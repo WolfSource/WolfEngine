@@ -2,6 +2,7 @@
 #include "scene.h"
 #include <w_content_manager.h>
 #include <glm_extension.h>
+#include <w_task.h>
 
 using namespace std;
 using namespace wolf;
@@ -15,7 +16,7 @@ static ImTextureID sTexID = (void*)("#i");
 static float sWindowWidth = 0;
 static float sWindowHeight = 0;
 static float sUXAnimationSpeed = 1.2f;
-enum collapse_states
+typedef enum collapse_states
 {
 	openned = 0,
 	openning,
@@ -45,7 +46,11 @@ scene::scene(_In_z_ const std::wstring& pContentPath, _In_ const wolf::system::w
 	_query_results(nullptr),
 	_number_of_query_results(0),
 	_current_selected_model(nullptr),
+	_show_all_instances_colors(false),
 	_rebuild_command_buffer(true),
+	_show_all(true),
+	_show_lods(false),
+	_searching(false),
 	_index_of_selected_mesh(0)
 {
 #ifdef __WIN32
@@ -129,7 +134,7 @@ void scene::load()
 		V(W_FAILED,
 			w_log_type::W_ERROR,
 			true,
-			"creating render pass. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
+			"creating render pass. trace info: {}", _gDevice->get_info(), _trace_info);
 	}
 
 	//create semaphore
@@ -140,10 +145,10 @@ void scene::load()
 		V(W_FAILED,
 			w_log_type::W_ERROR,
 			true,
-			"creating draw semaphore. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
+			"creating draw semaphore. trace info: {}", _gDevice->get_info(), _trace_info);
 	}
 
-	//Fence for syncing
+	//fence for syncing
 	_hr = this->_draw_fence.initialize(_gDevice);
 	if (_hr == W_FAILED)
 	{
@@ -151,7 +156,7 @@ void scene::load()
 		V(W_FAILED,
 			w_log_type::W_ERROR,
 			true,
-			"creating draw fence. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
+			"creating draw fence. trace info: {}", _gDevice->get_info(), _trace_info);
 	}
 
 	//load gui icon
@@ -169,7 +174,7 @@ void scene::load()
 			V(W_FAILED,
 				w_log_type::W_ERROR,
 				true,
-				"initializing icon. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
+				"initializing icon. trace info: {}", _gDevice->get_info(), _trace_info);
 		}
 
 		_hr = _gui_icons->load_texture_2D_from_file(wolf::content_path +
@@ -180,7 +185,7 @@ void scene::load()
 			V(W_FAILED,
 				w_log_type::W_ERROR,
 				true,
-				"loading icon. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
+				"loading icon. trace info: {}", _gDevice->get_info(), _trace_info);
 		}
 	}
 
@@ -201,23 +206,91 @@ void scene::load()
 		V(W_FAILED,
 			w_log_type::W_ERROR,
 			true,
-			"creating draw command buffers. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
+			"creating draw command buffers. trace info: {}", _gDevice->get_info(), _trace_info);
 	}
-	
-	w_vertex_binding_attributes _basic_vertex_binding_attributes(w_vertex_declaration::VERTEX_POSITION);
-	auto _basic_vertex_shader_path = shared::scene_content_path + L"shaders/shader.vert.spv";
-	auto _fragment_shader_path = shared::scene_content_path + L"shaders/shader.frag.spv";
 
-	//create pipeline cache for model
+	//create coordinate system
+	this->_shape_coordinate_axis = new (std::nothrow) w_shapes(w_color::LIME());
+	if (this->_shape_coordinate_axis)
+	{
+		_hr = this->_shape_coordinate_axis->load(_gDevice, this->_draw_render_pass, this->_viewport, this->_viewport_scissor);
+		if (_hr == W_FAILED)
+		{
+			V(W_FAILED,
+				w_log_type::W_ERROR,
+				true,
+				"loading shape coordinate axis. trace info: {}", _trace_info);
+		}
+	}
+	else
+	{
+		release();
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			true,
+			"allocating memory for shape coordinate axis. trace info: {}", _trace_info);
+	}
+
+	if (_load_scene_from_folder(wolf::content_path + L"models/sponza/") == W_FAILED)
+	{
+		release();
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			true,
+			"loading memory for sponza model. trace info: {}", _trace_info);
+	}
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//The following codes have been added for this project
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	if (this->_gpu_occlusion_query.initialize(_gDevice, this->_number_of_query_results) == W_FAILED)
+	{
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			true,
+			"initialize gpu occlusion query failed. trace info: {}", _trace_info);
+	}
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+}
+
+W_RESULT scene::_load_scene_from_folder(_In_z_ const std::wstring& pDirectoryPath)
+{
+	const std::string _trace_info = this->name + "::_load_scenes_from_folder";
+
+	W_RESULT _hr = W_FAILED;
+	auto _gDevice = this->graphics_devices[0];
+
+	//loading pipeline cache
 	std::string _model_pipeline_cache_name = "model_pipeline_cache";
 	if (w_pipeline::create_pipeline_cache(_gDevice, _model_pipeline_cache_name) == W_FAILED)
 	{
-		logger.error("could not create pipeline cache for models");
+		logger.error("could not create model pipeline cache");
 		_model_pipeline_cache_name.clear();
 	}
 
-	//load collada scene
-	auto _scene = w_content_manager::load<w_cpipeline_scene>(shared::scene_content_path + L"models/test_oculling.wscene");
+	std::string _model_compute_pipeline_cache_name = "model_compute_pipeline_cache";
+	if (w_pipeline::create_pipeline_cache(_gDevice, _model_compute_pipeline_cache_name) == W_FAILED)
+	{
+		logger.error("could not create model compute pipeline cache");
+		_model_compute_pipeline_cache_name.clear();
+	}
+
+	//set vertex binding attributes
+	std::map<uint32_t, std::vector<w_vertex_attribute>> _basic_vertex_declaration;
+	_basic_vertex_declaration[0] = { W_POS, W_NORM, W_UV }; //position ,normal and uv per each vertex
+
+	std::map<uint32_t, std::vector<w_vertex_attribute>> _instance_vertex_declaration;
+	_instance_vertex_declaration[0] = { W_POS, W_NORM, W_UV }; //position ,normal and uv per each vertex
+	_instance_vertex_declaration[1] = { W_POS, W_ROT }; // position, rotation per each instance
+
+	w_vertex_binding_attributes _basic_vertex_binding_attributes(_basic_vertex_declaration);
+	w_vertex_binding_attributes _instance_vertex_binding_attributes(_instance_vertex_declaration);
+
+	const auto _instanced_vertex_shader_path = shared::scene_content_path + L"shaders/instance.vert.spv";
+	const auto _basic_vertex_shader_path = shared::scene_content_path + L"shaders/basic.vert.spv";
+	const auto _fragment_shader_path = shared::scene_content_path + L"shaders/shader.frag.spv";
+
+	auto _scene = w_content_manager::load<w_cpipeline_scene>(wolf::content_path + L"models/sponza/sponza.wscene");
 	if (_scene)
 	{
 		//get first camera
@@ -241,71 +314,73 @@ void scene::load()
 		std::wstring _vertex_shader_path;
 		for (auto _m : _cmodels)
 		{
-			_vertex_shader_path = _basic_vertex_shader_path;
-			auto _model = new (std::nothrow) model_mesh(_m, _basic_vertex_binding_attributes);
-			
+			model* _model = nullptr;
+			if (_m->get_instances_count())
+			{
+				continue;
+				_vertex_shader_path = _instanced_vertex_shader_path;
+				_model = new (std::nothrow) model(_m, _instance_vertex_binding_attributes);
+			}
+			else
+			{
+				_vertex_shader_path = _basic_vertex_shader_path;
+				_model = new (std::nothrow) model(_m, _basic_vertex_binding_attributes);
+			}
+
 			if (!_model)
 			{
 				V(W_FAILED,
 					w_log_type::W_WARNING,
-					"allocating memory for model: {}. graphics device: {} . trace info: {}", _m->get_name(), _gDevice->get_info(), _trace_info);
-
+					"allocating memory for model: {}. trace info: {}", _m->get_name(), _trace_info);
 				continue;
 			}
 
-			_hr = _model->load(
-				_gDevice,
-				_model_pipeline_cache_name,
-				_vertex_shader_path,
-				_fragment_shader_path,
-				this->_draw_render_pass);
+			//do not check sky for occlusion culling
+			if (_m->get_name() == "sky")
+			{
+				_model->set_is_sky(true);
+			}
+			else
+			{
+				_model->set_is_sky(false);
+				this->_number_of_query_results++;
+				this->_number_of_query_results += _model->get_instances_count();
+			}
+
+			//initialize model
+			_hr = _model->initialize();
 			if (_hr == W_FAILED)
 			{
 				V(W_FAILED,
 					w_log_type::W_WARNING,
-					"loading model: {}. graphics device: {} . trace info: {}", _m->get_name(), _gDevice->get_info(), _trace_info);
+					"initializing model: {}. trace info: {}", _m->get_name(), _trace_info);
 				continue;
 			}
+			else
+			{
+				_hr = _model->load(
+					_gDevice,
+					_model_pipeline_cache_name,
+					_model_compute_pipeline_cache_name,
+					_vertex_shader_path,
+					_fragment_shader_path,
+					this->_draw_render_pass);
+				if (_hr == W_FAILED)
+				{
+					V(W_FAILED,
+						w_log_type::W_WARNING,
+						"loading model: {}. trace info: {}", _m->get_name(), _trace_info);
+					continue;
+				}
+			}
 
-			//set view projection
-			_model->set_view_projection(this->_first_camera.get_view(), this->_first_camera.get_projection());
 			this->_models.push_back(_model);
 		}
 		_cmodels.clear();
 		_scene->release();
 	}
 
-	//create coordinate system
-	this->_shape_coordinate_axis = new (std::nothrow) w_shapes(w_color::LIME());
-	if (this->_shape_coordinate_axis)
-	{
-		_hr = this->_shape_coordinate_axis->load(_gDevice, this->_draw_render_pass, this->_viewport, this->_viewport_scissor);
-		if (_hr == W_FAILED)
-		{
-			V(W_FAILED,
-				w_log_type::W_ERROR,
-				true,
-				"loading shape coordinate axis. trace info: {}", _trace_info);
-		}
-	}
-	else
-	{
-		V(W_FAILED,
-			w_log_type::W_ERROR,
-			true,
-			"allocating memory for shape coordinate axis. trace info: {}", _trace_info);
-	}
-
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//The following codes have been added for this project
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	_hr = this->_gpu_occlusion_query.initialize(_gDevice, 2);
-	V(_hr,
-		w_log_type::W_ERROR,
-		true,
-		"initialize gpu occlusion query failed. trace info: {}", _trace_info);
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	return _hr;
 }
 
 W_RESULT scene::_build_draw_command_buffers()
@@ -319,9 +394,6 @@ W_RESULT scene::_build_draw_command_buffers()
 		this->_draw_command_buffers.begin(i);
 		{
 			auto _cmd = this->_draw_command_buffers.get_command_at(i);
-
-			this->_gpu_occlusion_query.reset(_cmd);
-
 			this->_draw_render_pass.begin(
 				i,
 				_cmd,
@@ -335,9 +407,9 @@ W_RESULT scene::_build_draw_command_buffers()
 					//++++++++++++++++++++++++++++++++++++++++++++++++++++
 					//The following codes have been added for this project
 					//++++++++++++++++++++++++++++++++++++++++++++++++++++
-					_gpu_occlusion_query.begin_query(_cmd, i);
+					this->_gpu_occlusion_query.begin_query(_cmd, i);
 					this->_models[i]->draw(_cmd);
-					_gpu_occlusion_query.end_query(_cmd, i);
+					this->_gpu_occlusion_query.end_query(_cmd, i);
 					//++++++++++++++++++++++++++++++++++++++++++++++++++++
 					//++++++++++++++++++++++++++++++++++++++++++++++++++++
 				}
@@ -380,21 +452,21 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 	{
 		this->_force_update_camera = true;
 	});
+
 	if (this->_force_update_camera)
 	{
 		this->_force_update_camera = false;
 		//update view and projection of all models
 		for (auto _model : this->_models)
 		{
-			_model->set_view_projection(this->_first_camera.get_view(), this->_first_camera.get_projection());
+			_model->set_view_projection_position(
+				this->_first_camera.get_view(),
+				this->_first_camera.get_projection(),
+				this->_first_camera.get_position());
+			_model->update();
 		}
-		this->_rebuild_command_buffer = true;
-	}
 
-	if (this->_rebuild_command_buffer)
-	{
-		_build_draw_command_buffers();
-		this->_rebuild_command_buffer = false;
+		this->_rebuild_command_buffer = true;
 	}
 
 	//update shape coordinate
@@ -425,27 +497,58 @@ W_RESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 	auto _draw_cmd = this->_draw_command_buffers.get_command_at(_frame_index);
 	auto _gui_cmd = w_imgui::get_command_buffer_at(_frame_index);
 
-	const std::vector<w_pipeline_stage_flag_bits> _wait_dst_stage_mask =
+	std::vector<w_pipeline_stage_flag_bits> _wait_dst_stage_mask =
 	{
 		w_pipeline_stage_flag_bits::COLOR_ATTACHMENT_OUTPUT_BIT,
 	};
 
 	//reset draw fence
+	std::vector<w_semaphore> _wait_semaphors = { _output_window->swap_chain_image_is_available_semaphore };
+
 	this->_draw_fence.reset();
+
+	if (this->_rebuild_command_buffer)
+	{
+		//submit compute shader for all visible models
+		std::for_each(this->_models.begin(), this->_models.end(),
+			[&](_In_ model* pModel)
+		{
+			if (pModel)
+			{
+				if (pModel->submit_compute_shader() == W_PASSED)
+				{
+					auto _semaphore = pModel->get_compute_semaphore();
+					if (_semaphore)
+					{
+						_wait_semaphors.push_back(*_semaphore);
+					}
+				}
+			}
+		});
+
+		_build_draw_command_buffers();
+		this->_rebuild_command_buffer = false;
+	}
+
+	//If waitSemaphoreCount is not 0, pWaitDstStageMask must be a pointer to an array of waitSemaphoreCount valid combinations of VkPipelineStageFlagBits values
+	for (size_t i = 0; i < _wait_semaphors.size(); ++i)
+	{
+		_wait_dst_stage_mask.push_back(w_pipeline_stage_flag_bits::COMPUTE_SHADER_BIT);
+	}
+
 	if (_gDevice->submit(
 		{ &_draw_cmd, &_gui_cmd },//command buffers
 		_gDevice->vk_graphics_queue, //graphics queue
 		_wait_dst_stage_mask, //destination masks
-		{ _output_window->swap_chain_image_is_available_semaphore }, //wait semaphores
+		_wait_semaphors, //wait semaphores
 		{ _output_window->rendering_done_semaphore }, //signal semaphores
 		&this->_draw_fence,
 		false) == W_FAILED)
 	{
-		release();
 		V(W_FAILED,
 			w_log_type::W_ERROR,
 			true,
-			"submiting queue for drawing. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
+			"submiting queue for drawing. trace info: {}", _trace_info);
 	}
 	this->_draw_fence.wait();
 
@@ -454,8 +557,12 @@ W_RESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//check occuling for next frame
 	this->_query_results = this->_gpu_occlusion_query.wait_for_query_results(this->_number_of_query_results);
-	this->_models[0]->set_draw_lod(this->_query_results[0] == 0);
-	this->_models[1]->set_draw_lod(this->_query_results[1] == 0);
+	for (size_t i = 0; i < this->_models.size(); ++i)
+	{
+		if (this->_models[i]->get_is_sky()) continue;
+
+		//this->_models[i]->set_all_use_last_lod(this->_query_results[i] == 0);
+	}
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -487,12 +594,11 @@ ULONG scene::release()
 	{
 		SAFE_RELEASE(_m);
 	}
+	this->_searched_models.clear();
 	this->_current_selected_model = nullptr;
 	this->_index_of_selected_mesh = 0;
 
 	SAFE_RELEASE(this->_shape_coordinate_axis);
-
-	this->_gpu_occlusion_query.release();
 
 	//release gui's resources
 	w_imgui::release();
@@ -533,37 +639,97 @@ void scene::_show_floating_debug_window()
 	std::string _selected_mesh_name = "";
 	if (this->_current_selected_model)
 	{
-		//this is ref mesh
-		_selected_mesh_name = this->_current_selected_model->get_model_name();
+		if (this->_index_of_selected_mesh)
+		{
+			auto _index = this->_index_of_selected_mesh - 1;
+			//this is instance
+			auto _instances = this->_current_selected_model->get_instances();
+			if (_index >= 0 && _index < _instances.size())
+			{
+				_selected_mesh_name = _instances[_index].name;
+			}
+		}
+		else
+		{
+			//this is ref mesh
+			_selected_mesh_name = this->_current_selected_model->get_model_name();
+		}
 	}
 
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//The following codes have been added for this project
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	if (_number_of_query_results)
-	{
-		ImGui::Text("Press \"Esc\" to exit\r\nRight click on name of mesh to focus\r\nFPS:%d\r\nFrameTime:%f\r\nTotalTime:%f\r\nSelected Mesh:%s\r\n\r\nif model occluded, it will be draw as lod.\r\nBox Occlusion State: %d\r\nSphere Occlusion State: %d",
-			sFPS,
-			sElapsedTimeInSec,
-			sTotalTimeTimeInSec,
-			_selected_mesh_name.c_str(),
-			this->_query_results[0], this->_query_results[1]);
-	}
-	else
-	{
-		ImGui::Text("Ooops something problem happened, press \"Esc\" to exit.");
-	}
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	ImGui::Text("Press \"Esc\" to exit\r\nRight click on name of mesh to focus\r\nMovments:Q,Z,W,A,S,D and Mouse Left Button\r\nFPS:%d\r\nFrameTime:%f\r\nTotalTime:%f\r\nReferences have red Color\r\nInstances have green Color\r\n",
+		sFPS,
+		sElapsedTimeInSec,
+		sTotalTimeTimeInSec);
 
 	if (this->_current_selected_model)
 	{
 		if (ImGui::Button("Focus"))
 		{
 			auto _b_sphere = w_bounding_sphere::create_from_bounding_box(this->_current_selected_model->get_global_bounding_box());
-			this->_first_camera.focus(_b_sphere);
-			this->_force_update_camera = true;
+
+			if (this->_index_of_selected_mesh)
+			{
+				//this is instance
+				auto _index = this->_index_of_selected_mesh - 1;
+				auto _instances = this->_current_selected_model->get_instances();
+				if (_index >= 0 && _index < _instances.size())
+				{
+					auto _ins = &_instances[_index];
+					if (_ins)
+					{
+						_b_sphere.center[0] = _ins->position[0];
+						_b_sphere.center[1] = _ins->position[1];
+						_b_sphere.center[2] = _ins->position[2];
+
+						this->_first_camera.focus(_b_sphere);
+						this->_force_update_camera = true;
+					}
+				}
+			}
+			else
+			{
+				this->_first_camera.focus(_b_sphere);
+				this->_force_update_camera = true;
+			}
 		}
+
+		auto _checked = this->_current_selected_model->get_enable_instances_colors();
+		if (ImGui::Checkbox("Show instances colors", &_checked))
+		{
+			this->_current_selected_model->set_enable_instances_colors(_checked);
+		}
+		_checked = this->_current_selected_model->get_global_visiblity();
+		if (ImGui::Checkbox("Visible", &_checked))
+		{
+			this->_current_selected_model->set_global_visiblity(_checked);
+			this->_rebuild_command_buffer = true;
+		}
+	}
+	if (ImGui::Checkbox("Show all", &this->_show_all))
+	{
+		for (auto _m : this->_models)
+		{
+			if (!_m) continue;
+			_m->set_global_visiblity(this->_show_all);
+		}
+		this->_rebuild_command_buffer = true;
+	}
+	if (ImGui::Checkbox("Show all instances colors", &this->_show_all_instances_colors))
+	{
+		for (auto _m : this->_models)
+		{
+			if (!_m) continue;
+			_m->set_enable_instances_colors(this->_show_all_instances_colors);
+		}
+	}
+	if (ImGui::Checkbox("Show only lod", &this->_show_lods))
+	{
+		for (auto _m : this->_models)
+		{
+			if (!_m) continue;
+			_m->set_all_use_last_lod(this->_show_lods);
+		}
+		this->_rebuild_command_buffer = true;
 	}
 	ImGui::End();
 
@@ -692,7 +858,46 @@ scene::widget_info scene::_show_search_widget(_In_ scene::widget_info* pRelatedW
 	ImGui::PushItemWidth(_text_box_width);
 	if (ImGui::InputText("", sSearch, MAX_SEARCH_LENGHT, ImGuiInputTextFlags_EnterReturnsTrue))
 	{
-		logger.write("Searching");
+#pragma region Seraching
+		this->_searched_models.clear();
+		if (!this->_searching)
+		{
+			if (sSearch[0] == '\0')
+			{
+				this->_searching = false;
+			}
+			else
+			{
+				this->_searching = true;
+				std::string _lower_search(sSearch);
+				std::transform(_lower_search.begin(), _lower_search.end(), _lower_search.begin(), ::tolower);
+				w_task::execute_async([this, _lower_search]()->W_RESULT
+				{
+					//start seraching model names
+					std::for_each(this->_models.begin(), this->_models.end(),
+						[this, _lower_search](_In_ model* pModel)
+					{
+						if (pModel)
+						{
+							auto _name = pModel->get_model_name();
+							std::transform(_name.begin(), _name.end(), _name.begin(), ::tolower);
+							if (_name.find(_lower_search) != std::string::npos)
+							{
+								this->_searched_models.push_back(pModel);
+							}
+						}
+					});
+
+					return W_PASSED;
+
+				}, [this](W_RESULT pV)
+				{
+					//on callback
+					this->_searching = false;
+				});
+			}
+		}
+#pragma endregion
 	}
 	ImGui::PopItemWidth();
 	ImGui::PopStyleColor();
@@ -743,6 +948,35 @@ scene::widget_info scene::_show_search_widget(_In_ scene::widget_info* pRelatedW
 					{
 						this->_current_selected_model = _model;
 						this->_index_of_selected_mesh = 0;
+					}
+					//create sub tree nodes for all instances of models
+					auto _instances = _model->get_instances();
+					for (int i = 0; i < _instances.size(); ++i)
+					{
+						auto _ins = &_instances[i];
+						if (!_ins) continue;
+
+						ImGui::TreeNodeEx((void*)(intptr_t)i, _node_flags, _ins->name.c_str());
+						//on right click select and focus on it
+						if (ImGui::IsItemClicked(1))
+						{
+							this->_current_selected_model = _model;
+							this->_index_of_selected_mesh = i + 1;
+
+							//on double click, focus on object
+							_b_sphere.center[0] = _ins->position[0];
+							_b_sphere.center[1] = _ins->position[1];
+							_b_sphere.center[2] = _ins->position[2];
+
+							this->_first_camera.focus(_b_sphere);
+							this->_force_update_camera = true;
+						}
+						//on left click, pick it
+						else if (ImGui::IsItemClicked(0))
+						{
+							this->_current_selected_model = _model;
+							this->_index_of_selected_mesh = i + 1;
+						}
 					}
 					ImGui::PopStyleColor();
 					ImGui::TreePop();
@@ -839,7 +1073,7 @@ scene::widget_info scene::_show_explorer()
 	ImGui::SameLine(0.0f, 0.0f);
 
 	ImVec2 _icon_size(_w_i.size.y - 2.0f, _w_i.size.y - 2.0f);
-	ImGui::SetWindowPos(ImVec2(_w_i.size.x / 2.625f, _w_i.pos.y + 1));
+	ImGui::SetWindowPos(ImVec2(80.0f, _w_i.pos.y + 1));
 	if (ImGui::ImageButton(sTexID, _icon_size, ImVec2(0, 0), ImVec2(0.1, 0.1), -1.0f, ImVec4(0, 0, 0, 0), Colors::Black))
 	{
 		sLeftWidgetCollapseState = collapse_states::collapsing;

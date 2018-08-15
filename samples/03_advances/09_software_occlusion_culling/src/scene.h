@@ -15,13 +15,13 @@
 #define __SCENE_H__
 
 #include <w_framework/w_game.h>
+#include <w_framework/w_first_person_camera.h>
 #include <vulkan/w_command_buffers.h>
 #include <vulkan/w_render_pass.h>
 #include <vulkan/w_semaphore.h>
 #include <vulkan/w_pipeline.h>
 #include <vulkan/w_shader.h>
 #include <vulkan/w_imgui.h>
-#include <w_framework/w_first_person_camera.h>
 #include "model.h"
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++

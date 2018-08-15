@@ -46,17 +46,10 @@ scene::scene(_In_z_ const std::wstring& pContentPath, _In_ const wolf::system::w
 	_current_selected_model(nullptr),
 	_show_all_instances_colors(false),
 	_rebuild_command_buffer(true),
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//The following codes have been added for this project
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	_show_all(true),
 	_show_lods(false),
-	_has_camera_animation(false),
-	_play_camera_anim(false),
-	_current_camera_time(0),
-	_searching(false)
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	_searching(false),
+	_index_of_selected_mesh(0)
 {
 #ifdef __WIN32
 	w_graphics_device_manager_configs _config;
@@ -214,14 +207,32 @@ void scene::load()
 			"creating draw command buffers. trace info: {}", _gDevice->get_info(), _trace_info);
 	}
 
-	_load_scenes_from_folder(wolf::content_path + L"models/sponza/");
+	//create coordinate system
+	this->_shape_coordinate_axis = new (std::nothrow) w_shapes(w_color::LIME());
+	if (this->_shape_coordinate_axis)
+	{
+		_hr = this->_shape_coordinate_axis->load(_gDevice, this->_draw_render_pass, this->_viewport, this->_viewport_scissor);
+		if (_hr == W_FAILED)
+		{
+			V(W_FAILED,
+				w_log_type::W_ERROR,
+				true,
+				"loading shape coordinate axis. trace info: {}", _trace_info);
+		}
+	}
+	else
+	{
+		release();
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			true,
+			"allocating memory for shape coordinate axis. trace info: {}", _trace_info);
+	}
+
+	_load_scene_from_folder(wolf::content_path + L"models/sponza/");
 }
 
-//++++++++++++++++++++++++++++++++++++++++++++++++++++
-//The following codes have been added for this project
-//++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-W_RESULT scene::_load_scenes_from_folder(_In_z_ const std::wstring& pDirectoryPath)
+W_RESULT scene::_load_scene_from_folder(_In_z_ const std::wstring& pDirectoryPath)
 {
 	const std::string _trace_info = this->name + "::_load_scenes_from_folder";
 
@@ -358,16 +369,13 @@ W_RESULT scene::_build_draw_command_buffers()
 				1.0f,
 				0.0f);
 			{
-				//++++++++++++++++++++++++++++++++++++++++++++++++++++
-				//The following codes have been added for this project
-				//++++++++++++++++++++++++++++++++++++++++++++++++++++
 				//draw all models
 				for (auto _model : this->_models)
 				{
 					_model->draw(_cmd);
-				}
-				//++++++++++++++++++++++++++++++++++++++++++++++++++++
-				//++++++++++++++++++++++++++++++++++++++++++++++++++++
+				}			
+				//draw coordinate system
+				this->_shape_coordinate_axis->draw(_cmd);
 			}
 			this->_draw_render_pass.end(_cmd);
 		}
@@ -386,9 +394,6 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 	sElapsedTimeInSec = pGameTime.get_elapsed_seconds();
 	sTotalTimeTimeInSec = pGameTime.get_total_seconds();
 
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//The following codes have been added for this project
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	bool _gui_procceded = false;
 	w_imgui::new_frame(sElapsedTimeInSec, [this, &_gui_procceded]()
 	{
@@ -400,27 +405,7 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 		w_point_t _screen_size;
 		_screen_size.x = this->_viewport.width;
 		_screen_size.y = this->_viewport.height;
-
-		if (!this->_has_camera_animation || !this->_play_camera_anim)
-		{
-			this->_force_update_camera = this->_first_camera.update(pGameTime, _screen_size);
-		}
-	}
-
-	if (this->_has_camera_animation && this->_play_camera_anim)
-	{
-		this->_camera_time.set_fixed_time_step(true);
-		this->_camera_time.set_target_elapsed_seconds(1 / 30.0f);
-		this->_camera_time.tick([this]()
-		{
-			this->_first_camera.set_position(this->_camera_anim_positions[this->_current_camera_time]);
-			this->_first_camera.set_look_at(this->_camera_anim_targets[this->_current_camera_time]);
-			this->_first_camera.update_view();
-			this->_first_camera.update_frustum();
-
-			this->_current_camera_time = (this->_current_camera_time + 1) % this->_camera_anim_positions.size();
-			this->_force_update_camera = true;
-		});
+		this->_force_update_camera = this->_first_camera.update(pGameTime, _screen_size);
 	}
 
 	//first time update all models
@@ -444,9 +429,16 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 
 		this->_rebuild_command_buffer = true;
 	}
-
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	
+	//update shape coordinate
+	auto _world = glm::mat4(1) * glm::scale(glm::vec3(20.0f));
+	auto _wvp = this->_first_camera.get_projection_view() * _world;
+	if (this->_shape_coordinate_axis->update(_wvp) == W_FAILED)
+	{
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"loading shape coordinate axis. trace info: {}", _trace_info);
+	}
 
 	w_game::update(pGameTime);
 }
@@ -521,21 +513,6 @@ W_RESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 	}
 	this->_draw_fence.wait();
 
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//The following codes have been added for this project
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	/*if (_current_selected_model)
-	{
-		if (_current_selected_model->get_instances_count())
-		{
-			auto _result = _current_selected_model->get_result_of_compute_shader();
-			logger.write(std::to_string(_result.draw_count));
-			logger.write(std::to_string(_result.lod_level[0]));
-			logger.write(std::to_string(_result.lod_level[1]));
-		}
-	}*/
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	return w_game::render(pGameTime);
 }
 
@@ -560,17 +537,15 @@ ULONG scene::release()
 	this->_draw_command_buffers.release();
 	this->_draw_render_pass.release();
 
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//The following codes have been added for this project
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	for (auto _m : this->_models)
 	{
 		SAFE_RELEASE(_m);
 	}
 	this->_searched_models.clear();
 	this->_current_selected_model = nullptr;
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	this->_index_of_selected_mesh = 0;
+
+	SAFE_RELEASE(this->_shape_coordinate_axis);
 
 	//release gui's resources
 	w_imgui::release();
@@ -587,8 +562,13 @@ void scene::_show_floating_debug_window()
 	_style.WindowPadding = ImVec2(5, 0);
 	_style.ItemSpacing = ImVec2(0, 2);
 
+	auto _orange_color = Colors::Orange;
 	_style.Colors[ImGuiCol_Text] = Colors::White;
 	_style.Colors[ImGuiCol_WindowBg] = Colors::LightBlue;
+	_style.Colors[ImGuiCol_Button] = _orange_color;
+	_orange_color.w = 0.7f;
+	_style.Colors[ImGuiCol_ButtonHovered] = _orange_color;
+	_style.Colors[ImGuiCol_ButtonActive] = Colors::LightBlue;
 
 	ImGuiWindowFlags  _window_flags = 0;;
 	ImGui::SetNextWindowSize(ImVec2(400, 350), ImGuiSetCond_FirstUseEver);
@@ -602,11 +582,76 @@ void scene::_show_floating_debug_window()
 		return;
 	}
 
+	//get name of selected mesh
+	std::string _selected_mesh_name = "";
+	if (this->_current_selected_model)
+	{
+		if (this->_index_of_selected_mesh)
+		{
+			auto _index = this->_index_of_selected_mesh - 1;
+			//this is instance
+			auto _instances = this->_current_selected_model->get_instances();
+			if (_index >= 0 && _index < _instances.size())
+			{
+				_selected_mesh_name = _instances[_index].name;
+			}
+		}
+		else
+		{
+			//this is ref mesh
+			_selected_mesh_name = this->_current_selected_model->get_model_name();
+		}
+	}
+
 	ImGui::Text("Press \"Esc\" to exit\r\nRight click on name of mesh to focus\r\nMovments:Q,Z,W,A,S,D and Mouse Left Button\r\nFPS:%d\r\nFrameTime:%f\r\nTotalTime:%f\r\nReferences have red Color\r\nInstances have green Color\r\n",
 		sFPS,
 		sElapsedTimeInSec,
 		sTotalTimeTimeInSec);
+	
+	if (this->_current_selected_model)
+	{
+		if (ImGui::Button("Focus"))
+		{
+			auto _b_sphere = w_bounding_sphere::create_from_bounding_box(this->_current_selected_model->get_global_bounding_box());
 
+			if (this->_index_of_selected_mesh)
+			{
+				//this is instance
+				auto _index = this->_index_of_selected_mesh - 1;
+				auto _instances = this->_current_selected_model->get_instances();
+				if (_index >= 0 && _index < _instances.size())
+				{
+					auto _ins = &_instances[_index];
+					if (_ins)
+					{
+						_b_sphere.center[0] = _ins->position[0];
+						_b_sphere.center[1] = _ins->position[1];
+						_b_sphere.center[2] = _ins->position[2];
+
+						this->_first_camera.focus(_b_sphere);
+						this->_force_update_camera = true;
+					}
+				}
+			}
+			else
+			{
+				this->_first_camera.focus(_b_sphere);
+				this->_force_update_camera = true;
+			}
+		}
+
+		auto _checked = this->_current_selected_model->get_enable_instances_colors();
+		if (ImGui::Checkbox("Show instances colors", &_checked))
+		{
+			this->_current_selected_model->set_enable_instances_colors(_checked);
+		}
+		_checked = this->_current_selected_model->get_global_visiblity();
+		if (ImGui::Checkbox("Visible", &_checked))
+		{
+			this->_current_selected_model->set_global_visiblity(_checked);
+			this->_rebuild_command_buffer = true;
+		}
+	}
 	if (ImGui::Checkbox("Show all", &this->_show_all))
 	{
 		for (auto _m : this->_models)
@@ -616,7 +661,14 @@ void scene::_show_floating_debug_window()
 		}
 		this->_rebuild_command_buffer = true;
 	}
-	
+	if (ImGui::Checkbox("Show all instances colors", &this->_show_all_instances_colors))
+	{
+		for (auto _m : this->_models)
+		{
+			if (!_m) continue;
+			_m->set_enable_instances_colors(this->_show_all_instances_colors);
+		}
+	}
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//The following codes have been added for this project
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -631,35 +683,6 @@ void scene::_show_floating_debug_window()
 	}
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	if (ImGui::Checkbox("Show all instances colors", &this->_show_all_instances_colors))
-	{
-		for (auto _m : this->_models)
-		{
-			if (!_m) continue;
-			_m->set_enable_instances_colors(this->_show_all_instances_colors);
-		}
-	}
-
-	if (this->_current_selected_model)
-	{
-		auto _checked = this->_current_selected_model->get_enable_instances_colors();
-		if (ImGui::Checkbox("Show instances colors", &_checked))
-		{
-			this->_current_selected_model->set_enable_instances_colors(_checked);
-		}
-		_checked = this->_current_selected_model->get_global_visiblity();
-		if (ImGui::Checkbox("Visible", &_checked))
-		{
-			this->_current_selected_model->set_global_visiblity(_checked);
-			this->_rebuild_command_buffer = true;
-		}
-	}
-
-	if (this->_has_camera_animation && ImGui::Checkbox("Play Camera Animation", &this->_play_camera_anim))
-	{
-		this->_current_camera_time = 0;
-	}
-
 	ImGui::End();
 
 	return;
@@ -683,6 +706,12 @@ scene::widget_info scene::_show_left_widget_controller()
 	_style.FrameBorderSize = 0.0f;
 	_style.ChildBorderSize = 0;
 #pragma endregion
+
+	_style.Colors[ImGuiCol_Button] = Colors::Transparent;
+	_style.Colors[ImGuiCol_ButtonHovered] = Colors::Transparent;
+	_style.Colors[ImGuiCol_ButtonActive] = Colors::Transparent;
+	_style.Colors[ImGuiCol_ImageButtonActive] = Colors::White;
+	_style.Colors[ImGuiCol_ImageButtonHovered] = Colors::Orange;
 
 	ImGuiWindowFlags _window_flags = 0;
 	_window_flags |= ImGuiWindowFlags_NoTitleBar;
@@ -839,13 +868,13 @@ scene::widget_info scene::_show_search_widget(_In_ scene::widget_info* pRelatedW
 	if (ImGui::CollapsingHeaderEx(sTexID, ImVec2(0.3f, 0.0f), ImVec2(0.4f, 0.1f), _icon_color, "Models", &_opened))
 	{
 		//add all models and instances to tree view
-		auto _size = this->_searched_models.size();
+		auto _size = this->_models.size();
 		if (_size)
 		{
 			for (int i = 0; i < _size; ++i)
 			{
 				//create a tree node for model
-				auto _model = this->_searched_models.at(i);
+				auto _model = this->_models.at(i);
 				if (!_model) continue;
 
 				auto _name = _model->get_model_name();
@@ -856,39 +885,49 @@ scene::widget_info scene::_show_search_widget(_In_ scene::widget_info* pRelatedW
 					//The Ref
 					ImGui::TreeNodeEx((void*)(intptr_t)i, _node_flags, "Ref model");
 					auto _b_sphere = w_bounding_sphere::create_from_bounding_box(_model->get_global_bounding_box());
+					//on right click select and focus on it
 					if (ImGui::IsItemClicked(1))
 					{
-						//on right click, focus on ref object
-
-						this->_current_selected_model = _model;
-						auto _position = this->_current_selected_model->get_position();
-						_b_sphere.center[0] = _position[0];
-						_b_sphere.center[1] = _position[1];
-						_b_sphere.center[2] = _position[2];
-
 						this->_first_camera.focus(_b_sphere);
-
 						this->_force_update_camera = true;
 
+						//select the ref model
+						this->_current_selected_model = _model;
+						this->_index_of_selected_mesh = 0;
 					}
+					//on left click, change debug window also select the ref model
 					else if (ImGui::IsItemClicked(0))
 					{
-						//on left click, change debug window
 						this->_current_selected_model = _model;
+						this->_index_of_selected_mesh = 0;
 					}
 					//create sub tree nodes for all instances of models
-					for (auto& _ins : _model->get_instances())
+					auto _instances = _model->get_instances();
+					for (int i = 0; i < _instances.size(); ++i)
 					{
-						ImGui::TreeNodeEx((void*)(intptr_t)i, _node_flags, _ins.name.c_str());
+						auto _ins = &_instances[i];
+						if (!_ins) continue;
+
+						ImGui::TreeNodeEx((void*)(intptr_t)i, _node_flags, _ins->name.c_str());
+						//on right click select and focus on it
 						if (ImGui::IsItemClicked(1))
 						{
-							//on right click, focus on object
-							_b_sphere.center[0] = _ins.position[0];
-							_b_sphere.center[1] = _ins.position[1];
-							_b_sphere.center[2] = _ins.position[2];
+							this->_current_selected_model = _model;
+							this->_index_of_selected_mesh = i + 1;
+
+							//on double click, focus on object
+							_b_sphere.center[0] = _ins->position[0];
+							_b_sphere.center[1] = _ins->position[1];
+							_b_sphere.center[2] = _ins->position[2];
 
 							this->_first_camera.focus(_b_sphere);
 							this->_force_update_camera = true;
+						}
+						//on left click, pick it
+						else if (ImGui::IsItemClicked(0))
+						{
+							this->_current_selected_model = _model;
+							this->_index_of_selected_mesh = i + 1;
 						}
 					}
 					ImGui::PopStyleColor();
@@ -900,70 +939,6 @@ scene::widget_info scene::_show_search_widget(_In_ scene::widget_info* pRelatedW
 			if (ImGui::TreeNode("		"))
 			{
 				ImGui::TreePop();
-			}
-		}
-		else
-		{
-			_size = this->_models.size();
-			if (_size)
-			{
-				for (int i = 0; i < _size; ++i)
-				{
-					//create a tree node for model
-					auto _model = this->_models.at(i);
-					if (!_model) continue;
-
-					auto _name = _model->get_model_name();
-
-					if (ImGui::TreeNode(_name.c_str()))
-					{
-						ImGui::PushStyleColor(ImGuiCol_Header, Colors::Transparent);
-						//The Ref
-						ImGui::TreeNodeEx((void*)(intptr_t)i, _node_flags, "Ref model");
-						auto _b_sphere = w_bounding_sphere::create_from_bounding_box(_model->get_global_bounding_box());
-						if (ImGui::IsItemClicked(1))
-						{
-							this->_current_selected_model = _model;
-
-							auto _pos = this->_current_selected_model->get_position();
-							_b_sphere.center[0] = _pos[0];
-							_b_sphere.center[1] = _pos[1];
-							_b_sphere.center[2] = _pos[2];
-
-							//on right click, focus on object
-							this->_first_camera.focus(_b_sphere);
-							this->_force_update_camera = true;
-						}
-						else if (ImGui::IsItemClicked(0))
-						{
-							//on left click, change debug window
-							this->_current_selected_model = _model;
-						}
-						//create sub tree nodes for all instances of models
-						for (auto& _ins : _model->get_instances())
-						{
-							ImGui::TreeNodeEx((void*)(intptr_t)i, _node_flags, _ins.name.c_str());
-							if (ImGui::IsItemClicked(1))
-							{
-								//on right click, focus on object
-								_b_sphere.center[0] = _ins.position[0];
-								_b_sphere.center[1] = _ins.position[1];
-								_b_sphere.center[2] = _ins.position[2];
-
-								this->_first_camera.focus(_b_sphere);
-								this->_force_update_camera = true;
-							}
-						}
-						ImGui::PopStyleColor();
-						ImGui::TreePop();
-					}
-				}
-
-				//fake
-				if (ImGui::TreeNode("		"))
-				{
-					ImGui::TreePop();
-				}
 			}
 		}
 	}
@@ -1029,6 +1004,12 @@ scene::widget_info scene::_show_explorer()
 	_window_flags |= ImGuiWindowFlags_NoMove;
 	_window_flags |= ImGuiWindowFlags_NoScrollbar;
 	_window_flags |= ImGuiWindowFlags_NoCollapse;
+
+	_style.Colors[ImGuiCol_Button] = Colors::Transparent;
+	_style.Colors[ImGuiCol_ButtonHovered] = Colors::Transparent;
+	_style.Colors[ImGuiCol_ButtonActive] = Colors::Transparent;
+	_style.Colors[ImGuiCol_ImageButtonActive] = Colors::White;
+	_style.Colors[ImGuiCol_ImageButtonHovered] = Colors::Orange;
 
 	ImGui::SetNextWindowSize(sLeftWidgetControllerSize, ImGuiCond_Always);
 	ImGui::SetNextWindowPos(_w_i.pos);

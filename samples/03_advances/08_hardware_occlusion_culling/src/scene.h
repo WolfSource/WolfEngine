@@ -1,10 +1,22 @@
 /*
-    Project			 : Wolf Engine. Copyright(c) Pooya Eimandar (http://PooyaEimandar.com) . All rights reserved.
-    Source			 : Please direct any bug to https://github.com/PooyaEimandar/Wolf.Engine/issues
-    Website			 : http://WolfSource.io
-    Name			 : scene.h
-    Description		 : The main scene of Wolf Engine
-    Comment          : Read more information about this sample on http://wolfsource.io/gpunotes/
+	Project			 : Wolf Engine. Copyright(c) Pooya Eimandar (http://PooyaEimandar.com) . All rights reserved.
+	Source			 : Please direct any bug to https://github.com/PooyaEimandar/Wolf.Engine/issues
+	Website			 : http://WolfSource.io
+	Name			 : scene.h
+	Description		 : The main scene of Wolf Engine
+	Comment          : Read more information about this sample on http://wolfsource.io/gpunotes/
+					   based on http://developer.download.nvidia.com/books/HTML/gpugems/gpugems_ch29.html
+					   Check the query result from the previous frame.
+					   (Begin query):
+							If the object was visible in the last frame:
+								Enable rendering to screen.
+								Enable or disable writing to depth buffer (depends on whether the object is translucent or opaque).
+								Render the object itself.
+							If the object wasn't visible in the last frame:
+								Disable rendering to screen.
+								Disable writing to depth buffer.
+								"Render" the object's bounding box or LOD.
+					   (End query)
 */
 
 #if _MSC_VER > 1000
@@ -15,15 +27,15 @@
 #define __SCENE_H__
 
 #include <w_framework/w_game.h>
+#include <w_framework/w_first_person_camera.h>
 #include <vulkan/w_command_buffers.h>
 #include <vulkan/w_render_pass.h>
 #include <vulkan/w_semaphore.h>
 #include <vulkan/w_pipeline.h>
 #include <vulkan/w_shader.h>
-#include <vulkan/w_imgui.h>
 #include <vulkan/w_shapes.h>
-#include <w_framework/w_first_person_camera.h>
-#include "model_mesh.h"
+#include <vulkan/w_imgui.h>
+#include "model.h"
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
 //The following codes have been added for this project
@@ -39,9 +51,9 @@ public:
 	virtual ~scene();
 
 	/*
-	Allows the game to perform any initialization and it needs to before starting to run.
-	Calling Game::Initialize() will enumerate through any components and initialize them as well.
-	The parameter pOutputWindowsInfo represents the information of output window(s) of this game.
+		Allows the game to perform any initialization and it needs to before starting to run.
+		Calling Game::Initialize() will enumerate through any components and initialize them as well.
+		The parameter pOutputWindowsInfo represents the information of output window(s) of this game.
 	*/
 	void initialize(_In_ std::map<int, w_present_info> pOutputWindowsInfo) override;
 
@@ -71,38 +83,44 @@ private:
 		ImVec2	pos;
 	};
 
+	W_RESULT	_load_scene_from_folder(_In_z_ const std::wstring& pDirectoryPath);
 	W_RESULT	_build_draw_command_buffers();
 	void		_show_floating_debug_window();
 	widget_info	_show_left_widget_controller();
 	widget_info	_show_search_widget(_In_ widget_info* pRelatedWidgetInfo);
 	widget_info	_show_explorer();
 	bool    	_update_gui();
-	
-	wolf::render::vulkan::w_viewport                                    _viewport;
-	wolf::render::vulkan::w_viewport_scissor                            _viewport_scissor;
 
-	wolf::render::vulkan::w_command_buffers                             _draw_command_buffers;
-	wolf::render::vulkan::w_render_pass                                 _draw_render_pass;
+	wolf::render::vulkan::w_viewport										_viewport;
+	wolf::render::vulkan::w_viewport_scissor								_viewport_scissor;
 
-	wolf::render::vulkan::w_fences                                      _draw_fence;
-	wolf::render::vulkan::w_semaphore                                   _draw_semaphore;
-	
-	bool																_rebuild_command_buffer;
-	bool																_force_update_camera;
-	wolf::framework::w_first_person_camera								_first_camera;
-	std::vector<model_mesh*>											_models;
+	wolf::render::vulkan::w_command_buffers									_draw_command_buffers;
+	wolf::render::vulkan::w_render_pass										_draw_render_pass;
 
-	model_mesh*															_current_selected_model;
+	wolf::render::vulkan::w_fences											_draw_fence;
+	wolf::render::vulkan::w_semaphore										_draw_semaphore;
+
+	bool																	_rebuild_command_buffer;
+	bool																	_force_update_camera;
+	wolf::framework::w_first_person_camera									_first_camera;
+	std::vector<model*>														_models;
+
+	bool																	_show_all;
+	bool																	_show_all_instances_colors;
+	model*																	_current_selected_model;
 	//zero means ref model and none zero is index of instances
-	int																	_index_of_selected_mesh;
-	wolf::render::vulkan::w_shapes*										_shape_coordinate_axis;
+	int																		_index_of_selected_mesh;
+	wolf::render::vulkan::w_shapes*											_shape_coordinate_axis;
+	bool																	_show_lods;
+	bool																	_searching;
+	std::vector<model*>														_searched_models;
 
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//The following codes have been added for this project
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	wolf::render::vulkan::w_occlusion_query								_gpu_occlusion_query;
-	uint64_t*															_query_results;
-	size_t																_number_of_query_results;
+	wolf::render::vulkan::w_occlusion_query									_gpu_occlusion_query;
+	uint64_t*																_query_results;
+	size_t																	_number_of_query_results;
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 };

@@ -124,7 +124,7 @@ W_RESULT model_mesh::load(
 	this->c_model->release();
 	this->c_model = nullptr;
 
-	auto _number_of_instances = static_cast<uint32_t>(this->instnaces_transforms.size());
+	auto _number_of_instances = static_cast<uint32_t>(this->instances_transforms.size());
 	if (_number_of_instances)
 	{
 		//create compute semaphore
@@ -192,8 +192,8 @@ W_RESULT model_mesh::_build_compute_command_buffer()
 	auto _cmd = this->_cs.command_buffers.get_command_at(0);
 	this->_cs.command_buffers.begin(0);
 	{
-		auto _indirect_draws_buffer = this->indirect_draws.buffer.get_buffer_handle();
-		auto _size = this->indirect_draws.buffer.get_descriptor_info().range;
+		auto _indirect_draws_buffer = this->_indirect_draws.buffer.get_buffer_handle();
+		auto _size = this->_indirect_draws.buffer.get_descriptor_info().range;
 
 		// Add memory barrier to ensure that the indirect commands have been consumed before the compute shader updates them
 		VkBufferMemoryBarrier _barrier = {};
@@ -226,7 +226,7 @@ W_RESULT model_mesh::_build_compute_command_buffer()
 
 		vkCmdDispatch(
 			_cmd.handle,
-			(uint32_t)(this->indirect_draws.drawing_commands.size() / this->_cs.batch_local_size),
+			(uint32_t)(this->_indirect_draws.drawing_commands.size() / this->_cs.batch_local_size),
 			1,
 			1);
 
@@ -270,7 +270,7 @@ W_RESULT model_mesh::submit_compute_shader()
 		_distance_to_camera = glm::distance(_model_pos, _cam_pos);
 	}
 
-	auto _number_of_instances = static_cast<uint32_t>(this->instnaces_transforms.size());
+	auto _number_of_instances = static_cast<uint32_t>(this->instances_transforms.size());
 	if (!_number_of_instances)
 	{
 		if (this->lods_info.size())
@@ -432,9 +432,9 @@ W_RESULT model_mesh::draw(_In_ const w_command_buffer& pCommandBuffer)
 
 		return this->_mesh->draw(pCommandBuffer,
 			&_instance_buffer_handle,
-			static_cast<uint32_t>(this->instnaces_transforms.size()),
+			static_cast<uint32_t>(this->instances_transforms.size()),
 			0,
-			&this->indirect_draws);
+			&this->_indirect_draws);
 	}
 	else
 	{
@@ -1080,26 +1080,26 @@ W_RESULT model_mesh::_create_buffers()
 {	
 	const std::string _trace_info = this->_name + "::_create_buffers";
 
-	auto _number_of_instances = static_cast<uint32_t>(this->instnaces_transforms.size());
+	auto _number_of_instances = static_cast<uint32_t>(this->instances_transforms.size());
 	if (!_number_of_instances) return W_PASSED;
 
 	//set compute shader batch size
 	uint32_t _draw_counts = 1 + _number_of_instances;
 	//find nearest pow of 2 for compute shader local batch size
 	this->_cs.batch_local_size = static_cast<uint32_t>(pow(2, ceil(log(_draw_counts) / log(2))));
-	this->indirect_draws.drawing_commands.resize(this->_cs.batch_local_size);
+	this->_indirect_draws.drawing_commands.resize(this->_cs.batch_local_size);
 
 	this->_cs_out_struct.draw_count = _draw_counts;
 
 	for (uint32_t i = 0; i < _draw_counts; ++i)
 	{
-		this->indirect_draws.drawing_commands[i].instanceCount = 1;
-		this->indirect_draws.drawing_commands[i].firstInstance = i;
+		this->_indirect_draws.drawing_commands[i].instanceCount = 1;
+		this->_indirect_draws.drawing_commands[i].firstInstance = i;
 		//firstIndex and indexCount are written by the compute shader for models which has at least one instance
 	}
 
 	//load indirect draws
-	if (this->indirect_draws.load(this->gDevice, _draw_counts) == W_FAILED)
+	if (this->_indirect_draws.load(this->gDevice, _draw_counts) == W_FAILED)
 	{
 		V(W_FAILED,
 			w_log_type::W_ERROR,
@@ -1133,7 +1133,7 @@ W_RESULT model_mesh::_create_instance_buffers()
 {
 	const std::string _trace_info = this->_name + "::_create_instance_buffer";
 
-	auto _number_of_instances = static_cast<uint32_t>(this->instnaces_transforms.size());
+	auto _number_of_instances = static_cast<uint32_t>(this->instances_transforms.size());
 	if (!_number_of_instances) return W_PASSED;
 
 	w_buffer _staging_buffers[2];
@@ -1168,7 +1168,7 @@ W_RESULT model_mesh::_create_instance_buffers()
 		1.0f);
 
 	_index++;
-	for (auto _ins : this->instnaces_transforms)
+	for (auto _ins : this->instances_transforms)
 	{
 		_vertex_instances_data[_index].pos[0] = _ins.position[0];
 		_vertex_instances_data[_index].pos[1] = _ins.position[1];
@@ -1297,7 +1297,7 @@ W_RESULT model_mesh::_create_lod_levels_buffer()
 {
 	const std::string _trace_info = this->_name + "::_create_lod_levels_buffer";
 
-	auto _number_of_instances = static_cast<uint32_t>(this->instnaces_transforms.size());
+	auto _number_of_instances = static_cast<uint32_t>(this->instances_transforms.size());
 	if (!_number_of_instances) return W_PASSED;
 
 	w_buffer _staging_buffer;
@@ -1362,7 +1362,7 @@ W_RESULT model_mesh::_create_cs_out_buffer()
 {
 	const std::string _trace_info = this->_name + "::_create_cs_out_buffer";
 
-	auto _number_of_instances = static_cast<uint32_t>(this->instnaces_transforms.size());
+	auto _number_of_instances = static_cast<uint32_t>(this->instances_transforms.size());
 	if (!_number_of_instances) return W_PASSED;
 
 	//create buffer of compute stage output
@@ -1587,7 +1587,7 @@ W_RESULT model_mesh::_create_shader_modules(
 	_shader_param.stage = w_shader_stage_flag_bits::VERTEX_SHADER;
 
 	//set U0 uniform of instance vertex shader, which has seperate structure for basic model or instanced models
-	if (this->instnaces_transforms.size())
+	if (this->instances_transforms.size())
 	{
 		_hr = this->_instance_u0.load(this->gDevice);
 		if (_hr == W_FAILED)
@@ -1669,7 +1669,7 @@ W_RESULT model_mesh::_create_shader_modules(
 	_shader_params.push_back(_shader_param);
 
 	//the following shader parameters will be added for models which have at least one instance
-	auto _number_of_instances = static_cast<uint32_t>(this->instnaces_transforms.size());
+	auto _number_of_instances = static_cast<uint32_t>(this->instances_transforms.size());
 	if (_number_of_instances)
 	{
 		_shader_param.index = 0;
@@ -1681,7 +1681,7 @@ W_RESULT model_mesh::_create_shader_modules(
 		_shader_param.index = 1;
 		_shader_param.type = w_shader_binding_type::STORAGE;
 		_shader_param.stage = w_shader_stage_flag_bits::COMPUTE_SHADER;
-		_shader_param.buffer_info = this->indirect_draws.buffer.get_descriptor_info();
+		_shader_param.buffer_info = this->_indirect_draws.buffer.get_descriptor_info();
 		_shader_params.push_back(_shader_param);
 
 		_shader_param.index = 2;
@@ -1792,7 +1792,7 @@ W_RESULT model_mesh::_create_pipelines(
 		return W_FAILED;
 	}
 
-	auto _number_of_instances = static_cast<uint32_t>(this->instnaces_transforms.size());
+	auto _number_of_instances = static_cast<uint32_t>(this->instances_transforms.size());
 	if (_number_of_instances)
 	{
 		if (this->_cs.pipeline.load_compute(
@@ -1821,7 +1821,7 @@ ULONG model_mesh::release()
 	this->_name.clear();
 	this->model_name.clear();
 
-	this->instnaces_transforms.clear();
+	this->instances_transforms.clear();
 
 	if (this->c_model)
 	{
@@ -1881,12 +1881,12 @@ glm::vec3 model_mesh::get_scale() const
 
 std::vector<w_instance_info> model_mesh::get_instances() const
 {
-	return this->instnaces_transforms;
+	return this->instances_transforms;
 }
 
 const uint32_t model_mesh::get_instances_count() const
 {
-	return static_cast<uint32_t>(this->instnaces_transforms.size());
+	return static_cast<uint32_t>(this->instances_transforms.size());
 }
 
 w_bounding_box model_mesh::get_global_bounding_box() const
@@ -1946,7 +1946,7 @@ void model_mesh::set_view_projection_position(
 	const std::string _trace_info = this->_name + "::set_view_projection";
 
 	this->_camera_position = glm::vec4(pPosition, 1.0f);
-	if (this->instnaces_transforms.size())
+	if (this->instances_transforms.size())
 	{
 		this->_instance_u0.data.view = pView;
 		this->_instance_u0.data.projection = pProjection;

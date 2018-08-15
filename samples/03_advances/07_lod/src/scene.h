@@ -15,13 +15,14 @@
 #define __SCENE_H__
 
 #include <w_framework/w_game.h>
+#include <w_framework/w_first_person_camera.h>
 #include <vulkan/w_command_buffers.h>
 #include <vulkan/w_render_pass.h>
 #include <vulkan/w_semaphore.h>
 #include <vulkan/w_pipeline.h>
 #include <vulkan/w_shader.h>
+#include <vulkan/w_shapes.h>
 #include <vulkan/w_imgui.h>
-#include <w_framework/w_first_person_camera.h>
 #include "model.h"
 
 class scene : public wolf::framework::w_game
@@ -63,7 +64,7 @@ private:
 		ImVec2	pos;
 	};
 
-	W_RESULT	_load_scenes_from_folder(_In_z_ const std::wstring& pDirectoryPath);
+	W_RESULT	_load_scene_from_folder(_In_z_ const std::wstring& pDirectoryPath);
 	W_RESULT	_build_draw_command_buffers();
 	void		_show_floating_debug_window();
 	widget_info	_show_left_widget_controller();
@@ -88,7 +89,9 @@ private:
 	bool																	_show_all;
 	bool																	_show_all_instances_colors;
 	model*																	_current_selected_model;
-
+	//zero means ref model and none zero is index of instances
+	int																		_index_of_selected_mesh;
+	wolf::render::vulkan::w_shapes*											_shape_coordinate_axis;
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//The following codes have been added for this project
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -97,13 +100,6 @@ private:
 	std::vector<model*>														_searched_models;
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	
-	bool																	_has_camera_animation;
-	bool																	_play_camera_anim;
-	long																	_current_camera_time;
-	wolf::system::w_game_time												_camera_time;
-	std::vector<glm::vec3>													_camera_anim_positions;
-	std::vector<glm::vec3>													_camera_anim_targets;
 };
 
 #endif

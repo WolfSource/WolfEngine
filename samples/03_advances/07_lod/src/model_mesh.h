@@ -20,11 +20,12 @@
 #include <w_cpipeline_model.h>
 #include <vulkan/w_mesh.h>
 #include <vulkan/w_command_buffers.h>
+#include <vulkan/w_shader.h>
+#include <vulkan/w_pipeline.h>
+
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
 //The following codes have been added for this project
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
-#include <vulkan/w_shader.h>
-#include <vulkan/w_pipeline.h>
 #include <vulkan/w_uniform.h>
 #include "compute_stage.h"
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -140,7 +141,7 @@ protected:
 	std::string														model_name;
 	
 	wolf::content_pipeline::w_transform_info*						transform;
-	std::vector<wolf::content_pipeline::w_instance_info>			instnaces_transforms;
+	std::vector<wolf::content_pipeline::w_instance_info>			instances_transforms;
 
 	std::vector<float>												tmp_batch_vertices;
 	std::vector<uint32_t>											tmp_batch_indices;
@@ -190,7 +191,7 @@ private:
 		glm::mat4											projection;
 		glm::vec4											camera_pos;//w is padding
 	};
-	wolf::render::vulkan::w_uniform<basic_u0>						_basic_u0;
+	wolf::render::vulkan::w_uniform<basic_u0>				_basic_u0;
 
 	struct instance_u0
 	{
@@ -198,7 +199,7 @@ private:
 		glm::mat4											projection;
 		glm::vec4											camera_pos;//w is padding
 	};
-	wolf::render::vulkan::w_uniform<instance_u0>					_instance_u0;
+	wolf::render::vulkan::w_uniform<instance_u0>			_instance_u0;
 
 	struct U1
 	{
@@ -207,7 +208,7 @@ private:
 		float		padding_0;
 		float		padding_1;
 	};
-	wolf::render::vulkan::w_uniform<U1>                           _u1;
+	wolf::render::vulkan::w_uniform<U1>                     _u1;
 
 	struct u2
 	{
@@ -216,31 +217,34 @@ private:
 		float												padding_1;
 		float												padding_2;
 	};
-	wolf::render::vulkan::w_uniform<u2>							_u2;
+	wolf::render::vulkan::w_uniform<u2>						_u2;
 	
-	wolf::render::vulkan::w_shader*								_shader;
-	wolf::render::vulkan::w_pipeline								_pipeline;
+	wolf::render::vulkan::w_shader*							_shader;
+	wolf::render::vulkan::w_pipeline						_pipeline;
 
 	struct vertex_instance_data
 	{
 		glm::vec3   pos;
 		glm::vec3   rot;
 	};
-	wolf::render::vulkan::w_mesh*									_mesh;
-	wolf::render::vulkan::w_buffer								_instances_buffer;
+	wolf::render::vulkan::w_mesh*							_mesh;
+	wolf::render::vulkan::w_buffer							_instances_buffer;
 
-	std::vector<wolf::render::vulkan::w_texture*>					_textures;
+	std::vector<wolf::render::vulkan::w_texture*>			_textures;
 	
-	wolf::render::vulkan::w_indirect_draws_command_buffer         indirect_draws;
+	wolf::render::vulkan::w_indirect_draws_command_buffer   _indirect_draws;
 
 	compute_stage											_cs;
 	compute_stage_output									_cs_out_struct;
-	wolf::render::vulkan::w_buffer								_cs_out_buffer;
+	wolf::render::vulkan::w_buffer							_cs_out_buffer;
 
 	bool													_show_only_lod;
 	bool													_is_sky;
 
 	uint32_t												_selected_lod_index;
+
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 };
 
 #endif

@@ -583,20 +583,8 @@ w_cpipeline_scene* w_assimp::load(_In_z_ const std::wstring& pAssetPath,
 							//if already has lod then continue
 							if (_mesh->lod_1_vertices.size()) continue;
 
-							if (_mesh->vertices.size() <= 8)
-							{
-								//do not allow to create LOD for a model with 8 vertices
-
-								auto _indices_size = _mesh->indices.size();
-								auto _vertices_size = _mesh->vertices.size();
-
-								_mesh->lod_1_indices.resize(_indices_size);
-								_mesh->lod_1_vertices.resize(_vertices_size);
-
-								std::copy(_mesh->indices.begin(), _mesh->indices.end(), _mesh->lod_1_indices.begin());
-								std::copy(_mesh->vertices.begin(), _mesh->vertices.end(), _mesh->lod_1_vertices.begin());
-							}
-							else
+							//do not allow to create LOD for a model with 8 vertices
+							if (_mesh->vertices.size() > 8)
 							{
 								//generate lod for it
 								if (_generate_simpolygon_lod(_mesh))

@@ -1124,18 +1124,18 @@ W_RESULT model_mesh::_create_instance_buffers()
 
 	//first one is ref model
 	int _index = 0;
-	_vertex_instances_data[_index].pos[0] = this->transform.position[0];
-	_vertex_instances_data[_index].pos[1] = this->transform.position[1];
-	_vertex_instances_data[_index].pos[2] = this->transform.position[2];
+	_vertex_instances_data[_index].pos[0] = this->transform->position[0];
+	_vertex_instances_data[_index].pos[1] = this->transform->position[1];
+	_vertex_instances_data[_index].pos[2] = this->transform->position[2];
 
-	_vertex_instances_data[_index].rot[0] = this->transform.rotation[0];
-	_vertex_instances_data[_index].rot[1] = this->transform.rotation[1];
-	_vertex_instances_data[_index].rot[2] = this->transform.rotation[2];
+	_vertex_instances_data[_index].rot[0] = this->transform->rotation[0];
+	_vertex_instances_data[_index].rot[1] = this->transform->rotation[1];
+	_vertex_instances_data[_index].rot[2] = this->transform->rotation[2];
 
 	_compute_instances_data[_index].pos = glm::vec4(
-		this->transform.position[0],
-		this->transform.position[1],
-		this->transform.position[2],
+		this->transform->position[0],
+		this->transform->position[1],
+		this->transform->position[2],
 		1.0f);
 
 	_index++;
@@ -1947,12 +1947,12 @@ std::string model_mesh::get_model_name() const
 
 glm::vec3 model_mesh::get_position() const
 {
-	return glm::vec3(this->transform.position[0], this->transform.position[1], this->transform.position[2]);
+	return glm::vec3(this->transform->position[0], this->transform->position[1], this->transform->position[2]);
 }
 
 glm::vec3 model_mesh::get_rotation() const
 {
-	return glm::vec3(this->transform.rotation[0], this->transform.rotation[1], this->transform.rotation[2]);
+	return glm::vec3(this->transform->rotation[0], this->transform->rotation[1], this->transform->rotation[2]);
 }
 
 //glm::vec3 model_mesh::get_scale() const

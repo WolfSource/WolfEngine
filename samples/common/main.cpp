@@ -5,18 +5,6 @@
 	Name			 : main.cpp
 	Description		 : This sample shows how to load 3d model in Wolf Engine.
 	Comment          : Read more information about this sample on http://wolfsource.io/gpunotes/
-					   based on http://developer.download.nvidia.com/books/HTML/gpugems/gpugems_ch29.html
-						Check the query result from the previous frame.
-						Issue query begin:
-							If the object was visible in the last frame:
-								Enable rendering to screen.
-								Enable or disable writing to depth buffer (depends on whether the object is translucent or opaque).
-								Render the object itself.
-							If the object wasn't visible in the last frame:
-								Disable rendering to screen.
-								Disable writing to depth buffer.
-								"Render" the object's bounding box.
-						(End query)
 */
 
 #include "pch.h"

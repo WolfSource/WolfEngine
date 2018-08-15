@@ -17,7 +17,7 @@ model::model(
 		this->model_name = this->c_model->get_name();
 		this->transform = this->c_model->get_transform();
 		//get all instances
-		this->c_model->get_instances(this->instances_transforms);
+		this->c_model->get_instances(this->instnaces_transforms);
 	}
 }
 
@@ -42,12 +42,14 @@ W_RESULT model::initialize()
 #pragma region collada from 3DMax 
 
 	//3DMax is right handed Zup
-	this->transform.rotation[0] += glm::radians(90.0f);
-	std::swap(this->transform.position[1], this->transform.position[2]);
-	this->transform.position[1] *= -1.0f;
+	this->transform->rotation[0] *= -1.0f;
+	this->transform->rotation[0] += glm::radians(90.0f);
+	std::swap(this->transform->position[1], this->transform->position[2]);
+	this->transform->position[1] *= -1.0f;
 
-	for (auto& _ins : this->instances_transforms)
+	for (auto& _ins : this->instnaces_transforms)
 	{
+		_ins.rotation[0] *= -1.0f;
 		_ins.rotation[0] += glm::radians(90.0f);
 		std::swap(_ins.position[1], _ins.position[2]);
 		_ins.position[1] *= -1.0f;
@@ -82,8 +84,7 @@ W_RESULT model::initialize()
 	const uint32_t _lod_distance_offset = 700;
 	lod_info _lod_info;
 
-	auto _number_of_meshes = _meshes.size();
-	if (_number_of_meshes)
+	if (_meshes_count)
 	{
 		//add first lod
 		_lod_info.first_index = 0;// this->tmp_batch_indices.size();// First index for this LOD
@@ -94,65 +95,39 @@ W_RESULT model::initialize()
 		this->lods_info.push_back(_lod_info);
 	}
 
-	auto _number_of_ch = this->c_model->get_convex_hulls_count();
-	auto _number_of_lods = this->c_model->get_lods_count();
-
-	//use ch for masked occlusion culling if avaiable
-	if (_number_of_ch)
+	//use last lod for masked occlusion culling if avaiable
+	bool _lod_found = false;
+	if (_meshes_count > 0)
 	{
-		std::vector<w_cpipeline_model*> _chs;
-		this->c_model->get_convex_hulls(_chs);
+		_add_to_mocs(_meshes[_meshes_count - 1]);
+		_lod_found = true;
+	}
 
-		for (auto& _iter : _chs)
-		{
-			//generate vertices and indices of bounding box
-			_add_to_mocs(_iter);
-		}
-	}
-	//use first lod for masked occlusion culling if avaiable
-	else if (_number_of_lods > 0)
-	{
-		std::vector<w_cpipeline_model*> _lods;
-		this->c_model->get_lods(_lods);
-		_add_to_mocs(_lods[0]);
-	}
-	//-ch and -lod not found, so we will use default bounding box
-	else if (_number_of_meshes)
+	//-lod not found, so we will use default bounding box
+	if (!_lod_found)
 	{
 		_meshes[0]->bounding_box.generate_vertices();
 		_add_to_mocs(_meshes[0]->bounding_box);
 	}
 
-	if (_number_of_lods > 0)
+	//store meshes and lod to batch buffer
+	if (_meshes_count > 0)
 	{
 		//append all lods to _batch_vertices and _batch_indices
-		std::vector<w_cpipeline_model*> _lods;
-		this->c_model->get_lods(_lods);
-		for (auto _lod_model : _lods)
-		{
-			_meshes.clear();
-			_lod_model->get_meshes(_meshes);
-			if (_meshes.size())
-			{
-				_lod_info.first_index = this->tmp_batch_indices.size();// First index for this LOD
-				_lod_info.index_count = _meshes[0]->indices.size();// Index count for this LOD
-				_lod_info.distance = _lod_distance_index * _lod_distance_offset;
-				_lod_distance_index++;
+		_lod_info.first_index = this->tmp_batch_indices.size();// First index for this LOD
+		_lod_info.index_count = _meshes[0]->indices.size();// Index count for this LOD
+		_lod_info.distance = _lod_distance_index * _lod_distance_offset;
+		_lod_distance_index++;
 
-				this->lods_info.push_back(_lod_info);
+		this->lods_info.push_back(_lod_info);
 
-				_store_to_batch(
-					_meshes,
-					this->vertex_binding_attributes,
-					_base_vertex_offset,
-					this->tmp_batch_vertices,
-					this->tmp_batch_indices);
-			}
-		}
-
-		_lods.clear();
+		_store_to_batch(
+			_meshes,
+			this->vertex_binding_attributes,
+			_base_vertex_offset,
+			this->tmp_batch_vertices,
+			this->tmp_batch_indices);
 	}
-	_meshes.clear();
 
 	return W_PASSED;
 }
@@ -186,56 +161,44 @@ void model::_add_to_mocs(_In_ const w_bounding_box& pBoundingBox)
 	this->_mocs.push_back(_moc_data);
 }
 
-void model::_add_to_mocs(_In_  w_cpipeline_model* pConvexHull)
+void model::_add_to_mocs(_In_  w_cpipeline_mesh* pMesh)
 {
-	auto _size = pConvexHull->get_meshes_count();
-	if (!_size) return;
+	if (!pMesh) return;
 
-	std::vector<w_cpipeline_mesh*> _meshes;
-	pConvexHull->get_meshes(_meshes);
+	moc_data _moc_data;
 
-	auto _transform = pConvexHull->get_transform();
-	auto _pos = _transform.position;
-	auto _rot = _transform.rotation;
-
-	for (auto& _iter : _meshes)
+	clipspace_vertex _cv;
+	auto _vert_size = pMesh->vertices.size();
+	for (uint32_t i = 0; i < _vert_size; i++)
 	{
-		moc_data _moc_data;
+		auto _vertex_pos = pMesh->vertices[i].position;
+		_cv.x = _vertex_pos[0];
+		_cv.y = _vertex_pos[1];
+		_cv.z = 0;
+		_cv.w = _vertex_pos[2];
 
-		clipspace_vertex _cv;
-		auto _vert_size = _iter->vertices.size();
-		for (uint32_t i = 0; i < _vert_size; i++)
-		{
-			auto _vertex_pos = _iter->vertices[i].position;
-			_cv.x = _vertex_pos[0];
-			_cv.y = _vertex_pos[1];
-			_cv.z = 0;
-			_cv.w = _vertex_pos[2];
-
-			_moc_data.vertices.push_back(_cv);
-			//_moc_data.indices.push_back(i);
-		}
-
-		_size = _iter->indices.size();
-		for (uint32_t i = 0; i < _size; i++)
-		{
-			_moc_data.indices.push_back(_iter->indices[i]);
-		}
-
-		auto _pos = _iter->bounding_box.position;
-		auto _rot = _iter->bounding_box.rotation;
-
-		_moc_data.position.x = _pos[0];
-		_moc_data.position.y = _pos[1];
-		_moc_data.position.z = _pos[2];
-
-		_moc_data.rotation.x = _rot[0];
-		_moc_data.rotation.y = _rot[1];
-		_moc_data.rotation.z = _rot[2];
-
-		_moc_data.num_of_tris_for_moc = static_cast<int>(_vert_size / 3);
-		this->_mocs.push_back(_moc_data);
+		_moc_data.vertices.push_back(_cv);
+		//_moc_data.indices.push_back(i);
 	}
+
+	for (uint32_t i = 0; i < pMesh->indices.size(); ++i)
+	{
+		_moc_data.indices.push_back(pMesh->indices[i]);
+	}
+
+	auto _pos = pMesh->bounding_box.position;
+	auto _rot = pMesh->bounding_box.rotation;
+
+	_moc_data.position.x = _pos[0];
+	_moc_data.position.y = _pos[1];
+	_moc_data.position.z = _pos[2];
+
+	_moc_data.rotation.x = _rot[0];
+	_moc_data.rotation.y = _rot[1];
+	_moc_data.rotation.z = _rot[2];
+
+	_moc_data.num_of_tris_for_moc = static_cast<int>(_vert_size / 3);
+	this->_mocs.push_back(_moc_data);
 }
 
 bool model::check_is_in_sight(_In_ wolf::framework::w_first_person_camera* pCamera)
