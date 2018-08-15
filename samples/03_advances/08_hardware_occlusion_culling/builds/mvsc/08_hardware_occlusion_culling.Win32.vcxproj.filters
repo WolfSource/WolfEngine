@@ -5,11 +5,13 @@
     <ClCompile Include="..\..\..\..\common\pch.cpp" />
     <ClCompile Include="..\..\src\scene.cpp" />
     <ClCompile Include="..\..\src\model_mesh.cpp" />
+    <ClCompile Include="..\..\src\model.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\common\pch.h" />
     <ClInclude Include="..\..\src\scene.h" />
     <ClInclude Include="..\..\src\model_mesh.h" />
+    <ClInclude Include="..\..\src\model.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="content">
@@ -18,13 +20,79 @@
     <Filter Include="content\shaders">
       <UniqueIdentifier>{7a5668f2-3529-48d4-9246-705ecfafb4de}</UniqueIdentifier>
     </Filter>
+    <Filter Include="content\shaders\compute">
+      <UniqueIdentifier>{906dd627-932c-46b4-b30a-cd6883a0d759}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\src\content\shaders\basic.vert">
+      <Filter>content\shaders</Filter>
+    </None>
+    <None Include="..\..\src\content\shaders\instance.vert">
+      <Filter>content\shaders</Filter>
+    </None>
     <None Include="..\..\src\content\shaders\shader.frag">
       <Filter>content\shaders</Filter>
     </None>
-    <None Include="..\..\src\content\shaders\shader.vert">
-      <Filter>content\shaders</Filter>
+    <None Include="..\..\src\content\shaders\compute\lod_0_local_size_x2.comp">
+      <Filter>content\shaders\compute</Filter>
+    </None>
+    <None Include="..\..\src\content\shaders\compute\lod_0_local_size_x4.comp">
+      <Filter>content\shaders\compute</Filter>
+    </None>
+    <None Include="..\..\src\content\shaders\compute\lod_0_local_size_x8.comp">
+      <Filter>content\shaders\compute</Filter>
+    </None>
+    <None Include="..\..\src\content\shaders\compute\lod_0_local_size_x16.comp">
+      <Filter>content\shaders\compute</Filter>
+    </None>
+    <None Include="..\..\src\content\shaders\compute\lod_0_local_size_x32.comp">
+      <Filter>content\shaders\compute</Filter>
+    </None>
+    <None Include="..\..\src\content\shaders\compute\lod_0_local_size_x64.comp">
+      <Filter>content\shaders\compute</Filter>
+    </None>
+    <None Include="..\..\src\content\shaders\compute\lod_0_local_size_x128.comp">
+      <Filter>content\shaders\compute</Filter>
+    </None>
+    <None Include="..\..\src\content\shaders\compute\lod_0_local_size_x256.comp">
+      <Filter>content\shaders\compute</Filter>
+    </None>
+    <None Include="..\..\src\content\shaders\compute\lod_0_local_size_x512.comp">
+      <Filter>content\shaders\compute</Filter>
+    </None>
+    <None Include="..\..\src\content\shaders\compute\lod_0_local_size_x1024.comp">
+      <Filter>content\shaders\compute</Filter>
+    </None>
+    <None Include="..\..\src\content\shaders\compute\lod_1_local_size_x2.comp">
+      <Filter>content\shaders\compute</Filter>
+    </None>
+    <None Include="..\..\src\content\shaders\compute\lod_1_local_size_x4.comp">
+      <Filter>content\shaders\compute</Filter>
+    </None>
+    <None Include="..\..\src\content\shaders\compute\lod_1_local_size_x8.comp">
+      <Filter>content\shaders\compute</Filter>
+    </None>
+    <None Include="..\..\src\content\shaders\compute\lod_1_local_size_x16.comp">
+      <Filter>content\shaders\compute</Filter>
+    </None>
+    <None Include="..\..\src\content\shaders\compute\lod_1_local_size_x32.comp">
+      <Filter>content\shaders\compute</Filter>
+    </None>
+    <None Include="..\..\src\content\shaders\compute\lod_1_local_size_x64.comp">
+      <Filter>content\shaders\compute</Filter>
+    </None>
+    <None Include="..\..\src\content\shaders\compute\lod_1_local_size_x128.comp">
+      <Filter>content\shaders\compute</Filter>
+    </None>
+    <None Include="..\..\src\content\shaders\compute\lod_1_local_size_x256.comp">
+      <Filter>content\shaders\compute</Filter>
+    </None>
+    <None Include="..\..\src\content\shaders\compute\lod_1_local_size_x512.comp">
+      <Filter>content\shaders\compute</Filter>
+    </None>
+    <None Include="..\..\src\content\shaders\compute\lod_1_local_size_x1024.comp">
+      <Filter>content\shaders\compute</Filter>
     </None>
   </ItemGroup>
 </Project>
