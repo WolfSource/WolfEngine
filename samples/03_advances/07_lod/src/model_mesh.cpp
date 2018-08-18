@@ -266,7 +266,7 @@ W_RESULT model_mesh::submit_compute_shader()
 	
 	if (this->_show_only_lod)
 	{
-		_cam_pos.x += 10000;//set camera to far
+		_cam_pos.x += 100000;//set camera to far
 		_distance_to_camera = glm::distance(_model_pos, _cam_pos);
 	}
 
@@ -281,7 +281,7 @@ W_RESULT model_mesh::submit_compute_shader()
 			{
 				if (_distance_to_camera <= this->lods_info[i].distance)
 				{
-					_selected_lod_index = i;
+					this->_selected_lod_index = i;
 					break;
 				}
 			}
@@ -465,7 +465,7 @@ W_RESULT model_mesh::draw(_In_ const w_command_buffer& pCommandBuffer)
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-void model_mesh::_store_indices_vertices_to_batch(
+W_RESULT model_mesh::_store_indices_vertices_to_batch(
 	_In_ const wolf::render::vulkan::w_vertex_binding_attributes& pVertexBindingAttributes,
 	_In_ const float& pTextureUVIndex,
 	_In_ const std::vector<w_vertex_struct>& pVertices,
@@ -474,6 +474,8 @@ void model_mesh::_store_indices_vertices_to_batch(
 	_Inout_ std::vector<uint32_t>& pBatchIndices,
 	_Inout_ uint32_t& pBaseVertexOffset)
 {
+	if (!pVertices.size()) return W_FAILED;
+	
 	uint32_t i = 0;
 
 #pragma region store index buffer
@@ -924,6 +926,8 @@ void model_mesh::_store_indices_vertices_to_batch(
 		break;
 	};
 #pragma endregion
+
+	return W_PASSED;
 }
 
 void model_mesh::_store_to_batch(
@@ -994,31 +998,39 @@ void model_mesh::_store_to_batch(
 	_first_lod_info.distance = _lod_distance_index * pLodDistance;
 	pLODInfos.push_back(_first_lod_info);
 
+	bool _add_lod_info = false;
 	for (size_t i = 0; i < _meshes_count; ++i)
 	{
 		auto _mesh_data = pModelMeshes[i];
 
-		_store_indices_vertices_to_batch(
+		if (_store_indices_vertices_to_batch(
 			pVertexBindingAttributes,
 			_texture_uv_indices[i],
 			_mesh_data->lod_1_vertices,
 			_mesh_data->lod_1_indices,
 			pBatchVertices,
 			pBatchIndices,
-			pBaseVertexOffset);
+			pBaseVertexOffset) == W_PASSED)
+		{
+			_add_lod_info = true;
+		}
 	}
 
-	_lod_distance_index++;
+	if (_add_lod_info)
+	{
+		_lod_distance_index++;
 
-	lod_info _second_lod_info;
-	_second_lod_info.first_index = _first_lod_info.index_count;
-	_second_lod_info.index_count = pBatchIndices.size() - _first_lod_info.index_count;
-	_second_lod_info.distance = _lod_distance_index * pLodDistance;
-	pLODInfos.push_back(_second_lod_info);
+		lod_info _second_lod_info;
+		_second_lod_info.first_index = _first_lod_info.index_count;
+		_second_lod_info.index_count = pBatchIndices.size() - _first_lod_info.index_count;
+		_second_lod_info.distance = _lod_distance_index * pLodDistance;
+		pLODInfos.push_back(_second_lod_info);
+	}
 
 	//clear resources
 	_textures_index.clear();
 	_texture_uv_indices.clear();
+
 }
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++

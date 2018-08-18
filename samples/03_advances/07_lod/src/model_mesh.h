@@ -114,7 +114,7 @@ protected:
 		float														_padding;
 	};
 
-	static void _store_indices_vertices_to_batch(
+	static W_RESULT _store_indices_vertices_to_batch(
 		_In_ const wolf::render::vulkan::w_vertex_binding_attributes& pVertexBindingAttributes,
 		_In_ const float& pTextureUVIndex,
 		_In_ const std::vector<wolf::content_pipeline::w_vertex_struct>& pVertices,

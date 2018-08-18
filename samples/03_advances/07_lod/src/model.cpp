@@ -67,9 +67,14 @@ W_RESULT model::initialize()
 	}
 	//prepare vertices and indices
 	uint32_t _base_vertex_offset = 0;
-
 	//store the indices and vertices of mesh to batches
-	const uint32_t _lod_distance_offset = 700;
+	uint32_t _lod_distance_offset = 700;
+	auto _mesh_bounding_box = this->c_model->get_bounding_box(0);
+	if (_mesh_bounding_box)
+	{
+		auto _sphere_from_box = w_bounding_sphere::create_from_bounding_box(*_mesh_bounding_box);
+		_lod_distance_offset = (_sphere_from_box.radius > 0 ? _sphere_from_box.radius : 1) * 5;
+	}
 	_store_to_batch(
 		_meshes,
 		this->vertex_binding_attributes,

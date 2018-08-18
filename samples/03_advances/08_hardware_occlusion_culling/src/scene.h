@@ -103,7 +103,13 @@ private:
 	bool																	_rebuild_command_buffer;
 	bool																	_force_update_camera;
 	wolf::framework::w_first_person_camera									_first_camera;
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//The following codes have been added for this project
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	model*																	_sky;
 	std::vector<model*>														_models;
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 	bool																	_show_all;
 	bool																	_show_all_instances_colors;

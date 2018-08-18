@@ -34,31 +34,6 @@
     <ClInclude Include="..\..\src\model_mesh.h" />
     <ClInclude Include="..\..\src\scene.h" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\src\content\shaders\basic.vert" />
-    <None Include="..\..\src\content\shaders\compute\lod_0_local_size_x1024.comp" />
-    <None Include="..\..\src\content\shaders\compute\lod_0_local_size_x128.comp" />
-    <None Include="..\..\src\content\shaders\compute\lod_0_local_size_x16.comp" />
-    <None Include="..\..\src\content\shaders\compute\lod_0_local_size_x2.comp" />
-    <None Include="..\..\src\content\shaders\compute\lod_0_local_size_x256.comp" />
-    <None Include="..\..\src\content\shaders\compute\lod_0_local_size_x32.comp" />
-    <None Include="..\..\src\content\shaders\compute\lod_0_local_size_x4.comp" />
-    <None Include="..\..\src\content\shaders\compute\lod_0_local_size_x512.comp" />
-    <None Include="..\..\src\content\shaders\compute\lod_0_local_size_x64.comp" />
-    <None Include="..\..\src\content\shaders\compute\lod_0_local_size_x8.comp" />
-    <None Include="..\..\src\content\shaders\compute\lod_1_local_size_x1024.comp" />
-    <None Include="..\..\src\content\shaders\compute\lod_1_local_size_x128.comp" />
-    <None Include="..\..\src\content\shaders\compute\lod_1_local_size_x16.comp" />
-    <None Include="..\..\src\content\shaders\compute\lod_1_local_size_x2.comp" />
-    <None Include="..\..\src\content\shaders\compute\lod_1_local_size_x256.comp" />
-    <None Include="..\..\src\content\shaders\compute\lod_1_local_size_x32.comp" />
-    <None Include="..\..\src\content\shaders\compute\lod_1_local_size_x4.comp" />
-    <None Include="..\..\src\content\shaders\compute\lod_1_local_size_x512.comp" />
-    <None Include="..\..\src\content\shaders\compute\lod_1_local_size_x64.comp" />
-    <None Include="..\..\src\content\shaders\compute\lod_1_local_size_x8.comp" />
-    <None Include="..\..\src\content\shaders\instance.vert" />
-    <None Include="..\..\src\content\shaders\shader.frag" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{890325E2-798E-47D8-9E36-23BB40ADFB30}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>

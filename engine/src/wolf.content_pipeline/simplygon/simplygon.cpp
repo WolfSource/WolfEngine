@@ -163,7 +163,7 @@ W_RESULT simplygon::generate_lod(
 	_settings->SetSymmetryOffset(0.0f);
 	_settings->SetTextureImportance(1.0f);
 	//_settings->SetTriangleCount(1000.0f);
-	_settings->SetTriangleRatio(0.5f);
+	_settings->SetTriangleRatio(0.2f);
 	_settings->SetUseAutomaticSymmetryDetection(false); //Auto-detect the symmetry plane, if one exists. Can, if required, be set manually instead.
 	_settings->SetUseVertexWeights(true); //Drastically increases the quality of the LODs normals, at the cost of extra processing time.
 	_settings->SetVertexColorImportance(1.0f);

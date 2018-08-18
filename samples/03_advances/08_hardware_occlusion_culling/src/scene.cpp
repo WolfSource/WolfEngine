@@ -51,7 +51,8 @@ scene::scene(_In_z_ const std::wstring& pContentPath, _In_ const wolf::system::w
 	_show_all(true),
 	_show_lods(false),
 	_searching(false),
-	_index_of_selected_mesh(0)
+	_index_of_selected_mesh(0),
+	_sky(nullptr)
 {
 #ifdef __WIN32
 	w_graphics_device_manager_configs _config;
@@ -87,9 +88,9 @@ void scene::load()
 	auto _output_window = &(_gDevice->output_presentation_window);
 
 #ifdef WIN32
-	shared::scene_content_path = wolf::system::io::get_current_directoryW() + L"/../../../../samples/03_advances/08_hardware_occlusion_culling/src/content/";
+	shared::scene_content_path = wolf::system::io::get_current_directoryW() + L"/../../../../samples/03_advances/07_lod/src/content/";
 #elif defined(__APPLE__)
-	shared::scene_content_path = wolf::system::io::get_current_directoryW() + L"/../../../../../samples/03_advances/08_hardware_occlusion_culling/src/content/";
+	shared::scene_content_path = wolf::system::io::get_current_directoryW() + L"/../../../../../samples/03_advances/07_lod/src/content/";
 #endif // WIN32
 
 	w_point_t _preferred_backbuffer_size;
@@ -317,7 +318,14 @@ W_RESULT scene::_load_scene_from_folder(_In_z_ const std::wstring& pDirectoryPat
 			model* _model = nullptr;
 			if (_m->get_instances_count())
 			{
+				//++++++++++++++++++++++++++++++++++++++++++++++++++++
+				//The following codes have been added for this project
+				//++++++++++++++++++++++++++++++++++++++++++++++++++++
+				//we are not using hardware occlusion query for draw instancing   
 				continue;
+				//++++++++++++++++++++++++++++++++++++++++++++++++++++
+				//++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 				_vertex_shader_path = _instanced_vertex_shader_path;
 				_model = new (std::nothrow) model(_m, _instance_vertex_binding_attributes);
 			}
@@ -336,13 +344,14 @@ W_RESULT scene::_load_scene_from_folder(_In_z_ const std::wstring& pDirectoryPat
 			}
 
 			//do not check sky for occlusion culling
-			if (_m->get_name() == "sky")
+			auto _is_sky = _m->get_name() == "sky";
+			if (_is_sky)
 			{
-				_model->set_is_sky(true);
+				_model->set_is_sky(_is_sky);
 			}
 			else
 			{
-				_model->set_is_sky(false);
+				_model->set_is_sky(_is_sky);
 				this->_number_of_query_results++;
 				this->_number_of_query_results += _model->get_instances_count();
 			}
@@ -374,7 +383,14 @@ W_RESULT scene::_load_scene_from_folder(_In_z_ const std::wstring& pDirectoryPat
 				}
 			}
 
-			this->_models.push_back(_model);
+			if (_is_sky)
+			{
+				this->_sky = _model;
+			}
+			else
+			{
+				this->_models.push_back(_model);
+			}
 		}
 		_cmodels.clear();
 		_scene->release();
@@ -401,18 +417,21 @@ W_RESULT scene::_build_draw_command_buffers()
 				1.0f,
 				0.0f);
 			{
+				//++++++++++++++++++++++++++++++++++++++++++++++++++++
+				//The following codes have been added for this project
+				//++++++++++++++++++++++++++++++++++++++++++++++++++++
+				//draw sky
+				this->_sky->draw(_cmd);
 				//draw all models
 				for (uint32_t i = 0; i < this->_models.size(); ++i)
 				{
-					//++++++++++++++++++++++++++++++++++++++++++++++++++++
-					//The following codes have been added for this project
-					//++++++++++++++++++++++++++++++++++++++++++++++++++++
 					this->_gpu_occlusion_query.begin_query(_cmd, i);
 					this->_models[i]->draw(_cmd);
 					this->_gpu_occlusion_query.end_query(_cmd, i);
-					//++++++++++++++++++++++++++++++++++++++++++++++++++++
-					//++++++++++++++++++++++++++++++++++++++++++++++++++++
 				}
+				//++++++++++++++++++++++++++++++++++++++++++++++++++++
+				//++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 				//draw coordinate system
 				this->_shape_coordinate_axis->draw(_cmd);
 			}
@@ -456,6 +475,13 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 	if (this->_force_update_camera)
 	{
 		this->_force_update_camera = false;
+		//update sky
+		this->_sky->set_view_projection_position(
+			this->_first_camera.get_view(),
+			this->_first_camera.get_projection(),
+			this->_first_camera.get_position());
+		this->_sky->update();
+		
 		//update view and projection of all models
 		for (auto _model : this->_models)
 		{
@@ -559,9 +585,7 @@ W_RESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 	this->_query_results = this->_gpu_occlusion_query.wait_for_query_results(this->_number_of_query_results);
 	for (size_t i = 0; i < this->_models.size(); ++i)
 	{
-		if (this->_models[i]->get_is_sky()) continue;
-
-		//this->_models[i]->set_all_use_last_lod(this->_query_results[i] == 0);
+		this->_models[i]->set_all_use_last_lod(this->_query_results[i] == 0);
 	}
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -590,6 +614,7 @@ ULONG scene::release()
 	this->_draw_command_buffers.release();
 	this->_draw_render_pass.release();
 
+	SAFE_RELEASE(this->_sky);
 	for (auto _m : this->_models)
 	{
 		SAFE_RELEASE(_m);
@@ -600,6 +625,9 @@ ULONG scene::release()
 
 	SAFE_RELEASE(this->_shape_coordinate_axis);
 
+	_gpu_occlusion_query.release();
+	this->_query_results = nullptr;
+	
 	//release gui's resources
 	w_imgui::release();
 
@@ -656,7 +684,13 @@ void scene::_show_floating_debug_window()
 		}
 	}
 
-	ImGui::Text("Press \"Esc\" to exit\r\nRight click on name of mesh to focus\r\nMovments:Q,Z,W,A,S,D and Mouse Left Button\r\nFPS:%d\r\nFrameTime:%f\r\nTotalTime:%f\r\nReferences have red Color\r\nInstances have green Color\r\n",
+	std::string _msg = "Press \"Esc\" to exit\r\nRight click on name of mesh to focus\r\nMovments:Q,Z,W,A,S,D and Mouse Left Button\r\nFPS:%d\r\nFrameTime:%f\r\nTotalTime:%f\r\nReferences have red Color\r\nInstances have green Color\r\n";
+	if (this->_current_selected_model && this->_current_selected_model->get_is_use_last_lod())
+	{
+		_msg += this->_current_selected_model->get_model_name() + " is drawing with last LOD\r\n";
+	}
+
+	ImGui::Text(_msg.c_str(),
 		sFPS,
 		sElapsedTimeInSec,
 		sTotalTimeTimeInSec);
@@ -713,14 +747,6 @@ void scene::_show_floating_debug_window()
 			_m->set_global_visiblity(this->_show_all);
 		}
 		this->_rebuild_command_buffer = true;
-	}
-	if (ImGui::Checkbox("Show all instances colors", &this->_show_all_instances_colors))
-	{
-		for (auto _m : this->_models)
-		{
-			if (!_m) continue;
-			_m->set_enable_instances_colors(this->_show_all_instances_colors);
-		}
 	}
 	if (ImGui::Checkbox("Show only lod", &this->_show_lods))
 	{

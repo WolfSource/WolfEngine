@@ -519,9 +519,12 @@ w_cpipeline_scene* w_assimp::load(_In_z_ const std::wstring& pAssetPath,
 
 						if (_meshes.size() && _lod_meshes.size())
 						{
+							//resize
+							_meshes[0]->lod_1_vertices.resize(_lod_meshes[0]->vertices.size());
+							_meshes[0]->lod_1_indices.resize(_lod_meshes[0]->indices.size());
 							//copy lod vertices & indices
-							_lod_meshes[0]->lod_1_vertices.swap(_meshes[0]->lod_1_vertices);
-							_lod_meshes[0]->lod_1_indices.swap(_meshes[0]->lod_1_indices);
+							_meshes[0]->lod_1_vertices.swap(_lod_meshes[0]->vertices);
+							_meshes[0]->lod_1_indices.swap(_lod_meshes[0]->indices);
 						}
 						return true;
 					}
@@ -584,7 +587,7 @@ w_cpipeline_scene* w_assimp::load(_In_z_ const std::wstring& pAssetPath,
 							if (_mesh->lod_1_vertices.size()) continue;
 
 							//do not allow to create LOD for a model with 8 vertices
-							if (_mesh->vertices.size() > 8)
+							if (_mesh->vertices.size() > 16)
 							{
 								//generate lod for it
 								if (_generate_simpolygon_lod(_mesh))
