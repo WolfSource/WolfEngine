@@ -30,6 +30,7 @@ build:
   
 skip_commits:
   files:
+    - .circleci/*
     - content/*
     - docs/*
     - samples/*
