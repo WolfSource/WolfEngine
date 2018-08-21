@@ -79,7 +79,7 @@
     <OutDir>$(SolutionDir)\..\bin\win32\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>$(SolutionDir)\..\bin\$(Platform)\$(Configuration)\Win32\</OutDir>
+    <OutDir>$(SolutionDir)\..\bin\win32\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -115,7 +115,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(ProjectDir)/../../src/;$(ProjectDir)/../../../../common/;$(SolutionDir)/../engine/src/wolf.system;$(SolutionDir)/../engine/src/wolf.content_pipeline;$(SolutionDir)/../engine/src/wolf.render;$(SolutionDir)/../engine/dependencies/vulkan/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)/../../src;$(ProjectDir)/../../../../common;$(SolutionDir)/../engine/src/wolf.system;$(SolutionDir)/../engine/src/wolf.content_pipeline;$(SolutionDir)/../engine/src/wolf.render;$(SolutionDir)/../engine/dependencies/vulkan/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;__WIN32;WIN32;_UNICODE;UNICODE;__VULKAN__;_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -140,7 +140,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(ProjectDir)/../../src/;$(ProjectDir)/../../../../common/;$(SolutionDir)/../engine/src/wolf.system;$(SolutionDir)/../engine/src/wolf.content_pipeline;$(SolutionDir)/../engine/src/wolf.render;$(SolutionDir)/../engine/dependencies/vulkan/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)/../../src;$(ProjectDir)/../../../../common;$(SolutionDir)/../engine/src/wolf.system;$(SolutionDir)/../engine/src/wolf.content_pipeline;$(SolutionDir)/../engine/src/wolf.render;$(SolutionDir)/../engine/dependencies/vulkan/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>__WIN32;WIN32;_UNICODE;UNICODE;__VULKAN__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -148,8 +148,8 @@
       <LanguageStandard>stdcpp14</LanguageStandard>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>wolf.system.win32.lib;wolf.vulkan.win32.lib;vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)/../bin/$(Platform)/$(Configuration)/Win32;$(SolutionDir)/../engine/dependencies/vulkan/lib/windows/x64</AdditionalLibraryDirectories>
+      <AdditionalDependencies>wolf.system.win32.lib;wolf.render.vulkan.win32.lib;vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)/../bin/win32/$(Platform)/$(Configuration)/;$(SolutionDir)/../engine/dependencies/vulkan/lib/windows/x64</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <AssemblyDebug>false</AssemblyDebug>
       <SubSystem>Windows</SubSystem>

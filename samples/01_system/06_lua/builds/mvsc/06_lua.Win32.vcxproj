@@ -80,7 +80,7 @@
     <OutDir>$(SolutionDir)\..\bin\win32\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>$(SolutionDir)\..\bin\$(Platform)\$(Configuration)\Win32\</OutDir>
+    <OutDir>$(SolutionDir)\..\bin\win32\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -131,13 +131,13 @@
     <Link>
       <AssemblyDebug>true</AssemblyDebug>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>$(SolutionDir)/../bin/win32/$(Platform)/$(Configuration)/;$(SolutionDir)/../engine/dependencies/tbb/oss/windows/lib/intel64/vc14;$(SolutionDir)/../engine/dependencies/luaJIT/lib/windows/x64/debug</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)/../bin/win32/$(Platform)/$(Configuration)/;</AdditionalLibraryDirectories>
       <AdditionalDependencies>wolf.system.win32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)/../engine/src/wolf.system/;$(SolutionDir)/../engine/dependencies/luaJIT/include/;$(SolutionDir)/../engine/dependencies/tbb/oss/windows/include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)/../engine/src/wolf.system/;$(SolutionDir)/../engine/dependencies/luaJIT/include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>__WIN32;WIN32;_UNICODE;UNICODE;__LUA__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -145,7 +145,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>wolf.system.win32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)/../bin/$(Platform)/$(Configuration)/Win32;$(SolutionDir)/../engine/dependencies/tbb/oss/windows/lib/intel64/vc14;$(SolutionDir)/../engine/dependencies/luaJIT/lib/windows/x64/release</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)/../bin/win32/$(Platform)/$(Configuration)/;</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <AssemblyDebug>false</AssemblyDebug>
       <SubSystem>Windows</SubSystem>
