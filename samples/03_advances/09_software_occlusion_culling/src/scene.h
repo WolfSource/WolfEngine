@@ -94,6 +94,7 @@ private:
 	bool															_force_update_camera;
 	wolf::framework::w_first_person_camera							_first_camera;
 	std::vector<model*>												_scene_models;
+	model*															_sky;
 
 	bool															_show_all;
 	bool															_show_all_instances_colors;
@@ -116,18 +117,8 @@ private:
 	std::vector<model*>												_searched_models;
 
 	wolf::render::vulkan::w_shapes*									_shape_coordinate_axis;
-
-	bool															_has_camera_animation;
-	bool															_play_camera_anim;
-	long															_current_camera_frame;
-	wolf::system::w_game_time										_camera_time;
-	std::vector<glm::vec3>											_camera_anim_positions;
-	std::vector<glm::vec3>											_camera_anim_targets;
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-	bool															_capture;
-	wolf::system::w_signal<void(const w_point_t, uint8_t*)>			on_pixels_captured_signal;
 };
 
 #endif

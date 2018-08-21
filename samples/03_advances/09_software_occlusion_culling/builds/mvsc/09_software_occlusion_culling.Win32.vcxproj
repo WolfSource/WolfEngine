@@ -24,8 +24,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\..\src\model_mesh.cpp" />
     <ClCompile Include="..\..\src\model.cpp" />
+    <ClCompile Include="..\..\src\model_mesh.cpp" />
     <ClCompile Include="..\..\src\scene.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -121,7 +121,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <AdditionalIncludeDirectories>$(ProjectDir)/../../src/;$(ProjectDir)/../../../../common/;$(SolutionDir)/../engine/src/wolf.system;$(SolutionDir)/../engine/src/wolf.content_pipeline;$(SolutionDir)/../engine/src/wolf.render;$(SolutionDir)/../engine/dependencies/vulkan/include;$(SolutionDir)/../engine/dependencies/tbb/oss/windows/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_DEBUG;__WIN32;WIN32;_UNICODE;UNICODE;__VULKAN__;_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;__WIN32;WIN32;_UNICODE;UNICODE;__VULKAN__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -137,7 +137,7 @@
       <AssemblyDebug>true</AssemblyDebug>
       <SubSystem>Windows</SubSystem>
       <AdditionalLibraryDirectories>$(SolutionDir)/../bin/win32/$(Platform)/$(Configuration);$(SolutionDir)/../engine/dependencies/vulkan/lib/windows/x64;$(SolutionDir)/../engine/dependencies/tbb/oss/windows/lib/intel64/vc14</AdditionalLibraryDirectories>
-      <AdditionalDependencies>wolf.system.win32.lib;wolf.content_pipeline.win32.lib;wolf.render.vulkan.win32.lib;vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>wolf.system.win32.lib;wolf.content_pipeline.win32.lib;wolf.render.vulkan.win32.lib;vulkan-1.lib;tbb_debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Manifest>
       <AdditionalManifestFiles>../../../../../manifest.manifest</AdditionalManifestFiles>
@@ -153,7 +153,7 @@
       <LanguageStandard>stdcpp14</LanguageStandard>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>wolf.system.win32.lib;wolf.content_pipeline.win32.lib;wolf.render.vulkan.win32.lib;vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>wolf.system.win32.lib;wolf.content_pipeline.win32.lib;wolf.render.vulkan.win32.lib;vulkan-1.lib;tbb.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)/../bin/win32/$(Platform)/$(Configuration);$(SolutionDir)/../engine/dependencies/vulkan/lib/windows/x64;$(SolutionDir)/../engine/dependencies/tbb/oss/windows/lib/intel64/vc14</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <AssemblyDebug>false</AssemblyDebug>

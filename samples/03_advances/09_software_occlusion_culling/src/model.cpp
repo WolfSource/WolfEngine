@@ -6,6 +6,14 @@ using namespace wolf::system;
 using namespace wolf::render::vulkan;
 using namespace wolf::content_pipeline;
 
+static void make_it_z_up_max(_Inout_ float* pPosition, _Inout_ float* pRotation)
+{
+	pRotation[0] *= -1.0f;
+	pRotation[0] += glm::radians(90.0f);
+	std::swap(pPosition[1], pPosition[2]);
+	pPosition[1] *= -1.0f;
+}
+
 model::model(
 	_In_ w_cpipeline_model* pContentPipelineModel,
 	_In_ w_vertex_binding_attributes pVertexBindingAttributes) :
@@ -17,7 +25,7 @@ model::model(
 		this->model_name = this->c_model->get_name();
 		this->transform = this->c_model->get_transform();
 		//get all instances
-		this->c_model->get_instances(this->instnaces_transforms);
+		this->c_model->get_instances(this->instances_transforms);
 	}
 }
 
@@ -42,17 +50,10 @@ W_RESULT model::initialize()
 #pragma region collada from 3DMax 
 
 	//3DMax is right handed Zup
-	this->transform->rotation[0] *= -1.0f;
-	this->transform->rotation[0] += glm::radians(90.0f);
-	std::swap(this->transform->position[1], this->transform->position[2]);
-	this->transform->position[1] *= -1.0f;
-
-	for (auto& _ins : this->instnaces_transforms)
+	make_it_z_up_max(&this->transform->position[0], &this->transform->rotation[0]);	
+	for (auto& _ins : this->instances_transforms)
 	{
-		_ins.rotation[0] *= -1.0f;
-		_ins.rotation[0] += glm::radians(90.0f);
-		std::swap(_ins.position[1], _ins.position[2]);
-		_ins.position[1] *= -1.0f;
+		make_it_z_up_max(&_ins.position[0], &_ins.rotation[0]);
 	}
 
 #pragma endregion 
@@ -66,67 +67,48 @@ W_RESULT model::initialize()
 			"model: {} does not have any mesh. trace info: {}", this->model_name, _trace_info);
 		return W_FAILED;
 	}
+
 	//prepare vertices and indices
 	uint32_t _base_vertex_offset = 0;
-
+	//store the indices and vertices of mesh to batches
+	uint32_t _lod_distance_offset = 700;
+	auto _mesh_bounding_box = this->c_model->get_bounding_box(0);
+	if (_mesh_bounding_box)
+	{
+		auto _sphere_from_box = w_bounding_sphere::create_from_bounding_box(*_mesh_bounding_box);
+		_lod_distance_offset = (_sphere_from_box.radius > 0 ? _sphere_from_box.radius : 1) * 5;
+	}
 	//store the indices and vertices of mesh to batches
 	_store_to_batch(
 		_meshes,
 		this->vertex_binding_attributes,
+		_lod_distance_offset,
 		_base_vertex_offset,
 		this->tmp_batch_vertices,
 		this->tmp_batch_indices,
+		this->lods_info,
 		&this->merged_bounding_box,
 		&this->sub_meshes_bounding_box,
 		&this->textures_paths);
 
-	uint32_t _lod_distance_index = 1;
-	const uint32_t _lod_distance_offset = 700;
-	lod_info _lod_info;
-
-	if (_meshes_count)
-	{
-		//add first lod
-		_lod_info.first_index = 0;// this->tmp_batch_indices.size();// First index for this LOD
-		_lod_info.index_count = _meshes[0]->indices.size();// Index count for this LOD
-		_lod_info.distance = _lod_distance_index * _lod_distance_offset;
-		_lod_distance_index++;
-
-		this->lods_info.push_back(_lod_info);
-	}
-
 	//use last lod for masked occlusion culling if avaiable
-	bool _lod_found = false;
 	if (_meshes_count > 0)
 	{
-		_add_to_mocs(_meshes[_meshes_count - 1]);
-		_lod_found = true;
-	}
-
-	//-lod not found, so we will use default bounding box
-	if (!_lod_found)
-	{
-		_meshes[0]->bounding_box.generate_vertices();
-		_add_to_mocs(_meshes[0]->bounding_box);
-	}
-
-	//store meshes and lod to batch buffer
-	if (_meshes_count > 0)
-	{
-		//append all lods to _batch_vertices and _batch_indices
-		_lod_info.first_index = this->tmp_batch_indices.size();// First index for this LOD
-		_lod_info.index_count = _meshes[0]->indices.size();// Index count for this LOD
-		_lod_info.distance = _lod_distance_index * _lod_distance_offset;
-		_lod_distance_index++;
-
-		this->lods_info.push_back(_lod_info);
-
-		_store_to_batch(
-			_meshes,
-			this->vertex_binding_attributes,
-			_base_vertex_offset,
-			this->tmp_batch_vertices,
-			this->tmp_batch_indices);
+		auto _size = _meshes[_meshes_count - 1]->lod_1_vertices.size();
+		if (_size)
+		{
+			//use lod
+			_add_to_mocs(
+				_meshes[_meshes_count - 1]->lod_1_vertices,
+				_meshes[_meshes_count - 1]->lod_1_indices);
+		}
+		else
+		{
+			//use the same model
+			_add_to_mocs(
+				_meshes[_meshes_count - 1]->vertices,
+				_meshes[_meshes_count - 1]->indices);
+		}
 	}
 
 	return W_PASSED;
@@ -161,17 +143,18 @@ void model::_add_to_mocs(_In_ const w_bounding_box& pBoundingBox)
 	this->_mocs.push_back(_moc_data);
 }
 
-void model::_add_to_mocs(_In_  w_cpipeline_mesh* pMesh)
+void model::_add_to_mocs(
+	_In_ const std::vector<w_vertex_struct>& pVertices,
+	_In_ const w_vector_uint32_t& pIndices)
 {
-	if (!pMesh) return;
-
+	auto _vert_size = pVertices.size();
+	
 	moc_data _moc_data;
 
 	clipspace_vertex _cv;
-	auto _vert_size = pMesh->vertices.size();
 	for (uint32_t i = 0; i < _vert_size; i++)
 	{
-		auto _vertex_pos = pMesh->vertices[i].position;
+		auto _vertex_pos = pVertices[i].position;
 		_cv.x = _vertex_pos[0];
 		_cv.y = _vertex_pos[1];
 		_cv.z = 0;
@@ -181,21 +164,21 @@ void model::_add_to_mocs(_In_  w_cpipeline_mesh* pMesh)
 		//_moc_data.indices.push_back(i);
 	}
 
-	for (uint32_t i = 0; i < pMesh->indices.size(); ++i)
+	for (uint32_t i = 0; i < pIndices.size(); ++i)
 	{
-		_moc_data.indices.push_back(pMesh->indices[i]);
+		_moc_data.indices.push_back(pIndices[i]);
 	}
 
-	auto _pos = pMesh->bounding_box.position;
-	auto _rot = pMesh->bounding_box.rotation;
+	auto _position = get_position();
+	auto _rotation = get_rotation();
 
-	_moc_data.position.x = _pos[0];
-	_moc_data.position.y = _pos[1];
-	_moc_data.position.z = _pos[2];
+	_moc_data.position.x = _position[0];
+	_moc_data.position.y = _position[1];
+	_moc_data.position.z = _position[2];
 
-	_moc_data.rotation.x = _rot[0];
-	_moc_data.rotation.y = _rot[1];
-	_moc_data.rotation.z = _rot[2];
+	_moc_data.rotation.x = _rotation[0];
+	_moc_data.rotation.y = _rotation[1];
+	_moc_data.rotation.z = _rotation[2];
 
 	_moc_data.num_of_tris_for_moc = static_cast<int>(_vert_size / 3);
 	this->_mocs.push_back(_moc_data);
@@ -309,8 +292,8 @@ W_RESULT model::pre_update(
 			else
 			{
 				//find the difference from transform of instance and root
-				_dif_pos = _pos - glm::vec3(this->transform.position[0], this->transform.position[1], this->transform.position[2]);
-				_dif_rot = _rot - glm::vec3(this->transform.rotation[0], this->transform.rotation[1], this->transform.rotation[2]);
+				_dif_pos = _pos - glm::vec3(this->transform->position[0], this->transform->position[1], this->transform->position[2]);
+				_dif_rot = _rot - glm::vec3(this->transform->rotation[0], this->transform->rotation[1], this->transform->rotation[2]);
 				_model_to_clip_matrix = this->_projection_view * glm::translate(_iter.position + _dif_pos) * glm::rotate(_iter.rotation + _dif_rot);
 			}
 
@@ -393,8 +376,8 @@ W_RESULT model::post_update(_In_ wolf::framework::w_masked_occlusion_culling& pM
 			else
 			{
 				//find the difference from transform of instance and root
-				_dif_pos = _pos - glm::vec3(this->transform.position[0], this->transform.position[1], this->transform.position[2]);
-				_dif_rot = _rot - glm::vec3(this->transform.rotation[0], this->transform.rotation[1], this->transform.rotation[2]);
+				_dif_pos = _pos - glm::vec3(this->transform->position[0], this->transform->position[1], this->transform->position[2]);
+				_dif_rot = _rot - glm::vec3(this->transform->rotation[0], this->transform->rotation[1], this->transform->rotation[2]);
 				_model_to_clip_matrix = this->_projection_view * glm::translate(_iter.position + _dif_pos) * glm::rotate(_iter.rotation + _dif_rot);
 			}
 

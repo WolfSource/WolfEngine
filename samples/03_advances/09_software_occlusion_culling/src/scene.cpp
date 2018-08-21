@@ -42,6 +42,8 @@ static uint32_t sFPS = 0;
 static float sElapsedTimeInSec = 0;
 static float sTotalTimeTimeInSec = 0;
 
+static std::once_flag _once_flag;
+
 scene::scene(_In_z_ const std::wstring& pContentPath, _In_ const wolf::system::w_logger_config& pLogConfig) :
 	w_game(pContentPath, pLogConfig),
 	_current_selected_model(nullptr),
@@ -55,9 +57,7 @@ scene::scene(_In_z_ const std::wstring& pContentPath, _In_ const wolf::system::w
 	_show_all_wireframe(false),
 	_show_all_bounding_box(false),
 	_visible_meshes(0),
-	_has_camera_animation(false),
-	_play_camera_anim(false),
-	_current_camera_frame(0)
+	_sky(nullptr)
 {
 #if defined(__WIN32) && defined(DEBUG)
 	w_graphics_device_manager_configs _config;
@@ -80,32 +80,6 @@ scene::scene(_In_z_ const std::wstring& pContentPath, _In_ const wolf::system::w
 	}
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-	this->on_pixels_captured_signal += [&](_In_ const w_point_t pSize, _In_ uint8_t* pPixels)->void
-	{
-#pragma region Convert BGRA to RGBA
-		//some gpu does not support RGBA, so we used BGRA as default format fo swap chain 
-		for (size_t i = 0; i < pSize.x * pSize.y * 4; i += 4)
-		{
-			auto _r = pPixels[i];
-			auto _b = pPixels[i + 2];
-
-			pPixels[i] = _b;//R
-			pPixels[i + 1] = pPixels[i + 1];//G
-			pPixels[i + 2] = _r;//B
-			pPixels[i + 3] = pPixels[i + 3];//A
-		}
-#pragma endregion
-
-		std::string _path = "c:\\Wolf\\" + std::to_string(this->_current_camera_frame) + ".bmp";
-		w_texture::save_bmp_to_file(_path.c_str(), pSize.x, pSize.y, pPixels, 4);
-
-		this->_current_camera_frame = this->_current_camera_frame + 1;
-		if (this->_current_camera_frame == this->_camera_anim_positions.size())
-		{
-			this->_play_camera_anim = false;
-		}
-	};
 }
 
 scene::~scene()
@@ -411,7 +385,9 @@ W_RESULT scene::_load_scene()
 				continue;
 			}
 
-			_model->set_is_sky(_m->get_name() == "sky");
+			auto _is_sky = _m->get_name() == "sky";
+			_model->set_is_sky(_is_sky);
+
 			_hr = _model->initialize();
 			if (_hr == W_FAILED)
 			{
@@ -440,7 +416,16 @@ W_RESULT scene::_load_scene()
 				}
 			}
 
-			this->_scene_models.push_back(_model);
+			if (_is_sky)
+			{
+				//set visible true
+				this->_sky = _model;
+				this->_sky->set_global_visiblity(true);
+			}
+			else
+			{
+				this->_scene_models.push_back(_model);
+			}
 		}
 		_cmodels.clear();
 		_scene->release();
@@ -467,6 +452,8 @@ W_RESULT scene::_build_draw_command_buffers()
 				1.0f,
 				0.0f);
 			{
+				//draw sky
+				this->_sky->draw(_cmd, &this->_first_camera);
 				//draw all models
 				for (auto _model : this->_drawable_models)
 				{
@@ -504,33 +491,25 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 		w_point_t _screen_size;
 		_screen_size.x = this->_viewport.width;
 		_screen_size.y = this->_viewport.height;
-
-		if (!this->_has_camera_animation || !this->_play_camera_anim)
-		{
-			this->_force_update_camera = this->_first_camera.update(pGameTime, _screen_size);
-		}
+		this->_force_update_camera = this->_first_camera.update(pGameTime, _screen_size);
 	}
-
-	if (this->_has_camera_animation && this->_play_camera_anim)
+	
+	//first time update all models
+	std::call_once(_once_flag, [this]()
 	{
-		this->_camera_time.set_fixed_time_step(true);
-		this->_camera_time.set_target_elapsed_seconds(1 / 30.0f);
-		this->_camera_time.tick([this]()
-		{
-			this->_first_camera.set_position(this->_camera_anim_positions[this->_current_camera_frame]);
-			this->_first_camera.set_look_at(this->_camera_anim_targets[this->_current_camera_frame]);
-			this->_first_camera.update_view();
-			this->_first_camera.update_frustum();
-
-			this->_force_update_camera = true;
-			this->_capture = true;
-		});
-	}
+		this->_force_update_camera = true;
+	});
 
 	if (this->_force_update_camera)
 	{
 		this->_force_update_camera = false;
 
+		//update sky
+		this->_sky->set_view_projection_position(
+			this->_first_camera.get_view(),
+			this->_first_camera.get_projection(),
+			this->_first_camera.get_position());
+		
 		//clear all
 		this->_visible_meshes = 0;
 		this->_visible_models.clear();
@@ -665,14 +644,8 @@ W_RESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 		}
 	}
 
-	std::vector<const w_command_buffer*> _commands_buffers = { &_draw_cmd };
-	if (!this->_play_camera_anim)
-	{
-		_commands_buffers.push_back(&_gui_cmd);
-	}
-
 	if (_gDevice->submit(
-		_commands_buffers,//command buffers
+		{ &_draw_cmd, &_gui_cmd },//command buffers
 		_gDevice->vk_graphics_queue, //graphics queue
 		this->_wait_dst_stage_mask, //destination masks
 		_wait_semaphors, //wait semaphores
@@ -688,31 +661,7 @@ W_RESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 
 	this->_draw_fence.wait();
 
-	//if (_current_selected_model)
-	//{
-	//	if (_current_selected_model->get_instances_count())
-	//	{
-	//		auto _result = _current_selected_model->get_result_of_compute_shader();
-	//		logger.write(std::to_string(_result.draw_count));
-	//		logger.write(std::to_string(_result.lod_level[0]));
-	//		logger.write(std::to_string(_result.lod_level[1]));
-	//	}
-	//}
-	auto _hr = w_game::render(pGameTime);
-
-	if (this->_play_camera_anim && this->_capture)
-	{
-		this->_capture = false;
-		if (_gDevice->capture_presented_swap_chain_buffer(this->on_pixels_captured_signal) == W_FAILED)
-		{
-			V(W_FAILED,
-				w_log_type::W_ERROR,
-				"capturing graphics device. trace info: {}", _trace_info);
-			return W_FAILED;
-		}
-	}
-
-	return _hr;
+	return w_game::render(pGameTime);
 }
 
 void scene::on_window_resized(_In_ const uint32_t& pIndex, _In_ const w_point& pNewSizeOfWindow)
@@ -739,6 +688,7 @@ ULONG scene::release()
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//The following codes have been added for this project
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	SAFE_RELEASE(this->_sky);
 	for (auto _m : this->_scene_models)
 	{
 		SAFE_RELEASE(_m);
@@ -878,11 +828,6 @@ void scene::_show_floating_debug_window()
 	if (ImGui::SliderFloat("Camera Movement Speed", &_cam_mov_speed, 100.0f, 10000.0f))
 	{
 		this->_first_camera.set_movement_speed(_cam_mov_speed);
-	}
-
-	if (this->_has_camera_animation && ImGui::Checkbox("Play Camera Animation", &this->_play_camera_anim))
-	{
-		this->_current_camera_frame = 0;
 	}
 
 	ImGui::End();

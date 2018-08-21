@@ -43,7 +43,9 @@ private:
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 	void _add_to_mocs(_In_ const wolf::system::w_bounding_box& pBoundingBox);
-	void _add_to_mocs(_In_ wolf::content_pipeline::w_cpipeline_mesh* pConvexHull);
+	void _add_to_mocs(
+		_In_ const std::vector<wolf::content_pipeline::w_vertex_struct>& pVertices, 
+		_In_ const w_vector_uint32_t& pIndices);
 
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
