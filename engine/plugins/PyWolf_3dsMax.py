@@ -15,7 +15,7 @@ import datetime
 #if PyWolfPath != "" and (not PyWolfPath in sys.path):
 	#sys.path.append(PyWolfPath)
 	
-wolf_version = "PyWolf (v.1.45.0.0) without Wolf"
+wolf_version = "PyWolf (v.1.47.0.0) without Wolf"
 
 #try:
 	#import PyWolf
@@ -104,6 +104,8 @@ callbacks = CallBacks()
 wolfWidget = WolfWidget()
 WIDTH = 640
 HEIGHT = 480
+align_lod_ref_check = QCheckBox("Align lod to ref")
+align_lod_ref_check.setToolTip("I'm responisble to align LOD to ref model, you need to check the accuracy of position manually")
 
 class Dialog(QDialog):
     def __init__(self, parent = None):
@@ -272,19 +274,31 @@ def reinstance_current_layer():
 	
 	_preferred_ref_name = refModelTextBox.toPlainText()
 	#check for ref
+	ch_indexer = 1
+	lod_indexer = 1
 	for j in range(0, _len_nodes):
 		_node = nodes[j]
 		_rotate = _node.GetWorldRotation()
 		_rx, _ry, _rz = quaternion_to_euler_angle(_rotate.GetW(), _rotate.GetX(), _rotate.GetY(), _rotate.GetZ())	
 		_node_name = _node.Name
-			
-		if _node_name.find("-ch") != -1:
-			continue
+
+		if _node_name.find("-ch") != -1 or _node_name.find("_ch") != -1 or _node_name.find("-CH") != -1 or _node_name.find("-Ch") != -1 or _node_name.find("-cH") != -1 or _node_name.find("_CH") != -1 or _node_name.find("_Ch") != -1 or _node_name.find("_cH") != -1:
+                        nodes[j].Name = pre_name + _layer_index_str + "-ch" + str(ch_indexer)
+                        ch_indexer = ch_indexer + 1
+                        apply_editpoly_reset_xform_selected_model(nodes[j].Name)
+                        continue
 		
-		if _node_name.find("-lod") != -1:
+		if _node_name.find("-lod") != -1 or _node_name.find("_lod") != -1 or _node_name.find("-Lod") != -1 or _node_name.find("_Lod") != -1 or _node_name.find("-LOD") != -1 or _node_name.find("_LOD") != -1:
+			nodes[j].Name = pre_name + _layer_index_str + "-lod" + str(lod_indexer)
+			lod_indexer = lod_indexer + 1
+			apply_editpoly_reset_xform_selected_model(nodes[j].Name)
 			_lod_index = j
 			continue
 		
+		if _node_name.find("-ins") != -1:
+			_lod_index = j
+			continue
+			
 		if _preferred_ref_name == "":
 			if in_range_of(_rx, -0.1, 0.1) and in_range_of(_ry, -0.1, 0.1) and in_range_of(_rz, -0.1, 0.1):
 				_ref_index = j
@@ -333,7 +347,8 @@ def reinstance_current_layer():
 	_ref.Name = pre_name + _layer_index_str + "_" + _equipment_name
 		
 	#move lod to ref location
-	if _lod_index != -1:
+	_checked = align_lod_ref_check.checkState()
+	if _lod_index != -1 and  _checked == Qt.Checked:
 		_lod =  nodes[_lod_index]
 		_ref_pos = _ref.Position
 		_lod.SetPositionX(_ref_pos.GetX())
@@ -408,6 +423,60 @@ def reset_nodes():
 		apply_editpoly_reset_xform_selected_model(names[0])
 	else:
 		apply_editpoly_reset_xform_selected_models(names)
+		
+def smooth_45():
+	_selected_count = MaxPlus.SelectionManager.GetCount()
+	if _selected_count == 0:
+		logger.log("Nothing selected for smoothing")
+		return
+	
+	names = []
+	for c in MaxPlus.SelectionManager.Nodes:
+		names.append(c.Name)
+	
+	for name in names:
+		_max_sxript_cmd = "select $\'" + name + "\'									\r\n\
+		macros.run \"Modifier Stack\" \"Convert_to_Poly\" \r\n\
+subobjectLevel = 5		\r\n\
+actionMan.executeAction 0 \"40021\"	\r\n\
+max select all	\r\n\
+$.EditablePoly.SetSelection #Face #{1..10000} \r\n\
+macros.run \"PolyTools\" \"Hard\" \r\n\
+$.autoSmoothThreshold = 45 \r\n\
+$.EditablePoly.autosmooth () \r\n\
+actionMan.executeAction 0 \"40043\"  -- Selection: Select None \r\n\
+max select none \r\n\
+$.EditablePoly.SetSelection #Face #{} \r\n\
+subobjectLevel = 0 \r\n\
+clearSelection()"
+		MaxPlus.Core.EvalMAXScript(_max_sxript_cmd)
+	
+def smooth_65():
+	_selected_count = MaxPlus.SelectionManager.GetCount()
+	if _selected_count == 0:
+		logger.log("Nothing selected for smoothing")
+		return
+	
+	names = []
+	for c in MaxPlus.SelectionManager.Nodes:
+		names.append(c.Name)
+	
+	for name in names:
+		_max_sxript_cmd = "select $\'" + name + "\'									\r\n\
+		macros.run \"Modifier Stack\" \"Convert_to_Poly\" \r\n\
+subobjectLevel = 5		\r\n\
+actionMan.executeAction 0 \"40021\"	\r\n\
+max select all	\r\n\
+$.EditablePoly.SetSelection #Face #{1..10000} \r\n\
+macros.run \"PolyTools\" \"Hard\" \r\n\
+$.autoSmoothThreshold = 65 \r\n\
+$.EditablePoly.autosmooth () \r\n\
+actionMan.executeAction 0 \"40043\"  -- Selection: Select None \r\n\
+max select none \r\n\
+$.EditablePoly.SetSelection #Face #{} \r\n\
+subobjectLevel = 0 \r\n\
+clearSelection()"
+		MaxPlus.Core.EvalMAXScript(_max_sxript_cmd)
 
 def clear_log():
 	logger.clear()
@@ -545,7 +614,7 @@ def init_reinstance_layout():
 	button_1 = QPushButton("Select Ref node ")
 	button_1.clicked.connect(select_ref_node)
 	button_1.setToolTip("Select preferred node as a parent of other instnaces. First select 3D object and then press me")
-	
+		
 	button_2 = QPushButton("ReInstance ")
 	button_2.clicked.connect(reinstance_current_layer)
 	button_2.setToolTip("I'm responisble to re-instnace all nodes of active layer except LOD and Convex Hull objects")
@@ -560,21 +629,32 @@ def init_reinstance_layout():
 	h_layout.addWidget(preNameTextBox)
 	h_layout.addWidget(button_1)
 	h_layout.addWidget(refModelTextBox)
+	h_layout.addWidget(align_lod_ref_check)	
 	h_layout.addWidget(button_2)
 	h_layout.addWidget(button_3)
 	
 	return widget
 
 def init_reset_layout():
-	widget = QWidget()
-		
-	button_1 = QPushButton("Reset selected model(s)")
-	button_1.clicked.connect(reset_nodes)
-	button_1.setToolTip("I'm responisble to reset xform selected models and covert them to editable polygons")
+	widget = QWidget() 
+
+	button_0 = QPushButton("Smooth 45") 
+	button_0.clicked.connect(smooth_45)
+	button_0.setToolTip("I'm responisble to apply smooth on model")
+	
+	button_1 = QPushButton("Smooth 65")
+	button_1.clicked.connect(smooth_65)
+	button_1.setToolTip("I'm responisble to apply smooth on model")
+	
+	button_2 = QPushButton("Reset selected model(s)")
+	button_2.clicked.connect(reset_nodes)
+	button_2.setToolTip("I'm responisble to reset xform selected models and covert them to editable polygons")
 	
 	h_layout = QHBoxLayout(widget)
 	h_layout.setAlignment(Qt.AlignTop)
+	h_layout.addWidget(button_0)
 	h_layout.addWidget(button_1)
+	h_layout.addWidget(button_2)
 	
 	return widget
 	
