@@ -20,13 +20,13 @@ namespace wolf
 
 				W_RESULT load(
 					_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-					_In_ const w_viewport& pViewPort,
-					_In_ const w_viewport_scissor& pViewPortScissor,
+					_In_ const w_point& pOffset,
+					_In_ const w_point_t& pSize,
 					_In_ std::vector<std::vector<w_image_view>> pAttachments,
 					_In_ const std::vector<VkSubpassDescription>* pSubpassDescriptions,
 					_In_ const std::vector<VkSubpassDependency>* pSubpassDependencies)
 				{
-					const char* _trace_info = (this->_name + "::load").c_str();
+					const std::string _trace_info = this->_name + "::load";
 
 					if (!pAttachments.size())
 					{
@@ -39,9 +39,10 @@ namespace wolf
 					}
 
 					this->_gDevice = pGDevice;
-					this->_viewport = pViewPort;
-					this->_viewport_scissor = pViewPortScissor;
+					this->_offset = pOffset;
+					this->_size = pSize;
 
+					
 					std::vector<VkAttachmentDescription> _attachment_descriptions;
 					std::vector<VkSubpassDescription> _subpass_descriptions;
 					std::vector<VkSubpassDependency> _subpass_dependencies;
@@ -172,8 +173,8 @@ namespace wolf
 							this->_layer_count											// Layers
 						};
 
-						VkFramebuffer _frame_buffer = nullptr;
-						_hr = vkCreateFramebuffer(this->_gDevice->vk_device, &_framebuffer_create_info, nullptr, &_frame_buffer);
+						w_frame_buffer_handle _frame_buffer;
+						_hr = vkCreateFramebuffer(this->_gDevice->vk_device, &_framebuffer_create_info, nullptr, &_frame_buffer.handle);
 						if (_hr == VkResult::VK_SUCCESS)
 						{
 							this->_frame_buffers.push_back(_frame_buffer);
@@ -200,7 +201,7 @@ namespace wolf
 					_In_ const w_color& pClearColor,
 					_In_ const float& pClearDepth,
 					_In_ const uint32_t& pClearStencil,
-					_In_ const VkSubpassContents& pSubpassContents)
+					_In_ const w_subpass_contents& pSubpassContents)
 				{
 					const std::string _trace_info = this->_name + "::begin";
 
@@ -230,25 +231,22 @@ namespace wolf
 						VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,               // Type
 						nullptr,                                                // Next
 						this->_render_pass.handle,                              // RenderPass
-						this->_frame_buffers[pFrameBufferIndex],                // Framebuffer
+						this->_frame_buffers[pFrameBufferIndex].handle,         // Framebuffer
 						{                                                       // RenderArea
 							{
-								static_cast<int32_t>(this->_viewport.x),        // X
-								static_cast<int32_t>(this->_viewport.y)         // Y
+								static_cast<int32_t>(this->_offset.x),			// X
+								static_cast<int32_t>(this->_offset.y)			// Y
 							},
 							{
-								static_cast<uint32_t>(this->_viewport.width),   // Width
-								static_cast<uint32_t>(this->_viewport.height),  // Height
+								static_cast<uint32_t>(this->_size.x),			// Width
+								static_cast<uint32_t>(this->_size.y),			// Height
 							}
 						},
 						static_cast<uint32_t>(_clear_values.size()),            // ClearValueCount
 						_clear_values.data()                                    // ClearValues
 					};
 
-					auto _cmd = pCommandBuffer.handle;
-					vkCmdBeginRenderPass(_cmd, &_render_pass_begin_info, pSubpassContents);
-					vkCmdSetViewport(_cmd, 0, 1, &this->_viewport);
-					vkCmdSetScissor(_cmd, 0, 1, &this->_viewport_scissor);
+					vkCmdBeginRenderPass(pCommandBuffer.handle, &_render_pass_begin_info, (VkSubpassContents)pSubpassContents);
 				}
 
 				void end(_In_ const w_command_buffer pCommandBuffer)
@@ -260,8 +258,8 @@ namespace wolf
 				{
 					for (auto _iter : this->_frame_buffers)
 					{
-						vkDestroyFramebuffer(this->_gDevice->vk_device, _iter, nullptr);
-						_iter = 0;
+						vkDestroyFramebuffer(this->_gDevice->vk_device, _iter.handle, nullptr);
+						_iter.handle = 0;
 					}
 					if (this->_render_pass.handle)
 					{
@@ -277,19 +275,25 @@ namespace wolf
 
 #pragma region Getters
 
+				const w_point get_offset() const
+				{
+					return this->_offset;
+				}
+
+				const w_point_t get_size() const
+				{
+					return this->_size;
+				}
+
 				const w_render_pass_handle get_handle() const
 				{
 					return this->_render_pass;
 				}
 
-				w_viewport get_viewport() const
+				const w_frame_buffer_handle get_frame_buffer_handle(_In_ const size_t& pFrameBufferIndex) const
 				{
-					return this->_viewport;
-				}
-
-				w_viewport_scissor get_viewport_scissor() const
-				{
-					return this->_viewport_scissor;
+					if (pFrameBufferIndex >= this->_frame_buffers.size()) return w_frame_buffer_handle();
+					return this->_frame_buffers.at(pFrameBufferIndex);
 				}
 
 				const size_t get_number_of_frame_buffers() const
@@ -304,31 +308,17 @@ namespace wolf
 
 #pragma endregion
 
-#pragma region Setters
-
-				void set_viewport(_In_ const w_viewport& pViewPort)
-				{
-					this->_viewport = pViewPort;
-				}
-
-				void set_viewport_scissor(_In_ const w_viewport_scissor& pViewPortScissor)
-				{
-					this->_viewport_scissor = pViewPortScissor;
-				}
-
-#pragma endregion
-
 #pragma endregion
 
 			private:
 				std::string                                     _name;
 				std::shared_ptr<w_graphics_device>              _gDevice;
 				w_render_pass_handle                            _render_pass;
-				w_viewport                                      _viewport;
-				w_viewport_scissor                              _viewport_scissor;
-				std::vector<VkFramebuffer>                      _frame_buffers;
+				std::vector<w_frame_buffer_handle>              _frame_buffers;
 				uint32_t                                        _layer_count;
 				bool											_depth_stencil_enabled;
+				w_point											_offset;
+				w_point_t										_size;
 			};
 		}
 	}
@@ -347,8 +337,8 @@ w_render_pass::~w_render_pass()
 }
 
 W_RESULT w_render_pass::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-	_In_ const w_viewport& pViewPort,
-	_In_ const w_viewport_scissor& pViewPortScissor,
+	_In_ const w_point& pOffset,
+	_In_ const w_point_t& pSize,
 	_In_ std::vector<std::vector<w_image_view>> pAttachments,
 	_In_ const std::vector<VkSubpassDescription>* pSubpassDescriptions,
 	_In_ const std::vector<VkSubpassDependency>* pSubpassDependencies)
@@ -356,8 +346,8 @@ W_RESULT w_render_pass::load(_In_ const std::shared_ptr<w_graphics_device>& pGDe
 	if (!this->_pimp) return W_FAILED;
 	return this->_pimp->load(
 		pGDevice,
-		pViewPort,
-		pViewPortScissor,
+		pOffset,
+		pSize,
 		pAttachments,
 		pSubpassDescriptions,
 		pSubpassDependencies);
@@ -369,7 +359,7 @@ void w_render_pass::begin(
     _In_ const w_color& pClearColor,
     _In_ const float&  pClearDepth,
     _In_ const uint32_t&  pClearStencil,
-    _In_ const VkSubpassContents& pSubpassContents)
+    _In_ const w_subpass_contents& pSubpassContents)
 {
     if(!this->_pimp) return;
     this->_pimp->begin(
@@ -398,22 +388,28 @@ ULONG w_render_pass::release()
 
 #pragma region Getters
 
+const w_point w_render_pass::get_offset() const
+{
+	if (!this->_pimp) return w_point();
+	this->_pimp->get_offset();
+}
+
+const w_point_t w_render_pass::get_size() const
+{
+	if (!this->_pimp) return w_point_t();
+	this->_pimp->get_size();
+}
+
 const w_render_pass_handle w_render_pass::get_handle() const
 {
     if(!this->_pimp) return w_render_pass_handle();
     return this->_pimp->get_handle();
 }
 
-w_viewport w_render_pass::get_viewport() const
+const w_frame_buffer_handle w_render_pass::get_frame_buffer_handle(_In_ const size_t& pFrameBufferIndex) const
 {
-    if (!this->_pimp) return w_viewport();
-    return this->_pimp->get_viewport();
-}
-
-w_viewport_scissor w_render_pass::get_viewport_scissor() const
-{
-    if (!this->_pimp) return w_viewport_scissor();
-    return this->_pimp->get_viewport_scissor();
+	if (!this->_pimp) return w_frame_buffer_handle();
+	return this->_pimp->get_frame_buffer_handle(pFrameBufferIndex);
 }
 
 const size_t w_render_pass::get_number_of_frame_buffers() const
@@ -429,22 +425,3 @@ const bool w_render_pass::get_depth_stencil_enabled() const
 
 #pragma endregion
 
-#pragma region Setters
-
-void w_render_pass::set_viewport(_In_ const w_viewport& pViewPort)
-{
-    if (this->_pimp)
-    {
-        this->_pimp->set_viewport(pViewPort);
-    }
-}
-
-void w_render_pass::set_viewport_scissor(_In_ const  w_viewport_scissor& pViewPortScissor)
-{
-    if (this->_pimp)
-    {
-        this->_pimp->set_viewport_scissor(pViewPortScissor);
-    }
-}
-
-#pragma endregion

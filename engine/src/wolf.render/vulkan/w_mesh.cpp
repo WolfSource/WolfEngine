@@ -145,7 +145,7 @@ namespace wolf
 					_In_ const uint32_t* const pIndicesData,
 					_In_ const uint32_t& pIndicesCount)
 				{
-					const char* _trace_info = (this->_name + "").c_str();
+					const std::string _trace_info = this->_name + "::update_dynamic_buffer";
 
 					if (!this->_dynamic_buffer)
 					{
@@ -442,7 +442,7 @@ namespace wolf
 					_In_ const w_memory_usage_flag& pMemoryFlag,
 					_Inout_ w_buffer& pBuffer)
 				{
-					const char* _trace_info = (this->_name + "::_create_buffer").c_str();
+					const std::string _trace_info = this->_name + "::_create_buffer";
 
 					if (pBuffer.allocate(this->_gDevice, pBufferSizeInBytes, pBufferUsageFlag, pMemoryFlag))
 					{

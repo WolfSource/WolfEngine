@@ -16,6 +16,7 @@
 
 #include <imgui/imgui.h>
 #include <w_graphics_device_manager.h>
+#include "w_viewport.h"
 #include "w_render_pass.h"
 #include "w_texture.h"
 #include <w_point.h>

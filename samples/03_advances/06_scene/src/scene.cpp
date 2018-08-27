@@ -131,11 +131,20 @@ void scene::load()
 			{ _output_window->swap_chain_image_views[i], _output_window->depth_buffer_image_view }
 		);
 	}
+
 	//create render pass
+	w_point _offset;
+	_offset.x = this->_viewport.x;
+	_offset.y = this->_viewport.y;
+
+	w_point_t _size;
+	_size.x = this->_viewport.width;
+	_size.y = this->_viewport.height;
+
 	auto _hr = this->_draw_render_pass.load(
 		_gDevice,
-		_viewport,
-		_viewport_scissor,
+		_offset,
+		_size,
 		_render_pass_attachments);
 	if (_hr == W_FAILED)
 	{
@@ -301,7 +310,9 @@ void scene::load()
 				_model_pipeline_cache_name, 
 				_vertex_shader_path,
 				_fragment_shader_path, 
-				this->_draw_render_pass);
+				this->_draw_render_pass,
+				this->_viewport,
+				this->_viewport_scissor);
 			if (_hr == W_FAILED)
 			{
 				V(W_FAILED,
@@ -361,6 +372,9 @@ W_RESULT scene::_build_draw_command_buffers()
 				1.0f,
 				0.0f);
 			{
+				this->_viewport.set(_cmd);
+				this->_viewport_scissor.set(_cmd);
+
 				//++++++++++++++++++++++++++++++++++++++++++++++++++++
 				//The following codes have been added for this project
 				//++++++++++++++++++++++++++++++++++++++++++++++++++++

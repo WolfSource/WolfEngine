@@ -181,11 +181,20 @@ void scene::load()
 			{ _output_window->swap_chain_image_views[i], _output_window->depth_buffer_image_view }
 		);
 	}
+
 	//create render pass
+	w_point _offset;
+	_offset.x = this->_viewport.x;
+	_offset.y = this->_viewport.y;
+
+	w_point_t _size;
+	_size.x = this->_viewport.width;
+	_size.y = this->_viewport.height;
+
 	auto _hr = this->_draw_render_pass.load(
 		_gDevice,
-		_viewport,
-		_viewport_scissor,
+		_offset,
+		_size,
 		_render_pass_attachments);
 	if (_hr == W_FAILED)
 	{
@@ -335,102 +344,118 @@ W_RESULT scene::_load_scene()
 	const auto _basic_vertex_shader_path = shared::scene_content_path + L"shaders/basic.vert.spv";
 	const auto _fragment_shader_path = shared::scene_content_path + L"shaders/shader.frag.spv";
 
-	auto _scene = w_content_manager::load<w_cpipeline_scene>(wolf::content_path + L"models/sponza/sponza.wscene");
-	if (_scene)
+	auto _parent_dir = wolf::content_path + L"models/sponza/";
+	std::vector<std::wstring> _file_names;
+	wolf::system::io::get_files_folders_in_directoryW(_parent_dir, _file_names);
+	for (auto& _file_name : _file_names)
 	{
-		//get first camera
-		_scene->get_first_camera(this->_first_camera);
-		float _near_plan = 0.1f, far_plan = 100000;
+		auto _ext = wolf::system::io::get_file_extentionW(_file_name);
+		auto _base_name = wolf::system::io::get_base_file_nameW(_file_name);
 
-		this->_first_camera.set_near_plan(_near_plan);
-		this->_first_camera.set_far_plan(far_plan);
-		this->_first_camera.set_aspect_ratio(this->_viewport.width / this->_viewport.height);
-		this->_first_camera.set_rotation_speed(1.0f);
-		this->_first_camera.set_movement_speed(500.0f);
+		if (_ext.empty() || _ext == L"." || _ext != L".wscene") continue;
 
-		this->_first_camera.update_view();
-		this->_first_camera.update_projection();
-		this->_first_camera.update_frustum();
-
-		this->_masked_occlusion_culling.set_near_clip(_near_plan);
-		this->_masked_occlusion_culling.set_resolution(this->_viewport.width, this->_viewport.height);
-		//this->_masked_occlusion_culling.suspend_threads();
-
-		//get all models
-		std::vector<w_cpipeline_model*> _cmodels;
-		_scene->get_all_models(_cmodels);
-
-		std::wstring _vertex_shader_path;
-		int index = 0;
-		for (auto _m : _cmodels)
+		auto _scene = w_content_manager::load<w_cpipeline_scene>(_parent_dir + _file_name);
+		if (_scene)
 		{
-			model* _model = nullptr;
-			if (_m->get_instances_count())
-			{
-				_vertex_shader_path = _instanced_vertex_shader_path;
-				_model = new (std::nothrow) model(_m, _instance_vertex_binding_attributes);
-			}
-			else
-			{
-				_vertex_shader_path = _basic_vertex_shader_path;
-				_model = new (std::nothrow) model(_m, _basic_vertex_binding_attributes);
-			}
+			//get first camera
+			_scene->get_first_camera(this->_first_camera);
+			float _near_plan = 0.1f, far_plan = 100000;
 
-			if (!_model)
-			{
-				V(W_FAILED,
-					w_log_type::W_WARNING,
-					false,
-					"allocating memory for model: {}. trace info: {}", _m->get_name(), _trace_info);
-				continue;
-			}
+			this->_first_camera.set_near_plan(_near_plan);
+			this->_first_camera.set_far_plan(far_plan);
+			this->_first_camera.set_aspect_ratio(this->_viewport.width / this->_viewport.height);
+			this->_first_camera.set_rotation_speed(1.0f);
+			this->_first_camera.set_movement_speed(500.0f);
 
-			auto _is_sky = _m->get_name() == "sky";
-			_model->set_is_sky(_is_sky);
+			this->_first_camera.update_view();
+			this->_first_camera.update_projection();
+			this->_first_camera.update_frustum();
 
-			_hr = _model->initialize();
-			if (_hr == W_FAILED)
+			this->_masked_occlusion_culling.set_near_clip(_near_plan);
+			this->_masked_occlusion_culling.set_resolution(this->_viewport.width, this->_viewport.height);
+			//this->_masked_occlusion_culling.suspend_threads();
+
+			//get all models
+			std::vector<w_cpipeline_model*> _cmodels;
+			_scene->get_all_models(_cmodels);
+
+			std::wstring _vertex_shader_path;
+			int index = 0;
+			for (auto _m : _cmodels)
 			{
-				V(W_FAILED,
-					w_log_type::W_WARNING,
-					false,
-					"initializing model: {}. trace info: {}", _m->get_name(), _trace_info);
-				continue;
-			}
-			else
-			{
-				_hr = _model->load(
-					_gDevice,
-					_model_pipeline_cache_name,
-					_model_compute_pipeline_cache_name,
-					_vertex_shader_path,
-					_fragment_shader_path,
-					this->_draw_render_pass);
+				model* _model = nullptr;
+				auto _inst_count = _m->get_instances_count();
+				if (_inst_count)
+				{
+					_vertex_shader_path = _instanced_vertex_shader_path;
+					_model = new (std::nothrow) model(_m, _instance_vertex_binding_attributes);
+				}
+				else
+				{
+					_vertex_shader_path = _basic_vertex_shader_path;
+					_model = new (std::nothrow) model(_m, _basic_vertex_binding_attributes);
+				}
+
+				if (!_model)
+				{
+					V(W_FAILED,
+						w_log_type::W_WARNING,
+						false,
+						"allocating memory for model: {}. trace info: {}", _m->get_name(), _trace_info);
+					continue;
+				}
+
+				auto _is_sky = _m->get_name() == "sky";
+				_model->set_is_sky(_is_sky);
+
+				_hr = _model->initialize();
 				if (_hr == W_FAILED)
 				{
 					V(W_FAILED,
 						w_log_type::W_WARNING,
 						false,
-						"loading model: {}. trace info: {}", _m->get_name(), _trace_info);
+						"initializing model: {}. trace info: {}", _m->get_name(), _trace_info);
 					continue;
 				}
-			}
+				else
+				{
+					_hr = _model->load(
+						_gDevice,
+						_model_pipeline_cache_name,
+						_model_compute_pipeline_cache_name,
+						_vertex_shader_path,
+						_fragment_shader_path,
+						this->_draw_render_pass,
+						this->_viewport,
+						this->_viewport_scissor);
+					if (_hr == W_FAILED)
+					{
+						V(W_FAILED,
+							w_log_type::W_WARNING,
+							false,
+							"loading model: {}. trace info: {}", _m->get_name(), _trace_info);
+						continue;
+					}
+				}
 
-			if (_is_sky)
-			{
-				//set visible true
-				this->_sky = _model;
-				this->_sky->set_global_visiblity(true);
+				if (_model)
+				{
+					if (_is_sky)
+					{
+						//set visible true
+						this->_sky = _model;
+						this->_sky->set_global_visiblity(true);
+					}
+					else
+					{
+						this->_scene_models.push_back(_model);
+					}
+				}
 			}
-			else
-			{
-				this->_scene_models.push_back(_model);
-			}
+			_cmodels.clear();
+			_scene->release();
 		}
-		_cmodels.clear();
-		_scene->release();
 	}
-
 	return _hr;
 }
 
@@ -452,8 +477,14 @@ W_RESULT scene::_build_draw_command_buffers()
 				1.0f,
 				0.0f);
 			{
+				this->_viewport.set(_cmd);
+				this->_viewport_scissor.set(_cmd);
+
 				//draw sky
-				this->_sky->draw(_cmd, &this->_first_camera);
+				if (this->_sky)
+				{
+					this->_sky->draw(_cmd, &this->_first_camera);
+				}
 				//draw all models
 				for (auto _model : this->_drawable_models)
 				{
@@ -505,11 +536,13 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 		this->_force_update_camera = false;
 
 		//update sky
-		this->_sky->set_view_projection_position(
-			this->_first_camera.get_view(),
-			this->_first_camera.get_projection(),
-			this->_first_camera.get_position());
-		
+		if (this->_sky)
+		{
+			this->_sky->set_view_projection_position(
+				this->_first_camera.get_view(),
+				this->_first_camera.get_projection(),
+				this->_first_camera.get_position());
+		}
 		//clear all
 		this->_visible_meshes = 0;
 		this->_visible_models.clear();

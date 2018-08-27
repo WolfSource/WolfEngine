@@ -70,11 +70,20 @@ void scene::load()
 				{ _output_window->swap_chain_image_views[i], _output_window->depth_buffer_image_view }
 			);
 		}
+
 		//create render pass
+		w_point _offset;
+		_offset.x = this->_viewport[i].x;
+		_offset.y = this->_viewport[i].y;
+
+		w_point_t _size;
+		_size.x = this->_viewport[i].width;
+		_size.y = this->_viewport[i].height;
+
 		auto _hr = this->_draw_render_pass[i].load(
 			_gDevice,
-			_viewport[i],
-			_viewport_scissor[i],
+			_offset,
+			_size,
 			_render_pass_attachments);
 		if (_hr == W_FAILED)
 		{

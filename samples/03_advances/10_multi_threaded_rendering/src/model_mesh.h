@@ -18,12 +18,12 @@
 #include <w_game_time.h>
 #include <w_bounding.h>
 #include <w_cpipeline_model.h>
-#include <w_graphics/w_mesh.h>
-#include <w_graphics/w_command_buffers.h>
-#include <w_graphics/w_shader.h>
-#include <w_graphics/w_pipeline.h>
-#include <w_graphics/w_uniform.h>
-#include <w_graphics/w_shapes.h>
+#include <vulkan/w_mesh.h>
+#include <vulkan/w_command_buffers.h>
+#include <vulkan/w_shader.h>
+#include <vulkan/w_pipeline.h>
+#include <vulkan/w_uniform.h>
+#include <vulkan/w_shapes.h>
 #include <w_framework/w_first_person_camera.h>
 #include "compute_stage.h"
 
@@ -32,21 +32,23 @@ class model_mesh : public wolf::system::w_object
 public:
 	model_mesh(
 		_In_ wolf::content_pipeline::w_cpipeline_model* pContentPipelineModel,
-		_In_ wolf::graphics::w_vertex_binding_attributes pVertexBindingAttributes);
+		_In_ wolf::render::vulkan::w_vertex_binding_attributes pVertexBindingAttributes);
 
 	virtual ~model_mesh();
 	
 	W_RESULT load(
-		_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice,
+		_In_ const std::shared_ptr<wolf::render::vulkan::w_graphics_device>& pGDevice,
 		_In_z_ const std::string& pPipelineCacheName,
 		_In_z_ const std::string& pComputePipelineCacheName,
 		_In_z_ const std::wstring& pVertexShaderPath,
 		_In_z_ const std::wstring& pFragmentShaderPath,
-		_In_ const wolf::graphics::w_render_pass& pRenderPass
+		_In_ const wolf::render::vulkan::w_render_pass& pRenderPass,
+		_In_ const wolf::render::vulkan::w_viewport& pViewport,
+		_In_ const wolf::render::vulkan::w_viewport_scissor& pViewportScissor
 	);
 
 	W_RESULT submit_compute_shader();
-	W_RESULT draw(_In_ const wolf::graphics::w_command_buffer& pCommandBuffer, _In_ const wolf::framework::w_first_person_camera* pCamera);
+	W_RESULT draw(_In_ const wolf::render::vulkan::w_command_buffer& pCommandBuffer, _In_ const wolf::framework::w_first_person_camera* pCamera);
 
 	//release all resources
 	ULONG release() override;
@@ -63,7 +65,7 @@ public:
 	const uint32_t											get_instances_count() const;
 	bool													get_global_visiblity() const;
 	bool													get_visiblity(_In_ const uint32_t& pModelInstanceIndex = 0) const;
-	wolf::graphics::w_semaphore*							get_compute_semaphore();
+	wolf::render::vulkan::w_semaphore*						get_compute_semaphore();
 	compute_stage_output									get_result_of_compute_shader();
 	bool													get_showing_wireframe() const;
 
@@ -81,50 +83,63 @@ public:
 	void set_show_only_lods(_In_ const bool& pValue);
 	void set_showing_wireframe(_In_ const bool& pValue);
 	void set_show_bounding_box(_In_ const bool& pValue);
+	void set_is_sky(_In_ const bool& pValue) { this->_is_sky = pValue; }
 
 #pragma endregion
 
 protected:
-	static void _store_to_batch(
-		_In_ const std::vector<wolf::content_pipeline::w_cpipeline_mesh*>& pModelMeshes,
-		_In_ const wolf::graphics::w_vertex_binding_attributes& pVertexBindingAttributes,
-		_Inout_ uint32_t& pBaseVertex,
+	struct lod_info
+	{
+		uint32_t													first_index;
+		uint32_t													index_count;
+		float														distance;
+		float														_padding;
+	};
+
+	static W_RESULT _store_indices_vertices_to_batch(
+		_In_ const wolf::render::vulkan::w_vertex_binding_attributes& pVertexBindingAttributes,
+		_In_ const float& pTextureUVIndex,
+		_In_ const std::vector<wolf::content_pipeline::w_vertex_struct>& pVertices,
+		_In_ const std::vector<uint32_t>& pIndices,
 		_Inout_ std::vector<float>& pBatchVertices,
 		_Inout_ std::vector<uint32_t>& pBatchIndices,
+		_Inout_ uint32_t& pBaseVertexOffset);
+
+	static void _store_to_batch(
+		_In_ const std::vector<wolf::content_pipeline::w_cpipeline_mesh*>& pModelMeshes,
+		_In_ const wolf::render::vulkan::w_vertex_binding_attributes& pVertexBindingAttributes,
+		_In_ const uint32_t& pLodDistance,
+		_Inout_ uint32_t& pBaseVertexOffset,
+		_Inout_ std::vector<float>& pBatchVertices,
+		_Inout_ std::vector<uint32_t>& pBatchIndices,
+		_Inout_ std::vector<lod_info>& pLODInfos,
 		_Inout_ wolf::system::w_bounding_box* pMergedBoundingBox = nullptr,
 		_Inout_ std::vector<wolf::system::w_bounding_box>* pSubMeshBoundingBoxes = nullptr,
 		_Inout_ std::vector<std::string>* pTexturePathsToBeLoad = nullptr);
 
-	std::shared_ptr<wolf::graphics::w_graphics_device> 		gDevice;
+	std::shared_ptr<wolf::render::vulkan::w_graphics_device>	gDevice;
 
-	wolf::content_pipeline::w_cpipeline_model*				c_model;
-	std::string												model_name;
+	wolf::content_pipeline::w_cpipeline_model*					c_model;
+	std::string													model_name;
 	
-	wolf::content_pipeline::w_transform_info				transform;
-	std::vector<wolf::content_pipeline::w_instance_info>	instances_transforms;
+	wolf::content_pipeline::w_transform_info*					transform;
+	std::vector<wolf::content_pipeline::w_instance_info>		instances_transforms;
 
-	std::vector<float>										tmp_batch_vertices;
-	std::vector<uint32_t>									tmp_batch_indices;
+	std::vector<float>											tmp_batch_vertices;
+	std::vector<uint32_t>										tmp_batch_indices;
 
-	std::vector<std::string>								textures_paths;
+	std::vector<std::string>									textures_paths;
 	//global bounding box of all meshes
-	wolf::system::w_bounding_box							merged_bounding_box;
+	wolf::system::w_bounding_box								merged_bounding_box;
 	//sub bounding boxes for all meshes
-	std::vector<wolf::system::w_bounding_box>				sub_meshes_bounding_box;
+	std::vector<wolf::system::w_bounding_box>					sub_meshes_bounding_box;
 
-	wolf::graphics::w_vertex_binding_attributes				vertex_binding_attributes;
+	wolf::render::vulkan::w_vertex_binding_attributes			vertex_binding_attributes;
 
-	struct lod_info
-	{
-		uint32_t											first_index;
-		uint32_t											index_count;
-		float												distance;
-		float												_padding;
-	};
-	std::vector<lod_info>									lods_info;
+	std::vector<lod_info>										lods_info;
 
-	bool													global_visiblity;
-	std::vector<glm::vec4>                                  visibilities;
+	bool														global_visiblity;
+	std::vector<glm::vec4>										visibilities;
 	
 private:
 
@@ -134,18 +149,27 @@ private:
 	W_RESULT	_create_lod_levels_buffer();
 	W_RESULT	_create_cs_out_buffer();
 	W_RESULT	_prepare_cs_path_uniform_based_on_local_size(
-		_Inout_ wolf::graphics::w_shader_binding_param& pShaderBindingParam,
+		_Inout_ wolf::render::vulkan::w_shader_binding_param& pShaderBindingParam,
 		_Inout_ std::wstring& pComputeShaderPath);
 	W_RESULT	_create_shader_modules(
 		_In_z_ const std::wstring& pVertexShaderPath,
 		_In_z_ const std::wstring& pFragmentShaderPath);
 	W_RESULT	_create_pipelines(
 		_In_z_ const std::string& pPipelineCacheName,
-		_In_ const wolf::graphics::w_render_pass& pRenderPass);
+		_In_z_ const std::string& pComputePipelineCacheName,
+		_In_ const wolf::render::vulkan::w_render_pass& pRenderPass,
+		_In_ const wolf::render::vulkan::w_viewport& pViewport,
+		_In_ const wolf::render::vulkan::w_viewport_scissor& pViewportScissor);
 	
-	W_RESULT _create_bounding_box_shapes(_In_ const wolf::graphics::w_render_pass& pRenderPass);
-	wolf::graphics::w_shapes* _create_shape(
-		_In_ const wolf::graphics::w_render_pass& pRenderPass, 
+	W_RESULT _create_bounding_box_shapes(
+		_In_ const wolf::render::vulkan::w_render_pass& pRenderPass, 
+		_In_ const wolf::render::vulkan::w_viewport& pViewport,
+		_In_ const wolf::render::vulkan::w_viewport_scissor& pViewportScissor);
+	
+	wolf::render::vulkan::w_shapes* _create_shape(
+		_In_ const wolf::render::vulkan::w_render_pass& pRenderPass,
+		_In_ const wolf::render::vulkan::w_viewport& pViewport,
+		_In_ const wolf::render::vulkan::w_viewport_scissor& pViewportScissor,
 		_In_ const wolf::system::w_bounding_box& pBoundingBox, 
 		_In_ w_color& pColor);
 
@@ -165,7 +189,7 @@ private:
 		glm::mat4											projection;
 		glm::vec4											camera_pos;//w is padding
 	};
-	wolf::graphics::w_uniform<basic_u0>						_basic_u0;
+	wolf::render::vulkan::w_uniform<basic_u0>				_basic_u0;
 
 	struct instance_u0
 	{
@@ -173,7 +197,7 @@ private:
 		glm::mat4											projection;
 		glm::vec4											camera_pos;//w is padding
 	};
-	wolf::graphics::w_uniform<instance_u0>					_instance_u0;
+	wolf::render::vulkan::w_uniform<instance_u0>			_instance_u0;
 
 	struct U1
 	{
@@ -182,7 +206,7 @@ private:
 		float		padding_0;
 		float		padding_1;
 	};
-	wolf::graphics::w_uniform<U1>                           _u1;
+	wolf::render::vulkan::w_uniform<U1>                           _u1;
 
 	struct u2
 	{
@@ -191,37 +215,40 @@ private:
 		float												padding_1;
 		float												padding_2;
 	};
-	wolf::graphics::w_uniform<u2>							_u2;
+	wolf::render::vulkan::w_uniform<u2>						_u2;
 	
-	wolf::graphics::w_shader*								_shader;
+	wolf::render::vulkan::w_shader*							_shader;
 
 	bool													_show_wireframe;
 	bool													_show_bounding_box;
 
-	wolf::graphics::w_pipeline                              _solid_pipeline;
-	wolf::graphics::w_pipeline                              _wireframe_pipeline;
+	wolf::render::vulkan::w_pipeline                        _solid_pipeline;
+	wolf::render::vulkan::w_pipeline                        _wireframe_pipeline;
 
 	struct vertex_instance_data
 	{
 		glm::vec3   pos;
 		glm::vec3   rot;
 	};
-	wolf::graphics::w_mesh*									_mesh;
-	wolf::graphics::w_buffer								_instances_buffer;
+	wolf::render::vulkan::w_mesh*							_mesh;
+	wolf::render::vulkan::w_buffer							_instances_buffer;
 
-	std::vector<wolf::graphics::w_texture*>					_textures;
+	std::vector<wolf::render::vulkan::w_texture*>			_textures;
 	
-	wolf::graphics::w_indirect_draws_command_buffer         indirect_draws;
+	wolf::render::vulkan::w_indirect_draws_command_buffer   indirect_draws;
 
 	compute_stage											_cs;
 	compute_stage_output									_cs_out_struct;
-	wolf::graphics::w_buffer								_cs_out_buffer;
+	wolf::render::vulkan::w_buffer							_cs_out_buffer;
 
 	bool													_show_only_lod;
 
 	uint32_t												_selected_lod_index;
 
-	std::vector<wolf::graphics::w_shapes*>					_shapes;
+	std::vector<wolf::render::vulkan::w_shapes*>			_shapes;
+
+
+	bool													_is_sky;
 };
 
 #endif

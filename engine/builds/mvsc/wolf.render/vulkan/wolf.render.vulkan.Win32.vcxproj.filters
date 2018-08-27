@@ -160,6 +160,9 @@
     <ClInclude Include="..\..\..\..\src\wolf.render\vulkan\w_uniform.h">
       <Filter>vulkan</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\src\wolf.render\vulkan\w_viewport.h">
+      <Filter>vulkan</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="imgui">

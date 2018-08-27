@@ -15,6 +15,7 @@
 #define __W_PIEPELINE_H__
 
 #include "w_graphics_device_manager.h"
+#include "w_viewport.h"
 #include "w_shader.h"
 #include "w_mesh.h"
 

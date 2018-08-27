@@ -229,6 +229,7 @@
     <ClInclude Include="..\..\..\..\src\wolf.render\vulkan\w_shapes.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\vulkan\w_texture.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\vulkan\w_uniform.h" />
+    <ClInclude Include="..\..\..\..\src\wolf.render\vulkan\w_viewport.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\masked_occlusion_culling\CullingThreadpool.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\masked_occlusion_culling\FrameRecorder.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\masked_occlusion_culling\MaskedOcclusionCulling.h" />

@@ -32,7 +32,7 @@ namespace wolf
 					_In_ const w_memory_usage_flag& pMemoryFlag,
 					_In_ const bool& pAllocateFromMemoryPool)
 				{
-					const char* _trace_info = (this->_name + "::allocate").c_str();
+					const std::string _trace_info = this->_name + "::allocate";
 
 					this->_gDevice = pGDevice;
 					this->_usage_flags = pUsageFlags;
@@ -168,7 +168,7 @@ namespace wolf
 
 				W_RESULT reallocate(_In_ uint32_t& pBufferSizeInBytes)
 				{
-					//const char* _trace_info = (this->_name + "::reallocate").c_str();
+					//const std::string _trace_info = this->_name + "::reallocate";
 
 					if (!this->_gDevice) return W_FAILED;
 
@@ -210,7 +210,7 @@ namespace wolf
 
 				W_RESULT copy_to(_In_ w_buffer& pDestinationBuffer)
 				{
-					const char* _trace_info = (this->_name + "::copy_to").c_str();
+					const std::string _trace_info = this->_name + "::copy_to";
 
 					//create one command buffer
 					w_command_buffers _copy_command_buffer;
@@ -275,7 +275,7 @@ namespace wolf
 
 				void* map()
 				{
-					const char* _trace_info = (this->_name + "::map").c_str();
+					const std::string _trace_info = this->_name + "::map";
 
 					if (this->_allocated_from_pool)
 					{

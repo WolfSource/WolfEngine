@@ -332,10 +332,7 @@ w_cpipeline_scene* w_assimp::load(_In_z_ const std::wstring& pAssetPath,
 					aiTextureType_DIFFUSE,
 					_texture_index,
 					&_texture_path);
-				if (strcmp(_texture_path.C_Str(), ""))
-				{
-					_texture_paths.push_back(_texture_path.C_Str());
-				}
+				_texture_paths.push_back(_texture_path.C_Str());
 			}
 		}
 
@@ -384,7 +381,7 @@ w_cpipeline_scene* w_assimp::load(_In_z_ const std::wstring& pAssetPath,
 						//does not have any vertex
 						if (!_a_mesh->mVertices)
 						{
-							logger.error("{} does have any vertex information", _scene_name);
+							logger.error("{} doesn't have any vertex information", _scene_name);
 							break;
 						}
 
@@ -587,7 +584,7 @@ w_cpipeline_scene* w_assimp::load(_In_z_ const std::wstring& pAssetPath,
 							if (_mesh->lod_1_vertices.size()) continue;
 
 							//do not allow to create LOD for a model with 8 vertices
-							if (_mesh->vertices.size() > 16)
+							if (_mesh->vertices.size() > 50)
 							{
 								//generate lod for it
 								if (_generate_simpolygon_lod(_mesh))

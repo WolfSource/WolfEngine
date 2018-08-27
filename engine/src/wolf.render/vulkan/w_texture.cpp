@@ -70,7 +70,7 @@ namespace wolf
 
 			W_RESULT load()
 			{
-				const char* _trace_info = (this->_name + "::load").c_str();
+				const std::string _trace_info = this->_name + "::load";
 
 				auto _hr = _create_image();
 				if (_hr == W_FAILED) return W_FAILED;
@@ -503,7 +503,7 @@ namespace wolf
             
 			W_RESULT _create_sampler()
 			{
-				const char* _trace_info = (this->_name + "::_create_sampler").c_str();
+				const std::string _trace_info = this->_name + "::_create_sampler";
 
 				VkSamplerCreateInfo _sampler_create_info = {};
 				_sampler_create_info.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
@@ -620,7 +620,7 @@ namespace wolf
 
             W_RESULT copy_data_to_texture_2D(_In_ const uint8_t* pRGBA)
             {
-				const char* _trace_info = (this->_name + "::copy_data_to_texture_2D").c_str();
+				const std::string _trace_info = this->_name + "::copy_data_to_texture_2D";
 				
                 auto _data_size = this->_image_view.width * this->_image_view.height * 4;
 				W_RESULT _hr = W_RESULT::W_FAILED;
@@ -800,7 +800,7 @@ namespace wolf
             
 			W_RESULT copy_data_to_texture_2D_array(_In_ const gli::texture2d_array& pTextureArrayRGBA)
 			{				
-				const char* _trace_info = (this->_name + "::copy_data_to_texture_2D_array").c_str();
+				const std::string _trace_info = this->_name + "::copy_data_to_texture_2D_array";
 
 				auto _data_size = static_cast<uint32_t>(pTextureArrayRGBA.size());
 
@@ -998,7 +998,7 @@ namespace wolf
             
             W_RESULT _copy_mip_maps()
             {
-				const char* _trace_info = (this->_name + "::_copy_mip_maps").c_str();
+				const std::string _trace_info = this->_name + "::_copy_mip_maps";
 				                
                 bool _bliting_supported = true;
                 
@@ -1189,7 +1189,7 @@ namespace wolf
             
 			void* read_data_from_texture()
 			{
-				const char* _trace_info = "w_texture::read_data_from_texture";
+				const std::string _trace_info = this->_name + "::read_data_from_texture";
 
 				if (this->_is_staging)
 				{
@@ -1394,7 +1394,7 @@ namespace wolf
             {
                 if (!this->_is_staging) return W_FAILED;
                 
-				const char* _trace_info = "w_texture::read_data_from_texture";
+				const std::string _trace_info = this->_name + "::read_data_from_texture";
 
                 //create command buffer
                 w_command_buffers _command_buffer;

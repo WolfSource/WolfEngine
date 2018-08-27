@@ -20,16 +20,14 @@ namespace wolf
 
 				W_RESULT load(
 					_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-					_In_ w_viewport pViewPort,
-					_In_ w_viewport_scissor pViewportScissor,
+					_In_ const w_point& pOffset,
+					_In_ const w_point_t& pSize,
 					_In_ std::vector<w_image_view> pAttachments,
 					_In_ const size_t& pCount)
 				{
 					const std::string _trace_info = this->_name + "::load";
 
 					this->_gDevice = pGDevice;
-					this->_viewport = pViewPort;
-					this->_viewport_scissor = pViewportScissor;
 
 					W_RESULT _hr = W_PASSED;
 					std::vector<std::vector<w_image_view>> _frame_buffers;
@@ -68,7 +66,7 @@ namespace wolf
 							}
 
 							_texture_buffer->set_format((w_format)_attachment.attachment_desc.desc.format);
-							auto _hr = _texture_buffer->initialize(pGDevice, pViewPort.width, pViewPort.height, false, _attachment.attachment_desc.memory_flag);
+							auto _hr = _texture_buffer->initialize(pGDevice, pSize.x, pSize.y, false, _attachment.attachment_desc.memory_flag);
 							if (_hr == W_FAILED)
 							{
 								V(W_FAILED,
@@ -108,8 +106,8 @@ namespace wolf
 					}
 
 					_hr = this->_render_pass.load(pGDevice,
-						pViewPort,
-						pViewportScissor,
+						pOffset,
+						pSize,
 						_frame_buffers);
 					if (_hr == W_FAILED)
 					{
@@ -192,14 +190,14 @@ namespace wolf
 
 #pragma region Getters
 
-				const uint32_t get_width() const
+				const w_point get_offset() const
 				{
-					return this->_viewport.width;
+					return this->_render_pass.get_offset();
 				}
 
-				const uint32_t get_height() const
+				const w_point_t get_size() const
 				{
-					return this->_viewport.height;
+					return this->_render_pass.get_size();
 				}
 
 				w_sampler get_sampler(_In_ size_t pBufferIndex) const
@@ -270,8 +268,6 @@ namespace wolf
 
 				std::string													_name;
 				std::shared_ptr<w_graphics_device>							_gDevice;
-				w_viewport													_viewport;
-				w_viewport_scissor											_viewport_scissor;
 				w_render_pass												_render_pass;
 				std::vector<w_texture*>										_attachment_buffers;
 			};
@@ -294,16 +290,16 @@ w_render_target::~w_render_target()
 
 W_RESULT w_render_target::load(
 	_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-	_In_ w_viewport pViewPort,
-	_In_ w_viewport_scissor pViewportScissor,
+	_In_ const w_point& pOffset,
+	_In_ const w_point_t& pSize,
 	_In_ std::vector<w_image_view> pAttachments,
 	_In_ const size_t& pCount)
 {
 	if (!this->_pimp) return W_FAILED;
 	return this->_pimp->load(
 		pGDevice,
-		pViewPort,
-		pViewportScissor,
+		pOffset,
+		pSize,
 		pAttachments,
 		pCount);
 }
@@ -355,16 +351,16 @@ ULONG w_render_target::release()
 
 #pragma region Getters
 
-const uint32_t w_render_target::get_width() const
+const w_point w_render_target::get_offset() const
 {
-	if (!this->_pimp) return 0;
-	return this->_pimp->get_width();
+	if (!this->_pimp) return w_point();
+	return this->_pimp->get_offset();
 }
 
-const uint32_t w_render_target::get_height() const
+const w_point_t w_render_target::get_size() const
 {
-	if (!this->_pimp) return 0;
-	return this->_pimp->get_height();
+	if (!this->_pimp) return w_point_t();
+	return this->_pimp->get_size();
 }
 
 w_sampler w_render_target::get_sampler(_In_ size_t pBufferIndex) const

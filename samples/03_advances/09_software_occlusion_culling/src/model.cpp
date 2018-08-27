@@ -76,7 +76,7 @@ W_RESULT model::initialize()
 	if (_mesh_bounding_box)
 	{
 		auto _sphere_from_box = w_bounding_sphere::create_from_bounding_box(*_mesh_bounding_box);
-		_lod_distance_offset = (_sphere_from_box.radius > 0 ? _sphere_from_box.radius : 1) * 5;
+		_lod_distance_offset = (_sphere_from_box.radius > 0 ? _sphere_from_box.radius : 1) * 10;
 	}
 	//store the indices and vertices of mesh to batches
 	_store_to_batch(

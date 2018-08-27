@@ -119,9 +119,17 @@ namespace wolf
 					_attachments[1][0].attachment_desc.desc.storeOp = _attachments[1][1].attachment_desc.desc.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
 
 					//create render pass
+					w_point _offset;
+					_offset.x = pViewport.x;
+					_offset.y = pViewport.y;
+
+					w_point_t _size;
+					_size.x = pViewport.width;
+					_size.y = pViewport.height;
+				
 					auto __hr = this->_render_pass.load(_gDevice,
-						pViewport,
-						pViewportScissor,
+						_offset,
+						_size,
 						_attachments);
 					if (__hr == W_FAILED)
 					{

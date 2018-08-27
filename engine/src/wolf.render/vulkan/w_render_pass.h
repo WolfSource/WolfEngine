@@ -14,7 +14,6 @@
 #define __W_RENDER_PASS_H__
 
 #include "w_graphics_device_manager.h"
-#include "w_command_buffers.h"
 
 namespace wolf
 {
@@ -32,8 +31,8 @@ namespace wolf
 				//load render pass which contains frame buffers
 				W_VK_EXP W_RESULT load(
 					_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-					_In_ const w_viewport& pViewPort,
-					_In_ const w_viewport_scissor& pViewPortScissor,
+					_In_ const w_point& pOffset,
+					_In_ const w_point_t& pSize,
 					_In_ std::vector<std::vector<w_image_view>> pAttachments,
 					_In_ const std::vector<VkSubpassDescription>* pSubpassDescriptions = nullptr,
 					_In_ const std::vector<VkSubpassDependency>* pSubpassDependencies = nullptr);
@@ -45,7 +44,7 @@ namespace wolf
 					_In_ const w_color& pClearColor,
 					_In_ const float& pClearDepth = 1.0f,
 					_In_ const uint32_t& pClearStencil = 0,
-					_In_ const VkSubpassContents& pSubpassContents = VK_SUBPASS_CONTENTS_INLINE);
+					_In_ const w_subpass_contents& pSubpassContents = INLINE);
 
 				//end render pass
 				W_VK_EXP void end(_In_ const w_command_buffer& pCommandBuffer);
@@ -56,20 +55,15 @@ namespace wolf
 
 #pragma region Getters
 
+				W_VK_EXP const w_point get_offset() const;
+				W_VK_EXP const w_point_t get_size() const;
 				W_VK_EXP const w_render_pass_handle get_handle() const;
-				W_VK_EXP w_viewport get_viewport() const;
-				W_VK_EXP w_viewport_scissor get_viewport_scissor() const;
+				W_VK_EXP const w_frame_buffer_handle get_frame_buffer_handle(_In_ const size_t& pFrameBufferIndex) const;
 				W_VK_EXP const size_t get_number_of_frame_buffers() const;
 				W_VK_EXP const bool get_depth_stencil_enabled() const;
 
 #pragma endregion
 
-#pragma region Setters
-
-				W_VK_EXP void set_viewport(_In_ const w_viewport& pViewPort);
-				W_VK_EXP void set_viewport_scissor(_In_ const w_viewport_scissor& pViewPortScissor);
-
-#pragma endregion
 
 #ifdef __PYTHON__
 

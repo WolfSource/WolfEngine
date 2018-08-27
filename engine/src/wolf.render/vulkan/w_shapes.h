@@ -15,6 +15,7 @@
 #define __W_SHAPES_H__
 
 #include "w_graphics_device_manager.h"
+#include "w_viewport.h"
 #include "w_render_pass.h"
 #include <w_bounding.h>
 #include <w_plane.h>

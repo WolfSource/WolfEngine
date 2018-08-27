@@ -368,7 +368,7 @@ namespace wolf
 					_In_ const std::vector<VkDescriptorPoolSize> pDescriptorPoolSize,
 					_In_ const uint32_t& pMaxPoolSets)
 				{
-					const char* _trace_info = (this->_name + "_create_descriptor_pool").c_str();
+					const std::string _trace_info = this->_name + "::_create_descriptor_pool";
 
 					VkDescriptorPoolCreateInfo _descriptor_pool_create_info =
 					{
@@ -481,7 +481,7 @@ namespace wolf
 					_Inout_ VkDescriptorSet& pDescriptorSet,
 					_Inout_ VkDescriptorSetLayout& pDescriptorSetLyout)
 				{
-					const char* _trace_info = (this->_name + "_create_descriptor_set_layout_binding").c_str();
+					const std::string _trace_info = this->_name + "::_create_descriptor_set_layout_binding";
 
 					VkDescriptorSetLayoutCreateInfo _descriptor_set_layout_create_info =
 					{

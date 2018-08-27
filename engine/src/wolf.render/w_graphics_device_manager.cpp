@@ -2367,7 +2367,7 @@ namespace wolf
 
 			void create_swap_chain(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
 			{
-				const char* _trace_info = "::create_swap_chain";
+				const std::string _trace_info = this->_name + "::create_swap_chain";
 
 #ifdef __DX12__
 				auto _device_name = wolf::system::convert::string_to_wstring(pGDevice->device_name);

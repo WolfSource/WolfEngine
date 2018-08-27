@@ -32,7 +32,9 @@ W_RESULT model_mesh::load(
 	_In_z_ const std::string& pComputePipelineCacheName,
 	_In_z_ const std::wstring& pVertexShaderPath,
 	_In_z_ const std::wstring& pFragmentShaderPath,
-	_In_ const w_render_pass& pRenderPass)
+	_In_ const w_render_pass& pRenderPass,
+	_In_ const w_viewport& pViewport,
+	_In_ const w_viewport_scissor& pViewportScissor)
 {
 	if (!pGDevice || !this->c_model) return W_FAILED;
 	this->gDevice = pGDevice;
@@ -106,7 +108,7 @@ W_RESULT model_mesh::load(
 	}
 
 	//create pipeline
-	if (_create_pipelines(pPipelineCacheName, pRenderPass) == W_FAILED)
+	if (_create_pipelines(pPipelineCacheName, pComputePipelineCacheName, pRenderPass, pViewport, pViewportScissor) == W_FAILED)
 	{
 		release();
 		return W_FAILED;
@@ -1731,10 +1733,19 @@ W_RESULT model_mesh::_create_shader_modules(
 }
 
 W_RESULT model_mesh::_create_pipelines(
+	_In_z_ const std::string& pPipelineCacheName,
 	_In_z_ const std::string& pComputePipelineCacheName,
-	_In_ const w_render_pass& pRenderPass)
+	_In_ const w_render_pass& pRenderPass,
+	_In_ const w_viewport& pViewport,
+	_In_ const w_viewport_scissor& pViewportScissor)
 {
 	const std::string _trace_info = this->_name + "_create_pipelines";
+
+	std::vector<w_dynamic_state> _dynamic_states =
+	{
+		VIEWPORT,
+		SCISSOR,
+	};
 
 	if (this->_pipeline.load(
 		this->gDevice,
@@ -1742,8 +1753,10 @@ W_RESULT model_mesh::_create_pipelines(
 		w_primitive_topology::TRIANGLE_LIST,
 		&pRenderPass,
 		this->_shader,
-		{ pRenderPass.get_viewport() },
-		{ pRenderPass.get_viewport_scissor() }) == W_FAILED)
+		{ pViewport },
+		{ pViewportScissor },
+		pPipelineCacheName,
+		_dynamic_states) == W_FAILED)
 	{
 		V(W_FAILED,
 			w_log_type::W_ERROR,

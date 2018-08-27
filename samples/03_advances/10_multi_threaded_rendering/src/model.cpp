@@ -3,8 +3,16 @@
 #include <tbb/parallel_for.h>
 
 using namespace wolf::system;
-using namespace wolf::graphics;
+using namespace wolf::render::vulkan;
 using namespace wolf::content_pipeline;
+
+static void make_it_z_up_max(_Inout_ float* pPosition, _Inout_ float* pRotation)
+{
+	pRotation[0] *= -1.0f;
+	pRotation[0] += glm::radians(90.0f);
+	std::swap(pPosition[1], pPosition[2]);
+	pPosition[1] *= -1.0f;
+}
 
 model::model(
 	_In_ w_cpipeline_model* pContentPipelineModel,
@@ -39,102 +47,69 @@ W_RESULT model::initialize()
 	//get all meshes
 	this->c_model->get_meshes(_meshes);
 
+#pragma region collada from 3DMax 
+
+	//3DMax is right handed Zup
+	make_it_z_up_max(&this->transform->position[0], &this->transform->rotation[0]);	
+	for (auto& _ins : this->instances_transforms)
+	{
+		make_it_z_up_max(&_ins.position[0], &_ins.rotation[0]);
+	}
+
+#pragma endregion 
+
 	//get size of mesh
 	size_t _meshes_count = _meshes.size();
 	if (!_meshes_count)
 	{
-		V(W_FAILED, "model " + this->model_name + " does not have any mesh", _trace_info, 2);
+		V(W_FAILED,
+			w_log_type::W_WARNING,
+			"model: {} does not have any mesh. trace info: {}", this->model_name, _trace_info);
 		return W_FAILED;
 	}
+
 	//prepare vertices and indices
 	uint32_t _base_vertex_offset = 0;
-
+	//store the indices and vertices of mesh to batches
+	uint32_t _lod_distance_offset = 700;
+	auto _mesh_bounding_box = this->c_model->get_bounding_box(0);
+	if (_mesh_bounding_box)
+	{
+		auto _sphere_from_box = w_bounding_sphere::create_from_bounding_box(*_mesh_bounding_box);
+		_lod_distance_offset = (_sphere_from_box.radius > 0 ? _sphere_from_box.radius : 1) * 5;
+	}
 	//store the indices and vertices of mesh to batches
 	_store_to_batch(
 		_meshes,
 		this->vertex_binding_attributes,
+		_lod_distance_offset,
 		_base_vertex_offset,
 		this->tmp_batch_vertices,
 		this->tmp_batch_indices,
+		this->lods_info,
 		&this->merged_bounding_box,
 		&this->sub_meshes_bounding_box,
 		&this->textures_paths);
 
-	uint32_t _lod_distance_index = 1;
-	const uint32_t _lod_distance_offset = 700;
-	lod_info _lod_info;
-
-	auto _number_of_meshes = _meshes.size();
-	if (_number_of_meshes)
+	//use last lod for masked occlusion culling if avaiable
+	if (_meshes_count > 0)
 	{
-		//add first lod
-		_lod_info.first_index = 0;// this->tmp_batch_indices.size();// First index for this LOD
-		_lod_info.index_count = _meshes[0]->indices.size();// Index count for this LOD
-		_lod_info.distance = _lod_distance_index * _lod_distance_offset;
-		_lod_distance_index++;
-
-		this->lods_info.push_back(_lod_info);
-	}
-
-	auto _number_of_ch = this->c_model->get_convex_hulls_count();
-	auto _number_of_lods = this->c_model->get_lods_count();
-
-	//use ch for masked occlusion culling if avaiable
-	if (_number_of_ch)
-	{
-		std::vector<w_cpipeline_model*> _chs;
-		this->c_model->get_convex_hulls(_chs);
-
-		for (auto& _iter : _chs)
+		auto _size = _meshes[_meshes_count - 1]->lod_1_vertices.size();
+		if (_size)
 		{
-			//generate vertices and indices of bounding box
-			_add_to_mocs(_iter);
+			//use lod
+			_add_to_mocs(
+				_meshes[_meshes_count - 1]->lod_1_vertices,
+				_meshes[_meshes_count - 1]->lod_1_indices);
+		}
+		else
+		{
+			//use the same model
+			_add_to_mocs(
+				_meshes[_meshes_count - 1]->vertices,
+				_meshes[_meshes_count - 1]->indices);
 		}
 	}
-	//use first lod for masked occlusion culling if avaiable
-	else if (_number_of_lods > 0)
-	{
-		std::vector<w_cpipeline_model*> _lods;
-		this->c_model->get_lods(_lods);
-		_add_to_mocs(_lods[0]);
-	}
-	//-ch and -lod not found, so we will use default bounding box
-	else if (_number_of_meshes)
-	{
-		_meshes[0]->bounding_box.generate_vertices();
-		_add_to_mocs(_meshes[0]->bounding_box);
-	}
-
-	if (_number_of_lods > 0)
-	{
-		//append all lods to _batch_vertices and _batch_indices
-		std::vector<w_cpipeline_model*> _lods;
-		this->c_model->get_lods(_lods);
-		for (auto _lod_model : _lods)
-		{
-			_meshes.clear();
-			_lod_model->get_meshes(_meshes);
-			if (_meshes.size())
-			{
-				_lod_info.first_index = this->tmp_batch_indices.size();// First index for this LOD
-				_lod_info.index_count = _meshes[0]->indices.size();// Index count for this LOD
-				_lod_info.distance = _lod_distance_index * _lod_distance_offset;
-				_lod_distance_index++;
-
-				this->lods_info.push_back(_lod_info);
-
-				_store_to_batch(
-					_meshes,
-					this->vertex_binding_attributes,
-					_base_vertex_offset,
-					this->tmp_batch_vertices,
-					this->tmp_batch_indices);
-			}
-		}
-
-		_lods.clear();
-	}
-	_meshes.clear();
 
 	return W_PASSED;
 }
@@ -168,76 +143,69 @@ void model::_add_to_mocs(_In_ const w_bounding_box& pBoundingBox)
 	this->_mocs.push_back(_moc_data);
 }
 
-void model::_add_to_mocs(_In_  w_cpipeline_model* pConvexHull)
+void model::_add_to_mocs(
+	_In_ const std::vector<w_vertex_struct>& pVertices,
+	_In_ const w_vector_uint32_t& pIndices)
 {
-	auto _size = pConvexHull->get_meshes_count();
-	if (!_size) return;
+	auto _vert_size = pVertices.size();
+	
+	moc_data _moc_data;
 
-	std::vector<w_cpipeline_mesh*> _meshes;
-	pConvexHull->get_meshes(_meshes);
-
-	auto _transform = pConvexHull->get_transform();
-	auto _pos = _transform.position;
-	auto _rot = _transform.rotation;
-
-	for (auto& _iter : _meshes)
+	clipspace_vertex _cv;
+	for (uint32_t i = 0; i < _vert_size; i++)
 	{
-		moc_data _moc_data;
+		auto _vertex_pos = pVertices[i].position;
+		_cv.x = _vertex_pos[0];
+		_cv.y = _vertex_pos[1];
+		_cv.z = 0;
+		_cv.w = _vertex_pos[2];
 
-		clipspace_vertex _cv;
-		auto _vert_size = _iter->vertices.size();
-		for (uint32_t i = 0; i < _vert_size; i++)
-		{
-			auto _vertex_pos = _iter->vertices[i].position;
-			_cv.x = _vertex_pos[0];
-			_cv.y = _vertex_pos[1];
-			_cv.z = 0;
-			_cv.w = _vertex_pos[2];
-
-			_moc_data.vertices.push_back(_cv);
-			//_moc_data.indices.push_back(i);
-		}
-
-		_size = _iter->indices.size();
-		for (uint32_t i = 0; i < _size; i++)
-		{
-			_moc_data.indices.push_back(_iter->indices[i]);
-		}
-
-		auto _pos = _iter->bounding_box.position;
-		auto _rot = _iter->bounding_box.rotation;
-
-		_moc_data.position.x = _pos[0];
-		_moc_data.position.y = _pos[1];
-		_moc_data.position.z = _pos[2];
-
-		_moc_data.rotation.x = _rot[0];
-		_moc_data.rotation.y = _rot[1];
-		_moc_data.rotation.z = _rot[2];
-
-		_moc_data.num_of_tris_for_moc = static_cast<int>(_vert_size / 3);
-		this->_mocs.push_back(_moc_data);
+		_moc_data.vertices.push_back(_cv);
+		//_moc_data.indices.push_back(i);
 	}
+
+	for (uint32_t i = 0; i < pIndices.size(); ++i)
+	{
+		_moc_data.indices.push_back(pIndices[i]);
+	}
+
+	auto _position = get_position();
+	auto _rotation = get_rotation();
+
+	_moc_data.position.x = _position[0];
+	_moc_data.position.y = _position[1];
+	_moc_data.position.z = _position[2];
+
+	_moc_data.rotation.x = _rotation[0];
+	_moc_data.rotation.y = _rotation[1];
+	_moc_data.rotation.z = _rotation[2];
+
+	_moc_data.num_of_tris_for_moc = static_cast<int>(_vert_size / 3);
+	this->_mocs.push_back(_moc_data);
 }
 
 bool model::check_is_in_sight(_In_ wolf::framework::w_first_person_camera* pCamera)
 {
 	const std::string _trace_info = this->_name + "::check_is_in_sight";
-	
+
 	if (!pCamera)
 	{
-		V(W_FAILED, "camera not avaiable", _trace_info, 3);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"camera not avaiable. trace info: {}", _trace_info);
 		return false;
 	}
 	if (!this->sub_meshes_bounding_box.size())
 	{
-		V(W_FAILED, "sub mesh bounding sphere not avaiable for model: " + this->model_name, _trace_info, 3);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"sub mesh bounding sphere not avaiable for model: {}. trace info: {}", this->model_name, _trace_info);
 		return false;
 	}
 
 	
 	tbb::atomic<bool> _found = false;
-	auto _camera_pos = pCamera->get_translate();
+	auto _camera_pos = pCamera->get_position();
 	auto _camera_frustum = pCamera->get_frustum();
 
 	tbb::parallel_for(
@@ -271,7 +239,7 @@ W_RESULT model::pre_update(
 	W_RESULT _hr = W_FAILED;
 	
 	this->_projection_view = pProjectionView;
-	
+
 	glm::mat4 _model_to_clip_matrix;
 	//draw root model to Masked Occlusion culling
 	for (auto& _iter : this->_mocs)
@@ -282,7 +250,6 @@ W_RESULT model::pre_update(
 			glm::rotate(_iter.rotation);
 
 		//wolf::logger.write("pre updating model " + get_model_name());
-		//pMaskedOcclusionCulling.set_matrix((float*)(&_model_to_clip_matrix[0]));
 		if (pMaskedOcclusionCulling.render_triangles(
 			(float*)&_iter.vertices[0],
 			_iter.indices.data(),
@@ -293,7 +260,9 @@ W_RESULT model::pre_update(
 		}
 		else
 		{
-			V(W_FAILED, "rendering to masked occlusion culling buffer for model: " + this->model_name, _trace_info, 3);
+			V(W_FAILED,
+				w_log_type::W_ERROR,
+				"rendering to masked occlusion culling buffer for model: {}. trace info: {}", this->model_name, _trace_info);
 		}
 	}
 
@@ -323,13 +292,12 @@ W_RESULT model::pre_update(
 			else
 			{
 				//find the difference from transform of instance and root
-				_dif_pos = _pos - glm::vec3(this->transform.position[0], this->transform.position[1], this->transform.position[2]);
-				_dif_rot = _rot - glm::vec3(this->transform.rotation[0], this->transform.rotation[1], this->transform.rotation[2]);
+				_dif_pos = _pos - glm::vec3(this->transform->position[0], this->transform->position[1], this->transform->position[2]);
+				_dif_rot = _rot - glm::vec3(this->transform->rotation[0], this->transform->rotation[1], this->transform->rotation[2]);
 				_model_to_clip_matrix = this->_projection_view * glm::translate(_iter.position + _dif_pos) * glm::rotate(_iter.rotation + _dif_rot);
 			}
 
 			//wolf::logger.write("pre updating ins " + _ins.name);
-			//pMaskedOcclusionCulling.set_matrix((float*)(&_model_to_clip_matrix[0]));
 			if (pMaskedOcclusionCulling.render_triangles(
 				(float*)&_iter.vertices[0],
 				_iter.indices.data(),
@@ -340,7 +308,9 @@ W_RESULT model::pre_update(
 			}
 			else
 			{
-				V(W_FAILED, "rendering instance to masked occlusion culling buffer for model: " + this->model_name, _trace_info, 3);
+				V(W_FAILED,
+					w_log_type::W_ERROR,
+					"rendering instance to masked occlusion culling buffer for model: {}. trace info: {}", this->model_name, _trace_info);
 			}
 		}
 	}
@@ -359,7 +329,6 @@ W_RESULT model::post_update(_In_ wolf::framework::w_masked_occlusion_culling& pM
 	{
 		_model_to_clip_matrix = this->_projection_view * glm::translate(_iter.position) * glm::rotate(_iter.rotation);
 		//wolf::logger.write("post updating model" + get_model_name());
-		//pMaskedOcclusionCulling.set_matrix((float*)(&_model_to_clip_matrix[0]));
 		_culling_result = pMaskedOcclusionCulling.test_triangles(
 			(float*)&_iter.vertices[0],
 			_iter.indices.data(),
@@ -407,13 +376,12 @@ W_RESULT model::post_update(_In_ wolf::framework::w_masked_occlusion_culling& pM
 			else
 			{
 				//find the difference from transform of instance and root
-				_dif_pos = _pos - glm::vec3(this->transform.position[0], this->transform.position[1], this->transform.position[2]);
-				_dif_rot = _rot - glm::vec3(this->transform.rotation[0], this->transform.rotation[1], this->transform.rotation[2]);
+				_dif_pos = _pos - glm::vec3(this->transform->position[0], this->transform->position[1], this->transform->position[2]);
+				_dif_rot = _rot - glm::vec3(this->transform->rotation[0], this->transform->rotation[1], this->transform->rotation[2]);
 				_model_to_clip_matrix = this->_projection_view * glm::translate(_iter.position + _dif_pos) * glm::rotate(_iter.rotation + _dif_rot);
 			}
 
 			//wolf::logger.write("pre updating ins " + _ins->name);
-			//pMaskedOcclusionCulling.set_matrix((float*)(&_model_to_clip_matrix[0]));
 			_culling_result = pMaskedOcclusionCulling.test_triangles(
 				(float*)&_iter.vertices[0],
 				_iter.indices.data(),
@@ -423,6 +391,8 @@ W_RESULT model::post_update(_In_ wolf::framework::w_masked_occlusion_culling& pM
 			int _indexer = i + 1;
 			int _base_index = _indexer / 4;
 			int _sec_index = _indexer % 4;
+			this->visibilities[_base_index][_sec_index] = 1.0f;
+
 			if (_culling_result == MaskedOcclusionCulling::VISIBLE)
 			{
 				this->visibilities[_base_index][_sec_index] = 1.0f;

@@ -24,7 +24,7 @@
 #include <w_cpipeline_model.h>
 #include <vulkan/w_mesh.h>
 #include <vulkan/w_command_buffers.h>
-
+#include <vulkan/w_viewport.h>
 
 class model_mesh_pimp;
 //Provides basic functions for rendering wolf::content_pipeline::w_cpipeline_model 
@@ -42,7 +42,9 @@ public:
 		_In_ const std::string& pPipelineCacheName,
 		_In_z_ const std::wstring& pVertexShaderPath,
 		_In_z_ const std::wstring& pFragmentShaderPath,
-		_In_ const wolf::render::vulkan::w_render_pass& pDrawRenderPass);
+		_In_ const wolf::render::vulkan::w_render_pass& pDrawRenderPass,
+		_In_ const wolf::render::vulkan::w_viewport& pViewPort,
+		_In_ const wolf::render::vulkan::w_viewport_scissor& pViewPortScissor);
 	
 	/*
 		direct draw to graphics device or indirect draw.

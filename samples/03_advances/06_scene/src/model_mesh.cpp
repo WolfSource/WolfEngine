@@ -32,7 +32,9 @@ public:
 		_In_z_ const std::string& pPipelineCacheName, 
 		_In_z_ const std::wstring& pVertexShaderPath,
 		_In_z_ const std::wstring& pFragmentShaderPath,
-		_In_ const w_render_pass& pRenderPass)
+		_In_ const w_render_pass& pRenderPass,
+		_In_ const w_viewport& pViewPort,
+		_In_ const w_viewport_scissor& pViewPortScissor)
 	{
 		if (!pGDevice || !_c_model) return W_FAILED;
 		this->_gDevice = pGDevice;
@@ -237,7 +239,7 @@ public:
 #pragma endregion
 
 #pragma region create pipeline
-		if (_create_pipeline(pPipelineCacheName, pRenderPass) == W_FAILED)
+		if (_create_pipeline(pPipelineCacheName, pRenderPass, pViewPort, pViewPortScissor) == W_FAILED)
 		{
 			V(W_FAILED,
 				w_log_type::W_ERROR,
@@ -1106,7 +1108,9 @@ private:
 
 	W_RESULT _create_pipeline(
 		_In_z_ const std::string& pPipelineCacheName,
-		_In_ const w_render_pass& pRenderPass)
+		_In_ const w_render_pass& pRenderPass,
+		_In_ const w_viewport& pViewPort,
+		_In_ const w_viewport_scissor& pViewPortScissor)
 	{
 		return this->_pipeline.load(
 			this->_gDevice,
@@ -1114,8 +1118,8 @@ private:
 			w_primitive_topology::TRIANGLE_LIST,
 			&pRenderPass,
 			&this->_shader,
-			{ pRenderPass.get_viewport() },
-			{ pRenderPass.get_viewport_scissor() },
+			{ pViewPort },
+			{ pViewPortScissor },
 			pPipelineCacheName);
 	}
 
@@ -1191,14 +1195,18 @@ W_RESULT model_mesh::load(
 	_In_ const std::string& pPipelineCacheName,
 	_In_z_ const std::wstring& pVertexShaderPath,
 	_In_z_ const std::wstring& pFragmentShaderPath,
-	_In_ const w_render_pass& pDrawRenderPass)
+	_In_ const w_render_pass& pDrawRenderPass,
+	_In_ const wolf::render::vulkan::w_viewport& pViewPort,
+	_In_ const wolf::render::vulkan::w_viewport_scissor& pViewPortScissor)
 {
 	return !this->_pimp ? W_FAILED : this->_pimp->load(
 		pGDevice, 
 		pPipelineCacheName, 
 		pVertexShaderPath, 
 		pFragmentShaderPath,
-		pDrawRenderPass);
+		pDrawRenderPass,
+		pViewPort,
+		pViewPortScissor);
 }
 
 W_RESULT model_mesh::draw(_In_ const w_command_buffer& pCommandBuffer, _In_ const bool& pInDirectDraw)

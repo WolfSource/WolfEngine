@@ -3,7 +3,7 @@
 
 using namespace wolf;
 using namespace wolf::system;
-using namespace wolf::graphics;
+using namespace wolf::render::vulkan;
 using namespace wolf::content_pipeline;
 
 model_mesh::model_mesh(
@@ -17,7 +17,8 @@ model_mesh::model_mesh(
 	c_model(pContentPipelineModel),
 	_selected_lod_index(0),
 	_show_wireframe(false),
-	_show_bounding_box(false)
+	_show_bounding_box(false),
+	_is_sky(false)
 {
 }
 
@@ -32,7 +33,9 @@ W_RESULT model_mesh::load(
 	_In_z_ const std::string& pComputePipelineCacheName,
 	_In_z_ const std::wstring& pVertexShaderPath,
 	_In_z_ const std::wstring& pFragmentShaderPath,
-	_In_ const w_render_pass& pRenderPass)
+	_In_ const w_render_pass& pRenderPass,
+	_In_ const w_viewport& pViewport,
+	_In_ const w_viewport_scissor& pViewportScissor)
 {
 	if (!pGDevice || !this->c_model) return W_FAILED;
 	this->gDevice = pGDevice;
@@ -44,7 +47,9 @@ W_RESULT model_mesh::load(
 	if (!this->_mesh)
 	{
 		release();
-		V(W_FAILED, "allocating memory for w_mesh for model: " + this->model_name, _trace_info, 2);
+		V(W_FAILED,
+			w_log_type::W_WARNING,
+			"allocating memory for w_mesh for model: {}. trace info: {}", this->model_name, _trace_info);
 		return W_FAILED;
 	}
 	_mesh->set_vertex_binding_attributes(this->vertex_binding_attributes);
@@ -59,7 +64,7 @@ W_RESULT model_mesh::load(
 	{
 		//set the default texture
 		this->_textures.push_back(w_texture::default_texture);
-		logger.warning("default texture will be used for model: " + this->model_name);
+		logger.warning("default texture will be used for model: {}", this->model_name);
 		_mesh->set_texture(this->_textures[0]);
 	}
 
@@ -82,7 +87,9 @@ W_RESULT model_mesh::load(
 	if (_hr == W_FAILED)
 	{
 		release();
-		V(W_FAILED, "loading mesh for model: " + this->model_name, _trace_info, 2);
+		V(W_FAILED,
+			w_log_type::W_WARNING,
+			"loading mesh for model: {}. trace info: {}", this->model_name, _trace_info);
 		return W_FAILED;
 	}
 
@@ -103,7 +110,7 @@ W_RESULT model_mesh::load(
 	}
 
 	//create pipeline
-	if (_create_pipelines(pPipelineCacheName, pRenderPass) == W_FAILED)
+	if (_create_pipelines(pPipelineCacheName, pComputePipelineCacheName, pRenderPass, pViewport, pViewportScissor) == W_FAILED)
 	{
 		release();
 		return W_FAILED;
@@ -120,14 +127,18 @@ W_RESULT model_mesh::load(
 		if (this->_cs.semaphore.initialize(this->gDevice) == W_FAILED)
 		{
 			release();
-			V(W_FAILED, "initializing compute semaphore for model: " + this->model_name, _trace_info, 2);
+			V(W_FAILED,
+				w_log_type::W_WARNING,
+				"initializing compute semaphore for model: {}. trace info: {}", this->model_name, _trace_info);
 			return W_FAILED;
 		}
 		//build compute command buffer
 		if (_build_compute_command_buffer() == W_FAILED)
 		{
 			release();
-			V(W_FAILED, "building compute command buffer for model: " + this->model_name, _trace_info, 2);
+			V(W_FAILED,
+				w_log_type::W_WARNING,
+				"building compute command buffer for model: {}. trace info: {}", this->model_name, _trace_info);
 			return W_FAILED;
 		}
 	}
@@ -143,13 +154,17 @@ W_RESULT model_mesh::load(
 	this->_u1.data.bounding_sphere_radius = _get_first_model_bsphere.radius;
 	if (this->_u1.update() == W_FAILED)
 	{
-		V(W_FAILED, "updating uniform u1(mipmaps) for model: " + this->model_name, _trace_info, 3);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"updating uniform u1(mipmaps) for model: {}. trace info: {}", this->model_name, _trace_info);
 		return W_FAILED;
 	}
 
-	if (_create_bounding_box_shapes(pRenderPass) == W_FAILED)
+	if (_create_bounding_box_shapes(pRenderPass, pViewport, pViewportScissor) == W_FAILED)
 	{
-		V(W_FAILED, "creaing shapes and bounding boxes for model: " + this->model_name, _trace_info, 3);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"creaing shapes and bounding boxes for model: {}. trace info: {}", this->model_name, _trace_info);
 	}
 
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -173,7 +188,9 @@ W_RESULT model_mesh::_build_compute_command_buffer()
 		true,
 		&gDevice->vk_compute_queue) == W_FAILED)
 	{
-		V(W_FAILED, "creating compute command buffer for " + this->model_name, _trace_info);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"creating compute command buffer for: {}. trace info: {}", this->model_name, _trace_info);
 		return W_FAILED;
 	}
 
@@ -205,7 +222,9 @@ W_RESULT model_mesh::_build_compute_command_buffer()
 		if (this->_cs.pipeline.bind(_cmd, w_pipeline_bind_point::COMPUTE) == W_FAILED)
 		{
 			this->_cs.command_buffers.end(0);
-			V(W_FAILED, "binding compute command buffer for " + this->model_name, _trace_info);
+			V(W_FAILED,
+				w_log_type::W_ERROR,
+				"binding compute command buffer for: {}. trace info: {}", this->model_name, _trace_info);
 			return W_FAILED;
 		}
 
@@ -363,7 +382,9 @@ W_RESULT model_mesh::submit_compute_shader()
 
 	if (_hr == W_FAILED)
 	{
-		V(_hr, "updating compute shader's unifrom for model: " + this->model_name, _trace_info, 3);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"updating compute shader's unifrom for model: {}. trace info: {}", this->model_name, _trace_info);
 	}
 
 	auto _cmd = this->_cs.command_buffers.get_command_at(0);
@@ -378,7 +399,9 @@ W_RESULT model_mesh::submit_compute_shader()
 		false) == W_FAILED)
 	{
 		_hr = W_FAILED;
-		V(_hr, "submiting compute shader queue for model: " + this->model_name, _trace_info, 3);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"submiting compute shader queue for model: {}. trace info: {}", this->model_name, _trace_info);
 	}
 
 	return _hr;
@@ -398,7 +421,7 @@ W_RESULT model_mesh::draw(_In_ const w_command_buffer& pCommandBuffer, _In_ cons
 	{
 		auto _view = pCamera->get_view();
 		auto _projection = pCamera->get_projection();
-		auto _camera_position = pCamera->get_translate();
+		auto _camera_position = pCamera->get_position();
 		set_view_projection_position(_view, _projection, _camera_position);
 	}
 
@@ -438,7 +461,9 @@ W_RESULT model_mesh::draw(_In_ const w_command_buffer& pCommandBuffer, _In_ cons
 		}
 		else
 		{
-			V(W_FAILED, "drawing model, lod info is out of range for model: " + this->model_name, _trace_info, 3);
+			V(W_FAILED,
+				w_log_type::W_ERROR,
+				"drawing model, lod info is out of range for model: {}. trace info: {}", this->model_name, _trace_info);
 			return W_FAILED;
 		}
 	}
@@ -446,7 +471,9 @@ W_RESULT model_mesh::draw(_In_ const w_command_buffer& pCommandBuffer, _In_ cons
 	bool _error = false;
 	if (_hr == W_FAILED)
 	{
-		V(W_FAILED, "drawing model for model: " + this->model_name, _trace_info, 3);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"drawing model for model: {}. trace info: {}", this->model_name, _trace_info);
 		_error = true;
 	}
 
@@ -457,7 +484,9 @@ W_RESULT model_mesh::draw(_In_ const w_command_buffer& pCommandBuffer, _In_ cons
 		{
 			if (_shape->draw(pCommandBuffer) == W_FAILED)
 			{
-				V(W_FAILED, "drawing shape for model: " + this->model_name, _trace_info, 3);
+				V(W_FAILED,
+					w_log_type::W_ERROR,
+					"drawing shape for model: {}. trace info: {}", this->model_name, _trace_info);
 				_error = true;
 			}
 		}
@@ -466,37 +495,507 @@ W_RESULT model_mesh::draw(_In_ const w_command_buffer& pCommandBuffer, _In_ cons
 	return _error ? W_FAILED : W_PASSED;
 }
 
-//++++++++++++++++++++++++++++++++++++++++++++++++++++
-//++++++++++++++++++++++++++++++++++++++++++++++++++++
+W_RESULT model_mesh::_store_indices_vertices_to_batch(
+	_In_ const wolf::render::vulkan::w_vertex_binding_attributes& pVertexBindingAttributes,
+	_In_ const float& pTextureUVIndex,
+	_In_ const std::vector<w_vertex_struct>& pVertices,
+	_In_ const std::vector<uint32_t>& pIndices,
+	_Inout_ std::vector<float>& pBatchVertices,
+	_Inout_ std::vector<uint32_t>& pBatchIndices,
+	_Inout_ uint32_t& pBaseVertexOffset)
+{
+	if (!pVertices.size()) return W_FAILED;
+
+	uint32_t i = 0;
+
+#pragma region store index buffer
+	for (i = 0; i < pIndices.size(); ++i)
+	{
+		pBatchIndices.push_back(pBaseVertexOffset + pIndices[i]);
+	}
+#pragma endregion
+
+#pragma region store vertex buffer
+	i = 0;
+	auto _vertex_dec = pVertexBindingAttributes.binding_attributes.find(0);
+	switch (pVertexBindingAttributes.declaration)
+	{
+	default:
+		//user defined, we need to find vertex declaration
+		if (_vertex_dec != pVertexBindingAttributes.binding_attributes.end())
+		{
+			for (auto& _data : pVertices)
+			{
+				for (auto _dec : _vertex_dec->second)
+				{
+					if (_dec == w_vertex_attribute::W_TEXTURE_INDEX)
+					{
+						pBatchVertices.push_back(pTextureUVIndex);
+					}
+					if (_dec == w_vertex_attribute::W_UV)
+					{
+						pBatchVertices.push_back(_data.uv[0]);
+						pBatchVertices.push_back(1 - _data.uv[1]);
+					}
+					else if (_dec == w_vertex_attribute::W_POS)
+					{
+						pBatchVertices.push_back(_data.position[0]);
+						pBatchVertices.push_back(_data.position[1]);
+						pBatchVertices.push_back(_data.position[2]);
+					}
+					else if (_dec == w_vertex_attribute::W_NORM)
+					{
+						pBatchVertices.push_back(_data.normal[0]);
+						pBatchVertices.push_back(_data.normal[1]);
+						pBatchVertices.push_back(_data.normal[2]);
+					}
+					else if (_dec == w_vertex_attribute::W_TANGENT)
+					{
+						pBatchVertices.push_back(_data.tangent[0]);
+						pBatchVertices.push_back(_data.tangent[1]);
+						pBatchVertices.push_back(_data.tangent[2]);
+					}
+					else if (_dec == w_vertex_attribute::W_BINORMAL)
+					{
+						pBatchVertices.push_back(_data.binormal[0]);
+						pBatchVertices.push_back(_data.binormal[1]);
+						pBatchVertices.push_back(_data.binormal[2]);
+					}
+					else if (_dec == w_vertex_attribute::W_COLOR)
+					{
+						pBatchVertices.push_back(_data.color[0]);
+						pBatchVertices.push_back(_data.color[1]);
+						pBatchVertices.push_back(_data.color[2]);
+						pBatchVertices.push_back(_data.color[3]);
+					}
+					else if (_dec == w_vertex_attribute::W_BLEND_WEIGHT)
+					{
+						pBatchVertices.push_back(_data.blend_weight[0]);
+						pBatchVertices.push_back(_data.blend_weight[1]);
+						pBatchVertices.push_back(_data.blend_weight[2]);
+						pBatchVertices.push_back(_data.blend_weight[3]);
+					}
+					else if (_dec == w_vertex_attribute::W_BLEND_INDICES)
+					{
+						pBatchVertices.push_back(_data.blend_indices[0]);
+						pBatchVertices.push_back(_data.blend_indices[1]);
+						pBatchVertices.push_back(_data.blend_indices[2]);
+						pBatchVertices.push_back(_data.blend_indices[3]);
+					}
+				}
+				pBaseVertexOffset++;
+			}
+		}
+		break;
+	case w_vertex_declaration::VERTEX_POSITION:
+		for (auto& _data : pVertices)
+		{
+			auto _pos = _data.position;
+
+			//position
+			pBatchVertices.push_back(_pos[0]);
+			pBatchVertices.push_back(_pos[1]);
+			pBatchVertices.push_back(_pos[2]);
+
+			pBaseVertexOffset++;
+		}
+		break;
+	case w_vertex_declaration::VERTEX_POSITION_COLOR:
+		for (auto& _data : pVertices)
+		{
+			auto _pos = _data.position;
+			auto _color = _data.color;
+
+			//position
+			pBatchVertices.push_back(_pos[0]);
+			pBatchVertices.push_back(_pos[1]);
+			pBatchVertices.push_back(_pos[2]);
+
+			//color
+			pBatchVertices.push_back(_color[0]);
+			pBatchVertices.push_back(_color[1]);
+			pBatchVertices.push_back(_color[2]);
+			pBatchVertices.push_back(_color[3]);
+
+			pBaseVertexOffset++;
+		}
+		break;
+	case w_vertex_declaration::VERTEX_POSITION_UV:
+		for (auto& _data : pVertices)
+		{
+			auto _pos = _data.position;
+			auto _uv = _data.uv;
+
+			//position
+			pBatchVertices.push_back(_pos[0]);
+			pBatchVertices.push_back(_pos[1]);
+			pBatchVertices.push_back(_pos[2]);
+
+			//uv
+			pBatchVertices.push_back(_uv[0]);
+			pBatchVertices.push_back(_uv[1]);
+
+			pBaseVertexOffset++;
+		}
+		break;
+	case w_vertex_declaration::VERTEX_POSITION_UV_INDEX:
+		for (auto& _data : pVertices)
+		{
+			auto _pos = _data.position;
+			auto _uv = _data.uv;
+
+			//position
+			pBatchVertices.push_back(_pos[0]);
+			pBatchVertices.push_back(_pos[1]);
+			pBatchVertices.push_back(_pos[2]);
+
+			//uv
+			pBatchVertices.push_back(_uv[0]);
+			pBatchVertices.push_back(_uv[1]);
+			pBatchVertices.push_back(pTextureUVIndex);
+
+			pBaseVertexOffset++;
+		}
+		break;
+	case w_vertex_declaration::VERTEX_POSITION_UV_COLOR:
+		for (auto& _data : pVertices)
+		{
+			auto _pos = _data.position;
+			auto _uv = _data.uv;
+			auto _color = _data.color;
+
+			//position
+			pBatchVertices.push_back(_pos[0]);
+			pBatchVertices.push_back(_pos[1]);
+			pBatchVertices.push_back(_pos[2]);
+
+			//uv
+			pBatchVertices.push_back(_uv[0]);
+			pBatchVertices.push_back(_uv[1]);
+
+			//color
+			pBatchVertices.push_back(_color[0]);
+			pBatchVertices.push_back(_color[1]);
+			pBatchVertices.push_back(_color[2]);
+			pBatchVertices.push_back(_color[3]);
+
+			pBaseVertexOffset++;
+		}
+		break;
+	case w_vertex_declaration::VERTEX_POSITION_UV_INDEX_COLOR:
+		for (auto& _data : pVertices)
+		{
+			auto _pos = _data.position;
+			auto _uv = _data.uv;
+			auto _color = _data.color;
+
+			//position
+			pBatchVertices.push_back(_pos[0]);
+			pBatchVertices.push_back(_pos[1]);
+			pBatchVertices.push_back(_pos[2]);
+
+			//uv
+			pBatchVertices.push_back(_uv[0]);
+			pBatchVertices.push_back(_uv[1]);
+			pBatchVertices.push_back(pTextureUVIndex);
+
+
+			//color
+			pBatchVertices.push_back(_color[0]);
+			pBatchVertices.push_back(_color[1]);
+			pBatchVertices.push_back(_color[2]);
+			pBatchVertices.push_back(_color[3]);
+
+			pBaseVertexOffset++;
+		}
+		break;
+	case w_vertex_declaration::VERTEX_POSITION_NORMAL_COLOR:
+		for (auto& _data : pVertices)
+		{
+			auto _pos = _data.position;
+			auto _nor = _data.normal;
+			auto _color = _data.color;
+
+			//position
+			pBatchVertices.push_back(_pos[0]);
+			pBatchVertices.push_back(_pos[1]);
+			pBatchVertices.push_back(_pos[2]);
+
+			//normal
+			pBatchVertices.push_back(_nor[0]);
+			pBatchVertices.push_back(_nor[1]);
+			pBatchVertices.push_back(_nor[2]);
+
+			//color
+			pBatchVertices.push_back(_color[0]);
+			pBatchVertices.push_back(_color[1]);
+			pBatchVertices.push_back(_color[2]);
+			pBatchVertices.push_back(_color[3]);
+
+			pBaseVertexOffset++;
+		}
+		break;
+	case w_vertex_declaration::VERTEX_POSITION_NORMAL_UV:
+		for (auto& _data : pVertices)
+		{
+			auto _pos = _data.position;
+			auto _nor = _data.normal;
+			auto _uv = _data.uv;
+
+			//position
+			pBatchVertices.push_back(_pos[0]);
+			pBatchVertices.push_back(_pos[1]);
+			pBatchVertices.push_back(_pos[2]);
+
+			//normal
+			pBatchVertices.push_back(_nor[0]);
+			pBatchVertices.push_back(_nor[1]);
+			pBatchVertices.push_back(_nor[2]);
+
+			//uv
+			pBatchVertices.push_back(_uv[0]);
+			pBatchVertices.push_back(_uv[1]);
+
+			pBaseVertexOffset++;
+		}
+		break;
+	case w_vertex_declaration::VERTEX_POSITION_NORMAL_UV_INDEX:
+		for (auto& _data : pVertices)
+		{
+			auto _pos = _data.position;
+			auto _nor = _data.normal;
+			auto _uv = _data.uv;
+
+			//position
+			pBatchVertices.push_back(_pos[0]);
+			pBatchVertices.push_back(_pos[1]);
+			pBatchVertices.push_back(_pos[2]);
+
+			//normal
+			pBatchVertices.push_back(_nor[0]);
+			pBatchVertices.push_back(_nor[1]);
+			pBatchVertices.push_back(_nor[2]);
+
+			//uv
+			pBatchVertices.push_back(_uv[0]);
+			pBatchVertices.push_back(_uv[1]);
+			pBatchVertices.push_back(pTextureUVIndex);
+
+			pBaseVertexOffset++;
+		}
+		break;
+	case w_vertex_declaration::VERTEX_POSITION_NORMAL_UV_TANGENT_BINORMAL:
+		for (auto& _data : pVertices)
+		{
+			auto _pos = _data.position;
+			auto _nor = _data.normal;
+			auto _uv = _data.uv;
+			auto _tangent = _data.tangent;
+			auto _binormal = _data.binormal;
+
+			//position
+			pBatchVertices.push_back(_pos[0]);
+			pBatchVertices.push_back(_pos[1]);
+			pBatchVertices.push_back(_pos[2]);
+
+			//normal
+			pBatchVertices.push_back(_nor[0]);
+			pBatchVertices.push_back(_nor[1]);
+			pBatchVertices.push_back(_nor[2]);
+
+			//uv
+			pBatchVertices.push_back(_uv[0]);
+			pBatchVertices.push_back(_uv[1]);
+
+			//tangent
+			pBatchVertices.push_back(_tangent[0]);
+			pBatchVertices.push_back(_tangent[1]);
+			pBatchVertices.push_back(_tangent[2]);
+
+			//binormal
+			pBatchVertices.push_back(_binormal[0]);
+			pBatchVertices.push_back(_binormal[1]);
+			pBatchVertices.push_back(_binormal[2]);
+
+			pBaseVertexOffset++;
+		}
+		break;
+	case w_vertex_declaration::VERTEX_POSITION_NORMAL_UV_INDEX_TANGENT_BINORMAL:
+		for (auto& _data : pVertices)
+		{
+			auto _pos = _data.position;
+			auto _nor = _data.normal;
+			auto _uv = _data.uv;
+			auto _tangent = _data.tangent;
+			auto _binormal = _data.binormal;
+
+			//position
+			pBatchVertices.push_back(_pos[0]);
+			pBatchVertices.push_back(_pos[1]);
+			pBatchVertices.push_back(_pos[2]);
+
+			//normal
+			pBatchVertices.push_back(_nor[0]);
+			pBatchVertices.push_back(_nor[1]);
+			pBatchVertices.push_back(_nor[2]);
+
+			//uv
+			pBatchVertices.push_back(_uv[0]);
+			pBatchVertices.push_back(_uv[1]);
+			pBatchVertices.push_back(pTextureUVIndex);
+
+			//tangent
+			pBatchVertices.push_back(_tangent[0]);
+			pBatchVertices.push_back(_tangent[1]);
+			pBatchVertices.push_back(_tangent[2]);
+
+			//binormal
+			pBatchVertices.push_back(_binormal[0]);
+			pBatchVertices.push_back(_binormal[1]);
+			pBatchVertices.push_back(_binormal[2]);
+
+			pBaseVertexOffset++;
+		}
+		break;
+	case w_vertex_declaration::VERTEX_POSITION_NORMAL_UV_TANGENT_BINORMAL_BLEND_WEIGHT_BLEND_INDICES:
+		for (auto& _data : pVertices)
+		{
+			auto _pos = _data.position;
+			auto _nor = _data.normal;
+			auto _uv = _data.uv;
+			auto _tangent = _data.tangent;
+			auto _binormal = _data.binormal;
+			auto _blend_weight = _data.blend_weight;
+			auto _blend_indices = _data.blend_indices;
+
+			//position
+			pBatchVertices.push_back(_pos[0]);
+			pBatchVertices.push_back(_pos[1]);
+			pBatchVertices.push_back(_pos[2]);
+
+			//normal
+			pBatchVertices.push_back(_nor[0]);
+			pBatchVertices.push_back(_nor[1]);
+			pBatchVertices.push_back(_nor[2]);
+
+			//uv
+			pBatchVertices.push_back(_uv[0]);
+			pBatchVertices.push_back(_uv[1]);
+
+			//tangent
+			pBatchVertices.push_back(_tangent[0]);
+			pBatchVertices.push_back(_tangent[1]);
+			pBatchVertices.push_back(_tangent[2]);
+
+			//binormal
+			pBatchVertices.push_back(_binormal[0]);
+			pBatchVertices.push_back(_binormal[1]);
+			pBatchVertices.push_back(_binormal[2]);
+
+			//blend_weight
+			pBatchVertices.push_back(_blend_weight[0]);
+			pBatchVertices.push_back(_blend_weight[1]);
+			pBatchVertices.push_back(_blend_weight[2]);
+
+			//blend_indices
+			pBatchVertices.push_back(_blend_indices[0]);
+			pBatchVertices.push_back(_blend_indices[1]);
+			pBatchVertices.push_back(_blend_indices[2]);
+
+			pBaseVertexOffset++;
+		}
+		break;
+	case w_vertex_declaration::VERTEX_POSITION_NORMAL_UV_INDEX_TANGENT_BINORMAL_BLEND_WEIGHT_BLEND_INDICES:
+		for (auto& _data : pVertices)
+		{
+			auto _pos = _data.position;
+			auto _nor = _data.normal;
+			auto _uv = _data.uv;
+			auto _tangent = _data.tangent;
+			auto _binormal = _data.binormal;
+			auto _blend_weight = _data.blend_weight;
+			auto _blend_indices = _data.blend_indices;
+
+			//position
+			pBatchVertices.push_back(_pos[0]);
+			pBatchVertices.push_back(_pos[1]);
+			pBatchVertices.push_back(_pos[2]);
+
+			//normal
+			pBatchVertices.push_back(_nor[0]);
+			pBatchVertices.push_back(_nor[1]);
+			pBatchVertices.push_back(_nor[2]);
+
+			//uv
+			pBatchVertices.push_back(_uv[0]);
+			pBatchVertices.push_back(_uv[1]);
+			pBatchVertices.push_back(pTextureUVIndex);
+
+			//tangent
+			pBatchVertices.push_back(_tangent[0]);
+			pBatchVertices.push_back(_tangent[1]);
+			pBatchVertices.push_back(_tangent[2]);
+
+			//binormal
+			pBatchVertices.push_back(_binormal[0]);
+			pBatchVertices.push_back(_binormal[1]);
+			pBatchVertices.push_back(_binormal[2]);
+
+			//blend_weight
+			pBatchVertices.push_back(_blend_weight[0]);
+			pBatchVertices.push_back(_blend_weight[1]);
+			pBatchVertices.push_back(_blend_weight[2]);
+
+			//blend_indices
+			pBatchVertices.push_back(_blend_indices[0]);
+			pBatchVertices.push_back(_blend_indices[1]);
+			pBatchVertices.push_back(_blend_indices[2]);
+
+			pBaseVertexOffset++;
+		}
+		break;
+	};
+#pragma endregion
+
+	return W_PASSED;
+}
 
 void model_mesh::_store_to_batch(
 	_In_ const std::vector<w_cpipeline_mesh*>& pModelMeshes,
 	_In_ const w_vertex_binding_attributes& pVertexBindingAttributes,
-	_Inout_ uint32_t& pBaseVertex,
+	_In_ const uint32_t& pLodDistance,
+	_Inout_ uint32_t& pBaseVertexOffset,
 	_Inout_ std::vector<float>& pBatchVertices,
 	_Inout_ std::vector<uint32_t>& pBatchIndices,
+	_Inout_ std::vector<lod_info>& pLODInfos,
 	_Inout_ w_bounding_box* pMergedBoundingBox,
 	_Inout_ std::vector<w_bounding_box>* pSubMeshBoundingBoxes,
 	_Inout_ std::vector<std::string>* pTexturePathsToBeLoad)
 {
+	auto _meshes_count = pModelMeshes.size();
+
 	int _texture_index = 0;
 	std::map<std::string, int> _textures_index;
-	for (auto& _mesh_data : pModelMeshes)
+
+	std::vector<int> _texture_uv_indices;
+	_texture_uv_indices.resize(_meshes_count);
+
+	for (size_t i = 0; i < _meshes_count; ++i)
 	{
+		auto _mesh_data = pModelMeshes[i];
 		//check for finding uv index
-		int _texture_uv_index = 0;
 		if (pTexturePathsToBeLoad)
 		{
 			auto _find = _textures_index.find(_mesh_data->textures_path);
 			if (_textures_index.empty() && _find == _textures_index.end())
 			{
-				_texture_uv_index = _texture_index;
+				_texture_uv_indices[i] = _texture_index;
 				_textures_index.insert({ _mesh_data->textures_path, _texture_index++ });
 				pTexturePathsToBeLoad->push_back(_mesh_data->textures_path);
 			}
 			else
 			{
-				_texture_uv_index = _find->second;
+				_texture_uv_indices[i] = _find->second;
 			}
 		}
 
@@ -510,464 +1009,59 @@ void model_mesh::_store_to_batch(
 			pSubMeshBoundingBoxes->push_back(_mesh_data->bounding_box);
 		}
 
-		uint32_t _vertex_offset = 0, _instance_vertex_offset = 0, i = 0;
-
-#pragma region store index buffer
-		for (i = 0; i < _mesh_data->indices.size(); ++i)
-		{
-			pBatchIndices.push_back(pBaseVertex + _mesh_data->indices[i]);
-		}
-#pragma endregion
-
-#pragma region store vertex buffer
-		i = 0;
-		auto _vertex_dec = pVertexBindingAttributes.binding_attributes.find(0);
-		switch (pVertexBindingAttributes.declaration)
-		{
-		default:
-			//user defined, we need to find vertex declaration
-			if (_vertex_dec != pVertexBindingAttributes.binding_attributes.end())
-			{
-				for (auto& _data : _mesh_data->vertices)
-				{
-					for (auto _dec : _vertex_dec->second)
-					{
-						if (_dec == w_vertex_attribute::W_TEXTURE_INDEX)
-						{
-							pBatchVertices.push_back(_texture_uv_index);
-						}
-						if (_dec == w_vertex_attribute::W_UV)
-						{
-							pBatchVertices.push_back(_data.uv[0]);
-							pBatchVertices.push_back(1 - _data.uv[1]);
-						}
-						else if (_dec == w_vertex_attribute::W_POS)
-						{
-							pBatchVertices.push_back(_data.position[0]);
-							pBatchVertices.push_back(_data.position[1]);
-							pBatchVertices.push_back(_data.position[2]);
-						}
-						else if (_dec == w_vertex_attribute::W_NORM)
-						{
-							pBatchVertices.push_back(_data.normal[0]);
-							pBatchVertices.push_back(_data.normal[1]);
-							pBatchVertices.push_back(_data.normal[2]);
-						}
-						else if (_dec == w_vertex_attribute::W_TANGENT)
-						{
-							pBatchVertices.push_back(_data.tangent[0]);
-							pBatchVertices.push_back(_data.tangent[1]);
-							pBatchVertices.push_back(_data.tangent[2]);
-						}
-						else if (_dec == w_vertex_attribute::W_BINORMAL)
-						{
-							pBatchVertices.push_back(_data.binormal[0]);
-							pBatchVertices.push_back(_data.binormal[1]);
-							pBatchVertices.push_back(_data.binormal[2]);
-						}
-						else if (_dec == w_vertex_attribute::W_COLOR)
-						{
-							pBatchVertices.push_back(_data.color[0]);
-							pBatchVertices.push_back(_data.color[1]);
-							pBatchVertices.push_back(_data.color[2]);
-							pBatchVertices.push_back(_data.color[3]);
-						}
-						else if (_dec == w_vertex_attribute::W_BLEND_WEIGHT)
-						{
-							pBatchVertices.push_back(_data.blend_weight[0]);
-							pBatchVertices.push_back(_data.blend_weight[1]);
-							pBatchVertices.push_back(_data.blend_weight[2]);
-							pBatchVertices.push_back(_data.blend_weight[3]);
-						}
-						else if (_dec == w_vertex_attribute::W_BLEND_INDICES)
-						{
-							pBatchVertices.push_back(_data.blend_indices[0]);
-							pBatchVertices.push_back(_data.blend_indices[1]);
-							pBatchVertices.push_back(_data.blend_indices[2]);
-							pBatchVertices.push_back(_data.blend_indices[3]);
-						}
-					}
-					pBaseVertex++;
-				}
-			}
-			break;
-		case w_vertex_declaration::VERTEX_POSITION:
-			for (auto& _data : _mesh_data->vertices)
-			{
-				auto _pos = _data.position;
-
-				//position
-				pBatchVertices.push_back(_pos[0]);
-				pBatchVertices.push_back(_pos[1]);
-				pBatchVertices.push_back(_pos[2]);
-
-				pBaseVertex++;
-			}
-			break;
-		case w_vertex_declaration::VERTEX_POSITION_COLOR:
-			for (auto& _data : _mesh_data->vertices)
-			{
-				auto _pos = _data.position;
-				auto _color = _data.color;
-
-				//position
-				pBatchVertices.push_back(_pos[0]);
-				pBatchVertices.push_back(_pos[1]);
-				pBatchVertices.push_back(_pos[2]);
-
-				//color
-				pBatchVertices.push_back(_color[0]);
-				pBatchVertices.push_back(_color[1]);
-				pBatchVertices.push_back(_color[2]);
-				pBatchVertices.push_back(_color[3]);
-
-				pBaseVertex++;
-			}
-			break;
-		case w_vertex_declaration::VERTEX_POSITION_UV:
-			for (auto& _data : _mesh_data->vertices)
-			{
-				auto _pos = _data.position;
-				auto _uv = _data.uv;
-
-				//position
-				pBatchVertices.push_back(_pos[0]);
-				pBatchVertices.push_back(_pos[1]);
-				pBatchVertices.push_back(_pos[2]);
-
-				//uv
-				pBatchVertices.push_back(_uv[0]);
-				pBatchVertices.push_back(_uv[1]);
-
-				pBaseVertex++;
-			}
-			break;
-		case w_vertex_declaration::VERTEX_POSITION_UV_INDEX:
-			for (auto& _data : _mesh_data->vertices)
-			{
-				auto _pos = _data.position;
-				auto _uv = _data.uv;
-
-				//position
-				pBatchVertices.push_back(_pos[0]);
-				pBatchVertices.push_back(_pos[1]);
-				pBatchVertices.push_back(_pos[2]);
-
-				//uv
-				pBatchVertices.push_back(_uv[0]);
-				pBatchVertices.push_back(_uv[1]);
-				pBatchVertices.push_back(_texture_uv_index);
-
-				pBaseVertex++;
-			}
-			break;
-		case w_vertex_declaration::VERTEX_POSITION_UV_COLOR:
-			for (auto& _data : _mesh_data->vertices)
-			{
-				auto _pos = _data.position;
-				auto _uv = _data.uv;
-				auto _color = _data.color;
-
-				//position
-				pBatchVertices.push_back(_pos[0]);
-				pBatchVertices.push_back(_pos[1]);
-				pBatchVertices.push_back(_pos[2]);
-
-				//uv
-				pBatchVertices.push_back(_uv[0]);
-				pBatchVertices.push_back(_uv[1]);
-
-				//color
-				pBatchVertices.push_back(_color[0]);
-				pBatchVertices.push_back(_color[1]);
-				pBatchVertices.push_back(_color[2]);
-				pBatchVertices.push_back(_color[3]);
-
-				pBaseVertex++;
-			}
-			break;
-		case w_vertex_declaration::VERTEX_POSITION_UV_INDEX_COLOR:
-			for (auto& _data : _mesh_data->vertices)
-			{
-				auto _pos = _data.position;
-				auto _uv = _data.uv;
-				auto _color = _data.color;
-
-				//position
-				pBatchVertices.push_back(_pos[0]);
-				pBatchVertices.push_back(_pos[1]);
-				pBatchVertices.push_back(_pos[2]);
-
-				//uv
-				pBatchVertices.push_back(_uv[0]);
-				pBatchVertices.push_back(_uv[1]);
-				pBatchVertices.push_back(_texture_uv_index);
-
-
-				//color
-				pBatchVertices.push_back(_color[0]);
-				pBatchVertices.push_back(_color[1]);
-				pBatchVertices.push_back(_color[2]);
-				pBatchVertices.push_back(_color[3]);
-
-				pBaseVertex++;
-			}
-			break;
-		case w_vertex_declaration::VERTEX_POSITION_NORMAL_COLOR:
-			for (auto& _data : _mesh_data->vertices)
-			{
-				auto _pos = _data.position;
-				auto _nor = _data.normal;
-				auto _color = _data.color;
-
-				//position
-				pBatchVertices.push_back(_pos[0]);
-				pBatchVertices.push_back(_pos[1]);
-				pBatchVertices.push_back(_pos[2]);
-
-				//normal
-				pBatchVertices.push_back(_nor[0]);
-				pBatchVertices.push_back(_nor[1]);
-				pBatchVertices.push_back(_nor[2]);
-
-				//color
-				pBatchVertices.push_back(_color[0]);
-				pBatchVertices.push_back(_color[1]);
-				pBatchVertices.push_back(_color[2]);
-				pBatchVertices.push_back(_color[3]);
-
-				pBaseVertex++;
-			}
-			break;
-		case w_vertex_declaration::VERTEX_POSITION_NORMAL_UV:
-			for (auto& _data : _mesh_data->vertices)
-			{
-				auto _pos = _data.position;
-				auto _nor = _data.normal;
-				auto _uv = _data.uv;
-
-				//position
-				pBatchVertices.push_back(_pos[0]);
-				pBatchVertices.push_back(_pos[1]);
-				pBatchVertices.push_back(_pos[2]);
-
-				//normal
-				pBatchVertices.push_back(_nor[0]);
-				pBatchVertices.push_back(_nor[1]);
-				pBatchVertices.push_back(_nor[2]);
-
-				//uv
-				pBatchVertices.push_back(_uv[0]);
-				pBatchVertices.push_back(_uv[1]);
-
-				pBaseVertex++;
-			}
-			break;
-		case w_vertex_declaration::VERTEX_POSITION_NORMAL_UV_INDEX:
-			for (auto& _data : _mesh_data->vertices)
-			{
-				auto _pos = _data.position;
-				auto _nor = _data.normal;
-				auto _uv = _data.uv;
-
-				//position
-				pBatchVertices.push_back(_pos[0]);
-				pBatchVertices.push_back(_pos[1]);
-				pBatchVertices.push_back(_pos[2]);
-
-				//normal
-				pBatchVertices.push_back(_nor[0]);
-				pBatchVertices.push_back(_nor[1]);
-				pBatchVertices.push_back(_nor[2]);
-
-				//uv
-				pBatchVertices.push_back(_uv[0]);
-				pBatchVertices.push_back(_uv[1]);
-				pBatchVertices.push_back(_texture_uv_index);
-
-				pBaseVertex++;
-			}
-			break;
-		case w_vertex_declaration::VERTEX_POSITION_NORMAL_UV_TANGENT_BINORMAL:
-			for (auto& _data : _mesh_data->vertices)
-			{
-				auto _pos = _data.position;
-				auto _nor = _data.normal;
-				auto _uv = _data.uv;
-				auto _tangent = _data.tangent;
-				auto _binormal = _data.binormal;
-
-				//position
-				pBatchVertices.push_back(_pos[0]);
-				pBatchVertices.push_back(_pos[1]);
-				pBatchVertices.push_back(_pos[2]);
-
-				//normal
-				pBatchVertices.push_back(_nor[0]);
-				pBatchVertices.push_back(_nor[1]);
-				pBatchVertices.push_back(_nor[2]);
-
-				//uv
-				pBatchVertices.push_back(_uv[0]);
-				pBatchVertices.push_back(_uv[1]);
-
-				//tangent
-				pBatchVertices.push_back(_tangent[0]);
-				pBatchVertices.push_back(_tangent[1]);
-				pBatchVertices.push_back(_tangent[2]);
-
-				//binormal
-				pBatchVertices.push_back(_binormal[0]);
-				pBatchVertices.push_back(_binormal[1]);
-				pBatchVertices.push_back(_binormal[2]);
-
-				pBaseVertex++;
-			}
-			break;
-		case w_vertex_declaration::VERTEX_POSITION_NORMAL_UV_INDEX_TANGENT_BINORMAL:
-			for (auto& _data : _mesh_data->vertices)
-			{
-				auto _pos = _data.position;
-				auto _nor = _data.normal;
-				auto _uv = _data.uv;
-				auto _tangent = _data.tangent;
-				auto _binormal = _data.binormal;
-
-				//position
-				pBatchVertices.push_back(_pos[0]);
-				pBatchVertices.push_back(_pos[1]);
-				pBatchVertices.push_back(_pos[2]);
-
-				//normal
-				pBatchVertices.push_back(_nor[0]);
-				pBatchVertices.push_back(_nor[1]);
-				pBatchVertices.push_back(_nor[2]);
-
-				//uv
-				pBatchVertices.push_back(_uv[0]);
-				pBatchVertices.push_back(_uv[1]);
-				pBatchVertices.push_back(_texture_uv_index);
-
-				//tangent
-				pBatchVertices.push_back(_tangent[0]);
-				pBatchVertices.push_back(_tangent[1]);
-				pBatchVertices.push_back(_tangent[2]);
-
-				//binormal
-				pBatchVertices.push_back(_binormal[0]);
-				pBatchVertices.push_back(_binormal[1]);
-				pBatchVertices.push_back(_binormal[2]);
-
-				pBaseVertex++;
-			}
-			break;
-		case w_vertex_declaration::VERTEX_POSITION_NORMAL_UV_TANGENT_BINORMAL_BLEND_WEIGHT_BLEND_INDICES:
-			for (auto& _data : _mesh_data->vertices)
-			{
-				auto _pos = _data.position;
-				auto _nor = _data.normal;
-				auto _uv = _data.uv;
-				auto _tangent = _data.tangent;
-				auto _binormal = _data.binormal;
-				auto _blend_weight = _data.blend_weight;
-				auto _blend_indices = _data.blend_indices;
-
-				//position
-				pBatchVertices.push_back(_pos[0]);
-				pBatchVertices.push_back(_pos[1]);
-				pBatchVertices.push_back(_pos[2]);
-
-				//normal
-				pBatchVertices.push_back(_nor[0]);
-				pBatchVertices.push_back(_nor[1]);
-				pBatchVertices.push_back(_nor[2]);
-
-				//uv
-				pBatchVertices.push_back(_uv[0]);
-				pBatchVertices.push_back(_uv[1]);
-
-				//tangent
-				pBatchVertices.push_back(_tangent[0]);
-				pBatchVertices.push_back(_tangent[1]);
-				pBatchVertices.push_back(_tangent[2]);
-
-				//binormal
-				pBatchVertices.push_back(_binormal[0]);
-				pBatchVertices.push_back(_binormal[1]);
-				pBatchVertices.push_back(_binormal[2]);
-
-				//blend_weight
-				pBatchVertices.push_back(_blend_weight[0]);
-				pBatchVertices.push_back(_blend_weight[1]);
-				pBatchVertices.push_back(_blend_weight[2]);
-
-				//blend_indices
-				pBatchVertices.push_back(_blend_indices[0]);
-				pBatchVertices.push_back(_blend_indices[1]);
-				pBatchVertices.push_back(_blend_indices[2]);
-
-				pBaseVertex++;
-			}
-			break;
-		case w_vertex_declaration::VERTEX_POSITION_NORMAL_UV_INDEX_TANGENT_BINORMAL_BLEND_WEIGHT_BLEND_INDICES:
-			for (auto& _data : _mesh_data->vertices)
-			{
-				auto _pos = _data.position;
-				auto _nor = _data.normal;
-				auto _uv = _data.uv;
-				auto _tangent = _data.tangent;
-				auto _binormal = _data.binormal;
-				auto _blend_weight = _data.blend_weight;
-				auto _blend_indices = _data.blend_indices;
-
-				//position
-				pBatchVertices.push_back(_pos[0]);
-				pBatchVertices.push_back(_pos[1]);
-				pBatchVertices.push_back(_pos[2]);
-
-				//normal
-				pBatchVertices.push_back(_nor[0]);
-				pBatchVertices.push_back(_nor[1]);
-				pBatchVertices.push_back(_nor[2]);
-
-				//uv
-				pBatchVertices.push_back(_uv[0]);
-				pBatchVertices.push_back(_uv[1]);
-				pBatchVertices.push_back(_texture_uv_index);
-
-				//tangent
-				pBatchVertices.push_back(_tangent[0]);
-				pBatchVertices.push_back(_tangent[1]);
-				pBatchVertices.push_back(_tangent[2]);
-
-				//binormal
-				pBatchVertices.push_back(_binormal[0]);
-				pBatchVertices.push_back(_binormal[1]);
-				pBatchVertices.push_back(_binormal[2]);
-
-				//blend_weight
-				pBatchVertices.push_back(_blend_weight[0]);
-				pBatchVertices.push_back(_blend_weight[1]);
-				pBatchVertices.push_back(_blend_weight[2]);
-
-				//blend_indices
-				pBatchVertices.push_back(_blend_indices[0]);
-				pBatchVertices.push_back(_blend_indices[1]);
-				pBatchVertices.push_back(_blend_indices[2]);
-
-				pBaseVertex++;
-			}
-			break;
-		};
-#pragma endregion
-
+		_store_indices_vertices_to_batch(
+			pVertexBindingAttributes,
+			_texture_uv_indices[i],
+			_mesh_data->vertices,
+			_mesh_data->indices,
+			pBatchVertices,
+			pBatchIndices,
+			pBaseVertexOffset);
 	}
-	_textures_index.clear();
-}
 
-//++++++++++++++++++++++++++++++++++++++++++++++++++++
-//The following codes have been added for this project
-//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//now store the lods
+	float _lod_distance_index = 1.0f;
+
+	lod_info _first_lod_info;
+	_first_lod_info.first_index = 0;
+	_first_lod_info.index_count = pBatchIndices.size();// Index count for this LOD
+	_first_lod_info.distance = _lod_distance_index * pLodDistance;
+	pLODInfos.push_back(_first_lod_info);
+
+	bool _add_lod_info = false;
+	for (size_t i = 0; i < _meshes_count; ++i)
+	{
+		auto _mesh_data = pModelMeshes[i];
+
+		if (_store_indices_vertices_to_batch(
+			pVertexBindingAttributes,
+			_texture_uv_indices[i],
+			_mesh_data->lod_1_vertices,
+			_mesh_data->lod_1_indices,
+			pBatchVertices,
+			pBatchIndices,
+			pBaseVertexOffset) == W_PASSED)
+		{
+			_add_lod_info = true;
+		}
+	}
+
+	if (_add_lod_info)
+	{
+		_lod_distance_index++;
+
+		lod_info _second_lod_info;
+		_second_lod_info.first_index = _first_lod_info.index_count;
+		_second_lod_info.index_count = pBatchIndices.size() - _first_lod_info.index_count;
+		_second_lod_info.distance = _lod_distance_index * pLodDistance;
+		pLODInfos.push_back(_second_lod_info);
+	}
+
+	//clear resources
+	_textures_index.clear();
+	_texture_uv_indices.clear();
+
+}
 
 #pragma region create methods
 
@@ -980,13 +1074,17 @@ W_RESULT model_mesh::_load_textures()
 	bool _problem = false;
 	for (auto& _path : this->textures_paths)
 	{
+		auto _file_path = wolf::system::io::get_file_name(_path);
+		auto _index = _file_path.find("_");
+		auto _texture_name = _file_path.substr(_index + 1, _file_path.size() - _index);
+
 		auto _texture = new (std::nothrow) w_texture();
 		if (_texture)
 		{
 			if (w_texture::load_to_shared_textures(
 				this->gDevice,
-				wolf::content_path + L"models/sponza/sponza/" +
-				wolf::system::convert::string_to_wstring(_path),
+				wolf::content_path + L"models/sponza/textures/" +
+				wolf::system::convert::string_to_wstring(_texture_name),
 				true,
 				&_texture) == W_PASSED)
 			{
@@ -994,7 +1092,10 @@ W_RESULT model_mesh::_load_textures()
 			}
 			else
 			{
-				V(W_FAILED, "loading texture\'" + _path + "\'", _trace_info);
+				V(W_FAILED,
+					w_log_type::W_ERROR,
+					"loading texture\"{}\" for model: {} . graphics device: {} . trace info: {}",
+					_path, this->model_name, this->gDevice->get_info(), _trace_info);
 				_problem = true;
 				//release texture
 				SAFE_DELETE(_texture);
@@ -1002,7 +1103,10 @@ W_RESULT model_mesh::_load_textures()
 		}
 		else
 		{
-			V(W_FAILED, "allocating memory for w_texture\'" + _path + "\'", _trace_info);
+			V(W_FAILED,
+				w_log_type::W_ERROR,
+				"allocating memory of texture\"{}\" for model: {} . graphics device: {} . trace info: {}",
+				_path, this->model_name, this->gDevice->get_info(), _trace_info);
 			_problem = true;
 		}
 	}
@@ -1035,7 +1139,9 @@ W_RESULT model_mesh::_create_buffers()
 	//load indirect draws
 	if (this->indirect_draws.load(this->gDevice, _draw_counts) == W_FAILED)
 	{
-		V(W_FAILED, "loading indirect draws command buffer for model: " + this->model_name, _trace_info, 3);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"loading indirect draws command buffer for model: {}. trace info: {}", this->model_name, _trace_info);
 		return W_FAILED;
 	}
 
@@ -1084,18 +1190,18 @@ W_RESULT model_mesh::_create_instance_buffers()
 
 	//first one is ref model
 	int _index = 0;
-	_vertex_instances_data[_index].pos[0] = this->transform.position[0];
-	_vertex_instances_data[_index].pos[1] = this->transform.position[1];
-	_vertex_instances_data[_index].pos[2] = this->transform.position[2];
+	_vertex_instances_data[_index].pos[0] = this->transform->position[0];
+	_vertex_instances_data[_index].pos[1] = this->transform->position[1];
+	_vertex_instances_data[_index].pos[2] = this->transform->position[2];
 
-	_vertex_instances_data[_index].rot[0] = this->transform.rotation[0];
-	_vertex_instances_data[_index].rot[1] = this->transform.rotation[1];
-	_vertex_instances_data[_index].rot[2] = this->transform.rotation[2];
+	_vertex_instances_data[_index].rot[0] = this->transform->rotation[0];
+	_vertex_instances_data[_index].rot[1] = this->transform->rotation[1];
+	_vertex_instances_data[_index].rot[2] = this->transform->rotation[2];
 
 	_compute_instances_data[_index].pos = glm::vec4(
-		this->transform.position[0],
-		this->transform.position[1],
-		this->transform.position[2],
+		this->transform->position[0],
+		this->transform->position[1],
+		this->transform->position[2],
 		1.0f);
 
 	_index++;
@@ -1122,13 +1228,17 @@ W_RESULT model_mesh::_create_instance_buffers()
 	auto _buffer_size = static_cast<uint32_t>(_draw_counts * sizeof(vertex_instance_data));
 	if (_staging_buffers[0].allocate_as_staging(this->gDevice, _buffer_size) == W_FAILED)
 	{
-		V(W_FAILED, "loading staging buffer of vertex instances buffer", _trace_info, 3);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"loading staging buffer of vertex instances buffer. trace info: {}", this->model_name, _trace_info);
 		return W_FAILED;
 	}
 
 	if (_staging_buffers[0].set_data(_vertex_instances_data.data()) == W_FAILED)
 	{
-		V(W_FAILED, "setting data to staging buffer of vertex instances buffer", _trace_info, 3);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"setting data to staging buffer of vertex instances buffer. trace info: {}", this->model_name, _trace_info);
 		return W_FAILED;
 	}
 	if (this->_instances_buffer.allocate(
@@ -1137,13 +1247,17 @@ W_RESULT model_mesh::_create_instance_buffers()
 		VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
 		w_memory_usage_flag::MEMORY_USAGE_GPU_ONLY) == W_FAILED)
 	{
-		V(W_FAILED, "loading device buffer of vertex instances buffer", _trace_info, 2);
+		V(W_FAILED,
+			w_log_type::W_WARNING,
+			"loading device buffer of vertex instances buffer. trace info: {}", this->model_name, _trace_info);
 		return W_FAILED;
 	}
 
 	if (_staging_buffers[0].copy_to(this->_instances_buffer) == W_FAILED)
 	{
-		V(W_FAILED, "copying to device buffer of vertex instances buffer", _trace_info, 2);
+		V(W_FAILED,
+			w_log_type::W_WARNING,
+			"copying to device buffer of vertex instances buffer. trace info: {}", this->model_name, _trace_info);
 		return W_FAILED;
 	}
 	//release buffer
@@ -1154,12 +1268,16 @@ W_RESULT model_mesh::_create_instance_buffers()
 	_buffer_size = _draw_counts * sizeof(compute_instance_data);
 	if (_staging_buffers[1].allocate_as_staging(this->gDevice, _buffer_size) == W_FAILED)
 	{
-		V(W_FAILED, "loading staging buffer of compute instances buffer", _trace_info, 3);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"loading staging buffer of compute instances buffer. trace info: {}", this->model_name, _trace_info);
 		return W_FAILED;
 	}
 	if (_staging_buffers[1].set_data(_compute_instances_data.data()) == W_FAILED)
 	{
-		V(W_FAILED, "setting data to staging buffer of compute instances buffer", _trace_info, 2);
+		V(W_FAILED,
+			w_log_type::W_WARNING,
+			"setting data to staging buffer of compute instances buffer. trace info: {}", this->model_name, _trace_info);
 		return W_FAILED;
 	}
 	if (this->_cs.instances_buffer.allocate(
@@ -1168,12 +1286,16 @@ W_RESULT model_mesh::_create_instance_buffers()
 		VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
 		w_memory_usage_flag::MEMORY_USAGE_GPU_ONLY) == W_FAILED)
 	{
-		V(W_FAILED, "loading device buffer of compute instances buffer", _trace_info, 2);
+		V(W_FAILED,
+			w_log_type::W_WARNING,
+			"loading device buffer of compute instances buffer. trace info: {}", this->model_name, _trace_info);
 		return W_FAILED;
 	}
 	if (_staging_buffers[1].copy_to(_cs.instances_buffer) == W_FAILED)
 	{
-		V(W_FAILED, "copying to device buffer of compute instances buffer", _trace_info, 2);
+		V(W_FAILED,
+			w_log_type::W_WARNING,
+			"copying to device buffer of compute instances buffer. trace info: {}", this->model_name, _trace_info);
 		return W_FAILED;
 	}
 	_staging_buffers[1].release();
@@ -1198,12 +1320,16 @@ W_RESULT model_mesh::_create_lod_levels_buffer()
 	auto _size = static_cast<uint32_t>(this->lods_info.size() * sizeof(lod_info));
 	if (_staging_buffer.allocate_as_staging(this->gDevice, _size) == W_FAILED)
 	{
-		V(W_FAILED, "loading staging buffer for lod levels buffer", _trace_info, 3);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"loading staging buffer for lod levels buffer. trace info: {}", this->model_name, _trace_info);
 		return W_FAILED;
 	}
 	if (_staging_buffer.set_data(this->lods_info.data()))
 	{
-		V(W_FAILED, "setting data to staging buffer of lod levels buffer", _trace_info, 3);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"setting data to staging buffer of lod levels buffer. trace info: {}", this->model_name, _trace_info);
 		return W_FAILED;
 	}
 	if (this->_cs.lod_levels_buffer.allocate(
@@ -1212,12 +1338,16 @@ W_RESULT model_mesh::_create_lod_levels_buffer()
 		VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
 		w_memory_usage_flag::MEMORY_USAGE_GPU_TO_CPU) == W_FAILED)
 	{
-		V(W_FAILED, "loading data to staging buffer of lod levels buffer", _trace_info, 3);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"loading data to staging buffer of lod levels buffer. trace info: {}", this->model_name, _trace_info);
 		return W_FAILED;
 	}
 	if (_staging_buffer.copy_to(this->_cs.lod_levels_buffer) == W_FAILED)
 	{
-		V(W_FAILED, "copy staging buffer to device buffer of lod levels buffer", _trace_info, 3);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"copy staging buffer to device buffer of lod levels buffer. trace info: {}", this->model_name, _trace_info);
 		return W_FAILED;
 	}
 
@@ -1240,7 +1370,9 @@ W_RESULT model_mesh::_create_cs_out_buffer()
 		VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
 		w_memory_usage_flag::MEMORY_USAGE_GPU_TO_CPU) == W_FAILED)
 	{
-		V(W_FAILED, "loading compute shader stage output buffer for model: " + this->model_name, _trace_info, 3);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"loading compute shader stage output buffer for model: {}. trace info: {}", this->model_name, _trace_info);
 		return W_FAILED;
 	}
 
@@ -1261,15 +1393,23 @@ W_RESULT model_mesh::_prepare_cs_path_uniform_based_on_local_size(
 	{
 	default:
 		_hr = W_FAILED;
-		V(_hr, "batch_local_size " + std::to_string(this->_cs.batch_local_size) +
-			" not supported for model: " + this->model_name, _trace_info);
+		V(_hr,
+			w_log_type::W_ERROR,
+			"batch_local_size:{} not supported for model: {} . trace info: {}", 
+			this->_cs.batch_local_size, 
+			this->model_name, 
+			_trace_info);
 	case 2:
 		this->visibilities.resize(1);
 		this->_cs.unifrom_x2 = new w_uniform<compute_unifrom_x2>();
 		if (this->_cs.unifrom_x2->load(this->gDevice) == W_FAILED)
 		{
 			_hr = W_FAILED;
-			V(_hr, "loading compute shader unifrom_x2 for " + this->model_name, _trace_info);
+			V(_hr,
+				w_log_type::W_ERROR,
+				"loading compute shader unifrom_x2 for model: {}. trace info: {}",
+				this->model_name,
+				_trace_info);
 		}
 		else
 		{
@@ -1282,7 +1422,11 @@ W_RESULT model_mesh::_prepare_cs_path_uniform_based_on_local_size(
 		if (this->_cs.unifrom_x4->load(this->gDevice) == W_FAILED)
 		{
 			_hr = W_FAILED;
-			V(_hr, "loading compute shader unifrom_x4 for " + this->model_name, _trace_info);
+			V(_hr,
+				w_log_type::W_ERROR,
+				"loading compute shader unifrom_x4 for model: {}. trace info: {}",
+				this->model_name,
+				_trace_info);
 		}
 		else
 		{
@@ -1295,7 +1439,11 @@ W_RESULT model_mesh::_prepare_cs_path_uniform_based_on_local_size(
 		if (this->_cs.unifrom_x8->load(this->gDevice) == W_FAILED)
 		{
 			_hr = W_FAILED;
-			V(_hr, "loading compute shader unifrom_x8 for " + this->model_name, _trace_info);
+			V(_hr,
+				w_log_type::W_ERROR,
+				"loading compute shader unifrom_x8 for model: {}. trace info: {}",
+				this->model_name,
+				_trace_info);
 		}
 		else
 		{
@@ -1308,7 +1456,11 @@ W_RESULT model_mesh::_prepare_cs_path_uniform_based_on_local_size(
 		if (this->_cs.unifrom_x16->load(this->gDevice) == W_FAILED)
 		{
 			_hr = W_FAILED;
-			V(_hr, "loading compute shader unifrom_x16 for " + this->model_name, _trace_info);
+			V(_hr,
+				w_log_type::W_ERROR,
+				"loading compute shader unifrom_x16 for model: {}. trace info: {}",
+				this->model_name,
+				_trace_info);
 		}
 		else
 		{
@@ -1321,7 +1473,11 @@ W_RESULT model_mesh::_prepare_cs_path_uniform_based_on_local_size(
 		if (this->_cs.unifrom_x32->load(this->gDevice) == W_FAILED)
 		{
 			_hr = W_FAILED;
-			V(_hr, "loading compute shader unifrom_x32 for " + this->model_name, _trace_info);
+			V(_hr,
+				w_log_type::W_ERROR,
+				"loading compute shader unifrom_x32 for model: {}. trace info: {}",
+				this->model_name,
+				_trace_info);
 		}
 		else
 		{
@@ -1334,7 +1490,11 @@ W_RESULT model_mesh::_prepare_cs_path_uniform_based_on_local_size(
 		if (this->_cs.unifrom_x64->load(this->gDevice) == W_FAILED)
 		{
 			_hr = W_FAILED;
-			V(_hr, "loading compute shader unifrom_x64 for " + this->model_name, _trace_info);
+			V(_hr,
+				w_log_type::W_ERROR,
+				"loading compute shader unifrom_x64 for model: {}. trace info: {}",
+				this->model_name,
+				_trace_info);
 		}
 		else
 		{
@@ -1347,7 +1507,11 @@ W_RESULT model_mesh::_prepare_cs_path_uniform_based_on_local_size(
 		if (this->_cs.unifrom_x128->load(this->gDevice) == W_FAILED)
 		{
 			_hr = W_FAILED;
-			V(_hr, "loading compute shader uniform_x128 for " + this->model_name, _trace_info);
+			V(_hr,
+				w_log_type::W_ERROR,
+				"loading compute shader unifrom_x128 for model: {}. trace info: {}",
+				this->model_name,
+				_trace_info);
 		}
 		else
 		{
@@ -1360,7 +1524,11 @@ W_RESULT model_mesh::_prepare_cs_path_uniform_based_on_local_size(
 		if (this->_cs.unifrom_x256->load(this->gDevice) == S_FALSE)
 		{
 			_hr = W_FAILED;
-			V(_hr, "loading compute shader uniform_x256 for " + this->model_name, _trace_info);
+			V(_hr,
+				w_log_type::W_ERROR,
+				"loading compute shader unifrom_x256 for model: {}. trace info: {}",
+				this->model_name,
+				_trace_info);
 		}
 		else
 		{
@@ -1373,7 +1541,11 @@ W_RESULT model_mesh::_prepare_cs_path_uniform_based_on_local_size(
 		if (this->_cs.unifrom_x512->load(this->gDevice) == S_FALSE)
 		{
 			_hr = W_FAILED;
-			V(_hr, "loading compute shader uniform_x512 for " + this->model_name, _trace_info);
+			V(_hr,
+				w_log_type::W_ERROR,
+				"loading compute shader unifrom_x512 for model: {}. trace info: {}",
+				this->model_name,
+				_trace_info);
 		}
 		else
 		{
@@ -1386,7 +1558,11 @@ W_RESULT model_mesh::_prepare_cs_path_uniform_based_on_local_size(
 		if (this->_cs.unifrom_x1024->load(this->gDevice) == S_FALSE)
 		{
 			_hr = W_FAILED;
-			V(_hr, "loading compute shader uniform_x512 for " + this->model_name, _trace_info);
+			V(_hr,
+				w_log_type::W_ERROR,
+				"loading compute shader unifrom_x1024 for model: {}. trace info: {}",
+				this->model_name,
+				_trace_info);
 		}
 		else
 		{
@@ -1419,7 +1595,11 @@ W_RESULT model_mesh::_create_shader_modules(
 		_hr = this->_instance_u0.load(this->gDevice);
 		if (_hr == W_FAILED)
 		{
-			V(W_FAILED, "loading vertex shader instance uniform for model: " + this->model_name, _trace_info, 3);
+			V(_hr,
+				w_log_type::W_ERROR,
+				"loading vertex shader instance uniform for model: {}. trace info: {}",
+				this->model_name,
+				_trace_info);
 			return W_FAILED;
 		}
 		_shader_param.buffer_info = this->_instance_u0.get_descriptor_info();
@@ -1429,7 +1609,11 @@ W_RESULT model_mesh::_create_shader_modules(
 		_hr = this->_basic_u0.load(this->gDevice);
 		if (_hr == W_FAILED)
 		{
-			V(W_FAILED, "loading vertex shader basic uniform for model: " + this->model_name, _trace_info, 3);
+			V(_hr,
+				w_log_type::W_ERROR,
+				"loading vertex shader basic uniform for model: {}. trace info: {}",
+				this->model_name,
+				_trace_info);
 			return W_FAILED;
 		}
 		_shader_param.buffer_info = this->_basic_u0.get_descriptor_info();
@@ -1440,7 +1624,11 @@ W_RESULT model_mesh::_create_shader_modules(
 	_hr = this->_u1.load(this->gDevice);
 	if (_hr == W_FAILED)
 	{
-		V(W_FAILED, "loading vertex shader uniform 1 for model: " + this->model_name, _trace_info, 3);
+		V(_hr,
+			w_log_type::W_ERROR,
+			"loading vertex shader uniform 1 for model: {}. trace info: {}",
+			this->model_name,
+			_trace_info);
 		return W_FAILED;
 	}
 	_shader_param.index = 1;
@@ -1460,8 +1648,25 @@ W_RESULT model_mesh::_create_shader_modules(
 	_hr = this->_u2.load(this->gDevice);
 	if (_hr == W_FAILED)
 	{
-		V(W_FAILED, "loading fragment shader uniform 2 for model: " + this->model_name, _trace_info, 3);
+		V(_hr,
+			w_log_type::W_ERROR,
+			"loading fragment shader uniform 2 for model: {}. trace info: {}",
+			this->model_name,
+			_trace_info);
 		return W_FAILED;
+	}
+	if (this->_is_sky)
+	{
+		this->_u2.data.cmds = 2;
+		auto _hr = this->_u2.update();
+		if (_hr == W_FAILED)
+		{
+			V(_hr,
+				w_log_type::W_ERROR,
+				"updating uniform u2(cmds) for sky: {}. trace info: {}",
+				this->model_name,
+				_trace_info);
+		}
 	}
 	_shader_param.index = 3;
 	_shader_param.type = w_shader_binding_type::UNIFORM;
@@ -1492,7 +1697,11 @@ W_RESULT model_mesh::_create_shader_modules(
 		std::wstring _compute_shader_path;
 		if (_prepare_cs_path_uniform_based_on_local_size(_shader_param, _compute_shader_path) == W_FAILED)
 		{
-			V(W_FAILED, "getting compute shader uniform and filename path for model: " + this->model_name, _trace_info, 3);
+			V(_hr,
+				w_log_type::W_ERROR,
+				"getting compute shader uniform and filename path for model: {}. trace info: {}",
+				this->model_name,
+				_trace_info);
 			return W_FAILED;
 		}
 		_shader_params.push_back(_shader_param);
@@ -1523,7 +1732,11 @@ W_RESULT model_mesh::_create_shader_modules(
 			false,
 			&this->_shader) == W_FAILED)
 		{
-			V(W_FAILED, "loading shader module for model: " + this->model_name, _trace_info, 3);
+			V(_hr,
+				w_log_type::W_ERROR,
+				"loading shader module for model: {}. trace info: {}",
+				this->model_name,
+				_trace_info);
 			return W_FAILED;
 		}
 	}
@@ -1543,7 +1756,11 @@ W_RESULT model_mesh::_create_shader_modules(
 			false,
 			&this->_shader) == W_FAILED)
 		{
-			V(W_FAILED, "loading shader module for model: " + this->model_name, _trace_info, 3);
+			V(_hr,
+				w_log_type::W_ERROR,
+				"loading shader module for model: {}. trace info: {}",
+				this->model_name,
+				_trace_info);
 			return W_FAILED;
 		}
 	}
@@ -1551,7 +1768,11 @@ W_RESULT model_mesh::_create_shader_modules(
 	_hr = this->_shader->set_shader_binding_params(_shader_params);
 	if (_hr == W_FAILED)
 	{
-		V(W_FAILED, "setting shader binding param for model: " + this->model_name, _trace_info, 3);
+		V(_hr,
+			w_log_type::W_ERROR,
+			"setting shader binding param for model: {}. trace info: {}",
+			this->model_name,
+			_trace_info);
 		return W_FAILED;
 	}
 	_shader_params.clear();
@@ -1560,10 +1781,23 @@ W_RESULT model_mesh::_create_shader_modules(
 }
 
 W_RESULT model_mesh::_create_pipelines(
+	_In_z_ const std::string& pPipelineCacheName,
 	_In_z_ const std::string& pComputePipelineCacheName,
-	_In_ const w_render_pass& pRenderPass)
+	_In_ const w_render_pass& pRenderPass,
+	_In_ const w_viewport& pViewport,
+	_In_ const w_viewport_scissor& pViewportScissor)
 {
 	const std::string _trace_info = this->_name + "_create_pipelines";
+
+	std::vector<w_viewport> _viewports = { pViewport };
+	std::vector<w_viewport_scissor> _viewport_scissors = { pViewportScissor };
+
+	//dynamic states
+	std::vector<w_dynamic_state> _dynamic_states =
+	{
+		VIEWPORT,
+		SCISSOR,
+	};
 
 	if (this->_solid_pipeline.load(
 		this->gDevice,
@@ -1571,15 +1805,20 @@ W_RESULT model_mesh::_create_pipelines(
 		w_primitive_topology::TRIANGLE_LIST,
 		&pRenderPass,
 		this->_shader,
-		{ pRenderPass.get_viewport() },
-		{ pRenderPass.get_viewport_scissor() },
-		pComputePipelineCacheName) == W_FAILED)
+		_viewports,
+		_viewport_scissors,
+		pPipelineCacheName,
+		_dynamic_states) == W_FAILED)
 	{
-		V(W_FAILED, "loading drawing pipeline for model: " + this->model_name, _trace_info, 3);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"loading drawing pipeline for model: {}. trace info: {}",
+			this->model_name,
+			_trace_info);
 		return W_FAILED;
 	}
 
-	auto _rasterization_states = wolf::graphics::w_graphics_device::defaults_states::pipelines::rasterization_create_info;
+	auto _rasterization_states = w_graphics_device::defaults_states::pipelines::rasterization_create_info;
 	_rasterization_states.set_polygon_mode(w_polygon_mode::LINE);
 	if (this->_wireframe_pipeline.load(
 		this->gDevice,
@@ -1587,15 +1826,19 @@ W_RESULT model_mesh::_create_pipelines(
 		w_primitive_topology::TRIANGLE_LIST,
 		&pRenderPass,
 		this->_shader,
-		{ pRenderPass.get_viewport() },
-		{ pRenderPass.get_viewport_scissor() },
+		_viewports,
+		_viewport_scissors,
 		pComputePipelineCacheName,
-		{},
+		_dynamic_states,
 		{},
 		0,//Disable tessellation stage
 		_rasterization_states) == W_FAILED)
 	{
-		V(W_FAILED, "loading drawing wireframe pipeline for model: " + this->model_name, _trace_info, 3);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"loading drawing wireframe pipeline for model: {}. trace info: {}",
+			this->model_name,
+			_trace_info);
 		return W_FAILED;
 	}
 
@@ -1608,7 +1851,11 @@ W_RESULT model_mesh::_create_pipelines(
 			5,
 			pComputePipelineCacheName) == W_FAILED)
 		{
-			V(W_FAILED, "loading computing pipeline for model: " + this->model_name, _trace_info, 3);
+			V(W_FAILED,
+				w_log_type::W_ERROR,
+				"loading computing pipeline for model: {}. trace info: {}",
+				this->model_name,
+				_trace_info);
 			return W_FAILED;
 		}
 	}
@@ -1616,7 +1863,10 @@ W_RESULT model_mesh::_create_pipelines(
 	return W_PASSED;
 }
 
-W_RESULT model_mesh::_create_bounding_box_shapes(_In_ const wolf::graphics::w_render_pass& pRenderPass)
+W_RESULT model_mesh::_create_bounding_box_shapes(
+	_In_ const w_render_pass& pRenderPass, 
+	_In_ const w_viewport& pViewport,
+	_In_ const w_viewport_scissor& pViewportScissor)
 {
 	const std::string _trace_info = this->_name + "_create_bounding_box_shapes";
 
@@ -1647,7 +1897,7 @@ W_RESULT model_mesh::_create_bounding_box_shapes(_In_ const wolf::graphics::w_re
 
 
 		this->sub_meshes_bounding_box.push_back(_aligned);
-		auto _shape = _create_shape(pRenderPass, _aligned, w_color::RED());
+		auto _shape = _create_shape(pRenderPass, pViewport, pViewportScissor, _aligned, w_color::RED());
 		if (_shape)
 		{
 			this->_shapes.push_back(_shape);
@@ -1670,7 +1920,7 @@ W_RESULT model_mesh::_create_bounding_box_shapes(_In_ const wolf::graphics::w_re
 			std::memcpy(&_aligned.max[0], &_transfer_max[0], 3 * sizeof(float));
 
 			this->sub_meshes_bounding_box.push_back(_aligned);
-			_shape = _create_shape(pRenderPass, _aligned, w_color::GREEN());
+			_shape = _create_shape(pRenderPass, pViewport, pViewportScissor, _aligned, w_color::GREEN());
 			if (_shape)
 			{
 				this->_shapes.push_back(_shape);
@@ -1686,7 +1936,9 @@ W_RESULT model_mesh::_create_bounding_box_shapes(_In_ const wolf::graphics::w_re
 }
 
 w_shapes* model_mesh::_create_shape(
-	_In_ const wolf::graphics::w_render_pass& pRenderPass,
+	_In_ const w_render_pass& pRenderPass,
+	_In_ const w_viewport& pViewport,
+	_In_ const w_viewport_scissor& pViewportScissor,
 	_In_ const w_bounding_box& pBoundingBox,
 	_In_ w_color& pColor)
 {
@@ -1696,19 +1948,25 @@ w_shapes* model_mesh::_create_shape(
 	auto _shape_box = new (std::nothrow) w_shapes(pBoundingBox, pColor);
 	if (!_shape_box)
 	{
-		V(W_FAILED, "allocating memory for shape(box) for mode: " + this->model_name
-			, _trace_info, 3);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"allocating memory for shape(box) for model: {}. trace info: {}",
+			this->model_name,
+			_trace_info);
 		return nullptr;
 	}
 
 	if (_shape_box->load(
 		this->gDevice,
 		pRenderPass,
-		pRenderPass.get_viewport(),
-		pRenderPass.get_viewport_scissor()) == W_FAILED)
+		pViewport,
+		pViewportScissor) == W_FAILED)
 	{
-		V(W_FAILED, "loading shape(box) for model: " + this->model_name,
-			_trace_info, 3);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"loading shape(box) for model: {}. trace info: {}",
+			this->model_name,
+			_trace_info);
 		return nullptr;
 	}
 	return _shape_box;
@@ -1774,12 +2032,12 @@ std::string model_mesh::get_model_name() const
 
 glm::vec3 model_mesh::get_position() const
 {
-	return glm::vec3(this->transform.position[0], this->transform.position[1], this->transform.position[2]);
+	return glm::vec3(this->transform->position[0], this->transform->position[1], this->transform->position[2]);
 }
 
 glm::vec3 model_mesh::get_rotation() const
 {
-	return glm::vec3(this->transform.rotation[0], this->transform.rotation[1], this->transform.rotation[2]);
+	return glm::vec3(this->transform->rotation[0], this->transform->rotation[1], this->transform->rotation[2]);
 }
 
 //glm::vec3 model_mesh::get_scale() const
@@ -1867,7 +2125,11 @@ void model_mesh::set_view_projection_position(
 		auto _hr = this->_instance_u0.update();
 		if (_hr == W_FAILED)
 		{
-			V(W_FAILED, "updating instance uniform ViewProjection for model: " + this->model_name, _trace_info, 3);
+			V(W_FAILED,
+				w_log_type::W_ERROR,
+				"updating instance uniform ViewProjection for model: {}. trace info: {}",
+				this->model_name,
+				_trace_info);
 		}
 	}
 	else
@@ -1884,7 +2146,11 @@ void model_mesh::set_view_projection_position(
 		auto _hr = this->_basic_u0.update();
 		if (_hr == W_FAILED)
 		{
-			V(W_FAILED, "updating basic uniform ViewProjection for model: " + this->model_name, _trace_info, 3);
+			V(W_FAILED,
+				w_log_type::W_ERROR,
+				"updating basic uniform ViewProjection for model: {}. trace info: {}",
+				this->model_name,
+				_trace_info);
 		}
 	}
 
@@ -1902,11 +2168,18 @@ void model_mesh::set_enable_instances_colors(_In_ const bool& pEnable)
 {
 	const std::string _trace_info = this->_name + "::set_enable_instances_colors";
 
-	this->_u2.data.cmds = pEnable ? 1 : 0;
-	auto _hr = this->_u2.update();
-	if (_hr == W_FAILED)
+	if (!this->_is_sky)
 	{
-		V(W_FAILED, "updating uniform u2(cmds) for model: " + this->model_name, _trace_info, 3);
+		this->_u2.data.cmds = pEnable ? 1 : 0;
+		auto _hr = this->_u2.update();
+		if (_hr == W_FAILED)
+		{
+			V(W_FAILED,
+				w_log_type::W_ERROR,
+				"updating uniform u2(cmds) for model: {}. trace info: {}",
+				this->model_name,
+				_trace_info);
+		}
 	}
 }
 

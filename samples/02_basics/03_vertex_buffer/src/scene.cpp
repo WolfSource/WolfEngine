@@ -70,10 +70,19 @@ void scene::load()
 	}
 
 	//create render pass
+	w_point _offset;
+	_offset.x = this->_viewport.x;
+	_offset.y = this->_viewport.y;
+
+	w_point_t _size;
+	_size.x = this->_viewport.width;
+	_size.y = this->_viewport.height;
+
+	//create render pass
 	auto _hr = this->_draw_render_pass.load(
 		_gDevice,
-		_viewport,
-		_viewport_scissor,
+		_offset,
+		_size,
 		_render_pass_attachments);
 	if (_hr == W_FAILED)
 	{
@@ -164,13 +173,22 @@ void scene::load()
 		_pipeline_cache_name.clear();
 	}
 
+	//dynamic states
+	std::vector<w_dynamic_state> _dynamic_states =
+	{
+		VIEWPORT,
+		SCISSOR,
+	};
+
 	_hr = this->_pipeline.load(_gDevice,
 		this->_mesh.get_vertex_binding_attributes(),
 		w_primitive_topology::TRIANGLE_STRIP,
 		&this->_draw_render_pass,
 		&this->_shader,
 		{ this->_viewport },
-		{ this->_viewport_scissor });
+		{ this->_viewport_scissor },
+		_pipeline_cache_name,
+		_dynamic_states);
 
 	if (_hr == W_FAILED)
 	{
@@ -231,6 +249,8 @@ W_RESULT scene::_build_draw_command_buffers()
 				1.0f,
 				0.0f);
 			{
+				this->_viewport.set(_cmd);
+				this->_viewport_scissor.set(_cmd);
 				this->_pipeline.bind(_cmd, w_pipeline_bind_point::GRAPHICS);
 				//++++++++++++++++++++++++++++++++++++++++++++++++++++
 				//The following codes have been added for this project

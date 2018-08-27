@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:05_scene.xcodeproj">
+      location = "self:09_software_occlusion_culling.Win32.xcodeproj">
    </FileRef>
 </Workspace>

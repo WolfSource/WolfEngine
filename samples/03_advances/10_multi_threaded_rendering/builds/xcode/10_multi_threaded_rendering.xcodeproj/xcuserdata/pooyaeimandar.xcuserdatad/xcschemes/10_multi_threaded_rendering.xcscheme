@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "2C2803461E61C73600048A80"
-               BuildableName = "08_masked_occlusion_culling.app"
-               BlueprintName = "08_masked_occlusion_culling"
-               ReferencedContainer = "container:08_masked_occlusion_culling.xcodeproj">
+               BuildableName = "10_multi_threaded_rendering.app"
+               BlueprintName = "10_multi_threaded_rendering"
+               ReferencedContainer = "container:10_multi_threaded_rendering.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -34,9 +34,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2C2803461E61C73600048A80"
-            BuildableName = "08_masked_occlusion_culling.app"
-            BlueprintName = "08_masked_occlusion_culling"
-            ReferencedContainer = "container:08_masked_occlusion_culling.xcodeproj">
+            BuildableName = "10_multi_threaded_rendering.app"
+            BlueprintName = "10_multi_threaded_rendering"
+            ReferencedContainer = "container:10_multi_threaded_rendering.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -58,9 +58,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2C2803461E61C73600048A80"
-            BuildableName = "08_masked_occlusion_culling.app"
-            BlueprintName = "08_masked_occlusion_culling"
-            ReferencedContainer = "container:08_masked_occlusion_culling.xcodeproj">
+            BuildableName = "10_multi_threaded_rendering.app"
+            BlueprintName = "10_multi_threaded_rendering"
+            ReferencedContainer = "container:10_multi_threaded_rendering.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -77,9 +77,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2C2803461E61C73600048A80"
-            BuildableName = "08_masked_occlusion_culling.app"
-            BlueprintName = "08_masked_occlusion_culling"
-            ReferencedContainer = "container:08_masked_occlusion_culling.xcodeproj">
+            BuildableName = "10_multi_threaded_rendering.app"
+            BlueprintName = "10_multi_threaded_rendering"
+            ReferencedContainer = "container:10_multi_threaded_rendering.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

@@ -14,7 +14,7 @@
 #define __W_RENDER_TARGET_H__
 
 #include "w_graphics_device_manager.h"
-#include "w_command_buffers.h"
+#include "w_viewport.h"
 #include <functional>
 
 namespace wolf
@@ -32,8 +32,8 @@ namespace wolf
 
 				W_VK_EXP W_RESULT load(
 					_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-					_In_ w_viewport pViewPort,
-					_In_ w_viewport_scissor pViewportScissor,
+					_In_ const w_point& pOffset,
+					_In_ const w_point_t& pSize,
 					_In_ std::vector<w_image_view> pAttachments,
 					_In_ const size_t& pCount);
 
@@ -51,10 +51,10 @@ namespace wolf
 
 #pragma region Getters
 
-				//get width of render target
-				W_VK_EXP const uint32_t get_width() const;
-				//get height of render target
-				W_VK_EXP const uint32_t get_height() const;
+				//get offset of render target
+				W_VK_EXP const w_point get_offset() const;
+				//get size of render target
+				W_VK_EXP const w_point_t get_size() const;
 				//get sampler of render target's buffers
 				W_VK_EXP w_sampler get_sampler(_In_ size_t pBufferIndex) const;
 				//get image view handles of render target's buffers

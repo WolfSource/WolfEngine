@@ -15,6 +15,7 @@
 #define __SCENE_H__
 
 #include <w_framework/w_game.h>
+#include <vulkan/w_viewport.h>
 #include <vulkan/w_command_buffers.h>
 #include <vulkan/w_render_pass.h>
 

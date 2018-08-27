@@ -263,6 +263,13 @@ namespace wolf
 							_trace_info);
 					}
 
+					//dynamic states
+					std::vector<w_dynamic_state> _dynamic_states =
+					{
+						VIEWPORT,
+						SCISSOR,
+					};
+
 					//loading pipeline cache
 					std::string _pipeline_cache_name = "shape_pipeline_cache";
 					if (w_pipeline::create_pipeline_cache(_gDevice, _pipeline_cache_name) == W_FAILED)
@@ -277,7 +284,9 @@ namespace wolf
 						&pRenderPass,
 						&this->_shader,
 						{ pViewport },
-						{ pViewportScissor });
+						{ pViewportScissor },
+						_pipeline_cache_name,
+						_dynamic_states);
 					if (_hr == W_FAILED)
 					{
 						release();

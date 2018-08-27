@@ -42,88 +42,8 @@ namespace wolf
 		{
 			//forward declaration
 			struct w_graphics_device_manager_configs;
-			struct w_viewport;
-			struct w_viewport_scissor;
 			//struct w_buffer;
 			//class  w_pipeline;
-
-			/*
-				For Vulkan
-					attachment description contains:
-					@param flags, Flags
-					@param format, Format of an image used for the attachment
-					@param samples, Number of samples of the image; The value greater than 1 means multisampling
-					@param loadOp, Specifies what to do with the image(s) contents at the beginning of a render pass.
-					@param storeOp, Informs the driver what to do with the image(s) content(s) after the render pass.
-					@param stencilLoadOp, The same as loadOp but for the stencil part of depth/stencil images, please note that for color attachments this parameter will be ignored
-					@param stencilStoreOp, The same as storeOp but for the stencil part of depth/stencil images, please note that for color attachments this parameter will be ignored
-					@param initialLayout, The layout of given attachment when the render pass starts
-					@param finalLayout, The layout that driver will automatically transite the given image into at the end of a render pass
-					attachment reference contains:
-					@param attachment, index of attachment
-					@param layout, The layout of given attachment
-			*/
-			struct w_attachment_buffer_desc
-			{
-				w_attachment_description desc;
-				w_attachment_reference ref;
-				uint32_t memory_flag = w_memory_property_flag_bits::DEVICE_LOCAL_BIT;
-
-				static w_attachment_buffer_desc create_color_desc_buffer()
-				{
-					w_attachment_buffer_desc _buffer_desc = {};
-
-					//init description
-					_buffer_desc.desc.flags = 0;
-					_buffer_desc.desc.format = VkFormat::VK_FORMAT_B8G8R8A8_UNORM;
-					_buffer_desc.desc.samples = VkSampleCountFlagBits::VK_SAMPLE_COUNT_1_BIT;
-					_buffer_desc.desc.loadOp = VkAttachmentLoadOp::VK_ATTACHMENT_LOAD_OP_CLEAR;
-					_buffer_desc.desc.storeOp = VkAttachmentStoreOp::VK_ATTACHMENT_STORE_OP_STORE;
-					_buffer_desc.desc.stencilLoadOp = VkAttachmentLoadOp::VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-					_buffer_desc.desc.stencilStoreOp = VkAttachmentStoreOp::VK_ATTACHMENT_STORE_OP_DONT_CARE;
-					_buffer_desc.desc.initialLayout = VkImageLayout::VK_IMAGE_LAYOUT_UNDEFINED;
-					_buffer_desc.desc.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
-
-					//init reference
-					_buffer_desc.ref.attachment = 0;
-					_buffer_desc.ref.layout = VkImageLayout::VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-
-					return _buffer_desc;
-				}
-
-				static w_attachment_buffer_desc create_depth_desc_buffer()
-				{
-					w_attachment_buffer_desc _buffer_desc = {};
-
-					_buffer_desc.desc.flags = 0;
-					_buffer_desc.desc.format = VkFormat::VK_FORMAT_D32_SFLOAT_S8_UINT;
-					_buffer_desc.desc.samples = VkSampleCountFlagBits::VK_SAMPLE_COUNT_1_BIT;
-					_buffer_desc.desc.loadOp = VkAttachmentLoadOp::VK_ATTACHMENT_LOAD_OP_CLEAR;
-					_buffer_desc.desc.storeOp = VkAttachmentStoreOp::VK_ATTACHMENT_STORE_OP_STORE;
-					_buffer_desc.desc.stencilLoadOp = VkAttachmentLoadOp::VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-					_buffer_desc.desc.stencilStoreOp = VkAttachmentStoreOp::VK_ATTACHMENT_STORE_OP_DONT_CARE;
-					_buffer_desc.desc.initialLayout = VkImageLayout::VK_IMAGE_LAYOUT_UNDEFINED;
-					_buffer_desc.desc.finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
-
-					//init reference
-					_buffer_desc.ref.attachment = 1;
-					_buffer_desc.ref.layout = VkImageLayout::VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
-
-					return _buffer_desc;
-				}
-			};
-
-			struct w_image_view
-			{
-#ifdef __VULKAN__
-				VkImage                             image = 0;
-				VkImageView                         view = 0;
-#endif
-
-				uint32_t							width = 0;
-				uint32_t							height = 0;
-				w_attachment_buffer_desc			attachment_desc;
-			};
 
 			//Output window which handles all 3d resources for output renderer
 			struct w_output_presentation_window
@@ -580,8 +500,6 @@ namespace wolf
 				w_graphics_device_manager_pimp*                     _pimp;
 			};
 
-#pragma region structures
-
 			//the default config for creating graphics devices, you can edit the config before calling w_graphics_device_manager::initialize
 			struct w_graphics_device_manager_configs
 			{
@@ -594,78 +512,6 @@ namespace wolf
 				//used for compute mode
 				bool off_screen_mode = false;
 			};
-
-			struct w_viewport :
-#ifdef __VULKAN__
-				public VkViewport
-#elif defined(__DX12__)
-				public RECT
-#endif
-			{
-				w_viewport()
-				{
-#ifdef __VULKAN__
-					this->x = 0.0f;
-					this->y = 0.0f;
-					this->width = 800.0f;
-					this->height = 600.0f;
-					this->minDepth = 0.0f;
-					this->maxDepth = 1.0f;
-#elif defined(__DX12__)
-					this->left = 0.0f;
-					this->top = 0.0f;
-					this->right = 800.0f;
-					this->bottom = 600.0f;
-#endif
-
-				}
-			};
-
-#ifdef __VULKAN__
-			struct w_viewport_scissor :
-				public VkRect2D
-			{
-				w_viewport_scissor()
-				{
-					this->offset.x = 0;
-					this->offset.y = 0;
-					this->extent.width = 800;
-					this->extent.height = 600;
-				}
-
-
-#ifdef __PYTHON__
-				w_point py_get_offset() const
-				{
-					auto _point = w_point();
-					_point.x = this->offset.x;
-					_point.y = this->offset.y;
-					return _point;
-				}
-				void py_set_offset(_In_ const int32_t& pX, _In_ const int32_t& pY)
-				{
-					this->offset.x = pX;
-					this->offset.y = pY;
-				}
-
-				w_point_t py_get_extent() const
-				{
-					auto _point = w_point_t();
-					_point.x = this->extent.width;
-					_point.y = this->extent.height;
-					return _point;
-				}
-				void py_set_extent(_In_ const uint32_t& pWidth, _In_ const uint32_t& pHeight)
-				{
-					this->extent.width = pWidth;
-					this->extent.height = pHeight;
-				}
-#endif
-			};
-#endif
-
-#pragma endregion
-
 		}
 	}
 }

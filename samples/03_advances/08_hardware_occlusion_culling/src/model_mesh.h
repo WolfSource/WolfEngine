@@ -40,7 +40,9 @@ public:
 		_In_z_ const std::string& pComputePipelineCacheName,
 		_In_z_ const std::wstring& pVertexShaderPath,
 		_In_z_ const std::wstring& pFragmentShaderPath,
-		_In_ const wolf::render::vulkan::w_render_pass& pRenderPass
+		_In_ const wolf::render::vulkan::w_render_pass& pRenderPass,
+		_In_ const wolf::render::vulkan::w_viewport& pViewport,
+		_In_ const wolf::render::vulkan::w_viewport_scissor& pViewportScissor
 	);
 
 	W_RESULT submit_compute_shader();
@@ -155,7 +157,10 @@ private:
 		_In_z_ const std::wstring& pFragmentShaderPath);
 	W_RESULT	_create_pipelines(
 		_In_z_ const std::string& pPipelineCacheName,
-		_In_ const wolf::render::vulkan::w_render_pass& pRenderPass);
+		_In_z_ const std::string& pComputePipelineCacheName,
+		_In_ const wolf::render::vulkan::w_render_pass& pRenderPass,
+		_In_ const wolf::render::vulkan::w_viewport& pViewport,
+		_In_ const wolf::render::vulkan::w_viewport_scissor& pViewportScissor);
 
 	W_RESULT   _build_compute_command_buffer();
 

@@ -36,7 +36,7 @@ namespace wolf
 					_In_ const w_pipeline_color_blend_attachment_state& pBlendState,
 					_In_ const w_color& pBlendColors)
 				{
-					const char* _trace_info = (this->_name + "::load").c_str();
+					const std::string _trace_info = this->_name + "::load";
 
 					this->_gDevice = pGDevice;
 
@@ -209,7 +209,7 @@ namespace wolf
 					_In_ const std::string& pPipelineCacheName,
 					_In_ const std::vector<w_push_constant_range> pPushConstantRanges)
 				{
-					const char* _trace_info = (this->_name + "::load_compute").c_str();
+					const std::string _trace_info = this->_name + "::load_compute";
 
 					this->_gDevice = pGDevice;
 

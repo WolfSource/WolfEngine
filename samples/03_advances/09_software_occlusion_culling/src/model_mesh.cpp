@@ -33,7 +33,9 @@ W_RESULT model_mesh::load(
 	_In_z_ const std::string& pComputePipelineCacheName,
 	_In_z_ const std::wstring& pVertexShaderPath,
 	_In_z_ const std::wstring& pFragmentShaderPath,
-	_In_ const w_render_pass& pRenderPass)
+	_In_ const w_render_pass& pRenderPass,
+	_In_ const w_viewport& pViewport,
+	_In_ const w_viewport_scissor& pViewportScissor)
 {
 	if (!pGDevice || !this->c_model) return W_FAILED;
 	this->gDevice = pGDevice;
@@ -108,7 +110,7 @@ W_RESULT model_mesh::load(
 	}
 
 	//create pipeline
-	if (_create_pipelines(pPipelineCacheName, pRenderPass) == W_FAILED)
+	if (_create_pipelines(pPipelineCacheName, pComputePipelineCacheName, pRenderPass, pViewport, pViewportScissor) == W_FAILED)
 	{
 		release();
 		return W_FAILED;
@@ -158,7 +160,7 @@ W_RESULT model_mesh::load(
 		return W_FAILED;
 	}
 
-	if (_create_bounding_box_shapes(pRenderPass) == W_FAILED)
+	if (_create_bounding_box_shapes(pRenderPass, pViewport, pViewportScissor) == W_FAILED)
 	{
 		V(W_FAILED,
 			w_log_type::W_ERROR,
@@ -1779,10 +1781,22 @@ W_RESULT model_mesh::_create_shader_modules(
 }
 
 W_RESULT model_mesh::_create_pipelines(
+	_In_z_ const std::string& pPipelineCacheName,
 	_In_z_ const std::string& pComputePipelineCacheName,
-	_In_ const w_render_pass& pRenderPass)
+	_In_ const w_render_pass& pRenderPass,
+	_In_ const w_viewport& pViewport,
+	_In_ const w_viewport_scissor& pViewportScissor)
 {
 	const std::string _trace_info = this->_name + "_create_pipelines";
+
+	std::vector<w_viewport> _viewports = { pViewport };
+	std::vector<w_viewport_scissor> _viewport_scissors = { pViewportScissor };
+
+	std::vector<w_dynamic_state> _dynamic_states =
+	{
+		VIEWPORT,
+		SCISSOR,
+	};
 
 	if (this->_solid_pipeline.load(
 		this->gDevice,
@@ -1790,9 +1804,10 @@ W_RESULT model_mesh::_create_pipelines(
 		w_primitive_topology::TRIANGLE_LIST,
 		&pRenderPass,
 		this->_shader,
-		{ pRenderPass.get_viewport() },
-		{ pRenderPass.get_viewport_scissor() },
-		pComputePipelineCacheName) == W_FAILED)
+		_viewports,
+		_viewport_scissors,
+		pPipelineCacheName,
+		_dynamic_states) == W_FAILED)
 	{
 		V(W_FAILED,
 			w_log_type::W_ERROR,
@@ -1804,19 +1819,24 @@ W_RESULT model_mesh::_create_pipelines(
 
 	auto _rasterization_states = w_graphics_device::defaults_states::pipelines::rasterization_create_info;
 	_rasterization_states.set_polygon_mode(w_polygon_mode::LINE);
-	if (this->_wireframe_pipeline.load(
+	auto _hr = this->_wireframe_pipeline.load(
 		this->gDevice,
 		this->vertex_binding_attributes,
 		w_primitive_topology::TRIANGLE_LIST,
 		&pRenderPass,
 		this->_shader,
-		{ pRenderPass.get_viewport() },
-		{ pRenderPass.get_viewport_scissor() },
+		_viewports,
+		_viewport_scissors,
 		pComputePipelineCacheName,
-		{},
+		_dynamic_states,
 		{},
 		0,//Disable tessellation stage
-		_rasterization_states) == W_FAILED)
+		_rasterization_states);
+	
+	_viewports.clear();
+	_viewport_scissors.clear();
+
+	if(_hr == W_FAILED)
 	{
 		V(W_FAILED,
 			w_log_type::W_ERROR,
@@ -1847,7 +1867,7 @@ W_RESULT model_mesh::_create_pipelines(
 	return W_PASSED;
 }
 
-W_RESULT model_mesh::_create_bounding_box_shapes(_In_ const w_render_pass& pRenderPass)
+W_RESULT model_mesh::_create_bounding_box_shapes(_In_ const w_render_pass& pRenderPass, _In_ const w_viewport& pViewport, _In_ const w_viewport_scissor& pViewportScissor)
 {
 	const std::string _trace_info = this->_name + "_create_bounding_box_shapes";
 
@@ -1878,7 +1898,7 @@ W_RESULT model_mesh::_create_bounding_box_shapes(_In_ const w_render_pass& pRend
 
 
 		this->sub_meshes_bounding_box.push_back(_aligned);
-		auto _shape = _create_shape(pRenderPass, _aligned, w_color::RED());
+		auto _shape = _create_shape(pRenderPass, pViewport, pViewportScissor, _aligned, w_color::RED());
 		if (_shape)
 		{
 			this->_shapes.push_back(_shape);
@@ -1901,7 +1921,7 @@ W_RESULT model_mesh::_create_bounding_box_shapes(_In_ const w_render_pass& pRend
 			std::memcpy(&_aligned.max[0], &_transfer_max[0], 3 * sizeof(float));
 
 			this->sub_meshes_bounding_box.push_back(_aligned);
-			_shape = _create_shape(pRenderPass, _aligned, w_color::GREEN());
+			_shape = _create_shape(pRenderPass, pViewport, pViewportScissor, _aligned, w_color::GREEN());
 			if (_shape)
 			{
 				this->_shapes.push_back(_shape);
@@ -1918,6 +1938,8 @@ W_RESULT model_mesh::_create_bounding_box_shapes(_In_ const w_render_pass& pRend
 
 w_shapes* model_mesh::_create_shape(
 	_In_ const w_render_pass& pRenderPass,
+	_In_ const w_viewport& pViewport,
+	_In_ const w_viewport_scissor& pViewportScissor,
 	_In_ const w_bounding_box& pBoundingBox,
 	_In_ w_color& pColor)
 {
@@ -1938,8 +1960,8 @@ w_shapes* model_mesh::_create_shape(
 	if (_shape_box->load(
 		this->gDevice,
 		pRenderPass,
-		pRenderPass.get_viewport(),
-		pRenderPass.get_viewport_scissor()) == W_FAILED)
+		pViewport,
+		pViewportScissor) == W_FAILED)
 	{
 		V(W_FAILED,
 			w_log_type::W_ERROR,

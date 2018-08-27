@@ -42,7 +42,9 @@ public:
 		_In_z_ const std::string& pComputePipelineCacheName,
 		_In_z_ const std::wstring& pVertexShaderPath,
 		_In_z_ const std::wstring& pFragmentShaderPath,
-		_In_ const wolf::render::vulkan::w_render_pass& pRenderPass
+		_In_ const wolf::render::vulkan::w_render_pass& pRenderPass,
+		_In_ const wolf::render::vulkan::w_viewport& pViewport,
+		_In_ const wolf::render::vulkan::w_viewport_scissor& pViewportScissor
 	);
 
 	W_RESULT submit_compute_shader();
@@ -154,11 +156,20 @@ private:
 		_In_z_ const std::wstring& pFragmentShaderPath);
 	W_RESULT	_create_pipelines(
 		_In_z_ const std::string& pPipelineCacheName,
-		_In_ const wolf::render::vulkan::w_render_pass& pRenderPass);
+		_In_z_ const std::string& pComputePipelineCacheName,
+		_In_ const wolf::render::vulkan::w_render_pass& pRenderPass,
+		_In_ const wolf::render::vulkan::w_viewport& pViewport,
+		_In_ const wolf::render::vulkan::w_viewport_scissor& pViewportScissor);
 	
-	W_RESULT _create_bounding_box_shapes(_In_ const wolf::render::vulkan::w_render_pass& pRenderPass);
+	W_RESULT _create_bounding_box_shapes(
+		_In_ const wolf::render::vulkan::w_render_pass& pRenderPass, 
+		_In_ const wolf::render::vulkan::w_viewport& pViewport, 
+		_In_ const wolf::render::vulkan::w_viewport_scissor& pViewportScissor);
+
 	wolf::render::vulkan::w_shapes* _create_shape(
 		_In_ const wolf::render::vulkan::w_render_pass& pRenderPass,
+		_In_ const wolf::render::vulkan::w_viewport& pViewport,
+		_In_ const wolf::render::vulkan::w_viewport_scissor& pViewportScissor,
 		_In_ const wolf::system::w_bounding_box& pBoundingBox, 
 		_In_ w_color& pColor);
 

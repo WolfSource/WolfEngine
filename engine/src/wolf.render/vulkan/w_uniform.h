@@ -43,7 +43,7 @@ namespace wolf
 				W_RESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
 					_In_ const bool& pHostVisible = false)
 				{
-					const char* _trace_info = (this->name + "::update").c_str();
+					const std::string _trace_info = this->name + "::update";
 
 					this->_host_visible = pHostVisible;
 

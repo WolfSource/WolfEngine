@@ -24,7 +24,7 @@ namespace wolf
 					_In_ const bool& pCreateCommandPool,
 					_In_ const w_queue* pCommandPoolQueue)
 				{
-					const char* _trace_info = (this->_name + "::load").c_str();
+					const std::string _trace_info = this->_name + "::load";
 
 					if (pCreateCommandPool)
 					{
@@ -114,7 +114,7 @@ namespace wolf
 				{
 					if (pCommandBufferIndex >= this->_commands.size()) return W_FAILED;
 
-					const char* _trace_info = (this->_name + "::begin").c_str();
+					const std::string _trace_info = this->_name + "::begin";
 
 					//prepare data for recording command buffers
 					const VkCommandBufferBeginInfo _command_buffer_begin_info =
@@ -139,11 +139,44 @@ namespace wolf
 					return W_PASSED;
 				}
 
+				W_RESULT begin_secondary(
+					_In_ const size_t& pCommandBufferIndex,
+					_In_ const w_render_pass_handle& pRenderPassHandle,
+					_In_ const w_frame_buffer_handle& pFrameBufferHandle,
+					_In_ const uint32_t pFlags)
+				{
+					if (pCommandBufferIndex >= this->_commands.size()) return W_FAILED;
+
+					const std::string _trace_info = this->_name + "::begin_secondary";
+
+					VkCommandBufferInheritanceInfo _inheritance_info = {};
+					_inheritance_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO;
+					_inheritance_info.renderPass = pRenderPassHandle.handle;
+					_inheritance_info.framebuffer = pFrameBufferHandle.handle;
+
+					VkCommandBufferBeginInfo _sec_cmd_buffer_begin_info{};
+					_sec_cmd_buffer_begin_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+					_sec_cmd_buffer_begin_info.flags = (VkCommandBufferUsageFlags)pFlags;
+					_sec_cmd_buffer_begin_info.pInheritanceInfo = &_inheritance_info;
+
+					auto _hr = vkBeginCommandBuffer(this->_commands.at(pCommandBufferIndex).handle, &_sec_cmd_buffer_begin_info);
+					if (_hr != VK_SUCCESS)
+					{
+						V(W_FAILED,
+							w_log_type::W_ERROR,
+							"begining command buffer for graphics device: {}. trace info: {}",
+							this->_gDevice->get_info(),
+							_trace_info);
+						return W_FAILED;
+					}
+					return W_PASSED;
+				}
+
 				W_RESULT end(_In_ const size_t& pCommandBufferIndex)
 				{
 					if (pCommandBufferIndex >= this->_commands.size()) return W_FAILED;
 
-					const char* _trace_info = (this->_name + "::end").c_str();
+					const std::string _trace_info = this->_name + "::end";
 
 					auto _hr = vkEndCommandBuffer(this->_commands.at(pCommandBufferIndex).handle);
 					if (_hr != VK_SUCCESS)
@@ -161,7 +194,7 @@ namespace wolf
 				{
 					if (pCommandBufferIndex >= this->_commands.size()) return W_FAILED;
 
-					const char* _trace_info = (this->_name + "::end").c_str();
+					const std::string _trace_info = this->_name + "::end";
 
 					auto _cmd = this->_commands.at(pCommandBufferIndex);
 
@@ -237,6 +270,29 @@ namespace wolf
 						}
 					}
 					return _result;
+				}
+
+				W_RESULT execute_secondary_commands(
+					_In_ const size_t& pCommandBufferIndex,
+					_In_ const std::vector<w_command_buffer*>& pSecondaryCommandBuffers)
+				{
+					if (pCommandBufferIndex >= this->_commands.size()) return W_FAILED;
+
+					auto _size = pSecondaryCommandBuffers.size();
+					std::vector<VkCommandBuffer> _handles(_size);
+					for (size_t i = 0; i < _size; ++i)
+					{
+						auto _cmd = pSecondaryCommandBuffers[i];
+						if (!_cmd || !_cmd->handle) continue;
+						_handles[i] = _cmd->handle;
+					}
+					vkCmdExecuteCommands(
+						this->_commands.at(pCommandBufferIndex).handle,
+						pSecondaryCommandBuffers.size(),
+						_handles.data());
+					_handles.clear();
+
+					return W_PASSED;
 				}
 
 				ULONG release()
@@ -318,6 +374,16 @@ W_RESULT w_command_buffers::begin(_In_ const size_t& pCommandBufferIndex, _In_ c
     return this->_pimp->begin(pCommandBufferIndex, pFlags);
 }
 
+W_RESULT w_command_buffers::begin_secondary(
+	_In_ const size_t& pCommandBufferIndex,
+	_In_ const w_render_pass_handle& pRenderPassHandle,
+	_In_ const w_frame_buffer_handle& pFrameBufferHandle,
+	_In_ const uint32_t pFlags)
+{
+	if (!this->_pimp) return W_FAILED;
+	return this->_pimp->begin_secondary(pCommandBufferIndex, pRenderPassHandle, pFrameBufferHandle, pFlags);
+}
+
 W_RESULT w_command_buffers::end(_In_ const size_t& pCommandBufferIndex)
 {
     if(!this->_pimp) return W_FAILED;
@@ -334,6 +400,14 @@ W_RESULT w_command_buffers::flush_all()
 {
     if(!this->_pimp) return W_FAILED;
     return this->_pimp->flush_all();
+}
+
+W_RESULT w_command_buffers::execute_secondary_commands(
+	_In_ const size_t& pCommandBufferIndex,
+	_In_ const std::vector<w_command_buffer*>& pSecondaryCommandBuffers)
+{
+	if (!this->_pimp) return W_FAILED;
+	return this->_pimp->execute_secondary_commands(pCommandBufferIndex, pSecondaryCommandBuffers);
 }
 
 ULONG w_command_buffers::release()

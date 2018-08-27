@@ -127,6 +127,19 @@ namespace wolf
 #endif
 			} w_front_face;
 
+
+			typedef enum w_memory_property_flag_bits
+			{
+#ifdef __VULKAN__
+				DEVICE_LOCAL_BIT = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+				HOST_VISIBLE_BIT = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT,
+				HOST_COHERENT_BIT = VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+				HOST_CACHED_BIT = VK_MEMORY_PROPERTY_HOST_CACHED_BIT,
+				LAZILY_ALLOCATED_BIT = VK_MEMORY_PROPERTY_LAZILY_ALLOCATED_BIT,
+				MEMORY_PROPERTY_FLAG_BITS_MAX_ENUM = VK_MEMORY_PROPERTY_FLAG_BITS_MAX_ENUM
+#endif
+			} w_memory_property_flag_bits;
+
 			struct w_descriptor_set
 			{
 #ifdef __VULKAN__
@@ -145,6 +158,13 @@ namespace wolf
 			{
 #ifdef __VULKAN__
 				VkBuffer handle = 0;
+#endif
+			};
+
+			struct w_frame_buffer_handle
+			{
+#ifdef __VULKAN__
+				VkFramebuffer handle = 0;
 #endif
 			};
 
@@ -219,6 +239,84 @@ namespace wolf
 			{
 			};
 
+			/*
+			For Vulkan
+			attachment description contains:
+			@param flags, Flags
+			@param format, Format of an image used for the attachment
+			@param samples, Number of samples of the image; The value greater than 1 means multisampling
+			@param loadOp, Specifies what to do with the image(s) contents at the beginning of a render pass.
+			@param storeOp, Informs the driver what to do with the image(s) content(s) after the render pass.
+			@param stencilLoadOp, The same as loadOp but for the stencil part of depth/stencil images, please note that for color attachments this parameter will be ignored
+			@param stencilStoreOp, The same as storeOp but for the stencil part of depth/stencil images, please note that for color attachments this parameter will be ignored
+			@param initialLayout, The layout of given attachment when the render pass starts
+			@param finalLayout, The layout that driver will automatically transite the given image into at the end of a render pass
+			attachment reference contains:
+			@param attachment, index of attachment
+			@param layout, The layout of given attachment
+			*/
+			struct w_attachment_buffer_desc
+			{
+				w_attachment_description desc;
+				w_attachment_reference ref;
+				uint32_t memory_flag = w_memory_property_flag_bits::DEVICE_LOCAL_BIT;
+
+				static w_attachment_buffer_desc create_color_desc_buffer()
+				{
+					w_attachment_buffer_desc _buffer_desc = {};
+
+					//init description
+					_buffer_desc.desc.flags = 0;
+					_buffer_desc.desc.format = VkFormat::VK_FORMAT_B8G8R8A8_UNORM;
+					_buffer_desc.desc.samples = VkSampleCountFlagBits::VK_SAMPLE_COUNT_1_BIT;
+					_buffer_desc.desc.loadOp = VkAttachmentLoadOp::VK_ATTACHMENT_LOAD_OP_CLEAR;
+					_buffer_desc.desc.storeOp = VkAttachmentStoreOp::VK_ATTACHMENT_STORE_OP_STORE;
+					_buffer_desc.desc.stencilLoadOp = VkAttachmentLoadOp::VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+					_buffer_desc.desc.stencilStoreOp = VkAttachmentStoreOp::VK_ATTACHMENT_STORE_OP_DONT_CARE;
+					_buffer_desc.desc.initialLayout = VkImageLayout::VK_IMAGE_LAYOUT_UNDEFINED;
+					_buffer_desc.desc.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+
+					//init reference
+					_buffer_desc.ref.attachment = 0;
+					_buffer_desc.ref.layout = VkImageLayout::VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+
+					return _buffer_desc;
+				}
+
+				static w_attachment_buffer_desc create_depth_desc_buffer()
+				{
+					w_attachment_buffer_desc _buffer_desc = {};
+
+					_buffer_desc.desc.flags = 0;
+					_buffer_desc.desc.format = VkFormat::VK_FORMAT_D32_SFLOAT_S8_UINT;
+					_buffer_desc.desc.samples = VkSampleCountFlagBits::VK_SAMPLE_COUNT_1_BIT;
+					_buffer_desc.desc.loadOp = VkAttachmentLoadOp::VK_ATTACHMENT_LOAD_OP_CLEAR;
+					_buffer_desc.desc.storeOp = VkAttachmentStoreOp::VK_ATTACHMENT_STORE_OP_STORE;
+					_buffer_desc.desc.stencilLoadOp = VkAttachmentLoadOp::VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+					_buffer_desc.desc.stencilStoreOp = VkAttachmentStoreOp::VK_ATTACHMENT_STORE_OP_DONT_CARE;
+					_buffer_desc.desc.initialLayout = VkImageLayout::VK_IMAGE_LAYOUT_UNDEFINED;
+					_buffer_desc.desc.finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+
+					//init reference
+					_buffer_desc.ref.attachment = 1;
+					_buffer_desc.ref.layout = VkImageLayout::VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+
+					return _buffer_desc;
+				}
+			};
+
+			struct w_image_view
+			{
+#ifdef __VULKAN__
+				VkImage                             image = 0;
+				VkImageView                         view = 0;
+#endif
+
+				uint32_t							width = 0;
+				uint32_t							height = 0;
+				w_attachment_buffer_desc			attachment_desc;
+			};
+
 			struct w_pipeline_layout_create_info :
 #ifdef __VULKAN__
 				VkPipelineLayoutCreateInfo
@@ -269,18 +367,6 @@ namespace wolf
 			{
 			};
 
-			typedef enum w_memory_property_flag_bits
-			{
-#ifdef __VULKAN__
-				DEVICE_LOCAL_BIT = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-				HOST_VISIBLE_BIT = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT,
-				HOST_COHERENT_BIT = VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-				HOST_CACHED_BIT = VK_MEMORY_PROPERTY_HOST_CACHED_BIT,
-				LAZILY_ALLOCATED_BIT = VK_MEMORY_PROPERTY_LAZILY_ALLOCATED_BIT,
-				MEMORY_PROPERTY_FLAG_BITS_MAX_ENUM = VK_MEMORY_PROPERTY_FLAG_BITS_MAX_ENUM
-#endif
-			} w_memory_property_flag_bits;
-
 			typedef enum w_command_buffer_level
 			{
 #ifdef __VULKAN__
@@ -288,6 +374,14 @@ namespace wolf
 				SECONDARY = VK_COMMAND_BUFFER_LEVEL_SECONDARY
 #endif
 			} w_command_buffer_level;
+
+			typedef enum w_subpass_contents 
+			{
+#ifdef __VULKAN__
+				INLINE = VK_SUBPASS_CONTENTS_INLINE,
+				SECONDARY_COMMAND_BUFFERS = VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS
+#endif
+			} w_subpass_contents;
 
 			typedef enum w_command_buffer_usage_flag_bits
 			{
