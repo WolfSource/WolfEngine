@@ -126,14 +126,14 @@ private:
 	{
 		wolf::system::w_thread                                      thread;
 		wolf::render::vulkan::w_command_buffers                     secondary_command_buffers;
-		size_t                                                      batch_size;
+		size_t                                                      batch_size = 0;
 		void release()
 		{
 			this->thread.release();
 			this->secondary_command_buffers.release();
 		}
 	};
-	std::vector<render_thread_context*>                             _render_thread_pool;
+	tbb::concurrent_vector<render_thread_context*>                  _render_thread_pool;
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 };

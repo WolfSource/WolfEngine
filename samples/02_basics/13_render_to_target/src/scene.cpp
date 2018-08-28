@@ -225,8 +225,9 @@ void scene::load()
 	}
 
 	//update uniform's data
+	auto _cmd = this->_draw_command_buffers.get_command_at(0);
 	this->_u0.data.wvp = glm::mat4(1);
-	_hr = this->_u0.update();
+	_hr = this->_u0.update(_cmd);
 	if (_hr == W_FAILED)
 	{
 		release();
@@ -317,6 +318,7 @@ void scene::load()
 	std::vector<uint32_t> _index_data = { 0, 1, 3, 3, 1, 2 };
 
 	_hr = this->_mesh.load(_gDevice,
+		_cmd,
 		_vertex_data.data(),
 		static_cast<uint32_t>(_vertex_data.size() * sizeof(float)),
 		static_cast<uint32_t>(_vertex_data.size()),

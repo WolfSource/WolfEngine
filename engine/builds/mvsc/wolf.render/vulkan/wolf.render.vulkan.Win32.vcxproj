@@ -175,6 +175,7 @@
     <ClCompile Include="..\..\..\..\src\wolf.render\vulkan\w_command_buffers.cpp" />
     <ClCompile Include="..\..\..\..\src\wolf.render\vulkan\w_fences.cpp" />
     <ClCompile Include="..\..\..\..\src\wolf.render\vulkan\w_imgui.cpp" />
+    <ClCompile Include="..\..\..\..\src\wolf.render\vulkan\w_indirect_draw_commands.cpp" />
     <ClCompile Include="..\..\..\..\src\wolf.render\vulkan\w_memory_allocator.cpp" />
     <ClCompile Include="..\..\..\..\src\wolf.render\vulkan\w_mesh.cpp" />
     <ClCompile Include="..\..\..\..\src\wolf.render\vulkan\w_occlusion_query.cpp" />
@@ -217,6 +218,7 @@
     <ClInclude Include="..\..\..\..\src\wolf.render\vulkan\w_command_buffers.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\vulkan\w_fences.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\vulkan\w_imgui.h" />
+    <ClInclude Include="..\..\..\..\src\wolf.render\vulkan\w_indirect_draw_commands.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\vulkan\w_memory_allocator.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\vulkan\w_mesh.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\vulkan\w_occlusion_query.h" />

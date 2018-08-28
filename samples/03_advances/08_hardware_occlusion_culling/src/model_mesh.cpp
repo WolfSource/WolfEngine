@@ -166,7 +166,6 @@ W_RESULT model_mesh::_build_compute_command_buffer()
 		this->gDevice,
 		1,
 		w_command_buffer_level::PRIMARY,
-		true,
 		&gDevice->vk_compute_queue) == W_FAILED)
 	{
 		V(W_FAILED,

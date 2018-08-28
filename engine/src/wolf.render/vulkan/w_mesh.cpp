@@ -16,7 +16,6 @@ namespace wolf
 				w_mesh_pimp() :
 					_name("w_mesh"),
 					_gDevice(nullptr),
-					_copy_command_buffer(nullptr),
 					_vertices_count(0),
 					_indices_count(0),
 					_vertex_binding_attributes(w_vertex_declaration::NOT_DEFINED)
@@ -35,6 +34,7 @@ namespace wolf
 						* use VRAM buffer for rendering
 				*/
 				W_RESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+					_In_ const w_command_buffer& pCommandBuffer,
 					_In_ const void* const pVerticesData,
 					_In_ const uint32_t&  pVerticesSizeInBytes,
 					_In_ const uint32_t& pVerticesCount,
@@ -103,13 +103,13 @@ namespace wolf
 						}
 					}
 
-					if (this->_stagings_buffers.vertices.copy_to(this->_vertex_buffer) == W_FAILED)
+					if (this->_stagings_buffers.vertices.copy_to(this->_vertex_buffer, pCommandBuffer) == W_FAILED)
 					{
 						return W_FAILED;
 					}
 					if (!_there_is_no_index_buffer)
 					{
-						if (this->_stagings_buffers.indices.copy_to(this->_index_buffer) == W_FAILED)
+						if (this->_stagings_buffers.indices.copy_to(this->_index_buffer, pCommandBuffer) == W_FAILED)
 						{
 							return W_FAILED;
 						}
@@ -138,7 +138,9 @@ namespace wolf
 					return W_PASSED;
 				}
 
-				W_RESULT update_dynamic_buffer(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+				W_RESULT update_dynamic_buffer(
+					_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+					_In_ const w_command_buffer& pCommandBuffer,
 					_In_ const void* const pVerticesData,
 					_In_ const uint32_t& pVerticesSize,
 					_In_ const uint32_t& pVerticesCount,
@@ -190,7 +192,7 @@ namespace wolf
 						//V(_hr, "binding staging index buffer", this->_name, 3);
 					}
 
-					if (_stagings_buffers.vertices.copy_to(this->_vertex_buffer) == W_FAILED)
+					if (_stagings_buffers.vertices.copy_to(this->_vertex_buffer, pCommandBuffer) == W_FAILED)
 					{
 						V(_hr,
 							w_log_type::W_ERROR,
@@ -203,7 +205,7 @@ namespace wolf
 					auto _index_count = this->_indices_count * sizeof(uint32_t);
 					if (_index_count)
 					{
-						if (_stagings_buffers.indices.copy_to(this->_index_buffer) == W_FAILED)
+						if (_stagings_buffers.indices.copy_to(this->_index_buffer, pCommandBuffer) == W_FAILED)
 						{
 							V(_hr,
 								w_log_type::W_ERROR,
@@ -374,7 +376,6 @@ namespace wolf
 						{
 							this->_stagings_buffers.indices.release();
 						}
-						SAFE_DELETE(this->_copy_command_buffer);
 					}
 
 					this->_texture = nullptr;
@@ -382,60 +383,7 @@ namespace wolf
 				}
 
 			private:
-
-				//       W_RESULT _copy_DRAM_to_VRAM(
-				//           _In_ const uint32_t pVerticesSize,
-				//           _In_ const uint32_t pIndicesSize)
-				//       {
-				//           //create one command buffer 
-				//           if (!this->_copy_command_buffer)
-				//           {
-				//               this->_copy_command_buffer = new w_command_buffers();
-				//               _copy_command_buffer->load(this->_gDevice, 1);
-				//           }
-
-				//           this->_copy_command_buffer->begin(0);
-				//           {
-				//               auto _copy_cmd = _copy_command_buffer->get_command_at(0);
-
-				//               // Vertex buffer
-				//               VkBufferCopy _copy_region = {};
-				//               _copy_region.size = pVerticesSize;
-
-				//               vkCmdCopyBuffer(
-				//                   _copy_cmd.handle,
-				//                   _stagings_buffers.vertices.get_buffer_handle().handle,
-				//                   this->_vertex_buffer.get_buffer_handle().handle,
-				//                   1,
-				//                   &_copy_region);
-
-				//               if (pIndicesSize)
-				//               {
-				//                   // Index buffer
-				//                   _copy_region.size = pIndicesSize;
-				//                   vkCmdCopyBuffer(
-				//                       _copy_cmd.handle,
-				//                       _stagings_buffers.indices.get_buffer_handle().handle,
-				//                       this->_index_buffer.get_buffer_handle().handle,
-				//                       1,
-				//                       &_copy_region);
-				//               }
-
-							   //_copy_cmd.handle = nullptr;
-				//           }
-
-				//           this->_copy_command_buffer->flush(0);
-				//           if (!this->_dynamic_buffer)
-				//           {
-				//               SAFE_DELETE(this->_copy_command_buffer);
-				//           }
-
-				//           return W_PASSED;
-				//       }
-
-					   /*
-						   Create buffers for rendering.
-						*/
+				//Create buffers for rendering
 				W_RESULT _create_buffer(_In_ const VkBufferUsageFlags pBufferUsageFlag,
 					_In_ const void* const pBufferData,
 					_In_ uint32_t pBufferSizeInBytes,
@@ -473,17 +421,6 @@ namespace wolf
 						}
 					}
 
-					//bind to it
-					//_hr = pBuffer.bind();
-					//if(_hr == W_FAILED)
-					//{
-					//    V(W_FAILED, "binding to vertex buffer's memory for graphics device: " +
-					//      _gDevice->device_info->get_device_name() + " ID:" + std::to_string(_gDevice->device_info->get_device_id()),
-					//      this->_name, 3, false);
-					//    
-					//    return W_FAILED;
-					//}
-
 					return W_PASSED;
 				}
 
@@ -495,7 +432,6 @@ namespace wolf
 				uint32_t                                            _vertices_count;
 				w_texture*                                          _texture;
 				w_vertex_binding_attributes                         _vertex_binding_attributes;
-				w_command_buffers*                                  _copy_command_buffer;
 				bool                                                _dynamic_buffer;
 				struct
 				{
@@ -519,18 +455,21 @@ w_mesh::~w_mesh()
 	release();
 }
 
-W_RESULT w_mesh::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-                     _In_ const void* const pVerticesData,
-                    _In_  const uint32_t&  pVerticesSize,
-                     _In_ const uint32_t& pVerticesCount,
-                     _In_ const uint32_t* const pIndicesData,
-                     _In_ const uint32_t& pIndicesCount,
-                     _In_ const bool& pUseDynamicBuffer)
+W_RESULT w_mesh::load(
+	_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+	_In_ const w_command_buffer& pCommandBuffer,
+    _In_ const void* const pVerticesData,
+    _In_  const uint32_t&  pVerticesSize,
+    _In_ const uint32_t& pVerticesCount,
+    _In_ const uint32_t* const pIndicesData,
+    _In_ const uint32_t& pIndicesCount,
+    _In_ const bool& pUseDynamicBuffer)
 {
     if (!this->_pimp) return W_FAILED;
     
     return this->_pimp->load(
         pGDevice,
+		pCommandBuffer,
         pVerticesData,
         pVerticesSize,
         pVerticesCount,
@@ -541,6 +480,7 @@ W_RESULT w_mesh::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
 
 W_RESULT w_mesh::update_dynamic_buffer(
     _In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+	_In_ const w_command_buffer& pCommandBuffer,
     _In_ const void* const pVerticesData,
     _In_ const uint32_t& pVerticesSize,
     _In_ const uint32_t& pVerticesCount,
@@ -549,6 +489,7 @@ W_RESULT w_mesh::update_dynamic_buffer(
 {
     return this->_pimp ? this->_pimp->update_dynamic_buffer(
         pGDevice,
+		pCommandBuffer,
         pVerticesData,
         pVerticesSize,
         pVerticesCount,

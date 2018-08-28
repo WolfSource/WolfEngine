@@ -323,6 +323,7 @@ W_RESULT scene::_load_render_thread_pool(_In_ const size_t& pSwapChainImageSize)
 	this->_render_thread_pool.resize(_thread_pool_size);
 	logger.write("render thread pool size is {}", _thread_pool_size);
 
+	//create thread contexts which are contains command pool and command buffers
 	W_RESULT _hr = W_PASSED;
 	for (size_t i = 0; i < _thread_pool_size; ++i)
 	{
@@ -337,8 +338,7 @@ W_RESULT scene::_load_render_thread_pool(_In_ const size_t& pSwapChainImageSize)
 			_gDevice,
 			pSwapChainImageSize,
 			w_command_buffer_level::SECONDARY,
-			true,
-			&_gDevice->vk_present_queue) == W_FAILED)
+			true) == W_FAILED)
 		{
 			release();
 			V(W_FAILED,
@@ -565,20 +565,20 @@ W_RESULT scene::_build_draw_command_buffers()
 				//this->_viewport.set(_primary_cmd);
 				//this->_viewport_scissor.set(_primary_cmd);
 				//draw sky on main thread
-				if (this->_sky)
-				{
+				//if (this->_sky)
+				//{
 					//this->_sky->draw(_primary_cmd, &this->_first_camera);
-				}
+				//}
 
 				//draw models on secondary threads
 				size_t _start_index = 0;
-				std::vector<w_command_buffer*> _sec_cmd_buffers;
+				tbb::concurrent_vector<w_command_buffer*> _sec_cmd_buffers;
 				for (size_t j = 0; j < this->_render_thread_pool.size(); ++j)
 				{
 					//if thread does not have any models then skip it
 					if (this->_render_thread_pool[j]->batch_size == 0) continue;
 
-					this->_render_thread_pool[i]->thread.add_job([&, j, _start_index]()//send start index as seperated constant data for each thread
+					this->_render_thread_pool[j]->thread.add_job([this, i, j, _start_index, &_sec_cmd_buffers]()//send start index as seperated constant data for each thread
 					{
 						this->_render_thread_pool[j]->secondary_command_buffers.begin_secondary(
 							i,
@@ -588,6 +588,9 @@ W_RESULT scene::_build_draw_command_buffers()
 							auto _sec_cmd = this->_render_thread_pool[j]->secondary_command_buffers.get_command_at(i);
 							_sec_cmd_buffers.push_back(&_sec_cmd);
 
+							this->_viewport.set(_sec_cmd);
+							this->_viewport_scissor.set(_sec_cmd);
+
 							auto _begin_iter = this->_drawable_models.begin() + _start_index;
 							auto _end_iter = this->_drawable_models.begin() + _start_index + this->_render_thread_pool[j]->batch_size;
 							std::for_each(
@@ -595,13 +598,12 @@ W_RESULT scene::_build_draw_command_buffers()
 								_end_iter,
 								[&](_In_ model* const pModel)
 							{
-								this->_viewport.set(_sec_cmd);
-								this->_viewport_scissor.set(_sec_cmd);
 								pModel->draw(_sec_cmd, &this->_first_camera);
 							});
 						}
 						this->_render_thread_pool[j]->secondary_command_buffers.end(i);
 					});
+
 					_start_index += this->_render_thread_pool[j]->batch_size;
 				}
 
@@ -613,19 +615,19 @@ W_RESULT scene::_build_draw_command_buffers()
 
 				if (_sec_cmd_buffers.size())
 				{
+					std::vector<w_command_buffer*> _cmds(_sec_cmd_buffers.begin(), _sec_cmd_buffers.end());
 					//Execute secondary commands buffer to primary command
 					this->_draw_command_buffers.execute_secondary_commands(
 						i,
-						_sec_cmd_buffers);
+						_cmds);
+					_cmds.clear();
+					_sec_cmd_buffers.clear();
 				}
 
 				//draw coordinate system on main thread
 				//this->_viewport.set(_primary_cmd);
 				//this->_viewport_scissor.set(_primary_cmd);
 				//this->_shape_coordinate_axis->draw(_primary_cmd);
-
-				//clear temp holder
-				_sec_cmd_buffers.clear();
 			}
 			this->_draw_render_pass.end(_primary_cmd);
 		}
@@ -899,7 +901,8 @@ void scene::_show_floating_debug_window()
 	auto _cam_position = this->_first_camera.get_position();
 	auto _cam_interest = this->_first_camera.get_look_at();
 
-	ImGui::Text("Press \"Esc\" to exit\r\nMovments:Q,Z,W,A,S,D and Mouse Left Button\r\nFPS:%d\r\nFrameTime:%f\r\nTotalTime:%f\r\nInFrustumVisibleModels:%d\r\nDrawingModels:%d\r\nVisibleMeshes:%d\r\nCamera Position:%.1f,%.1f,%.1f\r\nCamera LookAt:%.1f,%.1f,%.1f\r\n",
+	ImGui::Text("Press \"Esc\" to exit\r\nMovments:Q,Z,W,A,S,D and Mouse Left Button\r\nNumber of Rendering Threads:%d\r\nFPS:%d\r\nFrameTime:%f\r\nTotalTime:%f\r\nInFrustumVisibleModels:%d\r\nDrawingModels:%d\r\nVisibleMeshes:%d\r\nCamera Position:%.1f,%.1f,%.1f\r\nCamera LookAt:%.1f,%.1f,%.1f\r\n",
+		this->_render_thread_pool.size(),
 		sFPS,
 		sElapsedTimeInSec,
 		sTotalTimeTimeInSec,

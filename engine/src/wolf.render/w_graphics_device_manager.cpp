@@ -29,24 +29,24 @@ VkInstance w_graphics_device::vk_instance = NULL;
 
 std::vector<VkSubpassDependency> w_graphics_device::defaults_states::vk_default_subpass_dependencies =
 {
-    {
-        VK_SUBPASS_EXTERNAL,																// uint32_t                       srcSubpass
-        0,																					// uint32_t                       dstSubpass
-        VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,												// VkPipelineStageFlags           srcStageMask
-        VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,										// VkPipelineStageFlags           dstStageMask
-        VK_ACCESS_MEMORY_READ_BIT,															// VkAccessFlags                  srcAccessMask
-        VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,        // VkAccessFlags                  dstAccessMask
-        VK_DEPENDENCY_BY_REGION_BIT															// VkDependencyFlags              dependencyFlags
-    },
-    {
-        0,																					// uint32_t                       srcSubpass
-        VK_SUBPASS_EXTERNAL,																// uint32_t                       dstSubpass
-        VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,										// VkPipelineStageFlags           srcStageMask
-        VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,												// VkPipelineStageFlags           dstStageMask
-        VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,			// VkAccessFlags                  srcAccessMask
-        VK_ACCESS_MEMORY_READ_BIT,															// VkAccessFlags                  dstAccessMask
-        VK_DEPENDENCY_BY_REGION_BIT															// VkDependencyFlags              dependencyFlags
-    }
+	{
+		VK_SUBPASS_EXTERNAL,																// uint32_t                       srcSubpass
+		0,																					// uint32_t                       dstSubpass
+		VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,												// VkPipelineStageFlags           srcStageMask
+		VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,										// VkPipelineStageFlags           dstStageMask
+		VK_ACCESS_MEMORY_READ_BIT,															// VkAccessFlags                  srcAccessMask
+		VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,        // VkAccessFlags                  dstAccessMask
+		VK_DEPENDENCY_BY_REGION_BIT															// VkDependencyFlags              dependencyFlags
+	},
+	{
+		0,																					// uint32_t                       srcSubpass
+		VK_SUBPASS_EXTERNAL,																// uint32_t                       dstSubpass
+		VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,										// VkPipelineStageFlags           srcStageMask
+		VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,												// VkPipelineStageFlags           dstStageMask
+		VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,			// VkAccessFlags                  srcAccessMask
+		VK_ACCESS_MEMORY_READ_BIT,															// VkAccessFlags                  dstAccessMask
+		VK_DEPENDENCY_BY_REGION_BIT															// VkDependencyFlags              dependencyFlags
+	}
 };
 
 w_pipeline_layout_create_info w_graphics_device::defaults_states::pipelines::layout_create_info;
@@ -95,7 +95,7 @@ w_graphics_device::w_graphics_device() :
 		defaults_states::pipelines::layout_create_info.flags = 0;
 		defaults_states::pipelines::layout_create_info.setLayoutCount = 0;
 		defaults_states::pipelines::layout_create_info.pSetLayouts = nullptr;
-		defaults_states::pipelines::layout_create_info.pushConstantRangeCount  = 0;
+		defaults_states::pipelines::layout_create_info.pushConstantRangeCount = 0;
 		defaults_states::pipelines::layout_create_info.pPushConstantRanges = nullptr;
 
 		defaults_states::pipelines::vertex_input_create_info.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
@@ -105,13 +105,13 @@ w_graphics_device::w_graphics_device() :
 		defaults_states::pipelines::vertex_input_create_info.pVertexBindingDescriptions = nullptr;
 		defaults_states::pipelines::vertex_input_create_info.vertexAttributeDescriptionCount = 0;
 		defaults_states::pipelines::vertex_input_create_info.pVertexAttributeDescriptions = nullptr;
-		
+
 		defaults_states::pipelines::input_assembly_create_info.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
 		defaults_states::pipelines::input_assembly_create_info.pNext = nullptr;
 		defaults_states::pipelines::input_assembly_create_info.flags = 0;
 		defaults_states::pipelines::input_assembly_create_info.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
 		defaults_states::pipelines::input_assembly_create_info.primitiveRestartEnable = VK_FALSE;
-		
+
 		defaults_states::pipelines::rasterization_create_info.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
 		defaults_states::pipelines::rasterization_create_info.pNext = nullptr;
 		defaults_states::pipelines::rasterization_create_info.flags = 0;
@@ -189,7 +189,7 @@ W_RESULT w_graphics_device::submit(
 
 	auto _size = static_cast<uint32_t>(pCommandBuffers.size());
 	if (!_size) return W_FAILED;
-	
+
 	W_RESULT _hr = W_PASSED;
 	std::vector<VkCommandBuffer> _cmds(_size);
 	for (size_t i = 0; i < _size; ++i)
@@ -206,10 +206,10 @@ W_RESULT w_graphics_device::submit(
 	_submit_info.pCommandBuffers = _cmds.data();
 
 	_cmds.clear();
-	
+
 	_size = static_cast<uint32_t>(pWaitDstStageMask.size());
 	_submit_info.pWaitDstStageMask = _size ? (VkPipelineStageFlags*)(&pWaitDstStageMask[0]) : nullptr;
-	
+
 	_size = static_cast<uint32_t>(pWaitForSemaphores.size());
 	std::vector<VkSemaphore> _wait_semaphors;
 	if (_size)
@@ -244,7 +244,7 @@ W_RESULT w_graphics_device::submit(
 		_hr = W_FAILED;
 		V(_hr,
 			w_log_type::W_ERROR,
-			"submiting queue for graphics device: {}. trace info: {}", 
+			"submiting queue for graphics device: {}. trace info: {}",
 			this->get_info(),
 			_trace_info);
 		goto submit_clear;
@@ -260,7 +260,7 @@ W_RESULT w_graphics_device::submit(
 				"waiting idle queue for graphics device: {} . trace info: {}",
 				this->get_info(),
 				_trace_info);
-				goto submit_clear;
+			goto submit_clear;
 		}
 	}
 
@@ -273,22 +273,22 @@ submit_clear:
 }
 
 W_RESULT w_graphics_device::capture(
-	_In_ VkImage pSourceImage, 
-	_In_ VkFormat pSourceImageFormat, 
+	_In_ VkImage pSourceImage,
+	_In_ VkFormat pSourceImageFormat,
 	_In_ VkImageLayout pSourceImageLayout,
-	_In_ const uint32_t& pWidth, 
-	_In_ const uint32_t& pHeight, 
+	_In_ const uint32_t& pWidth,
+	_In_ const uint32_t& pHeight,
 	_In_ wolf::system::w_signal<void(const w_point_t, uint8_t*)>& pOnPixelsDataCaptured)
 {
-    W_RESULT _return_result = W_PASSED;
+	W_RESULT _return_result = W_PASSED;
 
-    const std::string _trace_info = "w_graphics_device::capture";
-    
-    VkImage _dst_image = 0;
-    VkDeviceMemory _dst_image_memory = 0;
-    VkCommandBuffer _copy_cmd = 0;
-    VkFence _copy_fence = 0;
-    bool _command_buffer_began = false;
+	const std::string _trace_info = "w_graphics_device::capture";
+
+	VkImage _dst_image = 0;
+	VkDeviceMemory _dst_image_memory = 0;
+	VkCommandBuffer _copy_cmd = 0;
+	VkFence _copy_fence = 0;
+	bool _command_buffer_began = false;
 	bool _bliting_supported = true;
 
 	//check whether blitting is supported or not
@@ -315,27 +315,27 @@ W_RESULT w_graphics_device::capture(
 		}
 	}
 
-    //create destination image in order to get data of swap chain's image and later allow access from cpu
-    VkImageCreateInfo _image_create_info = {};
-    _image_create_info.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
-    _image_create_info.imageType = VK_IMAGE_TYPE_2D;
-    _image_create_info.format = pSourceImageFormat;
-    _image_create_info.extent.width = pWidth;
-    _image_create_info.extent.height = pHeight;
-    _image_create_info.extent.depth = 1;
-    _image_create_info.arrayLayers = 1;
-    _image_create_info.mipLevels = 1;
-    _image_create_info.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-    _image_create_info.samples = VK_SAMPLE_COUNT_1_BIT;
-    _image_create_info.tiling = VK_IMAGE_TILING_LINEAR;
-    _image_create_info.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT;
+	//create destination image in order to get data of swap chain's image and later allow access from cpu
+	VkImageCreateInfo _image_create_info = {};
+	_image_create_info.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+	_image_create_info.imageType = VK_IMAGE_TYPE_2D;
+	_image_create_info.format = pSourceImageFormat;
+	_image_create_info.extent.width = pWidth;
+	_image_create_info.extent.height = pHeight;
+	_image_create_info.extent.depth = 1;
+	_image_create_info.arrayLayers = 1;
+	_image_create_info.mipLevels = 1;
+	_image_create_info.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+	_image_create_info.samples = VK_SAMPLE_COUNT_1_BIT;
+	_image_create_info.tiling = VK_IMAGE_TILING_LINEAR;
+	_image_create_info.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT;
 
-    //create the destination image
-    auto _hr = vkCreateImage(
-        this->vk_device,
-        &_image_create_info,
-        nullptr,
-        &_dst_image);
+	//create the destination image
+	auto _hr = vkCreateImage(
+		this->vk_device,
+		&_image_create_info,
+		nullptr,
+		&_dst_image);
 	if (_hr)
 	{
 		_return_result = W_FAILED;
@@ -348,62 +348,62 @@ W_RESULT w_graphics_device::capture(
 	}
 
 
-    {
-        //get memory requirements
-        VkMemoryRequirements _mem_requirements;
-        vkGetImageMemoryRequirements(this->vk_device, _dst_image, &_mem_requirements);
+	{
+		//get memory requirements
+		VkMemoryRequirements _mem_requirements;
+		vkGetImageMemoryRequirements(this->vk_device, _dst_image, &_mem_requirements);
 
-        uint32_t _mem_type_index;
-        w_graphics_device_manager::memory_type_from_properties(
-            this->vk_physical_device_memory_properties,
-            _mem_requirements.memoryTypeBits,
+		uint32_t _mem_type_index;
+		w_graphics_device_manager::memory_type_from_properties(
+			this->vk_physical_device_memory_properties,
+			_mem_requirements.memoryTypeBits,
 			VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-            &_mem_type_index);
+			&_mem_type_index);
 
-        //allocate memory info
-        VkMemoryAllocateInfo _mem_alloc_info = {};
-        _mem_alloc_info.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-        _mem_alloc_info.allocationSize = _mem_requirements.size;
-        _mem_alloc_info.memoryTypeIndex = _mem_type_index;
+		//allocate memory info
+		VkMemoryAllocateInfo _mem_alloc_info = {};
+		_mem_alloc_info.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+		_mem_alloc_info.allocationSize = _mem_requirements.size;
+		_mem_alloc_info.memoryTypeIndex = _mem_type_index;
 
-        //allocate memory in host
-        _hr = vkAllocateMemory(this->vk_device, &_mem_alloc_info, nullptr, &_dst_image_memory);
-        if (_hr)
-        {
-            _return_result = W_FAILED;
-            V(_return_result,
+		//allocate memory in host
+		_hr = vkAllocateMemory(this->vk_device, &_mem_alloc_info, nullptr, &_dst_image_memory);
+		if (_hr)
+		{
+			_return_result = W_FAILED;
+			V(_return_result,
 				w_log_type::W_ERROR,
-                "creating destination image for graphics device: {}. trace info: {}", 
+				"creating destination image for graphics device: {}. trace info: {}",
 				this->get_info(),
-                _trace_info);
-            goto clean_up;
-        }
-    }
+				_trace_info);
+			goto clean_up;
+		}
+	}
 
 	//TODO: this must do once over instnace
-    //bind to image memory
-    _hr = vkBindImageMemory(this->vk_device, _dst_image, _dst_image_memory, 0);
-    if (_hr)
-    {
-        _return_result = W_FAILED;
-        V(_return_result,
+	//bind to image memory
+	_hr = vkBindImageMemory(this->vk_device, _dst_image, _dst_image_memory, 0);
+	if (_hr)
+	{
+		_return_result = W_FAILED;
+		V(_return_result,
 			w_log_type::W_ERROR,
-            "binding to destination image for graphics graphics device: {}. trace info: {}",
+			"binding to destination image for graphics graphics device: {}. trace info: {}",
 			this->get_info(),
-            _trace_info);
-        goto clean_up;
-    }
+			_trace_info);
+		goto clean_up;
+	}
 
-    {
-        const auto _sub_res_range = VkImageSubresourceRange
-        {
-            VK_IMAGE_ASPECT_COLOR_BIT,
-            0,
-            1,
-            0,
-            1
-        };
-        
+	{
+		const auto _sub_res_range = VkImageSubresourceRange
+		{
+			VK_IMAGE_ASPECT_COLOR_BIT,
+			0,
+			1,
+			0,
+			1
+		};
+
 		// create command buffer on primary
 		VkCommandBufferAllocateInfo _copy_cmd_buf_allocate_info = {};
 		_copy_cmd_buf_allocate_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -438,115 +438,115 @@ W_RESULT w_graphics_device::capture(
 			goto clean_up;
 		}
 
-        //transition from memory to transfer write for destination image
-        VkImageMemoryBarrier _imb_undefined_to_dst_transfer= {};
-        _imb_undefined_to_dst_transfer.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-        _imb_undefined_to_dst_transfer.srcAccessMask = 0;
-        _imb_undefined_to_dst_transfer.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
-        _imb_undefined_to_dst_transfer.oldLayout = VK_IMAGE_LAYOUT_PREINITIALIZED;
-        _imb_undefined_to_dst_transfer.newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
-        _imb_undefined_to_dst_transfer.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-        _imb_undefined_to_dst_transfer.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-        _imb_undefined_to_dst_transfer.image = _dst_image;
-        _imb_undefined_to_dst_transfer.subresourceRange = _sub_res_range;
+		//transition from memory to transfer write for destination image
+		VkImageMemoryBarrier _imb_undefined_to_dst_transfer = {};
+		_imb_undefined_to_dst_transfer.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+		_imb_undefined_to_dst_transfer.srcAccessMask = 0;
+		_imb_undefined_to_dst_transfer.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+		_imb_undefined_to_dst_transfer.oldLayout = VK_IMAGE_LAYOUT_PREINITIALIZED;
+		_imb_undefined_to_dst_transfer.newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+		_imb_undefined_to_dst_transfer.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+		_imb_undefined_to_dst_transfer.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+		_imb_undefined_to_dst_transfer.image = _dst_image;
+		_imb_undefined_to_dst_transfer.subresourceRange = _sub_res_range;
 
-        vkCmdPipelineBarrier(
-            _copy_cmd,
-            VK_PIPELINE_STAGE_TRANSFER_BIT,
-            VK_PIPELINE_STAGE_TRANSFER_BIT,
-            0,
-            0,
-            nullptr,
-            0,
-            nullptr,
-            1,
-            &_imb_undefined_to_dst_transfer);
+		vkCmdPipelineBarrier(
+			_copy_cmd,
+			VK_PIPELINE_STAGE_TRANSFER_BIT,
+			VK_PIPELINE_STAGE_TRANSFER_BIT,
+			0,
+			0,
+			nullptr,
+			0,
+			nullptr,
+			1,
+			&_imb_undefined_to_dst_transfer);
 
-        //transition from memory read to transfer read for source image
-        VkImageMemoryBarrier _imb_memory_to_transfer_read = {};
-        _imb_memory_to_transfer_read.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-        _imb_memory_to_transfer_read.srcAccessMask = VK_ACCESS_MEMORY_READ_BIT;
-        _imb_memory_to_transfer_read.dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
-        _imb_memory_to_transfer_read.oldLayout = pSourceImageLayout;
-        _imb_memory_to_transfer_read.newLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
-        _imb_memory_to_transfer_read.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-        _imb_memory_to_transfer_read.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-        _imb_memory_to_transfer_read.image = pSourceImage;
-        _imb_memory_to_transfer_read.subresourceRange = _sub_res_range;
-        
-        vkCmdPipelineBarrier(
-            _copy_cmd,
-            VK_PIPELINE_STAGE_TRANSFER_BIT,
-            VK_PIPELINE_STAGE_TRANSFER_BIT,
-            0,
-            0,
-            nullptr,
-            0,
-            nullptr,
-            1,
-            &_imb_memory_to_transfer_read);
+		//transition from memory read to transfer read for source image
+		VkImageMemoryBarrier _imb_memory_to_transfer_read = {};
+		_imb_memory_to_transfer_read.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+		_imb_memory_to_transfer_read.srcAccessMask = VK_ACCESS_MEMORY_READ_BIT;
+		_imb_memory_to_transfer_read.dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
+		_imb_memory_to_transfer_read.oldLayout = pSourceImageLayout;
+		_imb_memory_to_transfer_read.newLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
+		_imb_memory_to_transfer_read.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+		_imb_memory_to_transfer_read.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+		_imb_memory_to_transfer_read.image = pSourceImage;
+		_imb_memory_to_transfer_read.subresourceRange = _sub_res_range;
 
-    }
+		vkCmdPipelineBarrier(
+			_copy_cmd,
+			VK_PIPELINE_STAGE_TRANSFER_BIT,
+			VK_PIPELINE_STAGE_TRANSFER_BIT,
+			0,
+			0,
+			nullptr,
+			0,
+			nullptr,
+			1,
+			&_imb_memory_to_transfer_read);
 
-    if (_bliting_supported)
-    {
-        // apply bliting
-        VkOffset3D _src_offset =
-        {
-            (int32_t)pWidth,	//x
-            (int32_t)pHeight,	//y
-            1					//z
-        };
+	}
 
-        VkImageBlit _image_blit_region = {};
-        _image_blit_region.srcSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-        _image_blit_region.srcSubresource.layerCount = 1;
-        _image_blit_region.srcOffsets[1] = _src_offset;
-        _image_blit_region.dstSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-        _image_blit_region.dstSubresource.layerCount = 1;
-        _image_blit_region.dstOffsets[1] = _src_offset;
+	if (_bliting_supported)
+	{
+		// apply bliting
+		VkOffset3D _src_offset =
+		{
+			(int32_t)pWidth,	//x
+			(int32_t)pHeight,	//y
+			1					//z
+		};
 
-        // apply blit command
-        vkCmdBlitImage(
-            _copy_cmd,
+		VkImageBlit _image_blit_region = {};
+		_image_blit_region.srcSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+		_image_blit_region.srcSubresource.layerCount = 1;
+		_image_blit_region.srcOffsets[1] = _src_offset;
+		_image_blit_region.dstSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+		_image_blit_region.dstSubresource.layerCount = 1;
+		_image_blit_region.dstOffsets[1] = _src_offset;
+
+		// apply blit command
+		vkCmdBlitImage(
+			_copy_cmd,
 			pSourceImage, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
-            _dst_image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
-            1,
-            &_image_blit_region,
-            VK_FILTER_NEAREST);
-    }
-    else
-    {
-        // apply image copy
-        VkImageCopy _image_copy_region = {};
-        _image_copy_region.srcSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-        _image_copy_region.srcSubresource.layerCount = 1;
-        _image_copy_region.dstSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-        _image_copy_region.dstSubresource.layerCount = 1;
-        _image_copy_region.extent.width = pWidth;
-        _image_copy_region.extent.height = pHeight;
-        _image_copy_region.extent.depth = 1;
+			_dst_image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+			1,
+			&_image_blit_region,
+			VK_FILTER_NEAREST);
+	}
+	else
+	{
+		// apply image copy
+		VkImageCopy _image_copy_region = {};
+		_image_copy_region.srcSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+		_image_copy_region.srcSubresource.layerCount = 1;
+		_image_copy_region.dstSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+		_image_copy_region.dstSubresource.layerCount = 1;
+		_image_copy_region.extent.width = pWidth;
+		_image_copy_region.extent.height = pHeight;
+		_image_copy_region.extent.depth = 1;
 
-        //Apply copy region command
-        vkCmdCopyImage(
-            _copy_cmd,
+		//Apply copy region command
+		vkCmdCopyImage(
+			_copy_cmd,
 			pSourceImage, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
-            _dst_image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
-            1,
-            &_image_copy_region);
-    }
+			_dst_image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+			1,
+			&_image_copy_region);
+	}
 
 
 	{
-        const auto _sub_res_range = VkImageSubresourceRange
-        {
-            VK_IMAGE_ASPECT_COLOR_BIT,
-            0,
-            1,
-            0,
-            1
-        };
-        
+		const auto _sub_res_range = VkImageSubresourceRange
+		{
+			VK_IMAGE_ASPECT_COLOR_BIT,
+			0,
+			1,
+			0,
+			1
+		};
+
 		//transition from transfer write to memory read for destination image
 		VkImageMemoryBarrier _imb_transfer_write_to_memory_read = {};
 		_imb_transfer_write_to_memory_read.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
@@ -630,7 +630,7 @@ W_RESULT w_graphics_device::capture(
 		_submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 		_submit_info.pCommandBuffers = &_copy_cmd;
 		_submit_info.commandBufferCount = 1;
-		
+
 		//Submit to the queue
 		_hr = vkQueueSubmit(this->vk_graphics_queue.queue, 1, &_submit_info, _copy_fence);
 		if (_hr)
@@ -669,27 +669,27 @@ W_RESULT w_graphics_device::capture(
 		_data += _sub_resource_layout.offset;
 		pOnPixelsDataCaptured.emit(_size, _data);
 		vkUnmapMemory(this->vk_device, _dst_image_memory);
-		
+
 		_data = nullptr;
 	}
 
 clean_up:
-    if (_dst_image_memory)
-    {
-        vkFreeMemory(this->vk_device, _dst_image_memory, nullptr);
-    }
-    if (_dst_image)
-    {
-        vkDestroyImage(
-            this->vk_device,
-            _dst_image,
-            nullptr);
-    }
-    if (_copy_cmd)
-    {
-        if (_command_buffer_began)
-        {
-            _hr = vkEndCommandBuffer(_copy_cmd);
+	if (_dst_image_memory)
+	{
+		vkFreeMemory(this->vk_device, _dst_image_memory, nullptr);
+	}
+	if (_dst_image)
+	{
+		vkDestroyImage(
+			this->vk_device,
+			_dst_image,
+			nullptr);
+	}
+	if (_copy_cmd)
+	{
+		if (_command_buffer_began)
+		{
+			_hr = vkEndCommandBuffer(_copy_cmd);
 			if (_hr)
 			{
 				V(W_FAILED,
@@ -697,22 +697,22 @@ clean_up:
 					this->get_info(),
 					_trace_info);
 			}
-        }
-        vkFreeCommandBuffers(
-            this->vk_device,
-            this->vk_command_allocator_pool,
-            1,
-            &_copy_cmd
-        );
-    }
-    //release fence
-    if (_copy_fence)
-    {
-        vkDestroyFence(this->vk_device, _copy_fence, nullptr);
-    }
+		}
+		vkFreeCommandBuffers(
+			this->vk_device,
+			this->vk_command_allocator_pool,
+			1,
+			&_copy_cmd
+		);
+	}
+	//release fence
+	if (_copy_fence)
+	{
+		vkDestroyFence(this->vk_device, _copy_fence, nullptr);
+	}
 
 
-    return _return_result;
+	return _return_result;
 }
 
 W_RESULT w_graphics_device::capture_presented_swap_chain_buffer(
@@ -989,7 +989,7 @@ clean_up:
 		}
 		_objs_ptr->command_buffer_began = false;
 	}
-	
+
 	return _return_result;
 }
 
@@ -1075,57 +1075,57 @@ void w_graphics_device::_clean_swap_chain()
 
 ULONG w_graphics_device::release()
 {
-    //release all resources
-    if (this->_is_released) return 1;
+	//release all resources
+	if (this->_is_released) return 1;
 
-    this->_is_released = true;
+	this->_is_released = true;
 
 #ifdef __DX12__
 
-    //wait for previous frame
+	//wait for previous frame
 
-    this->device_name.clear();
-    this->device_id = 0;
+	this->device_name.clear();
+	this->device_id = 0;
 
-    //release all output presentation windows
-    for (size_t i = 0; i < this->output_presentation_windows.size(); ++i)
-    {
-        auto _output_window = &(this->output_presentation_windows.at(i));
+	//release all output presentation windows
+	for (size_t i = 0; i < this->output_presentation_windows.size(); ++i)
+	{
+		auto _output_window = &(this->output_presentation_windows.at(i));
 
-        if (_output_window->dx_swap_chain)
-        {
-            _output_window->dx_swap_chain->SetFullscreenState(false, NULL);
-        }
+		if (_output_window->dx_swap_chain)
+		{
+			_output_window->dx_swap_chain->SetFullscreenState(false, NULL);
+		}
 
-        COMPTR_RELEASE(_output_window->dx_command_allocator_pool);
-        COMPTR_RELEASE(_output_window->dx_command_queue);
-        COMPTR_RELEASE(_output_window->dx_command_list);
-        COMPTR_RELEASE(_output_window->dx_fence);
-        COMPTR_RELEASE(_output_window->dx_pipeline_state);
+		COMPTR_RELEASE(_output_window->dx_command_allocator_pool);
+		COMPTR_RELEASE(_output_window->dx_command_queue);
+		COMPTR_RELEASE(_output_window->dx_command_list);
+		COMPTR_RELEASE(_output_window->dx_fence);
+		COMPTR_RELEASE(_output_window->dx_pipeline_state);
 
-        for (size_t i = 0; i < _output_window->dx_swap_chain_image_views.size(); ++i)
-        {
-            COM_RELEASE(_output_window->dx_swap_chain_image_views[i]);
-        }
-        COMPTR_RELEASE(_output_window->dx_render_target_view_heap);
-        COMPTR_RELEASE(_output_window->dx_swap_chain);
+		for (size_t i = 0; i < _output_window->dx_swap_chain_image_views.size(); ++i)
+		{
+			COM_RELEASE(_output_window->dx_swap_chain_image_views[i]);
+		}
+		COMPTR_RELEASE(_output_window->dx_render_target_view_heap);
+		COMPTR_RELEASE(_output_window->dx_swap_chain);
 
 #ifdef __WIN32
-        _output_window->hwnd = NULL;
+		_output_window->hwnd = NULL;
 #endif
 
-        COMPTR_RELEASE(_output_window->dx_fence);
-        CloseHandle(_output_window->dx_fence_event);
-    }
+		COMPTR_RELEASE(_output_window->dx_fence);
+		CloseHandle(_output_window->dx_fence_event);
+	}
 
-    COMPTR_RELEASE(this->dx_device);
-    COMPTR_RELEASE(this->dx_dxgi_outputs);
-    COMPTR_RELEASE(this->dx_adaptor);
+	COMPTR_RELEASE(this->dx_device);
+	COMPTR_RELEASE(this->dx_dxgi_outputs);
+	COMPTR_RELEASE(this->dx_adaptor);
 
 #elif defined(__VULKAN__)
 
-    //wait for device to become IDLE
-    vkDeviceWaitIdle(this->vk_device);
+	//wait for device to become IDLE
+	vkDeviceWaitIdle(this->vk_device);
 
 	//release memory
 	this->memory_allocator.release();
@@ -1140,29 +1140,29 @@ ULONG w_graphics_device::release()
 		nullptr);
 	this->output_presentation_window.vk_presentation_surface = 0;
 
-    this->vk_queue_family_properties.clear();
-    this->vk_queue_family_supports_present.clear();
+	this->vk_queue_family_properties.clear();
+	this->vk_queue_family_supports_present.clear();
 
-    this->vk_graphics_queue.release();
-    this->vk_present_queue.release();
-    this->vk_compute_queue.release();
-    this->vk_transfer_queue.release();
+	this->vk_graphics_queue.release();
+	this->vk_present_queue.release();
+	this->vk_compute_queue.release();
+	this->vk_transfer_queue.release();
 	this->vk_sparse_queue.release();
 
-    //destroy command pool
-    vkDestroyCommandPool(this->vk_device,
-        this->vk_command_allocator_pool,
-        nullptr);
-    this->vk_command_allocator_pool = 0;
+	//destroy command pool
+	vkDestroyCommandPool(this->vk_device,
+		this->vk_command_allocator_pool,
+		nullptr);
+	this->vk_command_allocator_pool = 0;
 
-    SAFE_RELEASE(this->device_info);
+	SAFE_RELEASE(this->device_info);
 
-    //release vulkan resources
-    vkDestroyDevice(this->vk_device, nullptr);
-	
+	//release vulkan resources
+	vkDestroyDevice(this->vk_device, nullptr);
+
 #endif
 
-    return 1;
+	return 1;
 }
 
 #pragma region w_graphics_device_manager
@@ -1177,302 +1177,167 @@ static PFN_vkDebugReportMessageEXT sDebugBreakCallback = 0;
 
 static VkDebugReportCallbackEXT MsgCallback;
 static VkBool32 DebugMessageCallback(
-    VkDebugReportFlagsEXT pFlags,
-    VkDebugReportObjectTypeEXT pObjType,
-    uint64_t pSrcObject,
-    size_t pLocation,
-    int32_t pMsgCode,
-    const char* pLayerPrefix,
-    const char* pMsg,
-    void* pUserData)
+	VkDebugReportFlagsEXT pFlags,
+	VkDebugReportObjectTypeEXT pObjType,
+	uint64_t pSrcObject,
+	size_t pLocation,
+	int32_t pMsgCode,
+	const char* pLayerPrefix,
+	const char* pMsg,
+	void* pUserData)
 {
-    using namespace wolf;
+	using namespace wolf;
 
-    // Error that may result in undefined behaviour
-    if (pFlags & VK_DEBUG_REPORT_ERROR_BIT_EXT)
-    {
+	// Error that may result in undefined behaviour
+	if (pFlags & VK_DEBUG_REPORT_ERROR_BIT_EXT)
+	{
 		logger.error("[Vulkan Debugger] Flag: ERROR - Message code: {} - Message: {}", pMsgCode, pMsg);
-    }
-    // Warnings may hint at unexpected / non-spec API usage
-    if (pFlags & VK_DEBUG_REPORT_WARNING_BIT_EXT)
-    {
-        logger.warning("[Vulkan Debugger] Flag: WARNING - Message code: {} - Message: {}", pMsgCode, pMsg);
-    }
-    // May indicate sub-optimal usage of the API
-    if (pFlags & VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT)
-    {
-        logger.write("[Vulkan Debugger] Flag: PERFORMANCE - Message code: {} - Message: {}", pMsgCode, pMsg);
-    }
-    // Informal messages that may become handy during debugging
-    if (pFlags & VK_DEBUG_REPORT_INFORMATION_BIT_EXT)
-    {
+	}
+	// Warnings may hint at unexpected / non-spec API usage
+	if (pFlags & VK_DEBUG_REPORT_WARNING_BIT_EXT)
+	{
+		logger.warning("[Vulkan Debugger] Flag: WARNING - Message code: {} - Message: {}", pMsgCode, pMsg);
+	}
+	// May indicate sub-optimal usage of the API
+	if (pFlags & VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT)
+	{
+		logger.write("[Vulkan Debugger] Flag: PERFORMANCE - Message code: {} - Message: {}", pMsgCode, pMsg);
+	}
+	// Informal messages that may become handy during debugging
+	if (pFlags & VK_DEBUG_REPORT_INFORMATION_BIT_EXT)
+	{
 		logger.write("[Vulkan Debugger] Flag: INFO - Message code: {} - Message: {}", pMsgCode, pMsg);
-    }
-    // Diagnostic info from the Vulkan loader and layers
-    // Usually not helpful in terms of API usage, but may help to debug layer and loader problems 
-    if (pFlags & VK_DEBUG_REPORT_DEBUG_BIT_EXT)
-    {
+	}
+	// Diagnostic info from the Vulkan loader and layers
+	// Usually not helpful in terms of API usage, but may help to debug layer and loader problems 
+	if (pFlags & VK_DEBUG_REPORT_DEBUG_BIT_EXT)
+	{
 		logger.write("[Vulkan Debugger] Flag: DEBUG - Message code: {} - Message: {}", pMsgCode, pMsg);
-    }
+	}
 
-    // The return value of this callback controls wether the Vulkan call that caused
-    // the validation message will be aborted or not
-    // We return VK_FALSE as we DON'T want Vulkan calls that cause a validation message 
-    // (and return a VkResult) to abort
-    // If you instead want to have calls abort, pass in VK_TRUE and the function will 
-    // return VK_ERROR_VALIDATION_FAILED_EXT 
-    return VK_FALSE;
+	// The return value of this callback controls wether the Vulkan call that caused
+	// the validation message will be aborted or not
+	// We return VK_FALSE as we DON'T want Vulkan calls that cause a validation message 
+	// (and return a VkResult) to abort
+	// If you instead want to have calls abort, pass in VK_TRUE and the function will 
+	// return VK_ERROR_VALIDATION_FAILED_EXT 
+	return VK_FALSE;
 }
 #endif
 
 namespace wolf
 {
-    namespace render
-    {
+	namespace render
+	{
 		namespace vulkan
 		{
-		class w_graphics_device_manager_pimp
-		{
-		public:
-			w_graphics_device_manager_pimp() :
-				_name("w_graphics_device_manager_pimp")
+			class w_graphics_device_manager_pimp
 			{
-			}
+			public:
+				w_graphics_device_manager_pimp() :
+					_name("w_graphics_device_manager_pimp")
+				{
+				}
 
-			void enumerate_devices(_Inout_  std::vector<std::shared_ptr<w_graphics_device>>& pGraphicsDevices,
-				_In_ system::w_signal<void(w_device_info**)>* pOnDeviceFeaturesFetched)
-			{
+				void enumerate_devices(_Inout_  std::vector<std::shared_ptr<w_graphics_device>>& pGraphicsDevices,
+					_In_ system::w_signal<void(w_device_info**)>* pOnDeviceFeaturesFetched)
+				{
 #ifdef __DX12__
 
-				W_RESULT _hr = W_FAILED;
+					W_RESULT _hr = W_FAILED;
 
-				std::wstring _msg;
-				_msg += L"++++++++++++++++++++++++++++++++++++++++++++++++++++++++\r\n\t\t\t\t\tDirectX API version: 12";
+					std::wstring _msg;
+					_msg += L"++++++++++++++++++++++++++++++++++++++++++++++++++++++++\r\n\t\t\t\t\tDirectX API version: 12";
 
-				UINT _dxgi_factory_flags = 0;
-                
-				if (this->_config.debug_gpu)
-				{
-					/*
-						Enable the debug layer (requires the Graphics Tools "optional feature").
-						NOTE: Enabling the debug layer after device creation will invalidate the active device.
-					*/
-					ComPtr<ID3D12Debug> _debug_controller;
-					if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&_debug_controller))))
+					UINT _dxgi_factory_flags = 0;
+
+					if (this->_config.debug_gpu)
 					{
-						_debug_controller->EnableDebugLayer();
-						//Enable additional debug layers.
-						_dxgi_factory_flags |= DXGI_CREATE_FACTORY_DEBUG;
-					}
-					else
-					{
-						logger.warning(L"Could not enable the debug layer for DirectX 12");
-					}
-				}
-
-				_hr = CreateDXGIFactory2(_dxgi_factory_flags, IID_PPV_ARGS(&w_graphics_device::dx_dxgi_factory));
-				if (FAILED(_hr))
-				{
-					logger.error(L"error on getting dxgi factory");
-					release();
-					std::exit(EXIT_FAILURE);
-				}
-
-				const D3D_FEATURE_LEVEL _feature_levels[] =
-				{
-					D3D_FEATURE_LEVEL_12_1,
-					D3D_FEATURE_LEVEL_12_0,
-					D3D_FEATURE_LEVEL_11_1,
-					D3D_FEATURE_LEVEL_11_0,
-					D3D_FEATURE_LEVEL_10_1,
-					D3D_FEATURE_LEVEL_10_0,
-					D3D_FEATURE_LEVEL_9_3,
-					D3D_FEATURE_LEVEL_9_2,
-					D3D_FEATURE_LEVEL_9_1
-				};
-
-				const size_t _features_len = ARRAYSIZE(_feature_levels);
-				size_t _feature_level_start_index = 0;
-
-				//create wrap mode device or hardware device?
-				if (this->_config.use_wrap_mode)
-				{
-					if (this->_config.wrap_mode_feature_level < D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_0)
-					{
-						this->_config.wrap_mode_feature_level = D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_0;
-						logger.warning("Minimum feature level must be at least D3D_FEATURE_LEVEL_11_0 for a D3D12 device. Wrap mode feature level set to D3D_FEATURE_LEVEL_11_0.");
-					}
-					for (_feature_level_start_index = 0; _feature_level_start_index < _features_len; ++_feature_level_start_index)
-					{
-						if (_feature_levels[_feature_level_start_index] == this->_config.wrap_mode_feature_level)
+						/*
+							Enable the debug layer (requires the Graphics Tools "optional feature").
+							NOTE: Enabling the debug layer after device creation will invalidate the active device.
+						*/
+						ComPtr<ID3D12Debug> _debug_controller;
+						if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&_debug_controller))))
 						{
-							break;
-						}
-					}
-
-					auto _gDevice = std::make_shared<w_graphics_device>();
-					_gDevice->dx_device_removed = false;
-					_gDevice->dx_is_wrap_device = true;
-
-					ComPtr<IDXGIAdapter> _warp_adapter;
-					_hr = w_graphics_device::dx_dxgi_factory->EnumWarpAdapter(IID_PPV_ARGS(&_warp_adapter));
-					if (FAILED(_hr))
-					{
-						logger.error(L"error on getting wrap adaptor");
-						release();
-						std::exit(EXIT_FAILURE);
-					}
-
-					bool _device_created = false;
-					for (size_t i = _feature_level_start_index; i < _features_len; i++)
-					{
-						_hr = D3D12CreateDevice(
-							_warp_adapter.Get(),
-							_feature_levels[i],
-							IID_PPV_ARGS(&_gDevice->dx_device));
-						if (FAILED(_hr))
-						{
-							_msg += L"creating wrap device with feature level: " + DirectX::GetFeatureLevelStrW(this->_config.wrap_mode_feature_level);
-							logger.error(_msg);
+							_debug_controller->EnableDebugLayer();
+							//Enable additional debug layers.
+							_dxgi_factory_flags |= DXGI_CREATE_FACTORY_DEBUG;
 						}
 						else
 						{
-							this->_config.wrap_mode_feature_level = _feature_levels[i];
-							_device_created = true;
-							break;
+							logger.warning(L"Could not enable the debug layer for DirectX 12");
 						}
 					}
 
-					if (!_device_created)
+					_hr = CreateDXGIFactory2(_dxgi_factory_flags, IID_PPV_ARGS(&w_graphics_device::dx_dxgi_factory));
+					if (FAILED(_hr))
 					{
-						logger.error(L"no device was created");
+						logger.error(L"error on getting dxgi factory");
 						release();
 						std::exit(EXIT_FAILURE);
 					}
 
-					_gDevice->device_name = "DirectX Wrap mode with " + DirectX::GetFeatureLevelStr(this->_config.wrap_mode_feature_level);
-					_gDevice->device_id = 0;
-					_gDevice->device_vendor_id = 0;
-					_msg += L"\r\n\t\t\t\t\tDirectX Wrap mode with " + DirectX::GetFeatureLevelStrW(this->_config.wrap_mode_feature_level);
-
-
-					//add the wrap device graphics devices list
-					pGraphicsDevices.push_back(_gDevice);
-
-					//create first presentation windows for wrap graphics device
-					auto _win = this->_windows_info.find(0);
-					if (_win != this->_windows_info.end())
+					const D3D_FEATURE_LEVEL _feature_levels[] =
 					{
-						for (size_t j = 0; j < _win->second.size(); ++j)
-						{
-							auto _window = _win->second[j];
+						D3D_FEATURE_LEVEL_12_1,
+						D3D_FEATURE_LEVEL_12_0,
+						D3D_FEATURE_LEVEL_11_1,
+						D3D_FEATURE_LEVEL_11_0,
+						D3D_FEATURE_LEVEL_10_1,
+						D3D_FEATURE_LEVEL_10_0,
+						D3D_FEATURE_LEVEL_9_3,
+						D3D_FEATURE_LEVEL_9_2,
+						D3D_FEATURE_LEVEL_9_1
+					};
 
-							w_output_presentation_window _out_window;
-							_out_window.index = static_cast<int>(j);
-							_out_window.dx_swap_chain_selected_format = (DXGI_FORMAT)_window.swap_chain_format;
+					const size_t _features_len = ARRAYSIZE(_feature_levels);
+					size_t _feature_level_start_index = 0;
 
-#if defined(__WIN32) || ( defined(__linux) && !defined(__ANDROID) ) || defined(__APPLE__)
-							_out_window.width = _window.width;
-							_out_window.height = _window.height;
-							_out_window.aspect_ratio = (float)_window.width / (float)_window.height;
-							_out_window.v_sync = _window.v_sync;
-							_out_window.force_to_disable_v_sync = _window.force_to_disable_v_sync;
-							_out_window.is_full_screen = _window.is_full_screen;
-#ifdef __WIN32
-							_out_window.hwnd = _window.hwnd;
-							_out_window.hInstance = _window.hInstance == NULL ? (HINSTANCE)GetModuleHandle(NULL) : _window.hInstance;
-#endif
-
-#elif defined(__UWP)
-							_out_window.window = _window.window;
-							_out_window.window_size = _window.window_size;
-							_out_window.window_current_orientation = _window.window_current_orientation;
-							_out_window.window_native_orientation = _window.window_native_orientation;
-							_out_window.window_dpi = _window.window_dpi;
-							_out_window.support_high_resolutions = _window.support_high_resolutions;
-							_out_window.aspect_ratio = _window.window_size.Width / _window.window_size.Height;
-#endif
-
-							_gDevice->output_presentation_windows.push_back(_out_window);
-
-							create_or_resize_swap_chain(_gDevice, j);
-							_create_depth_stencil_buffer(_gDevice, j);
-							_create_fences(_gDevice, j);
-
-						}
-					}
-				}
-				else
-				{
-					//looking for hardware GPUs 
-					_msg += L"\r\n\t\t\t\t\tGPU(s) founded:\r\n";
-
-					//Iterate for all adaptors
-					ComPtr<IDXGIAdapter1> _adapter;
-					for (int i = 0; w_graphics_device::dx_dxgi_factory->EnumAdapters1(i, &_adapter) != DXGI_ERROR_NOT_FOUND; ++i)
+					//create wrap mode device or hardware device?
+					if (this->_config.use_wrap_mode)
 					{
-						//if the feature level not specified in configs, the default feature level is D3D_FEATURE_LEVEL_11_0
-						auto _selected_feature_level = i >= this->_config.hardware_feature_levels.size() ? D3D_FEATURE_LEVEL_11_0 : this->_config.hardware_feature_levels[i];
-						if (_selected_feature_level < D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_0)
+						if (this->_config.wrap_mode_feature_level < D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_0)
 						{
-							_selected_feature_level = D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_0;
-							logger.warning("Minimum feature level must be at least D3D_FEATURE_LEVEL_11_0 for a D3D12 device. Hardware feature level for graphics device set to D3D_FEATURE_LEVEL_11_0.");
+							this->_config.wrap_mode_feature_level = D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_0;
+							logger.warning("Minimum feature level must be at least D3D_FEATURE_LEVEL_11_0 for a D3D12 device. Wrap mode feature level set to D3D_FEATURE_LEVEL_11_0.");
 						}
 						for (_feature_level_start_index = 0; _feature_level_start_index < _features_len; ++_feature_level_start_index)
 						{
-							if (_feature_levels[_feature_level_start_index] == _selected_feature_level)
+							if (_feature_levels[_feature_level_start_index] == this->_config.wrap_mode_feature_level)
 							{
 								break;
 							}
 						}
 
-						DXGI_ADAPTER_DESC1 _adapter_desc = {};
-						auto _hr = _adapter->GetDesc1(&_adapter_desc);
-						if (_hr != W_PASSED)
+						auto _gDevice = std::make_shared<w_graphics_device>();
+						_gDevice->dx_device_removed = false;
+						_gDevice->dx_is_wrap_device = true;
+
+						ComPtr<IDXGIAdapter> _warp_adapter;
+						_hr = w_graphics_device::dx_dxgi_factory->EnumWarpAdapter(IID_PPV_ARGS(&_warp_adapter));
+						if (FAILED(_hr))
 						{
-							logger.write(_msg);
-							_msg.clear();
-							_msg = L"Could not get adaptor.";
-							logger.error(_msg);
+							logger.error(L"error on getting wrap adaptor");
 							release();
 							std::exit(EXIT_FAILURE);
 						}
 
-						auto _device_name = std::wstring(_adapter_desc.Description);
-						auto _device_id = _adapter_desc.DeviceId;
-						auto _device_vendor_id = _adapter_desc.VendorId;
-
-						_msg += L"\t\t\t\t\t\tDevice Name: " + _device_name + L"\r\n";
-						_msg += L"\t\t\t\t\t\tDevice ID: " + std::to_wstring(_device_id) + L"\r\n";
-						_msg += L"\t\t\t\t\t\tDevice Vendor: " + std::to_wstring(_device_vendor_id) + L"\r\n";
-						_msg += L"\t\t\t\t\t\tDevice Subsystem ID: " + std::to_wstring(_adapter_desc.SubSysId) + L"\r\n";
-						_msg += L"\t\t\t\t\t\tDevice Revision: " + std::to_wstring(_adapter_desc.Revision) + L"\r\n";
-						_msg += L"\t\t\t\t\t\tDevice Dedicated Video Memory: " + std::to_wstring(_adapter_desc.DedicatedVideoMemory) + L"\r\n";
-						_msg += L"\t\t\t\t\t\tDevice Dedicated System Memory: " + std::to_wstring(_adapter_desc.DedicatedSystemMemory) + L"\r\n";
-						_msg += L"\t\t\t\t\t\tDevice Shared System Memory: " + std::to_wstring(_adapter_desc.SharedSystemMemory) + L"\r\n";
-
-						/*
-							Acording to MSDN, starting with Windows 8, an adapter called the "Microsoft Basic Render Driver"
-							is always present.This adapter has a VendorId of 0x1414 and a DeviceID of 0x8c.
-							Wolf.Engine will skip it. Instead you can create w_graphics_device in wrap mode
-						*/
-						if (_adapter_desc.Flags & DXGI_ADAPTER_FLAG_SOFTWARE)
-						{
-							continue;
-						}
-
 						bool _device_created = false;
-						for (size_t _index = _feature_level_start_index; _index < _features_len; ++_index)
+						for (size_t i = _feature_level_start_index; i < _features_len; i++)
 						{
-							//Check to see if the adapter supports Direct3D 12, if not then skip it
-							if (FAILED(D3D12CreateDevice(_adapter.Get(), _feature_levels[_index], _uuidof(ID3D12Device), nullptr)))
+							_hr = D3D12CreateDevice(
+								_warp_adapter.Get(),
+								_feature_levels[i],
+								IID_PPV_ARGS(&_gDevice->dx_device));
+							if (FAILED(_hr))
 							{
-								_msg += L"\t\t\t\t\t\tFeature level: " + DirectX::GetFeatureLevelStrW(_feature_levels[_index]) +
-									L" not supported for " + _device_name + L"\r\n";
+								_msg += L"creating wrap device with feature level: " + DirectX::GetFeatureLevelStrW(this->_config.wrap_mode_feature_level);
+								logger.error(_msg);
 							}
 							else
 							{
-								_selected_feature_level = _feature_levels[_index];
+								this->_config.wrap_mode_feature_level = _feature_levels[i];
 								_device_created = true;
 								break;
 							}
@@ -1480,47 +1345,22 @@ namespace wolf
 
 						if (!_device_created)
 						{
-							continue;
-						}
-
-						_msg += L"\t\t\t\t\t\tFeature level: " + DirectX::GetFeatureLevelStrW(_selected_feature_level) + L" supported\r\n";
-
-						auto _gDevice = std::make_shared<w_graphics_device>();
-						_gDevice->device_name = std::string(_device_name.begin(), _device_name.end());
-						_gDevice->dx_device_removed = false;
-						_gDevice->dx_is_wrap_device = false;
-						_gDevice->dx_feature_level = _selected_feature_level;
-
-						_hr = D3D12CreateDevice(
-							_adapter.Get(),
-							_selected_feature_level,
-							IID_PPV_ARGS(&_gDevice->dx_device));
-						if (_hr != W_PASSED)
-						{
-							logger.write(_msg);
-							_msg.clear();
-							_msg = L"creating hadrware device with feature level: " + DirectX::GetFeatureLevelStrW((_selected_feature_level));
-							logger.error(_msg);
+							logger.error(L"no device was created");
 							release();
 							std::exit(EXIT_FAILURE);
 						}
 
-						//write to output
-						logger.write(_msg);
-						_msg.clear();
+						_gDevice->device_name = "DirectX Wrap mode with " + DirectX::GetFeatureLevelStr(this->_config.wrap_mode_feature_level);
+						_gDevice->device_id = 0;
+						_gDevice->device_vendor_id = 0;
+						_msg += L"\r\n\t\t\t\t\tDirectX Wrap mode with " + DirectX::GetFeatureLevelStrW(this->_config.wrap_mode_feature_level);
 
 
-#ifdef __WIN32
-						//get the monitors numerator and denominator
-						_hr = _adapter->EnumOutputs(0, &_gDevice->dx_dxgi_outputs);
-						V(_hr, "enumurate output monitors", this->_name, 2);
-
-#endif
-						//add harware device to graphics devices list
+						//add the wrap device graphics devices list
 						pGraphicsDevices.push_back(_gDevice);
 
-						//create necessry presentation windows for each graphics device
-						auto _win = this->_windows_info.find(static_cast<int>(i));
+						//create first presentation windows for wrap graphics device
+						auto _win = this->_windows_info.find(0);
 						if (_win != this->_windows_info.end())
 						{
 							for (size_t j = 0; j < _win->second.size(); ++j)
@@ -1540,7 +1380,7 @@ namespace wolf
 								_out_window.is_full_screen = _window.is_full_screen;
 #ifdef __WIN32
 								_out_window.hwnd = _window.hwnd;
-								_out_window.hInstance = _out_window.hInstance = _window.hInstance == NULL ? (HINSTANCE)GetModuleHandle(NULL) : _window.hInstance;
+								_out_window.hInstance = _window.hInstance == NULL ? (HINSTANCE)GetModuleHandle(NULL) : _window.hInstance;
 #endif
 
 #elif defined(__UWP)
@@ -1562,895 +1402,1193 @@ namespace wolf
 							}
 						}
 					}
-				}
+					else
+					{
+						//looking for hardware GPUs 
+						_msg += L"\r\n\t\t\t\t\tGPU(s) founded:\r\n";
 
-				if (_msg.length())
-				{
-					//write to output
-					logger.write(_msg);
-					_msg.clear();
-				}
+						//Iterate for all adaptors
+						ComPtr<IDXGIAdapter1> _adapter;
+						for (int i = 0; w_graphics_device::dx_dxgi_factory->EnumAdapters1(i, &_adapter) != DXGI_ERROR_NOT_FOUND; ++i)
+						{
+							//if the feature level not specified in configs, the default feature level is D3D_FEATURE_LEVEL_11_0
+							auto _selected_feature_level = i >= this->_config.hardware_feature_levels.size() ? D3D_FEATURE_LEVEL_11_0 : this->_config.hardware_feature_levels[i];
+							if (_selected_feature_level < D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_0)
+							{
+								_selected_feature_level = D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_0;
+								logger.warning("Minimum feature level must be at least D3D_FEATURE_LEVEL_11_0 for a D3D12 device. Hardware feature level for graphics device set to D3D_FEATURE_LEVEL_11_0.");
+							}
+							for (_feature_level_start_index = 0; _feature_level_start_index < _features_len; ++_feature_level_start_index)
+							{
+								if (_feature_levels[_feature_level_start_index] == _selected_feature_level)
+								{
+									break;
+								}
+							}
+
+							DXGI_ADAPTER_DESC1 _adapter_desc = {};
+							auto _hr = _adapter->GetDesc1(&_adapter_desc);
+							if (_hr != W_PASSED)
+							{
+								logger.write(_msg);
+								_msg.clear();
+								_msg = L"Could not get adaptor.";
+								logger.error(_msg);
+								release();
+								std::exit(EXIT_FAILURE);
+							}
+
+							auto _device_name = std::wstring(_adapter_desc.Description);
+							auto _device_id = _adapter_desc.DeviceId;
+							auto _device_vendor_id = _adapter_desc.VendorId;
+
+							_msg += L"\t\t\t\t\t\tDevice Name: " + _device_name + L"\r\n";
+							_msg += L"\t\t\t\t\t\tDevice ID: " + std::to_wstring(_device_id) + L"\r\n";
+							_msg += L"\t\t\t\t\t\tDevice Vendor: " + std::to_wstring(_device_vendor_id) + L"\r\n";
+							_msg += L"\t\t\t\t\t\tDevice Subsystem ID: " + std::to_wstring(_adapter_desc.SubSysId) + L"\r\n";
+							_msg += L"\t\t\t\t\t\tDevice Revision: " + std::to_wstring(_adapter_desc.Revision) + L"\r\n";
+							_msg += L"\t\t\t\t\t\tDevice Dedicated Video Memory: " + std::to_wstring(_adapter_desc.DedicatedVideoMemory) + L"\r\n";
+							_msg += L"\t\t\t\t\t\tDevice Dedicated System Memory: " + std::to_wstring(_adapter_desc.DedicatedSystemMemory) + L"\r\n";
+							_msg += L"\t\t\t\t\t\tDevice Shared System Memory: " + std::to_wstring(_adapter_desc.SharedSystemMemory) + L"\r\n";
+
+							/*
+								Acording to MSDN, starting with Windows 8, an adapter called the "Microsoft Basic Render Driver"
+								is always present.This adapter has a VendorId of 0x1414 and a DeviceID of 0x8c.
+								Wolf.Engine will skip it. Instead you can create w_graphics_device in wrap mode
+							*/
+							if (_adapter_desc.Flags & DXGI_ADAPTER_FLAG_SOFTWARE)
+							{
+								continue;
+							}
+
+							bool _device_created = false;
+							for (size_t _index = _feature_level_start_index; _index < _features_len; ++_index)
+							{
+								//Check to see if the adapter supports Direct3D 12, if not then skip it
+								if (FAILED(D3D12CreateDevice(_adapter.Get(), _feature_levels[_index], _uuidof(ID3D12Device), nullptr)))
+								{
+									_msg += L"\t\t\t\t\t\tFeature level: " + DirectX::GetFeatureLevelStrW(_feature_levels[_index]) +
+										L" not supported for " + _device_name + L"\r\n";
+								}
+								else
+								{
+									_selected_feature_level = _feature_levels[_index];
+									_device_created = true;
+									break;
+								}
+							}
+
+							if (!_device_created)
+							{
+								continue;
+							}
+
+							_msg += L"\t\t\t\t\t\tFeature level: " + DirectX::GetFeatureLevelStrW(_selected_feature_level) + L" supported\r\n";
+
+							auto _gDevice = std::make_shared<w_graphics_device>();
+							_gDevice->device_name = std::string(_device_name.begin(), _device_name.end());
+							_gDevice->dx_device_removed = false;
+							_gDevice->dx_is_wrap_device = false;
+							_gDevice->dx_feature_level = _selected_feature_level;
+
+							_hr = D3D12CreateDevice(
+								_adapter.Get(),
+								_selected_feature_level,
+								IID_PPV_ARGS(&_gDevice->dx_device));
+							if (_hr != W_PASSED)
+							{
+								logger.write(_msg);
+								_msg.clear();
+								_msg = L"creating hadrware device with feature level: " + DirectX::GetFeatureLevelStrW((_selected_feature_level));
+								logger.error(_msg);
+								release();
+								std::exit(EXIT_FAILURE);
+							}
+
+							//write to output
+							logger.write(_msg);
+							_msg.clear();
+
+
+#ifdef __WIN32
+							//get the monitors numerator and denominator
+							_hr = _adapter->EnumOutputs(0, &_gDevice->dx_dxgi_outputs);
+							V(_hr, "enumurate output monitors", this->_name, 2);
+
+#endif
+							//add harware device to graphics devices list
+							pGraphicsDevices.push_back(_gDevice);
+
+							//create necessry presentation windows for each graphics device
+							auto _win = this->_windows_info.find(static_cast<int>(i));
+							if (_win != this->_windows_info.end())
+							{
+								for (size_t j = 0; j < _win->second.size(); ++j)
+								{
+									auto _window = _win->second[j];
+
+									w_output_presentation_window _out_window;
+									_out_window.index = static_cast<int>(j);
+									_out_window.dx_swap_chain_selected_format = (DXGI_FORMAT)_window.swap_chain_format;
+
+#if defined(__WIN32) || ( defined(__linux) && !defined(__ANDROID) ) || defined(__APPLE__)
+									_out_window.width = _window.width;
+									_out_window.height = _window.height;
+									_out_window.aspect_ratio = (float)_window.width / (float)_window.height;
+									_out_window.v_sync = _window.v_sync;
+									_out_window.force_to_disable_v_sync = _window.force_to_disable_v_sync;
+									_out_window.is_full_screen = _window.is_full_screen;
+#ifdef __WIN32
+									_out_window.hwnd = _window.hwnd;
+									_out_window.hInstance = _out_window.hInstance = _window.hInstance == NULL ? (HINSTANCE)GetModuleHandle(NULL) : _window.hInstance;
+#endif
+
+#elif defined(__UWP)
+									_out_window.window = _window.window;
+									_out_window.window_size = _window.window_size;
+									_out_window.window_current_orientation = _window.window_current_orientation;
+									_out_window.window_native_orientation = _window.window_native_orientation;
+									_out_window.window_dpi = _window.window_dpi;
+									_out_window.support_high_resolutions = _window.support_high_resolutions;
+									_out_window.aspect_ratio = _window.window_size.Width / _window.window_size.Height;
+#endif
+
+									_gDevice->output_presentation_windows.push_back(_out_window);
+
+									create_or_resize_swap_chain(_gDevice, j);
+									_create_depth_stencil_buffer(_gDevice, j);
+									_create_fences(_gDevice, j);
+
+								}
+							}
+						}
+					}
+
+					if (_msg.length())
+					{
+						//write to output
+						logger.write(_msg);
+						_msg.clear();
+					}
 
 #elif defined(__VULKAN__)
-				auto _vk_major = VK_VERSION_MAJOR(VK_API_VERSION_1_1);
-				auto _vk_minor = VK_VERSION_MINOR(VK_API_VERSION_1_1);
-				auto _vk_patch = VK_VERSION_PATCH(VK_HEADER_VERSION);
+					auto _vk_major = VK_VERSION_MAJOR(VK_API_VERSION_1_1);
+					auto _vk_minor = VK_VERSION_MINOR(VK_API_VERSION_1_1);
+					auto _vk_patch = VK_VERSION_PATCH(VK_HEADER_VERSION);
 
-				std::ostringstream _msg;
-				_msg << "++++++++++++++++++++++++++++++++++++++++++++++++++++++++\r\n";
-				_msg << "\t\t\t\t\tVulkan API version: " << _vk_major << "." << _vk_minor << "." << _vk_patch << "\r\n";
+					std::ostringstream _msg;
+					_msg << "++++++++++++++++++++++++++++++++++++++++++++++++++++++++\r\n";
+					_msg << "\t\t\t\t\tVulkan API version: " << _vk_major << "." << _vk_minor << "." << _vk_patch << "\r\n";
 
-				//first find number of Vulkan instances
-				uint32_t _instance_layer_count;
+					//first find number of Vulkan instances
+					uint32_t _instance_layer_count;
 
-				// Use second parameter as NULL to return the layer count
-				vkEnumerateInstanceLayerProperties(&_instance_layer_count, nullptr);
-                
-				VkLayerProperties* _layer_property = nullptr;
-				vkEnumerateInstanceLayerProperties(&_instance_layer_count, _layer_property);
+					// Use second parameter as NULL to return the layer count
+					vkEnumerateInstanceLayerProperties(&_instance_layer_count, nullptr);
 
-				uint32_t _extension_count = 0;
+					VkLayerProperties* _layer_property = nullptr;
+					vkEnumerateInstanceLayerProperties(&_instance_layer_count, _layer_property);
 
-				//get available extensions count
-				auto _hr = vkEnumerateInstanceExtensionProperties(nullptr,
+					uint32_t _extension_count = 0;
+
+					//get available extensions count
+					auto _hr = vkEnumerateInstanceExtensionProperties(nullptr,
 						&_extension_count,
 						nullptr);
-				if (_hr)
-				{
-					//write the buffer to output before exiting
-					logger.write(_msg.str().c_str());
-					_msg.str("");
-					_msg.clear();
-					
-					logger.error("error on enumerating instance extension properties.");
-
-					release();
-					std::exit(EXIT_FAILURE);
-				}
-
-				auto _extensions_available = new VkExtensionProperties[_extension_count];
-				vkEnumerateInstanceExtensionProperties(nullptr, &_extension_count, _extensions_available);
-
-				_msg << "\t\t\t\t\tVulkan extension(s) available:";
-				for (size_t i = 0; i < _extension_count; ++i)
-				{
-					_msg << "\r\n\t\t\t\t\t\t" << _extensions_available[i].extensionName;
-				}
-
-				//Vulkan instance object
-				VkApplicationInfo _app_info = {};
-				_app_info.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-				_app_info.pApplicationName = "Wolf.Engine";
-				_app_info.pEngineName = "Wolf.Engine";
-				_app_info.apiVersion = VK_API_VERSION_1_0;
-
-				std::vector<const char*> _vk_instance_enabled_extensions =
-				{
-					VK_KHR_SURFACE_EXTENSION_NAME,
-				};
-
-				if (!this->_config.off_screen_mode)
-				{
-					// Enable surface extensions depending on OS
-#if defined(__ANDROID)
-					_vk_instance_enabled_extensions.push_back(VK_KHR_ANDROID_SURFACE_EXTENSION_NAME);
-#elif defined(__WIN32)
-					_vk_instance_enabled_extensions.push_back(VK_KHR_WIN32_SURFACE_EXTENSION_NAME);
-#elif defined(_DIRECT2DISPLAY)
-					_vk_instance_enabled_extensions.push_back(VK_KHR_DISPLAY_EXTENSION_NAME);
-#elif defined(__linux)
-					_vk_instance_enabled_extensions.push_back(VK_KHR_XCB_SURFACE_EXTENSION_NAME);
-#elif defined(__iOS__)
-					_vk_instance_enabled_extensions.push_back(VK_MVK_IOS_SURFACE_EXTENSION_NAME);
-#elif defined(__APPLE__)
-					_vk_instance_enabled_extensions.push_back(VK_MVK_MACOS_SURFACE_EXTENSION_NAME);
-#endif
-				}
-
-#if !defined(__APPLE__) && !defined(__iOS__)
-                if (this->_config.debug_gpu)
-                {
-                    _vk_instance_enabled_extensions.push_back(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
-                }
-#endif
-
-                VkInstanceCreateInfo _instance_create_info = {};
-                _instance_create_info.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
-                _instance_create_info.pNext = nullptr;
-                _instance_create_info.pApplicationInfo = &_app_info;
-                if (_vk_instance_enabled_extensions.size() > 0)
-                {
-                    _instance_create_info.enabledExtensionCount = (uint32_t)_vk_instance_enabled_extensions.size();
-                    _instance_create_info.ppEnabledExtensionNames = _vk_instance_enabled_extensions.data();
-                }
-                
-#if !defined(__APPLE__) && !defined(__iOS__)
-                if (this->_config.debug_gpu)
-                {
-                    const char* _validation_layer_names[] =
-                    {
-                        "VK_LAYER_LUNARG_standard_validation",
-#ifdef __ANDROID
-                        "VK_LAYER_GOOGLE_threading",
-                        "VK_LAYER_LUNARG_parameter_validation",
-                        "VK_LAYER_LUNARG_object_tracker,"
-                        "VK_LAYER_LUNARG_core_validation",
-                        "VK_LAYER_LUNARG_swapchain",
-                        "VK_LAYER_GOOGLE_unique_objects"
-#endif
-                    };
-
-                    _instance_create_info.enabledLayerCount = (uint32_t)W_ARRAY_SIZE(_validation_layer_names);
-                    _instance_create_info.ppEnabledLayerNames = _validation_layer_names;
-                }
-#endif
-                //create Vulkan instance
-                _hr = vkCreateInstance(&_instance_create_info, nullptr, &w_graphics_device::vk_instance);
-                _vk_instance_enabled_extensions.clear();
-				if (_hr)
-				{
-					logger.write(_msg.str().c_str());
-					_msg.str("");
-					_msg.clear();
-					logger.error("error on creating Vulkan instance.");
-					release();
-					std::exit(EXIT_FAILURE);
-				}
-
-#if !defined(__APPLE__) && !defined(__iOS__)
-                if (this->_config.debug_gpu)
-                {
-                    // Set what type of debug message should be report
-                    VkDebugReportFlagsEXT _debug_report_flags = VK_DEBUG_REPORT_ERROR_BIT_EXT | VK_DEBUG_REPORT_WARNING_BIT_EXT;
-
-                    //vks::debug::setupDebugging(instance, debugReportFlags, VK_NULL_HANDLE);
-                    sCreateDebugReportCallback = reinterpret_cast<PFN_vkCreateDebugReportCallbackEXT>(vkGetInstanceProcAddr(w_graphics_device::vk_instance, "vkCreateDebugReportCallbackEXT"));
-                    sDestroyDebugReportCallback = reinterpret_cast<PFN_vkDestroyDebugReportCallbackEXT>(vkGetInstanceProcAddr(w_graphics_device::vk_instance, "vkDestroyDebugReportCallbackEXT"));
-                    sDebugBreakCallback = reinterpret_cast<PFN_vkDebugReportMessageEXT>(vkGetInstanceProcAddr(w_graphics_device::vk_instance, "vkDebugReportMessageEXT"));
-
-                    VkDebugReportCallbackCreateInfoEXT _debug_create_info = {};
-                    _debug_create_info.sType = VK_STRUCTURE_TYPE_DEBUG_REPORT_CREATE_INFO_EXT;
-                    _debug_create_info.pfnCallback = (PFN_vkDebugReportCallbackEXT)DebugMessageCallback;
-                    _debug_create_info.flags = _debug_report_flags;
-
-                    auto _hr = sCreateDebugReportCallback(
-                        w_graphics_device::vk_instance,
-                        &_debug_create_info,
-                        nullptr,
-                        &MsgCallback);
-                    if (_hr != VK_SUCCESS)
-                    {
-                        logger.error("Could not create debug callback for vulkan");
-                    }
-                }
-#endif
-
-				//Enumerate physical devices
-				uint32_t _gpu_count = 0;
-
-				//Get number of GPU count
-				vkEnumeratePhysicalDevices(w_graphics_device::vk_instance, &_gpu_count, nullptr);
-
-				//Get GPU list names
-				if (_gpu_count == 0)
-				{
-					//write the buffer to output before exiting
-					logger.write(_msg.str().c_str());
-					_msg.str("");
-					_msg.clear();
-					logger.error("GPU count. No GPU found.");
-					release();
-					std::exit(EXIT_FAILURE);
-				}
-
-				_msg << "\r\n\t\t\t\t\tGPU(s) founded:\r\n";
-
-				auto _gpus = new VkPhysicalDevice[_gpu_count];
-
-				vkEnumeratePhysicalDevices(w_graphics_device::vk_instance, &_gpu_count, _gpus);
-
-				for (size_t i = 0; i < _gpu_count; ++i)
-				{
-					auto _device_properties = new (std::nothrow) VkPhysicalDeviceProperties();
-					if (!_device_properties)
-					{
-						_msg << "Error on allocating memory for device properties";
-						logger.write(_msg.str().c_str());
-						_msg.str("");
-						_msg.clear();
-						release();
-						std::exit(EXIT_FAILURE);
-					}
-					vkGetPhysicalDeviceProperties(_gpus[i], _device_properties);
-					
-					_msg << "\t\t\t\t\t\tDevice Name: " << _device_properties->deviceName << "\r\n" << 
-						"\t\t\t\t\t\tDevice ID: " << _device_properties->deviceID << "\r\n" << 
-						"\t\t\t\t\t\tDevice Vendor: " << _device_properties->vendorID << "\r\n" << 
-					    "\t\t\t\t\t\tAPI Version: " << (_device_properties->apiVersion >> 22) << "." << 
-						((_device_properties->apiVersion >> 12) & 0x3ff) << "." << (_device_properties->apiVersion & 0xfff) << "\r\n" <<
-						"\t\t\t\t\t\tDriver Version: " << (_device_properties->driverVersion) << "\r\n\t\t\t\t\t\tDevice Type: ";
-
-					switch (_device_properties->deviceType)
-					{
-					case VK_PHYSICAL_DEVICE_TYPE_OTHER:
-						_msg << "VK_PHYSICAL_DEVICE_TYPE_OTHER";
-						break;
-					case VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU:
-						_msg << "VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU";
-						break;
-					case VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU:
-						_msg << "VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU";
-						break;
-					case VK_PHYSICAL_DEVICE_TYPE_VIRTUAL_GPU:
-						_msg << "VK_PHYSICAL_DEVICE_TYPE_VIRTUAL_GPU";
-						break;
-					case VK_PHYSICAL_DEVICE_TYPE_CPU:
-						_msg << "VK_PHYSICAL_DEVICE_TYPE_CPU";
-						break;
-					case VK_PHYSICAL_DEVICE_TYPE_RANGE_SIZE:
-						_msg << "VK_PHYSICAL_DEVICE_TYPE_RANGE_SIZE";
-						break;
-					case VK_PHYSICAL_DEVICE_TYPE_MAX_ENUM:
-						_msg << "VK_PHYSICAL_DEVICE_TYPE_MAX_ENUM";
-						break;
-					}
-
-					_msg << "\r\n\t\t\t\t\t\tPhysical Device Limits:" << 
-					"\r\n\t\t\t\t\t\t\tbufferImageGranularity: " << _device_properties->limits.bufferImageGranularity << 
-					"\r\n\t\t\t\t\t\t\tdiscreteQueuePriorities: " << _device_properties->limits.discreteQueuePriorities << 
-					"\r\n\t\t\t\t\t\t\tframebufferColorSampleCounts: " << _device_properties->limits.framebufferColorSampleCounts <<
-					"\r\n\t\t\t\t\t\t\tframebufferDepthSampleCounts: " << _device_properties->limits.framebufferDepthSampleCounts << 
-					"\r\n\t\t\t\t\t\t\tframebufferNoAttachmentsSampleCounts: " << _device_properties->limits.framebufferNoAttachmentsSampleCounts << 
-					"\r\n\t\t\t\t\t\t\tframebufferStencilSampleCounts: " << _device_properties->limits.framebufferStencilSampleCounts << 
-					"\r\n\t\t\t\t\t\t\tlineWidthGranularity: " << _device_properties->limits.lineWidthGranularity << 
-					"\r\n\t\t\t\t\t\t\tmaxBoundDescriptorSets: " << _device_properties->limits.maxBoundDescriptorSets << 
-					"\r\n\t\t\t\t\t\t\tmaxClipDistances: " << _device_properties->limits.maxClipDistances <<
-					"\r\n\t\t\t\t\t\t\tmaxColorAttachments: " << _device_properties->limits.maxColorAttachments << 
-					"\r\n\t\t\t\t\t\t\tmaxCombinedClipAndCullDistances: " << _device_properties->limits.maxCombinedClipAndCullDistances << 
-					"\r\n\t\t\t\t\t\t\tmaxComputeSharedMemorySize: " << _device_properties->limits.maxComputeSharedMemorySize << 
-					"\r\n\t\t\t\t\t\t\tmaxComputeWorkGroupInvocations: " << _device_properties->limits.maxComputeWorkGroupInvocations <<
-					"\r\n\t\t\t\t\t\t\tmaxCullDistances: " << _device_properties->limits.maxCullDistances <<
-					"\r\n\t\t\t\t\t\t\tmaxDescriptorSetInputAttachments: " << _device_properties->limits.maxDescriptorSetInputAttachments <<
-					"\r\n\t\t\t\t\t\t\tmaxDescriptorSetSampledImages: " << _device_properties->limits.maxDescriptorSetSampledImages <<
-					"\r\n\t\t\t\t\t\t\tmaxDescriptorSetSamplers: " << _device_properties->limits.maxDescriptorSetSamplers <<
-					"\r\n\t\t\t\t\t\t\tmaxDescriptorSetStorageBuffers: " << _device_properties->limits.maxDescriptorSetStorageBuffers <<
-					"\r\n\t\t\t\t\t\t\tmaxDescriptorSetStorageBuffersDynamic: " << _device_properties->limits.maxDescriptorSetStorageBuffersDynamic <<
-					"\r\n\t\t\t\t\t\t\tmaxDrawIndexedIndexValue: " << _device_properties->limits.maxDrawIndexedIndexValue <<
-					"\r\n\t\t\t\t\t\t\tmaxDrawIndirectCount: " << _device_properties->limits.maxDrawIndirectCount <<
-					"\r\n\t\t\t\t\t\t\tmaxFragmentCombinedOutputResources: " << _device_properties->limits.maxFragmentCombinedOutputResources <<
-					"\r\n\t\t\t\t\t\t\tmaxFragmentDualSrcAttachments: " << _device_properties->limits.maxFragmentDualSrcAttachments <<
-					"\r\n\t\t\t\t\t\t\tmaxFragmentInputComponents: " << _device_properties->limits.maxFragmentInputComponents <<
-					"\r\n\t\t\t\t\t\t\tmaxFragmentOutputAttachments: " << _device_properties->limits.maxFragmentOutputAttachments <<
-					"\r\n\t\t\t\t\t\t\tmaxFramebufferWidth: " << _device_properties->limits.maxFramebufferWidth <<
-					"\r\n\t\t\t\t\t\t\tmaxFramebufferHeight: " << _device_properties->limits.maxFramebufferHeight <<
-					"\r\n\t\t\t\t\t\t\tmaxFramebufferLayers: " << _device_properties->limits.maxFramebufferLayers <<
-					"\r\n\t\t\t\t\t\t\tmaxGeometryInputComponents: " << _device_properties->limits.maxGeometryInputComponents <<
-					"\r\n\t\t\t\t\t\t\tmaxGeometryOutputComponents: " << _device_properties->limits.maxGeometryOutputComponents <<
-					"\r\n\t\t\t\t\t\t\tmaxGeometryOutputVertices: " << _device_properties->limits.maxGeometryOutputVertices <<
-					"\r\n\t\t\t\t\t\t\tmaxGeometryShaderInvocations: " << _device_properties->limits.maxGeometryShaderInvocations <<
-					"\r\n\t\t\t\t\t\t\tmaxGeometryTotalOutputComponents: " << _device_properties->limits.maxGeometryTotalOutputComponents <<
-					"\r\n\t\t\t\t\t\t\tmaxImageArrayLayers: " << _device_properties->limits.maxImageArrayLayers <<
-					"\r\n\t\t\t\t\t\t\tmaxImageDimension1D: " << _device_properties->limits.maxImageDimension1D <<
-					"\r\n\t\t\t\t\t\t\tmaxImageDimension2D: " << _device_properties->limits.maxImageDimension2D <<
-					"\r\n\t\t\t\t\t\t\tmaxImageDimension3D: " << _device_properties->limits.maxImageDimension3D <<
-					"\r\n\t\t\t\t\t\t\tmaxImageDimensionCube: " << _device_properties->limits.maxImageDimensionCube <<
-					"\r\n\t\t\t\t\t\t\tmaxInterpolationOffset: " << _device_properties->limits.maxInterpolationOffset <<
-					"\r\n\t\t\t\t\t\t\tmaxMemoryAllocationCount: " << _device_properties->limits.maxMemoryAllocationCount <<
-					"\r\n\t\t\t\t\t\t\tmaxPerStageDescriptorInputAttachments: " << _device_properties->limits.maxPerStageDescriptorInputAttachments <<
-					"\r\n\t\t\t\t\t\t\tmaxPerStageDescriptorSampledImages: " << _device_properties->limits.maxPerStageDescriptorSampledImages <<
-					"\r\n\t\t\t\t\t\t\tmaxPerStageDescriptorSamplers: " << _device_properties->limits.maxPerStageDescriptorSamplers <<
-					"\r\n\t\t\t\t\t\t\tmaxPerStageDescriptorStorageBuffers: " << _device_properties->limits.maxPerStageDescriptorStorageBuffers <<
-					"\r\n\t\t\t\t\t\t\tmaxPerStageDescriptorStorageImages: " << _device_properties->limits.maxPerStageDescriptorStorageImages <<
-					"\r\n\t\t\t\t\t\t\tmaxPerStageDescriptorUniformBuffers: " << _device_properties->limits.maxPerStageDescriptorUniformBuffers <<
-					"\r\n\t\t\t\t\t\t\tmaxPerStageResources: " << _device_properties->limits.maxPerStageResources <<
-					"\r\n\t\t\t\t\t\t\tmaxPushConstantsSize: " << _device_properties->limits.maxPushConstantsSize <<
-					"\r\n\t\t\t\t\t\t\tmaxSampleMaskWords: " << _device_properties->limits.maxSampleMaskWords <<
-					"\r\n\t\t\t\t\t\t\tmaxSamplerAllocationCount: " << _device_properties->limits.maxSamplerAllocationCount <<
-					"\r\n\t\t\t\t\t\t\tmaxSamplerAnisotropy: " << _device_properties->limits.maxSamplerAnisotropy <<
-					"\r\n\t\t\t\t\t\t\tmaxSamplerLodBias: " << _device_properties->limits.maxSamplerLodBias <<
-					"\r\n\t\t\t\t\t\t\tmaxStorageBufferRange: " << _device_properties->limits.maxStorageBufferRange <<
-					"\r\n\t\t\t\t\t\t\tmaxTessellationControlPerPatchOutputComponents: " << _device_properties->limits.maxTessellationControlPerPatchOutputComponents <<
-					"\r\n\t\t\t\t\t\t\tmaxTessellationControlPerVertexInputComponents: " << _device_properties->limits.maxTessellationControlPerVertexInputComponents <<
-					"\r\n\t\t\t\t\t\t\tmaxTessellationControlPerVertexOutputComponents: " << _device_properties->limits.maxTessellationControlPerVertexOutputComponents <<
-					"\r\n\t\t\t\t\t\t\tmaxTessellationControlTotalOutputComponents: " << _device_properties->limits.maxTessellationControlTotalOutputComponents <<
-					"\r\n\t\t\t\t\t\t\tmaxTessellationEvaluationInputComponents: " << _device_properties->limits.maxTessellationEvaluationInputComponents <<
-					"\r\n\t\t\t\t\t\t\tmaxTessellationEvaluationOutputComponents: " << _device_properties->limits.maxTessellationEvaluationOutputComponents <<
-					"\r\n\t\t\t\t\t\t\tmaxTessellationGenerationLevel: " << _device_properties->limits.maxTessellationGenerationLevel <<
-					"\r\n\t\t\t\t\t\t\tmaxTessellationPatchSize: " << _device_properties->limits.maxTessellationPatchSize <<
-					"\r\n\t\t\t\t\t\t\tmaxTexelBufferElements: " << _device_properties->limits.maxTexelBufferElements <<
-					"\r\n\t\t\t\t\t\t\tmaxTexelGatherOffset: " << _device_properties->limits.maxTexelGatherOffset <<
-					"\r\n\t\t\t\t\t\t\tmaxTexelOffset: " << _device_properties->limits.maxTexelOffset <<
-					"\r\n\t\t\t\t\t\t\tmaxUniformBufferRange: " << _device_properties->limits.maxUniformBufferRange <<
-					"\r\n\t\t\t\t\t\t\tmaxVertexInputAttributeOffset: " << _device_properties->limits.maxVertexInputAttributeOffset <<
-					"\r\n\t\t\t\t\t\t\tmaxVertexInputAttributes: " << _device_properties->limits.maxVertexInputAttributes <<
-					"\r\n\t\t\t\t\t\t\tmaxVertexInputBindingStride: " << _device_properties->limits.maxVertexInputBindingStride <<
-					"\r\n\t\t\t\t\t\t\tmaxVertexInputBindings: " << _device_properties->limits.maxVertexInputBindings <<
-					"\r\n\t\t\t\t\t\t\tmaxVertexOutputComponents: " << _device_properties->limits.maxVertexOutputComponents <<
-					"\r\n\t\t\t\t\t\t\tmaxViewports: " << _device_properties->limits.maxViewports <<
-					"\r\n\t\t\t\t\t\t\tminInterpolationOffset: " << _device_properties->limits.minInterpolationOffset <<
-					"\r\n\t\t\t\t\t\t\tminMemoryMapAlignment: " << _device_properties->limits.minMemoryMapAlignment <<
-					"\r\n\t\t\t\t\t\t\tminStorageBufferOffsetAlignment: " << _device_properties->limits.minStorageBufferOffsetAlignment <<
-					"\r\n\t\t\t\t\t\t\tminTexelBufferOffsetAlignment: " << _device_properties->limits.minTexelBufferOffsetAlignment <<
-					"\r\n\t\t\t\t\t\t\tminTexelGatherOffset: " << _device_properties->limits.minTexelGatherOffset <<
-					"\r\n\t\t\t\t\t\t\tminTexelOffset: " << _device_properties->limits.minTexelOffset <<
-					"\r\n\t\t\t\t\t\t\tminUniformBufferOffsetAlignment: " << _device_properties->limits.minUniformBufferOffsetAlignment <<
-					"\r\n\t\t\t\t\t\t\tmipmapPrecisionBits: " << _device_properties->limits.mipmapPrecisionBits <<
-					"\r\n\t\t\t\t\t\t\tnonCoherentAtomSize: " << _device_properties->limits.nonCoherentAtomSize <<
-					"\r\n\t\t\t\t\t\t\toptimalBufferCopyOffsetAlignment: " << _device_properties->limits.optimalBufferCopyOffsetAlignment <<
-					"\r\n\t\t\t\t\t\t\toptimalBufferCopyRowPitchAlignment: " << _device_properties->limits.optimalBufferCopyRowPitchAlignment <<
-					"\r\n\t\t\t\t\t\t\tpointSizeGranularity: " << _device_properties->limits.pointSizeGranularity <<
-					"\r\n\t\t\t\t\t\t\tsampledImageColorSampleCounts: " << _device_properties->limits.sampledImageColorSampleCounts <<
-					"\r\n\t\t\t\t\t\t\tsampledImageDepthSampleCounts: " << _device_properties->limits.sampledImageDepthSampleCounts <<
-					"\r\n\t\t\t\t\t\t\tsampledImageIntegerSampleCounts: " << _device_properties->limits.sampledImageIntegerSampleCounts <<
-					"\r\n\t\t\t\t\t\t\tsampledImageStencilSampleCounts: " << _device_properties->limits.sampledImageStencilSampleCounts <<
-					"\r\n\t\t\t\t\t\t\tsparseAddressSpaceSize: " << _device_properties->limits.sparseAddressSpaceSize <<
-					"\r\n\t\t\t\t\t\t\tstandardSampleLocations: " << _device_properties->limits.standardSampleLocations <<
-					"\r\n\t\t\t\t\t\t\tstorageImageSampleCounts: " << _device_properties->limits.storageImageSampleCounts <<
-					"\r\n\t\t\t\t\t\t\tstrictLines: " << _device_properties->limits.strictLines <<
-					"\r\n\t\t\t\t\t\t\tsubPixelInterpolationOffsetBits: " << _device_properties->limits.subPixelInterpolationOffsetBits <<
-					"\r\n\t\t\t\t\t\t\tsubPixelPrecisionBits: " << _device_properties->limits.subPixelPrecisionBits <<
-					"\r\n\t\t\t\t\t\t\tsubTexelPrecisionBits: " << _device_properties->limits.subTexelPrecisionBits <<
-					"\r\n\t\t\t\t\t\t\ttimestampComputeAndGraphics: " << _device_properties->limits.timestampComputeAndGraphics <<
-					"\r\n\t\t\t\t\t\t\ttimestampPeriod: " << _device_properties->limits.timestampPeriod <<
-					"\r\n\t\t\t\t\t\t\tviewportSubPixelBits: " << _device_properties->limits.viewportSubPixelBits;
-
-					//create a shared graphics device for this GPU
-					auto _gDevice = std::make_shared<w_graphics_device>();
-					_gDevice->vk_physical_device = _gpus[i];
-
-					auto _device_info = new (std::nothrow) w_device_info();
-					if (!_device_info)
-					{
-						logger.write(_msg.str().c_str());
-						_msg.str("");
-						_msg.clear();
-						logger.error("could not find allocate memory for device_info.");
-						release();
-						std::exit(EXIT_FAILURE);
-					}
-					_device_info->device_properties = _device_properties;
-					_device_info->device_features = &_gDevice->vk_physical_device_features;
-
-                    //get device features
-                    vkGetPhysicalDeviceFeatures(_gpus[i], &_gDevice->vk_physical_device_features);
-
-                    //call event callback for changing device extensions and features from user
-                    if (pOnDeviceFeaturesFetched)
-                    {
-                        (*pOnDeviceFeaturesFetched)(&_device_info);
-                    }
-					
-                    //swap device extensions with user defined extentions
-                    _gDevice->device_info = _device_info;
-
-					//get memory properties from the physical device or GPU
-					vkGetPhysicalDeviceMemoryProperties(_gpus[i], &_gDevice->vk_physical_device_memory_properties);
-
-					for (size_t j = 0; j < _gDevice->vk_physical_device_memory_properties.memoryHeapCount; ++j)
-					{
-						_msg << "\r\n\t\t\t\t\t\t\tmemoryHeapSize: "  << _gDevice->vk_physical_device_memory_properties.memoryHeaps[j].size;
-						switch (_gDevice->vk_physical_device_memory_properties.memoryHeaps[j].flags)
-						{
-						case VK_MEMORY_HEAP_DEVICE_LOCAL_BIT:
-							_msg << "\r\n\t\t\t\t\t\t\tmemoryHeapFlag: VK_MEMORY_HEAP_DEVICE_LOCAL_BIT";
-							break;
-						case VK_MEMORY_HEAP_FLAG_BITS_MAX_ENUM:
-							_msg << "\r\n\t\t\t\t\t\t\tmemoryHeapFlag: VK_MEMORY_HEAP_FLAG_BITS_MAX_ENUM";
-							break;
-						}
-					}
-
-					for (size_t j = 0; j < _gDevice->vk_physical_device_memory_properties.memoryTypeCount; ++j)
-					{
-						_msg << "\r\n\t\t\t\t\t\t\tmemoryTypeHeapIndex: " <<
-							_gDevice->vk_physical_device_memory_properties.memoryTypes[j].heapIndex;
-						switch (_gDevice->vk_physical_device_memory_properties.memoryTypes[j].propertyFlags)
-						{
-						case VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT:
-							_msg << "\r\n\t\t\t\t\t\t\t\tmemoryTypeFlag: VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT";
-							break;
-						case VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT:
-							_msg << "\r\n\t\t\t\t\t\t\t\tmemoryTypeFlag: VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT";
-							break;
-						case VK_MEMORY_PROPERTY_HOST_COHERENT_BIT:
-							_msg << "\r\n\t\t\t\t\t\t\t\tmemoryTypeFlag: VK_MEMORY_PROPERTY_HOST_COHERENT_BIT";
-							break;
-						case VK_MEMORY_PROPERTY_HOST_CACHED_BIT:
-							_msg << "\r\n\t\t\t\t\t\t\t\tmemoryTypeFlag: VK_MEMORY_PROPERTY_HOST_CACHED_BIT";
-							break;
-						case VK_MEMORY_PROPERTY_LAZILY_ALLOCATED_BIT:
-							_msg << "\r\n\t\t\t\t\t\t\t\tmemoryTypeFlag: VK_MEMORY_PROPERTY_LAZILY_ALLOCATED_BIT";
-							break;
-						case VK_MEMORY_PROPERTY_FLAG_BITS_MAX_ENUM:
-							_msg << "\r\n\t\t\t\t\t\t\t\tmemoryTypeFlag: VK_MEMORY_PROPERTY_FLAG_BITS_MAX_ENUM";
-							break;
-						}
-					}
-
-					//write buffer to output
-					logger.write(_msg.str().c_str());
-					_msg.str("");
-					_msg.clear();
-
-					//get queue family from default GPU
-					uint32_t _queue_family_property_count = 0;
-
-					vkGetPhysicalDeviceQueueFamilyProperties(_gpus[i],
-						&_queue_family_property_count,
-						nullptr);
-
-					if (_queue_family_property_count == 0)
-					{
-						logger.write(_msg.str().c_str());
-						_msg.str("");
-						_msg.clear();
-						logger.error("could not find queue family for default GPU.");
-						release();
-						std::exit(EXIT_FAILURE);
-					}
-
-					_gDevice->vk_queue_family_properties.resize(_queue_family_property_count);
-					_gDevice->vk_queue_family_supports_present.resize(_queue_family_property_count);
-
-					vkGetPhysicalDeviceQueueFamilyProperties(_gpus[i],
-						&_queue_family_property_count,
-						_gDevice->vk_queue_family_properties.data());
-
-
-					bool _queue_graphics_bit_found = false;
-					for (size_t j = 0; j < _queue_family_property_count; ++j)
-					{
-						_msg << "\r\n\t\t\t\t\t\t_queue_family_properties: " << j;
-						if (_gDevice->vk_queue_family_properties[j].queueFlags & VK_QUEUE_GRAPHICS_BIT)
-						{
-							_queue_graphics_bit_found = true;
-							_gDevice->vk_graphics_queue.index = static_cast<uint32_t>(j);
-							_msg << "\r\n\t\t\t\t\t\t\tVK_QUEUE_GRAPHICS_BIT supported.";
-							break;
-						}
-					}
-
-                    for (size_t j = 0; j < _queue_family_property_count; ++j)
-                    {
-                        _msg << "\r\n\t\t\t\t\t\t_queue_family_properties: "  << j;
-                        if (_gDevice->vk_queue_family_properties[j].queueFlags & VK_QUEUE_COMPUTE_BIT)
-                        {
-                            _queue_graphics_bit_found = true;
-                            _gDevice->vk_compute_queue.index = static_cast<uint32_t>(j);
-                            _msg << "\r\n\t\t\t\t\t\t\tVK_QUEUE_COMPUTE_BIT supported.";
-                            break;
-                        }
-                    }
-
-
-                    for (size_t j = 0; j < _queue_family_property_count; ++j)
-                    {
-                        _msg << "\r\n\t\t\t\t\t\t_queue_family_properties: " << j;
-                        if (_gDevice->vk_queue_family_properties[j].queueFlags & VK_QUEUE_TRANSFER_BIT)
-                        {
-                            _queue_graphics_bit_found = true;
-                            _gDevice->vk_transfer_queue.index = static_cast<uint32_t>(j);
-                            _msg << "\r\n\t\t\t\t\t\t\tVK_QUEUE_TRANSFER_BIT supported.";
-                            break;
-                        }
-                    }
-
-
-                    for (size_t j = 0; j < _queue_family_property_count; ++j)
-                    {
-                        _msg << "\r\n\t\t\t\t\t\t_queue_family_properties: " + std::to_string(j);
-                        if (_gDevice->vk_queue_family_properties[j].queueFlags & VK_QUEUE_SPARSE_BINDING_BIT)
-                        {
-                            _queue_graphics_bit_found = true;
-                            _gDevice->vk_sparse_queue.index = static_cast<uint32_t>(j);
-                            _msg << "\r\n\t\t\t\t\t\t\tVK_QUEUE_SPARSE_BINDING_BIT supported.";
-                            break;
-                        }
-                    }
-
-					logger.write(_msg.str().c_str());
-					_msg.str("");
-					_msg.clear();
-					if (!_queue_graphics_bit_found || _queue_family_property_count == 0)
+					if (_hr)
 					{
 						//write the buffer to output before exiting
 						logger.write(_msg.str().c_str());
 						_msg.str("");
 						_msg.clear();
-						logger.error("could not find queue family with VK_QUEUE_GRAPHICS_BIT for default GPU.");
+
+						logger.error("error on enumerating instance extension properties.");
+
 						release();
 						std::exit(EXIT_FAILURE);
 					}
 
-					//create queue info
-					float _queue_priorities[1] = { 1.0f };
-					VkDeviceQueueCreateInfo _queue_info = {};
-					_queue_info.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-					_queue_info.pNext = nullptr;
-					_queue_info.flags = 0;
-					_queue_info.queueCount = 1;
-					_queue_info.queueFamilyIndex = 0;
-					_queue_info.pQueuePriorities = _queue_priorities;
+					auto _extensions_available = new VkExtensionProperties[_extension_count];
+					vkEnumerateInstanceExtensionProperties(nullptr, &_extension_count, _extensions_available);
 
-					//create device info
-					VkDeviceCreateInfo _create_device_info = {};
-					_create_device_info.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-					_create_device_info.pNext = nullptr;
-					_create_device_info.queueCreateInfoCount = 1;
-					_create_device_info.pQueueCreateInfos = &_queue_info;
-					_create_device_info.enabledLayerCount = 0;
-					_create_device_info.ppEnabledLayerNames = nullptr;
-					_create_device_info.pEnabledFeatures = &_gDevice->vk_physical_device_features;
-					if (_gDevice->device_info->device_extensions.size())
+					_msg << "\t\t\t\t\tVulkan extension(s) available:";
+					for (size_t i = 0; i < _extension_count; ++i)
 					{
-						_create_device_info.enabledExtensionCount = static_cast<uint32_t>(_gDevice->device_info->device_extensions.size());
-						_create_device_info.ppEnabledExtensionNames = _gDevice->device_info->device_extensions.data();
+						_msg << "\r\n\t\t\t\t\t\t" << _extensions_available[i].extensionName;
 					}
 
-					//create device
-					_hr = vkCreateDevice(_gpus[i], &_create_device_info, nullptr, &_gDevice->vk_device);
+					//Vulkan instance object
+					VkApplicationInfo _app_info = {};
+					_app_info.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
+					_app_info.pApplicationName = "Wolf.Engine";
+					_app_info.pEngineName = "Wolf.Engine";
+					_app_info.apiVersion = VK_API_VERSION_1_0;
+
+					std::vector<const char*> _vk_instance_enabled_extensions =
+					{
+						VK_KHR_SURFACE_EXTENSION_NAME,
+					};
+
+					if (!this->_config.off_screen_mode)
+					{
+						// Enable surface extensions depending on OS
+#if defined(__ANDROID)
+						_vk_instance_enabled_extensions.push_back(VK_KHR_ANDROID_SURFACE_EXTENSION_NAME);
+#elif defined(__WIN32)
+						_vk_instance_enabled_extensions.push_back(VK_KHR_WIN32_SURFACE_EXTENSION_NAME);
+#elif defined(_DIRECT2DISPLAY)
+						_vk_instance_enabled_extensions.push_back(VK_KHR_DISPLAY_EXTENSION_NAME);
+#elif defined(__linux)
+						_vk_instance_enabled_extensions.push_back(VK_KHR_XCB_SURFACE_EXTENSION_NAME);
+#elif defined(__iOS__)
+						_vk_instance_enabled_extensions.push_back(VK_MVK_IOS_SURFACE_EXTENSION_NAME);
+#elif defined(__APPLE__)
+						_vk_instance_enabled_extensions.push_back(VK_MVK_MACOS_SURFACE_EXTENSION_NAME);
+#endif
+					}
+
+#if !defined(__APPLE__) && !defined(__iOS__)
+					if (this->_config.debug_gpu)
+					{
+						_vk_instance_enabled_extensions.push_back(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
+					}
+#endif
+
+					VkInstanceCreateInfo _instance_create_info = {};
+					_instance_create_info.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
+					_instance_create_info.pNext = nullptr;
+					_instance_create_info.pApplicationInfo = &_app_info;
+					if (_vk_instance_enabled_extensions.size() > 0)
+					{
+						_instance_create_info.enabledExtensionCount = (uint32_t)_vk_instance_enabled_extensions.size();
+						_instance_create_info.ppEnabledExtensionNames = _vk_instance_enabled_extensions.data();
+					}
+
+#if !defined(__APPLE__) && !defined(__iOS__)
+					if (this->_config.debug_gpu)
+					{
+						const char* _validation_layer_names[] =
+						{
+							"VK_LAYER_LUNARG_standard_validation",
+	#ifdef __ANDROID
+							"VK_LAYER_GOOGLE_threading",
+							"VK_LAYER_LUNARG_parameter_validation",
+							"VK_LAYER_LUNARG_object_tracker,"
+							"VK_LAYER_LUNARG_core_validation",
+							"VK_LAYER_LUNARG_swapchain",
+							"VK_LAYER_GOOGLE_unique_objects"
+	#endif
+						};
+
+						_instance_create_info.enabledLayerCount = (uint32_t)W_ARRAY_SIZE(_validation_layer_names);
+						_instance_create_info.ppEnabledLayerNames = _validation_layer_names;
+					}
+#endif
+					//create Vulkan instance
+					_hr = vkCreateInstance(&_instance_create_info, nullptr, &w_graphics_device::vk_instance);
+					_vk_instance_enabled_extensions.clear();
 					if (_hr)
 					{
 						logger.write(_msg.str().c_str());
 						_msg.str("");
 						_msg.clear();
-						logger.error("error on creating Vulkan device.");
-						release();
-						std::exit(EXIT_FAILURE);
-					}
-                    
-                    //create command pool
-                    //create a command pool to allocate our command buffer from
-                    VkCommandPoolCreateInfo _command_pool_info = {};
-                    _command_pool_info.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-                    _command_pool_info.pNext = nullptr;
-                    _command_pool_info.queueFamilyIndex = _gDevice->vk_graphics_queue.index;
-                    _command_pool_info.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
-                    
-                    _hr = vkCreateCommandPool(_gDevice->vk_device,
-                                                   &_command_pool_info,
-                                                   nullptr,
-                                                   &_gDevice->vk_command_allocator_pool);
-					if (_hr)
-					{
-						logger.error("error on creating vulkan command pool for graphics device:{} with device ID: {}",
-							_device_properties->deviceName, _device_properties->deviceID);
+						logger.error("error on creating Vulkan instance.");
 						release();
 						std::exit(EXIT_FAILURE);
 					}
 
-
-					if (!this->_config.off_screen_mode)
+#if !defined(__APPLE__) && !defined(__iOS__)
+					if (this->_config.debug_gpu)
 					{
-						auto _win = this->_windows_info.find(static_cast<int>(i));
-                        if (_win != this->_windows_info.end())
-                        {
-                            auto _window = _win->second;
+						// Set what type of debug message should be report
+						VkDebugReportFlagsEXT _debug_report_flags = VK_DEBUG_REPORT_ERROR_BIT_EXT | VK_DEBUG_REPORT_WARNING_BIT_EXT;
 
-                            w_output_presentation_window _out_window;
-                            _out_window.width = _window.width;
-                            _out_window.height = _window.height;
-                            _out_window.aspect_ratio = (float)_window.width / (float)_window.height;
-                            _out_window.vk_swap_chain_selected_format.format = (VkFormat)_window.swap_chain_format;
-                            _out_window.vk_swap_chain_selected_format.colorSpace = VkColorSpaceKHR::VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
-                            _out_window.cpu_access_to_swapchain_buffer = _window.cpu_access_swap_chain_buffer;
-							_out_window.double_buffering = _window.double_buffering;
-							_out_window.v_sync = _window.v_sync;
+						//vks::debug::setupDebugging(instance, debugReportFlags, VK_NULL_HANDLE);
+						sCreateDebugReportCallback = reinterpret_cast<PFN_vkCreateDebugReportCallbackEXT>(vkGetInstanceProcAddr(w_graphics_device::vk_instance, "vkCreateDebugReportCallbackEXT"));
+						sDestroyDebugReportCallback = reinterpret_cast<PFN_vkDestroyDebugReportCallbackEXT>(vkGetInstanceProcAddr(w_graphics_device::vk_instance, "vkDestroyDebugReportCallbackEXT"));
+						sDebugBreakCallback = reinterpret_cast<PFN_vkDebugReportMessageEXT>(vkGetInstanceProcAddr(w_graphics_device::vk_instance, "vkDebugReportMessageEXT"));
+
+						VkDebugReportCallbackCreateInfoEXT _debug_create_info = {};
+						_debug_create_info.sType = VK_STRUCTURE_TYPE_DEBUG_REPORT_CREATE_INFO_EXT;
+						_debug_create_info.pfnCallback = (PFN_vkDebugReportCallbackEXT)DebugMessageCallback;
+						_debug_create_info.flags = _debug_report_flags;
+
+						auto _hr = sCreateDebugReportCallback(
+							w_graphics_device::vk_instance,
+							&_debug_create_info,
+							nullptr,
+							&MsgCallback);
+						if (_hr != VK_SUCCESS)
+						{
+							logger.error("Could not create debug callback for vulkan");
+						}
+					}
+#endif
+
+					//Enumerate physical devices
+					uint32_t _gpu_count = 0;
+
+					//Get number of GPU count
+					vkEnumeratePhysicalDevices(w_graphics_device::vk_instance, &_gpu_count, nullptr);
+
+					//Get GPU list names
+					if (_gpu_count == 0)
+					{
+						//write the buffer to output before exiting
+						logger.write(_msg.str().c_str());
+						_msg.str("");
+						_msg.clear();
+						logger.error("GPU count. No GPU found.");
+						release();
+						std::exit(EXIT_FAILURE);
+					}
+
+					_msg << "\r\n\t\t\t\t\tGPU(s) founded:\r\n";
+
+					auto _gpus = new VkPhysicalDevice[_gpu_count];
+
+					vkEnumeratePhysicalDevices(w_graphics_device::vk_instance, &_gpu_count, _gpus);
+
+					for (size_t i = 0; i < _gpu_count; ++i)
+					{
+						auto _device_properties = new (std::nothrow) VkPhysicalDeviceProperties();
+						if (!_device_properties)
+						{
+							_msg << "Error on allocating memory for device properties";
+							logger.write(_msg.str().c_str());
+							_msg.str("");
+							_msg.clear();
+							release();
+							std::exit(EXIT_FAILURE);
+						}
+						vkGetPhysicalDeviceProperties(_gpus[i], _device_properties);
+
+						_msg << "\t\t\t\t\t\tDevice Name: " << _device_properties->deviceName << "\r\n" <<
+							"\t\t\t\t\t\tDevice ID: " << _device_properties->deviceID << "\r\n" <<
+							"\t\t\t\t\t\tDevice Vendor: " << _device_properties->vendorID << "\r\n" <<
+							"\t\t\t\t\t\tAPI Version: " << (_device_properties->apiVersion >> 22) << "." <<
+							((_device_properties->apiVersion >> 12) & 0x3ff) << "." << (_device_properties->apiVersion & 0xfff) << "\r\n" <<
+							"\t\t\t\t\t\tDriver Version: " << (_device_properties->driverVersion) << "\r\n\t\t\t\t\t\tDevice Type: ";
+
+						switch (_device_properties->deviceType)
+						{
+						case VK_PHYSICAL_DEVICE_TYPE_OTHER:
+							_msg << "VK_PHYSICAL_DEVICE_TYPE_OTHER";
+							break;
+						case VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU:
+							_msg << "VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU";
+							break;
+						case VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU:
+							_msg << "VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU";
+							break;
+						case VK_PHYSICAL_DEVICE_TYPE_VIRTUAL_GPU:
+							_msg << "VK_PHYSICAL_DEVICE_TYPE_VIRTUAL_GPU";
+							break;
+						case VK_PHYSICAL_DEVICE_TYPE_CPU:
+							_msg << "VK_PHYSICAL_DEVICE_TYPE_CPU";
+							break;
+						case VK_PHYSICAL_DEVICE_TYPE_RANGE_SIZE:
+							_msg << "VK_PHYSICAL_DEVICE_TYPE_RANGE_SIZE";
+							break;
+						case VK_PHYSICAL_DEVICE_TYPE_MAX_ENUM:
+							_msg << "VK_PHYSICAL_DEVICE_TYPE_MAX_ENUM";
+							break;
+						}
+
+						_msg << "\r\n\t\t\t\t\t\tPhysical Device Limits:" <<
+							"\r\n\t\t\t\t\t\t\tbufferImageGranularity: " << _device_properties->limits.bufferImageGranularity <<
+							"\r\n\t\t\t\t\t\t\tdiscreteQueuePriorities: " << _device_properties->limits.discreteQueuePriorities <<
+							"\r\n\t\t\t\t\t\t\tframebufferColorSampleCounts: " << _device_properties->limits.framebufferColorSampleCounts <<
+							"\r\n\t\t\t\t\t\t\tframebufferDepthSampleCounts: " << _device_properties->limits.framebufferDepthSampleCounts <<
+							"\r\n\t\t\t\t\t\t\tframebufferNoAttachmentsSampleCounts: " << _device_properties->limits.framebufferNoAttachmentsSampleCounts <<
+							"\r\n\t\t\t\t\t\t\tframebufferStencilSampleCounts: " << _device_properties->limits.framebufferStencilSampleCounts <<
+							"\r\n\t\t\t\t\t\t\tlineWidthGranularity: " << _device_properties->limits.lineWidthGranularity <<
+							"\r\n\t\t\t\t\t\t\tmaxBoundDescriptorSets: " << _device_properties->limits.maxBoundDescriptorSets <<
+							"\r\n\t\t\t\t\t\t\tmaxClipDistances: " << _device_properties->limits.maxClipDistances <<
+							"\r\n\t\t\t\t\t\t\tmaxColorAttachments: " << _device_properties->limits.maxColorAttachments <<
+							"\r\n\t\t\t\t\t\t\tmaxCombinedClipAndCullDistances: " << _device_properties->limits.maxCombinedClipAndCullDistances <<
+							"\r\n\t\t\t\t\t\t\tmaxComputeSharedMemorySize: " << _device_properties->limits.maxComputeSharedMemorySize <<
+							"\r\n\t\t\t\t\t\t\tmaxComputeWorkGroupInvocations: " << _device_properties->limits.maxComputeWorkGroupInvocations <<
+							"\r\n\t\t\t\t\t\t\tmaxCullDistances: " << _device_properties->limits.maxCullDistances <<
+							"\r\n\t\t\t\t\t\t\tmaxDescriptorSetInputAttachments: " << _device_properties->limits.maxDescriptorSetInputAttachments <<
+							"\r\n\t\t\t\t\t\t\tmaxDescriptorSetSampledImages: " << _device_properties->limits.maxDescriptorSetSampledImages <<
+							"\r\n\t\t\t\t\t\t\tmaxDescriptorSetSamplers: " << _device_properties->limits.maxDescriptorSetSamplers <<
+							"\r\n\t\t\t\t\t\t\tmaxDescriptorSetStorageBuffers: " << _device_properties->limits.maxDescriptorSetStorageBuffers <<
+							"\r\n\t\t\t\t\t\t\tmaxDescriptorSetStorageBuffersDynamic: " << _device_properties->limits.maxDescriptorSetStorageBuffersDynamic <<
+							"\r\n\t\t\t\t\t\t\tmaxDrawIndexedIndexValue: " << _device_properties->limits.maxDrawIndexedIndexValue <<
+							"\r\n\t\t\t\t\t\t\tmaxDrawIndirectCount: " << _device_properties->limits.maxDrawIndirectCount <<
+							"\r\n\t\t\t\t\t\t\tmaxFragmentCombinedOutputResources: " << _device_properties->limits.maxFragmentCombinedOutputResources <<
+							"\r\n\t\t\t\t\t\t\tmaxFragmentDualSrcAttachments: " << _device_properties->limits.maxFragmentDualSrcAttachments <<
+							"\r\n\t\t\t\t\t\t\tmaxFragmentInputComponents: " << _device_properties->limits.maxFragmentInputComponents <<
+							"\r\n\t\t\t\t\t\t\tmaxFragmentOutputAttachments: " << _device_properties->limits.maxFragmentOutputAttachments <<
+							"\r\n\t\t\t\t\t\t\tmaxFramebufferWidth: " << _device_properties->limits.maxFramebufferWidth <<
+							"\r\n\t\t\t\t\t\t\tmaxFramebufferHeight: " << _device_properties->limits.maxFramebufferHeight <<
+							"\r\n\t\t\t\t\t\t\tmaxFramebufferLayers: " << _device_properties->limits.maxFramebufferLayers <<
+							"\r\n\t\t\t\t\t\t\tmaxGeometryInputComponents: " << _device_properties->limits.maxGeometryInputComponents <<
+							"\r\n\t\t\t\t\t\t\tmaxGeometryOutputComponents: " << _device_properties->limits.maxGeometryOutputComponents <<
+							"\r\n\t\t\t\t\t\t\tmaxGeometryOutputVertices: " << _device_properties->limits.maxGeometryOutputVertices <<
+							"\r\n\t\t\t\t\t\t\tmaxGeometryShaderInvocations: " << _device_properties->limits.maxGeometryShaderInvocations <<
+							"\r\n\t\t\t\t\t\t\tmaxGeometryTotalOutputComponents: " << _device_properties->limits.maxGeometryTotalOutputComponents <<
+							"\r\n\t\t\t\t\t\t\tmaxImageArrayLayers: " << _device_properties->limits.maxImageArrayLayers <<
+							"\r\n\t\t\t\t\t\t\tmaxImageDimension1D: " << _device_properties->limits.maxImageDimension1D <<
+							"\r\n\t\t\t\t\t\t\tmaxImageDimension2D: " << _device_properties->limits.maxImageDimension2D <<
+							"\r\n\t\t\t\t\t\t\tmaxImageDimension3D: " << _device_properties->limits.maxImageDimension3D <<
+							"\r\n\t\t\t\t\t\t\tmaxImageDimensionCube: " << _device_properties->limits.maxImageDimensionCube <<
+							"\r\n\t\t\t\t\t\t\tmaxInterpolationOffset: " << _device_properties->limits.maxInterpolationOffset <<
+							"\r\n\t\t\t\t\t\t\tmaxMemoryAllocationCount: " << _device_properties->limits.maxMemoryAllocationCount <<
+							"\r\n\t\t\t\t\t\t\tmaxPerStageDescriptorInputAttachments: " << _device_properties->limits.maxPerStageDescriptorInputAttachments <<
+							"\r\n\t\t\t\t\t\t\tmaxPerStageDescriptorSampledImages: " << _device_properties->limits.maxPerStageDescriptorSampledImages <<
+							"\r\n\t\t\t\t\t\t\tmaxPerStageDescriptorSamplers: " << _device_properties->limits.maxPerStageDescriptorSamplers <<
+							"\r\n\t\t\t\t\t\t\tmaxPerStageDescriptorStorageBuffers: " << _device_properties->limits.maxPerStageDescriptorStorageBuffers <<
+							"\r\n\t\t\t\t\t\t\tmaxPerStageDescriptorStorageImages: " << _device_properties->limits.maxPerStageDescriptorStorageImages <<
+							"\r\n\t\t\t\t\t\t\tmaxPerStageDescriptorUniformBuffers: " << _device_properties->limits.maxPerStageDescriptorUniformBuffers <<
+							"\r\n\t\t\t\t\t\t\tmaxPerStageResources: " << _device_properties->limits.maxPerStageResources <<
+							"\r\n\t\t\t\t\t\t\tmaxPushConstantsSize: " << _device_properties->limits.maxPushConstantsSize <<
+							"\r\n\t\t\t\t\t\t\tmaxSampleMaskWords: " << _device_properties->limits.maxSampleMaskWords <<
+							"\r\n\t\t\t\t\t\t\tmaxSamplerAllocationCount: " << _device_properties->limits.maxSamplerAllocationCount <<
+							"\r\n\t\t\t\t\t\t\tmaxSamplerAnisotropy: " << _device_properties->limits.maxSamplerAnisotropy <<
+							"\r\n\t\t\t\t\t\t\tmaxSamplerLodBias: " << _device_properties->limits.maxSamplerLodBias <<
+							"\r\n\t\t\t\t\t\t\tmaxStorageBufferRange: " << _device_properties->limits.maxStorageBufferRange <<
+							"\r\n\t\t\t\t\t\t\tmaxTessellationControlPerPatchOutputComponents: " << _device_properties->limits.maxTessellationControlPerPatchOutputComponents <<
+							"\r\n\t\t\t\t\t\t\tmaxTessellationControlPerVertexInputComponents: " << _device_properties->limits.maxTessellationControlPerVertexInputComponents <<
+							"\r\n\t\t\t\t\t\t\tmaxTessellationControlPerVertexOutputComponents: " << _device_properties->limits.maxTessellationControlPerVertexOutputComponents <<
+							"\r\n\t\t\t\t\t\t\tmaxTessellationControlTotalOutputComponents: " << _device_properties->limits.maxTessellationControlTotalOutputComponents <<
+							"\r\n\t\t\t\t\t\t\tmaxTessellationEvaluationInputComponents: " << _device_properties->limits.maxTessellationEvaluationInputComponents <<
+							"\r\n\t\t\t\t\t\t\tmaxTessellationEvaluationOutputComponents: " << _device_properties->limits.maxTessellationEvaluationOutputComponents <<
+							"\r\n\t\t\t\t\t\t\tmaxTessellationGenerationLevel: " << _device_properties->limits.maxTessellationGenerationLevel <<
+							"\r\n\t\t\t\t\t\t\tmaxTessellationPatchSize: " << _device_properties->limits.maxTessellationPatchSize <<
+							"\r\n\t\t\t\t\t\t\tmaxTexelBufferElements: " << _device_properties->limits.maxTexelBufferElements <<
+							"\r\n\t\t\t\t\t\t\tmaxTexelGatherOffset: " << _device_properties->limits.maxTexelGatherOffset <<
+							"\r\n\t\t\t\t\t\t\tmaxTexelOffset: " << _device_properties->limits.maxTexelOffset <<
+							"\r\n\t\t\t\t\t\t\tmaxUniformBufferRange: " << _device_properties->limits.maxUniformBufferRange <<
+							"\r\n\t\t\t\t\t\t\tmaxVertexInputAttributeOffset: " << _device_properties->limits.maxVertexInputAttributeOffset <<
+							"\r\n\t\t\t\t\t\t\tmaxVertexInputAttributes: " << _device_properties->limits.maxVertexInputAttributes <<
+							"\r\n\t\t\t\t\t\t\tmaxVertexInputBindingStride: " << _device_properties->limits.maxVertexInputBindingStride <<
+							"\r\n\t\t\t\t\t\t\tmaxVertexInputBindings: " << _device_properties->limits.maxVertexInputBindings <<
+							"\r\n\t\t\t\t\t\t\tmaxVertexOutputComponents: " << _device_properties->limits.maxVertexOutputComponents <<
+							"\r\n\t\t\t\t\t\t\tmaxViewports: " << _device_properties->limits.maxViewports <<
+							"\r\n\t\t\t\t\t\t\tminInterpolationOffset: " << _device_properties->limits.minInterpolationOffset <<
+							"\r\n\t\t\t\t\t\t\tminMemoryMapAlignment: " << _device_properties->limits.minMemoryMapAlignment <<
+							"\r\n\t\t\t\t\t\t\tminStorageBufferOffsetAlignment: " << _device_properties->limits.minStorageBufferOffsetAlignment <<
+							"\r\n\t\t\t\t\t\t\tminTexelBufferOffsetAlignment: " << _device_properties->limits.minTexelBufferOffsetAlignment <<
+							"\r\n\t\t\t\t\t\t\tminTexelGatherOffset: " << _device_properties->limits.minTexelGatherOffset <<
+							"\r\n\t\t\t\t\t\t\tminTexelOffset: " << _device_properties->limits.minTexelOffset <<
+							"\r\n\t\t\t\t\t\t\tminUniformBufferOffsetAlignment: " << _device_properties->limits.minUniformBufferOffsetAlignment <<
+							"\r\n\t\t\t\t\t\t\tmipmapPrecisionBits: " << _device_properties->limits.mipmapPrecisionBits <<
+							"\r\n\t\t\t\t\t\t\tnonCoherentAtomSize: " << _device_properties->limits.nonCoherentAtomSize <<
+							"\r\n\t\t\t\t\t\t\toptimalBufferCopyOffsetAlignment: " << _device_properties->limits.optimalBufferCopyOffsetAlignment <<
+							"\r\n\t\t\t\t\t\t\toptimalBufferCopyRowPitchAlignment: " << _device_properties->limits.optimalBufferCopyRowPitchAlignment <<
+							"\r\n\t\t\t\t\t\t\tpointSizeGranularity: " << _device_properties->limits.pointSizeGranularity <<
+							"\r\n\t\t\t\t\t\t\tsampledImageColorSampleCounts: " << _device_properties->limits.sampledImageColorSampleCounts <<
+							"\r\n\t\t\t\t\t\t\tsampledImageDepthSampleCounts: " << _device_properties->limits.sampledImageDepthSampleCounts <<
+							"\r\n\t\t\t\t\t\t\tsampledImageIntegerSampleCounts: " << _device_properties->limits.sampledImageIntegerSampleCounts <<
+							"\r\n\t\t\t\t\t\t\tsampledImageStencilSampleCounts: " << _device_properties->limits.sampledImageStencilSampleCounts <<
+							"\r\n\t\t\t\t\t\t\tsparseAddressSpaceSize: " << _device_properties->limits.sparseAddressSpaceSize <<
+							"\r\n\t\t\t\t\t\t\tstandardSampleLocations: " << _device_properties->limits.standardSampleLocations <<
+							"\r\n\t\t\t\t\t\t\tstorageImageSampleCounts: " << _device_properties->limits.storageImageSampleCounts <<
+							"\r\n\t\t\t\t\t\t\tstrictLines: " << _device_properties->limits.strictLines <<
+							"\r\n\t\t\t\t\t\t\tsubPixelInterpolationOffsetBits: " << _device_properties->limits.subPixelInterpolationOffsetBits <<
+							"\r\n\t\t\t\t\t\t\tsubPixelPrecisionBits: " << _device_properties->limits.subPixelPrecisionBits <<
+							"\r\n\t\t\t\t\t\t\tsubTexelPrecisionBits: " << _device_properties->limits.subTexelPrecisionBits <<
+							"\r\n\t\t\t\t\t\t\ttimestampComputeAndGraphics: " << _device_properties->limits.timestampComputeAndGraphics <<
+							"\r\n\t\t\t\t\t\t\ttimestampPeriod: " << _device_properties->limits.timestampPeriod <<
+							"\r\n\t\t\t\t\t\t\tviewportSubPixelBits: " << _device_properties->limits.viewportSubPixelBits;
+
+						//create a shared graphics device for this GPU
+						auto _gDevice = std::make_shared<w_graphics_device>();
+						_gDevice->vk_physical_device = _gpus[i];
+
+						auto _device_info = new (std::nothrow) w_device_info();
+						if (!_device_info)
+						{
+							logger.write(_msg.str().c_str());
+							_msg.str("");
+							_msg.clear();
+							logger.error("could not find allocate memory for device_info.");
+							release();
+							std::exit(EXIT_FAILURE);
+						}
+						_device_info->device_properties = _device_properties;
+						_device_info->device_features = &_gDevice->vk_physical_device_features;
+
+						//get device features
+						vkGetPhysicalDeviceFeatures(_gpus[i], &_gDevice->vk_physical_device_features);
+
+						//call event callback for changing device extensions and features from user
+						if (pOnDeviceFeaturesFetched)
+						{
+							(*pOnDeviceFeaturesFetched)(&_device_info);
+						}
+
+						//swap device extensions with user defined extentions
+						_gDevice->device_info = _device_info;
+
+						//get memory properties from the physical device or GPU
+						vkGetPhysicalDeviceMemoryProperties(_gpus[i], &_gDevice->vk_physical_device_memory_properties);
+
+						for (size_t j = 0; j < _gDevice->vk_physical_device_memory_properties.memoryHeapCount; ++j)
+						{
+							_msg << "\r\n\t\t\t\t\t\t\tmemoryHeapSize: " << _gDevice->vk_physical_device_memory_properties.memoryHeaps[j].size;
+							switch (_gDevice->vk_physical_device_memory_properties.memoryHeaps[j].flags)
+							{
+							case VK_MEMORY_HEAP_DEVICE_LOCAL_BIT:
+								_msg << "\r\n\t\t\t\t\t\t\tmemoryHeapFlag: VK_MEMORY_HEAP_DEVICE_LOCAL_BIT";
+								break;
+							case VK_MEMORY_HEAP_FLAG_BITS_MAX_ENUM:
+								_msg << "\r\n\t\t\t\t\t\t\tmemoryHeapFlag: VK_MEMORY_HEAP_FLAG_BITS_MAX_ENUM";
+								break;
+							}
+						}
+
+						for (size_t j = 0; j < _gDevice->vk_physical_device_memory_properties.memoryTypeCount; ++j)
+						{
+							_msg << "\r\n\t\t\t\t\t\t\tmemoryTypeHeapIndex: " <<
+								_gDevice->vk_physical_device_memory_properties.memoryTypes[j].heapIndex;
+							switch (_gDevice->vk_physical_device_memory_properties.memoryTypes[j].propertyFlags)
+							{
+							case VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT:
+								_msg << "\r\n\t\t\t\t\t\t\t\tmemoryTypeFlag: VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT";
+								break;
+							case VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT:
+								_msg << "\r\n\t\t\t\t\t\t\t\tmemoryTypeFlag: VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT";
+								break;
+							case VK_MEMORY_PROPERTY_HOST_COHERENT_BIT:
+								_msg << "\r\n\t\t\t\t\t\t\t\tmemoryTypeFlag: VK_MEMORY_PROPERTY_HOST_COHERENT_BIT";
+								break;
+							case VK_MEMORY_PROPERTY_HOST_CACHED_BIT:
+								_msg << "\r\n\t\t\t\t\t\t\t\tmemoryTypeFlag: VK_MEMORY_PROPERTY_HOST_CACHED_BIT";
+								break;
+							case VK_MEMORY_PROPERTY_LAZILY_ALLOCATED_BIT:
+								_msg << "\r\n\t\t\t\t\t\t\t\tmemoryTypeFlag: VK_MEMORY_PROPERTY_LAZILY_ALLOCATED_BIT";
+								break;
+							case VK_MEMORY_PROPERTY_FLAG_BITS_MAX_ENUM:
+								_msg << "\r\n\t\t\t\t\t\t\t\tmemoryTypeFlag: VK_MEMORY_PROPERTY_FLAG_BITS_MAX_ENUM";
+								break;
+							}
+						}
+
+						//write buffer to output
+						logger.write(_msg.str().c_str());
+						_msg.str("");
+						_msg.clear();
+
+						//get queue family from default GPU
+						uint32_t _queue_family_property_count = 0;
+
+						vkGetPhysicalDeviceQueueFamilyProperties(_gpus[i],
+							&_queue_family_property_count,
+							nullptr);
+
+						if (_queue_family_property_count == 0)
+						{
+							logger.write(_msg.str().c_str());
+							_msg.str("");
+							_msg.clear();
+							logger.error("could not find queue family for default GPU.");
+							release();
+							std::exit(EXIT_FAILURE);
+						}
+
+						_gDevice->vk_queue_family_properties.resize(_queue_family_property_count);
+						_gDevice->vk_queue_family_supports_present.resize(_queue_family_property_count);
+
+						vkGetPhysicalDeviceQueueFamilyProperties(_gpus[i],
+							&_queue_family_property_count,
+							_gDevice->vk_queue_family_properties.data());
+
+
+						bool _queue_graphics_bit_found = false;
+						for (size_t j = 0; j < _queue_family_property_count; ++j)
+						{
+							_msg << "\r\n\t\t\t\t\t\t_queue_family_properties: " << j;
+							if (_gDevice->vk_queue_family_properties[j].queueFlags & VK_QUEUE_GRAPHICS_BIT)
+							{
+								_queue_graphics_bit_found = true;
+								_gDevice->vk_graphics_queue.index = static_cast<uint32_t>(j);
+								_msg << "\r\n\t\t\t\t\t\t\tVK_QUEUE_GRAPHICS_BIT supported.";
+								break;
+							}
+						}
+
+						for (size_t j = 0; j < _queue_family_property_count; ++j)
+						{
+							_msg << "\r\n\t\t\t\t\t\t_queue_family_properties: " << j;
+							if (_gDevice->vk_queue_family_properties[j].queueFlags & VK_QUEUE_COMPUTE_BIT)
+							{
+								_queue_graphics_bit_found = true;
+								_gDevice->vk_compute_queue.index = static_cast<uint32_t>(j);
+								_msg << "\r\n\t\t\t\t\t\t\tVK_QUEUE_COMPUTE_BIT supported.";
+								break;
+							}
+						}
+
+
+						for (size_t j = 0; j < _queue_family_property_count; ++j)
+						{
+							_msg << "\r\n\t\t\t\t\t\t_queue_family_properties: " << j;
+							if (_gDevice->vk_queue_family_properties[j].queueFlags & VK_QUEUE_TRANSFER_BIT)
+							{
+								_queue_graphics_bit_found = true;
+								_gDevice->vk_transfer_queue.index = static_cast<uint32_t>(j);
+								_msg << "\r\n\t\t\t\t\t\t\tVK_QUEUE_TRANSFER_BIT supported.";
+								break;
+							}
+						}
+
+
+						for (size_t j = 0; j < _queue_family_property_count; ++j)
+						{
+							_msg << "\r\n\t\t\t\t\t\t_queue_family_properties: " + std::to_string(j);
+							if (_gDevice->vk_queue_family_properties[j].queueFlags & VK_QUEUE_SPARSE_BINDING_BIT)
+							{
+								_queue_graphics_bit_found = true;
+								_gDevice->vk_sparse_queue.index = static_cast<uint32_t>(j);
+								_msg << "\r\n\t\t\t\t\t\t\tVK_QUEUE_SPARSE_BINDING_BIT supported.";
+								break;
+							}
+						}
+
+						logger.write(_msg.str().c_str());
+						_msg.str("");
+						_msg.clear();
+						if (!_queue_graphics_bit_found || _queue_family_property_count == 0)
+						{
+							//write the buffer to output before exiting
+							logger.write(_msg.str().c_str());
+							_msg.str("");
+							_msg.clear();
+							logger.error("could not find queue family with VK_QUEUE_GRAPHICS_BIT for default GPU.");
+							release();
+							std::exit(EXIT_FAILURE);
+						}
+
+						//create queue info
+						float _queue_priorities[1] = { 1.0f };
+						VkDeviceQueueCreateInfo _queue_info = {};
+						_queue_info.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+						_queue_info.pNext = nullptr;
+						_queue_info.flags = 0;
+						_queue_info.queueCount = 1;
+						_queue_info.queueFamilyIndex = 0;
+						_queue_info.pQueuePriorities = _queue_priorities;
+
+						//create device info
+						VkDeviceCreateInfo _create_device_info = {};
+						_create_device_info.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+						_create_device_info.pNext = nullptr;
+						_create_device_info.queueCreateInfoCount = 1;
+						_create_device_info.pQueueCreateInfos = &_queue_info;
+						_create_device_info.enabledLayerCount = 0;
+						_create_device_info.ppEnabledLayerNames = nullptr;
+						_create_device_info.pEnabledFeatures = &_gDevice->vk_physical_device_features;
+						if (_gDevice->device_info->device_extensions.size())
+						{
+							_create_device_info.enabledExtensionCount = static_cast<uint32_t>(_gDevice->device_info->device_extensions.size());
+							_create_device_info.ppEnabledExtensionNames = _gDevice->device_info->device_extensions.data();
+						}
+
+						//create device
+						_hr = vkCreateDevice(_gpus[i], &_create_device_info, nullptr, &_gDevice->vk_device);
+						if (_hr)
+						{
+							logger.write(_msg.str().c_str());
+							_msg.str("");
+							_msg.clear();
+							logger.error("error on creating Vulkan device.");
+							release();
+							std::exit(EXIT_FAILURE);
+						}
+
+						//create our main command pool to allocate our command buffer from it
+						VkCommandPoolCreateInfo _command_pool_info = {};
+						_command_pool_info.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+						_command_pool_info.pNext = nullptr;
+						_command_pool_info.queueFamilyIndex = _gDevice->vk_graphics_queue.index;
+						_command_pool_info.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+
+						_hr = vkCreateCommandPool(_gDevice->vk_device,
+							&_command_pool_info,
+							nullptr,
+							&_gDevice->vk_command_allocator_pool);
+						if (_hr)
+						{
+							logger.error("error on creating vulkan command pool for graphics device:{} with device ID: {}",
+								_device_properties->deviceName, _device_properties->deviceID);
+							release();
+							std::exit(EXIT_FAILURE);
+						}
+
+
+						if (!this->_config.off_screen_mode)
+						{
+							auto _win = this->_windows_info.find(static_cast<int>(i));
+							if (_win != this->_windows_info.end())
+							{
+								auto _window = _win->second;
+
+								w_output_presentation_window _out_window;
+								_out_window.width = _window.width;
+								_out_window.height = _window.height;
+								_out_window.aspect_ratio = (float)_window.width / (float)_window.height;
+								_out_window.vk_swap_chain_selected_format.format = (VkFormat)_window.swap_chain_format;
+								_out_window.vk_swap_chain_selected_format.colorSpace = VkColorSpaceKHR::VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
+								_out_window.cpu_access_to_swapchain_buffer = _window.cpu_access_swap_chain_buffer;
+								_out_window.double_buffering = _window.double_buffering;
+								_out_window.v_sync = _window.v_sync;
 
 #if defined(__WIN32) || defined(__linux) || defined(__APPLE__) || defined(__ANDROID)
-							
+
 #ifdef __WIN32
-                            _out_window.hwnd = _window.hwnd;
-                            _out_window.hInstance = _window.hInstance == NULL ? (HINSTANCE)GetModuleHandle(NULL) : _window.hInstance;
+								_out_window.hwnd = _window.hwnd;
+								_out_window.hInstance = _window.hInstance == NULL ? (HINSTANCE)GetModuleHandle(NULL) : _window.hInstance;
 #elif defined(__ANDROID)
-                            _out_window.window = _window.window;
+								_out_window.window = _window.window;
 #elif defined(__linux)
-                            _out_window.xcb_connection = _window.xcb_connection;
-                            _out_window.xcb_window = _window.xcb_window;
+								_out_window.xcb_connection = _window.xcb_connection;
+								_out_window.xcb_window = _window.xcb_window;
 #elif defined(__APPLE__)
-                            _out_window.window = _window.window;
+								_out_window.window = _window.window;
 #endif
 
 #endif
 
 #if defined(VK_USE_PLATFORM_WIN32_KHR)
-                            VkWin32SurfaceCreateInfoKHR surface_create_info =
-                            {
-                                VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR,    // Type
-                                nullptr,                                            // Next
-                                0,                                                  // Flags
-                                _out_window.hInstance,                              // Hinstance
-                                _out_window.hwnd                                    // Hwnd
-                            };
+								VkWin32SurfaceCreateInfoKHR surface_create_info =
+								{
+									VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR,    // Type
+									nullptr,                                            // Next
+									0,                                                  // Flags
+									_out_window.hInstance,                              // Hinstance
+									_out_window.hwnd                                    // Hwnd
+								};
 
-                            _hr = vkCreateWin32SurfaceKHR(w_graphics_device::vk_instance,
-                                &surface_create_info,
-                                nullptr,
-                                &_out_window.vk_presentation_surface);
-							if (_hr)
+								_hr = vkCreateWin32SurfaceKHR(w_graphics_device::vk_instance,
+									&surface_create_info,
+									nullptr,
+									&_out_window.vk_presentation_surface);
+								if (_hr)
+								{
+									logger.write(_msg.str().c_str());
+									_msg.str("");
+									_msg.clear();
+									logger.error("error on creating win32 surface for Vulkan.");
+									release();
+									std::exit(EXIT_FAILURE);
+								}
+
+#elif defined(VK_USE_PLATFORM_XCB_KHR)
+								VkXcbSurfaceCreateInfoKHR _surface_create_info =
+								{
+									VK_STRUCTURE_TYPE_XCB_SURFACE_CREATE_INFO_KHR,      // Type
+									nullptr,                                            // Next
+									0,                                                  // Flags
+									_out_window.xcb_connection,                         // Connection
+									(*_out_window.xcb_window)                           // Window
+								};
+								_hr = vkCreateXcbSurfaceKHR(w_graphics_device::vk_instance,
+									&_surface_create_info,
+									nullptr,
+									&_out_window.vk_presentation_surface);
+								if (_hr)
+								{
+									logger.write(_msg.str().c_str());
+									_msg.str("");
+									_msg.clear();
+									logger.error("error on creating xcb surface for Vulkan.");
+									release();
+									std::exit(EXIT_FAILURE);
+								}
+#elif defined(VK_USE_PLATFORM_XLIB_KHR)
+								VkXlibSurfaceCreateInfoKHR surface_create_info =
+								{
+									VK_STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR,     // VkStructureType                sType
+									nullptr,                                            // const void                    *pNext
+									0,                                                  // VkXlibSurfaceCreateFlagsKHR    flags
+									_window.DisplayPtr,                                 // Display                       *dpy
+									_window.Handle                                      // Window                         window
+								};
+								_hr = vkCreateXlibSurfaceKHR(Vulkan.Instance,
+									&surface_create_info, nullptr, &Vulkan.PresentationSurface);
+								if (_hr)
+								{
+									logger.write(_msg.str().c_str());
+									_msg.str("");
+									_msg.clear();
+									logger.error("error on creating xlib surface for Vulkan.");
+									release();
+									std::exit(EXIT_FAILURE);
+								}
+#elif defined(__ANDROID)
+								VkAndroidSurfaceCreateInfoKHR _android_surface_create_info = {};
+								_android_surface_create_info.sType = VK_STRUCTURE_TYPE_ANDROID_SURFACE_CREATE_INFO_KHR;
+								_android_surface_create_info.window = _out_window.window;
+								_android_surface_create_info.flags = 0;
+								_android_surface_create_info.pNext = nullptr;
+
+								_hr = vkCreateAndroidSurfaceKHR(w_graphics_device::vk_instance,
+									&_android_surface_create_info,
+									nullptr,
+									&_out_window.vk_presentation_surface);
+								if (_hr)
+								{
+									logger.write(_msg.str().c_str());
+									_msg.str("");
+									_msg.clear();
+									logger.error("error on creating android surface for Vulkan.");
+									release();
+									std::exit(EXIT_FAILURE);
+								}
+#elif defined(VK_USE_PLATFORM_IOS_MVK)
+								VkIOSSurfaceCreateInfoMVK _surface_create_info = {};
+								_surface_create_info.sType = VK_STRUCTURE_TYPE_IOS_SURFACE_CREATE_INFO_MVK;
+								_surface_create_info.pNext = NULL;
+								_surface_create_info.flags = 0;
+								_surface_create_info.pView = _window.window;
+
+								_hr = vkCreateIOSSurfaceMVK(w_graphics_device::vk_instance,
+									&_surface_create_info,
+									NULL,
+									&_out_window.vk_presentation_surface);
+								if (_hr)
+								{
+									logger.write(_msg.str().c_str());
+									_msg.str("");
+									_msg.clear();
+									logger.error("error on creating iOS surface for Vulkan.");
+									release();
+									std::exit(EXIT_FAILURE);
+								}
+#elif defined(VK_USE_PLATFORM_MACOS_MVK)
+								VkMacOSSurfaceCreateInfoMVK _surface_create_info = {};
+								_surface_create_info.sType = VK_STRUCTURE_TYPE_MACOS_SURFACE_CREATE_INFO_MVK;
+								_surface_create_info.pNext = NULL;
+								_surface_create_info.flags = 0;
+								_surface_create_info.pView = _window.window;
+								_hr = vkCreateMacOSSurfaceMVK(w_graphics_device::vk_instance,
+									&_surface_create_info,
+									NULL,
+									&_out_window.vk_presentation_surface);
+								if (_hr)
+								{
+									logger.write(_msg.str().c_str());
+									_msg.str("");
+									_msg.clear();
+									logger.error("error on creating macOS surface for Vulkan.");
+									release();
+									std::exit(EXIT_FAILURE);
+								}
+#endif
+
+								_gDevice->output_presentation_window = _out_window;
+
+								create_swap_chain(_gDevice);
+								_create_fences(_gDevice);
+							}
+						}
+						else
+						{
+							w_output_presentation_window _out_window;
+							_out_window.width = 0;
+							_out_window.height = 0;
+							_out_window.aspect_ratio = 0.0f;
+							_gDevice->output_presentation_window = _out_window;
+						}
+
+						//get queues (graphics and present may be the same)
+
+						//graphics
+						if (_gDevice->vk_graphics_queue.index != UINT32_MAX)
+						{
+							vkGetDeviceQueue(_gDevice->vk_device,
+								_gDevice->vk_graphics_queue.index,
+								0,
+								&_gDevice->vk_graphics_queue.queue);
+						}
+
+						//present
+						if (_gDevice->vk_compute_queue.index != UINT32_MAX)
+						{
+							if (!this->_config.off_screen_mode)
 							{
-								logger.write(_msg.str().c_str());
-								_msg.str("");
-								_msg.clear();
-								logger.error("error on creating win32 surface for Vulkan.");
+								vkGetDeviceQueue(_gDevice->vk_device,
+									_gDevice->vk_present_queue.index,
+									0,
+									&_gDevice->vk_present_queue.queue);
+							}
+						}
+
+						//compute
+						if (_gDevice->vk_compute_queue.index != UINT32_MAX)
+						{
+							vkGetDeviceQueue(_gDevice->vk_device,
+								_gDevice->vk_compute_queue.index,
+								0,
+								&_gDevice->vk_compute_queue.queue);
+						}
+
+						//transfer
+						if (_gDevice->vk_transfer_queue.index != UINT32_MAX)
+						{
+							vkGetDeviceQueue(_gDevice->vk_device,
+								_gDevice->vk_transfer_queue.index,
+								0,
+								&_gDevice->vk_transfer_queue.queue);
+						}
+
+						//sparse
+						if (_gDevice->vk_sparse_queue.index != UINT32_MAX)
+						{
+							vkGetDeviceQueue(_gDevice->vk_device,
+								_gDevice->vk_sparse_queue.index,
+								0,
+								&_gDevice->vk_sparse_queue.queue);
+						}
+
+						//initialize memory allocator
+						if (_gDevice->memory_allocator.initialize(_gDevice) == W_FAILED)
+						{
+							logger.error("error on initializing graphics device memory allocator.");
+							release();
+							std::exit(EXIT_FAILURE);
+						}
+
+						pGraphicsDevices.push_back(_gDevice);
+
+						//each window for each gpu
+						if (this->_windows_info.size() == pGraphicsDevices.size())
+						{
+							break;
+						}
+
+					}
+#endif //__DX12__, __VULKAN__
+				}
+
+				void create_swap_chain(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
+				{
+					const std::string _trace_info = this->_name + "::create_swap_chain";
+
+#ifdef __DX12__
+					auto _device_name = wolf::system::convert::string_to_wstring(pGDevice->device_name);
+					auto _device_id = pGDevice->device_id;
+					auto _output_presentation_window = &(pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex));
+
+					const size_t _desired_number_of_swapchain_images = 2;
+
+					//release dx_swap_chain_image_views
+					for (size_t i = 0; i < _output_presentation_window->dx_swap_chain_image_views.size(); i++)
+					{
+						COM_RELEASE(_output_presentation_window->dx_swap_chain_image_views[i]);
+					}
+
+					_output_presentation_window->dx_swap_chain_image_views.resize(_desired_number_of_swapchain_images);
+					_output_presentation_window->force_to_clear_color_times = _desired_number_of_swapchain_images;
+
+
+					W_RESULT _hr = W_FAILED;
+#ifdef __WIN32
+
+					if (_output_presentation_window->dx_swap_chain != nullptr)
+					{
+						//If the swap chain already exists, resize it.
+						_hr = _output_presentation_window->dx_swap_chain->ResizeBuffers(_desired_number_of_swapchain_images,
+							_output_presentation_window->width,
+							_output_presentation_window->height,
+							_output_presentation_window->dx_swap_chain_selected_format,
+							0);
+						if (_hr == DXGI_ERROR_DEVICE_REMOVED || _hr == DXGI_ERROR_DEVICE_RESET)
+						{
+							logger.error(L"Error on resizing swap chain, because of DXGI_ERROR_DEVICE_REMOVED or DXGI_ERROR_DEVICE_RESET for graphics device: "
+								+ _device_name + L" ID:" + std::to_wstring(_device_id));
+							// If the device was removed for any reason, a new device and swap chain will need to be created.
+							pGDevice->dx_device_removed = true;
+							return;
+						}
+						else
+						{
+							logger.error(L"Error on resizing swap chain, unknown error for graphics device: "
+								+ _device_name + L" ID:" + std::to_wstring(_device_id));
+							release();
+							std::exit(EXIT_FAILURE);
+						}
+					}
+					else
+					{
+						// Disable full screen with ALT+Enter
+						_hr = w_graphics_device::dx_dxgi_factory->MakeWindowAssociation(_output_presentation_window->hwnd, DXGI_MWA_NO_ALT_ENTER);
+						V(_hr, L"disabling ALT+Enter for presentation window: " + std::to_wstring(pOutputPresentationWindowIndex),
+							this->_name, 2);
+
+						// Describe and create the swap chain.
+						DXGI_SWAP_CHAIN_DESC1 _swap_chain_desc = {};
+						_swap_chain_desc.AlphaMode = DXGI_ALPHA_MODE::DXGI_ALPHA_MODE_UNSPECIFIED;
+						_swap_chain_desc.BufferCount = _desired_number_of_swapchain_images;
+						_swap_chain_desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+						_swap_chain_desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
+						_swap_chain_desc.SampleDesc.Count = 1;//No hardware multisampling
+						_swap_chain_desc.SampleDesc.Quality = 0;
+						_swap_chain_desc.Format = _output_presentation_window->dx_swap_chain_selected_format;
+						_swap_chain_desc.Width = _output_presentation_window->width;
+						_swap_chain_desc.Height = _output_presentation_window->height;
+						_swap_chain_desc.Scaling = DXGI_SCALING::DXGI_SCALING_NONE;
+						_swap_chain_desc.Stereo = FALSE;
+						_swap_chain_desc.Flags = 0;
+
+						{
+							ComPtr<IDXGISwapChain1> _swap_chain = nullptr;
+
+							_hr = w_graphics_device::dx_dxgi_factory->CreateSwapChainForHwnd(
+								_output_presentation_window->dx_command_queue.Get(),//Swap chain needs the queue so that it can force a flush on it.
+								_output_presentation_window->hwnd,
+								&_swap_chain_desc,
+								nullptr,
+								nullptr,
+								&_swap_chain);
+
+							V(_hr, L"create swap chain from hwnd for graphics device: " + _device_name + L" ID:" + std::to_wstring(_device_id) +
+								L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex),
+								this->_name, 2);
+
+							_hr = _swap_chain->QueryInterface(__uuidof(IDXGISwapChain3), (void**)&_output_presentation_window->dx_swap_chain);
+							if (FAILED(_hr))
+							{
+								logger.error(L"error on getting swap chain 3 from swap chain 1 for graphics device: " + L" ID:" + std::to_wstring(_device_id) +
+									_device_name + L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
 								release();
 								std::exit(EXIT_FAILURE);
 							}
-
-#elif defined(VK_USE_PLATFORM_XCB_KHR)
-                            VkXcbSurfaceCreateInfoKHR _surface_create_info =
-                            {
-                                VK_STRUCTURE_TYPE_XCB_SURFACE_CREATE_INFO_KHR,      // Type
-                                nullptr,                                            // Next
-                                0,                                                  // Flags
-                                _out_window.xcb_connection,                         // Connection
-                                (*_out_window.xcb_window)                           // Window
-                            };
-                            _hr = vkCreateXcbSurfaceKHR(w_graphics_device::vk_instance,
-                                &_surface_create_info,
-                                nullptr,
-                                &_out_window.vk_presentation_surface);
-                            if (_hr)
-                            {
-                                logger.write(_msg.str().c_str());
-								_msg.str("");
-								_msg.clear();
-                                logger.error("error on creating xcb surface for Vulkan.");
-                                release();
-                                std::exit(EXIT_FAILURE);
-                            }
-#elif defined(VK_USE_PLATFORM_XLIB_KHR)
-                            VkXlibSurfaceCreateInfoKHR surface_create_info =
-                            {
-                                VK_STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR,     // VkStructureType                sType
-                                nullptr,                                            // const void                    *pNext
-                                0,                                                  // VkXlibSurfaceCreateFlagsKHR    flags
-                                _window.DisplayPtr,                                 // Display                       *dpy
-                                _window.Handle                                      // Window                         window
-                            };
-                            _hr = vkCreateXlibSurfaceKHR(Vulkan.Instance,
-                                &surface_create_info, nullptr, &Vulkan.PresentationSurface);
-                            if (_hr)
-                            {
-                                logger.write(_msg.str().c_str());
-								_msg.str("");
-								_msg.clear();
-                                logger.error("error on creating xlib surface for Vulkan.");
-                                release();
-                                std::exit(EXIT_FAILURE);
-                            }
-#elif defined(__ANDROID)
-                            VkAndroidSurfaceCreateInfoKHR _android_surface_create_info = {};
-                            _android_surface_create_info.sType = VK_STRUCTURE_TYPE_ANDROID_SURFACE_CREATE_INFO_KHR;
-                            _android_surface_create_info.window = _out_window.window;
-                            _android_surface_create_info.flags = 0;
-                            _android_surface_create_info.pNext = nullptr;
-
-                            _hr = vkCreateAndroidSurfaceKHR(w_graphics_device::vk_instance,
-                                &_android_surface_create_info,
-                                nullptr,
-                                &_out_window.vk_presentation_surface);
-                            if (_hr)
-                            {
-                                logger.write(_msg.str().c_str());
-								_msg.str("");
-								_msg.clear();
-                                logger.error("error on creating android surface for Vulkan.");
-                                release();
-                                std::exit(EXIT_FAILURE);
-                            }
-#elif defined(VK_USE_PLATFORM_IOS_MVK)
-                            VkIOSSurfaceCreateInfoMVK _surface_create_info = {};
-                            _surface_create_info.sType = VK_STRUCTURE_TYPE_IOS_SURFACE_CREATE_INFO_MVK;
-                            _surface_create_info.pNext = NULL;
-                            _surface_create_info.flags = 0;
-                            _surface_create_info.pView = _window.window;
-
-                            _hr = vkCreateIOSSurfaceMVK(w_graphics_device::vk_instance,
-                                &_surface_create_info,
-                                NULL,
-                                &_out_window.vk_presentation_surface);
-                            if (_hr)
-                            {
-								logger.write(_msg.str().c_str());
-								_msg.str("");
-								_msg.clear();
-                                logger.error("error on creating iOS surface for Vulkan.");
-                                release();
-                                std::exit(EXIT_FAILURE);
-                            }
-#elif defined(VK_USE_PLATFORM_MACOS_MVK)
-                            VkMacOSSurfaceCreateInfoMVK _surface_create_info = {};
-                            _surface_create_info.sType = VK_STRUCTURE_TYPE_MACOS_SURFACE_CREATE_INFO_MVK;
-                            _surface_create_info.pNext = NULL;
-                            _surface_create_info.flags = 0;
-                            _surface_create_info.pView = _window.window;
-                            _hr = vkCreateMacOSSurfaceMVK(w_graphics_device::vk_instance,
-                                &_surface_create_info,
-                                NULL,
-                                &_out_window.vk_presentation_surface);
-                            if (_hr)
-                            {
-								logger.write(_msg.str().c_str());
-								_msg.str("");
-								_msg.clear();
-                                logger.error("error on creating macOS surface for Vulkan.");
-                                release();
-                                std::exit(EXIT_FAILURE);
-                            }
-#endif
-
-                            _gDevice->output_presentation_window = _out_window;
-
-							create_swap_chain(_gDevice);
-                            _create_fences(_gDevice);
-                        }
-					}
-					else
-					{
-						w_output_presentation_window _out_window;
-						_out_window.width = 0;
-						_out_window.height = 0;
-						_out_window.aspect_ratio = 0.0f;
-						_gDevice->output_presentation_window = _out_window;
-					}
-
-					//get queues (graphics and present may be the same)
-                    
-                    //graphics
-                    if (_gDevice->vk_graphics_queue.index != UINT32_MAX)
-                    {
-                        vkGetDeviceQueue(_gDevice->vk_device,
-                            _gDevice->vk_graphics_queue.index,
-                            0,
-                            &_gDevice->vk_graphics_queue.queue);
-                    }
-
-                    //present
-					if (_gDevice->vk_compute_queue.index != UINT32_MAX)
-					{
-						if (!this->_config.off_screen_mode)
-						{
-							vkGetDeviceQueue(_gDevice->vk_device,
-								_gDevice->vk_present_queue.index,
-								0,
-								&_gDevice->vk_present_queue.queue);
 						}
 					}
 
-                    //compute
-                    if (_gDevice->vk_compute_queue.index != UINT32_MAX)
-                    {
-                        vkGetDeviceQueue(_gDevice->vk_device,
-                            _gDevice->vk_compute_queue.index,
-                            0,
-                            &_gDevice->vk_compute_queue.queue);
-                    }
+#elif defined(__UWP)
 
-                    //transfer
-                    if (_gDevice->vk_transfer_queue.index != UINT32_MAX)
-                    {
-                        vkGetDeviceQueue(_gDevice->vk_device,
-                            _gDevice->vk_transfer_queue.index,
-                            0,
-                            &_gDevice->vk_transfer_queue.queue);
-                    }
+					auto _display_rotation = _compute_display_rotation(_output_presentation_window->window_native_orientation,
+						_output_presentation_window->window_current_orientation);
 
-                    //sparse
-                    if (_gDevice->vk_sparse_queue.index != UINT32_MAX)
-                    {
-                        vkGetDeviceQueue(_gDevice->vk_device,
-                            _gDevice->vk_sparse_queue.index,
-                            0,
-                            &_gDevice->vk_sparse_queue.queue);
-                    }
+					float _back_buffer_width = 0;
+					float _back_buffer_height = 0;
 
-					//initialize memory allocator
-					if (_gDevice->memory_allocator.initialize(_gDevice) == W_FAILED)
+					//_update_render_target_size
 					{
-						logger.error("error on initializing graphics device memory allocator.");
-						release();
-						std::exit(EXIT_FAILURE);
+						auto _effective_dpi = _output_presentation_window->window_dpi;
+
+						/*
+							To improve battery life on high resolution devices, render to a smaller render target
+							and allow the GPU to scale the output when it is presented.
+
+							The default thresholds that define a "high resolution" display. If the thresholds
+							are exceeded and SupportHighResolutions is false, the dimensions will be scaled
+							by 50%.
+						*/
+						static const float _DpiThreshold = 192.0f;		// 200% of standard desktop display.
+						static const float _WidthThreshold = 1920.0f;	// 1080p width.
+						static const float _HeightThreshold = 1080.0f;	// 1080p height.
+						if (!_output_presentation_window->support_high_resolutions && _output_presentation_window->window_dpi > _DpiThreshold)
+						{
+							float _width = w_graphics_device_manager::convert_dips_to_pixels(
+								_output_presentation_window->window_size.Width,
+								_output_presentation_window->window_dpi);
+
+							float _height = w_graphics_device_manager::convert_dips_to_pixels(_output_presentation_window->window_size.Height,
+								_output_presentation_window->window_dpi);
+
+							/*
+								When the device is in portrait orientation, height > width. Compare the
+								larger dimension against the width threshold and the smaller dimension
+								against the height threshold.
+							*/
+							if (max(_width, _height) > _WidthThreshold && min(_width, _height) > _HeightThreshold)
+							{
+								// To scale the app we change the effective DPI. Logical size does not change.
+								_effective_dpi /= 2.0f;
+							}
+						}
+
+						// Calculate the necessary render target size in pixels.
+						_back_buffer_width = w_graphics_device_manager::convert_dips_to_pixels(_output_presentation_window->window_size.Width,
+							_effective_dpi);
+						_back_buffer_height = w_graphics_device_manager::convert_dips_to_pixels(_output_presentation_window->window_size.Height,
+							_effective_dpi);
+
+						// Prevent zero size DirectX content from being created.
+						_back_buffer_width = max(_back_buffer_width, 1.0f);
+						_back_buffer_height = max(_back_buffer_height, 1.0f);
 					}
 
-					pGraphicsDevices.push_back(_gDevice);
-
-					//each window for each gpu
-					if (this->_windows_info.size() == pGraphicsDevices.size())
+					bool _swap_dimensions = _display_rotation == DXGI_MODE_ROTATION_ROTATE90 || _display_rotation == DXGI_MODE_ROTATION_ROTATE270;
+					if (_swap_dimensions)
 					{
-						break;
-					}
-
-				}
-#endif //__DX12__, __VULKAN__
-			}
-
-			void create_swap_chain(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
-			{
-				const std::string _trace_info = this->_name + "::create_swap_chain";
-
-#ifdef __DX12__
-				auto _device_name = wolf::system::convert::string_to_wstring(pGDevice->device_name);
-				auto _device_id = pGDevice->device_id;
-				auto _output_presentation_window = &(pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex));
-
-				const size_t _desired_number_of_swapchain_images = 2;
-
-				//release dx_swap_chain_image_views
-				for (size_t i = 0; i < _output_presentation_window->dx_swap_chain_image_views.size(); i++)
-				{
-					COM_RELEASE(_output_presentation_window->dx_swap_chain_image_views[i]);
-				}
-
-				_output_presentation_window->dx_swap_chain_image_views.resize(_desired_number_of_swapchain_images);
-				_output_presentation_window->force_to_clear_color_times = _desired_number_of_swapchain_images;
-
-
-				W_RESULT _hr = W_FAILED;
-#ifdef __WIN32
-
-				if (_output_presentation_window->dx_swap_chain != nullptr)
-				{
-					//If the swap chain already exists, resize it.
-					_hr = _output_presentation_window->dx_swap_chain->ResizeBuffers(_desired_number_of_swapchain_images,
-						_output_presentation_window->width,
-						_output_presentation_window->height,
-						_output_presentation_window->dx_swap_chain_selected_format,
-						0);
-					if (_hr == DXGI_ERROR_DEVICE_REMOVED || _hr == DXGI_ERROR_DEVICE_RESET)
-					{
-						logger.error(L"Error on resizing swap chain, because of DXGI_ERROR_DEVICE_REMOVED or DXGI_ERROR_DEVICE_RESET for graphics device: "
-							+ _device_name + L" ID:" + std::to_wstring(_device_id));
-						// If the device was removed for any reason, a new device and swap chain will need to be created.
-						pGDevice->dx_device_removed = true;
-						return;
+						//need to swap size
+						_back_buffer_width = lround(_back_buffer_height);
+						_back_buffer_height = lround(_back_buffer_width);
 					}
 					else
 					{
-						logger.error(L"Error on resizing swap chain, unknown error for graphics device: "
-							+ _device_name + L" ID:" + std::to_wstring(_device_id));
-						release();
-						std::exit(EXIT_FAILURE);
+						_back_buffer_width = lround(_back_buffer_width);
+						_back_buffer_height = lround(_back_buffer_height);
 					}
-				}
-				else
-				{
-					// Disable full screen with ALT+Enter
-					_hr = w_graphics_device::dx_dxgi_factory->MakeWindowAssociation(_output_presentation_window->hwnd, DXGI_MWA_NO_ALT_ENTER);
-					V(_hr, L"disabling ALT+Enter for presentation window: " + std::to_wstring(pOutputPresentationWindowIndex),
-						this->_name, 2);
 
-					// Describe and create the swap chain.
-					DXGI_SWAP_CHAIN_DESC1 _swap_chain_desc = {};
-					_swap_chain_desc.AlphaMode = DXGI_ALPHA_MODE::DXGI_ALPHA_MODE_UNSPECIFIED;
-					_swap_chain_desc.BufferCount = _desired_number_of_swapchain_images;
-					_swap_chain_desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-					_swap_chain_desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
-					_swap_chain_desc.SampleDesc.Count = 1;//No hardware multisampling
-					_swap_chain_desc.SampleDesc.Quality = 0;
-					_swap_chain_desc.Format = _output_presentation_window->dx_swap_chain_selected_format;
-					_swap_chain_desc.Width = _output_presentation_window->width;
-					_swap_chain_desc.Height = _output_presentation_window->height;
-					_swap_chain_desc.Scaling = DXGI_SCALING::DXGI_SCALING_NONE;
-					_swap_chain_desc.Stereo = FALSE;
-					_swap_chain_desc.Flags = 0;
-
+					if (_output_presentation_window->dx_swap_chain != nullptr)
 					{
-						ComPtr<IDXGISwapChain1> _swap_chain = nullptr;
+						//If the swap chain already exists, resize it.
+						_hr = _output_presentation_window->dx_swap_chain->ResizeBuffers(_desired_number_of_swapchain_images,
+							static_cast<UINT>(_back_buffer_width),
+							static_cast<UINT>(_back_buffer_height),
+							_output_presentation_window->dx_swap_chain_selected_format,
+							0);
 
-						_hr = w_graphics_device::dx_dxgi_factory->CreateSwapChainForHwnd(
+						if (_hr == DXGI_ERROR_DEVICE_REMOVED || _hr == DXGI_ERROR_DEVICE_RESET)
+						{
+							logger.error(L"Error on resizing swap chain, because of DXGI_ERROR_DEVICE_REMOVED or DXGI_ERROR_DEVICE_RESET for graphics device: "
+								+ _device_name L" ID:" + std::to_wstring(_device_id));
+							// If the device was removed for any reason, a new device and swap chain will need to be created.
+							pGDevice->dx_device_removed = true;
+							return;
+						}
+						else if (_hr != W_PASSED)
+						{
+							logger.error(L"Error on resizing swap chain, unknown error for graphics device: "
+								+ _device_name L" ID:" + std::to_wstring(_device_id));
+							release();
+							std::exit(EXIT_FAILURE);
+						}
+					}
+					else
+					{
+						DXGI_SCALING _scaling = _output_presentation_window->support_high_resolutions ? DXGI_SCALING_NONE : DXGI_SCALING_STRETCH;
+
+						// Describe and create the swap chain.
+						DXGI_SWAP_CHAIN_DESC1 _swap_chain_desc = {};
+						_swap_chain_desc.BufferCount = _desired_number_of_swapchain_images;
+						_swap_chain_desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+						_swap_chain_desc.Stereo = false;
+						_swap_chain_desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
+						_swap_chain_desc.SampleDesc.Count = 1;//No hardware multisampling
+						_swap_chain_desc.SampleDesc.Quality = 0;
+						_swap_chain_desc.Width = static_cast<UINT>(_back_buffer_width);
+						_swap_chain_desc.Height = static_cast<UINT>(_back_buffer_height);
+						_swap_chain_desc.Format = _output_presentation_window->dx_swap_chain_selected_format;
+						_swap_chain_desc.Scaling = _scaling;
+						_swap_chain_desc.Flags = 0;
+						_swap_chain_desc.AlphaMode = DXGI_ALPHA_MODE_IGNORE;
+
+						ComPtr<IDXGISwapChain1> _swap_chain;
+						_hr = pGDevice->dx_dxgi_factory->CreateSwapChainForCoreWindow(
+#ifdef __DX12__
 							_output_presentation_window->dx_command_queue.Get(),//Swap chain needs the queue so that it can force a flush on it.
-							_output_presentation_window->hwnd,
+#else
+							pGDevice->dx_device.Get(),
+#endif
+							_output_presentation_window->window,
 							&_swap_chain_desc,
 							nullptr,
-							nullptr,
 							&_swap_chain);
-
-						V(_hr, L"create swap chain from hwnd for graphics device: " + _device_name + L" ID:" + std::to_wstring(_device_id) +
+						V(_hr, L"create swap chain from core window for graphics device: " + _device_name + L" ID:" + std::to_wstring(_device_id) +
 							L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex),
 							this->_name, 2);
 
-						_hr = _swap_chain->QueryInterface(__uuidof(IDXGISwapChain3), (void**)&_output_presentation_window->dx_swap_chain);
+						//getting swap chain 3 from swap chain 1
+						_hr = _swap_chain.As(&_output_presentation_window->dx_swap_chain);
 						if (FAILED(_hr))
 						{
 							logger.error(L"error on getting swap chain 3 from swap chain 1 for graphics device: " + L" ID:" + std::to_wstring(_device_id) +
@@ -2458,1129 +2596,990 @@ namespace wolf
 							release();
 							std::exit(EXIT_FAILURE);
 						}
-					}
-				}
 
-#elif defined(__UWP)
-
-				auto _display_rotation = _compute_display_rotation(_output_presentation_window->window_native_orientation,
-					_output_presentation_window->window_current_orientation);
-
-				float _back_buffer_width = 0;
-				float _back_buffer_height = 0;
-
-				//_update_render_target_size
-				{
-					auto _effective_dpi = _output_presentation_window->window_dpi;
-
-					/*
-						To improve battery life on high resolution devices, render to a smaller render target
-						and allow the GPU to scale the output when it is presented.
-
-						The default thresholds that define a "high resolution" display. If the thresholds
-						are exceeded and SupportHighResolutions is false, the dimensions will be scaled
-						by 50%.
-					*/
-					static const float _DpiThreshold = 192.0f;		// 200% of standard desktop display.
-					static const float _WidthThreshold = 1920.0f;	// 1080p width.
-					static const float _HeightThreshold = 1080.0f;	// 1080p height.
-					if (!_output_presentation_window->support_high_resolutions && _output_presentation_window->window_dpi > _DpiThreshold)
-					{
-						float _width = w_graphics_device_manager::convert_dips_to_pixels(
-							_output_presentation_window->window_size.Width,
-							_output_presentation_window->window_dpi);
-
-						float _height = w_graphics_device_manager::convert_dips_to_pixels(_output_presentation_window->window_size.Height,
-							_output_presentation_window->window_dpi);
-
-						/*
-							When the device is in portrait orientation, height > width. Compare the
-							larger dimension against the width threshold and the smaller dimension
-							against the height threshold.
-						*/
-						if (max(_width, _height) > _WidthThreshold && min(_width, _height) > _HeightThreshold)
+						_hr = _output_presentation_window->dx_swap_chain->SetRotation(_display_rotation);
+						if (FAILED(_hr))
 						{
-							// To scale the app we change the effective DPI. Logical size does not change.
-							_effective_dpi /= 2.0f;
+							logger.error(L"setting rotation of swap chain for graphics device: " + L" ID:" + std::to_wstring(_device_id) +
+								_device_name + L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
+							release();
+							std::exit(EXIT_FAILURE);
+						}
+
+						switch (_display_rotation)
+						{
+						case DXGI_MODE_ROTATION_IDENTITY:
+							// 0-degree Z-rotation
+							_output_presentation_window->orientation_transform_3D = DirectX::XMFLOAT4X4(
+								1.0f, 0.0f, 0.0f, 0.0f,
+								0.0f, 1.0f, 0.0f, 0.0f,
+								0.0f, 0.0f, 1.0f, 0.0f,
+								0.0f, 0.0f, 0.0f, 1.0f
+							);
+							break;
+
+						case DXGI_MODE_ROTATION_ROTATE90:
+							// 90-degree Z-rotation
+							_output_presentation_window->orientation_transform_3D = DirectX::XMFLOAT4X4(
+								0.0f, 1.0f, 0.0f, 0.0f,
+								-1.0f, 0.0f, 0.0f, 0.0f,
+								0.0f, 0.0f, 1.0f, 0.0f,
+								0.0f, 0.0f, 0.0f, 1.0f
+							);
+							break;
+
+						case DXGI_MODE_ROTATION_ROTATE180:
+							// 180-degree Z-rotation
+							_output_presentation_window->orientation_transform_3D = DirectX::XMFLOAT4X4(
+								-1.0f, 0.0f, 0.0f, 0.0f,
+								0.0f, -1.0f, 0.0f, 0.0f,
+								0.0f, 0.0f, 1.0f, 0.0f,
+								0.0f, 0.0f, 0.0f, 1.0f
+							);
+							break;
+
+						case DXGI_MODE_ROTATION_ROTATE270:
+							// 270-degree Z-rotation
+							_output_presentation_window->orientation_transform_3D = DirectX::XMFLOAT4X4(
+								0.0f, -1.0f, 0.0f, 0.0f,
+								1.0f, 0.0f, 0.0f, 0.0f,
+								0.0f, 0.0f, 1.0f, 0.0f,
+								0.0f, 0.0f, 0.0f, 1.0f
+							);
+							break;
+
+						case DXGI_MODE_ROTATION_UNSPECIFIED:
+							logger.warning(L"DXGI_MODE_ROTATION_UNSPECIFIED for graphics device: " + L" ID:" + std::to_wstring(_device_id) +
+								_device_name + L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
+						}
+
+					}
+#endif
+
+					// Describe and create a render target view (RTV) descriptor heap.
+					D3D12_DESCRIPTOR_HEAP_DESC _render_target_view_heap_desc = {};
+					_render_target_view_heap_desc.NumDescriptors = _desired_number_of_swapchain_images;
+					_render_target_view_heap_desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
+					_render_target_view_heap_desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+
+					_hr = pGDevice->dx_device->CreateDescriptorHeap(&_render_target_view_heap_desc, IID_PPV_ARGS(&_output_presentation_window->dx_render_target_view_heap));
+					V(_hr, L"creating render target heap descriptorfor graphics device: " + _device_name + L" ID:" + std::to_wstring(_device_id) +
+						L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex),
+						this->_name, 2);
+
+					_output_presentation_window->dx_render_target_descriptor_size = pGDevice->dx_device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+
+					// Create frame resources.
+					DirectX::CD3DX12_CPU_DESCRIPTOR_HANDLE _render_target_descriptor_handle(_output_presentation_window->dx_render_target_view_heap->GetCPUDescriptorHandleForHeapStart());
+
+					// Create a render target view for each image of swap chain.
+					_output_presentation_window->dx_swap_chain_image_views.resize(_desired_number_of_swapchain_images);
+					for (UINT i = 0; i < _desired_number_of_swapchain_images; ++i)
+					{
+						_hr = _output_presentation_window->dx_swap_chain->GetBuffer(i, IID_PPV_ARGS(&_output_presentation_window->dx_swap_chain_image_views[i]));
+						V(_hr, L"creating render target image view for swap chain of graphics device: " + _device_name + L" ID:" + std::to_wstring(_device_id) +
+							L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex),
+							this->_name, 2);
+
+						pGDevice->dx_device->CreateRenderTargetView(_output_presentation_window->dx_swap_chain_image_views[i], nullptr, _render_target_descriptor_handle);
+
+						_render_target_descriptor_handle.Offset(1, _output_presentation_window->dx_render_target_descriptor_size);
+					}
+
+					//get the swap chain frame index
+					_output_presentation_window->dx_swap_chain_image_index = _output_presentation_window->dx_swap_chain->GetCurrentBackBufferIndex();
+
+#elif defined(__VULKAN__)
+					auto _device_name = pGDevice->device_info->get_device_name();
+					//auto _device_id = pGDevice->device_info->get_device_id();
+					auto _output_presentation_window = &(pGDevice->output_presentation_window);
+
+					if (!_output_presentation_window) return;
+					auto _vk_presentation_surface = _output_presentation_window->vk_presentation_surface;
+					if (!_vk_presentation_surface) return;
+
+
+					for (size_t j = 0; j < pGDevice->vk_queue_family_properties.size(); ++j)
+					{
+						//check if this device support presentation
+						auto _hr = vkGetPhysicalDeviceSurfaceSupportKHR(pGDevice->vk_physical_device,
+							static_cast<uint32_t>(j),
+							_vk_presentation_surface,
+							&pGDevice->vk_queue_family_supports_present[j]);
+
+						V(_hr == 0 ? W_PASSED : W_FAILED,
+							w_log_type::W_WARNING,
+							"could not get physical device surface support for graphics device: {}. trace info: {}",
+							pGDevice->get_info(),
+							_trace_info);
+
+						if (pGDevice->vk_present_queue.index == UINT32_MAX &&
+							pGDevice->vk_graphics_queue.index != UINT32_MAX &&
+							pGDevice->vk_queue_family_supports_present[j])
+						{
+							pGDevice->vk_present_queue.index = static_cast<uint32_t>(j);
 						}
 					}
 
-					// Calculate the necessary render target size in pixels.
-					_back_buffer_width = w_graphics_device_manager::convert_dips_to_pixels(_output_presentation_window->window_size.Width,
-						_effective_dpi);
-					_back_buffer_height = w_graphics_device_manager::convert_dips_to_pixels(_output_presentation_window->window_size.Height,
-						_effective_dpi);
-
-					// Prevent zero size DirectX content from being created.
-					_back_buffer_width = max(_back_buffer_width, 1.0f);
-					_back_buffer_height = max(_back_buffer_height, 1.0f);
-				}
-
-				bool _swap_dimensions = _display_rotation == DXGI_MODE_ROTATION_ROTATE90 || _display_rotation == DXGI_MODE_ROTATION_ROTATE270;
-				if (_swap_dimensions)
-				{
-					//need to swap size
-					_back_buffer_width = lround(_back_buffer_height);
-					_back_buffer_height = lround(_back_buffer_width);
-				}
-				else
-				{
-					_back_buffer_width = lround(_back_buffer_width);
-					_back_buffer_height = lround(_back_buffer_height);
-				}
-
-				if (_output_presentation_window->dx_swap_chain != nullptr)
-				{
-					//If the swap chain already exists, resize it.
-					_hr = _output_presentation_window->dx_swap_chain->ResizeBuffers(_desired_number_of_swapchain_images,
-						static_cast<UINT>(_back_buffer_width),
-						static_cast<UINT>(_back_buffer_height),
-						_output_presentation_window->dx_swap_chain_selected_format,
-						0);
-
-					if (_hr == DXGI_ERROR_DEVICE_REMOVED || _hr == DXGI_ERROR_DEVICE_RESET)
-					{
-						logger.error(L"Error on resizing swap chain, because of DXGI_ERROR_DEVICE_REMOVED or DXGI_ERROR_DEVICE_RESET for graphics device: "
-							+ _device_name L" ID:" + std::to_wstring(_device_id));
-						// If the device was removed for any reason, a new device and swap chain will need to be created.
-						pGDevice->dx_device_removed = true;
-						return;
-					}
-					else if (_hr != W_PASSED)
-					{
-						logger.error(L"Error on resizing swap chain, unknown error for graphics device: "
-							+ _device_name L" ID:" + std::to_wstring(_device_id));
-						release();
-						std::exit(EXIT_FAILURE);
-					}
-				}
-				else
-				{
-					DXGI_SCALING _scaling = _output_presentation_window->support_high_resolutions ? DXGI_SCALING_NONE : DXGI_SCALING_STRETCH;
-
-					// Describe and create the swap chain.
-					DXGI_SWAP_CHAIN_DESC1 _swap_chain_desc = {};
-					_swap_chain_desc.BufferCount = _desired_number_of_swapchain_images;
-					_swap_chain_desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-					_swap_chain_desc.Stereo = false;
-					_swap_chain_desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
-					_swap_chain_desc.SampleDesc.Count = 1;//No hardware multisampling
-					_swap_chain_desc.SampleDesc.Quality = 0;
-					_swap_chain_desc.Width = static_cast<UINT>(_back_buffer_width);
-					_swap_chain_desc.Height = static_cast<UINT>(_back_buffer_height);
-					_swap_chain_desc.Format = _output_presentation_window->dx_swap_chain_selected_format;
-					_swap_chain_desc.Scaling = _scaling;
-					_swap_chain_desc.Flags = 0;
-					_swap_chain_desc.AlphaMode = DXGI_ALPHA_MODE_IGNORE;
-
-					ComPtr<IDXGISwapChain1> _swap_chain;
-					_hr = pGDevice->dx_dxgi_factory->CreateSwapChainForCoreWindow(
-#ifdef __DX12__
-						_output_presentation_window->dx_command_queue.Get(),//Swap chain needs the queue so that it can force a flush on it.
-#else
-						pGDevice->dx_device.Get(),
-#endif
-						_output_presentation_window->window,
-						&_swap_chain_desc,
-						nullptr,
-						&_swap_chain);
-					V(_hr, L"create swap chain from core window for graphics device: " + _device_name + L" ID:" + std::to_wstring(_device_id) +
-						L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex),
-						this->_name, 2);
-
-					//getting swap chain 3 from swap chain 1
-					_hr = _swap_chain.As(&_output_presentation_window->dx_swap_chain);
-					if (FAILED(_hr))
-					{
-						logger.error(L"error on getting swap chain 3 from swap chain 1 for graphics device: " + L" ID:" + std::to_wstring(_device_id) +
-							_device_name + L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
-						release();
-						std::exit(EXIT_FAILURE);
-					}
-
-					_hr = _output_presentation_window->dx_swap_chain->SetRotation(_display_rotation);
-					if (FAILED(_hr))
-					{
-						logger.error(L"setting rotation of swap chain for graphics device: " + L" ID:" + std::to_wstring(_device_id) +
-							_device_name + L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
-						release();
-						std::exit(EXIT_FAILURE);
-					}
-
-					switch (_display_rotation)
-					{
-					case DXGI_MODE_ROTATION_IDENTITY:
-						// 0-degree Z-rotation
-						_output_presentation_window->orientation_transform_3D = DirectX::XMFLOAT4X4(
-							1.0f, 0.0f, 0.0f, 0.0f,
-							0.0f, 1.0f, 0.0f, 0.0f,
-							0.0f, 0.0f, 1.0f, 0.0f,
-							0.0f, 0.0f, 0.0f, 1.0f
-						);
-						break;
-
-					case DXGI_MODE_ROTATION_ROTATE90:
-						// 90-degree Z-rotation
-						_output_presentation_window->orientation_transform_3D = DirectX::XMFLOAT4X4(
-							0.0f, 1.0f, 0.0f, 0.0f,
-							-1.0f, 0.0f, 0.0f, 0.0f,
-							0.0f, 0.0f, 1.0f, 0.0f,
-							0.0f, 0.0f, 0.0f, 1.0f
-						);
-						break;
-
-					case DXGI_MODE_ROTATION_ROTATE180:
-						// 180-degree Z-rotation
-						_output_presentation_window->orientation_transform_3D = DirectX::XMFLOAT4X4(
-							-1.0f, 0.0f, 0.0f, 0.0f,
-							0.0f, -1.0f, 0.0f, 0.0f,
-							0.0f, 0.0f, 1.0f, 0.0f,
-							0.0f, 0.0f, 0.0f, 1.0f
-						);
-						break;
-
-					case DXGI_MODE_ROTATION_ROTATE270:
-						// 270-degree Z-rotation
-						_output_presentation_window->orientation_transform_3D = DirectX::XMFLOAT4X4(
-							0.0f, -1.0f, 0.0f, 0.0f,
-							1.0f, 0.0f, 0.0f, 0.0f,
-							0.0f, 0.0f, 1.0f, 0.0f,
-							0.0f, 0.0f, 0.0f, 1.0f
-						);
-						break;
-
-					case DXGI_MODE_ROTATION_UNSPECIFIED:
-						logger.warning(L"DXGI_MODE_ROTATION_UNSPECIFIED for graphics device: " + L" ID:" + std::to_wstring(_device_id) +
-							_device_name + L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
-					}
-
-				}
-#endif
-
-				// Describe and create a render target view (RTV) descriptor heap.
-				D3D12_DESCRIPTOR_HEAP_DESC _render_target_view_heap_desc = {};
-				_render_target_view_heap_desc.NumDescriptors = _desired_number_of_swapchain_images;
-				_render_target_view_heap_desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
-				_render_target_view_heap_desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
-
-				_hr = pGDevice->dx_device->CreateDescriptorHeap(&_render_target_view_heap_desc, IID_PPV_ARGS(&_output_presentation_window->dx_render_target_view_heap));
-				V(_hr, L"creating render target heap descriptorfor graphics device: " + _device_name + L" ID:" + std::to_wstring(_device_id) +
-					L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex),
-					this->_name, 2);
-
-				_output_presentation_window->dx_render_target_descriptor_size = pGDevice->dx_device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
-
-				// Create frame resources.
-				DirectX::CD3DX12_CPU_DESCRIPTOR_HANDLE _render_target_descriptor_handle(_output_presentation_window->dx_render_target_view_heap->GetCPUDescriptorHandleForHeapStart());
-
-				// Create a render target view for each image of swap chain.
-				_output_presentation_window->dx_swap_chain_image_views.resize(_desired_number_of_swapchain_images);
-				for (UINT i = 0; i < _desired_number_of_swapchain_images; ++i)
-				{
-					_hr = _output_presentation_window->dx_swap_chain->GetBuffer(i, IID_PPV_ARGS(&_output_presentation_window->dx_swap_chain_image_views[i]));
-					V(_hr, L"creating render target image view for swap chain of graphics device: " + _device_name + L" ID:" + std::to_wstring(_device_id) +
-						L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex),
-						this->_name, 2);
-
-					pGDevice->dx_device->CreateRenderTargetView(_output_presentation_window->dx_swap_chain_image_views[i], nullptr, _render_target_descriptor_handle);
-
-					_render_target_descriptor_handle.Offset(1, _output_presentation_window->dx_render_target_descriptor_size);
-				}
-
-				//get the swap chain frame index
-				_output_presentation_window->dx_swap_chain_image_index = _output_presentation_window->dx_swap_chain->GetCurrentBackBufferIndex();
-
-#elif defined(__VULKAN__)
-				auto _device_name = pGDevice->device_info->get_device_name();
-				//auto _device_id = pGDevice->device_info->get_device_id();
-				auto _output_presentation_window = &(pGDevice->output_presentation_window);
-
-				if (!_output_presentation_window) return;
-				auto _vk_presentation_surface = _output_presentation_window->vk_presentation_surface;
-				if (!_vk_presentation_surface) return;
-
-
-				for (size_t j = 0; j < pGDevice->vk_queue_family_properties.size(); ++j)
-				{
-					//check if this device support presentation
-					auto _hr = vkGetPhysicalDeviceSurfaceSupportKHR(pGDevice->vk_physical_device,
-						static_cast<uint32_t>(j),
-						_vk_presentation_surface,
-						&pGDevice->vk_queue_family_supports_present[j]);
-
-					V(_hr == 0 ? W_PASSED : W_FAILED,
+					V(pGDevice->vk_present_queue.index == UINT32_MAX ? W_FAILED : W_PASSED,
 						w_log_type::W_WARNING,
-						"could not get physical device surface support for graphics device: {}. trace info: {}",
+						"could not find queue family which supports presentation for graphics device: {}. trace info: {}",
 						pGDevice->get_info(),
 						_trace_info);
 
-					if (pGDevice->vk_present_queue.index == UINT32_MAX &&
-						pGDevice->vk_graphics_queue.index != UINT32_MAX &&
-						pGDevice->vk_queue_family_supports_present[j])
+					//get the list of VkFormats that are supported:
+					uint32_t _vk_format_count;
+					auto _hr = vkGetPhysicalDeviceSurfaceFormatsKHR(pGDevice->vk_physical_device,
+						_vk_presentation_surface,
+						&_vk_format_count,
+						NULL);
+					if (_hr)
 					{
-						pGDevice->vk_present_queue.index = static_cast<uint32_t>(j);
+						logger.error("could not get number of physical device surface formats for graphics device: {}",
+							pGDevice->get_info());
+						release();
+						std::exit(EXIT_FAILURE);
 					}
-				}
 
-				V(pGDevice->vk_present_queue.index == UINT32_MAX ? W_FAILED : W_PASSED,
-					w_log_type::W_WARNING,
-					"could not find queue family which supports presentation for graphics device: {}. trace info: {}",
-					pGDevice->get_info(),
-					_trace_info);
+					_output_presentation_window->vk_surface_formats.resize(_vk_format_count);
 
-				//get the list of VkFormats that are supported:
-				uint32_t _vk_format_count;
-				auto _hr = vkGetPhysicalDeviceSurfaceFormatsKHR(pGDevice->vk_physical_device,
-					_vk_presentation_surface,
-					&_vk_format_count,
-					NULL);
-				if (_hr)
-				{
-					logger.error("could not get number of physical device surface formats for graphics device: {}",
-						pGDevice->get_info());
-					release();
-					std::exit(EXIT_FAILURE);
-				}
-
-				_output_presentation_window->vk_surface_formats.resize(_vk_format_count);
-
-				_hr = vkGetPhysicalDeviceSurfaceFormatsKHR(pGDevice->vk_physical_device,
-					_vk_presentation_surface,
-					&_vk_format_count,
-					_output_presentation_window->vk_surface_formats.data());
-				if (_hr)
-				{
-					logger.error("could not get physical device surface formats for graphics device: {}",
-						pGDevice->get_info());
-					release();
-					std::exit(EXIT_FAILURE);
-				}
-
-
-				/*
-					If the format list includes just one entry of VK_FORMAT_UNDEFINED,
-					the surface has no preferred format.  Otherwise, at least one
-					supported format will be returned.
-				*/
-				if (_vk_format_count == 1 && _output_presentation_window->vk_surface_formats[0].format == VkFormat::VK_FORMAT_UNDEFINED)
-				{
-					_output_presentation_window->vk_swap_chain_selected_format.format = VkFormat::VK_FORMAT_B8G8R8A8_UNORM;
-					_output_presentation_window->vk_swap_chain_selected_format.colorSpace = VkColorSpaceKHR::VK_COLORSPACE_SRGB_NONLINEAR_KHR;
-				}
-				else
-				{
-					bool _find_format = false;
-					for (auto _iter : _output_presentation_window->vk_surface_formats)
+					_hr = vkGetPhysicalDeviceSurfaceFormatsKHR(pGDevice->vk_physical_device,
+						_vk_presentation_surface,
+						&_vk_format_count,
+						_output_presentation_window->vk_surface_formats.data());
+					if (_hr)
 					{
-						if (_iter.format == _output_presentation_window->vk_swap_chain_selected_format.format)
+						logger.error("could not get physical device surface formats for graphics device: {}",
+							pGDevice->get_info());
+						release();
+						std::exit(EXIT_FAILURE);
+					}
+
+
+					/*
+						If the format list includes just one entry of VK_FORMAT_UNDEFINED,
+						the surface has no preferred format.  Otherwise, at least one
+						supported format will be returned.
+					*/
+					if (_vk_format_count == 1 && _output_presentation_window->vk_surface_formats[0].format == VkFormat::VK_FORMAT_UNDEFINED)
+					{
+						_output_presentation_window->vk_swap_chain_selected_format.format = VkFormat::VK_FORMAT_B8G8R8A8_UNORM;
+						_output_presentation_window->vk_swap_chain_selected_format.colorSpace = VkColorSpaceKHR::VK_COLORSPACE_SRGB_NONLINEAR_KHR;
+					}
+					else
+					{
+						bool _find_format = false;
+						for (auto _iter : _output_presentation_window->vk_surface_formats)
 						{
-							_find_format = true;
-							break;
+							if (_iter.format == _output_presentation_window->vk_swap_chain_selected_format.format)
+							{
+								_find_format = true;
+								break;
+							}
+						}
+						//use the default one
+						if (!_find_format)
+						{
+							logger.error("preferred swap chain format \'{}\' not found for graphics device: {}",
+								_output_presentation_window->vk_swap_chain_selected_format.format,
+								pGDevice->get_info());
+
+							_output_presentation_window->vk_swap_chain_selected_format = _output_presentation_window->vk_surface_formats[0];
 						}
 					}
-					//use the default one
-					if (!_find_format)
+
+					VkSurfaceCapabilitiesKHR _surface_capabilities;
+					_hr = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(pGDevice->vk_physical_device,
+						_vk_presentation_surface,
+						&_surface_capabilities);
+					if (_hr == -3)
 					{
-						logger.error("preferred swap chain format \'{}\' not found for graphics device: {}", 
-							_output_presentation_window->vk_swap_chain_selected_format.format,  
+						logger.error("error on create vulkan surface capabilities for graphics device: {}",
 							pGDevice->get_info());
 
-						_output_presentation_window->vk_swap_chain_selected_format = _output_presentation_window->vk_surface_formats[0];
-					}
-				}
-
-				VkSurfaceCapabilitiesKHR _surface_capabilities;
-				_hr = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(pGDevice->vk_physical_device,
-					_vk_presentation_surface,
-					&_surface_capabilities);
-				if (_hr == -3)
-				{
-					logger.error("error on create vulkan surface capabilities for graphics device: {}",
-						pGDevice->get_info());
-
-					//manually create _surface_capabilities
-					_surface_capabilities.currentExtent.width = _output_presentation_window->width;
-					_surface_capabilities.currentExtent.height = _output_presentation_window->height;
-					_surface_capabilities.currentTransform = VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR;
-					_surface_capabilities.maxImageArrayLayers = 1;
-					_surface_capabilities.maxImageCount = 16;
-					_surface_capabilities.maxImageExtent.width = _output_presentation_window->width;
-					_surface_capabilities.maxImageExtent.height = _output_presentation_window->height;
-					_surface_capabilities.minImageCount = 1;
-					_surface_capabilities.minImageExtent.width = 1;
-					_surface_capabilities.minImageExtent.height = 1;
-					_surface_capabilities.supportedCompositeAlpha = 1;
-					_surface_capabilities.supportedTransforms = 1;
-					_surface_capabilities.supportedUsageFlags = 159;
-				}
-
-				//width and height are either both 0xFFFFFFFF, or both not 0xFFFFFFFF.
-				VkExtent2D _swap_chain_extent;
-				if (_surface_capabilities.currentExtent.width == 0xFFFFFFFF)
-				{
-					// If the surface size is undefined, the size is set to the size of the images requested.
-					_swap_chain_extent.width = _output_presentation_window->width;
-					_swap_chain_extent.height = _output_presentation_window->height;
-
-					if (_swap_chain_extent.width < _surface_capabilities.minImageExtent.width)
-					{
-						_swap_chain_extent.width = _surface_capabilities.minImageExtent.width;
-					}
-					else if (_swap_chain_extent.width > _surface_capabilities.maxImageExtent.width)
-					{
-						_swap_chain_extent.width = _surface_capabilities.maxImageExtent.width;
+						//manually create _surface_capabilities
+						_surface_capabilities.currentExtent.width = _output_presentation_window->width;
+						_surface_capabilities.currentExtent.height = _output_presentation_window->height;
+						_surface_capabilities.currentTransform = VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR;
+						_surface_capabilities.maxImageArrayLayers = 1;
+						_surface_capabilities.maxImageCount = 16;
+						_surface_capabilities.maxImageExtent.width = _output_presentation_window->width;
+						_surface_capabilities.maxImageExtent.height = _output_presentation_window->height;
+						_surface_capabilities.minImageCount = 1;
+						_surface_capabilities.minImageExtent.width = 1;
+						_surface_capabilities.minImageExtent.height = 1;
+						_surface_capabilities.supportedCompositeAlpha = 1;
+						_surface_capabilities.supportedTransforms = 1;
+						_surface_capabilities.supportedUsageFlags = 159;
 					}
 
-					if (_swap_chain_extent.height < _surface_capabilities.minImageExtent.height)
+					//width and height are either both 0xFFFFFFFF, or both not 0xFFFFFFFF.
+					VkExtent2D _swap_chain_extent;
+					if (_surface_capabilities.currentExtent.width == 0xFFFFFFFF)
 					{
-						_swap_chain_extent.height = _surface_capabilities.minImageExtent.height;
+						// If the surface size is undefined, the size is set to the size of the images requested.
+						_swap_chain_extent.width = _output_presentation_window->width;
+						_swap_chain_extent.height = _output_presentation_window->height;
+
+						if (_swap_chain_extent.width < _surface_capabilities.minImageExtent.width)
+						{
+							_swap_chain_extent.width = _surface_capabilities.minImageExtent.width;
+						}
+						else if (_swap_chain_extent.width > _surface_capabilities.maxImageExtent.width)
+						{
+							_swap_chain_extent.width = _surface_capabilities.maxImageExtent.width;
+						}
+
+						if (_swap_chain_extent.height < _surface_capabilities.minImageExtent.height)
+						{
+							_swap_chain_extent.height = _surface_capabilities.minImageExtent.height;
+						}
+						else if (_swap_chain_extent.height > _surface_capabilities.maxImageExtent.height)
+						{
+							_swap_chain_extent.height = _surface_capabilities.maxImageExtent.height;
+						}
 					}
-					else if (_swap_chain_extent.height > _surface_capabilities.maxImageExtent.height)
+					else
 					{
-						_swap_chain_extent.height = _surface_capabilities.maxImageExtent.height;
+						// If the surface size is defined, the swap chain size must match
+						_swap_chain_extent = _surface_capabilities.currentExtent;
+
 					}
-				}
-				else
-				{
-					// If the surface size is defined, the swap chain size must match
-					_swap_chain_extent = _surface_capabilities.currentExtent;
 
-				}
-
-				auto _desired_number_of_swapchain_images = _surface_capabilities.minImageCount;
-				/*
-					Determine the number of VkImage's to use in the swap chain.
-					We need to acquire only 1 presentable image at at time.
-					Asking for minImageCount images ensures that we can acquire
-					1 presentable image as long as we present it before attempting
-					to acquire another.
-				*/
-				if ((_surface_capabilities.maxImageCount > 0) &&
-					(_desired_number_of_swapchain_images > _surface_capabilities.maxImageCount))
-				{
-					_desired_number_of_swapchain_images = _surface_capabilities.maxImageCount;
-				}
-
-				if (_desired_number_of_swapchain_images == 0)
-				{
-					logger.error("The images count of surface capabilities and swap chain is zero, for graphics device: {}",
-						pGDevice->get_info());
-					release();
-					std::exit(EXIT_FAILURE);
-				}
-				if (_desired_number_of_swapchain_images < 2)
-				{
-					if (_output_presentation_window->double_buffering)
-					{
-						logger.warning("Double buffering for swap chain forced by user, for graphics device: {}",
-							pGDevice->get_info());
-						_desired_number_of_swapchain_images = 2;
-					}
-				}
-
-				logger.write(
-					"Desired number of swapchain image(s) is {} for graphics device: {}",
-					_desired_number_of_swapchain_images,
-					pGDevice->get_info());
-
-				//Find a supported composite alpha format
-				VkCompositeAlphaFlagBitsKHR _composite_alpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
-				std::vector<VkCompositeAlphaFlagBitsKHR> _desired_composite_alphas = 
-				{
-					VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR,
-					VK_COMPOSITE_ALPHA_PRE_MULTIPLIED_BIT_KHR,
-					VK_COMPOSITE_ALPHA_POST_MULTIPLIED_BIT_KHR,
-					VK_COMPOSITE_ALPHA_INHERIT_BIT_KHR,
-				};
-				for (auto& _flag : _desired_composite_alphas) 
-				{
-					if (_surface_capabilities.supportedCompositeAlpha & _flag)
-					{
-						_composite_alpha = _flag;
-						break;
-					};
-				}
-
-				VkSurfaceTransformFlagBitsKHR _pre_transform;
-				if (_surface_capabilities.supportedTransforms & VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR)
-				{
-					_pre_transform = VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR;
-				}
-				else
-				{
-					_pre_transform = _surface_capabilities.currentTransform;
-				}
-
-				auto _image_extend = _surface_capabilities.currentExtent;
-				if (_image_extend.width != _output_presentation_window->width)
-				{
-					_output_presentation_window->width = _image_extend.width;
-				}
-				if (_image_extend.height != _output_presentation_window->height)
-				{
-					_output_presentation_window->height = _image_extend.height;
-				}
-
-				//get the count of present modes
-				uint32_t _present_mode_count;
-				_hr = vkGetPhysicalDeviceSurfacePresentModesKHR(pGDevice->vk_physical_device,
-					_vk_presentation_surface,
-					&_present_mode_count, nullptr);
-				if (_hr)
-				{
-					logger.error("error on getting vulkan present mode(s) count for graphics device: {}",
-						pGDevice->get_info());
-					release();
-					std::exit(EXIT_FAILURE);
-				}
-
-				//get present modes
-				std::vector<VkPresentModeKHR> _avaiable_present_modes(_present_mode_count);
-				_hr = vkGetPhysicalDeviceSurfacePresentModesKHR(pGDevice->vk_physical_device,
-					_vk_presentation_surface,
-					&_present_mode_count,
-					_avaiable_present_modes.data());
-				if (_hr)
-				{
-					logger.error("error on getting vulkan present mode(s) for graphics device: {}",
-						pGDevice->get_info());
-					release();
-					std::exit(EXIT_FAILURE);
-				}
-
-				if (_avaiable_present_modes.size() == 0)
-				{
-					logger.error("no avaiable present mode founded for graphics device: {}",
-						pGDevice->get_info());
-					release();
-					std::exit(EXIT_FAILURE);
-				}
-
-				//select present mode
-				/*
-					VK_PRESENT_MODE_IMMEDIATE_KHR:		The presentation engine does not wait for a vertical blanking period to 
-															update the current image, meaning this mode may result in visible tearing. 
-															No internal queuing of presentation requests is needed, as the requests are 
-															applied immediately.
-					VK_PRESENT_MODE_MAILBOX_KHR:		The presentation engine waits for the next vertical blanking period to update 
-															the current image. Tearing cannot be observed. An internal single-entry queue 
-															is used to hold pending presentation requests. If the queue is full when a new 
-															presentation request is received, the new request replaces the existing entry, 
-															and any images associated with the prior entry become available for re-use by 
-															the application. One request is removed from the queue and processed during each 
-															vertical blanking period in which the queue is non-empty.
-					VK_PRESENT_MODE_FIFO_KHR:			The presentation engine waits for the next vertical blanking period to update the current image. 
-															Tearing cannot be observed. An internal queue is used to hold pending presentation requests. 
-															New requests are appended to the end of the queue, and one request is removed from the beginning 
-															of the queue and processed during each vertical blanking period in which the queue is non-empty. 
-															This is the only value of presentMode that is required to be supported.
-					VK_PRESENT_MODE_FIFO_RELAXED_KHR:	The presentation engine generally waits for the next vertical blanking period to update 
-															the current image. If a vertical blanking period has already passed since the last update 
-															of the current image then the presentation engine does not wait for another vertical blanking 
-															period for the update, meaning this mode may result in visible tearing in this case. 
-															This mode is useful for reducing visual stutter with an application that will mostly present 
-															a new image before the next vertical blanking period, but may occasionally be late, and present 
-															a new image just after the next vertical blanking period. An internal queue is used to hold pending 
-															presentation requests. New requests are appended to the end of the queue, and one request is removed 
-															from the beginning of the queue and processed during or after each vertical blanking period in which 
-															the queue is non-empty.
-				*/
-
-				std::vector<VkPresentModeKHR> _desired_present_modes;
-				if (_output_presentation_window->v_sync)
-				{
-					_desired_present_modes.push_back(VK_PRESENT_MODE_FIFO_KHR);
-					_desired_present_modes.push_back(VK_PRESENT_MODE_FIFO_RELAXED_KHR);
-					_desired_present_modes.push_back(VK_PRESENT_MODE_MAILBOX_KHR);
-				}
-				else
-				{
-					_desired_present_modes.push_back(VK_PRESENT_MODE_IMMEDIATE_KHR);
-				}
-
-				auto _present_mode = _select_present_mode(_desired_present_modes, _avaiable_present_modes);
-				
-				VkSwapchainCreateInfoKHR _swap_chain_create_info = {};
-				_swap_chain_create_info.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
-				_swap_chain_create_info.pNext = nullptr;
-				_swap_chain_create_info.surface = _vk_presentation_surface;
-				_swap_chain_create_info.minImageCount = _desired_number_of_swapchain_images;
-				_swap_chain_create_info.imageFormat = _output_presentation_window->vk_swap_chain_selected_format.format;
-				_swap_chain_create_info.imageColorSpace = _output_presentation_window->vk_swap_chain_selected_format.colorSpace;
-				_swap_chain_create_info.imageExtent = _image_extend;
-				_swap_chain_create_info.preTransform = _pre_transform;
-				_swap_chain_create_info.compositeAlpha = _composite_alpha;
-				_swap_chain_create_info.imageArrayLayers = 1;
-				_swap_chain_create_info.presentMode = _present_mode;
-				_swap_chain_create_info.oldSwapchain = VK_NULL_HANDLE;
-				_swap_chain_create_info.clipped = VK_TRUE;//Discard rendering outside of the surface area
-				_swap_chain_create_info.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
-				_swap_chain_create_info.queueFamilyIndexCount = 0;
-				_swap_chain_create_info.pQueueFamilyIndices = NULL;
-				_swap_chain_create_info.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
-				if (_output_presentation_window->cpu_access_to_swapchain_buffer)
-				{
-					_swap_chain_create_info.imageUsage |= VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
-				}
-
-				uint32_t _queue_family_indices[2] =
-				{
-					pGDevice->vk_graphics_queue.index,
-					pGDevice->vk_present_queue.index,
-				};
-				if (_queue_family_indices[0] != _queue_family_indices[1])
-				{
+					auto _desired_number_of_swapchain_images = _surface_capabilities.minImageCount;
 					/*
-						If the graphics and present queues are from different queue families,
-						we either have to explicitly transfer ownership of images between
-						the queues, or we have to create the swap chain with imageSharingMode
-						as VK_SHARING_MODE_CONCURRENT
+						Determine the number of VkImage's to use in the swap chain.
+						We need to acquire only 1 presentable image at at time.
+						Asking for minImageCount images ensures that we can acquire
+						1 presentable image as long as we present it before attempting
+						to acquire another.
 					*/
-					_swap_chain_create_info.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
-					_swap_chain_create_info.queueFamilyIndexCount = 2;
-					_swap_chain_create_info.pQueueFamilyIndices = _queue_family_indices;
-				}
+					if ((_surface_capabilities.maxImageCount > 0) &&
+						(_desired_number_of_swapchain_images > _surface_capabilities.maxImageCount))
+					{
+						_desired_number_of_swapchain_images = _surface_capabilities.maxImageCount;
+					}
 
-				//create swap chain
-				_hr = vkCreateSwapchainKHR(pGDevice->vk_device,
-					&_swap_chain_create_info,
-					nullptr,
-					&_output_presentation_window->vk_swap_chain);
-				if (_hr || !_output_presentation_window->vk_swap_chain)
-				{
-					logger.error("error on creating swap chain for vulkan for graphics device: {}", pGDevice->get_info());
-					release();
-					std::exit(EXIT_FAILURE);
-				}
-
-				//get the count of swap chain 's images
-				uint32_t _swap_chain_image_count = UINT32_MAX;
-				_hr = vkGetSwapchainImagesKHR(pGDevice->vk_device,
-					_output_presentation_window->vk_swap_chain,
-					&_swap_chain_image_count,
-					nullptr);
-				if (_hr || _swap_chain_image_count == UINT32_MAX)
-				{
-					logger.error("error on getting total available image counts of swap chain for graphics device: {}",
-						pGDevice->get_info());
-					release();
-					std::exit(EXIT_FAILURE);
-				}
-
-				std::vector<VkImage> _swap_chain_images(_swap_chain_image_count);
-				_hr = vkGetSwapchainImagesKHR(pGDevice->vk_device,
-					_output_presentation_window->vk_swap_chain,
-					&_swap_chain_image_count,
-					_swap_chain_images.data());
-				if (_hr)
-				{
-					logger.error("error on getting total available images of swap chain for graphics device: {}",
-						pGDevice->get_info());
-					release();
-					std::exit(EXIT_FAILURE);
-				}
-
-                for (size_t j = 0; j < _swap_chain_images.size(); ++j)
-                {
-                    VkImageViewCreateInfo _color_image_view = {};
-
-                    _color_image_view.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-                    _color_image_view.pNext = nullptr;
-                    _color_image_view.flags = 0;
-                    _color_image_view.image = _swap_chain_images[j];
-                    _color_image_view.viewType = VK_IMAGE_VIEW_TYPE_2D;
-                    _color_image_view.format = _output_presentation_window->vk_swap_chain_selected_format.format;
-                    _color_image_view.components.r = VK_COMPONENT_SWIZZLE_R;
-                    _color_image_view.components.g = VK_COMPONENT_SWIZZLE_G;
-                    _color_image_view.components.b = VK_COMPONENT_SWIZZLE_B;
-                    _color_image_view.components.a = VK_COMPONENT_SWIZZLE_A;
-                    _color_image_view.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-                    _color_image_view.subresourceRange.baseMipLevel = 0;
-                    _color_image_view.subresourceRange.levelCount = 1;
-                    _color_image_view.subresourceRange.baseArrayLayer = 0;
-                    _color_image_view.subresourceRange.layerCount = 1;
-
-                    w_image_view _image_view;
-                    _image_view.image = _swap_chain_images[j];
-
-                    auto _hr = vkCreateImageView(pGDevice->vk_device,
-                        &_color_image_view,
-                        nullptr,
-                        &_image_view.view);
-                    if (_hr)
-                    {
-                        logger.error("error on creating image view total available images of swap chain for graphics device: {}",
+					if (_desired_number_of_swapchain_images == 0)
+					{
+						logger.error("The images count of surface capabilities and swap chain is zero, for graphics device: {}",
 							pGDevice->get_info());
-                        release();
-                        std::exit(EXIT_FAILURE);
-                    }
+						release();
+						std::exit(EXIT_FAILURE);
+					}
+					if (_desired_number_of_swapchain_images < 2)
+					{
+						if (_output_presentation_window->double_buffering)
+						{
+							logger.warning("Double buffering for swap chain forced by user, for graphics device: {}",
+								pGDevice->get_info());
+							_desired_number_of_swapchain_images = 2;
+						}
+					}
 
-					_image_view.width = _output_presentation_window->width;
-					_image_view.height = _output_presentation_window->height;
-					_image_view.attachment_desc = w_attachment_buffer_desc::create_color_desc_buffer();
-                    _output_presentation_window->swap_chain_image_views.push_back(_image_view);
-                }
+					logger.write(
+						"Desired number of swapchain image(s) is {} for graphics device: {}",
+						_desired_number_of_swapchain_images,
+						pGDevice->get_info());
+
+					//Find a supported composite alpha format
+					VkCompositeAlphaFlagBitsKHR _composite_alpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
+					std::vector<VkCompositeAlphaFlagBitsKHR> _desired_composite_alphas =
+					{
+						VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR,
+						VK_COMPOSITE_ALPHA_PRE_MULTIPLIED_BIT_KHR,
+						VK_COMPOSITE_ALPHA_POST_MULTIPLIED_BIT_KHR,
+						VK_COMPOSITE_ALPHA_INHERIT_BIT_KHR,
+					};
+					for (auto& _flag : _desired_composite_alphas)
+					{
+						if (_surface_capabilities.supportedCompositeAlpha & _flag)
+						{
+							_composite_alpha = _flag;
+							break;
+						};
+					}
+
+					VkSurfaceTransformFlagBitsKHR _pre_transform;
+					if (_surface_capabilities.supportedTransforms & VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR)
+					{
+						_pre_transform = VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR;
+					}
+					else
+					{
+						_pre_transform = _surface_capabilities.currentTransform;
+					}
+
+					auto _image_extend = _surface_capabilities.currentExtent;
+					if (_image_extend.width != _output_presentation_window->width)
+					{
+						_output_presentation_window->width = _image_extend.width;
+					}
+					if (_image_extend.height != _output_presentation_window->height)
+					{
+						_output_presentation_window->height = _image_extend.height;
+					}
+
+					//get the count of present modes
+					uint32_t _present_mode_count;
+					_hr = vkGetPhysicalDeviceSurfacePresentModesKHR(pGDevice->vk_physical_device,
+						_vk_presentation_surface,
+						&_present_mode_count, nullptr);
+					if (_hr)
+					{
+						logger.error("error on getting vulkan present mode(s) count for graphics device: {}",
+							pGDevice->get_info());
+						release();
+						std::exit(EXIT_FAILURE);
+					}
+
+					//get present modes
+					std::vector<VkPresentModeKHR> _avaiable_present_modes(_present_mode_count);
+					_hr = vkGetPhysicalDeviceSurfacePresentModesKHR(pGDevice->vk_physical_device,
+						_vk_presentation_surface,
+						&_present_mode_count,
+						_avaiable_present_modes.data());
+					if (_hr)
+					{
+						logger.error("error on getting vulkan present mode(s) for graphics device: {}",
+							pGDevice->get_info());
+						release();
+						std::exit(EXIT_FAILURE);
+					}
+
+					if (_avaiable_present_modes.size() == 0)
+					{
+						logger.error("no avaiable present mode founded for graphics device: {}",
+							pGDevice->get_info());
+						release();
+						std::exit(EXIT_FAILURE);
+					}
+
+					//select present mode
+					/*
+						VK_PRESENT_MODE_IMMEDIATE_KHR:		The presentation engine does not wait for a vertical blanking period to
+																update the current image, meaning this mode may result in visible tearing.
+																No internal queuing of presentation requests is needed, as the requests are
+																applied immediately.
+						VK_PRESENT_MODE_MAILBOX_KHR:		The presentation engine waits for the next vertical blanking period to update
+																the current image. Tearing cannot be observed. An internal single-entry queue
+																is used to hold pending presentation requests. If the queue is full when a new
+																presentation request is received, the new request replaces the existing entry,
+																and any images associated with the prior entry become available for re-use by
+																the application. One request is removed from the queue and processed during each
+																vertical blanking period in which the queue is non-empty.
+						VK_PRESENT_MODE_FIFO_KHR:			The presentation engine waits for the next vertical blanking period to update the current image.
+																Tearing cannot be observed. An internal queue is used to hold pending presentation requests.
+																New requests are appended to the end of the queue, and one request is removed from the beginning
+																of the queue and processed during each vertical blanking period in which the queue is non-empty.
+																This is the only value of presentMode that is required to be supported.
+						VK_PRESENT_MODE_FIFO_RELAXED_KHR:	The presentation engine generally waits for the next vertical blanking period to update
+																the current image. If a vertical blanking period has already passed since the last update
+																of the current image then the presentation engine does not wait for another vertical blanking
+																period for the update, meaning this mode may result in visible tearing in this case.
+																This mode is useful for reducing visual stutter with an application that will mostly present
+																a new image before the next vertical blanking period, but may occasionally be late, and present
+																a new image just after the next vertical blanking period. An internal queue is used to hold pending
+																presentation requests. New requests are appended to the end of the queue, and one request is removed
+																from the beginning of the queue and processed during or after each vertical blanking period in which
+																the queue is non-empty.
+					*/
+
+					std::vector<VkPresentModeKHR> _desired_present_modes;
+					if (_output_presentation_window->v_sync)
+					{
+						_desired_present_modes.push_back(VK_PRESENT_MODE_FIFO_KHR);
+						_desired_present_modes.push_back(VK_PRESENT_MODE_FIFO_RELAXED_KHR);
+						_desired_present_modes.push_back(VK_PRESENT_MODE_MAILBOX_KHR);
+					}
+					else
+					{
+						_desired_present_modes.push_back(VK_PRESENT_MODE_IMMEDIATE_KHR);
+					}
+
+					auto _present_mode = _select_present_mode(_desired_present_modes, _avaiable_present_modes);
+
+					VkSwapchainCreateInfoKHR _swap_chain_create_info = {};
+					_swap_chain_create_info.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
+					_swap_chain_create_info.pNext = nullptr;
+					_swap_chain_create_info.surface = _vk_presentation_surface;
+					_swap_chain_create_info.minImageCount = _desired_number_of_swapchain_images;
+					_swap_chain_create_info.imageFormat = _output_presentation_window->vk_swap_chain_selected_format.format;
+					_swap_chain_create_info.imageColorSpace = _output_presentation_window->vk_swap_chain_selected_format.colorSpace;
+					_swap_chain_create_info.imageExtent = _image_extend;
+					_swap_chain_create_info.preTransform = _pre_transform;
+					_swap_chain_create_info.compositeAlpha = _composite_alpha;
+					_swap_chain_create_info.imageArrayLayers = 1;
+					_swap_chain_create_info.presentMode = _present_mode;
+					_swap_chain_create_info.oldSwapchain = VK_NULL_HANDLE;
+					_swap_chain_create_info.clipped = VK_TRUE;//Discard rendering outside of the surface area
+					_swap_chain_create_info.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
+					_swap_chain_create_info.queueFamilyIndexCount = 0;
+					_swap_chain_create_info.pQueueFamilyIndices = NULL;
+					_swap_chain_create_info.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+					if (_output_presentation_window->cpu_access_to_swapchain_buffer)
+					{
+						_swap_chain_create_info.imageUsage |= VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
+					}
+
+					uint32_t _queue_family_indices[2] =
+					{
+						pGDevice->vk_graphics_queue.index,
+						pGDevice->vk_present_queue.index,
+					};
+					if (_queue_family_indices[0] != _queue_family_indices[1])
+					{
+						/*
+							If the graphics and present queues are from different queue families,
+							we either have to explicitly transfer ownership of images between
+							the queues, or we have to create the swap chain with imageSharingMode
+							as VK_SHARING_MODE_CONCURRENT
+						*/
+						_swap_chain_create_info.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
+						_swap_chain_create_info.queueFamilyIndexCount = 2;
+						_swap_chain_create_info.pQueueFamilyIndices = _queue_family_indices;
+					}
+
+					//create swap chain
+					_hr = vkCreateSwapchainKHR(pGDevice->vk_device,
+						&_swap_chain_create_info,
+						nullptr,
+						&_output_presentation_window->vk_swap_chain);
+					if (_hr || !_output_presentation_window->vk_swap_chain)
+					{
+						logger.error("error on creating swap chain for vulkan for graphics device: {}", pGDevice->get_info());
+						release();
+						std::exit(EXIT_FAILURE);
+					}
+
+					//get the count of swap chain 's images
+					uint32_t _swap_chain_image_count = UINT32_MAX;
+					_hr = vkGetSwapchainImagesKHR(pGDevice->vk_device,
+						_output_presentation_window->vk_swap_chain,
+						&_swap_chain_image_count,
+						nullptr);
+					if (_hr || _swap_chain_image_count == UINT32_MAX)
+					{
+						logger.error("error on getting total available image counts of swap chain for graphics device: {}",
+							pGDevice->get_info());
+						release();
+						std::exit(EXIT_FAILURE);
+					}
+
+					std::vector<VkImage> _swap_chain_images(_swap_chain_image_count);
+					_hr = vkGetSwapchainImagesKHR(pGDevice->vk_device,
+						_output_presentation_window->vk_swap_chain,
+						&_swap_chain_image_count,
+						_swap_chain_images.data());
+					if (_hr)
+					{
+						logger.error("error on getting total available images of swap chain for graphics device: {}",
+							pGDevice->get_info());
+						release();
+						std::exit(EXIT_FAILURE);
+					}
+
+					for (size_t j = 0; j < _swap_chain_images.size(); ++j)
+					{
+						VkImageViewCreateInfo _color_image_view = {};
+
+						_color_image_view.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+						_color_image_view.pNext = nullptr;
+						_color_image_view.flags = 0;
+						_color_image_view.image = _swap_chain_images[j];
+						_color_image_view.viewType = VK_IMAGE_VIEW_TYPE_2D;
+						_color_image_view.format = _output_presentation_window->vk_swap_chain_selected_format.format;
+						_color_image_view.components.r = VK_COMPONENT_SWIZZLE_R;
+						_color_image_view.components.g = VK_COMPONENT_SWIZZLE_G;
+						_color_image_view.components.b = VK_COMPONENT_SWIZZLE_B;
+						_color_image_view.components.a = VK_COMPONENT_SWIZZLE_A;
+						_color_image_view.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+						_color_image_view.subresourceRange.baseMipLevel = 0;
+						_color_image_view.subresourceRange.levelCount = 1;
+						_color_image_view.subresourceRange.baseArrayLayer = 0;
+						_color_image_view.subresourceRange.layerCount = 1;
+
+						w_image_view _image_view;
+						_image_view.image = _swap_chain_images[j];
+
+						auto _hr = vkCreateImageView(pGDevice->vk_device,
+							&_color_image_view,
+							nullptr,
+							&_image_view.view);
+						if (_hr)
+						{
+							logger.error("error on creating image view total available images of swap chain for graphics device: {}",
+								pGDevice->get_info());
+							release();
+							std::exit(EXIT_FAILURE);
+						}
+
+						_image_view.width = _output_presentation_window->width;
+						_image_view.height = _output_presentation_window->height;
+						_image_view.attachment_desc = w_attachment_buffer_desc::create_color_desc_buffer();
+						_output_presentation_window->swap_chain_image_views.push_back(_image_view);
+					}
 
 #pragma region Create Depth Buffer
 
-				VkImageCreateInfo _depth_stencil_image_create_info = {};
-				const VkFormat _depth_format = w_graphics_device_manager::find_supported_format(
-					pGDevice,
-					{ VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT },
-					VK_IMAGE_TILING_OPTIMAL,
-					VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT);
-				if (_depth_format == VkFormat::VK_FORMAT_UNDEFINED)
-				{
-					logger.error("Depth format not supported for graphics device: {}",
-						pGDevice->get_info());
-					release();
-					std::exit(EXIT_FAILURE);
-				}
+					VkImageCreateInfo _depth_stencil_image_create_info = {};
+					const VkFormat _depth_format = w_graphics_device_manager::find_supported_format(
+						pGDevice,
+						{ VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT },
+						VK_IMAGE_TILING_OPTIMAL,
+						VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT);
+					if (_depth_format == VkFormat::VK_FORMAT_UNDEFINED)
+					{
+						logger.error("Depth format not supported for graphics device: {}",
+							pGDevice->get_info());
+						release();
+						std::exit(EXIT_FAILURE);
+					}
 
-				_output_presentation_window->depth_buffer_format = (w_format)_depth_format;
+					_output_presentation_window->depth_buffer_format = (w_format)_depth_format;
 
-				//define depth stencil image description
-				_depth_stencil_image_create_info.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
-				_depth_stencil_image_create_info.pNext = nullptr;
-				_depth_stencil_image_create_info.imageType = VK_IMAGE_TYPE_2D;
-				_depth_stencil_image_create_info.format = _depth_format;
-				_depth_stencil_image_create_info.extent.width = _output_presentation_window->width;
-				_depth_stencil_image_create_info.extent.height = _output_presentation_window->height;
-				_depth_stencil_image_create_info.extent.depth = 1;
-				_depth_stencil_image_create_info.mipLevels = 1;
-				_depth_stencil_image_create_info.arrayLayers = 1;
-				_depth_stencil_image_create_info.samples = NUM_SAMPLES;
-				_depth_stencil_image_create_info.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-				_depth_stencil_image_create_info.usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
-				_depth_stencil_image_create_info.queueFamilyIndexCount = 0;
-				_depth_stencil_image_create_info.pQueueFamilyIndices = nullptr;
-				_depth_stencil_image_create_info.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-				_depth_stencil_image_create_info.flags = 0;
+					//define depth stencil image description
+					_depth_stencil_image_create_info.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+					_depth_stencil_image_create_info.pNext = nullptr;
+					_depth_stencil_image_create_info.imageType = VK_IMAGE_TYPE_2D;
+					_depth_stencil_image_create_info.format = _depth_format;
+					_depth_stencil_image_create_info.extent.width = _output_presentation_window->width;
+					_depth_stencil_image_create_info.extent.height = _output_presentation_window->height;
+					_depth_stencil_image_create_info.extent.depth = 1;
+					_depth_stencil_image_create_info.mipLevels = 1;
+					_depth_stencil_image_create_info.arrayLayers = 1;
+					_depth_stencil_image_create_info.samples = NUM_SAMPLES;
+					_depth_stencil_image_create_info.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+					_depth_stencil_image_create_info.usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
+					_depth_stencil_image_create_info.queueFamilyIndexCount = 0;
+					_depth_stencil_image_create_info.pQueueFamilyIndices = nullptr;
+					_depth_stencil_image_create_info.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+					_depth_stencil_image_create_info.flags = 0;
 
-				VkMemoryAllocateInfo _mem_alloc = {};
-				_mem_alloc.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-				_mem_alloc.pNext = nullptr;
-				_mem_alloc.allocationSize = 0;
-				_mem_alloc.memoryTypeIndex = 0;
+					VkMemoryAllocateInfo _mem_alloc = {};
+					_mem_alloc.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+					_mem_alloc.pNext = nullptr;
+					_mem_alloc.allocationSize = 0;
+					_mem_alloc.memoryTypeIndex = 0;
 
-				//Create image of depth stencil
-				_hr = vkCreateImage(pGDevice->vk_device,
-					&_depth_stencil_image_create_info,
-					nullptr,
-					&_output_presentation_window->depth_buffer_image_view.image);
-				if (_hr)
-				{
-					logger.error("error on creating depth buffer for graphics device: {}",
-						pGDevice->get_info());
-					release();
-					std::exit(EXIT_FAILURE);
-				}
+					//Create image of depth stencil
+					_hr = vkCreateImage(pGDevice->vk_device,
+						&_depth_stencil_image_create_info,
+						nullptr,
+						&_output_presentation_window->depth_buffer_image_view.image);
+					if (_hr)
+					{
+						logger.error("error on creating depth buffer for graphics device: {}",
+							pGDevice->get_info());
+						release();
+						std::exit(EXIT_FAILURE);
+					}
 
-				VkMemoryRequirements _mem_reqs;
-				vkGetImageMemoryRequirements(pGDevice->vk_device,
-					_output_presentation_window->depth_buffer_image_view.image,
-					&_mem_reqs);
+					VkMemoryRequirements _mem_reqs;
+					vkGetImageMemoryRequirements(pGDevice->vk_device,
+						_output_presentation_window->depth_buffer_image_view.image,
+						&_mem_reqs);
 
-				_mem_alloc.allocationSize = _mem_reqs.size;
+					_mem_alloc.allocationSize = _mem_reqs.size;
 
-				//use the memory properties to determine the type of memory required
-				_hr = w_graphics_device_manager::memory_type_from_properties(pGDevice->vk_physical_device_memory_properties,
-					_mem_reqs.memoryTypeBits,
-					0, // No Requirements
-					&_mem_alloc.memoryTypeIndex);
-				if (_hr)
-				{
-					logger.error("error on determining the type of memory required from memory properties for graphics device: {}",
-						pGDevice->get_info());
-					release();
-					std::exit(EXIT_FAILURE);
-				}
+					//use the memory properties to determine the type of memory required
+					_hr = w_graphics_device_manager::memory_type_from_properties(pGDevice->vk_physical_device_memory_properties,
+						_mem_reqs.memoryTypeBits,
+						0, // No Requirements
+						&_mem_alloc.memoryTypeIndex);
+					if (_hr)
+					{
+						logger.error("error on determining the type of memory required from memory properties for graphics device: {}",
+							pGDevice->get_info());
+						release();
+						std::exit(EXIT_FAILURE);
+					}
 
-				//allocate memory
-				_hr = vkAllocateMemory(pGDevice->vk_device,
-					&_mem_alloc,
-					nullptr,
-					&_output_presentation_window->depth_buffer_memory);
-				if (_hr)
-				{
-					logger.error("error on allocating memory for depth buffer image for graphics device: {}",
-						pGDevice->get_info());
-					release();
-					std::exit(EXIT_FAILURE);
-				}
+					//allocate memory
+					_hr = vkAllocateMemory(pGDevice->vk_device,
+						&_mem_alloc,
+						nullptr,
+						&_output_presentation_window->depth_buffer_memory);
+					if (_hr)
+					{
+						logger.error("error on allocating memory for depth buffer image for graphics device: {}",
+							pGDevice->get_info());
+						release();
+						std::exit(EXIT_FAILURE);
+					}
 
-				//bind memory
-				_hr = vkBindImageMemory(pGDevice->vk_device,
-					_output_presentation_window->depth_buffer_image_view.image,
-					_output_presentation_window->depth_buffer_memory,
-					0);
-				if (_hr)
-				{
-					logger.error("error on binding to memory for depth buffer image for graphics device: {}",
-						pGDevice->get_info());
-					release();
-					std::exit(EXIT_FAILURE);
-				}
+					//bind memory
+					_hr = vkBindImageMemory(pGDevice->vk_device,
+						_output_presentation_window->depth_buffer_image_view.image,
+						_output_presentation_window->depth_buffer_memory,
+						0);
+					if (_hr)
+					{
+						logger.error("error on binding to memory for depth buffer image for graphics device: {}",
+							pGDevice->get_info());
+						release();
+						std::exit(EXIT_FAILURE);
+					}
 
-				//create depth stencil buffer image view
-				VkImageViewCreateInfo _depth_stencil_view_info = {};
-				_depth_stencil_view_info.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-				_depth_stencil_view_info.pNext = nullptr;
-				_depth_stencil_view_info.viewType = VK_IMAGE_VIEW_TYPE_2D;
-				_depth_stencil_view_info.image = _output_presentation_window->depth_buffer_image_view.image;
-				_depth_stencil_view_info.format = _depth_format;
-				_depth_stencil_view_info.components.r = VK_COMPONENT_SWIZZLE_R;
-				_depth_stencil_view_info.components.g = VK_COMPONENT_SWIZZLE_G;
-				_depth_stencil_view_info.components.b = VK_COMPONENT_SWIZZLE_B;
-				_depth_stencil_view_info.components.a = VK_COMPONENT_SWIZZLE_A;
-				_depth_stencil_view_info.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
-				_depth_stencil_view_info.subresourceRange.baseMipLevel = 0;
-				_depth_stencil_view_info.subresourceRange.levelCount = 1;
-				_depth_stencil_view_info.subresourceRange.baseArrayLayer = 0;
-				_depth_stencil_view_info.subresourceRange.layerCount = 1;
-				_depth_stencil_view_info.flags = 0;
+					//create depth stencil buffer image view
+					VkImageViewCreateInfo _depth_stencil_view_info = {};
+					_depth_stencil_view_info.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+					_depth_stencil_view_info.pNext = nullptr;
+					_depth_stencil_view_info.viewType = VK_IMAGE_VIEW_TYPE_2D;
+					_depth_stencil_view_info.image = _output_presentation_window->depth_buffer_image_view.image;
+					_depth_stencil_view_info.format = _depth_format;
+					_depth_stencil_view_info.components.r = VK_COMPONENT_SWIZZLE_R;
+					_depth_stencil_view_info.components.g = VK_COMPONENT_SWIZZLE_G;
+					_depth_stencil_view_info.components.b = VK_COMPONENT_SWIZZLE_B;
+					_depth_stencil_view_info.components.a = VK_COMPONENT_SWIZZLE_A;
+					_depth_stencil_view_info.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
+					_depth_stencil_view_info.subresourceRange.baseMipLevel = 0;
+					_depth_stencil_view_info.subresourceRange.levelCount = 1;
+					_depth_stencil_view_info.subresourceRange.baseArrayLayer = 0;
+					_depth_stencil_view_info.subresourceRange.layerCount = 1;
+					_depth_stencil_view_info.flags = 0;
 
-				_hr = vkCreateImageView(pGDevice->vk_device,
-					&_depth_stencil_view_info,
-					nullptr,
-					&_output_presentation_window->depth_buffer_image_view.view);
-				if (_hr)
-				{
-					logger.error("error on creating image view for depth buffer image for graphics device: {}",
-						pGDevice->get_info());
-					release();
-					std::exit(EXIT_FAILURE);
-				}
+					_hr = vkCreateImageView(pGDevice->vk_device,
+						&_depth_stencil_view_info,
+						nullptr,
+						&_output_presentation_window->depth_buffer_image_view.view);
+					if (_hr)
+					{
+						logger.error("error on creating image view for depth buffer image for graphics device: {}",
+							pGDevice->get_info());
+						release();
+						std::exit(EXIT_FAILURE);
+					}
 
-				_output_presentation_window->depth_buffer_image_view.width = _output_presentation_window->width;
-				_output_presentation_window->depth_buffer_image_view.height = _output_presentation_window->height;
-				_output_presentation_window->depth_buffer_image_view.attachment_desc = w_attachment_buffer_desc::create_depth_desc_buffer();
+					_output_presentation_window->depth_buffer_image_view.width = _output_presentation_window->width;
+					_output_presentation_window->depth_buffer_image_view.height = _output_presentation_window->height;
+					_output_presentation_window->depth_buffer_image_view.attachment_desc = w_attachment_buffer_desc::create_depth_desc_buffer();
 
 #pragma endregion
 
-                //create required objects for accessing swap chain buffer by CPU
-                if (_output_presentation_window->cpu_access_to_swapchain_buffer)
-                {
-                    _create_shared_objects_between_cpu_gpu(pGDevice);
-                }
+					//create required objects for accessing swap chain buffer by CPU
+					if (_output_presentation_window->cpu_access_to_swapchain_buffer)
+					{
+						_create_shared_objects_between_cpu_gpu(pGDevice);
+					}
 
 #endif //__DX12__ __VULKAN__
-			}
+				}
 
-			//Release all resources
-			ULONG release()
-			{
-				//release all windows info
-				this->_windows_info.clear();
-				this->_name = "";
-                
-                if (this->_config.debug_gpu)
-                {
+				//Release all resources
+				ULONG release()
+				{
+					//release all windows info
+					this->_windows_info.clear();
+					this->_name = "";
+
+					if (this->_config.debug_gpu)
+					{
 #if defined(__VULKAN__) && !defined(__APPLE__) && !defined(__iOS__)
-                    sDestroyDebugReportCallback(w_graphics_device::vk_instance, MsgCallback, nullptr);
+						sDestroyDebugReportCallback(w_graphics_device::vk_instance, MsgCallback, nullptr);
 #endif
-                }
+					}
 
-				return 1;
-			}
+					return 1;
+				}
 
 #pragma region Getters
 
-			std::map<int, w_present_info> get_output_windows_info() const
-			{
-				return this->_windows_info;
-			}
+				std::map<int, w_present_info> get_output_windows_info() const
+				{
+					return this->_windows_info;
+				}
 
-			w_graphics_device_manager_configs get_graphics_device_manager_configs() const
-			{
-				return this->_config;
-			}
+				w_graphics_device_manager_configs get_graphics_device_manager_configs() const
+				{
+					return this->_config;
+				}
 
 #pragma endregion
 
 #pragma region Setters
 
-			void set_graphics_device_manager_configs(_In_ const w_graphics_device_manager_configs& pConfig)
-			{
-				this->_config = pConfig;
-			}
+				void set_graphics_device_manager_configs(_In_ const w_graphics_device_manager_configs& pConfig)
+				{
+					this->_config = pConfig;
+				}
 
-			void set_output_windows_info(_In_ std::map<int, w_present_info> pOutputWindowsInfo)
-			{
-				this->_windows_info = pOutputWindowsInfo;
-			}
+				void set_output_windows_info(_In_ std::map<int, w_present_info> pOutputWindowsInfo)
+				{
+					this->_windows_info = pOutputWindowsInfo;
+				}
 
 #pragma endregion
 
-		private:
-                        
-			void _create_fences(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
-			{
+			private:
+
+				void _create_fences(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
+				{
 #ifdef __DX12__ 
-				auto _device_name = wolf::system::convert::string_to_wstring(pGDevice->device_name);
-				auto _device_id = pGDevice->device_id;
+					auto _device_name = wolf::system::convert::string_to_wstring(pGDevice->device_name);
+					auto _device_id = pGDevice->device_id;
 
-				auto _output_presentation_window = &(pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex));
+					auto _output_presentation_window = &(pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex));
 
-				auto _hr = pGDevice->dx_device->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&_output_presentation_window->dx_fence));
-				if (FAILED(_hr))
-				{
-					logger.error(L"error on creating directx fence for graphics device: " +
-						_device_name + L" ID:" + std::to_wstring(_device_id) + L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
-					release();
-					std::exit(EXIT_FAILURE);
-				}
+					auto _hr = pGDevice->dx_device->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&_output_presentation_window->dx_fence));
+					if (FAILED(_hr))
+					{
+						logger.error(L"error on creating directx fence for graphics device: " +
+							_device_name + L" ID:" + std::to_wstring(_device_id) + L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
+						release();
+						std::exit(EXIT_FAILURE);
+					}
 
-				_output_presentation_window->dx_fence_event = CreateEventEx(NULL, FALSE, FALSE, EVENT_ALL_ACCESS);
-				if (_output_presentation_window->dx_fence_event == NULL)
-				{
-					logger.error(L"error on creating directx event handle for graphics device: " +
-						_device_name + L" ID:" + std::to_wstring(_device_id) + L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
-					release();
-					std::exit(EXIT_FAILURE);
-				}
+					_output_presentation_window->dx_fence_event = CreateEventEx(NULL, FALSE, FALSE, EVENT_ALL_ACCESS);
+					if (_output_presentation_window->dx_fence_event == NULL)
+					{
+						logger.error(L"error on creating directx event handle for graphics device: " +
+							_device_name + L" ID:" + std::to_wstring(_device_id) + L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
+						release();
+						std::exit(EXIT_FAILURE);
+					}
 
-				_output_presentation_window->dx_fence_value = 1;
+					_output_presentation_window->dx_fence_value = 1;
 
 #elif defined(__VULKAN__)
-				auto _device_name = pGDevice->device_info->get_device_name();
-				//auto _device_id = pGDevice->device_info->get_device_id();
-				auto _output_presentation_window = &(pGDevice->output_presentation_window);
+					auto _device_name = pGDevice->device_info->get_device_name();
+					//auto _device_id = pGDevice->device_info->get_device_id();
+					auto _output_presentation_window = &(pGDevice->output_presentation_window);
 
-                //create semaphores fro this graphics device
-                if (_output_presentation_window->swap_chain_image_is_available_semaphore.initialize(pGDevice) == W_FAILED)
-                {
-					logger.error("error on creating image_is_available semaphore for graphics device: {}",
-						pGDevice->get_info());
-                    release();
-                    std::exit(EXIT_FAILURE);
-                }
-                if (_output_presentation_window->rendering_done_semaphore.initialize(pGDevice) == W_FAILED)
-                {
-					logger.error("error on creating rendering_is_done semaphore for graphics device: {}",
-						pGDevice->get_info());
-					release();
-					std::exit(EXIT_FAILURE);
-				}
+					//create semaphores fro this graphics device
+					if (_output_presentation_window->swap_chain_image_is_available_semaphore.initialize(pGDevice) == W_FAILED)
+					{
+						logger.error("error on creating image_is_available semaphore for graphics device: {}",
+							pGDevice->get_info());
+						release();
+						std::exit(EXIT_FAILURE);
+					}
+					if (_output_presentation_window->rendering_done_semaphore.initialize(pGDevice) == W_FAILED)
+					{
+						logger.error("error on creating rendering_is_done semaphore for graphics device: {}",
+							pGDevice->get_info());
+						release();
+						std::exit(EXIT_FAILURE);
+					}
 #endif
-			}
-            
-            void _create_shared_objects_between_cpu_gpu(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
-            {
-                auto _output_window = &(pGDevice->output_presentation_window);
-                if (!_output_window) return;
+				}
 
-                const std::string _trace_info = "w_graphics_device::_create_shared_objects_between_cpu_gpu";
-                //auto _device_id = pGDevice->device_info->get_device_id();
-                auto _device_name = pGDevice->device_info->get_device_name();
+				void _create_shared_objects_between_cpu_gpu(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
+				{
+					auto _output_window = &(pGDevice->output_presentation_window);
+					if (!_output_window) return;
 
-                auto _src_format = _output_window->vk_swap_chain_selected_format.format;
-                _output_window->objs_between_cpu_gpu = new (std::nothrow) w_output_presentation_window::shared_objs_between_cpu_gpu();
-                if (!_output_window->objs_between_cpu_gpu)
-                {
-                    logger.error("error on allocating memory for shared objects between CPU and GPU for graphics device: {}",
-						pGDevice->get_info());
-                    release();
-                    std::exit(EXIT_FAILURE);
-                }
-				
-				auto _objs_ptr = _output_window->objs_between_cpu_gpu;
+					const std::string _trace_info = "w_graphics_device::_create_shared_objects_between_cpu_gpu";
+					//auto _device_id = pGDevice->device_info->get_device_id();
+					auto _device_name = pGDevice->device_info->get_device_name();
 
-                //check whether blitting is supported or not
-                VkFormatProperties _format_properties;
-                // Check for whether blitting is supported from optimal image
-                vkGetPhysicalDeviceFormatProperties(
-                    pGDevice->vk_physical_device,
-                    _src_format,
-                    &_format_properties);
-                if (!(_format_properties.optimalTilingFeatures & VK_FORMAT_FEATURE_BLIT_SRC_BIT))
-                {
-					logger.warning("Blitting feature not supported from optimal tiled image for graphics device: {} and following format: {}",
-						pGDevice->get_info(),
-						_src_format);
-                    _output_window->bliting_supported_by_swap_chain = false;
-                }
-                if (_output_window->bliting_supported_by_swap_chain)
-                {
-                    // Check for whether blitting is supported for linear image
-                    if (!(_format_properties.linearTilingFeatures & VK_FORMAT_FEATURE_BLIT_DST_BIT))
-                    {
-						logger.warning("Blitting feature not supported from linear tiled image for graphics device: {} and following format: {}",
+					auto _src_format = _output_window->vk_swap_chain_selected_format.format;
+					_output_window->objs_between_cpu_gpu = new (std::nothrow) w_output_presentation_window::shared_objs_between_cpu_gpu();
+					if (!_output_window->objs_between_cpu_gpu)
+					{
+						logger.error("error on allocating memory for shared objects between CPU and GPU for graphics device: {}",
+							pGDevice->get_info());
+						release();
+						std::exit(EXIT_FAILURE);
+					}
+
+					auto _objs_ptr = _output_window->objs_between_cpu_gpu;
+
+					//check whether blitting is supported or not
+					VkFormatProperties _format_properties;
+					// Check for whether blitting is supported from optimal image
+					vkGetPhysicalDeviceFormatProperties(
+						pGDevice->vk_physical_device,
+						_src_format,
+						&_format_properties);
+					if (!(_format_properties.optimalTilingFeatures & VK_FORMAT_FEATURE_BLIT_SRC_BIT))
+					{
+						logger.warning("Blitting feature not supported from optimal tiled image for graphics device: {} and following format: {}",
 							pGDevice->get_info(),
 							_src_format);
-                        _output_window->bliting_supported_by_swap_chain = false;
-                    }
-                }
-
-                //create destination image in order to get data of swap chain's image and later allow access from cpu
-                VkImageCreateInfo _image_create_info = {};
-                _image_create_info.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
-                _image_create_info.imageType = VK_IMAGE_TYPE_2D;
-                _image_create_info.format = _src_format;
-                _image_create_info.extent.width = _output_window->width;
-                _image_create_info.extent.height = _output_window->height;
-                _image_create_info.extent.depth = 1;
-                _image_create_info.arrayLayers = 1;
-                _image_create_info.mipLevels = 1;
-                _image_create_info.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-                _image_create_info.samples = VK_SAMPLE_COUNT_1_BIT;
-                _image_create_info.tiling = VK_IMAGE_TILING_LINEAR;
-                _image_create_info.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT;
-
-                //create the destination image
-                auto _hr = vkCreateImage(
-                    pGDevice->vk_device,
-                    &_image_create_info,
-                    nullptr,
-                    &_objs_ptr->destination_image);
-				if (_hr)
-				{
-					logger.error("error on creating destination image for graphics device: {}",
-						pGDevice->get_info());
-					release();
-					std::exit(EXIT_FAILURE);
-				}
-
-                //get memory requirements
-                VkMemoryRequirements _mem_requirements;
-                vkGetImageMemoryRequirements(pGDevice->vk_device, _objs_ptr->destination_image, &_mem_requirements);
-
-                uint32_t _mem_type_index;
-                //check for host memory index
-                w_graphics_device_manager::memory_type_from_properties(
-                    pGDevice->vk_physical_device_memory_properties,
-                    _mem_requirements.memoryTypeBits,
-                    VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-                    &_mem_type_index);
-
-                //allocate memory info
-                VkMemoryAllocateInfo _mem_alloc_info = {};
-                _mem_alloc_info.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-                _mem_alloc_info.allocationSize = _mem_requirements.size;
-                _mem_alloc_info.memoryTypeIndex = _mem_type_index;
-
-                //allocate memory in host
-                _hr = vkAllocateMemory(pGDevice->vk_device, &_mem_alloc_info, nullptr, &_objs_ptr->destination_image_memory);
-                if (_hr)
-                {
-					logger.error("error on creating destination image for graphics device: {}",
-						pGDevice->get_info());
-                    release();
-                    std::exit(EXIT_FAILURE);
-                }
-
-                // create command buffer on primary
-                VkCommandBufferAllocateInfo _copy_cmd_buf_allocate_info = {};
-                _copy_cmd_buf_allocate_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-                _copy_cmd_buf_allocate_info.commandPool = pGDevice->vk_command_allocator_pool;
-                _copy_cmd_buf_allocate_info.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-                _copy_cmd_buf_allocate_info.commandBufferCount = 1;
-                _hr = vkAllocateCommandBuffers(pGDevice->vk_device, &_copy_cmd_buf_allocate_info, &_objs_ptr->copy_command_buffer);
-                if (_hr)
-                {
-                    logger.error("error on allocating buffer for copy command buffer for graphics device: {}",
-						pGDevice->get_info());
-                    release();
-                    std::exit(EXIT_FAILURE);
-                }
-
-				//bind to image memory
-				_hr = vkBindImageMemory(pGDevice->vk_device, _objs_ptr->destination_image, _objs_ptr->destination_image_memory, 0);
-				if (_hr)
-				{
-					logger.error("binding to destination image  for graphics device: {}",
-						pGDevice->get_info());
-					release();
-					std::exit(EXIT_FAILURE);
-				}
-            }
-
-			static VkPresentModeKHR _select_present_mode(
-				_In_ std::vector<VkPresentModeKHR> pDesiredPresentModes,
-				_In_ std::vector<VkPresentModeKHR> pAvaiablePresentModes)
-			{
-				VkPresentModeKHR _selected = pAvaiablePresentModes.size() > 0 ? pAvaiablePresentModes[0] :
-					VkPresentModeKHR::VK_PRESENT_MODE_FIFO_KHR;
-				bool _found = false;
-				for (auto& _desired : pDesiredPresentModes)
-				{
-					for (auto& _avaiable : pAvaiablePresentModes)
+						_output_window->bliting_supported_by_swap_chain = false;
+					}
+					if (_output_window->bliting_supported_by_swap_chain)
 					{
-						if (_desired == _avaiable)
+						// Check for whether blitting is supported for linear image
+						if (!(_format_properties.linearTilingFeatures & VK_FORMAT_FEATURE_BLIT_DST_BIT))
 						{
-							_found = true;
-							break;
+							logger.warning("Blitting feature not supported from linear tiled image for graphics device: {} and following format: {}",
+								pGDevice->get_info(),
+								_src_format);
+							_output_window->bliting_supported_by_swap_chain = false;
 						}
 					}
 
-					if (_found) break;
+					//create destination image in order to get data of swap chain's image and later allow access from cpu
+					VkImageCreateInfo _image_create_info = {};
+					_image_create_info.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+					_image_create_info.imageType = VK_IMAGE_TYPE_2D;
+					_image_create_info.format = _src_format;
+					_image_create_info.extent.width = _output_window->width;
+					_image_create_info.extent.height = _output_window->height;
+					_image_create_info.extent.depth = 1;
+					_image_create_info.arrayLayers = 1;
+					_image_create_info.mipLevels = 1;
+					_image_create_info.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+					_image_create_info.samples = VK_SAMPLE_COUNT_1_BIT;
+					_image_create_info.tiling = VK_IMAGE_TILING_LINEAR;
+					_image_create_info.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT;
+
+					//create the destination image
+					auto _hr = vkCreateImage(
+						pGDevice->vk_device,
+						&_image_create_info,
+						nullptr,
+						&_objs_ptr->destination_image);
+					if (_hr)
+					{
+						logger.error("error on creating destination image for graphics device: {}",
+							pGDevice->get_info());
+						release();
+						std::exit(EXIT_FAILURE);
+					}
+
+					//get memory requirements
+					VkMemoryRequirements _mem_requirements;
+					vkGetImageMemoryRequirements(pGDevice->vk_device, _objs_ptr->destination_image, &_mem_requirements);
+
+					uint32_t _mem_type_index;
+					//check for host memory index
+					w_graphics_device_manager::memory_type_from_properties(
+						pGDevice->vk_physical_device_memory_properties,
+						_mem_requirements.memoryTypeBits,
+						VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+						&_mem_type_index);
+
+					//allocate memory info
+					VkMemoryAllocateInfo _mem_alloc_info = {};
+					_mem_alloc_info.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+					_mem_alloc_info.allocationSize = _mem_requirements.size;
+					_mem_alloc_info.memoryTypeIndex = _mem_type_index;
+
+					//allocate memory in host
+					_hr = vkAllocateMemory(pGDevice->vk_device, &_mem_alloc_info, nullptr, &_objs_ptr->destination_image_memory);
+					if (_hr)
+					{
+						logger.error("error on creating destination image for graphics device: {}",
+							pGDevice->get_info());
+						release();
+						std::exit(EXIT_FAILURE);
+					}
+
+					// create command buffer on primary
+					VkCommandBufferAllocateInfo _copy_cmd_buf_allocate_info = {};
+					_copy_cmd_buf_allocate_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+					_copy_cmd_buf_allocate_info.commandPool = pGDevice->vk_command_allocator_pool;
+					_copy_cmd_buf_allocate_info.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+					_copy_cmd_buf_allocate_info.commandBufferCount = 1;
+					_hr = vkAllocateCommandBuffers(pGDevice->vk_device, &_copy_cmd_buf_allocate_info, &_objs_ptr->copy_command_buffer);
+					if (_hr)
+					{
+						logger.error("error on allocating buffer for copy command buffer for graphics device: {}",
+							pGDevice->get_info());
+						release();
+						std::exit(EXIT_FAILURE);
+					}
+
+					//bind to image memory
+					_hr = vkBindImageMemory(pGDevice->vk_device, _objs_ptr->destination_image, _objs_ptr->destination_image_memory, 0);
+					if (_hr)
+					{
+						logger.error("binding to destination image  for graphics device: {}",
+							pGDevice->get_info());
+						release();
+						std::exit(EXIT_FAILURE);
+					}
 				}
 
-				return _selected;
-			}
+				static VkPresentModeKHR _select_present_mode(
+					_In_ std::vector<VkPresentModeKHR> pDesiredPresentModes,
+					_In_ std::vector<VkPresentModeKHR> pAvaiablePresentModes)
+				{
+					VkPresentModeKHR _selected = pAvaiablePresentModes.size() > 0 ? pAvaiablePresentModes[0] :
+						VkPresentModeKHR::VK_PRESENT_MODE_FIFO_KHR;
+					bool _found = false;
+					for (auto& _desired : pDesiredPresentModes)
+					{
+						for (auto& _avaiable : pAvaiablePresentModes)
+						{
+							if (_desired == _avaiable)
+							{
+								_found = true;
+								break;
+							}
+						}
+
+						if (_found) break;
+					}
+
+					return _selected;
+				}
 
 #ifdef __UWP
-			// This method determines the rotation between the display device's native Orientation and the current display orientation.
-			static DXGI_MODE_ROTATION _compute_display_rotation(_In_ Windows::Graphics::Display::DisplayOrientations pNativeRotation,
-				_In_ Windows::Graphics::Display::DisplayOrientations pCurrentRotation)
-			{
-				auto _rotation = DXGI_MODE_ROTATION::DXGI_MODE_ROTATION_UNSPECIFIED;
-
-				using namespace Windows::Graphics::Display;
-
-				// pNativeOrientation can only be Landscape or Portrait even though, the DisplayOrientations enum has other values.
-				switch (pNativeRotation)
+				// This method determines the rotation between the display device's native Orientation and the current display orientation.
+				static DXGI_MODE_ROTATION _compute_display_rotation(_In_ Windows::Graphics::Display::DisplayOrientations pNativeRotation,
+					_In_ Windows::Graphics::Display::DisplayOrientations pCurrentRotation)
 				{
-				case DisplayOrientations::Landscape:
-					switch (pCurrentRotation)
+					auto _rotation = DXGI_MODE_ROTATION::DXGI_MODE_ROTATION_UNSPECIFIED;
+
+					using namespace Windows::Graphics::Display;
+
+					// pNativeOrientation can only be Landscape or Portrait even though, the DisplayOrientations enum has other values.
+					switch (pNativeRotation)
 					{
 					case DisplayOrientations::Landscape:
-						_rotation = DXGI_MODE_ROTATION_IDENTITY;
+						switch (pCurrentRotation)
+						{
+						case DisplayOrientations::Landscape:
+							_rotation = DXGI_MODE_ROTATION_IDENTITY;
+							break;
+
+						case DisplayOrientations::Portrait:
+							_rotation = DXGI_MODE_ROTATION_ROTATE270;
+							break;
+
+						case DisplayOrientations::LandscapeFlipped:
+							_rotation = DXGI_MODE_ROTATION_ROTATE180;
+							break;
+
+						case DisplayOrientations::PortraitFlipped:
+							_rotation = DXGI_MODE_ROTATION_ROTATE90;
+							break;
+						}
 						break;
 
 					case DisplayOrientations::Portrait:
-						_rotation = DXGI_MODE_ROTATION_ROTATE270;
-						break;
+						switch (pCurrentRotation)
+						{
+						case DisplayOrientations::Landscape:
+							_rotation = DXGI_MODE_ROTATION_ROTATE90;
+							break;
 
-					case DisplayOrientations::LandscapeFlipped:
-						_rotation = DXGI_MODE_ROTATION_ROTATE180;
-						break;
+						case DisplayOrientations::Portrait:
+							_rotation = DXGI_MODE_ROTATION_IDENTITY;
+							break;
 
-					case DisplayOrientations::PortraitFlipped:
-						_rotation = DXGI_MODE_ROTATION_ROTATE90;
+						case DisplayOrientations::LandscapeFlipped:
+							_rotation = DXGI_MODE_ROTATION_ROTATE270;
+							break;
+
+						case DisplayOrientations::PortraitFlipped:
+							_rotation = DXGI_MODE_ROTATION_ROTATE180;
+							break;
+						}
 						break;
 					}
-					break;
-
-				case DisplayOrientations::Portrait:
-					switch (pCurrentRotation)
-					{
-					case DisplayOrientations::Landscape:
-						_rotation = DXGI_MODE_ROTATION_ROTATE90;
-						break;
-
-					case DisplayOrientations::Portrait:
-						_rotation = DXGI_MODE_ROTATION_IDENTITY;
-						break;
-
-					case DisplayOrientations::LandscapeFlipped:
-						_rotation = DXGI_MODE_ROTATION_ROTATE270;
-						break;
-
-					case DisplayOrientations::PortraitFlipped:
-						_rotation = DXGI_MODE_ROTATION_ROTATE180;
-						break;
-					}
-					break;
+					return _rotation;
 				}
-				return _rotation;
-			}
 #endif
-			w_graphics_device_manager_configs					_config;
-            std::map<int, w_present_info>                        _windows_info;
-            std::string                                         _name;;
-		};
-    }
+				w_graphics_device_manager_configs					_config;
+				std::map<int, w_present_info>                        _windows_info;
+				std::string                                         _name;;
+			};
+		}
 	}
 }
 
@@ -3589,9 +3588,9 @@ namespace wolf
 w_graphics_device_manager::w_graphics_device_manager() : _pimp(new w_graphics_device_manager_pimp())
 {
 	_super::set_class_name("w_graphics_device_manager_pimp");// typeid(this).name());
-   
+
 #if defined(__WIN32) && !defined(__PYTHON__)
-    auto _hr = CoInitialize(NULL);
+	auto _hr = CoInitialize(NULL);
 	V(_hr == S_OK ? W_PASSED : W_FAILED, L"CoInitialize already been called", _super::name, 3, false);
 #endif
 
@@ -3607,19 +3606,19 @@ w_graphics_device_manager::~w_graphics_device_manager()
 
 void w_graphics_device_manager::initialize(_In_ std::map<int, w_present_info> pOutputWindowsInfo)
 {
-    //store information of windows for the first time
-    this->_pimp->set_output_windows_info(pOutputWindowsInfo);
-    this->_pimp->enumerate_devices(this->graphics_devices, &this->on_device_info_fetched);
-    
-    //If there is no associated graphics device
-    if (this->graphics_devices.size() == 0)
-    {
+	//store information of windows for the first time
+	this->_pimp->set_output_windows_info(pOutputWindowsInfo);
+	this->_pimp->enumerate_devices(this->graphics_devices, &this->on_device_info_fetched);
+
+	//If there is no associated graphics device
+	if (this->graphics_devices.size() == 0)
+	{
 		logger.error("No graphics device created");
 		release();
 		std::exit(EXIT_FAILURE);
-    }
+	}
 
-    _load_shared_resources();
+	_load_shared_resources();
 }
 
 void w_graphics_device_manager::_load_shared_resources()
@@ -3677,12 +3676,12 @@ void w_graphics_device_manager::_load_shared_resources()
 void w_graphics_device_manager::on_device_lost()
 {
 	logger.write(L"Graphics device is reseting");
-	
+
 	auto _windows_info = this->_pimp->get_output_windows_info();
 	release();
 	this->_pimp = new w_graphics_device_manager_pimp();
 	initialize(_windows_info);
-	
+
 	logger.write(L"Graphics device reset successfully");
 }
 
@@ -3719,7 +3718,7 @@ void w_graphics_device_manager::on_window_resized(_In_ const uint32_t& pGraphics
 	auto _window = &_gDevice->output_presentation_window;
 
 	_window->width = static_cast<uint32_t>(pNewSizeOfWindow.x);
-	_window->height =  static_cast<uint32_t>(pNewSizeOfWindow.y);
+	_window->height = static_cast<uint32_t>(pNewSizeOfWindow.y);
 
 	_wait_for_previous_frame(_gDevice);
 
@@ -3730,7 +3729,7 @@ void w_graphics_device_manager::on_window_resized(_In_ const uint32_t& pGraphics
 void w_graphics_device_manager::_wait_for_previous_frame(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
 {
 #ifdef __DX12__
-    auto _output_presentation_window = &(pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex));
+	auto _output_presentation_window = &(pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex));
 
 	const UINT64 _fence_value = _output_presentation_window->dx_fence_value;
 	auto _hr = _output_presentation_window->dx_command_queue->Signal(_output_presentation_window->dx_fence.Get(), _fence_value);
@@ -3763,38 +3762,38 @@ void w_graphics_device_manager::_wait_for_previous_frame(_In_ const std::shared_
 W_RESULT w_graphics_device_manager::prepare()
 {
 	if (!this->_pimp) return W_FAILED;
-	
+
 	auto _config = this->_pimp->get_graphics_device_manager_configs();
 	if (_config.off_screen_mode) return W_PASSED;
 
-    for (size_t i = 0; i < this->graphics_devices.size(); ++i)
-    {
-        auto _gDevice = this->graphics_devices[i];
+	for (size_t i = 0; i < this->graphics_devices.size(); ++i)
+	{
+		auto _gDevice = this->graphics_devices[i];
 
-        if (_gDevice->_is_released) continue;
+		if (_gDevice->_is_released) continue;
 
 #ifdef __DX12__
-        if (_gDevice->dx_device_removed)
-        {
-            on_device_lost();
-            continue;
-        }
+		if (_gDevice->dx_device_removed)
+		{
+			on_device_lost();
+			continue;
+		}
 #endif
 
-        auto _output_window = &(_gDevice->output_presentation_window);
+		auto _output_window = &(_gDevice->output_presentation_window);
 
 #ifdef __DX12__
 
-        _wait_for_previous_frame(_gDevice, j);
+		_wait_for_previous_frame(_gDevice, j);
 
 #elif defined(__VULKAN__)
-        auto _semaphore = _output_window->swap_chain_image_is_available_semaphore.get();
-        auto _hr = vkAcquireNextImageKHR(_gDevice->vk_device,
-            _output_window->vk_swap_chain,
-            UINT64_MAX,
-            *_semaphore,
-            VK_NULL_HANDLE,
-            &_output_window->swap_chain_image_index);
+		auto _semaphore = _output_window->swap_chain_image_is_available_semaphore.get();
+		auto _hr = vkAcquireNextImageKHR(_gDevice->vk_device,
+			_output_window->vk_swap_chain,
+			UINT64_MAX,
+			*_semaphore,
+			VK_NULL_HANDLE,
+			&_output_window->swap_chain_image_index);
 
 		if (_hr != VK_SUCCESS && _hr != VK_SUBOPTIMAL_KHR)
 		{
@@ -3803,9 +3802,9 @@ W_RESULT w_graphics_device_manager::prepare()
 			std::exit(EXIT_FAILURE);
 		}
 #endif
-    }
+	}
 
-    return W_PASSED;
+	return W_PASSED;
 }
 
 W_RESULT w_graphics_device_manager::present()
@@ -3815,103 +3814,103 @@ W_RESULT w_graphics_device_manager::present()
 	auto _config = this->_pimp->get_graphics_device_manager_configs();
 	if (_config.off_screen_mode) return W_PASSED;
 
-    for (size_t i = 0; i < this->graphics_devices.size(); ++i)
-    {
-        auto _gDevice = this->graphics_devices[i];
+	for (size_t i = 0; i < this->graphics_devices.size(); ++i)
+	{
+		auto _gDevice = this->graphics_devices[i];
 
 #ifdef __DX12__
-        if (_gDevice->dx_device_removed)
-        {
-            on_device_lost();
-            continue;
-        }
+		if (_gDevice->dx_device_removed)
+		{
+			on_device_lost();
+			continue;
+		}
 #endif
 
-        auto _present_window = &(_gDevice->output_presentation_window);
+		auto _present_window = &(_gDevice->output_presentation_window);
 
 #ifdef __DX12__
 
-        //submit command list for executing
-        ID3D12CommandList* _command_lists[1] = { _present_window->dx_command_list.Get() };
-        _present_window->dx_command_queue->ExecuteCommandLists(1, _command_lists);
+		//submit command list for executing
+		ID3D12CommandList* _command_lists[1] = { _present_window->dx_command_list.Get() };
+		_present_window->dx_command_queue->ExecuteCommandLists(1, _command_lists);
 
 #ifdef __WIN32
-        auto _hr = _present_window->dx_swap_chain->Present(_present_window->v_sync ? 1 : 0, 0);
+		auto _hr = _present_window->dx_swap_chain->Present(_present_window->v_sync ? 1 : 0, 0);
 #elif defined(__UWP)
-        auto _hr = _present_window->dx_swap_chain->Present(1, 0);
+		auto _hr = _present_window->dx_swap_chain->Present(1, 0);
 #endif
 
-        /*
-         If the device was removed either by a disconnection or a driver upgrade, we
-         must recreate all device resources.
-         */
-        if (_hr == DXGI_ERROR_DEVICE_REMOVED || _hr == DXGI_ERROR_DEVICE_RESET)
-        {
-            logger.error("Error on presenting swap chain, because of DXGI_ERROR_DEVICE_REMOVED or DXGI_ERROR_DEVICE_RESET for graphics device: "
-                + _gDevice->device_name);
-            // If the device was removed for any reason, a new device and swap chain will need to be created.
-            _gDevice->dx_device_removed = true;
-            return W_FAILED;
-        }
+		/*
+		 If the device was removed either by a disconnection or a driver upgrade, we
+		 must recreate all device resources.
+		 */
+		if (_hr == DXGI_ERROR_DEVICE_REMOVED || _hr == DXGI_ERROR_DEVICE_RESET)
+		{
+			logger.error("Error on presenting swap chain, because of DXGI_ERROR_DEVICE_REMOVED or DXGI_ERROR_DEVICE_RESET for graphics device: "
+				+ _gDevice->device_name);
+			// If the device was removed for any reason, a new device and swap chain will need to be created.
+			_gDevice->dx_device_removed = true;
+			return W_FAILED;
+		}
 
 #elif defined(__VULKAN__)
-        VkPresentInfoKHR _present_info = {};
+		VkPresentInfoKHR _present_info = {};
 
-        _present_info.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
-        _present_info.waitSemaphoreCount = 1;
-        _present_info.pWaitSemaphores = _present_window->rendering_done_semaphore.get();
-        _present_info.swapchainCount = 1;
-        _present_info.pSwapchains = &_present_window->vk_swap_chain;
-        _present_info.pImageIndices = &_present_window->swap_chain_image_index;
+		_present_info.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+		_present_info.waitSemaphoreCount = 1;
+		_present_info.pWaitSemaphores = _present_window->rendering_done_semaphore.get();
+		_present_info.swapchainCount = 1;
+		_present_info.pSwapchains = &_present_window->vk_swap_chain;
+		_present_info.pImageIndices = &_present_window->swap_chain_image_index;
 
-        auto _hr = vkQueuePresentKHR(_gDevice->vk_present_queue.queue,
-            &_present_info);
-        if (_hr)
-        {
-            if (_hr == VK_ERROR_OUT_OF_DATE_KHR || _hr == VK_SUBOPTIMAL_KHR)
-            {
+		auto _hr = vkQueuePresentKHR(_gDevice->vk_present_queue.queue,
+			&_present_info);
+		if (_hr)
+		{
+			if (_hr == VK_ERROR_OUT_OF_DATE_KHR || _hr == VK_SUBOPTIMAL_KHR)
+			{
 				//resize it agian
 				w_point _new_win_size;
 				_new_win_size.x = _present_window->width;
 				_new_win_size.y = _present_window->height;
-                on_window_resized(static_cast<uint32_t>(i), _new_win_size);
-                return W_FAILED;
-            }
+				on_window_resized(static_cast<uint32_t>(i), _new_win_size);
+				return W_FAILED;
+			}
 
-            logger.error("error on presenting queue of graphics device: {}", _gDevice->get_info());
-            release();
-            std::exit(EXIT_FAILURE);
-        }
+			logger.error("error on presenting queue of graphics device: {}", _gDevice->get_info());
+			release();
+			std::exit(EXIT_FAILURE);
+		}
 
-        _hr = vkQueueWaitIdle(_gDevice->vk_present_queue.queue);
-        if (_hr)
-        {
-            logger.error("error on wait idle queue of graphics device: {}", _gDevice->get_info());
-            release();
-            std::exit(EXIT_FAILURE);
-        }
+		_hr = vkQueueWaitIdle(_gDevice->vk_present_queue.queue);
+		if (_hr)
+		{
+			logger.error("error on wait idle queue of graphics device: {}", _gDevice->get_info());
+			release();
+			std::exit(EXIT_FAILURE);
+		}
 #endif
-    }
-    
-    return W_PASSED;
+	}
+
+	return W_PASSED;
 }
 
 ULONG w_graphics_device_manager::release()
 {
-    //release all shared resources
-    w_texture::release_shared_textures();
-    w_shader::release_shared_shaders();
+	//release all shared resources
+	w_texture::release_shared_textures();
+	w_shader::release_shared_shaders();
 
-    //release the private implementation
-    SAFE_RELEASE(this->_pimp);
-    
-    //release all graphics devices
-    while (this->graphics_devices.size() > 0)
-    {
-        auto _gDevice = this->graphics_devices.front();
-        
+	//release the private implementation
+	SAFE_RELEASE(this->_pimp);
+
+	//release all graphics devices
+	while (this->graphics_devices.size() > 0)
+	{
+		auto _gDevice = this->graphics_devices.front();
+
 #ifdef __DX12__
-        //wait for all presentation windows to perform their tasks
+		//wait for all presentation windows to perform their tasks
 		//for (size_t j = 0; j < _gDevice->output_presentation_windows.size(); ++j)
 		//{
 		//	_wait_for_previous_frame(_gDevice, j);
@@ -3919,183 +3918,183 @@ ULONG w_graphics_device_manager::release()
 		//	present();
 		//}
 #endif
-        
-        SHARED_RELEASE(_gDevice);
-        
-        this->graphics_devices.pop_back();
-    }
-    
+
+		SHARED_RELEASE(_gDevice);
+
+		this->graphics_devices.pop_back();
+	}
+
 #ifdef __DX12__
-    
-    //release 
-    COMPTR_RELEASE(w_graphics_device::dx_dxgi_factory);
-    
+
+	//release 
+	COMPTR_RELEASE(w_graphics_device::dx_dxgi_factory);
+
 #elif defined(__VULKAN__)
-    //release vulkan instance
-    if (w_graphics_device::vk_instance)
-    {
-        vkDestroyInstance(w_graphics_device::vk_instance, nullptr);
-        w_graphics_device::vk_instance = nullptr;
-    }
+	//release vulkan instance
+	if (w_graphics_device::vk_instance)
+	{
+		vkDestroyInstance(w_graphics_device::vk_instance, nullptr);
+		w_graphics_device::vk_instance = nullptr;
+	}
 #endif
-    
+
 #ifdef __ANDROID
-    FreeVulkan();
+	FreeVulkan();
 #endif
-    
+
 #if defined(__WIN32) && !defined(__PYTHON__)
 	CoUninitialize();
 #endif
 
-    return _super::release();
+	return _super::release();
 }
 
 #ifdef __VULKAN__
 VkResult w_graphics_device_manager::memory_type_from_properties(
-        VkPhysicalDeviceMemoryProperties pMemoryProperties,
-        uint32_t pTypeBits,
-        uint32_t pRequirementsFlags,
-        uint32_t* pTypeIndex)
+	VkPhysicalDeviceMemoryProperties pMemoryProperties,
+	uint32_t pTypeBits,
+	uint32_t pRequirementsFlags,
+	uint32_t* pTypeIndex)
 {
-    // Search mem types to find first index with those properties
-    for (uint32_t i = 0; i <  pMemoryProperties.memoryTypeCount; ++i)
-    {
-        if ((pTypeBits & 1) == 1) 
-        {
-            // Type is available, does it match user properties?
-            if ((pMemoryProperties.memoryTypes[i].propertyFlags & pRequirementsFlags) == pRequirementsFlags)
-            {
-                *pTypeIndex =  i;
-                return VkResult::VK_SUCCESS;
-            }
-        }
-        pTypeBits >>= 1;
-    }
-    // No memory types matched, return failure
-    return VkResult::VK_INCOMPLETE;
+	// Search mem types to find first index with those properties
+	for (uint32_t i = 0; i < pMemoryProperties.memoryTypeCount; ++i)
+	{
+		if ((pTypeBits & 1) == 1)
+		{
+			// Type is available, does it match user properties?
+			if ((pMemoryProperties.memoryTypes[i].propertyFlags & pRequirementsFlags) == pRequirementsFlags)
+			{
+				*pTypeIndex = i;
+				return VkResult::VK_SUCCESS;
+			}
+		}
+		pTypeBits >>= 1;
+	}
+	// No memory types matched, return failure
+	return VkResult::VK_INCOMPLETE;
 }
 
 void w_graphics_device_manager::set_src_dst_masks_of_image_barrier(_Inout_ VkImageMemoryBarrier& pImageMemoryBarrier)
 {
-    //Set source access mask which controls actions that have to be finished on the old layout before it will be transitioned to the new layout
-    switch (pImageMemoryBarrier.oldLayout)
-    {
-        default:
-            break;
-        case VK_IMAGE_LAYOUT_UNDEFINED:
-            /*
-                Image layout is undefined
-                No flags required, listed only for completeness
-            */
-            pImageMemoryBarrier.srcAccessMask = 0;
-            break;
-            
-        case VK_IMAGE_LAYOUT_PREINITIALIZED:
-            /*
-                Only valid as initial layout for linear images, preserves memory contents
-                Make sure host writes have been finished
-            */
-            pImageMemoryBarrier.srcAccessMask = VK_ACCESS_HOST_WRITE_BIT;
-            break;
-            
-        case VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL:
-            //Make sure any writes to the color buffer have been finished
-            pImageMemoryBarrier.srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
-            break;
-            
-        case VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL:
-            //Make sure any writes to the depth/stencil buffer have been finished
-            pImageMemoryBarrier.srcAccessMask = VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
-            break;
-            
-        case VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL:
-            //Make sure any reads from the image have been finished
-            pImageMemoryBarrier.srcAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
-            break;
-            
-        case VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL:
-            // Image is a transfer destination
-            // Make sure any writes to the image have been finished
-            pImageMemoryBarrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
-            break;
-            
-        case VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL:
-            //Make sure any shader reads from the image have been finished
-            pImageMemoryBarrier.srcAccessMask = VK_ACCESS_SHADER_READ_BIT;
-            break;
-    }
-    
-    // Set destination access mask which controls the dependency for the new image layout
-    switch (pImageMemoryBarrier.newLayout)
-    {
-        default:
-            break;
-        case VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL:
-            /*
-                Image will be used as a transfer destination
-                Make sure any writes to the image have been finished
-            */
-            pImageMemoryBarrier.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
-            break;
-            
-        case VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL:
-            /*
-                Image will be used as a transfer source
-                Make sure any reads from the image have been finished
-            */
-            pImageMemoryBarrier.dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
-            break;
-            
-        case VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL:
-            //Make sure any writes to the color buffer have been finished
-            pImageMemoryBarrier.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
-            break;
-            
-        case VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL:
-            //Make sure any writes to depth/stencil buffer have been finished
-            pImageMemoryBarrier.dstAccessMask = pImageMemoryBarrier.dstAccessMask | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
-            break;
-            
-        case VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL:
-            //Make sure any writes to the image have been finished
-            if (pImageMemoryBarrier.srcAccessMask == 0)
-            {
-                pImageMemoryBarrier.srcAccessMask = VK_ACCESS_HOST_WRITE_BIT | VK_ACCESS_TRANSFER_WRITE_BIT;
-            }
-            pImageMemoryBarrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
-            break;
-    }
+	//Set source access mask which controls actions that have to be finished on the old layout before it will be transitioned to the new layout
+	switch (pImageMemoryBarrier.oldLayout)
+	{
+	default:
+		break;
+	case VK_IMAGE_LAYOUT_UNDEFINED:
+		/*
+			Image layout is undefined
+			No flags required, listed only for completeness
+		*/
+		pImageMemoryBarrier.srcAccessMask = 0;
+		break;
+
+	case VK_IMAGE_LAYOUT_PREINITIALIZED:
+		/*
+			Only valid as initial layout for linear images, preserves memory contents
+			Make sure host writes have been finished
+		*/
+		pImageMemoryBarrier.srcAccessMask = VK_ACCESS_HOST_WRITE_BIT;
+		break;
+
+	case VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL:
+		//Make sure any writes to the color buffer have been finished
+		pImageMemoryBarrier.srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+		break;
+
+	case VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL:
+		//Make sure any writes to the depth/stencil buffer have been finished
+		pImageMemoryBarrier.srcAccessMask = VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
+		break;
+
+	case VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL:
+		//Make sure any reads from the image have been finished
+		pImageMemoryBarrier.srcAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
+		break;
+
+	case VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL:
+		// Image is a transfer destination
+		// Make sure any writes to the image have been finished
+		pImageMemoryBarrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+		break;
+
+	case VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL:
+		//Make sure any shader reads from the image have been finished
+		pImageMemoryBarrier.srcAccessMask = VK_ACCESS_SHADER_READ_BIT;
+		break;
+	}
+
+	// Set destination access mask which controls the dependency for the new image layout
+	switch (pImageMemoryBarrier.newLayout)
+	{
+	default:
+		break;
+	case VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL:
+		/*
+			Image will be used as a transfer destination
+			Make sure any writes to the image have been finished
+		*/
+		pImageMemoryBarrier.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+		break;
+
+	case VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL:
+		/*
+			Image will be used as a transfer source
+			Make sure any reads from the image have been finished
+		*/
+		pImageMemoryBarrier.dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
+		break;
+
+	case VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL:
+		//Make sure any writes to the color buffer have been finished
+		pImageMemoryBarrier.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+		break;
+
+	case VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL:
+		//Make sure any writes to depth/stencil buffer have been finished
+		pImageMemoryBarrier.dstAccessMask = pImageMemoryBarrier.dstAccessMask | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
+		break;
+
+	case VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL:
+		//Make sure any writes to the image have been finished
+		if (pImageMemoryBarrier.srcAccessMask == 0)
+		{
+			pImageMemoryBarrier.srcAccessMask = VK_ACCESS_HOST_WRITE_BIT | VK_ACCESS_TRANSFER_WRITE_BIT;
+		}
+		pImageMemoryBarrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+		break;
+	}
 }
 
 VkFormat w_graphics_device_manager::find_supported_format(
-    _In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-    _In_ const std::vector<VkFormat>& pFormatCandidates,
-    _In_ VkImageTiling pImageTiling,
-    _In_ VkFormatFeatureFlags pFormatFeatureFlags)
+	_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+	_In_ const std::vector<VkFormat>& pFormatCandidates,
+	_In_ VkImageTiling pImageTiling,
+	_In_ VkFormatFeatureFlags pFormatFeatureFlags)
 {
-    VkFormat _selected_format = VkFormat::VK_FORMAT_UNDEFINED;
-    for (auto& _format : pFormatCandidates)
-    {
-        VkFormatProperties _properties;
-        vkGetPhysicalDeviceFormatProperties(pGDevice->vk_physical_device, _format, &_properties);
-        if (pImageTiling == VK_IMAGE_TILING_LINEAR &&
-            (_properties.linearTilingFeatures & pFormatFeatureFlags) == pFormatFeatureFlags)
-        {
-            _selected_format = _format;
-            break;
-        }
-        else if (pImageTiling == VK_IMAGE_TILING_OPTIMAL &&
-            (_properties.optimalTilingFeatures & pFormatFeatureFlags) == pFormatFeatureFlags)
-        {
-            _selected_format = _format;
-            break;
-        }
-    }
-    return _selected_format;
+	VkFormat _selected_format = VkFormat::VK_FORMAT_UNDEFINED;
+	for (auto& _format : pFormatCandidates)
+	{
+		VkFormatProperties _properties;
+		vkGetPhysicalDeviceFormatProperties(pGDevice->vk_physical_device, _format, &_properties);
+		if (pImageTiling == VK_IMAGE_TILING_LINEAR &&
+			(_properties.linearTilingFeatures & pFormatFeatureFlags) == pFormatFeatureFlags)
+		{
+			_selected_format = _format;
+			break;
+		}
+		else if (pImageTiling == VK_IMAGE_TILING_OPTIMAL &&
+			(_properties.optimalTilingFeatures & pFormatFeatureFlags) == pFormatFeatureFlags)
+		{
+			_selected_format = _format;
+			break;
+		}
+	}
+	return _selected_format;
 }
 
 #endif
-            
+
 #pragma endregion
 
 #pragma region Getters

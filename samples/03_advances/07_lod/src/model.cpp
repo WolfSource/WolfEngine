@@ -23,20 +23,19 @@ model::model(
 #pragma region collada from 3DMax 
 
 		//3DMax is right handed Zup
-		this->transform->rotation[0] *= -1.0f;
 		this->transform->rotation[0] += glm::radians(90.0f);
 		std::swap(this->transform->position[1], this->transform->position[2]);
 		this->transform->position[1] *= -1.0f;
 
 		for (auto& _ins : this->instances_transforms)
 		{
-			_ins.rotation[0] *= -1.0f;
 			_ins.rotation[0] += glm::radians(90.0f);
 			std::swap(_ins.position[1], _ins.position[2]);
 			_ins.position[1] *= -1.0f;
 		}
 
 #pragma endregion 
+
 	}
 }
 

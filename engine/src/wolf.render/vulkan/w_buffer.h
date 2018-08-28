@@ -14,8 +14,7 @@
 #ifndef __W_BUFFER_H__
 #define __W_BUFFER_H__
 
-#include <w_graphics_headers.h>
-#include <w_render_export.h>
+#include "w_graphics_device_manager.h"
 
 namespace wolf
 {
@@ -46,7 +45,7 @@ namespace wolf
 
 				W_VK_EXP W_RESULT bind();
 
-				W_VK_EXP W_RESULT copy_to(_In_ w_buffer& pDestinationBuffer);
+				W_VK_EXP W_RESULT copy_to(_In_ w_buffer& pDestinationBuffer, _In_ const w_command_buffer& pCopyCommandBuffer);
 
 				W_VK_EXP void* map();
 				W_VK_EXP void unmap();
@@ -57,14 +56,14 @@ namespace wolf
 
 #pragma region Getters
 
-				W_VK_EXP const uint32_t					  get_offset() const;
-				//W_VK_EXP const uint32_t					  get_global_offset() const;
-				W_VK_EXP const uint32_t                      get_size() const;
-				W_VK_EXP const uint32_t					  get_usage_flags() const;
-				W_VK_EXP const uint32_t				      get_memory_flags() const;
-				W_VK_EXP const w_buffer_handle               get_buffer_handle() const;
-				W_VK_EXP const w_descriptor_buffer_info      get_descriptor_info() const;
-				W_VK_EXP const w_device_memory				  get_memory() const;
+				W_VK_EXP const uint32_t							get_offset() const;
+				//W_VK_EXP const uint32_t						get_global_offset() const;
+				W_VK_EXP const uint32_t							get_size() const;
+				W_VK_EXP const uint32_t							get_usage_flags() const;
+				W_VK_EXP const uint32_t							get_memory_flags() const;
+				W_VK_EXP const w_buffer_handle					get_buffer_handle() const;
+				W_VK_EXP const w_descriptor_buffer_info			get_descriptor_info() const;
+				W_VK_EXP const w_device_memory					get_memory() const;
 
 #pragma endregion
 

@@ -1,8 +1,6 @@
 #include "w_render_pch.h"
-#include "w_graphics_device_manager.h"
 #include "w_buffer.h"
 #include <w_convert.h>
-#include "w_command_buffers.h"
 #include <glm_extension.h>
 
 static std::mutex _mutex;
@@ -208,7 +206,7 @@ namespace wolf
 					return _hr;
 				}
 
-				W_RESULT copy_to(_In_ w_buffer& pDestinationBuffer)
+				W_RESULT copy_to(_In_ w_buffer& pDestinationBuffer, _In_ const w_command_buffer& pCopyCommandBuffer)
 				{
 					const std::string _trace_info = this->_name + "::copy_to";
 
@@ -240,11 +238,6 @@ namespace wolf
 					_copy_region.srcOffset = 0;// get_offset();
 					_copy_region.dstOffset = 0;// pDestinationBuffer.get_offset();
 					_copy_region.size = this->_used_memory_size;
-
-
-					//bind();
-					//pDestinationBuffer.bind();
-
 
 					auto _copy_cmd = _copy_command_buffer.get_command_at(0);
 					auto _dest_buffer = pDestinationBuffer.get_buffer_handle();
@@ -520,11 +513,11 @@ W_RESULT w_buffer::set_data(_In_ const void* const pData)
     return this->_pimp->set_data(pData);
 }
 
-W_RESULT w_buffer::copy_to(_In_ w_buffer& pDestinationBuffer)
+W_RESULT w_buffer::copy_to(_In_ w_buffer& pDestinationBuffer, _In_ const w_command_buffer& pCopyCommandBuffer)
 {
     if (!this->_pimp) return W_FAILED;
 
-    return this->_pimp->copy_to(pDestinationBuffer);
+    return this->_pimp->copy_to(pDestinationBuffer, pCopyCommandBuffer);
 }
 
 void* w_buffer::map()

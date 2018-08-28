@@ -435,7 +435,10 @@ W_RESULT scene::_build_draw_command_buffers()
 				//The following codes have been added for this project
 				//++++++++++++++++++++++++++++++++++++++++++++++++++++
 				//draw sky
-				this->_sky->draw(_cmd);
+				if (this->_sky)
+				{
+					this->_sky->draw(_cmd);
+				}
 				//draw all models
 				for (uint32_t i = 0; i < this->_models.size(); ++i)
 				{
@@ -489,13 +492,15 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 	if (this->_force_update_camera)
 	{
 		this->_force_update_camera = false;
-		//update sky
-		this->_sky->set_view_projection_position(
-			this->_first_camera.get_view(),
-			this->_first_camera.get_projection(),
-			this->_first_camera.get_position());
-		this->_sky->update();
-		
+		if (this->_sky)
+		{
+			//update sky
+			this->_sky->set_view_projection_position(
+				this->_first_camera.get_view(),
+				this->_first_camera.get_projection(),
+				this->_first_camera.get_position());
+			this->_sky->update();
+		}
 		//update view and projection of all models
 		for (auto _model : this->_models)
 		{

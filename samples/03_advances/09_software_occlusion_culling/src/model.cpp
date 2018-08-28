@@ -8,7 +8,6 @@ using namespace wolf::content_pipeline;
 
 static void make_it_z_up_max(_Inout_ float* pPosition, _Inout_ float* pRotation)
 {
-	pRotation[0] *= -1.0f;
 	pRotation[0] += glm::radians(90.0f);
 	std::swap(pPosition[1], pPosition[2]);
 	pPosition[1] *= -1.0f;

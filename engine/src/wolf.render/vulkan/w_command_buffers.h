@@ -16,7 +16,6 @@
 
 #include <w_graphics_headers.h>
 #include <w_render_export.h>
-#include "w_buffer.h"
 
 namespace wolf
 {
@@ -26,9 +25,20 @@ namespace wolf
 		{
 			struct w_command_buffer
 			{
-#ifdef __VULKAN__
 				VkCommandBuffer	handle = 0;
-#endif
+
+				W_RESULT begin(_In_ const uint32_t pFlags);
+
+				W_RESULT begin_secondary(
+					_In_ const w_render_pass_handle& pRenderPassHandle,
+					_In_ const w_frame_buffer_handle& pFrameBufferHandle,
+					_In_ const uint32_t pFlags);
+
+				W_RESULT end();
+
+				W_RESULT flush(_In_ const std::shared_ptr<w_graphics_device>& pGDevice);
+
+				W_RESULT execute_secondary_commands(_In_ const std::vector<w_command_buffer*>& pSecondaryCommandBuffers);
 			};
 
 			class w_command_buffer_pimp;
@@ -42,8 +52,7 @@ namespace wolf
 					pGDevice = graphices device,
 					pCount = count of command buffers to be created,
 					pLevel = primary or secondary level of thread execution
-					pCreateCommandPool = create seperated command pool,
-					pCommandPoolQueue = if pCreateCommandPool set true, then use this w_queue_index for creating command pool
+					pCommandPoolQueue = by default vk_graphics_queue will be used, set another w_queue_index for creating command another pool
 				*/
 				W_VK_EXP W_RESULT load(
 					_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
@@ -120,14 +129,6 @@ namespace wolf
 			private:
 				typedef system::w_object            _super;
 				w_command_buffer_pimp*              _pimp;
-			};
-
-			struct w_indirect_draws_command_buffer
-			{
-				wolf::render::vulkan::w_buffer								buffer;
-				std::vector<w_draw_indexed_indirect_command>            drawing_commands;
-
-				W_VK_EXP W_RESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice, _In_ const uint32_t& pDrawCount);
 			};
 		}
 	}

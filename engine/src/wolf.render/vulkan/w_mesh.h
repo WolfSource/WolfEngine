@@ -15,6 +15,7 @@
 #define __W_MESH_H__
 
 #include "w_graphics_device_manager.h"
+#include "w_indirect_draw_commands.h"
 #include "w_texture.h"
 #include "w_render_pass.h"
 #include <glm/mat4x4.hpp>
@@ -251,6 +252,7 @@ namespace wolf
 
 				//load mesh
 				W_VK_EXP W_RESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+					_In_ const w_command_buffer& pCommandBuffer,
 					_In_ const void* const pVerticesData,
 					_In_ const uint32_t&  pVerticesSizeInBytes,
 					_In_ const uint32_t& pVerticesCount,
@@ -261,6 +263,7 @@ namespace wolf
 				//update data of vertices and indices
 				W_VK_EXP W_RESULT update_dynamic_buffer(
 					_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+					_In_ const w_command_buffer& pCommandBuffer,
 					_In_ const void* const pVerticesData,
 					_In_ const uint32_t& pVerticesSize,
 					_In_ const uint32_t& pVerticesCount,

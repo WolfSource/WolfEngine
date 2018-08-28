@@ -210,7 +210,10 @@ void scene::load()
 		 0.7f,  0.7f,	0.0f,		//pos3
 		 0.0f,  1.0f,	0.0f, 1.0f	//color3
 	};
+
+	auto _cmd = this->_draw_command_buffers.get_command_at(0);
 	_hr = this->_mesh.load(_gDevice,
+		_cmd,
 		_vertex_data.data(),
 		static_cast<uint32_t>(_vertex_data.size() * sizeof(float)),
 		static_cast<uint32_t>(_vertex_data.size()),

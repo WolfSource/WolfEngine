@@ -29,6 +29,7 @@ model_mesh::~model_mesh()
 
 W_RESULT model_mesh::load(
 	_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+	_In_ const w_command_buffer& pCommandBuffer,
 	_In_z_ const std::string& pPipelineCacheName,
 	_In_z_ const std::string& pComputePipelineCacheName,
 	_In_z_ const std::wstring& pVertexShaderPath,
@@ -74,6 +75,7 @@ W_RESULT model_mesh::load(
 
 	auto _hr = _mesh->load(
 		this->gDevice,
+		pCommandBuffer,
 		this->tmp_batch_vertices.data(),
 		static_cast<uint32_t>(this->tmp_batch_vertices.size() * sizeof(float)),
 		_v_size,
@@ -96,14 +98,14 @@ W_RESULT model_mesh::load(
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//The following codes have been added for this project
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	if (_create_buffers() == W_FAILED)
+	if (_create_buffers(pCommandBuffer) == W_FAILED)
 	{
 		release();
 		return W_FAILED;
 	}
 
 	//create shader modules
-	if (_create_shader_modules(pVertexShaderPath, pFragmentShaderPath) == W_FAILED)
+	if (_create_shader_modules(pCommandBuffer, pVertexShaderPath, pFragmentShaderPath) == W_FAILED)
 	{
 		release();
 		return W_FAILED;
@@ -152,7 +154,7 @@ W_RESULT model_mesh::load(
 	auto _get_first_model_bsphere = w_bounding_sphere::create_from_bounding_box(this->sub_meshes_bounding_box.at(0));
 	this->_u1.data.texture_max_mip_maps_max_level = this->_textures[0]->get_mip_maps_level();
 	this->_u1.data.bounding_sphere_radius = _get_first_model_bsphere.radius;
-	if (this->_u1.update() == W_FAILED)
+	if (this->_u1.update(pCommandBuffer) == W_FAILED)
 	{
 		V(W_FAILED,
 			w_log_type::W_ERROR,
@@ -160,7 +162,7 @@ W_RESULT model_mesh::load(
 		return W_FAILED;
 	}
 
-	if (_create_bounding_box_shapes(pRenderPass, pViewport, pViewportScissor) == W_FAILED)
+	if (_create_bounding_box_shapes(pCommandBuffer, pRenderPass, pViewport, pViewportScissor) == W_FAILED)
 	{
 		V(W_FAILED,
 			w_log_type::W_ERROR,
@@ -185,7 +187,6 @@ W_RESULT model_mesh::_build_compute_command_buffer()
 		this->gDevice,
 		1,
 		w_command_buffer_level::PRIMARY,
-		true,
 		&gDevice->vk_compute_queue) == W_FAILED)
 	{
 		V(W_FAILED,
@@ -256,7 +257,7 @@ W_RESULT model_mesh::_build_compute_command_buffer()
 	return W_PASSED;
 }
 
-W_RESULT model_mesh::submit_compute_shader()
+W_RESULT model_mesh::submit_compute_shader(_In_ const w_command_buffer& pCommandBuffer)
 {
 	W_RESULT _hr = W_PASSED;
 	const std::string _trace_info = this->_name + "::submit_compute_shader";
@@ -304,7 +305,7 @@ W_RESULT model_mesh::submit_compute_shader()
 			&this->_cs.unifrom_x2->data.is_visible[0],
 			this->visibilities.data(),
 			sizeof(this->_cs.unifrom_x2->data.is_visible));
-		_hr = this->_cs.unifrom_x2->update();
+		_hr = this->_cs.unifrom_x2->update(pCommandBuffer);
 		break;
 	case 4:
 		this->_cs.unifrom_x4->data.camera_pos = _cam_pos;
@@ -312,7 +313,7 @@ W_RESULT model_mesh::submit_compute_shader()
 			&this->_cs.unifrom_x4->data.is_visible[0],
 			this->visibilities.data(),
 			sizeof(this->_cs.unifrom_x4->data.is_visible));
-		_hr = this->_cs.unifrom_x4->update();
+		_hr = this->_cs.unifrom_x4->update(pCommandBuffer);
 		break;
 	case 8:
 		this->_cs.unifrom_x8->data.camera_pos = _cam_pos;
@@ -320,7 +321,7 @@ W_RESULT model_mesh::submit_compute_shader()
 			&this->_cs.unifrom_x8->data.is_visible[0],
 			this->visibilities.data(),
 			sizeof(this->_cs.unifrom_x8->data.is_visible));
-		_hr = this->_cs.unifrom_x8->update();
+		_hr = this->_cs.unifrom_x8->update(pCommandBuffer);
 		break;
 	case 16:
 		this->_cs.unifrom_x16->data.camera_pos = _cam_pos;
@@ -328,7 +329,7 @@ W_RESULT model_mesh::submit_compute_shader()
 			&this->_cs.unifrom_x16->data.is_visible[0],
 			this->visibilities.data(),
 			sizeof(this->_cs.unifrom_x16->data.is_visible));
-		_hr = this->_cs.unifrom_x16->update();
+		_hr = this->_cs.unifrom_x16->update(pCommandBuffer);
 		break;
 	case 32:
 		this->_cs.unifrom_x32->data.camera_pos = _cam_pos;
@@ -336,7 +337,7 @@ W_RESULT model_mesh::submit_compute_shader()
 			&this->_cs.unifrom_x32->data.is_visible[0],
 			this->visibilities.data(),
 			sizeof(this->_cs.unifrom_x32->data.is_visible));
-		_hr = this->_cs.unifrom_x32->update();
+		_hr = this->_cs.unifrom_x32->update(pCommandBuffer);
 		break;
 	case 64:
 		this->_cs.unifrom_x64->data.camera_pos = _cam_pos;
@@ -344,7 +345,7 @@ W_RESULT model_mesh::submit_compute_shader()
 			&this->_cs.unifrom_x64->data.is_visible[0],
 			this->visibilities.data(),
 			sizeof(this->_cs.unifrom_x64->data.is_visible));
-		_hr = this->_cs.unifrom_x64->update();
+		_hr = this->_cs.unifrom_x64->update(pCommandBuffer);
 		break;
 	case 128:
 		this->_cs.unifrom_x128->data.camera_pos = _cam_pos;
@@ -352,7 +353,7 @@ W_RESULT model_mesh::submit_compute_shader()
 			&this->_cs.unifrom_x128->data.is_visible[0],
 			this->visibilities.data(),
 			sizeof(this->_cs.unifrom_x128->data.is_visible));
-		_hr = this->_cs.unifrom_x128->update();
+		_hr = this->_cs.unifrom_x128->update(pCommandBuffer);
 		break;
 	case 256:
 		this->_cs.unifrom_x256->data.camera_pos = _cam_pos;
@@ -360,7 +361,7 @@ W_RESULT model_mesh::submit_compute_shader()
 			&this->_cs.unifrom_x256->data.is_visible[0],
 			this->visibilities.data(),
 			sizeof(this->_cs.unifrom_x256->data.is_visible));
-		_hr = this->_cs.unifrom_x256->update();
+		_hr = this->_cs.unifrom_x256->update(pCommandBuffer);
 		break;
 	case 512:
 		this->_cs.unifrom_x512->data.camera_pos = _cam_pos;
@@ -368,7 +369,7 @@ W_RESULT model_mesh::submit_compute_shader()
 			&this->_cs.unifrom_x512->data.is_visible[0],
 			this->visibilities.data(),
 			sizeof(this->_cs.unifrom_x512->data.is_visible));
-		_hr = this->_cs.unifrom_x512->update();
+		_hr = this->_cs.unifrom_x512->update(pCommandBuffer);
 		break;
 	case 1024:
 		this->_cs.unifrom_x1024->data.camera_pos = _cam_pos;
@@ -376,7 +377,7 @@ W_RESULT model_mesh::submit_compute_shader()
 			&this->_cs.unifrom_x1024->data.is_visible[0],
 			this->visibilities.data(),
 			sizeof(this->_cs.unifrom_x1024->data.is_visible));
-		_hr = this->_cs.unifrom_x1024->update();
+		_hr = this->_cs.unifrom_x1024->update(pCommandBuffer);
 		break;
 	}
 
@@ -422,7 +423,7 @@ W_RESULT model_mesh::draw(_In_ const w_command_buffer& pCommandBuffer, _In_ cons
 		auto _view = pCamera->get_view();
 		auto _projection = pCamera->get_projection();
 		auto _camera_position = pCamera->get_position();
-		set_view_projection_position(_view, _projection, _camera_position);
+		set_view_projection_position(pCommandBuffer, _view, _projection, _camera_position);
 	}
 
 	//bind pipeline
@@ -1114,7 +1115,7 @@ W_RESULT model_mesh::_load_textures()
 
 }
 
-W_RESULT model_mesh::_create_buffers()
+W_RESULT model_mesh::_create_buffers(_In_ const w_command_buffer& pCommandBuffer)
 {	
 	const std::string _trace_info = this->_name + "::_create_buffers";
 
@@ -1137,7 +1138,7 @@ W_RESULT model_mesh::_create_buffers()
 	}
 
 	//load indirect draws
-	if (this->indirect_draws.load(this->gDevice, _draw_counts) == W_FAILED)
+	if (this->indirect_draws.load(this->gDevice, pCommandBuffer, _draw_counts) == W_FAILED)
 	{
 		V(W_FAILED,
 			w_log_type::W_ERROR,
@@ -1146,13 +1147,13 @@ W_RESULT model_mesh::_create_buffers()
 	}
 
 	//create instance buffers
-	if (_create_instance_buffers() == W_FAILED)
+	if (_create_instance_buffers(pCommandBuffer) == W_FAILED)
 	{
 		return W_FAILED;
 	}
 
 	//create compute shader lod buffer
-	if (_create_lod_levels_buffer() == W_FAILED)
+	if (_create_lod_levels_buffer(pCommandBuffer) == W_FAILED)
 	{
 		return W_FAILED;
 	}
@@ -1166,7 +1167,7 @@ W_RESULT model_mesh::_create_buffers()
 	return W_PASSED;
 }
 
-W_RESULT model_mesh::_create_instance_buffers()
+W_RESULT model_mesh::_create_instance_buffers(_In_ const w_command_buffer& pCommandBuffer)
 {
 	const std::string _trace_info = this->_name + "::_create_instance_buffer";
 
@@ -1253,7 +1254,7 @@ W_RESULT model_mesh::_create_instance_buffers()
 		return W_FAILED;
 	}
 
-	if (_staging_buffers[0].copy_to(this->_instances_buffer) == W_FAILED)
+	if (_staging_buffers[0].copy_to(this->_instances_buffer, pCommandBuffer) == W_FAILED)
 	{
 		V(W_FAILED,
 			w_log_type::W_WARNING,
@@ -1291,7 +1292,7 @@ W_RESULT model_mesh::_create_instance_buffers()
 			"loading device buffer of compute instances buffer. trace info: {}", this->model_name, _trace_info);
 		return W_FAILED;
 	}
-	if (_staging_buffers[1].copy_to(_cs.instances_buffer) == W_FAILED)
+	if (_staging_buffers[1].copy_to(_cs.instances_buffer, pCommandBuffer) == W_FAILED)
 	{
 		V(W_FAILED,
 			w_log_type::W_WARNING,
@@ -1304,7 +1305,7 @@ W_RESULT model_mesh::_create_instance_buffers()
 	return W_PASSED;
 }
 
-W_RESULT model_mesh::_create_lod_levels_buffer()
+W_RESULT model_mesh::_create_lod_levels_buffer(_In_ const wolf::render::vulkan::w_command_buffer& pCommandBuffer)
 {
 	const std::string _trace_info = this->_name + "::_create_lod_levels_buffer";
 
@@ -1343,7 +1344,7 @@ W_RESULT model_mesh::_create_lod_levels_buffer()
 			"loading data to staging buffer of lod levels buffer. trace info: {}", this->model_name, _trace_info);
 		return W_FAILED;
 	}
-	if (_staging_buffer.copy_to(this->_cs.lod_levels_buffer) == W_FAILED)
+	if (_staging_buffer.copy_to(this->_cs.lod_levels_buffer, pCommandBuffer) == W_FAILED)
 	{
 		V(W_FAILED,
 			w_log_type::W_ERROR,
@@ -1575,6 +1576,7 @@ W_RESULT model_mesh::_prepare_cs_path_uniform_based_on_local_size(
 }
 
 W_RESULT model_mesh::_create_shader_modules(
+	_In_ const w_command_buffer& pCommandBuffer,
 	_In_z_ const std::wstring& pVertexShaderPath,
 	_In_z_ const std::wstring& pFragmentShaderPath)
 {
@@ -1658,7 +1660,7 @@ W_RESULT model_mesh::_create_shader_modules(
 	if (this->_is_sky)
 	{
 		this->_u2.data.cmds = 2;
-		auto _hr = this->_u2.update();
+		auto _hr = this->_u2.update(pCommandBuffer);
 		if (_hr == W_FAILED)
 		{
 			V(_hr,
@@ -1867,7 +1869,11 @@ W_RESULT model_mesh::_create_pipelines(
 	return W_PASSED;
 }
 
-W_RESULT model_mesh::_create_bounding_box_shapes(_In_ const w_render_pass& pRenderPass, _In_ const w_viewport& pViewport, _In_ const w_viewport_scissor& pViewportScissor)
+W_RESULT model_mesh::_create_bounding_box_shapes(
+	_In_ const w_command_buffer& pCommandBuffer,
+	_In_ const w_render_pass& pRenderPass, 
+	_In_ const w_viewport& pViewport, 
+	_In_ const w_viewport_scissor& pViewportScissor)
 {
 	const std::string _trace_info = this->_name + "_create_bounding_box_shapes";
 
@@ -1898,7 +1904,7 @@ W_RESULT model_mesh::_create_bounding_box_shapes(_In_ const w_render_pass& pRend
 
 
 		this->sub_meshes_bounding_box.push_back(_aligned);
-		auto _shape = _create_shape(pRenderPass, pViewport, pViewportScissor, _aligned, w_color::RED());
+		auto _shape = _create_shape(pCommandBuffer, pRenderPass, pViewport, pViewportScissor, _aligned, w_color::RED());
 		if (_shape)
 		{
 			this->_shapes.push_back(_shape);
@@ -1921,7 +1927,7 @@ W_RESULT model_mesh::_create_bounding_box_shapes(_In_ const w_render_pass& pRend
 			std::memcpy(&_aligned.max[0], &_transfer_max[0], 3 * sizeof(float));
 
 			this->sub_meshes_bounding_box.push_back(_aligned);
-			_shape = _create_shape(pRenderPass, pViewport, pViewportScissor, _aligned, w_color::GREEN());
+			_shape = _create_shape(pCommandBuffer, pRenderPass, pViewport, pViewportScissor, _aligned, w_color::GREEN());
 			if (_shape)
 			{
 				this->_shapes.push_back(_shape);
@@ -1937,6 +1943,7 @@ W_RESULT model_mesh::_create_bounding_box_shapes(_In_ const w_render_pass& pRend
 }
 
 w_shapes* model_mesh::_create_shape(
+	_In_ const w_command_buffer& pCommandBuffer,
 	_In_ const w_render_pass& pRenderPass,
 	_In_ const w_viewport& pViewport,
 	_In_ const w_viewport_scissor& pViewportScissor,
@@ -1959,6 +1966,7 @@ w_shapes* model_mesh::_create_shape(
 
 	if (_shape_box->load(
 		this->gDevice,
+		pCommandBuffer,
 		pRenderPass,
 		pViewport,
 		pViewportScissor) == W_FAILED)
@@ -2110,6 +2118,7 @@ bool model_mesh::get_showing_wireframe() const
 #pragma region Setters
 
 void model_mesh::set_view_projection_position(
+	_In_ const w_command_buffer& pCommandBuffer,
 	_In_ const glm::mat4& pView, 
 	_In_ const glm::mat4& pProjection,
 	_In_ const glm::vec3& pPosition)
@@ -2123,7 +2132,7 @@ void model_mesh::set_view_projection_position(
 		this->_instance_u0.data.projection = pProjection;
 		this->_instance_u0.data.camera_pos = this->_camera_position;
 
-		auto _hr = this->_instance_u0.update();
+		auto _hr = this->_instance_u0.update(pCommandBuffer);
 		if (_hr == W_FAILED)
 		{
 			V(W_FAILED,
@@ -2144,7 +2153,7 @@ void model_mesh::set_view_projection_position(
 		this->_basic_u0.data.projection = pProjection;
 		this->_basic_u0.data.camera_pos = glm::vec4(pPosition, 1.0f);
 
-		auto _hr = this->_basic_u0.update();
+		auto _hr = this->_basic_u0.update(pCommandBuffer);
 		if (_hr == W_FAILED)
 		{
 			V(W_FAILED,
@@ -2160,19 +2169,19 @@ void model_mesh::set_view_projection_position(
 		auto _world = glm::mat4(1);
 		for (auto _shape : this->_shapes)
 		{
-			_shape->update(pProjection * pView * _world);
+			_shape->update(pCommandBuffer, pProjection * pView * _world);
 		}
 	}
 }
 
-void model_mesh::set_enable_instances_colors(_In_ const bool& pEnable)
+void model_mesh::set_enable_instances_colors(_In_ const w_command_buffer& pCommandBuffer, _In_ const bool& pEnable)
 {
 	const std::string _trace_info = this->_name + "::set_enable_instances_colors";
 
 	if (!this->_is_sky)
 	{
 		this->_u2.data.cmds = pEnable ? 1 : 0;
-		auto _hr = this->_u2.update();
+		auto _hr = this->_u2.update(pCommandBuffer);
 		if (_hr == W_FAILED)
 		{
 			V(W_FAILED,

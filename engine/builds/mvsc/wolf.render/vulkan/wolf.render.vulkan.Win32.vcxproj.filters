@@ -79,6 +79,9 @@
     <ClCompile Include="..\..\..\..\src\wolf.render\vulkan\w_texture.cpp">
       <Filter>vulkan</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\wolf.render\vulkan\w_indirect_draw_commands.cpp">
+      <Filter>vulkan</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics_device_manager.h" />
@@ -161,6 +164,9 @@
       <Filter>vulkan</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\wolf.render\vulkan\w_viewport.h">
+      <Filter>vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\wolf.render\vulkan\w_indirect_draw_commands.h">
       <Filter>vulkan</Filter>
     </ClInclude>
   </ItemGroup>

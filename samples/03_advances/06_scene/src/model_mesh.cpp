@@ -50,19 +50,17 @@ public:
 		//get all meshes
 		_c_model->get_meshes(_meshes);
 		//get all instances
-		_c_model->get_instances(this->_instnaces_transforms);
+		_c_model->get_instances(this->_instances_transforms);
 		
 #pragma region collada from 3DMax 
 
 		//3DMax is right handed Zup
-		this->_transform->rotation[0] *= -1.0f;
-		this->_transform->rotation[0] += glm::radians(90.0f);
+		this->_transform->rotation[0] += glm::radians(90.0f);	
 		std::swap(this->_transform->position[1], this->_transform->position[2]);
 		this->_transform->position[1] *= -1.0f;
 
-		for (auto& _ins : this->_instnaces_transforms)
+		for (auto& _ins : this->_instances_transforms)
 		{
-			_ins.rotation[0] *= -1.0f;
 			_ins.rotation[0] += glm::radians(90.0f);
 			std::swap(_ins.position[1], _ins.position[2]);
 			_ins.position[1] *= -1.0f;
@@ -152,7 +150,7 @@ public:
 
 #pragma region create instnace buffer
 		
-		auto _instances_size = this->_instnaces_transforms.size();
+		auto _instances_size = this->_instances_transforms.size();
 		if (_instances_size)
 		{
 			auto _vertex_dec = _vertex_binding_attributes.binding_attributes.find(1);
@@ -187,7 +185,7 @@ public:
 				}
 
 				//others are instances
-				for (auto _ins : this->_instnaces_transforms)
+				for (auto _ins : this->_instances_transforms)
 				{
 					for (auto _dec : _vertex_dec->second)
 					{
@@ -267,7 +265,7 @@ public:
 		//bind pipeline
 		this->_pipeline.bind(pCommandBuffer, w_pipeline_bind_point::GRAPHICS);
 		auto _buffer_handle = this->_instances_buffer.get_buffer_handle();
-		return this->_mesh->draw(pCommandBuffer, _buffer_handle.handle ? &_buffer_handle : nullptr, this->_instnaces_transforms.size(), pInDirectMode);
+		return this->_mesh->draw(pCommandBuffer, _buffer_handle.handle ? &_buffer_handle : nullptr, this->_instances_transforms.size(), pInDirectMode);
 	}
 	
 	void release()
@@ -275,7 +273,7 @@ public:
 		this->_name.clear();
 		this->_model_name.clear();
 
-		this->_instnaces_transforms.clear();
+		this->_instances_transforms.clear();
 
 		this->_pipeline.release();
 		this->_shader.release();
@@ -306,7 +304,7 @@ public:
 	{
 		const std::string _trace_info = this->_name + "::set_view_projection";
 
-		if (this->_instnaces_transforms.size())
+		if (this->_instances_transforms.size())
 		{
 			this->_instance_u0.data.view = pView;
 			this->_instance_u0.data.projection = pProjection;
@@ -385,7 +383,7 @@ public:
 
 	std::vector<w_instance_info> get_instances() const
 	{
-		return this->_instnaces_transforms;
+		return this->_instances_transforms;
 	}
 
 	w_bounding_box get_global_bounding_box() const
@@ -1037,7 +1035,7 @@ private:
 		_shader_param.stage = w_shader_stage_flag_bits::VERTEX_SHADER;
 		
 		//load vertex shader uniform
-		if (this->_instnaces_transforms.size())
+		if (this->_instances_transforms.size())
 		{
 			_hr = this->_instance_u0.load(_gDevice);
 			if (_hr == W_FAILED)
@@ -1112,6 +1110,13 @@ private:
 		_In_ const w_viewport& pViewPort,
 		_In_ const w_viewport_scissor& pViewPortScissor)
 	{
+		//dynamic states
+		std::vector<w_dynamic_state> _dynamic_states =
+		{
+			VIEWPORT,
+			SCISSOR,
+		};
+
 		return this->_pipeline.load(
 			this->_gDevice,
 			this->_vertex_binding_attributes,
@@ -1120,7 +1125,8 @@ private:
 			&this->_shader,
 			{ pViewPort },
 			{ pViewPortScissor },
-			pPipelineCacheName);
+			pPipelineCacheName,
+			_dynamic_states);
 	}
 
 	std::shared_ptr<w_graphics_device> 		_gDevice;
@@ -1128,7 +1134,7 @@ private:
 	std::string								_model_name;
 	
 	w_transform_info*						_transform;
-	std::vector<w_instance_info>			_instnaces_transforms;
+	std::vector<w_instance_info>			_instances_transforms;
 
 	w_shader								_shader;
 	w_pipeline								_pipeline;
