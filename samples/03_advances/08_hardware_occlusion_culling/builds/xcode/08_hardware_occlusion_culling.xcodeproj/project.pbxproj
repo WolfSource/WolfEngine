@@ -18,6 +18,7 @@
 		2C6E468B2102505B009BF7F5 /* libassimp.4.1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C6E468A2102505B009BF7F5 /* libassimp.4.1.0.dylib */; };
 		2C6E469221025101009BF7F5 /* model_mesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C6E469021025100009BF7F5 /* model_mesh.cpp */; };
 		2C6E4695210251E8009BF7F5 /* pch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C6E4693210251E8009BF7F5 /* pch.cpp */; };
+		2C968C8521300B41001BFFB2 /* model.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C968C8421300B41001BFFB2 /* model.cpp */; };
 		2CB69EDB1F62DDF60068D1E6 /* ViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2CB69ED81F62DDF60068D1E6 /* ViewController.mm */; };
 		2CB69EDE1F62E1BF0068D1E6 /* scene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CB69EDC1F62E1BF0068D1E6 /* scene.cpp */; };
 		2CB69EE31F62E5470068D1E6 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CB69EE21F62E5470068D1E6 /* QuartzCore.framework */; };
@@ -42,6 +43,9 @@
 		2C6E469021025100009BF7F5 /* model_mesh.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = model_mesh.cpp; path = ../../src/model_mesh.cpp; sourceTree = "<group>"; };
 		2C6E4693210251E8009BF7F5 /* pch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = pch.cpp; path = ../../../../common/pch.cpp; sourceTree = "<group>"; };
 		2C6E4694210251E8009BF7F5 /* pch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pch.h; path = ../../../../common/pch.h; sourceTree = "<group>"; };
+		2C968C8221300B41001BFFB2 /* model.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = model.h; path = ../../src/model.h; sourceTree = "<group>"; };
+		2C968C8321300B41001BFFB2 /* compute_stage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = compute_stage.h; path = ../../src/compute_stage.h; sourceTree = "<group>"; };
+		2C968C8421300B41001BFFB2 /* model.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = model.cpp; path = ../../src/model.cpp; sourceTree = "<group>"; };
 		2CB69ED71F62DDF60068D1E6 /* ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ViewController.h; path = ../../../../common/ViewController.h; sourceTree = "<group>"; };
 		2CB69ED81F62DDF60068D1E6 /* ViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = ViewController.mm; path = ../../../../common/ViewController.mm; sourceTree = "<group>"; };
 		2CB69EDC1F62E1BF0068D1E6 /* scene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = scene.cpp; path = ../../src/scene.cpp; sourceTree = "<group>"; };
@@ -74,6 +78,9 @@
 		2C28033E1E61C73600048A80 = {
 			isa = PBXGroup;
 			children = (
+				2C968C8321300B41001BFFB2 /* compute_stage.h */,
+				2C968C8421300B41001BFFB2 /* model.cpp */,
+				2C968C8221300B41001BFFB2 /* model.h */,
 				2C6E469021025100009BF7F5 /* model_mesh.cpp */,
 				2C6E468E21025100009BF7F5 /* model_mesh.h */,
 				2CB69EDC1F62E1BF0068D1E6 /* scene.cpp */,
@@ -198,6 +205,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2C6E469221025101009BF7F5 /* model_mesh.cpp in Sources */,
+				2C968C8521300B41001BFFB2 /* model.cpp in Sources */,
 				2CB69EDE1F62E1BF0068D1E6 /* scene.cpp in Sources */,
 				2C6E4695210251E8009BF7F5 /* pch.cpp in Sources */,
 				2C13839F1F5096DE00D5283B /* main.m in Sources */,
@@ -328,7 +336,7 @@
 				DEVELOPMENT_TEAM = J2WEUYPJ98;
 				FRAMEWORK_SEARCH_PATHS = "";
 				"FRAMEWORK_SEARCH_PATHS[arch=*]" = (
-					"$(SRCROOT)/../../../../../bin/Build/macOS/Products/Debug/",
+					"$(SRCROOT)/../../../../../bin/osx/Build/Products/Debug/",
 					"$(SRCROOT)/../../../../../engine/dependencies/vulkan/macOS/macOS/Frameworks",
 				);
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -342,7 +350,7 @@
 				"HEADER_SEARCH_PATHS[arch=*]" = (
 					"$(PROJECT_DIR)/../../src/",
 					"$(PROJECT_DIR)/../../../../common/",
-					"$(SRCROOT)/../../../../../engine/dependencies/vulkan/Mac/Molten/MoltenVK/include",
+					"$(SRCROOT)/../../../../../engine/dependencies/vulkan/macOS/macOS/include",
 					"$(SRCROOT)/../../../../../engine/src/wolf.system",
 					"$(SRCROOT)/../../../../../engine/src/wolf.content_pipeline",
 					"$(SRCROOT)/../../../../../engine/src/wolf.render",

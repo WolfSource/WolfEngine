@@ -179,7 +179,7 @@ private:
 		_In_ const wolf::render::vulkan::w_viewport& pViewport,
 		_In_ const wolf::render::vulkan::w_viewport_scissor& pViewportScissor,
 		_In_ const wolf::system::w_bounding_box& pBoundingBox, 
-		_In_ w_color& pColor);
+		_In_ const w_color& pColor);
 
 	W_RESULT   _build_compute_command_buffer();
 	

@@ -391,13 +391,13 @@ ULONG w_render_pass::release()
 const w_point w_render_pass::get_offset() const
 {
 	if (!this->_pimp) return w_point();
-	this->_pimp->get_offset();
+	return this->_pimp->get_offset();
 }
 
 const w_point_t w_render_pass::get_size() const
 {
 	if (!this->_pimp) return w_point_t();
-	this->_pimp->get_size();
+	return this->_pimp->get_size();
 }
 
 const w_render_pass_handle w_render_pass::get_handle() const

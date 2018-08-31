@@ -71,6 +71,9 @@
 		2CA945EF1ED9F7CC007B70B8 /* imgui.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CA945EA1ED9F7CC007B70B8 /* imgui.h */; };
 		2CA945F11EDA8B4F007B70B8 /* imgui_demo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CA945F01EDA8B4F007B70B8 /* imgui_demo.cpp */; };
 		2CCE632E1FD5E73000EC0BB5 /* IOSurface.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CCE632C1FD5E6EF00EC0BB5 /* IOSurface.framework */; };
+		2CE4DA0221391ADC005B386E /* w_indirect_draw_commands.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE4D9FF21391ADC005B386E /* w_indirect_draw_commands.h */; };
+		2CE4DA0321391ADC005B386E /* w_viewport.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE4DA0021391ADC005B386E /* w_viewport.h */; };
+		2CE4DA0421391ADC005B386E /* w_indirect_draw_commands.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CE4DA0121391ADC005B386E /* w_indirect_draw_commands.cpp */; };
 		2CF54B09205A2A1C000B80E3 /* vulkan.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CF54B08205A2A1C000B80E3 /* vulkan.framework */; };
 /* End PBXBuildFile section */
 
@@ -142,6 +145,9 @@
 		2CA945EA1ED9F7CC007B70B8 /* imgui.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = imgui.h; path = ../../../src/wolf.render/imgui/imgui.h; sourceTree = "<group>"; };
 		2CA945F01EDA8B4F007B70B8 /* imgui_demo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = imgui_demo.cpp; path = ../../../src/wolf.render/imgui/imgui_demo.cpp; sourceTree = "<group>"; };
 		2CCE632C1FD5E6EF00EC0BB5 /* IOSurface.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOSurface.framework; path = System/Library/Frameworks/IOSurface.framework; sourceTree = SDKROOT; };
+		2CE4D9FF21391ADC005B386E /* w_indirect_draw_commands.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_indirect_draw_commands.h; path = ../../../src/wolf.render/vulkan/w_indirect_draw_commands.h; sourceTree = "<group>"; };
+		2CE4DA0021391ADC005B386E /* w_viewport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_viewport.h; path = ../../../src/wolf.render/vulkan/w_viewport.h; sourceTree = "<group>"; };
+		2CE4DA0121391ADC005B386E /* w_indirect_draw_commands.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_indirect_draw_commands.cpp; path = ../../../src/wolf.render/vulkan/w_indirect_draw_commands.cpp; sourceTree = "<group>"; };
 		2CF54B08205A2A1C000B80E3 /* vulkan.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = vulkan.framework; path = ../../../dependencies/vulkan/macOS/macOS/Frameworks/vulkan.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -176,6 +182,8 @@
 				2C1E3F5E210870B90072D5D3 /* w_fences.h */,
 				2C1E3F47210870B80072D5D3 /* w_imgui.cpp */,
 				2C1E3F55210870B90072D5D3 /* w_imgui.h */,
+				2CE4DA0121391ADC005B386E /* w_indirect_draw_commands.cpp */,
+				2CE4D9FF21391ADC005B386E /* w_indirect_draw_commands.h */,
 				2C1E3F61210870BA0072D5D3 /* w_memory_allocator.cpp */,
 				2C1E3F53210870B90072D5D3 /* w_memory_allocator.h */,
 				2C1E3F56210870B90072D5D3 /* w_mesh.cpp */,
@@ -199,6 +207,7 @@
 				2C1E3F4B210870B80072D5D3 /* w_texture.cpp */,
 				2C1E3F50210870B90072D5D3 /* w_texture.h */,
 				2C1E3F49210870B80072D5D3 /* w_uniform.h */,
+				2CE4DA0021391ADC005B386E /* w_viewport.h */,
 			);
 			name = vulkan;
 			sourceTree = "<group>";
@@ -297,6 +306,7 @@
 				2C598C651FA2387B0055D215 /* w_graphics_headers.h in Headers */,
 				2C38D9531E79646D00EE8595 /* w_render_pch.h in Headers */,
 				2C1E3F7D210870BA0072D5D3 /* w_render_pass.h in Headers */,
+				2CE4DA0221391ADC005B386E /* w_indirect_draw_commands.h in Headers */,
 				2C1E3F6A210870BA0072D5D3 /* w_buffer.h in Headers */,
 				2C1E3F7E210870BA0072D5D3 /* w_fences.h in Headers */,
 				2C68598D20D92D1B0096C33B /* MaskedOcclusionCulling.h in Headers */,
@@ -312,6 +322,7 @@
 				2C38D94F1E79646D00EE8595 /* w_graphics_device_manager.h in Headers */,
 				2C68597820D92A490096C33B /* w_first_person_camera.h in Headers */,
 				2C68597E20D92CE30096C33B /* w_masked_occlusion_culling.h in Headers */,
+				2CE4DA0321391ADC005B386E /* w_viewport.h in Headers */,
 				2C68598F20D92D1B0096C33B /* FrameRecorder.h in Headers */,
 				2C38D9511E79646D00EE8595 /* w_render_export.h in Headers */,
 				2C1E3F7C210870BA0072D5D3 /* w_occlusion_query.h in Headers */,
@@ -411,6 +422,7 @@
 				2C68598A20D92D1B0096C33B /* MaskedOcclusionCulling.cpp in Sources */,
 				2C1E3F79210870BA0072D5D3 /* w_shapes.cpp in Sources */,
 				2C1E3F82210870BA0072D5D3 /* w_queue.cpp in Sources */,
+				2CE4DA0421391ADC005B386E /* w_indirect_draw_commands.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
