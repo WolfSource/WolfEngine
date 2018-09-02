@@ -260,9 +260,12 @@ void scene::load()
 	}
 
 	//load collada scene
+	auto _cmd = this->_draw_command_buffers.get_command_at(0);
 	auto _scene = w_content_manager::load<w_cpipeline_scene>(wolf::content_path + L"models/sponza/sponza.wscene");
 	if (_scene)
 	{
+		auto _cmd = this->_draw_command_buffers.get_command_at(0);
+
 		//get first camera
 		_scene->get_first_camera(this->_first_camera);
 		float _near_plan = 0.1f, far_plan = 100000;
@@ -307,6 +310,7 @@ void scene::load()
 
 			_hr = _model->load(
 				_gDevice, 
+				_cmd,
 				_model_pipeline_cache_name, 
 				_vertex_shader_path,
 				_fragment_shader_path, 
@@ -322,7 +326,7 @@ void scene::load()
 			}
 
 			//set view projection
-			_model->set_view_projection(this->_first_camera.get_view(), this->_first_camera.get_projection());
+			_model->set_view_projection(_cmd, this->_first_camera.get_view(), this->_first_camera.get_projection());
 			this->_models.push_back(_model);
 		}
 		_cmodels.clear();
@@ -333,7 +337,12 @@ void scene::load()
 	this->_shape_coordinate_axis = new (std::nothrow) w_shapes(w_color::LIME());
 	if (this->_shape_coordinate_axis)
 	{
-		_hr = this->_shape_coordinate_axis->load(_gDevice, this->_draw_render_pass, this->_viewport, this->_viewport_scissor);
+		_hr = this->_shape_coordinate_axis->load(
+			_gDevice, 
+			_cmd,
+			this->_draw_render_pass, 
+			this->_viewport, 
+			this->_viewport_scissor);
 		if (_hr == W_FAILED)
 		{
 			V(W_FAILED,
@@ -429,11 +438,12 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 	});
 	if (this->_force_update_camera)
 	{
+		auto _cmd = this->_draw_command_buffers.get_command_at(0);
 		this->_force_update_camera = false;
 		//update view and projection of all models
 		for (auto _model : this->_models)
 		{
-			_model->set_view_projection(this->_first_camera.get_view(), this->_first_camera.get_projection());
+			_model->set_view_projection(_cmd, this->_first_camera.get_view(), this->_first_camera.get_projection());
 		}
 	}
 
@@ -446,7 +456,8 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 	//update shape coordinate
 	auto _world = glm::mat4(1) * glm::scale(glm::vec3(20.0f));
 	auto _wvp = this->_first_camera.get_projection_view() * _world;
-	if (this->_shape_coordinate_axis->update(_wvp) == W_FAILED)
+	auto _cmd = this->_draw_command_buffers.get_command_at(0);
+	if (this->_shape_coordinate_axis->update(_cmd, _wvp) == W_FAILED)
 	{
 		V(W_FAILED,
 			w_log_type::W_ERROR,
@@ -636,7 +647,8 @@ void scene::_show_floating_debug_window()
 		auto _checked = this->_current_selected_model->get_enable_instances_colors();
 		if (ImGui::Checkbox("Show instances colors", &_checked))
 		{
-			this->_current_selected_model->set_enable_instances_colors(_checked);
+			auto _cmd = this->_draw_command_buffers.get_command_at(0);
+			this->_current_selected_model->set_enable_instances_colors(_cmd, _checked);
 		}
 		_checked = this->_current_selected_model->get_visible();
 		if (ImGui::Checkbox("Visible", &_checked))
@@ -657,10 +669,11 @@ void scene::_show_floating_debug_window()
     
     if (ImGui::Checkbox("Show all instances colors", &this->_show_all_instances_colors))
     {
+		auto _cmd = this->_draw_command_buffers.get_command_at(0);
         for (auto _m : this->_models)
         {
             if (!_m) continue;
-            _m->set_enable_instances_colors(this->_show_all_instances_colors);
+            _m->set_enable_instances_colors(_cmd, this->_show_all_instances_colors);
         }
     }
 	ImGui::End();

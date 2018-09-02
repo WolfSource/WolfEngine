@@ -103,13 +103,13 @@ namespace wolf
 						}
 					}
 
-					if (this->_stagings_buffers.vertices.copy_to(this->_vertex_buffer, pCommandBuffer) == W_FAILED)
+					if (this->_stagings_buffers.vertices.copy_to(pCommandBuffer, this->_vertex_buffer) == W_FAILED)
 					{
 						return W_FAILED;
 					}
 					if (!_there_is_no_index_buffer)
 					{
-						if (this->_stagings_buffers.indices.copy_to(this->_index_buffer, pCommandBuffer) == W_FAILED)
+						if (this->_stagings_buffers.indices.copy_to(pCommandBuffer, this->_index_buffer) == W_FAILED)
 						{
 							return W_FAILED;
 						}
@@ -192,7 +192,7 @@ namespace wolf
 						//V(_hr, "binding staging index buffer", this->_name, 3);
 					}
 
-					if (_stagings_buffers.vertices.copy_to(this->_vertex_buffer, pCommandBuffer) == W_FAILED)
+					if (_stagings_buffers.vertices.copy_to(pCommandBuffer, this->_vertex_buffer) == W_FAILED)
 					{
 						V(_hr,
 							w_log_type::W_ERROR,
@@ -205,7 +205,7 @@ namespace wolf
 					auto _index_count = this->_indices_count * sizeof(uint32_t);
 					if (_index_count)
 					{
-						if (_stagings_buffers.indices.copy_to(this->_index_buffer, pCommandBuffer) == W_FAILED)
+						if (_stagings_buffers.indices.copy_to(pCommandBuffer, this->_index_buffer) == W_FAILED)
 						{
 							V(_hr,
 								w_log_type::W_ERROR,

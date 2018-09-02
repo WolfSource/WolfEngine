@@ -97,7 +97,7 @@ W_RESULT w_indirect_draws_command_buffer::load(
 		return W_FAILED;
 	}
 
-	if (_staging_buffer.copy_to(this->buffer, pCommandBuffer) == W_FAILED)
+	if (_staging_buffer.copy_to(pCommandBuffer, this->buffer) == W_FAILED)
 	{
 		V(W_FAILED,
 			w_log_type::W_ERROR,

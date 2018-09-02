@@ -276,6 +276,7 @@ void scene::load()
 				std::vector<float> _vertices;
 				std::vector<uint32_t> _indices;
 
+				auto _cmd = this->_draw_command_buffers.get_command_at(0);
 				//get vertices and indices
 				for (auto _mesh : _meshes)
 				{
@@ -309,6 +310,7 @@ void scene::load()
 					_mesh->set_vertex_binding_attributes(_vertex_binding_attributes);
 					if (_mesh->load(
 						_gDevice,
+						_cmd,
 						_vertices.data(),
 						_v_size * sizeof(float),
 						_v_size,
@@ -331,7 +333,12 @@ void scene::load()
 				this->_shape_bounding_box = new (std::nothrow) w_shapes(this->_mesh_bounding_box, w_color::YELLOW());
 				if (this->_shape_bounding_box)
 				{
-					_hr = this->_shape_bounding_box->load(_gDevice, this->_draw_render_pass, this->_viewport, this->_viewport_scissor);
+					_hr = this->_shape_bounding_box->load(
+						_gDevice, 
+						_cmd,
+						this->_draw_render_pass, 
+						this->_viewport, 
+						this->_viewport_scissor);
 					if (_hr == W_FAILED)
 					{
 						release();
@@ -447,9 +454,10 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 		1000.0f);
 
 	auto _wvp = _projection * _view * _world;
-	
 	this->_u0.data.wvp = _wvp;
-	auto _hr = this->_u0.update();
+
+	auto _cmd = this->_draw_command_buffers.get_command_at(0);
+	auto _hr = this->_u0.update(_cmd);
 	if (_hr == W_FAILED)
 	{
 		V(W_FAILED,
@@ -459,7 +467,7 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 
 	if (sShowBoundingBox && this->_shape_bounding_box)
 	{
-		this->_shape_bounding_box->update(_wvp);
+		this->_shape_bounding_box->update(_cmd, _wvp);
 	}
 	if (sReBuild)
 	{

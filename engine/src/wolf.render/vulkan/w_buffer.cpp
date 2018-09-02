@@ -206,7 +206,7 @@ namespace wolf
 					return _hr;
 				}
 
-				W_RESULT copy_to(_In_ w_buffer& pDestinationBuffer, _In_ const w_command_buffer& pCopyCommandBuffer)
+				W_RESULT copy_to(_In_ const w_command_buffer& pCopyCommandBuffer, _In_ w_buffer& pDestinationBuffer)
 				{
 					const std::string _trace_info = this->_name + "::copy_to";
 
@@ -513,11 +513,11 @@ W_RESULT w_buffer::set_data(_In_ const void* const pData)
     return this->_pimp->set_data(pData);
 }
 
-W_RESULT w_buffer::copy_to(_In_ w_buffer& pDestinationBuffer, _In_ const w_command_buffer& pCopyCommandBuffer)
+W_RESULT w_buffer::copy_to(_In_ const w_command_buffer& pCopyCommandBuffer, _In_ w_buffer& pDestinationBuffer)
 {
     if (!this->_pimp) return W_FAILED;
 
-    return this->_pimp->copy_to(pDestinationBuffer, pCopyCommandBuffer);
+    return this->_pimp->copy_to(pCopyCommandBuffer, pDestinationBuffer);
 }
 
 void* w_buffer::map()

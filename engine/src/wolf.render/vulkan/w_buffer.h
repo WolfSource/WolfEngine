@@ -45,7 +45,7 @@ namespace wolf
 
 				W_VK_EXP W_RESULT bind();
 
-				W_VK_EXP W_RESULT copy_to(_In_ w_buffer& pDestinationBuffer, _In_ const w_command_buffer& pCopyCommandBuffer);
+				W_VK_EXP W_RESULT copy_to(_In_ const w_command_buffer& pCopyCommandBuffer, _In_ w_buffer& pDestinationBuffer);
 
 				W_VK_EXP void* map();
 				W_VK_EXP void unmap();

@@ -103,8 +103,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "22_fiber.Win32", "01_system
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "21_networking_request_reply_client.Win32", "01_system\21_networking_request_reply_client\builds\mvsc\21_networking_request_reply_client.Win32.vcxproj", "{2F0FA337-2831-43D7-B4F7-823D0AC15490}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wolf_scene.Win32", "wolf_scene\builds\mvsc\wolf_scene.Win32.vcxproj", "{AA66FC74-0566-48A5-9E94-BAEEF687710F}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "08_hardware_occlusion_culling.Win32", "03_advances\08_hardware_occlusion_culling\builds\mvsc\08_hardware_occlusion_culling.Win32.vcxproj", "{890325E2-798E-47D8-9E36-23BB40ADFB30}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "09_software_occlusion_culling.Win32", "03_advances\09_software_occlusion_culling\builds\mvsc\09_software_occlusion_culling.Win32.vcxproj", "{13B2EC3B-DB17-4287-B669-E47F2FF97519}"
@@ -496,14 +494,6 @@ Global
 		{2F0FA337-2831-43D7-B4F7-823D0AC15490}.Release|x64.Build.0 = Release|x64
 		{2F0FA337-2831-43D7-B4F7-823D0AC15490}.Release|x86.ActiveCfg = Release|Win32
 		{2F0FA337-2831-43D7-B4F7-823D0AC15490}.Release|x86.Build.0 = Release|Win32
-		{AA66FC74-0566-48A5-9E94-BAEEF687710F}.Debug|x64.ActiveCfg = Debug|x64
-		{AA66FC74-0566-48A5-9E94-BAEEF687710F}.Debug|x64.Build.0 = Debug|x64
-		{AA66FC74-0566-48A5-9E94-BAEEF687710F}.Debug|x86.ActiveCfg = Debug|Win32
-		{AA66FC74-0566-48A5-9E94-BAEEF687710F}.Debug|x86.Build.0 = Debug|Win32
-		{AA66FC74-0566-48A5-9E94-BAEEF687710F}.Release|x64.ActiveCfg = Release|x64
-		{AA66FC74-0566-48A5-9E94-BAEEF687710F}.Release|x64.Build.0 = Release|x64
-		{AA66FC74-0566-48A5-9E94-BAEEF687710F}.Release|x86.ActiveCfg = Release|Win32
-		{AA66FC74-0566-48A5-9E94-BAEEF687710F}.Release|x86.Build.0 = Release|Win32
 		{890325E2-798E-47D8-9E36-23BB40ADFB30}.Debug|x64.ActiveCfg = Debug|x64
 		{890325E2-798E-47D8-9E36-23BB40ADFB30}.Debug|x64.Build.0 = Debug|x64
 		{890325E2-798E-47D8-9E36-23BB40ADFB30}.Debug|x86.ActiveCfg = Debug|Win32

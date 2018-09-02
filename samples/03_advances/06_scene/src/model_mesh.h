@@ -39,6 +39,7 @@ public:
 	//load model resources
 	W_RESULT load(
 		_In_ const std::shared_ptr<wolf::render::vulkan::w_graphics_device>& pGDevice,
+		_In_ const wolf::render::vulkan::w_command_buffer& pCommandBuffer,
 		_In_ const std::string& pPipelineCacheName,
 		_In_z_ const std::wstring& pVertexShaderPath,
 		_In_z_ const std::wstring& pFragmentShaderPath,
@@ -71,8 +72,13 @@ public:
 
 #pragma region Setters
 
-	void													set_view_projection(_In_ const glm::mat4& pView, _In_ const glm::mat4& pProjection);
-	void													set_enable_instances_colors(_In_ const bool& pEnable);
+	void													set_view_projection(
+		_In_ const wolf::render::vulkan::w_command_buffer& pCommandBuffer, 
+		_In_ const glm::mat4& pView, 
+		_In_ const glm::mat4& pProjection);
+	void													set_enable_instances_colors(
+		_In_ const wolf::render::vulkan::w_command_buffer& pCommandBuffer,
+		_In_ const bool& pEnable);
 	void													set_visible(_In_ const bool& pValue);
 
 #pragma endregion

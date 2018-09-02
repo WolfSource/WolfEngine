@@ -29,6 +29,7 @@ public:
 
 	W_RESULT load(
 		_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+		_In_ const wolf::render::vulkan::w_command_buffer& pCommandBuffer,
 		_In_z_ const std::string& pPipelineCacheName, 
 		_In_z_ const std::wstring& pVertexShaderPath,
 		_In_z_ const std::wstring& pFragmentShaderPath,
@@ -129,6 +130,7 @@ public:
 
 		auto _hr = _mesh->load(
 			_gDevice,
+			pCommandBuffer,
 			_batch_vertices.data(),
 			static_cast<uint32_t>(_batch_vertices.size() * sizeof(float)),
 			_v_size,
@@ -209,7 +211,7 @@ public:
 				}
 
 				auto _size_of_buffer = static_cast<uint32_t>((_instances_size + 1) * _size_of_instance_struct);
-				_hr = _create_instance_buffer(_instances_data, _size_of_buffer);
+				_hr = _create_instance_buffer(pCommandBuffer, _instances_data, _size_of_buffer);
 				_instances_data.clear();
 
 				if (_hr == W_FAILED)
@@ -300,7 +302,10 @@ public:
 
 #pragma region Setters
 
-	void set_view_projection(_In_ const glm::mat4& pView, _In_ const glm::mat4& pProjection)
+	void set_view_projection(
+		_In_ const w_command_buffer& pCommandBuffer, 
+		_In_ const glm::mat4& pView, 
+		_In_ const glm::mat4& pProjection)
 	{
 		const std::string _trace_info = this->_name + "::set_view_projection";
 
@@ -308,7 +313,7 @@ public:
 		{
 			this->_instance_u0.data.view = pView;
 			this->_instance_u0.data.projection = pProjection;
-			auto _hr = this->_instance_u0.update();
+			auto _hr = this->_instance_u0.update(pCommandBuffer);
 			if (_hr == W_FAILED)
 			{
 				V(W_FAILED,
@@ -326,7 +331,7 @@ public:
 			this->_basic_u0.data.model = glm::translate(_position) * glm::rotate(_rotation) * glm::scale(_scale);
 			this->_basic_u0.data.view = pView;
 			this->_basic_u0.data.projection = pProjection;
-			auto _hr = this->_basic_u0.update();
+			auto _hr = this->_basic_u0.update(pCommandBuffer);
 			if (_hr == W_FAILED)
 			{
 				V(W_FAILED,
@@ -337,12 +342,14 @@ public:
 		}
 	}
 
-	void set_enable_instances_colors(_In_ const bool& pEnable)
+	void set_enable_instances_colors(
+		_In_ const w_command_buffer& pCommandBuffer, 
+		_In_ const bool& pEnable)
 	{
 		const std::string _trace_info = this->_name + "::set_enable_instances_colors";
 
 		this->_u1.data.cmds = pEnable ? 1 : 0;
-		auto _hr = this->_u1.update();
+		auto _hr = this->_u1.update(pCommandBuffer);
 		if (_hr == W_FAILED)
 		{
 			V(W_FAILED,
@@ -940,19 +947,16 @@ private:
 		return _problem ? W_FAILED : W_PASSED;
 	}
 
-	W_RESULT _create_instance_buffer(_In_ const std::vector<float>& pData, _In_ uint32_t& pSizeOfBuffer)
+	W_RESULT _create_instance_buffer(
+		_In_ const w_command_buffer& pCommandBuffer,
+		_In_ const std::vector<float>& pData, 
+		_In_ uint32_t& pSizeOfBuffer)
 	{
 		const std::string _trace_info = this->_name + "::_create_instance_buffer";
 
 		w_buffer _staging_buffers;
 
 		_staging_buffers.allocate_as_staging(_gDevice, pSizeOfBuffer);
-		//if (_staging_buffers.bind() == W_FAILED)
-		//{
-		//	V(W_FAILED, "binding to staging buffer of vertex_instance_buffer", _trace_info, 2);
-		//	return W_FAILED;
-		//}
-
 		if (_staging_buffers.set_data(pData.data()) == W_FAILED)
 		{
 			V(W_FAILED,
@@ -975,12 +979,7 @@ private:
 			return W_FAILED;
 		}
 
-		//if (this->_instances_buffer.bind() == W_FAILED)
-		//{
-		//	V(W_FAILED, "binding to device buffer of vertex_instance_buffer", _trace_info, 2);
-		//	return W_FAILED;
-		//}
-		if (_staging_buffers.copy_to(this->_instances_buffer) == W_FAILED)
+		if (_staging_buffers.copy_to(pCommandBuffer, this->_instances_buffer) == W_FAILED)
 		{
 			V(W_FAILED,
 				w_log_type::W_ERROR,
@@ -1198,6 +1197,7 @@ model_mesh::~model_mesh()
 
 W_RESULT model_mesh::load(
 	_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+	_In_ const wolf::render::vulkan::w_command_buffer& pCommandBuffer,
 	_In_ const std::string& pPipelineCacheName,
 	_In_z_ const std::wstring& pVertexShaderPath,
 	_In_z_ const std::wstring& pFragmentShaderPath,
@@ -1207,6 +1207,7 @@ W_RESULT model_mesh::load(
 {
 	return !this->_pimp ? W_FAILED : this->_pimp->load(
 		pGDevice, 
+		pCommandBuffer,
 		pPipelineCacheName, 
 		pVertexShaderPath, 
 		pFragmentShaderPath,
@@ -1276,19 +1277,24 @@ bool model_mesh::get_visible() const
 
 #pragma region Setters
 
-void model_mesh::set_view_projection(_In_ const glm::mat4& pView, _In_ const glm::mat4& pProjection)
+void model_mesh::set_view_projection(
+	_In_ const wolf::render::vulkan::w_command_buffer& pCommandBuffer, 
+	_In_ const glm::mat4& pView, 
+	_In_ const glm::mat4& pProjection)
 {
 	if (this->_pimp)
 	{
-		this->_pimp->set_view_projection(pView, pProjection);
+		this->_pimp->set_view_projection(pCommandBuffer, pView, pProjection);
 	}
 }
 
-void model_mesh::set_enable_instances_colors(_In_ const bool& pEnable)
+void model_mesh::set_enable_instances_colors(
+	_In_ const wolf::render::vulkan::w_command_buffer& pCommandBuffer, 
+	_In_ const bool& pEnable)
 {
 	if (this->_pimp)
 	{
-		this->_pimp->set_enable_instances_colors(pEnable);
+		this->_pimp->set_enable_instances_colors(pCommandBuffer, pEnable);
 	}
 }
 

@@ -165,7 +165,7 @@ namespace wolf
 
 						if (_hr == W_FAILED) return _hr;
 
-						_hr = this->_staging_buffer.copy_to(this->_buffer, pCommandBuffer);
+						_hr = this->_staging_buffer.copy_to(pCommandBuffer, this->_buffer);
 						V(_hr,
 							w_log_type::W_ERROR,
 							"copy staging buffer to device buffer . graphics device : {}.trace info : {}",
