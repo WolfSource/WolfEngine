@@ -55,7 +55,7 @@ public:
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//The following codes have been added for this project
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	W_RESULT submit_compute_shader(_In_ const wolf::render::vulkan::w_command_buffer& pCommandBuffer);
+	W_RESULT submit_compute_shader();
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 

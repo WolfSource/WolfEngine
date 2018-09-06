@@ -36,6 +36,7 @@ public:
 
 	W_RESULT load(
 		_In_ const std::shared_ptr<wolf::render::vulkan::w_graphics_device>& pGDevice,
+		_In_ const wolf::render::vulkan::w_command_buffer& pCommandBuffer,
 		_In_z_ const std::string& pPipelineCacheName,
 		_In_z_ const std::string& pComputePipelineCacheName,
 		_In_z_ const std::wstring& pVertexShaderPath,
@@ -74,10 +75,15 @@ public:
 #pragma region Setters
 
 	void set_view_projection_position(
+		_In_ const wolf::render::vulkan::w_command_buffer& pCommandBuffer,
 		_In_ const glm::mat4& pView,
 		_In_ const glm::mat4& pProjection,
 		_In_ const glm::vec3& pCameraPosition);
-	void set_enable_instances_colors(_In_ const bool& pEnable);
+	
+	void set_enable_instances_colors(
+		_In_ const wolf::render::vulkan::w_command_buffer& pCommandBuffer, 
+		_In_ const bool& pEnable);
+	
 	void set_global_visiblity(_In_ const bool& pValue);
 	void set_visiblity(_In_ const bool& pValue, _In_ const uint32_t& pModelInstanceIndex = 0);
 	void set_all_use_last_lod(_In_ const bool& pValue);
@@ -145,16 +151,20 @@ protected:
 private:
 
 	W_RESULT	_load_textures();
-	W_RESULT	_create_buffers();
-	W_RESULT	_create_instance_buffers();
-	W_RESULT	_create_lod_levels_buffer();
+	W_RESULT	_create_buffers(_In_ const wolf::render::vulkan::w_command_buffer& pCommandBuffer);
+	W_RESULT	_create_instance_buffers(_In_ const wolf::render::vulkan::w_command_buffer& pCommandBuffer);
+	W_RESULT	_create_lod_levels_buffer(_In_ const wolf::render::vulkan::w_command_buffer& pCommandBuffer);
 	W_RESULT	_create_cs_out_buffer();
+
 	W_RESULT	_prepare_cs_path_uniform_based_on_local_size(
 		_Inout_ wolf::render::vulkan::w_shader_binding_param& pShaderBindingParam,
 		_Inout_ std::wstring& pComputeShaderPath);
+
 	W_RESULT	_create_shader_modules(
+		_In_ const wolf::render::vulkan::w_command_buffer& pCommandBuffer,
 		_In_z_ const std::wstring& pVertexShaderPath,
 		_In_z_ const std::wstring& pFragmentShaderPath);
+	
 	W_RESULT	_create_pipelines(
 		_In_z_ const std::string& pPipelineCacheName,
 		_In_z_ const std::string& pComputePipelineCacheName,

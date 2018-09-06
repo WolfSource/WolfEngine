@@ -661,7 +661,7 @@ W_RESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 		{
 			if (pModel)
 			{
-				if (pModel->submit_compute_shader(_cmd) == W_PASSED)
+				if (pModel->submit_compute_shader() == W_PASSED)
 				{
 					auto _semaphore = pModel->get_compute_semaphore();
 					if (_semaphore)
@@ -1159,7 +1159,7 @@ scene::widget_info scene::_show_search_widget(_In_ scene::widget_info* pRelatedW
 						//The Ref
 						ImGui::TreeNodeEx((void*)(intptr_t)i, _node_flags, "Ref model");
 						auto _b_sphere = w_bounding_sphere::create_from_bounding_box(_model->get_global_bounding_box());
-						if (ImGui::IsMouseDoubleClicked(0))
+						if (ImGui::IsMouseClicked(1))
 						{
 							this->_current_selected_model = _model;
 
@@ -1181,7 +1181,7 @@ scene::widget_info scene::_show_search_widget(_In_ scene::widget_info* pRelatedW
 						for (auto& _ins : _model->get_instances())
 						{
 							ImGui::TreeNodeEx((void*)(intptr_t)i, _node_flags, _ins.name.c_str());
-							if (ImGui::IsMouseDoubleClicked(0))
+							if (ImGui::IsMouseClicked(1))
 							{
 								//on right click, focus on object
 								_b_sphere.center[0] = _ins.position[0];

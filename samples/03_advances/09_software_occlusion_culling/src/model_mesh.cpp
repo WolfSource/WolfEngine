@@ -257,7 +257,7 @@ W_RESULT model_mesh::_build_compute_command_buffer()
 	return W_PASSED;
 }
 
-W_RESULT model_mesh::submit_compute_shader(_In_ const w_command_buffer& pCommandBuffer)
+W_RESULT model_mesh::submit_compute_shader()
 {
 	W_RESULT _hr = W_PASSED;
 	const std::string _trace_info = this->_name + "::submit_compute_shader";
@@ -297,6 +297,7 @@ W_RESULT model_mesh::submit_compute_shader(_In_ const w_command_buffer& pCommand
 		return W_FAILED;
 	}
 
+	auto _cmd = this->_cs.command_buffers.get_command_at(0);
 	switch (this->_cs.batch_local_size)
 	{
 	case 2:
@@ -305,7 +306,7 @@ W_RESULT model_mesh::submit_compute_shader(_In_ const w_command_buffer& pCommand
 			&this->_cs.unifrom_x2->data.is_visible[0],
 			this->visibilities.data(),
 			sizeof(this->_cs.unifrom_x2->data.is_visible));
-		_hr = this->_cs.unifrom_x2->update(pCommandBuffer);
+		_hr = this->_cs.unifrom_x2->update(_cmd);
 		break;
 	case 4:
 		this->_cs.unifrom_x4->data.camera_pos = _cam_pos;
@@ -313,7 +314,7 @@ W_RESULT model_mesh::submit_compute_shader(_In_ const w_command_buffer& pCommand
 			&this->_cs.unifrom_x4->data.is_visible[0],
 			this->visibilities.data(),
 			sizeof(this->_cs.unifrom_x4->data.is_visible));
-		_hr = this->_cs.unifrom_x4->update(pCommandBuffer);
+		_hr = this->_cs.unifrom_x4->update(_cmd);
 		break;
 	case 8:
 		this->_cs.unifrom_x8->data.camera_pos = _cam_pos;
@@ -321,7 +322,7 @@ W_RESULT model_mesh::submit_compute_shader(_In_ const w_command_buffer& pCommand
 			&this->_cs.unifrom_x8->data.is_visible[0],
 			this->visibilities.data(),
 			sizeof(this->_cs.unifrom_x8->data.is_visible));
-		_hr = this->_cs.unifrom_x8->update(pCommandBuffer);
+		_hr = this->_cs.unifrom_x8->update(_cmd);
 		break;
 	case 16:
 		this->_cs.unifrom_x16->data.camera_pos = _cam_pos;
@@ -329,7 +330,7 @@ W_RESULT model_mesh::submit_compute_shader(_In_ const w_command_buffer& pCommand
 			&this->_cs.unifrom_x16->data.is_visible[0],
 			this->visibilities.data(),
 			sizeof(this->_cs.unifrom_x16->data.is_visible));
-		_hr = this->_cs.unifrom_x16->update(pCommandBuffer);
+		_hr = this->_cs.unifrom_x16->update(_cmd);
 		break;
 	case 32:
 		this->_cs.unifrom_x32->data.camera_pos = _cam_pos;
@@ -337,7 +338,7 @@ W_RESULT model_mesh::submit_compute_shader(_In_ const w_command_buffer& pCommand
 			&this->_cs.unifrom_x32->data.is_visible[0],
 			this->visibilities.data(),
 			sizeof(this->_cs.unifrom_x32->data.is_visible));
-		_hr = this->_cs.unifrom_x32->update(pCommandBuffer);
+		_hr = this->_cs.unifrom_x32->update(_cmd);
 		break;
 	case 64:
 		this->_cs.unifrom_x64->data.camera_pos = _cam_pos;
@@ -345,7 +346,7 @@ W_RESULT model_mesh::submit_compute_shader(_In_ const w_command_buffer& pCommand
 			&this->_cs.unifrom_x64->data.is_visible[0],
 			this->visibilities.data(),
 			sizeof(this->_cs.unifrom_x64->data.is_visible));
-		_hr = this->_cs.unifrom_x64->update(pCommandBuffer);
+		_hr = this->_cs.unifrom_x64->update(_cmd);
 		break;
 	case 128:
 		this->_cs.unifrom_x128->data.camera_pos = _cam_pos;
@@ -353,7 +354,7 @@ W_RESULT model_mesh::submit_compute_shader(_In_ const w_command_buffer& pCommand
 			&this->_cs.unifrom_x128->data.is_visible[0],
 			this->visibilities.data(),
 			sizeof(this->_cs.unifrom_x128->data.is_visible));
-		_hr = this->_cs.unifrom_x128->update(pCommandBuffer);
+		_hr = this->_cs.unifrom_x128->update(_cmd);
 		break;
 	case 256:
 		this->_cs.unifrom_x256->data.camera_pos = _cam_pos;
@@ -361,7 +362,7 @@ W_RESULT model_mesh::submit_compute_shader(_In_ const w_command_buffer& pCommand
 			&this->_cs.unifrom_x256->data.is_visible[0],
 			this->visibilities.data(),
 			sizeof(this->_cs.unifrom_x256->data.is_visible));
-		_hr = this->_cs.unifrom_x256->update(pCommandBuffer);
+		_hr = this->_cs.unifrom_x256->update(_cmd);
 		break;
 	case 512:
 		this->_cs.unifrom_x512->data.camera_pos = _cam_pos;
@@ -369,7 +370,7 @@ W_RESULT model_mesh::submit_compute_shader(_In_ const w_command_buffer& pCommand
 			&this->_cs.unifrom_x512->data.is_visible[0],
 			this->visibilities.data(),
 			sizeof(this->_cs.unifrom_x512->data.is_visible));
-		_hr = this->_cs.unifrom_x512->update(pCommandBuffer);
+		_hr = this->_cs.unifrom_x512->update(_cmd);
 		break;
 	case 1024:
 		this->_cs.unifrom_x1024->data.camera_pos = _cam_pos;
@@ -377,7 +378,7 @@ W_RESULT model_mesh::submit_compute_shader(_In_ const w_command_buffer& pCommand
 			&this->_cs.unifrom_x1024->data.is_visible[0],
 			this->visibilities.data(),
 			sizeof(this->_cs.unifrom_x1024->data.is_visible));
-		_hr = this->_cs.unifrom_x1024->update(pCommandBuffer);
+		_hr = this->_cs.unifrom_x1024->update(_cmd);
 		break;
 	}
 
@@ -387,8 +388,6 @@ W_RESULT model_mesh::submit_compute_shader(_In_ const w_command_buffer& pCommand
 			w_log_type::W_ERROR,
 			"updating compute shader's unifrom for model: {}. trace info: {}", this->model_name, _trace_info);
 	}
-
-	auto _cmd = this->_cs.command_buffers.get_command_at(0);
 
 	if (this->gDevice->submit(
 		{ &_cmd },//command buffers
@@ -1254,7 +1253,7 @@ W_RESULT model_mesh::_create_instance_buffers(_In_ const w_command_buffer& pComm
 		return W_FAILED;
 	}
 
-	if (_staging_buffers[0].copy_to(this->_instances_buffer, pCommandBuffer) == W_FAILED)
+	if (_staging_buffers[0].copy_to(pCommandBuffer, this->_instances_buffer) == W_FAILED)
 	{
 		V(W_FAILED,
 			w_log_type::W_WARNING,
@@ -1292,7 +1291,7 @@ W_RESULT model_mesh::_create_instance_buffers(_In_ const w_command_buffer& pComm
 			"loading device buffer of compute instances buffer. trace info: {}", this->model_name, _trace_info);
 		return W_FAILED;
 	}
-	if (_staging_buffers[1].copy_to(_cs.instances_buffer, pCommandBuffer) == W_FAILED)
+	if (_staging_buffers[1].copy_to(pCommandBuffer, _cs.instances_buffer) == W_FAILED)
 	{
 		V(W_FAILED,
 			w_log_type::W_WARNING,
@@ -1344,7 +1343,7 @@ W_RESULT model_mesh::_create_lod_levels_buffer(_In_ const wolf::render::vulkan::
 			"loading data to staging buffer of lod levels buffer. trace info: {}", this->model_name, _trace_info);
 		return W_FAILED;
 	}
-	if (_staging_buffer.copy_to(this->_cs.lod_levels_buffer, pCommandBuffer) == W_FAILED)
+	if (_staging_buffer.copy_to(pCommandBuffer, this->_cs.lod_levels_buffer) == W_FAILED)
 	{
 		V(W_FAILED,
 			w_log_type::W_ERROR,
@@ -1948,7 +1947,7 @@ w_shapes* model_mesh::_create_shape(
 	_In_ const w_viewport& pViewport,
 	_In_ const w_viewport_scissor& pViewportScissor,
 	_In_ const w_bounding_box& pBoundingBox,
-	_In_ w_color& pColor)
+	_In_ const w_color& pColor)
 {
 	const std::string _trace_info = this->_name + "_create_shape";
 

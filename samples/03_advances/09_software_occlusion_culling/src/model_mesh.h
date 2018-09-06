@@ -48,8 +48,10 @@ public:
 		_In_ const wolf::render::vulkan::w_viewport_scissor& pViewportScissor
 	);
 
-	W_RESULT submit_compute_shader(_In_ const wolf::render::vulkan::w_command_buffer& pCommandBuffer);
-	W_RESULT draw(_In_ const wolf::render::vulkan::w_command_buffer& pCommandBuffer, _In_ const wolf::framework::w_first_person_camera* pCamera);
+	W_RESULT submit_compute_shader();
+	W_RESULT draw(
+		_In_ const wolf::render::vulkan::w_command_buffer& pCommandBuffer, 
+		_In_ const wolf::framework::w_first_person_camera* pCamera);
 
 	//release all resources
 	ULONG release() override;

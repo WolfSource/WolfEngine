@@ -272,7 +272,13 @@ void scene::load()
 	this->_shape_coordinate_axis = new (std::nothrow) w_shapes(w_color::LIME());
 	if (this->_shape_coordinate_axis)
 	{
-		_hr = this->_shape_coordinate_axis->load(_gDevice, this->_draw_render_pass, this->_viewport, this->_viewport_scissor);
+		auto _cmd = this->_draw_command_buffers.get_command_at(0);
+		_hr = this->_shape_coordinate_axis->load(
+			_gDevice, 
+			_cmd,
+			this->_draw_render_pass, 
+			this->_viewport, 
+			this->_viewport_scissor);
 		if (_hr == W_FAILED)
 		{
 			release();
@@ -427,6 +433,7 @@ W_RESULT scene::_load_scene()
 
 			std::wstring _vertex_shader_path;
 			int index = 0;
+			auto _cmd = this->_draw_command_buffers.get_command_at(0);
 			for (auto _m : _cmodels)
 			{
 				model* _model = nullptr;
@@ -467,6 +474,7 @@ W_RESULT scene::_load_scene()
 				{
 					_hr = _model->load(
 						_gDevice,
+						_cmd,
 						_model_pipeline_cache_name,
 						_model_compute_pipeline_cache_name,
 						_vertex_shader_path,
@@ -673,13 +681,16 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 		this->_force_update_camera = false;
 
 		//update sky
+		auto _cmd = this->_draw_command_buffers.get_command_at(0);
 		if (this->_sky)
 		{
 			this->_sky->set_view_projection_position(
+				_cmd,
 				this->_first_camera.get_view(),
 				this->_first_camera.get_projection(),
 				this->_first_camera.get_position());
 		}
+
 		//clear all
 		this->_visible_meshes = 0;
 		this->_visible_models.clear();
@@ -748,7 +759,7 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 		//update shape coordinate
 		auto _world = glm::mat4(1) * glm::scale(glm::vec3(20.0f));
 		auto _wvp = this->_first_camera.get_projection_view() * _world;
-		if (this->_shape_coordinate_axis->update(_wvp) == W_FAILED)
+		if (this->_shape_coordinate_axis->update(_cmd, _wvp) == W_FAILED)
 		{
 			V(W_FAILED,
 				w_log_type::W_ERROR,
@@ -936,10 +947,11 @@ void scene::_show_floating_debug_window()
 
 	if (ImGui::Checkbox("Show all instances colors", &this->_show_all_instances_colors))
 	{
+		auto _cmd = this->_draw_command_buffers.get_command_at(0);
 		for (auto _m : this->_scene_models)
 		{
 			if (!_m) continue;
-			_m->set_enable_instances_colors(this->_show_all_instances_colors);
+			_m->set_enable_instances_colors(_cmd, this->_show_all_instances_colors);
 		}
 	}
 	if (ImGui::Checkbox("Show all in wireframe mode", &this->_show_all_wireframe))
@@ -966,7 +978,8 @@ void scene::_show_floating_debug_window()
 		auto _checked = this->_current_selected_model->get_enable_instances_colors();
 		if (ImGui::Checkbox("Show instances colors", &_checked))
 		{
-			this->_current_selected_model->set_enable_instances_colors(_checked);
+			auto _cmd = this->_draw_command_buffers.get_command_at(0);
+			this->_current_selected_model->set_enable_instances_colors(_cmd, _checked);
 		}
 		_checked = this->_current_selected_model->get_global_visiblity();
 		if (ImGui::Checkbox("Visible", &_checked))
