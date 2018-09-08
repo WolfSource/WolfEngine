@@ -29,7 +29,6 @@ model_mesh::~model_mesh()
 
 W_RESULT model_mesh::load(
 	_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-	_In_ const w_command_buffer& pCommandBuffer,
 	_In_z_ const std::string& pPipelineCacheName,
 	_In_z_ const std::string& pComputePipelineCacheName,
 	_In_z_ const std::wstring& pVertexShaderPath,
@@ -75,7 +74,6 @@ W_RESULT model_mesh::load(
 
 	auto _hr = _mesh->load(
 		this->gDevice,
-		pCommandBuffer,
 		this->tmp_batch_vertices.data(),
 		static_cast<uint32_t>(this->tmp_batch_vertices.size() * sizeof(float)),
 		_v_size,
@@ -98,7 +96,7 @@ W_RESULT model_mesh::load(
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//The following codes have been added for this project
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	if (_create_buffers(pCommandBuffer) == W_FAILED)
+	if (_create_buffers() == W_FAILED)
 	{
 		release();
 		return W_FAILED;
@@ -1114,7 +1112,7 @@ W_RESULT model_mesh::_load_textures()
 
 }
 
-W_RESULT model_mesh::_create_buffers(_In_ const w_command_buffer& pCommandBuffer)
+W_RESULT model_mesh::_create_buffers()
 {	
 	const std::string _trace_info = this->_name + "::_create_buffers";
 
@@ -1137,7 +1135,7 @@ W_RESULT model_mesh::_create_buffers(_In_ const w_command_buffer& pCommandBuffer
 	}
 
 	//load indirect draws
-	if (this->indirect_draws.load(this->gDevice, pCommandBuffer, _draw_counts) == W_FAILED)
+	if (this->indirect_draws.load(this->gDevice, _draw_counts) == W_FAILED)
 	{
 		V(W_FAILED,
 			w_log_type::W_ERROR,
@@ -1253,7 +1251,7 @@ W_RESULT model_mesh::_create_instance_buffers(_In_ const w_command_buffer& pComm
 		return W_FAILED;
 	}
 
-	if (_staging_buffers[0].copy_to(pCommandBuffer, this->_instances_buffer) == W_FAILED)
+	if (_staging_buffers[0].copy_to(this->_instances_buffer) == W_FAILED)
 	{
 		V(W_FAILED,
 			w_log_type::W_WARNING,
@@ -2117,7 +2115,6 @@ bool model_mesh::get_showing_wireframe() const
 #pragma region Setters
 
 void model_mesh::set_view_projection_position(
-	_In_ const w_command_buffer& pCommandBuffer,
 	_In_ const glm::mat4& pView, 
 	_In_ const glm::mat4& pProjection,
 	_In_ const glm::vec3& pPosition)
@@ -2131,7 +2128,7 @@ void model_mesh::set_view_projection_position(
 		this->_instance_u0.data.projection = pProjection;
 		this->_instance_u0.data.camera_pos = this->_camera_position;
 
-		auto _hr = this->_instance_u0.update(pCommandBuffer);
+		auto _hr = this->_instance_u0.update();
 		if (_hr == W_FAILED)
 		{
 			V(W_FAILED,
@@ -2152,7 +2149,7 @@ void model_mesh::set_view_projection_position(
 		this->_basic_u0.data.projection = pProjection;
 		this->_basic_u0.data.camera_pos = glm::vec4(pPosition, 1.0f);
 
-		auto _hr = this->_basic_u0.update(pCommandBuffer);
+		auto _hr = this->_basic_u0.update();
 		if (_hr == W_FAILED)
 		{
 			V(W_FAILED,
