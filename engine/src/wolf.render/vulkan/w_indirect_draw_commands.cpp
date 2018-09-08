@@ -5,7 +5,6 @@ using namespace wolf::render::vulkan;
 
 W_RESULT w_indirect_draws_command_buffer::load(
 	_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-	_In_ const w_command_buffer& pCommandBuffer,
 	_In_ const uint32_t& pDrawCount)
 {
 	const std::string _trace_info = "w_indirect_draws_command_buffer::load";
@@ -97,7 +96,7 @@ W_RESULT w_indirect_draws_command_buffer::load(
 		return W_FAILED;
 	}
 
-	if (_staging_buffer.copy_to(pCommandBuffer, this->buffer) == W_FAILED)
+	if (_staging_buffer.copy_to(this->buffer) == W_FAILED)
 	{
 		V(W_FAILED,
 			w_log_type::W_ERROR,

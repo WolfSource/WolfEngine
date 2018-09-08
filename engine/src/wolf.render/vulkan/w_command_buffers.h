@@ -39,6 +39,9 @@ namespace wolf
 				W_RESULT flush(_In_ const std::shared_ptr<w_graphics_device>& pGDevice);
 
 				W_RESULT execute_secondary_commands(_In_ const std::vector<w_command_buffer*>& pSecondaryCommandBuffers);
+
+			private:
+				bool began = false;
 			};
 
 			class w_command_buffer_pimp;

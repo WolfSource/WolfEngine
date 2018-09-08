@@ -11,6 +11,8 @@ namespace wolf
 		{
 			W_RESULT w_command_buffer::begin(_In_ const uint32_t pFlags)
 			{
+				if (this->began) return W_PASSED;
+				
 				//prepare data for recording command buffers
 				const VkCommandBufferBeginInfo _command_buffer_begin_info =
 				{
@@ -27,6 +29,7 @@ namespace wolf
 					return W_FAILED;
 				}
 
+				this->began = true;
 				return W_PASSED;
 			}
 			
@@ -35,6 +38,8 @@ namespace wolf
 				_In_ const w_frame_buffer_handle& pFrameBufferHandle,
 				_In_ const uint32_t pFlags)
 			{
+				if (this->began) return W_FAILED;
+				
 				VkCommandBufferInheritanceInfo _inheritance_info = {};
 				_inheritance_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO;
 				_inheritance_info.renderPass = pRenderPassHandle.handle;
@@ -51,17 +56,25 @@ namespace wolf
 					logger.error("begining command buffer. trace info: w_command_buffer::begin_secondary");
 					return W_FAILED;
 				}
+				this->began = true;
 				return W_PASSED;
 			}
 			
 			W_RESULT w_command_buffer::end()
 			{
+				if (!this->began)
+				{
+					logger.error("command buffer hasn't begun. trace info: w_command_buffer::begin");
+					return W_FAILED;
+				}
+
 				auto _hr = vkEndCommandBuffer(this->handle);
 				if (_hr != VK_SUCCESS)
 				{
 					logger.error("ending command buffer. trace info: w_command_buffer::end");
 					return W_FAILED;
 				}
+				this->began = false;
 				return W_PASSED;
 			}
 

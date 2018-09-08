@@ -275,7 +275,6 @@ void scene::load()
 		auto _cmd = this->_draw_command_buffers.get_command_at(0);
 		_hr = this->_shape_coordinate_axis->load(
 			_gDevice, 
-			_cmd,
 			this->_draw_render_pass, 
 			this->_viewport, 
 			this->_viewport_scissor);
@@ -433,7 +432,6 @@ W_RESULT scene::_load_scene()
 
 			std::wstring _vertex_shader_path;
 			int index = 0;
-			auto _cmd = this->_draw_command_buffers.get_command_at(0);
 			for (auto _m : _cmodels)
 			{
 				model* _model = nullptr;
@@ -474,7 +472,6 @@ W_RESULT scene::_load_scene()
 				{
 					_hr = _model->load(
 						_gDevice,
-						_cmd,
 						_model_pipeline_cache_name,
 						_model_compute_pipeline_cache_name,
 						_vertex_shader_path,
@@ -570,14 +567,6 @@ W_RESULT scene::_build_draw_command_buffers()
 				0.0f,
 				w_subpass_contents::SECONDARY_COMMAND_BUFFERS);//allow primary command buffer to execute secondary command buffers 
 			{
-				//this->_viewport.set(_primary_cmd);
-				//this->_viewport_scissor.set(_primary_cmd);
-				//draw sky on main thread
-				//if (this->_sky)
-				//{
-					//this->_sky->draw(_primary_cmd, &this->_first_camera);
-				//}
-
 				//draw models on secondary threads
 				size_t _start_index = 0;
 				tbb::concurrent_vector<w_command_buffer*> _sec_cmd_buffers;
@@ -606,7 +595,7 @@ W_RESULT scene::_build_draw_command_buffers()
 								_end_iter,
 								[&](_In_ model* const pModel)
 							{
-								pModel->draw(_sec_cmd, &this->_first_camera);
+								pModel->draw(_sec_cmd);
 							});
 						}
 						this->_render_thread_pool[j]->secondary_command_buffers.end(i);
@@ -680,17 +669,6 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 	{
 		this->_force_update_camera = false;
 
-		//update sky
-		auto _cmd = this->_draw_command_buffers.get_command_at(0);
-		if (this->_sky)
-		{
-			this->_sky->set_view_projection_position(
-				_cmd,
-				this->_first_camera.get_view(),
-				this->_first_camera.get_projection(),
-				this->_first_camera.get_position());
-		}
-
 		//clear all
 		this->_visible_meshes = 0;
 		this->_visible_models.clear();
@@ -703,7 +681,8 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 		{
 			for (size_t i = pRange.begin(); i < pRange.end(); ++i)
 			{
-				if (this->_scene_models[i] && this->_scene_models[i]->check_is_in_sight(&this->_first_camera))
+				if (this->_scene_models[i] && 
+					this->_scene_models[i]->check_is_in_sight(&this->_first_camera))
 				{
 					this->_visible_models.push_back(this->_scene_models[i]);
 				}
@@ -711,8 +690,8 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 		});
 
 		//now check for masked occlusion culling
+		auto _cmd = this->_draw_command_buffers.get_command_at(0);
 		bool _need_post_check = false;
-
 		if (_visible_models.size())
 		{
 			this->_masked_occlusion_culling.clear_buffer();
@@ -721,7 +700,9 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 			std::for_each(this->_visible_models.begin(), this->_visible_models.end(), [&](_In_ model* pModel)
 			{
 				if (pModel &&
-					pModel->pre_update(_projection_view, this->_masked_occlusion_culling) == W_PASSED)
+					pModel->pre_update(
+						_projection_view, 
+						this->_masked_occlusion_culling) == W_PASSED)
 				{
 					_need_post_check = true;
 				}
@@ -729,12 +710,36 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 
 			if (_need_post_check)
 			{
+				//update sky
+				auto _cam_view = this->_first_camera.get_view();
+				auto _cam_projection = this->_first_camera.get_projection();
+				auto _cam_position = this->_first_camera.get_position();
+
+				//always add sky
+				if (this->_sky)
+				{
+					this->_sky->set_view_projection_position(
+						_cam_view,
+						_cam_projection,
+						_cam_position);
+					this->_drawable_models.push_back(this->_sky);
+				}				
 				//post update stage for all visible models to find drawable models
-				std::for_each(this->_visible_models.begin(), this->_visible_models.end(), [&](_In_ model* pModel)
+				std::for_each(
+					this->_visible_models.begin(), 
+					this->_visible_models.end(), 
+					[&](_In_ model* pModel)
 				{
 					if (pModel &&
-						pModel->post_update(this->_masked_occlusion_culling, this->_visible_meshes) == W_PASSED)
+						pModel->post_update(
+							this->_masked_occlusion_culling, 
+							this->_visible_meshes) == W_PASSED)
 					{
+						pModel->set_view_projection_position(
+							_cam_view,
+							_cam_projection,
+							_cam_position);
+
 						this->_drawable_models.push_back(pModel);
 					}
 				});
@@ -759,7 +764,7 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 		//update shape coordinate
 		auto _world = glm::mat4(1) * glm::scale(glm::vec3(20.0f));
 		auto _wvp = this->_first_camera.get_projection_view() * _world;
-		if (this->_shape_coordinate_axis->update(_cmd, _wvp) == W_FAILED)
+		if (this->_shape_coordinate_axis->update(_wvp) == W_FAILED)
 		{
 			V(W_FAILED,
 				w_log_type::W_ERROR,
@@ -947,11 +952,10 @@ void scene::_show_floating_debug_window()
 
 	if (ImGui::Checkbox("Show all instances colors", &this->_show_all_instances_colors))
 	{
-		auto _cmd = this->_draw_command_buffers.get_command_at(0);
 		for (auto _m : this->_scene_models)
 		{
 			if (!_m) continue;
-			_m->set_enable_instances_colors(_cmd, this->_show_all_instances_colors);
+			_m->set_enable_instances_colors(this->_show_all_instances_colors);
 		}
 	}
 	if (ImGui::Checkbox("Show all in wireframe mode", &this->_show_all_wireframe))
@@ -978,8 +982,7 @@ void scene::_show_floating_debug_window()
 		auto _checked = this->_current_selected_model->get_enable_instances_colors();
 		if (ImGui::Checkbox("Show instances colors", &_checked))
 		{
-			auto _cmd = this->_draw_command_buffers.get_command_at(0);
-			this->_current_selected_model->set_enable_instances_colors(_cmd, _checked);
+			this->_current_selected_model->set_enable_instances_colors(_checked);
 		}
 		_checked = this->_current_selected_model->get_global_visiblity();
 		if (ImGui::Checkbox("Visible", &_checked))
@@ -1294,7 +1297,7 @@ scene::widget_info scene::_show_search_widget(_In_ scene::widget_info* pRelatedW
 						//The Ref
 						ImGui::TreeNodeEx((void*)(intptr_t)i, _node_flags, "Ref model");
 						auto _b_sphere = w_bounding_sphere::create_from_bounding_box(_model->get_global_bounding_box());
-						if (ImGui::IsMouseDoubleClicked(0))
+						if (ImGui::IsMouseClicked(1))
 						{
 							this->_current_selected_model = _model;
 
@@ -1316,7 +1319,7 @@ scene::widget_info scene::_show_search_widget(_In_ scene::widget_info* pRelatedW
 						for (auto& _ins : _model->get_instances())
 						{
 							ImGui::TreeNodeEx((void*)(intptr_t)i, _node_flags, _ins.name.c_str());
-							if (ImGui::IsMouseDoubleClicked(0))
+							if (ImGui::IsMouseClicked(1))
 							{
 								//on right click, focus on object
 								_b_sphere.center[0] = _ins.position[0];

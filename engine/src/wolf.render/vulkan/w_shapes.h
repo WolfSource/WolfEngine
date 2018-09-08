@@ -74,13 +74,12 @@ namespace wolf
 				//load shapes render
 				W_VK_EXP W_RESULT load(
 					_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-					_In_ const w_command_buffer& pCommandBuffer,
 					_In_ const w_render_pass& pRenderPass,
 					_In_ const w_viewport& pViewport,
 					_In_ const w_viewport_scissor& pViewportScissor);
 
 				//update uniform of shape
-				W_VK_EXP W_RESULT update(_In_ const w_command_buffer& pCommandBuffer, _In_ const glm::mat4& pWorldViewProjection);
+				W_VK_EXP W_RESULT update(_In_ const glm::mat4& pWorldViewProjection);
 
 				//draw shape
 				W_VK_EXP W_RESULT draw(_In_ const w_command_buffer& pCommandBuffer);

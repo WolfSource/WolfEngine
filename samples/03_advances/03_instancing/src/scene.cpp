@@ -26,7 +26,7 @@ scene::scene(_In_z_ const std::wstring& pContentPath, _In_ const wolf::system::w
     w_game(pContentPath, pLogConfig)
 {
 	w_graphics_device_manager_configs _config;
-	_config.debug_gpu = false;
+	_config.debug_gpu = true;
 	w_game::set_graphics_device_manager_configs(_config);
 
 	w_game::set_fixed_time_step(false);
@@ -321,7 +321,6 @@ void scene::load()
 					_mesh->set_vertex_binding_attributes(_vertex_binding_attributes);
 					if (_mesh->load(
 						_gDevice,
-						_cmd,
 						_vertices.data(),
 						_v_size * sizeof(float),
 						_v_size,
@@ -407,7 +406,7 @@ void scene::load()
 						"loading device buffer of vertex_instance_buffer. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 				}
 
-				if (_staging_buffers.copy_to(_cmd, this->_instances_buffer) == W_FAILED)
+				if (_staging_buffers.copy_to(this->_instances_buffer) == W_FAILED)
 				{
 					release();
 					V(W_FAILED,
@@ -507,11 +506,9 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//The following codes have been added for this project
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	auto _cmd = this->_draw_command_buffers.get_command_at(0);
-
 	this->_u0.data.view = _view;
 	this->_u0.data.projection = _projection;
-	auto _hr = this->_u0.update(_cmd);
+	auto _hr = this->_u0.update();
 	if (_hr == W_FAILED)
 	{
 		V(W_FAILED,

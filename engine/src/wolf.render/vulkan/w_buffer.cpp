@@ -206,12 +206,13 @@ namespace wolf
 					return _hr;
 				}
 
-				W_RESULT copy_to(_In_ const w_command_buffer& pCopyCommandBuffer, _In_ w_buffer& pDestinationBuffer)
+				W_RESULT copy_to(_In_ w_buffer& pDestinationBuffer)
 				{
 					const std::string _trace_info = this->_name + "::copy_to";
 
 					//create one command buffer
 					w_command_buffers _copy_command_buffer;
+
 					auto _hr = _copy_command_buffer.load(this->_gDevice, 1);
 					if (_hr != W_PASSED)
 					{
@@ -226,6 +227,7 @@ namespace wolf
 					_hr = _copy_command_buffer.begin(0);
 					if (_hr != W_PASSED)
 					{
+						_copy_command_buffer.release();
 						V(W_FAILED,
 							w_log_type::W_ERROR,
 							"begining command buffer for graphics device: {}. trace info: {}",
@@ -239,31 +241,27 @@ namespace wolf
 					_copy_region.dstOffset = 0;// pDestinationBuffer.get_offset();
 					_copy_region.size = this->_used_memory_size;
 
-					auto _copy_cmd = _copy_command_buffer.get_command_at(0);
 					auto _dest_buffer = pDestinationBuffer.get_buffer_handle();
 					vkCmdCopyBuffer(
-						_copy_cmd.handle,
+						_copy_command_buffer.get_command_at(0).handle,
 						this->_buffer_handle.handle,
 						_dest_buffer.handle,
 						1,
 						&_copy_region);
 
-					_hr = _copy_command_buffer.flush(0);
+					_hr = _copy_command_buffer.flush(0);// this->_gDevice);
 					if (_hr != W_PASSED)
 					{
-						_copy_cmd.handle = nullptr;
 						V(W_FAILED,
 							w_log_type::W_ERROR,
 							"flushing command buffer of graphics device: {}. trace info: {}",
 							_gDevice->get_info(),
 							_trace_info);
-						return _hr;
 					}
 
 					_copy_command_buffer.release();
-					_copy_cmd.handle = nullptr;
-
-					return W_PASSED;
+					
+					return _hr;
 				}
 
 				void* map()
@@ -513,11 +511,11 @@ W_RESULT w_buffer::set_data(_In_ const void* const pData)
     return this->_pimp->set_data(pData);
 }
 
-W_RESULT w_buffer::copy_to(_In_ const w_command_buffer& pCopyCommandBuffer, _In_ w_buffer& pDestinationBuffer)
+W_RESULT w_buffer::copy_to(_In_ w_buffer& pDestinationBuffer)
 {
     if (!this->_pimp) return W_FAILED;
 
-    return this->_pimp->copy_to(pCopyCommandBuffer, pDestinationBuffer);
+    return this->_pimp->copy_to(pDestinationBuffer);
 }
 
 void* w_buffer::map()

@@ -131,7 +131,6 @@ namespace wolf
 
 				W_RESULT load(
 					_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-					_In_ const w_command_buffer& pCommandBuffer,
 					_In_ const w_render_pass& pRenderPass,
 					_In_ const w_viewport& pViewport,
 					_In_ const w_viewport_scissor& pViewportScissor)
@@ -166,7 +165,6 @@ namespace wolf
 					this->_shape_drawer.set_vertex_binding_attributes(w_vertex_declaration::VERTEX_POSITION);
 					auto _hr = this->_shape_drawer.load(
 						this->_gDevice,
-						pCommandBuffer,
 						_vertices.data(),
 						static_cast<uint32_t>(_vertices.size() * sizeof(float)),
 						static_cast<uint32_t>(_vertices.size()),
@@ -300,16 +298,16 @@ namespace wolf
 						return W_FAILED;
 					}
 
-					return set_color(pCommandBuffer, this->_color);
+					return set_color(this->_color);
 				}
 
-				W_RESULT update(_In_ const w_command_buffer& pCommandBuffer, _In_ const glm::mat4& pWorldViewProjection)
+				W_RESULT update(_In_ const glm::mat4& pWorldViewProjection)
 				{
 					const std::string _trace_info = this->_name + "::update";
 
 					//we must update uniform
 					this->_u0.data.wvp = pWorldViewProjection;
-					auto _hr = this->_u0.update(pCommandBuffer);
+					auto _hr = this->_u0.update();
 					if (_hr == W_FAILED)
 					{
 						V(W_FAILED,
@@ -322,7 +320,7 @@ namespace wolf
 					return W_PASSED;
 				}
 
-				W_RESULT set_color(_In_ const w_command_buffer& pCommandBuffer, _In_ w_color pColor)
+				W_RESULT set_color(_In_ w_color pColor)
 				{
 					const std::string _trace_info = this->_name + "::set_color";
 
@@ -334,7 +332,7 @@ namespace wolf
 					this->_u1.data.color.b = this->_color.b / 255.0f;
 					this->_u1.data.color.a = this->_color.a / 255.0f;
 
-					auto _hr = this->_u1.update(pCommandBuffer);
+					auto _hr = this->_u1.update();
 					if (_hr == W_FAILED)
 					{
 						V(W_FAILED,
@@ -999,17 +997,16 @@ w_shapes::~w_shapes()
 }
 
 W_RESULT w_shapes::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-	_In_ const w_command_buffer& pCommandBuffer,
 	_In_ const w_render_pass& pRenderPass,
 	_In_ const w_viewport& pViewport,
 	_In_ const w_viewport_scissor& pViewportScissor)
 {
-	return (!this->_pimp) ? W_FAILED : this->_pimp->load(pGDevice, pCommandBuffer, pRenderPass, pViewport, pViewportScissor);
+	return (!this->_pimp) ? W_FAILED : this->_pimp->load(pGDevice, pRenderPass, pViewport, pViewportScissor);
 }
 
-W_RESULT w_shapes::update(_In_ const w_command_buffer& pCommandBuffer, _In_ const glm::mat4& pWorldViewProjection)
+W_RESULT w_shapes::update(_In_ const glm::mat4& pWorldViewProjection)
 {
-	return (!this->_pimp) ? W_FAILED : this->_pimp->update(pCommandBuffer, pWorldViewProjection);
+	return (!this->_pimp) ? W_FAILED : this->_pimp->update(pWorldViewProjection);
 }
 
 W_RESULT w_shapes::draw(_In_ const w_command_buffer& pCommandBuffer)

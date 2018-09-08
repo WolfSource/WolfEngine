@@ -30,7 +30,6 @@ namespace wolf
 
 				W_VK_EXP W_RESULT load(
 					_In_ const std::shared_ptr<w_graphics_device>& pGDevice, 
-					_In_ const w_command_buffer& pCommandBuffer,
 					_In_ const uint32_t& pDrawCount);
 			};
 		}

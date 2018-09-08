@@ -38,7 +38,6 @@ public:
 	
 	W_RESULT load(
 		_In_ const std::shared_ptr<wolf::render::vulkan::w_graphics_device>& pGDevice,
-		_In_ const wolf::render::vulkan::w_command_buffer& pCommandBuffer,
 		_In_z_ const std::string& pPipelineCacheName,
 		_In_z_ const std::string& pComputePipelineCacheName,
 		_In_z_ const std::wstring& pVertexShaderPath,
@@ -49,9 +48,7 @@ public:
 	);
 
 	W_RESULT submit_compute_shader();
-	W_RESULT draw(
-		_In_ const wolf::render::vulkan::w_command_buffer& pCommandBuffer,
-		_In_ const wolf::framework::w_first_person_camera* pCamera);
+	W_RESULT draw(_In_ wolf::render::vulkan::w_command_buffer& pCommandBuffer);
 
 	//release all resources
 	ULONG release() override;
@@ -77,13 +74,11 @@ public:
 #pragma region Setters
 
 	void set_view_projection_position(
-		_In_ const wolf::render::vulkan::w_command_buffer& pCommandBuffer,
 		_In_ const glm::mat4& pView,
 		_In_ const glm::mat4& pProjection,
 		_In_ const glm::vec3& pPosition);
 	
 	void set_enable_instances_colors(
-		_In_ const wolf::render::vulkan::w_command_buffer& pCommandBuffer, 
 		_In_ const bool& pEnable);
 	
 	void set_global_visiblity(_In_ const bool& pValue);
@@ -152,9 +147,9 @@ protected:
 private:
 
 	W_RESULT	_load_textures();
-	W_RESULT	_create_buffers(_In_ const wolf::render::vulkan::w_command_buffer& pCommandBuffer);
-	W_RESULT	_create_instance_buffers(_In_ const wolf::render::vulkan::w_command_buffer& pCommandBuffer);
-	W_RESULT	_create_lod_levels_buffer(_In_ const wolf::render::vulkan::w_command_buffer& pCommandBuffer);
+	W_RESULT	_create_buffers();
+	W_RESULT	_create_instance_buffers();
+	W_RESULT	_create_lod_levels_buffer();
 	W_RESULT	_create_cs_out_buffer();
 
 	W_RESULT	_prepare_cs_path_uniform_based_on_local_size(
@@ -162,7 +157,6 @@ private:
 		_Inout_ std::wstring& pComputeShaderPath);
 
 	W_RESULT	_create_shader_modules(
-		_In_ const wolf::render::vulkan::w_command_buffer& pCommandBuffer,
 		_In_z_ const std::wstring& pVertexShaderPath,
 		_In_z_ const std::wstring& pFragmentShaderPath);
 
@@ -174,13 +168,11 @@ private:
 		_In_ const wolf::render::vulkan::w_viewport_scissor& pViewportScissor);
 	
 	W_RESULT _create_bounding_box_shapes(
-		_In_ const wolf::render::vulkan::w_command_buffer& pCommandBuffer,
 		_In_ const wolf::render::vulkan::w_render_pass& pRenderPass, 
 		_In_ const wolf::render::vulkan::w_viewport& pViewport,
 		_In_ const wolf::render::vulkan::w_viewport_scissor& pViewportScissor);
 	
 	wolf::render::vulkan::w_shapes* _create_shape(
-		_In_ const wolf::render::vulkan::w_command_buffer& pCommandBuffer,
 		_In_ const wolf::render::vulkan::w_render_pass& pRenderPass,
 		_In_ const wolf::render::vulkan::w_viewport& pViewport,
 		_In_ const wolf::render::vulkan::w_viewport_scissor& pViewportScissor,

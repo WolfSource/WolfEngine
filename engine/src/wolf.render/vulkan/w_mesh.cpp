@@ -34,7 +34,6 @@ namespace wolf
 						* use VRAM buffer for rendering
 				*/
 				W_RESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-					_In_ const w_command_buffer& pCommandBuffer,
 					_In_ const void* const pVerticesData,
 					_In_ const uint32_t&  pVerticesSizeInBytes,
 					_In_ const uint32_t& pVerticesCount,
@@ -103,13 +102,13 @@ namespace wolf
 						}
 					}
 
-					if (this->_stagings_buffers.vertices.copy_to(pCommandBuffer, this->_vertex_buffer) == W_FAILED)
+					if (this->_stagings_buffers.vertices.copy_to(this->_vertex_buffer) == W_FAILED)
 					{
 						return W_FAILED;
 					}
 					if (!_there_is_no_index_buffer)
 					{
-						if (this->_stagings_buffers.indices.copy_to(pCommandBuffer, this->_index_buffer) == W_FAILED)
+						if (this->_stagings_buffers.indices.copy_to(this->_index_buffer) == W_FAILED)
 						{
 							return W_FAILED;
 						}
@@ -140,7 +139,6 @@ namespace wolf
 
 				W_RESULT update_dynamic_buffer(
 					_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-					_In_ const w_command_buffer& pCommandBuffer,
 					_In_ const void* const pVerticesData,
 					_In_ const uint32_t& pVerticesSize,
 					_In_ const uint32_t& pVerticesCount,
@@ -192,7 +190,7 @@ namespace wolf
 						//V(_hr, "binding staging index buffer", this->_name, 3);
 					}
 
-					if (_stagings_buffers.vertices.copy_to(pCommandBuffer, this->_vertex_buffer) == W_FAILED)
+					if (_stagings_buffers.vertices.copy_to(this->_vertex_buffer) == W_FAILED)
 					{
 						V(_hr,
 							w_log_type::W_ERROR,
@@ -205,7 +203,7 @@ namespace wolf
 					auto _index_count = this->_indices_count * sizeof(uint32_t);
 					if (_index_count)
 					{
-						if (_stagings_buffers.indices.copy_to(pCommandBuffer, this->_index_buffer) == W_FAILED)
+						if (_stagings_buffers.indices.copy_to(this->_index_buffer) == W_FAILED)
 						{
 							V(_hr,
 								w_log_type::W_ERROR,
@@ -457,7 +455,6 @@ w_mesh::~w_mesh()
 
 W_RESULT w_mesh::load(
 	_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-	_In_ const w_command_buffer& pCommandBuffer,
     _In_ const void* const pVerticesData,
     _In_  const uint32_t&  pVerticesSize,
     _In_ const uint32_t& pVerticesCount,
@@ -469,7 +466,6 @@ W_RESULT w_mesh::load(
     
     return this->_pimp->load(
         pGDevice,
-		pCommandBuffer,
         pVerticesData,
         pVerticesSize,
         pVerticesCount,
@@ -480,7 +476,6 @@ W_RESULT w_mesh::load(
 
 W_RESULT w_mesh::update_dynamic_buffer(
     _In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-	_In_ const w_command_buffer& pCommandBuffer,
     _In_ const void* const pVerticesData,
     _In_ const uint32_t& pVerticesSize,
     _In_ const uint32_t& pVerticesCount,
@@ -489,7 +484,6 @@ W_RESULT w_mesh::update_dynamic_buffer(
 {
     return this->_pimp ? this->_pimp->update_dynamic_buffer(
         pGDevice,
-		pCommandBuffer,
         pVerticesData,
         pVerticesSize,
         pVerticesCount,
