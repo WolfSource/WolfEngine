@@ -130,7 +130,6 @@ public:
 
 		auto _hr = _mesh->load(
 			_gDevice,
-			pCommandBuffer,
 			_batch_vertices.data(),
 			static_cast<uint32_t>(_batch_vertices.size() * sizeof(float)),
 			_v_size,
@@ -313,7 +312,7 @@ public:
 		{
 			this->_instance_u0.data.view = pView;
 			this->_instance_u0.data.projection = pProjection;
-			auto _hr = this->_instance_u0.update(pCommandBuffer);
+			auto _hr = this->_instance_u0.update();
 			if (_hr == W_FAILED)
 			{
 				V(W_FAILED,
@@ -331,7 +330,7 @@ public:
 			this->_basic_u0.data.model = glm::translate(_position) * glm::rotate(_rotation) * glm::scale(_scale);
 			this->_basic_u0.data.view = pView;
 			this->_basic_u0.data.projection = pProjection;
-			auto _hr = this->_basic_u0.update(pCommandBuffer);
+			auto _hr = this->_basic_u0.update();
 			if (_hr == W_FAILED)
 			{
 				V(W_FAILED,
@@ -349,7 +348,7 @@ public:
 		const std::string _trace_info = this->_name + "::set_enable_instances_colors";
 
 		this->_u1.data.cmds = pEnable ? 1 : 0;
-		auto _hr = this->_u1.update(pCommandBuffer);
+		auto _hr = this->_u1.update();
 		if (_hr == W_FAILED)
 		{
 			V(W_FAILED,
@@ -979,7 +978,7 @@ private:
 			return W_FAILED;
 		}
 
-		if (_staging_buffers.copy_to(pCommandBuffer, this->_instances_buffer) == W_FAILED)
+		if (_staging_buffers.copy_to(this->_instances_buffer) == W_FAILED)
 		{
 			V(W_FAILED,
 				w_log_type::W_ERROR,

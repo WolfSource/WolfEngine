@@ -884,6 +884,12 @@ ULONG scene::release()
 
 	SAFE_RELEASE(this->_shape_coordinate_axis);
 
+	for (auto _thread_context : this->_render_thread_pool)
+	{
+		SAFE_RELEASE(_thread_context);
+	}	
+	this->_render_thread_pool.clear();
+
 	//release gui's resources
 	w_imgui::release();
 

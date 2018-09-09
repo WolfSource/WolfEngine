@@ -10,7 +10,7 @@ scene::scene(_In_z_ const std::wstring& pContentPath, _In_ const wolf::system::w
 	w_game(pContentPath, pLogConfig)
 {
 	w_graphics_device_manager_configs _config;
-	_config.debug_gpu = false;
+	_config.debug_gpu = true;
 	w_game::set_graphics_device_manager_configs(_config);
 
 	w_game::set_fixed_time_step(false);

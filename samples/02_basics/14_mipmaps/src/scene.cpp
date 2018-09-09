@@ -224,9 +224,8 @@ void scene::load()
 	}
 
 	//update uniform's data
-	auto _cmd = this->_draw_command_buffers.get_command_at(0);
 	this->_u0.data.texture_lod = 1;
-	_hr = this->_u0.update(_cmd);
+	_hr = this->_u0.update();
 	if (_hr == W_FAILED)
 	{
 		release();
@@ -319,8 +318,7 @@ void scene::load()
 
     this->_mesh.set_texture(&this->_texture);
     _hr = this->_mesh.load(_gDevice,
-		_cmd,
-        _vertex_data.data(),
+		_vertex_data.data(),
         static_cast<uint32_t>(_vertex_data.size() * sizeof(float)),
         static_cast<uint32_t>(_vertex_data.size()),
         _index_data.data(),
@@ -395,7 +393,7 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 		this->_u0.data.texture_lod = sTextureLOD;
 		auto _cmd = this->_draw_command_buffers.get_command_at(0);
 		//update uniform
-		if (this->_u0.update(_cmd) == W_FAILED)
+		if (this->_u0.update() == W_FAILED)
 		{
 			V(W_FAILED,
 				w_log_type::W_ERROR,

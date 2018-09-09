@@ -156,7 +156,7 @@ void scene::load()
 			true,
 			"allocating memory for shape coordinate axis. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 	}
-	_hr = this->_shape_coordinate_axis->load(_gDevice, _cmd, this->_draw_render_pass, this->_viewport, this->_viewport_scissor);
+	_hr = this->_shape_coordinate_axis->load(_gDevice, this->_draw_render_pass, this->_viewport, this->_viewport_scissor);
 	if (_hr == W_FAILED)
 	{
 		release();
@@ -234,8 +234,7 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 		100.0f);
 
 	auto _wvp = _projection * _view * _world;
-	auto _cmd = this->_draw_command_buffers.get_command_at(0);
-	this->_shape_coordinate_axis->update(_cmd, _wvp);
+	this->_shape_coordinate_axis->update(_wvp);
 
 	w_game::update(pGameTime);
 }

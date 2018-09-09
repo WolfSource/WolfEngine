@@ -144,7 +144,6 @@ void scene::load()
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 	//Add Line
-	auto _cmd = this->_draw_command_buffers.get_command_at(0);
 	this->_shape_line = new (std::nothrow) w_shapes(
 		glm::vec3(0.0f, 0.0f, 0.0f),
 		glm::vec3(3.0f, 3.0f, 3.0f),
@@ -157,7 +156,11 @@ void scene::load()
 			true,
 			"allocating memory for shape(line). graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 	}
-	_hr = this->_shape_line->load(_gDevice, _cmd, this->_draw_render_pass, this->_viewport, this->_viewport_scissor);
+	_hr = this->_shape_line->load(
+		_gDevice, 
+		this->_draw_render_pass, 
+		this->_viewport, 
+		this->_viewport_scissor);
 	if (_hr == W_FAILED)
 	{
 		release();
@@ -181,7 +184,11 @@ void scene::load()
 			true,
 			"allocating memory for shape(triangle). graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 	}
-	_hr = this->_shape_triangle->load(_gDevice, _cmd, this->_draw_render_pass, this->_viewport, this->_viewport_scissor);
+	_hr = this->_shape_triangle->load(
+		_gDevice, 
+		this->_draw_render_pass, 
+		this->_viewport, 
+		this->_viewport_scissor);
 	if (_hr == W_FAILED)
 	{
 		release();
@@ -206,7 +213,11 @@ void scene::load()
 			true,
 			"allocating memory for shape(circle). graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 	}
-	_hr = this->_shape_circle->load(_gDevice, _cmd, this->_draw_render_pass, this->_viewport, this->_viewport_scissor);
+	_hr = this->_shape_circle->load(
+		_gDevice, 
+		this->_draw_render_pass, 
+		this->_viewport, 
+		this->_viewport_scissor);
 	if (_hr == W_FAILED)
 	{
 		release();
@@ -236,7 +247,11 @@ void scene::load()
 			true,
 			"allocating memory for shape(box). graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 	}
-	_hr = this->_shape_box->load(_gDevice, _cmd, this->_draw_render_pass, this->_viewport, this->_viewport_scissor);
+	_hr = this->_shape_box->load(
+		_gDevice, 
+		this->_draw_render_pass, 
+		this->_viewport, 
+		this->_viewport_scissor);
 	if (_hr == W_FAILED)
 	{
 		release();
@@ -265,7 +280,11 @@ void scene::load()
 			true,
 			"allocating memory for shape(sphere). graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 	}
-	_hr = this->_shape_sphere->load(_gDevice, _cmd, this->_draw_render_pass, this->_viewport, this->_viewport_scissor);
+	_hr = this->_shape_sphere->load(
+		_gDevice, 
+		this->_draw_render_pass, 
+		this->_viewport, 
+		this->_viewport_scissor);
 	if (_hr == W_FAILED)
 	{
 		release();
@@ -353,12 +372,11 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 
 	auto _wvp = _projection * _view * _world;
 
-	auto _cmd = this->_draw_command_buffers.get_command_at(0);
-	this->_shape_line->update(_cmd, _wvp);
-	this->_shape_triangle->update(_cmd, _wvp);
-	this->_shape_circle->update(_cmd, _wvp);
-	this->_shape_box->update(_cmd, _wvp);
-	this->_shape_sphere->update(_cmd, _wvp);
+	this->_shape_line->update(_wvp);
+	this->_shape_triangle->update(_wvp);
+	this->_shape_circle->update(_wvp);
+	this->_shape_box->update(_wvp);
+	this->_shape_sphere->update(_wvp);
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 

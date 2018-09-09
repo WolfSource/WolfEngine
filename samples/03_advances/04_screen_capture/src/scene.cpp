@@ -285,7 +285,6 @@ void scene::load()
 		std::vector<w_cpipeline_model*> _models;
 		_scene->get_all_models(_models);
 
-		auto _cmd = this->_draw_command_buffers.get_command_at(0);
 		for (auto _model : _models)
 		{
 			//load first model
@@ -337,7 +336,6 @@ void scene::load()
 					_mesh->set_vertex_binding_attributes(_vertex_binding_attributes);
 					if (_mesh->load(
 						_gDevice,
-						_cmd,
 						_vertices.data(),
 						_v_size * sizeof(float),
 						_v_size,
@@ -430,7 +428,7 @@ void scene::load()
 						"loading device buffer of vertex_instance_buffer. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 				}
 
-				if (_staging_buffers.copy_to(_cmd, this->_instances_buffer) == W_FAILED)
+				if (_staging_buffers.copy_to(this->_instances_buffer) == W_FAILED)
 				{
 					release();
 					V(W_FAILED,
@@ -528,10 +526,9 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 		0.1f, 
 		1000.0f);
 	
-	auto _cmd = this->_draw_command_buffers.get_command_at(0);
 	this->_u0.data.view = _view;
 	this->_u0.data.projection = _projection;
-	auto _hr = this->_u0.update(_cmd);
+	auto _hr = this->_u0.update();
 	if (_hr == W_FAILED)
 	{
 		V(W_FAILED,

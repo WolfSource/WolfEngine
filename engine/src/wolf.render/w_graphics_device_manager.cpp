@@ -1003,7 +1003,10 @@ void w_graphics_device::_clean_swap_chain()
 		//release objects destination image memory
 		if (_shared_obj->destination_image_memory)
 		{
-			vkFreeMemory(this->vk_device, _shared_obj->destination_image_memory, nullptr);
+			vkFreeMemory(
+				this->vk_device, 
+				_shared_obj->destination_image_memory, 
+				nullptr);
 		}
 		//release destination image
 		if (_shared_obj->destination_image)
@@ -1048,7 +1051,7 @@ void w_graphics_device::_clean_swap_chain()
 	//release all image view of swap chains
 	for (size_t i = 0; i < this->output_presentation_window.swap_chain_image_views.size(); ++i)
 	{
-		//release both color image and view,
+		//release both color image and view
 		vkDestroyImageView(
 			this->vk_device,
 			this->output_presentation_window.swap_chain_image_views[i].view,
@@ -1059,9 +1062,17 @@ void w_graphics_device::_clean_swap_chain()
 	this->output_presentation_window.swap_chain_image_views.clear();
 
 	//release depth image and view,
+	vkDestroyImage(
+		this->vk_device,
+		this->output_presentation_window.depth_buffer_image_view.image,
+		nullptr);
 	vkDestroyImageView(
 		this->vk_device,
 		this->output_presentation_window.depth_buffer_image_view.view,
+		nullptr);
+	vkFreeMemory(
+		this->vk_device,
+		this->output_presentation_window.depth_buffer_memory,
 		nullptr);
 	this->output_presentation_window.depth_buffer_image_view.view = 0;
 	this->output_presentation_window.depth_buffer_image_view.image = 0;

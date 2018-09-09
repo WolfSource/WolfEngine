@@ -156,7 +156,6 @@ private:
 		_Inout_ std::wstring& pComputeShaderPath);
 
 	W_RESULT	_create_shader_modules(
-		_In_ const wolf::render::vulkan::w_command_buffer& pCommandBuffer,
 		_In_z_ const std::wstring& pVertexShaderPath,
 		_In_z_ const std::wstring& pFragmentShaderPath);
 
@@ -168,13 +167,11 @@ private:
 		_In_ const wolf::render::vulkan::w_viewport_scissor& pViewportScissor);
 	
 	W_RESULT _create_bounding_box_shapes(
-		_In_ const wolf::render::vulkan::w_command_buffer& pCommandBuffer,
 		_In_ const wolf::render::vulkan::w_render_pass& pRenderPass, 
 		_In_ const wolf::render::vulkan::w_viewport& pViewport, 
 		_In_ const wolf::render::vulkan::w_viewport_scissor& pViewportScissor);
 
 	wolf::render::vulkan::w_shapes* _create_shape(
-		_In_ const wolf::render::vulkan::w_command_buffer& pCommandBuffer,
 		_In_ const wolf::render::vulkan::w_render_pass& pRenderPass,
 		_In_ const wolf::render::vulkan::w_viewport& pViewport,
 		_In_ const wolf::render::vulkan::w_viewport_scissor& pViewportScissor,

@@ -339,7 +339,6 @@ void scene::load()
 	{
 		_hr = this->_shape_coordinate_axis->load(
 			_gDevice, 
-			_cmd,
 			this->_draw_render_pass, 
 			this->_viewport, 
 			this->_viewport_scissor);
@@ -456,8 +455,7 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 	//update shape coordinate
 	auto _world = glm::mat4(1) * glm::scale(glm::vec3(20.0f));
 	auto _wvp = this->_first_camera.get_projection_view() * _world;
-	auto _cmd = this->_draw_command_buffers.get_command_at(0);
-	if (this->_shape_coordinate_axis->update(_cmd, _wvp) == W_FAILED)
+	if (this->_shape_coordinate_axis->update(_wvp) == W_FAILED)
 	{
 		V(W_FAILED,
 			w_log_type::W_ERROR,
