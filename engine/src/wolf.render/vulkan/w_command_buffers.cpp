@@ -150,13 +150,16 @@ namespace wolf
 					if (!_cmd || !_cmd->handle) continue;
 					_handles[i] = _cmd->handle;
 				}
-				vkCmdExecuteCommands(
-					this->handle,
-					pSecondaryCommandBuffers.size(),
-					_handles.data());
-				_handles.clear();
-
-				return W_PASSED;
+				if (_handles.size())
+				{
+					vkCmdExecuteCommands(
+						this->handle,
+						_handles.size(),
+						_handles.data());
+					_handles.clear();
+					return W_PASSED;
+				}
+				return W_FAILED;
 			}
 
 			class w_command_buffer_pimp

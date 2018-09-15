@@ -9,10 +9,11 @@ using namespace wolf::render::vulkan;
 scene::scene(_In_z_ const std::wstring& pContentPath, _In_ const wolf::system::w_logger_config& pLogConfig) :
 	w_game(pContentPath, pLogConfig)
 {
+#ifdef DEBUG
 	w_graphics_device_manager_configs _config;
-	_config.debug_gpu = true;
+	_config.debug_gpu = false;
 	w_game::set_graphics_device_manager_configs(_config);
-
+#endif
 	w_game::set_fixed_time_step(false);
 }
 

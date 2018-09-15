@@ -151,6 +151,9 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <CompileAsWinRT>false</CompileAsWinRT>
       <LanguageStandard>stdcpp14</LanguageStandard>
+      <Optimization>Custom</Optimization>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
     </ClCompile>
     <Link>
       <AdditionalDependencies>wolf.system.win32.lib;wolf.content_pipeline.win32.lib;wolf.render.vulkan.win32.lib;vulkan-1.lib;tbb.lib;%(AdditionalDependencies)</AdditionalDependencies>

@@ -150,7 +150,7 @@ const std::string w_graphics_device::get_info()
 		_device_vendor_id = this->device_info->get_device_vendor_id();
 	}
 	return std::string(
-		"graphics device: " + _device_name +
+		" Name: " + _device_name +
 		" ID:" + std::to_string(_device_id) +
 		" VendorID:" + std::to_string(_device_vendor_id));
 }

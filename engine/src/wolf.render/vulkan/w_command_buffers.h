@@ -27,18 +27,18 @@ namespace wolf
 			{
 				VkCommandBuffer	handle = 0;
 
-				W_RESULT begin(_In_ const uint32_t pFlags);
+				W_VK_EXP W_RESULT begin(_In_ const uint32_t pFlags);
 
-				W_RESULT begin_secondary(
+				W_VK_EXP W_RESULT begin_secondary(
 					_In_ const w_render_pass_handle& pRenderPassHandle,
 					_In_ const w_frame_buffer_handle& pFrameBufferHandle,
 					_In_ const uint32_t pFlags);
 
-				W_RESULT end();
+				W_VK_EXP W_RESULT end();
 
-				W_RESULT flush(_In_ const std::shared_ptr<w_graphics_device>& pGDevice);
+				W_VK_EXP W_RESULT flush(_In_ const std::shared_ptr<w_graphics_device>& pGDevice);
 
-				W_RESULT execute_secondary_commands(_In_ const std::vector<w_command_buffer*>& pSecondaryCommandBuffers);
+				W_VK_EXP W_RESULT execute_secondary_commands(_In_ const std::vector<w_command_buffer*>& pSecondaryCommandBuffers);
 
 			private:
 				bool began = false;

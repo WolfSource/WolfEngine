@@ -58,9 +58,9 @@ scene::scene(_In_z_ const std::wstring& pContentPath, _In_ const wolf::system::w
 	_visible_meshes(0),
 	_sky(nullptr)
 {
-#if defined(__WIN32) && defined(DEBUG)
+#ifdef DEBUG
 	w_graphics_device_manager_configs _config;
-	_config.debug_gpu = true;
+	_config.debug_gpu = false;
 	w_game::set_graphics_device_manager_configs(_config);
 #endif
 
@@ -553,9 +553,11 @@ W_RESULT scene::_build_draw_command_buffers()
 		}
 	}
 	
+	tbb::concurrent_vector<w_command_buffer*> _sec_cmd_buffers;
 	auto _size = this->_draw_command_buffers.get_commands_size();
 	for (uint32_t i = 0; i < _size; ++i)
 	{
+		_sec_cmd_buffers.clear();
 		this->_draw_command_buffers.begin(i);
 		{
 			auto _primary_cmd = this->_draw_command_buffers.get_command_at(i);
@@ -569,27 +571,27 @@ W_RESULT scene::_build_draw_command_buffers()
 			{
 				//draw models on secondary threads
 				size_t _start_index = 0;
-				tbb::concurrent_vector<w_command_buffer*> _sec_cmd_buffers;
 				for (size_t j = 0; j < this->_render_thread_pool.size(); ++j)
 				{
+					auto _thread_context = this->_render_thread_pool[j];
 					//if thread does not have any models then skip it
-					if (this->_render_thread_pool[j]->batch_size == 0) continue;
+					if (_thread_context->batch_size == 0) continue;
 
-					this->_render_thread_pool[j]->thread.add_job([this, i, j, _start_index, &_sec_cmd_buffers]()//send start index as seperated constant data for each thread
+					_thread_context->thread.add_job([&, _ctx = _thread_context, _index = _start_index]()//send start index as seperated constant data for each thread
 					{
-						this->_render_thread_pool[j]->secondary_command_buffers.begin_secondary(
+						_ctx->secondary_command_buffers.begin_secondary(
 							i,
 							this->_draw_render_pass.get_handle(),
 							this->_draw_render_pass.get_frame_buffer_handle(i));
 						{
-							auto _sec_cmd = this->_render_thread_pool[j]->secondary_command_buffers.get_command_at(i);
+							auto _sec_cmd = _ctx->secondary_command_buffers.get_command_at(i);
 							_sec_cmd_buffers.push_back(&_sec_cmd);
-
+							
 							this->_viewport.set(_sec_cmd);
 							this->_viewport_scissor.set(_sec_cmd);
 
-							auto _begin_iter = this->_drawable_models.begin() + _start_index;
-							auto _end_iter = this->_drawable_models.begin() + _start_index + this->_render_thread_pool[j]->batch_size;
+							auto _begin_iter = this->_drawable_models.begin() + _index;
+							auto _end_iter = this->_drawable_models.begin() + _index + _ctx->batch_size;
 							std::for_each(
 								_begin_iter,
 								_end_iter,
@@ -598,7 +600,7 @@ W_RESULT scene::_build_draw_command_buffers()
 								pModel->draw(_sec_cmd);
 							});
 						}
-						this->_render_thread_pool[j]->secondary_command_buffers.end(i);
+						_ctx->secondary_command_buffers.end(i);
 					});
 
 					_start_index += this->_render_thread_pool[j]->batch_size;
@@ -612,11 +614,9 @@ W_RESULT scene::_build_draw_command_buffers()
 
 				if (_sec_cmd_buffers.size())
 				{
-					std::vector<w_command_buffer*> _cmds(_sec_cmd_buffers.begin(), _sec_cmd_buffers.end());
 					//Execute secondary commands buffer to primary command
-					this->_draw_command_buffers.execute_secondary_commands(
-						i,
-						_cmds);
+					std::vector<w_command_buffer*> _cmds(_sec_cmd_buffers.begin(), _sec_cmd_buffers.end());
+					_primary_cmd.execute_secondary_commands(_cmds);
 					_cmds.clear();
 					_sec_cmd_buffers.clear();
 				}
