@@ -215,6 +215,7 @@
 		2C6523C71FD4B0D70030A053 /* platform.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C6523BE1FD4B0D70030A053 /* platform.h */; };
 		2C6523C81FD4B0D70030A053 /* trigonometric.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C6523BF1FD4B0D70030A053 /* trigonometric.h */; };
 		2C68597420D91B180096C33B /* msgpack.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 2C68597320D91B170096C33B /* msgpack.hpp */; };
+		2C68E3F4214ECB0C00AA1141 /* libcurl-d.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C68E3F3214ECB0C00AA1141 /* libcurl-d.dylib */; };
 		2C7BC4431F51A320009F0C6E /* rapidxml_iterators.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 2C7BC43F1F51A320009F0C6E /* rapidxml_iterators.hpp */; };
 		2C7BC4441F51A320009F0C6E /* rapidxml_print.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 2C7BC4401F51A320009F0C6E /* rapidxml_print.hpp */; };
 		2C7BC4451F51A320009F0C6E /* rapidxml_utils.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 2C7BC4411F51A320009F0C6E /* rapidxml_utils.hpp */; };
@@ -674,6 +675,7 @@
 		2C6523BE1FD4B0D70030A053 /* platform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = platform.h; path = ../../../src/wolf.system/glm/simd/platform.h; sourceTree = "<group>"; };
 		2C6523BF1FD4B0D70030A053 /* trigonometric.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = trigonometric.h; path = ../../../src/wolf.system/glm/simd/trigonometric.h; sourceTree = "<group>"; };
 		2C68597320D91B170096C33B /* msgpack.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = msgpack.hpp; path = ../../../src/wolf.system/msgpack.hpp; sourceTree = "<group>"; };
+		2C68E3F3214ECB0C00AA1141 /* libcurl-d.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libcurl-d.dylib"; path = "../../../dependencies/curl/libs/osx/debug/libcurl-d.dylib"; sourceTree = "<group>"; };
 		2C7BC43F1F51A320009F0C6E /* rapidxml_iterators.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = rapidxml_iterators.hpp; path = ../../../src/wolf.system/rapidxml/rapidxml_iterators.hpp; sourceTree = "<group>"; };
 		2C7BC4401F51A320009F0C6E /* rapidxml_print.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = rapidxml_print.hpp; path = ../../../src/wolf.system/rapidxml/rapidxml_print.hpp; sourceTree = "<group>"; };
 		2C7BC4411F51A320009F0C6E /* rapidxml_utils.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = rapidxml_utils.hpp; path = ../../../src/wolf.system/rapidxml/rapidxml_utils.hpp; sourceTree = "<group>"; };
@@ -774,6 +776,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2C68E3F4214ECB0C00AA1141 /* libcurl-d.dylib in Frameworks */,
 				2C07D51320318B20005E7D14 /* libluajit-static.a in Frameworks */,
 				2C94BC291FF1A0E9007338F7 /* libnanomsg.a in Frameworks */,
 			);
@@ -1303,6 +1306,7 @@
 		2CFA170D1E674C850041A83F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2C68E3F3214ECB0C00AA1141 /* libcurl-d.dylib */,
 				2C07D51220318B20005E7D14 /* libluajit-static.a */,
 				2C94BC281FF1A0E9007338F7 /* libnanomsg.a */,
 			);
@@ -1847,7 +1851,7 @@
 				DYLIB_CURRENT_VERSION = 1;
 				EXECUTABLE_PREFIX = lib;
 				FRAMEWORK_SEARCH_PATHS = "";
-				"FRAMEWORK_SEARCH_PATHS[arch=*]" = "";
+				"FRAMEWORK_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/../../../dependencies/curl/libs/osx/debug";
 				GCC_C_LANGUAGE_STANDARD = c11;
 				GCC_ENABLE_CPP_EXCEPTIONS = YES;
 				GCC_ENABLE_CPP_RTTI = YES;
@@ -1864,11 +1868,13 @@
 					"$(SRCROOT)/../../../src/wolf.system",
 					"$(SRCROOT)/../../../dependencies/luaJIT/include",
 					"$(SRCROOT)/../../../dependencies/nanomsg/include",
+					"$(SRCROOT)/../../../dependencies/curl/include",
 				);
 				LIBRARY_SEARCH_PATHS = "";
 				"LIBRARY_SEARCH_PATHS[arch=*]" = (
 					"$(SRCROOT)/../../../dependencies/nanomsg/lib/osx/debug",
 					"$(SRCROOT)/../../../dependencies/luaJIT/lib/osx/debug",
+					"$(SRCROOT)/../../../dependencies/curl/libs/osx/debug",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				"VALID_ARCHS[sdk=*]" = x86_64;

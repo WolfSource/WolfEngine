@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "scene.h"
 #include <w_compress.hpp>
+#include <curl/curl.h>
 
 using namespace wolf;
 using namespace wolf::system;
@@ -10,7 +11,25 @@ using namespace wolf::render::vulkan;
 scene::scene(_In_z_ const std::wstring& pContentPath, _In_ const system::w_logger_config& pLogConfig) :
 	w_game(pContentPath, pLogConfig)
 {
-
+        CURL* curl;
+        CURLcode res;
+        
+        curl = curl_easy_init();
+        if(curl) {
+            curl_easy_setopt(curl, CURLOPT_URL, "https://accounts.pod.land/oauth2/authorize/index.html?state=T3yD1PphVaY5MMYvvcXTfBpSRzsYDG28&response_type=code&approval_prompt=auto&client_id=4d1b4bcd9808c999790d85cd&redirect_uri=https%3A%2F%2Fe.fanap.ir%2F");
+            /* example.com is redirected, so we tell libcurl to follow redirection */
+            curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+            
+            /* Perform the request, res will get the return code */
+            res = curl_easy_perform(curl);
+            /* Check for errors */
+            if(res != CURLE_OK)
+                fprintf(stderr, "curl_easy_perform() failed: %s\n",
+                        curl_easy_strerror(res));
+            
+            /* always cleanup */
+            curl_easy_cleanup(curl);
+        }
 	char* _src = "This is test. Hey there. this is test. Salam. Pooya. Poooooooooya. Ryannnnnnn. Raaaaaaaaaayyyyyyyyyy";
 	int _compressed_size = 0;
 

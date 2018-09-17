@@ -16,6 +16,7 @@
 		2C6858F620D8520F0096C33B /* libwolf.media_core.osx.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C6858F520D8520F0096C33B /* libwolf.media_core.osx.dylib */; };
 		2C6858F820D8520F0096C33B /* libwolf.system.osx.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C6858F720D8520F0096C33B /* libwolf.system.osx.dylib */; };
 		2C6858FB20D852D90096C33B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2C6858F920D852D90096C33B /* Main.storyboard */; };
+		2C68E3F6214ECBC300AA1141 /* libcurl-d.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C68E3F5214ECBC300AA1141 /* libcurl-d.dylib */; };
 		2C7079951EAB6D7D003784A2 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C70798F1EAB6D7D003784A2 /* AppDelegate.m */; };
 		2C7079961EAB6D7D003784A2 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C7079901EAB6D7D003784A2 /* main.m */; };
 		2C7079971EAB6D7D003784A2 /* scene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C7079911EAB6D7D003784A2 /* scene.cpp */; };
@@ -44,6 +45,7 @@
 		2C6858F520D8520F0096C33B /* libwolf.media_core.osx.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; path = libwolf.media_core.osx.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		2C6858F720D8520F0096C33B /* libwolf.system.osx.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; path = libwolf.system.osx.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		2C6858FA20D852D90096C33B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = test_vulkan_osx/Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		2C68E3F5214ECBC300AA1141 /* libcurl-d.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libcurl-d.dylib"; path = "../../../../dependencies/curl/libs/osx/debug/libcurl-d.dylib"; sourceTree = "<group>"; };
 		2C70798E1EAB6D7D003784A2 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = ../../../../src/tests/AppDelegate.h; sourceTree = "<group>"; };
 		2C70798F1EAB6D7D003784A2 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = ../../../../src/tests/AppDelegate.m; sourceTree = "<group>"; };
 		2C7079901EAB6D7D003784A2 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = ../../../../src/tests/main.m; sourceTree = "<group>"; };
@@ -68,6 +70,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2C68E3F6214ECBC300AA1141 /* libcurl-d.dylib in Frameworks */,
 				2C1E3F86210871000072D5D3 /* libwolf.render.vulkan.osx.dylib in Frameworks */,
 				2C766E6A20B33FCD000C66F4 /* libassimp.4.1.0.dylib in Frameworks */,
 				2C766E6820B33FAD000C66F4 /* vulkan.framework in Frameworks */,
@@ -136,6 +139,7 @@
 		2C620FAB1E61804B005DFB10 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2C68E3F5214ECBC300AA1141 /* libcurl-d.dylib */,
 				2C1E3F85210871000072D5D3 /* libwolf.render.vulkan.osx.dylib */,
 				2C6858F520D8520F0096C33B /* libwolf.media_core.osx.dylib */,
 				2C6858F720D8520F0096C33B /* libwolf.system.osx.dylib */,
@@ -367,6 +371,7 @@
 				"FRAMEWORK_SEARCH_PATHS[arch=*]" = (
 					"$(SRCROOT)/../../../../dependencies/vulkan/macOS/macOS/Frameworks",
 					"$(SRCROOT)/../../../../dependencies/assimp/lib/osx/debug/",
+					"$(SRCROOT)/../../../../dependencies/curl/libs/osx/debug",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
@@ -376,10 +381,14 @@
 					"$(SRCROOT)/../../../../src/wolf.system",
 					"$(SRCROOT)/../../../../src/wolf.render",
 					"$(SRCROOT)/../../../../src/wolf.content_pipeline",
+					"$(SRCROOT)/../../../../dependencies/curl/include",
 				);
 				INFOPLIST_FILE = test_vulkan_osx/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) $(SRCROOT)/../../../../../engine/dependencies/vulkan/macOS/macOS/Frameworks";
-				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/../../../../dependencies/assimp/lib/osx/debug/";
+				"LIBRARY_SEARCH_PATHS[arch=*]" = (
+					"$(SRCROOT)/../../../../dependencies/assimp/lib/osx/debug/",
+					"$(SRCROOT)/../../../../dependencies/curl/libs/osx/debug",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = wolf.engine.vulkan.osx.test;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				"VALID_ARCHS[sdk=*]" = x86_64;
