@@ -1,2 +1,0 @@
-https://github.com/msgpack/msgpack-c/
-version 3.0.1 master 0a65c44
