@@ -11,10 +11,10 @@
 /docs/extra/
 /samples/.vs/*
 /engine/builds/mvsc/.vs/*
-/engine/dependencies/*
-!/engine/dependencies/*.zip
-!/engine/dependencies/vulkan.zip.001
-!/engine/dependencies/vulkan.zip.002
+/engine/deps/*
+!/engine/deps/*.zip
+!/engine/deps/vulkan.zip.001
+!/engine/deps/vulkan.zip.002
 
 # Compiled Object files
 *.slo
@@ -70,3 +70,5 @@
 /samples/01_system/05_window/builds/netbeans/05_window/dist/
 /samples/01_system/06_lua/builds/netbeans/06_lua/build/
 /samples/01_system/06_lua/builds/netbeans/06_lua/dist/
+/engine/builds/netbeans/wolf.system.linux/dist/
+/engine/builds/netbeans/wolf.system.linux/build/
