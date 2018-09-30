@@ -13,16 +13,15 @@
 #if _MSC_VER > 1000
 #pragma once
 #endif
-
 #include "w_system_pch.h"
-#include <glm/glm.hpp>
-#include <glm/vec2.hpp>
-#include <glm/vec3.hpp>
-#include <glm/vec4.hpp>
-#include <glm/gtc/constants.hpp>
-#include <glm/gtx/rotate_vector.hpp>
-#include <glm/gtx/quaternion.hpp>
-#include <glm/gtx/compatibility.hpp>
+#include "glm/glm.hpp"
+#include "glm/vec2.hpp"
+#include "glm/vec3.hpp"
+#include "glm/vec4.hpp"
+#include "glm/gtc/constants.hpp"
+#include "glm/gtx/rotate_vector.hpp"
+#include "glm/gtx/quaternion.hpp"
+#include "glm/gtx/compatibility.hpp"
 #include <string>
 #include "w_convert.h"
 #include "w_color.h"
