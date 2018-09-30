@@ -13,8 +13,8 @@
 #include "w_system_export.h"
 #include <vector>
 #include <array>
-#include <glm_extension.h>
-#include <msgpack.hpp>
+#include "glm_extension.h"
+#include "msgpack.hpp"
 #include "python_exporter/w_boost_python_helper.h"
 
 namespace wolf

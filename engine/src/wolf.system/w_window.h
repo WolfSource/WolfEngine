@@ -246,7 +246,7 @@ public:
         xcb_generic_event_t* _e = nullptr;
         while (!this->_close)
         {
-            while (_e = xcb_poll_for_event(this->_xcb_con)) //xcb_wait_for_event
+            while ((_e = xcb_poll_for_event(this->_xcb_con))) //xcb_wait_for_event
             {
                 switch (_e->response_type & ~0x80)
                 {
