@@ -6,8 +6,10 @@
 *.ipch
 *.res
 *.enc
+*.vscode
 /bin/win32/
 /bin/osx/
+/bin/linux/
 /docs/extra/
 /samples/.vs/*
 /engine/builds/mvsc/.vs/*
