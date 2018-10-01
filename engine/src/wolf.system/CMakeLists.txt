@@ -20,6 +20,8 @@ if(UNIX)
     endif()
 endif()
 
+set(CMAKE_C_COMPILER "clang")#gcc
+set(CMAKE_CXX_COMPILER "clang++")#g++
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -91,6 +93,7 @@ _REENTRANT
 _THREAD_SAFE 
 __LUA__ 
 __WOLF_SYSTEM__
+__linux
 )
 
 if (CMAKE_BUILD_TYPE MATCHES Debug)
@@ -103,9 +106,11 @@ target_compile_options(wolf.system.linux PRIVATE -fPIC -m64)
 # libs
 link_directories(/usr/local/lib)
 if (CMAKE_BUILD_TYPE MATCHES Debug)
+target_link_libraries(wolf.system.linux ${CMAKE_CURRENT_SOURCE_DIR}/../../deps/luaJIT/lib/linux/x64/debug/libluajit-static.a)
 target_link_libraries(wolf.system.linux ${CMAKE_CURRENT_SOURCE_DIR}/../../deps/nanomsg/lib/linux/x64/debug/libnanomsg.a)
 else()
+target_link_libraries(wolf.system.linux ${CMAKE_CURRENT_SOURCE_DIR}/../../deps/luaJIT/lib/linux/x64/release/libluajit-static.a)
 target_link_libraries(wolf.system.linux ${CMAKE_CURRENT_SOURCE_DIR}/../../deps/nanomsg/lib/linux/x64/release/libnanomsg.a)
 endif()
 
-target_link_libraries(wolf.system.linux nsl pthread)
+target_link_libraries(wolf.system.linux xcb anl rt nsl pthread)
