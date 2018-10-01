@@ -34,10 +34,7 @@ include Makefile
 OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
-OBJECTFILES= \
-	${OBJECTDIR}/_ext/46a988ea/main.o \
-	${OBJECTDIR}/_ext/46a988ea/pch.o \
-	${OBJECTDIR}/_ext/46a988ea/scene.o
+OBJECTFILES=
 
 
 # C Compiler Flags
@@ -62,22 +59,7 @@ LDLIBSOPTIONS=
 
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/vulkan.linux: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
-	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/vulkan.linux ${OBJECTFILES} ${LDLIBSOPTIONS}
-
-${OBJECTDIR}/_ext/46a988ea/main.o: ../../../../src/tests/Vulkan.Linux/main.cpp
-	${MKDIR} -p ${OBJECTDIR}/_ext/46a988ea
-	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/46a988ea/main.o ../../../../src/tests/Vulkan.Linux/main.cpp
-
-${OBJECTDIR}/_ext/46a988ea/pch.o: ../../../../src/tests/Vulkan.Linux/pch.cpp
-	${MKDIR} -p ${OBJECTDIR}/_ext/46a988ea
-	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/46a988ea/pch.o ../../../../src/tests/Vulkan.Linux/pch.cpp
-
-${OBJECTDIR}/_ext/46a988ea/scene.o: ../../../../src/tests/Vulkan.Linux/scene.cpp
-	${MKDIR} -p ${OBJECTDIR}/_ext/46a988ea
-	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/46a988ea/scene.o ../../../../src/tests/Vulkan.Linux/scene.cpp
+	${LINK.c} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/vulkan.linux ${OBJECTFILES} ${LDLIBSOPTIONS}
 
 # Subprojects
 .build-subprojects:

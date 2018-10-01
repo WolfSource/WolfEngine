@@ -7,13 +7,13 @@ CND_BASEDIR=`pwd`
 CND_BUILDDIR=build
 CND_DISTDIR=dist
 # Debug configuration
-CND_PLATFORM_Debug=GNU-Linux
-CND_ARTIFACT_DIR_Debug=dist/../../../../../../bin/x64/Debug/GNU-Linux
+CND_PLATFORM_Debug=CLang-Linux
+CND_ARTIFACT_DIR_Debug=dist/../../../../../../bin/x64/Debug/CLang-Linux
 CND_ARTIFACT_NAME_Debug=vulkan.linux
-CND_ARTIFACT_PATH_Debug=dist/../../../../../../bin/x64/Debug/GNU-Linux/vulkan.linux
-CND_PACKAGE_DIR_Debug=dist/Debug/GNU-Linux/package
+CND_ARTIFACT_PATH_Debug=dist/../../../../../../bin/x64/Debug/CLang-Linux/vulkan.linux
+CND_PACKAGE_DIR_Debug=dist/Debug/CLang-Linux/package
 CND_PACKAGE_NAME_Debug=vulkan.linux.tar
-CND_PACKAGE_PATH_Debug=dist/Debug/GNU-Linux/package/vulkan.linux.tar
+CND_PACKAGE_PATH_Debug=dist/Debug/CLang-Linux/package/vulkan.linux.tar
 # Release configuration
 CND_PLATFORM_Release=CLang-Linux
 CND_ARTIFACT_DIR_Release=dist/Release/CLang-Linux
