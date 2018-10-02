@@ -2,7 +2,7 @@ echo off
 setlocal
 
 echo make wolf's dependencies ready
-cd ./engine/dependencies/
+cd ./engine/deps/
 
 set keys=assimp boost ffmpeg luaJIT nanomsg tbb simplygon
 set values=version.txt builds.txt version.txt version.txt COPYING version.txt SimplygonSDKRuntimeReleasex64.dll
