@@ -10,7 +10,7 @@ jobs:
           command: 'apt-get update'
       - run:
           name: Setup clang
-          command: 'apt-get install clang'
+          command: 'apt-get install clang --force-yes'
       - run:
           name: Greeting
           command: clang --version
