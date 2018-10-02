@@ -10,7 +10,7 @@ jobs:
           command: 'apt-get update'
       - run:
           name: setup clang
-          command: 'apt-get install -y clang cmake unzip'
+          command: 'apt-get install -y clang cmake unzip libxcb1-dev'
       - run:
           name: clang version
           command: clang --version
