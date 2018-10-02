@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo "make wolf's dependencies ready"
-cd ./engine/dependencies/
+cd ./engine/deps/
 
 keys=(
 assimp
@@ -39,15 +39,29 @@ else
   echo "vulkan verified successfully"
 fi
 
-tar -zxvf ./vulkan/macOS.tar.gz -C ./vulkan/
-
+echo "$OSTYPE"
 echo "start building Wolf"
-case "$OSTYPE" in
-  darwin*)  
-            xcodebuild clean build -workspace ../../engine/builds/xcode/wolf.engine.vulkan.osx.xcworkspace -scheme test_vulkan_osx -sdk macosx10.13 -configuration Debug 
-            ;; 
-  linux*)   echo "LINUX" ;;
-  *)        echo "OS: $OSTYPE" ;;
-esac
+
+if [[ "$OSTYPE" == "darwin" ]]; then
+  tar -zxvf ./vulkan/macOS.tar.gz -C ./vulkan/ 
+  xcodebuild clean build -workspace ../../engine/builds/xcode/wolf.engine.vulkan.osx.xcworkspace -scheme test_vulkan_osx -sdk macosx10.13 -configuration Debug
+  echo "All done successfully"
+elif [[ "$OSTYPE" == "linux-gnu" ]]; then
+  echo "building wolf.system.linux" 
+  cd   "$PWD/../src/wolf.system/"
+  cmake . 
+  make
+  echo "building wolf.media_core.linux" 
+  cd   "$PWD/../wolf.media_core/"
+  cmake . 
+  make
+  echo "building wolf.content_pipeline.linux" 
+  cd   "$PWD/../wolf.content_pipeline/"
+  cmake . 
+  make
+  echo "All done successfully"
+else
+  echo "platform not supported yet"
+fi
 
 
