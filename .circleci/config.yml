@@ -7,10 +7,10 @@ jobs:
       - checkout
       - run:
           name: APT Update
-          command: 'sudo apt-get update'
+          command: 'apt-get update'
       - run:
           name: Setup clang
-          command: 'sudo apt-get install clang'
+          command: 'apt-get install clang'
       - run:
           name: Greeting
           command: clang --version
