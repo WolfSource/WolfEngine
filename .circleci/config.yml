@@ -3,11 +3,14 @@ jobs:
   build:
     docker:
       - image: ubuntu:bionic
-        dependencies:
-          pre:
-            - sudo apt-get update; sudo apt-get install clang
     steps:
       - checkout
+      - run:
+          name: APT Update
+          command: 'sudo apt-get update'
+      - run:
+          name: Setup clang
+          command: 'sudo apt-get install clang'
       - run:
           name: Greeting
           command: clang --version
