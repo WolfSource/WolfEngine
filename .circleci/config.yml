@@ -6,11 +6,14 @@ jobs:
     steps:
       - checkout
       - run:
-          name: APT Update
+          name: apt update
           command: 'apt-get update'
       - run:
-          name: Setup clang
+          name: setup clang
           command: 'apt-get install -y clang'
       - run:
-          name: Greeting
+          name: clang version
           command: clang --version
+      - run:
+          name: wolf.engine
+          command: ./install.sh
