@@ -10,7 +10,7 @@ jobs:
           command: 'apt-get update'
       - run:
           name: setup clang
-          command: 'apt-get install -y clang'
+          command: 'apt-get install -y clang cmake'
       - run:
           name: clang version
           command: clang --version
