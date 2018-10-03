@@ -422,9 +422,9 @@ namespace wolf
 					else
 					{
 						this->_stream_out->id = this->_stream_out_ctx->nb_streams - 1;
-						this->_stream_out->time_base.den = this->_stream_out->pts.den = 90000;
-						this->_stream_out->time_base.num = this->_stream_out->pts.num = 1;
-
+						this->_stream_out->time_base.den = /*this->_stream_out->pts.den =*/ 90000;
+						this->_stream_out->time_base.num = /*this->_stream_out->pts.num =*/ 1;
+						
 						//auto _bit_rate = 7500 * 1000; //7500 kbps * 1000
 
 						this->_stream_out->codec->codec_id = pCodecID;
