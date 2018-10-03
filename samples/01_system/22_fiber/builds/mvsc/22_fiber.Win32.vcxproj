@@ -113,7 +113,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)/../engine/src/wolf.system/;$(SolutionDir)/../engine/dependencies/boost/include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)/../engine/src/wolf.system/;$(SolutionDir)/../engine/deps/boost/include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;__WIN32;WIN32;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -128,21 +128,21 @@
     <Link>
       <AssemblyDebug>true</AssemblyDebug>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>$(SolutionDir)/../bin/win32/$(Platform)/$(Configuration)/;$(SolutionDir)/../engine/dependencies/boost/lib/windows</AdditionalLibraryDirectories>
-      <AdditionalDependencies>wolf.system.win32.lib;libboost_fiber-vc141-mt-gd-x64-1_67.lib;libboost_context-vc141-mt-gd-x64-1_67.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)/../bin/win32/$(Platform)/$(Configuration)/;$(SolutionDir)/../engine/deps/boost/lib/windows</AdditionalLibraryDirectories>
+      <AdditionalDependencies>wolf.system.win32.lib;libboost_fiber-vc141-mt-gd-x64-1_68.lib;libboost_context-vc141-mt-gd-x64-1_68.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)/../engine/src/wolf.system/;$(SolutionDir)/../engine/dependencies/boost/include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)/../engine/src/wolf.system/;$(SolutionDir)/../engine/deps/boost/include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>__WIN32;WIN32;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp14</LanguageStandard>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>wolf.system.win32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)/../bin/win32/$(Platform)/$(Configuration)/;$(SolutionDir)/../engine/dependencies/boost/lib/windows</AdditionalLibraryDirectories>
+      <AdditionalDependencies>wolf.system.win32.lib;libboost_fiber-vc141-mt-x64-1_68.lib;libboost_context-vc141-mt-x64-1_68.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)/../bin/win32/$(Platform)/$(Configuration)/;$(SolutionDir)/../engine/deps/boost/lib/windows</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <AssemblyDebug>false</AssemblyDebug>
       <SubSystem>Windows</SubSystem>

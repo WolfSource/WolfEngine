@@ -5,6 +5,11 @@
 - Realtime Raytracing
 - DEBUG, RELEASE, MinSizeRelease(does not have assimp and just use wscene files)
 
+# 1.68.0.9 (2018-10-03)
+A major release with many compatibility-breaking changes.
+
+Notable new features:
+- CMAKE added for building wolf for linux platform
 
 # 1.65.0.0 (2018-06-04)
 A major release with many compatibility-breaking changes.
