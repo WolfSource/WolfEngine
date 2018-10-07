@@ -147,7 +147,7 @@ namespace wolf
 				}
 
 				// Convert QPC units into a canonical tick format. This cannot overflow due to the previous clamp.
-				_time_delta *= TICKS_PER_SECOND;
+				_time_delta = static_cast<long long>(_time_delta * TICKS_PER_SECOND);
 #if defined(__WIN32) || defined(__UWP)
 				if (this->_frequency.QuadPart == 0)
 				{
@@ -222,7 +222,7 @@ namespace wolf
 					}
 					else
 					{
-						this->_seconds_counter = (uint64_t)this->_seconds_counter % this->_frequency.QuadPart;
+						this->_seconds_counter = static_cast<double>((uint64_t)this->_seconds_counter % this->_frequency.QuadPart);
 					}
 
 #elif defined(__ANDROID) || defined(__linux) || defined(__APPLE__)
