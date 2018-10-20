@@ -14,6 +14,7 @@
 #ifndef __WOLF_H__
 #define __WOLF_H__
 
+#include <w_ireleasable.h>
 #include "w_system_pch.h"
 #include "w_game_time.h"
 
