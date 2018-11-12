@@ -36,6 +36,96 @@
       <Filter>lz4</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\wolf.system\w_compress.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\zlib\src\adler32.c">
+      <Filter>zlib\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\zlib\src\compress.c">
+      <Filter>zlib\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\zlib\src\crc32.c">
+      <Filter>zlib\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\zlib\src\deflate.c">
+      <Filter>zlib\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\zlib\src\gzclose.c">
+      <Filter>zlib\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\zlib\src\gzlib.c">
+      <Filter>zlib\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\zlib\src\gzread.c">
+      <Filter>zlib\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\zlib\src\gzwrite.c">
+      <Filter>zlib\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\zlib\src\infback.c">
+      <Filter>zlib\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\zlib\src\inffast.c">
+      <Filter>zlib\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\zlib\src\inflate.c">
+      <Filter>zlib\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\zlib\src\inftrees.c">
+      <Filter>zlib\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\zlib\src\trees.c">
+      <Filter>zlib\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\zlib\src\uncompr.c">
+      <Filter>zlib\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\zlib\src\zutil.c">
+      <Filter>zlib\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\libpng\src\png.c">
+      <Filter>libpng\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\libpng\src\pngerror.c">
+      <Filter>libpng\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\libpng\src\pngget.c">
+      <Filter>libpng\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\libpng\src\pngmem.c">
+      <Filter>libpng\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\libpng\src\pngpread.c">
+      <Filter>libpng\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\libpng\src\pngread.c">
+      <Filter>libpng\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\libpng\src\pngrio.c">
+      <Filter>libpng\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\libpng\src\pngrutil.c">
+      <Filter>libpng\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\libpng\src\pngset.c">
+      <Filter>libpng\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\libpng\src\pngtrans.c">
+      <Filter>libpng\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\libpng\src\pngwio.c">
+      <Filter>libpng\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\libpng\src\pngwrite.c">
+      <Filter>libpng\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\libpng\src\pngwtran.c">
+      <Filter>libpng\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\libpng\src\pngwutil.c">
+      <Filter>libpng\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\libpng\src\pngrtran.c">
+      <Filter>libpng\src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\wolf.system\w_allocator.h" />
@@ -815,6 +905,60 @@
     </ClInclude>
     <ClInclude Include="..\..\..\src\wolf.system\w_compress.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_compress.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\zlib\src\crc32.h">
+      <Filter>zlib\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\zlib\src\deflate.h">
+      <Filter>zlib\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\zlib\src\gzguts.h">
+      <Filter>zlib\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\zlib\src\inffast.h">
+      <Filter>zlib\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\zlib\src\inffixed.h">
+      <Filter>zlib\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\zlib\src\inflate.h">
+      <Filter>zlib\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\zlib\src\inftrees.h">
+      <Filter>zlib\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\zlib\src\trees.h">
+      <Filter>zlib\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\zlib\src\zutil.h">
+      <Filter>zlib\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\zlib\zconf.h">
+      <Filter>zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\zlib\zlib.h">
+      <Filter>zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\libpng\png.h">
+      <Filter>libpng</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\libpng\src\pngconf.h">
+      <Filter>libpng\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\libpng\src\pngdebug.h">
+      <Filter>libpng\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\libpng\src\pnginfo.h">
+      <Filter>libpng\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\libpng\src\pnglibconf.h">
+      <Filter>libpng\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\libpng\src\pngpriv.h">
+      <Filter>libpng\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\libpng\src\pngstruct.h">
+      <Filter>libpng\src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="rapidxml">
@@ -858,6 +1002,18 @@
     </Filter>
     <Filter Include="lz4">
       <UniqueIdentifier>{a1acc8b0-e651-47b6-96b5-9e39cdbc75d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zlib">
+      <UniqueIdentifier>{d7e546cd-d754-40c7-959b-ac7005f2bc4b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zlib\src">
+      <UniqueIdentifier>{24149a83-b8ec-4936-8687-43fce1621e74}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libpng">
+      <UniqueIdentifier>{71118414-4a1e-4ef9-aa31-d362356d2211}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libpng\src">
+      <UniqueIdentifier>{f533a687-30f8-4b02-bd6c-1d6321b2b281}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1337,6 +1493,18 @@
     </None>
     <None Include="..\..\..\src\wolf.system\gli\core\view.inl">
       <Filter>gli\core</Filter>
+    </None>
+    <None Include="..\..\..\src\wolf.system\zlib\src\ChangeLog">
+      <Filter>zlib\src</Filter>
+    </None>
+    <None Include="..\..\..\src\wolf.system\zlib\src\README">
+      <Filter>zlib\src</Filter>
+    </None>
+    <None Include="..\..\..\src\wolf.system\libpng\src\CHANGES">
+      <Filter>libpng\src</Filter>
+    </None>
+    <None Include="..\..\..\src\wolf.system\libpng\src\LICENSE">
+      <Filter>libpng\src</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

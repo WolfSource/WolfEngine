@@ -21,6 +21,21 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\src\wolf.system\dllmain.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\glm\detail\glm.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.system\libpng\src\png.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\libpng\src\pngerror.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\libpng\src\pngget.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\libpng\src\pngmem.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\libpng\src\pngpread.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\libpng\src\pngread.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\libpng\src\pngrio.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\libpng\src\pngrtran.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\libpng\src\pngrutil.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\libpng\src\pngset.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\libpng\src\pngtrans.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\libpng\src\pngwio.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\libpng\src\pngwrite.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\libpng\src\pngwtran.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\libpng\src\pngwutil.c" />
     <ClCompile Include="..\..\..\src\wolf.system\lz4\lz4.c" />
     <ClCompile Include="..\..\..\src\wolf.system\lz4\lz4frame.c" />
     <ClCompile Include="..\..\..\src\wolf.system\lz4\lz4hc.c" />
@@ -51,6 +66,21 @@
     <ClCompile Include="..\..\..\src\wolf.system\w_time_span.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_window.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_xml.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.system\zlib\src\adler32.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\zlib\src\compress.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\zlib\src\crc32.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\zlib\src\deflate.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\zlib\src\gzclose.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\zlib\src\gzlib.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\zlib\src\gzread.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\zlib\src\gzwrite.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\zlib\src\infback.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\zlib\src\inffast.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\zlib\src\inflate.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\zlib\src\inftrees.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\zlib\src\trees.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\zlib\src\uncompr.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\zlib\src\zutil.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\wolf.system\asio.hpp" />
@@ -255,6 +285,13 @@
     <ClInclude Include="..\..\..\src\wolf.system\glm\vec4.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\vector_relational.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm_extension.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\libpng\png.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\libpng\src\pngconf.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\libpng\src\pngdebug.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\libpng\src\pnginfo.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\libpng\src\pnglibconf.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\libpng\src\pngpriv.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\libpng\src\pngstruct.h" />
     <ClInclude Include="..\..\..\src\wolf.system\lz4\lz4.h" />
     <ClInclude Include="..\..\..\src\wolf.system\lz4\lz4frame.h" />
     <ClInclude Include="..\..\..\src\wolf.system\lz4\lz4frame_static.h" />
@@ -340,6 +377,17 @@
     <ClInclude Include="..\..\..\src\wolf.system\w_time_span.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_window.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_xml.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\zlib\src\crc32.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\zlib\src\deflate.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\zlib\src\gzguts.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\zlib\src\inffast.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\zlib\src\inffixed.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\zlib\src\inflate.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\zlib\src\inftrees.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\zlib\src\trees.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\zlib\src\zutil.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\zlib\zconf.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\zlib\zlib.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\src\wolf.system\gli\core\clear.inl" />
@@ -501,6 +549,10 @@
     <None Include="..\..\..\src\wolf.system\glm\gtx\vector_angle.inl" />
     <None Include="..\..\..\src\wolf.system\glm\gtx\vector_query.inl" />
     <None Include="..\..\..\src\wolf.system\glm\gtx\wrap.inl" />
+    <None Include="..\..\..\src\wolf.system\libpng\src\CHANGES" />
+    <None Include="..\..\..\src\wolf.system\libpng\src\LICENSE" />
+    <None Include="..\..\..\src\wolf.system\zlib\src\ChangeLog" />
+    <None Include="..\..\..\src\wolf.system\zlib\src\README" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\..\src\wolf.system\gli\version.txt" />
@@ -613,8 +665,8 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../deps/luaJIT/include;$(SolutionDir)/../../deps/nanomsg/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_DEBUG;_WINDLL;__WIN32;__WOLF_SYSTEM__;GLM_FORCE_DEPTH_ZERO_TO_ONE;ASIO_STANDALONE;NN_HAVE_WINDOWS;NN_STATIC_LIB;NN_HAVE_CONDVAR=1;NN_MAX_SOCKETS=512;__LUA__;LZ4_DLL_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../deps/luaJIT/include;$(SolutionDir)/../../deps/nanomsg/include;$(SolutionDir)/../../deps/libjpeg-turbo/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG;_WINDLL;__WIN32;__WOLF_SYSTEM__;GLM_FORCE_DEPTH_ZERO_TO_ONE;ASIO_STANDALONE;NN_HAVE_WINDOWS;NN_STATIC_LIB;NN_HAVE_CONDVAR=1;NN_MAX_SOCKETS=512;__LUA__;LZ4_DLL_EXPORT;NO_FSEEKO;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
@@ -633,8 +685,8 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>true</AssemblyDebug>
-      <AdditionalLibraryDirectories>$(SolutionDir)/../../deps/luaJIT/lib/windows/x64/debug;$(SolutionDir)/../../deps/nanomsg/lib/windows/x64/debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Kernel32.lib;advapi32.lib;ws2_32.lib;mswsock.lib;nanomsg.lib;luajit-static.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)/../../deps/luaJIT/lib/windows/x64/debug;$(SolutionDir)/../../deps/nanomsg/lib/windows/x64/debug;$(SolutionDir)/../../deps/libjpeg-turbo/lib/windows/x64/debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Kernel32.lib;advapi32.lib;ws2_32.lib;mswsock.lib;nanomsg.lib;luajit-static.lib;jpeg-static.lib;turbojpeg-static.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

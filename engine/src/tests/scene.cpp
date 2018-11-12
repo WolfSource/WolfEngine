@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "scene.h"
 #include <w_compress.hpp>
+#include <libpng/png.h>
+
 //#include <curl/curl.h>
 
 using namespace wolf;
@@ -11,7 +13,55 @@ using namespace wolf::render::vulkan;
 scene::scene(_In_z_ const std::wstring& pContentPath, _In_ const system::w_logger_config& pLogConfig) :
 	w_game(pContentPath, pLogConfig)
 {
-        //CURL* curl;
+
+	uint32_t _w, _h;
+	uint8_t _c, _d;
+	int _n;
+	int _state;
+	auto _pixels = wolf::system::io::read_png_from_file(
+		"D:\\github\\WolfSource\\Wolf.Engine\\Logo.png",
+		_w,
+		_h,
+		_c,
+		_d,
+		_n,
+		_state);
+
+	_state = 0;
+	wolf::system::io::write_png_to_file(
+		"D:\\github\\WolfSource\\Wolf.Engine\\Logo_new.png",
+		_pixels,
+		_w,
+		_h,
+		_c,
+		_d,
+		_state);
+
+	_state = 0;
+	std::ostringstream _stream;
+	wolf::system::io::write_png_to_stream(
+		_stream,
+		_pixels,
+		_w,
+		_h,
+		_c,
+		_d,
+		_state);
+
+	logger.write("{}", _stream.str().c_str());
+
+	int _width, _height, _sub, _col, _pass;
+	_state = 0;
+	wolf::system::io::read_jpeg_from_file(
+		"D:\\github\\WolfSource\\Wolf.Engine\\Logo.png",
+		_width,
+		_height,
+		_sub,
+		_col,
+		_pass,
+		_state);
+
+	    //CURL* curl;
         //CURLcode res;
         //
         //curl = curl_easy_init();

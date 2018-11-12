@@ -103,10 +103,10 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>__720p__;_DEBUG;_WINDOWS;__WIN32;__VULKAN__;GLM_FORCE_DEPTH_ZERO_TO_ONE;_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>__720p__;_DEBUG;_WINDOWS;__WIN32;__VULKAN__;GLM_FORCE_DEPTH_ZERO_TO_ONE;_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>
       </SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.render;$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.content_pipeline;$(SolutionDir)/../../src/wolf.media_core;$(SolutionDir)/../../deps/ffmpeg/include;$(SolutionDir)/../../deps/tbb/oss/windows/include;$(SolutionDir)/../../deps/nanomsg/include/;$(SolutionDir)/../../deps/vulkan/include;$(SolutionDir)/../../deps/curl/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.render;$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.content_pipeline;$(SolutionDir)/../../src/wolf.media_core;$(SolutionDir)/../../deps/ffmpeg/include;$(SolutionDir)/../../deps/tbb/oss/windows/include;$(SolutionDir)/../../deps/nanomsg/include/;$(SolutionDir)/../../deps/libjpeg-turbo/include;$(SolutionDir)/../../deps/vulkan/include;$(SolutionDir)/../../deps/curl/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
       <LanguageStandard>stdcpp14</LanguageStandard>
@@ -114,8 +114,8 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)/../../deps/tbb/oss/windows/lib/intel64/vc14;$(SolutionDir)/../../deps/lua/lua;$(SolutionDir)/../../deps/ffmpeg/lib/windows/x64;$(SolutionDir)/../../deps/nanomsg/lib/vc14/x64/debug;$(SolutionDir)/../../deps/vulkan/lib/windows/x64;$(SolutionDir)/../../deps/curl/libs/windows/x64/debug</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Kernel32.lib;vulkan-1.lib;avformat.lib;avcodec.lib;avutil.lib;swscale.lib;swresample.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)/../../deps/tbb/oss/windows/lib/intel64/vc14;$(SolutionDir)/../../deps/lua/lua;$(SolutionDir)/../../deps/ffmpeg/lib/windows/x64;$(SolutionDir)/../../deps/nanomsg/lib/vc14/x64/debug;$(SolutionDir)/../../deps/libjpeg-turbo/lib/windows/x64/debug;$(SolutionDir)/../../deps/vulkan/lib/windows/x64;$(SolutionDir)/../../deps/curl/libs/windows/x64/debug</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Kernel32.lib;vulkan-1.lib;avformat.lib;avcodec.lib;avutil.lib;swscale.lib;swresample.lib;jpeg-static.lib;turbojpeg-static.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Manifest>
       <AdditionalManifestFiles>$(SolutionDir)/../../../manifest.manifest</AdditionalManifestFiles>
