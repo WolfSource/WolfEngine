@@ -883,7 +883,7 @@ namespace wolf
 				-1 means the file could not be opened for reading
 				-2 means internal function error
 			*/
-			inline uint8_t* read_png_from_stream(_Inout_ std::ifstream& pStream,
+			inline uint8_t* read_png_from_stream(_Inout_ std::istream& pStream,
 				_Out_ uint32_t& pWidth,
 				_Out_ uint32_t& pHeight,
 				_Out_ uint8_t& pColorType,
