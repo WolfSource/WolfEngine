@@ -805,49 +805,37 @@ namespace wolf
 				pBuffer = nullptr;
 			}
 
-			/*
-				Check is png
-				return value indicates to state
-				 0 means the file is png
-				 1 means the file is not png
-				-1 means the stream is not good
-			*/
-			inline int is_png_file(_Inout_ std::istream& pStream)
+			//Check is png
+			inline W_RESULT is_png_file(_Inout_ std::istream& pStream)
 			{
 				const int _png_paging_size = 8;
 				png_byte _header[_png_paging_size];
 
 				pStream.read((char*)_header, _png_paging_size);
 
-				if (!pStream.good()) return -1;
+				if (!pStream.good()) return W_INVALID_FILE_ATTRIBUTES;
 
 				//check for png
 				auto _hr = png_sig_cmp(_header, 0, _png_paging_size);
 				//seek to first of stream
 				pStream.seekg(0, std::ios::beg);
 
-				return _hr;
+				return _hr == 0 ? W_PASSED : W_FAILED;
 			}
 
-			/*
-				Check is png
-				return value indicates to state 
-				 0 means the file is png
-				 1 means the file is not png
-				-1 means the file could not be opened for reading or croupted
-			*/
-			inline int is_png_file(_In_z_ const char* pFilePath)
+			//Check is png
+			inline W_RESULT is_png_file(_In_z_ const char* pFilePath)
 			{
 				std::ifstream _file(pFilePath, std::ios::binary);
 				if (!_file)
 				{
 					//file is exist but it might be corrupted
-					return -2;
+					return W_INVALID_FILE_ATTRIBUTES;
 				}			
 				auto _hr = is_png_file(_file);
 				_file.close();
 
-				return _hr;
+				return _hr == 0 ? W_PASSED : W_FAILED;
 			}
 
 			inline void png_user_read_data(
@@ -1205,7 +1193,6 @@ namespace wolf
 			inline void free_jpeg_buffer(_Inout_ uint8_t* pBuffer)
 			{
 				tjFree(pBuffer);
-				pBuffer = nullptr;
 			}
 
 			/*
