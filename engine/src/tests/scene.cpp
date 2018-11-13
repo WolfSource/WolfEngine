@@ -65,7 +65,7 @@ scene::scene(_In_z_ const std::wstring& pContentPath, _In_ const system::w_logge
 	_url.request_url("https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/master/Logo.jpg", _url_result_buffer);
 	
 	std::istringstream _str_stream(_url_result_buffer);
-	auto _pixels = wolf::system::io::read_jpeg_from_stream(
+	auto _pixels_ = wolf::system::io::read_jpeg_from_stream(
 		_str_stream,
 		_width,
 		_height,

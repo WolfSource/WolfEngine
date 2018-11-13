@@ -866,8 +866,8 @@ namespace wolf
 				-2 means internal function error
 			*/
 			inline uint8_t* read_png_from_stream(_Inout_ std::istream& pStream,
-				_Out_ uint32_t& pWidth,
-				_Out_ uint32_t& pHeight,
+				_Out_ int& pWidth,
+				_Out_ int& pHeight,
 				_Out_ uint8_t& pColorType,
 				_Out_ uint8_t& pBitDepth,
 				_Out_ int& pNumberOfPasses,
@@ -921,8 +921,8 @@ namespace wolf
 				png_set_sig_bytes(_png_ptr, _png_paging_size);
 				png_read_info(_png_ptr, _info_ptr);
 
-				pWidth = png_get_image_width(_png_ptr, _info_ptr);
-				pHeight = png_get_image_height(_png_ptr, _info_ptr);
+				pWidth = (int)png_get_image_width(_png_ptr, _info_ptr);
+				pHeight = (int)png_get_image_height(_png_ptr, _info_ptr);
 				pColorType = png_get_color_type(_png_ptr, _info_ptr);
 				pBitDepth = png_get_bit_depth(_png_ptr, _info_ptr);
 				pNumberOfPasses = png_set_interlace_handling(_png_ptr);
@@ -936,7 +936,7 @@ namespace wolf
 				}
 
 				auto _row_pointers = (png_bytep*)malloc(sizeof(png_bytep) * pHeight);
-				for (uint32_t j = 0; j < pHeight; ++j)
+				for (int j = 0; j < pHeight; ++j)
 				{
 					_row_pointers[j] = (png_byte*)malloc(png_get_rowbytes(_png_ptr, _info_ptr));
 				}
@@ -955,8 +955,8 @@ namespace wolf
 				-2 means internal function error
 			*/
 			inline uint8_t* read_png_from_file(_In_z_ const char* pFilePath,
-				_Out_ uint32_t& pWidth,
-				_Out_ uint32_t& pHeight,
+				_Out_ int& pWidth,
+				_Out_ int& pHeight,
 				_Out_ uint8_t& pColorType,
 				_Out_ uint8_t& pBitDepth,
 				_Out_ int& pNumberOfPasses,
@@ -993,8 +993,8 @@ namespace wolf
 			inline void write_png_to_file(
 				_In_z_ const char* pFilePath,
 				_In_ const uint8_t* pPixels, 
-				_In_ const uint32_t& pWidth,
-				_In_ const uint32_t& pHeight,
+				_In_ const int& pWidth,
+				_In_ const int& pHeight,
 				_In_ const uint8_t& pColorType,
 				_In_ const uint8_t& pBitDepth,
 				_Out_ int& pState)
@@ -1102,8 +1102,8 @@ namespace wolf
 			inline void write_png_to_stream(
 				_Inout_ std::ostream& pStream,
 				_In_ const uint8_t* pPixels,
-				_In_ const uint32_t& pWidth,
-				_In_ const uint32_t& pHeight,
+				_In_ const int& pWidth,
+				_In_ const int& pHeight,
 				_In_ const uint8_t& pColorType,
 				_In_ const uint8_t& pBitDepth,
 				_Out_ int& pState)
@@ -1283,17 +1283,17 @@ namespace wolf
 			*/
 			inline uint8_t* read_jpeg_from_stream(
 				_In_z_ std::istream& pStream,
-				_Out_ uint32_t& pWidth,
-				_Out_ uint32_t& pHeight,
+				_Out_ int& pWidth,
+				_Out_ int& pHeight,
 				_Out_ int& pSubSample,
 				_Out_ int& pColorSpace,
 				_Out_ int& pNumberOfPasses,
 				_Out_ int& pState,
-				_In_ const TJPF& pComponents = TJPF_RGB)
+				_In_ const TJPF& pPixelFormat = TJPF_RGB)
 			{
 				pState = 0;
 
-				if (pComponents == TJPF_UNKNOWN)
+				if (pPixelFormat == TJPF_UNKNOWN)
 				{
 					pState = -2;
 					return nullptr;
@@ -1331,13 +1331,12 @@ namespace wolf
 					return nullptr;
 				}
 
-				int _w = 0, _h = 0;
 				if (tjDecompressHeader3(
 					_tj_instance,
 					_jpeg_buffer,
 					_jpeg_buffer_len,
-					&_w,
-					&_h,
+					&pWidth,
+					&pHeight,
 					&pSubSample,
 					&pColorSpace))
 				{
@@ -1346,11 +1345,8 @@ namespace wolf
 					return nullptr;
 				}
 
-				pWidth = static_cast<int>(_w);
-				pHeight = static_cast<int>(_h);
-
 				auto _comp = 4;
-				switch (pComponents)
+				switch (pPixelFormat)
 				{
 				case TJPF_RGB:
 				case TJPF_BGR:
@@ -1359,16 +1355,16 @@ namespace wolf
 				}
 
 				//TODO: should be alligned_malloc
-				auto _pixels = (uint8_t*)malloc(pComponents * pWidth * pHeight * sizeof(uint8_t));
+				auto _pixels = (uint8_t*)malloc(_comp * pWidth * pHeight * sizeof(uint8_t));
 				auto _hr = tjDecompress2(
 					_tj_instance,
 					_jpeg_buffer,
 					_jpeg_buffer_len,
 					_pixels,
 					pWidth,
-					pComponents * pWidth,
+					_comp * pWidth,
 					pHeight,
-					pComponents,
+					pPixelFormat,
 					0);
 
 				tjFree(_jpeg_buffer);
