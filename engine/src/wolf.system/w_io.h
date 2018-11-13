@@ -799,12 +799,6 @@ namespace wolf
 
 #pragma region PNG Methods
 
-			inline void free_png_buffer(_Inout_ uint8_t* pBuffer)
-			{
-				free(pBuffer);
-				pBuffer = nullptr;
-			}
-
 			//Check is png
 			inline W_RESULT is_png_file(_Inout_ std::istream& pStream)
 			{
@@ -1190,11 +1184,6 @@ namespace wolf
 
 #pragma region JPG Methods
 
-			inline void free_jpeg_buffer(_Inout_ uint8_t* pBuffer)
-			{
-				tjFree(pBuffer);
-			}
-
 			/*
 				read jpg from file
 				pState indicates the state
@@ -1294,19 +1283,26 @@ namespace wolf
 			*/
 			inline uint8_t* read_jpeg_from_stream(
 				_In_z_ std::istream& pStream,
-				_Out_ int& pWidth,
-				_Out_ int& pHeight,
+				_Out_ uint32_t& pWidth,
+				_Out_ uint32_t& pHeight,
 				_Out_ int& pSubSample,
 				_Out_ int& pColorSpace,
 				_Out_ int& pNumberOfPasses,
-				_Out_ int& pState)
+				_Out_ int& pState,
+				_In_ const TJPF& pComponents = TJPF_RGB)
 			{
 				pState = 0;
 
+				if (pComponents == TJPF_UNKNOWN)
+				{
+					pState = -2;
+					return nullptr;
+				}
+
 				//find size of file
 				pStream.seekg(0, std::ios::end);
-				unsigned long _size = static_cast<unsigned long>(pStream.tellg());
-				if (_size <= 0)
+				unsigned long _jpeg_buffer_len = static_cast<unsigned long>(pStream.tellg());
+				if (_jpeg_buffer_len <= 0)
 				{
 					pState = -1;
 					return nullptr;
@@ -1314,14 +1310,14 @@ namespace wolf
 
 				//go to begin 
 				pStream.seekg(0, std::ios::beg);
-				auto _pixels = (uint8_t*)tjAlloc(_size);
-				if (!_pixels)
+				auto _jpeg_buffer = (uint8_t*)tjAlloc(_jpeg_buffer_len);
+				if (!_jpeg_buffer)
 				{
 					pState = -2;
 					return nullptr;
 				}
 
-				pStream.read((char*)_pixels, _size);
+				pStream.read((char*)_jpeg_buffer, _jpeg_buffer_len);
 				if (!pStream.good())
 				{
 					pState = -1;
@@ -1335,20 +1331,55 @@ namespace wolf
 					return nullptr;
 				}
 
+				int _w = 0, _h = 0;
 				if (tjDecompressHeader3(
 					_tj_instance,
-					_pixels,
-					_size,
-					&pWidth,
-					&pHeight,
+					_jpeg_buffer,
+					_jpeg_buffer_len,
+					&_w,
+					&_h,
 					&pSubSample,
-					&pColorSpace) < 0)
+					&pColorSpace))
 				{
 					pState = 1;
-					tjFree(_pixels);
+					free(_jpeg_buffer);
 					return nullptr;
 				}
 
+				pWidth = static_cast<int>(_w);
+				pHeight = static_cast<int>(_h);
+
+				auto _comp = 4;
+				switch (pComponents)
+				{
+				case TJPF_RGB:
+				case TJPF_BGR:
+					_comp = 3;
+					break;
+				}
+
+				//TODO: should be alligned_malloc
+				auto _pixels = (uint8_t*)malloc(pComponents * pWidth * pHeight * sizeof(uint8_t));
+				auto _hr = tjDecompress2(
+					_tj_instance,
+					_jpeg_buffer,
+					_jpeg_buffer_len,
+					_pixels,
+					pWidth,
+					pComponents * pWidth,
+					pHeight,
+					pComponents,
+					0);
+
+				tjFree(_jpeg_buffer);
+				tjDestroy(_tj_instance);
+
+				if (_hr)
+				{
+					pState = -2;
+					return nullptr;
+				}
+				
 				return _pixels;
 			}
 
