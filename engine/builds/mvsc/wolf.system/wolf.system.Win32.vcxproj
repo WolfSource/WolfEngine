@@ -19,6 +19,701 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\amigaos.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\asyn-ares.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\asyn-thread.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\base64.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\conncache.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\connect.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\content_encoding.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\cookie.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\curl_addrinfo.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\curl_ctype.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\curl_des.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\curl_endian.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\curl_fnmatch.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\curl_gethostname.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\curl_gssapi.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\curl_memrchr.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\curl_multibyte.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\curl_ntlm_core.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\curl_ntlm_wb.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\curl_path.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\curl_range.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\curl_rtmp.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\curl_sasl.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\curl_sspi.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\curl_threads.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\dict.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\doh.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\dotdot.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\easy.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\escape.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\file.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\fileinfo.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\formdata.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\ftp.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\ftplistparser.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\getenv.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\getinfo.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\gopher.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\hash.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\hmac.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\hostasyn.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\hostcheck.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\hostip.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\hostip4.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\hostip6.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\hostsyn.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\http.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\http2.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\http_chunks.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\http_digest.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\http_negotiate.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\http_ntlm.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\http_proxy.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\idn_win32.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\if2ip.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\imap.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\inet_ntop.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\inet_pton.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\krb5.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\ldap.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\llist.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\md4.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\md5.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\memdebug.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\mime.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\mprintf.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\multi.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\netrc.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\non-ascii.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\nonblock.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\nwlib.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\nwos.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\openldap.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\parsedate.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\pingpong.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\pipeline.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\pop3.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\progress.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\psl.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\rand.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\rtsp.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\security.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\select.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\sendf.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\setopt.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\sha256.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\share.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\slist.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\smb.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\smtp.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\socks.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\socks_gssapi.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\socks_sspi.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\speedcheck.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\splay.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\ssh-libssh.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\ssh.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\strcase.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\strdup.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\strerror.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\strtok.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\strtoofft.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\system_win32.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\telnet.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\tftp.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\timeval.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\transfer.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\url.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\urlapi.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vauth\cleartext.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vauth\cram.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vauth\digest.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vauth\digest_sspi.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vauth\krb5_gssapi.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vauth\krb5_sspi.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vauth\ntlm.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vauth\ntlm_sspi.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vauth\oauth2.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vauth\spnego_gssapi.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vauth\spnego_sspi.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vauth\vauth.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\version.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vtls\axtls.c">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vtls\cyassl.c">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vtls\darwinssl.c">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vtls\gskit.c">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vtls\gtls.c">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vtls\mbedtls.c">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vtls\mesalink.c">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vtls\nss.c">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vtls\openssl.c">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vtls\polarssl.c">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vtls\polarssl_threadlock.c">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vtls\schannel.c">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vtls\schannel_verify.c">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vtls\vtls.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\warnless.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\wildcard.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\x509asn1.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DisableSpecificWarnings>
+    </ClCompile>
     <ClCompile Include="..\..\..\src\wolf.system\dllmain.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\glm\detail\glm.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\libpng\src\png.c" />
@@ -64,6 +759,7 @@
     <ClCompile Include="..\..\..\src\wolf.system\w_thread.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_thread_pool.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_time_span.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.system\w_url.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_window.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_xml.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\zlib\src\adler32.c" />
@@ -84,6 +780,142 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\wolf.system\asio.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\curl.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\curlver.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\easy.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\mprintf.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\multi.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\amigaos.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\arpa_telnet.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\asyn.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\config-win32.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\conncache.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\connect.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\content_encoding.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\cookie.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curlx.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_addrinfo.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_base64.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_config.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_ctype.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_des.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_endian.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_fnmatch.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_gethostname.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_gssapi.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_hmac.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_ldap.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_md4.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_md5.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_memory.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_memrchr.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_multibyte.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_ntlm_core.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_ntlm_wb.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_path.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_printf.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_range.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_rtmp.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_sasl.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_sec.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_setup.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_setup_once.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_sha256.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_sspi.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_threads.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\dict.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\doh.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\dotdot.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\easyif.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\escape.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\file.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\fileinfo.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\formdata.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\ftp.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\ftplistparser.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\getinfo.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\gopher.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\hash.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\hostcheck.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\hostip.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\http.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\http2.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\http_chunks.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\http_digest.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\http_negotiate.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\http_ntlm.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\http_proxy.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\if2ip.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\imap.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\inet_ntop.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\inet_pton.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\llist.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\memdebug.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\mime.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\multihandle.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\multiif.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\netrc.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\non-ascii.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\nonblock.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\parsedate.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\pingpong.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\pipeline.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\pop3.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\progress.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\psl.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\rand.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\rtsp.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\select.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\sendf.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\setopt.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\setup-os400.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\setup-vms.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\share.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\sigpipe.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\slist.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\smb.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\smtp.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\sockaddr.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\socks.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\speedcheck.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\splay.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\ssh.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\strcase.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\strdup.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\strerror.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\strtok.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\strtoofft.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\system_win32.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\telnet.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\tftp.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\timeval.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\transfer.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\url.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\urlapi-int.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\urldata.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\vauth\digest.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\vauth\ntlm.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\vauth\vauth.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\vtls\axtls.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\vtls\cyassl.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\vtls\darwinssl.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\vtls\gskit.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\vtls\gtls.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\vtls\mbedtls.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\vtls\mesalink.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\vtls\nssg.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\vtls\openssl.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\vtls\polarssl.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\vtls\polarssl_threadlock.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\vtls\schannel.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\vtls\vtls.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\warnless.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\wildcard.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\x509asn1.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\stdcheaders.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\system.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\typecheck-gcc.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\urlapi.h" />
     <ClInclude Include="..\..\..\src\wolf.system\gli\clear.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\gli\comparison.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\gli\convert.hpp" />
@@ -375,6 +1207,7 @@
     <ClInclude Include="..\..\..\src\wolf.system\w_timer.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_timer_callback.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_time_span.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\w_url.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_window.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_xml.h" />
     <ClInclude Include="..\..\..\src\wolf.system\zlib\src\crc32.h" />
@@ -390,6 +1223,7 @@
     <ClInclude Include="..\..\..\src\wolf.system\zlib\zlib.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\..\src\wolf.system\curl\src\curl_config.h.in" />
     <None Include="..\..\..\src\wolf.system\gli\core\clear.inl" />
     <None Include="..\..\..\src\wolf.system\gli\core\comparison.inl" />
     <None Include="..\..\..\src\wolf.system\gli\core\convert.inl" />
@@ -665,8 +1499,8 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../deps/luaJIT/include;$(SolutionDir)/../../deps/nanomsg/include;$(SolutionDir)/../../deps/libjpeg-turbo/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_DEBUG;_WINDLL;__WIN32;__WOLF_SYSTEM__;GLM_FORCE_DEPTH_ZERO_TO_ONE;ASIO_STANDALONE;NN_HAVE_WINDOWS;NN_STATIC_LIB;NN_HAVE_CONDVAR=1;NN_MAX_SOCKETS=512;__LUA__;LZ4_DLL_EXPORT;NO_FSEEKO;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.system/curl/src/;$(SolutionDir)/../../deps/luaJIT/include;$(SolutionDir)/../../deps/nanomsg/include;$(SolutionDir)/../../deps/libjpeg-turbo/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;WIN32;__WIN32;_USRDLL;_WINDLL;__WOLF_SYSTEM__;GLM_FORCE_DEPTH_ZERO_TO_ONE;ASIO_STANDALONE;NN_HAVE_WINDOWS;NN_STATIC_LIB;NN_HAVE_CONDVAR=1;NN_MAX_SOCKETS=512;__LUA__;LZ4_DLL_EXPORT;NO_FSEEKO;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;BUILDING_LIBCURL;CURL_HIDDEN_SYMBOLS;HAVE_CONFIG_H;PNG_NO_CONFIG_H;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
@@ -686,7 +1520,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>true</AssemblyDebug>
       <AdditionalLibraryDirectories>$(SolutionDir)/../../deps/luaJIT/lib/windows/x64/debug;$(SolutionDir)/../../deps/nanomsg/lib/windows/x64/debug;$(SolutionDir)/../../deps/libjpeg-turbo/lib/windows/x64/debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Kernel32.lib;advapi32.lib;ws2_32.lib;mswsock.lib;nanomsg.lib;luajit-static.lib;jpeg-static.lib;turbojpeg-static.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Kernel32.lib;advapi32.lib;ws2_32.lib;wldap32.lib;winmm.lib;crypt32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;mswsock.lib;nanomsg.lib;luajit-static.lib;jpeg-static.lib;turbojpeg-static.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

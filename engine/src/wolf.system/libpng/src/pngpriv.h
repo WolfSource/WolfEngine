@@ -57,7 +57,7 @@
  * special build system support on a reasonably ANSI-C compliant system.
  */
 #if defined(HAVE_CONFIG_H) && !defined(PNG_NO_CONFIG_H)
-#  include <config.h>
+#  include "config.h"
 
    /* Pick up the definition of 'restrict' from config.h if it was read: */
 #  define PNG_RESTRICT restrict

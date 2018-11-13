@@ -126,6 +126,424 @@
     <ClCompile Include="..\..\..\src\wolf.system\libpng\src\pngrtran.c">
       <Filter>libpng\src</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vauth\cleartext.c">
+      <Filter>curl\src\vauth</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vauth\cram.c">
+      <Filter>curl\src\vauth</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vauth\digest.c">
+      <Filter>curl\src\vauth</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vauth\digest_sspi.c">
+      <Filter>curl\src\vauth</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vauth\krb5_gssapi.c">
+      <Filter>curl\src\vauth</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vauth\krb5_sspi.c">
+      <Filter>curl\src\vauth</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vauth\ntlm.c">
+      <Filter>curl\src\vauth</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vauth\ntlm_sspi.c">
+      <Filter>curl\src\vauth</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vauth\oauth2.c">
+      <Filter>curl\src\vauth</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vauth\spnego_gssapi.c">
+      <Filter>curl\src\vauth</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vauth\spnego_sspi.c">
+      <Filter>curl\src\vauth</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vauth\vauth.c">
+      <Filter>curl\src\vauth</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vtls\axtls.c">
+      <Filter>curl\src\vtls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vtls\cyassl.c">
+      <Filter>curl\src\vtls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vtls\darwinssl.c">
+      <Filter>curl\src\vtls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vtls\gskit.c">
+      <Filter>curl\src\vtls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vtls\gtls.c">
+      <Filter>curl\src\vtls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vtls\mbedtls.c">
+      <Filter>curl\src\vtls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vtls\mesalink.c">
+      <Filter>curl\src\vtls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vtls\nss.c">
+      <Filter>curl\src\vtls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vtls\openssl.c">
+      <Filter>curl\src\vtls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vtls\polarssl.c">
+      <Filter>curl\src\vtls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vtls\polarssl_threadlock.c">
+      <Filter>curl\src\vtls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vtls\schannel.c">
+      <Filter>curl\src\vtls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vtls\schannel_verify.c">
+      <Filter>curl\src\vtls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vtls\vtls.c">
+      <Filter>curl\src\vtls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\amigaos.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\asyn-ares.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\asyn-thread.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\base64.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\conncache.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\connect.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\content_encoding.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\cookie.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\curl_addrinfo.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\curl_ctype.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\curl_des.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\curl_endian.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\curl_fnmatch.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\curl_gethostname.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\curl_gssapi.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\curl_memrchr.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\curl_multibyte.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\curl_ntlm_core.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\curl_ntlm_wb.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\curl_path.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\curl_range.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\curl_rtmp.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\curl_sasl.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\curl_sspi.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\curl_threads.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\dict.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\doh.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\dotdot.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\easy.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\escape.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\file.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\fileinfo.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\formdata.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\ftp.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\ftplistparser.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\getenv.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\getinfo.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\gopher.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\hash.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\hmac.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\hostasyn.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\hostcheck.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\hostip.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\hostip4.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\hostip6.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\hostsyn.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\http.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\http_chunks.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\http_digest.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\http_negotiate.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\http_ntlm.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\http_proxy.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\http2.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\idn_win32.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\if2ip.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\imap.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\inet_ntop.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\inet_pton.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\krb5.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\ldap.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\llist.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\md4.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\md5.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\memdebug.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\mime.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\mprintf.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\multi.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\netrc.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\non-ascii.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\nonblock.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\nwlib.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\nwos.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\openldap.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\parsedate.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\pingpong.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\pipeline.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\pop3.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\progress.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\psl.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\rand.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\rtsp.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\security.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\select.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\sendf.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\setopt.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\sha256.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\share.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\slist.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\smb.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\smtp.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\socks.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\socks_gssapi.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\socks_sspi.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\speedcheck.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\splay.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\ssh.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\ssh-libssh.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\strcase.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\strdup.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\strerror.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\strtok.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\strtoofft.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\system_win32.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\telnet.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\tftp.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\timeval.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\transfer.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\url.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\urlapi.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\version.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\warnless.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\wildcard.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\x509asn1.c">
+      <Filter>curl\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\w_url.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\wolf.system\w_allocator.h" />
@@ -959,6 +1377,415 @@
     <ClInclude Include="..\..\..\src\wolf.system\libpng\src\pngstruct.h">
       <Filter>libpng\src</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\curl.h">
+      <Filter>curl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\curlver.h">
+      <Filter>curl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\easy.h">
+      <Filter>curl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\mprintf.h">
+      <Filter>curl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\multi.h">
+      <Filter>curl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\stdcheaders.h">
+      <Filter>curl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\system.h">
+      <Filter>curl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\typecheck-gcc.h">
+      <Filter>curl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\urlapi.h">
+      <Filter>curl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\vauth\digest.h">
+      <Filter>curl\src\vauth</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\vauth\ntlm.h">
+      <Filter>curl\src\vauth</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\vauth\vauth.h">
+      <Filter>curl\src\vauth</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\vtls\axtls.h">
+      <Filter>curl\src\vtls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\vtls\cyassl.h">
+      <Filter>curl\src\vtls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\vtls\darwinssl.h">
+      <Filter>curl\src\vtls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\vtls\gskit.h">
+      <Filter>curl\src\vtls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\vtls\gtls.h">
+      <Filter>curl\src\vtls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\vtls\mbedtls.h">
+      <Filter>curl\src\vtls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\vtls\mesalink.h">
+      <Filter>curl\src\vtls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\vtls\nssg.h">
+      <Filter>curl\src\vtls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\vtls\openssl.h">
+      <Filter>curl\src\vtls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\vtls\polarssl.h">
+      <Filter>curl\src\vtls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\vtls\polarssl_threadlock.h">
+      <Filter>curl\src\vtls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\vtls\schannel.h">
+      <Filter>curl\src\vtls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\vtls\vtls.h">
+      <Filter>curl\src\vtls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\amigaos.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\arpa_telnet.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\asyn.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\config-win32.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\conncache.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\connect.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\content_encoding.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\cookie.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_addrinfo.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_base64.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_config.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_ctype.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_des.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_endian.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_fnmatch.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_gethostname.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_gssapi.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_hmac.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_ldap.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_md4.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_md5.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_memory.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_memrchr.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_multibyte.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_ntlm_core.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_ntlm_wb.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_path.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_printf.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_range.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_rtmp.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_sasl.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_sec.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_setup.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_setup_once.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_sha256.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_sspi.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_threads.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curlx.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\dict.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\doh.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\dotdot.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\easyif.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\escape.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\file.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\fileinfo.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\formdata.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\ftp.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\ftplistparser.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\getinfo.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\gopher.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\hash.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\hostcheck.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\hostip.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\http.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\http_chunks.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\http_digest.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\http_negotiate.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\http_ntlm.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\http_proxy.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\http2.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\if2ip.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\imap.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\inet_ntop.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\inet_pton.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\llist.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\memdebug.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\mime.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\multihandle.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\multiif.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\netrc.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\non-ascii.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\nonblock.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\parsedate.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\pingpong.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\pipeline.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\pop3.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\progress.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\psl.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\rand.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\rtsp.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\select.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\sendf.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\setopt.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\setup-os400.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\setup-vms.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\share.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\sigpipe.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\slist.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\smb.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\smtp.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\sockaddr.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\socks.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\speedcheck.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\splay.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\ssh.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\strcase.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\strdup.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\strerror.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\strtok.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\strtoofft.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\system_win32.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\telnet.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\tftp.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\timeval.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\transfer.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\url.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\urlapi-int.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\urldata.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\warnless.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\wildcard.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\x509asn1.h">
+      <Filter>curl\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\w_url.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="rapidxml">
@@ -1014,6 +1841,18 @@
     </Filter>
     <Filter Include="libpng\src">
       <UniqueIdentifier>{f533a687-30f8-4b02-bd6c-1d6321b2b281}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="curl">
+      <UniqueIdentifier>{b8fbfa8e-0869-4937-9121-ea85fcb657ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="curl\src">
+      <UniqueIdentifier>{6d22db2d-49fc-4421-b330-c864f05c893d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="curl\src\vtls">
+      <UniqueIdentifier>{7a0ee3a7-b8c9-4eba-ae00-536b4bc57eed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="curl\src\vauth">
+      <UniqueIdentifier>{03e39b23-e6ac-4ee6-8e67-b605a34a8a37}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1505,6 +2344,9 @@
     </None>
     <None Include="..\..\..\src\wolf.system\libpng\src\LICENSE">
       <Filter>libpng\src</Filter>
+    </None>
+    <None Include="..\..\..\src\wolf.system\curl\src\curl_config.h.in">
+      <Filter>curl\src</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

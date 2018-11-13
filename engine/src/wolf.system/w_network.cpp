@@ -511,12 +511,12 @@ ULONG w_network::release()
     return _super::release();
 }
 
-int w_network::send(_In_ const int& pSocketID, _In_z_ const char* pMessage, _In_ const size_t& pMessageSize)
+int w_network::nano_send(_In_ const int& pSocketID, _In_z_ const char* pMessage, _In_ const size_t& pMessageSize)
 {
     return nn_send(pSocketID, pMessage, pMessageSize, 0);
 }
 
-int w_network::receive(_In_ const int& pSocketID, _In_opt_z_ char** pBuffer)
+int w_network::nano_receive(_In_ const int& pSocketID, _In_opt_z_ char** pBuffer)
 {
     return nn_recv(pSocketID, pBuffer, NN_MSG, 0);
 }

@@ -169,20 +169,20 @@ namespace wolf
             WSYS_EXP ULONG release();
 
             /*
-                send message via socket
+                send message via nano msg socket
                 @param pSocketID, the id of socket object
                 @param pMessage, the message you want to send
                 @return, number of bytes sent
             */
-            WSYS_EXP static int send(_In_ const int& pSocketID, _In_z_ const char* pMessage, _In_ const size_t& pMessageSize);
+            WSYS_EXP static int nano_send(_In_ const int& pSocketID, _In_z_ const char* pMessage, _In_ const size_t& pMessageSize);
 
             /*
-                receive buffer via socket
+                receive buffer via nano msg socket
                 @param pSocketID, the id of socket object
                 @param pBuffer, the buffer which will be received 
                 @return, number of bytes received 
             */
-            WSYS_EXP static int receive(_In_ const int& pSocketID, _Inout_z_ char** pBuffer);
+            WSYS_EXP static int nano_receive(_In_ const int& pSocketID, _Inout_z_ char** pBuffer);
 
 			//free message buffer
 			WSYS_EXP static W_RESULT free_buffer(_In_z_ char* pBuffer);

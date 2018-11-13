@@ -2,8 +2,7 @@
 #include "scene.h"
 #include <w_compress.hpp>
 #include <libpng/png.h>
-
-//#include <curl/curl.h>
+#include <w_url.h>
 
 using namespace wolf;
 using namespace wolf::system;
@@ -13,7 +12,6 @@ using namespace wolf::render::vulkan;
 scene::scene(_In_z_ const std::wstring& pContentPath, _In_ const system::w_logger_config& pLogConfig) :
 	w_game(pContentPath, pLogConfig)
 {
-
 	uint32_t _w, _h;
 	uint8_t _c, _d;
 	int _n;
@@ -61,25 +59,22 @@ scene::scene(_In_z_ const std::wstring& pContentPath, _In_ const system::w_logge
 		_pass,
 		_state);
 
-	    //CURL* curl;
-        //CURLcode res;
-        //
-        //curl = curl_easy_init();
-        //if(curl) {
-        //    curl_easy_setopt(curl, CURLOPT_URL, "https://");
-        //    /* example.com is redirected, so we tell libcurl to follow redirection */
-        //    curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
-        //    
-        //    /* Perform the request, res will get the return code */
-        //    res = curl_easy_perform(curl);
-        //    /* Check for errors */
-        //    if(res != CURLE_OK)
-        //        fprintf(stderr, "curl_easy_perform() failed: %s\n",
-        //                curl_easy_strerror(res));
-        //    
-        //    /* always cleanup */
-        //    curl_easy_cleanup(curl);
-        //}
+
+	std::string _url_result_buffer;
+	w_url _url;
+	_url.request_url("https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/master/Logo.jpg", _url_result_buffer);
+	
+	std::istringstream _str_stream(_url_result_buffer);
+	auto _pixels = wolf::system::io::read_jpeg_from_stream(
+		_str_stream,
+		_width,
+		_height,
+		_sub,
+		_col,
+		_pass,
+		_state);
+	_url.release();
+
 	char* _src = "This is test. Hey there. this is test. Salam. Pooya. Poooooooooya. Ryannnnnnn. Raaaaaaaaaayyyyyyyyyy";
 	int _compressed_size = 0;
 

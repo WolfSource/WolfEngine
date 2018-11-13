@@ -16,7 +16,7 @@ int compress_buffer_c(
 	if (!pCompressInfo || !pSrcBuffer || pCompressInfo->size_in == 0) return 1;
 	
 	//allocate size for compressed data
-	const int _max_dst_size = LZ4_compressBound(pCompressInfo->size_in);
+	const int _max_dst_size = LZ4_compressBound((int)(pCompressInfo->size_in));
 	pCompressInfo->data = malloc(_max_dst_size);
 	if (!pCompressInfo->data)
 	{
@@ -30,11 +30,20 @@ int compress_buffer_c(
 	int _compressed_buffer_size = -1;
 	if (pMode == W_FAST)
 	{
-		_compressed_buffer_size = LZ4_compress_fast_force(pSrcBuffer, pCompressInfo->data, pCompressInfo->size_in, _max_dst_size, pAcceleration);
+		_compressed_buffer_size = LZ4_compress_fast_force(
+			pSrcBuffer, 
+			pCompressInfo->data, 
+			pCompressInfo->size_in, 
+			_max_dst_size, 
+			pAcceleration);
 	}
 	else
 	{
-		_compressed_buffer_size = LZ4_compress_default(pSrcBuffer, pCompressInfo->data, pCompressInfo->size_in, _max_dst_size);
+		_compressed_buffer_size = LZ4_compress_default(
+			pSrcBuffer, 
+			pCompressInfo->data, 
+			(int)pCompressInfo->size_in, 
+			_max_dst_size);
 	}
 
 	if (_compressed_buffer_size > 0)
@@ -90,7 +99,7 @@ int decompress_buffer_c(
 				pCompressedBuffer,
 				&pDecompressInfo->data[0],
 				(int)pDecompressInfo->size_in,
-				_destination_capacity);
+				(int)_destination_capacity);
 		if (_decompressed_size >= 0)
 		{
 			break;
