@@ -995,9 +995,9 @@ namespace wolf
 				_In_ const uint8_t* pPixels, 
 				_In_ const int& pWidth,
 				_In_ const int& pHeight,
-				_In_ const uint8_t& pColorType,
 				_In_ const uint8_t& pBitDepth,
-				_Out_ int& pState)
+				_Out_ int& pState,
+				_In_ const uint8_t& pColorType = PNG_COLOR_TYPE_RGBA)
 			{
 				pState = 0;
 
@@ -1104,9 +1104,9 @@ namespace wolf
 				_In_ const uint8_t* pPixels,
 				_In_ const int& pWidth,
 				_In_ const int& pHeight,
-				_In_ const uint8_t& pColorType,
 				_In_ const uint8_t& pBitDepth,
-				_Out_ int& pState)
+				_Out_ int& pState,
+				_In_ const uint8_t& pColorType = PNG_COLOR_TYPE_RGBA)
 			{
 				pState = 0;
 
@@ -1184,94 +1184,6 @@ namespace wolf
 
 #pragma region JPG Methods
 
-			/*
-				read jpg from file
-				pState indicates the state
-				 0 means the succeded
-				 1 means file is not jpg
-				-1 means the file could not be opened for reading
-				-2 means internal function error
-			*/
-			inline uint8_t* read_jpeg_from_file(
-				_In_z_ const char* pFilePath,
-				_Out_ int& pWidth,
-				_Out_ int& pHeight,
-				_Out_ int& pSubSample,
-				_Out_ int& pColorSpace,
-				_Out_ int& pNumberOfPasses,
-				_Out_ int& pState)
-			{
-				pState = 0;
-
-#if defined(__WIN32) || defined(__UWP)
-				FILE* _file;
-				fopen_s(&_file, pFilePath, "rb");
-
-#else
-				FILE* _file = fopen(pFilePath, "rb");
-#endif
-				if (!_file)
-				{
-					pState = -1;
-					return nullptr;
-				}
-
-				unsigned long _size = 0;
-				if (fseek(_file, 0, SEEK_END) < 0 || ((_size = ftell(_file)) < 0) || fseek(_file, 0, SEEK_SET) < 0)
-				{
-					pState = -1;
-					fclose(_file);
-					return nullptr;
-				}
-
-				if (_size == 0)
-				{
-					pState = -1;
-					fclose(_file);
-					return nullptr;
-				}
-
-				auto _pixels = (uint8_t*)tjAlloc(_size);
-				if (!_pixels)
-				{
-					pState = -2;
-					fclose(_file);
-					return nullptr;
-				}
-
-				if (fread(_pixels, _size, 1, _file) < 1)
-				{
-					pState = -2;
-					fclose(_file);
-					return nullptr;
-				}
-
-				fclose(_file);  
-				_file = NULL;
-
-				auto _tj_instance = tjInitDecompress();
-				if (!_tj_instance)
-				{
-					pState = -2;
-					return nullptr;
-				}
-
-				if (tjDecompressHeader3(
-					_tj_instance,
-					_pixels,
-					_size,
-					&pWidth,
-					&pHeight,
-					&pSubSample,
-					&pColorSpace) < 0)
-				{
-					pState = 1;
-					tjFree(_pixels);
-					return nullptr;
-				}
-
-				return _pixels;
-			}
 
 			/*
 				read jpg from stream
@@ -1375,7 +1287,47 @@ namespace wolf
 					pState = -2;
 					return nullptr;
 				}
-				
+
+				return _pixels;
+			}
+
+			/*
+				read jpg from file
+				pState indicates the state
+				 0 means the succeded
+				 1 means file is not jpg
+				-1 means the file could not be opened for reading
+				-2 means internal function error
+			*/
+			inline uint8_t* read_jpeg_from_file(
+				_In_z_ const char* pFilePath,
+				_Out_ int& pWidth,
+				_Out_ int& pHeight,
+				_Out_ int& pSubSample,
+				_Out_ int& pColorSpace,
+				_Out_ int& pNumberOfPasses,
+				_Out_ int& pState,
+				_In_ const TJPF& pPixelFormat = TJPF_RGB)
+			{
+				pState = 0;
+
+				std::ifstream _file(pFilePath, std::ios::binary);
+				if (!_file)
+				{
+					pState = -1;
+					return nullptr;
+				}
+				auto _pixels = read_jpeg_from_stream(
+					_file,
+					pWidth,
+					pHeight,
+					pSubSample,
+					pColorSpace,
+					pNumberOfPasses,
+					pState,
+					pPixelFormat);
+				_file.close();
+
 				return _pixels;
 			}
 
