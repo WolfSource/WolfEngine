@@ -1180,6 +1180,7 @@
     <ClInclude Include="..\..\..\src\wolf.system\w_color.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_compress.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_compress.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\w_concurrent_queue.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_convert.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_cpu.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_memory_pool.h" />

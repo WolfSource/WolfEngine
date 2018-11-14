@@ -3,6 +3,7 @@
 #include <w_compress.hpp>
 #include <libpng/png.h>
 #include <w_url.h>
+#include <w_concurrent_queue.h>
 
 using namespace wolf;
 using namespace wolf::system;
@@ -12,6 +13,7 @@ using namespace wolf::render::vulkan;
 scene::scene(_In_z_ const std::wstring& pContentPath, _In_ const system::w_logger_config& pLogConfig) :
 	w_game(pContentPath, pLogConfig)
 {
+	
 	int _w, _h;
 	uint8_t _c, _d;
 	int _n;

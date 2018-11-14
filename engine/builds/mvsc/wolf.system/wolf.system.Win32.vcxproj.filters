@@ -1786,6 +1786,7 @@
       <Filter>curl\src</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\wolf.system\w_url.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\w_concurrent_queue.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="rapidxml">
