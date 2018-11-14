@@ -857,6 +857,8 @@ namespace wolf
 
 			//}
 
+			enum png_pixel_format { RGB = 0, BGR, RGBA, BGRA };
+
 			/*
 				read png from stream
 				pState indicates the state
@@ -871,7 +873,8 @@ namespace wolf
 				_Out_ uint8_t& pColorType,
 				_Out_ uint8_t& pBitDepth,
 				_Out_ int& pNumberOfPasses,
-				_Out_ int& pState)
+				_Out_ int& pState,
+				_In_ const png_pixel_format& pPixelFormat = png_pixel_format::RGBA)
 			{
 				pState = 0;
 
@@ -926,24 +929,163 @@ namespace wolf
 				pColorType = png_get_color_type(_png_ptr, _info_ptr);
 				pBitDepth = png_get_bit_depth(_png_ptr, _info_ptr);
 				pNumberOfPasses = png_set_interlace_handling(_png_ptr);
+
+				//check bit depth
+				if (pBitDepth == 16)
+				{
+					png_set_strip_16(_png_ptr);
+				}
+
+				if (pColorType == PNG_COLOR_TYPE_PALETTE)
+				{
+					png_set_palette_to_rgb(_png_ptr);
+				}
+
+				// PNG_COLOR_TYPE_GRAY_ALPHA is always 8 or 16 bit depth.
+				if (pColorType == PNG_COLOR_TYPE_GRAY && pBitDepth < 8)
+				{
+					png_set_expand_gray_1_2_4_to_8(_png_ptr);
+				}
+
+				if (png_get_valid(_png_ptr, _info_ptr, PNG_INFO_tRNS))
+				{
+					png_set_tRNS_to_alpha(_png_ptr);
+				}
+
+				// These color_type don't have an alpha channel then fill it with 0xff.
+				if (pColorType == PNG_COLOR_TYPE_RGB ||
+					pColorType == PNG_COLOR_TYPE_GRAY ||
+					pColorType == PNG_COLOR_TYPE_PALETTE)
+				{
+					png_set_filler(_png_ptr, 0xFF, PNG_FILLER_AFTER);
+				}
+
+				if (pColorType == PNG_COLOR_TYPE_GRAY || pColorType == PNG_COLOR_TYPE_GRAY_ALPHA)
+				{
+					png_set_gray_to_rgb(_png_ptr);
+				}
+
 				png_read_update_info(_png_ptr, _info_ptr);
 
-				//read file
-				if (setjmp(png_jmpbuf(_png_ptr)))
+				//now data must be rgba
+				auto _comp = 4;
+				if (pPixelFormat == png_pixel_format::RGB || 
+					pPixelFormat == png_pixel_format::BGR)
 				{
-					pState = -2;
-					return nullptr;
+					_comp = 3;
 				}
 
-				auto _row_pointers = (png_bytep*)malloc(sizeof(png_bytep) * pHeight);
-				for (int j = 0; j < pHeight; ++j)
+				//allocate memory
+				auto _pixels = (uint8_t*)malloc(_comp * pWidth * pHeight * sizeof(uint8_t));
+				auto _bytes_per_row = png_get_rowbytes(_png_ptr, _info_ptr);
+				auto _raw_data = (uint8_t*)malloc(_bytes_per_row * sizeof(uint8_t));
+
+				//pixels counter
+				uint32_t _k = 0;
+
+				//read single row at a time and then convert it to desired pixel format
+				switch (pPixelFormat)
 				{
-					_row_pointers[j] = (png_byte*)malloc(png_get_rowbytes(_png_ptr, _info_ptr));
-				}
-				png_read_image(_png_ptr, _row_pointers);
+				case png_pixel_format::RGB:
+					for (auto i = 0; i < pHeight; ++i)
+					{
+						png_read_row(_png_ptr, (png_bytep)_raw_data, NULL);
+
+						const auto _row_offset = i * pWidth;
+
+						uint32_t _byte_index = 0;
+						for (auto j = 0; j < pWidth; ++j)
+						{
+							const uint32_t _r = _raw_data[_byte_index++];
+							const uint32_t _g = _raw_data[_byte_index++];
+							const uint32_t _b = _raw_data[_byte_index++];
+							const uint32_t _a = _raw_data[_byte_index++];//ignored
+
+							_pixels[_k] = _r;
+							_pixels[_k + 1] = _g;
+							_pixels[_k + 2] = _b;
+
+							_k += _comp;
+						}
+					}
+					break;
+				case png_pixel_format::BGR:
+					for (auto i = 0; i < pHeight; ++i)
+					{
+						png_read_row(_png_ptr, (png_bytep)_raw_data, NULL);
+
+						const auto _row_offset = i * pWidth;
+
+						uint32_t _byte_index = 0;
+						for (auto j = 0; j < pWidth; ++j)
+						{
+							const uint32_t _r = _raw_data[_byte_index++];
+							const uint32_t _g = _raw_data[_byte_index++];
+							const uint32_t _b = _raw_data[_byte_index++];
+							const uint32_t _a = _raw_data[_byte_index++];//ignored
+
+							_pixels[_k] = _b;
+							_pixels[_k + 1] = _g;
+							_pixels[_k + 2] = _r;
+
+							_k += _comp;
+						}
+					}
+					break;
+				case png_pixel_format::RGBA:
+					for (auto i = 0; i < pHeight; ++i)
+					{
+						png_read_row(_png_ptr, (png_bytep)_raw_data, NULL);
+
+						const auto _row_offset = i * pWidth;
+
+						uint32_t _byte_index = 0;
+						for (auto j = 0; j < pWidth; ++j)
+						{
+							const uint32_t _r = _raw_data[_byte_index++];
+							const uint32_t _g = _raw_data[_byte_index++];
+							const uint32_t _b = _raw_data[_byte_index++];
+							const uint32_t _a = _raw_data[_byte_index++];//ignored
+
+							_pixels[_k] = _r;
+							_pixels[_k + 1] = _g;
+							_pixels[_k + 2] = _b;
+							_pixels[_k + 3] = _a;
+
+							_k += _comp;
+						}
+					}
+						break;
+				case png_pixel_format::BGRA:
+					for (auto i = 0; i < pHeight; ++i)
+					{
+						png_read_row(_png_ptr, (png_bytep)_raw_data, NULL);
+
+						const auto _row_offset = i * pWidth;
+
+						uint32_t _byte_index = 0;
+						for (auto j = 0; j < pWidth; ++j)
+						{
+							const uint32_t _r = _raw_data[_byte_index++];
+							const uint32_t _g = _raw_data[_byte_index++];
+							const uint32_t _b = _raw_data[_byte_index++];
+							const uint32_t _a = _raw_data[_byte_index++];//ignored
+
+							_pixels[_k] = _b;
+							_pixels[_k + 1] = _g;
+							_pixels[_k + 2] = _r;
+							_pixels[_k + 3] = _a;
+
+							_k += _comp;
+						}
+					}
+					break;
+				};
+				
 				png_destroy_read_struct(&_png_ptr, &_info_ptr, (png_infopp)0);
+				free(_raw_data);
 
-				return (uint8_t*)_row_pointers;
+				return _pixels;
 			}
 
 			/*
@@ -960,7 +1102,8 @@ namespace wolf
 				_Out_ uint8_t& pColorType,
 				_Out_ uint8_t& pBitDepth,
 				_Out_ int& pNumberOfPasses,
-				_Out_ int& pState)
+				_Out_ int& pState,
+				_In_ const png_pixel_format& pPixelFormat = png_pixel_format::RGBA)
 			{
 				pState = 0;
 
@@ -977,7 +1120,8 @@ namespace wolf
 					pColorType,
 					pBitDepth,
 					pNumberOfPasses,
-					pState);
+					pState,
+					pPixelFormat);
 				_file.close();
 
 				return _pixels;
@@ -990,106 +1134,105 @@ namespace wolf
 				-1 means file could not be opened for writing
 				-2 means internal function error
 			*/
-			inline void write_png_to_file(
-				_In_z_ const char* pFilePath,
-				_In_ const uint8_t* pPixels, 
-				_In_ const int& pWidth,
-				_In_ const int& pHeight,
-				_In_ const uint8_t& pBitDepth,
-				_Out_ int& pState,
-				_In_ const uint8_t& pColorType = PNG_COLOR_TYPE_RGBA)
-			{
-				pState = 0;
-
-				//create file
-#if defined(__WIN32) || defined(__UWP)
-				FILE* _file;
-				fopen_s(&_file, pFilePath, "wb");
-
-#else
-				FILE* _file = fopen(pFilePath, "wb");
-#endif
-				if (!_file)
-				{
-					pState = -1;
-					return;
-				}
-
-				//initialize stuff
-				auto _png_ptr = png_create_write_struct(
-					PNG_LIBPNG_VER_STRING, 
-					NULL, 
-					NULL, 
-					NULL);
-				if (!_png_ptr)
-				{
-					pState = -2;
-					fclose(_file);
-					return;
-				}
-
-				auto _info_ptr = png_create_info_struct(_png_ptr);
-				if (!_info_ptr)
-				{
-					pState = -2;
-					png_destroy_write_struct(&_png_ptr, &_info_ptr);
-					fclose(_file);
-					return;
-				}
-
-				if (setjmp(png_jmpbuf(_png_ptr)))
-				{
-					pState = -2;
-					png_destroy_write_struct(&_png_ptr, &_info_ptr);
-					fclose(_file);
-					return;
-				}
-				png_init_io(_png_ptr, _file);
-
-				//write header
-				if (setjmp(png_jmpbuf(_png_ptr)))
-				{
-					pState = -2;
-					png_destroy_write_struct(&_png_ptr, &_info_ptr);
-					fclose(_file);
-					return;
-				}
-
-				png_set_IHDR(
-					_png_ptr, 
-					_info_ptr, 
-					pWidth, 
-					pHeight,
-					pBitDepth, 
-					pColorType, 
-					PNG_INTERLACE_NONE,
-					PNG_COMPRESSION_TYPE_BASE, 
-					PNG_FILTER_TYPE_BASE);
-
-				png_write_info(_png_ptr, _info_ptr);
-				
-				//write bytes
-				if (setjmp(png_jmpbuf(_png_ptr)))
-				{
-					pState = -2;
-					png_destroy_write_struct(&_png_ptr, &_info_ptr);
-					fclose(_file);
-					return;
-				}
-				png_write_image(_png_ptr, (png_bytep*)pPixels);
-
-				//end write
-				if (setjmp(png_jmpbuf(_png_ptr)))
-				{
-					pState = -2;
-					png_destroy_write_struct(&_png_ptr, &_info_ptr);
-					fclose(_file);
-					return;
-				}
-				png_write_end(_png_ptr, NULL);
-				png_destroy_write_struct(&_png_ptr, &_info_ptr);
-				fclose(_file);
-			}
+//			inline void write_png_to_file(
+//				_In_z_ const char* pFilePath,
+//				_In_ const uint8_t* pPixels, 
+//				_In_ const int& pWidth,
+//				_In_ const int& pHeight,
+//				_In_ const uint8_t& pBitDepth,
+//				_Out_ int& pState)
+//			{
+//				pState = 0;
+//
+//				//create file
+//#if defined(__WIN32) || defined(__UWP)
+//				FILE* _file;
+//				fopen_s(&_file, pFilePath, "wb");
+//
+//#else
+//				FILE* _file = fopen(pFilePath, "wb");
+//#endif
+//				if (!_file)
+//				{
+//					pState = -1;
+//					return;
+//				}
+//
+//				//initialize stuff
+//				auto _png_ptr = png_create_write_struct(
+//					PNG_LIBPNG_VER_STRING, 
+//					NULL, 
+//					NULL, 
+//					NULL);
+//				if (!_png_ptr)
+//				{
+//					pState = -2;
+//					fclose(_file);
+//					return;
+//				}
+//
+//				auto _info_ptr = png_create_info_struct(_png_ptr);
+//				if (!_info_ptr)
+//				{
+//					pState = -2;
+//					png_destroy_write_struct(&_png_ptr, &_info_ptr);
+//					fclose(_file);
+//					return;
+//				}
+//
+//				if (setjmp(png_jmpbuf(_png_ptr)))
+//				{
+//					pState = -2;
+//					png_destroy_write_struct(&_png_ptr, &_info_ptr);
+//					fclose(_file);
+//					return;
+//				}
+//				png_init_io(_png_ptr, _file);
+//
+//				//write header
+//				if (setjmp(png_jmpbuf(_png_ptr)))
+//				{
+//					pState = -2;
+//					png_destroy_write_struct(&_png_ptr, &_info_ptr);
+//					fclose(_file);
+//					return;
+//				}
+//
+//				png_set_IHDR(
+//					_png_ptr, 
+//					_info_ptr, 
+//					pWidth, 
+//					pHeight,
+//					pBitDepth, 
+//					PNG_COLOR_TYPE_RGBA,
+//					PNG_INTERLACE_NONE,
+//					PNG_COMPRESSION_TYPE_BASE, 
+//					PNG_FILTER_TYPE_BASE);
+//
+//				png_write_info(_png_ptr, _info_ptr);
+//				
+//				//write bytes
+//				if (setjmp(png_jmpbuf(_png_ptr)))
+//				{
+//					pState = -2;
+//					png_destroy_write_struct(&_png_ptr, &_info_ptr);
+//					fclose(_file);
+//					return;
+//				}
+//				png_write_image(_png_ptr, (png_bytep*)pPixels);
+//
+//				//end write
+//				if (setjmp(png_jmpbuf(_png_ptr)))
+//				{
+//					pState = -2;
+//					png_destroy_write_struct(&_png_ptr, &_info_ptr);
+//					fclose(_file);
+//					return;
+//				}
+//				png_write_end(_png_ptr, NULL);
+//				png_destroy_write_struct(&_png_ptr, &_info_ptr);
+//				fclose(_file);
+//			}
 
 
 			/*
@@ -1099,86 +1242,85 @@ namespace wolf
 				-1 means file could not be opened for writing
 				-2 means internal function error
 			*/
-			inline void write_png_to_stream(
-				_Inout_ std::ostream& pStream,
-				_In_ const uint8_t* pPixels,
-				_In_ const int& pWidth,
-				_In_ const int& pHeight,
-				_In_ const uint8_t& pBitDepth,
-				_Out_ int& pState,
-				_In_ const uint8_t& pColorType = PNG_COLOR_TYPE_RGBA)
-			{
-				pState = 0;
+			//inline void write_png_to_stream(
+			//	_Inout_ std::ostream& pStream,
+			//	_In_ const uint8_t* pPixels,
+			//	_In_ const int& pWidth,
+			//	_In_ const int& pHeight,
+			//	_In_ const uint8_t& pBitDepth,
+			//	_Out_ int& pState)
+			//{
+			//	pState = 0;
 
-				//initialize stuff
-				auto _png_ptr = png_create_write_struct(
-					PNG_LIBPNG_VER_STRING,
-					NULL,
-					NULL,
-					NULL);
-				if (!_png_ptr)
-				{
-					pState = -2;
-					return;
-				}
+			//	//initialize stuff
+			//	auto _png_ptr = png_create_write_struct(
+			//		PNG_LIBPNG_VER_STRING,
+			//		NULL,
+			//		NULL,
+			//		NULL);
+			//	if (!_png_ptr)
+			//	{
+			//		pState = -2;
+			//		return;
+			//	}
 
-				auto _info_ptr = png_create_info_struct(_png_ptr);
-				if (!_info_ptr)
-				{
-					pState = -2;
-					png_destroy_write_struct(&_png_ptr, &_info_ptr);
-					return;
-				}
+			//	auto _info_ptr = png_create_info_struct(_png_ptr);
+			//	if (!_info_ptr)
+			//	{
+			//		pState = -2;
+			//		png_destroy_write_struct(&_png_ptr, &_info_ptr);
+			//		return;
+			//	}
 
-				if (setjmp(png_jmpbuf(_png_ptr)))
-				{
-					pState = -2;
-					png_destroy_write_struct(&_png_ptr, &_info_ptr);
-					return;
-				}
+			//	if (setjmp(png_jmpbuf(_png_ptr)))
+			//	{
+			//		pState = -2;
+			//		png_destroy_write_struct(&_png_ptr, &_info_ptr);
+			//		return;
+			//	}
 
-				png_set_write_fn(_png_ptr, (void*)&pStream, png_user_write_data, NULL);//png_init_io(_png_ptr, _file);
+			//	png_set_write_fn(_png_ptr, (void*)&pStream, png_user_write_data, NULL);//png_init_io(_png_ptr, _file);
 
-				//write header
-				if (setjmp(png_jmpbuf(_png_ptr)))
-				{
-					pState = -2;
-					png_destroy_write_struct(&_png_ptr, &_info_ptr);
-					return;
-				}
+			//	//write header
+			//	if (setjmp(png_jmpbuf(_png_ptr)))
+			//	{
+			//		pState = -2;
+			//		png_destroy_write_struct(&_png_ptr, &_info_ptr);
+			//		return;
+			//	}
 
-				png_set_IHDR(
-					_png_ptr,
-					_info_ptr,
-					pWidth,
-					pHeight,
-					pBitDepth,
-					pColorType,
-					PNG_INTERLACE_NONE,
-					PNG_COMPRESSION_TYPE_BASE,
-					PNG_FILTER_TYPE_BASE);
+			//	png_set_IHDR(
+			//		_png_ptr,
+			//		_info_ptr,
+			//		pWidth,
+			//		pHeight,
+			//		pBitDepth,
+			//		PNG_COLOR_TYPE_RGBA,
+			//		PNG_INTERLACE_NONE,
+			//		PNG_COMPRESSION_TYPE_BASE,
+			//		PNG_FILTER_TYPE_BASE);
 
-				png_write_info(_png_ptr, _info_ptr);
+			//	png_write_info(_png_ptr, _info_ptr);
 
-				//write bytes
-				if (setjmp(png_jmpbuf(_png_ptr)))
-				{
-					pState = -2;
-					png_destroy_write_struct(&_png_ptr, &_info_ptr);
-					return;
-				}
-				png_write_image(_png_ptr, (png_bytep*)pPixels);
+			//	//write bytes
+			//	if (setjmp(png_jmpbuf(_png_ptr)))
+			//	{
+			//		pState = -2;
+			//		png_destroy_write_struct(&_png_ptr, &_info_ptr);
+			//		return;
+			//	}
+			//	png_write_image(_png_ptr, (png_bytep*)pPixels);
 
-				//end write
-				if (setjmp(png_jmpbuf(_png_ptr)))
-				{
-					pState = -2;
-					png_destroy_write_struct(&_png_ptr, &_info_ptr);
-					return;
-				}
-				png_write_end(_png_ptr, NULL);
-				png_destroy_write_struct(&_png_ptr, &_info_ptr);
-			}
+			//	//end write
+			//	if (setjmp(png_jmpbuf(_png_ptr)))
+			//	{
+			//		pState = -2;
+			//		png_destroy_write_struct(&_png_ptr, &_info_ptr);
+			//		return;
+			//	}
+			//	png_write_end(_png_ptr, NULL);
+			//	png_destroy_write_struct(&_png_ptr, &_info_ptr);
+			//}
 
 #pragma endregion
 

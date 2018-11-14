@@ -25,26 +25,26 @@ scene::scene(_In_z_ const std::wstring& pContentPath, _In_ const system::w_logge
 		_n,
 		_state);
 
-	_state = 0;
-	wolf::system::io::write_png_to_file(
-		"D:\\github\\WolfSource\\Wolf.Engine\\Logo_new.png",
-		_pixels,
-		_w,
-		_h,
-		_d,
-		_state);
+	//_state = 0;
+	//wolf::system::io::write_png_to_file(
+	//	"D:\\github\\WolfSource\\Wolf.Engine\\Logo_new.png",
+	//	_pixels,
+	//	_w,
+	//	_h,
+	//	_d,
+	//	_state);
 
-	_state = 0;
-	std::ostringstream _stream;
-	wolf::system::io::write_png_to_stream(
-		_stream,
-		_pixels,
-		_w,
-		_h,
-		_d,
-		_state);
+	//_state = 0;
+	//std::ostringstream _stream;
+	//wolf::system::io::write_png_to_stream(
+	//	_stream,
+	//	_pixels,
+	//	_w,
+	//	_h,
+	//	_d,
+	//	_state);
 
-	logger.write("{}", _stream.str().c_str());
+	//logger.write("{}", _stream.str().c_str());
 
 	int _width, _height, _sub, _col, _pass;
 	_state = 0;
