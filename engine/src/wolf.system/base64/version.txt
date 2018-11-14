@@ -1,0 +1,2 @@
+fastbase64 version 0.1.0
+https://github.com/lemire/fastbase64

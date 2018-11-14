@@ -544,6 +544,24 @@
       <Filter>curl\src</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\wolf.system\w_url.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.system\base64\chromiumbase64.c">
+      <Filter>base64</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\base64\fastavx512bwbase64.c">
+      <Filter>base64</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\base64\fastavxbase64.c">
+      <Filter>base64</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\base64\klompavxbase64.c">
+      <Filter>base64</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\base64\quicktimebase64.c">
+      <Filter>base64</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\base64\scalarbase64.c">
+      <Filter>base64</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\wolf.system\w_allocator.h" />
@@ -1787,6 +1805,24 @@
     </ClInclude>
     <ClInclude Include="..\..\..\src\wolf.system\w_url.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_concurrent_queue.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\base64\chromiumbase64.h">
+      <Filter>base64</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\base64\fastavx512bwbase64.h">
+      <Filter>base64</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\base64\fastavxbase64.h">
+      <Filter>base64</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\base64\klompavxbase64.h">
+      <Filter>base64</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\base64\quicktimebase64.h">
+      <Filter>base64</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\base64\scalarbase64.h">
+      <Filter>base64</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="rapidxml">
@@ -1854,6 +1890,9 @@
     </Filter>
     <Filter Include="curl\src\vauth">
       <UniqueIdentifier>{03e39b23-e6ac-4ee6-8e67-b605a34a8a37}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="base64">
+      <UniqueIdentifier>{950eb53b-3832-46f6-af36-f56e607b0357}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -2368,6 +2407,12 @@
     </Text>
     <Text Include="..\..\..\src\wolf.system\spdlog\version.txt">
       <Filter>spdlog</Filter>
+    </Text>
+    <Text Include="..\..\..\src\wolf.system\base64\version.txt">
+      <Filter>base64</Filter>
+    </Text>
+    <Text Include="..\..\..\src\wolf.system\base64\LICENSE">
+      <Filter>base64</Filter>
     </Text>
   </ItemGroup>
   <ItemGroup>

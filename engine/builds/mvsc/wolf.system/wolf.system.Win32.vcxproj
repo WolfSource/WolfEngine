@@ -19,6 +19,18 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\src\wolf.system\base64\chromiumbase64.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\base64\fastavx512bwbase64.c">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\base64\fastavxbase64.c">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\base64\klompavxbase64.c">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AdvancedVectorExtensions</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\base64\quicktimebase64.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\base64\scalarbase64.c" />
     <ClCompile Include="..\..\..\src\wolf.system\curl\src\amigaos.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
       <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -780,6 +792,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\wolf.system\asio.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\base64\chromiumbase64.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\base64\fastavx512bwbase64.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\base64\fastavxbase64.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\base64\klompavxbase64.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\base64\quicktimebase64.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\base64\scalarbase64.h" />
     <ClInclude Include="..\..\..\src\wolf.system\curl\curl.h" />
     <ClInclude Include="..\..\..\src\wolf.system\curl\curlver.h" />
     <ClInclude Include="..\..\..\src\wolf.system\curl\easy.h" />
@@ -1390,6 +1408,8 @@
     <None Include="..\..\..\src\wolf.system\zlib\src\README" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="..\..\..\src\wolf.system\base64\LICENSE" />
+    <Text Include="..\..\..\src\wolf.system\base64\version.txt" />
     <Text Include="..\..\..\src\wolf.system\gli\version.txt" />
     <Text Include="..\..\..\src\wolf.system\glm\copying.txt" />
     <Text Include="..\..\..\src\wolf.system\glm\version.txt" />
