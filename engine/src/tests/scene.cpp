@@ -31,7 +31,6 @@ scene::scene(_In_z_ const std::wstring& pContentPath, _In_ const system::w_logge
 		_pixels,
 		_w,
 		_h,
-		_c,
 		_d,
 		_state);
 
@@ -42,7 +41,6 @@ scene::scene(_In_z_ const std::wstring& pContentPath, _In_ const system::w_logge
 		_pixels,
 		_w,
 		_h,
-		_c,
 		_d,
 		_state);
 
