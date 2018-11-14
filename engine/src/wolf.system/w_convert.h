@@ -30,6 +30,17 @@
 
 #endif
 
+#include "base64/chromiumbase64.h"
+#include "base64/fastavx512bwbase64.h"
+#include "base64/fastavxbase64.h"
+#include "base64/klompavxbase64.h"
+#include "base64/quicktimebase64.h"
+#include "base64/scalarbase64.h"
+
+#ifdef __linux
+#include "base64/linuxbase64.h"
+#endif
+
 namespace wolf
 {
 	namespace system
@@ -378,6 +389,62 @@ namespace wolf
             
 #endif
 
+#pragma endregion
+
+#pragma region base64
+
+			enum base_64_mode { chromium, klomp_avx, fast_avx, fast_avx512, quick_time, scalar };
+			inline size_t to_base_64(
+				_Inout_z_ char* pDestinationBuffer,
+				_In_z_ char* pSourceBuffer,
+				_In_z_ const size_t& pSourceBufferLenght,
+				_In_ const base_64_mode& pEncodeMode)
+			{
+				size_t _encoded_size = 0;
+				switch (pEncodeMode)
+				{
+				case chromium:
+					_encoded_size = chromium_base64_encode(
+						pDestinationBuffer,
+						pSourceBuffer,
+						pSourceBufferLenght);
+					break;
+				case klomp_avx:
+					klomp_avx2_base64_encode(
+						pSourceBuffer,
+						pSourceBufferLenght,
+						pDestinationBuffer,
+						&_encoded_size);
+					break;
+				case fast_avx:
+					_encoded_size = fast_avx2_base64_encode(
+						pDestinationBuffer,
+						pSourceBuffer,
+						pSourceBufferLenght);
+					break;
+				case fast_avx512:
+					_encoded_size = fast_avx512bw_base64_encode(
+						pDestinationBuffer,
+						pSourceBuffer,
+						pSourceBufferLenght);
+					break;
+				case quick_time:
+					_encoded_size = static_cast<size_t>(quicktime_base64_encode(
+						pDestinationBuffer,
+						pSourceBuffer,
+						(int)pSourceBufferLenght));
+					break;
+				case scalar:
+					scalar_base64_encode(
+						pSourceBuffer,
+						pSourceBufferLenght,
+						pDestinationBuffer,
+						&_encoded_size);
+					break;
+				}
+				return _encoded_size;
+			}
+			
 #pragma endregion
 
 		}

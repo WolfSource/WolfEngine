@@ -7,6 +7,7 @@
 
 #include <stddef.h>
 #include <stdint.h>
+#include "w_system_export.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -21,7 +22,7 @@ extern "C" {
  * to *out without trailing zero. Output length in bytes is written to *outlen.
  * The buffer in `out` has been allocated by the caller and is at least 3/4 the
  * size of the input. */
-int scalar_base64_decode
+WSYS_EXP int scalar_base64_decode
 	( const char		*src
 	, size_t		 srclen
 	, char			*out
@@ -33,7 +34,7 @@ int scalar_base64_decode
  * to *out without trailing zero. Output length in bytes is written to *outlen.
  * The buffer in `out` has been allocated by the caller and is at least 4/3 the
  * size of the input.  */
-void scalar_base64_encode
+WSYS_EXP void scalar_base64_encode
 	( const char		*src
 	, size_t		 srclen
 	, char			*out

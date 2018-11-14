@@ -13,8 +13,8 @@
 extern "C" {
 #endif /* __cplusplus */
 
-size_t fast_avx512bw_base64_decode(char *out, const char *src, size_t srclen);
-size_t fast_avx512bw_base64_encode(char* dest, const char* str, size_t len);
+WSYS_EXP size_t fast_avx512bw_base64_decode(char *out, const char *src, size_t srclen);
+WSYS_EXP size_t fast_avx512bw_base64_encode(char* dest, const char* str, size_t len);
 
 #ifdef __cplusplus
 }

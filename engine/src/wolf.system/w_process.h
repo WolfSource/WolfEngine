@@ -45,7 +45,7 @@ namespace wolf
 				_In_z_ const wchar_t* pPathtoProcess, 
 				_In_z_ const wchar_t* pCmdsArg,
 				_In_z_ const wchar_t* pCurrentDirectoryPath,
-				_In_  const unsigned long pWaitAfterRunningProcess = 0);
+				_In_  const long long pWaitAfterRunningProcess = 0);
 			//kill a process
 			WSYS_EXP static bool kill_process(_In_ w_process_info* pProcessInfo);
 			//kill all process by name

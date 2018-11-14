@@ -7,6 +7,7 @@
 
 #include <stddef.h>
 #include <stdint.h>
+#include "w_system_export.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -50,7 +51,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * to *out without trailing zero. Output length in bytes is written to *outlen.
  * The buffer in `out` has been allocated by the caller and is at least 3/4 the
  * size of the input. */
-int klomp_avx2_base64_decode
+WSYS_EXP int klomp_avx2_base64_decode
 	( const char		*src
 	, size_t		 srclen
 	, char			*out
@@ -62,7 +63,7 @@ int klomp_avx2_base64_decode
  * to *out without trailing zero. Output length in bytes is written to *outlen.
  * The buffer in `out` has been allocated by the caller and is at least 4/3 the
  * size of the input.  */
-void klomp_avx2_base64_encode
+WSYS_EXP void klomp_avx2_base64_encode
 	( const char		*src
 	, size_t		 srclen
 	, char			*out

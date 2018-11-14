@@ -29,6 +29,7 @@
 
 #include <stddef.h>
 #include <stdint.h>
+#include "w_system_export.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -60,7 +61,7 @@ extern "C" {
  * \endcode
  *
  */
-size_t chromium_base64_encode(char* dest, const char* str, size_t len);
+WSYS_EXP size_t chromium_base64_encode(char* dest, const char* str, size_t len);
 
 /**
  * Decode a base64 encoded string
@@ -84,7 +85,7 @@ size_t chromium_base64_encode(char* dest, const char* str, size_t len);
  * if (len == MODP_B64_ERROR) { error }
  * \endcode
  */
-size_t chromium_base64_decode(char* dest, const char* src, size_t len);
+WSYS_EXP size_t chromium_base64_decode(char* dest, const char* src, size_t len);
 
 /**
  * Given a source string of length len, this returns the amount of

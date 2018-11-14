@@ -143,7 +143,7 @@ namespace wolf
 				// Clamp excessively large time deltas (e.g. after paused in the debugger).
 				if (_time_delta > this->_max_delta)
 				{
-					_time_delta = this->_max_delta;
+					_time_delta = static_cast<long long>(this->_max_delta);
 				}
 
 				// Convert QPC units into a canonical tick format. This cannot overflow due to the previous clamp.
