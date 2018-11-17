@@ -367,7 +367,7 @@ namespace wolf
                 return W_PASSED;
             }
 
-			W_RESULT open_stream_server(
+			W_RESULT open_stream_sender(
 				_In_z_ const char* pURL,
 				_In_z_ const char* pProtocol,
 				_In_z_ const char* pFormatName,
@@ -624,7 +624,7 @@ namespace wolf
 				return W_PASSED;
 			}
 
-			W_RESULT open_stream_client(
+			W_RESULT open_stream_receiver(
 				_In_z_ const char* pURL,
 				_In_z_ const char* pProtocol,
 				_In_z_ const char* pFormatName,
@@ -636,7 +636,8 @@ namespace wolf
 				_In_ w_signal<void(const w_media_core::w_stream_connection_info&)>& pOnConnectionEstablished,
 				_In_ w_signal<void(const w_media_core::w_stream_frame_info&)>& pOnGettingStreamVideoFrame,
 				_In_ w_signal<void(const char*)>& pOnConnectionLost,
-				_In_ w_signal<void(const char*)>& pOnConnectionClosed)
+				_In_ w_signal<void(const char*)>& pOnConnectionClosed,
+				_In_ const bool& pListenToLocalPort)
 			{
 				const std::string _trace_info = this->_name + "::open_stream_client";
 
@@ -646,7 +647,10 @@ namespace wolf
 				AVDictionary* _av_dic = NULL;//"create" an empty dictionary
 				if (_fromat_str == "rtsp")
 				{
-					av_dict_set(&_av_dic, "rtsp_flags", "listen", 0); // add an entry
+					if (pListenToLocalPort)
+					{
+						av_dict_set(&_av_dic, "rtsp_flags", "listen", 0); // add an entry
+					}
 					av_dict_set(&_av_dic, "rtsp_transport", pProtocol, 0); // add an entry
 				}
 
@@ -1801,7 +1805,7 @@ W_RESULT w_media_core::open_media(_In_z_ std::wstring pMediaPath, _In_ int64_t p
     return this->_pimp ? this->_pimp->open_media(pMediaPath, pSeekToFrame) : W_FAILED;
 }
 
-W_RESULT w_media_core::open_stream_server(
+W_RESULT w_media_core::open_stream_sender(
 	_In_z_ const char* pURL,
 	_In_z_ const char* pProtocol,
 	_In_z_ const char* pFormatName,
@@ -1817,7 +1821,7 @@ W_RESULT w_media_core::open_stream_server(
 {
 	if (!this->_pimp) return W_FAILED;
 
-	return this->_pimp->open_stream_server(
+	return this->_pimp->open_stream_sender(
 		pURL,
 		pProtocol,
 		pFormatName,
@@ -1832,7 +1836,7 @@ W_RESULT w_media_core::open_stream_server(
 		pOnConnectionLost);
 }
 
-W_RESULT w_media_core::open_stream_client(
+W_RESULT w_media_core::open_stream_receiver(
 	_In_z_ const char* pURL,
 	_In_z_ const char* pProtocol,
 	_In_z_ const char* pFormatName,
@@ -1844,11 +1848,12 @@ W_RESULT w_media_core::open_stream_client(
 	_In_ w_signal<void(const w_stream_connection_info&)>& pOnConnectionEstablished,
 	_In_ w_signal<void(const w_stream_frame_info&)>& pOnGettingStreamVideoFrame,
 	_In_ w_signal<void(const char*)>& pOnConnectionLost,
-	_In_ w_signal<void(const char*)>& pOnConnectionClosed)
+	_In_ w_signal<void(const char*)>& pOnConnectionClosed,
+	_In_ const bool& pListenToLocalPort)
 {
 	if (!this->_pimp) return W_FAILED;
 
-	return this->_pimp->open_stream_client(
+	return this->_pimp->open_stream_receiver(
 		pURL,
 		pProtocol,
 		pFormatName,
@@ -1860,7 +1865,8 @@ W_RESULT w_media_core::open_stream_client(
 		pOnConnectionEstablished,
 		pOnGettingStreamVideoFrame,
 		pOnConnectionLost,
-		pOnConnectionClosed);
+		pOnConnectionClosed,
+		pListenToLocalPort);
 }
 
 int64_t w_media_core::time_to_frame(int64_t pMilliSecond)

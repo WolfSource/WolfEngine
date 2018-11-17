@@ -92,7 +92,7 @@ namespace wolf
             WMC_EXP W_RESULT open_media(_In_z_ std::wstring pMediaPath, _In_ int64_t pSeekToFrame = 0);
 
             /*
-                Open a stream server
+                Open a stream sender
                 This function will wait for client to make a connection
                 For testing, use ffplay, e.g. ./ffplay -rtsp_flags listen -i rtsp://127.0.0.1:8554/live.sdp
                 @param pURL, the connection url
@@ -108,7 +108,7 @@ namespace wolf
                 @param pOnFillingVideoFrameBuffer, rised for each filling video frame buffer. The argument is w_stream_frame_info
                 @param pOnConnectionLost, rised when connection lost. The argument is w_stream_connection_info
             */
-            WMC_EXP W_RESULT open_stream_server(
+            WMC_EXP W_RESULT open_stream_sender(
                 _In_z_ const char* pURL,
 				_In_z_ const char* pProtocol,
                 _In_z_ const char* pFormatName,
@@ -123,7 +123,7 @@ namespace wolf
                 _In_ system::w_signal<void(const char*)>& pOnConnectionLost);
 
 			/*
-				Open a stream client
+				Open a stream reciever
 				This function will wait for client to make a connection
 				For testing, use ffplay, e.g. ./ffplay -rtsp_flags listen -i rtsp://127.0.0.1:8554/live.sdp
 				@param pURL, the connection url
@@ -137,7 +137,7 @@ namespace wolf
 				@param pOnGettingStreamVideoFrame, rised for each filling video frame buffer. The argument is w_stream_frame_info
 				@param pOnConnectionLost, rised when connection lost. The argument is w_stream_connection_info
 			*/
-			WMC_EXP W_RESULT open_stream_client(
+			WMC_EXP W_RESULT open_stream_receiver(
 				_In_z_ const char* pURL,
 				_In_z_ const char* pProtocol,
 				_In_z_ const char* pFormatName,
@@ -149,7 +149,8 @@ namespace wolf
 				_In_ system::w_signal<void(const w_stream_connection_info&)>& pOnConnectionEstablished,
 				_In_ system::w_signal<void(const w_stream_frame_info&)>& pOnGettingStreamVideoFrame,
 				_In_ system::w_signal<void(const char*)>& pOnConnectionLost,
-				_In_ system::w_signal<void(const char*)>& pOnConnectionClosed);
+				_In_ system::w_signal<void(const char*)>& pOnConnectionClosed,
+				_In_ const bool& pListenToLocalPort = true);
 
 			//Convert specific milliseconds to frame number
             WMC_EXP int64_t time_to_frame(int64_t pMilliSecond);
