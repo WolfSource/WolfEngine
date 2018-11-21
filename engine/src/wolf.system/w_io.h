@@ -824,8 +824,8 @@ namespace wolf
 				_Out_ uint8_t& pColorType,
 				_Out_ uint8_t& pBitDepth,
 				_Out_ int& pNumberOfPasses,
-				_Out_ int& pState)
-	/*			_In_ const w_png_pixel_format& pPixelFormat = w_png_pixel_format::PNG_RGBA)*/
+				_Out_ int& pState,
+				_In_ const w_png_pixel_format& pPixelFormat = w_png_pixel_format::RGBA_PNG)
 			{
 				return w_image::read_png_from_stream(
 					pStream,
@@ -834,8 +834,8 @@ namespace wolf
 					pColorType,
 					pBitDepth,
 					pNumberOfPasses,
-					pState);
-					//pPixelFormat);
+					pState,
+					pPixelFormat);
 			}
 
 			/*
@@ -853,8 +853,8 @@ namespace wolf
 				_Out_ uint8_t& pColorType,
 				_Out_ uint8_t& pBitDepth,
 				_Out_ int& pNumberOfPasses,
-				_Out_ int& pState)
-				//_In_ const w_png_pixel_format& pPixelFormat = w_png_pixel_format::PNG_RGBA)
+				_Out_ int& pState,
+				_In_ const w_png_pixel_format& pPixelFormat = w_png_pixel_format::RGBA_PNG)
 			{
 				return w_image::read_png_from_file(
 					pFilePath,
@@ -863,8 +863,8 @@ namespace wolf
 					pColorType,
 					pBitDepth,
 					pNumberOfPasses,
-					pState);
-					//pPixelFormat);
+					pState,
+					pPixelFormat);
 			}
 
 #pragma endregion
@@ -886,8 +886,8 @@ namespace wolf
 				_Out_ int& pSubSample,
 				_Out_ int& pColorSpace,
 				_Out_ int& pNumberOfPasses,
-				_Out_ int& pState)
-				//_In_ const w_jpeg_pixel_format& pPixelFormat = w_jpeg_pixel_format::JPEG_RGB)
+				_Out_ int& pState,
+				_In_ const w_jpeg_pixel_format& pPixelFormat = w_jpeg_pixel_format::RGB_JPEG)
 			{
 				return w_image::read_jpeg_from_stream(
 					pStream,
@@ -896,8 +896,8 @@ namespace wolf
 					pSubSample,
 					pColorSpace,
 					pNumberOfPasses,
-					pState);
-					//pPixelFormat);
+					pState,
+					pPixelFormat);
 			}
 
 			/*
@@ -915,8 +915,8 @@ namespace wolf
 				_Out_ int& pSubSample,
 				_Out_ int& pColorSpace,
 				_Out_ int& pNumberOfPasses,
-				_Out_ int& pState)
-				//_In_ const w_jpeg_pixel_format& pPixelFormat = w_jpeg_pixel_format::JPEG_RGB)
+				_Out_ int& pState,
+				_In_ const w_jpeg_pixel_format& pPixelFormat = w_jpeg_pixel_format::RGB_JPEG)
 			{
 				return w_image::read_jpeg_from_file(
 					pFilePath,
@@ -925,8 +925,8 @@ namespace wolf
 					pSubSample,
 					pColorSpace,
 					pNumberOfPasses,
-					pState);
-					//pPixelFormat);
+					pState,
+					pPixelFormat);
 			}
 
 #pragma endregion

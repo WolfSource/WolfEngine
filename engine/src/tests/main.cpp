@@ -65,7 +65,7 @@ int WINAPI WinMain(HINSTANCE pHInstance, HINSTANCE pPrevHInstance, PSTR pSTR, in
 	sChildWindow->set_height(480);
 	sChildWindow->set_parent(sWindow->get_HWND());
 	sChildWindow->initialize(_msg_proc_func);
-
+	
 	//run the vulkan sample
 	w_present_info _window_info;
 	_window_info.width = sWindow->get_width();
