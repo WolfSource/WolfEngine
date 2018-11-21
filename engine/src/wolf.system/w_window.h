@@ -397,6 +397,12 @@ public:
 	WSYS_EXP void set_height(const int pValue);
 	//Set position of window 
 	WSYS_EXP void set_position(const int pX, const int pY);
+	//Set parent window 
+	WSYS_EXP void set_parent(
+#ifdef __WIN32
+		_In_ HWND pHWND
+#endif
+	);
 
 #pragma endregion
 
@@ -451,6 +457,7 @@ private:
 	HWND                                            _hwnd;
     HDC                                             _hdc;
 	DWORD											_window_style;
+	HWND											_parent_hwnd;
 #elif defined(__linux) && !defined(__ANDROID)
     xcb_connection_t*                               _xcb_con;
     xcb_screen_t*                                   _xcb_screen;

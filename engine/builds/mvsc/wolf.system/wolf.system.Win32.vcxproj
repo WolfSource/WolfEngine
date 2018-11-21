@@ -751,6 +751,7 @@
     <ClCompile Include="..\..\..\src\wolf.system\w_bounding.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_compress.c" />
     <ClCompile Include="..\..\..\src\wolf.system\w_cpu.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.system\w_image.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_inputs_manager.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_linear_allocator.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_logger.cpp" />
@@ -1201,6 +1202,7 @@
     <ClInclude Include="..\..\..\src\wolf.system\w_concurrent_queue.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_convert.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_cpu.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\w_image.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_memory_pool.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_network.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_signal.h" />

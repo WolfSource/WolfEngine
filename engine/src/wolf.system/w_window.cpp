@@ -14,6 +14,7 @@ w_window::w_window() :
 #ifdef __WIN32
     _hInstance(NULL),
     _hwnd(NULL),
+	_parent_hwnd(NULL),
 	_window_style(WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_POPUP),
 #elif defined(__linux) && !defined(__ANDROID)
     _xcb_con(nullptr),
@@ -140,7 +141,7 @@ W_RESULT w_window::initialize(std::function<HRESULT(HWND, UINT, WPARAM, LPARAM)>
 		this->_screen_posY,
 		this->_screen_width,
 		this->_screen_height,
-		NULL,
+		this->_parent_hwnd,
 		NULL,
 		this->_hInstance,
 		NULL);
@@ -391,6 +392,18 @@ void w_window::set_position(const int pX, const int pY)
 {
 	this->_screen_posX = pX;
 	this->_screen_posY = pY;
+}
+
+void w_window::set_parent(
+#ifdef __WIN32
+	_In_ HWND pHWND
+#endif
+)
+{
+#ifdef __WIN32
+	this->_parent_hwnd = pHWND;
+	this->_window_style |= WS_CHILD;
+#endif
 }
 
 #pragma endregion

@@ -562,6 +562,7 @@
     <ClCompile Include="..\..\..\src\wolf.system\base64\scalarbase64.c">
       <Filter>base64</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\w_image.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\wolf.system\w_allocator.h" />
@@ -1823,6 +1824,7 @@
     <ClInclude Include="..\..\..\src\wolf.system\base64\scalarbase64.h">
       <Filter>base64</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\w_image.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="rapidxml">

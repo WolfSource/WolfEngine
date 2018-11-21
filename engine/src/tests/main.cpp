@@ -5,6 +5,7 @@
 using namespace std;
 
 static std::unique_ptr<w_window> sWindow;
+static std::unique_ptr<w_window> sChildWindow;
 static std::unique_ptr<scene> sScene;
 
 static void release()
@@ -46,10 +47,24 @@ int WINAPI WinMain(HINSTANCE pHInstance, HINSTANCE pPrevHInstance, PSTR pSTR, in
 	//Initialize window 720p
 	sWindow = make_unique<w_window>();
     sWindow->set_id(0);
+	sWindow->enable_caption(true);
+	sWindow->enable_dialog_frame(true);
+	sWindow->enable_system_menu(true);
     sWindow->set_width(1280);
 	sWindow->set_height(720);
     //sWindow->set_position();
 	sWindow->initialize(_msg_proc_func);
+
+
+	sChildWindow = make_unique<w_window>();
+	sChildWindow->set_id(1);
+	sChildWindow->enable_caption(true);
+	sChildWindow->enable_dialog_frame(true);
+	sChildWindow->enable_system_menu(true);
+	sChildWindow->set_width(640);
+	sChildWindow->set_height(480);
+	sChildWindow->set_parent(sWindow->get_HWND());
+	sChildWindow->initialize(_msg_proc_func);
 
 	//run the vulkan sample
 	w_present_info _window_info;
@@ -75,10 +90,10 @@ int WINAPI WinMain(HINSTANCE pHInstance, HINSTANCE pPrevHInstance, PSTR pSTR, in
 	_log_config.flush_level = false;
 	_log_config.log_to_std_out = true;
 
-	sScene = make_unique<scene>(_content_path, _log_config);
+	//sScene = make_unique<scene>(_content_path, _log_config);
 	sWindow->run([&_windows_info]()->void
     {
-        sScene->run(_windows_info);
+        //sScene->run(_windows_info);
     });
 	//release all
 	release();
