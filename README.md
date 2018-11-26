@@ -61,7 +61,6 @@ extensively tested and makes a great starting point for learning how to use Wolf
 <ul>
 <li>Your access to and use of Wolf Engine or pyWolf on GitHub is governed by the&nbsp;<a href="https://github.com/WolfSource/Wolf.Engine/blob/master/LICENSE.md">This License</a>. If you don't agree to those terms, then you are not permitted to access or use Wolf Engine.
 </li>
-<li><a href="https://moltengl.com/moltenvk/" target="_blank">MoltenVK</a> is an implementation of Vulkan that runs on Apple's Metal graphics framework</li>
 </ul>
 
 <!--Issues-->
