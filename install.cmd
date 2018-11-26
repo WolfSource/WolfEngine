@@ -5,7 +5,7 @@ echo make wolf's dependencies ready
 cd ./engine/deps/
 
 set keys=assimp boost ffmpeg luaJIT nanomsg tbb simplygon libjpeg-turbo
-set values=version.txt builds.txt version.txt version.txt COPYING version.txt SimplygonSDKRuntimeReleasex64.dll readme.txt
+set values=version.txt builds.txt version.txt version.txt COPYING version.txt SimplygonSDKRuntimeReleasex64.dll version.txt
 
 set i=0
 (for %%k in (%keys%) do (
