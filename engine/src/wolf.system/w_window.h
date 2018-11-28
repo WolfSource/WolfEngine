@@ -204,10 +204,10 @@ public:
 
 #ifdef __WIN32
 	//Initialize 
-	WSYS_EXP W_RESULT initialize(std::function<HRESULT(HWND, UINT, WPARAM, LPARAM)> pMsgProcFunction);
+	WSYS_EXP W_RESULT initialize(_In_ std::function<HRESULT(HWND, UINT, WPARAM, LPARAM)> pMsgProcFunction);
 #elif defined(__linux)
         //Initialize 
-	WSYS_EXP W_RESULT initialize();
+	WSYS_EXP W_RESULT initialize(_In_ bool pShow = true);
 #endif
     //Run the main loop
     template <class T>

@@ -54,7 +54,8 @@ static LRESULT CALLBACK MsgProc(HWND pHwnd, UINT pMessage, WPARAM pWParam, LPARA
 	return DefWindowProc(pHwnd, pMessage, pWParam, pLParam);
 }
 
-W_RESULT w_window::initialize(std::function<HRESULT(HWND, UINT, WPARAM, LPARAM)> pMsgProcFunction)
+W_RESULT w_window::initialize(
+	_In_ std::function<HRESULT(HWND, UINT, WPARAM, LPARAM)> pMsgProcFunction)
 {
     using namespace wolf;
 
