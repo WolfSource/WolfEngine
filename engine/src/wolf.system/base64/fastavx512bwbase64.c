@@ -1,5 +1,7 @@
 #include "fastavx512bwbase64.h"
 
+#if USE_AVX512 != 0 && ((defined(_MSC_VER) && _MSC_VER >= 1911) || (defined(__INTEL_COMPILER) && __INTEL_COMPILER >= 1600) || (defined(__clang__) && __clang_major__ >= 4) || (defined(__GNUC__) && __GNUC__ >= 5))
+
 #ifdef _MSC_VER
 #include <intrin.h>
 #else
@@ -198,3 +200,4 @@ size_t fast_avx512bw_base64_decode(char *out, const char *src, size_t srclen) {
   return (out - out_orig) + scalarret;
 }
 
+#endif

@@ -1,6 +1,8 @@
 #ifndef FASTBASE64_AVX512BW_H_
 #define FASTBASE64_AVX512BW_H_
 
+#if USE_AVX512 != 0 && ((defined(_MSC_VER) && _MSC_VER >= 1911) || (defined(__INTEL_COMPILER) && __INTEL_COMPILER >= 1600) || (defined(__clang__) && __clang_major__ >= 4) || (defined(__GNUC__) && __GNUC__ >= 5))
+
 /**
 * Assumes recent x64 hardware with AVX512BW instructions.
 */
@@ -19,5 +21,7 @@ WSYS_EXP size_t fast_avx512bw_base64_encode(char* dest, const char* str, size_t 
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
+
+#endif
 
 #endif

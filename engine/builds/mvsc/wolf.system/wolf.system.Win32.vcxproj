@@ -20,9 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\src\wolf.system\base64\chromiumbase64.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\base64\fastavx512bwbase64.c">
-      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
-    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\base64\fastavx512bwbase64.c" />
     <ClCompile Include="..\..\..\src\wolf.system\base64\fastavxbase64.c">
       <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>

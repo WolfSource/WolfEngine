@@ -547,9 +547,6 @@
     <ClCompile Include="..\..\..\src\wolf.system\base64\chromiumbase64.c">
       <Filter>base64</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\base64\fastavx512bwbase64.c">
-      <Filter>base64</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\wolf.system\base64\fastavxbase64.c">
       <Filter>base64</Filter>
     </ClCompile>
@@ -563,6 +560,9 @@
       <Filter>base64</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\wolf.system\w_image.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.system\base64\fastavx512bwbase64.c">
+      <Filter>base64</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\wolf.system\w_allocator.h" />
@@ -1809,9 +1809,6 @@
     <ClInclude Include="..\..\..\src\wolf.system\base64\chromiumbase64.h">
       <Filter>base64</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\base64\fastavx512bwbase64.h">
-      <Filter>base64</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\wolf.system\base64\fastavxbase64.h">
       <Filter>base64</Filter>
     </ClInclude>
@@ -1825,6 +1822,9 @@
       <Filter>base64</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\wolf.system\w_image.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\base64\fastavx512bwbase64.h">
+      <Filter>base64</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="rapidxml">
