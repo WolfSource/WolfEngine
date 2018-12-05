@@ -14,6 +14,7 @@ std::map<uint32_t, float> wolf::windows_frame_time_in_sec;
 void wolf::release_heap_data()
 {
 	//release all loggers
+	curl_global_cleanup();
 	spdlog::drop_all();
     logger.release();
 	content_path.clear();
