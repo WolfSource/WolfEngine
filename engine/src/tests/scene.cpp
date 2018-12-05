@@ -14,18 +14,24 @@ scene::scene(_In_z_ const std::wstring& pContentPath, _In_ const system::w_logge
 	w_game(pContentPath, pLogConfig)
 {
 	
-	int _w, _h;
-	uint8_t _c, _d;
-	int _n;
+	std::string _url_result_buffer;
+	w_url _u;
+	_u.request_url("http://sandbox.pod.land:8080/nzh/image/?imageId=49862&width=640&height=360&hashCode=16734bcc409-0.6432314065968002",
+		_url_result_buffer);
+	_u.release();
+
+	//int _w, _h;
+	//uint8_t _c, _d;
+	//int _n;
 	int _state;
-	auto _pixels = wolf::system::io::read_png_from_file(
-		"D:\\github\\WolfSource\\Wolf.Engine\\Logo.png",
-		_w,
-		_h,
-		_c,
-		_d,
-		_n,
-		_state);
+	//auto _pixels = wolf::system::io::read_png_from_file(
+	//	"D:\\github\\WolfSource\\Wolf.Engine\\Logo.png",
+	//	_w,
+	//	_h,
+	//	_c,
+	//	_d,
+	//	_n,
+	//	_state);
 
 	//_state = 0;
 	//wolf::system::io::write_png_to_file(
@@ -49,21 +55,17 @@ scene::scene(_In_z_ const std::wstring& pContentPath, _In_ const system::w_logge
 	//logger.write("{}", _stream.str().c_str());
 
 	int _width, _height, _sub, _col, _pass;
-	_state = 0;
-	wolf::system::io::read_jpeg_from_file(
-		"D:\\github\\WolfSource\\Wolf.Engine\\Logo.png",
-		_width,
-		_height,
-		_sub,
-		_col,
-		_pass,
-		_state);
+	//_state = 0;
+	//wolf::system::io::read_jpeg_from_file(
+	//	_str,
+	//	_width,
+	//	_height,
+	//	_sub,
+	//	_col,
+	//	_pass,
+	//	_state);
 
 
-	std::string _url_result_buffer;
-	w_url _url;
-	_url.request_url("https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/master/Logo.jpg", _url_result_buffer);
-	
 	std::istringstream _str_stream(_url_result_buffer);
 	auto _pixels_ = wolf::system::io::read_jpeg_from_stream(
 		_str_stream,
@@ -73,8 +75,7 @@ scene::scene(_In_z_ const std::wstring& pContentPath, _In_ const system::w_logge
 		_col,
 		_pass,
 		_state);
-	_url.release();
-
+	
 	char* _src = "This is test. Hey there. this is test. Salam. Pooya. Poooooooooya. Ryannnnnnn. Raaaaaaaaaayyyyyyyyyy";
 	int _compressed_size = 0;
 

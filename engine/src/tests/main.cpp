@@ -90,10 +90,10 @@ int WINAPI WinMain(HINSTANCE pHInstance, HINSTANCE pPrevHInstance, PSTR pSTR, in
 	_log_config.flush_level = false;
 	_log_config.log_to_std_out = true;
 
-	//sScene = make_unique<scene>(_content_path, _log_config);
+	sScene = make_unique<scene>(_content_path, _log_config);
 	sWindow->run([&_windows_info]()->void
     {
-        //sScene->run(_windows_info);
+        sScene->run(_windows_info);
     });
 	//release all
 	release();

@@ -160,7 +160,7 @@ namespace wolf
 					if (this->size && this->memory)
 					{
 						pDestination.resize(this->size);
-						strcpy(&pDestination[0], this->memory);
+						memcpy(&pDestination[0], &this->memory[0], this->size);
 					}
 				}
 
