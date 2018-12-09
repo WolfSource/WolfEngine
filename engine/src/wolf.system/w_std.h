@@ -70,6 +70,7 @@ extern "C" {
 #endif
 
 #ifdef __ANDROID
+	#include <unistd.h>
     using std::size_t;
 #endif
 		

@@ -24,30 +24,10 @@
 #include <android/log.h>
 #include "../native_app_glue/android_native_app_glue.h"
 
-#include <w_time_span.h>
-#include <w_xml.h>
-#include <w_io.h>
-#include <w_convert.h>
-#include <w_color.h>
-#include <w_event.h>
-#include <w_logger.h>
-#include <w_game_time.h>
-#include <w_timer_callback.h>
-
-#include <unistd.h>
-
-#include <w_task.h>
-#include "scene.h"
-
 #define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "native-activity", __VA_ARGS__))
 #define LOGW(...) ((void)__android_log_print(ANDROID_LOG_WARN, "native-activity", __VA_ARGS__))
 
 #define LOG_ACCELEROMETER false
-
-wolf::system::w_game_time sGameTime;
-
-static std::map<int, std::vector<w_window_info>> sWindowsInfos;
-static scene* sScene = nullptr;
 
 /**
  * Our saved state data.
@@ -76,7 +56,6 @@ struct engine
     struct saved_state state;
 };
 
-static wolf::system::w_timer_callback tc;
 static int engine_init_display(struct engine* pEngine) 
 {
 	ANativeActivity* nativeActivity = pEngine->app->activity;
@@ -208,7 +187,7 @@ static int engine_init_display(struct engine* pEngine)
 	pEngine->width = ANativeWindow_getWidth(pEngine->app->window);
 	pEngine->height = ANativeWindow_getHeight(pEngine->app->window);
 
-	w_window_info _w_info;
+	/*w_window_info _w_info;
 	_w_info.width = static_cast<UINT>(pEngine->width);
 	_w_info.height = static_cast<UINT>(pEngine->height);
 	_w_info.window = pEngine->app->window;
@@ -217,7 +196,7 @@ static int engine_init_display(struct engine* pEngine)
 
 	sWindowsInfos[0] = _v;
 
-	sScene = new scene(nativeActivity->internalDataPath);
+	sScene = new scene(nativeActivity->internalDataPath);*/
 
     return 0;
 }
@@ -228,16 +207,16 @@ static int engine_init_display(struct engine* pEngine)
 static void engine_draw_frame(struct engine* engine) 
 {
 	//run the main loop
-	sScene->run(sWindowsInfos);
+	//sScene->run(sWindowsInfos);
 
-	sGameTime.tick([]
-	{
+	//sGameTime.tick([]
+	//{
 		/*logger.write("fps: " + std::to_string(sGameTime.get_frames_per_second()));
 		logger.write("elapsed: " + std::to_string(sGameTime.get_elapsed_seconds()));
 		logger.write("total: " + std::to_string(sGameTime.get_total_seconds()));*/
-	});
+	//});
 
-	usleep(16);
+	//usleep(16);
 }
 
 /**
@@ -345,8 +324,8 @@ void android_main(struct android_app* state) {
         int events;
         struct android_poll_source* source;
 
-		sGameTime.set_fixed_time_step(true);
-		sGameTime.set_target_elapsed_seconds(1.0 / 30.0);
+		//sGameTime.set_fixed_time_step(true);
+		//sGameTime.set_target_elapsed_seconds(1.0 / 30.0);
 
         // If not animating, we will block forever waiting for events.
         // If animating, we loop until all events are read, then continue

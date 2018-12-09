@@ -1825,6 +1825,7 @@
     <ClInclude Include="..\..\..\src\wolf.system\base64\fastavx512bwbase64.h">
       <Filter>base64</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\w_shared_memory.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="rapidxml">

@@ -8,9 +8,6 @@
 
 #ifndef __PCH_H__
 #define __PCH_H__
-
-#include <w_system_export.h>
-#include <w_render_export.h>
         
 #include <memory>
 #include <map>

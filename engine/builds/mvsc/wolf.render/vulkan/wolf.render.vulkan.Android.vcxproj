@@ -24,8 +24,8 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|Tegra-Android'">
     <ConfigurationType>StaticLibrary</ConfigurationType>
-    <AndroidTargetAPI>android-24</AndroidTargetAPI>
-    <AndroidMinAPI>android-23</AndroidMinAPI>
+    <AndroidTargetAPI>android-26</AndroidTargetAPI>
+    <AndroidMinAPI>android-19</AndroidMinAPI>
     <NdkToolchainVersion>gcc-4.9</NdkToolchainVersion>
   </PropertyGroup>
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|Tegra-Android'">

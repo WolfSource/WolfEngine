@@ -1203,6 +1203,7 @@
     <ClInclude Include="..\..\..\src\wolf.system\w_image.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_memory_pool.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_network.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\w_shared_memory.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_signal.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_game_time.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_inputs_manager.h" />

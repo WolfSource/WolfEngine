@@ -1,124 +1,168 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup Label="NsightTegraProject">
-    <NsightTegraProjectRevisionNumber>11</NsightTegraProjectRevisionNumber>
-  </PropertyGroup>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="Debug|Tegra-Android">
+    <ProjectConfiguration Include="Debug|ARM">
       <Configuration>Debug</Configuration>
-      <Platform>Tegra-Android</Platform>
+      <Platform>ARM</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Release|Tegra-Android">
+    <ProjectConfiguration Include="Release|ARM">
       <Configuration>Release</Configuration>
-      <Platform>Tegra-Android</Platform>
+      <Platform>ARM</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Shipping|Tegra-Android">
-      <Configuration>Shipping</Configuration>
-      <Platform>Tegra-Android</Platform>
+    <ProjectConfiguration Include="Debug|ARM64">
+      <Configuration>Debug</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|ARM64">
+      <Configuration>Release</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x86">
+      <Configuration>Debug</Configuration>
+      <Platform>x86</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x86">
+      <Configuration>Release</Configuration>
+      <Platform>x86</Platform>
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\src\wolf.system\w_logger.cpp" />
-    <ClCompile Include="..\..\..\src\wolf.system\w_object.cpp" />
-    <ClCompile Include="..\..\..\src\wolf.system\w_system_pch.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Tegra-Android'">Create</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\w_task.cpp" />
-    <ClCompile Include="..\..\..\src\wolf.system\w_time_span.cpp" />
-    <ClCompile Include="..\..\..\src\wolf.system\w_window.cpp" />
-    <ClCompile Include="..\..\..\src\wolf.system\w_xml.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.system\w_system_pch.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\src\wolf.system\glm_extention.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\w_color.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\w_convert.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\w_event.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\w_game_time.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\w_io.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\w_Ireleasable.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\w_logger.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\w_object.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\wolf_version.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_std.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\w_system_export.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_system_pch.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\w_target_ver.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\w_task.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\w_timer.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\w_timer_callback.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\w_time_span.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\w_window.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\w_xml.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{70B4AF00-0706-4E55-8AA0-55086A153DAC}</ProjectGuid>
-    <RootNamespace>Wolf_System_Android</RootNamespace>
-    <ProjectName>wolf.system.android</ProjectName>
+    <ProjectGuid>{11491e9b-e3bb-4126-a82c-f472551158c4}</ProjectGuid>
+    <Keyword>Android</Keyword>
+    <RootNamespace>wolf_system_android</RootNamespace>
+    <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
+    <ApplicationType>Android</ApplicationType>
+    <ApplicationTypeRevision>3.0</ApplicationTypeRevision>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|Tegra-Android'">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
-    <AndroidTargetAPI>android-24</AndroidTargetAPI>
-    <AndroidMinAPI>android-23</AndroidMinAPI>
-    <AndroidArch>armv7-a</AndroidArch>
-    <AndroidStlType>gnustl_static</AndroidStlType>
-    <NdkToolchainVersion>gcc-4.9</NdkToolchainVersion>
-  </PropertyGroup>
-  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|Tegra-Android'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <AndroidTargetAPI>android-24</AndroidTargetAPI>
-    <AndroidMinAPI>android-23</AndroidMinAPI>
-    <NdkToolchainVersion>gcc-4.9</NdkToolchainVersion>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>Clang_5_0</PlatformToolset>
   </PropertyGroup>
-  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Shipping|Tegra-Android'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <AndroidTargetAPI>android-24</AndroidTargetAPI>
-    <AndroidMinAPI>android-23</AndroidMinAPI>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>Clang_5_0</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>Clang_5_0</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>Clang_5_0</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>Clang_5_0</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>Clang_5_0</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>Clang_5_0</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>Clang_5_0</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
-  <ImportGroup Label="ExtensionSettings">
-  </ImportGroup>
-  <PropertyGroup Label="UserMacros">
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Label="Shared" />
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Tegra-Android'">
-    <OutDir>$(SolutionDir)/../../../bin/$(Platform)/$(Configuration)/</OutDir>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Tegra-Android'">
-    <OutDir>$(SolutionDir)/../../../bin/$(Platform)/$(Configuration)/</OutDir>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Shipping|Tegra-Android'">
-    <OutDir>$(SolutionDir)/../../../bin/$(Platform)/$(Configuration)/</OutDir>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
   </PropertyGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Tegra-Android'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <CppLanguageStandard>gnu++11</CppLanguageStandard>
-      <PreprocessorDefinitions>__ANDROID;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>w_system_pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../dependencies/glm/;$(SolutionDir)/../../dependencies/rapidxml;$(SolutionDir)/../../dependencies/lua/lua/include/</AdditionalIncludeDirectories>
-      <GccExceptionHandling>true</GccExceptionHandling>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>$(SolutionDir)/../../src/wolf.system/w_system_pch.h</PrecompiledHeaderFile>
       <AdditionalOptions>-std=c++11 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
+    <Link />
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Tegra-Android'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
     <ClCompile>
-      <CppLanguageStandard>gnu++11</CppLanguageStandard>
-      <PreprocessorDefinitions>__ANDROID;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>w_system_pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../dependencies/rapidxml-master/</AdditionalIncludeDirectories>
-      <GccExceptionHandling>true</GccExceptionHandling>
-    </ClCompile>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Shipping|Tegra-Android'">
-    <ClCompile>
-      <CppLanguageStandard>gnu++11</CppLanguageStandard>
-      <PreprocessorDefinitions>ANDROID;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>w_system_pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system</AdditionalIncludeDirectories>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Label="ExtensionTargets">
-  </ImportGroup>
+  <ImportGroup Label="ExtensionTargets" />
 </Project>

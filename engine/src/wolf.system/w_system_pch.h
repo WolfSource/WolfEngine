@@ -69,6 +69,7 @@
 //Java Native Interface library
 #include <jni.h>
 #include <android/asset_manager.h>
+#include <sys/resource.h>
 
 #endif
 
