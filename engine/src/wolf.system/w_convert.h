@@ -14,6 +14,7 @@
 #ifndef __W_CONVERT_H__
 #define __W_CONVERT_H__
 
+#include <stdlib.h>
 #include <vector>
 #include <codecvt>
 #include <string.h>
@@ -205,10 +206,13 @@ namespace wolf
 			template<class T >
 			auto substr_function(const std::string& pStr, size_t pOffset, size_t pCount, _Inout_ std::vector<T>& pResult) -> typename std::enable_if<std::is_integral<T>::value, void>::type
 			{
-				if (std::is_same<T, int>::value || std::is_same<T, unsigned int>::value ||
-					std::is_same<T, short>::value || std::is_same<T, unsigned short>::value)
+				if (std::is_same<T, int>::value || std::is_same<T, unsigned int>::value)
 				{
-					pResult.push_back(std::atoi(pStr.substr(pOffset, pCount).c_str()));
+					pResult.push_back(static_cast<int>(std::atoi(pStr.substr(pOffset, pCount).c_str())));
+				}
+				else if (std::is_same<T, short>::value || std::is_same<T, unsigned short>::value)
+				{
+					pResult.push_back(static_cast<short>(std::atoi(pStr.substr(pOffset, pCount).c_str())));
 				}
 				else if (std::is_same<T, long>::value || std::is_same < T, unsigned long> ::value)
 				{
@@ -303,16 +307,20 @@ namespace wolf
 			{
 				if (std::is_same<T, int>::value)
 				{
-					pResult.push_back(std::atoi(pStr.substr(pOffset, pCount).c_str()));
+					pResult.push_back(_wtoi(pStr.substr(pOffset, pCount).c_str()));
+				}
+				else if (std::is_same<T, short>::value)
+				{
+					pResult.push_back(static_cast<short>(_wtoi(pStr.substr(pOffset, pCount).c_str())));
 				}
 				else if (std::is_same<T, long>::value)
 				{
-					pResult.push_back(std::atol(pStr.substr(pOffset, pCount).c_str()));
+					pResult.push_back(_wtol(pStr.substr(pOffset, pCount).c_str()));
 				}
 
 				else if (std::is_same<T, long long>::value)
 				{
-					pResult.push_back(std::atoll(pStr.substr(pOffset, pCount).c_str()));
+					pResult.push_back(_wtoll(pStr.substr(pOffset, pCount).c_str()));
 				}
 				return;
 			}
@@ -320,7 +328,7 @@ namespace wolf
 			template<class T >
 			auto subwstr_function(const std::wstring& pStr, size_t pOffset, size_t pCount, _Inout_ std::vector<T>& pResult) -> typename std::enable_if<std::is_floating_point<T>::value, void>::type
 			{
-				pResult.push_back(std::atof(pStr.substr(pOffset, pCount).c_str()));
+				pResult.push_back(_wtof(pStr.substr(pOffset, pCount).c_str()));
 				return;
 			}
 
