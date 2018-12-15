@@ -203,7 +203,7 @@ W_RESULT w_url::request_url(_In_z_ const std::string& pURL, _Inout_ std::string&
 	std::memcpy(&_url[0], pURL.data(), _size);
 	_url[_size] = '\0';
 	auto _hr = this->_pimp->request_url(_url, pResultPage);
-	free(_url);
+	//free(_url);
 	return _hr;
 }
 
@@ -244,7 +244,7 @@ W_RESULT w_url::send_rest_post(
 		pMessageLenght,
 		pResult,
 		pHeaders);
-	free(_url);
+	//free(_url);
 
 	return _hr;
 }
