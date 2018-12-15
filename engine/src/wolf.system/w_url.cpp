@@ -201,6 +201,7 @@ W_RESULT w_url::request_url(_In_z_ const std::string& pURL, _Inout_ std::string&
 	}
 	//copy data
 	std::memcpy(&_url[0], pURL.data(), _size);
+	_url[_size] = '\0';
 	auto _hr = this->_pimp->request_url(_url, pResultPage);
 	free(_url);
 	return _hr;
@@ -224,6 +225,7 @@ W_RESULT w_url::send_rest_post(
 		return W_FAILED;
 	}
 	std::memcpy(&_url[0], pURL.data(), _size);
+	_url[_size] = '\0';
 
 	//copy message data
 	_size = pMessage.size();
@@ -234,6 +236,7 @@ W_RESULT w_url::send_rest_post(
 		return W_FAILED;
 	}
 	std::memcpy(&_msg[0], pMessage.data(), _size);
+	_msg[_size] = '\0';
 
 	auto _hr = this->_pimp->send_rest_post(
 		_url,
