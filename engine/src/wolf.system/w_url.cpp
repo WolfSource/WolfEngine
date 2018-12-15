@@ -188,24 +188,62 @@ w_url::~w_url()
 	release();
 }
 
-W_RESULT w_url::request_url(_In_z_ const char* pURL, _Inout_ std::string& pResultPage)
+W_RESULT w_url::request_url(_In_z_ const std::string& pURL, _Inout_ std::string& pResultPage)
 {
-	return this->_pimp ? this->_pimp->request_url(pURL, pResultPage) : W_FAILED;
+	if (!this->_pimp) return W_FAILED;
+
+	auto _size = pURL.size();
+	auto _url = (char*)malloc(pURL.size() * sizeof(char));
+	if (!_url)
+	{
+		wolf::logger.error("could not allocate memory for url");
+		return W_FAILED;
+	}
+	//copy data
+	std::memcpy(&_url[0], pURL.data(), _size);
+	auto _hr = this->_pimp->request_url(_url, pResultPage);
+	free(_url);
+	return _hr;
 }
 
 W_RESULT w_url::send_rest_post(
-	_In_z_ const char* pURL,
-	_In_z_ const char* pMessage,
+	_In_z_ const std::string& pURL,
+	_In_z_ const std::string& pMessage,
 	_In_ const size_t& pMessageLenght,
 	_Inout_ std::string& pResult,
 	_In_z_ std::initializer_list<std::string> pHeaders)
 {
-	return this->_pimp ? this->_pimp->send_rest_post(
-		pURL,
-		pMessage,
+	if (!this->_pimp) return W_FAILED;
+
+	//copy url data
+	auto _size = pURL.size();
+	auto _url = (char*)malloc(pURL.size() * sizeof(char));
+	if (!_url)
+	{
+		wolf::logger.error("could not allocate memory for url");
+		return W_FAILED;
+	}
+	std::memcpy(&_url[0], pURL.data(), _size);
+
+	//copy message data
+	_size = pMessage.size();
+	auto _msg = (char*)malloc(pMessage.size() * sizeof(char));
+	if (!_msg)
+	{
+		wolf::logger.error("could not allocate memory for url");
+		return W_FAILED;
+	}
+	std::memcpy(&_msg[0], pMessage.data(), _size);
+
+	auto _hr = this->_pimp->send_rest_post(
+		_url,
+		_msg,
 		pMessageLenght,
 		pResult,
-		pHeaders) : W_FAILED;
+		pHeaders);
+	free(_url);
+
+	return _hr;
 }
 
 ULONG w_url::release()

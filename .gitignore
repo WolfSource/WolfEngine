@@ -7,6 +7,10 @@
 *.res
 *.enc
 *.vscode
+*.advixeproj
+*.advixeexp
+*.dflgadvixe
+*.infoadvixe
 /bin/win32/
 /bin/osx/
 /bin/linux/

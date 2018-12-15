@@ -30,11 +30,11 @@ namespace wolf
 			WSYS_EXP	w_url();
 			WSYS_EXP	~w_url();
 
-			WSYS_EXP	W_RESULT request_url(_In_z_ const char* pURL, _Inout_ std::string& pResultPage);
+			WSYS_EXP	W_RESULT request_url(_In_z_ const std::string& pURL, _Inout_ std::string& pResultPage);
 
 			WSYS_EXP	W_RESULT send_rest_post(
-				_In_z_ const char* pURL,
-				_In_z_ const char* pMessage,
+				_In_z_ const std::string& pURL,
+				_In_z_ const std::string& pMessage,
 				_In_ const size_t& pMessageLenght,
 				_Inout_ std::string& pResult,
 				_In_z_ std::initializer_list<std::string> pHeaders = { "content-type:application/x-www-form-urlencoded" });
