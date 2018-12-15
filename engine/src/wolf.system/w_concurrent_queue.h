@@ -18,7 +18,7 @@
 
 #include <concurrent_queue.h>
 
-#else defined(__APPLE__) || defined(__linux)
+#elif defined(__APPLE__) || defined(__linux)
 
 #include <thread>
 #include <queue>
@@ -122,7 +122,7 @@ namespace wolf
             }
 
         private:
-            std::queue<T>               _queue;
+            std::queue<_Ty>             _queue;
             std::mutex                  _mutex;
             std::condition_variable     _cv;
         };
