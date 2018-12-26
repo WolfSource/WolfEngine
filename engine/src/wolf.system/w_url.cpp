@@ -20,36 +20,46 @@ namespace wolf
 				}
 			}
 
-			W_RESULT request_url(_In_z_ const char* pURL, _Inout_ std::string& pResultPage)
+			W_RESULT request_url(_In_z_ const char* pURL, _Inout_ std::string& pResultPage, 
+				_In_ const uint32_t& pConnectionTimeOutInMilliSeconds)
 			{
 				if (!this->_curl) return W_FAILED;
 				
 				//reset memory
 				_chunk.reset();
 
-				curl_easy_setopt(_curl, CURLOPT_URL, pURL);
-				curl_easy_setopt(_curl, CURLOPT_FOLLOWLOCATION, 1L);
-				curl_easy_setopt(_curl, CURLOPT_WRITEFUNCTION, _write_callback);
-				curl_easy_setopt(_curl, CURLOPT_WRITEDATA, (void*)(&this->_chunk));
+				curl_easy_setopt(this->_curl, CURLOPT_URL, pURL);
+				curl_easy_setopt(this->_curl, CURLOPT_FOLLOWLOCATION, 1L);
+				curl_easy_setopt(this->_curl, CURLOPT_CONNECTTIMEOUT_MS, pConnectionTimeOutInMilliSeconds);
+				curl_easy_setopt(this->_curl, CURLOPT_ACCEPTTIMEOUT_MS, pConnectionTimeOutInMilliSeconds);
+				curl_easy_setopt(this->_curl, CURLOPT_WRITEFUNCTION, _write_callback);
+				curl_easy_setopt(this->_curl, CURLOPT_WRITEDATA, (void*)(&this->_chunk));
 				//some servers don't like requests that are made without a user-agent field, so we provide one
-				curl_easy_setopt(_curl, CURLOPT_USERAGENT, "libcurl-agent/1.0");
-				
+				curl_easy_setopt(this->_curl, CURLOPT_USERAGENT, "libcurl-agent/1.0");
+				// abort if slower than 10 bytes/sec during 3 seconds
+				curl_easy_setopt(this->_curl, CURLOPT_LOW_SPEED_TIME, 2L);
+				curl_easy_setopt(this->_curl, CURLOPT_LOW_SPEED_LIMIT, 100L);
+
 				//perform the request
-				auto _result = curl_easy_perform(_curl);
+				auto _result = curl_easy_perform(this->_curl);
 
 				//check for errors
-				if (_result != CURLE_OK)
+				W_RESULT _hr = W_PASSED;
+				if (_result == CURLE_OK)
+				{
+					_chunk.copyto(pResultPage);
+				}
+				else
 				{
 					logger.error(
-						"could not get result of requested url : {} because {}", 
+						"could not get result of requested url : {} because {}",
 						pURL, curl_easy_strerror(_result));
-					return W_FAILED;
+					_hr = W_FAILED;
 				}
 				
-				_chunk.copyto(pResultPage);
 				_chunk.reset();
 
-				return W_PASSED;
+				return _hr;
 			}
 
 			W_RESULT send_rest_post(
@@ -57,6 +67,7 @@ namespace wolf
 				_In_z_ const char* pMessage, 
 				_In_ const size_t& pMessageLenght, 
 				_Inout_ std::string& pResult,
+				_In_ const uint32_t& pConnectionTimeOutInMilliSeconds,
 				_In_z_ std::initializer_list<std::string> pHeaders)
 			{
 				if (!_curl) return W_FAILED;
@@ -73,7 +84,12 @@ namespace wolf
 				curl_easy_setopt(_curl, CURLOPT_FOLLOWLOCATION, 1L);
 				curl_easy_setopt(_curl, CURLOPT_WRITEFUNCTION, _write_callback);
 				curl_easy_setopt(_curl, CURLOPT_WRITEDATA, (void*)(&this->_chunk));
-				
+				curl_easy_setopt(this->_curl, CURLOPT_CONNECTTIMEOUT_MS, pConnectionTimeOutInMilliSeconds);
+				curl_easy_setopt(this->_curl, CURLOPT_ACCEPTTIMEOUT_MS, pConnectionTimeOutInMilliSeconds);
+				// abort if slower than 100 bytes/sec during 2 seconds
+				curl_easy_setopt(this->_curl, CURLOPT_LOW_SPEED_TIME, 2L);
+				curl_easy_setopt(this->_curl, CURLOPT_LOW_SPEED_LIMIT, 100L);
+
 				//set http header
 				//for example "Accept: application/json";
 				struct curl_slist* _headers = NULL;
@@ -188,7 +204,9 @@ w_url::~w_url()
 	release();
 }
 
-W_RESULT w_url::request_url(_In_z_ const std::string& pURL, _Inout_ std::string& pResultPage)
+W_RESULT w_url::request_url(_In_z_ const std::string& pURL, 
+	_Inout_ std::string& pResultPage,
+	_In_ const uint32_t& pConnectionTimeOutInMilliSeconds)
 {
 	if (!this->_pimp) return W_FAILED;
 
@@ -202,7 +220,7 @@ W_RESULT w_url::request_url(_In_z_ const std::string& pURL, _Inout_ std::string&
 	//copy data
 	std::memcpy(&_url[0], pURL.data(), _size);
 	_url[_size] = '\0';
-	auto _hr = this->_pimp->request_url(_url, pResultPage);
+	auto _hr = this->_pimp->request_url(_url, pResultPage, pConnectionTimeOutInMilliSeconds);
 	//free(_url);
 	return _hr;
 }
@@ -212,6 +230,7 @@ W_RESULT w_url::send_rest_post(
 	_In_z_ const std::string& pMessage,
 	_In_ const size_t& pMessageLenght,
 	_Inout_ std::string& pResult,
+	_In_ const uint32_t& pConnectionTimeOutInMilliSeconds,
 	_In_z_ std::initializer_list<std::string> pHeaders)
 {
 	if (!this->_pimp) return W_FAILED;
@@ -243,6 +262,7 @@ W_RESULT w_url::send_rest_post(
 		_msg,
 		pMessageLenght,
 		pResult,
+		pConnectionTimeOutInMilliSeconds,
 		pHeaders);
 	//free(_url);
 
