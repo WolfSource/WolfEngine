@@ -30,6 +30,7 @@ namespace wolf
 
 				curl_easy_setopt(this->_curl, CURLOPT_URL, pURL);
 				curl_easy_setopt(this->_curl, CURLOPT_FOLLOWLOCATION, 1L);
+				curl_easy_setopt(this->_curl, CURLOPT_VERBOSE, 1L);
 				curl_easy_setopt(this->_curl, CURLOPT_CONNECTTIMEOUT_MS, pConnectionTimeOutInMilliSeconds);
 				curl_easy_setopt(this->_curl, CURLOPT_ACCEPTTIMEOUT_MS, pConnectionTimeOutInMilliSeconds);
 				curl_easy_setopt(this->_curl, CURLOPT_WRITEFUNCTION, _write_callback);

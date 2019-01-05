@@ -147,10 +147,40 @@ bool w_process::check_for_number_of_running_instances_from_process(_In_z_ const 
 	return _result;
 }
 
+size_t w_process::get_number_of_running_instances_from_process(_In_z_ const wchar_t* pProcessName)
+{
+#ifdef __WIN32
+
+	size_t _exists = 0;
+	PROCESSENTRY32 _entry;
+	_entry.dwSize = sizeof(PROCESSENTRY32);
+
+	HANDLE _snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, NULL);
+
+	if (Process32First(_snapshot, &_entry))
+	{
+		while (Process32Next(_snapshot, &_entry))
+		{
+			if (!_wcsicmp(_entry.szExeFile, pProcessName))
+			{
+				_exists++;
+			}
+		}
+	}
+	CloseHandle(_snapshot);
+
+#else
+
+
+#endif
+
+	return _exists;
+}
+
 #ifdef __WIN32
 w_process_info* w_process::create_process(
-	_In_z_ const wchar_t* pPathtoProcess, 
-	_In_z_ const wchar_t* pCmdsArg, 
+	_In_z_ const wchar_t* pPathtoProcess,
+	_In_z_ const wchar_t* pCmdsArg,
 	_In_z_ const wchar_t* pCurrentDirectoryPath,
 	_In_  const long long pWaitAfterRunningProcess)
 {
@@ -177,6 +207,9 @@ w_process_info* w_process::create_process(
 		auto _w_process_info = new w_process_info();
 		_w_process_info->info = _process_info;
 		
+		DWORD _err_val = GetLastError();
+		_w_process_info->error_code = std::error_code(_err_val, std::system_category());
+
 		return _w_process_info;
 	}
 	else

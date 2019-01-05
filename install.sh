@@ -5,7 +5,6 @@ cd ./engine/deps/
 
 keys=(
 assimp
-boost 
 ffmpeg 
 luaJIT 
 nanomsg 
@@ -13,7 +12,6 @@ tbb)
 
 values=(
 version.txt
-builds.txt 
 version.txt 
 version.txt  
 COPYING 
@@ -28,6 +26,17 @@ for i in "${!keys[@]}"; do
      echo "${keys[$i]} verified successfully"
    fi
 done
+
+echo "uncompressing boost.zip"
+cat boost.zip.001 > boost.zip
+cat boost.zip.002 >> boost.zip
+cat boost.zip.003 >> boost.zip
+unzip -q "boost.zip" 
+if [ ! -f ./boost/builds.txt ]; then
+  echo "could not find boost/builds.txt"
+else
+  echo "boost verified successfully"
+fi
 
 echo "uncompressing vulkan.zip"
 cat vulkan.zip.001 > vulkan.zip 

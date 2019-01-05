@@ -26,6 +26,7 @@ namespace wolf
 #ifdef __WIN32
 			PROCESS_INFORMATION info;
 #endif
+			std::error_code		error_code;
 		};
 
 		class w_process
@@ -40,6 +41,8 @@ namespace wolf
 			//check whether two instances of same process is running
 			WSYS_EXP static bool check_for_number_of_running_instances_from_process(_In_z_ const wchar_t* pProcessName,
 				_In_ size_t pNumberOfRunningInstnacesToBeChecked = 1);
+			//get number of running instances the process
+			WSYS_EXP static size_t get_number_of_running_instances_from_process(_In_z_ const wchar_t* pProcessName);
 			//create a process
 			WSYS_EXP static w_process_info* create_process(
 				_In_z_ const wchar_t* pPathtoProcess, 
