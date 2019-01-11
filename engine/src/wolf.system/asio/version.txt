@@ -1,2 +1,1 @@
-version : 1.12.1
-https://think-async.com/
+asio 1.12.2

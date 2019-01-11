@@ -251,72 +251,72 @@ namespace wolf
                 -2 means file is exist but could not open
                 -3 means file is to big to handle
 			*/
-			inline void read_binary_fileW(_In_z_ const wchar_t* pPath, _Inout_ std::vector<uint8_t>& pData,
-				_Out_ int& pFileState)
-			{
-				if (get_is_fileW(pPath) == W_FAILED)
-				{
-					pFileState = -1;
-					return;
-				}
-
-				// Open the file.
-#if (_WIN32_WINNT >= 0x0602 /*_WIN32_WINNT_WIN8*/)
-				ScopedHandle _hFile(safe_handle(CreateFile2(pPath, GENERIC_READ, FILE_SHARE_READ, OPEN_EXISTING, nullptr)));
-#else
-				ScopedHandle _hFile(safe_handle(CreateFileW(pPath, GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr)));
-#endif //(_WIN32_WINNT >= 0x0602 /*_WIN32_WINNT_WIN8*/)
-
-				if (!_hFile)
-				{
-					pFileState = -2;
-					return;// HRESULT_FROM_WIN32(GetLastError());
-				}
-				// Get the file size.
-				LARGE_INTEGER _file_size = { 0 };
-
-#if (_WIN32_WINNT >= _WIN32_WINNT_VISTA)
-				FILE_STANDARD_INFO fileInfo;
-
-				if (!GetFileInformationByHandleEx(_hFile.get(), FileStandardInfo, &fileInfo, sizeof(fileInfo)))
-				{
-					pFileState = -2;
-					return;// HRESULT_FROM_WIN32(GetLastError());
-				}
-
-				_file_size = fileInfo.EndOfFile;
-#else
-				GetFileSizeEx(hFile.get(), &_fileSize);
-#endif //(_WIN32_WINNT >= _WIN32_WINNT_VISTA)
-
-				// File is too big for 32-bit allocation, so reject read.
-				if (_file_size.HighPart > 0)
-				{
-					pFileState = -3;
-					return;// E_FAIL;
-				}
-
-				// Read the data in.
-				DWORD _bytesRead = 0;
-
-				auto _file_data = static_cast<uint8_t*>(malloc(_file_size.LowPart * sizeof(uint8_t)));
-				if (!ReadFile(_hFile.get(), _file_data, _file_size.LowPart, &_bytesRead, nullptr))
-				{
-					pFileState = -2;
-					return;// HRESULT_FROM_WIN32(GetLastError());
-				}
-
-				if (_bytesRead < _file_size.LowPart)
-				{
-					pFileState = -2;
-					return;// E_FAIL;
-				}
-
-				// Create enough space for the file data.
-				pData.reserve(_file_size.LowPart);
-				std::copy(&_file_data[0], &_file_data[_file_size.LowPart], std::back_inserter(pData));
-				free(_file_data);
-			}
+//			inline void read_binary_fileW(_In_z_ const wchar_t* pPath, _Inout_ std::vector<uint8_t>& pData,
+//				_Out_ int& pFileState)
+//			{
+//				if (get_is_fileW(pPath) == W_FAILED)
+//				{
+//					pFileState = -1;
+//					return;
+//				}
+//
+//				// Open the file.
+//#if (_WIN32_WINNT >= 0x0602 /*_WIN32_WINNT_WIN8*/)
+//				ScopedHandle _hFile(safe_handle(CreateFile2(pPath, GENERIC_READ, FILE_SHARE_READ, OPEN_EXISTING, nullptr)));
+//#else
+//				ScopedHandle _hFile(safe_handle(CreateFileW(pPath, GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr)));
+//#endif //(_WIN32_WINNT >= 0x0602 /*_WIN32_WINNT_WIN8*/)
+//
+//				if (!_hFile)
+//				{
+//					pFileState = -2;
+//					return;// HRESULT_FROM_WIN32(GetLastError());
+//				}
+//				// Get the file size.
+//				LARGE_INTEGER _file_size = { 0 };
+//
+//#if (_WIN32_WINNT >= _WIN32_WINNT_VISTA)
+//				FILE_STANDARD_INFO fileInfo;
+//
+//				if (!GetFileInformationByHandleEx(_hFile.get(), FileStandardInfo, &fileInfo, sizeof(fileInfo)))
+//				{
+//					pFileState = -2;
+//					return;// HRESULT_FROM_WIN32(GetLastError());
+//				}
+//
+//				_file_size = fileInfo.EndOfFile;
+//#else
+//				GetFileSizeEx(hFile.get(), &_fileSize);
+//#endif //(_WIN32_WINNT >= _WIN32_WINNT_VISTA)
+//
+//				// File is too big for 32-bit allocation, so reject read.
+//				if (_file_size.HighPart > 0)
+//				{
+//					pFileState = -3;
+//					return;// E_FAIL;
+//				}
+//
+//				// Read the data in.
+//				DWORD _bytesRead = 0;
+//
+//				auto _file_data = static_cast<uint8_t*>(malloc(_file_size.LowPart * sizeof(uint8_t)));
+//				if (!ReadFile(_hFile.get(), _file_data, _file_size.LowPart, &_bytesRead, nullptr))
+//				{
+//					pFileState = -2;
+//					return;// HRESULT_FROM_WIN32(GetLastError());
+//				}
+//
+//				if (_bytesRead < _file_size.LowPart)
+//				{
+//					pFileState = -2;
+//					return;// E_FAIL;
+//				}
+//
+//				// Create enough space for the file data.
+//				pData.reserve(_file_size.LowPart);
+//				std::copy(&_file_data[0], &_file_data[_file_size.LowPart], std::back_inserter(pData));
+//				free(_file_data);
+//			}
 
             //Write text file
             inline void write_text_file(_In_z_ const wchar_t* pPath, _In_z_ const wchar_t* pTextContent)
