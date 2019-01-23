@@ -57,7 +57,7 @@ namespace wolf
         {
             std::wstring app_name;
             std::wstring log_path;
-			//false means flush will be called always, true means flush level is warn
+			//false means flush will be called on info, true means flush level is warn
             bool flush_level = false;
             bool log_to_std_out = true;
         };
@@ -183,7 +183,7 @@ namespace wolf
 				}
 				else
 				{
-					this->_log_file->flush_on(spdlog::level::level_enum::off);
+					this->_log_file->flush_on(spdlog::level::level_enum::info);
 				}
 				
 				this->_opened = true;
