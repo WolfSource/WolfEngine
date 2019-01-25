@@ -1,5 +1,6 @@
-﻿#include "w_system_pch.h"
+#include "w_system_pch.h"
 #include "w_logger.h"
+#include <curl/curl.h>
 
 //Declaration of extern objects as shared
 #if defined(__WIN32) && !defined(__STATIC_LIB)

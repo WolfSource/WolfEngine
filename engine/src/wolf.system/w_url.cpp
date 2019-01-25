@@ -23,44 +23,44 @@ namespace wolf
 			W_RESULT request_url(_In_z_ const char* pURL, _Inout_ std::string& pResultPage, 
 				_In_ const uint32_t& pConnectionTimeOutInMilliSeconds)
 			{
-				if (!this->_curl) return W_FAILED;
-				
-				//reset memory
-				_chunk.reset();
+                if (!this->_curl) return W_FAILED;
 
-				curl_easy_setopt(this->_curl, CURLOPT_URL, pURL);
-				curl_easy_setopt(this->_curl, CURLOPT_FOLLOWLOCATION, 1L);
-				curl_easy_setopt(this->_curl, CURLOPT_VERBOSE, 1L);
-				curl_easy_setopt(this->_curl, CURLOPT_CONNECTTIMEOUT_MS, pConnectionTimeOutInMilliSeconds);
-				curl_easy_setopt(this->_curl, CURLOPT_ACCEPTTIMEOUT_MS, pConnectionTimeOutInMilliSeconds);
-				curl_easy_setopt(this->_curl, CURLOPT_WRITEFUNCTION, _write_callback);
-				curl_easy_setopt(this->_curl, CURLOPT_WRITEDATA, (void*)(&this->_chunk));
-				//some servers don't like requests that are made without a user-agent field, so we provide one
-				curl_easy_setopt(this->_curl, CURLOPT_USERAGENT, "libcurl-agent/1.0");
-				// abort if slower than 10 bytes/sec during 3 seconds
-				curl_easy_setopt(this->_curl, CURLOPT_LOW_SPEED_TIME, 2L);
-				curl_easy_setopt(this->_curl, CURLOPT_LOW_SPEED_LIMIT, 100L);
+                //reset memory
+                _chunk.reset();
 
-				//perform the request
-				auto _result = curl_easy_perform(this->_curl);
+                curl_easy_setopt(this->_curl, CURLOPT_URL, pURL);
+                curl_easy_setopt(this->_curl, CURLOPT_FOLLOWLOCATION, 1L);
+                curl_easy_setopt(this->_curl, CURLOPT_VERBOSE, 1L);
+                curl_easy_setopt(this->_curl, CURLOPT_CONNECTTIMEOUT_MS, pConnectionTimeOutInMilliSeconds);
+                curl_easy_setopt(this->_curl, CURLOPT_ACCEPTTIMEOUT_MS, pConnectionTimeOutInMilliSeconds);
+                curl_easy_setopt(this->_curl, CURLOPT_WRITEFUNCTION, _write_callback);
+                curl_easy_setopt(this->_curl, CURLOPT_WRITEDATA, (void*)(&this->_chunk));
+                //some servers don't like requests that are made without a user-agent field, so we provide one
+                curl_easy_setopt(this->_curl, CURLOPT_USERAGENT, "libcurl-agent/1.0");
+                // abort if slower than 10 bytes/sec during 3 seconds
+                curl_easy_setopt(this->_curl, CURLOPT_LOW_SPEED_TIME, 2L);
+                curl_easy_setopt(this->_curl, CURLOPT_LOW_SPEED_LIMIT, 100L);
 
-				//check for errors
-				W_RESULT _hr = W_PASSED;
-				if (_result == CURLE_OK)
-				{
-					_chunk.copyto(pResultPage);
-				}
-				else
-				{
-					logger.error(
-						"could not get result of requested url : {} because {}",
-						pURL, curl_easy_strerror(_result));
-					_hr = W_FAILED;
-				}
-				
-				_chunk.reset();
+                //perform the request
+                auto _result = curl_easy_perform(this->_curl);
 
-				return _hr;
+                //check for errors
+                W_RESULT _hr = W_PASSED;
+                if (_result == CURLE_OK)
+                {
+                    _chunk.copyto(pResultPage);
+                }
+                else
+                {
+                    logger.error(
+                        "could not get result of requested url : {} because {}",
+                        pURL, curl_easy_strerror(_result));
+                    _hr = W_FAILED;
+                }
+
+                _chunk.reset();
+
+                return _hr;
 			}
 
 			W_RESULT send_rest_post(
@@ -71,51 +71,51 @@ namespace wolf
 				_In_ const uint32_t& pConnectionTimeOutInMilliSeconds,
 				_In_z_ std::initializer_list<std::string> pHeaders)
 			{
-				if (!_curl) return W_FAILED;
+                if (!_curl) return W_FAILED;
 
-				//reset memory
-				_chunk.reset();
+                //reset memory
+                _chunk.reset();
 
-				//set POST url
-				curl_easy_setopt(_curl, CURLOPT_URL, pURL);
-				//now specify the POST data
-				curl_easy_setopt(_curl, CURLOPT_POSTFIELDS, pMessage);
-				curl_easy_setopt(_curl, CURLOPT_POSTFIELDSIZE, pMessageLenght);
-				curl_easy_setopt(_curl, CURLOPT_POST, 1L);
-				curl_easy_setopt(_curl, CURLOPT_FOLLOWLOCATION, 1L);
-				curl_easy_setopt(_curl, CURLOPT_WRITEFUNCTION, _write_callback);
-				curl_easy_setopt(_curl, CURLOPT_WRITEDATA, (void*)(&this->_chunk));
-				curl_easy_setopt(this->_curl, CURLOPT_CONNECTTIMEOUT_MS, pConnectionTimeOutInMilliSeconds);
-				curl_easy_setopt(this->_curl, CURLOPT_ACCEPTTIMEOUT_MS, pConnectionTimeOutInMilliSeconds);
-				// abort if slower than 100 bytes/sec during 2 seconds
-				curl_easy_setopt(this->_curl, CURLOPT_LOW_SPEED_TIME, 2L);
-				curl_easy_setopt(this->_curl, CURLOPT_LOW_SPEED_LIMIT, 100L);
+                //set POST url
+                curl_easy_setopt(_curl, CURLOPT_URL, pURL);
+                //now specify the POST data
+                curl_easy_setopt(_curl, CURLOPT_POSTFIELDS, pMessage);
+                curl_easy_setopt(_curl, CURLOPT_POSTFIELDSIZE, pMessageLenght);
+                curl_easy_setopt(_curl, CURLOPT_POST, 1L);
+                curl_easy_setopt(_curl, CURLOPT_FOLLOWLOCATION, 1L);
+                curl_easy_setopt(_curl, CURLOPT_WRITEFUNCTION, _write_callback);
+                curl_easy_setopt(_curl, CURLOPT_WRITEDATA, (void*)(&this->_chunk));
+                curl_easy_setopt(this->_curl, CURLOPT_CONNECTTIMEOUT_MS, pConnectionTimeOutInMilliSeconds);
+                curl_easy_setopt(this->_curl, CURLOPT_ACCEPTTIMEOUT_MS, pConnectionTimeOutInMilliSeconds);
+                // abort if slower than 100 bytes/sec during 2 seconds
+                curl_easy_setopt(this->_curl, CURLOPT_LOW_SPEED_TIME, 2L);
+                curl_easy_setopt(this->_curl, CURLOPT_LOW_SPEED_LIMIT, 100L);
 
-				//set http header
-				//for example "Accept: application/json";
-				struct curl_slist* _headers = NULL;
-				for (auto _header : pHeaders)
-				{
-					_headers = curl_slist_append(_headers, _header.c_str());
-				}
-				curl_easy_setopt(_curl, CURLOPT_HTTPHEADER, _headers);
-				//perform the request
-				auto _result = curl_easy_perform(_curl);
+                //set http header
+                //for example "Accept: application/json";
+                struct curl_slist* _headers = NULL;
+                for (auto _header : pHeaders)
+                {
+                    _headers = curl_slist_append(_headers, _header.c_str());
+                }
+                curl_easy_setopt(_curl, CURLOPT_HTTPHEADER, _headers);
+                //perform the request
+                auto _result = curl_easy_perform(_curl);
 
-				//free chuck
-				curl_slist_free_all(_headers);
+                //free chuck
+                curl_slist_free_all(_headers);
 
-				//check for errors
-				if (_result != CURLE_OK)
-				{
-					logger.error(
-						"could not get result of requested rest post : {} / {} because {}",
-						pURL, pMessage,  curl_easy_strerror(_result));
-					return W_FAILED;
-				}
+                //check for errors
+                if (_result != CURLE_OK)
+                {
+                    logger.error(
+                        "could not get result of requested rest post : {} / {} because {}",
+                        pURL, pMessage,  curl_easy_strerror(_result));
+                    return W_FAILED;
+                }
 
-				_chunk.copyto(pResult);
-				_chunk.reset();
+                _chunk.copyto(pResult);
+                _chunk.reset();
 
 				return W_PASSED;
 			}
@@ -124,7 +124,7 @@ namespace wolf
 			{
 				if (this->_curl)
 				{
-					curl_easy_cleanup(this->_curl);
+					//curl_easy_cleanup(this->_curl);
 					free(this->_chunk.memory);
 					this->_curl = nullptr;
 				}

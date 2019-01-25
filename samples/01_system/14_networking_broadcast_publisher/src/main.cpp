@@ -36,7 +36,7 @@ WOLF_MAIN()
 		{
 			//send
 			std::string _msg = "message " + w_time_span::now().to_string();
-			if (w_network::send(pSocketID, _msg.c_str(), _msg.size()) >= 0)
+			if (w_network::nano_send(pSocketID, _msg.c_str(), _msg.size()) >= 0)
 			{
 				logger.write("message \'{}\' published.", _msg);
 			}

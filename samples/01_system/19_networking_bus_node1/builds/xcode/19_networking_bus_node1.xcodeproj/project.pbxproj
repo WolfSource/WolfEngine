@@ -257,8 +257,8 @@
 				DEVELOPMENT_TEAM = J2WEUYPJ98;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SRCROOT)/../../../../../bin/Build/macOS/Products/Debug/",
-					"$(SRCROOT)/../../../../../engine/dependencies/tbb/oss/osx/lib",
-					"$(SRCROOT)/../../../../../engine/dependencies/luaJIT/lib/osx/debug/",
+					"$(SRCROOT)/../../../../../engine/deps/tbb/oss/osx/lib",
+					"$(SRCROOT)/../../../../../engine/deps/luaJIT/lib/osx/debug/",
 				);
 				GCC_C_LANGUAGE_STANDARD = c11;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -282,8 +282,8 @@
 				DEVELOPMENT_TEAM = J2WEUYPJ98;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SRCROOT)/../../../../../bin/Build/macOS/Products/Debug/",
-					"$(SRCROOT)/../../../../../engine/dependencies/tbb/oss/osx/lib",
-					"$(SRCROOT)/../../../../../engine/dependencies/luaJIT/lib/osx/debug/",
+					"$(SRCROOT)/../../../../../engine/deps/tbb/oss/osx/lib",
+					"$(SRCROOT)/../../../../../engine/deps/luaJIT/lib/osx/debug/",
 				);
 				GCC_C_LANGUAGE_STANDARD = c11;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;

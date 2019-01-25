@@ -7,12 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2C0CB00621FA27BE006AA6D7 /* vulkan.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C0CB00521FA27BE006AA6D7 /* vulkan.framework */; };
+		2C0CB02C21FA3318006AA6D7 /* libtbb_debug.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C0CB02B21FA3318006AA6D7 /* libtbb_debug.dylib */; };
 		2C1383A21F50971300D5283B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C1383A11F50971300D5283B /* AppDelegate.m */; };
 		2C1E3F922108769E0072D5D3 /* libwolf.render.vulkan.osx.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C1E3F912108769E0072D5D3 /* libwolf.render.vulkan.osx.dylib */; };
 		2C2B08F61FD1E11D0036E134 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2C2B08F51FD1E11D0036E134 /* Assets.xcassets */; };
 		2C2B08FA1FD1E13F0036E134 /* Base.lproj in Resources */ = {isa = PBXBuildFile; fileRef = 2C2B08F91FD1E13F0036E134 /* Base.lproj */; };
 		2C2B08FC1FD1E15D0036E134 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C2B08FB1FD1E15D0036E134 /* main.m */; };
-		2C2B08FF1FD1E3B30036E134 /* libtbb_debug.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C2B08FE1FD1E3B30036E134 /* libtbb_debug.dylib */; };
 		2C2B09041FD1E43F0036E134 /* shader.vert in Resources */ = {isa = PBXBuildFile; fileRef = 2C2B09021FD1E43F0036E134 /* shader.vert */; };
 		2C2B09051FD1E43F0036E134 /* shader.frag in Resources */ = {isa = PBXBuildFile; fileRef = 2C2B09031FD1E43F0036E134 /* shader.frag */; };
 		2C4639571EA55A6C00A16595 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2C4639551EA55A6C00A16595 /* Main.storyboard */; };
@@ -22,10 +23,11 @@
 		2CB69EE31F62E5470068D1E6 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CB69EE21F62E5470068D1E6 /* QuartzCore.framework */; };
 		2CB69EE51F62E5510068D1E6 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CB69EE41F62E5510068D1E6 /* Metal.framework */; };
 		2CB69EE71F62E56D0068D1E6 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CB69EE61F62E56D0068D1E6 /* libc++.tbd */; };
-		2CF54B2E205BE5AF000B80E3 /* vulkan.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CF54B2D205BE5AF000B80E3 /* vulkan.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2C0CB00521FA27BE006AA6D7 /* vulkan.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = vulkan.framework; path = ../../../../../engine/deps/vulkan/macOS/macOS/Frameworks/vulkan.framework; sourceTree = "<group>"; };
+		2C0CB02B21FA3318006AA6D7 /* libtbb_debug.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libtbb_debug.dylib; path = ../../../../../engine/deps/tbb/oss/osx/tbb/lib/libtbb_debug.dylib; sourceTree = "<group>"; };
 		2C1383A01F50971300D5283B /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = ../../../../common/AppDelegate.h; sourceTree = "<group>"; };
 		2C1383A11F50971300D5283B /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = ../../../../common/AppDelegate.m; sourceTree = "<group>"; };
 		2C1E3F912108769E0072D5D3 /* libwolf.render.vulkan.osx.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwolf.render.vulkan.osx.dylib; path = ../../../../../bin/osx/Build/Products/Debug/libwolf.render.vulkan.osx.dylib; sourceTree = "<group>"; };
@@ -56,11 +58,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2C0CB02C21FA3318006AA6D7 /* libtbb_debug.dylib in Frameworks */,
+				2C0CB00621FA27BE006AA6D7 /* vulkan.framework in Frameworks */,
 				2C68593920D85EFA0096C33B /* libwolf.system.osx.dylib in Frameworks */,
 				2C1E3F922108769E0072D5D3 /* libwolf.render.vulkan.osx.dylib in Frameworks */,
-				2C2B08FF1FD1E3B30036E134 /* libtbb_debug.dylib in Frameworks */,
 				2CB69EE71F62E56D0068D1E6 /* libc++.tbd in Frameworks */,
-				2CF54B2E205BE5AF000B80E3 /* vulkan.framework in Frameworks */,
 				2CB69EE51F62E5510068D1E6 /* Metal.framework in Frameworks */,
 				2CB69EE31F62E5470068D1E6 /* QuartzCore.framework in Frameworks */,
 			);
@@ -125,6 +127,8 @@
 		2CB69EDF1F62E53B0068D1E6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2C0CB02B21FA3318006AA6D7 /* libtbb_debug.dylib */,
+				2C0CB00521FA27BE006AA6D7 /* vulkan.framework */,
 				2C1E3F912108769E0072D5D3 /* libwolf.render.vulkan.osx.dylib */,
 				2C68593720D85EF90096C33B /* libwolf.system.osx.dylib */,
 				2CF54B2D205BE5AF000B80E3 /* vulkan.framework */,
@@ -343,22 +347,24 @@
 				FRAMEWORK_SEARCH_PATHS = "";
 				"FRAMEWORK_SEARCH_PATHS[arch=*]" = (
 					"$(SRCROOT)/../../../../../bin/osx/Build/Products/Debug/",
-					"$(SRCROOT)/../../../../../engine/dependencies/tbb/oss/osx/lib",
-					"$(SRCROOT)/../../../../../engine/dependencies/vulkan/macOS/macOS/Frameworks",
+					"$(SRCROOT)/../../../../../engine/deps/tbb/oss/osx/tbb/lib",
+					"$(SRCROOT)/../../../../../engine/deps/vulkan/macOS/macOS/Frameworks",
 				);
 				GCC_C_LANGUAGE_STANDARD = c11;
 				HEADER_SEARCH_PATHS = "";
 				"HEADER_SEARCH_PATHS[arch=*]" = (
 					"$(PROJECT_DIR)/../../src",
 					"$(PROJECT_DIR)/../../../../common",
-					"$(SRCROOT)/../../../../../engine/dependencies/vulkan/macOS/macOS/include",
+					"$(SRCROOT)/../../../../../engine/deps/vulkan/macOS/macOS/include",
 					"$(SRCROOT)/../../../../../engine/src/wolf.system",
 					"$(SRCROOT)/../../../../../engine/src/wolf.content_pipeline",
 					"$(SRCROOT)/../../../../../engine/src/wolf.render",
-					"$(SRCROOT)/../../../../../engine/dependencies/tbb/oss/osx/include",
+					"$(SRCROOT)/../../../../../engine/deps/tbb/oss/osx/tbb/include",
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/06_staging_buffer/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) $(SRCROOT)/../../../../../engine/dependencies/vulkan/macOS/macOS/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) $(SRCROOT)/../../../../../engine/deps/vulkan/macOS/macOS/Frameworks";
+				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/../../../../../engine/deps/tbb/oss/osx/tbb/lib";
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				PRODUCT_BUNDLE_IDENTIFIER = wolf.engine.vulkan.osx.sample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VALID_ARCHS = x86_64;
@@ -376,7 +382,8 @@
 				GCC_C_LANGUAGE_STANDARD = c11;
 				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = "$(SRCROOT)/06_staging_buffer/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) $(SRCROOT)/../../../../../engine/dependencies/vulkan/macOS/macOS/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) $(SRCROOT)/../../../../../engine/deps/vulkan/macOS/macOS/Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				PRODUCT_BUNDLE_IDENTIFIER = wolf.engine.vulkan.osx.sample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VALID_ARCHS = x86_64;

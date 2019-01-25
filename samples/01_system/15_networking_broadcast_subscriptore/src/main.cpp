@@ -36,7 +36,7 @@ WOLF_MAIN()
 		{
 			//receive
 			char* _rcv_buffer = nullptr;
-			auto _rcv_len = w_network::receive(pSocketID, &_rcv_buffer);
+			auto _rcv_len = w_network::nano_receive(pSocketID, &_rcv_buffer);
 			if (_rcv_len >= 0)
 			{
 				std::string _rcv_msg;

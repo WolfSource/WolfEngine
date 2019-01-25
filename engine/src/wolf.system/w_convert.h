@@ -431,12 +431,12 @@ namespace wolf
 						pSourceBufferLenght);
 					break;
 #if USE_AVX512 != 0 && ((defined(_MSC_VER) && _MSC_VER >= 1911) || (defined(__INTEL_COMPILER) && __INTEL_COMPILER >= 1600) || (defined(__clang__) && __clang_major__ >= 4) || (defined(__GNUC__) && __GNUC__ >= 5))
-				case fast_avx512:
-					_encoded_size = fast_avx512bw_base64_encode(
-						pDestinationBuffer,
-						pSourceBuffer,
-						pSourceBufferLenght);
-					break;
+                    case fast_avx512:
+                    _encoded_size = fast_avx512bw_base64_encode(
+                        pDestinationBuffer,
+                        pSourceBuffer,
+                        pSourceBufferLenght);
+                    break;
 #endif
 				case quick_time:
 					_encoded_size = static_cast<size_t>(quicktime_base64_encode(

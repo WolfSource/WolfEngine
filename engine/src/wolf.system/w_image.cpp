@@ -1,7 +1,7 @@
 #include "w_system_pch.h"
 #include "w_image.h"
 #include <turbojpeg.h>
-#include "libpng/png.h"
+#include <png.h>
 
 namespace wolf
 {

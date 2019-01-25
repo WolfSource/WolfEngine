@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2C0CB03221FA3864006AA6D7 /* libassimp.4.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C0CB03121FA3864006AA6D7 /* libassimp.4.dylib */; };
 		2C4913522064E33B006036E4 /* w_vertex_struct.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4913512064E33B006036E4 /* w_vertex_struct.h */; };
 		2C4CCB161EB0F59500E0A422 /* w_cpipeline_pch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C4CCB141EB0F59500E0A422 /* w_cpipeline_pch.cpp */; };
 		2C4CCB171EB0F59500E0A422 /* w_cpipeline_pch.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CCB151EB0F59500E0A422 /* w_cpipeline_pch.h */; };
@@ -21,7 +22,6 @@
 		2C736BC41ECA1EE400624CC7 /* w_cpipeline_model.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C736BC01ECA1EE400624CC7 /* w_cpipeline_model.h */; };
 		2C736BC51ECA1EE400624CC7 /* w_cpipeline_scene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C736BC11ECA1EE400624CC7 /* w_cpipeline_scene.cpp */; };
 		2C736BC61ECA1EE400624CC7 /* w_cpipeline_scene.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C736BC21ECA1EE400624CC7 /* w_cpipeline_scene.h */; };
-		2C766E6620B33F60000C66F4 /* libassimp.4.1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CE0DABD20ABF014003BC362 /* libassimp.4.1.0.dylib */; };
 		2C8D5AC31F4F8549000BCB87 /* amd_tootle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C8D5AC11F4F8549000BCB87 /* amd_tootle.cpp */; };
 		2C8D5AC41F4F8549000BCB87 /* amd_tootle.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5AC21F4F8549000BCB87 /* amd_tootle.h */; };
 		2C8D5ACA1F4F861C000BCB87 /* TootleRaytracer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C8D5AC81F4F861C000BCB87 /* TootleRaytracer.cpp */; };
@@ -97,6 +97,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2C0CAFE921F9FCBC006AA6D7 /* version.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = version.txt; path = ../../../deps/assimp/version.txt; sourceTree = "<group>"; };
+		2C0CAFEB21F9FCC7006AA6D7 /* assimp.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; name = assimp.zip; path = ../../../deps/assimp.zip; sourceTree = "<group>"; };
+		2C0CAFED21F9FCDC006AA6D7 /* libassimp.4.1.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libassimp.4.1.0.dylib; path = ../../../deps/assimp/lib/osx/debug/libassimp.4.1.0.dylib; sourceTree = "<group>"; };
+		2C0CB03121FA3864006AA6D7 /* libassimp.4.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libassimp.4.dylib; path = ../../../deps/assimp/lib/osx/debug/libassimp.4.dylib; sourceTree = "<group>"; };
 		2C4913512064E33B006036E4 /* w_vertex_struct.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_vertex_struct.h; path = ../../../src/wolf.content_pipeline/w_vertex_struct.h; sourceTree = "<group>"; };
 		2C4CCB141EB0F59500E0A422 /* w_cpipeline_pch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_cpipeline_pch.cpp; path = ../../../src/wolf.content_pipeline/w_cpipeline_pch.cpp; sourceTree = "<group>"; };
 		2C4CCB151EB0F59500E0A422 /* w_cpipeline_pch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_cpipeline_pch.h; path = ../../../src/wolf.content_pipeline/w_cpipeline_pch.h; sourceTree = "<group>"; };
@@ -192,7 +196,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2C766E6620B33F60000C66F4 /* libassimp.4.1.0.dylib in Frameworks */,
+				2C0CB03221FA3864006AA6D7 /* libassimp.4.dylib in Frameworks */,
 				2C4CCB2F1EB1045E00E0A422 /* libwolf.system.osx.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -368,6 +372,10 @@
 		2CFA170D1E674C850041A83F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2C0CB03121FA3864006AA6D7 /* libassimp.4.dylib */,
+				2C0CAFED21F9FCDC006AA6D7 /* libassimp.4.1.0.dylib */,
+				2C0CAFEB21F9FCC7006AA6D7 /* assimp.zip */,
+				2C0CAFE921F9FCBC006AA6D7 /* version.txt */,
 				2CE0DABD20ABF014003BC362 /* libassimp.4.1.0.dylib */,
 				2C4CCB2E1EB1045E00E0A422 /* libwolf.system.osx.dylib */,
 			);
@@ -646,7 +654,7 @@
 				DYLIB_CURRENT_VERSION = 1;
 				EXECUTABLE_PREFIX = lib;
 				FRAMEWORK_SEARCH_PATHS = "";
-				"FRAMEWORK_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/../../../dependencies/assimp/lib/osx/debug/";
+				"FRAMEWORK_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/../../../deps/assimp/lib/osx/debug/";
 				GCC_C_LANGUAGE_STANDARD = c11;
 				GCC_ENABLE_CPP_EXCEPTIONS = YES;
 				GCC_ENABLE_CPP_RTTI = YES;
@@ -663,10 +671,11 @@
 				"HEADER_SEARCH_PATHS[arch=*]" = (
 					"$(SRCROOT)/../../../src/wolf.system",
 					"$(SRCROOT)/../../../src/wolf.content_pipeline",
-					"$(SRCROOT)/../../../dependencies/assimp/include",
+					"$(SRCROOT)/../../../deps/assimp/include",
 				);
 				LIBRARY_SEARCH_PATHS = "";
-				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/../../../dependencies/assimp/lib/osx/debug/";
+				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/../../../deps/assimp/lib/osx/debug/";
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				OTHER_CFLAGS = "";
 				"OTHER_CFLAGS[arch=*]" = "";
 				"OTHER_CPLUSPLUSFLAGS[arch=*]" = "";
@@ -693,6 +702,7 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				HEADER_SEARCH_PATHS = "";
 				LIBRARY_SEARCH_PATHS = "";
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				OTHER_CFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				"VALID_ARCHS[sdk=*]" = x86_64;

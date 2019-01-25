@@ -253,7 +253,7 @@
 				FRAMEWORK_SEARCH_PATHS = "";
 				"FRAMEWORK_SEARCH_PATHS[arch=*]" = (
 					"$(SRCROOT)/../../../../../bin/osx/Build/Products/Debug/",
-					"$(SRCROOT)/../../../../../engine/dependencies/vulkan/macOS/macOS/Frameworks",
+					"$(SRCROOT)/../../../../../engine/deps/vulkan/macOS/macOS/Frameworks",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
@@ -261,15 +261,15 @@
 				"HEADER_SEARCH_PATHS[arch=*]" = (
 					"$(PROJECT_DIR)/../../src",
 					"$(PROJECT_DIR)/../../../../common",
-					"$(SRCROOT)/../../../../../engine/dependencies/msgpack/include/",
-					"$(SRCROOT)/../../../../../engine/dependencies/vulkan/macOS/macOS/include",
+					"$(SRCROOT)/../../../../../engine/deps/msgpack/include/",
+					"$(SRCROOT)/../../../../../engine/deps/vulkan/macOS/macOS/include",
 					"$(SRCROOT)/../../../../../engine/src/wolf.system",
 					"$(SRCROOT)/../../../../../engine/src/wolf.content_pipeline",
 				);
 				INSTALL_PATH = /usr/local/bin;
-				LD_RUNPATH_SEARCH_PATHS = "$(SRCROOT)/../../../../../engine/dependencies/vulkan/macOS/macOS/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(SRCROOT)/../../../../../engine/deps/vulkan/macOS/macOS/Frameworks";
 				LIBRARY_SEARCH_PATHS = "";
-				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/../../../../../engine/dependencies/assimp/lib/osx/debug";
+				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/../../../../../engine/deps/assimp/lib/osx/debug";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -284,7 +284,7 @@
 				GCC_PREFIX_HEADER = "";
 				HEADER_SEARCH_PATHS = "";
 				INSTALL_PATH = /usr/local/bin;
-				LD_RUNPATH_SEARCH_PATHS = "$(SRCROOT)/../../../../../engine/dependencies/vulkan/macOS/macOS/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(SRCROOT)/../../../../../engine/deps/vulkan/macOS/macOS/Frameworks";
 				LIBRARY_SEARCH_PATHS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VERSION_INFO_PREFIX = "";

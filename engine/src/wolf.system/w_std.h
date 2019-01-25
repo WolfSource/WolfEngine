@@ -23,10 +23,9 @@
 
 #include <limits.h>
 #include <stdint.h>
+#include <inttypes.h>
 
 #else
-
-#include <inttypes.h>
 
 //define dummy SAL for android and linux
 #ifndef _In_

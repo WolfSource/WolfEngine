@@ -7,9 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2C0CAFF921FA08EB006AA6D7 /* libboost_fiber.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C0CAFF721FA08EB006AA6D7 /* libboost_fiber.a */; };
+		2C0CAFFA21FA08EB006AA6D7 /* libboost_context.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C0CAFF821FA08EB006AA6D7 /* libboost_context.a */; };
 		2C68592120D85B200096C33B /* libwolf.system.osx.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C68592020D85B200096C33B /* libwolf.system.osx.dylib */; };
-		2C7C90F420AF25C10053A0B3 /* libboost_fiber.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C7C90F320AF25C10053A0B3 /* libboost_fiber.a */; };
-		2C7C90F620AF273A0053A0B3 /* libboost_context.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C7C90F520AF273A0053A0B3 /* libboost_context.a */; };
 		2CB495C01E6469BC000B94F6 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CB495BD1E6469BC000B94F6 /* main.cpp */; };
 		2CB495C11E6469BC000B94F6 /* pch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CB495BE1E6469BC000B94F6 /* pch.cpp */; };
 /* End PBXBuildFile section */
@@ -27,6 +27,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		2C0CAFF721FA08EB006AA6D7 /* libboost_fiber.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libboost_fiber.a; path = ../../../../../engine/deps/boost/lib/osx/debug/libboost_fiber.a; sourceTree = "<group>"; };
+		2C0CAFF821FA08EB006AA6D7 /* libboost_context.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libboost_context.a; path = ../../../../../engine/deps/boost/lib/osx/debug/libboost_context.a; sourceTree = "<group>"; };
 		2C326D151EA5539000AEC380 /* libtbb_debug.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libtbb_debug.dylib; path = ../../../../../bin/Build/macOS/Products/Debug/libtbb_debug.dylib; sourceTree = "<group>"; };
 		2C326D161EA5539000AEC380 /* libtbbmalloc_debug.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libtbbmalloc_debug.dylib; path = ../../../../../bin/Build/macOS/Products/Debug/libtbbmalloc_debug.dylib; sourceTree = "<group>"; };
 		2C326D171EA5539000AEC380 /* libwolf.system.macOS.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwolf.system.macOS.dylib; path = ../../../../../bin/Build/macOS/Products/Debug/libwolf.system.macOS.dylib; sourceTree = "<group>"; };
@@ -44,9 +46,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2C0CAFF921FA08EB006AA6D7 /* libboost_fiber.a in Frameworks */,
+				2C0CAFFA21FA08EB006AA6D7 /* libboost_context.a in Frameworks */,
 				2C68592120D85B200096C33B /* libwolf.system.osx.dylib in Frameworks */,
-				2C7C90F620AF273A0053A0B3 /* libboost_context.a in Frameworks */,
-				2C7C90F420AF25C10053A0B3 /* libboost_fiber.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -75,6 +77,8 @@
 		2CDCB30E1E64CF1F00DC0699 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2C0CAFF821FA08EB006AA6D7 /* libboost_context.a */,
+				2C0CAFF721FA08EB006AA6D7 /* libboost_fiber.a */,
 				2C68592020D85B200096C33B /* libwolf.system.osx.dylib */,
 				2C7C90F520AF273A0053A0B3 /* libboost_context.a */,
 				2C7C90F320AF25C10053A0B3 /* libboost_fiber.a */,
@@ -262,12 +266,12 @@
 				HEADER_SEARCH_PATHS = "";
 				"HEADER_SEARCH_PATHS[arch=*]" = (
 					"$(SRCROOT)/../../../../../engine/src/wolf.system",
-					"$(SRCROOT)/../../../../../engine/dependencies/tbb/oss/osx/include",
-					"$(SRCROOT)/../../../../../engine/dependencies/boost/include/",
+					"$(SRCROOT)/../../../../../engine/deps/tbb/oss/osx/tbb/include",
+					"$(SRCROOT)/../../../../../engine/deps/boost/include/",
 				);
 				INSTALL_PATH = /usr/local/bin;
 				LIBRARY_SEARCH_PATHS = "";
-				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/../../../../../engine/dependencies/boost/lib/osx/";
+				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/../../../../../engine/deps/boost/lib/osx/";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -281,14 +285,14 @@
 				FRAMEWORK_SEARCH_PATHS = "";
 				"FRAMEWORK_SEARCH_PATHS[arch=*]" = (
 					"$(SRCROOT)/../../../../../bin/Build/macOS/Products/Release/",
-					"$(SRCROOT)/../../../../../engine/dependencies/tbb/oss/osx/lib",
+					"$(SRCROOT)/../../../../../engine/deps/tbb/oss/osx/tbb/lib",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/../../src/pch.h";
 				HEADER_SEARCH_PATHS = "";
 				"HEADER_SEARCH_PATHS[arch=*]" = (
 					"$(SRCROOT)/../../../../../engine/src/wolf.system",
-					"$(SRCROOT)/../../../../../engine/dependencies/tbb/oss/osx/include",
+					"$(SRCROOT)/../../../../../engine/deps/tbb/oss/osx/tbb/include",
 				);
 				INSTALL_PATH = /usr/local/bin;
 				LIBRARY_SEARCH_PATHS = "";

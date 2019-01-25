@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2C0CAFF221F9FD60006AA6D7 /* vulkan.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C0CAFF121F9FD60006AA6D7 /* vulkan.framework */; };
+		2C0CB03421FA3881006AA6D7 /* libassimp.4.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C0CB03321FA3881006AA6D7 /* libassimp.4.dylib */; };
 		2C1E3F65210870BA0072D5D3 /* w_render_target.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C1E3F45210870B80072D5D3 /* w_render_target.h */; };
 		2C1E3F66210870BA0072D5D3 /* w_command_buffers.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C1E3F46210870B80072D5D3 /* w_command_buffers.h */; };
 		2C1E3F67210870BA0072D5D3 /* w_imgui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C1E3F47210870B80072D5D3 /* w_imgui.cpp */; };
@@ -62,7 +64,6 @@
 		2C68599120D92D1B0096C33B /* MaskedOcclusionCullingAVX2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C68598920D92D1B0096C33B /* MaskedOcclusionCullingAVX2.cpp */; settings = {COMPILER_FLAGS = "-mavx2 -mfma"; }; };
 		2C68599320D92F400096C33B /* MaskedOcclusionCullingAVX512.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C68599220D92F400096C33B /* MaskedOcclusionCullingAVX512.cpp */; settings = {COMPILER_FLAGS = "-mavx2 -mfma"; }; };
 		2C7079991EACE6F2003784A2 /* libwolf.system.osx.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C4CD32E1E8A8DBB0090EE0A /* libwolf.system.osx.dylib */; };
-		2C766E6C20B343C4000C66F4 /* libassimp.4.1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C766E6B20B343C4000C66F4 /* libassimp.4.1.0.dylib */; };
 		2C860FA41E5F1E80000E71B5 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C860FA31E5F1E80000E71B5 /* libc++.tbd */; };
 		2C860FA61E5F1E86000E71B5 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C860FA51E5F1E86000E71B5 /* Metal.framework */; };
 		2C860FA81E5F1E8C000E71B5 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C860FA71E5F1E8C000E71B5 /* QuartzCore.framework */; };
@@ -74,10 +75,12 @@
 		2CE4DA0221391ADC005B386E /* w_indirect_draw_commands.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE4D9FF21391ADC005B386E /* w_indirect_draw_commands.h */; };
 		2CE4DA0321391ADC005B386E /* w_viewport.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE4DA0021391ADC005B386E /* w_viewport.h */; };
 		2CE4DA0421391ADC005B386E /* w_indirect_draw_commands.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CE4DA0121391ADC005B386E /* w_indirect_draw_commands.cpp */; };
-		2CF54B09205A2A1C000B80E3 /* vulkan.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CF54B08205A2A1C000B80E3 /* vulkan.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2C0CAFEF21F9FD0D006AA6D7 /* libassimp.4.1.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libassimp.4.1.0.dylib; path = ../../../deps/assimp/lib/osx/debug/libassimp.4.1.0.dylib; sourceTree = "<group>"; };
+		2C0CAFF121F9FD60006AA6D7 /* vulkan.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = vulkan.framework; path = ../../../deps/vulkan/macOS/macOS/Frameworks/vulkan.framework; sourceTree = "<group>"; };
+		2C0CB03321FA3881006AA6D7 /* libassimp.4.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libassimp.4.dylib; path = ../../../deps/assimp/lib/osx/debug/libassimp.4.dylib; sourceTree = "<group>"; };
 		2C1E3F45210870B80072D5D3 /* w_render_target.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_render_target.h; path = ../../../src/wolf.render/vulkan/w_render_target.h; sourceTree = "<group>"; };
 		2C1E3F46210870B80072D5D3 /* w_command_buffers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_command_buffers.h; path = ../../../src/wolf.render/vulkan/w_command_buffers.h; sourceTree = "<group>"; };
 		2C1E3F47210870B80072D5D3 /* w_imgui.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_imgui.cpp; path = ../../../src/wolf.render/vulkan/w_imgui.cpp; sourceTree = "<group>"; };
@@ -156,8 +159,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2C766E6C20B343C4000C66F4 /* libassimp.4.1.0.dylib in Frameworks */,
-				2CF54B09205A2A1C000B80E3 /* vulkan.framework in Frameworks */,
+				2C0CB03421FA3881006AA6D7 /* libassimp.4.dylib in Frameworks */,
+				2C0CAFF221F9FD60006AA6D7 /* vulkan.framework in Frameworks */,
 				2C7079991EACE6F2003784A2 /* libwolf.system.osx.dylib in Frameworks */,
 				2C68597A20D92AEC0096C33B /* libwolf.content_pipeline.osx.dylib in Frameworks */,
 				2CCE632E1FD5E73000EC0BB5 /* IOSurface.framework in Frameworks */,
@@ -272,7 +275,10 @@
 		2C860FA01E5F1E5B000E71B5 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2C0CB03321FA3881006AA6D7 /* libassimp.4.dylib */,
+				2C0CAFF121F9FD60006AA6D7 /* vulkan.framework */,
 				2C766E6B20B343C4000C66F4 /* libassimp.4.1.0.dylib */,
+				2C0CAFEF21F9FD0D006AA6D7 /* libassimp.4.1.0.dylib */,
 				2CF54B08205A2A1C000B80E3 /* vulkan.framework */,
 				2CCE632C1FD5E6EF00EC0BB5 /* IOSurface.framework */,
 				2C29CD261EB3834B00BEFF54 /* libwolf.content_pipeline.osx.dylib */,
@@ -548,8 +554,8 @@
 				EXECUTABLE_PREFIX = lib;
 				FRAMEWORK_SEARCH_PATHS = "";
 				"FRAMEWORK_SEARCH_PATHS[arch=*]" = (
-					"$(SRCROOT)/../../../dependencies/vulkan/macOS/macOS/Frameworks",
-					"$(SRCROOT)/../../../dependencies/assimp/lib/osx/debug/",
+					"$(SRCROOT)/../../../deps/vulkan/macOS/macOS/Frameworks",
+					"$(SRCROOT)/../../../deps/assimp/lib/osx/debug/",
 				);
 				GCC_ENABLE_CPP_EXCEPTIONS = YES;
 				GCC_ENABLE_CPP_RTTI = YES;
@@ -565,15 +571,16 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				HEADER_SEARCH_PATHS = "";
 				"HEADER_SEARCH_PATHS[arch=*]" = (
-					"$(SRCROOT)/../../../dependencies/vulkan/macOS/macOS/include",
-					"$(SRCROOT)/../../../dependencies/luaJIT/include",
-					"$(SRCROOT)/../../../dependencies/nanomsg/include",
+					"$(SRCROOT)/../../../deps/vulkan/macOS/macOS/include",
+					"$(SRCROOT)/../../../deps/luaJIT/include",
+					"$(SRCROOT)/../../../deps/nanomsg/include",
 					"$(SRCROOT)/../../../src/wolf.system",
 					"$(SRCROOT)/../../../src/wolf.render",
 					"$(SRCROOT)/../../../src/wolf.content_pipeline",
 				);
 				LIBRARY_SEARCH_PATHS = "";
-				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/../../../dependencies/assimp/lib/osx/debug/";
+				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/../../../deps/assimp/lib/osx/debug/";
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VALID_ARCHS = "";
 				"VALID_ARCHS[sdk=*]" = x86_64;
@@ -595,6 +602,7 @@
 				GCC_PREFIX_HEADER = "$(SRCROOT)/../../../src/wolf.render/w_render_pch.h";
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				LIBRARY_SEARCH_PATHS = "";
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VALID_ARCHS = "";
 				"VALID_ARCHS[sdk=*]" = x86_64;

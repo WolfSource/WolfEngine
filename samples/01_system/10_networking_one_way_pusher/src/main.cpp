@@ -34,7 +34,7 @@ WOLF_MAIN()
         
         const char* _msg = "Hello, I'm pusher!";
         auto _len = strlen(_msg) + 1;//1 for "\0" end of message
-        if(w_network::send(pSocketID, _msg, _len) != _len)
+        if(w_network::nano_send(pSocketID, _msg, _len) != _len)
         {
             logger.error("count of sent bytes not equal to count of message bytes");
             return;

@@ -35,7 +35,7 @@ WOLF_MAIN()
         char* _buffer = nullptr;
         while (1)
         {
-            if(w_network::receive(pSocketID, &_buffer) >= 0)
+            if(w_network::nano_receive(pSocketID, &_buffer) >= 0)
             {
                 logger.write("Roger that, puller received: {}", _buffer);
                 break;

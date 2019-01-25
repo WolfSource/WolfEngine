@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2C0CB01621FA28B9006AA6D7 /* vulkan.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C0CB01521FA28B9006AA6D7 /* vulkan.framework */; };
 		2C13839F1F5096DE00D5283B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C13839E1F5096DE00D5283B /* main.m */; };
 		2C1383A21F50971300D5283B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C1383A11F50971300D5283B /* AppDelegate.m */; };
 		2C1E3FA221087A500072D5D3 /* libwolf.render.vulkan.osx.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C1E3FA121087A500072D5D3 /* libwolf.render.vulkan.osx.dylib */; };
@@ -20,10 +21,10 @@
 		2CB69EE31F62E5470068D1E6 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CB69EE21F62E5470068D1E6 /* QuartzCore.framework */; };
 		2CB69EE51F62E5510068D1E6 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CB69EE41F62E5510068D1E6 /* Metal.framework */; };
 		2CB69EE71F62E56D0068D1E6 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CB69EE61F62E56D0068D1E6 /* libc++.tbd */; };
-		2CF54B3D205C52A9000B80E3 /* vulkan.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CF54B3C205C52A9000B80E3 /* vulkan.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2C0CB01521FA28B9006AA6D7 /* vulkan.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = vulkan.framework; path = ../../../../../engine/deps/vulkan/macOS/macOS/Frameworks/vulkan.framework; sourceTree = "<group>"; };
 		2C13839E1F5096DE00D5283B /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = ../../../../../common/main.m; sourceTree = "<group>"; };
 		2C1383A01F50971300D5283B /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = ../../../../common/AppDelegate.h; sourceTree = "<group>"; };
 		2C1383A11F50971300D5283B /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = ../../../../common/AppDelegate.m; sourceTree = "<group>"; };
@@ -51,10 +52,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2C0CB01621FA28B9006AA6D7 /* vulkan.framework in Frameworks */,
 				2C68595920D85FA90096C33B /* libwolf.system.osx.dylib in Frameworks */,
 				2C1E3FA221087A500072D5D3 /* libwolf.render.vulkan.osx.dylib in Frameworks */,
 				2CB69EE71F62E56D0068D1E6 /* libc++.tbd in Frameworks */,
-				2CF54B3D205C52A9000B80E3 /* vulkan.framework in Frameworks */,
 				2CB69EE51F62E5510068D1E6 /* Metal.framework in Frameworks */,
 				2CB69EE31F62E5470068D1E6 /* QuartzCore.framework in Frameworks */,
 			);
@@ -119,6 +120,7 @@
 		2CB69EDF1F62E53B0068D1E6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2C0CB01521FA28B9006AA6D7 /* vulkan.framework */,
 				2C1E3FA121087A500072D5D3 /* libwolf.render.vulkan.osx.dylib */,
 				2C68595720D85FA80096C33B /* libwolf.system.osx.dylib */,
 				2CF54B3C205C52A9000B80E3 /* vulkan.framework */,
@@ -334,21 +336,21 @@
 				FRAMEWORK_SEARCH_PATHS = "";
 				"FRAMEWORK_SEARCH_PATHS[arch=*]" = (
 					"$(SRCROOT)/../../../../../bin/osx/Build/Products/Debug/",
-					"$(SRCROOT)/../../../../../engine/dependencies/vulkan/macOS/macOS/Frameworks",
+					"$(SRCROOT)/../../../../../engine/deps/vulkan/macOS/macOS/Frameworks",
 				);
 				GCC_C_LANGUAGE_STANDARD = c11;
 				HEADER_SEARCH_PATHS = "";
 				"HEADER_SEARCH_PATHS[arch=*]" = (
 					"$(PROJECT_DIR)/../../src",
 					"$(PROJECT_DIR)/../../../../common",
-					"$(SRCROOT)/../../../../../engine/dependencies/vulkan/macOS/macOS/include",
+					"$(SRCROOT)/../../../../../engine/deps/vulkan/macOS/macOS/include",
 					"$(SRCROOT)/../../../../../engine/src/wolf.system",
 					"$(SRCROOT)/../../../../../engine/src/wolf.content_pipeline",
 					"$(SRCROOT)/../../../../../engine/src/wolf.render",
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/14_mipmaps/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) $(SRCROOT)/../../../../../engine/dependencies/vulkan/macOS/macOS/Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) $(SRCROOT)/../../../../../engine/deps/vulkan/macOS/macOS/Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				PRODUCT_BUNDLE_IDENTIFIER = wolf.engine.vulkan.osx.sample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VALID_ARCHS = x86_64;
@@ -366,8 +368,8 @@
 				GCC_C_LANGUAGE_STANDARD = c11;
 				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = "$(SRCROOT)/14_mipmaps/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) $(SRCROOT)/../../../../../engine/dependencies/vulkan/macOS/macOS/Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) $(SRCROOT)/../../../../../engine/deps/vulkan/macOS/macOS/Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				PRODUCT_BUNDLE_IDENTIFIER = wolf.engine.vulkan.osx.sample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VALID_ARCHS = x86_64;

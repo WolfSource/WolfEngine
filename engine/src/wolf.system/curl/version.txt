@@ -1,2 +1,2 @@
-version : 7.62.0
-https://curl.haxx.se/download.html
+version : 7.63.0
+https://github.com/curl/curl/
