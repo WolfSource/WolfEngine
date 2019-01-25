@@ -417,54 +417,6 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "../../src/wolf.system/w_convert.h"
-            timestampString = "515235013.628656"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "247"
-            endingLineNumber = "247"
-            landmarkName = "unknown"
-            landmarkType = "0">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "void wolf::system::convert::find_all_numbers_then_convert_to&lt;float&gt;(std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt; const&amp;, std::__1::vector&lt;float, std::__1::allocator&lt;float&gt; &gt;&amp;)"
-                  moduleName = "libwolf.content_pipeline.osx.dylib"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/pooyaeimandar/Documents/github/WolfSource/Wolf.Engine/engine/builds/xcode/wolf.content_pipeline/../../../src/wolf.system/w_convert.h"
-                  timestampString = "515235013.642663"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "247"
-                  endingLineNumber = "247"
-                  offsetFromSymbolStart = "2743">
-               </Location>
-               <Location
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "void wolf::system::convert::find_all_numbers_then_convert_to&lt;unsigned short&gt;(std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt; const&amp;, std::__1::vector&lt;unsigned short, std::__1::allocator&lt;unsigned short&gt; &gt;&amp;)"
-                  moduleName = "libwolf.content_pipeline.osx.dylib"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/pooyaeimandar/Documents/github/WolfSource/Wolf.Engine/engine/builds/xcode/wolf.content_pipeline/../../../src/wolf.system/w_convert.h"
-                  timestampString = "515235013.644028"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "247"
-                  endingLineNumber = "247"
-                  offsetFromSymbolStart = "2743">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "../../src/wolf.content_pipeline/collada/c_parser.cpp"
             timestampString = "548193915.00001"
             startingColumnNumber = "9223372036854775807"
@@ -899,7 +851,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "81"
             endingLineNumber = "81"
-            landmarkName = "scene::update(_In_ const wolf::system::w_game_time&amp; pGameTime)"
+            landmarkName = "scene::scene(_In_z_ const std::wstring&amp; pContentPath, _In_ const system::w_logger_config&amp; pLogConfig)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
