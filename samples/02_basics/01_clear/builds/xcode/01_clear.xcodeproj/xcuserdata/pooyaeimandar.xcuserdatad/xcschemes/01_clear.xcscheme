@@ -526,7 +526,7 @@
       <EnvironmentVariables>
          <EnvironmentVariable
             key = "VK_ICD_FILENAMES"
-            value = "$(SRCROOT)/../../../../../engine/dependencies/vulkan/macOS/macOS/etc/vulkan/icd.d/MoltenVK_icd.json"
+            value = "$(SRCROOT)/../../../../../engine/deps/vulkan/macOS/macOS/etc/vulkan/icd.d/MoltenVK_icd.json"
             isEnabled = "YES">
          </EnvironmentVariable>
       </EnvironmentVariables>
