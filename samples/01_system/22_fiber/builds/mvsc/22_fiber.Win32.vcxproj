@@ -128,8 +128,8 @@
     <Link>
       <AssemblyDebug>true</AssemblyDebug>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>$(SolutionDir)/../bin/win32/$(Platform)/$(Configuration)/;$(SolutionDir)/../engine/deps/boost/lib/windows</AdditionalLibraryDirectories>
-      <AdditionalDependencies>wolf.system.win32.lib;libboost_fiber-vc141-mt-gd-x64-1_68.lib;libboost_context-vc141-mt-gd-x64-1_68.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)/../bin/win32/$(Platform)/$(Configuration)/;$(SolutionDir)/../engine/deps/boost/lib/windows/x64</AdditionalLibraryDirectories>
+      <AdditionalDependencies>wolf.system.win32.lib;libboost_fiber-vc141-mt-gd-x64-1_69.lib;libboost_context-vc141-mt-gd-x64-1_69.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -141,8 +141,8 @@
       <LanguageStandard>stdcpp14</LanguageStandard>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>wolf.system.win32.lib;libboost_fiber-vc141-mt-x64-1_68.lib;libboost_context-vc141-mt-x64-1_68.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)/../bin/win32/$(Platform)/$(Configuration)/;$(SolutionDir)/../engine/deps/boost/lib/windows</AdditionalLibraryDirectories>
+      <AdditionalDependencies>wolf.system.win32.lib;libboost_fiber-vc141-mt-x64-1_69.lib;libboost_context-vc141-mt-x64-1_69.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)/../bin/win32/$(Platform)/$(Configuration)/;$(SolutionDir)/../engine/deps/boost/lib/windows/x64</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <AssemblyDebug>false</AssemblyDebug>
       <SubSystem>Windows</SubSystem>

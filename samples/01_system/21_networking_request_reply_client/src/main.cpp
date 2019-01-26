@@ -36,13 +36,13 @@ WOLF_MAIN()
 		{
 			//send ack
 			std::string _msg = "client: " + w_time_span::now().to_string();
-			if (w_network::send(pSocketID, _msg.c_str(), _msg.size()) >= 0)
+			if (w_network::nano_send(pSocketID, _msg.c_str(), _msg.size()) >= 0)
 			{
 				logger.write("message \'{}\' sent.", _msg);
 
 				//receive
 				char* _rcv_buffer = nullptr;
-				auto _rcv_len = w_network::receive(pSocketID, &_rcv_buffer);
+				auto _rcv_len = w_network::nano_receive(pSocketID, &_rcv_buffer);
 				if (_rcv_len >= 0)
 				{
 					std::string _rcv_msg;

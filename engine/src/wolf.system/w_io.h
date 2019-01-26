@@ -734,6 +734,51 @@ namespace wolf
 				-1 means the file could not be found,
 				-2 means file is exist but could not open
 			*/
+			inline void read_binary_fileW(_In_z_ const wchar_t* pPath, _Inout_ std::vector<uint8_t>& pData,
+				_Out_ int& pFileState)
+			{
+				pFileState = 1;
+				std::ifstream _file(pPath, std::ios::binary);
+				if (!_file)
+				{
+					pFileState = -1;
+					return;
+				}
+
+				if (_file.fail())
+				{
+					pFileState = -2;
+					return;
+				}
+
+				// Stop eating new lines in binary mode!!!
+				_file.unsetf(std::ios::skipws);
+
+				// get its size:
+				//std::streampos _file_size;
+				size_t _data_size = 0;
+
+				_file.seekg(0, std::ios::end);
+				_data_size = static_cast<size_t>(_file.tellg());
+				_file.seekg(0, std::ios::beg);
+
+				// reserve capacity
+				pData.reserve(_data_size);
+
+				// read the data:
+				std::copy(std::istream_iterator<uint8_t>(_file),
+					std::istream_iterator<uint8_t>(),
+					std::back_inserter(pData));
+
+			}
+
+			/*
+				Read binary file and return array of uint8_t
+				fileState indicates to state of file
+				1 means everything is ok
+				-1 means the file could not be found,
+				-2 means file is exist but could not open
+			*/
 			inline void read_binary_file(_In_z_ const char* pPath, _Inout_ std::vector<uint8_t>& pData,
 				_Out_ int& pFileState)
 			{
