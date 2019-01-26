@@ -120,7 +120,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(ProjectDir)/../../src/;$(ProjectDir)/../../../../common/;$(SolutionDir)/../engine/src/wolf.system;$(SolutionDir)/../engine/src/wolf.content_pipeline;$(SolutionDir)/../engine/src/wolf.render;$(SolutionDir)/../engine/deps/vulkan/include;$(SolutionDir)/../engine/deps/tbb/oss/windows/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)/../../src/;$(ProjectDir)/../../../../common/;$(SolutionDir)/../engine/src/wolf.system;$(SolutionDir)/../engine/src/wolf.content_pipeline;$(SolutionDir)/../engine/src/wolf.render;$(SolutionDir)/../engine/deps/vulkan/include;$(SolutionDir)/../engine/deps/tbb/oss/windows/tbb/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;__WIN32;WIN32;_UNICODE;UNICODE;__VULKAN__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -136,7 +136,7 @@
     <Link>
       <AssemblyDebug>true</AssemblyDebug>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>$(SolutionDir)/../bin/win32/$(Platform)/$(Configuration);$(SolutionDir)/../engine/deps/vulkan/lib/windows/x64;$(SolutionDir)/../engine/deps/tbb/oss/windows/lib/intel64/vc14</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)/../bin/win32/$(Platform)/$(Configuration);$(SolutionDir)/../engine/deps/vulkan/lib/windows/x64;$(SolutionDir)/../engine/deps/tbb/oss/windows/tbb/lib/intel64/vc14</AdditionalLibraryDirectories>
       <AdditionalDependencies>wolf.system.win32.lib;wolf.content_pipeline.win32.lib;wolf.render.vulkan.win32.lib;vulkan-1.lib;tbb_debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Manifest>
@@ -145,7 +145,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(ProjectDir)/../../src/;$(ProjectDir)/../../../../common/;$(SolutionDir)/../engine/src/wolf.system;$(SolutionDir)/../engine/src/wolf.content_pipeline;$(SolutionDir)/../engine/src/wolf.render;$(SolutionDir)/../engine/deps/vulkan/include;$(SolutionDir)/../engine/deps/tbb/oss/windows/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)/../../src/;$(ProjectDir)/../../../../common/;$(SolutionDir)/../engine/src/wolf.system;$(SolutionDir)/../engine/src/wolf.content_pipeline;$(SolutionDir)/../engine/src/wolf.render;$(SolutionDir)/../engine/deps/vulkan/include;$(SolutionDir)/../engine/deps/tbb/oss/windows/tbb/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>__WIN32;WIN32;_UNICODE;UNICODE;__VULKAN__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -157,7 +157,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>wolf.system.win32.lib;wolf.content_pipeline.win32.lib;wolf.render.vulkan.win32.lib;vulkan-1.lib;tbb.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)/../bin/win32/$(Platform)/$(Configuration);$(SolutionDir)/../engine/deps/vulkan/lib/windows/x64;$(SolutionDir)/../engine/deps/tbb/oss/windows/lib/intel64/vc14</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)/../bin/win32/$(Platform)/$(Configuration);$(SolutionDir)/../engine/deps/vulkan/lib/windows/x64;$(SolutionDir)/../engine/deps/tbb/oss/windows/tbb/lib/intel64/vc14</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <AssemblyDebug>false</AssemblyDebug>
       <SubSystem>Windows</SubSystem>
