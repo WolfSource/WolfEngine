@@ -420,7 +420,7 @@ namespace wolf
 
 			//forward declaration
 			class w_graphics_device_manager_pimp;
-			//handles the configuration and management of the graphics device.
+			//handles the configuration and management of the graphics devices.
 			class w_graphics_device_manager : public system::w_object
 			{
 			public:

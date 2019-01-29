@@ -1633,7 +1633,7 @@ namespace wolf
 					_app_info.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
 					_app_info.pApplicationName = "Wolf.Engine";
 					_app_info.pEngineName = "Wolf.Engine";
-					_app_info.apiVersion = VK_API_VERSION_1_0;
+					_app_info.apiVersion = VK_API_VERSION_1_1;
 
 					std::vector<const char*> _vk_instance_enabled_extensions =
 					{
