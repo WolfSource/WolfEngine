@@ -10,7 +10,7 @@ scene::scene(_In_z_ const std::wstring& pContentPath, _In_ const wolf::system::w
 	w_game(pContentPath, pLogConfig)
 {
 	w_graphics_device_manager_configs _config;
-	_config.debug_gpu = false;
+	_config.debug_gpu = true;
 	w_game::set_graphics_device_manager_configs(_config);
 
 	w_game::set_fixed_time_step(false);
@@ -91,17 +91,6 @@ void scene::load()
 			w_log_type::W_ERROR,
 			true,
 			"creating render pass. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
-	}
-
-	//create semaphore create info
-	_hr = this->_draw_semaphore.initialize(_gDevice);
-	if (_hr == W_FAILED)
-	{
-		release();
-		V(W_FAILED, 
-			w_log_type::W_ERROR,
-			true,
-			"creating draw semaphore. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 	}
 
 	//Fence for render sync
@@ -301,7 +290,6 @@ ULONG scene::release()
     if (this->get_is_released()) return 1;
 
 	this->_draw_fence.release();
-	this->_draw_semaphore.release();
 
 	this->_draw_command_buffers.release();
 	this->_draw_render_pass.release();

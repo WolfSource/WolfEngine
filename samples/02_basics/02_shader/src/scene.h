@@ -69,7 +69,6 @@ private:
 	wolf::render::vulkan::w_render_pass                                   _draw_render_pass;
 
 	wolf::render::vulkan::w_fences                                        _draw_fence;
-	wolf::render::vulkan::w_semaphore                                     _draw_semaphore;
 
 
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
