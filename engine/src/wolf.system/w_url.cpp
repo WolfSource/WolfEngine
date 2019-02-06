@@ -41,6 +41,9 @@ namespace wolf
                 curl_easy_setopt(this->_curl, CURLOPT_LOW_SPEED_TIME, 2L);
                 curl_easy_setopt(this->_curl, CURLOPT_LOW_SPEED_LIMIT, 100L);
 
+				//set the default protocol
+				//curl_easy_setopt(this->_curl, CURLOPT_DEFAULT_PROTOCOL, "https");
+
                 //perform the request
                 auto _result = curl_easy_perform(this->_curl);
 

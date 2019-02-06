@@ -1977,10 +1977,10 @@
 #define USE_WIN32_LARGE_FILES 1
 
 /* to enable SSPI support */
-/* #undef USE_WINDOWS_SSPI */
+#define USE_WINDOWS_SSPI
 
 /* to enable Windows SSL  */
-/* #undef USE_SCHANNEL */
+#define USE_SCHANNEL
 
 /* enable multiple SSL backends */
 /* #undef CURL_WITH_MULTI_SSL */

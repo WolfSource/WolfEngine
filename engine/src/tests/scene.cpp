@@ -16,7 +16,7 @@ scene::scene(_In_z_ const std::wstring& pContentPath, _In_ const system::w_logge
 	
 	std::string _url_result_buffer;
 	w_url _u;
-	_u.request_url("http://sandbox.pod.land:8080/nzh/image/?imageId=49862&width=640&height=360&hashCode=16734bcc409-0.6432314065968002",
+	_u.request_url("https://core.pod.land/nzh/image/?imageId=66857&width=288&height=288&hashCode=168acabae06-0.04959742953546187",
 		_url_result_buffer);
 	_u.release();
 
