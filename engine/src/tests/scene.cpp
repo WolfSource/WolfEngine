@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "scene.h"
 #include <w_compress.hpp>
-#include <png.h>
+//#include <png.h>
 #include <w_url.h>
 #include <w_concurrent_queue.h>
 

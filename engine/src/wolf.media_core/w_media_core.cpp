@@ -653,6 +653,7 @@ namespace wolf
 					}
 					av_dict_set(&_av_dic, "rtsp_transport", pProtocol, 0); // add an entry
 				}
+				av_dict_set(&_av_dic, "stimeout", "3000000", 0);//stimeout for io socket
 
 				AVFormatContext* _stream_in_format_ctx = avformat_alloc_context();
 				//create an input context
