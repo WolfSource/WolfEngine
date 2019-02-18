@@ -18,6 +18,7 @@
 #include "w_object.h"
 #include <string>
 #include <initializer_list>
+#include "w_point.h"
 
 namespace wolf
 {
@@ -32,6 +33,7 @@ namespace wolf
 
 			WSYS_EXP	W_RESULT request_url(_In_z_ const std::string& pURL, 
 				_Inout_ std::string& pResultPage,
+				_In_ w_point& pAbortIfSlowerThanNumberOfBytesInSeconds,
 				_In_ const uint32_t& pConnectionTimeOutInMilliSeconds = 5000);
 
 			WSYS_EXP	W_RESULT send_rest_post(

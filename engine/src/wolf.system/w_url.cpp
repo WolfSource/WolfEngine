@@ -20,7 +20,10 @@ namespace wolf
 				}
 			}
 
-			W_RESULT request_url(_In_z_ const char* pURL, _Inout_ std::string& pResultPage, 
+			W_RESULT request_url(
+				_In_z_ const char* pURL, 
+				_Inout_ std::string& pResultPage, 
+				_In_ w_point pSlowerThanNumberOfBytesInSeconds,
 				_In_ const uint32_t& pConnectionTimeOutInMilliSeconds)
 			{
                 if (!this->_curl) return W_FAILED;
@@ -37,10 +40,10 @@ namespace wolf
                 curl_easy_setopt(this->_curl, CURLOPT_WRITEDATA, (void*)(&this->_chunk));
                 //some servers don't like requests that are made without a user-agent field, so we provide one
                 curl_easy_setopt(this->_curl, CURLOPT_USERAGENT, "libcurl-agent/1.0");
-                // abort if slower than 10 bytes/sec during 3 seconds
-                curl_easy_setopt(this->_curl, CURLOPT_LOW_SPEED_TIME, 2L);
-                curl_easy_setopt(this->_curl, CURLOPT_LOW_SPEED_LIMIT, 100L);
-
+                // abort if slower than bytes/sec 
+				curl_easy_setopt(this->_curl, CURLOPT_LOW_SPEED_LIMIT, pSlowerThanNumberOfBytesInSeconds.x);
+				curl_easy_setopt(this->_curl, CURLOPT_LOW_SPEED_TIME, pSlowerThanNumberOfBytesInSeconds.y);
+                
 				//set the default protocol
 				//curl_easy_setopt(this->_curl, CURLOPT_DEFAULT_PROTOCOL, "https");
 
@@ -210,6 +213,7 @@ w_url::~w_url()
 
 W_RESULT w_url::request_url(_In_z_ const std::string& pURL, 
 	_Inout_ std::string& pResultPage,
+	_In_ w_point& pAbortIfSlowerThanNumberOfBytesInSeconds,
 	_In_ const uint32_t& pConnectionTimeOutInMilliSeconds)
 {
 	if (!this->_pimp) return W_FAILED;
@@ -224,7 +228,11 @@ W_RESULT w_url::request_url(_In_z_ const std::string& pURL,
 	//copy data
 	std::memcpy(&_url[0], pURL.data(), _size);
 	_url[_size] = '\0';
-	auto _hr = this->_pimp->request_url(_url, pResultPage, pConnectionTimeOutInMilliSeconds);
+	auto _hr = this->_pimp->request_url(
+		_url, 
+		pResultPage, 
+		pAbortIfSlowerThanNumberOfBytesInSeconds,
+		pConnectionTimeOutInMilliSeconds);
 	//free(_url);
 	return _hr;
 }
