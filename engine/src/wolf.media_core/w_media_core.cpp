@@ -632,7 +632,8 @@ namespace wolf
 				_In_ const AVPixelFormat& pPixelFormat,
 				_In_ const uint32_t& pWidth,
 				_In_ const uint32_t& pHeight,
-				_In_ const long long& pTimeOut,
+				_In_ const long long& pStreamTimeOut,
+				_In_ const long long& pSocketTimeOut,
 				_In_ w_signal<void(const w_media_core::w_stream_connection_info&)>& pOnConnectionEstablished,
 				_In_ w_signal<void(const w_media_core::w_stream_frame_info&)>& pOnGettingStreamVideoFrame,
 				_In_ w_signal<void(const char*)>& pOnConnectionLost,
@@ -644,16 +645,24 @@ namespace wolf
 				std::string _fromat_str(pFormatName);
 				std::transform(_fromat_str.begin(), _fromat_str.end(), _fromat_str.begin(), ::tolower);
 
+				std::string _protocol_str(pProtocol);
+				std::transform(_protocol_str.begin(), _protocol_str.end(), _protocol_str.begin(), ::tolower);
+
 				AVDictionary* _av_dic = NULL;//"create" an empty dictionary
 				if (_fromat_str == "rtsp")
 				{
 					if (pListenToLocalPort)
 					{
-						av_dict_set(&_av_dic, "rtsp_flags", "listen", 0); // add an entry
+						av_dict_set(&_av_dic, "rtsp_flags", "listen", 0);
 					}
-					av_dict_set(&_av_dic, "rtsp_transport", pProtocol, 0); // add an entry
+					if (_protocol_str == "tcp")
+					{
+						av_dict_set(&_av_dic, "rtsp_flags", "prefer_tcp", 0);
+					}
+					av_dict_set(&_av_dic, "rtsp_transport", _protocol_str.c_str(), 0);
 				}
-				av_dict_set(&_av_dic, "stimeout", "10000000", 0);//10 second for io socket timeout
+				auto _socket_time_out = std::to_string(pSocketTimeOut * 1000);
+				av_dict_set(&_av_dic, "stimeout", _socket_time_out.c_str(), 0);//"10000000" 10 second for io socket timeout
 
 				AVFormatContext* _stream_in_format_ctx = avformat_alloc_context();
 				//create an input context
@@ -849,7 +858,7 @@ namespace wolf
 				AVPacket _packet = { 0 };
 				av_init_packet(&_packet);
 
-				long long _time_out = pTimeOut;
+				long long _time_out = pStreamTimeOut;
 				w_game_time _is_stream_live;
 				_is_stream_live.set_target_elapsed_seconds(1);
 				_is_stream_live.set_fixed_time_step(true);
@@ -864,7 +873,7 @@ namespace wolf
 						{
 							_connected = true;
 							_is_stream_live.reset();
-							_time_out = pTimeOut;
+							_time_out = pStreamTimeOut;
 
 							pOnConnectionEstablished.emit(_con_info);
 						}
@@ -1845,7 +1854,8 @@ W_RESULT w_media_core::open_stream_receiver(
 	_In_ const AVPixelFormat& pPixelFormat,
 	_In_ const uint32_t& pWidth,
 	_In_ const uint32_t& pHeight,
-	_In_ const long long& pTimeOut,
+	_In_ const long long& pStreamTimeOut,
+	_In_ const long long& pSocketTimeOut,
 	_In_ w_signal<void(const w_stream_connection_info&)>& pOnConnectionEstablished,
 	_In_ w_signal<void(const w_stream_frame_info&)>& pOnGettingStreamVideoFrame,
 	_In_ w_signal<void(const char*)>& pOnConnectionLost,
@@ -1862,7 +1872,8 @@ W_RESULT w_media_core::open_stream_receiver(
 		pPixelFormat,
 		pWidth,
 		pHeight,
-		pTimeOut,
+		pStreamTimeOut,
+		pSocketTimeOut,
 		pOnConnectionEstablished,
 		pOnGettingStreamVideoFrame,
 		pOnConnectionLost,
