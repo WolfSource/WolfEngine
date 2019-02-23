@@ -392,6 +392,7 @@
 					"$(SRCROOT)/../../../../deps/assimp/lib/osx/debug",
 					"$(SRCROOT)/../../../../deps/libpng/lib/osx",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				PRODUCT_BUNDLE_IDENTIFIER = wolf.engine.vulkan.osx.test;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				"VALID_ARCHS[sdk=*]" = x86_64;
@@ -410,6 +411,7 @@
 				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = test_vulkan_osx/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) $(SRCROOT)/../../../../../engine/dependencies/vulkan/macOS/macOS/Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				PRODUCT_BUNDLE_IDENTIFIER = wolf.engine.vulkan.osx.test;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				"VALID_ARCHS[sdk=*]" = x86_64;

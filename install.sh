@@ -5,16 +5,22 @@ cd ./engine/deps/
 
 keys=(
 assimp
-ffmpeg 
+ffmpeg
+libjpeg-turbo
+libpng 
 luaJIT 
 nanomsg 
-tbb)
+tbb
+zlib)
 
 values=(
 version.txt
 version.txt 
+version.txt
+version.txt 
 version.txt  
 COPYING 
+version.txt,
 version.txt)
 
 for i in "${!keys[@]}"; do
@@ -51,9 +57,9 @@ fi
 echo "$OSTYPE"
 echo "start building Wolf"
 
-if [[ "$OSTYPE" == "darwin" ]]; then
+if [ "$OSTYPE" == "darwin" ] || [ "$OSTYPE" == "darwin18" ] ; then
   tar -zxvf ./vulkan/macOS.tar.gz -C ./vulkan/ 
-  xcodebuild clean build -workspace ../../engine/builds/xcode/wolf.engine.vulkan.osx.xcworkspace -scheme test_vulkan_osx -sdk macosx10.13 -configuration Debug
+  xcodebuild clean build -workspace ../../engine/builds/xcode/wolf.engine.vulkan.osx.xcworkspace -scheme test_vulkan_osx -sdk macosx10.14 -configuration Debug
   echo "All done successfully"
 elif [[ "$OSTYPE" == "linux-gnu" ]]; then
   echo "building wolf.system.linux" 
