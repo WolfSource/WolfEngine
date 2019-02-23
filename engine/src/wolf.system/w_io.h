@@ -725,7 +725,6 @@ namespace wolf
 				pState = 1;
 				return _source;
 			}
-#endif
 
 			/*
 				Read binary file and return array of uint8_t
@@ -772,6 +771,7 @@ namespace wolf
 
 			}
 
+#endif
 			/*
 				Read binary file and return array of uint8_t
 				fileState indicates to state of file
