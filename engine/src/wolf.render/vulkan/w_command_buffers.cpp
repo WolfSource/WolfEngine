@@ -64,14 +64,14 @@ namespace wolf
 			{
 				if (!this->began)
 				{
-					logger.error("command buffer hasn't begun. trace info: w_command_buffer::begin");
+					logger.error("begin command buffer must be called first. trace info: w_command_buffer::begin");
 					return W_FAILED;
 				}
 
 				auto _hr = vkEndCommandBuffer(this->handle);
 				if (_hr != VK_SUCCESS)
 				{
-					logger.error("ending command buffer. trace info: w_command_buffer::end");
+					logger.error("problem on ending command buffer. trace info: w_command_buffer::end");
 					return W_FAILED;
 				}
 				this->began = false;

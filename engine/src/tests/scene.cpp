@@ -14,11 +14,11 @@ scene::scene(_In_z_ const std::wstring& pContentPath, _In_ const system::w_logge
 	w_game(pContentPath, pLogConfig)
 {
 	
-	std::string _url_result_buffer;
-	w_url _u;
-	_u.request_url("https://core.pod.land/nzh/image/?imageId=66857&width=288&height=288&hashCode=168acabae06-0.04959742953546187",
-		_url_result_buffer);
-	_u.release();
+//    std::string _url_result_buffer;
+//    w_url _u;
+//    _u.request_url("https://core.pod.land/nzh/image/?imageId=66857&width=288&height=288&hashCode=168acabae06-0.04959742953546187",
+//        _url_result_buffer);
+//    _u.release();
 
 	//int _w, _h;
 	//uint8_t _c, _d;
@@ -66,15 +66,15 @@ scene::scene(_In_z_ const std::wstring& pContentPath, _In_ const system::w_logge
 	//	_state);
 
 
-	std::istringstream _str_stream(_url_result_buffer);
-	auto _pixels_ = wolf::system::io::read_jpeg_from_stream(
-		_str_stream,
-		_width,
-		_height,
-		_sub,
-		_col,
-		_pass,
-		_state);
+//    std::istringstream _str_stream(_url_result_buffer);
+//    auto _pixels_ = wolf::system::io::read_jpeg_from_stream(
+//        _str_stream,
+//        _width,
+//        _height,
+//        _sub,
+//        _col,
+//        _pass,
+//        _state);
 	
 	char* _src = "This is test. Hey there. this is test. Salam. Pooya. Poooooooooya. Ryannnnnnn. Raaaaaaaaaayyyyyyyyyy";
 	int _compressed_size = 0;
