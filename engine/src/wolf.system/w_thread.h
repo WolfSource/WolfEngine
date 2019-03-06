@@ -74,7 +74,7 @@ namespace wolf
 
 
         private:
-            w_thread_pimp*                          _pimp;
+            w_thread_pimp*                          _pimp;	
         };
 	}
 }

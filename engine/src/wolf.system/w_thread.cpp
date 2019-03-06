@@ -262,4 +262,5 @@ void w_thread::release()
 {
     if (!this->_pimp) return;
     this->_pimp->release();
+	this->_pimp = nullptr;
 }

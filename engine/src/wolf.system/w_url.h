@@ -41,6 +41,7 @@ namespace wolf
 				_In_z_ const std::string& pMessage,
 				_In_ const size_t& pMessageLenght,
 				_Inout_ std::string& pResult,
+				_In_ w_point& pAbortIfSlowerThanNumberOfBytesInSeconds,
 				_In_ const uint32_t& pConnectionTimeOutInMilliSeconds = 5000,
 				_In_z_ std::initializer_list<std::string> pHeaders = { "content-type:application/x-www-form-urlencoded" });
 
