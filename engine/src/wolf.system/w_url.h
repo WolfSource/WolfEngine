@@ -36,6 +36,8 @@ namespace wolf
 				_In_ w_point& pAbortIfSlowerThanNumberOfBytesInSeconds,
 				_In_ const uint32_t& pConnectionTimeOutInMilliSeconds = 5000);
 
+			WSYS_EXP const std::string encoded_URL(_In_z_ const std::string& pURL);
+			
 			WSYS_EXP	W_RESULT send_rest_post(
 				_In_z_ const std::string& pURL,
 				_In_z_ const std::string& pMessage,

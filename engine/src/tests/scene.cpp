@@ -13,6 +13,10 @@ using namespace wolf::render::vulkan;
 scene::scene(_In_z_ const std::wstring& pContentPath, _In_ const system::w_logger_config& pLogConfig) :
 	w_game(pContentPath, pLogConfig)
 {
+
+	std::string _str = "http://google .com";
+	w_url _url;
+	auto _p = _url.encoded_URL(_str);
 	
 //    std::string _url_result_buffer;
 //    w_url _u;

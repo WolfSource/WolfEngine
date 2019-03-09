@@ -78,20 +78,20 @@ namespace wolf
 				_In_ const uint32_t& pConnectionTimeOutInMilliSeconds,
 				_In_z_ std::initializer_list<std::string> pHeaders)
 			{
-                if (!_curl) return W_FAILED;
+                if (!this->_curl) return W_FAILED;
 
                 //reset memory
                 _chunk.reset();
 
                 //set POST url
-                curl_easy_setopt(_curl, CURLOPT_URL, pURL);
+                curl_easy_setopt(this->_curl, CURLOPT_URL, pURL);
                 //now specify the POST data
-                curl_easy_setopt(_curl, CURLOPT_POSTFIELDS, pMessage);
-                curl_easy_setopt(_curl, CURLOPT_POSTFIELDSIZE, pMessageLenght);
-                curl_easy_setopt(_curl, CURLOPT_POST, 1L);
-                curl_easy_setopt(_curl, CURLOPT_FOLLOWLOCATION, 1L);
-                curl_easy_setopt(_curl, CURLOPT_WRITEFUNCTION, _write_callback);
-                curl_easy_setopt(_curl, CURLOPT_WRITEDATA, (void*)(&this->_chunk));
+                curl_easy_setopt(this->_curl, CURLOPT_POSTFIELDS, pMessage);
+                curl_easy_setopt(this->_curl, CURLOPT_POSTFIELDSIZE, pMessageLenght);
+                curl_easy_setopt(this->_curl, CURLOPT_POST, 1L);
+                curl_easy_setopt(this->_curl, CURLOPT_FOLLOWLOCATION, 1L);
+                curl_easy_setopt(this->_curl, CURLOPT_WRITEFUNCTION, _write_callback);
+                curl_easy_setopt(this->_curl, CURLOPT_WRITEDATA, (void*)(&this->_chunk));
                 curl_easy_setopt(this->_curl, CURLOPT_CONNECTTIMEOUT_MS, pConnectionTimeOutInMilliSeconds);
                 curl_easy_setopt(this->_curl, CURLOPT_ACCEPTTIMEOUT_MS, pConnectionTimeOutInMilliSeconds);
                 // abort if slower than bytes/sec 
@@ -105,9 +105,9 @@ namespace wolf
                 {
                     _headers = curl_slist_append(_headers, _header.c_str());
                 }
-                curl_easy_setopt(_curl, CURLOPT_HTTPHEADER, _headers);
+                curl_easy_setopt(this->_curl, CURLOPT_HTTPHEADER, _headers);
                 //perform the request
-                auto _result = curl_easy_perform(_curl);
+                auto _result = curl_easy_perform(this->_curl);
 
                 //free chuck
                 curl_slist_free_all(_headers);
@@ -125,6 +125,21 @@ namespace wolf
                 _chunk.reset();
 
 				return W_PASSED;
+			}
+
+			const std::string encoded_URL(_In_z_ const std::string& pURL)
+			{
+				std::string _output_str;
+				if (!_curl) return _output_str;
+
+				char* _output = curl_easy_escape(this->_curl, pURL.c_str(), pURL.size());
+				if (_output) 
+				{
+					_output_str = _output;
+					curl_free(_output);
+				}
+
+				return _output_str;
 			}
 
 			void release()
@@ -236,6 +251,12 @@ W_RESULT w_url::request_url(_In_z_ const std::string& pURL,
 		pConnectionTimeOutInMilliSeconds);
 	//free(_url);
 	return _hr;
+}
+
+const std::string w_url::encoded_URL(_In_z_ const std::string& pURL)
+{
+	if (!this->_pimp) return "";
+	return this->_pimp->encoded_URL(pURL);
 }
 
 W_RESULT w_url::send_rest_post(
