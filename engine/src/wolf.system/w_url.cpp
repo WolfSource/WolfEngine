@@ -235,7 +235,7 @@ W_RESULT w_url::request_url(_In_z_ const std::string& pURL,
 	if (!this->_pimp) return W_FAILED;
 
 	auto _size = pURL.size();
-	auto _url = (char*)malloc(pURL.size() + 1 * sizeof(char));
+	auto _url = (char*)malloc( (pURL.size() + 1 ) * sizeof(char));
 	if (!_url)
 	{
 		wolf::logger.error("could not allocate memory for url");
@@ -283,7 +283,7 @@ W_RESULT w_url::send_rest_post(
 
 	//copy message data
 	_size = pMessage.size();
-	auto _msg = (char*)malloc(pMessage.size() * sizeof(char));
+	auto _msg = (char*)malloc( (pMessage.size() + 1) * sizeof(char));
 	if (!_msg)
 	{
 		wolf::logger.error("could not allocate memory for url");
