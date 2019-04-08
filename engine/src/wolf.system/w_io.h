@@ -4,7 +4,7 @@
 	Website			 : http://WolfSource.io
 	Name			 : w_io.h
 	Description		 : The manager class for IO functions
-	Comment          : get_file_extention and get_file_name functions were declared based on std::experimental::filesystem::path class
+	Comment                  : get_file_extention and get_file_name functions were declared based on std::experimental::filesystem::path class
 */
 
 #if _MSC_VER > 1000
