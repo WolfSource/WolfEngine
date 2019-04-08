@@ -140,7 +140,7 @@ namespace wolf
 					//Create the directory of log inside the root directory
 					io::create_directoryW(_log_directory_cstr);
 				}
-				auto _log_file_path = _log_directory + io::get_unique_nameW() + L".wLog";
+				auto _log_file_path = _log_directory + io::get_date_time_strW() + L".wLog";
 #else
 				auto _log_directory = wolf::system::convert::wstring_to_string(pConfig.log_path) + "/Log/";
 				auto _log_directory_cstr = _log_directory.c_str();

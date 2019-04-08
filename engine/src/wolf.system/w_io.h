@@ -428,36 +428,156 @@ namespace wolf
 			}
 
 #endif
-
-			//Get a unique name - format: mm-dd-year-hour-min-sec
-			inline std::string get_unique_name()
+			//Get time - format: Hour(xx)Min(xx)Sec(xx)MiliSec(xxx)
+			inline std::string get_time_str()
 			{
-				time_t _t = time(0);
-				//get time now
+				std::string _time_str;
+
 #if defined(__WIN32) || defined(__UWP)
-				struct tm _now;
-				localtime_s(&_now, &_t);
+
+				SYSTEMTIME _time;
+				GetLocalTime(&_time);
+				long _ms = (_time.wSecond * 1000) + _time.wMilliseconds;
+
+				auto _sec_str = std::to_string(_time.wSecond);
+				auto _min_str = std::to_string(_time.wMinute);
+				auto _hr_str = std::to_string(_time.wHour);
 
 #else
+
+				time_t _t = time(0);
 				struct tm _now = *localtime(&_t);
+
+				struct timeval tp;
+				gettimeofday(&tp, NULL);
+				long _ms = tp.tv_sec * 1000 + tp.tv_usec / 1000;
+
+				auto _sec_str = std::to_string(_now.tm_sec);
+				auto _min_str = std::to_string(_now.tm_min);
+				auto _hr_str = std::to_string(_now.tm_hour);
+
 #endif
-				std::stringstream _ss;
-				_ss << 1 + _now.tm_mon << "-" << _now.tm_mday << "-" << 1900 + _now.tm_year << "-"
-					<< _now.tm_hour << "-" << _now.tm_min << "-" << _now.tm_sec;
 
-				auto _name = _ss.str();
+				std::string _ms_str = std::to_string(_ms).substr(0, 3);
 
-				//Clear sstream
-				_ss.clear();
-				_ss.str(std::string());
+				//format of ms (xxx)
+				if (_ms_str.size() < 1) _ms_str = "000";
+				else if (_ms_str.size() < 2) _ms_str = "00" + _ms_str;
+				if (_ms_str.size() < 3) _ms_str = "0" + _ms_str;
 
-				return _name;
+				//format of second (xx)
+				if (_sec_str.size() < 1) _sec_str = "00";
+				else if (_sec_str.size() < 2) _sec_str = "0" + _sec_str;
+
+				//format of minute (xx)
+				if (_min_str.size() < 1) _min_str = "00";
+				else if (_min_str.size() < 2) _min_str = "0" + _min_str;
+
+				//format of hour (xx)
+				if (_hr_str.size() < 1) _hr_str = "00";
+				else if (_hr_str.size() < 2) _hr_str = "0" + _hr_str;
+
+
+				std::stringstream _str;
+				_str << _hr_str << _min_str << _sec_str << _ms_str;
+
+				_time_str = _str.str();
+
+				//clear sstream
+				_str.clear();
+				_str.str("");
+
+				return _time_str;
 			}
 
-			//Get a unique name - format: mm-dd-year-hour-min-sec
-			inline std::wstring get_unique_nameW()
+			//Get time - format: Hour(xx)Min(xx)Sec(xx)MiliSec(xxx)
+			inline std::wstring get_time_strW()
 			{
-				auto _str = wolf::system::io::get_unique_name();
+				auto _str = wolf::system::io::get_time_str();
+				return std::wstring(_str.begin(), _str.end());
+			}
+
+			//Get date time - format: Day(xx)Mon(xx)Year(xxxx)Hour(xx)Min(xx)Sec(xx)MiliSec(xxx)
+			inline std::string get_date_time_str()
+			{
+				std::string _date_time_str;
+
+#if defined(__WIN32) || defined(__UWP)
+
+				SYSTEMTIME _time;
+				GetLocalTime(&_time);
+				long _ms = (_time.wSecond * 1000) + _time.wMilliseconds;
+
+				auto _sec_str = std::to_string(_time.wSecond);
+				auto _min_str = std::to_string(_time.wMinute);
+				auto _hr_str = std::to_string(_time.wHour);
+
+				auto _day_str = std::to_string(_time.wDay);
+				auto _mon_str = std::to_string(_time.wMonth);
+				auto _year_str = std::to_string(_time.wYear);
+
+#else
+
+				time_t _t = time(0);
+				struct tm _now = *localtime(&_t);
+				
+				struct timeval tp;
+				gettimeofday(&tp, NULL);
+				long _ms = tp.tv_sec * 1000 + tp.tv_usec / 1000;
+				
+				auto _sec_str = std::to_string(_now.tm_sec);
+				auto _min_str = std::to_string(_now.tm_min);
+				auto _hr_str = std::to_string(_now.tm_hour);
+
+				auto _day_str = std::to_string(_now.tm_mday);
+				auto _mon_str = std::to_string(1 + _now.tm_mon);
+				auto _year_str = std::to_string(1900 + _now.tm_year);
+#endif
+	
+				std::string _ms_str = std::to_string(_ms).substr(0, 3);
+
+				//format of ms (xxx)
+				if (_ms_str.size() < 1) _ms_str = "000";
+				else if (_ms_str.size() < 2) _ms_str = "00" + _ms_str;
+				if (_ms_str.size() < 3) _ms_str = "0" + _ms_str;
+
+				//format of second (xx)
+				if (_sec_str.size() < 1) _sec_str = "00";
+				else if (_sec_str.size() < 2) _sec_str = "0" + _sec_str;
+
+				//format of minute (xx)
+				if (_min_str.size() < 1) _min_str = "00";
+				else if (_min_str.size() < 2) _min_str = "0" + _min_str;
+
+				//format of hour (xx)
+				if (_hr_str.size() < 1) _hr_str = "00";
+				else if (_hr_str.size() < 2) _hr_str = "0" + _hr_str;
+
+				//format of day (xx)
+				if (_day_str.size() < 1) _day_str = "00";
+				else if (_day_str.size() < 2) _day_str = "0" + _day_str;
+
+				//format of month (xx)
+				if (_mon_str.size() < 1) _mon_str = "00";
+				else if (_mon_str.size() < 2) _mon_str = "0" + _mon_str;
+
+				std::stringstream _str;
+				_str << _day_str << _mon_str << _year_str <<
+					_hr_str << _min_str << _sec_str << _ms_str;
+			
+				_date_time_str = _str.str();
+
+				//clear sstream
+				_str.clear();
+				_str.str("");
+
+				return _date_time_str;
+			}
+
+			//Get a date time - format: mm-dd-year-hour-min-sec
+			inline std::wstring get_date_time_strW()
+			{
+				auto _str = wolf::system::io::get_date_time_str();
 				return std::wstring(_str.begin(), _str.end());
 			}
 
