@@ -3,7 +3,7 @@
 	Source			 : Please direct any bug to https://github.com/PooyaEimandar/Wolf.Engine/issues
 	Website			 : http://WolfSource.io
 	Name			 : w_color.h
-	Description		 : Global color structure
+	Description		 : Color structure
 	Comment          :
 */
 
