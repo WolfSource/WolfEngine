@@ -7,7 +7,7 @@
 	Comment          : Read more information about this sample on http://wolfsource.io/gpunotes/
 */
 
-#if _MSC_VER > 1000
+#if _MSC_VER > 1000 
 #pragma once
 #endif
 
