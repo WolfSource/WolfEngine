@@ -369,7 +369,7 @@ namespace wolf
 
 			W_RESULT open_stream_sender(
 				_In_z_ const char* pURL,
-				_In_z_ const char* pProtocol,
+				_In_z_ const char* pRTSPProtocol,
 				_In_z_ const char* pFormatName,
 				_In_ const AVCodecID& pCodecID,
 				_In_ const int64_t& pFrameRate,
@@ -422,9 +422,9 @@ namespace wolf
 					else
 					{
 						this->_stream_out->id = this->_stream_out_ctx->nb_streams - 1;
-						this->_stream_out->time_base.den = /*this->_stream_out->pts.den =*/ 90000;
-						this->_stream_out->time_base.num = /*this->_stream_out->pts.num =*/ 1;
-						
+						//this->_stream_out->time_base.den = /*this->_stream_out->pts.den =*/ 90000;
+						//this->_stream_out->time_base.num = /*this->_stream_out->pts.num =*/ 1;
+
 						//auto _bit_rate = 7500 * 1000; //7500 kbps * 1000
 
 						this->_stream_out->codec->codec_id = pCodecID;
@@ -437,12 +437,34 @@ namespace wolf
 						this->_stream_out->codec->time_base.num = 1;
 						this->_stream_out->codec->gop_size = 12; //emit one intra frame every twelve frames at most
 						this->_stream_out->codec->pix_fmt = pPixelFormat;
+
+						if (this->_stream_out->codec->codec_id == AV_CODEC_ID_MPEG2VIDEO)
+						{
+							/* just for testing, we also add B frames */
+							this->_stream_out->codec->max_b_frames = 2;
+						}
+						if (this->_stream_out->codec->codec_id == AV_CODEC_ID_MPEG1VIDEO)
+						{
+							/* Needed to avoid using macroblocks in which some coeffs overflow.
+							 * This does not happen with normal video, it just happens here as
+							 * the motion of the chroma plane does not match the luma plane. */
+							this->_stream_out->codec->mb_decision = 2;
+						}
 					}
 				}
 
 				AVDictionary* _av_dic = NULL; // "create" an empty dictionary
-				av_dict_set(&_av_dic, "rtsp_transport", pProtocol, 0); // add an entry
-				av_dict_set(&_av_dic, "timeout", "-1", 0); // add an entry
+				if (pRTSPProtocol)
+				{
+					av_dict_set(&_av_dic, "rtsp_transport", pRTSPProtocol, 0); // add an entry
+					av_dict_set(&_av_dic, "timeout", "-1", 0); // add an entry
+				}
+				else
+				{
+					//for RTMP
+					av_dict_set(&_av_dic, "preset", "superfast", 0);
+					av_dict_set(&_av_dic, "tune", "zerolatency", 0);
+				}
 
 				AVPicture  _stream_dst_picture = {};
 				//now open video stream 
@@ -485,6 +507,25 @@ namespace wolf
 						{
 							//copy data and linesize picture pointers to frame
 							*((AVPicture*)this->_stream_out_frame) = _stream_dst_picture;
+						}
+					}
+				}
+
+
+				if (this->_stream_out_ctx->oformat->flags & AVFMT_GLOBALHEADER)
+				{
+					this->_stream_out_ctx->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
+				}
+
+				//TODO only for Output URL, check for rtsp
+				if (!pRTSPProtocol)
+				{
+					if (!(this->_stream_out_ctx->oformat->flags & AVFMT_NOFILE))
+					{
+						if (avio_open(&this->_stream_out_ctx->pb, pURL, AVIO_FLAG_WRITE) < 0)
+						{
+							V(W_FAILED, w_log_type::W_ERROR,
+								"could not open output URL {}. trace info: {}", pURL, _trace_info);
 						}
 					}
 				}
@@ -574,7 +615,18 @@ namespace wolf
 									this->_stream_out->codec->time_base,
 									this->_stream_out->time_base,
 									AVRounding(AV_ROUND_NEAR_INF | AV_ROUND_PASS_MINMAX));
-								if (av_write_frame(this->_stream_out_ctx, &_packet) < 0)
+								/*_packet.dts = av_rescale_q_rnd(
+									_packet.dts,
+									this->_stream_out->codec->time_base,
+									this->_stream_out->time_base,
+									AVRounding(AV_ROUND_NEAR_INF | AV_ROUND_PASS_MINMAX));
+								_packet.duration = av_rescale_q(
+									_packet.duration, 
+									this->_stream_out->codec->time_base,
+									this->_stream_out->time_base);
+								_packet.pos = -1;*/
+								if (av_interleaved_write_frame(this->_stream_out_ctx, &_packet) < 0)
+									//av_write_frame(this->_stream_out_ctx, &_packet) < 0)
 								{
 									_frame_info.last_dropped_frames++;
 									V(W_FAILED, w_log_type::W_ERROR,
@@ -607,6 +659,9 @@ namespace wolf
 						av_init_packet(&_packet);
 					}
 				}
+
+				//recently added
+				av_write_trailer(this->_stream_out_ctx);
 
 				//free pixels
 				if (_frame_info.pixels)
