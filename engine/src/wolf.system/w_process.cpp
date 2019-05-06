@@ -182,7 +182,8 @@ w_process_info* w_process::create_process(
 	_In_z_ const wchar_t* pPathtoProcess,
 	_In_z_ const wchar_t* pCmdsArg,
 	_In_z_ const wchar_t* pCurrentDirectoryPath,
-	_In_  const long long pWaitAfterRunningProcess)
+	_In_  const long long pWaitAfterRunningProcess,
+	_In_ DWORD pCreationFlags)
 {
 	STARTUPINFO _startup_info;
 	ZeroMemory(&_startup_info, sizeof(_startup_info));
@@ -196,7 +197,7 @@ w_process_info* w_process::create_process(
 		NULL,
 		NULL,
 		FALSE,
-		0,
+		pCreationFlags,
 		NULL,
 		pCurrentDirectoryPath,
 		&_startup_info,
