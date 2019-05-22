@@ -14,9 +14,13 @@
 #ifndef __W_COMPRESS_HPP__
 #define __W_COMPRESS_HPP__
 
-#include "w_compress.h"
+#include "w_compress_lz4.h"
 #include "w_system_export.h"
 #include "w_logger.h"
+
+#ifdef __WIN32
+#include "w_compress_lzma.h"
+#endif
 
 namespace wolf
 {
@@ -24,7 +28,7 @@ namespace wolf
 	{
 		struct w_compress
 		{
-			static W_RESULT compress_buffer(
+			static W_RESULT compress_lz4(
 				_In_		const char* pSrcBuffer,
 				_Inout_		w_compress_result* pCompressResult,
 				_In_		w_compress_mode pMode = w_compress_mode::W_DEFAULT,
@@ -50,7 +54,7 @@ namespace wolf
 				return _result;
 			}
 
-			static W_RESULT decompress_buffer(
+			static W_RESULT decompress_lz4(
 				_In_	const char* pCompressedBuffer,
 				_Inout_	w_compress_result* pDecompressInfo)
 			{
@@ -71,6 +75,44 @@ namespace wolf
 
 				return _result;
 			}
+
+#ifdef __WIN32
+			static W_RESULT compress_lzma(
+				_In_ const uint8_t* pSrcBuffer,
+				_Inout_ w_compress_result* pCompressResult)
+			{
+				if (!pCompressResult || !pSrcBuffer) return W_RESULT::W_INVALIDARG;
+
+				W_RESULT _result = W_PASSED;
+
+				if (w_compress_lzma::compress(
+					pSrcBuffer,
+					pCompressResult))
+				{
+					_result = W_FAILED;
+				}
+
+				return _result;
+			}
+
+			static W_RESULT decompress_lzma(
+				_In_ const uint8_t* pCompressedBuffer,
+				_Inout_ w_compress_result* pDecompressInfo)
+			{
+				if (!pDecompressInfo || !pCompressedBuffer) return W_RESULT::W_INVALIDARG;
+
+				W_RESULT _result = W_PASSED;
+
+				if (w_compress_lzma::decompress(
+					pCompressedBuffer,
+					pDecompressInfo))
+				{
+					_result = W_FAILED;
+				}
+
+				return _result;
+			}
+#endif
 
 			/*static w_compress_result compress_file(_In_ FILE* pFileStreamIn, _Inout_ FILE* pCompressedFileOut)
 			{

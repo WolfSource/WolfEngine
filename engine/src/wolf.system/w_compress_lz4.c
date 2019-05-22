@@ -1,4 +1,4 @@
-#include "w_compress.h"
+#include "w_compress_lz4.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

@@ -14,6 +14,16 @@ scene::scene(_In_z_ const std::wstring& pContentPath, _In_ const system::w_logge
 	w_game(pContentPath, pLogConfig)
 {
 
+	const std::string _str_lzma = "here's something that should compress pretty well: abcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdef";
+	w_compress_result _c;
+	w_compress_result _d;
+	_c.size_in = _str_lzma.size();
+	
+	if (w_compress::compress_lzma((uint8_t*)_str_lzma.data(), &_c) == W_RESULT::W_PASSED)
+	{
+		w_compress::decompress_lzma((uint8_t*)_c.data, &_d);
+	}
+
 	std::string _str = "http://google .com";
 	w_url _url;
 	auto _p = _url.encoded_URL(_str);
@@ -80,18 +90,18 @@ scene::scene(_In_z_ const std::wstring& pContentPath, _In_ const system::w_logge
 //        _pass,
 //        _state);
 	
-	char* _src = "This is test. Hey there. this is test. Salam. Pooya. Poooooooooya. Ryannnnnnn. Raaaaaaaaaayyyyyyyyyy";
-	int _compressed_size = 0;
+	//char* _src = "This is test. Hey there. this is test. Salam. Pooya. Poooooooooya. Ryannnnnnn. Raaaaaaaaaayyyyyyyyyy";
+	//int _compressed_size = 0;
 
-	w_compress_result _com_result, _decom_result;
-	_com_result.size_in = strlen(_src) + 1;
+	//w_compress_result _com_result, _decom_result;
+	//_com_result.size_in = strlen(_src) + 1;
 
-	if (wolf::system::w_compress::compress_buffer(_src, &_com_result) == W_PASSED)
-	{
-		_decom_result.size_in = _com_result.size_out;
-		wolf::system::w_compress::decompress_buffer(_com_result.data, &_decom_result);
-	}
-	logger.write("A");
+	//if (wolf::system::w_compress::compress_buffer(_src, &_com_result) == W_PASSED)
+	//{
+	//	_decom_result.size_in = _com_result.size_out;
+	//	wolf::system::w_compress::decompress_buffer(_com_result.data, &_decom_result);
+	//}
+	//logger.write("A");
 	
 	//{
 	//	FILE* const _ifile = fopen("C:/Users/nano byte/Desktop/v.mp4", "rb");
