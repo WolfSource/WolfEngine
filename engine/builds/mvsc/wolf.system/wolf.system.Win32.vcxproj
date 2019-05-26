@@ -29,6 +29,7 @@
     </ClCompile>
     <ClCompile Include="..\..\..\src\wolf.system\base64\quicktimebase64.c" />
     <ClCompile Include="..\..\..\src\wolf.system\base64\scalarbase64.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\altsvc.c" />
     <ClCompile Include="..\..\..\src\wolf.system\curl\src\amigaos.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
       <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -99,6 +100,7 @@
       <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
       </DisableSpecificWarnings>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\curl_get_line.c" />
     <ClCompile Include="..\..\..\src\wolf.system\curl\src\curl_gssapi.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
       <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -404,11 +406,6 @@
       <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
       </DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\pipeline.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </DisableSpecificWarnings>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\wolf.system\curl\src\pop3.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
       <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -603,6 +600,7 @@
     <ClCompile Include="..\..\..\src\wolf.system\curl\src\vtls\polarssl_threadlock.c" />
     <ClCompile Include="..\..\..\src\wolf.system\curl\src\vtls\schannel.c" />
     <ClCompile Include="..\..\..\src\wolf.system\curl\src\vtls\schannel_verify.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vtls\sectransp.c" />
     <ClCompile Include="..\..\..\src\wolf.system\curl\src\vtls\vtls.c" />
     <ClCompile Include="..\..\..\src\wolf.system\curl\src\warnless.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
@@ -660,7 +658,9 @@
     <ClCompile Include="..\..\..\src\wolf.system\lzma\Ppmd7.c" />
     <ClCompile Include="..\..\..\src\wolf.system\lzma\Ppmd7Dec.c" />
     <ClCompile Include="..\..\..\src\wolf.system\lzma\Ppmd7Enc.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\lzma\Sha256.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\lzma\Sha256_lzma.c">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)</ObjectFileName>
+    </ClCompile>
     <ClCompile Include="..\..\..\src\wolf.system\lzma\Sort.c" />
     <ClCompile Include="..\..\..\src\wolf.system\lzma\Threads.c" />
     <ClCompile Include="..\..\..\src\wolf.system\lzma\Xz.c" />
@@ -712,9 +712,20 @@
     <ClInclude Include="..\..\..\src\wolf.system\curl\easy.h" />
     <ClInclude Include="..\..\..\src\wolf.system\curl\mprintf.h" />
     <ClInclude Include="..\..\..\src\wolf.system\curl\multi.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\altsvc.h" />
     <ClInclude Include="..\..\..\src\wolf.system\curl\src\amigaos.h" />
     <ClInclude Include="..\..\..\src\wolf.system\curl\src\arpa_telnet.h" />
     <ClInclude Include="..\..\..\src\wolf.system\curl\src\asyn.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\config-amigaos.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\config-dos.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\config-mac.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\config-os400.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\config-riscos.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\config-symbian.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\config-tpf.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\config-vxworks.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\config-win32.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\config-win32ce.h" />
     <ClInclude Include="..\..\..\src\wolf.system\curl\src\conncache.h" />
     <ClInclude Include="..\..\..\src\wolf.system\curl\src\connect.h" />
     <ClInclude Include="..\..\..\src\wolf.system\curl\src\content_encoding.h" />
@@ -728,6 +739,7 @@
     <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_endian.h" />
     <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_fnmatch.h" />
     <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_gethostname.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_get_line.h" />
     <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_gssapi.h" />
     <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_hmac.h" />
     <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_ldap.h" />
@@ -785,7 +797,6 @@
     <ClInclude Include="..\..\..\src\wolf.system\curl\src\nonblock.h" />
     <ClInclude Include="..\..\..\src\wolf.system\curl\src\parsedate.h" />
     <ClInclude Include="..\..\..\src\wolf.system\curl\src\pingpong.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\pipeline.h" />
     <ClInclude Include="..\..\..\src\wolf.system\curl\src\pop3.h" />
     <ClInclude Include="..\..\..\src\wolf.system\curl\src\progress.h" />
     <ClInclude Include="..\..\..\src\wolf.system\curl\src\psl.h" />
@@ -833,6 +844,7 @@
     <ClInclude Include="..\..\..\src\wolf.system\curl\src\vtls\polarssl.h" />
     <ClInclude Include="..\..\..\src\wolf.system\curl\src\vtls\polarssl_threadlock.h" />
     <ClInclude Include="..\..\..\src\wolf.system\curl\src\vtls\schannel.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\curl\src\vtls\sectransp.h" />
     <ClInclude Include="..\..\..\src\wolf.system\curl\src\vtls\vtls.h" />
     <ClInclude Include="..\..\..\src\wolf.system\curl\src\warnless.h" />
     <ClInclude Include="..\..\..\src\wolf.system\curl\src\wildcard.h" />
@@ -1078,7 +1090,7 @@
     <ClInclude Include="..\..\..\src\wolf.system\lzma\Ppmd7.h" />
     <ClInclude Include="..\..\..\src\wolf.system\lzma\Precomp.h" />
     <ClInclude Include="..\..\..\src\wolf.system\lzma\RotateDefs.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\lzma\Sha256.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\lzma\Sha256_lzma.h" />
     <ClInclude Include="..\..\..\src\wolf.system\lzma\Sort.h" />
     <ClInclude Include="..\..\..\src\wolf.system\lzma\Threads.h" />
     <ClInclude Include="..\..\..\src\wolf.system\lzma\Xz.h" />
@@ -1172,7 +1184,25 @@
     <ClInclude Include="..\..\..\src\wolf.system\w_xml.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\..\src\wolf.system\curl\src\checksrc.pl" />
+    <None Include="..\..\..\src\wolf.system\curl\src\curl_config.h.cmake" />
     <None Include="..\..\..\src\wolf.system\curl\src\curl_config.h.in" />
+    <None Include="..\..\..\src\wolf.system\curl\src\firefox-db2pem.sh" />
+    <None Include="..\..\..\src\wolf.system\curl\src\libcurl.plist" />
+    <None Include="..\..\..\src\wolf.system\curl\src\libcurl.vers.in" />
+    <None Include="..\..\..\src\wolf.system\curl\src\Makefile.am" />
+    <None Include="..\..\..\src\wolf.system\curl\src\makefile.amiga" />
+    <None Include="..\..\..\src\wolf.system\curl\src\makefile.dj" />
+    <None Include="..\..\..\src\wolf.system\curl\src\Makefile.inc" />
+    <None Include="..\..\..\src\wolf.system\curl\src\Makefile.m32" />
+    <None Include="..\..\..\src\wolf.system\curl\src\Makefile.netware" />
+    <None Include="..\..\..\src\wolf.system\curl\src\Makefile.vxworks" />
+    <None Include="..\..\..\src\wolf.system\curl\src\Makefile.Watcom" />
+    <None Include="..\..\..\src\wolf.system\curl\src\mk-ca-bundle.pl" />
+    <None Include="..\..\..\src\wolf.system\curl\src\mk-ca-bundle.vbs" />
+    <None Include="..\..\..\src\wolf.system\curl\src\objnames-test08.sh" />
+    <None Include="..\..\..\src\wolf.system\curl\src\objnames-test10.sh" />
+    <None Include="..\..\..\src\wolf.system\curl\src\objnames.inc" />
     <None Include="..\..\..\src\wolf.system\gli\core\clear.inl" />
     <None Include="..\..\..\src\wolf.system\gli\core\comparison.inl" />
     <None Include="..\..\..\src\wolf.system\gli\core\convert.inl" />
@@ -1355,7 +1385,7 @@
     <SccProvider>SAK</SccProvider>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>WolfSystemWin32</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -1372,12 +1402,12 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>

@@ -1,2 +1,2 @@
-version : 7.63.0
+version : 7.65.0
 https://github.com/curl/curl/

@@ -710,7 +710,7 @@ void scene::_show_floating_debug_window()
 		}
 	}
 
-	std::string _msg = "Press \"Esc\" to exit\r\nRight click on name of mesh to focus\r\nMovments:Q,Z,W,A,S,D and Mouse Left Button\r\nFPS:%d\r\nFrameTime:%f\r\nTotalTime:%f\r\nReferences have red Color\r\nInstances have green Color\r\n";
+	std::string _msg = "Press \"Esc\" to exit\r\nRight click on name of mesh to focus\r\nMovments:Q,Z,W,A,S,D and Mouse Left Button\r\nFPS:%d\r\nFrameTime:%f\r\nTotalTime:%f\r\nLion is %s\r\n";
 	if (this->_current_selected_model && this->_current_selected_model->get_is_use_last_lod())
 	{
 		_msg += this->_current_selected_model->get_model_name() + " is drawing with last LOD\r\n";
@@ -719,7 +719,8 @@ void scene::_show_floating_debug_window()
 	ImGui::Text(_msg.c_str(),
 		sFPS,
 		sElapsedTimeInSec,
-		sTotalTimeTimeInSec);
+		sTotalTimeTimeInSec,
+		(this->_query_results && this->_query_results[3] == 0) ? "occluded" : "visible");
 
 	if (this->_current_selected_model)
 	{

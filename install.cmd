@@ -4,8 +4,8 @@ setlocal
 echo make wolf's dependencies ready
 cd ./engine/deps/
 
-set keys=assimp ffmpeg luaJIT nanomsg tbb simplygon libjpeg-turbo
-set values=version.txt version.txt version.txt COPYING version.txt SimplygonSDKRuntimeReleasex64.dll version.txt
+set keys=assimp ffmpeg luaJIT nanomsg tbb simplygon libjpeg-turbo libpng
+set values=version.txt version.txt version.txt COPYING version.txt SimplygonSDKRuntimeReleasex64.dll version.txt version.txt
 
 set i=0
 (for %%k in (%keys%) do (

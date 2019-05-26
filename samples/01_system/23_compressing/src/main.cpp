@@ -49,7 +49,7 @@ WOLF_MAIN()
 	w_timer _timer;
 
 	_timer.start();
-	if (w_compress::compress_buffer(_src, &_compress_result) != W_PASSED)
+	if (w_compress::compress_lz4(_src, &_compress_result) != W_PASSED)
 	{
 		logger.error("could not compress buffer");
 		return EXIT_FAILURE;
@@ -64,7 +64,7 @@ WOLF_MAIN()
 	_decompress_result.size_in = _compress_result.size_out;
 
 	_timer.start();
-	if (w_compress::decompress_buffer(_compress_result.data, &_decompress_result) != W_PASSED)
+	if (w_compress::decompress_lz4(_compress_result.data, &_decompress_result) != W_PASSED)
 	{
 		logger.error("could not decompress buffer");
 		return EXIT_FAILURE;

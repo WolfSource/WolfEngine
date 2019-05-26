@@ -102,7 +102,7 @@ namespace wolf
 				
 				std::string _str = _sbuffer.str();
 				pWolfScenePacked.size_in = _str.size();
-				auto _hr = w_compress::compress_buffer(_str.c_str(), &pWolfScenePacked);
+				auto _hr = w_compress::compress_lz4(_str.c_str(), &pWolfScenePacked);
 				if (_hr != W_PASSED)
 				{
 					logger.error("error happened while compressing scenes");
@@ -173,7 +173,7 @@ namespace wolf
 				//decompress it, then unpack it
 				w_compress_result _decompress_result;
 				_decompress_result.size_in = pWolfScenePacked.size(); //1 for '\0'
-				auto _hr = w_compress::decompress_buffer(pWolfScenePacked.c_str(), &_decompress_result);
+				auto _hr = w_compress::decompress_lz4(pWolfScenePacked.c_str(), &_decompress_result);
 				if (_hr == W_RESULT::W_PASSED)
 				{
 					auto _msg = msgpack::unpack(_decompress_result.data, _decompress_result.size_out + 1);
