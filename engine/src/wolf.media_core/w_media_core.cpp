@@ -399,6 +399,8 @@ namespace wolf
 					return W_FAILED;
 				}
 
+				this->_stream_out_ctx->oformat->flags = AVFMT_NOTIMESTAMPS;
+
 				//find the encoder
 				auto _stream_video_codec = avcodec_find_encoder(pCodecID);
 				if (!_stream_video_codec)
@@ -595,7 +597,7 @@ namespace wolf
 							_stream_dst_picture.linesize);
 
 						//encode the image
-						this->_stream_out_frame->pts = _frame_info.index;
+						this->_stream_out_frame->pts = _frame_info.index;// av_rescale_q(1, this->_stream_out->time_base, this->_stream_out->time_base);
 						if (avcodec_encode_video2(
 							this->_stream_out->codec,
 							&_packet,
@@ -609,6 +611,7 @@ namespace wolf
 						{
 							if (_got_packet)
 							{
+								_packet.pos = -1;
 								_packet.stream_index = this->_stream_out->index;
 								_packet.pts = av_rescale_q_rnd(
 									_packet.pts,

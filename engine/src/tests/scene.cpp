@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "scene.h"
 #include <w_compress.hpp>
-//#include <png.h>
+#include <w_process.h>
 #include <w_url.h>
 #include <w_concurrent_queue.h>
 
@@ -13,6 +13,11 @@ using namespace wolf::render::vulkan;
 scene::scene(_In_z_ const std::wstring& pContentPath, _In_ const system::w_logger_config& pLogConfig) :
 	w_game(pContentPath, pLogConfig)
 {
+
+	auto _a = wolf::system::w_process::create_process(
+		L"D:/github/WolfEngine/Wolf.Engine/bin/win32/x64/Debug/7z.exe",
+		L"./7z.exe a zipname ./Log/*",
+		L"D:/github/WolfEngine/Wolf.Engine/bin/win32/x64/Debug/");
 
 	const std::string _str_lzma = "here's something that should compress pretty well: abcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdef";
 	w_compress_result _c;
