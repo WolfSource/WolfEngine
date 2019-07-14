@@ -537,29 +537,35 @@ namespace wolf
 				std::string _ms_str = std::to_string(_ms).substr(0, 3);
 
 				//format of ms (xxx)
-				if (_ms_str.size() < 1) _ms_str = "000";
-				else if (_ms_str.size() < 2) _ms_str = "00" + _ms_str;
-				if (_ms_str.size() < 3) _ms_str = "0" + _ms_str;
+				const auto _ms_str_size = _ms_str.size();
+				if (_ms_str_size < 1) _ms_str = "000";
+				else if (_ms_str_size < 2) _ms_str = "00" + _ms_str;
+				else if (_ms_str_size < 3) _ms_str = "0" + _ms_str;
 
 				//format of second (xx)
-				if (_sec_str.size() < 1) _sec_str = "00";
-				else if (_sec_str.size() < 2) _sec_str = "0" + _sec_str;
+				const auto _sec_str_size = _sec_str.size();
+				if (_sec_str_size < 1) _sec_str = "00";
+				else if (_sec_str_size < 2) _sec_str = "0" + _sec_str;
 
 				//format of minute (xx)
-				if (_min_str.size() < 1) _min_str = "00";
-				else if (_min_str.size() < 2) _min_str = "0" + _min_str;
+				const auto _min_str_size = _min_str.size();
+				if (_min_str_size < 1) _min_str = "00";
+				else if (_min_str_size < 2) _min_str = "0" + _min_str;
 
 				//format of hour (xx)
-				if (_hr_str.size() < 1) _hr_str = "00";
-				else if (_hr_str.size() < 2) _hr_str = "0" + _hr_str;
+				const auto _hr_str_size = _hr_str.size();
+				if (_hr_str_size < 1) _hr_str = "00";
+				else if (_hr_str_size < 2) _hr_str = "0" + _hr_str;
 
 				//format of day (xx)
-				if (_day_str.size() < 1) _day_str = "00";
-				else if (_day_str.size() < 2) _day_str = "0" + _day_str;
+				const auto _day_str_size = _day_str.size();
+				if (_day_str_size < 1) _day_str = "00";
+				else if (_day_str_size < 2) _day_str = "0" + _day_str;
 
 				//format of month (xx)
-				if (_mon_str.size() < 1) _mon_str = "00";
-				else if (_mon_str.size() < 2) _mon_str = "0" + _mon_str;
+				const auto _mon_str_size = _mon_str.size();
+				if (_mon_str_size < 1) _mon_str = "00";
+				else if (_mon_str_size < 2) _mon_str = "0" + _mon_str;
 
 				std::stringstream _str;
 				_str << _day_str << _mon_str << _year_str <<
