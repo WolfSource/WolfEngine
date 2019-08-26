@@ -24,8 +24,9 @@
 
 #include "w_system_pch.h"
 #include "w_system_export.h"
-#include <lua.hpp>
+#include "lua/lua.hpp"
 #include <string>
+#include <map>
 
 namespace wolf
 {
@@ -35,6 +36,7 @@ namespace wolf
 		{
 		public:
 			WSYS_EXP static W_RESULT		load_file(const wchar_t* pPath);
+			WSYS_EXP static W_RESULT		load_from_stream(const std::string pStreamFile);
 			WSYS_EXP static W_RESULT		run();
 			/*
 				lua_CFunction		: the c function binder for lua
@@ -58,16 +60,19 @@ namespace wolf
 
 #pragma region Getters
 
+			//return the lua state for custom operation
+			WSYS_EXP static lua_State*		get_lua_state()    			{ return _lua; };
+
 			//return the last error
-			WSYS_EXP static const char*		get_last_error() 				{ return _last_error.c_str(); };
+			WSYS_EXP static const char*		 get_last_error() 				{ return _last_error.c_str(); };
 
 			//make sure call run and prepare_function before calling this function
 			template<typename T>
-			static void						set_parameter_function(const T pParam);
+			static void						 set_parameter_function(const T pParam);
 
 			//get the global variable in lua script
 			template <typename T>
-			static W_RESULT					get_global_variable(const char* pVariableName, T& pValue);
+			static W_RESULT					 get_global_variable(const char* pVariableName, T& pValue);
 
 #pragma endregion
 
@@ -196,6 +201,36 @@ namespace wolf
 			else
 			{
 				pRequestedTypeError = "string";
+			}
+		}
+
+		template<typename K, typename V>
+		auto get_value(
+			lua_State* pLua,
+			int pIndex,
+			_Inout_ std::map<K, V>& pValue,
+			int& pVarType, std::string& pRequestedTypeError) -> typename std::enable_if< std::is_same< K, std::string >::value && std::is_same<V, double >::value, void>::type
+		{
+			pVarType = lua_type(pLua, pIndex);
+			if (pVarType == LUA_TTABLE)
+			{
+				pRequestedTypeError.clear();
+
+				lua_pushnil(pLua);
+				while (lua_next(pLua, -2) != 0)
+				{
+					if (lua_isstring(pLua, -1))
+					{
+						std::string _k = lua_tostring(pLua, -2);
+						double _v = lua_tonumber(pLua, -1);
+						pValue[_k] = _v;
+					}
+					lua_pop(pLua, 1);
+				}
+			}
+			else
+			{
+				pRequestedTypeError = "table";
 			}
 		}
 

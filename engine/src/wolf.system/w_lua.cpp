@@ -98,6 +98,38 @@ W_RESULT w_lua::load_file(const wchar_t* pPath)
 	return W_PASSED;
 }
 
+W_RESULT w_lua::load_from_stream(const std::string pStreamFile)
+{
+	_last_error.clear();
+
+	if (pStreamFile.empty())
+	{
+		_last_error = "stream file is empty";
+		return W_FAILED;
+	}
+
+	//initialize lua
+	_lua = luaL_newstate();
+	if (!_lua)
+	{
+		_VL(1);
+		return W_FAILED;
+	}
+	luaL_openlibs(_lua);
+
+	//load the lua buffer
+	const char* _buffer = pStreamFile.c_str();
+	const size_t _buffer_size = pStreamFile.size();
+
+	int _hr = luaL_loadbuffer(_lua, _buffer, _buffer_size, _buffer);
+	if (_hr)
+	{
+		_VL(_hr);
+		return W_FAILED;
+	}
+	return W_PASSED;
+}
+
 W_RESULT w_lua::run()
 {
 	int _hr = lua_pcall(_lua, 0, LUA_MULTRET, 0);

@@ -771,7 +771,8 @@ namespace wolf
 				}
 
 				auto _source = new char[_file_length + 1];
-				_source[_file_length] = 0;
+				_source[_file_length] = '\0';
+				_file.seekg(0, std::ios::beg);
 
 				unsigned int _i = 0;
 				while (_file.good())
@@ -782,7 +783,7 @@ namespace wolf
 						_i++;
 					}
 				}
-				_source[_i] = 0;
+				_source[_i] = '\0';
 
 				//close the file
 				_file.close();
@@ -832,7 +833,8 @@ namespace wolf
 				}
 
 				auto _source = new wchar_t[_file_length + 1];
-				_source[_file_length] = 0;
+				_source[_file_length] = '\0';
+				_file.seekg(0, std::ios::beg);
 
 				unsigned int _i = 0;
 				while (_file.good())
@@ -843,7 +845,7 @@ namespace wolf
 						_i++;
 					}
 				}
-				_source[_i] = 0;
+				_source[_i] = '\0';
 
 				//close the file
 				_file.close();

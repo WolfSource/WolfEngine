@@ -14,24 +14,26 @@ scene::scene(_In_z_ const std::wstring& pContentPath, _In_ const system::w_logge
 	w_game(pContentPath, pLogConfig)
 {
 
+	w_color _c = w_color::from_hex(2500);
+
 	auto _a = wolf::system::w_process::create_process(
 		L"D:/github/WolfEngine/Wolf.Engine/bin/win32/x64/Debug/7z.exe",
 		L"./7z.exe a zipname ./Log/*",
 		L"D:/github/WolfEngine/Wolf.Engine/bin/win32/x64/Debug/");
 
-	const std::string _str_lzma = "here's something that should compress pretty well: abcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdef";
-	w_compress_result _c;
-	w_compress_result _d;
-	_c.size_in = _str_lzma.size();
-	
-	if (w_compress::compress_lzma((uint8_t*)_str_lzma.data(), &_c) == W_RESULT::W_PASSED)
-	{
-		w_compress::decompress_lzma((uint8_t*)_c.data, &_d);
-	}
+	//const std::string _str_lzma = "here's something that should compress pretty well: abcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdef";
+	//w_compress_result _c;
+	//w_compress_result _d;
+	//_c.size_in = _str_lzma.size();
+	//
+	//if (w_compress::compress_lzma((uint8_t*)_str_lzma.data(), &_c) == W_RESULT::W_PASSED)
+	//{
+	//	w_compress::decompress_lzma((uint8_t*)_c.data, &_d);
+	//}
 
-	std::string _str = "http://google .com";
-	w_url _url;
-	auto _p = _url.encoded_URL(_str);
+	//std::string _str = "http://google .com";
+	//w_url _url;
+	//auto _p = _url.encoded_URL(_str);
 	
 //    std::string _url_result_buffer;
 //    w_url _u;
