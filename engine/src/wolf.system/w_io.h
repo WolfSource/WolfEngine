@@ -742,19 +742,20 @@ namespace wolf
 			*/
 			inline const char* read_text_file(_In_z_ const char* pPath, _Out_ int& pState)
 			{
-				if (get_is_file(pPath) == W_FAILED)
-				{
-					pState = -1;
-					return nullptr;
-				}
-
 				std::ifstream _file(pPath, std::ios::ate | std::ios::in);
 				if (!_file)
 				{
-					//file is exist but it might be corrupted
+					//file is not exist
+					pState = -1;
+					return nullptr;
+				}
+				if (_file.bad())
+				{
+					//file exists but it might be corrupted
 					pState = -2;
 					return nullptr;
 				}
+
 				auto _file_length = static_cast<unsigned long>(_file.tellg());
 				if (_file_length == 0)
 				{
@@ -804,19 +805,21 @@ namespace wolf
 			*/
 			inline const wchar_t* read_text_fileW(_In_z_ const wchar_t* pPath, _Out_ int& pState)
 			{
-				if (get_is_fileW(pPath) == W_FAILED)
+				std::ifstream _file(pPath, std::ios::ate | std::ios::in);
+				if (!_file)
 				{
+					//file is not exist
 					pState = -1;
 					return nullptr;
 				}
 
-				std::ifstream _file(pPath, std::ios::ate | std::ios::in);
-				if (!_file)
+				if (_file.bad())
 				{
-					//file is exist but it might be corrupted
+					//file exists but it might be corrupted
 					pState = -2;
 					return nullptr;
 				}
+
 				auto _file_length = static_cast<unsigned long>(_file.tellg());
 				if (_file_length == 0)
 				{

@@ -61,7 +61,7 @@ namespace wolf
 #pragma region Getters
 
 			//return the lua state for custom operation
-			WSYS_EXP static lua_State*		get_lua_state()    			{ return _lua; };
+			WSYS_EXP static std::shared_ptr<lua_State*>		get_lua_state()    			{ return std::make_shared<lua_State*>(_lua); };
 
 			//return the last error
 			WSYS_EXP static const char*		 get_last_error() 				{ return _last_error.c_str(); };
@@ -157,6 +157,51 @@ namespace wolf
                 pRequestedTypeError = "integer";
             }
         }
+
+		template<typename T>
+		auto get_value(lua_State* pLua, int pIndex, _Inout_ T& pValue, _Inout_ int& pVarType, _Inout_ std::string& pRequestedTypeError) -> typename std::enable_if<std::is_same<T, uint32_t>::value, void>::type
+		{
+			pVarType = lua_type(pLua, pIndex);
+			if (pVarType == LUA_TNUMBER)
+			{
+				pValue = static_cast<uint32_t>(lua_tointeger(pLua, pIndex));
+				pRequestedTypeError.clear();
+			}
+			else
+			{
+				pRequestedTypeError = "unsigned int";
+			}
+		}
+
+		template<typename T>
+		auto get_value(lua_State* pLua, int pIndex, _Inout_ T& pValue, _Inout_ int& pVarType, _Inout_ std::string& pRequestedTypeError) -> typename std::enable_if<std::is_same<T, long long>::value, void>::type
+		{
+			pVarType = lua_type(pLua, pIndex);
+			if (pVarType == LUA_TNUMBER)
+			{
+				pValue = static_cast<long long>(lua_tonumber(pLua, pIndex));
+				pRequestedTypeError.clear();
+			}
+			else
+			{
+				pRequestedTypeError = "long long";
+			}
+		}
+
+		template<typename T>
+		auto get_value(lua_State* pLua, int pIndex, _Inout_ T& pValue, _Inout_ int& pVarType, _Inout_ std::string& pRequestedTypeError) -> typename std::enable_if<std::is_same<T, size_t>::value, void>::type
+		{
+			pVarType = lua_type(pLua, pIndex);
+			if (pVarType == LUA_TNUMBER)
+			{
+				pValue = static_cast<size_t>(lua_tonumber(pLua, pIndex));
+				pRequestedTypeError.clear();
+			}
+			else
+			{
+				pRequestedTypeError = "size_t";
+			}
+		}
 
 		template<typename T>
 		auto get_value(lua_State* pLua, int pIndex, _Inout_ T& pValue, _Inout_ int& pVarType, _Inout_ std::string& pRequestedTypeError) -> typename std::enable_if<std::is_floating_point<T>::value, void>::type

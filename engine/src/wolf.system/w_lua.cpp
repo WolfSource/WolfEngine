@@ -173,8 +173,11 @@ void w_lua::execute_function()
 
 ULONG w_lua::release()
 {
-	lua_pop(_lua, 1);
-	lua_close(_lua);
+	if (_lua)
+	{
+		lua_pop(_lua, 1);
+		lua_close(_lua);
+	}
 
 	return 0;
 }
