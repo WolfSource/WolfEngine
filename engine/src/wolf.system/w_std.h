@@ -14,6 +14,8 @@
 #ifndef __W_STD_H__
 #define __W_STD_H__
 
+#include <string>
+
 #if defined(__WIN32) || defined(__UWP)
 
 #ifndef WIN32_LEAN_AND_MEAN
@@ -118,7 +120,6 @@ extern "C" {
 }//extern "C"
 #endif
 
-#include <string>
 #include <sstream>
 #include <sys/stat.h>
 #include <memory>

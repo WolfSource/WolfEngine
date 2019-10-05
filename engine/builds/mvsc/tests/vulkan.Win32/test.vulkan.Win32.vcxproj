@@ -22,7 +22,7 @@
     <ProjectGuid>{C4AB1F97-2370-486B-A048-53AE0DD1065D}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>test.vulkan.Win32</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ProjectName>test.vulkan.Win32</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -116,6 +116,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)/../../deps/tbb/oss/windows/lib/intel64/vc14;$(SolutionDir)/../../deps/lua/lua;$(SolutionDir)/../../deps/ffmpeg/lib/windows/x64;$(SolutionDir)/../../deps/nanomsg/lib/vc14/x64/debug;$(SolutionDir)/../../deps/vulkan/lib/windows/x64;$(SolutionDir)/../../deps/curl/libs/windows/x64/debug</AdditionalLibraryDirectories>
       <AdditionalDependencies>vulkan-1.lib;avformat.lib;avcodec.lib;avutil.lib;swscale.lib;swresample.lib;Kernel32.lib;advapi32.lib;ws2_32.lib;wldap32.lib;winmm.lib;crypt32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;mswsock.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AssemblyDebug>true</AssemblyDebug>
     </Link>
     <Manifest>
       <AdditionalManifestFiles>$(SolutionDir)/../../../manifest.manifest</AdditionalManifestFiles>

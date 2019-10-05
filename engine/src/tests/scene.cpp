@@ -14,6 +14,16 @@ scene::scene(_In_z_ const std::wstring& pContentPath, _In_ const system::w_logge
 	w_game(pContentPath, pLogConfig)
 {
 
+	std::string _result;
+	w_point _abort;
+	_abort.x = 100;
+	_abort.y = 10;
+	auto _url = new wolf::system::w_url();
+	auto _r = _url->request_url("https://service-play.pod.land/srv/serviceApi/getConfig/",
+		_result, _abort);
+	std::wstring _str(_result.begin(), _result.end());
+	OutputDebugString(_str.c_str());
+	
 	w_color _c = w_color::from_hex(2500);
 
 	auto _a = wolf::system::w_process::create_process(
