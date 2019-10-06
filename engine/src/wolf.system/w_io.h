@@ -675,7 +675,7 @@ namespace wolf
 				return _str.substr(0, _str.size() - _ext.size());
 			}
 
-#if defined(_MSC_VER) || (__cplusplus >= 201703L /*&& !defined(__APPLE__)*/)
+#if defined(_MSC_VER) &&  (_MSC_VER >= 1920) /* (__cplusplus >= 201703L && !defined(__APPLE__)*/
             inline void get_files_folders_in_directoryW(_In_z_ const std::wstring& pDirectoryPath, _Inout_ std::vector<std::wstring>& pPaths)
             {
                 pPaths.clear();

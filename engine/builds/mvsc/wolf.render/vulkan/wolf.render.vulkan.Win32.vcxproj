@@ -103,7 +103,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level1</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_DEBUG;_WINDOWS;__WIN32;__WOLF_RENDER_VULKAN__;__VULKAN__;GLM_FORCE_DEPTH_ZERO_TO_ONE;_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;__WIN32;__WOLF_RENDER_VULKAN__;__VULKAN__;GLM_FORCE_DEPTH_ZERO_TO_ONE;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.render;$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.content_pipeline;$(SolutionDir)/../../deps/vulkan/include/</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>w_render_pch.h</PrecompiledHeaderFile>
