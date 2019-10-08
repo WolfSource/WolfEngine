@@ -47,8 +47,12 @@
 #include <sys/stat.h>
 #include "w_image.h"
 
-#if defined(_WIN32) && defined(_MSC_VER)
+#ifdef __cpp_lib_filesystem
 #include <filesystem>
+#elif __cpp_lib_experimental_filesystem
+#include <experimental/filesystem>
+#else
+#error "no filesystem support ='("
 #endif
 
 #ifndef _MSC_VER
@@ -674,62 +678,60 @@ namespace wolf
 				auto _ext = get_file_extentionW(pPath);
 				return _str.substr(0, _str.size() - _ext.size());
 			}
+#if defined(__cpp_lib_filesystem) || defined(__cpp_lib_experimental_filesystem)
+			inline void get_files_folders_in_directoryW(_In_z_ const std::wstring& pDirectoryPath, _Inout_ std::vector<std::wstring>& pPaths)
+			{
+				pPaths.clear();
 
-#if defined(_MSC_VER) &&  (__cplusplus >= 201703L)/* && !defined(__APPLE__)*/
-            inline void get_files_folders_in_directoryW(_In_z_ const std::wstring& pDirectoryPath, _Inout_ std::vector<std::wstring>& pPaths)
-            {
-                pPaths.clear();
-
-                for (auto& _file_name : std::experimental::filesystem::directory_iterator(pDirectoryPath))
-                {
-                    pPaths.push_back(get_file_nameW(_file_name.path()));
-                }
-            }
-            inline void get_files_folders_in_directory(_In_z_ const std::string& pDirectoryPath, _Inout_ std::vector<std::string>& pPaths)
-            {
-                pPaths.clear();
+				for (auto& _file_name : std::experimental::filesystem::directory_iterator(pDirectoryPath))
+				{
+					pPaths.push_back(get_file_nameW(_file_name.path()));
+				}
+			}
+			inline void get_files_folders_in_directory(_In_z_ const std::string& pDirectoryPath, _Inout_ std::vector<std::string>& pPaths)
+			{
+				pPaths.clear();
 
 				std::string _name;
-                for (auto& _file_name : std::experimental::filesystem::directory_iterator(pDirectoryPath))
-                {
+				for (auto& _file_name : std::experimental::filesystem::directory_iterator(pDirectoryPath))
+				{
 					_name = wolf::system::convert::wstring_to_string(_file_name.path());
-                    pPaths.push_back(get_file_name(_name));
-                }
-            }
+					pPaths.push_back(get_file_name(_name));
+				}
+			}
 #else
+			inline void get_files_folders_in_directoryW(_In_z_ const std::wstring& pDirectoryPath, _Inout_ std::vector<std::wstring>& pPaths)
+			{
+				pPaths.clear();
 
-            inline void get_files_folders_in_directoryW(_In_z_ const std::wstring& pDirectoryPath, _Inout_ std::vector<std::wstring>& pPaths)
-            {
-                pPaths.clear();
-                
-                auto _path = wolf::system::convert::wstring_to_string(pDirectoryPath);
-                DIR* _dir;
-                struct dirent* _ent;
-                if ((_dir = opendir(_path.c_str())) != NULL)
-                {
-                    while ((_ent = readdir(_dir)) != NULL)
-                    {
-                        pPaths.push_back(wolf::system::convert::string_to_wstring(_ent->d_name));
-                    }
-                    closedir(_dir);
-                }
-            }
+				auto _path = wolf::system::convert::wstring_to_string(pDirectoryPath);
+				DIR* _dir;
+				struct dirent* _ent;
+				if ((_dir = opendir(_path.c_str())) != NULL)
+				{
+					while ((_ent = readdir(_dir)) != NULL)
+					{
+						pPaths.push_back(wolf::system::convert::string_to_wstring(_ent->d_name));
+					}
+					closedir(_dir);
+				}
+			}
 
-            inline void get_files_folders_in_directory(_In_z_ const std::string& pDirectoryPath, _Inout_ std::vector<std::string>& pPaths)
-            {
-                pPaths.clear();
-                
-                DIR* _dir;
-                struct dirent* _ent;
-                if ((_dir = opendir(pDirectoryPath.c_str())) != NULL)
-                {
-                    while ((_ent = readdir(_dir)) != NULL)
-                    {
-                        pPaths.push_back(_ent->d_name);
-                    }
-                    closedir(_dir);
-                }
-            }
+			inline void get_files_folders_in_directory(_In_z_ const std::string& pDirectoryPath, _Inout_ std::vector<std::string>& pPaths)
+			{
+				pPaths.clear();
+
+				DIR* _dir;
+				struct dirent* _ent;
+				if ((_dir = opendir(pDirectoryPath.c_str())) != NULL)
+				{
+					while ((_ent = readdir(_dir)) != NULL)
+					{
+						pPaths.push_back(_ent->d_name);
+					}
+					closedir(_dir);
+				}
+			}
 #endif
 			/*
 				Read text file from root path
