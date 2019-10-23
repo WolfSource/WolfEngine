@@ -10,15 +10,6 @@ environment:
       PYTHON_VERSION: "2.7.14"
       PYTHON_ARCH: "64"
 matrix:
-  fast_finish: true
-  exclude:
-    - platform: x86
-      configuration: Debug
-    - platform: x86
-      configuration: Release
-    - platform: x64
-      configuration: Release
-matrix:
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       configuration: Debug
       platform: x64
