@@ -1,7 +1,7 @@
 /*
-	Project			 : Wolf Engine. Copyright(c) Pooya Eimandar (http://PooyaEimandar.com) . All rights reserved.
-	Source			 : Please direct any bug to https://github.com/PooyaEimandar/Wolf.Engine/issues
-	Website			 : http://WolfSource.io
+	Project			 : Wolf Engine. Copyright(c) Pooya Eimandar (https://PooyaEimandar.github.io) . All rights reserved.
+	Source			 : Please direct any bug to https://github.com/WolfEngine/Wolf.Engine/issues
+	Website			 : https://WolfEngine.App
 	Name			 : w_graphics_header.h
 	Description		 : The include header for graphics devices. Wolf.Engine supports two render APIs, the first one is DirectX 12 
 						which supports both Windows 10 and Universal Windows Platform(UWP) and the second one is Vulkan which supports

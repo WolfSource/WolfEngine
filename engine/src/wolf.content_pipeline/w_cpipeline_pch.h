@@ -1,7 +1,7 @@
 ﻿/*
-	Project			 : Wolf Engine. Copyright(c) Pooya Eimandar (http://PooyaEimandar.com) . All rights reserved.
-	Source			 : Please direct any bug to https://github.com/PooyaEimandar/Wolf.Engine/issues
-	Website			 : http://WolfSource.io
+	Project			 : Wolf Engine. Copyright(c) Pooya Eimandar (https://PooyaEimandar.github.io) . All rights reserved.
+	Source			 : Please direct any bug to https://github.com/WolfEngine/Wolf.Engine/issues
+	Website			 : https://WolfEngine.App
 	Name			 : w_cpipeline_pch.h
 	Description		 : Pre-Compiled header of Wolf.ContentPipeline
 	Comment          :

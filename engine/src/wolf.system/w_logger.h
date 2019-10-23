@@ -1,7 +1,7 @@
 /*
-    Project			 : Wolf Engine. Copyright(c) Pooya Eimandar (http://PooyaEimandar.com) . All rights reserved.
-    Source			 : Please direct any bug to https://github.com/PooyaEimandar/Wolf.Engine/issues
-    Website			 : http://WolfSource.io
+	Project			 : Wolf Engine. Copyright(c) Pooya Eimandar (https://PooyaEimandar.github.io) . All rights reserved.
+	Source			 : Please direct any bug to https://github.com/WolfEngine/Wolf.Engine/issues
+	Website			 : https://WolfEngine.App
     Name			 : w_logger.h
     Description		 : a logger class which is shared over all dlls
     Comment          :
@@ -86,8 +86,8 @@ namespace wolf
 						L":" + std::to_wstring(WOLF_PATCH_VERSION) + L":" + std::to_wstring(WOLF_DEBUG_VERSION) + L"\",\r\n";
 
 					this->_log_file << L"{\r\n";
-					this->_log_file << L"\t\"Project\"          : \"Wolf Engine(http://WolfSource.io). Copyright(c) Pooya Eimandar(http://PooyaEimandar.com). All rights reserved.\",\r\n";
-					this->_log_file << L"\t\"Info\"             : \"contact@WolfSource.io\r\n";
+					this->_log_file << L"\t\"Project\"          : \"Wolf Engine(https://WolfEngine.app). Copyright(c) Pooya Eimandar(https://PooyaEimandar.github.io). All rights reserved.\",\r\n";
+					this->_log_file << L"\t\"Info\"             : \"Pooya@WolfEngine.App\r\n";
 					this->_log_file << _version.c_str();
 					this->_log_file << _created_time.c_str();
 					this->_log_file << _app_name.c_str();
@@ -171,9 +171,9 @@ namespace wolf
 				}
 
 				this->_log_file->info(
-					"Project: \"Wolf Engine(http://WolfSource.io). "\
-					"Copyright(c) Pooya Eimandar(http://PooyaEimandar.com). All rights reserved.\". "\
-					"Contact: \"Contact@WolfSource.io\" "\
+					"Project: \"Wolf Engine(https://WolfEngine.App). "\
+					"Copyright(c) Pooya Eimandar(https://PooyaEimandar.github.io). All rights reserved.\". "\
+					"Contact: \"Pooya@WolfEngine.App\" "\
 					"Version: {}.{}.{}.{}", WOLF_MAJOR_VERSION, WOLF_MINOR_VERSION, WOLF_PATCH_VERSION, WOLF_DEBUG_VERSION);
 				
 				if (pConfig.flush_level)

@@ -63,7 +63,6 @@
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\w_camera.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\w_content_manager.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\w_cpipeline_export.h" />
-    <ClInclude Include="..\..\..\src\wolf.content_pipeline\w_cpipeline_structs.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\w_cpipeline_pch.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\w_cpipeline_model.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\w_cpipeline_scene.h" />

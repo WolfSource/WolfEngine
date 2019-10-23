@@ -1,7 +1,7 @@
 /*
-	Project			 : Wolf Engine. Copyright(c) Pooya Eimandar (http://PooyaEimandar.com) . All rights reserved.
-	Source			 : Please direct any bug to https://github.com/PooyaEimandar/Wolf.Engine/issues
-	Website			 : http://WolfSource.io
+	Project			 : Wolf Engine. Copyright(c) Pooya Eimandar (https://PooyaEimandar.github.io) . All rights reserved.
+	Source			 : Please direct any bug to https://github.com/WolfEngine/Wolf.Engine/issues
+	Website			 : https://WolfEngine.App
 	Name			 : w_texture.h
 	Description		 : create and handle 2D texture resource
 	Comment          : Wolf used encoding texture with two channel based on http://devkk.net/index.php?tag=articles&id=24

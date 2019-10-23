@@ -1,7 +1,7 @@
 /*
-	Project			 : Wolf Engine. Copyright(c) Pooya Eimandar (http://PooyaEimandar.com) . All rights reserved.
-	Source			 : Please direct any bug to https://github.com/WolfSource/Wolf.Engine/issues
-	Website			 : http://WolfSource.io
+	Project			 : Wolf Engine. Copyright(c) Pooya Eimandar (https://PooyaEimandar.github.io) . All rights reserved.
+	Source			 : Please direct any bug to https://github.com/WolfEngine/Wolf.Engine/issues
+	Website			 : https://WolfEngine.App
 	Name			 : w_masked_occlusion_culling.h
 	Description		 : The w_masked_occlusion_culling
 	Comment          : //avx512 must build with "-march=skylake-avx512" flag and avx2 must build with "-mavx2 -mfma" flag
