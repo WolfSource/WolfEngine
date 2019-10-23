@@ -10,6 +10,7 @@ environment:
       PYTHON_VERSION: "2.7.14"
       PYTHON_ARCH: "64"
 matrix:
+  CXX_FLAGS: "/permissive- /std:c++latest /utf-8 /F4000000"
   fast_finish: true
   exclude:
     - platform: x86
