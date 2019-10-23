@@ -15,7 +15,7 @@ matrix:
       platform: x64
       CXX_FLAGS: "/permissive- /std:c++latest /utf-8"
       LINKER_FLAGS: ""
-      GENERATOR: Visual Studio 16 2019
+      GENERATOR: Visual Studio 17 2019
       
 install:
     # python requirements needed to unpack deps
