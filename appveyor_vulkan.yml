@@ -18,7 +18,14 @@ matrix:
       configuration: Release
     - platform: x64
       configuration: Release
-
+matrix:
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      configuration: Debug
+      platform: x64
+      CXX_FLAGS: "/permissive- /std:c++latest /utf-8"
+      LINKER_FLAGS: ""
+      GENERATOR: Visual Studio 16 2019
+      
 install:
     # python requirements needed to unpack deps
     - cmd: ./install.cmd
