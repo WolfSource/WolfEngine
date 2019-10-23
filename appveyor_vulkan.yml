@@ -9,13 +9,16 @@ environment:
     - PYTHON: "C:\\Python27-x64"
       PYTHON_VERSION: "2.7.14"
       PYTHON_ARCH: "64"
+      
 matrix:
-    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+  fast_finish: true
+  exclude:
+    - platform: x86
       configuration: Debug
-      platform: x64
-      CXX_FLAGS: "/permissive- /std:c++latest /utf-8"
-      LINKER_FLAGS: ""
-      GENERATOR: Visual Studio 17 2019
+    - platform: x86
+      configuration: Release
+    - platform: x64
+      configuration: Release
       
 install:
     # python requirements needed to unpack deps
