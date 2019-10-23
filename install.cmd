@@ -19,7 +19,7 @@ set i=0
 ))
 
 echo uncompressing boost.zip
-   type boost.zip.001 boost.zip.002 boost.zip.003 > boost.zip
+   type boost.zip.001 boost.zip.002 boost.zip.003 boost.zip.004 > boost.zip
    PowerShell Expand-Archive -Path "boost.zip" "./"
    if exist boost/builds.txt (
        echo boost verified successfully
