@@ -52,7 +52,7 @@
 #elif __cpp_lib_experimental_filesystem
 #include <experimental/filesystem>
 #else
-#error "no filesystem support ='("
+#error "no filesystem support"
 #endif
 
 #ifndef _MSC_VER
@@ -678,7 +678,7 @@ namespace wolf
 				auto _ext = get_file_extentionW(pPath);
 				return _str.substr(0, _str.size() - _ext.size());
 			}
-#if defined(__cpp_lib_filesystem) || defined(__cpp_lib_experimental_filesystem)
+#if !defined(_BUILD_FOR_APP_VEYOR_) && (defined(__cpp_lib_filesystem) || defined(__cpp_lib_experimental_filesystem))
 			inline void get_files_folders_in_directoryW(_In_z_ const std::wstring& pDirectoryPath, _Inout_ std::vector<std::wstring>& pPaths)
 			{
 				pPaths.clear();
