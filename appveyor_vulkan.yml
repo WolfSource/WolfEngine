@@ -2,6 +2,8 @@ version: 1.0.{build}
 image: Visual Studio 2019
 platform: x64
 configuration: Debug
+PlatformToolset: "v142"
+CXX_FLAGS: "/permissive- /std:c++latest /utf-8"
 
 environment:
   solution_name: c:\\projects\\wolf-engine\\engine\\builds\\mvsc\\wolf.engine.vulkan.Win32.sln
