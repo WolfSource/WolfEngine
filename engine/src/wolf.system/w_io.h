@@ -47,6 +47,10 @@
 #include <sys/stat.h>
 #include "w_image.h"
 
+#ifdef _MSC_VER
+#include <filesystem>
+namespace fs = std::filesystem;
+#else
 #ifdef __cpp_lib_filesystem
 #include <filesystem>
 namespace fs = std::filesystem;
@@ -56,8 +60,6 @@ namespace fs = std::experimental::filesystem;
 #else
 #error "no filesystem support"
 #endif
-
-#ifndef _MSC_VER
 #include <dirent.h>
 #endif
 
