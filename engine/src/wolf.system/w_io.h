@@ -49,8 +49,10 @@
 
 #ifdef __cpp_lib_filesystem
 #include <filesystem>
+namespace fs = std::filesystem;
 #elif __cpp_lib_experimental_filesystem
 #include <experimental/filesystem>
+namespace fs = std::experimental::filesystem;
 #else
 #error "no filesystem support"
 #endif
@@ -683,7 +685,7 @@ namespace wolf
 			{
 				pPaths.clear();
 
-				for (auto& _file_name : std::experimental::filesystem::directory_iterator(pDirectoryPath))
+				for (auto& _file_name : fs::directory_iterator(pDirectoryPath))
 				{
 					pPaths.push_back(get_file_nameW(_file_name.path()));
 				}
@@ -693,7 +695,7 @@ namespace wolf
 				pPaths.clear();
 
 				std::string _name;
-				for (auto& _file_name : std::experimental::filesystem::directory_iterator(pDirectoryPath))
+				for (auto& _file_name : fs::directory_iterator(pDirectoryPath))
 				{
 					_name = wolf::system::convert::wstring_to_string(_file_name.path());
 					pPaths.push_back(get_file_name(_name));
