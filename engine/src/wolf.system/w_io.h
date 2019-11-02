@@ -31,6 +31,7 @@
 
 #if defined(__linux) || defined(__APPLE__)
 #include <unistd.h>//for getcwd
+#include <sys/time.h>
 #endif
 
 #endif //__WIN32
@@ -48,19 +49,20 @@
 #include "w_image.h"
 
 #ifdef _MSC_VER
-#include <filesystem>
-namespace fs = std::filesystem;
+    #include <filesystem>
+        namespace fs = std::filesystem;
 #else
-#ifdef __cpp_lib_filesystem
-#include <filesystem>
-namespace fs = std::filesystem;
-#elif __cpp_lib_experimental_filesystem
-#include <experimental/filesystem>
-namespace fs = std::experimental::filesystem;
-#else
-#error "no filesystem support"
-#endif
-#include <dirent.h>
+        #ifdef __cpp_lib_filesystem
+            #include <filesystem>
+            namespace fs = std::filesystem;
+        #elif __cpp_lib_experimental_filesystem
+            #include <experimental/filesystem>
+            namespace fs = std::experimental::filesystem;
+        #else
+            #error "no filesystem support"
+        #endif
+        
+        #include <dirent.h>
 #endif
 
 namespace wolf
@@ -689,18 +691,18 @@ namespace wolf
 
 				for (auto& _file_name : fs::directory_iterator(pDirectoryPath))
 				{
-					pPaths.push_back(get_file_nameW(_file_name.path()));
+                    const auto _path = _file_name.path().wstring();
+					pPaths.push_back(get_file_nameW(_path));
 				}
 			}
 			inline void get_files_folders_in_directory(_In_z_ const std::string& pDirectoryPath, _Inout_ std::vector<std::string>& pPaths)
 			{
 				pPaths.clear();
 
-				std::string _name;
 				for (auto& _file_name : fs::directory_iterator(pDirectoryPath))
 				{
-					_name = wolf::system::convert::wstring_to_string(_file_name.path());
-					pPaths.push_back(get_file_name(_name));
+                    const auto _path = _file_name.path().string();
+					pPaths.push_back(get_file_name(_path));
 				}
 			}
 #else

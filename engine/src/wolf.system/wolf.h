@@ -7,12 +7,7 @@
 	Comment          :
 */
 
-#if _MSC_VER > 1000
 #pragma once
-#endif
-
-#ifndef __WOLF_H__
-#define __WOLF_H__
 
 #include <w_ireleasable.h>
 #include "w_system_pch.h"
@@ -29,7 +24,5 @@ int APIENTRY WinMain(HINSTANCE pHInstance, HINSTANCE pPrevHInstance, PSTR pSTR, 
 int main(int pArgc, const char * pArgv[])
 
 #endif
-
-#endif //__WOLF_H__
 
 

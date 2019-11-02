@@ -150,7 +150,7 @@ namespace wolf
 					//Create the directory of log inside the root directory
 					io::create_directory(_log_directory_cstr);
 				}
-				auto _log_file_path = _log_directory + io::get_unique_name() + ".wLog";
+				auto _log_file_path = _log_directory + io::get_date_time_str() + ".wLog";
 #endif
 				std::vector<spdlog::sink_ptr> sinks;
 

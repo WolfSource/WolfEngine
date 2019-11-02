@@ -14,6 +14,8 @@
 #ifndef __W_COMPRESS_DATA_TYPE_H__
 #define __W_COMPRESS_DATA_TYPE_H__
 
+#include <stddef.h>
+
 typedef enum
 {
 	W_DEFAULT,

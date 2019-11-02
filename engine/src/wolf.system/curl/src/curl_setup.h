@@ -56,7 +56,11 @@
 
 #ifdef HAVE_CONFIG_H
 
-#include "curl_config.h"
+#if defined(__APPLE__)
+    #include "../config/osx.h"
+#else
+    #include "curl_config.h"
+#endif
 
 #else /* HAVE_CONFIG_H */
 
@@ -94,6 +98,10 @@
 
 #ifdef __VXWORKS__
 #  include "config-vxworks.h"
+#endif
+
+#ifdef __PLAN9__
+#  include "config-plan9.h"
 #endif
 
 #endif /* HAVE_CONFIG_H */
@@ -482,7 +490,6 @@
 #ifdef WIN32
 
 #  define DIR_CHAR      "\\"
-#  define DOT_CHAR      "_"
 
 #else /* WIN32 */
 
@@ -508,14 +515,6 @@
 #  endif
 
 #  define DIR_CHAR      "/"
-#  ifndef DOT_CHAR
-#    define DOT_CHAR      "."
-#  endif
-
-#  ifdef MSDOS
-#    undef DOT_CHAR
-#    define DOT_CHAR      "_"
-#  endif
 
 #  ifndef fileno /* sunos 4 have this as a macro! */
      int fileno(FILE *stream);
@@ -648,7 +647,7 @@ int netware_init(void);
 
 #if defined(USE_GNUTLS) || defined(USE_OPENSSL) || defined(USE_NSS) || \
     defined(USE_MBEDTLS) || \
-    defined(USE_CYASSL) || defined(USE_SCHANNEL) || \
+    defined(USE_WOLFSSL) || defined(USE_SCHANNEL) || \
     defined(USE_SECTRANSP) || defined(USE_GSKIT) || defined(USE_MESALINK)
 #define USE_SSL    /* SSL support has been enabled */
 #endif
@@ -825,6 +824,10 @@ int getpwuid_r(uid_t uid, struct passwd *pwd, char *buf,
 #define UNITTEST
 #else
 #define UNITTEST static
+#endif
+
+#if defined(USE_NGTCP2) || defined(USE_QUICHE)
+#define ENABLE_QUIC
 #endif
 
 #endif /* HEADER_CURL_SETUP_H */
