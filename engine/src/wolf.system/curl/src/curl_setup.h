@@ -58,8 +58,10 @@
 
 #if defined(__APPLE__)
     #include "../config/osx.h"
+#elif defined(__WIN32)
+    #include "../config/win.h"
 #else
-    #include "curl_config.h"
+#include "curl_config.h"
 #endif
 
 #else /* HAVE_CONFIG_H */
