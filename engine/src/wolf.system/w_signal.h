@@ -20,10 +20,10 @@ namespace wolf
 {
 	namespace system
 	{
-        template<class sig>
+        template<typename sig>
         class w_signal;
 
-        template<class T, class... Args>
+        template<typename T, typename... Args>
         class w_signal<T(Args...)>
         {
             typedef std::function<T(Args...)>   w_slot;
