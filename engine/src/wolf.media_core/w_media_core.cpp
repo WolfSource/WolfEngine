@@ -574,7 +574,7 @@ namespace wolf
 				//init packet
 				av_init_packet(&_packet);
 
-				pOnConnectionEstablished.emit(_con_info);
+				pOnConnectionEstablished.rise(_con_info);
 				{
 					auto _start_send_time = std::chrono::system_clock::now();
 					while (this->_stream_out)
@@ -584,7 +584,7 @@ namespace wolf
 #pragma region Preparing Packets
 						_frame_info.index++;
 
-						pOnFillingVideoFrameBuffer.emit(_frame_info);
+						pOnFillingVideoFrameBuffer.rise(_frame_info);
 
 						//convert pixels to output stream format
 						sws_scale(
@@ -677,7 +677,7 @@ namespace wolf
 				//release stream server resources
 				release_output_stream_server();
 				//on connection lost
-				pOnConnectionClosed.emit(pURL);
+				pOnConnectionClosed.rise(pURL);
 
 				return W_PASSED;
 			}
@@ -933,7 +933,7 @@ namespace wolf
 							_is_stream_live.reset();
 							_time_out = pStreamTimeOut;
 
-							pOnConnectionEstablished.emit(_con_info);
+							pOnConnectionEstablished.rise(_con_info);
 						}
 						if (_packet.stream_index == _video_stream_index)
 						{
@@ -954,7 +954,7 @@ namespace wolf
 									_picture_rgb->linesize);
 
 								_frame_info.pixels = _picture_rgb->data[0];
-								pOnGettingStreamVideoFrame.emit(_frame_info);
+								pOnGettingStreamVideoFrame.rise(_frame_info);
 							}
 						}
 
@@ -966,7 +966,7 @@ namespace wolf
 					{
 						//on connection lost
 						_connected = false;
-						pOnConnectionLost.emit(pURL);
+						pOnConnectionLost.rise(pURL);
 
 						_is_stream_live.tick([&]()
 						{
@@ -979,7 +979,7 @@ namespace wolf
 					}
 				}
 				//on connection lost
-				pOnConnectionClosed.emit(pURL);
+				pOnConnectionClosed.rise(pURL);
 
 				//free pixels				
 				av_free(_picture);

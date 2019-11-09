@@ -15,6 +15,8 @@
 #define __W_SIGNAL_H__
 
 #include <vector>
+#include <functional>
+#include <utility>
 
 namespace wolf
 {
@@ -31,10 +33,10 @@ namespace wolf
         public:
             void operator()(Args... pArgs)
             {
-                emit(std::forward<Args>(pArgs)...);
+                rise(std::forward<Args>(pArgs)...);
             }
 
-            void emit(Args... pArgs) const
+            void rise(Args... pArgs) const
             {
                 for (auto i = this->_slots.begin(); i != this->_slots.end(); ++i)
                 {
