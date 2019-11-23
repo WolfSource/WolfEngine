@@ -33,7 +33,7 @@ namespace wolf
 					_In_ w_texture* pIconTexture,
 					_In_ w_texture** pStagingMediaTexture,
 					_In_ const char* pFontPath,
-					_In_ const float& pFontPixelSize)
+					_In_ const float pFontPixelSize)
 				{
 					const std::string _trace_info = this->_name + "::load";
 
@@ -413,7 +413,7 @@ namespace wolf
 					return _hr == VK_SUCCESS ? W_PASSED : W_FAILED;
 				}
 
-				void new_frame(_In_ const float& pDeltaTime, _In_ const std::function<void(void)>& pGuiWorkFlow)
+				void new_frame(_In_ const float pDeltaTime, _In_ const std::function<void(void)>& pGuiWorkFlow)
 				{
 					ImGuiIO& _io = ImGui::GetIO();
 
@@ -559,12 +559,12 @@ namespace wolf
 #pragma endregion
 
 #pragma region Setters
-				void set_width(_In_ const uint32_t& pWidth)
+				void set_width(_In_ const uint32_t pWidth)
 				{
 					this->_screen_size.x = pWidth;
 				}
 
-				void set_height(_In_ const uint32_t& pHeight)
+				void set_height(_In_ const uint32_t pHeight)
 				{
 					this->_screen_size.y = pHeight;
 				}
@@ -869,7 +869,7 @@ W_RESULT w_imgui::load(
 	_In_ w_texture* pIconTexture,
 	_In_ w_texture** pStagingMediaTexture,
 	_In_ const char* pFontPath,
-	_In_ const float& pFontPixelSize)
+	_In_ const float pFontPixelSize)
 {
 	if (!_pimp)
 	{
@@ -886,7 +886,7 @@ W_RESULT w_imgui::load(
 		pFontPixelSize);
 }
 
-void w_imgui::new_frame(_In_ const float& pDeltaTime, _In_ const std::function<void(void)>& pMakeGuiWork)
+void w_imgui::new_frame(_In_ const float pDeltaTime, _In_ const std::function<void(void)>& pMakeGuiWork)
 {
     if (!_pimp) return;
     _pimp->new_frame(pDeltaTime, pMakeGuiWork);
@@ -928,13 +928,13 @@ w_command_buffer w_imgui::get_command_buffer_at(_In_ const uint32_t pFrameIndex)
 
 #pragma region Setters
 
-void w_imgui::set_width(_In_ const uint32_t& pWidth)
+void w_imgui::set_width(_In_ const uint32_t pWidth)
 {
     if (!_pimp) return;
     _pimp->set_width(pWidth);
 }
 
-void w_imgui::set_height(_In_ const uint32_t& pHeight)
+void w_imgui::set_height(_In_ const uint32_t pHeight)
 {
     if (!_pimp) return;
     _pimp->set_width(pHeight);

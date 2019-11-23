@@ -414,11 +414,12 @@ W_RESULT w_masked_occlusion_culling::flush()
 
 ULONG w_masked_occlusion_culling::release()
 {
-	if (this->get_is_released()) return 1;
+	if (this->_is_released) return 1;
 
 	SAFE_RELEASE(this->_pimp);
+	this->_is_released = true;
 
-	return _super::release();
+	return 0;
 }
 
 #pragma region Getters

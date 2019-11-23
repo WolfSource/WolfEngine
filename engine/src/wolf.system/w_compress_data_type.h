@@ -7,12 +7,7 @@
 	Comment          :
 */
 
-#if _MSC_VER > 1000
 #pragma once
-#endif
-
-#ifndef __W_COMPRESS_DATA_TYPE_H__
-#define __W_COMPRESS_DATA_TYPE_H__
 
 #include <stddef.h>
 
@@ -29,5 +24,3 @@ typedef struct
 	size_t				size_out;
 	char*				data;
 } w_compress_result;
-
-#endif //__W_COMPRESS_DATA_TYPE_H__

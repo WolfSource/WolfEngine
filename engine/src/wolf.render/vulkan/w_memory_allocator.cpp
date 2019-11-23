@@ -72,8 +72,8 @@ namespace wolf
 				}
 
 				W_RESULT initialize(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-					_In_ const bool& pPreferredLargeHeapBlockSize,
-					_In_ const bool& pUseCustomCpuAllocation_Callbacks)
+					_In_ const bool pPreferredLargeHeapBlockSize,
+					_In_ const bool pUseCustomCpuAllocation_Callbacks)
 				{
 					this->_device_info = pGDevice->get_info();
 
@@ -218,9 +218,10 @@ namespace wolf
 
 using namespace wolf::render::vulkan;
 
-w_memory_allocator::w_memory_allocator() : _pimp(new w_memory_allocator_pimp())
+w_memory_allocator::w_memory_allocator() :
+	_is_released(false),
+	_pimp(new w_memory_allocator_pimp())
 {
-    _super::set_class_name("w_memory_allocator");
 }
 
 w_memory_allocator::~w_memory_allocator()
@@ -229,8 +230,8 @@ w_memory_allocator::~w_memory_allocator()
 }
 
 W_RESULT w_memory_allocator::initialize(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-	_In_ const bool& pPreferredLargeHeapBlockSize,
-	_In_ const bool& pUseCustomCpuAllocation_Callbacks)
+	_In_ const bool pPreferredLargeHeapBlockSize,
+	_In_ const bool pUseCustomCpuAllocation_Callbacks)
 {
 	return this->_pimp ? this->_pimp->initialize(pGDevice, pPreferredLargeHeapBlockSize, pUseCustomCpuAllocation_Callbacks) : W_FAILED;
 }
@@ -288,12 +289,14 @@ void w_memory_allocator::unmap(_In_ VmaAllocation* pAllocation)
 
 ULONG w_memory_allocator::release()
 {
-	if (this->get_is_released()) return 1;
+	if (this->_is_released) return 1;
 
 	SAFE_RELEASE(this->_pimp);
 
-	return _super::release();
+	this->_is_released = true;
+	return 0;
 }
+
 #pragma region Getters
 
 VkMemoryPropertyFlags w_memory_allocator::get_memory_property_flags(_In_ VmaAllocationInfo& pAllocInfo) const

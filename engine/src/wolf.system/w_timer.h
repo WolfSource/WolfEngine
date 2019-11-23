@@ -7,69 +7,60 @@
 	Comment          :
 */
 
-#if _MSC_VER > 1000
 #pragma once
-#endif
-
-#ifndef __W_TIMER_H__
-#define __W_TIMER_H__
 
 #include "w_game_time.h"
 
-namespace wolf
+namespace wolf::system
 {
-	namespace system
+	class w_timer
 	{
-		class w_timer
+		friend class w_timer_callback;
+	public:
+		// Constructor of Timer
+		w_timer()
 		{
-			friend class w_timer_callback;
-		public:
-			// Constructor of Timer
-			w_timer()
-			{
-				_timer.set_fixed_time_step(false);
-			}
+			_timer.set_fixed_time_step(false);
+		}
 
-			~w_timer()
-			{
-			}
+		~w_timer()
+		{
+		}
 
-			void start()
-			{
-				_timer.tick([]() { /*NOP*/ });
-			}
+		void start()
+		{
+			_timer.tick([]() { /*NOP*/ });
+		}
 
-			void stop()
-			{
-				_timer.tick([]() { /*NOP*/ });
-			}
+		void stop()
+		{
+			_timer.tick([]() { /*NOP*/ });
+		}
 
-            void reset()
-            {
-                _timer.reset();
-                _timer.tick([]() { /*NOP*/ });
-            }
+		void reset()
+		{
+			_timer.reset();
+			_timer.tick([]() { /*NOP*/ });
+		}
 
-			//Get total time in seconds
-			double get_seconds()
-			{
-                _timer.tick([]() { /*NOP*/ });
-				return _timer.get_total_seconds();
-			};
-
-			//Get total time in milliseconds
-			double get_milliseconds()
-			{
-                _timer.tick([]() { /*NOP*/ });
-				return _timer.get_total_seconds() * 1000;
-			};
-			
-		private:
-			w_game_time		_timer;
+		//Get total time in seconds
+		double get_seconds()
+		{
+			_timer.tick([]() { /*NOP*/ });
+			return _timer.get_total_seconds();
 		};
-	}
+
+		//Get total time in milliseconds
+		double get_milliseconds()
+		{
+			_timer.tick([]() { /*NOP*/ });
+			return _timer.get_total_seconds() * 1000;
+		};
+
+	private:
+		w_game_time		_timer;
+	};
 }
 
 #include "python_exporter/py_timer.h"
 
-#endif //__W_TIMER_H__

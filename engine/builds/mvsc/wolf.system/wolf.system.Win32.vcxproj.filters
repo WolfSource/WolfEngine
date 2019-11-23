@@ -12,7 +12,6 @@
     <ClCompile Include="..\..\..\src\wolf.system\w_xml.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_task.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\dllmain.cpp" />
-    <ClCompile Include="..\..\..\src\wolf.system\w_object.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_inputs_manager.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_thread.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_thread_pool.cpp" />
@@ -620,12 +619,10 @@
     <ClInclude Include="..\..\..\src\wolf.system\w_cpu.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_game_time.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_io.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\w_Ireleasable.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_linear_allocator.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_logger.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_lua.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_memory.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\w_object.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_process.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_system_pch.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_target_ver.h" />
@@ -1368,7 +1365,6 @@
     <ClInclude Include="..\..\..\src\wolf.system\w_bounding.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_aligned_malloc.h" />
     <ClInclude Include="..\..\..\src\wolf.system\glm_extension.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\wolf_version.h" />
     <ClInclude Include="..\..\..\src\wolf.system\spdlog\spdlog.h">
       <Filter>spdlog</Filter>
     </ClInclude>
@@ -1937,6 +1933,7 @@
     <ClInclude Include="..\..\..\src\wolf.system\curl\src\x509asn1.h">
       <Filter>curl\src</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\wolf_version.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="rapidxml">

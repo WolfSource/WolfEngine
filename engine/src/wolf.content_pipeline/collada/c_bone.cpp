@@ -3,12 +3,14 @@
 
 using namespace wolf::content_pipeline::collada;
 
-c_bone::c_bone()
+c_bone::c_bone() : 
+	_is_released(false)
 {
 	//Make sure world matrix is identity
 }
 
 c_bone::c_bone(c_bone* pParentBone, glm::mat4x4 pInitialMatrix, const std::string& pSID, const std::string& pName) :
+	_is_released(false),
 	parent(pParentBone),
 	initial_matrix(pInitialMatrix)
 {
@@ -180,7 +182,7 @@ glm::mat4x4 c_bone::calaculate_blended_matrices(float pTime, c_bone* pBone, floa
 
 ULONG c_bone::release()
 {
-	if (this->get_is_released()) return 1;
+	if (this->_is_released) return 1;
 	
 	//release children
 	std::for_each(children.begin(), children.end(), [](c_bone* pValue)
@@ -205,7 +207,9 @@ ULONG c_bone::release()
 	});
 	animations.clear();
 
-	return _super::release();
+	this->_is_released = true;
+
+	return 0;
 }
 
 #pragma region Getters

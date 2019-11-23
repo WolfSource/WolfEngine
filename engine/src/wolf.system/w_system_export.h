@@ -7,12 +7,7 @@
 	Comment          : 
 */
 
-#if _MSC_VER > 1000
 #pragma once
-#endif
-
-#ifndef __W_SYSTEM_EXPORT_H__
-#define __W_SYSTEM_EXPORT_H__
 
 #if (defined(__WIN32) || defined(__UWP)) && !defined(__WOLF_SYSTEM_STATIC_LIB)
 
@@ -33,5 +28,3 @@
 #endif
 
 #endif
-
-#endif //__W_SYSTEM_EXPORT_H__

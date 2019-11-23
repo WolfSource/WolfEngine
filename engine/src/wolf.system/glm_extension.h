@@ -7,12 +7,8 @@
 	Comment          :
 */
 
-#ifndef __W_GLM_EXTENSION_H__
-#define __W_GLM_EXTENSION_H__
-
-#if _MSC_VER > 1000
 #pragma once
-#endif
+
 #include "w_system_pch.h"
 #include "glm/glm.hpp"
 #include "glm/vec2.hpp"
@@ -865,4 +861,3 @@ namespace glm
 
 #include "python_exporter/py_glm.h"
 
-#endif

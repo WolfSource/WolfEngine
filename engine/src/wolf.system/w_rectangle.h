@@ -7,12 +7,7 @@
 	Comment          :
 */
 
-#if _MSC_VER > 1000
 #pragma once
-#endif
-
-#ifndef __W_RECTANGLE_H__
-#define __W_RECTANGLE_H__
 
 #include "w_std.h"
 
@@ -38,4 +33,3 @@ inline bool operator != (const w_rectangle& lValue, const w_rectangle& rValue)
 
 #include "python_exporter/py_rectangle.h"
 
-#endif // __W_RECTANGLE_H__

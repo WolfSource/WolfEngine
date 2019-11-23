@@ -9,12 +9,11 @@ using namespace wolf::framework;
 
 w_game::w_game(_In_z_ const std::wstring& pContentPath, _In_ const system::w_logger_config& pLogConfig) :
 	exiting(false),
+	_loaded(false),
+	_is_released(false),
     _app_name(pLogConfig.app_name)
 {
-	_super::set_class_name("w_game");
 	content_path = pContentPath;
-
-	this->load_state = LOAD_STATE::NOTLOADED;
 
     if (!logger.get_is_open())
     {
@@ -78,22 +77,20 @@ W_RESULT w_game::render(_In_ const wolf::system::w_game_time& pGameTime)
 
 bool w_game::run(_In_ map<int, w_present_info>& pOutputWindowsInfo)
 {
-	if (this->load_state == LOAD_STATE::NOTLOADED)
+	if (!this->_loaded)
 	{
-		this->load_state = LOAD_STATE::LOADING;
-
 		//Async initialize & load
 		auto f = std::async(std::launch::async, [this, pOutputWindowsInfo]()->void
 		{
 			initialize(pOutputWindowsInfo);
 			load();
-			this->load_state = LOAD_STATE::LOADED;
+			this->_loaded = true;
 		});
 		std::chrono::milliseconds _milli_sec(16);
 		f.wait_for(_milli_sec);
 	}
 
-    if (this->load_state != LOAD_STATE::LOADED) return true;
+    if (!this->_loaded) return true;
 
     update(this->_game_time);
 
@@ -119,9 +116,10 @@ void w_game::exit()
 
 ULONG w_game::release()
 {
-    if (_super::get_is_released()) return 1;
+    if (this->_is_released) return 1;
 	
     this->exiting = true;
+	this->_is_released = true;
 
-	return  _super::release();
+	return 0;
 }

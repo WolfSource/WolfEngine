@@ -667,7 +667,7 @@ W_RESULT w_graphics_device::capture(
 
 		vkMapMemory(this->vk_device, _dst_image_memory, 0, VK_WHOLE_SIZE, 0, (void**)&_data);
 		_data += _sub_resource_layout.offset;
-		pOnPixelsDataCaptured.emit(_size, _data);
+		pOnPixelsDataCaptured.rise(_size, _data);
 		vkUnmapMemory(this->vk_device, _dst_image_memory);
 
 		_data = nullptr;
@@ -968,7 +968,7 @@ W_RESULT w_graphics_device::capture_presented_swap_chain_buffer(
 
 			vkMapMemory(this->vk_device, _objs_ptr->destination_image_memory, 0, VK_WHOLE_SIZE, 0, (void**)&_data);
 			_data += _sub_resource_layout.offset;
-			pOnPixelsDataCaptured.emit(_size, _data);
+			pOnPixelsDataCaptured.rise(_size, _data);
 			vkUnmapMemory(this->vk_device, _objs_ptr->destination_image_memory);
 
 			_data = nullptr;
@@ -3596,13 +3596,15 @@ namespace wolf
 
 #pragma endregion
 
-w_graphics_device_manager::w_graphics_device_manager() : _pimp(new w_graphics_device_manager_pimp())
+w_graphics_device_manager::w_graphics_device_manager() :
+	_is_released(false),
+	_pimp(new w_graphics_device_manager_pimp())
 {
-	_super::set_class_name("w_graphics_device_manager_pimp");// typeid(this).name());
+	//_super::set_class_name("w_graphics_device_manager_pimp");// typeid(this).name());
 
 #if defined(__WIN32) && !defined(__PYTHON__)
 	auto _hr = CoInitialize(NULL);
-	V(_hr == S_OK ? W_PASSED : W_FAILED, L"CoInitialize already been called", _super::name, 3, false);
+	V(_hr == S_OK ? W_PASSED : W_FAILED, L"CoInitialize already been called", "w_graphics_device_manager_pimp", 3, false);
 #endif
 
 #ifdef __ANDROID
@@ -3908,6 +3910,8 @@ W_RESULT w_graphics_device_manager::present()
 
 ULONG w_graphics_device_manager::release()
 {
+	if(this->_is_released) return 1;
+	
 	//release all shared resources
 	w_texture::release_shared_textures();
 	w_shader::release_shared_shaders();
@@ -3957,7 +3961,9 @@ ULONG w_graphics_device_manager::release()
 	CoUninitialize();
 #endif
 
-	return _super::release();
+	this->_is_released = true;
+
+	return 0;
 }
 
 #ifdef __VULKAN__

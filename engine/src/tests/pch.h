@@ -7,8 +7,7 @@
 	Comment          :
 */
 
-#ifndef __PCH_H__
-#define __PCH_H__
+#pragma once
 
 #ifdef __WIN32
 
@@ -25,4 +24,3 @@
 #include <memory>
 #include <map>
 
-#endif

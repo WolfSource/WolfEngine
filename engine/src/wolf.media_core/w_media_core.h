@@ -7,12 +7,9 @@
     Comment          :
 */
 
-#ifndef __W_MEDIA_CORE_H__
-#define __W_MEDIA_CORE_H__
+#pragma once
 
 #include "w_media_core_export.h"
-
-#include <w_object.h>
 #include <w_time_span.h>
 #include "w_memory_pool.h"
 #include <stdint.h>
@@ -56,7 +53,7 @@ namespace wolf
 	namespace framework
 	{
         class w_media_core_pimp;
-		class w_media_core : public system::w_object
+		class w_media_core
 		{
 		public:
 			enum w_video_channels { R, G, B, A };
@@ -255,11 +252,8 @@ namespace wolf
 #pragma endregion
 
 		private:
-            typedef	system::w_object                                _super;
+			bool													_is_released;
             w_media_core_pimp*                                      _pimp;
 		};
 	}
 }
-
-
-#endif

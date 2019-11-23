@@ -7,35 +7,22 @@
 	Comment          :
 */
 
-#if _MSC_VER > 1000
 #pragma once
-#endif
-
-#ifndef __W_QUEUE_H__
-#define __W_QUEUE_H__
 
 #include <w_graphics_headers.h>
 #include <w_render_export.h>
 
-namespace wolf
+namespace wolf::render::vulkan
 {
-	namespace render
+	struct w_queue
 	{
-		namespace vulkan
-		{
-			struct w_queue
-			{
 #ifdef __VULKAN__
-				VkQueue        queue = 0;
+		VkQueue        queue = 0;
 #endif
-				uint32_t       index = UINT32_MAX;
+		uint32_t       index = UINT32_MAX;
 
-				W_VK_EXP ULONG release();
-			};
-		}
-	}
+		W_VK_EXP ULONG release();
+	};
 }
 
 #include "python_exporter/py_queue.h"
-
-#endif

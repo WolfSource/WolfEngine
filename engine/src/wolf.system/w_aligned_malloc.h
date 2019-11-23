@@ -4,16 +4,12 @@
 /// \file
 // This is the interface of address-aligned malloc and free.
 ****************************************************************************************/
-#if _MSC_VER > 1000
-#pragma once
-#endif
 
-#ifndef _W_ALIGNED_MALLOC_H
-#define _W_ALIGNED_MALLOC_H
+#pragma once
 
 #include "w_system_export.h"
 
-#if defined(_WIN32)    && (defined(_MSC_VER) || defined(__INTEL_COMPILER) || defined(__clang__)) // Windows: MSVC / Intel compiler / clang
+#if defined(_WIN32) && (defined(_MSC_VER) || defined(__INTEL_COMPILER) || defined(__clang__)) // Windows: MSVC / Intel compiler / clang
 
 #ifndef W_FORCE_INLINE
 	#define W_FORCE_INLINE __forceinline
@@ -37,4 +33,3 @@ WSYS_EXP W_FORCE_INLINE void* aligned_malloc(size_t bytes, size_t alignment);
 //=================================================================================================================================
 WSYS_EXP W_FORCE_INLINE void aligned_free(void* p);
 
-#endif

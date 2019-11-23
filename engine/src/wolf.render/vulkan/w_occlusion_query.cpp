@@ -16,7 +16,7 @@ namespace wolf
 				}
 
 				W_RESULT initialize(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-					_In_ const uint32_t& pQuerySize)
+					_In_ const uint32_t pQuerySize)
 				{
 					if (!pGDevice) return W_FAILED;
 
@@ -51,7 +51,7 @@ namespace wolf
 					return get_passed_samples_data();
 				}
 
-				void reset(_In_ const w_command_buffer& pCommandBuffer, _In_ const uint32_t& pFirstQuery)
+				void reset(_In_ const w_command_buffer& pCommandBuffer, _In_ const uint32_t pFirstQuery)
 				{
 					vkCmdResetQueryPool(
 						pCommandBuffer.handle,
@@ -60,12 +60,12 @@ namespace wolf
 						static_cast<uint32_t>(this->_passed_samples.size()));
 				}
 
-				void begin_query(_In_ const w_command_buffer& pCommandBuffer, _In_ const uint32_t& pQueryIndex)
+				void begin_query(_In_ const w_command_buffer& pCommandBuffer, _In_ const uint32_t pQueryIndex)
 				{
 					vkCmdBeginQuery(pCommandBuffer.handle, this->_query_pool, pQueryIndex, 0);
 				}
 
-				void end_query(_In_ const w_command_buffer& pCommandBuffer, _In_ const uint32_t& pQueryIndex)
+				void end_query(_In_ const w_command_buffer& pCommandBuffer, _In_ const uint32_t pQueryIndex)
 				{
 					vkCmdEndQuery(pCommandBuffer.handle, this->_query_pool, pQueryIndex);
 				}
@@ -113,9 +113,10 @@ namespace wolf
 
 using namespace wolf::render::vulkan;
 
-w_occlusion_query::w_occlusion_query() : _pimp(new w_occlusion_query_pimp())
+w_occlusion_query::w_occlusion_query() : 
+	_is_released(false),
+	_pimp(new w_occlusion_query_pimp())
 {
-	_super::set_class_name("w_occlusion_query");
 }
 
 w_occlusion_query::~w_occlusion_query()
@@ -125,7 +126,7 @@ w_occlusion_query::~w_occlusion_query()
 
 W_RESULT w_occlusion_query::initialize(
 	_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-	_In_ const uint32_t& pQuerySize)
+	_In_ const uint32_t pQuerySize)
 {
 	return this->_pimp ? this->_pimp->initialize(pGDevice, pQuerySize) : W_FAILED;
 }
@@ -152,19 +153,19 @@ uint64_t* w_occlusion_query::get_partial_query_results(_Inout_ size_t& pNumberOf
 	return nullptr;
 }
 
-void w_occlusion_query::reset(_In_ const w_command_buffer& pCommandBuffer, _In_ const uint32_t& pFirstQuery)
+void w_occlusion_query::reset(_In_ const w_command_buffer& pCommandBuffer, _In_ const uint32_t pFirstQuery)
 {
 	if (!this->_pimp) return;
 	this->_pimp->reset(pCommandBuffer, pFirstQuery);
 }
 
-void w_occlusion_query::begin_query(_In_ const w_command_buffer& pCommandBuffer, _In_ const uint32_t& pQueryIndex)
+void w_occlusion_query::begin_query(_In_ const w_command_buffer& pCommandBuffer, _In_ const uint32_t pQueryIndex)
 {
 	if (!this->_pimp) return;
 	this->_pimp->begin_query(pCommandBuffer, pQueryIndex);
 }
 
-void w_occlusion_query::end_query(_In_ const w_command_buffer& pCommandBuffer, _In_ const uint32_t& pQueryIndex)
+void w_occlusion_query::end_query(_In_ const w_command_buffer& pCommandBuffer, _In_ const uint32_t pQueryIndex)
 {
 	if (!this->_pimp) return;
 	this->_pimp->end_query(pCommandBuffer, pQueryIndex);
@@ -172,10 +173,11 @@ void w_occlusion_query::end_query(_In_ const w_command_buffer& pCommandBuffer, _
 
 ULONG w_occlusion_query::release()
 {
-    if (_super::get_is_released()) return 1;
+    if (this->_is_released) return 1;
     
 	//release the private implementation
 	SAFE_RELEASE(this->_pimp);
+	this->_is_released = true;
 
-	return _super::release();
+	return 0;
 }

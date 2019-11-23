@@ -7,12 +7,7 @@
     Comment          :
 */
 
-#if _MSC_VER > 1000
 #pragma once
-#endif
-
-#ifndef __W_LOGGER_H__
-#define __W_LOGGER_H__
 
 #include "wolf_version.h"
 #include "w_system_export.h"
@@ -613,5 +608,3 @@ inline void V(
 }
 
 #pragma endregion
-
-#endif //__W_LOGGER_H__

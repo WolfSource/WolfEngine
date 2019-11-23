@@ -7,12 +7,7 @@
 	Comment          :
 */
 
-#if _MSC_VER > 1000
 #pragma once
-#endif
-
-#ifndef __W_STD_H__
-#define __W_STD_H__
 
 #include <string>
 
@@ -85,30 +80,6 @@ extern "C" {
 	typedef unsigned short			WORD;
     typedef unsigned char			BYTE;
                 
-
-                //	typedef __uint32_t				UINT, *PUINT;
-//	typedef int8_t                  INT8, *PINT8;
-//	typedef int16_t                 INT16, *PINT16;
-//	typedef int32_t                 INT32, *PINT32;
-//	typedef __int64_t				INT64;
-//    typedef INT64                   LONG_PTR;
-//
-//    typedef unsigned char			UINT8, *PUINT8;
-//	typedef unsigned short			UINT16, *PUINT16;
-//	typedef __uint32_t              UINT32, *PUINT32;
-//	typedef __uint64_t				UINT64, *PUINT64;
-//    typedef UINT64                  UINT_PTR;
-//    
-//                  typedef UINT_PTR                WPARAM;
-//                  typedef LONG_PTR                LPARAM;
-//                  typedef LONG_PTR                LRESULT;
-
-
-
-
-
- 
-
 	// minimum signed 64 bit value
 #define _I64_MIN		(-9223372036854775807 - 1)
 	// maximum signed 64 bit value
@@ -148,14 +119,10 @@ namespace std
 
 #endif//ANDROID && __linux && __APPLE__
 
-enum W_RESULT : uint8_t { W_PASSED = 0, W_FAILED, W_INVALIDARG, W_OUTOFMEMORY, W_INVALID_FILE_ATTRIBUTES };
-
+#include <memory>
 #include <vector>
-typedef std::vector<uint8_t> w_vector_uint8_t;
-typedef std::vector<uint16_t> w_vector_uint16_t;
-typedef std::vector<uint32_t> w_vector_uint32_t;
-typedef std::vector<float>	w_vector_float;
 
+enum W_RESULT : uint8_t { W_PASSED = 0, W_FAILED, W_INVALIDARG, W_OUTOFMEMORY, W_INVALID_FILE_ATTRIBUTES };
 
 namespace std
 {
@@ -174,6 +141,17 @@ namespace std
 	}
 }
 
-#include "python_exporter/py_std.h"
+#define COM_RELEASE(x)			{ if (x) { x->Release(); x = nullptr;	} }
+#define COMPTR_RELEASE(x)		{ if (x) { auto _x = x.GetAddressOf(); (*_x)->Release(); (*_x) = nullptr; x = nullptr; } }
 
-#endif//__W_STD_H__
+#define SAFE_DELETE(x)			{ if (x) { delete x; x = nullptr;		} }
+#define SAFE_DELETE_ARRAY(ar)   { if (ar){ delete[] ar; ar = nullptr;	} }
+
+#define SAFE_DELETE_SHARED(x)   { if (x) { while(x.use_count() != 0) x.reset(); x = nullptr;} }
+
+#define UNIQUE_RELEASE(x)		{ if (x) { x->release(); x.reset(nullptr); } }
+#define SHARED_RELEASE(x)		{ if (x) { x->release(); while(x.use_count() != 0) x.reset(); x = nullptr;} }
+#define SAFE_RELEASE(x)			{ if (x) { x->release(); delete x; x = nullptr;	} }
+
+using defer = std::shared_ptr<void>;
+

@@ -213,13 +213,14 @@ using namespace wolf::system;
 static std::once_flag _once_init;
 static std::once_flag _once_release;
 
-w_url::w_url() : _pimp(new w_url_pimp())
+w_url::w_url() :
+	_is_released(false),
+	_pimp(new w_url_pimp())
 {
-	_super::set_class_name("w_url");
 	std::call_once(_once_init, [&]()
-	{
-		curl_global_init(CURL_GLOBAL_ALL);
-	});
+		{
+			curl_global_init(CURL_GLOBAL_ALL);
+		});
 }
 
 w_url::~w_url()
@@ -307,9 +308,10 @@ W_RESULT w_url::send_rest_post(
 
 ULONG w_url::release()
 {
-	if (this->get_is_released()) return 1;
+	if (this->_is_released) return 1;
 
 	SAFE_RELEASE(this->_pimp);
 
-	return _super::release();
+	this->_is_released = true;
+	return 0;
 }

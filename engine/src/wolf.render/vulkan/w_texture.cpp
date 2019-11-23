@@ -1725,9 +1725,9 @@ std::map<std::wstring, w_texture*> w_texture::_shared;
 w_texture* w_texture::default_texture = nullptr;
 
 w_texture::w_texture() : 
+	_is_released(false),
     _pimp(new w_texture_pimp())
 {
-	_super::set_class_name("w_texture");
 }
 
 w_texture::~w_texture()
@@ -1945,11 +1945,12 @@ W_RESULT w_texture::save_jpg_to_file(_In_z_ const char* pFilePath, _In_ uint32_t
 
 ULONG w_texture::release()
 {
-	if (_super::get_is_released()) return 1;
+	if (this->_is_released) return 1;
     
     SAFE_RELEASE(this->_pimp);
-    
-	return _super::release();
+	this->_is_released = true;
+
+	return 0;
 }
 
 ULONG w_texture::release_shared_textures()

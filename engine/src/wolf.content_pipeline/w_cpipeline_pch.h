@@ -7,9 +7,7 @@
 	Comment          :
 */
 
-
-#ifndef __W_CPIPELINE_PCH_H__
-#define __W_CPIPELINE_PCH_H__
+#pragma once
 
 #include "w_cpipeline_export.h"
 
@@ -45,7 +43,6 @@
 #include <glm_extension.h>
 
 #include <w_logger.h>
-#include <w_ireleasable.h>
 
 #ifdef __linux
 #define __cdecl
@@ -64,4 +61,3 @@
 
 #endif
 
-#endif

@@ -679,9 +679,10 @@ using namespace wolf::render::vulkan;
 
 std::map<std::string, w_shader*> w_shader::_shared;
 
-w_shader::w_shader() : _pimp(new w_shader_pimp())
+w_shader::w_shader() : 
+	_pimp(new w_shader_pimp()),
+	_is_released(false)
 {
-    _super::set_class_name("w_shader");
 }
 
 w_shader::~w_shader()
@@ -696,21 +697,19 @@ W_RESULT w_shader::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
 {
 	if (!this->_pimp) return W_FAILED;
 
-	_super::load_state = LOAD_STATE::LOADING;
-	auto _hr = this->_pimp->load(pGDevice, pShaderBinaryPath, pShaderStage, pMainFunctionName);
-	_super::load_state = LOAD_STATE::LOADED;
-
-	return _hr;
+	return this->_pimp->load(pGDevice, pShaderBinaryPath, pShaderStage, pMainFunctionName);
 }
 
 ULONG w_shader::release()
 {
-    if (_super::get_is_released()) return 1;
+    if (this->_is_released) return 1;
  
     //release the private implementation
     SAFE_RELEASE(this->_pimp);
     
-    return _super::release();
+	this->_is_released = true;
+
+	return 0;
 }
 
 #pragma region Getters

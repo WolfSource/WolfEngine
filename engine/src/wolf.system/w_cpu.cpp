@@ -5,7 +5,8 @@
 
 using namespace wolf::system;
 
-w_cpu::w_cpu()
+w_cpu::w_cpu() : 
+	_is_released(false)
 {
 }
 
@@ -67,14 +68,15 @@ int w_cpu::get_cpu_percentage() const
 
 ULONG w_cpu::release()
 {
-	if (this->get_is_released()) return 1;
+	if (this->_is_released) return 1;
 
 	if (this->_canReadCpu)
 	{
 		PdhCloseQuery(this->_queryHandle);
 	}
 
-	return w_object::release();
+	this->_is_released = true;
+	return 0;
 }
 
 #endif

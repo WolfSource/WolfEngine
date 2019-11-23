@@ -7,101 +7,91 @@
 	Comment          :
 */
 
-#if _MSC_VER > 1000
 #pragma once
-#endif
-
-#ifndef __W_SHARED_MEMORY_H__
-#define __W_SHARED_MEMORY_H__
 
 #ifdef BOOST
 
 #include <boost/interprocess/shared_memory_object.hpp>
 #include <boost/interprocess/mapped_region.hpp>
 
-namespace wolf
+namespace wolf::system
 {
-	namespace system
+	inline bool init_shared_memory(_In_ const char& pInitValue)
 	{
-		inline bool init_shared_memory(_In_ const char& pInitValue)
-		{
-			using namespace boost::interprocess;
+		using namespace boost::interprocess;
 
-			bool _result = true;
-			try
-			{
-				shared_memory_object::remove(sSharedMemoryName);
-				shared_memory_object _shared_mem{ create_only, sSharedMemoryName, read_write };
-				//set size for 1 character
-				_shared_mem.truncate(1);
-				//map the whole shared memory in this process
-				mapped_region _region(_shared_mem, read_write);
-				//set all memory to pInitValue
-				std::memset(_region.get_address(), pInitValue, _region.get_size());
-			}
-			catch (...)
-			{
-				_result = false;
-			}
-			return _result;
+		bool _result = true;
+		try
+		{
+			shared_memory_object::remove(sSharedMemoryName);
+			shared_memory_object _shared_mem{ create_only, sSharedMemoryName, read_write };
+			//set size for 1 character
+			_shared_mem.truncate(1);
+			//map the whole shared memory in this process
+			mapped_region _region(_shared_mem, read_write);
+			//set all memory to pInitValue
+			std::memset(_region.get_address(), pInitValue, _region.get_size());
+		}
+		catch (...)
+		{
+			_result = false;
+		}
+		return _result;
+	}
+
+	inline  bool write_to_shared_memory(_In_ const char& pInitValue)
+	{
+		using namespace boost::interprocess;
+
+		bool _result = true;
+		try
+		{
+			shared_memory_object _shared_mem{ open_or_create, sSharedMemoryName, read_write };
+
+			//map the whole shared memory in this process
+			mapped_region _region(_shared_mem, read_write);
+			//set all memory to pInitValue
+			std::memset(_region.get_address(), pInitValue, _region.get_size());
+		}
+		catch (...)
+		{
+			_result = false;
 		}
 
-		inline  bool write_to_shared_memory(_In_ const char& pInitValue)
+		return _result;
+	}
+
+	inline  char read_shared_memory(_Inout_ bool& pError)
+	{
+		using namespace boost::interprocess;
+
+		pError = false;
+		try
 		{
-			using namespace boost::interprocess;
-
-			bool _result = true;
-			try
+			shared_memory_object _shared_mem{ open_only, sSharedMemoryName, read_only };
+			offset_t  _size = 0;
+			if (_shared_mem.get_size(_size))
 			{
-				shared_memory_object _shared_mem{ open_or_create, sSharedMemoryName, read_write };
-
-				//map the whole shared memory in this process
-				mapped_region _region(_shared_mem, read_write);
-				//set all memory to pInitValue
-				std::memset(_region.get_address(), pInitValue, _region.get_size());
-			}
-			catch (...)
-			{
-				_result = false;
-			}
-
-			return _result;
-		}
-
-		inline  char read_shared_memory(_Inout_ bool& pError)
-		{
-			using namespace boost::interprocess;
-
-			pError = false;
-			try
-			{
-				shared_memory_object _shared_mem{ open_only, sSharedMemoryName, read_only };
-				offset_t  _size = 0;
-				if (_shared_mem.get_size(_size))
+				if (_size == 1)
 				{
-					if (_size == 1)
-					{
-						//map the whole shared memory in this process
-						mapped_region _region(_shared_mem, read_only);
+					//map the whole shared memory in this process
+					mapped_region _region(_shared_mem, read_only);
 
-						auto _mem = static_cast<char*>(_region.get_address());
-						if (_mem)
-						{
-							return _mem[0];
-						}
+					auto _mem = static_cast<char*>(_region.get_address());
+					if (_mem)
+					{
+						return _mem[0];
 					}
 				}
 			}
-			catch (...)
-			{
-				pError = true;
-			}
-
-			return -1;
 		}
+		catch (...)
+		{
+			pError = true;
+		}
+
+		return -1;
 	}
 }
 
 #endif
-
-#endif //__W_SHARED_MEMORY_H__

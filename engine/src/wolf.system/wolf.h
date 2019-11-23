@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include <w_ireleasable.h>
+#include "wolf_version.h"
 #include "w_system_pch.h"
 #include "w_game_time.h"
 

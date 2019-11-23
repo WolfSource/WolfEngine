@@ -5,7 +5,7 @@ using namespace wolf::render::vulkan;
 
 W_RESULT w_indirect_draws_command_buffer::load(
 	_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-	_In_ const uint32_t& pDrawCount)
+	_In_ const uint32_t pDrawCount)
 {
 	const std::string _trace_info = "w_indirect_draws_command_buffer::load";
 

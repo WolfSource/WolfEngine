@@ -7,12 +7,7 @@
 	Comment          :
 */
 
-#if _MSC_VER > 1000
 #pragma once
-#endif
-
-#ifndef __W_SYSTEM_PCH_H__
-#define __W_SYSTEM_PCH_H__
                         
 #ifndef NOMINMAX
 #define NOMINMAX
@@ -76,4 +71,3 @@
 #include "w_std.h"
 #include "w_logger.h"
 
-#endif //__W_SYSTEM_PCH_H__

@@ -7,12 +7,7 @@
 	Comment          :
 */
 
-#if _MSC_VER > 1000
 #pragma once
-#endif
-
-#ifndef __W_COLOR_H__
-#define __W_COLOR_H__
 
 #include "w_system_export.h"
 #include "w_std.h"
@@ -277,4 +272,3 @@ inline bool operator != (const w_color& lValue, const w_color& rValue)
 
 #include "python_exporter/py_color.h"
 
-#endif // __W_COLOR_H__

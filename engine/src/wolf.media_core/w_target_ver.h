@@ -9,8 +9,7 @@
 					   set the _WIN32_WINNT macro to the platform you wish to support before including SDKDDKVer.h.
 */
 
-#ifndef __W_TARGET_VER_H__
-#define __W_TARGET_VER_H__
+#pragma once
 
 #ifdef __WIN32
 
@@ -22,4 +21,3 @@
 
 #endif
 
-#endif

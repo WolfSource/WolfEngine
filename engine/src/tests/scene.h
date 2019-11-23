@@ -7,12 +7,7 @@
 	Comment          : Read more information about this sample on http://wolfsource.io/gpunotes/
 */
 
-#if _MSC_VER > 1000
 #pragma once
-#endif
-
-#ifndef __SCENE_H__
-#define __SCENE_H__
 
 #include <w_framework/w_game.h>
 
@@ -45,11 +40,10 @@ public:
 	void on_device_lost() override;
 
 	//Release function will be called once per game and is the place to unload assets and release all resources
-	ULONG release() override;
+	ULONG release();
 
 private:
     bool															_update_gui();
 
 };
-#endif
 

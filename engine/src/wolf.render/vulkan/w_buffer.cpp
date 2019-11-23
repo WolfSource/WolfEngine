@@ -25,10 +25,10 @@ namespace wolf
 				}
 
 				W_RESULT allocate(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-					_In_ uint32_t& pBufferSizeInBytes,
-					_In_ const uint32_t& pUsageFlags,
-					_In_ const w_memory_usage_flag& pMemoryFlag,
-					_In_ const bool& pAllocateFromMemoryPool)
+					_In_ uint32_t pBufferSizeInBytes,
+					_In_ const uint32_t pUsageFlags,
+					_In_ const w_memory_usage_flag pMemoryFlag,
+					_In_ const bool pAllocateFromMemoryPool)
 				{
 					const std::string _trace_info = this->_name + "::allocate";
 
@@ -164,7 +164,7 @@ namespace wolf
 					return W_PASSED;
 				}
 
-				W_RESULT reallocate(_In_ uint32_t& pBufferSizeInBytes)
+				W_RESULT reallocate(_In_ const uint32_t pBufferSizeInBytes)
 				{
 					//const std::string _trace_info = this->_name + "::reallocate";
 
@@ -454,9 +454,10 @@ namespace wolf
 
 using namespace wolf::render::vulkan;
 
-w_buffer::w_buffer() : _pimp(new w_buffer_pimp())
+w_buffer::w_buffer() :
+	_is_released(false),
+	_pimp(new w_buffer_pimp())
 {
-    _super::set_class_name("w_buffer");
 }
 
 w_buffer::~w_buffer()
@@ -466,8 +467,8 @@ w_buffer::~w_buffer()
 
 W_RESULT w_buffer::allocate_as_staging(
 	_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-	_In_ uint32_t& pBufferSize,
-	_In_ const bool& pAllocateFromMemoryPool)
+	_In_ const uint32_t pBufferSize,
+	_In_ const bool pAllocateFromMemoryPool)
 {
 	if (!this->_pimp) return W_FAILED;
 
@@ -480,17 +481,17 @@ W_RESULT w_buffer::allocate_as_staging(
 
 W_RESULT w_buffer::allocate(
 	_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-    _In_ uint32_t& pBufferSizeInBytes,
-    _In_ const uint32_t& pUsageFlags,
-    _In_ const w_memory_usage_flag& pMemoryFlag,
-	_In_ const bool& pAllocateFromMemoryPool)
+    _In_ const uint32_t pBufferSizeInBytes,
+    _In_ const uint32_t pUsageFlags,
+    _In_ const w_memory_usage_flag pMemoryFlag,
+	_In_ const bool pAllocateFromMemoryPool)
 {
     if(!this->_pimp) return W_FAILED;
     
     return this->_pimp->allocate(pGDevice, pBufferSizeInBytes, pUsageFlags, pMemoryFlag, pAllocateFromMemoryPool);
 }
 
-W_RESULT w_buffer::reallocate(_In_ uint32_t& pBufferSizeInBytes)
+W_RESULT w_buffer::reallocate(_In_ const uint32_t pBufferSizeInBytes)
 {
 	if (!this->_pimp) return W_FAILED;
 
@@ -548,11 +549,13 @@ W_RESULT w_buffer::free()
 
 ULONG w_buffer::release()
 {
-    if(_super::get_is_released()) return 1;
+    if(this->_is_released) return 1;
     
     SAFE_RELEASE(this->_pimp);
     
-    return _super::release();
+	this->_is_released = true;
+
+    return 0;
 }
 
 #pragma region Getters

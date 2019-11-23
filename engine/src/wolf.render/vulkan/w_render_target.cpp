@@ -23,7 +23,7 @@ namespace wolf
 					_In_ const w_point& pOffset,
 					_In_ const w_point_t& pSize,
 					_In_ std::vector<w_image_view> pAttachments,
-					_In_ const size_t& pCount)
+					_In_ const size_t pCount)
 				{
 					const std::string _trace_info = this->_name + "::load";
 
@@ -130,8 +130,8 @@ namespace wolf
 					_In_ w_command_buffers* pCommandBuffers,
 					_In_ std::function<W_RESULT(void)> pDrawFunction,
 					_In_ w_color pClearColor,
-					_In_ const float& pClearDepth,
-					_In_ const uint32_t&  pClearStencil)
+					_In_ const float pClearDepth,
+					_In_ const uint32_t pClearStencil)
 				{
 					if (!pCommandBuffers) return W_FAILED;
 
@@ -278,9 +278,9 @@ namespace wolf
 using namespace wolf::render::vulkan;
 
 w_render_target::w_render_target() :
+	_is_released(false),
     _pimp(new w_render_target_pimp())
 {
-	_super::set_class_name("w_render_target");
 }
 
 w_render_target::~w_render_target()
@@ -293,7 +293,7 @@ W_RESULT w_render_target::load(
 	_In_ const w_point& pOffset,
 	_In_ const w_point_t& pSize,
 	_In_ std::vector<w_image_view> pAttachments,
-	_In_ const size_t& pCount)
+	_In_ const size_t pCount)
 {
 	if (!this->_pimp) return W_FAILED;
 	return this->_pimp->load(
@@ -308,8 +308,8 @@ W_RESULT w_render_target::record_command_buffer(
 	_In_ w_command_buffers* pCommandBuffer,
 	_In_ std::function<W_RESULT(void)> pDrawFunction,
 	_In_ w_color pClearColor,
-	_In_ const float& pClearDepth,
-	_In_ const uint32_t&  pClearStencil)
+	_In_ const float pClearDepth,
+	_In_ const uint32_t pClearStencil)
 {
 	if (!this->_pimp) return W_FAILED;
 	return this->_pimp->record_command_buffer(
@@ -342,11 +342,12 @@ W_RESULT w_render_target::record_command_buffer(
 
 ULONG w_render_target::release()
 {
-	if (_super::get_is_released()) return 1;
+	if (this->_is_released) return 1;
     
     SAFE_RELEASE(this->_pimp);
-    
-	return _super::release();
+	this->_is_released = true;
+
+	return 0;
 }
 
 #pragma region Getters

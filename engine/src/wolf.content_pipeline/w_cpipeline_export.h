@@ -7,8 +7,7 @@
 	Comment          :
 */
 
-#ifndef __W_CPIPELINE_EXPORT_H__
-#define __W_CPIPELINE_EXPORT_H__
+#pragma once
 
 #if _MSC_VER > 1000
 #pragma once
@@ -35,4 +34,3 @@
 
 #endif
 
-#endif //__W_CPIPELINE_EXPORT_H__

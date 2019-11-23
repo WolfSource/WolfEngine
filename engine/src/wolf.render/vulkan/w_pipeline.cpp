@@ -376,9 +376,9 @@ namespace wolf
 
 				void set_push_constant_buffer(
 					_In_ const w_command_buffer&			pCommandBuffer,
-					_In_ const w_shader_stage_flag_bits&	pStageFlags,
-					_In_ const uint32_t&					pOffset,
-					_In_ const uint32_t&					pSize,
+					_In_ const w_shader_stage_flag_bits 	pStageFlags,
+					_In_ const uint32_t 					pOffset,
+					_In_ const uint32_t 					pSize,
 					_In_ const void*						pValues)
 				{
 					vkCmdPushConstants(
@@ -580,9 +580,10 @@ using namespace wolf::render::vulkan;
 
 std::map<std::string, VkPipelineCache> w_pipeline_pimp::pipeline_caches;
 
-w_pipeline::w_pipeline() : _pimp(new w_pipeline_pimp())
+w_pipeline::w_pipeline() :
+	_is_released(false),
+	_pimp(new w_pipeline_pimp())
 {
-	_super::set_class_name("w_pipeline");
 }
 
 w_pipeline::~w_pipeline()
@@ -655,11 +656,12 @@ W_RESULT w_pipeline::bind(_In_ const w_command_buffer& pCommandBuffer,
 
 ULONG w_pipeline::release()
 {
-	if (_super::get_is_released()) return 1;
+	if (this->_is_released) return 1;
     
     SAFE_RELEASE(this->_pimp);
-    
-	return _super::release();
+	this->_is_released = true;
+
+	return 0;
 }
 
 #pragma region Getters
@@ -682,9 +684,9 @@ const VkPipelineLayout w_pipeline::get_layout_handle() const
 
 void w_pipeline::set_push_constant_buffer(
 	_In_ const w_command_buffer&			pCommandBuffer,
-	_In_ const w_shader_stage_flag_bits&	pStageFlags,
-	_In_ const uint32_t&					pOffset,
-	_In_ const uint32_t&					pSize,
+	_In_ const w_shader_stage_flag_bits 	pStageFlags,
+	_In_ const uint32_t 					pOffset,
+	_In_ const uint32_t 					pSize,
 	_In_ const void*						pValues)
 {
 	if (!this->_pimp) return;

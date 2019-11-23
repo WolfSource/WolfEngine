@@ -29,7 +29,6 @@
 
 #include "w_system_export.h"
 #include <memory>
-#include "w_object.h"
 #include "w_game_time.h"
 #include "w_rectangle.h"
 #include <functional>
@@ -196,7 +195,7 @@ struct w_present_info
 
 #if defined(__WIN32) || (defined(__linux) && !defined(__ANDROID))
 
-class w_window : public wolf::system::w_object
+class w_window
 {
 public:
 	WSYS_EXP w_window();
@@ -364,7 +363,7 @@ public:
 	WSYS_EXP void close();
 
 	//Release 
-	WSYS_EXP virtual ULONG release() override;
+	WSYS_EXP ULONG release();
 
 #pragma region Setters
 
@@ -445,8 +444,7 @@ public:
 	//WSYS_EXP static std::function<HRESULT(HWND, UINT, WPARAM, LPARAM)> msg_proc_function;
 
 private:
-	typedef w_object                                _super;
-
+	bool											_is_released;
 	bool                                            _close;
 
     int                                             _id;

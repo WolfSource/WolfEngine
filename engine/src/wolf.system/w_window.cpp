@@ -29,7 +29,8 @@ w_window::w_window() :
     _screen_posX(0),
     _screen_posY(0),
     _id(0),
-    _close(false)
+    _close(false),
+	_is_released(false)
 {
     set_fixed_time_step(true);
 }
@@ -59,7 +60,7 @@ W_RESULT w_window::initialize(
 {
     using namespace wolf;
 
-	auto _trace_info = this->name + "::initialize";
+	auto _trace_info = "w_window::initialize";
 
     auto _iter = windows_frame_time_in_sec.find((uint32_t)this->_id);
     if (_iter == windows_frame_time_in_sec.end())
@@ -261,29 +262,30 @@ void w_window::close()
 
 ULONG w_window::release()
 {
-	if (get_is_released()) return 1;
+	if (this->_is_released) return 1;
 
 #ifdef __WIN32	
-        
+
 	this->_hInstance = NULL;
 	this->_hwnd = NULL;
 	this->_hdc = NULL;
 
 	UnregisterClass(this->_class_name.c_str(), NULL);
 	this->_class_name.clear();
-        
+
 #elif defined(__linux) && !defined(__ANDROID)
-        
-        xcb_disconnect(this->_xcb_con);
-        this->_xcb_con = nullptr;
-        this->_xcb_screen = nullptr;
-        delete this->_xcb_window;
-        this->_xcb_window = nullptr;
-        this->_atom_wm_delete_window = nullptr;
-        
+
+	xcb_disconnect(this->_xcb_con);
+	this->_xcb_con = nullptr;
+	this->_xcb_screen = nullptr;
+	delete this->_xcb_window;
+	this->_xcb_window = nullptr;
+	this->_atom_wm_delete_window = nullptr;
+
 #endif
 
-	return w_object::release();
+	this->_is_released = true;
+	return 0;
 }
 
 #pragma region Setters

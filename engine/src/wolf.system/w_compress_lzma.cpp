@@ -70,6 +70,7 @@ int w_compress_lzma::compress(const uint8_t* pSourceBuffer, w_compress_result* p
 
 int w_compress_lzma::decompress(const uint8_t* pCompressedBuffer, w_compress_result* pDeCompressInfo)
 {
+	pDeCompressInfo->size_out = 0;
 	if (pDeCompressInfo->size_in < 13)
 	{
 		return 1; // invalid header!
@@ -102,6 +103,7 @@ int w_compress_lzma::decompress(const uint8_t* pCompressedBuffer, w_compress_res
 		if (status == SZ_OK && _proc_out_size == _size_from_header)
 		{
 			pDeCompressInfo->data[_proc_out_size] = '\0';
+			pDeCompressInfo->size_out = _proc_out_size;
 			return 0;
 		}
 	}

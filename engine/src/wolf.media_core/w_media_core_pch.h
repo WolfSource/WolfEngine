@@ -8,8 +8,7 @@
 */
 
 
-#ifndef __W_MEDIA_CORE_PCH_H__
-#define __W_MEDIA_CORE_PCH_H__
+#pragma once
 
 #ifdef __WIN32
 
@@ -21,5 +20,3 @@
 
 #include <w_logger.h>
 #include <mutex>
-
-#endif

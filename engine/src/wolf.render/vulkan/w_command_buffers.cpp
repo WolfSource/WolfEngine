@@ -172,9 +172,9 @@ namespace wolf
 				}
 
 				W_RESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-					_In_ const size_t& pCount,
+					_In_ const size_t pCount,
 					_In_ const w_command_buffer_level& pLevel,
-					_In_ const bool& pCreateCommandPool,
+					_In_ const bool pCreateCommandPool,
 					_In_ const w_queue* pCommandPoolQueue)
 				{
 					const std::string _trace_info = this->_name + "::load";
@@ -271,7 +271,7 @@ namespace wolf
 					return W_PASSED;
 				}
 
-				W_RESULT begin(_In_ const size_t& pCommandBufferIndex, _In_ const uint32_t pFlags)
+				W_RESULT begin(_In_ const size_t pCommandBufferIndex, _In_ const uint32_t pFlags)
 				{
 					if (pCommandBufferIndex >= this->_commands.size())
 					{
@@ -297,7 +297,7 @@ namespace wolf
 				}
 
 				W_RESULT begin_secondary(
-					_In_ const size_t& pCommandBufferIndex,
+					_In_ const size_t pCommandBufferIndex,
 					_In_ const w_render_pass_handle& pRenderPassHandle,
 					_In_ const w_frame_buffer_handle& pFrameBufferHandle,
 					_In_ const uint32_t pFlags)
@@ -327,7 +327,7 @@ namespace wolf
 					return W_PASSED;
 				}
 
-				W_RESULT end(_In_ const size_t& pCommandBufferIndex)
+				W_RESULT end(_In_ const size_t pCommandBufferIndex)
 				{
 					if (pCommandBufferIndex >= this->_commands.size())
 					{
@@ -349,7 +349,7 @@ namespace wolf
 					return W_PASSED;
 				}
 
-				W_RESULT flush(_In_ const size_t& pCommandBufferIndex)
+				W_RESULT flush(_In_ const size_t pCommandBufferIndex)
 				{
 					if (pCommandBufferIndex >= this->_commands.size())
 					{
@@ -388,7 +388,7 @@ namespace wolf
 				}
 
 				W_RESULT execute_secondary_commands(
-					_In_ const size_t& pCommandBufferIndex,
+					_In_ const size_t pCommandBufferIndex,
 					_In_ const std::vector<w_command_buffer*>& pSecondaryCommandBuffers)
 				{
 					if (pCommandBufferIndex >= this->_commands.size())
@@ -451,9 +451,10 @@ namespace wolf
 
 using namespace wolf::render::vulkan;
 
-w_command_buffers::w_command_buffers() : _pimp(new w_command_buffer_pimp())
+w_command_buffers::w_command_buffers() : 
+	_is_released(false),
+	_pimp(new w_command_buffer_pimp())
 {
-	_super::set_class_name("w_command_buffer");
 }
 
 w_command_buffers::~w_command_buffers()
@@ -462,9 +463,9 @@ w_command_buffers::~w_command_buffers()
 }
 
 W_RESULT w_command_buffers::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-	_In_ const size_t& pCount,
-	_In_ const w_command_buffer_level& pLevel,
-	_In_ const bool& pCreateCommandPool,
+	_In_ const size_t pCount,
+	_In_ const w_command_buffer_level pLevel,
+	_In_ const bool pCreateCommandPool,
 	_In_ const w_queue* pCommandPoolQueue)
 {
 	if (!this->_pimp) return W_FAILED;
@@ -479,7 +480,7 @@ W_RESULT w_command_buffers::begin(_In_ const size_t& pCommandBufferIndex, _In_ c
 }
 
 W_RESULT w_command_buffers::begin_secondary(
-	_In_ const size_t& pCommandBufferIndex,
+	_In_ const size_t pCommandBufferIndex,
 	_In_ const w_render_pass_handle& pRenderPassHandle,
 	_In_ const w_frame_buffer_handle& pFrameBufferHandle,
 	_In_ const uint32_t pFlags)
@@ -488,13 +489,13 @@ W_RESULT w_command_buffers::begin_secondary(
 	return this->_pimp->begin_secondary(pCommandBufferIndex, pRenderPassHandle, pFrameBufferHandle, pFlags);
 }
 
-W_RESULT w_command_buffers::end(_In_ const size_t& pCommandBufferIndex)
+W_RESULT w_command_buffers::end(_In_ const size_t pCommandBufferIndex)
 {
 	if (!this->_pimp) return W_FAILED;
 	return this->_pimp->end(pCommandBufferIndex);
 }
 
-W_RESULT w_command_buffers::flush(_In_ const size_t& pCommandBufferIndex)
+W_RESULT w_command_buffers::flush(_In_ const size_t pCommandBufferIndex)
 {
 	if (!this->_pimp) return W_FAILED;
 	return this->_pimp->flush(pCommandBufferIndex);
@@ -507,7 +508,7 @@ W_RESULT w_command_buffers::flush_all()
 }
 
 W_RESULT w_command_buffers::execute_secondary_commands(
-	_In_ const size_t& pCommandBufferIndex,
+	_In_ const size_t pCommandBufferIndex,
 	_In_ const std::vector<w_command_buffer*>& pSecondaryCommandBuffers)
 {
 	if (!this->_pimp) return W_FAILED;
@@ -516,11 +517,12 @@ W_RESULT w_command_buffers::execute_secondary_commands(
 
 ULONG w_command_buffers::release()
 {
-	if (_super::get_is_released()) return 0;
+	if (this->_is_released) return 1;
 
 	SAFE_RELEASE(this->_pimp);
+	this->_is_released = true;
 
-	return _super::release();
+	return 0;
 }
 
 #pragma region Getters
@@ -532,7 +534,7 @@ const w_command_buffer* w_command_buffers::get_commands() const
 	return this->_pimp->get_commands();
 }
 
-const w_command_buffer w_command_buffers::get_command_at(_In_ const size_t& pIndex) const
+const w_command_buffer w_command_buffers::get_command_at(_In_ const size_t pIndex) const
 {
 	if (!_pimp) return w_command_buffer();
 

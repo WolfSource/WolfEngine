@@ -35,11 +35,11 @@ namespace wolf
 				*/
 				W_RESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
 					_In_ const void* const pVerticesData,
-					_In_ const uint32_t&  pVerticesSizeInBytes,
-					_In_ const uint32_t& pVerticesCount,
+					_In_ const uint32_t  pVerticesSizeInBytes,
+					_In_ const uint32_t pVerticesCount,
 					_In_ const uint32_t* const pIndicesData,
-					_In_ const uint32_t& pIndicesCount,
-					_In_ const bool& pUseDynamicBuffer)
+					_In_ const uint32_t pIndicesCount,
+					_In_ const bool pUseDynamicBuffer)
 				{
 					this->_gDevice = pGDevice;
 					this->_vertices_count = pVerticesCount;
@@ -140,10 +140,10 @@ namespace wolf
 				W_RESULT update_dynamic_buffer(
 					_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
 					_In_ const void* const pVerticesData,
-					_In_ const uint32_t& pVerticesSize,
-					_In_ const uint32_t& pVerticesCount,
+					_In_ const uint32_t pVerticesSize,
+					_In_ const uint32_t pVerticesCount,
 					_In_ const uint32_t* const pIndicesData,
-					_In_ const uint32_t& pIndicesCount)
+					_In_ const uint32_t pIndicesCount)
 				{
 					const std::string _trace_info = this->_name + "::update_dynamic_buffer";
 
@@ -220,14 +220,14 @@ namespace wolf
 				W_RESULT draw(
 					_In_ const w_command_buffer& pCommandBuffer,
 					_In_ const w_buffer_handle* pInstanceHandle,
-					_In_ const uint32_t& pInstancesCount,
-					_In_ const uint32_t& pFirstInstance,
+					_In_ const uint32_t pInstancesCount,
+					_In_ const uint32_t pFirstInstance,
 					_In_ const w_indirect_draws_command_buffer* pIndirectDrawCommands,
-					_In_ const uint32_t& pVertexOffset,
-					_In_ const int& pIndexCount,
-					_In_ const uint32_t& pFirstIndex,
-					_In_ const int& pVertexCount,
-					_In_ const uint32_t& pFirstVertex)
+					_In_ const uint32_t pVertexOffset,
+					_In_ const int pIndexCount,
+					_In_ const uint32_t pFirstIndex,
+					_In_ const int pVertexCount,
+					_In_ const uint32_t pFirstVertex)
 				{
 					if (!pCommandBuffer.handle) return W_FAILED;
 
@@ -385,7 +385,7 @@ namespace wolf
 				W_RESULT _create_buffer(_In_ const VkBufferUsageFlags pBufferUsageFlag,
 					_In_ const void* const pBufferData,
 					_In_ uint32_t pBufferSizeInBytes,
-					_In_ const w_memory_usage_flag& pMemoryFlag,
+					_In_ const w_memory_usage_flag pMemoryFlag,
 					_Inout_ w_buffer& pBuffer)
 				{
 					const std::string _trace_info = this->_name + "::_create_buffer";
@@ -443,9 +443,10 @@ namespace wolf
 
 using namespace wolf::render::vulkan;
 
-w_mesh::w_mesh() : _pimp(new w_mesh_pimp())
+w_mesh::w_mesh() : 
+	_is_released(false),
+	_pimp(new w_mesh_pimp())
 {
-	_super::set_class_name("w_mesh");
 }
 
 w_mesh::~w_mesh()
@@ -456,11 +457,11 @@ w_mesh::~w_mesh()
 W_RESULT w_mesh::load(
 	_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
     _In_ const void* const pVerticesData,
-    _In_  const uint32_t&  pVerticesSize,
-    _In_ const uint32_t& pVerticesCount,
+    _In_  const uint32_t  pVerticesSize,
+    _In_ const uint32_t pVerticesCount,
     _In_ const uint32_t* const pIndicesData,
-    _In_ const uint32_t& pIndicesCount,
-    _In_ const bool& pUseDynamicBuffer)
+    _In_ const uint32_t pIndicesCount,
+    _In_ const bool pUseDynamicBuffer)
 {
     if (!this->_pimp) return W_FAILED;
     
@@ -477,10 +478,10 @@ W_RESULT w_mesh::load(
 W_RESULT w_mesh::update_dynamic_buffer(
     _In_ const std::shared_ptr<w_graphics_device>& pGDevice,
     _In_ const void* const pVerticesData,
-    _In_ const uint32_t& pVerticesSize,
-    _In_ const uint32_t& pVerticesCount,
+    _In_ const uint32_t pVerticesSize,
+    _In_ const uint32_t pVerticesCount,
     _In_ const uint32_t* const pIndicesData,
-    _In_ const uint32_t& pIndicesCount)
+    _In_ const uint32_t pIndicesCount)
 {
     return this->_pimp ? this->_pimp->update_dynamic_buffer(
         pGDevice,
@@ -494,14 +495,14 @@ W_RESULT w_mesh::update_dynamic_buffer(
 W_RESULT w_mesh::draw(
 	_In_ const w_command_buffer& pCommandBuffer,
 	_In_ const w_buffer_handle* pInstanceHandle,
-	_In_ const uint32_t& pInstancesCount,
-	_In_ const uint32_t& pFirstInstance,
+	_In_ const uint32_t pInstancesCount,
+	_In_ const uint32_t pFirstInstance,
 	_In_ const w_indirect_draws_command_buffer* pIndirectDrawCommands,
-	_In_ const uint32_t& pVertexOffset,
-	_In_ const int& pIndexCount,
-	_In_ const uint32_t& pFirstIndex,
-	_In_ const int& pVertexCount,
-	_In_ const uint32_t& pFirstVertex)
+	_In_ const uint32_t pVertexOffset,
+	_In_ const int pIndexCount,
+	_In_ const uint32_t pFirstIndex,
+	_In_ const int pVertexCount,
+	_In_ const uint32_t pFirstVertex)
 {
 	if (!this->_pimp) return W_FAILED;
 	return this->_pimp->draw(
@@ -519,11 +520,12 @@ W_RESULT w_mesh::draw(
 
 ULONG w_mesh::release()
 {
-    if (this->get_is_released()) return 1;
+    if (this->_is_released) return 1;
 	
     SAFE_RELEASE(this->_pimp);
-   
-	return _super::release();
+	this->_is_released = true;
+
+	return 0;
 }
 
 #pragma region Getters

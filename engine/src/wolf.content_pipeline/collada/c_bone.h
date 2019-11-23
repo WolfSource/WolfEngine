@@ -11,7 +11,6 @@
 #define __C_BONE_H__
 
 #include <vector>
-#include <w_object.h>
 #include "c_obj.h"
 #include "glm/vec3.hpp"
 #include "glm/mat4x4.hpp"
@@ -29,7 +28,7 @@ namespace wolf
 				float weight;
 			};
 
-			class c_bone : public c_obj, public wolf::system::w_object
+			class c_bone : public c_obj
 			{
 			public:
 				c_bone();
@@ -41,7 +40,7 @@ namespace wolf
 				glm::mat4x4 calaculate_matrices(float pTime, _Out_ bool pHasAnimation);
 				glm::mat4x4 calaculate_blended_matrices(float pTime, c_bone* pBone, float pLinearAmout, _Out_ bool pHasAnimation);
 			
-				ULONG release() override;
+				ULONG release();
 
 #pragma region Getters
 
@@ -72,7 +71,7 @@ namespace wolf
 				std::vector<c_animation>	animations;
 
 			private:
-				typedef  wolf::system::w_object _super;
+				bool						_is_released;
 			};
 		}
 	}

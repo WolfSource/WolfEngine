@@ -7,12 +7,7 @@
 	Comment          :
 */
 
-#if _MSC_VER > 1000
 #pragma once
-#endif
-
-#ifndef __W_POINT_H__
-#define __W_POINT_H__
 
 #include "w_std.h"
 #include "python_exporter/w_boost_python_helper.h"
@@ -66,5 +61,3 @@ inline bool operator != (const w_point_t& lValue, const w_point_t& rValue)
 }
 
 #include "python_exporter/py_point.h"
-
-#endif // __W_POINT_H__

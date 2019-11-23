@@ -36,16 +36,13 @@ static void _lzma_free(ISzAllocPtr, void *addr)
 
 static ISzAlloc _alloc_funcs = { _lzma_alloc, _lzma_free };
 
-namespace wolf
+namespace wolf::system
 {
-	namespace system
+	struct w_compress_lzma
 	{
-		struct w_compress_lzma
-		{
-			WSYS_EXP static int compress(const uint8_t* pSourceBuffer, w_compress_result* pCompressInfo);
-			WSYS_EXP static int decompress(const uint8_t* pCompressedBuffer, w_compress_result* pDeCompressInfo);
-		};
-	}
+		WSYS_EXP static int compress(const uint8_t* pSourceBuffer, w_compress_result* pCompressInfo);
+		WSYS_EXP static int decompress(const uint8_t* pCompressedBuffer, w_compress_result* pDeCompressInfo);
+	};
 }
 
 #endif //__W_COMPRESS_LZMA_H__

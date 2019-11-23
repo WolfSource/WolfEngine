@@ -7,12 +7,7 @@
 	Comment          :
 */
 
-#if _MSC_VER > 1000
 #pragma once
-#endif
-
-#ifndef __W_VULKAN_PCH_H__
-#define __W_VULKAN_PCH_H__
 
 #ifndef NOMINMAX
 #define NOMINMAX
@@ -45,12 +40,9 @@
 #include <mutex>
 
 //Wolf
-#include <w_object.h>
 #include <w_std.h>
 #include <w_window.h>
-#include <w_ireleasable.h>
 #include <w_io.h>
 #include <w_color.h>
 #include <w_logger.h>
 
-#endif

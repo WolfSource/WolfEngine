@@ -150,13 +150,13 @@ void scene::initialize(_In_ std::map<int, w_present_info> pOutputWindowsInfo)
 
 void scene::load()
 {
-    const std::string _trace_info = this->name + "::load";
+    const std::string _trace_info = "scene::load";
 }
 
 void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 {
     if (w_game::exiting) return;
-    const std::string _trace_info = this->name + "::update";
+    const std::string _trace_info = "scene::update";
 
 
     w_game::update(pGameTime);
@@ -166,7 +166,7 @@ W_RESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 {
     if (w_game::exiting) return W_PASSED;
 
-    const std::string _trace_info = this->name + "::render";
+    const std::string _trace_info = "scene::render";
 
     return W_PASSED;
 }
@@ -183,7 +183,7 @@ void scene::on_device_lost()
 
 ULONG scene::release()
 {
-    if (this->get_is_released()) return 1;
+    if (w_game::get_is_released()) return 1;
 
     return w_game::release();
 }

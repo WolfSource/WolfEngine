@@ -7,12 +7,7 @@
 	Comment          :
 */
 
-#if _MSC_VER > 1000
 #pragma once
-#endif
-
-#ifndef __W_COMPRESS_LZ4_H__
-#define __W_COMPRESS_LZ4_H__
 
 #if defined (__cplusplus)
 extern "C" {
@@ -40,5 +35,3 @@ extern "C" {
 #if defined (__cplusplus)
 }
 #endif
-
-#endif //__W_COMPRESS_H__

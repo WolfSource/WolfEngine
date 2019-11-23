@@ -26,10 +26,8 @@ static std::once_flag once_initialize_flag;
 using namespace wolf;
 using namespace wolf::system;
 
-namespace wolf
+namespace wolf::framework
 {
-    namespace framework
-    {
         //struct w_video_frame_down_sample_data
         //{
         //    std::array<int, VIDEO_FRAME_DOWN_SAMPLE_SIZE> data;
@@ -1835,14 +1833,14 @@ namespace wolf
 
 			double                                      _frame_max_delay_in_ms;
         };
-    }
-}
+ }
 
 using namespace wolf::framework;
 
-w_media_core::w_media_core() :_pimp(new w_media_core_pimp())
+w_media_core::w_media_core() :
+	_is_released(false),
+	_pimp(new w_media_core_pimp())
 {
-    _super::set_class_name("w_media_core");
 }
 
 w_media_core::~w_media_core()
@@ -1974,9 +1972,10 @@ W_RESULT w_media_core::write_video_frame_to_buffer(
 
 ULONG w_media_core::release()
 {
-    if (this->get_is_released()) return 1;
+    if (this->_is_released) return 1;
     this->_pimp->release_media();
-    return _super::release();
+	this->_is_released = 0;
+    return 0;
 }
 
 ULONG w_media_core::release_media()

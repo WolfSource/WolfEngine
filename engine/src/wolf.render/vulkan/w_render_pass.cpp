@@ -199,9 +199,9 @@ namespace wolf
 					_In_ const uint32_t& pFrameBufferIndex,
 					_In_ const w_command_buffer pCommandBuffer,
 					_In_ const w_color& pClearColor,
-					_In_ const float& pClearDepth,
-					_In_ const uint32_t& pClearStencil,
-					_In_ const w_subpass_contents& pSubpassContents)
+					_In_ const float pClearDepth,
+					_In_ const uint32_t pClearStencil,
+					_In_ const w_subpass_contents pSubpassContents)
 				{
 					const std::string _trace_info = this->_name + "::begin";
 
@@ -326,9 +326,10 @@ namespace wolf
 
 using namespace wolf::render::vulkan;
 
-w_render_pass::w_render_pass() : _pimp(new w_render_pass_pimp())
+w_render_pass::w_render_pass() : 
+	_is_released(false),
+	_pimp(new w_render_pass_pimp())
 {
-	_super::set_class_name("w_render_pass");
 }
 
 w_render_pass::~w_render_pass()
@@ -354,12 +355,12 @@ W_RESULT w_render_pass::load(_In_ const std::shared_ptr<w_graphics_device>& pGDe
 }
 
 void w_render_pass::begin(
-    _In_ const uint32_t& pFrameBufferIndex,
+    _In_ const uint32_t pFrameBufferIndex,
     _In_ const w_command_buffer& pCommandBuffer,
     _In_ const w_color& pClearColor,
-    _In_ const float&  pClearDepth,
-    _In_ const uint32_t&  pClearStencil,
-    _In_ const w_subpass_contents& pSubpassContents)
+    _In_ const float  pClearDepth,
+    _In_ const uint32_t  pClearStencil,
+    _In_ const w_subpass_contents pSubpassContents)
 {
     if(!this->_pimp) return;
     this->_pimp->begin(
@@ -379,11 +380,12 @@ void w_render_pass::end(_In_ const w_command_buffer& pCommandBuffer)
 
 ULONG w_render_pass::release()
 {
-	if (_super::get_is_released()) return 1;
+	if (this->_is_released) return 1;
     
     SAFE_RELEASE(this->_pimp);
+	this->_is_released = true;
     
-	return _super::release();
+	return 0;
 }
 
 #pragma region Getters
@@ -406,7 +408,7 @@ const w_render_pass_handle w_render_pass::get_handle() const
     return this->_pimp->get_handle();
 }
 
-const w_frame_buffer_handle w_render_pass::get_frame_buffer_handle(_In_ const size_t& pFrameBufferIndex) const
+const w_frame_buffer_handle w_render_pass::get_frame_buffer_handle(_In_ const size_t pFrameBufferIndex) const
 {
 	if (!this->_pimp) return w_frame_buffer_handle();
 	return this->_pimp->get_frame_buffer_handle(pFrameBufferIndex);
