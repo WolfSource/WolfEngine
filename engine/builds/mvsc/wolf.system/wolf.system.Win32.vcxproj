@@ -226,7 +226,6 @@
     <ClCompile Include="..\..\..\src\wolf.system\w_bounding.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_compress_lz4.c" />
     <ClCompile Include="..\..\..\src\wolf.system\w_compress_lzma.cpp" />
-    <ClCompile Include="..\..\..\src\wolf.system\w_cpu.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_image.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_inputs_manager.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_linear_allocator.cpp" />
@@ -396,75 +395,13 @@
     <ClInclude Include="..\..\..\src\wolf.system\curl\system.h" />
     <ClInclude Include="..\..\..\src\wolf.system\curl\typecheck-gcc.h" />
     <ClInclude Include="..\..\..\src\wolf.system\curl\urlapi.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\gli\clear.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\gli\comparison.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\gli\convert.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\gli\copy.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\gli\core\clear.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\gli\core\convert_func.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\gli\core\coord.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\gli\core\file.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\gli\core\filter.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\gli\core\filter_compute.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\gli\core\flip.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\gli\core\mipmaps_compute.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\gli\core\storage.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\gli\core\storage_linear.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\gli\core\workaround.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\gli\duplicate.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\gli\dx.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\gli\format.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\gli\generate_mipmaps.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\gli\gl.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\gli\gli.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\gli\image.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\gli\levels.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\gli\load.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\gli\load_dds.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\gli\load_kmg.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\gli\load_ktx.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\gli\make_texture.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\gli\reduce.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\gli\sampler.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\gli\sampler1d.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\gli\sampler1d_array.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\gli\sampler2d.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\gli\sampler2d_array.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\gli\sampler3d.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\gli\sampler_cube.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\gli\sampler_cube_array.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\gli\save.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\gli\save_dds.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\gli\save_kmg.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\gli\save_ktx.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\gli\target.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\gli\texture.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\gli\texture1d.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\gli\texture1d_array.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\gli\texture2d.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\gli\texture2d_array.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\gli\texture3d.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\gli\texture_cube.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\gli\texture_cube_array.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\gli\transform.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\gli\type.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\gli\view.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\common.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\glm\detail\func_common.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\glm\detail\func_exponential.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\glm\detail\func_geometric.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\glm\detail\func_integer.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\glm\detail\func_matrix.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\glm\detail\func_packing.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\glm\detail\func_trigonometric.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\glm\detail\func_vector_relational.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\glm\detail\precision.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\detail\compute_common.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\detail\compute_vector_relational.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\detail\qualifier.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\detail\setup.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\detail\type_float.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\glm\detail\type_gentype.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\detail\type_half.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\glm\detail\type_int.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\glm\detail\type_mat.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\detail\type_mat2x2.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\detail\type_mat2x3.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\detail\type_mat2x4.hpp" />
@@ -474,7 +411,7 @@
     <ClInclude Include="..\..\..\src\wolf.system\glm\detail\type_mat4x2.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\detail\type_mat4x3.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\detail\type_mat4x4.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\glm\detail\type_vec.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\detail\type_quat.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\detail\type_vec1.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\detail\type_vec2.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\detail\type_vec3.hpp" />
@@ -487,6 +424,108 @@
     <ClInclude Include="..\..\..\src\wolf.system\glm\detail\_vectorize.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\exponential.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\ext.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_clip_space.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_common.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_double2x2.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_double2x2_precision.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_double2x3.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_double2x3_precision.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_double2x4.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_double2x4_precision.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_double3x2.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_double3x2_precision.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_double3x3.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_double3x3_precision.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_double3x4.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_double3x4_precision.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_double4x2.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_double4x2_precision.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_double4x3.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_double4x3_precision.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_double4x4.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_double4x4_precision.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_float2x2.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_float2x2_precision.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_float2x3.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_float2x3_precision.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_float2x4.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_float2x4_precision.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_float3x2.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_float3x2_precision.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_float3x3.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_float3x3_precision.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_float3x4.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_float3x4_precision.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_float4x2.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_float4x2_precision.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_float4x3.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_float4x3_precision.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_float4x4.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_float4x4_precision.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_projection.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_relational.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_transform.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\quaternion_common.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\quaternion_double.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\quaternion_double_precision.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\quaternion_exponential.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\quaternion_float.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\quaternion_float_precision.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\quaternion_geometric.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\quaternion_relational.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\quaternion_transform.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\quaternion_trigonometric.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\scalar_common.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\scalar_constants.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\scalar_integer.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\scalar_int_sized.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\scalar_relational.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\scalar_uint_sized.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\scalar_ulp.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_bool1.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_bool1_precision.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_bool2.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_bool2_precision.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_bool3.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_bool3_precision.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_bool4.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_bool4_precision.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_common.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_double1.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_double1_precision.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_double2.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_double2_precision.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_double3.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_double3_precision.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_double4.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_double4_precision.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_float1.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_float1_precision.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_float2.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_float2_precision.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_float3.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_float3_precision.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_float4.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_float4_precision.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_int1.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_int1_precision.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_int2.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_int2_precision.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_int3.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_int3_precision.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_int4.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_int4_precision.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_integer.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_relational.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_uint1.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_uint1_precision.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_uint2.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_uint2_precision.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_uint3.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_uint3_precision.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_uint4.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_uint4_precision.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_ulp.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\fwd.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\geometric.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\glm.hpp" />
@@ -494,7 +533,6 @@
     <ClInclude Include="..\..\..\src\wolf.system\glm\gtc\color_space.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\gtc\constants.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\gtc\epsilon.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtc\functions.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\gtc\integer.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\gtc\matrix_access.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\gtc\matrix_integer.hpp" />
@@ -514,18 +552,22 @@
     <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\associated_min_max.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\bit.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\closest_point.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\color_encoding.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\color_space.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\color_space_YCoCg.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\common.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\compatibility.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\component_wise.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\dual_quaternion.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\easing.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\euler_angles.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\extend.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\extended_min_max.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\exterior_product.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\fast_exponential.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\fast_square_root.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\fast_trigonometry.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\functions.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\gradient_paint.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\handed_coordinate_space.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\hash.hpp" />
@@ -535,6 +577,7 @@
     <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\log_base.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\matrix_cross_product.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\matrix_decompose.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\matrix_factorisation.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\matrix_interpolation.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\matrix_major_storage.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\matrix_operation.hpp" />
@@ -557,18 +600,17 @@
     <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\rotate_vector.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\scalar_multiplication.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\scalar_relational.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\simd_mat4.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\simd_quat.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\simd_vec4.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\spline.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\std_based_type.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\string_cast.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\texture.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\transform.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\transform2.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\type_aligned.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\type_trait.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\vector_angle.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\vector_query.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\vec_swizzle.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\wrap.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\integer.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\mat2x2.hpp" />
@@ -694,7 +736,6 @@
     <ClInclude Include="..\..\..\src\wolf.system\w_compress_lzma.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_concurrent_queue.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_convert.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\w_cpu.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_image.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_memory_pool.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_network.h" />
@@ -726,51 +767,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\src\wolf.system\curl\src\curl_config.h.in" />
-    <None Include="..\..\..\src\wolf.system\gli\core\clear.inl" />
-    <None Include="..\..\..\src\wolf.system\gli\core\comparison.inl" />
-    <None Include="..\..\..\src\wolf.system\gli\core\convert.inl" />
-    <None Include="..\..\..\src\wolf.system\gli\core\copy.inl" />
-    <None Include="..\..\..\src\wolf.system\gli\core\duplicate.inl" />
-    <None Include="..\..\..\src\wolf.system\gli\core\dx.inl" />
-    <None Include="..\..\..\src\wolf.system\gli\core\file.inl" />
-    <None Include="..\..\..\src\wolf.system\gli\core\filter.inl" />
-    <None Include="..\..\..\src\wolf.system\gli\core\flip.inl" />
-    <None Include="..\..\..\src\wolf.system\gli\core\format.inl" />
-    <None Include="..\..\..\src\wolf.system\gli\core\generate_mipmaps.inl" />
-    <None Include="..\..\..\src\wolf.system\gli\core\gl.inl" />
-    <None Include="..\..\..\src\wolf.system\gli\core\image.inl" />
-    <None Include="..\..\..\src\wolf.system\gli\core\levels.inl" />
-    <None Include="..\..\..\src\wolf.system\gli\core\load.inl" />
-    <None Include="..\..\..\src\wolf.system\gli\core\load_dds.inl" />
-    <None Include="..\..\..\src\wolf.system\gli\core\load_kmg.inl" />
-    <None Include="..\..\..\src\wolf.system\gli\core\load_ktx.inl" />
-    <None Include="..\..\..\src\wolf.system\gli\core\make_texture.inl" />
-    <None Include="..\..\..\src\wolf.system\gli\core\reduce.inl" />
-    <None Include="..\..\..\src\wolf.system\gli\core\sampler.inl" />
-    <None Include="..\..\..\src\wolf.system\gli\core\sampler1d.inl" />
-    <None Include="..\..\..\src\wolf.system\gli\core\sampler1d_array.inl" />
-    <None Include="..\..\..\src\wolf.system\gli\core\sampler2d.inl" />
-    <None Include="..\..\..\src\wolf.system\gli\core\sampler2d_array.inl" />
-    <None Include="..\..\..\src\wolf.system\gli\core\sampler3d.inl" />
-    <None Include="..\..\..\src\wolf.system\gli\core\sampler_cube.inl" />
-    <None Include="..\..\..\src\wolf.system\gli\core\sampler_cube_array.inl" />
-    <None Include="..\..\..\src\wolf.system\gli\core\save.inl" />
-    <None Include="..\..\..\src\wolf.system\gli\core\save_dds.inl" />
-    <None Include="..\..\..\src\wolf.system\gli\core\save_kmg.inl" />
-    <None Include="..\..\..\src\wolf.system\gli\core\save_ktx.inl" />
-    <None Include="..\..\..\src\wolf.system\gli\core\storage.inl" />
-    <None Include="..\..\..\src\wolf.system\gli\core\storage_linear.inl" />
-    <None Include="..\..\..\src\wolf.system\gli\core\texture.inl" />
-    <None Include="..\..\..\src\wolf.system\gli\core\texture1d.inl" />
-    <None Include="..\..\..\src\wolf.system\gli\core\texture1d_array.inl" />
-    <None Include="..\..\..\src\wolf.system\gli\core\texture2d.inl" />
-    <None Include="..\..\..\src\wolf.system\gli\core\texture2d_array.inl" />
-    <None Include="..\..\..\src\wolf.system\gli\core\texture3d.inl" />
-    <None Include="..\..\..\src\wolf.system\gli\core\texture_cube.inl" />
-    <None Include="..\..\..\src\wolf.system\gli\core\texture_cube_array.inl" />
-    <None Include="..\..\..\src\wolf.system\gli\core\transform.inl" />
-    <None Include="..\..\..\src\wolf.system\gli\core\view.inl" />
-    <None Include="..\..\..\src\wolf.system\gli\manual.md" />
     <None Include="..\..\..\src\wolf.system\glm\detail\func_common.inl" />
     <None Include="..\..\..\src\wolf.system\glm\detail\func_common_simd.inl" />
     <None Include="..\..\..\src\wolf.system\glm\detail\func_exponential.inl" />
@@ -787,9 +783,7 @@
     <None Include="..\..\..\src\wolf.system\glm\detail\func_trigonometric_simd.inl" />
     <None Include="..\..\..\src\wolf.system\glm\detail\func_vector_relational.inl" />
     <None Include="..\..\..\src\wolf.system\glm\detail\func_vector_relational_simd.inl" />
-    <None Include="..\..\..\src\wolf.system\glm\detail\type_gentype.inl" />
     <None Include="..\..\..\src\wolf.system\glm\detail\type_half.inl" />
-    <None Include="..\..\..\src\wolf.system\glm\detail\type_mat.inl" />
     <None Include="..\..\..\src\wolf.system\glm\detail\type_mat2x2.inl" />
     <None Include="..\..\..\src\wolf.system\glm\detail\type_mat2x3.inl" />
     <None Include="..\..\..\src\wolf.system\glm\detail\type_mat2x4.inl" />
@@ -800,18 +794,38 @@
     <None Include="..\..\..\src\wolf.system\glm\detail\type_mat4x3.inl" />
     <None Include="..\..\..\src\wolf.system\glm\detail\type_mat4x4.inl" />
     <None Include="..\..\..\src\wolf.system\glm\detail\type_mat4x4_simd.inl" />
-    <None Include="..\..\..\src\wolf.system\glm\detail\type_vec.inl" />
+    <None Include="..\..\..\src\wolf.system\glm\detail\type_quat.inl" />
+    <None Include="..\..\..\src\wolf.system\glm\detail\type_quat_simd.inl" />
     <None Include="..\..\..\src\wolf.system\glm\detail\type_vec1.inl" />
     <None Include="..\..\..\src\wolf.system\glm\detail\type_vec2.inl" />
     <None Include="..\..\..\src\wolf.system\glm\detail\type_vec3.inl" />
     <None Include="..\..\..\src\wolf.system\glm\detail\type_vec4.inl" />
     <None Include="..\..\..\src\wolf.system\glm\detail\type_vec4_simd.inl" />
+    <None Include="..\..\..\src\wolf.system\glm\ext\matrix_clip_space.inl" />
+    <None Include="..\..\..\src\wolf.system\glm\ext\matrix_common.inl" />
+    <None Include="..\..\..\src\wolf.system\glm\ext\matrix_projection.inl" />
+    <None Include="..\..\..\src\wolf.system\glm\ext\matrix_relational.inl" />
+    <None Include="..\..\..\src\wolf.system\glm\ext\matrix_transform.inl" />
+    <None Include="..\..\..\src\wolf.system\glm\ext\quaternion_common.inl" />
+    <None Include="..\..\..\src\wolf.system\glm\ext\quaternion_common_simd.inl" />
+    <None Include="..\..\..\src\wolf.system\glm\ext\quaternion_exponential.inl" />
+    <None Include="..\..\..\src\wolf.system\glm\ext\quaternion_geometric.inl" />
+    <None Include="..\..\..\src\wolf.system\glm\ext\quaternion_relational.inl" />
+    <None Include="..\..\..\src\wolf.system\glm\ext\quaternion_transform.inl" />
+    <None Include="..\..\..\src\wolf.system\glm\ext\quaternion_trigonometric.inl" />
+    <None Include="..\..\..\src\wolf.system\glm\ext\scalar_common.inl" />
+    <None Include="..\..\..\src\wolf.system\glm\ext\scalar_constants.inl" />
+    <None Include="..\..\..\src\wolf.system\glm\ext\scalar_integer.inl" />
+    <None Include="..\..\..\src\wolf.system\glm\ext\scalar_relational.inl" />
+    <None Include="..\..\..\src\wolf.system\glm\ext\scalar_ulp.inl" />
+    <None Include="..\..\..\src\wolf.system\glm\ext\vector_common.inl" />
+    <None Include="..\..\..\src\wolf.system\glm\ext\vector_integer.inl" />
+    <None Include="..\..\..\src\wolf.system\glm\ext\vector_relational.inl" />
+    <None Include="..\..\..\src\wolf.system\glm\ext\vector_ulp.inl" />
     <None Include="..\..\..\src\wolf.system\glm\gtc\bitfield.inl" />
-    <None Include="..\..\..\src\wolf.system\glm\gtc\color_encoding.inl" />
     <None Include="..\..\..\src\wolf.system\glm\gtc\color_space.inl" />
     <None Include="..\..\..\src\wolf.system\glm\gtc\constants.inl" />
     <None Include="..\..\..\src\wolf.system\glm\gtc\epsilon.inl" />
-    <None Include="..\..\..\src\wolf.system\glm\gtc\functions.inl" />
     <None Include="..\..\..\src\wolf.system\glm\gtc\integer.inl" />
     <None Include="..\..\..\src\wolf.system\glm\gtc\matrix_access.inl" />
     <None Include="..\..\..\src\wolf.system\glm\gtc\matrix_inverse.inl" />
@@ -826,23 +840,26 @@
     <None Include="..\..\..\src\wolf.system\glm\gtc\type_precision.inl" />
     <None Include="..\..\..\src\wolf.system\glm\gtc\type_ptr.inl" />
     <None Include="..\..\..\src\wolf.system\glm\gtc\ulp.inl" />
-    <None Include="..\..\..\src\wolf.system\glm\gtc\vec1.inl" />
     <None Include="..\..\..\src\wolf.system\glm\gtx\associated_min_max.inl" />
     <None Include="..\..\..\src\wolf.system\glm\gtx\bit.inl" />
     <None Include="..\..\..\src\wolf.system\glm\gtx\closest_point.inl" />
+    <None Include="..\..\..\src\wolf.system\glm\gtx\color_encoding.inl" />
     <None Include="..\..\..\src\wolf.system\glm\gtx\color_space.inl" />
     <None Include="..\..\..\src\wolf.system\glm\gtx\color_space_YCoCg.inl" />
     <None Include="..\..\..\src\wolf.system\glm\gtx\common.inl" />
     <None Include="..\..\..\src\wolf.system\glm\gtx\compatibility.inl" />
     <None Include="..\..\..\src\wolf.system\glm\gtx\component_wise.inl" />
     <None Include="..\..\..\src\wolf.system\glm\gtx\dual_quaternion.inl" />
+    <None Include="..\..\..\src\wolf.system\glm\gtx\easing.inl" />
     <None Include="..\..\..\src\wolf.system\glm\gtx\euler_angles.inl" />
     <None Include="..\..\..\src\wolf.system\glm\gtx\extend.inl" />
     <None Include="..\..\..\src\wolf.system\glm\gtx\extended_min_max.inl" />
+    <None Include="..\..\..\src\wolf.system\glm\gtx\exterior_product.inl" />
     <None Include="..\..\..\src\wolf.system\glm\gtx\fast_exponential.inl" />
     <None Include="..\..\..\src\wolf.system\glm\gtx\fast_square_root.inl" />
     <None Include="..\..\..\src\wolf.system\glm\gtx\fast_trigonometry.inl" />
     <None Include="..\..\..\src\wolf.system\glm\gtx\float_notmalize.inl" />
+    <None Include="..\..\..\src\wolf.system\glm\gtx\functions.inl" />
     <None Include="..\..\..\src\wolf.system\glm\gtx\gradient_paint.inl" />
     <None Include="..\..\..\src\wolf.system\glm\gtx\handed_coordinate_space.inl" />
     <None Include="..\..\..\src\wolf.system\glm\gtx\hash.inl" />
@@ -852,6 +869,7 @@
     <None Include="..\..\..\src\wolf.system\glm\gtx\log_base.inl" />
     <None Include="..\..\..\src\wolf.system\glm\gtx\matrix_cross_product.inl" />
     <None Include="..\..\..\src\wolf.system\glm\gtx\matrix_decompose.inl" />
+    <None Include="..\..\..\src\wolf.system\glm\gtx\matrix_factorisation.inl" />
     <None Include="..\..\..\src\wolf.system\glm\gtx\matrix_interpolation.inl" />
     <None Include="..\..\..\src\wolf.system\glm\gtx\matrix_major_storage.inl" />
     <None Include="..\..\..\src\wolf.system\glm\gtx\matrix_operation.inl" />
@@ -872,12 +890,10 @@
     <None Include="..\..\..\src\wolf.system\glm\gtx\rotate_normalized_axis.inl" />
     <None Include="..\..\..\src\wolf.system\glm\gtx\rotate_vector.inl" />
     <None Include="..\..\..\src\wolf.system\glm\gtx\scalar_relational.inl" />
-    <None Include="..\..\..\src\wolf.system\glm\gtx\simd_mat4.inl" />
-    <None Include="..\..\..\src\wolf.system\glm\gtx\simd_quat.inl" />
-    <None Include="..\..\..\src\wolf.system\glm\gtx\simd_vec4.inl" />
     <None Include="..\..\..\src\wolf.system\glm\gtx\spline.inl" />
     <None Include="..\..\..\src\wolf.system\glm\gtx\std_based_type.inl" />
     <None Include="..\..\..\src\wolf.system\glm\gtx\string_cast.inl" />
+    <None Include="..\..\..\src\wolf.system\glm\gtx\texture.inl" />
     <None Include="..\..\..\src\wolf.system\glm\gtx\transform.inl" />
     <None Include="..\..\..\src\wolf.system\glm\gtx\transform2.inl" />
     <None Include="..\..\..\src\wolf.system\glm\gtx\type_aligned.inl" />
@@ -889,9 +905,6 @@
   <ItemGroup>
     <Text Include="..\..\..\src\wolf.system\base64\LICENSE" />
     <Text Include="..\..\..\src\wolf.system\base64\version.txt" />
-    <Text Include="..\..\..\src\wolf.system\gli\version.txt" />
-    <Text Include="..\..\..\src\wolf.system\glm\copying.txt" />
-    <Text Include="..\..\..\src\wolf.system\glm\version.txt" />
     <Text Include="..\..\..\src\wolf.system\rapidjson\license.txt" />
     <Text Include="..\..\..\src\wolf.system\rapidxml\license.txt" />
     <Text Include="..\..\..\src\wolf.system\spdlog\version.txt" />
@@ -1012,7 +1025,7 @@
       </SDLCheck>
       <Optimization>Disabled</Optimization>
       <CompileAsWinRT>false</CompileAsWinRT>
-      <MinimalRebuild>true</MinimalRebuild>
+      <MinimalRebuild>false</MinimalRebuild>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <WarningLevel>Level3</WarningLevel>
@@ -1020,8 +1033,8 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>true</AssemblyDebug>
-      <AdditionalLibraryDirectories>$(SolutionDir)/../../deps/luaJIT/lib/windows/x64/debug;$(SolutionDir)/../../deps/nanomsg/lib/windows/x64/debug;$(SolutionDir)/../../deps/libjpeg-turbo/lib/windows/x64/debug;$(SolutionDir)/../../deps/libpng/lib/windows/x64/;$(SolutionDir)/../../deps/zlib/lib/windows/x64/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Kernel32.lib;advapi32.lib;ws2_32.lib;wldap32.lib;winmm.lib;crypt32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;mswsock.lib;nanomsg.lib;luajit-static.lib;jpeg-static.lib;turbojpeg-static.lib;libpng16_staticd.lib;zlibstaticd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)/../../deps/luaJIT/lib/windows/x64/debug;$(SolutionDir)/../../deps/libjpeg-turbo/lib/windows/x64/debug;$(SolutionDir)/../../deps/libpng/lib/windows/x64/;$(SolutionDir)/../../deps/zlib/lib/windows/x64/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Kernel32.lib;advapi32.lib;ws2_32.lib;wldap32.lib;winmm.lib;crypt32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;mswsock.lib;luajit-static.lib;jpeg-static.lib;turbojpeg-static.lib;libpng16_staticd.lib;zlibstaticd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -1042,9 +1055,9 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(SolutionDir)/../../deps/luaJIT/lib/windows/x64/release;$(SolutionDir)/../../deps/nanomsg/lib/windows/x64/release;$(SolutionDir)/../../deps/libjpeg-turbo/lib/windows/x64/release;$(SolutionDir)/../../deps/libpng/lib/windows/x64/;$(SolutionDir)/../../deps/zlib/lib/windows/x64/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)/../../deps/luaJIT/lib/windows/x64/release;$(SolutionDir)/../../deps/libjpeg-turbo/lib/windows/x64/release;$(SolutionDir)/../../deps/libpng/lib/windows/x64/;$(SolutionDir)/../../deps/zlib/lib/windows/x64/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>No</GenerateDebugInformation>
-      <AdditionalDependencies>Kernel32.lib;advapi32.lib;ws2_32.lib;wldap32.lib;winmm.lib;crypt32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;mswsock.lib;nanomsg.lib;luajit-static.lib;jpeg-static.lib;turbojpeg-static.lib;libpng16_static.lib;zlibstaticd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Kernel32.lib;advapi32.lib;ws2_32.lib;wldap32.lib;winmm.lib;crypt32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;mswsock.lib;luajit-static.lib;jpeg-static.lib;turbojpeg-static.lib;libpng16_static.lib;zlibstaticd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AssemblyDebug>false</AssemblyDebug>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>

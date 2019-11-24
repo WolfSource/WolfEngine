@@ -6,6 +6,8 @@ cd ./engine/deps/
 keys=(
 assimp
 ffmpeg
+gli
+glm
 libjpeg-turbo
 libpng 
 luaJIT 
@@ -16,6 +18,8 @@ zlib)
 values=(
 version.txt
 version.txt 
+VERSION.txt
+VERSION.txt 
 version.txt
 version.txt 
 version.txt  

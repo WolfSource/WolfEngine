@@ -40,7 +40,7 @@ bool w_first_person_camera::update(_In_ const wolf::system::w_game_time& pGameTi
 #endif
     
     bool _updated = false;
-    glm::vec3 _move_vector;
+    glm::vec3 _move_vector = glm::vec3(0);
 
     auto _result_of_keys = inputs_manager.is_keys_pressed({ _W_KEY_CODE , _S_KEY_CODE , _A_KEY_CODE , _D_KEY_CODE, _Q_KEY_CODE, _Z_KEY_CODE });
     if (_result_of_keys[0] || _result_of_keys[1] ||

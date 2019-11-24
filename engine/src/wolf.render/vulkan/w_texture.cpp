@@ -5,8 +5,7 @@
 #include "w_buffer.h"
 #include "w_command_buffers.h"
 #include <map>
-
-#include <gli/gli.hpp>
+#include "w_framework/gli/gli.hpp"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
