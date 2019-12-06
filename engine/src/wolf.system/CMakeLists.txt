@@ -53,7 +53,6 @@ add_library(wolf.system.linux SHARED ./lz4/lz4.c
 ./w_lua.cpp
 ./w_memory.cpp
 ./w_network.cpp
-./w_object.cpp
 ./w_system_pch.cpp
 ./w_task.cpp
 ./w_thread_pool.cpp
