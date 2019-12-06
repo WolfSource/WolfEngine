@@ -1104,7 +1104,6 @@
 		2C0CAB4021F79810006AA6D7 /* w_concurrent_queue.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C0CAAFD21F79805006AA6D7 /* w_concurrent_queue.h */; };
 		2C0CAB4121F79810006AA6D7 /* w_aligned_malloc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C0CAAFE21F79805006AA6D7 /* w_aligned_malloc.cpp */; };
 		2C0CAB4221F79810006AA6D7 /* wolf_version.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C0CAAFF21F79805006AA6D7 /* wolf_version.h */; };
-		2C0CAB4321F79810006AA6D7 /* w_object.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C0CAB0021F79805006AA6D7 /* w_object.h */; };
 		2C0CAB4421F79810006AA6D7 /* w_lua.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C0CAB0121F79805006AA6D7 /* w_lua.cpp */; };
 		2C0CAB4521F79810006AA6D7 /* w_memory.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C0CAB0221F79805006AA6D7 /* w_memory.h */; };
 		2C0CAB4621F79810006AA6D7 /* w_allocator.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C0CAB0321F79806006AA6D7 /* w_allocator.h */; };
@@ -1144,7 +1143,6 @@
 		2C0CAB6C21F79810006AA6D7 /* wolf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C0CAB2921F7980D006AA6D7 /* wolf.cpp */; };
 		2C0CAB6D21F79810006AA6D7 /* w_memory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C0CAB2A21F7980D006AA6D7 /* w_memory.cpp */; };
 		2C0CAB6E21F79810006AA6D7 /* w_thread_pool.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C0CAB2B21F7980D006AA6D7 /* w_thread_pool.h */; };
-		2C0CAB6F21F79810006AA6D7 /* w_object.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C0CAB2C21F7980D006AA6D7 /* w_object.cpp */; };
 		2C0CAB7021F79810006AA6D7 /* w_system_pch.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C0CAB2D21F7980D006AA6D7 /* w_system_pch.h */; };
 		2C0CAB7121F79810006AA6D7 /* w_cpu.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C0CAB2E21F7980E006AA6D7 /* w_cpu.h */; };
 		2C0CAB7221F79810006AA6D7 /* w_ireleasable.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C0CAB2F21F7980E006AA6D7 /* w_ireleasable.h */; };
@@ -2722,7 +2720,6 @@
 		2C0CAAFD21F79805006AA6D7 /* w_concurrent_queue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_concurrent_queue.h; path = ../../../src/wolf.system/w_concurrent_queue.h; sourceTree = "<group>"; };
 		2C0CAAFE21F79805006AA6D7 /* w_aligned_malloc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_aligned_malloc.cpp; path = ../../../src/wolf.system/w_aligned_malloc.cpp; sourceTree = "<group>"; };
 		2C0CAAFF21F79805006AA6D7 /* wolf_version.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = wolf_version.h; path = ../../../src/wolf.system/wolf_version.h; sourceTree = "<group>"; };
-		2C0CAB0021F79805006AA6D7 /* w_object.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_object.h; path = ../../../src/wolf.system/w_object.h; sourceTree = "<group>"; };
 		2C0CAB0121F79805006AA6D7 /* w_lua.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_lua.cpp; path = ../../../src/wolf.system/w_lua.cpp; sourceTree = "<group>"; };
 		2C0CAB0221F79805006AA6D7 /* w_memory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_memory.h; path = ../../../src/wolf.system/w_memory.h; sourceTree = "<group>"; };
 		2C0CAB0321F79806006AA6D7 /* w_allocator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_allocator.h; path = ../../../src/wolf.system/w_allocator.h; sourceTree = "<group>"; };
@@ -2762,7 +2759,6 @@
 		2C0CAB2921F7980D006AA6D7 /* wolf.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = wolf.cpp; path = ../../../src/wolf.system/wolf.cpp; sourceTree = "<group>"; };
 		2C0CAB2A21F7980D006AA6D7 /* w_memory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_memory.cpp; path = ../../../src/wolf.system/w_memory.cpp; sourceTree = "<group>"; };
 		2C0CAB2B21F7980D006AA6D7 /* w_thread_pool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_thread_pool.h; path = ../../../src/wolf.system/w_thread_pool.h; sourceTree = "<group>"; };
-		2C0CAB2C21F7980D006AA6D7 /* w_object.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_object.cpp; path = ../../../src/wolf.system/w_object.cpp; sourceTree = "<group>"; };
 		2C0CAB2D21F7980D006AA6D7 /* w_system_pch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_system_pch.h; path = ../../../src/wolf.system/w_system_pch.h; sourceTree = "<group>"; };
 		2C0CAB2E21F7980E006AA6D7 /* w_cpu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_cpu.h; path = ../../../src/wolf.system/w_cpu.h; sourceTree = "<group>"; };
 		2C0CAB2F21F7980E006AA6D7 /* w_ireleasable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_ireleasable.h; path = ../../../src/wolf.system/w_ireleasable.h; sourceTree = "<group>"; };
@@ -5525,8 +5521,6 @@
 				2C0CAB0221F79805006AA6D7 /* w_memory.h */,
 				2C0CAB1421F79809006AA6D7 /* w_network.cpp */,
 				2C0CAB1821F7980A006AA6D7 /* w_network.h */,
-				2C0CAB2C21F7980D006AA6D7 /* w_object.cpp */,
-				2C0CAB0021F79805006AA6D7 /* w_object.h */,
 				2C0CAB0C21F79807006AA6D7 /* w_plane.h */,
 				2C0CAB2721F7980C006AA6D7 /* w_point.h */,
 				2C0CAB3821F79810006AA6D7 /* w_rectangle.h */,
@@ -5807,7 +5801,6 @@
 				2C0CA81D21F77EA1006AA6D7 /* slot4.hpp in Headers */,
 				2C0C9D4921F7515A006AA6D7 /* strand.hpp in Headers */,
 				2C0CA65B21F77215006AA6D7 /* max.hpp in Headers */,
-				2C0CAB4321F79810006AA6D7 /* w_object.h in Headers */,
 				2C0C9D7321F7515A006AA6D7 /* time_traits.hpp in Headers */,
 				2C0CA69221F77328006AA6D7 /* mod.hpp in Headers */,
 				2C0CA4E621F76C3D006AA6D7 /* mat3x4.hpp in Headers */,
@@ -7039,7 +7032,6 @@
 				2C0CAB5321F79810006AA6D7 /* w_image.cpp in Sources */,
 				2CD42F672368A35F00085092 /* hostip6.c in Sources */,
 				2CD42F0E2368A35F00085092 /* strtoofft.c in Sources */,
-				2C0CAB6F21F79810006AA6D7 /* w_object.cpp in Sources */,
 				2CD42F002368A35F00085092 /* http_negotiate.c in Sources */,
 				2CD42FA92368A36000085092 /* hmac.c in Sources */,
 				2CD42FBA2368A36000085092 /* asyn-ares.c in Sources */,
@@ -7199,7 +7191,7 @@
 				EXECUTABLE_PREFIX = lib;
 				FRAMEWORK_SEARCH_PATHS = "";
 				"FRAMEWORK_SEARCH_PATHS[arch=*]" = "";
-				GCC_C_LANGUAGE_STANDARD = c11;
+				GCC_C_LANGUAGE_STANDARD = c18;
 				GCC_ENABLE_CPP_EXCEPTIONS = YES;
 				GCC_ENABLE_CPP_RTTI = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
@@ -7254,7 +7246,7 @@
 				EXECUTABLE_PREFIX = lib;
 				FRAMEWORK_SEARCH_PATHS = "";
 				"FRAMEWORK_SEARCH_PATHS[arch=*]" = "";
-				GCC_C_LANGUAGE_STANDARD = c11;
+				GCC_C_LANGUAGE_STANDARD = c18;
 				GCC_ENABLE_CPP_EXCEPTIONS = YES;
 				GCC_ENABLE_CPP_RTTI = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
