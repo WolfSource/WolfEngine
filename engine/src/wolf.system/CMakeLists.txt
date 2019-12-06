@@ -66,26 +66,6 @@ add_library(wolf.system.linux SHARED ./lz4/lz4.c
 # pre processors
 target_compile_definitions(wolf.system.linux PUBLIC 
 GLM_FORCE_DEPTH_ZERO_TO_ONE 
-NN_HAVE_ACCEPT4=1 
-NN_HAVE_BACKTRACE=1 
-NN_HAVE_CLOCK_GETTIME=1 
-NN_HAVE_CLOCK_MONOTONIC=1 
-NN_HAVE_EPOLL=1 
-NN_HAVE_EVENTFD=1 
-NN_HAVE_GCC_ATOMIC_BUILTINS 
-NN_HAVE_GETADDRINFO_A=1 
-NN_HAVE_LIBNSL=1 
-NN_HAVE_LINUX 
-NN_HAVE_MSG_CONTROL=1 
-NN_HAVE_PIPE2=1 
-NN_HAVE_PIPE=1 
-NN_HAVE_POLL=1 
-NN_HAVE_SEMAPHORE 
-NN_HAVE_SEMAPHORE_PTHREAD=1 
-NN_HAVE_SOCKETPAIR=1 
-NN_HAVE_UNIX_SOCKETS=1 
-NN_MAX_SOCKETS=512 
-NN_STATIC_LIB=1
 _GNU_SOURCE 
 _POSIX_PTHREAD_SEMANTICS 
 _REENTRANT 
@@ -106,10 +86,8 @@ target_compile_options(wolf.system.linux PRIVATE -fPIC -m64)
 link_directories(/usr/local/lib)
 if (CMAKE_BUILD_TYPE MATCHES Debug)
 target_link_libraries(wolf.system.linux ${CMAKE_CURRENT_SOURCE_DIR}/../../deps/luaJIT/lib/linux/x64/debug/libluajit-static.a)
-target_link_libraries(wolf.system.linux ${CMAKE_CURRENT_SOURCE_DIR}/../../deps/nanomsg/lib/linux/x64/debug/libnanomsg.a)
 else()
 target_link_libraries(wolf.system.linux ${CMAKE_CURRENT_SOURCE_DIR}/../../deps/luaJIT/lib/linux/x64/release/libluajit-static.a)
-target_link_libraries(wolf.system.linux ${CMAKE_CURRENT_SOURCE_DIR}/../../deps/nanomsg/lib/linux/x64/release/libnanomsg.a)
 endif()
 
 target_link_libraries(wolf.system.linux xcb anl rt nsl pthread)
