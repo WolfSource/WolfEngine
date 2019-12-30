@@ -13,7 +13,7 @@
 extern "C" {
 #endif
 
-#ifdef __WIN32
+#ifdef _WIN32
 
     #include <SDKDDKVer.h>
     #ifndef WIN32_LEAN_AND_MEAN
@@ -37,7 +37,8 @@ extern "C" {
 #include <stdio.h>
 #include <wchar.h>
 #include <stdlib.h>
-#include <unistd.h>
+#include <stdint.h>
+//#include <unistd.h>
 #include <assert.h>
 #include <limits.h>
 #include <os/w_platform.h>
