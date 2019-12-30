@@ -1,2560 +1,492 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="..\..\..\src\wolf.system\w_linear_allocator.cpp" />
-    <ClCompile Include="..\..\..\src\wolf.system\w_logger.cpp" />
-    <ClCompile Include="..\..\..\src\wolf.system\w_lua.cpp" />
-    <ClCompile Include="..\..\..\src\wolf.system\w_memory.cpp" />
-    <ClCompile Include="..\..\..\src\wolf.system\w_system_pch.cpp" />
-    <ClCompile Include="..\..\..\src\wolf.system\w_time_span.cpp" />
-    <ClCompile Include="..\..\..\src\wolf.system\w_window.cpp" />
-    <ClCompile Include="..\..\..\src\wolf.system\w_xml.cpp" />
-    <ClCompile Include="..\..\..\src\wolf.system\w_task.cpp" />
-    <ClCompile Include="..\..\..\src\wolf.system\dllmain.cpp" />
-    <ClCompile Include="..\..\..\src\wolf.system\w_inputs_manager.cpp" />
-    <ClCompile Include="..\..\..\src\wolf.system\w_thread.cpp" />
-    <ClCompile Include="..\..\..\src\wolf.system\w_thread_pool.cpp" />
-    <ClCompile Include="..\..\..\src\wolf.system\w_network.cpp" />
-    <ClCompile Include="..\..\..\src\wolf.system\w_aligned_malloc.cpp" />
-    <ClCompile Include="..\..\..\src\wolf.system\w_process.cpp" />
-    <ClCompile Include="..\..\..\src\wolf.system\lz4\lz4.c">
-      <Filter>lz4</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\lz4\lz4frame.c">
-      <Filter>lz4</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\lz4\lz4hc.c">
-      <Filter>lz4</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\lz4\xxhash.c">
-      <Filter>lz4</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\w_url.cpp" />
-    <ClCompile Include="..\..\..\src\wolf.system\base64\chromiumbase64.c">
-      <Filter>base64</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\base64\fastavxbase64.c">
-      <Filter>base64</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\base64\klompavxbase64.c">
-      <Filter>base64</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\base64\quicktimebase64.c">
-      <Filter>base64</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\base64\scalarbase64.c">
-      <Filter>base64</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\w_image.cpp" />
-    <ClCompile Include="..\..\..\src\wolf.system\base64\fastavx512bwbase64.c">
-      <Filter>base64</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\lzma\7zAlloc.c">
-      <Filter>lzma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\lzma\7zArcIn.c">
-      <Filter>lzma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\lzma\7zBuf.c">
-      <Filter>lzma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\lzma\7zBuf2.c">
-      <Filter>lzma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\lzma\7zCrc.c">
-      <Filter>lzma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\lzma\7zCrcOpt.c">
-      <Filter>lzma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\lzma\7zDec.c">
-      <Filter>lzma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\lzma\7zFile.c">
-      <Filter>lzma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\lzma\7zStream.c">
-      <Filter>lzma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\lzma\Aes.c">
-      <Filter>lzma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\lzma\AesOpt.c">
-      <Filter>lzma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\lzma\Alloc.c">
-      <Filter>lzma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\lzma\Bcj2.c">
-      <Filter>lzma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\lzma\Bcj2Enc.c">
-      <Filter>lzma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\lzma\Bra.c">
-      <Filter>lzma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\lzma\Bra86.c">
-      <Filter>lzma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\lzma\BraIA64.c">
-      <Filter>lzma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\lzma\CpuArch.c">
-      <Filter>lzma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\lzma\Delta.c">
-      <Filter>lzma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\lzma\DllSecur.c">
-      <Filter>lzma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\lzma\LzFind.c">
-      <Filter>lzma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\lzma\LzFindMt.c">
-      <Filter>lzma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\lzma\Lzma2Dec.c">
-      <Filter>lzma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\lzma\Lzma2DecMt.c">
-      <Filter>lzma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\lzma\Lzma2Enc.c">
-      <Filter>lzma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\lzma\Lzma86Dec.c">
-      <Filter>lzma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\lzma\Lzma86Enc.c">
-      <Filter>lzma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\lzma\LzmaDec.c">
-      <Filter>lzma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\lzma\LzmaEnc.c">
-      <Filter>lzma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\lzma\LzmaLib.c">
-      <Filter>lzma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\lzma\MtCoder.c">
-      <Filter>lzma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\lzma\MtDec.c">
-      <Filter>lzma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\lzma\Ppmd7.c">
-      <Filter>lzma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\lzma\Ppmd7Dec.c">
-      <Filter>lzma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\lzma\Ppmd7Enc.c">
-      <Filter>lzma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\lzma\Sort.c">
-      <Filter>lzma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\lzma\Threads.c">
-      <Filter>lzma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\lzma\Xz.c">
-      <Filter>lzma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\lzma\XzCrc64.c">
-      <Filter>lzma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\lzma\XzCrc64Opt.c">
-      <Filter>lzma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\lzma\XzDec.c">
-      <Filter>lzma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\lzma\XzEnc.c">
-      <Filter>lzma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\lzma\XzIn.c">
-      <Filter>lzma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\w_compress_lzma.cpp" />
-    <ClCompile Include="..\..\..\src\wolf.system\w_compress_lz4.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\lzma\Sha256_lzma.c">
-      <Filter>lzma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vauth\cleartext.c">
-      <Filter>curl\src\vauth</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vauth\cram.c">
-      <Filter>curl\src\vauth</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vauth\digest.c">
-      <Filter>curl\src\vauth</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vauth\digest_sspi.c">
-      <Filter>curl\src\vauth</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vauth\krb5_gssapi.c">
-      <Filter>curl\src\vauth</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vauth\krb5_sspi.c">
-      <Filter>curl\src\vauth</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vauth\ntlm.c">
-      <Filter>curl\src\vauth</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vauth\ntlm_sspi.c">
-      <Filter>curl\src\vauth</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vauth\oauth2.c">
-      <Filter>curl\src\vauth</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vauth\spnego_gssapi.c">
-      <Filter>curl\src\vauth</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vauth\spnego_sspi.c">
-      <Filter>curl\src\vauth</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vauth\vauth.c">
-      <Filter>curl\src\vauth</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vtls\gskit.c">
-      <Filter>curl\src\vtls</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vtls\gtls.c">
-      <Filter>curl\src\vtls</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vtls\mbedtls.c">
-      <Filter>curl\src\vtls</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vtls\mesalink.c">
-      <Filter>curl\src\vtls</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vtls\nss.c">
-      <Filter>curl\src\vtls</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vtls\openssl.c">
-      <Filter>curl\src\vtls</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vtls\polarssl.c">
-      <Filter>curl\src\vtls</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vtls\polarssl_threadlock.c">
-      <Filter>curl\src\vtls</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vtls\schannel.c">
-      <Filter>curl\src\vtls</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vtls\schannel_verify.c">
-      <Filter>curl\src\vtls</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vtls\sectransp.c">
-      <Filter>curl\src\vtls</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vtls\vtls.c">
-      <Filter>curl\src\vtls</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vtls\wolfssl.c">
-      <Filter>curl\src\vtls</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vquic\ngtcp2.c">
-      <Filter>curl\src\vquic</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vquic\quiche.c">
-      <Filter>curl\src\vquic</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vssh\libssh.c">
-      <Filter>curl\src\vssh</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\vssh\libssh2.c">
-      <Filter>curl\src\vssh</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\altsvc.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\amigaos.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\asyn-ares.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\asyn-thread.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\base64.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\conncache.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\connect.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\content_encoding.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\cookie.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\curl_addrinfo.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\curl_ctype.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\curl_des.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\curl_endian.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\curl_fnmatch.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\curl_get_line.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\curl_gethostname.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\curl_gssapi.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\curl_memrchr.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\curl_multibyte.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\curl_ntlm_core.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\curl_ntlm_wb.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\curl_path.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\curl_range.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\curl_rtmp.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\curl_sasl.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\curl_sspi.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\curl_threads.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\dict.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\doh.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\dotdot.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\easy.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\escape.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\file.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\fileinfo.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\formdata.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\ftp.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\ftplistparser.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\getenv.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\getinfo.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\gopher.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\hash.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\hmac.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\hostasyn.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\hostcheck.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\hostip.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\hostip4.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\hostip6.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\hostsyn.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\http.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\http_chunks.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\http_digest.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\http_negotiate.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\http_ntlm.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\http_proxy.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\http2.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\idn_win32.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\if2ip.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\imap.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\inet_ntop.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\inet_pton.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\krb5.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\ldap.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\llist.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\md4.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\md5.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\memdebug.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\mime.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\mprintf.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\multi.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\netrc.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\non-ascii.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\nonblock.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\nwlib.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\nwos.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\openldap.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\parsedate.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\pingpong.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\pop3.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\progress.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\psl.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\rand.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\rtsp.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\security.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\select.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\sendf.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\setopt.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\sha256.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\share.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\slist.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\smb.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\smtp.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\socks.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\socks_gssapi.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\socks_sspi.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\speedcheck.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\splay.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\strcase.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\strdup.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\strerror.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\strtok.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\strtoofft.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\system_win32.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\telnet.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\tftp.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\timeval.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\transfer.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\url.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\urlapi.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\version.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\warnless.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\wildcard.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\curl\src\x509asn1.c">
-      <Filter>curl\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\glm\detail\glm.cpp">
-      <Filter>glm\detail</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\w_bounding.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\..\src\wolf.system\w_allocator.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\w_color.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\w_convert.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\w_game_time.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\w_io.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\w_linear_allocator.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\w_logger.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\w_lua.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\w_memory.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\w_process.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\w_system_pch.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\w_target_ver.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\w_task.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\w_time_span.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\w_timer.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\w_timer_callback.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\w_window.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\w_xml.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\w_system_export.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\w_std.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\w_point.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\w_rectangle.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\w_inputs_manager.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\w_signal.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\w_thread.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\w_thread_pool.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\wolf.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\rapidxml\rapidxml.hpp">
-      <Filter>rapidxml</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\rapidxml\rapidxml_iterators.hpp">
-      <Filter>rapidxml</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\rapidxml\rapidxml_print.hpp">
-      <Filter>rapidxml</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\rapidxml\rapidxml_utils.hpp">
-      <Filter>rapidxml</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\rapidjson\memorybuffer.h">
-      <Filter>rapidjson</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\rapidjson\memorystream.h">
-      <Filter>rapidjson</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\rapidjson\ostreamwrapper.h">
-      <Filter>rapidjson</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\rapidjson\pointer.h">
-      <Filter>rapidjson</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\rapidjson\prettywriter.h">
-      <Filter>rapidjson</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\rapidjson\rapidjson.h">
-      <Filter>rapidjson</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\rapidjson\reader.h">
-      <Filter>rapidjson</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\rapidjson\schema.h">
-      <Filter>rapidjson</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\rapidjson\stream.h">
-      <Filter>rapidjson</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\rapidjson\stringbuffer.h">
-      <Filter>rapidjson</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\rapidjson\writer.h">
-      <Filter>rapidjson</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\rapidjson\allocators.h">
-      <Filter>rapidjson</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\rapidjson\document.h">
-      <Filter>rapidjson</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\rapidjson\encodedstream.h">
-      <Filter>rapidjson</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\rapidjson\encodings.h">
-      <Filter>rapidjson</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\rapidjson\filereadstream.h">
-      <Filter>rapidjson</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\rapidjson\filewritestream.h">
-      <Filter>rapidjson</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\rapidjson\fwd.h">
-      <Filter>rapidjson</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\rapidjson\istreamwrapper.h">
-      <Filter>rapidjson</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\rapidjson\error\en.h">
-      <Filter>rapidjson\error</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\rapidjson\error\error.h">
-      <Filter>rapidjson\error</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\rapidjson\internal\biginteger.h">
-      <Filter>rapidjson\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\rapidjson\internal\diyfp.h">
-      <Filter>rapidjson\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\rapidjson\internal\dtoa.h">
-      <Filter>rapidjson\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\rapidjson\internal\ieee754.h">
-      <Filter>rapidjson\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\rapidjson\internal\itoa.h">
-      <Filter>rapidjson\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\rapidjson\internal\meta.h">
-      <Filter>rapidjson\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\rapidjson\internal\pow10.h">
-      <Filter>rapidjson\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\rapidjson\internal\regex.h">
-      <Filter>rapidjson\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\rapidjson\internal\stack.h">
-      <Filter>rapidjson\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\rapidjson\internal\strfunc.h">
-      <Filter>rapidjson\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\rapidjson\internal\strtod.h">
-      <Filter>rapidjson\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\rapidjson\internal\swap.h">
-      <Filter>rapidjson\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\rapidjson\msinttypes\inttypes.h">
-      <Filter>rapidjson\msinttypes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\rapidjson\msinttypes\stdint.h">
-      <Filter>rapidjson\msinttypes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\stb_image.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\stb_image_write.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\w_memory_pool.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\w_network.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\w_aligned_malloc.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\spdlog\spdlog.h">
-      <Filter>spdlog</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\msgpack.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\asio.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\lz4\lz4.h">
-      <Filter>lz4</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\lz4\lz4frame.h">
-      <Filter>lz4</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\lz4\lz4frame_static.h">
-      <Filter>lz4</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\lz4\lz4hc.h">
-      <Filter>lz4</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\lz4\xxhash.h">
-      <Filter>lz4</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\w_compress.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\curl\curl.h">
-      <Filter>curl</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\curlver.h">
-      <Filter>curl</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\easy.h">
-      <Filter>curl</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\mprintf.h">
-      <Filter>curl</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\multi.h">
-      <Filter>curl</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\stdcheaders.h">
-      <Filter>curl</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\system.h">
-      <Filter>curl</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\typecheck-gcc.h">
-      <Filter>curl</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\urlapi.h">
-      <Filter>curl</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\w_url.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\w_concurrent_queue.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\base64\chromiumbase64.h">
-      <Filter>base64</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\base64\fastavxbase64.h">
-      <Filter>base64</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\base64\klompavxbase64.h">
-      <Filter>base64</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\base64\quicktimebase64.h">
-      <Filter>base64</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\base64\scalarbase64.h">
-      <Filter>base64</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\w_image.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\base64\fastavx512bwbase64.h">
-      <Filter>base64</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\w_shared_memory.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\lzma\7z.h">
-      <Filter>lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\lzma\7zAlloc.h">
-      <Filter>lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\lzma\7zBuf.h">
-      <Filter>lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\lzma\7zCrc.h">
-      <Filter>lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\lzma\7zFile.h">
-      <Filter>lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\lzma\7zTypes.h">
-      <Filter>lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\lzma\7zVersion.h">
-      <Filter>lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\lzma\Aes.h">
-      <Filter>lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\lzma\Alloc.h">
-      <Filter>lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\lzma\Bcj2.h">
-      <Filter>lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\lzma\Bra.h">
-      <Filter>lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\lzma\Compiler.h">
-      <Filter>lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\lzma\CpuArch.h">
-      <Filter>lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\lzma\Delta.h">
-      <Filter>lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\lzma\DllSecur.h">
-      <Filter>lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\lzma\LzFind.h">
-      <Filter>lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\lzma\LzFindMt.h">
-      <Filter>lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\lzma\LzHash.h">
-      <Filter>lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\lzma\Lzma2Dec.h">
-      <Filter>lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\lzma\Lzma2DecMt.h">
-      <Filter>lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\lzma\Lzma2Enc.h">
-      <Filter>lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\lzma\Lzma86.h">
-      <Filter>lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\lzma\LzmaDec.h">
-      <Filter>lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\lzma\LzmaEnc.h">
-      <Filter>lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\lzma\LzmaLib.h">
-      <Filter>lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\lzma\MtCoder.h">
-      <Filter>lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\lzma\MtDec.h">
-      <Filter>lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\lzma\Ppmd.h">
-      <Filter>lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\lzma\Ppmd7.h">
-      <Filter>lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\lzma\Precomp.h">
-      <Filter>lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\lzma\RotateDefs.h">
-      <Filter>lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\lzma\Sort.h">
-      <Filter>lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\lzma\Threads.h">
-      <Filter>lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\lzma\Xz.h">
-      <Filter>lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\lzma\XzCrc64.h">
-      <Filter>lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\lzma\XzEnc.h">
-      <Filter>lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\w_compress_lzma.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\w_compress_lz4.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\w_compress_data_type.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\lzma\Sha256_lzma.h">
-      <Filter>lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\vauth\digest.h">
-      <Filter>curl\src\vauth</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\vauth\ntlm.h">
-      <Filter>curl\src\vauth</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\vauth\vauth.h">
-      <Filter>curl\src\vauth</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\vtls\gskit.h">
-      <Filter>curl\src\vtls</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\vtls\gtls.h">
-      <Filter>curl\src\vtls</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\vtls\mbedtls.h">
-      <Filter>curl\src\vtls</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\vtls\mesalink.h">
-      <Filter>curl\src\vtls</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\vtls\nssg.h">
-      <Filter>curl\src\vtls</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\vtls\openssl.h">
-      <Filter>curl\src\vtls</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\vtls\polarssl.h">
-      <Filter>curl\src\vtls</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\vtls\polarssl_threadlock.h">
-      <Filter>curl\src\vtls</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\vtls\schannel.h">
-      <Filter>curl\src\vtls</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\vtls\sectransp.h">
-      <Filter>curl\src\vtls</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\vtls\vtls.h">
-      <Filter>curl\src\vtls</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\vtls\wolfssl.h">
-      <Filter>curl\src\vtls</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\vquic\ngtcp2.h">
-      <Filter>curl\src\vquic</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\vquic\quiche.h">
-      <Filter>curl\src\vquic</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\altsvc.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\amigaos.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\arpa_telnet.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\asyn.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\conncache.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\connect.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\content_encoding.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\cookie.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_addrinfo.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_base64.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_ctype.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_des.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_endian.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_fnmatch.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_get_line.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_gethostname.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_gssapi.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_hmac.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_ldap.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_md4.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_md5.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_memory.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_memrchr.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_multibyte.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_ntlm_core.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_ntlm_wb.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_path.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_printf.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_range.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_rtmp.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_sasl.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_sec.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_setup.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_setup_once.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_sha256.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_sspi.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curl_threads.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\curlx.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\dict.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\doh.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\dotdot.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\easyif.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\escape.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\file.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\fileinfo.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\formdata.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\ftp.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\ftplistparser.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\getinfo.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\gopher.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\hash.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\hostcheck.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\hostip.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\http.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\http_chunks.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\http_digest.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\http_negotiate.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\http_ntlm.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\http_proxy.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\http2.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\if2ip.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\imap.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\inet_ntop.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\inet_pton.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\llist.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\memdebug.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\mime.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\multihandle.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\multiif.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\netrc.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\non-ascii.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\nonblock.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\parsedate.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\pingpong.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\pop3.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\progress.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\psl.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\quic.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\rand.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\rtsp.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\select.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\sendf.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\setopt.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\setup-os400.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\setup-vms.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\share.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\sigpipe.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\slist.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\smb.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\smtp.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\sockaddr.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\socks.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\speedcheck.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\splay.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\ssh.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\strcase.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\strdup.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\strerror.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\strtok.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\strtoofft.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\system_win32.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\telnet.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\tftp.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\timeval.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\transfer.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\url.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\urlapi-int.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\urldata.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\warnless.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\wildcard.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\curl\src\x509asn1.h">
-      <Filter>curl\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\wolf_version.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\glm\detail\_features.hpp">
-      <Filter>glm\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\detail\_fixes.hpp">
-      <Filter>glm\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\detail\_noise.hpp">
-      <Filter>glm\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\detail\_swizzle.hpp">
-      <Filter>glm\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\detail\_swizzle_func.hpp">
-      <Filter>glm\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\detail\_vectorize.hpp">
-      <Filter>glm\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\detail\compute_common.hpp">
-      <Filter>glm\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\detail\compute_vector_relational.hpp">
-      <Filter>glm\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\detail\qualifier.hpp">
-      <Filter>glm\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\detail\setup.hpp">
-      <Filter>glm\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\detail\type_float.hpp">
-      <Filter>glm\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\detail\type_half.hpp">
-      <Filter>glm\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\detail\type_mat2x2.hpp">
-      <Filter>glm\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\detail\type_mat2x3.hpp">
-      <Filter>glm\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\detail\type_mat2x4.hpp">
-      <Filter>glm\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\detail\type_mat3x2.hpp">
-      <Filter>glm\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\detail\type_mat3x3.hpp">
-      <Filter>glm\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\detail\type_mat3x4.hpp">
-      <Filter>glm\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\detail\type_mat4x2.hpp">
-      <Filter>glm\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\detail\type_mat4x3.hpp">
-      <Filter>glm\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\detail\type_mat4x4.hpp">
-      <Filter>glm\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\detail\type_quat.hpp">
-      <Filter>glm\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\detail\type_vec1.hpp">
-      <Filter>glm\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\detail\type_vec2.hpp">
-      <Filter>glm\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\detail\type_vec3.hpp">
-      <Filter>glm\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\detail\type_vec4.hpp">
-      <Filter>glm\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_clip_space.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_common.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_double2x2.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_double2x2_precision.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_double2x3.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_double2x3_precision.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_double2x4.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_double2x4_precision.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_double3x2.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_double3x2_precision.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_double3x3.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_double3x3_precision.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_double3x4.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_double3x4_precision.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_double4x2.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_double4x2_precision.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_double4x3.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_double4x3_precision.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_double4x4.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_double4x4_precision.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_float2x2.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_float2x2_precision.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_float2x3.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_float2x3_precision.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_float2x4.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_float2x4_precision.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_float3x2.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_float3x2_precision.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_float3x3.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_float3x3_precision.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_float3x4.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_float3x4_precision.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_float4x2.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_float4x2_precision.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_float4x3.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_float4x3_precision.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_float4x4.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_float4x4_precision.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_projection.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_relational.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\matrix_transform.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\quaternion_common.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\quaternion_double.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\quaternion_double_precision.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\quaternion_exponential.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\quaternion_float.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\quaternion_float_precision.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\quaternion_geometric.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\quaternion_relational.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\quaternion_transform.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\quaternion_trigonometric.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\scalar_common.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\scalar_constants.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\scalar_int_sized.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\scalar_integer.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\scalar_relational.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\scalar_uint_sized.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\scalar_ulp.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_bool1.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_bool1_precision.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_bool2.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_bool2_precision.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_bool3.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_bool3_precision.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_bool4.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_bool4_precision.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_common.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_double1.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_double1_precision.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_double2.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_double2_precision.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_double3.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_double3_precision.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_double4.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_double4_precision.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_float1.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_float1_precision.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_float2.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_float2_precision.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_float3.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_float3_precision.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_float4.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_float4_precision.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_int1.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_int1_precision.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_int2.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_int2_precision.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_int3.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_int3_precision.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_int4.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_int4_precision.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_integer.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_relational.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_uint1.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_uint1_precision.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_uint2.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_uint2_precision.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_uint3.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_uint3_precision.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_uint4.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_uint4_precision.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext\vector_ulp.hpp">
-      <Filter>glm\ext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtc\bitfield.hpp">
-      <Filter>glm\gtc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtc\color_space.hpp">
-      <Filter>glm\gtc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtc\constants.hpp">
-      <Filter>glm\gtc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtc\epsilon.hpp">
-      <Filter>glm\gtc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtc\integer.hpp">
-      <Filter>glm\gtc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtc\matrix_access.hpp">
-      <Filter>glm\gtc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtc\matrix_integer.hpp">
-      <Filter>glm\gtc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtc\matrix_inverse.hpp">
-      <Filter>glm\gtc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtc\matrix_transform.hpp">
-      <Filter>glm\gtc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtc\noise.hpp">
-      <Filter>glm\gtc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtc\packing.hpp">
-      <Filter>glm\gtc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtc\quaternion.hpp">
-      <Filter>glm\gtc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtc\random.hpp">
-      <Filter>glm\gtc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtc\reciprocal.hpp">
-      <Filter>glm\gtc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtc\round.hpp">
-      <Filter>glm\gtc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtc\type_aligned.hpp">
-      <Filter>glm\gtc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtc\type_precision.hpp">
-      <Filter>glm\gtc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtc\type_ptr.hpp">
-      <Filter>glm\gtc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtc\ulp.hpp">
-      <Filter>glm\gtc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtc\vec1.hpp">
-      <Filter>glm\gtc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\associated_min_max.hpp">
-      <Filter>glm\gtx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\bit.hpp">
-      <Filter>glm\gtx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\closest_point.hpp">
-      <Filter>glm\gtx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\color_encoding.hpp">
-      <Filter>glm\gtx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\color_space.hpp">
-      <Filter>glm\gtx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\color_space_YCoCg.hpp">
-      <Filter>glm\gtx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\common.hpp">
-      <Filter>glm\gtx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\compatibility.hpp">
-      <Filter>glm\gtx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\component_wise.hpp">
-      <Filter>glm\gtx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\dual_quaternion.hpp">
-      <Filter>glm\gtx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\easing.hpp">
-      <Filter>glm\gtx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\euler_angles.hpp">
-      <Filter>glm\gtx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\extend.hpp">
-      <Filter>glm\gtx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\extended_min_max.hpp">
-      <Filter>glm\gtx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\exterior_product.hpp">
-      <Filter>glm\gtx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\fast_exponential.hpp">
-      <Filter>glm\gtx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\fast_square_root.hpp">
-      <Filter>glm\gtx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\fast_trigonometry.hpp">
-      <Filter>glm\gtx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\functions.hpp">
-      <Filter>glm\gtx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\gradient_paint.hpp">
-      <Filter>glm\gtx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\handed_coordinate_space.hpp">
-      <Filter>glm\gtx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\hash.hpp">
-      <Filter>glm\gtx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\integer.hpp">
-      <Filter>glm\gtx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\intersect.hpp">
-      <Filter>glm\gtx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\io.hpp">
-      <Filter>glm\gtx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\log_base.hpp">
-      <Filter>glm\gtx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\matrix_cross_product.hpp">
-      <Filter>glm\gtx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\matrix_decompose.hpp">
-      <Filter>glm\gtx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\matrix_factorisation.hpp">
-      <Filter>glm\gtx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\matrix_interpolation.hpp">
-      <Filter>glm\gtx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\matrix_major_storage.hpp">
-      <Filter>glm\gtx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\matrix_operation.hpp">
-      <Filter>glm\gtx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\matrix_query.hpp">
-      <Filter>glm\gtx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\matrix_transform_2d.hpp">
-      <Filter>glm\gtx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\mixed_product.hpp">
-      <Filter>glm\gtx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\norm.hpp">
-      <Filter>glm\gtx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\normal.hpp">
-      <Filter>glm\gtx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\normalize_dot.hpp">
-      <Filter>glm\gtx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\number_precision.hpp">
-      <Filter>glm\gtx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\optimum_pow.hpp">
-      <Filter>glm\gtx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\orthonormalize.hpp">
-      <Filter>glm\gtx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\perpendicular.hpp">
-      <Filter>glm\gtx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\polar_coordinates.hpp">
-      <Filter>glm\gtx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\projection.hpp">
-      <Filter>glm\gtx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\quaternion.hpp">
-      <Filter>glm\gtx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\range.hpp">
-      <Filter>glm\gtx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\raw_data.hpp">
-      <Filter>glm\gtx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\rotate_normalized_axis.hpp">
-      <Filter>glm\gtx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\rotate_vector.hpp">
-      <Filter>glm\gtx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\scalar_multiplication.hpp">
-      <Filter>glm\gtx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\scalar_relational.hpp">
-      <Filter>glm\gtx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\spline.hpp">
-      <Filter>glm\gtx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\std_based_type.hpp">
-      <Filter>glm\gtx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\string_cast.hpp">
-      <Filter>glm\gtx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\texture.hpp">
-      <Filter>glm\gtx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\transform.hpp">
-      <Filter>glm\gtx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\transform2.hpp">
-      <Filter>glm\gtx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\type_aligned.hpp">
-      <Filter>glm\gtx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\type_trait.hpp">
-      <Filter>glm\gtx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\vec_swizzle.hpp">
-      <Filter>glm\gtx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\vector_angle.hpp">
-      <Filter>glm\gtx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\vector_query.hpp">
-      <Filter>glm\gtx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\gtx\wrap.hpp">
-      <Filter>glm\gtx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\simd\common.h">
-      <Filter>glm\simd</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\simd\exponential.h">
-      <Filter>glm\simd</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\simd\geometric.h">
-      <Filter>glm\simd</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\simd\integer.h">
-      <Filter>glm\simd</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\simd\matrix.h">
-      <Filter>glm\simd</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\simd\packing.h">
-      <Filter>glm\simd</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\simd\platform.h">
-      <Filter>glm\simd</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\simd\trigonometric.h">
-      <Filter>glm\simd</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\simd\vector_relational.h">
-      <Filter>glm\simd</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\common.hpp">
-      <Filter>glm</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\exponential.hpp">
-      <Filter>glm</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\ext.hpp">
-      <Filter>glm</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\fwd.hpp">
-      <Filter>glm</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\geometric.hpp">
-      <Filter>glm</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\glm.hpp">
-      <Filter>glm</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\integer.hpp">
-      <Filter>glm</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\mat2x2.hpp">
-      <Filter>glm</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\mat2x3.hpp">
-      <Filter>glm</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\mat2x4.hpp">
-      <Filter>glm</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\mat3x2.hpp">
-      <Filter>glm</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\mat3x3.hpp">
-      <Filter>glm</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\mat3x4.hpp">
-      <Filter>glm</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\mat4x2.hpp">
-      <Filter>glm</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\mat4x3.hpp">
-      <Filter>glm</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\mat4x4.hpp">
-      <Filter>glm</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\matrix.hpp">
-      <Filter>glm</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\packing.hpp">
-      <Filter>glm</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\trigonometric.hpp">
-      <Filter>glm</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\vec2.hpp">
-      <Filter>glm</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\vec3.hpp">
-      <Filter>glm</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\vec4.hpp">
-      <Filter>glm</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm\vector_relational.hpp">
-      <Filter>glm</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\glm_extension.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\w_bounding.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <Filter Include="rapidxml">
-      <UniqueIdentifier>{482a21ce-0870-49ba-8861-e5241109f185}</UniqueIdentifier>
+    <Filter Include="apr-1">
+      <UniqueIdentifier>{bc1a3134-6f03-4e69-ac0d-3bb04f9bd5ee}</UniqueIdentifier>
     </Filter>
-    <Filter Include="rapidjson">
-      <UniqueIdentifier>{f26bc390-93d2-4e35-a612-4ddb6ce18021}</UniqueIdentifier>
+    <Filter Include="apr-1\src">
+      <UniqueIdentifier>{cda63e14-e4aa-4edd-b0fe-bcf5e3e00f02}</UniqueIdentifier>
     </Filter>
-    <Filter Include="rapidjson\error">
-      <UniqueIdentifier>{79f1f8a1-708f-4a54-b90f-325a42ebc38f}</UniqueIdentifier>
+    <Filter Include="apr-1\src\atomic">
+      <UniqueIdentifier>{62dc852c-005b-4cf7-95fd-55f0e70a1509}</UniqueIdentifier>
     </Filter>
-    <Filter Include="rapidjson\internal">
-      <UniqueIdentifier>{b4a7f4b8-8f35-4f2c-b2a6-2d713551628e}</UniqueIdentifier>
+    <Filter Include="apr-1\src\atomic\win32">
+      <UniqueIdentifier>{d12648e3-7d29-46b0-bd0b-e0c2732345a1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="rapidjson\msinttypes">
-      <UniqueIdentifier>{3b8c030f-0476-4753-953c-776bb1cd58b5}</UniqueIdentifier>
+    <Filter Include="apr-1\src\strings">
+      <UniqueIdentifier>{912239f3-6926-4353-a2cd-9a9f8d84fa6f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="spdlog">
-      <UniqueIdentifier>{6e6e72db-9eb4-485e-985b-d9fd33a53203}</UniqueIdentifier>
+    <Filter Include="apr-1\src\dso">
+      <UniqueIdentifier>{7c5631d8-9657-4ca8-80cc-85ff0a5953e9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="lz4">
-      <UniqueIdentifier>{a1acc8b0-e651-47b6-96b5-9e39cdbc75d3}</UniqueIdentifier>
+    <Filter Include="apr-1\src\dso\win32">
+      <UniqueIdentifier>{f20967e3-7926-4226-b125-005c0bacc844}</UniqueIdentifier>
     </Filter>
-    <Filter Include="curl">
-      <UniqueIdentifier>{b8fbfa8e-0869-4937-9121-ea85fcb657ae}</UniqueIdentifier>
+    <Filter Include="apr-1\src\user">
+      <UniqueIdentifier>{07934159-e54a-4644-9646-2d53d638a89e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="curl\src">
-      <UniqueIdentifier>{6d22db2d-49fc-4421-b330-c864f05c893d}</UniqueIdentifier>
+    <Filter Include="apr-1\src\tables">
+      <UniqueIdentifier>{63045e96-8bf0-4a29-b575-91722dbf2f64}</UniqueIdentifier>
     </Filter>
-    <Filter Include="curl\src\vtls">
-      <UniqueIdentifier>{7a0ee3a7-b8c9-4eba-ae00-536b4bc57eed}</UniqueIdentifier>
+    <Filter Include="apr-1\src\threadproc">
+      <UniqueIdentifier>{b8d91e64-fbb9-4d26-929d-27dcc2127813}</UniqueIdentifier>
     </Filter>
-    <Filter Include="curl\src\vauth">
-      <UniqueIdentifier>{03e39b23-e6ac-4ee6-8e67-b605a34a8a37}</UniqueIdentifier>
+    <Filter Include="apr-1\src\time">
+      <UniqueIdentifier>{f226f318-8b60-41b5-837b-5163250317ce}</UniqueIdentifier>
     </Filter>
-    <Filter Include="base64">
-      <UniqueIdentifier>{950eb53b-3832-46f6-af36-f56e607b0357}</UniqueIdentifier>
+    <Filter Include="apr-1\src\encoding">
+      <UniqueIdentifier>{660006e6-347e-49b4-ae55-c4337538b17b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="lzma">
-      <UniqueIdentifier>{c1585357-3a6a-4fd1-a800-267059539c85}</UniqueIdentifier>
+    <Filter Include="apr-1\src\file_io">
+      <UniqueIdentifier>{248bb18e-d024-4be9-9b32-706199416560}</UniqueIdentifier>
     </Filter>
-    <Filter Include="curl\src\vquic">
-      <UniqueIdentifier>{50e8fe6a-15f3-4c56-885a-bfb89fa9d9d3}</UniqueIdentifier>
+    <Filter Include="apr-1\src\locks">
+      <UniqueIdentifier>{1cf72def-c0b9-473f-8b44-cef54150f97d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="curl\src\vssh">
-      <UniqueIdentifier>{e14e9470-7034-4e6c-9905-43e586856161}</UniqueIdentifier>
+    <Filter Include="apr-1\src\memory">
+      <UniqueIdentifier>{c2e5c7fe-a89b-4943-a143-869cc65d0ee5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="glm">
-      <UniqueIdentifier>{e7aaa547-d123-4d62-821f-3069a00b64df}</UniqueIdentifier>
+    <Filter Include="apr-1\src\misc">
+      <UniqueIdentifier>{88cebe61-4371-42cd-8db0-515bf47e9343}</UniqueIdentifier>
     </Filter>
-    <Filter Include="glm\detail">
-      <UniqueIdentifier>{d41f9a36-d0ad-42b1-95de-69367c3b6991}</UniqueIdentifier>
+    <Filter Include="apr-1\src\mmap">
+      <UniqueIdentifier>{192b984d-a869-473c-80f9-299f1736527a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="glm\ext">
-      <UniqueIdentifier>{33a73ffc-1bc9-4b8b-b61d-5b96c58e9b38}</UniqueIdentifier>
+    <Filter Include="apr-1\src\network_io">
+      <UniqueIdentifier>{5f043633-b41f-451d-9b29-e6f481e3e499}</UniqueIdentifier>
     </Filter>
-    <Filter Include="glm\gtc">
-      <UniqueIdentifier>{9bb6815c-5389-477c-8ce0-ede0fb612477}</UniqueIdentifier>
+    <Filter Include="apr-1\src\passwd">
+      <UniqueIdentifier>{11cbd962-a849-4bb2-9bb4-db63ba5a1403}</UniqueIdentifier>
     </Filter>
-    <Filter Include="glm\gtx">
-      <UniqueIdentifier>{32b44add-9427-400c-83ef-10c51ba9a8c9}</UniqueIdentifier>
+    <Filter Include="apr-1\src\poll">
+      <UniqueIdentifier>{f84e3139-a9a9-4bac-9bb7-7dfcf045660d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="glm\simd">
-      <UniqueIdentifier>{732a871b-e83a-4a6f-adba-bfb8ee05f0a0}</UniqueIdentifier>
+    <Filter Include="apr-1\src\random">
+      <UniqueIdentifier>{cdfd2437-b386-4674-b8d3-debd8569b5a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="apr-1\src\shmem">
+      <UniqueIdentifier>{819e76ba-8b09-4be3-8610-ab338f808db5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="apr-1\src\file_io\win32">
+      <UniqueIdentifier>{ade6487e-6577-4e66-98fb-0dddf44d261e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="apr-1\src\locks\win32">
+      <UniqueIdentifier>{e21220a1-6e51-4200-9a8b-c961266e83c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="apr-1\src\memory\unix">
+      <UniqueIdentifier>{e6107107-4ec1-4fb9-a50b-64cedc474a77}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="apr-1\src\misc\win32">
+      <UniqueIdentifier>{ce4f7161-98c6-4e76-917c-35550e918a21}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="apr-1\src\mmap\win32">
+      <UniqueIdentifier>{26e9f2d0-8859-4156-ab2c-e78948315008}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="apr-1\src\network_io\win32">
+      <UniqueIdentifier>{5042a86a-3693-4172-90ef-72073d56351b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="apr-1\src\shmem\win32">
+      <UniqueIdentifier>{3105b8fa-5b60-42cf-b965-0da25ceb5a93}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="apr-1\src\tables\win32">
+      <UniqueIdentifier>{c8ba28a9-fc28-4973-82f3-15915e1b4064}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="apr-1\src\threadproc\win32">
+      <UniqueIdentifier>{26bb656c-7c8b-4e5b-bdbf-016478c777b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="apr-1\src\time\win32">
+      <UniqueIdentifier>{e8207e9f-4ebe-4c2d-905f-dcde438794cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="apr-1\src\user\win32">
+      <UniqueIdentifier>{9044f43e-2d8b-4e27-a359-d393f527d960}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="apr-1\src\poll\unix">
+      <UniqueIdentifier>{b1db3c2e-6890-44b4-94e2-e3fb6efe8445}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="apr-1\src\random\unix">
+      <UniqueIdentifier>{94c0ad19-0a73-498e-b5a1-6f5003cb5660}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="apr-1\src\file_io\unix">
+      <UniqueIdentifier>{aa36d00b-f4f7-49d5-a65f-6cb54becad83}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="apr-1\src\mmap\unix">
+      <UniqueIdentifier>{4e794d6e-6b78-4ffd-ae17-11a132d27ffa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="apr-1\src\misc\unix">
+      <UniqueIdentifier>{9ca3e041-b46d-414a-bd7a-cb2769abefb6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="apr-1\src\network_io\unix">
+      <UniqueIdentifier>{146a4c4f-af82-4fb4-a26b-9d8dfaea714d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\src\wolf.system\curl\src\curl_config.h.in">
-      <Filter>curl\src</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\detail\func_common.inl">
-      <Filter>glm\detail</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\detail\func_common_simd.inl">
-      <Filter>glm\detail</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\detail\func_exponential.inl">
-      <Filter>glm\detail</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\detail\func_exponential_simd.inl">
-      <Filter>glm\detail</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\detail\func_geometric.inl">
-      <Filter>glm\detail</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\detail\func_geometric_simd.inl">
-      <Filter>glm\detail</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\detail\func_integer.inl">
-      <Filter>glm\detail</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\detail\func_integer_simd.inl">
-      <Filter>glm\detail</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\detail\func_matrix.inl">
-      <Filter>glm\detail</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\detail\func_matrix_simd.inl">
-      <Filter>glm\detail</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\detail\func_packing.inl">
-      <Filter>glm\detail</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\detail\func_packing_simd.inl">
-      <Filter>glm\detail</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\detail\func_trigonometric.inl">
-      <Filter>glm\detail</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\detail\func_trigonometric_simd.inl">
-      <Filter>glm\detail</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\detail\func_vector_relational.inl">
-      <Filter>glm\detail</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\detail\func_vector_relational_simd.inl">
-      <Filter>glm\detail</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\detail\type_half.inl">
-      <Filter>glm\detail</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\detail\type_mat2x2.inl">
-      <Filter>glm\detail</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\detail\type_mat2x3.inl">
-      <Filter>glm\detail</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\detail\type_mat2x4.inl">
-      <Filter>glm\detail</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\detail\type_mat3x2.inl">
-      <Filter>glm\detail</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\detail\type_mat3x3.inl">
-      <Filter>glm\detail</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\detail\type_mat3x4.inl">
-      <Filter>glm\detail</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\detail\type_mat4x2.inl">
-      <Filter>glm\detail</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\detail\type_mat4x3.inl">
-      <Filter>glm\detail</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\detail\type_mat4x4.inl">
-      <Filter>glm\detail</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\detail\type_mat4x4_simd.inl">
-      <Filter>glm\detail</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\detail\type_quat.inl">
-      <Filter>glm\detail</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\detail\type_quat_simd.inl">
-      <Filter>glm\detail</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\detail\type_vec1.inl">
-      <Filter>glm\detail</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\detail\type_vec2.inl">
-      <Filter>glm\detail</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\detail\type_vec3.inl">
-      <Filter>glm\detail</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\detail\type_vec4.inl">
-      <Filter>glm\detail</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\detail\type_vec4_simd.inl">
-      <Filter>glm\detail</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\ext\matrix_clip_space.inl">
-      <Filter>glm\ext</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\ext\matrix_common.inl">
-      <Filter>glm\ext</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\ext\matrix_projection.inl">
-      <Filter>glm\ext</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\ext\matrix_relational.inl">
-      <Filter>glm\ext</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\ext\matrix_transform.inl">
-      <Filter>glm\ext</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\ext\quaternion_common.inl">
-      <Filter>glm\ext</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\ext\quaternion_common_simd.inl">
-      <Filter>glm\ext</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\ext\quaternion_exponential.inl">
-      <Filter>glm\ext</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\ext\quaternion_geometric.inl">
-      <Filter>glm\ext</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\ext\quaternion_relational.inl">
-      <Filter>glm\ext</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\ext\quaternion_transform.inl">
-      <Filter>glm\ext</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\ext\quaternion_trigonometric.inl">
-      <Filter>glm\ext</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\ext\scalar_common.inl">
-      <Filter>glm\ext</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\ext\scalar_constants.inl">
-      <Filter>glm\ext</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\ext\scalar_integer.inl">
-      <Filter>glm\ext</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\ext\scalar_relational.inl">
-      <Filter>glm\ext</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\ext\scalar_ulp.inl">
-      <Filter>glm\ext</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\ext\vector_common.inl">
-      <Filter>glm\ext</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\ext\vector_integer.inl">
-      <Filter>glm\ext</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\ext\vector_relational.inl">
-      <Filter>glm\ext</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\ext\vector_ulp.inl">
-      <Filter>glm\ext</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtc\bitfield.inl">
-      <Filter>glm\gtc</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtc\color_space.inl">
-      <Filter>glm\gtc</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtc\constants.inl">
-      <Filter>glm\gtc</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtc\epsilon.inl">
-      <Filter>glm\gtc</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtc\integer.inl">
-      <Filter>glm\gtc</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtc\matrix_access.inl">
-      <Filter>glm\gtc</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtc\matrix_inverse.inl">
-      <Filter>glm\gtc</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtc\matrix_transform.inl">
-      <Filter>glm\gtc</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtc\noise.inl">
-      <Filter>glm\gtc</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtc\packing.inl">
-      <Filter>glm\gtc</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtc\quaternion.inl">
-      <Filter>glm\gtc</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtc\quaternion_simd.inl">
-      <Filter>glm\gtc</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtc\random.inl">
-      <Filter>glm\gtc</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtc\reciprocal.inl">
-      <Filter>glm\gtc</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtc\round.inl">
-      <Filter>glm\gtc</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtc\type_precision.inl">
-      <Filter>glm\gtc</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtc\type_ptr.inl">
-      <Filter>glm\gtc</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtc\ulp.inl">
-      <Filter>glm\gtc</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtx\associated_min_max.inl">
-      <Filter>glm\gtx</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtx\bit.inl">
-      <Filter>glm\gtx</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtx\closest_point.inl">
-      <Filter>glm\gtx</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtx\color_encoding.inl">
-      <Filter>glm\gtx</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtx\color_space.inl">
-      <Filter>glm\gtx</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtx\color_space_YCoCg.inl">
-      <Filter>glm\gtx</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtx\common.inl">
-      <Filter>glm\gtx</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtx\compatibility.inl">
-      <Filter>glm\gtx</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtx\component_wise.inl">
-      <Filter>glm\gtx</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtx\dual_quaternion.inl">
-      <Filter>glm\gtx</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtx\easing.inl">
-      <Filter>glm\gtx</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtx\euler_angles.inl">
-      <Filter>glm\gtx</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtx\extend.inl">
-      <Filter>glm\gtx</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtx\extended_min_max.inl">
-      <Filter>glm\gtx</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtx\exterior_product.inl">
-      <Filter>glm\gtx</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtx\fast_exponential.inl">
-      <Filter>glm\gtx</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtx\fast_square_root.inl">
-      <Filter>glm\gtx</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtx\fast_trigonometry.inl">
-      <Filter>glm\gtx</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtx\float_notmalize.inl">
-      <Filter>glm\gtx</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtx\functions.inl">
-      <Filter>glm\gtx</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtx\gradient_paint.inl">
-      <Filter>glm\gtx</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtx\handed_coordinate_space.inl">
-      <Filter>glm\gtx</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtx\hash.inl">
-      <Filter>glm\gtx</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtx\integer.inl">
-      <Filter>glm\gtx</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtx\intersect.inl">
-      <Filter>glm\gtx</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtx\io.inl">
-      <Filter>glm\gtx</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtx\log_base.inl">
-      <Filter>glm\gtx</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtx\matrix_cross_product.inl">
-      <Filter>glm\gtx</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtx\matrix_decompose.inl">
-      <Filter>glm\gtx</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtx\matrix_factorisation.inl">
-      <Filter>glm\gtx</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtx\matrix_interpolation.inl">
-      <Filter>glm\gtx</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtx\matrix_major_storage.inl">
-      <Filter>glm\gtx</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtx\matrix_operation.inl">
-      <Filter>glm\gtx</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtx\matrix_query.inl">
-      <Filter>glm\gtx</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtx\matrix_transform_2d.inl">
-      <Filter>glm\gtx</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtx\mixed_product.inl">
-      <Filter>glm\gtx</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtx\norm.inl">
-      <Filter>glm\gtx</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtx\normal.inl">
-      <Filter>glm\gtx</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtx\normalize_dot.inl">
-      <Filter>glm\gtx</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtx\number_precision.inl">
-      <Filter>glm\gtx</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtx\optimum_pow.inl">
-      <Filter>glm\gtx</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtx\orthonormalize.inl">
-      <Filter>glm\gtx</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtx\perpendicular.inl">
-      <Filter>glm\gtx</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtx\polar_coordinates.inl">
-      <Filter>glm\gtx</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtx\projection.inl">
-      <Filter>glm\gtx</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtx\quaternion.inl">
-      <Filter>glm\gtx</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtx\raw_data.inl">
-      <Filter>glm\gtx</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtx\rotate_normalized_axis.inl">
-      <Filter>glm\gtx</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtx\rotate_vector.inl">
-      <Filter>glm\gtx</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtx\scalar_relational.inl">
-      <Filter>glm\gtx</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtx\spline.inl">
-      <Filter>glm\gtx</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtx\std_based_type.inl">
-      <Filter>glm\gtx</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtx\string_cast.inl">
-      <Filter>glm\gtx</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtx\texture.inl">
-      <Filter>glm\gtx</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtx\transform.inl">
-      <Filter>glm\gtx</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtx\transform2.inl">
-      <Filter>glm\gtx</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtx\type_aligned.inl">
-      <Filter>glm\gtx</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtx\type_trait.inl">
-      <Filter>glm\gtx</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtx\vector_angle.inl">
-      <Filter>glm\gtx</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtx\vector_query.inl">
-      <Filter>glm\gtx</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\glm\gtx\wrap.inl">
-      <Filter>glm\gtx</Filter>
-    </None>
+    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr.h">
+      <Filter>apr-1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_allocator.h">
+      <Filter>apr-1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_atomic.h">
+      <Filter>apr-1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_cstr.h">
+      <Filter>apr-1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_dso.h">
+      <Filter>apr-1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_encode.h">
+      <Filter>apr-1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_env.h">
+      <Filter>apr-1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_errno.h">
+      <Filter>apr-1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_escape.h">
+      <Filter>apr-1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_file_info.h">
+      <Filter>apr-1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_file_io.h">
+      <Filter>apr-1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_fnmatch.h">
+      <Filter>apr-1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_general.h">
+      <Filter>apr-1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_getopt.h">
+      <Filter>apr-1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_global_mutex.h">
+      <Filter>apr-1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_hash.h">
+      <Filter>apr-1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_inherit.h">
+      <Filter>apr-1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_lib.h">
+      <Filter>apr-1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_mmap.h">
+      <Filter>apr-1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_network_io.h">
+      <Filter>apr-1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_perms_set.h">
+      <Filter>apr-1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_poll.h">
+      <Filter>apr-1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_pools.h">
+      <Filter>apr-1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_portable.h">
+      <Filter>apr-1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_proc_mutex.h">
+      <Filter>apr-1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_random.h">
+      <Filter>apr-1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_ring.h">
+      <Filter>apr-1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_shm.h">
+      <Filter>apr-1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_signal.h">
+      <Filter>apr-1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_skiplist.h">
+      <Filter>apr-1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_strings.h">
+      <Filter>apr-1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_support.h">
+      <Filter>apr-1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_tables.h">
+      <Filter>apr-1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_thread_cond.h">
+      <Filter>apr-1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_thread_mutex.h">
+      <Filter>apr-1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_thread_proc.h">
+      <Filter>apr-1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_thread_rwlock.h">
+      <Filter>apr-1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_time.h">
+      <Filter>apr-1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_user.h">
+      <Filter>apr-1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_version.h">
+      <Filter>apr-1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_want.h">
+      <Filter>apr-1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_osx.h">
+      <Filter>apr-1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_win32.h">
+      <Filter>apr-1</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="..\..\..\src\wolf.system\rapidjson\license.txt">
-      <Filter>rapidjson</Filter>
-    </Text>
-    <Text Include="..\..\..\src\wolf.system\rapidxml\license.txt">
-      <Filter>rapidxml</Filter>
-    </Text>
-    <Text Include="..\..\..\src\wolf.system\spdlog\version.txt">
-      <Filter>spdlog</Filter>
-    </Text>
-    <Text Include="..\..\..\src\wolf.system\base64\version.txt">
-      <Filter>base64</Filter>
-    </Text>
-    <Text Include="..\..\..\src\wolf.system\base64\LICENSE">
-      <Filter>base64</Filter>
-    </Text>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="Resource.rc" />
-    <ResourceCompile Include="..\..\..\src\wolf.system\lzma\7zVersion.rc">
-      <Filter>lzma</Filter>
-    </ResourceCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\atomic\win32\apr_atomic.c">
+      <Filter>apr-1\src\atomic\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\strings\apr_cpystrn.c">
+      <Filter>apr-1\src\strings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\strings\apr_cstr.c">
+      <Filter>apr-1\src\strings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\strings\apr_fnmatch.c">
+      <Filter>apr-1\src\strings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\strings\apr_snprintf.c">
+      <Filter>apr-1\src\strings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\strings\apr_strings.c">
+      <Filter>apr-1\src\strings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\strings\apr_strnatcmp.c">
+      <Filter>apr-1\src\strings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\strings\apr_strtok.c">
+      <Filter>apr-1\src\strings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\dso\win32\dso.c">
+      <Filter>apr-1\src\dso\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\encoding\apr_encode.c">
+      <Filter>apr-1\src\encoding</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\encoding\apr_escape.c">
+      <Filter>apr-1\src\encoding</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\file_io\win32\buffer.c">
+      <Filter>apr-1\src\file_io\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\file_io\win32\dir.c">
+      <Filter>apr-1\src\file_io\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\file_io\win32\filedup.c">
+      <Filter>apr-1\src\file_io\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\file_io\win32\filepath.c">
+      <Filter>apr-1\src\file_io\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\file_io\win32\filestat.c">
+      <Filter>apr-1\src\file_io\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\file_io\win32\filesys.c">
+      <Filter>apr-1\src\file_io\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\file_io\win32\flock.c">
+      <Filter>apr-1\src\file_io\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\file_io\win32\open.c">
+      <Filter>apr-1\src\file_io\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\file_io\win32\pipe.c">
+      <Filter>apr-1\src\file_io\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\file_io\win32\readwrite.c">
+      <Filter>apr-1\src\file_io\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\file_io\win32\seek.c">
+      <Filter>apr-1\src\file_io\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\locks\win32\proc_mutex.c">
+      <Filter>apr-1\src\locks\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\locks\win32\thread_cond.c">
+      <Filter>apr-1\src\locks\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\locks\win32\thread_mutex.c">
+      <Filter>apr-1\src\locks\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\locks\win32\thread_rwlock.c">
+      <Filter>apr-1\src\locks\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\memory\unix\apr_pools.c">
+      <Filter>apr-1\src\memory\unix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\misc\win32\charset.c">
+      <Filter>apr-1\src\misc\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\misc\win32\env.c">
+      <Filter>apr-1\src\misc\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\misc\win32\internal.c">
+      <Filter>apr-1\src\misc\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\misc\win32\misc.c">
+      <Filter>apr-1\src\misc\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\misc\win32\rand.c">
+      <Filter>apr-1\src\misc\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\misc\win32\start.c">
+      <Filter>apr-1\src\misc\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\misc\win32\utf8.c">
+      <Filter>apr-1\src\misc\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\mmap\win32\mmap.c">
+      <Filter>apr-1\src\mmap\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\network_io\win32\sendrecv.c">
+      <Filter>apr-1\src\network_io\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\network_io\win32\sockets.c">
+      <Filter>apr-1\src\network_io\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\network_io\win32\sockopt.c">
+      <Filter>apr-1\src\network_io\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\passwd\apr_getpass.c">
+      <Filter>apr-1\src\passwd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\poll\unix\epoll.c">
+      <Filter>apr-1\src\poll\unix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\poll\unix\kqueue.c">
+      <Filter>apr-1\src\poll\unix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\poll\unix\poll.c">
+      <Filter>apr-1\src\poll\unix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\poll\unix\pollcb.c">
+      <Filter>apr-1\src\poll\unix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\poll\unix\pollset.c">
+      <Filter>apr-1\src\poll\unix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\poll\unix\port.c">
+      <Filter>apr-1\src\poll\unix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\poll\unix\select.c">
+      <Filter>apr-1\src\poll\unix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\poll\unix\wakeup.c">
+      <Filter>apr-1\src\poll\unix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\poll\unix\z_asio.c">
+      <Filter>apr-1\src\poll\unix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\random\unix\apr_random.c">
+      <Filter>apr-1\src\random\unix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\random\unix\sha2.c">
+      <Filter>apr-1\src\random\unix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\random\unix\sha2_glue.c">
+      <Filter>apr-1\src\random\unix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\shmem\win32\shm.c">
+      <Filter>apr-1\src\shmem\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\tables\apr_hash.c">
+      <Filter>apr-1\src\tables\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\tables\apr_skiplist.c">
+      <Filter>apr-1\src\tables\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\tables\apr_tables.c">
+      <Filter>apr-1\src\tables\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\threadproc\win32\proc.c">
+      <Filter>apr-1\src\threadproc\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\threadproc\win32\signals.c">
+      <Filter>apr-1\src\threadproc\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\threadproc\win32\thread.c">
+      <Filter>apr-1\src\threadproc\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\threadproc\win32\threadpriv.c">
+      <Filter>apr-1\src\threadproc\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\time\win32\time.c">
+      <Filter>apr-1\src\time\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\time\win32\timestr.c">
+      <Filter>apr-1\src\time\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\user\win32\groupinfo.c">
+      <Filter>apr-1\src\user\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\user\win32\userinfo.c">
+      <Filter>apr-1\src\user\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\file_io\unix\copy.c">
+      <Filter>apr-1\src\file_io\unix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\file_io\unix\fileacc.c">
+      <Filter>apr-1\src\file_io\unix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\mmap\unix\common.c">
+      <Filter>apr-1\src\mmap\unix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\misc\unix\errorcodes.c">
+      <Filter>apr-1\src\misc\unix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\file_io\unix\filepath_util.c">
+      <Filter>apr-1\src\file_io\unix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\file_io\unix\fullrw.c">
+      <Filter>apr-1\src\file_io\unix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\misc\unix\getopt.c">
+      <Filter>apr-1\src\misc\unix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\network_io\unix\inet_ntop.c">
+      <Filter>apr-1\src\network_io\unix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\network_io\unix\inet_pton.c">
+      <Filter>apr-1\src\network_io\unix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\file_io\unix\mktemp.c">
+      <Filter>apr-1\src\file_io\unix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\network_io\unix\multicast.c">
+      <Filter>apr-1\src\network_io\unix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\misc\unix\otherchild.c">
+      <Filter>apr-1\src\misc\unix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\network_io\unix\sockaddr.c">
+      <Filter>apr-1\src\network_io\unix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\network_io\unix\socket_util.c">
+      <Filter>apr-1\src\network_io\unix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\file_io\unix\tempdir.c">
+      <Filter>apr-1\src\file_io\unix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\misc\unix\version.c">
+      <Filter>apr-1\src\misc\unix</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
