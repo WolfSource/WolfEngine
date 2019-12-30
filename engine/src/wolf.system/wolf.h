@@ -25,6 +25,7 @@ extern "C" {
     int APIENTRY WinMain(HINSTANCE pHInstance, HINSTANCE pPrevHInstance, PSTR pSTR, int pCmdshow)
 
 #else
+    #include <unistd.h>
 
     #define WOLF_MAIN()                                                                                    \
     int main(int pArgc, const char * pArgv[])
@@ -38,7 +39,6 @@ extern "C" {
 #include <wchar.h>
 #include <stdlib.h>
 #include <stdint.h>
-//#include <unistd.h>
 #include <assert.h>
 #include <limits.h>
 #include <os/w_platform.h>
