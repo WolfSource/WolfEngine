@@ -78,28 +78,35 @@ w_thread* w_thread_get_current_id(void)
 
 void w_thread_current_sleep_for_nanoseconds(_In_ const double pTime)
 {
-    usleep(pTime * 1e-6);
+	apr_sleep(pTime * 1e-3);
 }
 
 void w_thread_current_sleep_for_microseconds(_In_ const double pTime)
 {
-    usleep(pTime * 1e-3);
+	apr_sleep(pTime);
 }
 
 void w_thread_current_sleep_for_milliseconds(_In_ const double pTime)
 {
-    usleep(pTime);
+	apr_sleep(pTime * 1e+3);
 }
 
 void w_thread_current_sleep_for_seconds(_In_ const double pTime)
 {
-    sleep(pTime);
+	apr_sleep(pTime * 1e+6);
 }
 
 void w_thread_get_number_of_cpu_threads(_Inout_ int* pCores,
                                         _Inout_ int* pThreads,
                                         _Inout_ int* pActualThreads)
 {
+#ifdef _WIN32
+	SYSTEM_INFO _sys_info;
+	GetSystemInfo(&_sys_info);
+	*pCores = (int)_sys_info.dwNumberOfProcessors;
+	*pThreads = 2;
+	*pActualThreads = (*pCores) * (*pThreads);
+#else
     unsigned int _a = 11, _b = 0, _c = 1, _d = 0;
 
     ASM volatile("cpuid"
@@ -112,4 +119,5 @@ void w_thread_get_number_of_cpu_threads(_Inout_ int* pCores,
     *pCores = _a;
     *pThreads = _b;
     *pActualThreads = _d;
+#endif
 }

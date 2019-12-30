@@ -20,8 +20,10 @@ extern "C" {
     #define WIN32_LEAN_AND_MEAN
     #endif
     #include <Windows.h>
+	#include <WinSock2.h>
+	#include <ws2ipdef.h>
 
-    #define WOLF_MAIN()                                                                                    \
+#define WOLF_MAIN()                                                                                    \
     int APIENTRY WinMain(HINSTANCE pHInstance, HINSTANCE pPrevHInstance, PSTR pSTR, int pCmdshow)
 
 #else
@@ -87,6 +89,10 @@ extern "C" {
     #define _Inout_
     #define _Inout_z_
 
+#endif
+
+#ifndef PATH_MAX
+#define PATH_MAX 256
 #endif
 
 #ifndef MAX_BUFFER_SIZE

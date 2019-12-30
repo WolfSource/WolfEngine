@@ -1,28 +1,23 @@
 #include "w_timespan.h"
 #include <time.h>
 
-const int64_t TICKS_PER_MILLISECOND = 10000;
-const double MILLI_SECONDS_PER_TICK = 1.0 / TICKS_PER_MILLISECOND;
+#define TICKS_PER_MILLISECOND	10000i64
+#define TICKS_PER_SECOND		TICKS_PER_MILLISECOND * 1000i64
+#define TICKS_PER_MINUTE		TICKS_PER_SECOND * 60i64
+#define TICKS_PER_HOUR			TICKS_PER_MINUTE * 60i64
+#define TICKS_PER_DAY			TICKS_PER_HOUR * 24i64
+#define MILLIS_PER_SECOND		1000i64
+#define MILLIS_PER_MINUTE		MILLIS_PER_SECOND * 60i64
+#define MILLIS_PER_HOUR			MILLIS_PER_MINUTE * 60i64
+#define MILLIS_PER_DAY			MILLIS_PER_HOUR * 24i64
 
-const int64_t TICKS_PER_SECOND = TICKS_PER_MILLISECOND * 1000;
-const double SECONDS_PER_TICK = 1.0 / TICKS_PER_SECOND;
-
-const int64_t TICKS_PER_MINUTE = TICKS_PER_SECOND * 60;
-const double MINUTES_PER_TICK = 1.0 / TICKS_PER_MINUTE;
-
-const int64_t TICKS_PER_HOUR = TICKS_PER_MINUTE * 60;
-const double HOURS_PER_TICK = 1.0 / TICKS_PER_HOUR;
-
-const int64_t TICKS_PER_DAY = TICKS_PER_HOUR * 24;
-const double DAYS_PER_TICK = 1.0 / TICKS_PER_DAY;
-
-const int MILLIS_PER_SECOND = 1000;
-const int MILLIS_PER_MINUTE = MILLIS_PER_SECOND * 60;
-const int MILLIS_PER_HOUR = MILLIS_PER_MINUTE * 60;
-const int MILLIS_PER_DAY = MILLIS_PER_HOUR * 24;
-
-const int64_t MAX_MILLISECONDS = LLONG_MAX / TICKS_PER_MILLISECOND;
-const int64_t MIN_MILLISECONDS = LLONG_MIN / TICKS_PER_MILLISECOND;
+static const double MILLI_SECONDS_PER_TICK = 1.0 / TICKS_PER_MILLISECOND;
+static const double SECONDS_PER_TICK = 1.0 / TICKS_PER_SECOND;
+static const double MINUTES_PER_TICK = 1.0 / TICKS_PER_MINUTE;
+static const double HOURS_PER_TICK = 1.0 / TICKS_PER_HOUR;
+static const double DAYS_PER_TICK = 1.0 / TICKS_PER_DAY;
+static const int64_t MAX_MILLISECONDS = LLONG_MAX / TICKS_PER_MILLISECOND;
+static const int64_t MIN_MILLISECONDS = LLONG_MIN / TICKS_PER_MILLISECOND;
 
 const long _timespan_w_wcstol(const wchar_t* const pValue, bool* pError)
 {
@@ -110,11 +105,12 @@ w_timespan* w_timespan_init_from_now(void)
     time_t t = time(0);
 #ifdef W_PLATFORM_UNIX
     struct tm* _now = localtime(&t);
+	return w_timespan_init_from_shorttime(_now->tm_hour, _now->tm_min, _now->tm_sec);
 #else
     struct tm _now;
     localtime_s(&_now, &t);
+	return w_timespan_init_from_shorttime(_now.tm_hour, _now.tm_min, _now.tm_sec);
 #endif
-    return w_timespan_init_from_shorttime(_now->tm_hour, _now->tm_min, _now->tm_sec);
 }
 
 w_timespan* w_timespan_init_from_days(_In_ const double pValue)

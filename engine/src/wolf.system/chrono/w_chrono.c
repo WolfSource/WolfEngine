@@ -1,4 +1,81 @@
 #include "w_chrono.h"
+#include <WinSock2.h> //just for timeval
+
+#ifdef _WIN32
+
+//dump define
+#ifndef CLOCK_MONOTONIC
+#define CLOCK_MONOTONIC				1
+#endif
+
+LARGE_INTEGER _get_file_time_offset()
+{
+	SYSTEMTIME _s;
+	FILETIME _f;
+	LARGE_INTEGER _t;
+
+	_s.wYear = 1970;
+	_s.wMonth = 1;
+	_s.wDay = 1;
+	_s.wHour = 0;
+	_s.wMinute = 0;
+	_s.wSecond = 0;
+	_s.wMilliseconds = 0;
+	SystemTimeToFileTime(&_s, &_f);
+	_t.QuadPart = _f.dwHighDateTime;
+	_t.QuadPart <<= 32;
+	_t.QuadPart |= _f.dwLowDateTime;
+	return (_t);
+}
+
+int clock_gettime(int pX, struct timeval* pTV)
+{
+	LARGE_INTEGER           _time;
+	FILETIME				_file_time;
+	double                  _microseconds;
+	static LARGE_INTEGER    _offset;
+	static double           _frequency_to_microseconds;
+	static int              _initialized = 0;
+	static BOOL             _use_performance_counter = 0;
+
+	if (!_initialized)
+	{
+		LARGE_INTEGER performanceFrequency;
+		_initialized = 1;
+		_use_performance_counter = QueryPerformanceFrequency(&performanceFrequency);
+		if (_use_performance_counter)
+		{
+			QueryPerformanceCounter(&_offset);
+			_frequency_to_microseconds = (double)performanceFrequency.QuadPart / 1000000.;
+		}
+		else 
+		{
+			_offset = _get_file_time_offset();
+			_frequency_to_microseconds = 10.;
+		}
+	}
+	if (_use_performance_counter)
+	{
+		QueryPerformanceCounter(&_time);
+	}
+	else 
+	{
+		GetSystemTimeAsFileTime(&_file_time);
+		_time.QuadPart = _file_time.dwHighDateTime;
+		_time.QuadPart <<= 32;
+		_time.QuadPart |= _file_time.dwLowDateTime;
+	}
+
+	_time.QuadPart -= _offset.QuadPart;
+	_microseconds = (double)_time.QuadPart / _frequency_to_microseconds;
+	_time.QuadPart = _microseconds;
+	pTV->tv_sec = _time.QuadPart / 1000000;
+	pTV->tv_usec = _time.QuadPart % 1000000;
+
+	return 0;
+}
+
+#endif
 
 struct timespec chrono_now(void)
 {

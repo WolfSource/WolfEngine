@@ -2,7 +2,7 @@
 #include "lz4/lz4.h"
 
 #ifdef _WIN32
-#include "w_compress_lzma.h"
+//#include "w_compress_lzma.h"
 #endif
 
 W_RESULT w_compress_lz4(_In_       const char* pSrcBuffer,

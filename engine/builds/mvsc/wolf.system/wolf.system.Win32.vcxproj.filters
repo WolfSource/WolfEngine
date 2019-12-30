@@ -118,6 +118,63 @@
     <Filter Include="apr-1\src\network_io\unix">
       <UniqueIdentifier>{146a4c4f-af82-4fb4-a26b-9d8dfaea714d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="base64">
+      <UniqueIdentifier>{247e782d-1b3a-4a0e-bdf7-63ab15310ab6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="chrono">
+      <UniqueIdentifier>{939eb036-0259-4dfa-8e88-9ebbce5df798}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="compression">
+      <UniqueIdentifier>{3566790d-8aeb-46d6-a4f0-79bff8a50dd9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="concurrency">
+      <UniqueIdentifier>{ccc62e0b-a14a-428d-88ab-662c43e486f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="compression\lz4">
+      <UniqueIdentifier>{cb4ea6f5-9802-47b4-a5bb-4ff233936a65}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="compression\lzma">
+      <UniqueIdentifier>{89a480b9-2af9-4cf5-871e-cb19c3de8db7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="compression\msgpack">
+      <UniqueIdentifier>{4a076715-3caa-4a27-ae25-fd9287ec4d55}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="compression\zlib">
+      <UniqueIdentifier>{c5f55799-fb4f-4541-855f-39badfd83986}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="io">
+      <UniqueIdentifier>{e5b035b2-13d9-4ad8-baa7-238109f44bff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="memory">
+      <UniqueIdentifier>{41b3ca0b-ad7c-4783-9ff1-9c379fd94a7e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="net">
+      <UniqueIdentifier>{332e5b0e-2334-4894-9016-fa0efdaa0995}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="os">
+      <UniqueIdentifier>{879e5083-4abe-4a2e-b5f0-f6b6c93b7da5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="script">
+      <UniqueIdentifier>{d933846f-c400-4758-a6c9-48ebddcf201c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="script\lua">
+      <UniqueIdentifier>{bd1c6d43-1799-4200-8c59-cad6e82ce989}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="log">
+      <UniqueIdentifier>{c5cfa315-1fbb-4f75-8dce-7712dc4b268b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="json">
+      <UniqueIdentifier>{afdf756b-841e-4737-9362-704ea7f243b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="xml">
+      <UniqueIdentifier>{8a6d849c-aefb-4f7a-8ad2-6bdb313bd4ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="xml\libexpat">
+      <UniqueIdentifier>{ebf0141f-1b61-4eda-89ab-769cc75fd15e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="json\cJSON">
+      <UniqueIdentifier>{ec64ae86-903a-4939-803d-fe09dda30375}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr.h">
@@ -248,6 +305,277 @@
     </ClInclude>
     <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_win32.h">
       <Filter>apr-1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\base64\chromiumbase64.h">
+      <Filter>base64</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\base64\fastavx512bwbase64.h">
+      <Filter>base64</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\base64\fastavxbase64.h">
+      <Filter>base64</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\base64\klompavxbase64.h">
+      <Filter>base64</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\base64\quicktimebase64.h">
+      <Filter>base64</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\base64\scalarbase64.h">
+      <Filter>base64</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\wolf.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\chrono\w_chrono.h">
+      <Filter>chrono</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\chrono\w_timespan.h">
+      <Filter>chrono</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lz4\lz4.h">
+      <Filter>compression\lz4</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lz4\lz4frame.h">
+      <Filter>compression\lz4</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lz4\lz4frame_static.h">
+      <Filter>compression\lz4</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lz4\lz4hc.h">
+      <Filter>compression\lz4</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lz4\xxhash.h">
+      <Filter>compression\lz4</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\7z.h">
+      <Filter>compression\lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\7zAlloc.h">
+      <Filter>compression\lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\7zBuf.h">
+      <Filter>compression\lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\7zCrc.h">
+      <Filter>compression\lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\7zFile.h">
+      <Filter>compression\lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\7zTypes.h">
+      <Filter>compression\lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\7zVersion.h">
+      <Filter>compression\lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Aes.h">
+      <Filter>compression\lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Alloc.h">
+      <Filter>compression\lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Bcj2.h">
+      <Filter>compression\lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Bra.h">
+      <Filter>compression\lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Compiler.h">
+      <Filter>compression\lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\CpuArch.h">
+      <Filter>compression\lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Delta.h">
+      <Filter>compression\lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\DllSecur.h">
+      <Filter>compression\lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\LzFind.h">
+      <Filter>compression\lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\LzFindMt.h">
+      <Filter>compression\lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\LzHash.h">
+      <Filter>compression\lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Lzma2Dec.h">
+      <Filter>compression\lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Lzma2DecMt.h">
+      <Filter>compression\lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Lzma2Enc.h">
+      <Filter>compression\lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Lzma86.h">
+      <Filter>compression\lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\LzmaDec.h">
+      <Filter>compression\lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\LzmaEnc.h">
+      <Filter>compression\lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\LzmaLib.h">
+      <Filter>compression\lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\MtCoder.h">
+      <Filter>compression\lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\MtDec.h">
+      <Filter>compression\lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Ppmd.h">
+      <Filter>compression\lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Ppmd7.h">
+      <Filter>compression\lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Precomp.h">
+      <Filter>compression\lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\RotateDefs.h">
+      <Filter>compression\lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Sha256_lzma.h">
+      <Filter>compression\lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Sort.h">
+      <Filter>compression\lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Threads.h">
+      <Filter>compression\lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Xz.h">
+      <Filter>compression\lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\XzCrc64.h">
+      <Filter>compression\lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\XzEnc.h">
+      <Filter>compression\lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\compression\msgpack\msgpack.h">
+      <Filter>compression\msgpack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\compression\zlib\crc32.h">
+      <Filter>compression\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\compression\zlib\deflate.h">
+      <Filter>compression\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\compression\zlib\gzguts.h">
+      <Filter>compression\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\compression\zlib\inffast.h">
+      <Filter>compression\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\compression\zlib\inffixed.h">
+      <Filter>compression\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\compression\zlib\inflate.h">
+      <Filter>compression\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\compression\zlib\inftrees.h">
+      <Filter>compression\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\compression\zlib\trees.h">
+      <Filter>compression\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\compression\zlib\zconf.h">
+      <Filter>compression\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\compression\zlib\zlib.h">
+      <Filter>compression\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\compression\zlib\zutil.h">
+      <Filter>compression\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\compression\w_compress.h">
+      <Filter>compression</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\concurrency\w_condition_variable.h">
+      <Filter>concurrency</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\concurrency\w_signal.h">
+      <Filter>concurrency</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\concurrency\w_thread.h">
+      <Filter>concurrency</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\io\w_io.h">
+      <Filter>io</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\memory\w_string.h">
+      <Filter>memory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\os\w_platform.h">
+      <Filter>os</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\script\lua\lauxlib.h">
+      <Filter>script\lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\script\lua\lua.h">
+      <Filter>script\lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\script\lua\luaconf.h">
+      <Filter>script\lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\script\lua\luajit.h">
+      <Filter>script\lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\script\lua\lualib.h">
+      <Filter>script\lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\xml\libexpat\ascii.h">
+      <Filter>xml\libexpat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\xml\libexpat\asciitab.h">
+      <Filter>xml\libexpat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\xml\libexpat\expat.h">
+      <Filter>xml\libexpat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\xml\libexpat\expat_config.h">
+      <Filter>xml\libexpat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\xml\libexpat\expat_external.h">
+      <Filter>xml\libexpat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\xml\libexpat\iasciitab.h">
+      <Filter>xml\libexpat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\xml\libexpat\internal.h">
+      <Filter>xml\libexpat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\xml\libexpat\latin1tab.h">
+      <Filter>xml\libexpat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\xml\libexpat\nametab.h">
+      <Filter>xml\libexpat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\xml\libexpat\siphash.h">
+      <Filter>xml\libexpat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\xml\libexpat\utf8tab.h">
+      <Filter>xml\libexpat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\xml\libexpat\winconfig.h">
+      <Filter>xml\libexpat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\xml\libexpat\xmlrole.h">
+      <Filter>xml\libexpat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\xml\libexpat\xmltok.h">
+      <Filter>xml\libexpat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\xml\libexpat\xmltok_impl.h">
+      <Filter>xml\libexpat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\json\cJSON\cJSON.h">
+      <Filter>json\cJSON</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -488,5 +816,252 @@
     <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\misc\unix\version.c">
       <Filter>apr-1\src\misc\unix</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\base64\chromiumbase64.c">
+      <Filter>base64</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\base64\fastavx512bwbase64.c">
+      <Filter>base64</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\base64\fastavxbase64.c">
+      <Filter>base64</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\base64\klompavxbase64.c">
+      <Filter>base64</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\base64\quicktimebase64.c">
+      <Filter>base64</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\base64\scalarbase64.c">
+      <Filter>base64</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\wolf.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\chrono\w_chrono.c">
+      <Filter>chrono</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\chrono\w_timespan.c">
+      <Filter>chrono</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lz4\lz4.c">
+      <Filter>compression\lz4</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lz4\lz4frame.c">
+      <Filter>compression\lz4</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lz4\lz4hc.c">
+      <Filter>compression\lz4</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lz4\xxhash.c">
+      <Filter>compression\lz4</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\7zAlloc.c">
+      <Filter>compression\lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\7zArcIn.c">
+      <Filter>compression\lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\7zBuf.c">
+      <Filter>compression\lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\7zBuf2.c">
+      <Filter>compression\lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\7zCrc.c">
+      <Filter>compression\lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\7zCrcOpt.c">
+      <Filter>compression\lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\7zDec.c">
+      <Filter>compression\lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\7zFile.c">
+      <Filter>compression\lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\7zStream.c">
+      <Filter>compression\lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\Aes.c">
+      <Filter>compression\lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\AesOpt.c">
+      <Filter>compression\lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\Alloc.c">
+      <Filter>compression\lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\Bcj2.c">
+      <Filter>compression\lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\Bcj2Enc.c">
+      <Filter>compression\lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\Bra.c">
+      <Filter>compression\lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\Bra86.c">
+      <Filter>compression\lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\BraIA64.c">
+      <Filter>compression\lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\CpuArch.c">
+      <Filter>compression\lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\Delta.c">
+      <Filter>compression\lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\DllSecur.c">
+      <Filter>compression\lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\LzFind.c">
+      <Filter>compression\lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\LzFindMt.c">
+      <Filter>compression\lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\Lzma2Dec.c">
+      <Filter>compression\lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\Lzma2DecMt.c">
+      <Filter>compression\lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\Lzma2Enc.c">
+      <Filter>compression\lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\Lzma86Dec.c">
+      <Filter>compression\lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\Lzma86Enc.c">
+      <Filter>compression\lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\LzmaDec.c">
+      <Filter>compression\lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\LzmaEnc.c">
+      <Filter>compression\lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\LzmaLib.c">
+      <Filter>compression\lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\MtCoder.c">
+      <Filter>compression\lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\MtDec.c">
+      <Filter>compression\lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\Ppmd7.c">
+      <Filter>compression\lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\Ppmd7Dec.c">
+      <Filter>compression\lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\Ppmd7Enc.c">
+      <Filter>compression\lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\Sha256_lzma.c">
+      <Filter>compression\lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\Sort.c">
+      <Filter>compression\lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\Threads.c">
+      <Filter>compression\lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\Xz.c">
+      <Filter>compression\lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\XzCrc64.c">
+      <Filter>compression\lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\XzCrc64Opt.c">
+      <Filter>compression\lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\XzDec.c">
+      <Filter>compression\lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\XzEnc.c">
+      <Filter>compression\lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\XzIn.c">
+      <Filter>compression\lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\compression\msgpack\objectc.c">
+      <Filter>compression\msgpack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\compression\msgpack\unpack.c">
+      <Filter>compression\msgpack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\compression\msgpack\version.c">
+      <Filter>compression\msgpack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\compression\msgpack\vrefbuffer.c">
+      <Filter>compression\msgpack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\compression\msgpack\zone.c">
+      <Filter>compression\msgpack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\compression\w_compress.c">
+      <Filter>compression</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\concurrency\w_condition_variable.c">
+      <Filter>concurrency</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\concurrency\w_signal.c">
+      <Filter>concurrency</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\concurrency\w_thread.c">
+      <Filter>concurrency</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\io\w_io.c">
+      <Filter>io</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\memory\w_string.c">
+      <Filter>memory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\xml\libexpat\xmlparse.c">
+      <Filter>xml\libexpat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\xml\libexpat\xmlrole.c">
+      <Filter>xml\libexpat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\xml\libexpat\xmltok.c">
+      <Filter>xml\libexpat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\xml\libexpat\xmltok_impl.c">
+      <Filter>xml\libexpat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\xml\libexpat\xmltok_ns.c">
+      <Filter>xml\libexpat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\json\cJSON\cJSON.c">
+      <Filter>json\cJSON</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\src\wolf.system\base64\LICENSE">
+      <Filter>base64</Filter>
+    </None>
+    <None Include="..\..\..\src\wolf.system\compression\lz4\LICENSE">
+      <Filter>compression\lz4</Filter>
+    </None>
+    <None Include="..\..\..\src\wolf.system\compression\lz4\README.md">
+      <Filter>compression\lz4</Filter>
+    </None>
+    <None Include="..\..\..\src\wolf.system\xml\libexpat\libexpat.def">
+      <Filter>xml\libexpat</Filter>
+    </None>
+    <None Include="..\..\..\src\wolf.system\xml\libexpat\libexpatw.def">
+      <Filter>xml\libexpat</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\..\..\src\wolf.system\base64\version.txt">
+      <Filter>base64</Filter>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\..\..\src\wolf.system\compression\lzma\7zVersion.rc">
+      <Filter>compression\lzma</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

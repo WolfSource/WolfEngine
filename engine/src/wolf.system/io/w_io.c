@@ -1,6 +1,6 @@
 #include "w_io.h"
-#include <w_string.h>
 #include <apr-1/apr_strings.h>
+#include <memory/w_string.h>
 
 #ifdef W_PLATFORM_UNIX
 #include <sys/stat.h>
@@ -157,7 +157,7 @@ W_RESULT w_io_get_is_file(_In_z_ const char* pPath)
     return _ret == -1 ? W_FAILED : W_PASSED;
 #else
     //on Windows
-    FILE* _file = nullptr;
+    FILE* _file = NULL;
     fopen_s(&_file, pPath, "r");
     if (_file)
     {
@@ -417,7 +417,7 @@ const char* w_io_get_parent_directory(_In_z_ const char* pPath)
     //copy strings
     if (_size == 0) return "";
 
-    return w_string_init_with(_size, pPath);    
+    return w_string_init_with_string(pPath);
 #endif
 }
 
