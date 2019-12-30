@@ -84,17 +84,15 @@
 #ifndef _BASE64_H_
 #define _BASE64_H_
 
-#include "w_system_export.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-WSYS_EXP int quicktime_base64_encode_len(int len);
-WSYS_EXP int quicktime_base64_encode(char * coded_dst, const char *plain_src,int len_plain_src);
+int quicktime_base64_encode_len(int len);
+int quicktime_base64_encode(char * coded_dst, const char *plain_src,int len_plain_src);
 
-WSYS_EXP int quicktime_base64_decode_len(const char * coded_src);
-WSYS_EXP int quicktime_base64_decode(char * plain_dst, const char *coded_src);
+int quicktime_base64_decode_len(const char * coded_src);
+int quicktime_base64_decode(char * plain_dst, const char *coded_src);
 
 #ifdef __cplusplus
 }

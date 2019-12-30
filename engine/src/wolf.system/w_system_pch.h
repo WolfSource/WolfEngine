@@ -52,8 +52,10 @@
 #endif
 
 #include <memory.h>
-#include <cstdlib>
-#include <tuple>
+//#include <stdlib>
+
+//#include <cstdlib>
+//#include <tuple>
 
 #if defined(__WIN32) || defined(__UWP)
 
@@ -68,6 +70,6 @@
 
 #endif
 
-#include "w_std.h"
-#include "w_logger.h"
+#include "wolf.h"
+#include "w_log.h"
 

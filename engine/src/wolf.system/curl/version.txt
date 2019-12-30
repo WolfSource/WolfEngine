@@ -1,4 +1,0 @@
-version : 7.66.0
-https://github.com/curl/curl/
-
-osx updated to 7.66.0
