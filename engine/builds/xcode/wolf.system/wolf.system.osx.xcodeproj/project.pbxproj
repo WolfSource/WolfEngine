@@ -101,51 +101,6 @@
 		2C30BAE723A4D599009FC330 /* w_platform.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C30BAE623A4D599009FC330 /* w_platform.h */; };
 		2C30BAEA23A77F34009FC330 /* w_string.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C30BAE823A77F34009FC330 /* w_string.c */; };
 		2C30BAEB23A77F34009FC330 /* w_string.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C30BAE923A77F34009FC330 /* w_string.h */; };
-		2C30BCFD23A97B6B00D24778 /* thread.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C30BCCF23A97B6800D24778 /* thread.c */; };
-		2C30BCFE23A97B6B00D24778 /* mdc.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C30BCD023A97B6800D24778 /* mdc.c */; };
-		2C30BCFF23A97B6B00D24778 /* rule.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C30BCD123A97B6800D24778 /* rule.h */; };
-		2C30BD0023A97B6B00D24778 /* record_table.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C30BCD223A97B6800D24778 /* record_table.h */; };
-		2C30BD0123A97B6B00D24778 /* record.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C30BCD323A97B6800D24778 /* record.h */; };
-		2C30BD0223A97B6B00D24778 /* zlog.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C30BCD423A97B6800D24778 /* zlog.h */; };
-		2C30BD0323A97B6B00D24778 /* rule.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C30BCD523A97B6800D24778 /* rule.c */; };
-		2C30BD0423A97B6B00D24778 /* record.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C30BCD623A97B6800D24778 /* record.c */; };
-		2C30BD0523A97B6B00D24778 /* buf.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C30BCD723A97B6800D24778 /* buf.c */; };
-		2C30BD0623A97B6B00D24778 /* category.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C30BCD823A97B6800D24778 /* category.h */; };
-		2C30BD0723A97B6B00D24778 /* category.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C30BCD923A97B6800D24778 /* category.c */; };
-		2C30BD0823A97B6B00D24778 /* rotater.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C30BCDA23A97B6800D24778 /* rotater.h */; };
-		2C30BD0923A97B6B00D24778 /* thread.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C30BCDB23A97B6800D24778 /* thread.h */; };
-		2C30BD0A23A97B6B00D24778 /* zc_profile.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C30BCDC23A97B6900D24778 /* zc_profile.c */; };
-		2C30BD0B23A97B6B00D24778 /* event.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C30BCDD23A97B6900D24778 /* event.c */; };
-		2C30BD0C23A97B6B00D24778 /* category_table.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C30BCDE23A97B6900D24778 /* category_table.c */; };
-		2C30BD0D23A97B6B00D24778 /* level.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C30BCDF23A97B6900D24778 /* level.c */; };
-		2C30BD0E23A97B6B00D24778 /* fmacros.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C30BCE023A97B6900D24778 /* fmacros.h */; };
-		2C30BD0F23A97B6B00D24778 /* buf.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C30BCE123A97B6900D24778 /* buf.h */; };
-		2C30BD1023A97B6B00D24778 /* zc_arraylist.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C30BCE223A97B6900D24778 /* zc_arraylist.h */; };
-		2C30BD1123A97B6B00D24778 /* level_list.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C30BCE323A97B6900D24778 /* level_list.c */; };
-		2C30BD1223A97B6B00D24778 /* zc_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C30BCE423A97B6900D24778 /* zc_defs.h */; };
-		2C30BD1323A97B6B00D24778 /* version.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C30BCE523A97B6900D24778 /* version.h */; };
-		2C30BD1423A97B6B00D24778 /* conf.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C30BCE623A97B6900D24778 /* conf.c */; };
-		2C30BD1523A97B6B00D24778 /* zc_arraylist.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C30BCE723A97B6900D24778 /* zc_arraylist.c */; };
-		2C30BD1623A97B6B00D24778 /* zc_hashtable.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C30BCE823A97B6900D24778 /* zc_hashtable.c */; };
-		2C30BD1723A97B6B00D24778 /* zc_util.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C30BCE923A97B6900D24778 /* zc_util.c */; };
-		2C30BD1823A97B6B00D24778 /* mdc.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C30BCEA23A97B6900D24778 /* mdc.h */; };
-		2C30BD1923A97B6B00D24778 /* zc_profile.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C30BCEB23A97B6900D24778 /* zc_profile.h */; };
-		2C30BD1A23A97B6B00D24778 /* level.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C30BCEC23A97B6900D24778 /* level.h */; };
-		2C30BD1C23A97B6B00D24778 /* category_table.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C30BCEE23A97B6A00D24778 /* category_table.h */; };
-		2C30BD1D23A97B6B00D24778 /* record_table.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C30BCEF23A97B6A00D24778 /* record_table.c */; };
-		2C30BD1E23A97B6B00D24778 /* spec.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C30BCF023A97B6A00D24778 /* spec.h */; };
-		2C30BD1F23A97B6B00D24778 /* conf.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C30BCF123A97B6A00D24778 /* conf.h */; };
-		2C30BD2023A97B6B00D24778 /* zc_util.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C30BCF223A97B6A00D24778 /* zc_util.h */; };
-		2C30BD2123A97B6B00D24778 /* zc_hashtable.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C30BCF323A97B6A00D24778 /* zc_hashtable.h */; };
-		2C30BD2223A97B6B00D24778 /* level_list.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C30BCF423A97B6A00D24778 /* level_list.h */; };
-		2C30BD2323A97B6B00D24778 /* format.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C30BCF523A97B6A00D24778 /* format.h */; };
-		2C30BD2423A97B6B00D24778 /* zc_xplatform.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C30BCF623A97B6A00D24778 /* zc_xplatform.h */; };
-		2C30BD2523A97B6B00D24778 /* zlog-chk-conf.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C30BCF723A97B6A00D24778 /* zlog-chk-conf.c */; };
-		2C30BD2623A97B6B00D24778 /* zlog.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C30BCF823A97B6A00D24778 /* zlog.c */; };
-		2C30BD2723A97B6B00D24778 /* spec.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C30BCF923A97B6A00D24778 /* spec.c */; };
-		2C30BD2823A97B6B00D24778 /* event.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C30BCFA23A97B6A00D24778 /* event.h */; };
-		2C30BD2923A97B6B00D24778 /* rotater.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C30BCFB23A97B6A00D24778 /* rotater.c */; };
-		2C30BD2A23A97B6B00D24778 /* format.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C30BCFC23A97B6A00D24778 /* format.c */; };
 		2C30BD4023AA250200D24778 /* xmltok.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C30BD2D23AA250100D24778 /* xmltok.c */; };
 		2C30BD4B23AA250200D24778 /* xmlparse.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C30BD3823AA250200D24778 /* xmlparse.c */; };
 		2C30BD5223AA250200D24778 /* xmlrole.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C30BD3F23AA250200D24778 /* xmlrole.c */; };
@@ -211,8 +166,6 @@
 		2C898545239E763C0062D70A /* msgpack.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C89853F239E763C0062D70A /* msgpack.h */; };
 		2C898553239F65E90062D70A /* w_thread.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C898551239F65E90062D70A /* w_thread.c */; };
 		2C898554239F65E90062D70A /* w_thread.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C898552239F65E90062D70A /* w_thread.h */; };
-		2C89893423A178370062D70A /* w_log.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C89893223A178370062D70A /* w_log.c */; };
-		2C89893523A178370062D70A /* w_log.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C89893323A178370062D70A /* w_log.h */; };
 		2C89893723A1790F0062D70A /* wolf.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C89893623A1790F0062D70A /* wolf.h */; };
 		2C89896223A1847F0062D70A /* apr_atomic.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C89893923A1847D0062D70A /* apr_atomic.h */; };
 		2C89896323A1847F0062D70A /* apr_poll.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C89893A23A1847D0062D70A /* apr_poll.h */; };
@@ -353,51 +306,6 @@
 		2C30BAE623A4D599009FC330 /* w_platform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_platform.h; path = ../../../src/wolf.system/os/w_platform.h; sourceTree = "<group>"; };
 		2C30BAE823A77F34009FC330 /* w_string.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = w_string.c; path = ../../../src/wolf.system/memory/w_string.c; sourceTree = "<group>"; };
 		2C30BAE923A77F34009FC330 /* w_string.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_string.h; path = ../../../src/wolf.system/memory/w_string.h; sourceTree = "<group>"; };
-		2C30BCCF23A97B6800D24778 /* thread.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = thread.c; path = ../../../src/wolf.system/log/zlog/thread.c; sourceTree = "<group>"; };
-		2C30BCD023A97B6800D24778 /* mdc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mdc.c; path = ../../../src/wolf.system/log/zlog/mdc.c; sourceTree = "<group>"; };
-		2C30BCD123A97B6800D24778 /* rule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = rule.h; path = ../../../src/wolf.system/log/zlog/rule.h; sourceTree = "<group>"; };
-		2C30BCD223A97B6800D24778 /* record_table.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = record_table.h; path = ../../../src/wolf.system/log/zlog/record_table.h; sourceTree = "<group>"; };
-		2C30BCD323A97B6800D24778 /* record.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = record.h; path = ../../../src/wolf.system/log/zlog/record.h; sourceTree = "<group>"; };
-		2C30BCD423A97B6800D24778 /* zlog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = zlog.h; path = ../../../src/wolf.system/log/zlog/zlog.h; sourceTree = "<group>"; };
-		2C30BCD523A97B6800D24778 /* rule.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = rule.c; path = ../../../src/wolf.system/log/zlog/rule.c; sourceTree = "<group>"; };
-		2C30BCD623A97B6800D24778 /* record.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = record.c; path = ../../../src/wolf.system/log/zlog/record.c; sourceTree = "<group>"; };
-		2C30BCD723A97B6800D24778 /* buf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = buf.c; path = ../../../src/wolf.system/log/zlog/buf.c; sourceTree = "<group>"; };
-		2C30BCD823A97B6800D24778 /* category.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = category.h; path = ../../../src/wolf.system/log/zlog/category.h; sourceTree = "<group>"; };
-		2C30BCD923A97B6800D24778 /* category.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = category.c; path = ../../../src/wolf.system/log/zlog/category.c; sourceTree = "<group>"; };
-		2C30BCDA23A97B6800D24778 /* rotater.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = rotater.h; path = ../../../src/wolf.system/log/zlog/rotater.h; sourceTree = "<group>"; };
-		2C30BCDB23A97B6800D24778 /* thread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = thread.h; path = ../../../src/wolf.system/log/zlog/thread.h; sourceTree = "<group>"; };
-		2C30BCDC23A97B6900D24778 /* zc_profile.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = zc_profile.c; path = ../../../src/wolf.system/log/zlog/zc_profile.c; sourceTree = "<group>"; };
-		2C30BCDD23A97B6900D24778 /* event.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = event.c; path = ../../../src/wolf.system/log/zlog/event.c; sourceTree = "<group>"; };
-		2C30BCDE23A97B6900D24778 /* category_table.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = category_table.c; path = ../../../src/wolf.system/log/zlog/category_table.c; sourceTree = "<group>"; };
-		2C30BCDF23A97B6900D24778 /* level.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = level.c; path = ../../../src/wolf.system/log/zlog/level.c; sourceTree = "<group>"; };
-		2C30BCE023A97B6900D24778 /* fmacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fmacros.h; path = ../../../src/wolf.system/log/zlog/fmacros.h; sourceTree = "<group>"; };
-		2C30BCE123A97B6900D24778 /* buf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = buf.h; path = ../../../src/wolf.system/log/zlog/buf.h; sourceTree = "<group>"; };
-		2C30BCE223A97B6900D24778 /* zc_arraylist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = zc_arraylist.h; path = ../../../src/wolf.system/log/zlog/zc_arraylist.h; sourceTree = "<group>"; };
-		2C30BCE323A97B6900D24778 /* level_list.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = level_list.c; path = ../../../src/wolf.system/log/zlog/level_list.c; sourceTree = "<group>"; };
-		2C30BCE423A97B6900D24778 /* zc_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = zc_defs.h; path = ../../../src/wolf.system/log/zlog/zc_defs.h; sourceTree = "<group>"; };
-		2C30BCE523A97B6900D24778 /* version.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = version.h; path = ../../../src/wolf.system/log/zlog/version.h; sourceTree = "<group>"; };
-		2C30BCE623A97B6900D24778 /* conf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = conf.c; path = ../../../src/wolf.system/log/zlog/conf.c; sourceTree = "<group>"; };
-		2C30BCE723A97B6900D24778 /* zc_arraylist.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = zc_arraylist.c; path = ../../../src/wolf.system/log/zlog/zc_arraylist.c; sourceTree = "<group>"; };
-		2C30BCE823A97B6900D24778 /* zc_hashtable.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = zc_hashtable.c; path = ../../../src/wolf.system/log/zlog/zc_hashtable.c; sourceTree = "<group>"; };
-		2C30BCE923A97B6900D24778 /* zc_util.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = zc_util.c; path = ../../../src/wolf.system/log/zlog/zc_util.c; sourceTree = "<group>"; };
-		2C30BCEA23A97B6900D24778 /* mdc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mdc.h; path = ../../../src/wolf.system/log/zlog/mdc.h; sourceTree = "<group>"; };
-		2C30BCEB23A97B6900D24778 /* zc_profile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = zc_profile.h; path = ../../../src/wolf.system/log/zlog/zc_profile.h; sourceTree = "<group>"; };
-		2C30BCEC23A97B6900D24778 /* level.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = level.h; path = ../../../src/wolf.system/log/zlog/level.h; sourceTree = "<group>"; };
-		2C30BCEE23A97B6A00D24778 /* category_table.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = category_table.h; path = ../../../src/wolf.system/log/zlog/category_table.h; sourceTree = "<group>"; };
-		2C30BCEF23A97B6A00D24778 /* record_table.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = record_table.c; path = ../../../src/wolf.system/log/zlog/record_table.c; sourceTree = "<group>"; };
-		2C30BCF023A97B6A00D24778 /* spec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = spec.h; path = ../../../src/wolf.system/log/zlog/spec.h; sourceTree = "<group>"; };
-		2C30BCF123A97B6A00D24778 /* conf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = conf.h; path = ../../../src/wolf.system/log/zlog/conf.h; sourceTree = "<group>"; };
-		2C30BCF223A97B6A00D24778 /* zc_util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = zc_util.h; path = ../../../src/wolf.system/log/zlog/zc_util.h; sourceTree = "<group>"; };
-		2C30BCF323A97B6A00D24778 /* zc_hashtable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = zc_hashtable.h; path = ../../../src/wolf.system/log/zlog/zc_hashtable.h; sourceTree = "<group>"; };
-		2C30BCF423A97B6A00D24778 /* level_list.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = level_list.h; path = ../../../src/wolf.system/log/zlog/level_list.h; sourceTree = "<group>"; };
-		2C30BCF523A97B6A00D24778 /* format.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = format.h; path = ../../../src/wolf.system/log/zlog/format.h; sourceTree = "<group>"; };
-		2C30BCF623A97B6A00D24778 /* zc_xplatform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = zc_xplatform.h; path = ../../../src/wolf.system/log/zlog/zc_xplatform.h; sourceTree = "<group>"; };
-		2C30BCF723A97B6A00D24778 /* zlog-chk-conf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = "zlog-chk-conf.c"; path = "../../../src/wolf.system/log/zlog/zlog-chk-conf.c"; sourceTree = "<group>"; };
-		2C30BCF823A97B6A00D24778 /* zlog.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = zlog.c; path = ../../../src/wolf.system/log/zlog/zlog.c; sourceTree = "<group>"; };
-		2C30BCF923A97B6A00D24778 /* spec.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = spec.c; path = ../../../src/wolf.system/log/zlog/spec.c; sourceTree = "<group>"; };
-		2C30BCFA23A97B6A00D24778 /* event.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = event.h; path = ../../../src/wolf.system/log/zlog/event.h; sourceTree = "<group>"; };
-		2C30BCFB23A97B6A00D24778 /* rotater.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = rotater.c; path = ../../../src/wolf.system/log/zlog/rotater.c; sourceTree = "<group>"; };
-		2C30BCFC23A97B6A00D24778 /* format.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = format.c; path = ../../../src/wolf.system/log/zlog/format.c; sourceTree = "<group>"; };
 		2C30BD2D23AA250100D24778 /* xmltok.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = xmltok.c; path = ../../../src/wolf.system/xml/libexpat/xmltok.c; sourceTree = "<group>"; };
 		2C30BD3823AA250200D24778 /* xmlparse.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = xmlparse.c; path = ../../../src/wolf.system/xml/libexpat/xmlparse.c; sourceTree = "<group>"; };
 		2C30BD3F23AA250200D24778 /* xmlrole.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = xmlrole.c; path = ../../../src/wolf.system/xml/libexpat/xmlrole.c; sourceTree = "<group>"; };
@@ -465,8 +373,6 @@
 		2C89853F239E763C0062D70A /* msgpack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = msgpack.h; path = ../../../src/wolf.system/compression/msgpack/msgpack.h; sourceTree = "<group>"; };
 		2C898551239F65E90062D70A /* w_thread.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = w_thread.c; path = ../../../src/wolf.system/concurrency/w_thread.c; sourceTree = "<group>"; };
 		2C898552239F65E90062D70A /* w_thread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_thread.h; path = ../../../src/wolf.system/concurrency/w_thread.h; sourceTree = "<group>"; };
-		2C89893223A178370062D70A /* w_log.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = w_log.c; path = ../../../src/wolf.system/log/w_log.c; sourceTree = "<group>"; };
-		2C89893323A178370062D70A /* w_log.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_log.h; path = ../../../src/wolf.system/log/w_log.h; sourceTree = "<group>"; };
 		2C89893623A1790F0062D70A /* wolf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = wolf.h; path = ../../../src/wolf.system/wolf.h; sourceTree = "<group>"; };
 		2C89893923A1847D0062D70A /* apr_atomic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = apr_atomic.h; path = "../../../src/wolf.system/apr-1/apr_atomic.h"; sourceTree = "<group>"; };
 		2C89893A23A1847D0062D70A /* apr_poll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = apr_poll.h; path = "../../../src/wolf.system/apr-1/apr_poll.h"; sourceTree = "<group>"; };
@@ -1065,9 +971,6 @@
 		2C89855C23A15BE50062D70A /* log */ = {
 			isa = PBXGroup;
 			children = (
-				2C8988D123A176C50062D70A /* zlog */,
-				2C89893223A178370062D70A /* w_log.c */,
-				2C89893323A178370062D70A /* w_log.h */,
 			);
 			name = log;
 			sourceTree = "<group>";
@@ -1097,58 +1000,6 @@
 				2C30BAE623A4D599009FC330 /* w_platform.h */,
 			);
 			name = os;
-			sourceTree = "<group>";
-		};
-		2C8988D123A176C50062D70A /* zlog */ = {
-			isa = PBXGroup;
-			children = (
-				2C30BCD723A97B6800D24778 /* buf.c */,
-				2C30BCE123A97B6900D24778 /* buf.h */,
-				2C30BCDE23A97B6900D24778 /* category_table.c */,
-				2C30BCEE23A97B6A00D24778 /* category_table.h */,
-				2C30BCD923A97B6800D24778 /* category.c */,
-				2C30BCD823A97B6800D24778 /* category.h */,
-				2C30BCE623A97B6900D24778 /* conf.c */,
-				2C30BCF123A97B6A00D24778 /* conf.h */,
-				2C30BCDD23A97B6900D24778 /* event.c */,
-				2C30BCFA23A97B6A00D24778 /* event.h */,
-				2C30BCE023A97B6900D24778 /* fmacros.h */,
-				2C30BCFC23A97B6A00D24778 /* format.c */,
-				2C30BCF523A97B6A00D24778 /* format.h */,
-				2C30BCE323A97B6900D24778 /* level_list.c */,
-				2C30BCF423A97B6A00D24778 /* level_list.h */,
-				2C30BCDF23A97B6900D24778 /* level.c */,
-				2C30BCEC23A97B6900D24778 /* level.h */,
-				2C30BCD023A97B6800D24778 /* mdc.c */,
-				2C30BCEA23A97B6900D24778 /* mdc.h */,
-				2C30BCEF23A97B6A00D24778 /* record_table.c */,
-				2C30BCD223A97B6800D24778 /* record_table.h */,
-				2C30BCD623A97B6800D24778 /* record.c */,
-				2C30BCD323A97B6800D24778 /* record.h */,
-				2C30BCFB23A97B6A00D24778 /* rotater.c */,
-				2C30BCDA23A97B6800D24778 /* rotater.h */,
-				2C30BCD523A97B6800D24778 /* rule.c */,
-				2C30BCD123A97B6800D24778 /* rule.h */,
-				2C30BCF923A97B6A00D24778 /* spec.c */,
-				2C30BCF023A97B6A00D24778 /* spec.h */,
-				2C30BCCF23A97B6800D24778 /* thread.c */,
-				2C30BCDB23A97B6800D24778 /* thread.h */,
-				2C30BCE523A97B6900D24778 /* version.h */,
-				2C30BCE723A97B6900D24778 /* zc_arraylist.c */,
-				2C30BCE223A97B6900D24778 /* zc_arraylist.h */,
-				2C30BCE423A97B6900D24778 /* zc_defs.h */,
-				2C30BCE823A97B6900D24778 /* zc_hashtable.c */,
-				2C30BCF323A97B6A00D24778 /* zc_hashtable.h */,
-				2C30BCDC23A97B6900D24778 /* zc_profile.c */,
-				2C30BCEB23A97B6900D24778 /* zc_profile.h */,
-				2C30BCE923A97B6900D24778 /* zc_util.c */,
-				2C30BCF223A97B6A00D24778 /* zc_util.h */,
-				2C30BCF623A97B6A00D24778 /* zc_xplatform.h */,
-				2C30BCF723A97B6A00D24778 /* zlog-chk-conf.c */,
-				2C30BCF823A97B6A00D24778 /* zlog.c */,
-				2C30BCD423A97B6800D24778 /* zlog.h */,
-			);
-			name = zlog;
 			sourceTree = "<group>";
 		};
 		2C89893823A184660062D70A /* apr-1 */ = {
@@ -1248,13 +1099,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				2C3756A723B7978C003A6B0A /* zconf.h in Headers */,
-				2C30BD0F23A97B6B00D24778 /* buf.h in Headers */,
 				2C89897E23A1847F0062D70A /* apr_user.h in Headers */,
 				2C37522123AFD0EF003A6B0A /* quicktimebase64.h in Headers */,
-				2C30BD1023A97B6B00D24778 /* zc_arraylist.h in Headers */,
 				2C89898323A1847F0062D70A /* apr_thread_mutex.h in Headers */,
-				2C30BD0923A97B6B00D24778 /* thread.h in Headers */,
-				2C30BD1A23A97B6B00D24778 /* level.h in Headers */,
 				2C37522723AFD0EF003A6B0A /* scalarbase64.h in Headers */,
 				2C89897623A1847F0062D70A /* apr_file_io.h in Headers */,
 				2C89897C23A1847F0062D70A /* apr_errno.h in Headers */,
@@ -1265,22 +1112,17 @@
 				2C3756BA23B7C1D7003A6B0A /* w_condition_variable.h in Headers */,
 				2C89897823A1847F0062D70A /* apr_ring.h in Headers */,
 				2C3756A823B7978C003A6B0A /* inflate.h in Headers */,
-				2C30BD1223A97B6B00D24778 /* zc_defs.h in Headers */,
 				2C89896F23A1847F0062D70A /* apr_want.h in Headers */,
 				2C89896223A1847F0062D70A /* apr_atomic.h in Headers */,
 				2C3756D923B7D35C003A6B0A /* lua.h in Headers */,
 				2C89896C23A1847F0062D70A /* apr_lib.h in Headers */,
 				2C89896923A1847F0062D70A /* apr_mmap.h in Headers */,
-				2C30BD0023A97B6B00D24778 /* record_table.h in Headers */,
 				2C898554239F65E90062D70A /* w_thread.h in Headers */,
-				2C30BD1923A97B6B00D24778 /* zc_profile.h in Headers */,
 				2C89897023A1847F0062D70A /* apr_inherit.h in Headers */,
 				2C3756A623B7978C003A6B0A /* crc32.h in Headers */,
-				2C30BD0E23A97B6B00D24778 /* fmacros.h in Headers */,
 				2C3756A223B7978C003A6B0A /* inffixed.h in Headers */,
 				2C898474239D2FA40062D70A /* w_timespan.h in Headers */,
 				2C3756A423B7978C003A6B0A /* zlib.h in Headers */,
-				2C30BD0123A97B6B00D24778 /* record.h in Headers */,
 				2C89897F23A1847F0062D70A /* apr_portable.h in Headers */,
 				2C89847D239E64960062D70A /* w_timer.h in Headers */,
 				2C89896E23A1847F0062D70A /* apr_thread_proc.h in Headers */,
@@ -1292,8 +1134,6 @@
 				2C30BAEB23A77F34009FC330 /* w_string.h in Headers */,
 				2C89897A23A1847F0062D70A /* apr_general.h in Headers */,
 				2C3756A123B7978C003A6B0A /* zutil.h in Headers */,
-				2C30BD1323A97B6B00D24778 /* version.h in Headers */,
-				2C30BD2423A97B6B00D24778 /* zc_xplatform.h in Headers */,
 				2C3756E323B7F302003A6B0A /* w_lua.h in Headers */,
 				2C89896A23A1847F0062D70A /* apr_hash.h in Headers */,
 				2C37522323AFD0EF003A6B0A /* fastavx512bwbase64.h in Headers */,
@@ -1305,46 +1145,32 @@
 				2C89897523A1847F0062D70A /* apr_random.h in Headers */,
 				2C89896523A1847F0062D70A /* apr_global_mutex.h in Headers */,
 				2C898545239E763C0062D70A /* msgpack.h in Headers */,
-				2C30BD0223A97B6B00D24778 /* zlog.h in Headers */,
-				2C30BD2023A97B6B00D24778 /* zc_util.h in Headers */,
 				2C30BD5823AA283800D24778 /* expat_config.h in Headers */,
-				2C30BD1823A97B6B00D24778 /* mdc.h in Headers */,
 				2C89898723A1847F0062D70A /* apr_fnmatch.h in Headers */,
 				2C89898923A1847F0062D70A /* apr_allocator.h in Headers */,
 				2C3756D723B7D35C003A6B0A /* lauxlib.h in Headers */,
 				2C898496239E735F0062D70A /* xxhash.h in Headers */,
 				2C3756A923B7978C003A6B0A /* trees.h in Headers */,
 				2C89897123A1847F0062D70A /* apr_file_info.h in Headers */,
-				2C30BD0823A97B6B00D24778 /* rotater.h in Headers */,
-				2C30BCFF23A97B6B00D24778 /* rule.h in Headers */,
 				2C3756A323B7978C003A6B0A /* gzguts.h in Headers */,
 				2C3756E823B924A3003A6B0A /* cJSON.h in Headers */,
-				2C30BD2323A97B6B00D24778 /* format.h in Headers */,
-				2C30BD2223A97B6B00D24778 /* level_list.h in Headers */,
 				2C89897223A1847F0062D70A /* apr_skiplist.h in Headers */,
 				2C3756A523B7978C003A6B0A /* inffast.h in Headers */,
 				2C37522923AFD0EF003A6B0A /* klompavxbase64.h in Headers */,
 				2C89897923A1847F0062D70A /* apr_proc_mutex.h in Headers */,
-				2C30BD2123A97B6B00D24778 /* zc_hashtable.h in Headers */,
 				2C20DCC723A41ABB00414E6F /* sha2.h in Headers */,
-				2C30BD0623A97B6B00D24778 /* category.h in Headers */,
 				2C89898423A1847F0062D70A /* apr_thread_rwlock.h in Headers */,
 				2C89893723A1790F0062D70A /* wolf.h in Headers */,
-				2C30BD1C23A97B6B00D24778 /* category_table.h in Headers */,
 				2C89896B23A1847F0062D70A /* apr_escape.h in Headers */,
 				2C30BAE023A42B2E009FC330 /* w_compress.h in Headers */,
-				2C30BD1F23A97B6B00D24778 /* conf.h in Headers */,
-				2C30BD1E23A97B6B00D24778 /* spec.h in Headers */,
 				2C89898023A1847F0062D70A /* apr_shm.h in Headers */,
 				2C89896423A1847F0062D70A /* apr_pools.h in Headers */,
 				2C89896823A1847F0062D70A /* apr.h in Headers */,
 				2C37522A23AFD0EF003A6B0A /* chromiumbase64.h in Headers */,
-				2C30BD2823A97B6B00D24778 /* event.h in Headers */,
 				2C898493239E735F0062D70A /* lz4.h in Headers */,
 				2C89897323A1847F0062D70A /* apr_strings.h in Headers */,
 				2C89848E239E735F0062D70A /* lz4hc.h in Headers */,
 				2C89898A23A1847F0062D70A /* apr_encode.h in Headers */,
-				2C89893523A178370062D70A /* w_log.h in Headers */,
 				2C89897423A1847F0062D70A /* apr_signal.h in Headers */,
 				2C3756AB23B7978C003A6B0A /* inftrees.h in Headers */,
 				2C89896323A1847F0062D70A /* apr_poll.h in Headers */,
@@ -1420,11 +1246,9 @@
 			files = (
 				2C20DC8E23A419C800414E6F /* start.c in Sources */,
 				2C20DC7723A4196600414E6F /* proc_mutex.c in Sources */,
-				2C30BD2A23A97B6B00D24778 /* format.c in Sources */,
 				2C20DC5D23A4192B00414E6F /* dir.c in Sources */,
 				2C20DC4B23A4190D00414E6F /* apr_encode.c in Sources */,
 				2C20DC3723A405CF00414E6F /* mutex.c in Sources */,
-				2C30BCFE23A97B6B00D24778 /* mdc.c in Sources */,
 				2C3756B523B79EF1003A6B0A /* w_signal.c in Sources */,
 				2C20DC4A23A4190D00414E6F /* apr_escape.c in Sources */,
 				2C20DCD723A41B2600414E6F /* apr_cpystrn.c in Sources */,
@@ -1435,18 +1259,15 @@
 				2C20DCBB23A41AA400414E6F /* z_asio.c in Sources */,
 				2C20DC6323A4192B00414E6F /* pipe.c in Sources */,
 				2C20DCF023A41BA700414E6F /* signals.c in Sources */,
-				2C30BD1423A97B6B00D24778 /* conf.c in Sources */,
 				2C898494239E735F0062D70A /* lz4frame.c in Sources */,
 				2C30BD4B23AA250200D24778 /* xmlparse.c in Sources */,
 				2C20DC3623A405CF00414E6F /* solaris.c in Sources */,
 				2C20DC3823A405CF00414E6F /* builtins64.c in Sources */,
-				2C30BD2623A97B6B00D24778 /* zlog.c in Sources */,
 				2C20DC5F23A4192B00414E6F /* filedup.c in Sources */,
 				2C20DCB923A41AA400414E6F /* port.c in Sources */,
 				2C20DCEE23A41BA700414E6F /* thread.c in Sources */,
 				2C20DC6B23A4192B00414E6F /* buffer.c in Sources */,
 				2C20DC8A23A419C800414E6F /* otherchild.c in Sources */,
-				2C30BCFD23A97B6B00D24778 /* thread.c in Sources */,
 				2C20DC8823A419C800414E6F /* version.c in Sources */,
 				2C20DCBF23A41AA400414E6F /* pollcb.c in Sources */,
 				2C20DCD523A41B2600414E6F /* apr_snprintf.c in Sources */,
@@ -1456,20 +1277,15 @@
 				2C20DCD823A41B2600414E6F /* apr_strtok.c in Sources */,
 				2C20DCD623A41B2600414E6F /* apr_strings.c in Sources */,
 				2C20DC9523A41A0100414E6F /* mmap.c in Sources */,
-				2C30BD1523A97B6B00D24778 /* zc_arraylist.c in Sources */,
 				2C20DCDA23A41B2600414E6F /* apr_strnatcmp.c in Sources */,
 				2C898490239E735F0062D70A /* xxhash.c in Sources */,
-				2C30BD2923A97B6B00D24778 /* rotater.c in Sources */,
 				2C898540239E763C0062D70A /* unpack.c in Sources */,
 				2C20DCBD23A41AA400414E6F /* kqueue.c in Sources */,
 				2C20DC9423A41A0100414E6F /* common.c in Sources */,
-				2C30BD1623A97B6B00D24778 /* zc_hashtable.c in Sources */,
 				2C20DCC823A41ABB00414E6F /* sha2_glue.c in Sources */,
 				2C20DC8B23A419C800414E6F /* getopt.c in Sources */,
 				2C20DC8C23A419C800414E6F /* charset.c in Sources */,
 				2C30BAE523A42CFD009FC330 /* w_io.c in Sources */,
-				2C30BD0B23A97B6B00D24778 /* event.c in Sources */,
-				2C30BD0523A97B6B00D24778 /* buf.c in Sources */,
 				2C20DC6523A4192B00414E6F /* filepath_util.c in Sources */,
 				2C30BAEA23A77F34009FC330 /* w_string.c in Sources */,
 				2C20DC3D23A405CF00414E6F /* ppc.c in Sources */,
@@ -1483,22 +1299,17 @@
 				2C20DC3923A405CF00414E6F /* s390.c in Sources */,
 				2C20DC6223A4192B00414E6F /* filepath.c in Sources */,
 				2C20DC8D23A419C800414E6F /* rand.c in Sources */,
-				2C30BD0423A97B6B00D24778 /* record.c in Sources */,
 				2C898544239E763C0062D70A /* objectc.c in Sources */,
-				2C30BD0A23A97B6B00D24778 /* zc_profile.c in Sources */,
 				2C20DC8923A419C800414E6F /* randbyte_os2.inc in Sources */,
 				2C20DC8723A419C800414E6F /* env.c in Sources */,
 				2C20DC6823A4192B00414E6F /* filestat.c in Sources */,
 				2C20DCB823A41AA400414E6F /* epoll.c in Sources */,
-				2C30BD1123A97B6B00D24778 /* level_list.c in Sources */,
 				2C20DCBE23A41AA400414E6F /* wakeup.c in Sources */,
 				2C20DCA023A41A2A00414E6F /* multicast.c in Sources */,
 				2C20DCE523A41B7B00414E6F /* apr_tables.c in Sources */,
 				2C898543239E763C0062D70A /* version.c in Sources */,
 				2C20DC5C23A4192B00414E6F /* tempdir.c in Sources */,
 				2C37522B23AFD0EF003A6B0A /* quicktimebase64.c in Sources */,
-				2C89893423A178370062D70A /* w_log.c in Sources */,
-				2C30BD1723A97B6B00D24778 /* zc_util.c in Sources */,
 				2C37522823AFD0EF003A6B0A /* chromiumbase64.c in Sources */,
 				2C30BD5223AA250200D24778 /* xmlrole.c in Sources */,
 				2C20DCA623A41A2A00414E6F /* socket_util.c in Sources */,
@@ -1509,11 +1320,8 @@
 				2C20DC7623A4196600414E6F /* thread_rwlock.c in Sources */,
 				2C20DCA123A41A2A00414E6F /* sockopt.c in Sources */,
 				2C20DCF223A41BA700414E6F /* threadpriv.c in Sources */,
-				2C30BD0D23A97B6B00D24778 /* level.c in Sources */,
 				2C20DCAA23A41A5200414E6F /* apr_getpass.c in Sources */,
-				2C30BD0323A97B6B00D24778 /* rule.c in Sources */,
 				2C20DCF123A41BA700414E6F /* procsup.c in Sources */,
-				2C30BD2723A97B6B00D24778 /* spec.c in Sources */,
 				2C20DCBC23A41AA400414E6F /* poll.c in Sources */,
 				2C20DC4623A418C700414E6F /* dso.c in Sources */,
 				2C20DC3B23A405CF00414E6F /* builtins.c in Sources */,
@@ -1536,10 +1344,8 @@
 				2C20DCD923A41B2600414E6F /* apr_fnmatch.c in Sources */,
 				2C20DC7423A4196600414E6F /* thread_cond.c in Sources */,
 				2C37522623AFD0EF003A6B0A /* fastavxbase64.c in Sources */,
-				2C30BD1D23A97B6B00D24778 /* record_table.c in Sources */,
 				2C20DC6A23A4192B00414E6F /* fileacc.c in Sources */,
 				2C898541239E763C0062D70A /* zone.c in Sources */,
-				2C30BD2523A97B6B00D24778 /* zlog-chk-conf.c in Sources */,
 				2C20DCCB23A41AFB00414E6F /* shm.c in Sources */,
 				2C898491239E735F0062D70A /* lz4.c in Sources */,
 				2C20DC6723A4192B00414E6F /* copy.c in Sources */,
@@ -1551,10 +1357,8 @@
 				2C20DD0023A41C2400414E6F /* userinfo.c in Sources */,
 				2C20DCEF23A41BA700414E6F /* proc.c in Sources */,
 				2C20DCDB23A41B2600414E6F /* apr_cstr.c in Sources */,
-				2C30BD0723A97B6B00D24778 /* category.c in Sources */,
 				2C20DCA223A41A2A00414E6F /* inet_ntop.c in Sources */,
 				2C20DC6623A4192B00414E6F /* mktemp.c in Sources */,
-				2C30BD0C23A97B6B00D24778 /* category_table.c in Sources */,
 				2C898553239F65E90062D70A /* w_thread.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

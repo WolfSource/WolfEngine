@@ -1,5 +1,7 @@
 #include "w_chrono.h"
+#ifdef W_PLATROM_WIN
 #include <WinSock2.h> //just for timeval
+#endif
 
 #ifdef _WIN32
 
