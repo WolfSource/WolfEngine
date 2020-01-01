@@ -168,20 +168,6 @@ W_RESULT w_io_get_is_file(_In_z_ const char* pPath)
 #endif
 }
 
-//#ifdef _WIN32
-//W_RESULT w_io_get_is_fileW(_In_z_ const wchar_t* pPath)
-//{
-//    FILE* _file = NULL;
-//    _wfopen_s(&_file, pPath, L"r");
-//    if (_file)
-//    {
-//        fclose(_file);
-//        return W_PASSED;
-//    }
-//    return W_FAILED;
-//}
-//#endif
-
 apr_finfo_t* w_io_get_file_info_from_path(_In_z_ const char* pPath)
 {
     apr_pool_t* _pool = w_get_default_memory_pool();
@@ -284,14 +270,14 @@ const char* w_io_get_file_name_from_path(_In_z_ const char* pFilePath)
 #endif
 }
 
-const char* w_io_get_file_name(_In_ apr_file_t* pFile)
+const char*	w_io_get_file_name(_In_ apr_file_t* pFile)
 {
     apr_finfo_t* _info = w_io_get_file_info(pFile);
     if (!_info) return "";
     return _info->name;
 }
 
-void* w_io_read_file_with_path(_In_z_ const char* pPath)
+void*	w_io_read_file_with_path(_In_z_ const char* pPath)
 {
     void* _buf = NULL;
     apr_pool_t* _pool = w_get_default_memory_pool();
@@ -318,7 +304,7 @@ void* w_io_read_file_with_path(_In_z_ const char* pPath)
     return _buf;
 }
 
-void* w_io_read_file_with_file(_In_z_ apr_file_t* pFile)
+void*	w_io_read_file_with_file(_In_z_ apr_file_t* pFile)
 {
     void* _buf = NULL;
     apr_pool_t* _pool = w_get_default_memory_pool();
@@ -337,7 +323,7 @@ void* w_io_read_file_with_file(_In_z_ apr_file_t* pFile)
     return _buf;
 }
 
-W_RESULT w_io_delete_file_with_path(_In_ const char* pPath)
+W_RESULT	w_io_delete_file_with_path(_In_ const char* pPath)
 {
     if (!pPath)
     {
@@ -355,7 +341,7 @@ W_RESULT w_io_delete_file_with_path(_In_ const char* pPath)
     return _ret == APR_SUCCESS ? W_PASSED : W_FAILED;
 }
 
-W_RESULT w_io_delete_file_with_file(_In_ apr_file_t* pFile)
+W_RESULT	w_io_delete_file_with_file(_In_ apr_file_t* pFile)
 {
     if (!pFile)
     {
@@ -373,7 +359,7 @@ W_RESULT w_io_delete_file_with_file(_In_ apr_file_t* pFile)
     return _ret == APR_SUCCESS ? W_PASSED : W_FAILED;
 }
 
-char* w_io_get_current_directory(void)
+char*	w_io_get_current_directory(void)
 {
     char* _path = w_string_create(PATH_MAX);
 #ifdef W_PLATFORM_UNIX
@@ -384,7 +370,7 @@ char* w_io_get_current_directory(void)
     return _path;
 }
 
-W_RESULT w_io_get_is_directory(_In_z_ const char* pPath)
+W_RESULT	w_io_get_is_directory(_In_z_ const char* pPath)
 {
     apr_pool_t* _pool = w_get_default_memory_pool();
     if(!_pool)
@@ -421,7 +407,7 @@ const char* w_io_get_parent_directory(_In_z_ const char* pPath)
 #endif
 }
 
-W_RESULT w_io_create_directory(_In_z_ const char* pPath)
+W_RESULT	w_io_create_directory(_In_z_ const char* pPath)
 {
     apr_pool_t* _pool = w_get_default_memory_pool();
     if(!_pool)
@@ -435,6 +421,197 @@ W_RESULT w_io_create_directory(_In_z_ const char* pPath)
     return _ret == APR_SUCCESS ? W_PASSED : W_FAILED;
 }
 
+W_RESULT	w_io_utf8_to_ucs2(
+	const char* in,
+	size_t* inbytes,
+	apr_uint16_t* out,
+	size_t* outwords)
+{
+	apr_int64_t newch, mask;
+	apr_size_t expect, eating;
+	int ch;
+
+	while (*inbytes && *outwords)
+	{
+		ch = (unsigned char)(*in++);
+		if (!(ch & 0200)) {
+			/* US-ASCII-7 plain text
+			 */
+			--* inbytes;
+			--* outwords;
+			*(out++) = ch;
+		}
+		else
+		{
+			if ((ch & 0300) != 0300) {
+				/* Multibyte Continuation is out of place
+				 */
+				return W_INVALID;
+			}
+			else
+			{
+				/* Multibyte Sequence Lead Character
+				 *
+				 * Compute the expected bytes while adjusting
+				 * or lead byte and leading zeros mask.
+				 */
+				mask = 0340;
+				expect = 1;
+				while ((ch & mask) == mask) {
+					mask |= mask >> 1;
+					if (++expect > 3) /* (truly 5 for ucs-4) */
+						return W_INVALID;
+				}
+				newch = ch & ~mask;
+				eating = expect + 1;
+				if (*inbytes <= expect)
+					return W_INCOMPLETE;
+				/* Reject values of excessive leading 0 bits
+				 * utf-8 _demands_ the shortest possible byte length
+				 */
+				if (expect == 1) {
+					if (!(newch & 0036))
+						return W_INVALID;
+				}
+				else {
+					/* Reject values of excessive leading 0 bits
+					 */
+					if (!newch && !((unsigned char)* in & 0077 & (mask << 1)))
+						return W_INVALID;
+					if (expect == 2) {
+						/* Reject values D800-DFFF when not utf16 encoded
+						 * (may not be an appropriate restriction for ucs-4)
+						 */
+						if (newch == 0015 && ((unsigned char)* in & 0040))
+							return W_INVALID;
+					}
+					else if (expect == 3) {
+						/* Short circuit values > 110000
+						 */
+						if (newch > 4)
+							return W_INVALID;
+						if (newch == 4 && ((unsigned char)* in & 0060))
+							return W_INVALID;
+					}
+				}
+				/* Where the boolean (expect > 2) is true, we will need
+				 * an extra word for the output.
+				 */
+				if (*outwords < (apr_size_t)(expect > 2) + 1)
+					break; /* buffer full */
+				while (expect--)
+				{
+					/* Multibyte Continuation must be legal */
+					if (((ch = (unsigned char) * (in++)) & 0300) != 0200)
+						return W_INVALID;
+					newch <<= 6;
+					newch |= (ch & 0077);
+				}
+				*inbytes -= eating;
+				/* newch is now a true ucs-4 character
+				 *
+				 * now we need to fold to ucs-2
+				 */
+				if (newch < 0x10000)
+				{
+					--* outwords;
+					*(out++) = (apr_uint16_t)newch;
+				}
+				else
+				{
+					*outwords -= 2;
+					newch -= 0x10000;
+					*(out++) = (apr_uint16_t)(0xD800 | (newch >> 10));
+					*(out++) = (apr_uint16_t)(0xDC00 | (newch & 0x03FF));
+				}
+			}
+		}
+	}
+	/* Buffer full 'errors' aren't errors, the client must inspect both
+	 * the inbytes and outwords values
+	 */
+	return W_PASSED;
+}
+
+apr_status_t w_io_ucs2_to_utf8(
+	const apr_uint16_t* in,
+	size_t* inwords,
+	char* out,
+	size_t* outbytes)
+{
+	apr_int64_t newch, require;
+	apr_size_t need;
+	char* invout;
+	int ch;
+
+	while (*inwords && *outbytes)
+	{
+		ch = (unsigned short)(*in++);
+		if (ch < 0x80)
+		{
+			--* inwords;
+			--* outbytes;
+			*(out++) = (unsigned char)ch;
+		}
+		else
+		{
+			if ((ch & 0xFC00) == 0xDC00) {
+				/* Invalid Leading ucs-2 Multiword Continuation Character
+				 */
+				return W_INVALID;
+			}
+			if ((ch & 0xFC00) == 0xD800) {
+				/* Leading ucs-2 Multiword Character
+				 */
+				if (*inwords < 2) {
+					/* Missing ucs-2 Multiword Continuation Character
+					 */
+					return W_INCOMPLETE;
+				}
+				if (((unsigned short)(*in) & 0xFC00) != 0xDC00) {
+					/* Invalid ucs-2 Multiword Continuation Character
+					 */
+					return W_INVALID;
+				}
+				newch = (ch & 0x03FF) << 10 | ((unsigned short)(*in++) & 0x03FF);
+				newch += 0x10000;
+			}
+			else {
+				/* ucs-2 Single Word Character
+				 */
+				newch = ch;
+			}
+			/* Determine the absolute minimum utf-8 bytes required
+			 */
+			require = newch >> 11;
+			need = 1;
+			while (require)
+				require >>= 5, ++need;
+			if (need >= *outbytes)
+				break; /* Insufficient buffer */
+			*inwords -= (need > 2) + 1;
+			*outbytes -= need + 1;
+			/* Compute the utf-8 characters in last to first order,
+			 * calculating the lead character length bits along the way.
+			 */
+			ch = 0200;
+			out += need + 1;
+			invout = out;
+			while (need--) {
+				ch |= ch >> 1;
+				*(--invout) = (unsigned char)(0200 | (newch & 0077));
+				newch >>= 6;
+			}
+			/* Compute the lead utf-8 character and move the dest offset
+			 */
+			*(--invout) = (unsigned char)(ch | newch);
+		}
+	}
+	/* Buffer full 'errors' aren't errors, the client must inspect both
+	 * the inwords and outbytes values
+	 */
+	return W_PASSED;
+}
 
 //apr_dir_read(<#apr_finfo_t *finfo#>, <#apr_int32_t wanted#>, <#apr_dir_t *thedir#>)
 //#if defined(__cpp_lib_filesystem) || defined(__cpp_lib_experimental_filesystem)

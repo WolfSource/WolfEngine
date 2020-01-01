@@ -148,9 +148,6 @@
     <Filter Include="memory">
       <UniqueIdentifier>{41b3ca0b-ad7c-4783-9ff1-9c379fd94a7e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="net">
-      <UniqueIdentifier>{332e5b0e-2334-4894-9016-fa0efdaa0995}</UniqueIdentifier>
-    </Filter>
     <Filter Include="os">
       <UniqueIdentifier>{879e5083-4abe-4a2e-b5f0-f6b6c93b7da5}</UniqueIdentifier>
     </Filter>
@@ -169,11 +166,17 @@
     <Filter Include="xml">
       <UniqueIdentifier>{8a6d849c-aefb-4f7a-8ad2-6bdb313bd4ca}</UniqueIdentifier>
     </Filter>
-    <Filter Include="xml\libexpat">
-      <UniqueIdentifier>{ebf0141f-1b61-4eda-89ab-769cc75fd15e}</UniqueIdentifier>
+    <Filter Include="xml\rapidxml">
+      <UniqueIdentifier>{398e9b36-a471-42d2-b15f-ce7e02445691}</UniqueIdentifier>
     </Filter>
-    <Filter Include="json\cJSON">
-      <UniqueIdentifier>{ec64ae86-903a-4939-803d-fe09dda30375}</UniqueIdentifier>
+    <Filter Include="json\rapidjson">
+      <UniqueIdentifier>{6fed42ad-4fb7-4bf4-bec4-547dcb0a7ba3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="log\spdlog">
+      <UniqueIdentifier>{dcbb76a6-8d16-4006-819f-ce87063b4edb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="log\spdlog\src">
+      <UniqueIdentifier>{5af967e1-fcbf-40b8-a7d6-4d5984514f45}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -529,53 +532,29 @@
     <ClInclude Include="..\..\..\src\wolf.system\script\lua\lualib.h">
       <Filter>script\lua</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\xml\libexpat\ascii.h">
-      <Filter>xml\libexpat</Filter>
+    <ClInclude Include="..\..\..\src\wolf.system\xml\rapidxml\rapidxml.hpp">
+      <Filter>xml\rapidxml</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\xml\libexpat\asciitab.h">
-      <Filter>xml\libexpat</Filter>
+    <ClInclude Include="..\..\..\src\wolf.system\xml\rapidxml\rapidxml_iterators.hpp">
+      <Filter>xml\rapidxml</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\xml\libexpat\expat.h">
-      <Filter>xml\libexpat</Filter>
+    <ClInclude Include="..\..\..\src\wolf.system\xml\rapidxml\rapidxml_print.hpp">
+      <Filter>xml\rapidxml</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\xml\libexpat\expat_config.h">
-      <Filter>xml\libexpat</Filter>
+    <ClInclude Include="..\..\..\src\wolf.system\xml\rapidxml\rapidxml_utils.hpp">
+      <Filter>xml\rapidxml</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\xml\libexpat\expat_external.h">
-      <Filter>xml\libexpat</Filter>
+    <ClInclude Include="..\..\..\src\wolf.system\xml\w_xml.h">
+      <Filter>xml</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\xml\libexpat\iasciitab.h">
-      <Filter>xml\libexpat</Filter>
+    <ClInclude Include="..\..\..\src\wolf.system\json\rapidjson\rapidjson.h">
+      <Filter>json\rapidjson</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\xml\libexpat\internal.h">
-      <Filter>xml\libexpat</Filter>
+    <ClInclude Include="..\..\..\src\wolf.system\log\spdlog\spdlog.h">
+      <Filter>log\spdlog</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\xml\libexpat\latin1tab.h">
-      <Filter>xml\libexpat</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\xml\libexpat\nametab.h">
-      <Filter>xml\libexpat</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\xml\libexpat\siphash.h">
-      <Filter>xml\libexpat</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\xml\libexpat\utf8tab.h">
-      <Filter>xml\libexpat</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\xml\libexpat\winconfig.h">
-      <Filter>xml\libexpat</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\xml\libexpat\xmlrole.h">
-      <Filter>xml\libexpat</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\xml\libexpat\xmltok.h">
-      <Filter>xml\libexpat</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\xml\libexpat\xmltok_impl.h">
-      <Filter>xml\libexpat</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\json\cJSON\cJSON.h">
-      <Filter>json\cJSON</Filter>
+    <ClInclude Include="..\..\..\src\wolf.system\log\w_log.h">
+      <Filter>log</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1018,23 +997,29 @@
     <ClCompile Include="..\..\..\src\wolf.system\memory\w_string.c">
       <Filter>memory</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\xml\libexpat\xmlparse.c">
-      <Filter>xml\libexpat</Filter>
+    <ClCompile Include="..\..\..\src\wolf.system\xml\w_xml.cpp">
+      <Filter>xml</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\xml\libexpat\xmlrole.c">
-      <Filter>xml\libexpat</Filter>
+    <ClCompile Include="..\..\..\src\wolf.system\log\spdlog\src\async.cpp">
+      <Filter>log\spdlog\src</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\xml\libexpat\xmltok.c">
-      <Filter>xml\libexpat</Filter>
+    <ClCompile Include="..\..\..\src\wolf.system\log\spdlog\src\color_sinks.cpp">
+      <Filter>log\spdlog\src</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\xml\libexpat\xmltok_impl.c">
-      <Filter>xml\libexpat</Filter>
+    <ClCompile Include="..\..\..\src\wolf.system\log\spdlog\src\file_sinks.cpp">
+      <Filter>log\spdlog\src</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\xml\libexpat\xmltok_ns.c">
-      <Filter>xml\libexpat</Filter>
+    <ClCompile Include="..\..\..\src\wolf.system\log\spdlog\src\fmt.cpp">
+      <Filter>log\spdlog\src</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\json\cJSON\cJSON.c">
-      <Filter>json\cJSON</Filter>
+    <ClCompile Include="..\..\..\src\wolf.system\log\spdlog\src\spdlog.cpp">
+      <Filter>log\spdlog\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\log\spdlog\src\stdout_sinks.cpp">
+      <Filter>log\spdlog\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\log\w_log.cpp">
+      <Filter>log</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1047,16 +1032,22 @@
     <None Include="..\..\..\src\wolf.system\compression\lz4\README.md">
       <Filter>compression\lz4</Filter>
     </None>
-    <None Include="..\..\..\src\wolf.system\xml\libexpat\libexpat.def">
-      <Filter>xml\libexpat</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\xml\libexpat\libexpatw.def">
-      <Filter>xml\libexpat</Filter>
+    <None Include="..\..\..\src\wolf.system\xml\rapidxml\manual.html">
+      <Filter>xml\rapidxml</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\..\src\wolf.system\base64\version.txt">
       <Filter>base64</Filter>
+    </Text>
+    <Text Include="..\..\..\src\wolf.system\xml\rapidxml\license.txt">
+      <Filter>xml\rapidxml</Filter>
+    </Text>
+    <Text Include="..\..\..\src\wolf.system\xml\rapidxml\version.txt">
+      <Filter>xml\rapidxml</Filter>
+    </Text>
+    <Text Include="..\..\..\src\wolf.system\json\rapidjson\version.txt">
+      <Filter>json\rapidjson</Filter>
     </Text>
   </ItemGroup>
   <ItemGroup>

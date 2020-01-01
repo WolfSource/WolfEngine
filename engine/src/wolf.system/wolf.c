@@ -1,5 +1,4 @@
 #include "wolf.h"
-#include <log/w_log.h>
 
 static apr_pool_t* s_default_memory_pool = NULL;
 
@@ -23,7 +22,7 @@ apr_pool_t* w_get_default_memory_pool(void)
     return s_default_memory_pool;
 }
 
-void* w_alloc(_In_ size_t pSize)
+void* w_alloc(_In_ const size_t pSize)
 {
     apr_pool_t* _pool = w_get_default_memory_pool();
     if(!_pool)

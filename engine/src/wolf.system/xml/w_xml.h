@@ -9,50 +9,65 @@
 
 #pragma once
 
-#include "w_system_export.h"
-#include "rapidxml/rapidxml.hpp"
-#include <string>
-#include "w_std.h"
+#include <wolf.h>
+#include <xml/rapidxml/rapidxml.hpp>
 
-namespace wolf::system
+struct w_xml_data
 {
-	struct w_xml_data
+	struct w_xml_data_attribute
 	{
-		struct w_xml_data_attribute
-		{
-			std::wstring name;
-			std::wstring value;
-		};
-
-		std::wstring node;
-		std::vector<w_xml_data_attribute> attributes;
-		std::vector<w_xml_data> children;
+		wchar_t* name;
+		wchar_t* value;
 	};
 
-	class w_xml
-	{
-	public:
-		WSYS_EXP w_xml();
-		WSYS_EXP ~w_xml();
+	wchar_t* node;
+	w_xml_data_attribute* attributes;
+	w_xml_data* children;
+};
 
-#if defined(__WIN32) || defined(__UWP)
-		WSYS_EXP static W_RESULT save(_In_z_ const wchar_t* pPath,
-#else
-		WSYS_EXP static W_RESULT save(_In_z_ const char* pPath,
-#endif
-			_In_ const bool& pUTF_8, _In_ wolf::system::w_xml_data & pData, _In_z_ const std::wstring pPreComment = L"");
+/**
+ * save xml to file
+ * @param pPath path to the file
+ * @param pXMLData xml data
+ * @param pPreComment path to the file
+ * @return result
+ */
+W_SYSTEM_EXPORT W_RESULT w_xml_save_to_file(
+	_In_z_ const wchar_t* pPath,
+	_In_ w_xml_data* pXMLData,
+	_In_z_ const wchar_t* pPreComment);
 
-		//get xml node value
-		WSYS_EXP static const std::string	get_node_value(_In_ rapidxml::xml_node<> * pNode);
-		//get xml node attribute value
-		WSYS_EXP static const std::string	get_node_attribute(_In_ rapidxml::xml_node<> * pNode, _In_z_ const char* const pAttribute);
+/**
+ * get xml node value
+ * @param pNode xml node
+ * @return node value
+ */
+W_SYSTEM_EXPORT const char* w_xml_get_node_value(_In_ rapidxml::xml_node<>* pNode);
+	
+/**
+ * get xml node as wide char
+ * @param pNode xml node
+ * @return node value
+ */
+W_SYSTEM_EXPORT const wchar_t* w_xml_get_node_value_wchar(_In_ rapidxml::xml_node<> * pNode);
+	
+/**
+ * get xml node attribute
+ * @param pNode xml node
+ * @param pAttribute xml node attribute
+ * @return node value
+ */
+W_SYSTEM_EXPORT const char* w_xml_get_node_attribute(
+	_In_ rapidxml::xml_node<>* pNode,
+	_In_z_ const char* const pAttribute);
 
-		//get xml node value as utf8
-		WSYS_EXP static const std::wstring	get_node_value_utf8(_In_ rapidxml::xml_node<> * pNode);
-		//get xml node attribute value as utf8
-		WSYS_EXP static const std::wstring	get_node_attribute_utf8(_In_ rapidxml::xml_node<> * pNode, _In_z_ const char* pAttribute);
-
-	private:
-		static void _write_element(_In_ wolf::system::w_xml_data & pData, _In_ rapidxml::xml_document<wchar_t> & pDoc, _Inout_ rapidxml::xml_node<wchar_t> * *pParentNode);
-	};
-}
+/**
+ * get xml node as wide char
+ * @param pNode xml node
+ * @param pAttribute xml node attribute
+ * @return node attribute value
+ */
+W_SYSTEM_EXPORT const wchar_t* w_xml_get_node_attribute_wide_char(
+	_In_ rapidxml::xml_node<>* pNode, 
+	_In_z_ const char* pAttribute);
+	

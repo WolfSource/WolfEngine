@@ -129,7 +129,9 @@
     <ClInclude Include="..\..\..\src\wolf.system\concurrency\w_signal.h" />
     <ClInclude Include="..\..\..\src\wolf.system\concurrency\w_thread.h" />
     <ClInclude Include="..\..\..\src\wolf.system\io\w_io.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\json\cJSON\cJSON.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\json\rapidjson\rapidjson.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\log\spdlog\spdlog.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\log\w_log.h" />
     <ClInclude Include="..\..\..\src\wolf.system\memory\w_string.h" />
     <ClInclude Include="..\..\..\src\wolf.system\os\w_platform.h" />
     <ClInclude Include="..\..\..\src\wolf.system\script\lua\lauxlib.h" />
@@ -138,21 +140,11 @@
     <ClInclude Include="..\..\..\src\wolf.system\script\lua\luajit.h" />
     <ClInclude Include="..\..\..\src\wolf.system\script\lua\lualib.h" />
     <ClInclude Include="..\..\..\src\wolf.system\wolf.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\xml\libexpat\ascii.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\xml\libexpat\asciitab.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\xml\libexpat\expat.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\xml\libexpat\expat_config.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\xml\libexpat\expat_external.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\xml\libexpat\iasciitab.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\xml\libexpat\internal.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\xml\libexpat\latin1tab.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\xml\libexpat\nametab.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\xml\libexpat\siphash.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\xml\libexpat\utf8tab.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\xml\libexpat\winconfig.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\xml\libexpat\xmlrole.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\xml\libexpat\xmltok.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\xml\libexpat\xmltok_impl.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\xml\rapidxml\rapidxml.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\xml\rapidxml\rapidxml_iterators.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\xml\rapidxml\rapidxml_print.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\xml\rapidxml\rapidxml_utils.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\xml\w_xml.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\atomic\win32\apr_atomic.c" />
@@ -300,24 +292,28 @@
     <ClCompile Include="..\..\..\src\wolf.system\concurrency\w_signal.c" />
     <ClCompile Include="..\..\..\src\wolf.system\concurrency\w_thread.c" />
     <ClCompile Include="..\..\..\src\wolf.system\io\w_io.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\json\cJSON\cJSON.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\log\spdlog\src\async.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.system\log\spdlog\src\color_sinks.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.system\log\spdlog\src\file_sinks.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.system\log\spdlog\src\fmt.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.system\log\spdlog\src\spdlog.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.system\log\spdlog\src\stdout_sinks.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.system\log\w_log.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\memory\w_string.c" />
     <ClCompile Include="..\..\..\src\wolf.system\wolf.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\xml\libexpat\xmlparse.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\xml\libexpat\xmlrole.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\xml\libexpat\xmltok.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\xml\libexpat\xmltok_impl.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\xml\libexpat\xmltok_ns.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\xml\w_xml.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\src\wolf.system\base64\LICENSE" />
     <None Include="..\..\..\src\wolf.system\compression\lz4\LICENSE" />
     <None Include="..\..\..\src\wolf.system\compression\lz4\README.md" />
-    <None Include="..\..\..\src\wolf.system\xml\libexpat\libexpat.def" />
-    <None Include="..\..\..\src\wolf.system\xml\libexpat\libexpatw.def" />
+    <None Include="..\..\..\src\wolf.system\xml\rapidxml\manual.html" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\..\src\wolf.system\base64\version.txt" />
+    <Text Include="..\..\..\src\wolf.system\json\rapidjson\version.txt" />
+    <Text Include="..\..\..\src\wolf.system\xml\rapidxml\license.txt" />
+    <Text Include="..\..\..\src\wolf.system\xml\rapidxml\version.txt" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\..\src\wolf.system\compression\lzma\7zVersion.rc" />
@@ -422,8 +418,8 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.system/apr-1;$(SolutionDir)/../../src/wolf.system/apr-1/arch/win32;$(SolutionDir)/../../src/wolf.system/apr-1/arch/unix;$(SolutionDir)/../../src/wolf.system/apr-1/private;$(SolutionDir)/../../src/wolf.system/compression/zlib;$(SolutionDir)/../../src/wolf.system/compression/msgpack;$(SolutionDir)/../../src/wolf.system/log/easylogger;$(SolutionDir)/../../deps/luaJIT/include;$(SolutionDir)/../../deps/libpng/include;$(SolutionDir)/../../deps/libjpeg-turbo/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_WIN32;_WINDOWS;WINNT;APR_DECLARE_EXPORT;libapr_1_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.system/apr-1;$(SolutionDir)/../../src/wolf.system/apr-1/arch/win32;$(SolutionDir)/../../src/wolf.system/apr-1/arch/unix;$(SolutionDir)/../../src/wolf.system/apr-1/private;$(SolutionDir)/../../src/wolf.system/compression/zlib;$(SolutionDir)/../../src/wolf.system/compression/msgpack;$(SolutionDir)/../../src/wolf.system/log/;$(SolutionDir)/../../deps/luaJIT/include;$(SolutionDir)/../../deps/libpng/include;$(SolutionDir)/../../deps/libjpeg-turbo/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WIN32;_WINDOWS;WINNT;APR_DECLARE_EXPORT;libapr_1_EXPORTS;SPDLOG_COMPILED_LIB;SPDLOG_WCHAR_TO_UTF8_SUPPORT;SPDLOG_WCHAR_FILENAMES;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>

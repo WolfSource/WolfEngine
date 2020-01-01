@@ -11,27 +11,27 @@
 
 #if defined(_WIN32) || defined(_WIN64)
 
-    #define W_PLATROM_WIN
+    #define W_PLATFORM_WIN
 
 #elif defined(__APPLE__)
 
-    #define W_PLATROM_OSX
+    #define W_PLATFORM_OSX
 
 #elif defined(__IOS__)
 
-    #define W_PLATROM_IOS
+    #define W_PLATFORM_IOS
 
 #elif defined(__linux) || defined(__linux__)
 
-    #define W_PLATROM_LINUX
+    #define W_PLATFORM_LINUX
 
 #elif defined(_ANDROID)
 
-    #define W_PLATROM_ANDROID
+    #define W_PLATFORM_ANDROID
 
 #endif
 
-#if defined(W_PLATROM_OSX) || defined(W_PLATROM_IOS) || defined(W_PLATROM_LINUX) || defined(W_PLATROM_ANDROID)
+#if defined(W_PLATFORM_OSX) || defined(W_PLATFORM_IOS) || defined(W_PLATFORM_LINUX) || defined(W_PLATFORM_ANDROID)
 
     #define W_PLATFORM_UNIX
 

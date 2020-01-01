@@ -1,13 +1,9 @@
 #include "w_chrono.h"
-#ifdef W_PLATROM_WIN
+#ifdef W_PLATFORM_WIN
 #include <WinSock2.h> //just for timeval
-#endif
-
-#ifdef _WIN32
-
 //dump define
 #ifndef CLOCK_MONOTONIC
-#define CLOCK_MONOTONIC				1
+#define CLOCK_MONOTONIC		1			
 #endif
 
 LARGE_INTEGER _get_file_time_offset()

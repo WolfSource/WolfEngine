@@ -1,0 +1,2 @@
+https://github.com/Tencent/rapidjson/
+Latest commit dfbe1db on Dec 3, 2019

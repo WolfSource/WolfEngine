@@ -52,30 +52,20 @@ extern "C" {
 #define W_SAFE_DELETE(x)            { if (x)  { delete x; x = NULL;                  } }
 #define W_SAFE_DELETE_ARRAY(ar)     { if (ar) { delete[] ar; ar = NULL;              } }
 #define W_SAFE_RELEASE(x)           { if (x)  { x->release(); delete x; x = NULL;    } }
-//#ifndef W_SPRINTF
-//    #ifdef _MSC_VER
-//        #define w_sprintf(s_, l_, f_, ...)                                      \
-//        sprintf_s((s_), (l_), (f_), __VA_ARGS__)
-//    #else
-//        #define w_sprintf(s_, l_, f_, ...)                                      \
-//        sprintf((s_), (f_), __VA_ARGS__)
-//    #endif
-//#endif
 
-//#if defined(__WIN32) && !defined(__WOLF_SYSTEM_STATIC_LIB)
-//
-//    //DLL export
-//    #ifndef W_DLL_EXPORT
-//    #define W_DLL_EXPORT __declspec(dllexport)
-//    #endif
-//
-//#else
-//    //fake
-//    #ifndef W_DLL_EXPORT
-//    #define W_DLL_EXPORT
-//    #endif
-//
-//#endif
+#ifdef __cplusplus
+#if defined(__WIN32) && !defined(__WOLF_SYSTEM_STATIC_LIB)
+    //DLL export
+    #ifndef W_SYSTEM_EXPORT
+    #define W_SYSTEM_EXPORT __declspec(dllexport)
+    #endif
+#else
+    //fake
+    #ifndef W_SYSTEM_EXPORT
+    #define W_SYSTEM_EXPORT
+    #endif
+#endif
+#endif
 
 #ifdef _MSC_VER
     #define ASM __asm
@@ -110,7 +100,8 @@ typedef enum
     W_FAILED = 1,
     W_INVALIDARG,
     W_OUTOFMEMORY,
-    W_INVALID_FILE_ATTRIBUTES
+    W_INVALID,
+	W_INCOMPLETE
 } W_RESULT;
 
 typedef void (*w_job)(void*);
@@ -125,7 +116,13 @@ W_RESULT wolf_initialize(void);
  * get default memory pool
  * @return apr memory pool
 */
-apr_pool_t* wolf_get_default_memory_pool(void);
+apr_pool_t* w_get_default_memory_pool(void);
+
+/**
+ * allocate memory
+ * @return memory in void pointer
+*/
+void* w_alloc(_In_ const size_t pSize);
 
 /**
  * release all resources of wolf

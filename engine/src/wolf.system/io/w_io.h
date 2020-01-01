@@ -188,6 +188,33 @@ const char* w_io_get_parent_directory(_In_z_ const char* pPath);
 */
 W_RESULT w_io_create_directory(_In_z_ const char* pPath);
 
+/**
+ * convert utf8 char* to wchar_t* 
+ * @param pIn char* inputs,
+ * @param pInLen lenght of inputs,
+ * @param pOut outputs,
+ * @param pOutLen lenght of output,
+ * @return result
+*/
+W_RESULT w_io_utf8_to_ucs2(
+	_In_	char* pIn,
+	_In_	size_t* pInLen,
+	_Out_	apr_uint16_t* pOut,
+	_Out_	size_t* pOutLen);
+
+/**
+ * convert wchar_t* to utf8 char*
+ * @param pIn wchar_t* inputs,
+ * @param pInLen lenght of inputs,
+ * @param pOut outputs,
+ * @param pOutLen lenght of output,
+ * @return result
+*/
+W_RESULT w_io_ucs2_to_utf8(
+	_In_	const apr_uint16_t* pIn,
+	_In_	size_t* pInLen,
+	_Out_	char* pOut,
+	_Out_	size_t* pOutLen);
 
 #ifdef __cplusplus
 }

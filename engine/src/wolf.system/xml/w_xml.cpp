@@ -1,89 +1,98 @@
-#include "w_system_pch.h"
 #include "w_xml.h"
+#include <io/w_io.h>
+#include <memory/w_string.h>
 #include "rapidxml/rapidxml_print.hpp"
-#include <fstream>
-#include "w_convert.h"
 
-using namespace wolf::system;
 using namespace rapidxml;
 
-w_xml::w_xml()
+W_RESULT w_xml_save_to_file(
+	_In_z_	const wchar_t* pPath, 
+	_In_	w_xml_data* pXMLData, 
+	_In_z_	const wchar_t* pPreComment)
 {
-}
-
-
-w_xml::~w_xml()
-{
-}
-
-#if defined(__WIN32) || defined(__UWP)
-W_RESULT w_xml::save(_In_z_ const wchar_t* pPath,
-#else
-W_RESULT w_xml::save(_In_z_ const char* pPath,
-#endif
-    _In_ const bool& pUTF_8, _In_ wolf::system::w_xml_data& pData, _In_z_ const std::wstring pPreComment)
-{
-	std::wofstream _file(pPath);
-	if (!_file) return W_FAILED;
-
-	if (pUTF_8)
-	{
-		_file.imbue(std::locale(std::locale(""), new std::codecvt_utf8<wchar_t, 0x10ffff, std::generate_header>));
-	}
-
 	xml_document<wchar_t> _doc;
 
 	//Add xml version & encoding
 	auto _node = _doc.allocate_node(node_declaration);
 	_node->append_attribute(_doc.allocate_attribute(L"version", L"1.0"));
-    if (pUTF_8)
-    {
-        _node->append_attribute(_doc.allocate_attribute(L"encoding", L"utf-8"));
-    }
+	_node->append_attribute(_doc.allocate_attribute(L"encoding", L"utf-8"));
 	_doc.append_node(_node);
 
-	_write_element(pData, _doc, nullptr);
-	
 	//print xml to stream
-	std::wstring _xml_as_string;
-	rapidxml::print(std::back_inserter(_xml_as_string), _doc);
+	std::wstring _xml_as_wstring = pPreComment;
+	rapidxml::print(std::back_inserter(_xml_as_wstring), _doc);
 
-    if (!pPreComment.empty())
-    {
-        _file << pPreComment;
-    }
-	_file << _xml_as_string;
+	//convert wchar_t* to utf8 char* for path
+	size_t _in_len = wcslen(pPath), _out_len = 0;
+	char* _new_path = (char*)w_alloc(_in_len * 2);
+	W_RESULT _ret = w_io_ucs2_to_utf8(
+		(apr_uint16_t*)pPath,
+		&_in_len,
+		_new_path,
+		&_out_len);
+	if (_ret != APR_SUCCESS)
+	{
+		return W_FAILED;
+	}
 
-	_file.flush();
-	_file.close();
-	
+	//convert wchar_t* to utf8 char* for content
+	_in_len = _xml_as_wstring.size(), _out_len = 0;
+	char* _xml_content = (char*)w_alloc(_in_len * 2);
+	_ret = w_io_ucs2_to_utf8(
+		(apr_uint16_t*)_xml_as_wstring.size(),
+		&_in_len,
+		_xml_content,
+		&_out_len);
+	if (_ret != APR_SUCCESS)
+	{
+		return W_FAILED;
+	}
+
+	//save it to file
+	_ret = w_io_save_to_file(
+		_new_path,
+		_xml_content,
+		false,
+		false,
+		false,
+		false,
+		false,
+		true,
+		false);
+
 	_doc.clear();
 
-	return W_PASSED;
+	return W_FAILED;
 }
 
-void w_xml::_write_element(_In_ w_xml_data& pData, _In_ xml_document<wchar_t>& pDoc, _Inout_ xml_node<wchar_t>** pParentNode)
+void _xml_write_element(
+	_In_ w_xml_data* pData, 
+	_In_ xml_document<wchar_t>* pDoc, 
+	_Inout_ xml_node<wchar_t>** pParentNode)
 {
-	auto _node = pDoc.allocate_node(node_element, pData.node.c_str());
-	auto _attributeSize = pData.attributes.size();
-	for (size_t i = 0; i < _attributeSize; ++i)
+	auto _node = pDoc->allocate_node(node_element, pData->node);
+	auto _attribute_len = sizeof(pData->attributes) / sizeof(pData->attributes[0]);
+	for (size_t i = 0; i < _attribute_len; ++i)
 	{
-		auto _attr = pData.attributes.at(i);
-		auto _name = pDoc.allocate_string(_attr.name.c_str());
-		auto _value = pDoc.allocate_string(_attr.value.c_str());
+		auto _attr = pData->attributes[i];
+		auto _name = pDoc->allocate_string(_attr.name);
+		auto _value = pDoc->allocate_string(_attr.value);
 
-		auto _attribute = pDoc.allocate_attribute(_name, _value);
+		auto _attribute = pDoc->allocate_attribute(_name, _value);
 		_node->append_attribute(_attribute);
 	}
 
 	//Add to the parent
 
-	auto _childSize = pData.children.size();
-	if (_childSize != 0)
+	auto _child_len = sizeof(pData->children) / sizeof(pData->children[0]);
+	if (_child_len != 0)
 	{
-		for (size_t i = 0; i < _childSize; ++i)
+		for (size_t i = 0; i < _child_len; ++i)
 		{
-			_write_element(pData.children.at(i), pDoc, &_node);
+			_xml_write_element(
+				&pData->children[i],
+				pDoc,
+				&_node);
 		}
 	}
 
@@ -93,17 +102,40 @@ void w_xml::_write_element(_In_ w_xml_data& pData, _In_ xml_document<wchar_t>& p
 	}
 	else
 	{
-		pDoc.append_node(_node);
+		pDoc->append_node(_node);
 	}
 }
 
-const std::string w_xml::get_node_value(_In_ rapidxml::xml_node<>* pNode)
+const char* w_xml_get_node_value(_In_ rapidxml::xml_node<>* pNode)
 {
 	if (pNode == nullptr) return "";
 	return pNode->value();
 }
 
-const std::string w_xml::get_node_attribute(_In_ rapidxml::xml_node<>* pNode, _In_z_ const char* const pAttribute)
+const wchar_t* w_xml_get_node_value_wchar(_In_ rapidxml::xml_node<>* pNode)
+{
+	if (pNode == nullptr) return L"";
+
+	char* _nv = pNode->value();
+	size_t _in_len = strlen(_nv), _out_len = 0;
+	apr_uint16_t* _new_value = (apr_uint16_t*)w_alloc(_in_len * 2);
+
+	W_RESULT _ret = w_io_utf8_to_ucs2(
+		_nv,
+		&_in_len,
+		_new_value,
+		&_out_len);
+	if (_ret != APR_SUCCESS)
+	{
+		return L"";
+	}
+
+	return (wchar_t*)_new_value;
+}
+
+const char* w_xml_get_node_attribute(
+	_In_ rapidxml::xml_node<>* pNode, 
+	_In_z_ const char* const pAttribute)
 {
 	if (pNode == nullptr) return "";
 
@@ -117,23 +149,27 @@ const std::string w_xml::get_node_attribute(_In_ rapidxml::xml_node<>* pNode, _I
 	return "";
 }
 
-const std::wstring w_xml::get_node_value_utf8(_In_ rapidxml::xml_node<>* pNode)
+const wchar_t* w_xml_get_node_attribute_wide_char(
+	_In_ rapidxml::xml_node<>* pNode,
+	_In_z_ const char* pAttribute)
 {
 	if (pNode == nullptr) return L"";
-
-	return wolf::system::convert::from_utf8(pNode->value());
-}
-
-const std::wstring w_xml::get_node_attribute_utf8(_In_ rapidxml::xml_node<>* pNode, _In_z_ const char* const pAttribute)
-{
-	if (pNode == nullptr) return L"";
-
 	//read the value of attribute
 	auto _value = pNode->first_attribute(pAttribute);
-	if (_value)
+	char* _nv = _value->value();
+	size_t _in_len = strlen(_nv), _out_len = 0;
+	apr_uint16_t* _new_value = (apr_uint16_t*)w_alloc(_in_len * 2);
+
+	//convert from char* to wchar*
+	W_RESULT _ret = w_io_utf8_to_ucs2(
+		_nv,
+		&_in_len,
+		_new_value,
+		&_out_len);
+	if (_ret != APR_SUCCESS)
 	{
-		return wolf::system::convert::from_utf8(_value->value());
+		return L"";
 	}
 
-	return L"";
+	return (wchar_t*)_new_value;
 }
