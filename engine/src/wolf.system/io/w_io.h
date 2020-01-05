@@ -211,7 +211,7 @@ W_RESULT w_io_utf8_to_ucs2(
  * @return result
 */
 W_RESULT w_io_ucs2_to_utf8(
-	_In_	const apr_uint16_t* pIn,
+	_In_	apr_uint16_t* pIn,
 	_In_	size_t* pInLen,
 	_Out_	char* pOut,
 	_Out_	size_t* pOutLen);

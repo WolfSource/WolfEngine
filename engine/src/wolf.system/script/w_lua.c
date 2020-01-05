@@ -1,6 +1,5 @@
 #include "w_lua.h"
 #include <apr-1/apr_strings.h>
-#include <log/w_log.h>
 #include <memory/w_string.h>
 #include <io/w_io.h>
 
@@ -18,8 +17,6 @@ void _VL(_In_ int pHR)
                      "lua: %s",
                      lua_tostring(s_lua, -1));
 		lua_pop(s_lua, 1);
-        
-        //w_log_warning("%s. trace info: %s", s_last_error, "w_lua:_VL");
 	}
 }
 
@@ -223,9 +220,6 @@ W_RESULT w_lua_execute_function_with_two_results(_In_ void** pResult1, _In_ void
         apr_snprintf(s_last_error, PATH_MAX, "lua: %s is type of %s\n",
                      s_function_name,
                      _requested_type_error);
-
-       // w_log_error("%s. trace info: %s", s_last_error, "w_lua:w_lua_execute_function_with_two_results");
-            
         return W_FAILED;
     }
     
@@ -234,9 +228,6 @@ W_RESULT w_lua_execute_function_with_two_results(_In_ void** pResult1, _In_ void
         apr_snprintf(s_last_error, PATH_MAX, "lua: %s is type of %s\n",
                      s_function_name,
                      _requested_type_error);
-
-        //w_log_error("%s. trace info: %s", s_last_error, "w_lua:w_lua_execute_function_with_two_results");
-            
         return W_FAILED;
     }
     
@@ -256,9 +247,6 @@ W_RESULT w_lua_execute_function_with_three_results(_In_ void** pResult1,
         apr_snprintf(s_last_error, PATH_MAX, "lua: %s is type of %s\n",
                      s_function_name,
                      _requested_type_error);
-
-        //w_log_error("%s. trace info: %s", s_last_error, "w_lua:w_lua_execute_function_with_three_results");
-            
         return W_FAILED;
     }
     
@@ -267,9 +255,6 @@ W_RESULT w_lua_execute_function_with_three_results(_In_ void** pResult1,
         apr_snprintf(s_last_error, PATH_MAX, "lua: %s is type of %s\n",
                      s_function_name,
                      _requested_type_error);
-
-        //w_log_error("%s. trace info: %s", s_last_error, "w_lua:w_lua_execute_function_with_three_results");
-            
         return W_FAILED;
     }
     
@@ -278,9 +263,6 @@ W_RESULT w_lua_execute_function_with_three_results(_In_ void** pResult1,
         apr_snprintf(s_last_error, PATH_MAX, "lua: %s is type of %s\n",
                      s_function_name,
                      _requested_type_error);
-
-        //w_log_error("%s. trace info: %s", s_last_error, "w_lua:w_lua_execute_function_with_three_results");
-            
         return W_FAILED;
     }
     
@@ -313,9 +295,6 @@ W_RESULT w_lua_get_global_variable(_In_z_ const char* pVariableName, _Inout_ voi
             apr_snprintf(s_last_error, PATH_MAX, "lua: %s is type of %s\n",
                          pVariableName,
                          _requested_type_error);
-
-            //w_log_error("%s. trace info: %s", s_last_error, "w_lua:w_lua_execute_function_with_three_results");
-                
             return W_FAILED;
         }
     }

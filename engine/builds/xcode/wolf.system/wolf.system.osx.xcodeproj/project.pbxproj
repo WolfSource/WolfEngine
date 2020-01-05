@@ -101,10 +101,6 @@
 		2C30BAE723A4D599009FC330 /* w_platform.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C30BAE623A4D599009FC330 /* w_platform.h */; };
 		2C30BAEA23A77F34009FC330 /* w_string.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C30BAE823A77F34009FC330 /* w_string.c */; };
 		2C30BAEB23A77F34009FC330 /* w_string.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C30BAE923A77F34009FC330 /* w_string.h */; };
-		2C30BD4023AA250200D24778 /* xmltok.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C30BD2D23AA250100D24778 /* xmltok.c */; };
-		2C30BD4B23AA250200D24778 /* xmlparse.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C30BD3823AA250200D24778 /* xmlparse.c */; };
-		2C30BD5223AA250200D24778 /* xmlrole.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C30BD3F23AA250200D24778 /* xmlrole.c */; };
-		2C30BD5823AA283800D24778 /* expat_config.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C30BD5723AA283800D24778 /* expat_config.h */; };
 		2C37521F23AFD0EF003A6B0A /* klompavxbase64.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C37521123AFD0EE003A6B0A /* klompavxbase64.c */; settings = {COMPILER_FLAGS = "-mavx2 -mfma"; }; };
 		2C37522023AFD0EF003A6B0A /* fastavxbase64.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C37521223AFD0EE003A6B0A /* fastavxbase64.h */; };
 		2C37522123AFD0EF003A6B0A /* quicktimebase64.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C37521323AFD0EE003A6B0A /* quicktimebase64.h */; };
@@ -141,8 +137,14 @@
 		2C3756DB23B7D35C003A6B0A /* luajit.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C3756D623B7D35C003A6B0A /* luajit.h */; };
 		2C3756E223B7F302003A6B0A /* w_lua.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C3756E023B7F302003A6B0A /* w_lua.c */; };
 		2C3756E323B7F302003A6B0A /* w_lua.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C3756E123B7F302003A6B0A /* w_lua.h */; };
-		2C3756E723B924A3003A6B0A /* cJSON.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C3756E523B924A3003A6B0A /* cJSON.c */; };
-		2C3756E823B924A3003A6B0A /* cJSON.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C3756E623B924A3003A6B0A /* cJSON.h */; };
+		2C4CACE723BD5A970084D392 /* async.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C4CACE123BD5A970084D392 /* async.cpp */; };
+		2C4CACE823BD5A970084D392 /* file_sinks.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C4CACE223BD5A970084D392 /* file_sinks.cpp */; };
+		2C4CACE923BD5A970084D392 /* spdlog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C4CACE323BD5A970084D392 /* spdlog.cpp */; };
+		2C4CACEA23BD5A970084D392 /* stdout_sinks.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C4CACE423BD5A970084D392 /* stdout_sinks.cpp */; };
+		2C4CACEB23BD5A970084D392 /* fmt.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C4CACE523BD5A970084D392 /* fmt.cpp */; };
+		2C4CACEC23BD5A970084D392 /* color_sinks.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C4CACE623BD5A970084D392 /* color_sinks.cpp */; };
+		2C4CAD0023C0EEE70084D392 /* w_log.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C4CACFE23C0EEE70084D392 /* w_log.cpp */; };
+		2C4CAD0123C0EEE70084D392 /* w_log.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CACFF23C0EEE70084D392 /* w_log.hpp */; };
 		2C898473239D2FA40062D70A /* w_timespan.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C898471239D2FA40062D70A /* w_timespan.c */; };
 		2C898474239D2FA40062D70A /* w_timespan.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C898472239D2FA40062D70A /* w_timespan.h */; };
 		2C898479239D344C0062D70A /* w_chrono.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C898477239D344C0062D70A /* w_chrono.h */; };
@@ -306,10 +308,6 @@
 		2C30BAE623A4D599009FC330 /* w_platform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_platform.h; path = ../../../src/wolf.system/os/w_platform.h; sourceTree = "<group>"; };
 		2C30BAE823A77F34009FC330 /* w_string.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = w_string.c; path = ../../../src/wolf.system/memory/w_string.c; sourceTree = "<group>"; };
 		2C30BAE923A77F34009FC330 /* w_string.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_string.h; path = ../../../src/wolf.system/memory/w_string.h; sourceTree = "<group>"; };
-		2C30BD2D23AA250100D24778 /* xmltok.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = xmltok.c; path = ../../../src/wolf.system/xml/libexpat/xmltok.c; sourceTree = "<group>"; };
-		2C30BD3823AA250200D24778 /* xmlparse.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = xmlparse.c; path = ../../../src/wolf.system/xml/libexpat/xmlparse.c; sourceTree = "<group>"; };
-		2C30BD3F23AA250200D24778 /* xmlrole.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = xmlrole.c; path = ../../../src/wolf.system/xml/libexpat/xmlrole.c; sourceTree = "<group>"; };
-		2C30BD5723AA283800D24778 /* expat_config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = expat_config.h; path = ../../../src/wolf.system/xml/libexpat/expat_config.h; sourceTree = "<group>"; };
 		2C37521123AFD0EE003A6B0A /* klompavxbase64.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = klompavxbase64.c; path = ../../../src/wolf.system/base64/klompavxbase64.c; sourceTree = "<group>"; };
 		2C37521223AFD0EE003A6B0A /* fastavxbase64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fastavxbase64.h; path = ../../../src/wolf.system/base64/fastavxbase64.h; sourceTree = "<group>"; };
 		2C37521323AFD0EE003A6B0A /* quicktimebase64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = quicktimebase64.h; path = ../../../src/wolf.system/base64/quicktimebase64.h; sourceTree = "<group>"; };
@@ -346,8 +344,14 @@
 		2C3756D623B7D35C003A6B0A /* luajit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = luajit.h; path = ../../../src/wolf.system/script/lua/luajit.h; sourceTree = "<group>"; };
 		2C3756E023B7F302003A6B0A /* w_lua.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = w_lua.c; path = ../../../src/wolf.system/script/w_lua.c; sourceTree = "<group>"; };
 		2C3756E123B7F302003A6B0A /* w_lua.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_lua.h; path = ../../../src/wolf.system/script/w_lua.h; sourceTree = "<group>"; };
-		2C3756E523B924A3003A6B0A /* cJSON.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = cJSON.c; path = ../../../src/wolf.system/json/cJSON/cJSON.c; sourceTree = "<group>"; };
-		2C3756E623B924A3003A6B0A /* cJSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cJSON.h; path = ../../../src/wolf.system/json/cJSON/cJSON.h; sourceTree = "<group>"; };
+		2C4CACE123BD5A970084D392 /* async.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = async.cpp; path = ../../../src/wolf.system/log/spdlog/src/async.cpp; sourceTree = "<group>"; };
+		2C4CACE223BD5A970084D392 /* file_sinks.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = file_sinks.cpp; path = ../../../src/wolf.system/log/spdlog/src/file_sinks.cpp; sourceTree = "<group>"; };
+		2C4CACE323BD5A970084D392 /* spdlog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = spdlog.cpp; path = ../../../src/wolf.system/log/spdlog/src/spdlog.cpp; sourceTree = "<group>"; };
+		2C4CACE423BD5A970084D392 /* stdout_sinks.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = stdout_sinks.cpp; path = ../../../src/wolf.system/log/spdlog/src/stdout_sinks.cpp; sourceTree = "<group>"; };
+		2C4CACE523BD5A970084D392 /* fmt.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = fmt.cpp; path = ../../../src/wolf.system/log/spdlog/src/fmt.cpp; sourceTree = "<group>"; };
+		2C4CACE623BD5A970084D392 /* color_sinks.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = color_sinks.cpp; path = ../../../src/wolf.system/log/spdlog/src/color_sinks.cpp; sourceTree = "<group>"; };
+		2C4CACFE23C0EEE70084D392 /* w_log.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_log.cpp; path = ../../../src/wolf.system/log/w_log.cpp; sourceTree = "<group>"; };
+		2C4CACFF23C0EEE70084D392 /* w_log.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = w_log.hpp; path = ../../../src/wolf.system/log/w_log.hpp; sourceTree = "<group>"; };
 		2C898471239D2FA40062D70A /* w_timespan.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = w_timespan.c; path = ../../../src/wolf.system/chrono/w_timespan.c; sourceTree = "<group>"; };
 		2C898472239D2FA40062D70A /* w_timespan.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_timespan.h; path = ../../../src/wolf.system/chrono/w_timespan.h; sourceTree = "<group>"; };
 		2C898477239D344C0062D70A /* w_chrono.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_chrono.h; path = ../../../src/wolf.system/chrono/w_chrono.h; sourceTree = "<group>"; };
@@ -814,20 +818,8 @@
 		2C30BD2B23AA200A00D24778 /* xml */ = {
 			isa = PBXGroup;
 			children = (
-				2C30BD2C23AA24BB00D24778 /* libexpat */,
 			);
 			name = xml;
-			sourceTree = "<group>";
-		};
-		2C30BD2C23AA24BB00D24778 /* libexpat */ = {
-			isa = PBXGroup;
-			children = (
-				2C30BD5723AA283800D24778 /* expat_config.h */,
-				2C30BD3823AA250200D24778 /* xmlparse.c */,
-				2C30BD3F23AA250200D24778 /* xmlrole.c */,
-				2C30BD2D23AA250100D24778 /* xmltok.c */,
-			);
-			name = libexpat;
 			sourceTree = "<group>";
 		};
 		2C37521023AFD0CE003A6B0A /* base64 */ = {
@@ -879,13 +871,25 @@
 			name = lua;
 			sourceTree = "<group>";
 		};
-		2C3756E423B92476003A6B0A /* cJSON */ = {
+		2C4CACE023BD5A740084D392 /* spdlog */ = {
 			isa = PBXGroup;
 			children = (
-				2C3756E523B924A3003A6B0A /* cJSON.c */,
-				2C3756E623B924A3003A6B0A /* cJSON.h */,
+				2C4CACED23BD5A9A0084D392 /* src */,
 			);
-			name = cJSON;
+			name = spdlog;
+			sourceTree = "<group>";
+		};
+		2C4CACED23BD5A9A0084D392 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				2C4CACE123BD5A970084D392 /* async.cpp */,
+				2C4CACE623BD5A970084D392 /* color_sinks.cpp */,
+				2C4CACE223BD5A970084D392 /* file_sinks.cpp */,
+				2C4CACE523BD5A970084D392 /* fmt.cpp */,
+				2C4CACE323BD5A970084D392 /* spdlog.cpp */,
+				2C4CACE423BD5A970084D392 /* stdout_sinks.cpp */,
+			);
+			name = src;
 			sourceTree = "<group>";
 		};
 		2C89847B239E62A70062D70A /* compression */ = {
@@ -963,7 +967,6 @@
 		2C89855B23A15BDC0062D70A /* json */ = {
 			isa = PBXGroup;
 			children = (
-				2C3756E423B92476003A6B0A /* cJSON */,
 			);
 			name = json;
 			sourceTree = "<group>";
@@ -971,6 +974,9 @@
 		2C89855C23A15BE50062D70A /* log */ = {
 			isa = PBXGroup;
 			children = (
+				2C4CACE023BD5A740084D392 /* spdlog */,
+				2C4CACFE23C0EEE70084D392 /* w_log.cpp */,
+				2C4CACFF23C0EEE70084D392 /* w_log.hpp */,
 			);
 			name = log;
 			sourceTree = "<group>";
@@ -1145,7 +1151,6 @@
 				2C89897523A1847F0062D70A /* apr_random.h in Headers */,
 				2C89896523A1847F0062D70A /* apr_global_mutex.h in Headers */,
 				2C898545239E763C0062D70A /* msgpack.h in Headers */,
-				2C30BD5823AA283800D24778 /* expat_config.h in Headers */,
 				2C89898723A1847F0062D70A /* apr_fnmatch.h in Headers */,
 				2C89898923A1847F0062D70A /* apr_allocator.h in Headers */,
 				2C3756D723B7D35C003A6B0A /* lauxlib.h in Headers */,
@@ -1153,7 +1158,6 @@
 				2C3756A923B7978C003A6B0A /* trees.h in Headers */,
 				2C89897123A1847F0062D70A /* apr_file_info.h in Headers */,
 				2C3756A323B7978C003A6B0A /* gzguts.h in Headers */,
-				2C3756E823B924A3003A6B0A /* cJSON.h in Headers */,
 				2C89897223A1847F0062D70A /* apr_skiplist.h in Headers */,
 				2C3756A523B7978C003A6B0A /* inffast.h in Headers */,
 				2C37522923AFD0EF003A6B0A /* klompavxbase64.h in Headers */,
@@ -1168,6 +1172,7 @@
 				2C89896823A1847F0062D70A /* apr.h in Headers */,
 				2C37522A23AFD0EF003A6B0A /* chromiumbase64.h in Headers */,
 				2C898493239E735F0062D70A /* lz4.h in Headers */,
+				2C4CAD0123C0EEE70084D392 /* w_log.hpp in Headers */,
 				2C89897323A1847F0062D70A /* apr_strings.h in Headers */,
 				2C89848E239E735F0062D70A /* lz4hc.h in Headers */,
 				2C89898A23A1847F0062D70A /* apr_encode.h in Headers */,
@@ -1260,7 +1265,6 @@
 				2C20DC6323A4192B00414E6F /* pipe.c in Sources */,
 				2C20DCF023A41BA700414E6F /* signals.c in Sources */,
 				2C898494239E735F0062D70A /* lz4frame.c in Sources */,
-				2C30BD4B23AA250200D24778 /* xmlparse.c in Sources */,
 				2C20DC3623A405CF00414E6F /* solaris.c in Sources */,
 				2C20DC3823A405CF00414E6F /* builtins64.c in Sources */,
 				2C20DC5F23A4192B00414E6F /* filedup.c in Sources */,
@@ -1272,8 +1276,10 @@
 				2C20DCBF23A41AA400414E6F /* pollcb.c in Sources */,
 				2C20DCD523A41B2600414E6F /* apr_snprintf.c in Sources */,
 				2C20DC3C23A405CF00414E6F /* mutex64.c in Sources */,
+				2C4CACEA23BD5A970084D392 /* stdout_sinks.cpp in Sources */,
 				2C20DC6023A4192B00414E6F /* flock.c in Sources */,
 				2C89847A239D344C0062D70A /* w_chrono.c in Sources */,
+				2C4CACE923BD5A970084D392 /* spdlog.cpp in Sources */,
 				2C20DCD823A41B2600414E6F /* apr_strtok.c in Sources */,
 				2C20DCD623A41B2600414E6F /* apr_strings.c in Sources */,
 				2C20DC9523A41A0100414E6F /* mmap.c in Sources */,
@@ -1292,7 +1298,6 @@
 				2C3756B923B7C1D7003A6B0A /* w_condition_variable.c in Sources */,
 				2C20DC6423A4192B00414E6F /* seek.c in Sources */,
 				2C37521F23AFD0EF003A6B0A /* klompavxbase64.c in Sources */,
-				2C30BD4023AA250200D24778 /* xmltok.c in Sources */,
 				2C20DCC623A41ABB00414E6F /* apr_random.c in Sources */,
 				2C3756E223B7F302003A6B0A /* w_lua.c in Sources */,
 				2C20DCC523A41ABB00414E6F /* sha2.c in Sources */,
@@ -1307,15 +1312,17 @@
 				2C20DCBE23A41AA400414E6F /* wakeup.c in Sources */,
 				2C20DCA023A41A2A00414E6F /* multicast.c in Sources */,
 				2C20DCE523A41B7B00414E6F /* apr_tables.c in Sources */,
+				2C4CACEB23BD5A970084D392 /* fmt.cpp in Sources */,
 				2C898543239E763C0062D70A /* version.c in Sources */,
 				2C20DC5C23A4192B00414E6F /* tempdir.c in Sources */,
 				2C37522B23AFD0EF003A6B0A /* quicktimebase64.c in Sources */,
 				2C37522823AFD0EF003A6B0A /* chromiumbase64.c in Sources */,
-				2C30BD5223AA250200D24778 /* xmlrole.c in Sources */,
 				2C20DCA623A41A2A00414E6F /* socket_util.c in Sources */,
 				2C20DCDF23A41B5700414E6F /* waitio.c in Sources */,
 				2C20DCF723A41BCA00414E6F /* timestr.c in Sources */,
+				2C4CACE723BD5A970084D392 /* async.cpp in Sources */,
 				2C20DC8623A419C800414E6F /* errorcodes.c in Sources */,
+				2C4CAD0023C0EEE70084D392 /* w_log.cpp in Sources */,
 				2C20DC7523A4196600414E6F /* thread_mutex.c in Sources */,
 				2C20DC7623A4196600414E6F /* thread_rwlock.c in Sources */,
 				2C20DCA123A41A2A00414E6F /* sockopt.c in Sources */,
@@ -1337,11 +1344,11 @@
 				2C20DC6123A4192B00414E6F /* fullrw.c in Sources */,
 				2C20DCA323A41A2A00414E6F /* sendrecv.c in Sources */,
 				2C20DD0123A41C2400414E6F /* groupinfo.c in Sources */,
-				2C3756E723B924A3003A6B0A /* cJSON.c in Sources */,
 				2C20DCE623A41B7B00414E6F /* apr_skiplist.c in Sources */,
 				2C20DCA523A41A2A00414E6F /* inet_pton.c in Sources */,
 				2C89847F239E64BD0062D70A /* w_timer.c in Sources */,
 				2C20DCD923A41B2600414E6F /* apr_fnmatch.c in Sources */,
+				2C4CACEC23BD5A970084D392 /* color_sinks.cpp in Sources */,
 				2C20DC7423A4196600414E6F /* thread_cond.c in Sources */,
 				2C37522623AFD0EF003A6B0A /* fastavxbase64.c in Sources */,
 				2C20DC6A23A4192B00414E6F /* fileacc.c in Sources */,
@@ -1357,6 +1364,7 @@
 				2C20DD0023A41C2400414E6F /* userinfo.c in Sources */,
 				2C20DCEF23A41BA700414E6F /* proc.c in Sources */,
 				2C20DCDB23A41B2600414E6F /* apr_cstr.c in Sources */,
+				2C4CACE823BD5A970084D392 /* file_sinks.cpp in Sources */,
 				2C20DCA223A41A2A00414E6F /* inet_ntop.c in Sources */,
 				2C20DC6623A4192B00414E6F /* mktemp.c in Sources */,
 				2C898553239F65E90062D70A /* w_thread.c in Sources */,
@@ -1516,6 +1524,8 @@
 					HAVE_EXPAT_CONFIG_H,
 					expat_EXPORTS,
 					"MAX_BUFFER_SIZE=4096",
+					SPDLOG_COMPILED_LIB,
+					SPDLOG_WCHAR_FILENAMES,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				HEADER_SEARCH_PATHS = "";
@@ -1528,7 +1538,7 @@
 					"$(SRCROOT)/../../../src/wolf.system/apr-1/private",
 					"$(SRCROOT)/../../../src/wolf.system/compression/zlib",
 					"$(SRCROOT)/../../../src/wolf.system/compression/msgpack",
-					"$(SRCROOT)/../../../src/wolf.system/xml/libexpat",
+					"$(SRCROOT)/../../../src/wolf.system/log/",
 					"$(SRCROOT)/../../../deps/luaJIT/include",
 					"$(SRCROOT)/../../../deps/libpng/include",
 					"$(SRCROOT)/../../../deps/libjpeg-turbo/include",

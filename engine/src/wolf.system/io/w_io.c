@@ -422,7 +422,7 @@ W_RESULT	w_io_create_directory(_In_z_ const char* pPath)
 }
 
 W_RESULT	w_io_utf8_to_ucs2(
-	const char* in,
+	char* in,
 	size_t* inbytes,
 	apr_uint16_t* out,
 	size_t* outwords)
@@ -533,8 +533,8 @@ W_RESULT	w_io_utf8_to_ucs2(
 	return W_PASSED;
 }
 
-apr_status_t w_io_ucs2_to_utf8(
-	const apr_uint16_t* in,
+W_RESULT w_io_ucs2_to_utf8(
+	apr_uint16_t* in,
 	size_t* inwords,
 	char* out,
 	size_t* outbytes)
