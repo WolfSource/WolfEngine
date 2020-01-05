@@ -1,4 +1,4 @@
-#include "w_xml.h"
+#include "w_xml.hpp"
 #include <io/w_io.h>
 #include <memory/w_string.h>
 #include "rapidxml/rapidxml_print.hpp"
@@ -19,8 +19,8 @@ W_RESULT w_xml_save_to_file(
 	_doc.append_node(_node);
 
 	//print xml to stream
-	std::wstring _xml_as_wstring = pPreComment;
-	rapidxml::print(std::back_inserter(_xml_as_wstring), _doc);
+    std::wstring _xml_as_wstring = pPreComment;
+    rapidxml::print(std::back_inserter(_xml_as_wstring), _doc);
 
 	//convert wchar_t* to utf8 char* for path
 	size_t _in_len = wcslen(pPath), _out_len = 0;
@@ -149,7 +149,7 @@ const char* w_xml_get_node_attribute(
 	return "";
 }
 
-const wchar_t* w_xml_get_node_attribute_wide_char(
+const wchar_t* w_xml_get_node_attribute_wchar(
 	_In_ rapidxml::xml_node<>* pNode,
 	_In_z_ const char* pAttribute)
 {

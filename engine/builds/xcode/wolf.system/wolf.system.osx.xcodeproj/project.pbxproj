@@ -211,6 +211,13 @@
 		2C89898923A1847F0062D70A /* apr_allocator.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C89896023A1847F0062D70A /* apr_allocator.h */; };
 		2C89898A23A1847F0062D70A /* apr_encode.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C89896123A1847F0062D70A /* apr_encode.h */; };
 		2C89898E23A193A40062D70A /* wolf.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C89898D23A193A40062D70A /* wolf.c */; };
+		2C99E78823C2016A00A9720B /* rapidjson.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C99E78723C2016A00A9720B /* rapidjson.h */; };
+		2C99E79023C2019D00A9720B /* rapidxml_iterators.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 2C99E78B23C2019D00A9720B /* rapidxml_iterators.hpp */; };
+		2C99E79123C2019D00A9720B /* rapidxml_print.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 2C99E78C23C2019D00A9720B /* rapidxml_print.hpp */; };
+		2C99E79223C2019D00A9720B /* rapidxml_utils.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 2C99E78D23C2019D00A9720B /* rapidxml_utils.hpp */; };
+		2C99E79323C2019D00A9720B /* rapidxml.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 2C99E78F23C2019D00A9720B /* rapidxml.hpp */; };
+		2C99E79623C201AB00A9720B /* w_xml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C99E79423C201AB00A9720B /* w_xml.cpp */; };
+		2C99E79723C201AB00A9720B /* w_xml.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 2C99E79523C201AB00A9720B /* w_xml.hpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -420,6 +427,15 @@
 		2C89896023A1847F0062D70A /* apr_allocator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = apr_allocator.h; path = "../../../src/wolf.system/apr-1/apr_allocator.h"; sourceTree = "<group>"; };
 		2C89896123A1847F0062D70A /* apr_encode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = apr_encode.h; path = "../../../src/wolf.system/apr-1/apr_encode.h"; sourceTree = "<group>"; };
 		2C89898D23A193A40062D70A /* wolf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = wolf.c; path = ../../../src/wolf.system/wolf.c; sourceTree = "<group>"; };
+		2C99E78723C2016A00A9720B /* rapidjson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = rapidjson.h; path = ../../../src/wolf.system/json/rapidjson/rapidjson.h; sourceTree = "<group>"; };
+		2C99E78A23C2019D00A9720B /* license.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = license.txt; path = ../../../src/wolf.system/xml/rapidxml/license.txt; sourceTree = "<group>"; };
+		2C99E78B23C2019D00A9720B /* rapidxml_iterators.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = rapidxml_iterators.hpp; path = ../../../src/wolf.system/xml/rapidxml/rapidxml_iterators.hpp; sourceTree = "<group>"; };
+		2C99E78C23C2019D00A9720B /* rapidxml_print.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = rapidxml_print.hpp; path = ../../../src/wolf.system/xml/rapidxml/rapidxml_print.hpp; sourceTree = "<group>"; };
+		2C99E78D23C2019D00A9720B /* rapidxml_utils.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = rapidxml_utils.hpp; path = ../../../src/wolf.system/xml/rapidxml/rapidxml_utils.hpp; sourceTree = "<group>"; };
+		2C99E78E23C2019D00A9720B /* version.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = version.txt; path = ../../../src/wolf.system/xml/rapidxml/version.txt; sourceTree = "<group>"; };
+		2C99E78F23C2019D00A9720B /* rapidxml.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = rapidxml.hpp; path = ../../../src/wolf.system/xml/rapidxml/rapidxml.hpp; sourceTree = "<group>"; };
+		2C99E79423C201AB00A9720B /* w_xml.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_xml.cpp; path = ../../../src/wolf.system/xml/w_xml.cpp; sourceTree = "<group>"; };
+		2C99E79523C201AB00A9720B /* w_xml.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = w_xml.hpp; path = ../../../src/wolf.system/xml/w_xml.hpp; sourceTree = "<group>"; };
 		2CD617231E59DA3E006FC5DC /* libwolf.system.osx.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libwolf.system.osx.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -818,6 +834,9 @@
 		2C30BD2B23AA200A00D24778 /* xml */ = {
 			isa = PBXGroup;
 			children = (
+				2C99E78923C2018300A9720B /* rapidxml */,
+				2C99E79423C201AB00A9720B /* w_xml.cpp */,
+				2C99E79523C201AB00A9720B /* w_xml.hpp */,
 			);
 			name = xml;
 			sourceTree = "<group>";
@@ -967,6 +986,7 @@
 		2C89855B23A15BDC0062D70A /* json */ = {
 			isa = PBXGroup;
 			children = (
+				2C99E78623C2015100A9720B /* rapidjson */,
 			);
 			name = json;
 			sourceTree = "<group>";
@@ -1057,6 +1077,27 @@
 			name = "apr-1";
 			sourceTree = "<group>";
 		};
+		2C99E78623C2015100A9720B /* rapidjson */ = {
+			isa = PBXGroup;
+			children = (
+				2C99E78723C2016A00A9720B /* rapidjson.h */,
+			);
+			name = rapidjson;
+			sourceTree = "<group>";
+		};
+		2C99E78923C2018300A9720B /* rapidxml */ = {
+			isa = PBXGroup;
+			children = (
+				2C99E78A23C2019D00A9720B /* license.txt */,
+				2C99E78B23C2019D00A9720B /* rapidxml_iterators.hpp */,
+				2C99E78C23C2019D00A9720B /* rapidxml_print.hpp */,
+				2C99E78D23C2019D00A9720B /* rapidxml_utils.hpp */,
+				2C99E78F23C2019D00A9720B /* rapidxml.hpp */,
+				2C99E78E23C2019D00A9720B /* version.txt */,
+			);
+			name = rapidxml;
+			sourceTree = "<group>";
+		};
 		2CD6171A1E59DA3E006FC5DC = {
 			isa = PBXGroup;
 			children = (
@@ -1107,6 +1148,7 @@
 				2C3756A723B7978C003A6B0A /* zconf.h in Headers */,
 				2C89897E23A1847F0062D70A /* apr_user.h in Headers */,
 				2C37522123AFD0EF003A6B0A /* quicktimebase64.h in Headers */,
+				2C99E79723C201AB00A9720B /* w_xml.hpp in Headers */,
 				2C89898323A1847F0062D70A /* apr_thread_mutex.h in Headers */,
 				2C37522723AFD0EF003A6B0A /* scalarbase64.h in Headers */,
 				2C89897623A1847F0062D70A /* apr_file_io.h in Headers */,
@@ -1131,6 +1173,7 @@
 				2C3756A423B7978C003A6B0A /* zlib.h in Headers */,
 				2C89897F23A1847F0062D70A /* apr_portable.h in Headers */,
 				2C89847D239E64960062D70A /* w_timer.h in Headers */,
+				2C99E78823C2016A00A9720B /* rapidjson.h in Headers */,
 				2C89896E23A1847F0062D70A /* apr_thread_proc.h in Headers */,
 				2C89898123A1847F0062D70A /* apr_cstr.h in Headers */,
 				2C89897723A1847F0062D70A /* apr_support.h in Headers */,
@@ -1158,6 +1201,8 @@
 				2C3756A923B7978C003A6B0A /* trees.h in Headers */,
 				2C89897123A1847F0062D70A /* apr_file_info.h in Headers */,
 				2C3756A323B7978C003A6B0A /* gzguts.h in Headers */,
+				2C99E79023C2019D00A9720B /* rapidxml_iterators.hpp in Headers */,
+				2C99E79223C2019D00A9720B /* rapidxml_utils.hpp in Headers */,
 				2C89897223A1847F0062D70A /* apr_skiplist.h in Headers */,
 				2C3756A523B7978C003A6B0A /* inffast.h in Headers */,
 				2C37522923AFD0EF003A6B0A /* klompavxbase64.h in Headers */,
@@ -1184,9 +1229,11 @@
 				2C89896723A1847F0062D70A /* apr_tables.h in Headers */,
 				2C898479239D344C0062D70A /* w_chrono.h in Headers */,
 				2C89898223A1847F0062D70A /* apr_version.h in Headers */,
+				2C99E79323C2019D00A9720B /* rapidxml.hpp in Headers */,
 				2C37522023AFD0EF003A6B0A /* fastavxbase64.h in Headers */,
 				2C89896623A1847F0062D70A /* apr_getopt.h in Headers */,
 				2C3756DA23B7D35C003A6B0A /* luaconf.h in Headers */,
+				2C99E79123C2019D00A9720B /* rapidxml_print.hpp in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1338,6 +1385,7 @@
 				2C20DCF623A41BCA00414E6F /* time.c in Sources */,
 				2C20DCBA23A41AA400414E6F /* select.c in Sources */,
 				2C20DC7323A4196600414E6F /* global_mutex.c in Sources */,
+				2C99E79623C201AB00A9720B /* w_xml.cpp in Sources */,
 				2C898542239E763C0062D70A /* vrefbuffer.c in Sources */,
 				2C898473239D2FA40062D70A /* w_timespan.c in Sources */,
 				2C37522C23AFD0EF003A6B0A /* scalarbase64.c in Sources */,

@@ -67,7 +67,7 @@ W_SYSTEM_EXPORT const char* w_xml_get_node_attribute(
  * @param pAttribute xml node attribute
  * @return node attribute value
  */
-W_SYSTEM_EXPORT const wchar_t* w_xml_get_node_attribute_wide_char(
+W_SYSTEM_EXPORT const wchar_t* w_xml_get_node_attribute_wchar(
 	_In_ rapidxml::xml_node<>* pNode, 
 	_In_z_ const char* pAttribute);
 	

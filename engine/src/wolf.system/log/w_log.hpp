@@ -65,6 +65,13 @@ W_RESULT  w_log(_In_z_ const char* pFMT);
 
 /**
  * write to default log file
+ * @param pFMT fmt
+ * @return result
+*/
+W_RESULT  w_log(_In_z_ const wchar_t* pFMT);
+
+/**
+ * write to default log file
  * @param pLogType type of log
         W_INFO,
         W_WARNING,
@@ -88,371 +95,112 @@ W_RESULT  w_log(_In_ const w_log_type pLogType,
                 _In_ const int pLogID,
                 _In_z_ const char* pFMT);
 
-///**
-// * write to specific log file
-// * @param pLogType type of log
-//        W_INFO,
-//        W_WARNING,
-//        W_ERROR
-// * @param pLogID log id
-// * @param pFMT fmt
-// * @return result
-//*/
-//W_RESULT  w_log(_In_ const w_log_type pLogType,
-//                _In_ const int pLogID,
-//                _In_z_ const wchar_t* pFMT);
-//
-///**
-// * write to default log file
-// * @param pLogType type of log
-//        W_INFO,
-//        W_WARNING,
-//        W_ERROR
-// * @param pFMT fmt
-// * @param pArgs are the argumans of fmt
-// * @return result
-//*/
-//template<typename... w_args>
-//W_RESULT  w_log(_In_ const w_log_type pLogType, _In_z_ const char* pFMT, _In_ const w_args&... pArgs);
-//
-///**
-// * write to default log file
-// * @param pLogType type of log
-//        W_INFO,
-//        W_WARNING,
-//        W_ERROR
-// * @param pFMT fmt
-// * @param pArgs are the argumans of fmt
-// * @return result
-//*/
-//template<typename... w_args>
-//W_RESULT  w_log(_In_ const w_log_type pLogType, _In_z_ const wchar_t* pFMT, _In_ const w_args&... pArgs);
-//
-///**
-// * write to default log file
-// * @param pLogType type of log
-//        W_INFO,
-//        W_WARNING,
-//        W_ERROR
-// * @param pLogID log id
-// * @param pFMT fmt
-// * @param pArgs are the argumans of fmt
-// * @return result
-//*/
-//template<typename... w_args>
-//W_RESULT  w_log(_In_ const w_log_type pLogType,
-//                _In_ const int pLogID,
-//                _In_z_ const char* pFMT,
-//                _In_ const w_args&... pArgs);
-//
-///**
-// * write to default log file
-// * @param pLogType type of log
-//        W_INFO,
-//        W_WARNING,
-//        W_ERROR
-// * @param pLogID log id
-// * @param pFMT fmt
-// * @param pArgs are the argumans of fmt
-// * @return result
-//*/
-//template<typename... w_args>
-//W_RESULT  w_log(_In_ const w_log_type pLogType,
-//                _In_ const int pLogID,
-//                _In_z_ const wchar_t* pFMT,
-//                _In_ const w_args&... pArgs);
-//
-//#pragma region VALIDATE
-///**
-// * Validate W_RESULT and write in to the log file
-// * @param pResult result
-// * @param pFMT fmt
-//*/
-//template<typename... w_args>
-//void V(_In_ const W_RESULT pResult, _In_z_ const char* pFMT);
-//
-///**
-// * Validate W_RESULT and write in to the log file
-// * @param pResult result
-// * @param pFMT fmt
-//*/
-//template<typename... w_args>
-//void V(_In_	const W_RESULT pResult, _In_z_ const wchar_t* pFMT);
+/**
+ * write to default log file
+ * @param pLogType type of log
+        W_INFO,
+        W_WARNING,
+        W_ERROR
+ * @param pFMT fmt
+ * @param pArgs are the argumans of fmt
+ * @return result
+*/
+template<typename... w_args>
+W_RESULT  w_log(_In_ const w_log_type pLogType, _In_z_ const char* pFMT, _In_ const w_args&... pArgs);
 
-////Validate W_RESULT and write in to the log file
-//template<typename... w_args>
-//inline void V(
-//	_In_	W_RESULT pResult,
-//	_In_z_	const wchar_t* fmt,
-//	_In_	const w_args&... args)
-//{
-//	if (pResult == W_PASSED) return;
-//	wolf::logger.write(fmt, args...);
-//}
-//
-////Validate W_RESULT and write in to the log file
-//template<typename... w_args>
-//inline void V(
-//	_In_	W_RESULT pResult,
-//	_In_	w_log_type pLogType,
-//	_In_z_	const wchar_t* fmt)
-//{
-//	if (pResult == W_PASSED) return;
-//
-//	switch (pLogType)
-//	{
-//	default:
-//	case w_log_type::W_INFO:
-//		wolf::logger.write(fmt);
-//		break;
-//	case w_log_type::W_WARNING:
-//		wolf::logger.warning(fmt);
-//		break;
-//	case w_log_type::W_ERROR:
-//		wolf::logger.error(fmt);
-//		break;
-//	}
-//}
-//
-////Validate W_RESULT and write in to the log file
-//template<typename... w_args>
-//inline void V(
-//	_In_	W_RESULT pResult,
-//	_In_	w_log_type pLogType,
-//	_In_z_	const wchar_t* fmt,
-//	_In_	const w_args&... args)
-//{
-//	if (pResult == W_PASSED) return;
-//
-//	switch (pLogType)
-//	{
-//	default:
-//	case w_log_type::W_INFO:
-//		wolf::logger.write(fmt, args...);
-//		break;
-//	case w_log_type::W_WARNING:
-//		wolf::logger.warning(fmt, args...);
-//		break;
-//	case w_log_type::W_ERROR:
-//		wolf::logger.error(fmt, args...);
-//		break;
-//	}
-//}
-//
-////Validate W_RESULT and write in to the log file
-//template<typename... w_args>
-//inline void V(
-//	_In_	W_RESULT pResult,
-//	_In_	w_log_type pLogType,
-//	_In_	bool pTerminateProgram,
-//	_In_z_	const wchar_t* fmt)
-//{
-//	using namespace std;
-//	using namespace wolf;
-//
-//	if (pResult == W_PASSED) return;
-//
-//	switch (pLogType)
-//	{
-//	default:
-//	case w_log_type::W_INFO:
-//		logger.write(fmt);
-//		break;
-//	case w_log_type::W_WARNING:
-//		logger.warning(fmt);
-//		break;
-//	case w_log_type::W_ERROR:
-//		logger.error(fmt);
-//		break;
-//	}
-//
-//	if (pTerminateProgram)
-//	{
-//		release_heap_data();
-//		std::exit(EXIT_FAILURE);
-//	}
-//}
-//
-////Validate W_RESULT and write in to the log file
-//template<typename... w_args>
-//inline void V(
-//	_In_	W_RESULT pResult,
-//	_In_	w_log_type pLogType,
-//	_In_	bool pTerminateProgram,
-//	_In_z_	const wchar_t* fmt,
-//	_In_	const w_args&... args)
-//{
-//	using namespace std;
-//	using namespace wolf;
-//
-//	if (pResult == W_PASSED) return;
-//
-//	switch (pLogType)
-//	{
-//	default:
-//	case w_log_type::W_INFO:
-//		logger.write(fmt, args...);
-//		break;
-//	case w_log_type::W_WARNING:
-//		logger.warning(fmt, args...);
-//		break;
-//	case w_log_type::W_ERROR:
-//		logger.error(fmt, args...);
-//		break;
-//	}
-//
-//	if (pTerminateProgram)
-//	{
-//		release_heap_data();
-//		std::exit(EXIT_FAILURE);
-//	}
-//}
-//
-//#pragma endregion
-//
-//#pragma region V for char
-//
-////Validate W_RESULT and write in to the log file
-//template<typename... w_args>
-//inline void V(
-//	_In_	W_RESULT pResult,
-//	_In_z_	const char* fmt)
-//{
-//	using namespace std;
-//	using namespace wolf;
-//
-//	if (pResult == W_PASSED) return;
-//	wolf::logger.write(fmt);
-//}
-//
-////Validate W_RESULT and write in to the log file
-//template<typename... w_args>
-//inline void V(
-//	_In_	W_RESULT pResult,
-//	_In_z_	const char* fmt,
-//	_In_	const w_args&... args)
-//{
-//	if (pResult == W_PASSED) return;
-//	wolf::logger.write(fmt, args...);
-//}
-//
-////Validate W_RESULT and write in to the log file
-//template<typename... w_args>
-//inline void V(
-//	_In_	W_RESULT pResult,
-//	_In_	w_log_type pLogType,
-//	_In_z_	const char* fmt)
-//{
-//	if (pResult == W_PASSED) return;
-//
-//	switch (pLogType)
-//	{
-//	default:
-//	case w_log_type::W_INFO:
-//		wolf::logger.write(fmt);
-//		break;
-//	case w_log_type::W_WARNING:
-//		wolf::logger.warning(fmt);
-//		break;
-//	case w_log_type::W_ERROR:
-//		wolf::logger.error(fmt);
-//		break;
-//	}
-//}
-//
-////Validate W_RESULT and write in to the log file
-//template<typename... w_args>
-//inline void V(
-//	_In_	W_RESULT pResult,
-//	_In_	w_log_type pLogType,
-//	_In_z_	const char* fmt,
-//	_In_	const w_args&... args)
-//{
-//	if (pResult == W_PASSED) return;
-//
-//	switch (pLogType)
-//	{
-//	default:
-//	case w_log_type::W_INFO:
-//		wolf::logger.write(fmt, args...);
-//		break;
-//	case w_log_type::W_WARNING:
-//		wolf::logger.warning(fmt, args...);
-//		break;
-//	case w_log_type::W_ERROR:
-//		wolf::logger.error(fmt, args...);
-//		break;
-//	}
-//}
-//
-////Validate W_RESULT and write in to the log file
-//template<typename... w_args>
-//inline void V(
-//	_In_	W_RESULT pResult,
-//	_In_	w_log_type pLogType,
-//	_In_	bool pTerminateProgram,
-//	_In_z_	const char* fmt)
-//{
-//	using namespace std;
-//	using namespace wolf;
-//
-//	if (pResult == W_PASSED) return;
-//
-//	switch (pLogType)
-//	{
-//	default:
-//	case w_log_type::W_INFO:
-//		logger.write(fmt);
-//		break;
-//	case w_log_type::W_WARNING:
-//		logger.warning(fmt);
-//		break;
-//	case w_log_type::W_ERROR:
-//		logger.error(fmt);
-//		break;
-//	}
-//
-//	if (pTerminateProgram)
-//	{
-//		release_heap_data();
-//		std::exit(EXIT_FAILURE);
-//	}
-//}
-//
-////Validate W_RESULT and write in to the log file
-//template<typename... w_args>
-//inline void V(
-//	_In_	W_RESULT pResult,
-//	_In_	w_log_type pLogType,
-//	_In_	bool pTerminateProgram,
-//	_In_z_	const char* fmt,
-//	_In_	const w_args&... args)
-//{
-//	using namespace std;
-//	using namespace wolf;
-//
-//	if (pResult == W_PASSED) return;
-//
-//	switch (pLogType)
-//	{
-//	default:
-//	case w_log_type::W_INFO:
-//		logger.write(fmt, args...);
-//		break;
-//	case w_log_type::W_WARNING:
-//		logger.warning(fmt, args...);
-//		break;
-//	case w_log_type::W_ERROR:
-//		logger.error(fmt, args...);
-//		break;
-//	}
-//
-//	if (pTerminateProgram)
-//	{
-//		release_heap_data();
-//		std::exit(EXIT_FAILURE);
-//	}
-//}
+/**
+ * write to default log file
+ * @param pLogType type of log
+        W_INFO,
+        W_WARNING,
+        W_ERROR
+ * @param pLogID log id
+ * @param pFMT fmt
+ * @param pArgs are the argumans of fmt
+ * @return result
+*/
+template<typename... w_args>
+W_RESULT  w_log(_In_ const w_log_type pLogType,
+                _In_ const int pLogID,
+                _In_z_ const char* pFMT,
+                _In_ const w_args&... pArgs);
+
+#pragma region VALIDATE
+
+/**
+ * Validate W_RESULT and write in to the default log file
+ * @param pResult result
+ * @param pFMT fmt
+*/
+template<typename... w_args>
+void V(_In_ const W_RESULT pResult, _In_z_ const char* pFMT);
+
+/**
+ * Validate W_RESULT and write in to the default log file
+ * @param pResult result
+ * @param pFMT fmt
+ * @param pArgs argumans
+*/
+template<typename... w_args>
+void V(
+	_In_	W_RESULT pResult,
+	_In_z_	const char* pFMT,
+    _In_	const w_args&... pArgs);
+
+/**
+ * Validate W_RESULT and write in to the default log file
+ * @param pResult result
+ * @param pLogType type of log
+ * @param pFMT fmt
+*/
+template<typename... w_args>
+void V(
+	_In_	W_RESULT pResult,
+	_In_	w_log_type pLogType,
+    _In_z_	const char* pFMT);
+
+/**
+ * Validate W_RESULT and write in to the default log file
+ * @param pResult result
+ * @param pLogType type of log
+ * @param pFMT fmt
+ * @param pArgs args
+*/
+template<typename... w_args>
+void V(
+	_In_	W_RESULT pResult,
+	_In_	w_log_type pLogType,
+	_In_z_	const char* pFMT,
+    _In_	const w_args&... pArgs);
+
+/**
+ * Validate W_RESULT and write in to the default log file
+ * @param pResult result
+ * @param pLogType type of log
+ * @param pTerminateProgram trminate program
+ * @param pFMT fmt
+*/
+template<typename... w_args>
+void V(
+	_In_	W_RESULT pResult,
+	_In_	w_log_type pLogType,
+	_In_	bool pTerminateProgram,
+    _In_z_	const char* pFMT);
+
+/**
+ * Validate W_RESULT and write in to the default log file
+ * @param pResult result
+ * @param pLogType type of log
+ * @param pTerminateProgram trminate program
+ * @param pFMT fmt
+*/
+template<typename... w_args>
+void V(
+	_In_	W_RESULT pResult,
+	_In_	w_log_type pLogType,
+	_In_	bool pTerminateProgram,
+	_In_z_	const char* pFMT,
+    _In_	const w_args&... pArgs);
 
 #pragma endregion
 
