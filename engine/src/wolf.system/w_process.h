@@ -43,9 +43,35 @@ namespace wolf::system
 			_In_z_ const wchar_t* pCurrentDirectoryPath,
 			_In_  const long long pWaitAfterRunningProcess = 0,
 			_In_ DWORD pCreationFlags = 0);
+		
 		//kill a process
 		WSYS_EXP static bool kill_process(_In_ w_process_info* pProcessInfo);
+		
+		//force to kill process
+		WSYS_EXP static bool force_kill_process_by_name(
+			_In_z_ const std::wstring pProcessName,
+			_In_ const bool pTerminateChildProcesses);
+		
+		//force to kill process by name as an administrator
+		WSYS_EXP static bool force_kill_process_by_name_as_admin(
+			_In_z_ const std::wstring pProcessName,
+			_In_z_ const std::wstring pUserNameName,
+			_In_z_ const std::wstring pPassword,
+			_In_ const bool pTerminateChildProcesses);
+
+		//force to kill process
+		WSYS_EXP static bool force_kill_process(
+			_In_ const DWORD pProcessID,
+			_In_ const bool pTerminateChildProcesses);
+
+		//force to kill process by name as an administrator
+		WSYS_EXP static bool force_kill_process_by_name_as_admin(
+			_In_ const DWORD pProcessID,
+			_In_z_ const std::wstring pUserNameName,
+			_In_z_ const std::wstring pPassword,
+			_In_ const bool pTerminateChildProcesses);
+
 		//kill all process by name
-		WSYS_EXP static bool kill_all_processes(_In_z_ std::initializer_list<const wchar_t*> pProcessNames);
+		WSYS_EXP static bool kill_all_processes(_In_ std::initializer_list<const wchar_t*> pProcessNames);
 	};
 }

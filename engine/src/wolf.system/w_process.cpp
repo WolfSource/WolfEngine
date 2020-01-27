@@ -1,5 +1,6 @@
 #include "w_system_pch.h"
 #include "w_process.h"
+#include <stdlib.h>
 
 #ifdef __WIN32
 #include <tlhelp32.h>//for checking process
@@ -243,7 +244,7 @@ bool w_process::kill_process(_In_ w_process_info* pProcessInfo)
 	return true;
 }
 
-bool w_process::kill_all_processes(std::initializer_list<const wchar_t*> pProcessNames)
+bool w_process::kill_all_processes(_In_ std::initializer_list<const wchar_t*> pProcessNames)
 {
 	W_RESULT _hr = W_PASSED;
 
@@ -281,6 +282,66 @@ bool w_process::kill_all_processes(std::initializer_list<const wchar_t*> pProces
 #endif
 
 	return _hr == W_PASSED;
+}
+
+bool w_process::force_kill_process_by_name(_In_z_ const std::wstring pProcessName,
+	_In_ const bool pTerminateChildProcesses)
+{
+	std::wstring _cmd = L"taskkill /IM " + pProcessName + L" /F";
+	if (pTerminateChildProcesses)
+	{
+		_cmd += L" /T";
+	}
+	_wsystem(_cmd.c_str());
+	return true;
+}
+
+bool w_process::force_kill_process_by_name_as_admin(
+	_In_z_ const std::wstring pProcessName,
+	_In_z_ const std::wstring pUserNameName,
+	_In_z_ const std::wstring pPassword,
+	_In_ const bool pTerminateChildProcesses)
+{
+	std::wstring _cmd = L"taskkill /IM " + pProcessName +
+		L" /U " + pUserNameName +
+		L" /P " + pPassword +
+		L" /F";
+	if (pTerminateChildProcesses)
+	{
+		_cmd += L" /T";
+	}
+	_wsystem(_cmd.c_str());
+	return true;
+}
+
+bool w_process::force_kill_process(_In_z_ const DWORD pProcessID, 
+	_In_ const bool pTerminateChildProcesses)
+{
+	std::wstring _cmd = L"taskkill /PID " + std::to_wstring(pProcessID) + L" /F";
+	if (pTerminateChildProcesses)
+	{
+		_cmd += L" /T";
+	}
+	_wsystem(_cmd.c_str());
+	return true;
+}
+
+bool w_process::force_kill_process_by_name_as_admin(
+	_In_ const DWORD pProcessID,
+	_In_z_ const std::wstring pUserNameName,
+	_In_z_ const std::wstring pPassword,
+	_In_ const bool pTerminateChildProcesses)
+{
+	std::wstring _cmd = L"taskkill /PID " + std::to_wstring(pProcessID) +
+		L" /U " + pUserNameName +
+		L" /P " + pPassword +
+		L" /F";
+	if (pTerminateChildProcesses)
+	{
+		_cmd += L" /T";
+	}
+	_wsystem(_cmd.c_str());
+	return true;
 }
 
 #endif
