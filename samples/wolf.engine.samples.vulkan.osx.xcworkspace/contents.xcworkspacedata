@@ -5,9 +5,6 @@
       location = "container:"
       name = "01_system">
       <FileRef
-         location = "group:01_system/01_async/builds/xcode/01_async.xcodeproj">
-      </FileRef>
-      <FileRef
          location = "group:01_system/02_thread/builds/xcode/02_thread.xcodeproj">
       </FileRef>
       <FileRef

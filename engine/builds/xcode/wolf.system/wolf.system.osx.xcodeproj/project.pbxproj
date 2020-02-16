@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2C069B8A23E21EB8004EB56F /* w_fiber.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C069B8823E21EB8004EB56F /* w_fiber.cpp */; };
+		2C069B8B23E21EB8004EB56F /* w_fiber.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 2C069B8923E21EB8004EB56F /* w_fiber.hpp */; };
 		2C20DC3623A405CF00414E6F /* solaris.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C20DC2E23A405CE00414E6F /* solaris.c */; };
 		2C20DC3723A405CF00414E6F /* mutex.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C20DC2F23A405CE00414E6F /* mutex.c */; };
 		2C20DC3823A405CF00414E6F /* builtins64.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C20DC3023A405CE00414E6F /* builtins64.c */; };
@@ -149,8 +151,6 @@
 		2C898474239D2FA40062D70A /* w_timespan.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C898472239D2FA40062D70A /* w_timespan.h */; };
 		2C898479239D344C0062D70A /* w_chrono.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C898477239D344C0062D70A /* w_chrono.h */; };
 		2C89847A239D344C0062D70A /* w_chrono.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C898478239D344C0062D70A /* w_chrono.c */; };
-		2C89847D239E64960062D70A /* w_timer.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C89847C239E64960062D70A /* w_timer.h */; };
-		2C89847F239E64BD0062D70A /* w_timer.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C89847E239E64BD0062D70A /* w_timer.c */; };
 		2C89848E239E735F0062D70A /* lz4hc.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C898483239E735F0062D70A /* lz4hc.h */; };
 		2C89848F239E735F0062D70A /* lz4frame.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C898484239E735F0062D70A /* lz4frame.h */; };
 		2C898490239E735F0062D70A /* xxhash.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C898486239E735F0062D70A /* xxhash.c */; };
@@ -218,9 +218,22 @@
 		2C99E79323C2019D00A9720B /* rapidxml.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 2C99E78F23C2019D00A9720B /* rapidxml.hpp */; };
 		2C99E79623C201AB00A9720B /* w_xml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C99E79423C201AB00A9720B /* w_xml.cpp */; };
 		2C99E79723C201AB00A9720B /* w_xml.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 2C99E79523C201AB00A9720B /* w_xml.hpp */; };
+		2C99E79E23C33A3900A9720B /* ev.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C99E79C23C33A3900A9720B /* ev.h */; };
+		2C99E79F23C33A3900A9720B /* ev.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C99E79D23C33A3900A9720B /* ev.c */; };
+		2C99E7A223C33A9F00A9720B /* event.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C99E7A023C33A9E00A9720B /* event.c */; };
+		2C99E7A323C33A9F00A9720B /* event.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C99E7A123C33A9F00A9720B /* event.h */; };
+		2C99E7B123C33AD400A9720B /* ev_vars.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C99E7A723C33AD400A9720B /* ev_vars.h */; };
+		2C99E7B523C33AD400A9720B /* config.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C99E7AB23C33AD400A9720B /* config.h */; };
+		2C99E7B623C33AD400A9720B /* ev_wrap.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C99E7AC23C33AD400A9720B /* ev_wrap.h */; };
+		2C99E7BA23C33D9A00A9720B /* w_timer.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C99E7B823C33D9A00A9720B /* w_timer.h */; };
+		2C99E7BB23C33D9A00A9720B /* w_timer.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C99E7B923C33D9A00A9720B /* w_timer.c */; };
+		2C99E7BF23CBA1F700A9720B /* libboost_context.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C99E7BD23CBA1E100A9720B /* libboost_context.a */; };
+		2C99E7C023CBA1F700A9720B /* libboost_fiber.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C99E7BE23CBA1E100A9720B /* libboost_fiber.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2C069B8823E21EB8004EB56F /* w_fiber.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_fiber.cpp; path = ../../../src/wolf.system/fiber/w_fiber.cpp; sourceTree = "<group>"; };
+		2C069B8923E21EB8004EB56F /* w_fiber.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = w_fiber.hpp; path = ../../../src/wolf.system/fiber/w_fiber.hpp; sourceTree = "<group>"; };
 		2C20DC2E23A405CE00414E6F /* solaris.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = solaris.c; path = "../../../src/wolf.system/apr-1/src/atomic/unix/solaris.c"; sourceTree = "<group>"; };
 		2C20DC2F23A405CE00414E6F /* mutex.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mutex.c; path = "../../../src/wolf.system/apr-1/src/atomic/unix/mutex.c"; sourceTree = "<group>"; };
 		2C20DC3023A405CE00414E6F /* builtins64.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = builtins64.c; path = "../../../src/wolf.system/apr-1/src/atomic/unix/builtins64.c"; sourceTree = "<group>"; };
@@ -363,8 +376,6 @@
 		2C898472239D2FA40062D70A /* w_timespan.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_timespan.h; path = ../../../src/wolf.system/chrono/w_timespan.h; sourceTree = "<group>"; };
 		2C898477239D344C0062D70A /* w_chrono.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_chrono.h; path = ../../../src/wolf.system/chrono/w_chrono.h; sourceTree = "<group>"; };
 		2C898478239D344C0062D70A /* w_chrono.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = w_chrono.c; path = ../../../src/wolf.system/chrono/w_chrono.c; sourceTree = "<group>"; };
-		2C89847C239E64960062D70A /* w_timer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_timer.h; path = ../../../src/wolf.system/chrono/w_timer.h; sourceTree = "<group>"; };
-		2C89847E239E64BD0062D70A /* w_timer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = w_timer.c; path = ../../../src/wolf.system/chrono/w_timer.c; sourceTree = "<group>"; };
 		2C898483239E735F0062D70A /* lz4hc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lz4hc.h; path = ../../../src/wolf.system/compression/lz4/lz4hc.h; sourceTree = "<group>"; };
 		2C898484239E735F0062D70A /* lz4frame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lz4frame.h; path = ../../../src/wolf.system/compression/lz4/lz4frame.h; sourceTree = "<group>"; };
 		2C898485239E735F0062D70A /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../../../src/wolf.system/compression/lz4/README.md; sourceTree = "<group>"; };
@@ -436,6 +447,18 @@
 		2C99E78F23C2019D00A9720B /* rapidxml.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = rapidxml.hpp; path = ../../../src/wolf.system/xml/rapidxml/rapidxml.hpp; sourceTree = "<group>"; };
 		2C99E79423C201AB00A9720B /* w_xml.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_xml.cpp; path = ../../../src/wolf.system/xml/w_xml.cpp; sourceTree = "<group>"; };
 		2C99E79523C201AB00A9720B /* w_xml.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = w_xml.hpp; path = ../../../src/wolf.system/xml/w_xml.hpp; sourceTree = "<group>"; };
+		2C99E79C23C33A3900A9720B /* ev.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ev.h; path = ../../../src/wolf.system/concurrency/libev/ev.h; sourceTree = "<group>"; };
+		2C99E79D23C33A3900A9720B /* ev.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ev.c; path = ../../../src/wolf.system/concurrency/libev/ev.c; sourceTree = "<group>"; };
+		2C99E7A023C33A9E00A9720B /* event.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = event.c; path = ../../../src/wolf.system/concurrency/libev/event.c; sourceTree = "<group>"; };
+		2C99E7A123C33A9F00A9720B /* event.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = event.h; path = ../../../src/wolf.system/concurrency/libev/event.h; sourceTree = "<group>"; };
+		2C99E7A723C33AD400A9720B /* ev_vars.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ev_vars.h; path = ../../../src/wolf.system/concurrency/libev/ev_vars.h; sourceTree = "<group>"; };
+		2C99E7AB23C33AD400A9720B /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = config.h; path = ../../../src/wolf.system/concurrency/libev/config.h; sourceTree = "<group>"; };
+		2C99E7AC23C33AD400A9720B /* ev_wrap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ev_wrap.h; path = ../../../src/wolf.system/concurrency/libev/ev_wrap.h; sourceTree = "<group>"; };
+		2C99E7B823C33D9A00A9720B /* w_timer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_timer.h; path = ../../../src/wolf.system/concurrency/w_timer.h; sourceTree = "<group>"; };
+		2C99E7B923C33D9A00A9720B /* w_timer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = w_timer.c; path = ../../../src/wolf.system/concurrency/w_timer.c; sourceTree = "<group>"; };
+		2C99E7BC23CBA1BA00A9720B /* debug */ = {isa = PBXFileReference; lastKnownFileType = folder; name = debug; path = ../../../deps/boost/lib/osx/debug; sourceTree = "<group>"; };
+		2C99E7BD23CBA1E100A9720B /* libboost_context.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libboost_context.a; path = ../../../deps/boost/lib/osx/debug/libboost_context.a; sourceTree = "<group>"; };
+		2C99E7BE23CBA1E100A9720B /* libboost_fiber.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libboost_fiber.a; path = ../../../deps/boost/lib/osx/debug/libboost_fiber.a; sourceTree = "<group>"; };
 		2CD617231E59DA3E006FC5DC /* libwolf.system.osx.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libwolf.system.osx.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -444,8 +467,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2C99E7C023CBA1F700A9720B /* libboost_fiber.a in Frameworks */,
 				2C3756D123B7D320003A6B0A /* libluajit-static.a in Frameworks */,
 				2C3756B223B79802003A6B0A /* libz.a in Frameworks */,
+				2C99E7BF23CBA1F700A9720B /* libboost_context.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -455,8 +480,6 @@
 		2C1CD488239AD69A0010A12C /* chrono */ = {
 			isa = PBXGroup;
 			children = (
-				2C89847E239E64BD0062D70A /* w_timer.c */,
-				2C89847C239E64960062D70A /* w_timer.h */,
 				2C898478239D344C0062D70A /* w_chrono.c */,
 				2C898477239D344C0062D70A /* w_chrono.h */,
 				2C898471239D2FA40062D70A /* w_timespan.c */,
@@ -957,6 +980,9 @@
 		2C898550239F65C70062D70A /* concurrency */ = {
 			isa = PBXGroup;
 			children = (
+				2C99E79B23C33A1D00A9720B /* libev */,
+				2C99E7B923C33D9A00A9720B /* w_timer.c */,
+				2C99E7B823C33D9A00A9720B /* w_timer.h */,
 				2C3756B723B7C1D7003A6B0A /* w_condition_variable.c */,
 				2C3756B823B7C1D7003A6B0A /* w_condition_variable.h */,
 				2C3756B323B79EF1003A6B0A /* w_signal.c */,
@@ -970,6 +996,8 @@
 		2C89855923A15BC50062D70A /* fiber */ = {
 			isa = PBXGroup;
 			children = (
+				2C069B8823E21EB8004EB56F /* w_fiber.cpp */,
+				2C069B8923E21EB8004EB56F /* w_fiber.hpp */,
 			);
 			name = fiber;
 			sourceTree = "<group>";
@@ -1098,6 +1126,20 @@
 			name = rapidxml;
 			sourceTree = "<group>";
 		};
+		2C99E79B23C33A1D00A9720B /* libev */ = {
+			isa = PBXGroup;
+			children = (
+				2C99E7AB23C33AD400A9720B /* config.h */,
+				2C99E7A723C33AD400A9720B /* ev_vars.h */,
+				2C99E7AC23C33AD400A9720B /* ev_wrap.h */,
+				2C99E7A023C33A9E00A9720B /* event.c */,
+				2C99E7A123C33A9F00A9720B /* event.h */,
+				2C99E79D23C33A3900A9720B /* ev.c */,
+				2C99E79C23C33A3900A9720B /* ev.h */,
+			);
+			name = libev;
+			sourceTree = "<group>";
+		};
 		2CD6171A1E59DA3E006FC5DC = {
 			isa = PBXGroup;
 			children = (
@@ -1132,6 +1174,9 @@
 		2CFA170D1E674C850041A83F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2C99E7BD23CBA1E100A9720B /* libboost_context.a */,
+				2C99E7BE23CBA1E100A9720B /* libboost_fiber.a */,
+				2C99E7BC23CBA1BA00A9720B /* debug */,
 				2C3756D023B7D310003A6B0A /* libluajit-static.a */,
 				2C3756AD23B797DC003A6B0A /* libz.a */,
 			);
@@ -1145,6 +1190,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2C069B8B23E21EB8004EB56F /* w_fiber.hpp in Headers */,
 				2C3756A723B7978C003A6B0A /* zconf.h in Headers */,
 				2C89897E23A1847F0062D70A /* apr_user.h in Headers */,
 				2C37522123AFD0EF003A6B0A /* quicktimebase64.h in Headers */,
@@ -1158,6 +1204,7 @@
 				2C89897D23A1847F0062D70A /* apr_time.h in Headers */,
 				2C89898523A1847F0062D70A /* apr_network_io.h in Headers */,
 				2C3756BA23B7C1D7003A6B0A /* w_condition_variable.h in Headers */,
+				2C99E7B623C33AD400A9720B /* ev_wrap.h in Headers */,
 				2C89897823A1847F0062D70A /* apr_ring.h in Headers */,
 				2C3756A823B7978C003A6B0A /* inflate.h in Headers */,
 				2C89896F23A1847F0062D70A /* apr_want.h in Headers */,
@@ -1172,8 +1219,8 @@
 				2C898474239D2FA40062D70A /* w_timespan.h in Headers */,
 				2C3756A423B7978C003A6B0A /* zlib.h in Headers */,
 				2C89897F23A1847F0062D70A /* apr_portable.h in Headers */,
-				2C89847D239E64960062D70A /* w_timer.h in Headers */,
 				2C99E78823C2016A00A9720B /* rapidjson.h in Headers */,
+				2C99E7B523C33AD400A9720B /* config.h in Headers */,
 				2C89896E23A1847F0062D70A /* apr_thread_proc.h in Headers */,
 				2C89898123A1847F0062D70A /* apr_cstr.h in Headers */,
 				2C89897723A1847F0062D70A /* apr_support.h in Headers */,
@@ -1186,6 +1233,7 @@
 				2C3756E323B7F302003A6B0A /* w_lua.h in Headers */,
 				2C89896A23A1847F0062D70A /* apr_hash.h in Headers */,
 				2C37522323AFD0EF003A6B0A /* fastavx512bwbase64.h in Headers */,
+				2C99E7B123C33AD400A9720B /* ev_vars.h in Headers */,
 				2C89898623A1847F0062D70A /* apr_dso.h in Headers */,
 				2C30BAE423A42CFD009FC330 /* w_io.h in Headers */,
 				2C89898823A1847F0062D70A /* apr_env.h in Headers */,
@@ -1202,6 +1250,7 @@
 				2C89897123A1847F0062D70A /* apr_file_info.h in Headers */,
 				2C3756A323B7978C003A6B0A /* gzguts.h in Headers */,
 				2C99E79023C2019D00A9720B /* rapidxml_iterators.hpp in Headers */,
+				2C99E79E23C33A3900A9720B /* ev.h in Headers */,
 				2C99E79223C2019D00A9720B /* rapidxml_utils.hpp in Headers */,
 				2C89897223A1847F0062D70A /* apr_skiplist.h in Headers */,
 				2C3756A523B7978C003A6B0A /* inffast.h in Headers */,
@@ -1216,6 +1265,7 @@
 				2C89896423A1847F0062D70A /* apr_pools.h in Headers */,
 				2C89896823A1847F0062D70A /* apr.h in Headers */,
 				2C37522A23AFD0EF003A6B0A /* chromiumbase64.h in Headers */,
+				2C99E7BA23C33D9A00A9720B /* w_timer.h in Headers */,
 				2C898493239E735F0062D70A /* lz4.h in Headers */,
 				2C4CAD0123C0EEE70084D392 /* w_log.hpp in Headers */,
 				2C89897323A1847F0062D70A /* apr_strings.h in Headers */,
@@ -1224,6 +1274,7 @@
 				2C89897423A1847F0062D70A /* apr_signal.h in Headers */,
 				2C3756AB23B7978C003A6B0A /* inftrees.h in Headers */,
 				2C89896323A1847F0062D70A /* apr_poll.h in Headers */,
+				2C99E7A323C33A9F00A9720B /* event.h in Headers */,
 				2C30BAE723A4D599009FC330 /* w_platform.h in Headers */,
 				2C89896D23A1847F0062D70A /* apr_perms_set.h in Headers */,
 				2C89896723A1847F0062D70A /* apr_tables.h in Headers */,
@@ -1297,6 +1348,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2C20DC8E23A419C800414E6F /* start.c in Sources */,
+				2C99E7BB23C33D9A00A9720B /* w_timer.c in Sources */,
 				2C20DC7723A4196600414E6F /* proc_mutex.c in Sources */,
 				2C20DC5D23A4192B00414E6F /* dir.c in Sources */,
 				2C20DC4B23A4190D00414E6F /* apr_encode.c in Sources */,
@@ -1332,6 +1384,7 @@
 				2C20DC9523A41A0100414E6F /* mmap.c in Sources */,
 				2C20DCDA23A41B2600414E6F /* apr_strnatcmp.c in Sources */,
 				2C898490239E735F0062D70A /* xxhash.c in Sources */,
+				2C99E7A223C33A9F00A9720B /* event.c in Sources */,
 				2C898540239E763C0062D70A /* unpack.c in Sources */,
 				2C20DCBD23A41AA400414E6F /* kqueue.c in Sources */,
 				2C20DC9423A41A0100414E6F /* common.c in Sources */,
@@ -1382,6 +1435,7 @@
 				2C20DCE423A41B7B00414E6F /* apr_hash.c in Sources */,
 				2C20DC5E23A4192B00414E6F /* readwrite.c in Sources */,
 				2C20DC3A23A405CF00414E6F /* ia32.c in Sources */,
+				2C069B8A23E21EB8004EB56F /* w_fiber.cpp in Sources */,
 				2C20DCF623A41BCA00414E6F /* time.c in Sources */,
 				2C20DCBA23A41AA400414E6F /* select.c in Sources */,
 				2C20DC7323A4196600414E6F /* global_mutex.c in Sources */,
@@ -1393,8 +1447,8 @@
 				2C20DCA323A41A2A00414E6F /* sendrecv.c in Sources */,
 				2C20DD0123A41C2400414E6F /* groupinfo.c in Sources */,
 				2C20DCE623A41B7B00414E6F /* apr_skiplist.c in Sources */,
+				2C99E79F23C33A3900A9720B /* ev.c in Sources */,
 				2C20DCA523A41A2A00414E6F /* inet_pton.c in Sources */,
-				2C89847F239E64BD0062D70A /* w_timer.c in Sources */,
 				2C20DCD923A41B2600414E6F /* apr_fnmatch.c in Sources */,
 				2C4CACEC23BD5A970084D392 /* color_sinks.cpp in Sources */,
 				2C20DC7423A4196600414E6F /* thread_cond.c in Sources */,
@@ -1590,6 +1644,7 @@
 					"$(SRCROOT)/../../../deps/luaJIT/include",
 					"$(SRCROOT)/../../../deps/libpng/include",
 					"$(SRCROOT)/../../../deps/libjpeg-turbo/include",
+					"$(SRCROOT)/../../../deps/boost/include",
 				);
 				INSTALL_PATH = /usr/local/lib;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
@@ -1599,6 +1654,7 @@
 					"$(SRCROOT)/../../../deps/libpng/lib/osx",
 					"$(SRCROOT)/../../../deps/libjpeg-turbo/lib/osx/debug",
 					"$(SRCROOT)/../../../deps/zlib/lib/osx/debug",
+					"$(SRCROOT)/../../../deps/boost/lib/osx/debug",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				ONLY_ACTIVE_ARCH = YES;

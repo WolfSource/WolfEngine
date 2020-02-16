@@ -7,6 +7,8 @@
     Comment          :
 */
 
+#ifndef _WIN32
+//windows does not support signal
 
 #pragma once
 
@@ -56,4 +58,6 @@ W_RESULT w_signal_unblock(_In_ int pSigno);
 
 #ifdef __cplusplus
 }
+#endif
+
 #endif

@@ -63,12 +63,6 @@ W_RESULT  w_log_flush(_In_ const int pLogID);
 */
 W_RESULT  w_log(_In_z_ const char* pFMT);
 
-/**
- * write to default log file
- * @param pFMT fmt
- * @return result
-*/
-W_RESULT  w_log(_In_z_ const wchar_t* pFMT);
 
 /**
  * write to default log file
