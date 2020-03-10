@@ -31,6 +31,8 @@ namespace wolf::system
 
 		void rise(Args... pArgs) const
 		{
+		        if (this->_slots.empty())
+			        return;
 			for (auto i = this->_slots.begin(); i != this->_slots.end(); ++i)
 			{
 				(*i)(std::forward<Args>(pArgs)...);
