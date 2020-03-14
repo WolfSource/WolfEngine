@@ -148,6 +148,7 @@ namespace wolf
 				_In_ system::w_signal<void(const w_stream_frame_info&)>& pOnGettingStreamVideoFrame,
 				_In_ system::w_signal<void(const char*)>& pOnConnectionLost,
 				_In_ system::w_signal<void(const char*)>& pOnConnectionClosed,
+				_Inout_ bool** pShutDown,
 				_In_ const bool& pListenToLocalPort = true);
 
 			//Convert specific milliseconds to frame number

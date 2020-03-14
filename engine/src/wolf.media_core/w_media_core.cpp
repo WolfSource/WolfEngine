@@ -694,9 +694,27 @@ namespace wolf::framework
 				_In_ w_signal<void(const w_media_core::w_stream_frame_info&)>& pOnGettingStreamVideoFrame,
 				_In_ w_signal<void(const char*)>& pOnConnectionLost,
 				_In_ w_signal<void(const char*)>& pOnConnectionClosed,
+				_Inout_ bool** pShutDown,
 				_In_ const bool& pListenToLocalPort)
 			{
 				const std::string _trace_info = this->_name + "::open_stream_client";
+
+				if (!pShutDown)
+				{
+					V(W_FAILED, w_log_type::W_ERROR,
+						"open_stream_receiver called with parameter pShutDown == nullptr . trace info: {}", _trace_info);
+					return W_FAILED;
+				}
+				else
+				{
+					bool* _b = *pShutDown;
+					if (*_b == true)
+					{
+						V(W_FAILED, w_log_type::W_ERROR,
+							"open_stream_receiver called with parameter *pShutDown = true . trace info: {}", _trace_info);
+						return W_FAILED;
+					}
+				}
 
 				std::string _fromat_str(pFormatName);
 				std::transform(_fromat_str.begin(), _fromat_str.end(), _fromat_str.begin(), ::tolower);
@@ -920,9 +938,23 @@ namespace wolf::framework
 				_is_stream_live.set_fixed_time_step(true);
 
 				bool _connected = false;
-				bool _exit = false;
-				while (!_exit)
+				//bool _exit = false;
+				while (true)
 				{
+					//check for break
+					if (!pShutDown)
+					{
+						break;
+					}
+					else
+					{
+						bool* _break = *pShutDown;
+						if (*_break)
+						{
+							break;
+						}
+					}
+
 					if (av_read_frame(_stream_in_format_ctx, &_packet) >= 0)
 					{
 						if (!_connected)
@@ -971,7 +1003,15 @@ namespace wolf::framework
 							_time_out -= _is_stream_live.get_elapsed_seconds() * 1000.000f;
 							if (_time_out <= 0)
 							{
-								_exit = true;
+								if (!pShutDown)
+								{
+									*pShutDown = new bool(true);
+								}
+								else
+								{
+									bool* _break = *pShutDown;
+									*_break = true;
+								}
 							}
 						});
 					}
@@ -1916,6 +1956,7 @@ W_RESULT w_media_core::open_stream_receiver(
 	_In_ w_signal<void(const w_stream_frame_info&)>& pOnGettingStreamVideoFrame,
 	_In_ w_signal<void(const char*)>& pOnConnectionLost,
 	_In_ w_signal<void(const char*)>& pOnConnectionClosed,
+	_Inout_ bool** pShutDown,
 	_In_ const bool& pListenToLocalPort)
 {
 	if (!this->_pimp) return W_FAILED;
@@ -1934,6 +1975,7 @@ W_RESULT w_media_core::open_stream_receiver(
 		pOnGettingStreamVideoFrame,
 		pOnConnectionLost,
 		pOnConnectionClosed,
+		pShutDown,
 		pListenToLocalPort);
 }
 
