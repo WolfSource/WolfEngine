@@ -2,6 +2,9 @@
 #include "w_process.h"
 #include <stdlib.h>
 
+//maximum class name size
+#define MAX_CLASS_NAME_SIZE 256
+
 #ifdef __WIN32
 #include <tlhelp32.h>//for checking process
 #include <psapi.h>//list all processes
@@ -10,7 +13,39 @@
 using namespace wolf;
 using namespace wolf::system;
 
-static std::wstringstream ProcessesList;
+static std::wstringstream s_processes_list;
+static std::vector<w_process_info*> s_processes_handles;
+
+static BOOL CALLBACK EnumWindowsProc(HWND pHWND, LPARAM pLParam)
+{
+	DWORD _process_id;
+	TCHAR _class_name[MAX_CLASS_NAME_SIZE];
+	TCHAR _title[MAX_CLASS_NAME_SIZE];
+
+	GetClassNameW(pHWND, _class_name, sizeof(_class_name));
+	GetWindowTextW(pHWND, _title, sizeof(_title));
+	GetWindowThreadProcessId(pHWND, &_process_id);
+
+	auto _process_info = new w_process_info();
+	if (!_process_info)
+	{
+		logger.error("could not allocate memory for w_process_info. trace info w_process::EnumWindowsProc");
+		return FALSE;
+	}
+
+	_process_info->class_name = _class_name;
+	_process_info->title_name = _title;
+	_process_info->info.dwProcessId = _process_id;
+	_process_info->info.dwThreadId = 0;
+	_process_info->info.hProcess = NULL;
+	_process_info->info.hThread = 0;
+	_process_info->handle = pHWND;
+	_process_info->process_name = w_process::get_process_name_by_ID(_process_id);
+
+	s_processes_handles.push_back(_process_info);
+
+	return TRUE;
+}
 
 W_RESULT w_process::kill_process_by_ID(_In_ const unsigned long& pProcessID)
 {
@@ -85,9 +120,9 @@ const std::wstring w_process::enum_all_processes()
 	cProcesses = cbNeeded / sizeof(DWORD);
 
 	// Print the name and process identifier for each process.
-	ProcessesList.str(L"");
-	ProcessesList.clear();
-	ProcessesList << L"Process Name : Process ID\n";
+	s_processes_list.str(L"");
+	s_processes_list.clear();
+	s_processes_list << L"Process Name : Process ID\n";
 
 	std::wstring _process_name;
 	for (i = 0; i < cProcesses; i++)
@@ -96,18 +131,25 @@ const std::wstring w_process::enum_all_processes()
 		{
 			_process_name = get_process_name_by_ID(aProcesses[i]);
 			// Print the process name and identifier.
-			ProcessesList << _process_name << L" " << aProcesses[i] << "\n";
+			s_processes_list << _process_name << L" " << aProcesses[i] << "\n";
 		}
 	}
 
-	ProcessesList << "\0";
-	std::wstring _result = ProcessesList.str();
+	s_processes_list << "\0";
+	std::wstring _result = s_processes_list.str();
 	
-	ProcessesList.str(L"");
-	ProcessesList.clear();
+	s_processes_list.str(L"");
+	s_processes_list.clear();
 
 	return _result;
 #endif
+}
+
+void w_process::enum_all_processes(_Inout_ std::vector<w_process_info*>& pProcessHandles)
+{
+	s_processes_handles.clear();
+	EnumWindows(EnumWindowsProc, NULL);
+	pProcessHandles.assign(s_processes_handles.begin(), s_processes_handles.end());
 }
 
 bool w_process::check_for_number_of_running_instances_from_process(_In_z_ const wchar_t* pProcessName, 

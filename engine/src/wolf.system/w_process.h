@@ -17,9 +17,13 @@ namespace wolf::system
 	struct w_process_info
 	{
 #ifdef __WIN32
-		PROCESS_INFORMATION info;
+		PROCESS_INFORMATION   info;
+		HWND				  handle;
+		std::wstring          class_name;
+		std::wstring          title_name;
+		std::wstring          process_name;
 #endif
-		std::error_code		error_code;
+		std::error_code		  error_code;
 	};
 
 	class w_process
@@ -29,8 +33,14 @@ namespace wolf::system
 		WSYS_EXP static W_RESULT kill_process_by_ID(_In_ const unsigned long& pProcessID);
 		//print process name based on proces ID
 		WSYS_EXP static std::wstring get_process_name_by_ID(_In_ const unsigned long& pProcessID);
-		//enumurate all processes
+		
+		//enumurate all processes and store in to the string
 		WSYS_EXP static const std::wstring enum_all_processes();
+
+		//enumurate all processes and store in to the vector
+		WSYS_EXP static void enum_all_processes(
+			_Inout_ std::vector<w_process_info*>& pProcessHandles);
+
 		//check whether two instances of same process is running
 		WSYS_EXP static bool check_for_number_of_running_instances_from_process(_In_z_ const wchar_t* pProcessName,
 			_In_ size_t pNumberOfRunningInstnacesToBeChecked = 1);
@@ -43,7 +53,7 @@ namespace wolf::system
 			_In_z_ const wchar_t* pCurrentDirectoryPath,
 			_In_  const long long pWaitAfterRunningProcess = 0,
 			_In_ DWORD pCreationFlags = 0);
-		
+
 		//kill a process
 		WSYS_EXP static bool kill_process(_In_ w_process_info* pProcessInfo);
 		
