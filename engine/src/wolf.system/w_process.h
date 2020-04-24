@@ -24,6 +24,18 @@ namespace wolf::system
 		std::wstring          process_name;
 #endif
 		std::error_code		  error_code;
+
+		ULONG release()
+		{
+			this->class_name.clear();
+			this->title_name.clear();
+			this->process_name.clear();
+#ifdef __WIN32
+			CloseHandle(this->handle);
+#endif
+
+			return 0;
+		}
 	};
 
 	class w_process
