@@ -738,8 +738,10 @@ namespace wolf::framework
 				auto _socket_time_out = std::to_string(pSocketTimeOut * 1000);
 				av_dict_set(&_av_dic, "stimeout", _socket_time_out.c_str(), 0);//"10000000" 10 second for io socket timeout
 
-				AVFormatContext* _stream_in_format_ctx = avformat_alloc_context();
 				//create an input context
+				AVFormatContext* _stream_in_format_ctx = avformat_alloc_context();
+				_stream_in_format_ctx->probesize = 100000000;//100MB
+				_stream_in_format_ctx->max_analyze_duration = 100000000;//100MB
 				if (avformat_open_input(&_stream_in_format_ctx, pURL, NULL, &_av_dic) < 0)
 				{
 					V(W_FAILED, w_log_type::W_ERROR,
