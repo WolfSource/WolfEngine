@@ -1906,7 +1906,7 @@ using namespace wolf::framework;
 
 w_media_core::w_media_core() :
 	_is_released(false),
-	_pimp(std::move(new w_media_core_pimp()))
+	_pimp(new w_media_core_pimp())
 {
 }
 
@@ -2044,8 +2044,6 @@ ULONG w_media_core::release()
     if (this->_is_released) return 1;
 	if (this->_pimp)
 	{
-		this->_pimp->release_media();
-		this->_pimp->release_output_stream_server();
 		delete this->_pimp;
 	}
 	this->_is_released = 0;
