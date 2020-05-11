@@ -110,7 +110,6 @@
 		2C0C9DAF21F7517F006AA6D7 /* fastavx512bwbase64.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C0C9DA021F7517E006AA6D7 /* fastavx512bwbase64.c */; settings = {COMPILER_FLAGS = "-mavx2 -mfma"; }; };
 		2C0C9DB121F7517F006AA6D7 /* scalarbase64.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C0C9DA221F7517E006AA6D7 /* scalarbase64.h */; };
 		2C0C9FDC21F75EE9006AA6D7 /* libluajit-static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C0C9FDB21F75EE9006AA6D7 /* libluajit-static.a */; };
-		2C0C9FDE21F75EFE006AA6D7 /* libnanomsg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C0C9FDD21F75EFD006AA6D7 /* libnanomsg.a */; };
 		2C0CA01821F75F54006AA6D7 /* storage.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 2C0C9FE121F75F50006AA6D7 /* storage.hpp */; };
 		2C0CA01921F75F54006AA6D7 /* mipmaps_compute.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 2C0C9FE321F75F51006AA6D7 /* mipmaps_compute.hpp */; };
 		2C0CA01A21F75F54006AA6D7 /* clear.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 2C0C9FE521F75F51006AA6D7 /* clear.hpp */; };
@@ -3069,7 +3068,6 @@
 				2C0CAB8021F79D92006AA6D7 /* libjpeg.a in Frameworks */,
 				2C0CAB8221F7A34D006AA6D7 /* libz.a in Frameworks */,
 				2C0CAA0521F7930B006AA6D7 /* libpng16d.a in Frameworks */,
-				2C0C9FDE21F75EFE006AA6D7 /* libnanomsg.a in Frameworks */,
 				2C0C9FDC21F75EE9006AA6D7 /* libluajit-static.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -7209,7 +7207,6 @@
 				"HEADER_SEARCH_PATHS[arch=*]" = (
 					"$(SRCROOT)/../../../src/wolf.system",
 					"$(SRCROOT)/../../../deps/luaJIT/include",
-					"$(SRCROOT)/../../../deps/nanomsg/include",
 					"$(SRCROOT)/../../../deps/libpng/include",
 					"$(SRCROOT)/../../../deps/libjpeg-turbo/include",
 					"$(SRCROOT)/../../../deps/zlib/include",
@@ -7218,13 +7215,12 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
 				LIBRARY_SEARCH_PATHS = "";
 				"LIBRARY_SEARCH_PATHS[arch=*]" = (
-					"$(SRCROOT)/../../../deps/nanomsg/lib/osx/debug",
 					"$(SRCROOT)/../../../deps/luaJIT/lib/osx/debug",
 					"$(SRCROOT)/../../../deps/libpng/lib/osx",
 					"$(SRCROOT)/../../../deps/libjpeg-turbo/lib/osx/debug",
 					"$(SRCROOT)/../../../deps/zlib/lib/osx/debug",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
 				OTHER_LDFLAGS = (
 					"-llber",
@@ -7257,7 +7253,7 @@
 				HEADER_SEARCH_PATHS = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
 				LIBRARY_SEARCH_PATHS = "";
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
 				OTHER_LDFLAGS = (
 					"-llber",
