@@ -7248,11 +7248,29 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
 				GCC_PREPROCESSOR_DEFINITIONS = "";
-				"GCC_PREPROCESSOR_DEFINITIONS[arch=*]" = "";
+				"GCC_PREPROCESSOR_DEFINITIONS[arch=*]" = (
+					HAVE_CONFIG_H,
+					BUILDING_LIBCURL,
+					__OSX__,
+				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				HEADER_SEARCH_PATHS = "";
+				"HEADER_SEARCH_PATHS[arch=*]" = (
+					"$(SRCROOT)/../../../src/wolf.system",
+					"$(SRCROOT)/../../../deps/luaJIT/include",
+					"$(SRCROOT)/../../../deps/libpng/include",
+					"$(SRCROOT)/../../../deps/libjpeg-turbo/include",
+					"$(SRCROOT)/../../../deps/zlib/include",
+					"$(SRCROOT)/../../../src/wolf.system/curl/src",
+				);
 				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
 				LIBRARY_SEARCH_PATHS = "";
+				"LIBRARY_SEARCH_PATHS[arch=*]" = (
+					"$(SRCROOT)/../../../deps/luaJIT/lib/osx/release",
+					"$(SRCROOT)/../../../deps/libpng/lib/osx",
+					"$(SRCROOT)/../../../deps/libjpeg-turbo/lib/osx/release",
+					"$(SRCROOT)/../../../deps/zlib/lib/osx/release",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
 				OTHER_LDFLAGS = (

@@ -20,7 +20,7 @@
 		2C0F36992006226B001CB2DF /* w_media_core.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C0F36942006226B001CB2DF /* w_media_core.h */; };
 		2C0F369A2006226B001CB2DF /* w_media_core_pch.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C0F36952006226B001CB2DF /* w_media_core_pch.h */; };
 		2C0F369B2006226B001CB2DF /* w_media_core_pch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C0F36962006226B001CB2DF /* w_media_core_pch.cpp */; };
-		2C4CCB2F1EB1045E00E0A422 /* libwolf.system.osx.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C4CCB2E1EB1045E00E0A422 /* libwolf.system.osx.dylib */; };
+		2CFBB6EE24696D7F001A4BE4 /* libwolf.system.osx.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CFBB6ED24696D7F001A4BE4 /* libwolf.system.osx.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -47,6 +47,7 @@
 		2C0F369E20062C1F001CB2DF /* libpostproc.54.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpostproc.54.dylib; path = ../../../dependencies/ffmpeg/bin/osx/libpostproc.54.dylib; sourceTree = "<group>"; };
 		2C4CCB2E1EB1045E00E0A422 /* libwolf.system.osx.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwolf.system.osx.dylib; path = ../../../../bin/osx/Build/Products/Debug/libwolf.system.osx.dylib; sourceTree = "<group>"; };
 		2CD617231E59DA3E006FC5DC /* libwolf.media_core.osx.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libwolf.media_core.osx.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		2CFBB6ED24696D7F001A4BE4 /* libwolf.system.osx.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; path = libwolf.system.osx.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,8 +62,8 @@
 				2C0CAFE521F9FC06006AA6D7 /* libswscale.5.dylib in Frameworks */,
 				2C0CAFE621F9FC06006AA6D7 /* libavformat.58.dylib in Frameworks */,
 				2C0CAFE721F9FC06006AA6D7 /* libavutil.56.dylib in Frameworks */,
+				2CFBB6EE24696D7F001A4BE4 /* libwolf.system.osx.dylib in Frameworks */,
 				2C0CAFE821F9FC06006AA6D7 /* libswresample.3.dylib in Frameworks */,
-				2C4CCB2F1EB1045E00E0A422 /* libwolf.system.osx.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -93,6 +94,7 @@
 		2CFA170D1E674C850041A83F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2CFBB6ED24696D7F001A4BE4 /* libwolf.system.osx.dylib */,
 				2C0CAFDC21F9FC06006AA6D7 /* libavcodec.58.dylib */,
 				2C0CAFDA21F9FC06006AA6D7 /* libavdevice.58.dylib */,
 				2C0CAFDB21F9FC06006AA6D7 /* libavfilter.7.dylib */,
@@ -307,13 +309,14 @@
 				DYLIB_CURRENT_VERSION = 1;
 				EXECUTABLE_PREFIX = lib;
 				FRAMEWORK_SEARCH_PATHS = "";
-				"FRAMEWORK_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/../../../deps/ffmpeg/bin/osx/";
+				"FRAMEWORK_SEARCH_PATHS[arch=*]" = "";
 				GCC_C_LANGUAGE_STANDARD = c11;
 				GCC_ENABLE_CPP_EXCEPTIONS = YES;
 				GCC_ENABLE_CPP_RTTI = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/../../../src/wolf.media_core/w_media_core_pch.h";
-				GCC_PREPROCESSOR_DEFINITIONS = (
+				GCC_PREPROCESSOR_DEFINITIONS = "";
+				"GCC_PREPROCESSOR_DEFINITIONS[arch=*]" = (
 					"$(inherited)",
 					"DEBUG=1",
 					__720p__,
@@ -328,8 +331,9 @@
 				);
 				LIBRARY_SEARCH_PATHS = "";
 				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/../../../deps/ffmpeg/bin/osx/";
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SYSTEM_FRAMEWORK_SEARCH_PATHS = "";
 				"VALID_ARCHS[sdk=*]" = x86_64;
 			};
 			name = Debug;
@@ -343,21 +347,33 @@
 				DYLIB_CURRENT_VERSION = 1;
 				EXECUTABLE_PREFIX = lib;
 				FRAMEWORK_SEARCH_PATHS = "";
+				"FRAMEWORK_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/../../../../bin/osx/Build/Products/Release";
 				GCC_C_LANGUAGE_STANDARD = c11;
 				GCC_ENABLE_CPP_EXCEPTIONS = YES;
 				GCC_ENABLE_CPP_RTTI = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/../../../src/wolf.media_core/w_media_core_pch.h";
-				GCC_PREPROCESSOR_DEFINITIONS = (
+				GCC_PREPROCESSOR_DEFINITIONS = "";
+				"GCC_PREPROCESSOR_DEFINITIONS[arch=*]" = (
+					"$(inherited)",
 					__720p__,
 					__WOLF_MEDIA_CORE__,
 				);
-				"GCC_PREPROCESSOR_DEFINITIONS[arch=*]" = "";
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				HEADER_SEARCH_PATHS = "";
+				"HEADER_SEARCH_PATHS[arch=*]" = (
+					"$(SRCROOT)/../../../src/wolf.system",
+					"$(SRCROOT)/../../../src/wolf.media_core",
+					"$(SRCROOT)/../../../deps/ffmpeg/include/",
+				);
 				LIBRARY_SEARCH_PATHS = "";
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				"LIBRARY_SEARCH_PATHS[arch=*]" = (
+					"$(SRCROOT)/../../../deps/ffmpeg/bin/osx/",
+					"$(SRCROOT)/../../../../bin/osx/Build/Products/Release",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SYSTEM_FRAMEWORK_SEARCH_PATHS = "";
 				"VALID_ARCHS[sdk=*]" = x86_64;
 			};
 			name = Release;
