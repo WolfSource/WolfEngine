@@ -1906,7 +1906,7 @@ using namespace wolf::framework;
 
 w_media_core::w_media_core() :
 	_is_released(false),
-	_pimp(new w_media_core_pimp())
+	_pimp(std::move(new w_media_core_pimp()))
 {
 }
 
