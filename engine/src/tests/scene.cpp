@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "scene.h"
 #include <w_compress.hpp>
-#include <w_process.h>
+//#include <w_process.h>
 #include <w_url.h>
 #include <w_concurrent_queue.h>
 
@@ -14,22 +14,22 @@ scene::scene(_In_z_ const std::wstring& pContentPath, _In_ const system::w_logge
 	w_game(pContentPath, pLogConfig)
 {
 
-	std::string _result;
-	w_point _abort;
-	_abort.x = 100;
-	_abort.y = 10;
-	auto _url = new wolf::system::w_url();
-	auto _r = _url->request_url("https://service-play.pod.land/srv/serviceApi/getConfig/",
-		_result, _abort);
-	std::wstring _str(_result.begin(), _result.end());
-	OutputDebugString(_str.c_str());
+//	std::string _result;
+//	w_point _abort;
+//	_abort.x = 100;
+//	_abort.y = 10;
+//	auto _url = new wolf::system::w_url();
+//	auto _r = _url->request_url("https://service-play.pod.land/srv/serviceApi/getConfig/",
+//		_result, _abort);
+//	std::wstring _str(_result.begin(), _result.end());
+//	OutputDebugString(_str.c_str());
 	
 	w_color _c = w_color::from_hex(2500);
 
-	auto _a = wolf::system::w_process::create_process(
-		L"D:/github/WolfEngine/Wolf.Engine/bin/win32/x64/Debug/7z.exe",
-		L"./7z.exe a zipname ./Log/*",
-		L"D:/github/WolfEngine/Wolf.Engine/bin/win32/x64/Debug/");
+//	auto _a = wolf::system::w_process::create_process(
+//		L"D:/github/WolfEngine/Wolf.Engine/bin/win32/x64/Debug/7z.exe",
+//		L"./7z.exe a zipname ./Log/*",
+//		L"D:/github/WolfEngine/Wolf.Engine/bin/win32/x64/Debug/");
 
 	//const std::string _str_lzma = "here's something that should compress pretty well: abcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdef";
 	//w_compress_result _c;

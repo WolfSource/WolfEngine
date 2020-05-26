@@ -53,16 +53,6 @@
 		2C68597720D92A490096C33B /* w_first_person_camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C68597520D92A490096C33B /* w_first_person_camera.cpp */; };
 		2C68597820D92A490096C33B /* w_first_person_camera.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C68597620D92A490096C33B /* w_first_person_camera.h */; };
 		2C68597A20D92AEC0096C33B /* libwolf.content_pipeline.osx.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C29CD261EB3834B00BEFF54 /* libwolf.content_pipeline.osx.dylib */; };
-		2C68597D20D92CE30096C33B /* w_masked_occlusion_culling.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C68597B20D92CE30096C33B /* w_masked_occlusion_culling.cpp */; };
-		2C68597E20D92CE30096C33B /* w_masked_occlusion_culling.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C68597C20D92CE30096C33B /* w_masked_occlusion_culling.h */; };
-		2C68598A20D92D1B0096C33B /* MaskedOcclusionCulling.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C68598020D92D1B0096C33B /* MaskedOcclusionCulling.cpp */; };
-		2C68598B20D92D1B0096C33B /* CullingThreadpool.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C68598120D92D1B0096C33B /* CullingThreadpool.h */; };
-		2C68598D20D92D1B0096C33B /* MaskedOcclusionCulling.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C68598420D92D1B0096C33B /* MaskedOcclusionCulling.h */; };
-		2C68598E20D92D1B0096C33B /* CullingThreadpool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C68598520D92D1B0096C33B /* CullingThreadpool.cpp */; };
-		2C68598F20D92D1B0096C33B /* FrameRecorder.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C68598620D92D1B0096C33B /* FrameRecorder.h */; };
-		2C68599020D92D1B0096C33B /* FrameRecorder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C68598720D92D1B0096C33B /* FrameRecorder.cpp */; };
-		2C68599120D92D1B0096C33B /* MaskedOcclusionCullingAVX2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C68598920D92D1B0096C33B /* MaskedOcclusionCullingAVX2.cpp */; settings = {COMPILER_FLAGS = "-mavx2 -mfma"; }; };
-		2C68599320D92F400096C33B /* MaskedOcclusionCullingAVX512.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C68599220D92F400096C33B /* MaskedOcclusionCullingAVX512.cpp */; settings = {COMPILER_FLAGS = "-mavx2 -mfma"; }; };
 		2C7079991EACE6F2003784A2 /* libwolf.system.osx.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C4CD32E1E8A8DBB0090EE0A /* libwolf.system.osx.dylib */; };
 		2C860FA41E5F1E80000E71B5 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C860FA31E5F1E80000E71B5 /* libc++.tbd */; };
 		2C860FA61E5F1E86000E71B5 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C860FA51E5F1E86000E71B5 /* Metal.framework */; };
@@ -126,18 +116,6 @@
 		2C598C641FA2387A0055D215 /* w_graphics_headers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_graphics_headers.h; path = ../../../src/wolf.render/w_graphics_headers.h; sourceTree = "<group>"; };
 		2C68597520D92A490096C33B /* w_first_person_camera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_first_person_camera.cpp; path = ../../../src/wolf.render/w_framework/w_first_person_camera.cpp; sourceTree = "<group>"; };
 		2C68597620D92A490096C33B /* w_first_person_camera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_first_person_camera.h; path = ../../../src/wolf.render/w_framework/w_first_person_camera.h; sourceTree = "<group>"; };
-		2C68597B20D92CE30096C33B /* w_masked_occlusion_culling.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_masked_occlusion_culling.cpp; path = ../../../src/wolf.render/w_framework/w_masked_occlusion_culling.cpp; sourceTree = "<group>"; };
-		2C68597C20D92CE30096C33B /* w_masked_occlusion_culling.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_masked_occlusion_culling.h; path = ../../../src/wolf.render/w_framework/w_masked_occlusion_culling.h; sourceTree = "<group>"; };
-		2C68598020D92D1B0096C33B /* MaskedOcclusionCulling.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MaskedOcclusionCulling.cpp; path = ../../../src/wolf.render/w_framework/masked_occlusion_culling/MaskedOcclusionCulling.cpp; sourceTree = "<group>"; };
-		2C68598120D92D1B0096C33B /* CullingThreadpool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CullingThreadpool.h; path = ../../../src/wolf.render/w_framework/masked_occlusion_culling/CullingThreadpool.h; sourceTree = "<group>"; };
-		2C68598320D92D1B0096C33B /* CompilerSpecific.inl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CompilerSpecific.inl; path = ../../../src/wolf.render/w_framework/masked_occlusion_culling/CompilerSpecific.inl; sourceTree = "<group>"; };
-		2C68598420D92D1B0096C33B /* MaskedOcclusionCulling.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MaskedOcclusionCulling.h; path = ../../../src/wolf.render/w_framework/masked_occlusion_culling/MaskedOcclusionCulling.h; sourceTree = "<group>"; };
-		2C68598520D92D1B0096C33B /* CullingThreadpool.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CullingThreadpool.cpp; path = ../../../src/wolf.render/w_framework/masked_occlusion_culling/CullingThreadpool.cpp; sourceTree = "<group>"; };
-		2C68598620D92D1B0096C33B /* FrameRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FrameRecorder.h; path = ../../../src/wolf.render/w_framework/masked_occlusion_culling/FrameRecorder.h; sourceTree = "<group>"; };
-		2C68598720D92D1B0096C33B /* FrameRecorder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FrameRecorder.cpp; path = ../../../src/wolf.render/w_framework/masked_occlusion_culling/FrameRecorder.cpp; sourceTree = "<group>"; };
-		2C68598820D92D1B0096C33B /* MaskedOcclusionCullingCommon.inl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = MaskedOcclusionCullingCommon.inl; path = ../../../src/wolf.render/w_framework/masked_occlusion_culling/MaskedOcclusionCullingCommon.inl; sourceTree = "<group>"; };
-		2C68598920D92D1B0096C33B /* MaskedOcclusionCullingAVX2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MaskedOcclusionCullingAVX2.cpp; path = ../../../src/wolf.render/w_framework/masked_occlusion_culling/MaskedOcclusionCullingAVX2.cpp; sourceTree = "<group>"; };
-		2C68599220D92F400096C33B /* MaskedOcclusionCullingAVX512.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MaskedOcclusionCullingAVX512.cpp; path = ../../../src/wolf.render/w_framework/masked_occlusion_culling/MaskedOcclusionCullingAVX512.cpp; sourceTree = "<group>"; };
 		2C69E9A91E5EC2CB00F15C44 /* libwolf.render.vulkan.osx.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libwolf.render.vulkan.osx.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		2C766E6B20B343C4000C66F4 /* libassimp.4.1.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libassimp.4.1.0.dylib; path = ../../../dependencies/assimp/lib/osx/debug/libassimp.4.1.0.dylib; sourceTree = "<group>"; };
 		2C860FA31E5F1E80000E71B5 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
@@ -218,32 +196,12 @@
 		2C29CD131EB3339E00BEFF54 /* w_framework */ = {
 			isa = PBXGroup;
 			children = (
-				2C68597F20D92CED0096C33B /* masked_occlusion_culling */,
 				2C68597520D92A490096C33B /* w_first_person_camera.cpp */,
 				2C68597620D92A490096C33B /* w_first_person_camera.h */,
 				2C29CD1C1EB3344000BEFF54 /* w_game.cpp */,
 				2C29CD1D1EB3344000BEFF54 /* w_game.h */,
-				2C68597B20D92CE30096C33B /* w_masked_occlusion_culling.cpp */,
-				2C68597C20D92CE30096C33B /* w_masked_occlusion_culling.h */,
 			);
 			name = w_framework;
-			sourceTree = "<group>";
-		};
-		2C68597F20D92CED0096C33B /* masked_occlusion_culling */ = {
-			isa = PBXGroup;
-			children = (
-				2C68598320D92D1B0096C33B /* CompilerSpecific.inl */,
-				2C68598520D92D1B0096C33B /* CullingThreadpool.cpp */,
-				2C68598120D92D1B0096C33B /* CullingThreadpool.h */,
-				2C68598720D92D1B0096C33B /* FrameRecorder.cpp */,
-				2C68598620D92D1B0096C33B /* FrameRecorder.h */,
-				2C68598020D92D1B0096C33B /* MaskedOcclusionCulling.cpp */,
-				2C68598420D92D1B0096C33B /* MaskedOcclusionCulling.h */,
-				2C68598920D92D1B0096C33B /* MaskedOcclusionCullingAVX2.cpp */,
-				2C68599220D92F400096C33B /* MaskedOcclusionCullingAVX512.cpp */,
-				2C68598820D92D1B0096C33B /* MaskedOcclusionCullingCommon.inl */,
-			);
-			name = masked_occlusion_culling;
 			sourceTree = "<group>";
 		};
 		2C69E9A01E5EC2CB00F15C44 = {
@@ -315,7 +273,6 @@
 				2CE4DA0221391ADC005B386E /* w_indirect_draw_commands.h in Headers */,
 				2C1E3F6A210870BA0072D5D3 /* w_buffer.h in Headers */,
 				2C1E3F7E210870BA0072D5D3 /* w_fences.h in Headers */,
-				2C68598D20D92D1B0096C33B /* MaskedOcclusionCulling.h in Headers */,
 				2C1E3F70210870BA0072D5D3 /* w_texture.h in Headers */,
 				2C1E3F73210870BA0072D5D3 /* w_memory_allocator.h in Headers */,
 				2C1E3F77210870BA0072D5D3 /* w_mesh.h in Headers */,
@@ -327,12 +284,9 @@
 				2CA945EF1ED9F7CC007B70B8 /* imgui.h in Headers */,
 				2C38D94F1E79646D00EE8595 /* w_graphics_device_manager.h in Headers */,
 				2C68597820D92A490096C33B /* w_first_person_camera.h in Headers */,
-				2C68597E20D92CE30096C33B /* w_masked_occlusion_culling.h in Headers */,
 				2CE4DA0321391ADC005B386E /* w_viewport.h in Headers */,
-				2C68598F20D92D1B0096C33B /* FrameRecorder.h in Headers */,
 				2C38D9511E79646D00EE8595 /* w_render_export.h in Headers */,
 				2C1E3F7C210870BA0072D5D3 /* w_occlusion_query.h in Headers */,
-				2C68598B20D92D1B0096C33B /* CullingThreadpool.h in Headers */,
 				2C1E3F6F210870BA0072D5D3 /* w_shader.h in Headers */,
 				2C1E3F71210870BA0072D5D3 /* vk_mem_alloc.h in Headers */,
 				2C1E3F78210870BA0072D5D3 /* w_semaphore.h in Headers */,
@@ -404,19 +358,14 @@
 				2C29CD1E1EB3344000BEFF54 /* w_game.cpp in Sources */,
 				2C1E3F6B210870BA0072D5D3 /* w_texture.cpp in Sources */,
 				2C1E3F76210870BA0072D5D3 /* w_mesh.cpp in Sources */,
-				2C68599120D92D1B0096C33B /* MaskedOcclusionCullingAVX2.cpp in Sources */,
-				2C68599020D92D1B0096C33B /* FrameRecorder.cpp in Sources */,
 				2C38D9521E79646D00EE8595 /* w_render_pch.cpp in Sources */,
 				2C1E3F7A210870BA0072D5D3 /* w_command_buffers.cpp in Sources */,
 				2C1E3F84210870BA0072D5D3 /* w_render_pass.cpp in Sources */,
 				2C38D94E1E79646D00EE8595 /* w_graphics_device_manager.cpp in Sources */,
 				2C1E3F6D210870BA0072D5D3 /* w_shader.cpp in Sources */,
-				2C68597D20D92CE30096C33B /* w_masked_occlusion_culling.cpp in Sources */,
-				2C68598E20D92D1B0096C33B /* CullingThreadpool.cpp in Sources */,
 				2C1E3F6C210870BA0072D5D3 /* w_buffer.cpp in Sources */,
 				2C38D9501E79646D00EE8595 /* w_obj_c_wrapper.mm in Sources */,
 				2C1E3F6E210870BA0072D5D3 /* w_render_target.cpp in Sources */,
-				2C68599320D92F400096C33B /* MaskedOcclusionCullingAVX512.cpp in Sources */,
 				2C1E3F7B210870BA0072D5D3 /* w_occlusion_query.cpp in Sources */,
 				2C68597720D92A490096C33B /* w_first_person_camera.cpp in Sources */,
 				2C1E3F68210870BA0072D5D3 /* w_pipeline.cpp in Sources */,
@@ -426,7 +375,6 @@
 				2C1E3F81210870BA0072D5D3 /* w_memory_allocator.cpp in Sources */,
 				2C1E3F83210870BA0072D5D3 /* w_fences.cpp in Sources */,
 				2C1E3F67210870BA0072D5D3 /* w_imgui.cpp in Sources */,
-				2C68598A20D92D1B0096C33B /* MaskedOcclusionCulling.cpp in Sources */,
 				2C1E3F79210870BA0072D5D3 /* w_shapes.cpp in Sources */,
 				2C1E3F82210870BA0072D5D3 /* w_queue.cpp in Sources */,
 				2CE4DA0421391ADC005B386E /* w_indirect_draw_commands.cpp in Sources */,

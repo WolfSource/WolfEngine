@@ -10,7 +10,9 @@
 #ifndef __W_VERTEX_STRUCT_H__
 #define __W_VERTEX_STRUCT_H__
 
+#if __cplusplus <= 201402L
 #include <msgpack.hpp>
+#endif
 #include <vector>
 
 namespace wolf
@@ -29,8 +31,9 @@ namespace wolf
             float		    color[4];
             uint32_t	    vertex_index;
 
+#if __cplusplus <= 201402L
             MSGPACK_DEFINE(position, normal, uv, vertex_index);
-
+#endif
 
 #ifdef __PYTHON__
 			glm::w_vec3		py_get_position() { return glm::w_vec3(this->position[0], this->position[1], this->position[2]); }

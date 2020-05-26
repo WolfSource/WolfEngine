@@ -65,8 +65,10 @@ namespace wolf::content_pipeline
 
 #pragma endregion
 
+#if __cplusplus <= 201402L
 		MSGPACK_DEFINE(_name, _cameras, _models, _boundaries);
-
+#endif
+        
 #ifdef __PYTHON__
 		void py_add_model(_In_ w_cpipeline_model& pModel)
 		{
