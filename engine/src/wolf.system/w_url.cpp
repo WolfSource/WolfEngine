@@ -23,6 +23,7 @@ namespace wolf
 			W_RESULT request_url(
 				_In_z_ const char* pURL, 
 				_Inout_ std::string& pResultPage, 
+				_Inout_ long& pResponseCode,
 				_In_ w_point pAbortIfSlowerThanNumberOfBytesInSeconds,
 				_In_ const uint32_t& pConnectionTimeOutInMilliSeconds)
 			{
@@ -55,6 +56,7 @@ namespace wolf
                 if (_result == CURLE_OK)
                 {
                     _chunk.copyto(pResultPage);
+					curl_easy_getinfo(this->_curl, CURLINFO_RESPONSE_CODE, &pResponseCode);
                 }
                 else
                 {
@@ -230,6 +232,7 @@ w_url::~w_url()
 
 W_RESULT w_url::request_url(_In_z_ const std::string& pURL, 
 	_Inout_ std::string& pResultPage,
+	_Inout_ long& pResponseCode,
 	_In_ w_point& pAbortIfSlowerThanNumberOfBytesInSeconds,
 	_In_ const uint32_t& pConnectionTimeOutInMilliSeconds)
 {
@@ -248,6 +251,7 @@ W_RESULT w_url::request_url(_In_z_ const std::string& pURL,
 	auto _hr = this->_pimp->request_url(
 		_url, 
 		pResultPage, 
+		pResponseCode,
 		pAbortIfSlowerThanNumberOfBytesInSeconds,
 		pConnectionTimeOutInMilliSeconds);
 	//free(_url);
