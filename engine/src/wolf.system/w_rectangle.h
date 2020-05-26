@@ -13,13 +13,7 @@
 
 #include "python_exporter/w_boost_python_helper.h"
 
-struct w_rectangle
-{
-    long left;
-    long top;
-    long right;
-    long bottom;
-};
+
 
 inline bool operator == (const w_rectangle& lValue, const w_rectangle& rValue)
 {

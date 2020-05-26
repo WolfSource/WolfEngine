@@ -1,27 +1,34 @@
 #include "w_io.h"
 #include <apr-1/apr_strings.h>
-#include <memory/w_string.h>
+
+#include "base64/chromiumbase64.h"
+#include "base64/fastavx512bwbase64.h"
+#include "base64/fastavxbase64.h"
+#include "base64/klompavxbase64.h"
+#include "base64/quicktimebase64.h"
+#include "base64/scalarbase64.h"
 
 #ifdef W_PLATFORM_UNIX
+#include "base64/linuxbase64.h"
 #include <sys/stat.h>
 #include <libgen.h>
 #endif
 
-apr_file_t* w_io_create_file(_In_z_  const char* pPath,
-                             _In_z_  const char* pContent,
-                             _In_    const bool pBinaryMode,
-                             _In_    const bool pBufferedMode,
-                             _In_    const bool pNoneBlockMode,
-                             _In_    const bool pMultiThreadedMode,
-                             _In_    const bool pOpenAppendMode,
-                             _In_    const bool pIsLargFile,
-                             _In_    const bool pErrorIfFileExists)
+w_file w_io_create_file(_In_z_  const char* pPath,
+                        _In_z_  const char* pContent,
+                        _In_    const bool pBinaryMode,
+                        _In_    const bool pBufferedMode,
+                        _In_    const bool pNoneBlockMode,
+                        _In_    const bool pMultiThreadedMode,
+                        _In_    const bool pOpenAppendMode,
+                        _In_    const bool pIsLargFile,
+                        _In_    const bool pErrorIfFileExists)
 {
     apr_status_t _ret = APR_SUCCESS;
     apr_file_t* _file = NULL;
     apr_size_t  _buffer_len = 0;
     apr_int32_t _flags = 0;
-    apr_pool_t* _pool = w_get_default_memory_pool();
+    w_mem_pool _pool = w_get_default_memory_pool();
     if(!_pool)
     {
         W_ASSERT(false, "could not get default memory. trace info: w_io_create_directory");
@@ -91,7 +98,7 @@ W_RESULT w_io_save_to_file(_In_z_  const char* pPath,
     apr_file_t* _file = NULL;
     apr_size_t  _buffer_len = 0;
     apr_int32_t _flags = 0;
-    apr_pool_t* _pool = w_get_default_memory_pool();
+    w_mem_pool _pool = w_get_default_memory_pool();
     if(!_pool)
     {
         W_ASSERT(false, "could not get default memory. trace info: w_io_create_directory");
@@ -146,7 +153,7 @@ W_RESULT w_io_save_to_file(_In_z_  const char* pPath,
     
 __return:
     apr_file_close(_file);
-    return _ret == APR_SUCCESS ? W_PASSED : W_FAILED;
+    return _ret == APR_SUCCESS ? W_SUCCESS : W_FAILURE;
 }
 
 W_RESULT w_io_get_is_file(_In_z_ const char* pPath)
@@ -154,7 +161,7 @@ W_RESULT w_io_get_is_file(_In_z_ const char* pPath)
 #ifdef W_PLATFORM_UNIX
     struct stat _stat;
     int _ret = stat(pPath, &_stat);
-    return _ret == -1 ? W_FAILED : W_PASSED;
+    return _ret == -1 ? W_FAILURE : W_SUCCESS;
 #else
     //on Windows
     FILE* _file = NULL;
@@ -168,12 +175,12 @@ W_RESULT w_io_get_is_file(_In_z_ const char* pPath)
 #endif
 }
 
-apr_finfo_t* w_io_get_file_info_from_path(_In_z_ const char* pPath)
+w_file_info w_io_get_file_info_from_path(_In_z_ const char* pPath)
 {
-    apr_pool_t* _pool = w_get_default_memory_pool();
+    w_mem_pool _pool = w_get_default_memory_pool();
     if(!_pool)
     {
-        W_ASSERT(false, "could not get default memory. trace info: w_string_create");
+        W_ASSERT(false, "could not get default memory. trace info: w_io_get_file_info_from_path");
         return NULL;
     }
     
@@ -195,12 +202,12 @@ apr_finfo_t* w_io_get_file_info_from_path(_In_z_ const char* pPath)
  * @param pFile opened file
  * @return file info
 */
-apr_finfo_t* w_io_get_file_info(_In_ apr_file_t* pFile)
+w_file_info w_io_get_file_info(_In_ w_file pFile)
 {
-    apr_pool_t* _pool = w_get_default_memory_pool();
+    w_mem_pool _pool = w_get_default_memory_pool();
     if(!_pool)
     {
-        W_ASSERT(false, "could not get default memory. trace info: w_string_create");
+        W_ASSERT(false, "could not get default memory. trace info: w_io_get_file_info");
         return NULL;
     }
     
@@ -224,7 +231,7 @@ const char* w_io_get_file_extension_from_path(_In_z_ const char* pFilePath)
     return _dot + 1;
 }
 
-const char* w_io_get_file_extension(_In_ apr_file_t* pFile)
+const char* w_io_get_file_extension(_In_ w_file pFile)
 {
     apr_finfo_t* _info = w_io_get_file_info(pFile);
     if (!_info) return "";
@@ -247,14 +254,14 @@ const char* w_io_get_base_file_name_from_path(_In_z_ const char* pPath)
     
     if (_index == -1) return "";
     
-    char* _dst_str = w_string_create(_index);
+    char* _dst_str = w_alloc(_index, "w_io_get_base_file_name_from_path");
     apr_cpystrn(_dst_str, pPath,_index);
     _dst_str[_index] = '\0';
     
     return _dst_str;
 }
 
-const char* w_io_get_base_file_name(_In_ apr_file_t* pFile)
+const char* w_io_get_base_file_name(_In_ w_file pFile)
 {
     apr_finfo_t* _info = w_io_get_file_info(pFile);
     return _info->fname;
@@ -270,7 +277,7 @@ const char* w_io_get_file_name_from_path(_In_z_ const char* pFilePath)
 #endif
 }
 
-const char*	w_io_get_file_name(_In_ apr_file_t* pFile)
+const char*	w_io_get_file_name(_In_ w_file pFile)
 {
     apr_finfo_t* _info = w_io_get_file_info(pFile);
     if (!_info) return "";
@@ -280,7 +287,7 @@ const char*	w_io_get_file_name(_In_ apr_file_t* pFile)
 void*	w_io_read_file_with_path(_In_z_ const char* pPath)
 {
     void* _buf = NULL;
-    apr_pool_t* _pool = w_get_default_memory_pool();
+    w_mem_pool _pool = w_get_default_memory_pool();
     if(!_pool)
     {
         W_ASSERT(false, "could not get default memory. trace info: w_io_create_directory");
@@ -304,10 +311,10 @@ void*	w_io_read_file_with_path(_In_z_ const char* pPath)
     return _buf;
 }
 
-void*	w_io_read_file_with_file(_In_z_ apr_file_t* pFile)
+void*	w_io_read_file_with_file(_In_z_ w_file pFile)
 {
     void* _buf = NULL;
-    apr_pool_t* _pool = w_get_default_memory_pool();
+    w_mem_pool _pool = w_get_default_memory_pool();
     if(!_pool)
     {
         W_ASSERT(false, "could not get default memory. trace info: w_io_create_directory");
@@ -328,40 +335,40 @@ W_RESULT	w_io_delete_file_with_path(_In_ const char* pPath)
     if (!pPath)
     {
         W_ASSERT(false, "pPath is NULL. trace info: w_io_delete_file_with_path");
-        return W_FAILED;
+        return W_FAILURE;
     }
     
-    apr_pool_t* _pool = w_get_default_memory_pool();
+    w_mem_pool _pool = w_get_default_memory_pool();
     if(!_pool)
     {
         W_ASSERT(false, "could not get default memory. trace info: w_io_delete_file_with_path");
-        return W_FAILED;
+        return W_FAILURE;
     }
     apr_status_t _ret = apr_file_remove(pPath, _pool);
-    return _ret == APR_SUCCESS ? W_PASSED : W_FAILED;
+    return _ret == APR_SUCCESS ? W_SUCCESS : W_FAILURE;
 }
 
-W_RESULT	w_io_delete_file_with_file(_In_ apr_file_t* pFile)
+W_RESULT	w_io_delete_file_with_file(_In_ w_file pFile)
 {
     if (!pFile)
     {
         W_ASSERT(false, "could not get default memory. trace info: w_io_delete_file_with_file");
-        return W_FAILED;
+        return W_FAILURE;
     }
-    apr_pool_t* _pool = w_get_default_memory_pool();
+    w_mem_pool _pool = w_get_default_memory_pool();
     if(!_pool)
     {
         W_ASSERT(false, "could not get default memory. trace info: w_io_delete_file_with_file");
-        return W_FAILED;
+        return W_FAILURE;
     }
     apr_finfo_t* _file = w_io_get_file_info(pFile);
     apr_status_t _ret = apr_file_remove(_file->fname, _pool);
-    return _ret == APR_SUCCESS ? W_PASSED : W_FAILED;
+    return _ret == APR_SUCCESS ? W_SUCCESS : W_FAILURE;
 }
 
 char*	w_io_get_current_directory(void)
 {
-    char* _path = w_string_create(PATH_MAX);
+    char* _path = (char*)w_alloc(PATH_MAX, "w_io_get_current_directory");
 #ifdef W_PLATFORM_UNIX
     if (getcwd(_path, PATH_MAX) == NULL) return NULL;
 #else
@@ -372,17 +379,17 @@ char*	w_io_get_current_directory(void)
 
 W_RESULT	w_io_get_is_directory(_In_z_ const char* pPath)
 {
-    apr_pool_t* _pool = w_get_default_memory_pool();
+    w_mem_pool _pool = w_get_default_memory_pool();
     if(!_pool)
     {
         W_ASSERT(false, "could not get default memory. trace info: w_io_get_is_directory");
-        return W_FAILED;
+        return W_FAILURE;
     }
     
     //open a directory
     apr_dir_t* _dir = NULL;
     apr_status_t _ret = apr_dir_open(&_dir, pPath, _pool);
-    return _ret == APR_SUCCESS ? W_PASSED : W_FAILED;
+    return _ret == APR_SUCCESS ? W_SUCCESS : W_FAILURE;
 }
 
 const char* w_io_get_parent_directory(_In_z_ const char* pPath)
@@ -403,28 +410,28 @@ const char* w_io_get_parent_directory(_In_z_ const char* pPath)
     //copy strings
     if (_size == 0) return "";
 
-    return w_string_init_with_string(pPath);
+    return w_string(pPath);
 #endif
 }
 
 W_RESULT	w_io_create_directory(_In_z_ const char* pPath)
 {
-    apr_pool_t* _pool = w_get_default_memory_pool();
+    w_mem_pool _pool = w_get_default_memory_pool();
     if(!_pool)
     {
         W_ASSERT(false, "could not get default memory. trace info: w_io_create_directory");
-        return W_FAILED;
+        return W_FAILURE;
     }
     
     //create a directory
     apr_status_t _ret = apr_dir_make_recursive(pPath, APR_OS_DEFAULT, _pool);
-    return _ret == APR_SUCCESS ? W_PASSED : W_FAILED;
+    return _ret == APR_SUCCESS ? W_SUCCESS : W_FAILURE;
 }
 
 W_RESULT	w_io_utf8_to_ucs2(
 	char* in,
 	size_t* inbytes,
-	apr_uint16_t* out,
+	uint16_t* out,
 	size_t* outwords)
 {
 	apr_int64_t newch, mask;
@@ -446,7 +453,7 @@ W_RESULT	w_io_utf8_to_ucs2(
 			if ((ch & 0300) != 0300) {
 				/* Multibyte Continuation is out of place
 				 */
-				return W_INVALID;
+				return APR_BADARG;
 			}
 			else
 			{
@@ -460,38 +467,38 @@ W_RESULT	w_io_utf8_to_ucs2(
 				while ((ch & mask) == mask) {
 					mask |= mask >> 1;
 					if (++expect > 3) /* (truly 5 for ucs-4) */
-						return W_INVALID;
+						return APR_BADARG;
 				}
 				newch = ch & ~mask;
 				eating = expect + 1;
 				if (*inbytes <= expect)
-					return W_INCOMPLETE;
+					return APR_BADARG;
 				/* Reject values of excessive leading 0 bits
 				 * utf-8 _demands_ the shortest possible byte length
 				 */
 				if (expect == 1) {
 					if (!(newch & 0036))
-						return W_INVALID;
+						return APR_BADARG;
 				}
 				else {
 					/* Reject values of excessive leading 0 bits
 					 */
 					if (!newch && !((unsigned char)* in & 0077 & (mask << 1)))
-						return W_INVALID;
+						return APR_BADARG;
 					if (expect == 2) {
 						/* Reject values D800-DFFF when not utf16 encoded
 						 * (may not be an appropriate restriction for ucs-4)
 						 */
 						if (newch == 0015 && ((unsigned char)* in & 0040))
-							return W_INVALID;
+							return APR_BADARG;
 					}
 					else if (expect == 3) {
 						/* Short circuit values > 110000
 						 */
 						if (newch > 4)
-							return W_INVALID;
+							return APR_BADARG;
 						if (newch == 4 && ((unsigned char)* in & 0060))
-							return W_INVALID;
+							return APR_BADARG;
 					}
 				}
 				/* Where the boolean (expect > 2) is true, we will need
@@ -503,7 +510,7 @@ W_RESULT	w_io_utf8_to_ucs2(
 				{
 					/* Multibyte Continuation must be legal */
 					if (((ch = (unsigned char) * (in++)) & 0300) != 0200)
-						return W_INVALID;
+						return APR_BADARG;
 					newch <<= 6;
 					newch |= (ch & 0077);
 				}
@@ -530,11 +537,11 @@ W_RESULT	w_io_utf8_to_ucs2(
 	/* Buffer full 'errors' aren't errors, the client must inspect both
 	 * the inbytes and outwords values
 	 */
-	return W_PASSED;
+	return W_SUCCESS;
 }
 
 W_RESULT w_io_ucs2_to_utf8(
-	apr_uint16_t* in,
+	uint16_t* in,
 	size_t* inwords,
 	char* out,
 	size_t* outbytes)
@@ -558,7 +565,7 @@ W_RESULT w_io_ucs2_to_utf8(
 			if ((ch & 0xFC00) == 0xDC00) {
 				/* Invalid Leading ucs-2 Multiword Continuation Character
 				 */
-				return W_INVALID;
+				return APR_BADARG;
 			}
 			if ((ch & 0xFC00) == 0xD800) {
 				/* Leading ucs-2 Multiword Character
@@ -566,12 +573,12 @@ W_RESULT w_io_ucs2_to_utf8(
 				if (*inwords < 2) {
 					/* Missing ucs-2 Multiword Continuation Character
 					 */
-					return W_INCOMPLETE;
+					return APR_BADARG;
 				}
 				if (((unsigned short)(*in) & 0xFC00) != 0xDC00) {
 					/* Invalid ucs-2 Multiword Continuation Character
 					 */
-					return W_INVALID;
+					return APR_BADARG;
 				}
 				newch = (ch & 0x03FF) << 10 | ((unsigned short)(*in++) & 0x03FF);
 				newch += 0x10000;
@@ -586,7 +593,7 @@ W_RESULT w_io_ucs2_to_utf8(
 			require = newch >> 11;
 			need = 1;
 			while (require)
-				require >>= 5, ++need;
+                (void)(require >>= 5), ++need;
 			if (need >= *outbytes)
 				break; /* Insufficient buffer */
 			*inwords -= (need > 2) + 1;
@@ -610,7 +617,131 @@ W_RESULT w_io_ucs2_to_utf8(
 	/* Buffer full 'errors' aren't errors, the client must inspect both
 	 * the inwords and outbytes values
 	 */
-	return W_PASSED;
+	return W_SUCCESS;
+}
+
+long w_io_to_hex(_In_z_ const char* pHexStr)
+{
+    return strtol(pHexStr, NULL, 16);
+}
+
+W_RESULT w_io_has_string_start_with(_In_z_ const char* pString, _In_z_ const char* pStartWith)
+{
+    return strncmp(pStartWith, pString, strlen(pStartWith));
+}
+
+W_RESULT w_io_has_wstring_start_with(_In_z_ const wchar_t* pString, _In_z_ const wchar_t* pStartWith)
+{
+    return wcsncmp(pStartWith, pString, wcslen(pStartWith));
+}
+
+W_RESULT w_io_has_string_end_with(_In_z_ const char* pString, _In_z_ const char* pEndWith)
+{
+    size_t _str_size = strlen(pString);
+    size_t _str_end_size = strlen(pEndWith);
+    
+    if (_str_size >= _str_end_size)
+    {
+        return strncmp(pString + _str_size - _str_end_size, pEndWith, _str_end_size) == 0;
+    }
+    return W_FAILURE;
+}
+
+W_RESULT w_io_has_wstring_end_with(_In_z_ const wchar_t* pString, _In_z_ const wchar_t* pEndWith)
+{
+    size_t _str_size = wcslen(pString);
+    size_t _str_end_size = wcslen(pEndWith);
+    
+    if (_str_size >= _str_end_size)
+    {
+        return wcsncmp(pString + _str_size - _str_end_size, pEndWith, _str_end_size) == 0;
+    }
+    return W_FAILURE;
+}
+
+W_RESULT w_io_split_string(_In_z_ char* pString,
+                           _In_z_ const char* pSplit,
+                           _Out_ w_array* pResults)
+{
+    w_mem_pool _mem_pool = w_get_default_memory_pool();
+    if (!_mem_pool)
+    {
+        W_ASSERT(false, "could not get default memory pool. trace info: w_io_split_string_then_convert_to_chars");
+        return W_FAILURE;
+    }
+    //create array with default size
+    if (*pResults)
+    {
+        w_free(*pResults);
+    }
+    *pResults = apr_array_make(_mem_pool, 32, sizeof(const char*));
+    if (!*pResults)
+    {
+        W_ASSERT(false, "could not create array. trace info: w_io_split_string_then_convert_to_chars");
+        return W_FAILURE;
+    }
+
+    char* _splits = strtok(pString, pSplit);
+    // loop through the string and extract all other splits
+    while( _splits != NULL )
+    {
+        *(const char**)apr_array_push(*pResults) = _splits;
+       _splits = strtok(NULL, pSplit);
+    }
+    
+    return W_SUCCESS;
+}
+
+size_t w_io_to_base_64(_Inout_z_ char** pDestinationBuffer,
+                       _In_z_ char* pSourceBuffer,
+                       _In_z_ const size_t pSourceBufferLenght,
+                       _In_ const enum base_64_mode pEncodeMode)
+{
+    size_t _encoded_size = 0;
+    switch (pEncodeMode)
+    {
+        case chromium:
+            _encoded_size = chromium_base64_encode(
+                *pDestinationBuffer,
+                pSourceBuffer,
+                pSourceBufferLenght);
+            break;
+        case klomp_avx:
+            klomp_avx2_base64_encode(
+                pSourceBuffer,
+                pSourceBufferLenght,
+                *pDestinationBuffer,
+                &_encoded_size);
+            break;
+        case fast_avx:
+            _encoded_size = fast_avx2_base64_encode(
+                *pDestinationBuffer,
+                pSourceBuffer,
+                pSourceBufferLenght);
+            break;
+        case fast_avx512:
+#if USE_AVX512 != 0 && ((defined(_MSC_VER) && _MSC_VER >= 1911) || (defined(__INTEL_COMPILER) && __INTEL_COMPILER >= 1600) || (defined(__clang__) && __clang_major__ >= 4) || (defined(__GNUC__) && __GNUC__ >= 5))
+            _encoded_size = fast_avx512bw_base64_encode(
+                pDestinationBuffer,
+                pSourceBuffer,
+                pSourceBufferLenght);
+#endif
+            break;
+        case quick_time:
+            _encoded_size = (size_t)(quicktime_base64_encode(
+                *pDestinationBuffer,
+                pSourceBuffer,
+                (int)pSourceBufferLenght));
+            break;
+        case scalar:
+            scalar_base64_encode(
+                pSourceBuffer,
+                pSourceBufferLenght,
+                *pDestinationBuffer,
+                &_encoded_size);
+            break;
+    }
+    return _encoded_size;
 }
 
 //apr_dir_read(<#apr_finfo_t *finfo#>, <#apr_int32_t wanted#>, <#apr_dir_t *thedir#>)

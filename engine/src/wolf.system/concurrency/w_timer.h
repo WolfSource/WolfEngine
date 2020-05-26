@@ -3,8 +3,8 @@
     Source           : Please direct any bug to https://github.com/WolfEngine/Wolf.Engine/issues
     Website          : https://WolfEngine.App
     Name             : w_timer.h
-    Description      : a ev timer
-    Comment          :
+    Description      : a timer based on libev
+    Comment          : https://metacpan.org/pod/distribution/EV/libev/ev.pod
 */
 
 #pragma once
@@ -16,12 +16,24 @@ extern "C" {
 #include "wolf.h"
 #include "libev/ev.h"
 
-typedef ev_timer w_timer;
-typedef ev_periodic w_timer_periodic;
+typedef ev_timer w_timer_base;
+typedef ev_periodic w_timer_base_periodic;
 typedef struct ev_loop w_timer_loop;
-typedef void w_timer_callback(w_timer_loop*, w_timer*, int /*revents*/);
-typedef void w_timer_periodic_callback(w_timer_loop*, w_timer_periodic*, int /*revents*/);
-typedef double w_timer_periodic_scheduler_callback(w_timer_periodic*, double /*now*/);
+typedef void w_timer_callback(w_timer_loop*, w_timer_base*, int /*revents*/);
+typedef void w_timer_periodic_callback(w_timer_loop*, w_timer_base_periodic*, int /*revents*/);
+typedef double w_timer_periodic_scheduler_callback(w_timer_base_periodic*, double /*now*/);
+
+typedef struct
+{
+    w_timer_base*               t;
+    w_timer_loop*               l;
+} w_timer;
+
+typedef struct
+{
+    w_timer_base_periodic*      t;
+    w_timer_loop*               l;
+} w_timer_periodic;
 
 /**
  * create a timer
@@ -52,6 +64,18 @@ w_timer_periodic* w_timer_init_periodic(_In_ const double pStartAfterSec,
                                         _In_ const double pIntervalInSec,
                                         _In_ w_timer_periodic_callback pCallBack,
                                         _In_ w_timer_periodic_scheduler_callback pSchedulerCallBack);
+
+/**
+ * release a timer
+ * @param pTimer timer to release
+*/
+void w_timer_release(_In_ w_timer* pTimer);
+
+/**
+ * release a timer periodic
+ * @param pTimer timer periodic to release
+*/
+void w_timer_periodic_release(_In_ w_timer_periodic* pTimer);
 
 #ifdef __cplusplus
 }

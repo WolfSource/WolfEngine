@@ -34,8 +34,12 @@ extern "C" {
 
 #endif
 
+//http://dev.ariel-networks.com/apr/apr-tutorial/html/apr-tutorial.html#toc1
 #include <apr-1/apr.h>
 #include <apr-1/apr_general.h>
+#include <apr-1/apr_strings.h>
+#include <apr-1/apr_tables.h>
+#include <apr-1/apr_file_io.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <wchar.h>
@@ -85,8 +89,8 @@ extern "C" {
 #define PATH_MAX 256
 #endif
 
-#ifndef MAX_BUFFER_SIZE
-#define MAX_BUFFER_SIZE 4096
+#ifndef W_MAX_BUFFER_SIZE
+#define W_MAX_BUFFER_SIZE 4096
 #endif
 
 #define WOLF_MAJOR_VERSION 2    // Making incompatible API changes
@@ -94,17 +98,21 @@ extern "C" {
 #define WOLF_PATCH_VERSION 0    // bug fixes
 #define WOLF_DEBUG_VERSION 0    // for debugging
 
-typedef enum
-{
-    W_PASSED = 0,
-    W_FAILED = 1,
-    W_INVALIDARG,
-    W_OUTOFMEMORY,
-    W_INVALID,
-	W_INCOMPLETE
-} W_RESULT;
+#ifndef W_SUCCESS
+#define W_SUCCESS 0
+#endif
 
+#ifndef W_FAILURE
+#define W_FAILURE APR_EGENERAL
+#endif
+
+typedef apr_status_t W_RESULT;
 typedef void (*w_job)(void*);
+typedef apr_pool_t* w_mem_pool;
+typedef apr_file_t* w_file;
+typedef apr_finfo_t* w_file_info;
+typedef apr_array_header_t* w_array;
+typedef apr_off_t w_offset;
 
 /**
  * initialize wolf
@@ -114,15 +122,43 @@ W_RESULT wolf_initialize(void);
 
 /**
  * get default memory pool
- * @return apr memory pool
+ * @return memory pool
 */
-apr_pool_t* w_get_default_memory_pool(void);
+w_mem_pool w_get_default_memory_pool(void);
 
 /**
- * allocate memory
+ * create memory pool
+ * @return memory pool
+*/
+w_mem_pool w_create_memory_pool(void);
+
+/**
+ * allocate memory from default memory pool
+ * @param pMemSize the size of memory
+ * @param pTraceInfo trace infomation
  * @return memory in void pointer
 */
-void* w_alloc(_In_ const size_t pSize);
+void* w_alloc(_In_ const size_t pMemSize, _In_z_ const char* pTraceInfo);
+
+/**
+ * free memory from default memory pool
+ * @param pMem the memory which is need to be free
+*/
+void w_free(_In_ const void* pMem);
+
+/**
+ * initialize a string
+ * @param pSource the constant string
+ * @return allocated string from default memory pool
+*/
+char* w_string(_In_ const char* pSource);
+
+/**
+ * initialize a string
+ * @param pNumberOfArgs the number of argumans
+ * @return concated string
+*/
+char* w_string_concat(_In_ const int pNumberOfArgs, ...);
 
 /**
  * release all resources of wolf

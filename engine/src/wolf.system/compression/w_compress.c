@@ -10,7 +10,7 @@ W_RESULT w_compress_lz4(_In_       const char* pSrcBuffer,
                         _In_       int pAcceleration,
                         _Inout_    w_compress_result* pResult)
 {
-    if (!pResult || !pSrcBuffer || pResult->size_in == 0) return W_INVALIDARG;
+    if (!pResult || !pSrcBuffer || pResult->size_in == 0) return APR_BADARG;
     
     //allocate size for compressed data
     const int _max_dst_size = LZ4_compressBound((int)(pResult->size_in));
@@ -18,7 +18,7 @@ W_RESULT w_compress_lz4(_In_       const char* pSrcBuffer,
     if (!pResult->data)
     {
         W_ASSERT(false, "allocating memory for compressed buffer. trace info: w_compress_lz4");
-        return W_FAILED;
+        return W_FAILURE;
     }
 
     int _compressed_buffer_size = -1;
@@ -55,22 +55,22 @@ W_RESULT w_compress_lz4(_In_       const char* pSrcBuffer,
         if (!pResult->data)
         {
             W_ASSERT(false, "could not fit memory of compressed buffer. trace info: compress_buffer_c");
-            return W_FAILED;
+            return W_FAILURE;
         }
     }
     else
     {
         W_ASSERT(false, "could not compress. trace info: compress_buffer_c");
-        return W_FAILED;
+        return W_FAILURE;
     }
 
-    return W_PASSED;
+    return W_SUCCESS;
 }
 
 W_RESULT w_decompress_lz4(_In_      const char* pCompressedBuffer,
                           _Inout_   w_compress_result* pDecompressResult)
 {
-  if (!pCompressedBuffer || pDecompressResult->size_in == 0) return W_INVALIDARG;
+  if (!pCompressedBuffer || pDecompressResult->size_in == 0) return APR_BADARG;
 
     //allocate memory for decompress
     size_t _destination_capacity = pDecompressResult->size_in * 2;
@@ -78,7 +78,7 @@ W_RESULT w_decompress_lz4(_In_      const char* pCompressedBuffer,
     if (!pDecompressResult->data)
     {
          W_ASSERT(false, "error on allocate buffer for decompressed buffer. trace info: w_decompress_lz4");
-        return W_FAILED;
+        return W_FAILURE;
     }
 
     int _decompressed_size = -1;
@@ -115,7 +115,7 @@ W_RESULT w_decompress_lz4(_In_      const char* pCompressedBuffer,
         free(pDecompressResult->data);
         pDecompressResult->data = NULL;
         pDecompressResult->size_out = 0;
-        return W_FAILED;
+        return W_FAILURE;
     }
     else
     {
@@ -124,10 +124,10 @@ W_RESULT w_decompress_lz4(_In_      const char* pCompressedBuffer,
         if (!pDecompressResult->data)
         {
              W_ASSERT(false, "could not fit memory for de-compressed buffer. trace info: w_decompress_lz4");
-            return W_FAILED;
+            return W_FAILURE;
         }
     }
-    return W_PASSED;
+    return W_SUCCESS;
 }
 
 

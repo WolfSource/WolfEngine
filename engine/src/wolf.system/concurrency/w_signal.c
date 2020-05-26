@@ -26,13 +26,13 @@ w_signal_handler* w_signal_set_handler(_In_ int pSigno, _In_ w_signal_handler* p
 W_RESULT w_signal_block(_In_ int pSigno)
 {
 	apr_status_t _ret = apr_signal_block(pSigno);
-	return _ret == APR_SUCCESS ? W_PASSED : W_FAILED;
+	return _ret == APR_SUCCESS ? W_SUCCESS : W_FAILURE;
 }
 
 W_RESULT w_signal_unblock(_In_ int pSigno)
 {
 	apr_status_t _ret = apr_signal_unblock(pSigno);
-	return _ret == APR_SUCCESS ? W_PASSED : W_FAILED;
+	return _ret == APR_SUCCESS ? W_SUCCESS : W_FAILURE;
 }
 
 #endif

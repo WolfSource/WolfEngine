@@ -6,6 +6,7 @@
     Description		 : a logger class which is shared over all dlls
     Comment          :
 */
+
 #pragma once
 
 #include <wolf.h>
@@ -126,7 +127,6 @@ W_RESULT  w_log(_In_ const w_log_type pLogType,
  * @param pResult result
  * @param pFMT fmt
 */
-template<typename... w_args>
 void V(_In_ const W_RESULT pResult, _In_z_ const char* pFMT);
 
 /**
@@ -147,7 +147,6 @@ void V(
  * @param pLogType type of log
  * @param pFMT fmt
 */
-template<typename... w_args>
 void V(
 	_In_	W_RESULT pResult,
 	_In_	w_log_type pLogType,
@@ -174,7 +173,6 @@ void V(
  * @param pTerminateProgram trminate program
  * @param pFMT fmt
 */
-template<typename... w_args>
 void V(
 	_In_	W_RESULT pResult,
 	_In_	w_log_type pLogType,

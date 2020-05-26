@@ -1,22 +1,20 @@
-#include "w_system_pch.h"
+#if !defined(W_PLATFORM_OSX) && !defined(W_PLATFORM_ANDROID)
 
-#if !defined(__APPLE__) && !defined(__UWP) && !defined(__ANDROID)
-
-#include "w_window.h"
+#include "w_window.hpp"
 #include <map>
 #include <chrono>
 
-#ifdef __WIN32
+#ifdef W_PLATFORM_WIN
 static std::map<std::wstring, std::function<HRESULT(HWND, UINT, WPARAM, LPARAM)>> sMsgsProcFunctions;
 #endif
 
 w_window::w_window() :
-#ifdef __WIN32
+#ifdef W_PLATFORM_WIN
     _hInstance(NULL),
     _hwnd(NULL),
 	_parent_hwnd(NULL),
 	_window_style(WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_POPUP),
-#elif defined(__linux) && !defined(__ANDROID)
+#elif defined(W_PLATFORM_LINUX) && !defined(W_PLATFORM_ANDROID)
     _xcb_con(nullptr),
     _xcb_screen(nullptr),
     _xcb_window(nullptr),
@@ -40,7 +38,7 @@ w_window::~w_window()
 	release();
 }
 
-#ifdef __WIN32
+#ifdef W_PLATFORM_WIN
 static LRESULT CALLBACK MsgProc(HWND pHwnd, UINT pMessage, WPARAM pWParam, LPARAM pLParam)
 {
 	TCHAR _class_name[MAX_PATH];
@@ -166,7 +164,7 @@ W_RESULT w_window::initialize(
     return W_PASSED;
 }
 
-#elif defined(__linux) && !defined(__ANDROID)
+#elif defined(W_PLATFORM_LINUX) && !defined(W_PLATFORM_ANDROID)
 
 W_RESULT w_window::initialize()
 {
@@ -264,7 +262,7 @@ ULONG w_window::release()
 {
 	if (this->_is_released) return 1;
 
-#ifdef __WIN32	
+#ifdef W_PLATFORM_WIN
 
 	this->_hInstance = NULL;
 	this->_hwnd = NULL;
@@ -273,7 +271,7 @@ ULONG w_window::release()
 	UnregisterClass(this->_class_name.c_str(), NULL);
 	this->_class_name.clear();
 
-#elif defined(__linux) && !defined(__ANDROID)
+#elif defined(W_PLATFORM_LINUX) && !defined(W_PLATFORM_ANDROID)
 
 	xcb_disconnect(this->_xcb_con);
 	this->_xcb_con = nullptr;
@@ -290,7 +288,7 @@ ULONG w_window::release()
 
 #pragma region Setters
 
-#ifdef __WIN32
+#ifdef W_PLATFORM_WIN
 void w_window::set_class_name(_In_ LPWSTR pValue)
 {
 	this->_class_name = pValue;
@@ -398,12 +396,12 @@ void w_window::set_position(const int pX, const int pY)
 }
 
 void w_window::set_parent(
-#ifdef __WIN32
+#ifdef W_PLATFORM_WIN
 	_In_ HWND pHWND
 #endif
 )
 {
-#ifdef __WIN32
+#ifdef W_PLATFORM_WIN
 	this->_parent_hwnd = pHWND;
 	this->_window_style |= WS_CHILD;
 #endif
@@ -413,7 +411,7 @@ void w_window::set_parent(
 
 #pragma region Getters
 
-#ifdef __WIN32
+#ifdef W_PLATFORM_WIN
 LPCWSTR w_window::get_class_name() const
 {
 	return this->_class_name.c_str();

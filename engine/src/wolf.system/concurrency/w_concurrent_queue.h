@@ -1,123 +1,103 @@
 /*
-	Project			 : Wolf Engine. Copyright(c) Pooya Eimandar (https://PooyaEimandar.github.io) . All rights reserved.
-	Source			 : Please direct any bug to https://github.com/WolfEngine/Wolf.Engine/issues
-	Website			 : https://WolfEngine.App
-	Name			 : w_concurrent_queue.h
-	Description		 : A cross platform concurrent queue, in windows inherited from Concurrency::concurrent_queue
-	Comment          :
+    Project          : Wolf Engine. Copyright(c) Pooya Eimandar (https://PooyaEimandar.github.io) . All rights reserved.
+    Source           : Please direct any bug to https://github.com/WolfEngine/Wolf.Engine/issues
+    Website          : https://WolfEngine.App
+    Name             : w_concurrent_queue.h
+    Description      : thread safe FIFO queue
+    Comment          :
 */
+
 
 #pragma once
 
-#if defined(__WIN32) || defined(__UWP)
-
-#include <concurrent_queue.h>
-
-#elif defined(__APPLE__) || defined(__linux)
-
-#include <thread>
-#include <queue>
-#include <mutex>
-#include <condition_variable>
-
+#ifdef __cplusplus
+extern "C" {
 #endif
 
-namespace wolf::system
-{
-#if defined(__WIN32) || defined(__UWP)
-	template<typename _Ty, class _Ax = std::allocator<_Ty> >
-	class w_concurrent_queue : public Concurrency::concurrent_queue<_Ty>
-	{
-	};
-#else
-	template<typename _Ty, class _Ax = std::allocator<_Ty> >
-	class w_concurrent_queue
-	{
-	public:
-		void clear()
-		{
-			std::unique_lock<std::mutex> _lock(this->_mutex);
-			{
-				this->_queue.clear();
-			}
-		}
-		bool empty()
-		{
-			bool _result = false;
-			std::unique_lock<std::mutex> _lock(this->_mutex);
-			{
-				_result = this->_queue.empty();
-				_lock.unlock();
-			}
-			return _result;
-		}
+#include "wolf.h"
 
-		void push(const _Ty& pItem)
-		{
-			//lock on queue
-			std::unique_lock<std::mutex> _lock(this->_mutex);
-			{
-				this->_queue.push(pItem);
-				_lock.unlock();
-			}
-			//then notify to conditional variable
-			this->_cv.notify_one();
-		}
+typedef struct apr_queue_t* w_concurrent_queue;
 
-		bool try_pop(_Ty& pItem)
-		{
-			bool _result = true;
-			std::unique_lock<std::mutex> _lock(this->_mutex);
-			{
-				while (this->_queue.empty())
-				{
-					this->_cv.wait(_lock);
-				}
-				if (this->_queue.size())
-				{
-					pItem = this->_queue.front();
-					this->_queue.pop();
-				}
-				else
-				{
-					_result = false;
-				}
-			}
-			_lock.unlock();
+/**
+ * create a thread safe FIFO queue
+ * @param pQueue The new queue
+ * @param pQueueCapacity maximum size of the queue
+ * @param pMemPool pool to allocate queue from
+*/
+W_RESULT  w_concurrent_queue_create(_Inout_ w_concurrent_queue* pQueue,
+                                    _In_ const uint32_t pQueueCapacity,
+                                    _In_ w_mem_pool pMemPool);
 
-			return _result;
-		}
+/**
+ * push/add an object to the queue, blocking if the queue is already full
+ *
+ * @param pQueue the queue
+ * @param pData the data
+ * @returns APR_EINTR the blocking was interrupted (try again)
+ * @returns APR_EOF the queue has been terminated
+ * @returns W_SUCCESS on a successful push
+*/
+W_RESULT  w_concurrent_queue_push(_In_ w_concurrent_queue pQueue, _In_ void* pData);
 
-		_Ty unsafe_begin() const
-		{
-			return this->_queue.front();
-		}
+/**
+ * pop/get an object from the queue, blocking if the queue is already empty
+ *
+ * @param pQueue the queue
+ * @param pData the data
+ * @returns APR_EINTR the blocking was interrupted (try again)
+ * @returns APR_EOF if the queue has been terminated
+ * @returns W_SUCCESS on a successful pop
+*/
+W_RESULT  w_concurrent_queue_pop(_In_ w_concurrent_queue pQueue, _Inout_ void** pData);
 
-		_Ty unsafe_end() const
-		{
-			return this->_queue.back();
-		}
+/**
+ * push/add an object to the queue, returning immediately if the queue is full
+ *
+ * @param pQueue the queue
+ * @param pData the data
+ * @returns APR_EINTR the blocking operation was interrupted (try again)
+ * @returns APR_EAGAIN the queue is full
+ * @returns APR_EOF the queue has been terminated
+ * @returns W_SUCCESS on a successful push
+*/
+W_RESULT  w_concurrent_queue_trypush(_In_ w_concurrent_queue pQueue, _In_ void* pData);
 
-		size_t unsafe_size() const
-		{
-			return this->_queue.size();
-		}
+/**
+ * pop/get an object to the queue, returning immediately if the queue is empty
+ *
+ * @param pQueue the queue
+ * @param pData the data
+ * @returns APR_EINTR the blocking operation was interrupted (try again)
+ * @returns APR_EAGAIN the queue is empty
+ * @returns APR_EOF the queue has been terminated
+ * @returns W_SUCCESS on a successful pop
+*/
+W_RESULT  w_concurrent_queue_trypop(_In_ w_concurrent_queue pQueue, _Inout_ void** pData);
 
-		size_t safe_size() const
-		{
-			size_t _size = 0;
-			std::unique_lock<std::mutex> _lock(this->_mutex);
-			{
-				_size = this->_queue.size();
-				_lock.unlock();
-			}
-			return _size;
-		}
+/**
+ * returns the size of the queue.
+ *
+ * @warning this is not threadsafe, and is intended for reporting/monitoring
+ * of the queue.
+ * @param pQueue the queue
+ * @returns the size of the queue
+*/
+uint32_t  w_concurrent_queue_size(_In_ w_concurrent_queue pQueue);
 
-	private:
-		std::queue<_Ty>             _queue;
-		std::mutex                  _mutex;
-		std::condition_variable     _cv;
-	};
-#endif
+/**
+ * interrupt all the threads blocking on this queue.
+ * @param pQueue the queue
+ * @return result
+*/
+W_RESULT  w_concurrent_queue_interrupt_all(_In_ w_concurrent_queue pQueue);
+
+/**
+ * terminate the queue, sending an interrupt to all the blocking threads
+ * @param pQueue the queue
+ * @return result
+*/
+W_RESULT  w_concurrent_queue_term(_In_ w_concurrent_queue pQueue);
+
+#ifdef __cplusplus
 }
+#endif

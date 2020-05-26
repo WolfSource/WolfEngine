@@ -1,6 +1,5 @@
 #include "w_lua.h"
 #include <apr-1/apr_strings.h>
-#include <memory/w_string.h>
 #include <io/w_io.h>
 
 lua_State*		s_lua;
@@ -29,59 +28,69 @@ W_RESULT _lua_get_value(_In_    int pIndex,
     {
         default:
             apr_snprintf(pExpectedType, PATH_MAX, "unknown");
-            return W_FAILED;
+            return W_FAILURE;
         case LUA_TNIL:
         {
             pValue = NULL;
             apr_snprintf(pExpectedType, PATH_MAX, "NULL");
-            return W_PASSED;
+            return W_SUCCESS;
         }
         case LUA_TBOOLEAN:
         {
-            int* _v = w_alloc(sizeof(int));
+            int* _v = w_alloc(sizeof(int), "_lua_get_value::LUA_TBOOLEAN");
+            if (!_v)
+            {
+                return W_FAILURE;
+            }
+            
             *_v = lua_toboolean(s_lua, pIndex);
             pValue = (void*)_v;
             apr_snprintf(pExpectedType, PATH_MAX, "BOOLEAN");
-            return W_PASSED;
+            return W_SUCCESS;
         }
         case LUA_TNUMBER:
         {
-            double* _v = w_alloc(sizeof(double));
+            double* _v = w_alloc(sizeof(double), "_lua_get_value::LUA_TNUMBER");
+            if (!_v)
+            {
+                return W_FAILURE;
+            }
+            
             *_v = lua_tonumber(s_lua, pIndex);
             pValue = (void*)_v;
             apr_snprintf(pExpectedType, PATH_MAX, "NUMBER");
-            return W_PASSED;
+            return W_SUCCESS;
         }
         case LUA_TSTRING:
         {
             pValue = (void*)lua_tostring(s_lua, pIndex);
             apr_snprintf(pExpectedType, PATH_MAX, "STRING");
-            return W_PASSED;
+            return W_SUCCESS;
         }
         case LUA_TTABLE:
         {
             apr_snprintf(pExpectedType, PATH_MAX, "TTABLE");
-            return W_PASSED;
+            return W_SUCCESS;
         }
         case LUA_TUSERDATA:
         {
             apr_snprintf(pExpectedType, PATH_MAX, "USERDATA");
-            return W_PASSED;
+            return W_SUCCESS;
         }
     }
 }
 
 W_RESULT w_lua_init(void)
 {
-    s_last_error = w_string_create(MAX_BUFFER_SIZE);
-    s_function_name = w_string_create(PATH_MAX);
+    s_last_error = (char*)w_alloc(MAX_BUFFER_SIZE, "w_lua_init");
+    s_function_name = (char*)w_alloc(PATH_MAX, "w_lua_init");
     s_function_number_input_parameters = 0;
     
     if (!s_function_name || !s_last_error)
     {
-        return W_FAILED;
+        return W_FAILURE;
     }
-    return W_PASSED;
+    return W_SUCCESS;
 }
 
 W_RESULT w_lua_load_file(_In_z_ const char* pPath)
@@ -89,18 +98,18 @@ W_RESULT w_lua_load_file(_In_z_ const char* pPath)
     if (!pPath)
     {
         W_ASSERT(false, "pPath is NULL. trace info: w_lua_load_file");
-        return W_FAILED;
+        return W_FAILURE;
     }
     
 	s_last_error[0] = '\0';
 
     W_RESULT _is_exists = w_io_get_is_file(pPath);
-    if (_is_exists == W_FAILED)
+    if (_is_exists == W_FAILURE)
     {
         apr_snprintf(s_last_error,
                      MAX_BUFFER_SIZE,
                      "lua: lua file not exists on following path: %s", pPath);
-        return W_FAILED;
+        return W_FAILURE;
     }
 
 	//initialize lua
@@ -108,7 +117,7 @@ W_RESULT w_lua_load_file(_In_z_ const char* pPath)
 	if (!s_lua)
 	{
 		_VL(1);
-		return W_FAILED;
+		return W_FAILURE;
 	}
 	luaL_openlibs(s_lua);
 
@@ -117,9 +126,9 @@ W_RESULT w_lua_load_file(_In_z_ const char* pPath)
 	if (_ret)
 	{
 		_VL(_ret);
-		return W_FAILED;
+		return W_FAILURE;
 	}
-	return W_PASSED;
+	return W_SUCCESS;
 }
 
 W_RESULT w_lua_load_from_stream(const char* pBuffer)
@@ -127,7 +136,7 @@ W_RESULT w_lua_load_from_stream(const char* pBuffer)
 	if (!pBuffer)
     {
         W_ASSERT(false, "pBuffer is NULL. trace info: w_lua_load_file");
-        return W_FAILED;
+        return W_FAILURE;
     }
 
 	//initialize lua
@@ -135,7 +144,7 @@ W_RESULT w_lua_load_from_stream(const char* pBuffer)
 	if (!s_lua)
 	{
 		_VL(1);
-		return W_FAILED;
+		return W_FAILURE;
 	}
 	luaL_openlibs(s_lua);
 
@@ -145,9 +154,9 @@ W_RESULT w_lua_load_from_stream(const char* pBuffer)
 	if (_ret)
 	{
 		_VL(_ret);
-		return W_FAILED;
+		return W_FAILURE;
 	}
-	return W_PASSED;
+	return W_SUCCESS;
 }
 
 W_RESULT w_lua_run(void)
@@ -156,9 +165,9 @@ W_RESULT w_lua_run(void)
 	if (_hr)
 	{
 		_VL(_hr);
-		return W_FAILED;
+		return W_FAILURE;
 	}
-	return W_PASSED;
+	return W_SUCCESS;
 }
 
 void w_lua_bind_to_cfunction(lua_CFunction pFunc, const char* pLuaFunctionName)
@@ -195,7 +204,7 @@ W_RESULT w_lua_execute_function_with_one_result(_In_ void** pResult)
     _VL(_hr);
 
     char* _requested_type_error = NULL;
-    if(_lua_get_value(-1, pResult, _requested_type_error) == W_FAILED)
+    if(_lua_get_value(-1, pResult, _requested_type_error) == W_FAILURE)
     {
         apr_snprintf(s_last_error, PATH_MAX, "lua: %s is type of %s\n",
                      s_function_name,
@@ -203,10 +212,10 @@ W_RESULT w_lua_execute_function_with_one_result(_In_ void** pResult)
 
         //w_log_error("%s. trace info: %s", s_last_error, "w_lua:w_lua_execute_function_with_one_result");
             
-        return W_FAILED;
+        return W_FAILURE;
     }
     
-    return W_PASSED;
+    return W_SUCCESS;
 }
 
 W_RESULT w_lua_execute_function_with_two_results(_In_ void** pResult1, _In_ void** pResult2)
@@ -215,23 +224,23 @@ W_RESULT w_lua_execute_function_with_two_results(_In_ void** pResult1, _In_ void
     _VL(_hr);
 
     char* _requested_type_error = NULL;
-    if(_lua_get_value(-2, pResult1, _requested_type_error) == W_FAILED)
+    if(_lua_get_value(-2, pResult1, _requested_type_error) == W_FAILURE)
     {
         apr_snprintf(s_last_error, PATH_MAX, "lua: %s is type of %s\n",
                      s_function_name,
                      _requested_type_error);
-        return W_FAILED;
+        return W_FAILURE;
     }
     
-    if(_lua_get_value(-1, pResult2, _requested_type_error) == W_FAILED)
+    if(_lua_get_value(-1, pResult2, _requested_type_error) == W_FAILURE)
     {
         apr_snprintf(s_last_error, PATH_MAX, "lua: %s is type of %s\n",
                      s_function_name,
                      _requested_type_error);
-        return W_FAILED;
+        return W_FAILURE;
     }
     
-    return W_PASSED;
+    return W_SUCCESS;
 }
 
 W_RESULT w_lua_execute_function_with_three_results(_In_ void** pResult1,
@@ -242,31 +251,31 @@ W_RESULT w_lua_execute_function_with_three_results(_In_ void** pResult1,
     _VL(_hr);
 
     char* _requested_type_error = NULL;
-    if(_lua_get_value(-3, pResult1, _requested_type_error) == W_FAILED)
+    if(_lua_get_value(-3, pResult1, _requested_type_error) == W_FAILURE)
     {
         apr_snprintf(s_last_error, PATH_MAX, "lua: %s is type of %s\n",
                      s_function_name,
                      _requested_type_error);
-        return W_FAILED;
+        return W_FAILURE;
     }
     
-    if(_lua_get_value(-2, pResult2, _requested_type_error) == W_FAILED)
+    if(_lua_get_value(-2, pResult2, _requested_type_error) == W_FAILURE)
     {
         apr_snprintf(s_last_error, PATH_MAX, "lua: %s is type of %s\n",
                      s_function_name,
                      _requested_type_error);
-        return W_FAILED;
+        return W_FAILURE;
     }
     
-    if(_lua_get_value(-1, pResult3, _requested_type_error) == W_FAILED)
+    if(_lua_get_value(-1, pResult3, _requested_type_error) == W_FAILURE)
     {
         apr_snprintf(s_last_error, PATH_MAX, "lua: %s is type of %s\n",
                      s_function_name,
                      _requested_type_error);
-        return W_FAILED;
+        return W_FAILURE;
     }
     
-    return W_PASSED;
+    return W_SUCCESS;
 }
 
 lua_State* w_lua_get_state(void)
@@ -285,21 +294,21 @@ W_RESULT w_lua_get_global_variable(_In_z_ const char* pVariableName, _Inout_ voi
     if (lua_isnil(s_lua, -1))
     {
         apr_snprintf(s_last_error, PATH_MAX, "%s is null\n", pVariableName);
-        return W_FAILED;
+        return W_FAILURE;
     }
     else
     {
         char* _requested_type_error = NULL;
-        if(_lua_get_value(-1, pValue, _requested_type_error) == W_FAILED)
+        if(_lua_get_value(-1, pValue, _requested_type_error) == W_FAILURE)
         {
             apr_snprintf(s_last_error, PATH_MAX, "lua: %s is type of %s\n",
                          pVariableName,
                          _requested_type_error);
-            return W_FAILED;
+            return W_FAILURE;
         }
     }
 
-    return W_PASSED;
+    return W_SUCCESS;
 }
 
 W_RESULT _lua_set_value(_Inout_ void* pValue, _In_ int pValueType)
@@ -307,45 +316,45 @@ W_RESULT _lua_set_value(_Inout_ void* pValue, _In_ int pValueType)
     switch (pValueType)
     {
         default:
-            return W_FAILED;
+            return W_FAILURE;
         case LUA_TNIL:
         {
             lua_pushnil(s_lua);
-            return W_PASSED;
+            return W_SUCCESS;
         }
         case LUA_TBOOLEAN:
         {
             bool _v = false;
             memcpy(&_v, pValue, sizeof(bool));
             lua_pushboolean(s_lua, _v);
-            return W_PASSED;
+            return W_SUCCESS;
         }
         case LUA_TNUMBER:
         {
             double _v = 0;
             memcpy(&_v, pValue, sizeof(double));
             lua_pushnumber(s_lua, _v);
-            return W_PASSED;
+            return W_SUCCESS;
         }
         case LUA_TSTRING:
         {
             lua_pushstring(s_lua, pValue);
-            return W_PASSED;
+            return W_SUCCESS;
         }
         case LUA_TTABLE:
         {
-            return W_PASSED;
+            return W_SUCCESS;
         }
         case LUA_TUSERDATA:
         {
-            return W_PASSED;
+            return W_SUCCESS;
         }
         case 9://integer
         {
             int _v = 0;
             memcpy(&_v, pValue, sizeof(int));
             lua_pushinteger(s_lua, _v);
-            return W_PASSED;
+            return W_SUCCESS;
         }
     }
 }
@@ -364,38 +373,38 @@ W_RESULT w_lua_set_global_variable(_In_z_ const char* pVariableName,
     if (lua_isnil(s_lua, -1))
     {
         apr_snprintf(s_last_error, PATH_MAX, "%s is null\n", pVariableName);
-        return W_FAILED;
+        return W_FAILURE;
     }
     else
     {
         //set the value for global variable of lua
-        if(_lua_set_value(pValue, pVariableType) == W_PASSED)
+        if(_lua_set_value(pValue, pVariableType) == W_SUCCESS)
         {
             lua_setglobal(s_lua, pVariableName);
-            return W_PASSED;
+            return W_SUCCESS;
         }
-        return W_FAILED;
+        return W_FAILURE;
     }
 }
 
 W_RESULT w_lua_set_lua_path(_In_z_ const char* pPath)
 {
-    apr_pool_t* _pool = w_get_default_memory_pool();
+    w_mem_pool _pool = w_get_default_memory_pool();
     if(!_pool)
     {
         W_ASSERT(false, "could not get default memory. trace info: w_string_create");
-        return W_FAILED;
+        return W_FAILURE;
     }
     
     lua_getglobal(s_lua, "package");
     lua_getfield(s_lua, -1, "path"); // get field "path" from table at top of stack (-1)
     const char* _cur_path = lua_tostring(s_lua, -1); // grab path string from top of stack
-    _cur_path = apr_pstrcat(_pool, _cur_path, ";", pPath);
+    _cur_path = apr_pstrcat(_pool, _cur_path, ";", pPath, NULL);
     lua_pop(s_lua, 1); // get rid of the string on the stack we just pushed on line 5
     lua_pushstring(s_lua, _cur_path); // push the new one
     lua_setfield(s_lua, -2, "path"); // set the field "path" in table at -2 with value at top of stack
     lua_pop(s_lua, 1); // get rid of package table from top of stack
-    return W_PASSED;
+    return W_SUCCESS;
 }
 
 W_RESULT w_lua_terminate()
@@ -406,5 +415,8 @@ W_RESULT w_lua_terminate()
         lua_close(s_lua);
     }
 
-    return W_PASSED;
+    w_free(s_last_error);
+    w_free(s_function_name);
+    
+    return W_SUCCESS;
 }

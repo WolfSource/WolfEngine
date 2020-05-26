@@ -1,6 +1,5 @@
 #include "w_log.hpp"
 #include <io/w_io.h>
-#include <memory/w_string.h>
 #include <chrono/w_timespan.h>
 #include <unordered_map>
 #include <time.h>
@@ -51,7 +50,7 @@ int w_log_init(_In_ const w_log_config* pConfig)
         return -1;
     }
     //if directory of log is not existed
-    if (w_io_get_is_directory(pConfig->log_path) != W_PASSED)
+    if (w_io_get_is_directory(pConfig->log_path) != W_SUCCESS)
     {
         //create the directory of log inside the root directory
         w_io_create_directory(pConfig->log_path);
@@ -130,31 +129,31 @@ int w_log_init(_In_ const w_log_config* pConfig)
 W_RESULT w_log_flush(void)
 {
     //get first log
-    if (s_loggers.find(s_id) == s_loggers.end()) return W_FAILED;
+    if (s_loggers.find(s_id) == s_loggers.end()) return W_FAILURE;
     s_loggers[s_id]->flush();
-    return W_PASSED;
+    return W_SUCCESS;
 }
 
 W_RESULT w_log_flush(_In_ const int pLogID)
 {
     //get the logger object based on log ID
-    if (s_loggers.find(pLogID) == s_loggers.end()) return W_FAILED;
+    if (s_loggers.find(pLogID) == s_loggers.end()) return W_FAILURE;
     s_loggers[pLogID]->flush();
-    return W_PASSED;
+    return W_SUCCESS;
 }
 
 W_RESULT  w_log(_In_z_ const char* pFMT)
 {
     //get first log
-    if (s_loggers.find(s_id) == s_loggers.end()) return W_FAILED;
+    if (s_loggers.find(s_id) == s_loggers.end()) return W_FAILURE;
     s_loggers[s_id]->info(pFMT);
-    return W_PASSED;
+    return W_SUCCESS;
 }
 
 W_RESULT  w_log(_In_ const w_log_type pLogType, _In_z_ const char* pFMT)
 {
     //get first log
-    if (s_loggers.find(s_id) == s_loggers.end()) return W_FAILED;
+    if (s_loggers.find(s_id) == s_loggers.end()) return W_FAILURE;
     switch (pLogType)
     {
         default:
@@ -168,14 +167,14 @@ W_RESULT  w_log(_In_ const w_log_type pLogType, _In_z_ const char* pFMT)
             s_loggers[s_id]->error(pFMT);
             break;
     }
-    return W_PASSED;
+    return W_SUCCESS;
 }
 
 W_RESULT  w_log(_In_ const w_log_type pLogType,
                 _In_ const int pLogID,
                 _In_z_ const char* pFMT)
 {
-    if (s_loggers.find(pLogID) == s_loggers.end()) return W_FAILED;
+    if (s_loggers.find(pLogID) == s_loggers.end()) return W_FAILURE;
     switch (pLogType)
     {
         default:
@@ -189,14 +188,14 @@ W_RESULT  w_log(_In_ const w_log_type pLogType,
             s_loggers[pLogID]->error(pFMT);
             break;
     }
-    return W_PASSED;
+    return W_SUCCESS;
 }
 
 template<typename... w_args>
 W_RESULT w_log(_In_ const w_log_type pLogType, _In_z_ const char* pFMT, _In_ const w_args&... pArgs)
 {
     //get first log
-    if (s_loggers.find(s_id) == s_loggers.end()) return W_FAILED;
+    if (s_loggers.find(s_id) == s_loggers.end()) return W_FAILURE;
     switch (pLogType)
     {
         default:
@@ -210,7 +209,7 @@ W_RESULT w_log(_In_ const w_log_type pLogType, _In_z_ const char* pFMT, _In_ con
             s_loggers[s_id]->error(pFMT, pArgs...);
             break;
     }
-    return W_PASSED;
+    return W_SUCCESS;
 }
 
 template<typename... w_args>
@@ -219,7 +218,7 @@ W_RESULT  w_log(_In_ const w_log_type pLogType,
                 _In_z_ const char* pFMT,
                 _In_ const w_args&... pArgs)
 {
-    if (s_loggers.find(pLogID) == s_loggers.end()) return W_FAILED;
+    if (s_loggers.find(pLogID) == s_loggers.end()) return W_FAILURE;
     switch (pLogType)
     {
         default:
@@ -233,13 +232,12 @@ W_RESULT  w_log(_In_ const w_log_type pLogType,
             s_loggers[pLogID]->error(pFMT, pArgs...);
             break;
     }
-    return W_PASSED;
+    return W_SUCCESS;
 }
 
-template<typename... w_args>
 void V(_In_ const W_RESULT pResult, _In_z_ const char* pFMT)
 {
-    if (pResult == W_PASSED) return;
+    if (pResult == W_SUCCESS) return;
     if (s_loggers.find(s_id) == s_loggers.end()) return;
     s_loggers[s_id]->info(pFMT);
 }
@@ -250,18 +248,17 @@ void V(
     _In_z_    const char* pFMT,
     _In_    const w_args&... pArgs)
 {
-    if (pResult == W_PASSED) return;
+    if (pResult == W_SUCCESS) return;
     if (s_loggers.find(s_id) == s_loggers.end()) return;
     s_loggers[s_id]->info(pFMT, pArgs...);
 }
 
-template<typename... w_args>
 void V(
     _In_    W_RESULT pResult,
     _In_    w_log_type pLogType,
     _In_z_  const char* pFMT)
 {
-    if (pResult == W_PASSED) return;
+    if (pResult == W_SUCCESS) return;
     if (s_loggers.find(s_id) == s_loggers.end()) return;
 
     switch (pLogType)
@@ -286,7 +283,7 @@ void V(
     _In_z_    const char* pFMT,
     _In_    const w_args&... pArgs)
 {
-    if (pResult == W_PASSED) return;
+    if (pResult == W_SUCCESS) return;
     if (s_loggers.find(s_id) == s_loggers.end()) return;
 
     switch (pLogType)
@@ -304,14 +301,13 @@ void V(
     }
 }
 
-template<typename... w_args>
 void V(
     _In_    W_RESULT pResult,
     _In_    w_log_type pLogType,
     _In_    bool pTerminateProgram,
     _In_z_  const char* pFMT)
 {
-    if (pResult == W_PASSED) return;
+    if (pResult == W_SUCCESS) return;
     if (s_loggers.find(s_id) == s_loggers.end()) return;
 
     switch (pLogType)
@@ -343,7 +339,7 @@ void V(
     _In_z_  const char* pFMT,
     _In_    const w_args&... pArgs)
 {
-    if (pResult == W_PASSED) return;
+    if (pResult == W_SUCCESS) return;
     if (s_loggers.find(s_id) == s_loggers.end()) return;
 
     switch (pLogType)

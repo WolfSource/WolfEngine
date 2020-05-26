@@ -1,6 +1,5 @@
 #include "w_xml.hpp"
 #include <io/w_io.h>
-#include <memory/w_string.h>
 #include "rapidxml/rapidxml_print.hpp"
 
 using namespace rapidxml;
@@ -10,8 +9,14 @@ W_RESULT w_xml_save_to_file(
 	_In_	w_xml_data* pXMLData, 
 	_In_z_	const wchar_t* pPreComment)
 {
+    //resources
+    W_RESULT _ret = W_FAILURE;
+    char* _xml_content = nullptr;
+    char* _new_path = nullptr;
 	xml_document<wchar_t> _doc;
-
+    size_t _in_len, _out_len = 0;
+    std::wstring _xml_as_wstring = pPreComment;
+    
 	//Add xml version & encoding
 	auto _node = _doc.allocate_node(node_declaration);
 	_node->append_attribute(_doc.allocate_attribute(L"version", L"1.0"));
@@ -19,25 +24,35 @@ W_RESULT w_xml_save_to_file(
 	_doc.append_node(_node);
 
 	//print xml to stream
-    std::wstring _xml_as_wstring = pPreComment;
     rapidxml::print(std::back_inserter(_xml_as_wstring), _doc);
 
 	//convert wchar_t* to utf8 char* for path
-	size_t _in_len = wcslen(pPath), _out_len = 0;
-	char* _new_path = (char*)w_alloc(_in_len * 2);
-	W_RESULT _ret = w_io_ucs2_to_utf8(
+    _in_len = wcslen(pPath);
+    _new_path = (char*)w_alloc(_in_len * 2, "w_xml_save_to_file::_new_path");
+    if (!_new_path)
+    {
+        goto _return;
+    }
+    
+	_ret = w_io_ucs2_to_utf8(
 		(apr_uint16_t*)pPath,
 		&_in_len,
 		_new_path,
 		&_out_len);
 	if (_ret != APR_SUCCESS)
 	{
-		return W_FAILED;
+        goto _return;
 	}
 
 	//convert wchar_t* to utf8 char* for content
-	_in_len = _xml_as_wstring.size(), _out_len = 0;
-	char* _xml_content = (char*)w_alloc(_in_len * 2);
+    _in_len = _xml_as_wstring.size();
+    _out_len = 0;
+	_xml_content = (char*)w_alloc(_in_len * 2, "w_xml_save_to_file::_xml_content");
+    if (!_xml_content)
+    {
+        goto _return;
+    }
+    
 	_ret = w_io_ucs2_to_utf8(
 		(apr_uint16_t*)_xml_as_wstring.size(),
 		&_in_len,
@@ -45,7 +60,7 @@ W_RESULT w_xml_save_to_file(
 		&_out_len);
 	if (_ret != APR_SUCCESS)
 	{
-		return W_FAILED;
+        goto _return;
 	}
 
 	//save it to file
@@ -60,9 +75,14 @@ W_RESULT w_xml_save_to_file(
 		true,
 		false);
 
-	_doc.clear();
-
-	return W_FAILED;
+    //return
+_return:
+    //release resources
+    _doc.clear();
+    w_free(_xml_content);
+    w_free(_new_path);
+    
+    return _ret;
 }
 
 void _xml_write_element(
@@ -83,7 +103,6 @@ void _xml_write_element(
 	}
 
 	//Add to the parent
-
 	auto _child_len = sizeof(pData->children) / sizeof(pData->children[0]);
 	if (_child_len != 0)
 	{
@@ -114,11 +133,18 @@ const char* w_xml_get_node_value(_In_ rapidxml::xml_node<>* pNode)
 
 const wchar_t* w_xml_get_node_value_wchar(_In_ rapidxml::xml_node<>* pNode)
 {
-	if (pNode == nullptr) return L"";
-
+	if (pNode == nullptr)
+    {
+        return L"";
+    }
+    
 	char* _nv = pNode->value();
 	size_t _in_len = strlen(_nv), _out_len = 0;
-	apr_uint16_t* _new_value = (apr_uint16_t*)w_alloc(_in_len * 2);
+	apr_uint16_t* _new_value = (apr_uint16_t*)w_alloc(_in_len * 2, "w_xml_get_node_value_wchar::_new_value");
+    if (!_new_value)
+    {
+        return L"";
+    }
 
 	W_RESULT _ret = w_io_utf8_to_ucs2(
 		_nv,
@@ -127,6 +153,7 @@ const wchar_t* w_xml_get_node_value_wchar(_In_ rapidxml::xml_node<>* pNode)
 		&_out_len);
 	if (_ret != APR_SUCCESS)
 	{
+        w_free(_new_value);
 		return L"";
 	}
 
@@ -153,13 +180,20 @@ const wchar_t* w_xml_get_node_attribute_wchar(
 	_In_ rapidxml::xml_node<>* pNode,
 	_In_z_ const char* pAttribute)
 {
-	if (pNode == nullptr) return L"";
+	if (pNode == nullptr)
+    {
+        return L"";
+    }
+    
 	//read the value of attribute
 	auto _value = pNode->first_attribute(pAttribute);
 	char* _nv = _value->value();
 	size_t _in_len = strlen(_nv), _out_len = 0;
-	apr_uint16_t* _new_value = (apr_uint16_t*)w_alloc(_in_len * 2);
-
+	apr_uint16_t* _new_value = (apr_uint16_t*)w_alloc(_in_len * 2, "_lua_get_value::LUA_TNUMBER");
+    if (!_new_value)
+    {
+        return L"";
+    }
 	//convert from char* to wchar*
 	W_RESULT _ret = w_io_utf8_to_ucs2(
 		_nv,
@@ -168,6 +202,7 @@ const wchar_t* w_xml_get_node_attribute_wchar(
 		&_out_len);
 	if (_ret != APR_SUCCESS)
 	{
+        w_free(_new_value);
 		return L"";
 	}
 
