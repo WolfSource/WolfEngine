@@ -25,6 +25,7 @@ namespace wolf::system
 
 		WSYS_EXP	W_RESULT request_url(_In_z_ const std::string& pURL,
 			_Inout_ std::string& pResultPage,
+			_Inout_ long& pResponseCode,
 			_In_ w_point& pAbortIfSlowerThanNumberOfBytesInSeconds,
 			_In_ const uint32_t& pConnectionTimeOutInMilliSeconds = 5000);
 
