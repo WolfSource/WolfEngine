@@ -10,8 +10,8 @@ W_RESULT w_condition_variable_init(_Inout_ w_condition_variable** pCond)
         return W_FAILURE;
     }
     
-    apr_status_t _ret = apr_thread_cond_create(pCond, _pool);
-    return _ret == APR_SUCCESS ? W_SUCCESS : W_FAILURE;
+    apr_status_t _rt = apr_thread_cond_create(pCond, _pool);
+    return _rt == APR_SUCCESS ? W_SUCCESS : W_FAILURE;
 }
 
 W_RESULT w_condition_variable_wait(_In_ w_condition_variable* pCond, _In_ w_mutex* pMutex)

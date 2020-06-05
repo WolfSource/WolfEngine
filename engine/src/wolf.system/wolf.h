@@ -40,6 +40,7 @@ extern "C" {
 #include <apr-1/apr_strings.h>
 #include <apr-1/apr_tables.h>
 #include <apr-1/apr_file_io.h>
+#include <apr-1/apr_hash.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <wchar.h>
@@ -47,7 +48,7 @@ extern "C" {
 #include <stdint.h>
 #include <assert.h>
 #include <limits.h>
-#include <os/w_platform.h>
+#include "os/w_platform.h"
 
 //#include <errno.h>
 
@@ -113,6 +114,7 @@ typedef apr_file_t* w_file;
 typedef apr_finfo_t* w_file_info;
 typedef apr_array_header_t* w_array;
 typedef apr_off_t w_offset;
+typedef apr_hash_t* w_hash;
 
 /**
  * initialize wolf

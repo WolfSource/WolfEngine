@@ -1,5 +1,5 @@
-#include "w_shared_mem.h"
 #include <apr-1/apr_shm.h>
+#include "w_shared_mem.h"
 
 W_RESULT    w_shared_mem_create(_Inout_ w_shared_mem* pSharedMem,
                                 _In_ const size_t pReqSize,

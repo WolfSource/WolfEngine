@@ -62,7 +62,7 @@ W_RESULT     w_mem_map_delete(_In_ w_mem_map pMemoryMap);
  * @param pOffset The offset to move to.
  * @return result code
 */
-W_RESULT     w_mem_map_offset(void** pAddress, w_mem_map pMemoryMap, w_offset pOffset);
+W_RESULT     w_mem_map_offset(_Inout_ void** pAddress, _In_ w_mem_map pMemoryMap, _In_ w_offset pOffset);
 
 #ifdef __cplusplus
 }

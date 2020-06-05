@@ -16,7 +16,7 @@ extern "C" {
 #include "wolf.h"
 
 //forward declaration
-typedef struct apr_shm_t* w_shared_mem;
+typedef apr_shm_t* w_shared_mem;
 
 /**
  * Create and make accessible a shared memory segment with default properties.
@@ -132,7 +132,7 @@ W_RESULT    w_shared_mem_attach(_Inout_ w_shared_mem* pSharedMem,
  * @param pSharedMem The shared memory structure to create.
  * @param pFileName The file used to create the original segment.(This MUST match the original filename.)
  * @param pMemPool the pool from which to allocate the shared memory structure for this process.
- * @param pFlags mask of APR_SHM_* (defined above)
+ * @param pFlags mask of APR_SHM_*
  * @return result code
 */
 W_RESULT    w_shared_mem_attach_ex(_Inout_ w_shared_mem* pSharedMem,

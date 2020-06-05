@@ -62,6 +62,8 @@
 		2C4CACEC23BD5A970084D392 /* color_sinks.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C4CACE623BD5A970084D392 /* color_sinks.cpp */; };
 		2C4CAD0023C0EEE70084D392 /* w_log.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C4CACFE23C0EEE70084D392 /* w_log.cpp */; };
 		2C4CAD0123C0EEE70084D392 /* w_log.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CACFF23C0EEE70084D392 /* w_log.hpp */; };
+		2C78102E24837AA400A1AB40 /* w_redis.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C78102C24837AA400A1AB40 /* w_redis.c */; };
+		2C78102F24837AA400A1AB40 /* w_redis.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C78102D24837AA400A1AB40 /* w_redis.h */; };
 		2C898473239D2FA40062D70A /* w_timespan.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C898471239D2FA40062D70A /* w_timespan.c */; };
 		2C898474239D2FA40062D70A /* w_timespan.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C898472239D2FA40062D70A /* w_timespan.h */; };
 		2C898479239D344C0062D70A /* w_chrono.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C898477239D344C0062D70A /* w_chrono.h */; };
@@ -101,10 +103,20 @@
 		2C99E7B623C33AD400A9720B /* ev_wrap.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C99E7AC23C33AD400A9720B /* ev_wrap.h */; };
 		2C99E7BF23CBA1F700A9720B /* libboost_context.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C99E7BD23CBA1E100A9720B /* libboost_context.a */; };
 		2C99E7C023CBA1F700A9720B /* libboost_fiber.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C99E7BE23CBA1E100A9720B /* libboost_fiber.a */; };
+		2CABF8112485A26B00E5E4D9 /* w_net.c in Sources */ = {isa = PBXBuildFile; fileRef = 2CABF80F2485A26A00E5E4D9 /* w_net.c */; };
+		2CABF8122485A26B00E5E4D9 /* w_net.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CABF8102485A26B00E5E4D9 /* w_net.h */; };
+		2CABF8142485A32200E5E4D9 /* libnng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CABF8132485A30F00E5E4D9 /* libnng.a */; };
+		2CABF82224861CA000E5E4D9 /* convey.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CABF82024861CA000E5E4D9 /* convey.h */; };
+		2CABF82324861CA000E5E4D9 /* convey.c in Sources */ = {isa = PBXBuildFile; fileRef = 2CABF82124861CA000E5E4D9 /* convey.c */; };
+		2CABF82424861E6E00E5E4D9 /* libmbedcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CABF81B2485B30200E5E4D9 /* libmbedcrypto.a */; };
+		2CABF82524861E6E00E5E4D9 /* libmbedtls.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CABF8192485B30200E5E4D9 /* libmbedtls.a */; };
+		2CABF82624861E6E00E5E4D9 /* libmbedx509.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CABF81A2485B30200E5E4D9 /* libmbedx509.a */; };
 		2CB21401247C2D7F0022DA86 /* w_shared_mem.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CB213FF247C2D7F0022DA86 /* w_shared_mem.h */; };
 		2CB21402247C2D7F0022DA86 /* w_shared_mem.c in Sources */ = {isa = PBXBuildFile; fileRef = 2CB21400247C2D7F0022DA86 /* w_shared_mem.c */; };
 		2CB21405247C2E060022DA86 /* w_mem_map.c in Sources */ = {isa = PBXBuildFile; fileRef = 2CB21403247C2E060022DA86 /* w_mem_map.c */; };
 		2CB21406247C2E060022DA86 /* w_mem_map.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CB21404247C2E060022DA86 /* w_mem_map.h */; };
+		2CB21409247ECB8D0022DA86 /* w_mem_cache.c in Sources */ = {isa = PBXBuildFile; fileRef = 2CB21407247ECB8C0022DA86 /* w_mem_cache.c */; };
+		2CB2140A247ECB8D0022DA86 /* w_mem_cache.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CB21408247ECB8D0022DA86 /* w_mem_cache.h */; };
 		2CCFD577246D4AB60030D3AC /* libapr-1.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C17290F246CBA1F009C03B3 /* libapr-1.a */; };
 		2CCFD57A246D4AF10030D3AC /* libaprutil-1.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CCFD578246D4AD00030D3AC /* libaprutil-1.a */; };
 		2CCFD57D246DF3F30030D3AC /* w_concurrent_queue.c in Sources */ = {isa = PBXBuildFile; fileRef = 2CCFD57B246DF3F30030D3AC /* w_concurrent_queue.c */; };
@@ -175,6 +187,8 @@
 		2C4CACE623BD5A970084D392 /* color_sinks.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = color_sinks.cpp; path = ../../../src/wolf.system/log/spdlog/src/color_sinks.cpp; sourceTree = "<group>"; };
 		2C4CACFE23C0EEE70084D392 /* w_log.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_log.cpp; path = ../../../src/wolf.system/log/w_log.cpp; sourceTree = "<group>"; };
 		2C4CACFF23C0EEE70084D392 /* w_log.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = w_log.hpp; path = ../../../src/wolf.system/log/w_log.hpp; sourceTree = "<group>"; };
+		2C78102C24837AA400A1AB40 /* w_redis.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = w_redis.c; path = ../../../src/wolf.system/memory/w_redis.c; sourceTree = "<group>"; };
+		2C78102D24837AA400A1AB40 /* w_redis.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_redis.h; path = ../../../src/wolf.system/memory/w_redis.h; sourceTree = "<group>"; };
 		2C898471239D2FA40062D70A /* w_timespan.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = w_timespan.c; path = ../../../src/wolf.system/chrono/w_timespan.c; sourceTree = "<group>"; };
 		2C898472239D2FA40062D70A /* w_timespan.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_timespan.h; path = ../../../src/wolf.system/chrono/w_timespan.h; sourceTree = "<group>"; };
 		2C898477239D344C0062D70A /* w_chrono.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_chrono.h; path = ../../../src/wolf.system/chrono/w_chrono.h; sourceTree = "<group>"; };
@@ -219,10 +233,20 @@
 		2C99E7BC23CBA1BA00A9720B /* debug */ = {isa = PBXFileReference; lastKnownFileType = folder; name = debug; path = ../../../deps/boost/lib/osx/debug; sourceTree = "<group>"; };
 		2C99E7BD23CBA1E100A9720B /* libboost_context.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libboost_context.a; path = ../../../deps/boost/lib/osx/debug/libboost_context.a; sourceTree = "<group>"; };
 		2C99E7BE23CBA1E100A9720B /* libboost_fiber.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libboost_fiber.a; path = ../../../deps/boost/lib/osx/debug/libboost_fiber.a; sourceTree = "<group>"; };
+		2CABF80F2485A26A00E5E4D9 /* w_net.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = w_net.c; path = ../../../src/wolf.system/net/w_net.c; sourceTree = "<group>"; };
+		2CABF8102485A26B00E5E4D9 /* w_net.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_net.h; path = ../../../src/wolf.system/net/w_net.h; sourceTree = "<group>"; };
+		2CABF8132485A30F00E5E4D9 /* libnng.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libnng.a; path = ../../../deps/nng/lib/osx/debug/libnng.a; sourceTree = "<group>"; };
+		2CABF8192485B30200E5E4D9 /* libmbedtls.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libmbedtls.a; path = ../../../deps/tls/lib/osx/debug/libmbedtls.a; sourceTree = "<group>"; };
+		2CABF81A2485B30200E5E4D9 /* libmbedx509.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libmbedx509.a; path = ../../../deps/tls/lib/osx/debug/libmbedx509.a; sourceTree = "<group>"; };
+		2CABF81B2485B30200E5E4D9 /* libmbedcrypto.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libmbedcrypto.a; path = ../../../deps/tls/lib/osx/debug/libmbedcrypto.a; sourceTree = "<group>"; };
+		2CABF82024861CA000E5E4D9 /* convey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = convey.h; path = ../../../src/wolf.system/test/convey.h; sourceTree = "<group>"; };
+		2CABF82124861CA000E5E4D9 /* convey.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = convey.c; path = ../../../src/wolf.system/test/convey.c; sourceTree = "<group>"; };
 		2CB213FF247C2D7F0022DA86 /* w_shared_mem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_shared_mem.h; path = ../../../src/wolf.system/memory/w_shared_mem.h; sourceTree = "<group>"; };
 		2CB21400247C2D7F0022DA86 /* w_shared_mem.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = w_shared_mem.c; path = ../../../src/wolf.system/memory/w_shared_mem.c; sourceTree = "<group>"; };
 		2CB21403247C2E060022DA86 /* w_mem_map.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = w_mem_map.c; path = ../../../src/wolf.system/memory/w_mem_map.c; sourceTree = "<group>"; };
 		2CB21404247C2E060022DA86 /* w_mem_map.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_mem_map.h; path = ../../../src/wolf.system/memory/w_mem_map.h; sourceTree = "<group>"; };
+		2CB21407247ECB8C0022DA86 /* w_mem_cache.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = w_mem_cache.c; path = ../../../src/wolf.system/memory/w_mem_cache.c; sourceTree = "<group>"; };
+		2CB21408247ECB8D0022DA86 /* w_mem_cache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_mem_cache.h; path = ../../../src/wolf.system/memory/w_mem_cache.h; sourceTree = "<group>"; };
 		2CCFD578246D4AD00030D3AC /* libaprutil-1.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libaprutil-1.a"; path = "../../../deps/apr/lib/osx/debug/libaprutil-1.a"; sourceTree = "<group>"; };
 		2CCFD579246D4AE10030D3AC /* libapr-1.la */ = {isa = PBXFileReference; lastKnownFileType = text; name = "libapr-1.la"; path = "../../../deps/apr/lib/osx/debug/libapr-1.la"; sourceTree = "<group>"; };
 		2CCFD57B246DF3F30030D3AC /* w_concurrent_queue.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = w_concurrent_queue.c; path = ../../../src/wolf.system/concurrency/w_concurrent_queue.c; sourceTree = "<group>"; };
@@ -240,10 +264,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				2C99E7C023CBA1F700A9720B /* libboost_fiber.a in Frameworks */,
+				2CABF82624861E6E00E5E4D9 /* libmbedx509.a in Frameworks */,
 				2CCFD577246D4AB60030D3AC /* libapr-1.a in Frameworks */,
 				2C3756D123B7D320003A6B0A /* libluajit-static.a in Frameworks */,
 				2C3756B223B79802003A6B0A /* libz.a in Frameworks */,
 				2C99E7BF23CBA1F700A9720B /* libboost_context.a in Frameworks */,
+				2CABF8142485A32200E5E4D9 /* libnng.a in Frameworks */,
+				2CABF82424861E6E00E5E4D9 /* libmbedcrypto.a in Frameworks */,
+				2CABF82524861E6E00E5E4D9 /* libmbedtls.a in Frameworks */,
 				2CCFD57A246D4AF10030D3AC /* libaprutil-1.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -498,11 +526,33 @@
 			name = libev;
 			sourceTree = "<group>";
 		};
+		2CABF80E24840FD200E5E4D9 /* net */ = {
+			isa = PBXGroup;
+			children = (
+				2CABF80F2485A26A00E5E4D9 /* w_net.c */,
+				2CABF8102485A26B00E5E4D9 /* w_net.h */,
+			);
+			name = net;
+			sourceTree = "<group>";
+		};
+		2CABF81F24861C5F00E5E4D9 /* test */ = {
+			isa = PBXGroup;
+			children = (
+				2CABF82124861CA000E5E4D9 /* convey.c */,
+				2CABF82024861CA000E5E4D9 /* convey.h */,
+			);
+			name = test;
+			sourceTree = "<group>";
+		};
 		2CB213FE247C2D620022DA86 /* memory */ = {
 			isa = PBXGroup;
 			children = (
+				2CB21407247ECB8C0022DA86 /* w_mem_cache.c */,
+				2CB21408247ECB8D0022DA86 /* w_mem_cache.h */,
 				2CB21403247C2E060022DA86 /* w_mem_map.c */,
 				2CB21404247C2E060022DA86 /* w_mem_map.h */,
+				2C78102C24837AA400A1AB40 /* w_redis.c */,
+				2C78102D24837AA400A1AB40 /* w_redis.h */,
 				2CB21400247C2D7F0022DA86 /* w_shared_mem.c */,
 				2CB213FF247C2D7F0022DA86 /* w_shared_mem.h */,
 			);
@@ -521,8 +571,10 @@
 				2C89855B23A15BDC0062D70A /* json */,
 				2C89855C23A15BE50062D70A /* log */,
 				2CB213FE247C2D620022DA86 /* memory */,
-				2C89855D23A15BED0062D70A /* script */,
+				2CABF80E24840FD200E5E4D9 /* net */,
 				2C89856023A15C0B0062D70A /* os */,
+				2C89855D23A15BED0062D70A /* script */,
+				2CABF81F24861C5F00E5E4D9 /* test */,
 				2C30BD2B23AA200A00D24778 /* xml */,
 				2C89898D23A193A40062D70A /* wolf.c */,
 				2C89893623A1790F0062D70A /* wolf.h */,
@@ -542,6 +594,10 @@
 		2CFA170D1E674C850041A83F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2CABF81B2485B30200E5E4D9 /* libmbedcrypto.a */,
+				2CABF8192485B30200E5E4D9 /* libmbedtls.a */,
+				2CABF81A2485B30200E5E4D9 /* libmbedx509.a */,
+				2CABF8132485A30F00E5E4D9 /* libnng.a */,
 				2CCFD579246D4AE10030D3AC /* libapr-1.la */,
 				2CCFD578246D4AD00030D3AC /* libaprutil-1.a */,
 				2C172918246D41A9009C03B3 /* libapr-1.0.dylib */,
@@ -564,6 +620,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2CB2140A247ECB8D0022DA86 /* w_mem_cache.h in Headers */,
 				2C069B8B23E21EB8004EB56F /* w_fiber.hpp in Headers */,
 				2C17289C246C168E009C03B3 /* w_gametime.h in Headers */,
 				2C3756A723B7978C003A6B0A /* zconf.h in Headers */,
@@ -571,6 +628,7 @@
 				2C99E79723C201AB00A9720B /* w_xml.hpp in Headers */,
 				2C37522723AFD0EF003A6B0A /* scalarbase64.h in Headers */,
 				2C3756AA23B7978C003A6B0A /* deflate.h in Headers */,
+				2C78102F24837AA400A1AB40 /* w_redis.h in Headers */,
 				2C89848F239E735F0062D70A /* lz4frame.h in Headers */,
 				2C3756BA23B7C1D7003A6B0A /* w_condition_variable.h in Headers */,
 				2CB21401247C2D7F0022DA86 /* w_shared_mem.h in Headers */,
@@ -592,6 +650,8 @@
 				2C3756E323B7F302003A6B0A /* w_lua.h in Headers */,
 				2C37522323AFD0EF003A6B0A /* fastavx512bwbase64.h in Headers */,
 				2C99E7B123C33AD400A9720B /* ev_vars.h in Headers */,
+				2CABF82224861CA000E5E4D9 /* convey.h in Headers */,
+				2CABF8122485A26B00E5E4D9 /* w_net.h in Headers */,
 				2C30BAE423A42CFD009FC330 /* w_io.h in Headers */,
 				2CCFD5852471E8550030D3AC /* w_async.h in Headers */,
 				2C3756B623B79EF1003A6B0A /* w_signal.h in Headers */,
@@ -703,6 +763,7 @@
 				2C3756E223B7F302003A6B0A /* w_lua.c in Sources */,
 				2C898544239E763C0062D70A /* objectc.c in Sources */,
 				2C4CACEB23BD5A970084D392 /* fmt.cpp in Sources */,
+				2CABF82324861CA000E5E4D9 /* convey.c in Sources */,
 				2C898543239E763C0062D70A /* version.c in Sources */,
 				2C37522B23AFD0EF003A6B0A /* quicktimebase64.c in Sources */,
 				2C37522823AFD0EF003A6B0A /* chromiumbase64.c in Sources */,
@@ -715,12 +776,15 @@
 				2C898542239E763C0062D70A /* vrefbuffer.c in Sources */,
 				2C898473239D2FA40062D70A /* w_timespan.c in Sources */,
 				2C37522C23AFD0EF003A6B0A /* scalarbase64.c in Sources */,
+				2C78102E24837AA400A1AB40 /* w_redis.c in Sources */,
 				2C99E79F23C33A3900A9720B /* ev.c in Sources */,
 				2C4CACEC23BD5A970084D392 /* color_sinks.cpp in Sources */,
 				2C37522623AFD0EF003A6B0A /* fastavxbase64.c in Sources */,
 				2CB21402247C2D7F0022DA86 /* w_shared_mem.c in Sources */,
+				2CABF8112485A26B00E5E4D9 /* w_net.c in Sources */,
 				2C898541239E763C0062D70A /* zone.c in Sources */,
 				2C898491239E735F0062D70A /* lz4.c in Sources */,
+				2CB21409247ECB8D0022DA86 /* w_mem_cache.c in Sources */,
 				2C89898E23A193A40062D70A /* wolf.c in Sources */,
 				2C898495239E735F0062D70A /* lz4hc.c in Sources */,
 				2C30BAE123A42B2E009FC330 /* w_compress.c in Sources */,
@@ -883,6 +947,7 @@
 					"MAX_BUFFER_SIZE=4096",
 					SPDLOG_COMPILED_LIB,
 					SPDLOG_WCHAR_FILENAMES,
+					NNG_PLATFORM_POSIX,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				HEADER_SEARCH_PATHS = "";
@@ -897,6 +962,9 @@
 					"$(SRCROOT)/../../../deps/libpng/include",
 					"$(SRCROOT)/../../../deps/libjpeg-turbo/include",
 					"$(SRCROOT)/../../../deps/boost/include",
+					"$(SRCROOT)/../../../deps/nng/include",
+					"$(SRCROOT)/../../../deps/nng/src",
+					"$(SRCROOT)/../../../deps/tls/include",
 				);
 				INSTALL_PATH = /usr/local/lib;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
@@ -908,6 +976,8 @@
 					"$(SRCROOT)/../../../deps/libjpeg-turbo/lib/osx/debug",
 					"$(SRCROOT)/../../../deps/zlib/lib/osx/debug",
 					"$(SRCROOT)/../../../deps/boost/lib/osx/debug",
+					"$(SRCROOT)/../../../deps/nng/lib/osx/debug",
+					"$(SRCROOT)/../../../deps/tls/lib/osx/debug",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				ONLY_ACTIVE_ARCH = YES;
@@ -969,6 +1039,7 @@
 					"$(SRCROOT)/../../../src/wolf.system/apr-1/private",
 					"$(SRCROOT)/../../../src/wolf.system/curl/src",
 					"$(SRCROOT)/../../../src/wolf.system/compression/msgpack",
+					"$(SRCROOT)/../../../deps/nng/include",
 				);
 				INSTALL_PATH = /usr/local/lib;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.1;

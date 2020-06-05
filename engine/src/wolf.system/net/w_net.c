@@ -1,0 +1,417 @@
+#include <nng/nng.h>
+#include <core/nng_impl.h>
+#include <nng/protocol/pipeline0/push.h>
+#include <nng/protocol/pipeline0/pull.h>
+#include <nng/protocol/pair1/pair.h>
+#include <nng/protocol/reqrep0/rep.h>
+#include <nng/protocol/reqrep0/req.h>
+#include <nng/protocol/pubsub0/pub.h>
+#include <nng/protocol/pubsub0/sub.h>
+#include <nng/protocol/survey0/survey.h>
+#include <nng/protocol/survey0/respond.h>
+#include <nng/supplemental/util/platform.h>
+#include "w_net.h"
+#include <arpa/inet.h> 
+
+const char* _net_error(_In_ const W_RESULT pErrorCode,
+                       _In_z_ const char* pUserDefinedMessage,
+                       _In_z_ const char* pTraceInfo)
+{
+    const char* _error_msg = nng_strerror(pErrorCode);
+    if (pErrorCode)
+    {
+        W_ASSERT_P(false,
+                   "%s. error code: %d. error message: %s. trace info: %s.",
+                   pUserDefinedMessage,
+                   pErrorCode,
+                   _error_msg,
+                   pTraceInfo);
+    }
+    return _error_msg;
+}
+
+const char* w_net_error(_In_ const W_RESULT pErrorCode)
+{
+    return nng_strerror(pErrorCode);
+}
+
+W_RESULT w_net_init(void)
+{
+    return nni_init();
+}
+
+W_RESULT w_net_url_parse(_In_z_ const char* pUrlAddress, _Inout_ w_url pURL)
+{
+    const char* _trace_info = "w_net_url_parse";
+    
+    if (!pUrlAddress)
+    {
+        pURL = NULL;
+        return NNG_ENOARG;
+    }
+    
+    W_RESULT _rt = nng_url_parse(&pURL, pUrlAddress);
+    if (_rt)
+    {
+        _net_error(_rt, "nng_url_parse got error", _trace_info);
+        return _rt;
+    }
+    
+    //check for NULL
+    if (pURL == NULL)
+    {
+        W_ASSERT(false,
+                 "nng_url_parse got NULL. trace info: w_net_url_parse");
+        return NNG_EINVAL;
+    }
+    
+    return _rt;
+}
+
+void w_net_url_free(_Inout_ w_url pURL)
+{
+    nng_url_free(pURL);
+}
+
+W_RESULT w_net_open_tcp_socket(_In_z_ const char* pEndPoint,
+                               _In_ w_socket_mode pSocketMode,
+                               _In_ bool pNoDelayOption,
+                               _In_ bool pKeepAliveOption,
+                               _In_ const bool pAsync,
+                               _Inout_ w_socket_tcp* pSocket)
+{
+    const char* _trace_info = "w_net_open_tcp_socket";
+    
+    if (!pSocket || !pEndPoint)
+    {
+        W_ASSERT(false, "pSocket is NULL! trace info: w_net_open_pair_tcp_socket");
+        return NNG_ENOARG;
+    }
+    
+    W_RESULT _rt = W_SUCCESS;
+    
+    switch (pSocketMode)
+    {
+        case one_way_pusher:
+            _rt = nng_push0_open(&pSocket->s);
+            break;
+        case one_way_puller:
+            _rt = nng_pull0_open(&pSocket->s);
+            break;
+        case two_way_dialer:
+        case two_way_listener:
+            _rt = nng_pair_open(&pSocket->s);
+            break;
+        case req_rep_dialer:
+            _rt = nng_req0_open(&pSocket->s);
+            break;
+        case req_rep_listener:
+            _rt = nng_rep0_open(&pSocket->s);
+            break;
+        case pub_sub_broadcaster:
+            _rt = nng_pub0_open(&pSocket->s);
+            break;
+        case pub_sub_subscriber:
+            _rt = nng_sub0_open(&pSocket->s);
+            _rt = nng_setopt(pSocket->s, NNG_OPT_SUB_SUBSCRIBE, "", 0);
+            break;
+        case survey_respond_server:
+            _rt = nng_surveyor0_open(&pSocket->s);
+            break;
+        case survey_respond_client:
+            _rt = nng_respondent0_open(&pSocket->s);
+            break;
+        case bus_node:
+            break;
+    }
+    
+    if(_rt)
+    {
+        _net_error(_rt, "could not open socket", _trace_info);
+        goto _exit;
+    }
+    
+    //set options
+    _rt = nng_setopt_bool(pSocket->s, NNG_OPT_TCP_NODELAY, pNoDelayOption);
+    if(_rt)
+    {
+        _net_error(_rt, "could not set socket no delay option", _trace_info);
+        goto _exit;
+    }
+    
+    _rt = nng_setopt_bool(pSocket->s, NNG_OPT_TCP_KEEPALIVE, pKeepAliveOption);
+    if(_rt)
+    {
+        _net_error(_rt, "could not set socket keep alive option", _trace_info);
+        goto _exit;
+    }
+    
+    switch (pSocketMode)
+    {
+        default:
+            _rt = NNG_ENOARG;
+            break;
+        case one_way_pusher:
+        case two_way_dialer:
+        case req_rep_dialer:
+        case pub_sub_subscriber:
+        case survey_respond_client:
+        {
+            //create dialer
+            
+            _rt = nng_dialer_create(&pSocket->d, pSocket->s, pEndPoint);
+            if(_rt)
+            {
+                _net_error(_rt, "could not create dialer object", _trace_info);
+                break;
+            }
+        
+            //set dialer options
+            _rt = nng_dialer_setopt_bool(pSocket->d, NNG_OPT_TCP_NODELAY, pNoDelayOption);
+            if(_rt)
+            {
+                _net_error(_rt, "could not set dialer no delay option", _trace_info);
+                break;
+            }
+        
+            _rt = nng_dialer_setopt_bool(pSocket->d, NNG_OPT_TCP_KEEPALIVE, pKeepAliveOption);
+            if(_rt)
+            {
+                _net_error(_rt, "could not set dialer keep alive option", _trace_info);
+                break;
+            }
+        
+            _rt = nng_dialer_start(pSocket->d, (pAsync ? NNG_FLAG_NONBLOCK : 0));
+            if (_rt)
+            {
+                _net_error(_rt, "could not start dialer", _trace_info);
+                break;
+            }
+        }
+        break;
+            
+        case one_way_puller:
+        case two_way_listener:
+        case req_rep_listener:
+        case pub_sub_broadcaster:
+        case survey_respond_server:
+        {
+            //create listener
+            
+            _rt = nng_listener_create(&pSocket->l, pSocket->s, pEndPoint);
+            if(_rt)
+            {
+                _net_error(_rt, "could not create listener object", _trace_info);
+                break;
+            }
+       
+            //set listener options
+            _rt = nng_listener_setopt_bool(pSocket->l, NNG_OPT_TCP_NODELAY, pNoDelayOption);
+            if(_rt)
+            {
+                _net_error(_rt, "could not set listener no delay option", _trace_info);
+                break;
+            }
+       
+            _rt = nng_listener_setopt_bool(pSocket->l, NNG_OPT_TCP_KEEPALIVE, pKeepAliveOption);
+            if(_rt)
+            {
+                _net_error(_rt, "could not set listener keep alive option", _trace_info);
+                break;
+            }
+       
+            _rt = nng_listener_start(pSocket->l, (pAsync ? NNG_FLAG_NONBLOCK : 0));
+            if (_rt)
+            {
+                _net_error(_rt, "could not start listener", _trace_info);
+                break;
+            }
+        }
+        break;
+    }
+    
+    if(_rt == 0)
+    {
+        return W_SUCCESS;
+    }
+    
+_exit:
+    
+    nng_dialer_close(pSocket->d);
+    nng_listener_close(pSocket->l);
+    nng_close(pSocket->s);
+    
+    return _rt;
+}
+
+W_RESULT w_net_close_tcp_socket(_Inout_ w_socket_tcp* pSocket)
+{
+    if (!pSocket)
+    {
+        W_ASSERT(false, "pSocket is NULL! trace info: w_net_close_tcp_socket");
+        return NNG_ENOARG;
+    }
+    
+    nng_dialer_close(pSocket->d);
+    nng_listener_close(pSocket->l);
+    nng_close(pSocket->s);
+    
+    return W_SUCCESS;
+}
+
+W_RESULT w_net_open_udp_socket(_In_z_ const char* pEndPoint, _Inout_ w_socket_udp* pSocket)
+{
+    W_RESULT _rt = W_SUCCESS;
+    w_url _url = NULL;
+    
+    _rt = w_net_url_parse(pEndPoint, _url);
+    if(_rt)
+    {
+        goto _exit;
+    }
+    
+    int _addr_hex = inet_addr(_url->u_hostname);
+    int _port = atoi(_url->u_port);
+    
+    pSocket->s.s_in.sa_family = NNG_AF_INET;
+    pSocket->s.s_in.sa_addr = htons(_addr_hex);
+    pSocket->s.s_in.sa_port = htons(_port);
+
+    //open udp socket
+    _rt = nni_plat_udp_open(&pSocket->u, &pSocket->s);
+    if(_rt)
+    {
+        goto _exit;
+    }
+    
+    //allocate aio
+    _rt = nng_aio_alloc(&pSocket->a, NULL, NULL);
+    if(_rt)
+    {
+        goto _exit;
+    }
+    
+    
+_exit:
+    w_net_url_free(_url);
+    return _rt;
+}
+
+void w_net_close_udp_socket(_Inout_ w_socket_udp* pSocket)
+{
+    nng_aio_free(pSocket->a);
+    nni_plat_udp_close(pSocket->u);
+}
+
+W_RESULT _io_udp_socket(_In_ w_socket_mode pSocketMode,
+                        _Inout_ w_socket_udp* pSocket,
+                        _In_z_ char* pMessage,
+                        _Inout_ size_t* pMessageLength)
+{
+    const char* _trace_info = "_io_udp_socket";
+    
+    if (!pSocket || !pMessage || !pMessageLength)
+    {
+        W_ASSERT(false, "parameters are NULL. trace info: _io_udp_socket");
+        return NNG_ENOARG;
+    }
+    
+    W_RESULT _rt = W_SUCCESS;
+    size_t _sent_len = 0;
+    const size_t _buf_len = (pSocketMode == two_way_dialer ? (*pMessageLength + 1) : *pMessageLength);
+    
+    pSocket->i.iov_buf = pMessage;
+    pSocket->i.iov_len = _buf_len;
+    
+    _rt = nng_aio_set_iov(pSocket->a, 1, &pSocket->i);
+    if (_rt)
+    {
+        _net_error(_rt, "nng_aio_set_iov failed", _trace_info);
+        goto _exit;
+    }
+    _rt = nng_aio_set_input(pSocket->a, 0, &pSocket->s);
+    if (_rt)
+    {
+        _net_error(_rt, "nng_aio_set_input failed", _trace_info);
+        goto _exit;
+    }
+    
+    //send buffer over udp
+    if (pSocketMode == two_way_dialer)
+    {
+        nni_plat_udp_send(pSocket->u, pSocket->a);
+    }
+    else
+    {
+        nni_plat_udp_recv(pSocket->u, pSocket->a);
+    }
+    
+    //wait
+    nng_aio_wait(pSocket->a);
+
+    _rt = nng_aio_result(pSocket->a);
+    if (_rt)
+    {
+        _net_error(_rt, "nng_aio_result failed", _trace_info);
+        goto _exit;
+    }
+    
+    _sent_len = nng_aio_count(pSocket->a);
+    if (_sent_len != _buf_len)
+    {
+        _net_error(_rt, "length of the sent buffer is not equal to inputted buffer", _trace_info);
+        goto _exit;
+    }
+    
+_exit:
+    return _rt;
+}
+
+W_RESULT w_net_send_msg(_Inout_ w_socket_tcp* pSocket,
+                        _In_z_ char* pMessage,
+                        _In_ const size_t pMessageLength,
+                        _In_ const bool pAsync)
+{
+    if (!pSocket || !pMessage || pMessageLength == 0)
+    {
+        W_ASSERT(false, "parameters are NULL trace info: w_net_send_msg");
+        return NNG_ENOARG;
+    }
+    
+    return nng_send(pSocket->s,
+                    pMessage,
+                    pMessageLength + 1 /* 1 for '/0'*/,
+                    pAsync ? NNG_FLAG_NONBLOCK : 0);
+}
+
+W_RESULT w_net_receive_msg(_Inout_ w_socket_tcp* pSocket,
+                           _Inout_ char* pMessage,
+                           _Inout_ size_t* pMessageLength)
+{
+    if (!pSocket)
+    {
+        W_ASSERT(false, "parameters are NULL. trace info: w_net_receive_msg");
+        return NNG_ENOARG;
+    }
+    
+    return nng_recv(pSocket->s, &pMessage, pMessageLength, NNG_FLAG_ALLOC);
+}
+
+W_RESULT w_net_send_msg_udp(_Inout_ w_socket_udp* pSocket,
+                            _In_z_ char* pMessage,
+                            _In_z_ size_t pMessageLength)
+{
+    return _io_udp_socket(two_way_dialer, pSocket, pMessage, &pMessageLength);
+}
+
+W_RESULT w_net_receive_msg_udp(_Inout_ w_socket_udp* pSocket,
+                               _In_z_ char* pMessage,
+                               _In_z_ size_t* pMessageLength)
+{
+    return _io_udp_socket(two_way_listener, pSocket, pMessage, pMessageLength);
+}
+
+void w_net_fini(void)
+{
+    nng_fini();
+}
