@@ -125,6 +125,7 @@
 		2CCFD5822471E56A0030D3AC /* w_timer.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CCFD5802471E56A0030D3AC /* w_timer.h */; };
 		2CCFD5852471E8550030D3AC /* w_async.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CCFD5832471E8550030D3AC /* w_async.h */; };
 		2CCFD5862471E8550030D3AC /* w_async.c in Sources */ = {isa = PBXBuildFile; fileRef = 2CCFD5842471E8550030D3AC /* w_async.c */; };
+		2CFADC1D248B6F3400409581 /* cr.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFADC1C248B6F3400409581 /* cr.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -256,6 +257,7 @@
 		2CCFD5832471E8550030D3AC /* w_async.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_async.h; path = ../../../src/wolf.system/concurrency/w_async.h; sourceTree = "<group>"; };
 		2CCFD5842471E8550030D3AC /* w_async.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = w_async.c; path = ../../../src/wolf.system/concurrency/w_async.c; sourceTree = "<group>"; };
 		2CD617231E59DA3E006FC5DC /* libwolf.system.osx.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libwolf.system.osx.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		2CFADC1C248B6F3400409581 /* cr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cr.h; path = ../../../src/wolf.system/os/cr.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -486,6 +488,7 @@
 		2C89856023A15C0B0062D70A /* os */ = {
 			isa = PBXGroup;
 			children = (
+				2CFADC1C248B6F3400409581 /* cr.h */,
 				2C30BAE623A4D599009FC330 /* w_platform.h */,
 			);
 			name = os;
@@ -667,6 +670,7 @@
 				2C99E79223C2019D00A9720B /* rapidxml_utils.hpp in Headers */,
 				2C3756A523B7978C003A6B0A /* inffast.h in Headers */,
 				2C37522923AFD0EF003A6B0A /* klompavxbase64.h in Headers */,
+				2CFADC1D248B6F3400409581 /* cr.h in Headers */,
 				2C89893723A1790F0062D70A /* wolf.h in Headers */,
 				2C30BAE023A42B2E009FC330 /* w_compress.h in Headers */,
 				2C37522A23AFD0EF003A6B0A /* chromiumbase64.h in Headers */,

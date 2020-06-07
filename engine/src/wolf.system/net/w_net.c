@@ -10,6 +10,8 @@
 #include <nng/protocol/survey0/survey.h>
 #include <nng/protocol/survey0/respond.h>
 #include <nng/supplemental/util/platform.h>
+#include <nng/supplemental/tls/tls.h>
+#include <nng/transport/tls/tls.h>
 #include "w_net.h"
 #include <arpa/inet.h> 
 
@@ -33,6 +35,87 @@ const char* _net_error(_In_ const W_RESULT pErrorCode,
 const char* w_net_error(_In_ const W_RESULT pErrorCode)
 {
     return nng_strerror(pErrorCode);
+}
+
+static W_RESULT _init_dialer_tls(_In_ nng_dialer pDialer,
+                                 _In_z_ const char* pServerName,
+                                 _In_ const bool pOwnCert,
+                                 _In_z_ const char* pCert,
+                                 _In_z_ const char* pPrivateKey)
+{
+    nng_tls_config* _cfg;
+    W_RESULT _rt;
+
+    if ((_rt = nng_tls_config_alloc(&_cfg, NNG_TLS_MODE_CLIENT)) != 0)
+    {
+        return _rt;
+    }
+
+    if ((_rt = nng_tls_config_ca_chain(_cfg, pCert, NULL)) != 0)
+    {
+        goto out;
+    }
+
+    if ((_rt = nng_tls_config_server_name(_cfg, pServerName)) != 0)
+    {
+        goto out;
+    }
+    nng_tls_config_auth_mode(_cfg, NNG_TLS_AUTH_MODE_REQUIRED);
+
+    if (pOwnCert)
+    {
+        if ((_rt = nng_tls_config_own_cert(_cfg, pCert, pPrivateKey, NULL)) != 0)
+        {
+            goto out;
+        }
+    }
+
+    _rt = nng_dialer_setopt_ptr(pDialer, NNG_OPT_TLS_CONFIG, _cfg);
+
+out:
+    nng_tls_config_free(_cfg);
+    return _rt;
+}
+
+static W_RESULT _init_listener_tls(_In_ nng_listener pListener,
+                                   _In_ int pAuthMode,
+                                   _In_z_ const char* pCert,
+                                   _In_z_ const char* pPrivateKey)
+{
+    nng_tls_config* _cfg;
+    W_RESULT _rt;
+
+    if ((_rt = nng_tls_config_alloc(&_cfg, NNG_TLS_MODE_SERVER)) != 0)
+    {
+        return _rt;
+    }
+    if ((_rt = nng_tls_config_own_cert(_cfg, pCert, pPrivateKey, NULL)) != 0)
+    {
+        goto out;
+    }
+    if ((_rt = nng_listener_setopt_ptr(pListener, NNG_OPT_TLS_CONFIG, _cfg)) != 0)
+    {
+        goto out;
+    }
+    switch (pAuthMode)
+    {
+    case NNG_TLS_AUTH_MODE_REQUIRED:
+    case NNG_TLS_AUTH_MODE_OPTIONAL:
+        if ((_rt = nng_tls_config_ca_chain(_cfg, pCert, NULL)) != 0)
+        {
+            goto out;
+        }
+        break;
+    default:
+        break;
+    }
+    if ((_rt = nng_tls_config_auth_mode(_cfg, pAuthMode)) != 0)
+    {
+        goto out;
+    }
+out:
+    nng_tls_config_free(_cfg);
+    return W_SUCCESS;
 }
 
 W_RESULT w_net_init(void)
@@ -78,6 +161,11 @@ W_RESULT w_net_open_tcp_socket(_In_z_ const char* pEndPoint,
                                _In_ bool pNoDelayOption,
                                _In_ bool pKeepAliveOption,
                                _In_ const bool pAsync,
+                               _In_ const bool pTLS,
+                               _In_z_ const char* pTLSServerName,
+                               _In_ const bool pOwnCert,
+                               _In_z_ const char* pCert,
+                               _In_z_ const char* pKey,
                                _Inout_ w_socket_tcp* pSocket)
 {
     const char* _trace_info = "w_net_open_tcp_socket";
@@ -128,7 +216,7 @@ W_RESULT w_net_open_tcp_socket(_In_z_ const char* pEndPoint,
     if(_rt)
     {
         _net_error(_rt, "could not open socket", _trace_info);
-        goto _exit;
+        goto out;
     }
     
     //set options
@@ -136,14 +224,14 @@ W_RESULT w_net_open_tcp_socket(_In_z_ const char* pEndPoint,
     if(_rt)
     {
         _net_error(_rt, "could not set socket no delay option", _trace_info);
-        goto _exit;
+        goto out;
     }
     
     _rt = nng_setopt_bool(pSocket->s, NNG_OPT_TCP_KEEPALIVE, pKeepAliveOption);
     if(_rt)
     {
         _net_error(_rt, "could not set socket keep alive option", _trace_info);
-        goto _exit;
+        goto out;
     }
     
     switch (pSocketMode)
@@ -180,7 +268,16 @@ W_RESULT w_net_open_tcp_socket(_In_z_ const char* pEndPoint,
                 _net_error(_rt, "could not set dialer keep alive option", _trace_info);
                 break;
             }
-        
+            
+            if(pTLS)
+            {
+                _init_dialer_tls(pSocket->d,
+                                 pTLSServerName,
+                                 pOwnCert,
+                                 pCert,
+                                 pKey);
+            }
+            
             _rt = nng_dialer_start(pSocket->d, (pAsync ? NNG_FLAG_NONBLOCK : 0));
             if (_rt)
             {
@@ -235,7 +332,7 @@ W_RESULT w_net_open_tcp_socket(_In_z_ const char* pEndPoint,
         return W_SUCCESS;
     }
     
-_exit:
+out:
     
     nng_dialer_close(pSocket->d);
     nng_listener_close(pSocket->l);
@@ -267,7 +364,7 @@ W_RESULT w_net_open_udp_socket(_In_z_ const char* pEndPoint, _Inout_ w_socket_ud
     _rt = w_net_url_parse(pEndPoint, _url);
     if(_rt)
     {
-        goto _exit;
+        goto out;
     }
     
     int _addr_hex = inet_addr(_url->u_hostname);
@@ -281,18 +378,18 @@ W_RESULT w_net_open_udp_socket(_In_z_ const char* pEndPoint, _Inout_ w_socket_ud
     _rt = nni_plat_udp_open(&pSocket->u, &pSocket->s);
     if(_rt)
     {
-        goto _exit;
+        goto out;
     }
     
     //allocate aio
     _rt = nng_aio_alloc(&pSocket->a, NULL, NULL);
     if(_rt)
     {
-        goto _exit;
+        goto out;
     }
     
     
-_exit:
+out:
     w_net_url_free(_url);
     return _rt;
 }
@@ -327,13 +424,13 @@ W_RESULT _io_udp_socket(_In_ w_socket_mode pSocketMode,
     if (_rt)
     {
         _net_error(_rt, "nng_aio_set_iov failed", _trace_info);
-        goto _exit;
+        goto out;
     }
     _rt = nng_aio_set_input(pSocket->a, 0, &pSocket->s);
     if (_rt)
     {
         _net_error(_rt, "nng_aio_set_input failed", _trace_info);
-        goto _exit;
+        goto out;
     }
     
     //send buffer over udp
@@ -353,17 +450,17 @@ W_RESULT _io_udp_socket(_In_ w_socket_mode pSocketMode,
     if (_rt)
     {
         _net_error(_rt, "nng_aio_result failed", _trace_info);
-        goto _exit;
+        goto out;
     }
     
     _sent_len = nng_aio_count(pSocket->a);
     if (_sent_len != _buf_len)
     {
         _net_error(_rt, "length of the sent buffer is not equal to inputted buffer", _trace_info);
-        goto _exit;
+        goto out;
     }
     
-_exit:
+out:
     return _rt;
 }
 

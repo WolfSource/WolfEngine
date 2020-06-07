@@ -73,6 +73,11 @@ void w_net_url_free(_Inout_ w_url pURL);
  * @param pNoDelayOption an option for tcp socket
  * @param pKeepAliveOption an option for tcp socket
  * @param pAsync create dialer or listener in async mode
+ * @param pTLS set true if tls is enable
+ * @param pTLSServerName server name
+ * @param pOwnCert initialize with own certificate
+ * @param pCert tls certificate
+ * @param pKey tls key
  * @param pSocket a tcp socket created
  * @return result code
 */
@@ -81,6 +86,11 @@ W_RESULT w_net_open_tcp_socket(_In_z_ const char* pEndPoint,
                                     _In_ const bool pNoDelayOption,
                                     _In_ const bool pKeepAliveOption,
                                     _In_ const bool pAsync,
+                                    _In_ const bool pTLS,
+                                    _In_z_ const char* pTLSServerName,
+                                    _In_ const bool pOwnCert,
+                                    _In_z_ const char* pCert,
+                                    _In_z_ const char* pKey,
                                     _Inout_ w_socket_tcp* pSocket);
 
 /**
