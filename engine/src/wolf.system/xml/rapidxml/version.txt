@@ -1,2 +1,0 @@
-http://rapidxml.sourceforge.net/
-version: 1.13
