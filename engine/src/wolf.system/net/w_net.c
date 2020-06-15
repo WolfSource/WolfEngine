@@ -13,7 +13,7 @@
 #include <nng/supplemental/tls/tls.h>
 #include <nng/transport/tls/tls.h>
 #include "w_net.h"
-#include <arpa/inet.h> 
+#include <arpa/inet.h>
 
 const char* _net_error(_In_ const W_RESULT pErrorCode,
                        _In_z_ const char* pUserDefinedMessage,
@@ -30,11 +30,6 @@ const char* _net_error(_In_ const W_RESULT pErrorCode,
                    pTraceInfo);
     }
     return _error_msg;
-}
-
-const char* w_net_error(_In_ const W_RESULT pErrorCode)
-{
-    return nng_strerror(pErrorCode);
 }
 
 static W_RESULT _init_dialer_tls(_In_ nng_dialer pDialer,
@@ -156,12 +151,45 @@ void w_net_url_free(_Inout_ w_url pURL)
     nng_url_free(pURL);
 }
 
+W_RESULT w_net_resolve(_In_z_ const char* pURL,
+                       _In_z_ const char* pPort,
+                       _In_ w_tcp_socket_address_family pSocketAddressFamily,
+                       _In_ const int pBindOrConnect,
+                       _Inout_ w_socket_address pSocketAddress)
+{
+    nng_aio*    _aio;
+    W_RESULT    _rt;
+    
+    //allocate aio
+    if((_rt = nng_aio_alloc(&_aio, NULL, NULL)) != 0)
+    {
+        goto out;
+    }
+    
+    //resolve and wait for aio
+    nni_tcp_resolv(pURL, pPort, pSocketAddressFamily, 1, _aio);
+    nng_aio_wait(_aio);
+    
+    //get result
+    if((_rt = nng_aio_result(_aio)) != 0)
+    {
+        goto out;
+    }
+    
+    nni_aio_get_sockaddr(_aio, pSocketAddress);
+    
+out:
+    nng_aio_free(_aio);
+    return _rt;
+}
+
 W_RESULT w_net_open_tcp_socket(_In_z_ const char* pEndPoint,
                                _In_ w_socket_mode pSocketMode,
                                _In_ bool pNoDelayOption,
                                _In_ bool pKeepAliveOption,
                                _In_ const bool pAsync,
                                _In_ const bool pTLS,
+                               _In_ const int pAuthMode,
                                _In_z_ const char* pTLSServerName,
                                _In_ const bool pOwnCert,
                                _In_z_ const char* pCert,
@@ -294,7 +322,6 @@ W_RESULT w_net_open_tcp_socket(_In_z_ const char* pEndPoint,
         case survey_respond_server:
         {
             //create listener
-            
             _rt = nng_listener_create(&pSocket->l, pSocket->s, pEndPoint);
             if(_rt)
             {
@@ -317,6 +344,15 @@ W_RESULT w_net_open_tcp_socket(_In_z_ const char* pEndPoint,
                 break;
             }
        
+            if (pTLS)
+            {
+                _rt = _init_listener_tls(pSocket->l, pAuthMode, pCert, pKey);
+                if (_rt)
+                {
+                    _net_error(_rt, "_init_listener_tls failed", _trace_info);
+                    break;
+                }
+            }
             _rt = nng_listener_start(pSocket->l, (pAsync ? NNG_FLAG_NONBLOCK : 0));
             if (_rt)
             {
@@ -506,6 +542,57 @@ W_RESULT w_net_receive_msg_udp(_Inout_ w_socket_udp* pSocket,
                                _In_z_ size_t* pMessageLength)
 {
     return _io_udp_socket(two_way_listener, pSocket, pMessage, pMessageLength);
+}
+
+W_RESULT w_net_run_websocket_server(_In_ const bool pSSL,
+                                    _In_z_ const char* pCertFilePath,
+                                    _In_z_ const char* pPrivateKeyFilePath,
+                                    _In_z_ const char* pPassPhrase,
+                                    _In_z_ const char* pRoot,
+                                    _In_ const int pPort,
+                                    _In_ const int pCompression,
+                                    _In_ const int pMaxPayloadLength,
+                                    _In_ const int pIdleTimeout,
+                                    _In_ const int pMaxBackPressure,
+                                    _In_ ws_on_listened_fn pOnListened,
+                                    _In_ ws_on_opened_fn pOnOpened,
+                                    _In_ ws_on_message_fn pOnMessage,
+                                    _In_ ws_on_closed_fn pOnClosed)
+{
+    W_RESULT _rt;
+    
+    ws _ws = ws_init();
+    if(_ws)
+    {
+        _rt = ws_run(_ws,
+                     pSSL,
+                     pCertFilePath,
+                     pPrivateKeyFilePath,
+                     pPassPhrase,
+                     pRoot,
+                     pPort,
+                     pCompression,
+                     pMaxPayloadLength,
+                     pIdleTimeout,
+                     pMaxBackPressure,
+                     pOnListened,
+                     pOnOpened,
+                     pOnMessage,
+                     pOnClosed);
+        ws_free(_ws);
+    }
+    else
+    {
+        W_ASSERT(false, "could not run websocket. trace info: w_net_run_websocket_server");
+        _rt = W_FAILURE;
+    }
+    
+    return _rt;
+}
+
+const char* w_net_error(_In_ const W_RESULT pErrorCode)
+{
+    return nng_strerror(pErrorCode);
 }
 
 void w_net_fini(void)

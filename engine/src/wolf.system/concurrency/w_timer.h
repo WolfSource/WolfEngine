@@ -69,13 +69,13 @@ w_timer_periodic* w_timer_init_periodic(_In_ const double pStartAfterSec,
  * release a timer
  * @param pTimer timer to release
 */
-void w_timer_release(_In_ w_timer* pTimer);
+void w_timer_free(_In_ w_timer* pTimer);
 
 /**
  * release a timer periodic
  * @param pTimer timer periodic to release
 */
-void w_timer_periodic_release(_In_ w_timer_periodic* pTimer);
+void w_timer_periodic_free(_In_ w_timer_periodic* pTimer);
 
 #ifdef __cplusplus
 }

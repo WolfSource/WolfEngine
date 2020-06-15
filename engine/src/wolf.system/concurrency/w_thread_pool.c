@@ -2,7 +2,7 @@
 #include <apr-1/apr_thread_proc.h>
 #include <apr-util/apr_thread_pool.h>
 
-w_thread_pool w_thread_pool_create(_In_ const size_t pMinThreads,
+w_thread_pool w_thread_pool_init(_In_ const size_t pMinThreads,
                                    _In_ const size_t pMaxThreads,
                                    _In_ w_mem_pool pMemoryPool)
 {
@@ -20,7 +20,7 @@ w_thread_pool w_thread_pool_create(_In_ const size_t pMinThreads,
     return (w_thread_pool)_thread_pool;
 }
   
-W_RESULT  w_thread_pool_destroy (_In_ w_thread_pool pThreadPool)
+W_RESULT  w_thread_pool_free(_In_ w_thread_pool pThreadPool)
 {
     return apr_thread_pool_destroy((apr_thread_pool_t*)pThreadPool) == APR_SUCCESS;
 }

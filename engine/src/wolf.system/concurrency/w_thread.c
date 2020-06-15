@@ -2,7 +2,7 @@
 #include <apr-1/apr_thread_proc.h>
 #include <apr-1/apr_portable.h>
 
-W_RESULT w_thread_create_once_flag(_Inout_ w_thread_once_flag pOnceFlag)
+W_RESULT w_thread_init_once_flag(_Inout_ w_thread_once_flag pOnceFlag)
 {
     //get default thread pool
     w_mem_pool _pool = w_get_default_memory_pool();

@@ -30,7 +30,7 @@ typedef void (*w_thread_once_job)(void);
  * @param pOnceFlag create once flag
  * @return result
 */
-W_RESULT w_thread_create_once_flag(_Inout_ w_thread_once_flag pOnceFlag);
+W_RESULT w_thread_init_once_flag(_Inout_ w_thread_once_flag pOnceFlag);
 
 /**
  * Run the specified function one time, regardless of how many threads call it.

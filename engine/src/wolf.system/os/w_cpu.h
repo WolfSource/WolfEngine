@@ -1,47 +1,55 @@
 /*
-	Project			 : Wolf Engine. Copyright(c) Pooya Eimandar (https://PooyaEimandar.github.io) . All rights reserved.
-	Source			 : Please direct any bug to https://github.com/WolfEngine/Wolf.Engine/issues
-	Website			 : https://WolfEngine.App
-	Name			 : w_cpu.h
-	Description		 : This class responsible to show the information of CPU
-	Comment          :
+    Project          : Wolf Engine. Copyright(c) Pooya Eimandar (https://PooyaEimandar.github.io) . All rights reserved.
+    Source           : Please direct any bug to https://github.com/WolfEngine/Wolf.Engine/issues
+    Website          : https://WolfEngine.App
+    Name             : w_cpu.h
+    Description      : Show the information of CPU
+    Comment          :
 */
 
 #pragma once
 
-#ifdef __WIN32
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-#include <pdh.h>
-#include "w_system_export.h"
+#include "wolf.h"
 
+#ifdef W_PLATFORM_WIN
 #pragma comment(lib, "pdh.lib")
+#endif
 
-namespace wolf::system
+//forward declaration
+struct w_cpu_pv;
+typedef struct
 {
-	class w_cpu
-	{
-	public:
-		WSYS_EXP w_cpu();
-		WSYS_EXP virtual ~w_cpu();
+    W_RESULT            error_code;
+    unsigned long       last_sample_time;
+    float               cpu_usage;
+    struct w_cpu_pv*    cpu_pv;
+} w_cpu_imp;
+typedef w_cpu_imp* w_cpu;
 
-		//Initialize the cpu info and return true or false value which indicates that function did initialize successfully or not. 
-		WSYS_EXP bool initialize();
-		//Update the percentage of CPU usage
-		WSYS_EXP void update();
-		//Get the value of CPU percentage
-		WSYS_EXP int get_cpu_percentage() const;
-		//Release all resources
-		WSYS_EXP ULONG release();
+/**
+ * initialize an object which is responsible to query the cpu information
+ * @return result code
+*/
+w_cpu w_cpu_init(void);
 
-	private:
-		bool _is_released;
-		bool _canReadCpu;
-		HQUERY _queryHandle;
-		HCOUNTER _counterHandle;
-		unsigned long _lastSampleTime;
-		long _cpuUsage;
+/**
+ * Update query and get the percentage of CPU usage
+ * @param pCPU a pointer to cpu information object
+ * @return result code
+*/
+W_RESULT w_cpu_get_info(_Inout_ w_cpu pCPU);
 
-	};
+/**
+ * free CPU information object
+ * @param pCPU a pointer to cpu information object
+ * @return result code
+*/
+W_RESULT w_cpu_free(_Inout_ w_cpu pCPU);
+
+#ifdef __cplusplus
 }
-
-#endif // __WIN32
+#endif

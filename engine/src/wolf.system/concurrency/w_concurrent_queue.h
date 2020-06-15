@@ -24,9 +24,9 @@ typedef struct apr_queue_t* w_concurrent_queue;
  * @param pQueueCapacity maximum size of the queue
  * @param pMemPool pool to allocate queue from
 */
-W_RESULT  w_concurrent_queue_create(_Inout_ w_concurrent_queue* pQueue,
-                                    _In_ const uint32_t pQueueCapacity,
-                                    _In_ w_mem_pool pMemPool);
+W_RESULT  w_concurrent_queue_init(_Inout_ w_concurrent_queue* pQueue,
+                                  _In_ const uint32_t pQueueCapacity,
+                                  _In_ w_mem_pool pMemPool);
 
 /**
  * push/add an object to the queue, blocking if the queue is already full

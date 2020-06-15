@@ -106,15 +106,15 @@ W_RESULT w_redis_disable_server(_In_ w_redis pRedisClient,
     return apr_redis_disable_server(pRedisClient, pRedisServer);
 }
 
-W_RESULT w_redis_server_create(_In_ w_mem_pool pMemPool,
-                               _In_z_ const char* pHost,
-                               _In_ uint16_t pPort,
-                               _In_ uint32_t pMin,
-                               _In_ uint32_t pSMax,
-                               _In_ uint32_t pMax,
-                               _In_ uint32_t pTTL,
-                               _In_ uint32_t pReadWriteTimeOut,
-                               _Inout_ w_redis_server* pNewServerLocation)
+W_RESULT w_redis_server_init(_In_ w_mem_pool pMemPool,
+                             _In_z_ const char* pHost,
+                             _In_ uint16_t pPort,
+                             _In_ uint32_t pMin,
+                             _In_ uint32_t pSMax,
+                             _In_ uint32_t pMax,
+                             _In_ uint32_t pTTL,
+                             _In_ uint32_t pReadWriteTimeOut,
+                             _Inout_ w_redis_server* pNewServerLocation)
 {
     w_mem_pool _pool = NULL;
     if (pMemPool)
@@ -142,10 +142,10 @@ W_RESULT w_redis_server_create(_In_ w_mem_pool pMemPool,
                                    pNewServerLocation);
 }
 
-W_RESULT w_redis_create(_In_ w_mem_pool pMemPool,
-                        _In_ uint16_t pMaxServers,
-                        _In_ uint32_t pFlags,
-                        _Inout_ w_redis* pRedisClient)
+W_RESULT w_redis_init(_In_ w_mem_pool pMemPool,
+                      _In_ uint16_t pMaxServers,
+                      _In_ uint32_t pFlags,
+                      _Inout_ w_redis* pRedisClient)
 {
     w_mem_pool _pool = NULL;
     if (pMemPool)

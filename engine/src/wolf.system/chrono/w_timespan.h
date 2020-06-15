@@ -17,6 +17,7 @@ extern "C" {
 
 //#include "python_exporter/w_boost_python_helper.h"
 
+//forward declaration
 typedef struct
 {
     int64_t                         ticks;

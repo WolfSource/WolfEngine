@@ -129,15 +129,15 @@ W_RESULT w_redis_disable_server(_In_ w_redis pRedisClient,
  * @return result code
  * @remark pMin, pSMax, and pMax are only used when APR_HAS_THREADS
  */
-W_RESULT w_redis_server_create(_In_ w_mem_pool pMemPool,
-                               _In_z_ const char* pHost,
-                               _In_ uint16_t pPort,
-                               _In_ uint32_t pMin,
-                               _In_ uint32_t pSMax,
-                               _In_ uint32_t pMax,
-                               _In_ uint32_t pTTL,
-                               _In_ uint32_t pReadWriteTimeOut,
-                               _Inout_ w_redis_server* pNewServerLocation);
+W_RESULT w_redis_server_init(_In_ w_mem_pool pMemPool,
+                             _In_z_ const char* pHost,
+                             _In_ uint16_t pPort,
+                             _In_ uint32_t pMin,
+                             _In_ uint32_t pSMax,
+                             _In_ uint32_t pMax,
+                             _In_ uint32_t pTTL,
+                             _In_ uint32_t pReadWriteTimeOut,
+                             _Inout_ w_redis_server* pNewServerLocation);
 /**
  * Creates a new redisd client object
  * @param pMemPool Pool to use
@@ -146,10 +146,10 @@ W_RESULT w_redis_server_create(_In_ w_mem_pool pMemPool,
  * @param pRedisClient  location of the new redis client object
  * @return result code
  */
-W_RESULT w_redis_create(_In_ w_mem_pool pMemPool,
-                        _In_ uint16_t pMaxServers,
-                        _In_ uint32_t pFlags,
-                        _Inout_ w_redis* pRedisClient);
+W_RESULT w_redis_init(_In_ w_mem_pool pMemPool,
+                      _In_ uint16_t pMaxServers,
+                      _In_ uint32_t pFlags,
+                      _Inout_ w_redis* pRedisClient);
 
 /**
  * Gets a value from the server

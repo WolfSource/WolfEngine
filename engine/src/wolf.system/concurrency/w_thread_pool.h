@@ -28,16 +28,16 @@ typedef struct w_thread_pool_imp* w_thread_pool;
  * @return The pointer in which to return the newly created apr_thread_pool
  * object, or NULL if thread pool creation fails
 */
-w_thread_pool w_thread_pool_create(_In_ const size_t pMinThreads,
-                                   _In_ const size_t pMaxThreads,
-                                   _In_ w_mem_pool pMemoryPool);
+w_thread_pool w_thread_pool_init(_In_ const size_t pMinThreads,
+                                 _In_ const size_t pMaxThreads,
+                                 _In_ w_mem_pool pMemoryPool);
 
 /**
- * Destroy the thread pool and stop all the threads
+ * Destroy and free the thread pool and stop all the threads
  * @param pThreadPool The thread pool
  * @return W_SUCCESS if all threads are stopped.
 */
-W_RESULT  w_thread_pool_destroy(_In_ w_thread_pool pThreadPool);
+W_RESULT  w_thread_pool_free(_In_ w_thread_pool pThreadPool);
 
 /**
  * Schedule a task to the bottom of the tasks of same priority.

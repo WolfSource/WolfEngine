@@ -72,12 +72,12 @@ w_timer_periodic* w_timer_init_periodic(_In_ const double pStartAfterSec,
     return _timer;
 }
 
-void w_timer_release(_In_ w_timer* pTimer)
+void w_timer_free(_In_ w_timer* pTimer)
 {
     ev_loop_destroy(pTimer->l);
 }
 
-void w_timer_periodic_release(_In_ w_timer_periodic* pTimer)
+void w_timer_periodic_free(_In_ w_timer_periodic* pTimer)
 {
     ev_loop_destroy(pTimer->l);
 }

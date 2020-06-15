@@ -407,7 +407,7 @@ W_RESULT w_lua_set_lua_path(_In_z_ const char* pPath)
     return W_SUCCESS;
 }
 
-W_RESULT w_lua_terminate()
+W_RESULT w_lua_free()
 {
     if (s_lua)
     {

@@ -113,6 +113,7 @@ typedef apr_pool_t* w_mem_pool;
 typedef apr_file_t* w_file;
 typedef apr_finfo_t* w_file_info;
 typedef apr_array_header_t* w_array;
+typedef apr_table_t* w_map;
 typedef apr_off_t w_offset;
 typedef apr_hash_t* w_hash;
 

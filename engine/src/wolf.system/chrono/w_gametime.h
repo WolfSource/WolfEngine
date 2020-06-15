@@ -16,6 +16,7 @@ extern "C" {
 #include "wolf.h"
 #include "w_chrono.h"
 
+//forward declaration
 struct w_gametime_imp;
 typedef struct w_gametime_imp* w_gametime;
 typedef void w_gametime_tick_callback(w_gametime);
