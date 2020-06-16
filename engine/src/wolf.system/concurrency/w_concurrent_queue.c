@@ -2,7 +2,7 @@
 #include <apr-util/apr_queue.h>
 
 W_RESULT  w_concurrent_queue_init(_Inout_ w_concurrent_queue* pQueue,
-                                  _In_ const uint32_t pQueueCapacity,
+                                  _In_ uint32_t pQueueCapacity,
                                   _In_ w_mem_pool pMemPool)
 {
     apr_status_t _rt = apr_queue_create((apr_queue_t**)pQueue, pQueueCapacity, pMemPool);

@@ -359,15 +359,15 @@ W_RESULT _lua_set_value(_Inout_ void* pValue, _In_ int pValueType)
     }
 }
 
-W_RESULT w_lua_set_parameter_function(_In_ const void* pValue, _In_ const int pValueType)
+W_RESULT w_lua_set_parameter_function(_In_ const void* pValue, _In_ int pValueType)
 {
     s_function_number_input_parameters++;
     return _lua_set_value(pValue, pValueType);
 }
 
-W_RESULT w_lua_set_global_variable(_In_z_ const char* pVariableName,
-                                   _In_ const int pVariableType,
-                                   _In_ const void* pValue)
+W_RESULT w_lua_set_global_variable(_In_z_ const char*   pVariableName,
+                                   _In_   int           pVariableType,
+                                   _In_   const void*   pValue)
 {
     lua_getglobal(s_lua, pVariableName);
     if (lua_isnil(s_lua, -1))

@@ -37,10 +37,10 @@ typedef struct
  * @param pAcceleration is the acceleration of process. the default value is 1
  * @return result
 */
-W_RESULT w_compress_lz4(_In_		const char* pSrcBuffer,
-                                          _In_		w_compress_mode pMode,
-                                          _In_		int pAcceleration,
-                                          _Inout_   w_compress_result* pCompressResult);
+W_RESULT w_compress_lz4(_In_    const char* pSrcBuffer,
+                        _In_	w_compress_mode pMode,
+                        _In_	int pAcceleration,
+                        _Inout_ w_compress_result* pCompressResult);
 
 /**
  * compress stream using lz4 algorithm
@@ -49,7 +49,7 @@ W_RESULT w_compress_lz4(_In_		const char* pSrcBuffer,
  * @return result
 */
 W_RESULT w_decompress_lz4(_In_	    const char* pCompressedBuffer,
-                                            _Inout_	w_compress_result* pDecompressInfo);
+                          _Inout_	w_compress_result* pDecompressInfo);
 
 #ifdef __WIN32
 W_RESULT w_compress_lzma(_In_ const uint8_t* pSrcBuffer,

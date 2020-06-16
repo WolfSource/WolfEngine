@@ -16,13 +16,13 @@
 
 w_file w_io_create_file(_In_z_  const char* pPath,
                         _In_z_  const char* pContent,
-                        _In_    const bool pBinaryMode,
-                        _In_    const bool pBufferedMode,
-                        _In_    const bool pNoneBlockMode,
-                        _In_    const bool pMultiThreadedMode,
-                        _In_    const bool pOpenAppendMode,
-                        _In_    const bool pIsLargFile,
-                        _In_    const bool pErrorIfFileExists)
+                        _In_    bool pBinaryMode,
+                        _In_    bool pBufferedMode,
+                        _In_    bool pNoneBlockMode,
+                        _In_    bool pMultiThreadedMode,
+                        _In_    bool pOpenAppendMode,
+                        _In_    bool pIsLargFile,
+                        _In_    bool pErrorIfFileExists)
 {
     apr_status_t _ret = APR_SUCCESS;
     apr_file_t* _file = NULL;
@@ -86,13 +86,13 @@ w_file w_io_create_file(_In_z_  const char* pPath,
 
 W_RESULT w_io_save_to_file(_In_z_  const char* pPath,
                            _In_z_  const char* pContent,
-                           _In_    const bool pBinaryMode,
-                           _In_    const bool pBufferedMode,
-                           _In_    const bool pNoneBlockMode,
-                           _In_    const bool pMultiThreadedMode,
-                           _In_    const bool pOpenAppendMode,
-                           _In_    const bool pIsLargFile,
-                           _In_    const bool pErrorIfFileExists)
+                           _In_    bool pBinaryMode,
+                           _In_    bool pBufferedMode,
+                           _In_    bool pNoneBlockMode,
+                           _In_    bool pMultiThreadedMode,
+                           _In_    bool pOpenAppendMode,
+                           _In_    bool pIsLargFile,
+                           _In_    bool pErrorIfFileExists)
 {
     apr_status_t _ret = APR_SUCCESS;
     apr_file_t* _file = NULL;
@@ -694,8 +694,8 @@ W_RESULT w_io_split_string(_In_z_ char* pString,
 
 size_t w_io_to_base_64(_Inout_z_ char** pDestinationBuffer,
                        _In_z_ char* pSourceBuffer,
-                       _In_z_ const size_t pSourceBufferLenght,
-                       _In_ const enum base_64_mode pEncodeMode)
+                       _In_z_ size_t pSourceBufferLenght,
+                       _In_ enum base_64_mode pEncodeMode)
 {
     size_t _encoded_size = 0;
     switch (pEncodeMode)

@@ -122,7 +122,7 @@ W_RESULT    w_lua_get_global_variable(_In_z_ const char* pVariableName, _Inout_ 
             LUA_INTEGER         9
  * @return result
 */
-W_RESULT w_lua_set_parameter_function(_In_ const void* pValue, _In_ const int pValueType);
+W_RESULT w_lua_set_parameter_function(_In_ const void* pValue, _In_ int pValueType);
 
 /**
  *  set global variable
@@ -142,7 +142,7 @@ W_RESULT w_lua_set_parameter_function(_In_ const void* pValue, _In_ const int pV
  * @return result
 */
 W_RESULT w_lua_set_global_variable(_In_z_   const char* pVariableName,
-                                   _In_     const int   pVariableType,
+                                   _In_     int         pVariableType,
                                    _In_     const void* pValue);
 
 /**

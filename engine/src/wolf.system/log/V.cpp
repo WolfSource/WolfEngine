@@ -161,7 +161,7 @@ W_RESULT  V_FLUSH(void)
     return s_loggers[0]->flush();
 }
 
-W_RESULT  V_FLUSH_EX(_In_ const int pLogID)
+W_RESULT  V_FLUSH_EX(_In_ int pLogID)
 {
     //get the logger object based on log ID
     if (s_loggers.find(pLogID) == s_loggers.end()) return W_FAILURE;

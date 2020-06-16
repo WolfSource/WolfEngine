@@ -53,35 +53,35 @@ w_timespan* w_timespan_init_from_now(void);
  * @param pValue is days
  * @return a pointer to w_timespan object
 */
-w_timespan* w_timespan_init_from_days(_In_ const double pValue);
+w_timespan* w_timespan_init_from_days(_In_ double pValue);
 
 /**
  * Returns timespan from hours
  * @param pValue is hours
  * @return a pointer to w_timespan object
 */
-w_timespan* w_timespan_init_from_hours(_In_ const double pValue);
+w_timespan* w_timespan_init_from_hours(_In_ double pValue);
 
 /**
  * Returns timespan from minutes
  * @param pValue is minutes
  * @return a pointer to w_timespan object
 */
-w_timespan* w_timespan_init_from_minutes(_In_ const double pValue);
+w_timespan* w_timespan_init_from_minutes(_In_ double pValue);
 
 /**
  * Returns timespan from seconds
  * @param pValue is seconds
  * @return a pointer to w_timespan object
 */
-w_timespan* w_timespan_init_from_seconds(_In_ const double pValue);
+w_timespan* w_timespan_init_from_seconds(_In_ double pValue);
 
 /**
  * Returns timespan from milliseconds
  * @param pValue is milliseconds
  * @return a pointer to w_timespan object
 */
-w_timespan* w_timespan_init_from_milliseconds(_In_ const double pValue);
+w_timespan* w_timespan_init_from_milliseconds(_In_ double pValue);
 
 /**
  * Returns timespan from const char*
@@ -95,7 +95,7 @@ w_timespan* w_timespan_init_from_string(_In_z_ const char* const pValue);
  * @param pValue is ticks
  * @return a pointer to w_timespan object
  */
-w_timespan* w_timespan_init_from_ticks(_In_ const int64_t pValue);
+w_timespan* w_timespan_init_from_ticks(_In_ int64_t pValue);
 
 /**
  * Initialize timespan with short time (hours, minutes, seconds)
@@ -104,9 +104,9 @@ w_timespan* w_timespan_init_from_ticks(_In_ const int64_t pValue);
  * @param pSeconds is number of seconds
  * @return a pointer to w_timespan object
  */
-w_timespan* w_timespan_init_from_shorttime(_In_ const int pHours,
-                                                        _In_ const int pMinutes,
-                                                        _In_ const int pSeconds);
+w_timespan* w_timespan_init_from_shorttime(_In_ int pHours,
+                                           _In_ int pMinutes,
+                                           _In_ int pSeconds);
 
 /**
  * Initialize timespan with long time (days, hours, minutes, seconds, milliseconds)
@@ -117,11 +117,11 @@ w_timespan* w_timespan_init_from_shorttime(_In_ const int pHours,
  * @param pMilliseconds is number of milliseconds
  * @return a pointer to w_timespan object
  */
-w_timespan* w_timespan_init_from_longtime(_In_ const int pDays,
-                                                       _In_ const int pHours,
-                                                       _In_ const int pMinutes,
-                                                       _In_ const int pSeconds,
-                                                       _In_ const int pMilliseconds);
+w_timespan* w_timespan_init_from_longtime(_In_ int pDays,
+                                          _In_ int pHours,
+                                          _In_ int pMinutes,
+                                          _In_ int pSeconds,
+                                          _In_ int pMilliseconds);
 
 /**
  * Initialize timespan from string (in the following format "00:00:00:00:000")
@@ -176,70 +176,70 @@ const wchar_t* w_timespan_to_wstring(_In_ const w_timespan* const pValue);
  * @param pValue timespan parameter
  * @return days as a constant int
 */
-const int w_timespan_get_days(_In_ const w_timespan* const pValue);
+int w_timespan_get_days(_In_ const w_timespan* const pValue);
 
 /**
  * get total days of timespan
  * @param pValue timespan parameter
  * @return total days as a constant double
 */
-const double w_timespan_get_total_days(_In_ const w_timespan* const pValue);
+double w_timespan_get_total_days(_In_ const w_timespan* const pValue);
 
 /**
  * get hours of timespan
  * @param pValue timespan parameter
  * @return hours as a constant int
 */
-const int w_timespan_get_hours(_In_ const w_timespan* const pValue);
+int w_timespan_get_hours(_In_ const w_timespan* const pValue);
 
 /**
  * get total hours of timespan
  * @param pValue timespan parameter
  * @return total hours as a constant double
 */
-const double w_timespan_get_total_hours(_In_ const w_timespan* const pValue);
+double w_timespan_get_total_hours(_In_ const w_timespan* const pValue);
 
 /**
  * get minutes of timespan
  * @param pValue timespan parameter
  * @return minutes as a constant int
 */
-const int w_timespan_get_minutes(_In_ const w_timespan* const pValue);
+int w_timespan_get_minutes(_In_ const w_timespan* const pValue);
 
 /**
  * get total minutes of timespan
  * @param pValue timespan parameter
  * @return total minutes as a constant double
 */
-const double w_timespan_get_total_minutes(_In_ const w_timespan* const pValue);
+double w_timespan_get_total_minutes(_In_ const w_timespan* const pValue);
 
 /**
  * get seconds of timespan
  * @param pValue timespan parameter
  * @return seconds as a constant int
 */
-const int w_timespan_get_seconds(_In_ const w_timespan* const pValue);
+int w_timespan_get_seconds(_In_ const w_timespan* const pValue);
 
 /**
  * get total seconds of timespan
  * @param pValue timespan parameter
  * @return total seconds as a constant double
 */
-const double w_timespan_get_total_seconds(_In_ const w_timespan* const pValue);
+double w_timespan_get_total_seconds(_In_ const w_timespan* const pValue);
 
 /**
  * get milliseconds of timespan
  * @param pValue timespan parameter
  * @return milliseconds as a constant int
 */
-const int w_timespan_get_milliseconds(_In_ const w_timespan* const pValue);
+int w_timespan_get_milliseconds(_In_ const w_timespan* const pValue);
 
 /**
  * get total milliseconds of timespan
  * @param pValue timespan parameter
  * @return total milliseconds as a constant double
 */
-const double w_timespan_get_total_milliseconds(_In_ const w_timespan* const pValue);
+double w_timespan_get_total_milliseconds(_In_ const w_timespan* const pValue);
 
 /**
  * get current date time in chars

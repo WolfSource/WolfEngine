@@ -19,7 +19,7 @@ static const double DAYS_PER_TICK = 1.0 / TICKS_PER_DAY;
 static const int64_t MAX_MILLISECONDS = LLONG_MAX / TICKS_PER_MILLISECOND;
 static const int64_t MIN_MILLISECONDS = LLONG_MIN / TICKS_PER_MILLISECOND;
 
-const long _timespan_w_wcstol(const wchar_t* const pValue, bool* pError)
+long _timespan_w_wcstol(const wchar_t* const pValue, bool* pError)
 {
     wchar_t* _endptr;
     long _long = wcstol(pValue, &_endptr, 0);
@@ -38,11 +38,11 @@ const long _timespan_w_wcstol(const wchar_t* const pValue, bool* pError)
     return _long;
 }
 
-int64_t _time_to_ticks(_In_ const int64_t pDays,
-                       _In_ const int64_t pHours,
-                       _In_ const int64_t pMinutes,
-                       _In_ const int64_t pSeconds,
-                       _In_ const int64_t pMilliSeconds,
+int64_t _time_to_ticks(_In_ int64_t pDays,
+                       _In_ int64_t pHours,
+                       _In_ int64_t pMinutes,
+                       _In_ int64_t pSeconds,
+                       _In_ int64_t pMilliSeconds,
                        _Inout_ bool* pOverflowed)
 {
     int64_t _total_milliSeconds = pDays * 864 * 100000 +
@@ -61,7 +61,7 @@ int64_t _time_to_ticks(_In_ const int64_t pDays,
     return _total_milliSeconds * TICKS_PER_MILLISECOND;
 }
 
-int64_t _interval(_In_ const double pValue, _In_ const int pScale, _Inout_ bool* pOverflowed)
+int64_t _interval(_In_ double pValue, _In_ int pScale, _Inout_ bool* pOverflowed)
 {
     double _tmp = pValue * pScale;
     double _millis = _tmp + (pValue >= 0 ? 0.5 : -0.5);
@@ -113,42 +113,42 @@ w_timespan* w_timespan_init_from_now(void)
 #endif
 }
 
-w_timespan* w_timespan_init_from_days(_In_ const double pValue)
+w_timespan* w_timespan_init_from_days(_In_ double pValue)
 {
     w_timespan* _timespan = (w_timespan*)malloc(sizeof(w_timespan));
     _timespan->ticks = _interval(pValue, MILLIS_PER_DAY, &_timespan->overflowed);
     return _timespan;
 }
 
-w_timespan* w_timespan_init_from_hours(_In_ const double pValue)
+w_timespan* w_timespan_init_from_hours(_In_ double pValue)
 {
     w_timespan* _timespan = (w_timespan*)malloc(sizeof(w_timespan));
     _timespan->ticks = _interval(pValue, MILLIS_PER_HOUR, &_timespan->overflowed);
     return _timespan;
 }
 
-w_timespan* w_timespan_init_from_minutes(_In_ const double pValue)
+w_timespan* w_timespan_init_from_minutes(_In_ double pValue)
 {
     w_timespan* _timespan = (w_timespan*)malloc(sizeof(w_timespan));
     _timespan->ticks = _interval(pValue, MILLIS_PER_MINUTE, &_timespan->overflowed);
     return _timespan;
 }
 
-w_timespan* w_timespan_init_from_seconds(_In_ const double pValue)
+w_timespan* w_timespan_init_from_seconds(_In_ double pValue)
 {
     w_timespan* _timespan = (w_timespan*)malloc(sizeof(w_timespan));
     _timespan->ticks = _interval(pValue, MILLIS_PER_SECOND, &_timespan->overflowed);
     return _timespan;
 }
 
-w_timespan* w_timespan_init_from_milliseconds(_In_ const double pValue)
+w_timespan* w_timespan_init_from_milliseconds(_In_ double pValue)
 {
     w_timespan* _timespan = (w_timespan*)malloc(sizeof(w_timespan));
     _timespan->ticks = _interval(pValue, 1, &_timespan->overflowed);
     return _timespan;
 }
 
-w_timespan* w_timespan_init_from_ticks(_In_ const int64_t pTicks)
+w_timespan* w_timespan_init_from_ticks(_In_ int64_t pTicks)
 {
     w_timespan* _timespan = (w_timespan*)malloc(sizeof(w_timespan));
     if(pTicks > LLONG_MAX || LLONG_MAX < LLONG_MIN)
@@ -164,9 +164,9 @@ w_timespan* w_timespan_init_from_ticks(_In_ const int64_t pTicks)
     return _timespan;
 }
 
-w_timespan* w_timespan_init_from_shorttime(_In_ const int pHours,
-                                           _In_ const int pMinutes,
-                                           _In_ const int pSeconds)
+w_timespan* w_timespan_init_from_shorttime(_In_ int pHours,
+                                           _In_ int pMinutes,
+                                           _In_ int pSeconds)
 {
     w_timespan* _timespan = (w_timespan*)malloc(sizeof(w_timespan));
     _timespan->ticks = _time_to_ticks(
@@ -179,11 +179,11 @@ w_timespan* w_timespan_init_from_shorttime(_In_ const int pHours,
     return _timespan;
 }
 
-w_timespan* w_timespan_init_from_longtime(_In_ const int pDays,
-                                        _In_ const int pHours,
-                                        _In_ const int pMinutes,
-                                        _In_ const int pSeconds,
-                                        _In_ const int pMilliseconds)
+w_timespan* w_timespan_init_from_longtime(_In_ int pDays,
+                                          _In_ int pHours,
+                                          _In_ int pMinutes,
+                                          _In_ int pSeconds,
+                                          _In_ int pMilliseconds)
 {
     w_timespan* _timespan = (w_timespan*)malloc(sizeof(w_timespan));
     _timespan->ticks = _time_to_ticks(
@@ -364,52 +364,52 @@ const wchar_t* w_timespan_to_wstring(_In_ const w_timespan* const pValue)
 
 #pragma region Getters
 
-const int w_timespan_get_days(_In_ const w_timespan* const pValue)
+int w_timespan_get_days(_In_ const w_timespan* const pValue)
 {
     return (int)(pValue->ticks / TICKS_PER_DAY);
 }
 
-const double w_timespan_get_total_days(_In_ const w_timespan* const pValue)
+double w_timespan_get_total_days(_In_ const w_timespan* const pValue)
 {
     return (double)pValue->ticks * DAYS_PER_TICK;
 }
 
-const int w_timespan_get_hours(_In_ const w_timespan* const pValue)
+int w_timespan_get_hours(_In_ const w_timespan* const pValue)
 {
     return ((int)(pValue->ticks / TICKS_PER_HOUR) % 24);
 }
 
-const double w_timespan_get_total_hours(_In_ const w_timespan* const pValue)
+double w_timespan_get_total_hours(_In_ const w_timespan* const pValue)
 {
     return (double)(pValue->ticks) * HOURS_PER_TICK;
 }
 
-const int w_timespan_get_minutes(_In_ const w_timespan* const pValue)
+int w_timespan_get_minutes(_In_ const w_timespan* const pValue)
 {
     return ((int)(pValue->ticks / TICKS_PER_MINUTE) % 60);
 }
 
-const double w_timespan_get_total_minutes(_In_ const w_timespan* const pValue)
+double w_timespan_get_total_minutes(_In_ const w_timespan* const pValue)
 {
     return (double)(pValue->ticks) * MINUTES_PER_TICK;
 }
 
-const int w_timespan_get_seconds(_In_ const w_timespan* const pValue)
+int w_timespan_get_seconds(_In_ const w_timespan* const pValue)
 {
     return ((int)(pValue->ticks / TICKS_PER_SECOND) % 60);
 }
 
-const double w_timespan_get_total_seconds(_In_ const w_timespan* const pValue)
+double w_timespan_get_total_seconds(_In_ const w_timespan* const pValue)
 {
     return (double)(pValue->ticks) * SECONDS_PER_TICK;
 }
 
-const int w_timespan_get_milliseconds(_In_ const w_timespan* const pValue)
+int w_timespan_get_milliseconds(_In_ const w_timespan* const pValue)
 {
     return ((int)(pValue->ticks / TICKS_PER_MILLISECOND) % 1000);
 }
 
-const double w_timespan_get_total_milliseconds(_In_ const w_timespan* const pValue)
+double w_timespan_get_total_milliseconds(_In_ const w_timespan* const pValue)
 {
     double _temp = (double)(pValue->ticks) * MILLI_SECONDS_PER_TICK;
     if (_temp > MAX_MILLISECONDS) return (double)MAX_MILLISECONDS;

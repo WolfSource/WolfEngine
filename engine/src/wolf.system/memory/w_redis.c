@@ -3,7 +3,7 @@
 
 uint32_t w_redis_hash(_In_ w_redis pRedisClient,
                       _In_z_ const char* pData,
-                      _In_ const size_t pDataLen)
+                      _In_ size_t pDataLen)
 {
     if (!pRedisClient || pData || pDataLen == 0)
     {
@@ -15,7 +15,7 @@ uint32_t w_redis_hash(_In_ w_redis pRedisClient,
 
 uint32_t w_redis_hash_crc32(_In_ void* pBaton,
                             _In_z_ const char* pData,
-                            _In_ const size_t pDataLen)
+                            _In_ size_t pDataLen)
 {
     if (!pBaton || pData || pDataLen == 0)
     {
@@ -27,7 +27,7 @@ uint32_t w_redis_hash_crc32(_In_ void* pBaton,
 
 uint32_t w_redis_hash_default(_In_ void* pBaton,
                               _In_ const char* pData,
-                              _In_ const size_t pDataLen)
+                              _In_ size_t pDataLen)
 {
     if (!pBaton || pData || pDataLen == 0)
     {
@@ -38,7 +38,7 @@ uint32_t w_redis_hash_default(_In_ void* pBaton,
 }
 
 w_redis_server w_redis_find_server_hash(_In_ w_redis pRedisClient,
-                                        _In_ const uint32_t pHash)
+                                        _In_ uint32_t pHash)
 {
     if (!pRedisClient || pHash == 0)
     {
@@ -50,7 +50,7 @@ w_redis_server w_redis_find_server_hash(_In_ w_redis pRedisClient,
 
 w_redis_server w_redis_find_server_hash_default(_In_ void* pBaton,
                                                 _In_ w_redis pRedisClient,
-                                                _In_ const uint32_t pHash)
+                                                _In_ uint32_t pHash)
 {
     if (!pRedisClient || pHash == 0)
     {
@@ -207,7 +207,7 @@ W_RESULT w_redis_get(_In_ w_redis pRedisClient,
 W_RESULT w_redis_set(_In_ w_redis pRedisClient,
                      _In_z_ const char* pKey,
                      _In_z_ char* pBaton,
-                     _In_ const size_t pDataSize,
+                     _In_ size_t pDataSize,
                      _In_ uint16_t pFlags)
 {
     if (!pRedisClient || !pKey || !pBaton)
@@ -225,7 +225,7 @@ W_RESULT w_redis_set(_In_ w_redis pRedisClient,
 W_RESULT w_redis_setex(_In_ w_redis pRedisClient,
                        _In_z_ const char* pKey,
                        _In_z_ char* pBaton,
-                       _In_ const size_t pDataSize,
+                       _In_ size_t pDataSize,
                        _In_ uint32_t pTimeOut,
                        _In_ uint16_t pFlags)
 {

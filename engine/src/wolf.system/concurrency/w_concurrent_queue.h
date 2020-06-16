@@ -25,7 +25,7 @@ typedef struct apr_queue_t* w_concurrent_queue;
  * @param pMemPool pool to allocate queue from
 */
 W_RESULT  w_concurrent_queue_init(_Inout_ w_concurrent_queue* pQueue,
-                                  _In_ const uint32_t pQueueCapacity,
+                                  _In_ uint32_t pQueueCapacity,
                                   _In_ w_mem_pool pMemPool);
 
 /**

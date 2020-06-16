@@ -30,7 +30,7 @@ typedef apr_redis_stats_t* w_redis_stats;
  */
 uint32_t w_redis_hash(_In_ w_redis pRedisClient,
                       _In_z_ const char* pData,
-                      _In_ const size_t pDataLen);
+                      _In_ size_t pDataLen);
 
 /**
  * Creates pure CRC32 Hash. Used by some clients
@@ -41,7 +41,7 @@ uint32_t w_redis_hash(_In_ w_redis pRedisClient,
 */
 uint32_t w_redis_hash_crc32(_In_ void* pBaton,
                             _In_z_ const char* pData,
-                            _In_ const size_t pDataLen);
+                            _In_ size_t pDataLen);
 
 /**
  * hash compatible with the standard Perl Client.
@@ -52,7 +52,7 @@ uint32_t w_redis_hash_crc32(_In_ void* pBaton,
 */
 uint32_t w_redis_hash_default(_In_ void* pBaton,
                               _In_ const char* pData,
-                              _In_ const size_t pDataLen);
+                              _In_ size_t pDataLen);
 
 /**
  * Picks a server based on a hash
@@ -61,7 +61,7 @@ uint32_t w_redis_hash_default(_In_ void* pBaton,
  * @return server that controls specified hash
  */
 w_redis_server w_redis_find_server_hash(_In_ w_redis pRedisClient,
-                                          _In_ const uint32_t pHash);
+                                        _In_ uint32_t pHash);
 
 /**
  * Server selection compatible with the standard Perl Client.
@@ -72,7 +72,7 @@ w_redis_server w_redis_find_server_hash(_In_ w_redis pRedisClient,
 */
 w_redis_server w_redis_find_server_hash_default(_In_ void* pBaton,
                                                 _In_ w_redis pRedisClient,
-                                                _In_ const uint32_t pHash);
+                                                _In_ uint32_t pHash);
 
 /**
  * Adds a server to a client object
@@ -179,7 +179,7 @@ W_RESULT w_redis_get(_In_ w_redis pRedisClient,
 W_RESULT w_redis_set(_In_ w_redis pRedisClient,
                      _In_z_ const char* pKey,
                      _In_z_ char* pBaton,
-                     _In_ const size_t pDataSize,
+                     _In_ size_t pDataSize,
                      _In_ uint16_t pFlags);
 
 /**
@@ -195,7 +195,7 @@ W_RESULT w_redis_set(_In_ w_redis pRedisClient,
 W_RESULT w_redis_setex(_In_ w_redis pRedisClient,
                        _In_z_ const char* pKey,
                        _In_z_ char* pBaton,
-                       _In_ const size_t pDataSize,
+                       _In_ size_t pDataSize,
                        _In_ uint32_t pTimeOut,
                        _In_ uint16_t pFlags);
 

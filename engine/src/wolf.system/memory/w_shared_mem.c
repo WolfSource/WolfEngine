@@ -2,7 +2,7 @@
 #include "w_shared_mem.h"
 
 W_RESULT    w_shared_mem_create(_Inout_ w_shared_mem* pSharedMem,
-                                _In_ const size_t pReqSize,
+                                _In_ size_t pReqSize,
                                 _In_z_ const char* pFileName,
                                 _In_ w_mem_pool pMemPool)
 {
@@ -20,7 +20,7 @@ W_RESULT    w_shared_mem_create(_Inout_ w_shared_mem* pSharedMem,
 }
  
 W_RESULT    w_shared_mem_create_ex(_Inout_ w_shared_mem* pSharedMem,
-                                   _In_ const size_t pReqSize,
+                                   _In_ size_t pReqSize,
                                    _In_z_ const char* pFileName,
                                    _In_ w_mem_pool pMemPool,
                                    _In_ int pFlags)

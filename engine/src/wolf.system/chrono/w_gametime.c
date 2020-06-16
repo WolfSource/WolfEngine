@@ -112,7 +112,7 @@ void w_game_time_reset(_In_ w_gametime pGameTime)
     _ptr->seconds_counter = 0;
 }
 
-uint64_t w_gametime_get_elapsed_ticks(_In_ const w_gametime pGameTime)
+uint64_t w_gametime_get_elapsed_ticks(_In_ w_gametime pGameTime)
 {
     w_gametime_imp* _ptr = (w_gametime_imp*)pGameTime;
     if (!_ptr)
@@ -123,7 +123,7 @@ uint64_t w_gametime_get_elapsed_ticks(_In_ const w_gametime pGameTime)
     return _ptr->elapsed_ticks;
 }
 
-double w_gametime_get_elapsvoided_seconds(_In_ const w_gametime pGameTime)
+double w_gametime_get_elapsvoided_seconds(_In_ w_gametime pGameTime)
 {
     w_gametime_imp* _ptr = (w_gametime_imp*)pGameTime;
     if (!_ptr)
@@ -134,7 +134,7 @@ double w_gametime_get_elapsvoided_seconds(_In_ const w_gametime pGameTime)
     return _ptr->elapsed_ticks;
 }
 
-uint64_t w_gametime_get_total_ticks(_In_ const w_gametime pGameTime)
+uint64_t w_gametime_get_total_ticks(_In_ w_gametime pGameTime)
 {
     w_gametime_imp* _ptr = (w_gametime_imp*)pGameTime;
     if (!_ptr)
@@ -145,7 +145,7 @@ uint64_t w_gametime_get_total_ticks(_In_ const w_gametime pGameTime)
     return _ptr->total_ticks;
 }
 
-double w_gametime_get_total_seconds(_In_ const w_gametime pGameTime)
+double w_gametime_get_total_seconds(_In_ w_gametime pGameTime)
 {
     w_gametime_imp* _ptr = (w_gametime_imp*)pGameTime;
     if (!_ptr)
@@ -156,7 +156,7 @@ double w_gametime_get_total_seconds(_In_ const w_gametime pGameTime)
     return ticks_to_seconds(_ptr->total_ticks);
 }
 
-uint32_t w_gametime_get_frame_count(_In_ const w_gametime pGameTime)
+uint32_t w_gametime_get_frame_count(_In_ w_gametime pGameTime)
 {
     w_gametime_imp* _ptr = (w_gametime_imp*)pGameTime;
     if (!_ptr)
@@ -167,7 +167,7 @@ uint32_t w_gametime_get_frame_count(_In_ const w_gametime pGameTime)
     return _ptr->frame_count;
 }
 
-uint32_t w_gametime_get_frames_per_second(_In_ const w_gametime pGameTime)
+uint32_t w_gametime_get_frames_per_second(_In_ w_gametime pGameTime)
 {
     w_gametime_imp* _ptr = (w_gametime_imp*)pGameTime;
     if (!_ptr)
@@ -178,7 +178,7 @@ uint32_t w_gametime_get_frames_per_second(_In_ const w_gametime pGameTime)
     return _ptr->fps;
 }
 
-bool w_gametime_get_fixed_time_step(_In_ const w_gametime pGameTime)
+bool w_gametime_get_fixed_time_step(_In_ w_gametime pGameTime)
 {
     w_gametime_imp* _ptr = (w_gametime_imp*)pGameTime;
     if (!_ptr)
@@ -189,7 +189,7 @@ bool w_gametime_get_fixed_time_step(_In_ const w_gametime pGameTime)
     return _ptr->fixed_time_step;
 }
 
-void w_gametime_enable_fixed_time_step(_In_ const w_gametime pGameTime)
+void w_gametime_enable_fixed_time_step(_In_ w_gametime pGameTime)
 {
     w_gametime_imp* _ptr = (w_gametime_imp*)pGameTime;
     if (!_ptr)
@@ -200,7 +200,7 @@ void w_gametime_enable_fixed_time_step(_In_ const w_gametime pGameTime)
     _ptr->fixed_time_step = true;
 }
 
-void w_gametime_disable_fixed_time_step(_In_ const w_gametime pGameTime)
+void w_gametime_disable_fixed_time_step(_In_ w_gametime pGameTime)
 {
     w_gametime_imp* _ptr = (w_gametime_imp*)pGameTime;
     if (!_ptr)
@@ -211,7 +211,7 @@ void w_gametime_disable_fixed_time_step(_In_ const w_gametime pGameTime)
     _ptr->fixed_time_step = false;
 }
 
-void w_gametime_set_target_elapsed_ticks(_In_ const w_gametime pGameTime, _In_ const uint64_t pValue)
+void w_gametime_set_target_elapsed_ticks(_In_ w_gametime pGameTime, _In_ uint64_t pValue)
 {
     w_gametime_imp* _ptr = (w_gametime_imp*)pGameTime;
     if (!_ptr)
@@ -222,7 +222,7 @@ void w_gametime_set_target_elapsed_ticks(_In_ const w_gametime pGameTime, _In_ c
     _ptr->target_elapsed_ticks = pValue;
 }
 
-void w_gametime_set_target_elapsed_seconds(_In_ const w_gametime pGameTime, _In_ const double pValue)
+void w_gametime_set_target_elapsed_seconds(_In_ w_gametime pGameTime, _In_ double pValue)
 {
     w_gametime_imp* _ptr = (w_gametime_imp*)pGameTime;
     if (!_ptr)
@@ -234,7 +234,7 @@ void w_gametime_set_target_elapsed_seconds(_In_ const w_gametime pGameTime, _In_
 }
 
 
-void w_gametime_tick(_In_ const w_gametime pGameTime, _In_ w_gametime_tick_callback pOnTickCallBack)
+void w_gametime_tick(_In_ w_gametime pGameTime, _In_ w_gametime_tick_callback pOnTickCallBack)
 {
     w_gametime_imp* _ptr = (w_gametime_imp*)pGameTime;
     if (!_ptr)

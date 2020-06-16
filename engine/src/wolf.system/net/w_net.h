@@ -89,7 +89,7 @@ void w_net_url_free(_Inout_ w_url pURL);
 W_RESULT w_net_resolve(_In_z_ const char* pURL,
                        _In_z_ const char* pPort,
                        _In_ w_tcp_socket_address_family pSocketAddressFamily,
-                       _In_ const int pBindOrConnect,
+                       _In_ int pBindOrConnect,
                        _Inout_ w_socket_address pSocketAddress);
 
 /**
@@ -117,13 +117,13 @@ W_RESULT w_net_resolve(_In_z_ const char* pURL,
 */
 W_RESULT w_net_open_tcp_socket(_In_z_ const char* pEndPoint,
                                     _In_ w_socket_mode pSocketMode,
-                                    _In_ const bool pNoDelayOption,
-                                    _In_ const bool pKeepAliveOption,
-                                    _In_ const bool pAsync,
-                                    _In_ const bool pTLS,
-                                    _In_ const int pAuthMode,
+                                    _In_ bool pNoDelayOption,
+                                    _In_ bool pKeepAliveOption,
+                                    _In_ bool pAsync,
+                                    _In_ bool pTLS,
+                                    _In_ int pAuthMode,
                                     _In_z_ const char* pTLSServerName,
-                                    _In_ const bool pOwnCert,
+                                    _In_ bool pOwnCert,
                                     _In_z_ const char* pCert,
                                     _In_z_ const char* pKey,
                                     _Inout_ w_socket_tcp* pSocket);
@@ -160,8 +160,8 @@ void w_net_close_udp_socket(_Inout_ w_socket_udp* pSocket);
 */
 W_RESULT w_net_send_msg(_Inout_ w_socket_tcp* pSocket,
                         _In_z_ char* pMessage,
-                        _In_ const size_t pMessageLength,
-                        _In_ const bool pAsync);
+                        _In_ size_t pMessageLength,
+                        _In_ bool pAsync);
 
 /**
  * receive a message via tcp socket
@@ -230,16 +230,16 @@ W_RESULT w_net_receive_msg_udp(_Inout_ w_socket_udp* pSocket,
  * @param pOnClosed on closed callback
  * @return result code
 */
-W_RESULT w_net_run_websocket_server(_In_ const bool pSSL,
+W_RESULT w_net_run_websocket_server(_In_ bool pSSL,
                                     _In_z_ const char* pCertFilePath,
                                     _In_z_ const char* pPrivateKeyFilePath,
                                     _In_z_ const char* pPassPhrase,
                                     _In_z_ const char* pRoot,
-                                    _In_ const int pPort,
-                                    _In_ const int pCompression,
-                                    _In_ const int pMaxPayloadLength,
-                                    _In_ const int pIdleTimeout,
-                                    _In_ const int pMaxBackPressure,
+                                    _In_ int pPort,
+                                    _In_ int pCompression,
+                                    _In_ int pMaxPayloadLength,
+                                    _In_ int pIdleTimeout,
+                                    _In_ int pMaxBackPressure,
                                     _In_ ws_on_listened_fn pOnListened,
                                     _In_ ws_on_opened_fn pOnOpened,
                                     _In_ ws_on_message_fn pOnMessage,
@@ -250,7 +250,7 @@ W_RESULT w_net_run_websocket_server(_In_ const bool pSSL,
  * @param pErrorCode error code
  * @return string message of error code
 */
-const char* w_net_error(_In_ const W_RESULT pErrorCode);
+const char* w_net_error(_In_ W_RESULT pErrorCode);
 
 /**
  * w_net_fini is used to terminate the library, freeing certain global resources.

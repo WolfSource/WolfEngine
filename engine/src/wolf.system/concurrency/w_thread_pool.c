@@ -2,9 +2,9 @@
 #include <apr-1/apr_thread_proc.h>
 #include <apr-util/apr_thread_pool.h>
 
-w_thread_pool w_thread_pool_init(_In_ const size_t pMinThreads,
-                                   _In_ const size_t pMaxThreads,
-                                   _In_ w_mem_pool pMemoryPool)
+w_thread_pool w_thread_pool_init(_In_ size_t pMinThreads,
+                                 _In_ size_t pMaxThreads,
+                                 _In_ w_mem_pool pMemoryPool)
 {
     apr_thread_pool_t* _thread_pool;
     apr_status_t _ret = apr_thread_pool_create (&_thread_pool,
@@ -28,7 +28,7 @@ W_RESULT  w_thread_pool_free(_In_ w_thread_pool pThreadPool)
 W_RESULT  w_thread_pool_push(_In_ w_thread_pool pThreadPool,
                              _In_ w_thread_job pTaskFunction,
                              _In_ void* pParam,
-                             _In_ const uint8_t pPriority,
+                             _In_ uint8_t pPriority,
                              _In_ void* pOwner)
 {
     apr_status_t _ret = apr_thread_pool_push((apr_thread_pool_t*)pThreadPool,
@@ -68,7 +68,7 @@ W_RESULT w_thread_pool_schedule(_In_ w_thread_pool pThreadPool,
 W_RESULT w_thread_pool_top(_In_ w_thread_pool pThreadPool,
                            _In_ w_thread_job pTaskFunction,
                            _In_ void* pParam,
-                           _In_ const uint8_t pPriority,
+                           _In_ uint8_t pPriority,
                            _In_ void* pOwner)
 {
     apr_status_t _ret = apr_thread_pool_top((apr_thread_pool_t*)pThreadPool,
@@ -122,7 +122,7 @@ size_t w_thread_pool_idle_count (_In_ w_thread_pool pThreadPool)
     return apr_thread_pool_idle_count((apr_thread_pool_t*)pThreadPool);
 }
 
-size_t w_thread_pool_idle_max_set (_In_ w_thread_pool pThreadPool, _In_ const size_t pCount)
+size_t w_thread_pool_idle_max_set (_In_ w_thread_pool pThreadPool, _In_ size_t pCount)
 {
     return apr_thread_pool_idle_max_set((apr_thread_pool_t*)pThreadPool, pCount);
 }
@@ -152,12 +152,12 @@ size_t w_thread_pool_idle_max_get(_In_ w_thread_pool pThreadPool)
     return apr_thread_pool_idle_max_get((apr_thread_pool_t*)pThreadPool);
 }
 
-size_t w_thread_pool_thread_max_set(_In_ w_thread_pool pThreadPool, _In_ const size_t pCount)
+size_t w_thread_pool_thread_max_set(_In_ w_thread_pool pThreadPool, _In_ size_t pCount)
 {
     return apr_thread_pool_thread_max_set((apr_thread_pool_t*)pThreadPool, pCount);
 }
 
-long w_thread_pool_idle_wait_set(_In_ w_thread_pool pThreadPool, _In_ const long pTimeOut)
+long w_thread_pool_idle_wait_set(_In_ w_thread_pool pThreadPool, _In_ long pTimeOut)
 {
     return apr_thread_pool_idle_wait_set((apr_thread_pool_t*)pThreadPool, pTimeOut);
 }
@@ -172,7 +172,7 @@ size_t w_thread_pool_thread_max_get(_In_ w_thread_pool pThreadPool)
     return apr_thread_pool_thread_max_get((apr_thread_pool_t*)pThreadPool);
 }
 
-size_t w_thread_pool_threshold_set(_In_ w_thread_pool pThreadPool, _In_ const size_t pValue)
+size_t w_thread_pool_threshold_set(_In_ w_thread_pool pThreadPool, _In_ size_t pValue)
 {
     return apr_thread_pool_threshold_set((apr_thread_pool_t*)pThreadPool, pValue);
 }

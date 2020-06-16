@@ -15,9 +15,9 @@
 //  return now + (3600. - fmod (now, 3600.));
 //}
 
-w_timer* w_timer_init(_In_ const double pStartAfterSec,
-                  _In_ const double pTimeOutInSec,
-                  _In_ w_timer_callback pCallBack)
+w_timer* w_timer_init(_In_ double pStartAfterSec,
+                      _In_ double pTimeOutInSec,
+                      _In_ w_timer_callback pCallBack)
 {
     //allocate memory from pool
     w_timer* _timer = (w_timer*)w_alloc(sizeof(w_timer), "w_timer_init::_timer");
@@ -47,8 +47,8 @@ void w_timer_restart(_In_ w_timer* pTimer)
     ev_timer_again(pTimer->l, pTimer->t);
 }
 
-w_timer_periodic* w_timer_init_periodic(_In_ const double pStartAfterSec,
-                                        _In_ const double pIntervalInSec,
+w_timer_periodic* w_timer_init_periodic(_In_ double pStartAfterSec,
+                                        _In_ double pIntervalInSec,
                                         _In_ w_timer_periodic_callback pCallBack,
                                         _In_ w_timer_periodic_scheduler_callback pSchedulerCallBack)
 {

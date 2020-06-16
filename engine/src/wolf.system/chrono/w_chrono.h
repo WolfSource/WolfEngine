@@ -32,7 +32,7 @@ struct timespec w_chrono_now(void);
  *      CLOCK_PROCESS_CPUTIME_ID : used for measuring the amount of CPU time consumed by the thread.
  * @return a pointer to w_timespan object
  */
-struct timespec w_chrono_clock_now(_In_ const int pClockType);
+struct timespec w_chrono_clock_now(_In_ int pClockType);
 
 /**
  * get current time in seconds
@@ -52,9 +52,8 @@ double w_chrono_timespec_to_sec(_In_ const struct timespec* pT);
  * @param pT2 is second time
  * @return a pointer to w_timespan object
  */
-struct timespec w_chrono_duration(
-                                             _In_ const struct timespec* pT1,
-                                             _In_ const struct timespec* pT2);
+struct timespec w_chrono_duration(_In_ const struct timespec* pT1,
+                                  _In_ const struct timespec* pT2);
 
 /**
  * get duration in total nanoseconds
@@ -62,9 +61,8 @@ struct timespec w_chrono_duration(
  * @param pT2 is second time
  * @return total nanoseconds
  */
-double w_chrono_duration_nanoseconds(
-                                             _In_ const struct timespec* pT1,
-                                             _In_ const struct timespec* pT2);
+double w_chrono_duration_nanoseconds(_In_ const struct timespec* pT1,
+                                     _In_ const struct timespec* pT2);
 
 /**
  * get duration in total microseconds
@@ -72,9 +70,8 @@ double w_chrono_duration_nanoseconds(
  * @param pT2 is second time
  * @return total microseconds
  */
-double w_chrono_duration_microseconds(
-                                             _In_ const struct timespec* pT1,
-                                             _In_ const struct timespec* pT2);
+double w_chrono_duration_microseconds(_In_ const struct timespec* pT1,
+                                      _In_ const struct timespec* pT2);
 
 /**
  * get duration in total milliseconds
@@ -82,9 +79,8 @@ double w_chrono_duration_microseconds(
  * @param pT2 is second time
  * @return total milliseconds
  */
-double w_chrono_duration_milliseconds(
-                                             _In_ const struct timespec* pT1,
-                                             _In_ const struct timespec* pT2);
+double w_chrono_duration_milliseconds(_In_ const struct timespec* pT1,
+                                      _In_ const struct timespec* pT2);
 
 /**
  * get duration in total seconds
@@ -93,7 +89,7 @@ double w_chrono_duration_milliseconds(
  * @return total seconds
  */
 double w_chrono_duration_seconds(_In_ const struct timespec* pT1,
-                               _In_ const struct timespec* pT2);
+                                 _In_ const struct timespec* pT2);
 
 #ifdef __cplusplus
 }

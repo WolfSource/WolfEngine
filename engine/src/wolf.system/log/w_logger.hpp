@@ -42,7 +42,7 @@ public:
     
     W_RESULT  flush(void);
     
-    W_RESULT  flush(_In_ const int pLogID);
+    W_RESULT  flush(_In_ int pLogID);
     
 private:
     std::shared_ptr<spdlog::logger> _l;

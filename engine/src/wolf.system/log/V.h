@@ -77,7 +77,7 @@ W_RESULT  V_FLUSH(void);
 /**
  * flush the specific log file
 */
-W_RESULT  V_FLUSH_EX(_In_ const int pLogID);
+W_RESULT  V_FLUSH_EX(_In_ int pLogID);
 
 #ifdef __cplusplus
 }

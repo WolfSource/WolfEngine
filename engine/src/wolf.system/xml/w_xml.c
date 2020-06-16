@@ -54,207 +54,163 @@ W_RESULT   w_xml_parse_file(_In_    w_mem_pool pMemPool,
                               pBufferLength);
 }
 
-//W_RESULT w_xml_save_to_file(
-//	_In_z_	const wchar_t* pPath,
-//	_In_	w_xml_data* pXMLData,
-//	_In_z_	const wchar_t* pPreComment)
-//{
-//    //resources
-//    W_RESULT _ret = W_FAILURE;
-//    char* _xml_content = nullptr;
-//    char* _new_path = nullptr;
-//	xml_document<wchar_t> _doc;
-//    size_t _in_len, _out_len = 0;
-//    std::wstring _xml_as_wstring = pPreComment;
-//
-//	//Add xml version & encoding
-//	auto _node = _doc.allocate_node(node_declaration);
-//	_node->append_attribute(_doc.allocate_attribute(L"version", L"1.0"));
-//	_node->append_attribute(_doc.allocate_attribute(L"encoding", L"utf-8"));
-//	_doc.append_node(_node);
-//
-//	//print xml to stream
-//    rapidxml::print(std::back_inserter(_xml_as_wstring), _doc);
-//
-//	//convert wchar_t* to utf8 char* for path
-//    _in_len = wcslen(pPath);
-//    _new_path = (char*)w_alloc(_in_len * 2, "w_xml_save_to_file::_new_path");
-//    if (!_new_path)
-//    {
-//        goto _return;
-//    }
-//
-//	_ret = w_io_ucs2_to_utf8(
-//		(apr_uint16_t*)pPath,
-//		&_in_len,
-//		_new_path,
-//		&_out_len);
-//	if (_ret != APR_SUCCESS)
-//	{
-//        goto _return;
-//	}
-//
-//	//convert wchar_t* to utf8 char* for content
-//    _in_len = _xml_as_wstring.size();
-//    _out_len = 0;
-//	_xml_content = (char*)w_alloc(_in_len * 2, "w_xml_save_to_file::_xml_content");
-//    if (!_xml_content)
-//    {
-//        goto _return;
-//    }
-//
-//	_ret = w_io_ucs2_to_utf8(
-//		(apr_uint16_t*)_xml_as_wstring.size(),
-//		&_in_len,
-//		_xml_content,
-//		&_out_len);
-//	if (_ret != APR_SUCCESS)
-//	{
-//        goto _return;
-//	}
-//
-//	//save it to file
-//	_ret = w_io_save_to_file(
-//		_new_path,
-//		_xml_content,
-//		false,
-//		false,
-//		false,
-//		false,
-//		false,
-//		true,
-//		false);
-//
-//    //return
-//_return:
-//    //release resources
-//    _doc.clear();
-//    w_free(_xml_content);
-//    w_free(_new_path);
-//
-//    return _ret;
-//}
-//
-//void _xml_write_element(
-//	_In_ w_xml_data* pData,
-//	_In_ xml_document<wchar_t>* pDoc,
-//	_Inout_ xml_node<wchar_t>** pParentNode)
-//{
-//	auto _node = pDoc->allocate_node(node_element, pData->node);
-//	auto _attribute_len = sizeof(pData->attributes) / sizeof(pData->attributes[0]);
-//	for (size_t i = 0; i < _attribute_len; ++i)
-//	{
-//		auto _attr = pData->attributes[i];
-//		auto _name = pDoc->allocate_string(_attr.name);
-//		auto _value = pDoc->allocate_string(_attr.value);
-//
-//		auto _attribute = pDoc->allocate_attribute(_name, _value);
-//		_node->append_attribute(_attribute);
-//	}
-//
-//	//Add to the parent
-//	auto _child_len = sizeof(pData->children) / sizeof(pData->children[0]);
-//	if (_child_len != 0)
-//	{
-//		for (size_t i = 0; i < _child_len; ++i)
-//		{
-//			_xml_write_element(
-//				&pData->children[i],
-//				pDoc,
-//				&_node);
-//		}
-//	}
-//
-//	if (pParentNode)
-//	{
-//		(*pParentNode)->append_node(_node);
-//	}
-//	else
-//	{
-//		pDoc->append_node(_node);
-//	}
-//}
-//
-//const char* w_xml_get_node_value(_In_ rapidxml::xml_node<>* pNode)
-//{
-//	if (pNode == nullptr) return "";
-//	return pNode->value();
-//}
-//
-//const wchar_t* w_xml_get_node_value_wchar(_In_ rapidxml::xml_node<>* pNode)
-//{
-//	if (pNode == nullptr)
-//    {
-//        return L"";
-//    }
-//
-//	char* _nv = pNode->value();
-//	size_t _in_len = strlen(_nv), _out_len = 0;
-//	apr_uint16_t* _new_value = (apr_uint16_t*)w_alloc(_in_len * 2, "w_xml_get_node_value_wchar::_new_value");
-//    if (!_new_value)
-//    {
-//        return L"";
-//    }
-//
-//	W_RESULT _ret = w_io_utf8_to_ucs2(
-//		_nv,
-//		&_in_len,
-//		_new_value,
-//		&_out_len);
-//	if (_ret != APR_SUCCESS)
-//	{
-//        w_free(_new_value);
-//		return L"";
-//	}
-//
-//	return (wchar_t*)_new_value;
-//}
-//
-//const char* w_xml_get_node_attribute(
-//	_In_ rapidxml::xml_node<>* pNode,
-//	_In_z_ const char* const pAttribute)
-//{
-//	if (pNode == nullptr) return "";
-//
-//	//read the value of attribute
-//	auto _value = pNode->first_attribute(pAttribute);
-//	if (_value)
-//	{
-//		return _value->value();
-//	}
-//
-//	return "";
-//}
-//
-//const wchar_t* w_xml_get_node_attribute_wchar(
-//	_In_ rapidxml::xml_node<>* pNode,
-//	_In_z_ const char* pAttribute)
-//{
-//	if (pNode == nullptr)
-//    {
-//        return L"";
-//    }
-//
-//	//read the value of attribute
-//	auto _value = pNode->first_attribute(pAttribute);
-//	char* _nv = _value->value();
-//	size_t _in_len = strlen(_nv), _out_len = 0;
-//	apr_uint16_t* _new_value = (apr_uint16_t*)w_alloc(_in_len * 2, "w_xml_get_node_attribute_wchar::_new_value");
-//    if (!_new_value)
-//    {
-//        return L"";
-//    }
-//	//convert from char* to wchar*
-//	W_RESULT _ret = w_io_utf8_to_ucs2(
-//		_nv,
-//		&_in_len,
-//		_new_value,
-//		&_out_len);
-//	if (_ret != APR_SUCCESS)
-//	{
-//        w_free(_new_value);
-//		return L"";
-//	}
-//
-//	return (wchar_t*)_new_value;
-//}
+W_RESULT    w_xml_parser_feed(_In_      w_xml_parser pParser,
+                              _In_z_    const char* pData,
+                              _In_      size_t pLen)
+{
+    if (!pParser || !pData || !pLen)
+    {
+        W_ASSERT(false, "invalid parameters. trace info: w_xml_parser_feed");
+        return APR_BADARG;
+    }
+    return apr_xml_parser_feed(pParser, pData, pLen);
+}
+
+W_RESULT    w_xml_parser_done(_In_      w_xml_parser pParser,
+                              _Inout_   w_xml_doc* pPDOC)
+{
+    if (!pParser || !pPDOC)
+    {
+        W_ASSERT(false, "invalid parameters. trace info: w_xml_parser_done");
+        return APR_BADARG;
+    }
+    return apr_xml_parser_done(pParser, pPDOC);
+}
+
+char*       w_xml_parser_get_error(_In_      w_xml_parser pParser,
+                                   _Inout_   char* pErrorBuffer,
+                                   _In_      size_t pErrorBufferSize)
+{
+    if (!pParser || !pErrorBuffer || !pErrorBufferSize)
+    {
+        W_ASSERT(false, "invalid parameters. trace info: w_xml_parser_get_error");
+        return NULL;
+    }
+    return w_xml_parser_get_error(pParser, pErrorBuffer, pErrorBufferSize);
+}
+
+void        w_xml_to_text(_In_ w_mem_pool pMemPool,
+                          _In_ const w_xml_elem pElemenet,
+                          _In_ int pStyle,
+                          _In_ w_array pNamespaces,
+                          _Inout_ int* pNSMap,
+                          _Inout_ const char** pBuffer,
+                          _Inout_ size_t* pSize)
+{
+    w_mem_pool _pool = NULL;
+    if (pMemPool)
+    {
+        _pool = pMemPool;
+    }
+    else
+    {
+        //get default thread pool
+        _pool = w_get_default_memory_pool();
+        if (!_pool)
+        {
+            W_ASSERT(false, "could not get default memory pool. trace info: w_xml_to_text");
+            return;
+        }
+    }
+    
+    if (!pElemenet)
+     {
+         W_ASSERT(false, "invalid parameters. trace info: w_xml_to_text");
+         return;
+     }
+     return w_xml_to_text(_pool,
+                          pElemenet,
+                          pStyle,
+                          pNamespaces,
+                          pNSMap,
+                          pBuffer,
+                          pSize);
+}
+
+const char* w_xml_empty_element(_In_ w_mem_pool pMemPool,
+                                _In_ const w_xml_elem pElemenet)
+{
+    w_mem_pool _pool = NULL;
+    if (pMemPool)
+    {
+        _pool = pMemPool;
+    }
+    else
+    {
+        //get default thread pool
+        _pool = w_get_default_memory_pool();
+        if (!_pool)
+        {
+            W_ASSERT(false, "could not get default memory pool. trace info: w_xml_empty_element");
+            return NULL;
+        }
+    }
+    
+    if (!pElemenet)
+    {
+        W_ASSERT(false, "invalid parameters. trace info: w_xml_empty_elem");
+        return NULL;
+    }
+     return w_xml_empty_element(_pool, pElemenet);
+}
+
+const char* w_xml_quote_string(_In_ w_mem_pool pMemPool,
+                               _In_z_ const char* pString,
+                               _In_ int pQuotes)
+{
+    w_mem_pool _pool = NULL;
+    if (pMemPool)
+    {
+        _pool = pMemPool;
+    }
+    else
+    {
+        //get default thread pool
+        _pool = w_get_default_memory_pool();
+        if (!_pool)
+        {
+            W_ASSERT(false, "could not get default memory pool. trace info: w_xml_empty_element");
+            return NULL;
+        }
+    }
+       
+    if (!pString)
+    {
+        W_ASSERT(false, "invalid parameters. trace info: w_xml_empty_elem");
+        return NULL;
+    }
+    return apr_xml_quote_string(_pool, pString, pQuotes);
+}
+
+void w_xml_quote_element(_In_ w_mem_pool pMemPool,
+                         _In_ w_xml_elem pElement)
+{
+    w_mem_pool _pool = NULL;
+    if (pMemPool)
+    {
+        _pool = pMemPool;
+    }
+    else
+    {
+        //get default thread pool
+        _pool = w_get_default_memory_pool();
+        if (!_pool)
+        {
+            W_ASSERT(false, "could not get default memory pool. trace info: w_xml_quote_element");
+            return;
+        }
+    }
+       
+    if (!pElement)
+    {
+        W_ASSERT(false, "invalid parameters. trace info: w_xml_empty_elem");
+        return;
+    }
+    return w_xml_quote_element(_pool, pElement);
+}
+
+int w_xml_insert_uri(_Inout_    w_array pURIArray,
+                     _Inout_z_  const char* pURI)
+{       
+    return apr_xml_insert_uri(pURIArray, pURI);
+}

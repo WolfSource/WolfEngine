@@ -82,7 +82,7 @@ struct timespec w_chrono_now(void)
     return _time;
 }
 
-struct timespec w_chrono_clock_now(_In_ const int pClockType)
+struct timespec w_chrono_clock_now(_In_ int pClockType)
 {
     struct timespec _time;
     clock_gettime(pClockType, &_time);
@@ -90,7 +90,7 @@ struct timespec w_chrono_clock_now(_In_ const int pClockType)
 }
 
 struct timespec w_chrono_duration(_In_ const struct timespec* pT1,
-                                _In_ const struct timespec* pT2)
+                                  _In_ const struct timespec* pT2)
 {
     struct timespec _diff;
     if (!pT1 || !pT2)
@@ -126,28 +126,28 @@ double w_chrono_timespec_to_sec(_In_ const struct timespec* pT)
 }
 
 double w_chrono_duration_nanoseconds(_In_ const struct timespec* pT1,
-                                   _In_ const struct timespec* pT2)
+                                     _In_ const struct timespec* pT2)
 {
     struct timespec _diff = w_chrono_duration(pT1, pT2);
     return (double)(_diff.tv_sec * 1e+9 + _diff.tv_nsec);
 }
 
 double w_chrono_duration_microseconds(_In_ const struct timespec* pT1,
-                                    _In_ const struct timespec* pT2)
+                                      _In_ const struct timespec* pT2)
 {
     struct timespec _diff = w_chrono_duration(pT1, pT2);
     return (double)_diff.tv_sec * 1e+6 + (double)(_diff.tv_nsec * 1e-3);
 }
 
 double w_chrono_duration_milliseconds(_In_ const struct timespec* pT1,
-                                    _In_ const struct timespec* pT2)
+                                      _In_ const struct timespec* pT2)
 {
     struct timespec _diff = w_chrono_duration(pT1, pT2);
     return (double)_diff.tv_sec * 1e+3 + (double)(_diff.tv_nsec * 1e-6);
 }
 
 double w_chrono_duration_seconds(_In_ const struct timespec* pT1,
-                               _In_ const struct timespec* pT2)
+                                 _In_ const struct timespec* pT2)
 {
     struct timespec _diff = w_chrono_duration(pT1, pT2);
     return (double)_diff.tv_sec + (double)(_diff.tv_nsec * 1e-9);

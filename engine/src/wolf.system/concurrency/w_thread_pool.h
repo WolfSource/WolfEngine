@@ -28,8 +28,8 @@ typedef struct w_thread_pool_imp* w_thread_pool;
  * @return The pointer in which to return the newly created apr_thread_pool
  * object, or NULL if thread pool creation fails
 */
-w_thread_pool w_thread_pool_init(_In_ const size_t pMinThreads,
-                                 _In_ const size_t pMaxThreads,
+w_thread_pool w_thread_pool_init(_In_ size_t pMinThreads,
+                                 _In_ size_t pMaxThreads,
                                  _In_ w_mem_pool pMemoryPool);
 
 /**
@@ -51,7 +51,7 @@ W_RESULT  w_thread_pool_free(_In_ w_thread_pool pThreadPool);
 W_RESULT  w_thread_pool_push(_In_ w_thread_pool pThreadPool,
                              _In_ w_thread_job pTaskFunction,
                              _In_ void* pParam,
-                             _In_ const uint8_t pPriority,
+                             _In_ uint8_t pPriority,
                              _In_ void* pOwner);
 
 /**
@@ -81,7 +81,7 @@ W_RESULT w_thread_pool_schedule(_In_ w_thread_pool pThreadPool,
 W_RESULT w_thread_pool_top(_In_ w_thread_pool pThreadPool,
                            _In_ w_thread_job pTaskFunction,
                            _In_ void* pParam,
-                           _In_ const uint8_t pPriority,
+                           _In_ uint8_t pPriority,
                            _In_ void* pOwner);
 
 /**
@@ -136,7 +136,7 @@ size_t   w_thread_pool_idle_count(_In_ w_thread_pool pThreadPool);
  * @param pCount The number
  * @return The number of threads that were stopped.
 */
-size_t   w_thread_pool_idle_max_set(_In_ w_thread_pool pThreadPool, _In_ const size_t pCount);
+size_t   w_thread_pool_idle_max_set(_In_ w_thread_pool pThreadPool, _In_ size_t pCount);
 
 /**
  * Get number of tasks that have run
@@ -179,7 +179,7 @@ size_t   w_thread_pool_idle_max_get(_In_ w_thread_pool pThreadPool);
  * @param pCount Number of threads
  * @return The original maximum number of threads
 */
-size_t   w_thread_pool_thread_max_set(_In_ w_thread_pool pThreadPool, _In_ const size_t pCount);
+size_t   w_thread_pool_thread_max_set(_In_ w_thread_pool pThreadPool, _In_ size_t pCount);
 
 /**
  * Access function for the maximum wait time (in microseconds) of an
@@ -190,7 +190,7 @@ size_t   w_thread_pool_thread_max_set(_In_ w_thread_pool pThreadPool, _In_ const
  * @param pTimeOut The number of microseconds an idle thread should wait till it reaps itself
  * @return The original maximum wait time
 */
-long     w_thread_pool_idle_wait_set(_In_ w_thread_pool pThreadPool, _In_ const long pTimeOut);
+long     w_thread_pool_idle_wait_set(_In_ w_thread_pool pThreadPool, _In_ long pTimeOut);
 
 /**
  * Access function for the maximum wait time (in microseconds) of an idling thread that exceeds the maximum number of idling threads
@@ -212,7 +212,7 @@ size_t   w_thread_pool_thread_max_get (_In_ w_thread_pool pThreadPool);
  * @param pValue The new threshold
  * @return The original threshold
 */
-size_t   w_thread_pool_threshold_set(_In_ w_thread_pool pThreadPool, _In_ const size_t pValue);
+size_t   w_thread_pool_threshold_set(_In_ w_thread_pool pThreadPool, _In_ size_t pValue);
 
 /**
  * Access function for the threshold of tasks in queue to trigger a new thread.

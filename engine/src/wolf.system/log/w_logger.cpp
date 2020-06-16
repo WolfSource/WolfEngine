@@ -169,7 +169,7 @@ W_RESULT w_logger::flush(void)
     return W_SUCCESS;
 }
 
-W_RESULT w_logger::flush(_In_ const int pLogID)
+W_RESULT w_logger::flush(_In_ int pLogID)
 {
     if (!this->_l) return W_FAILURE;
     this->_l->flush();

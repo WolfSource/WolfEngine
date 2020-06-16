@@ -74,7 +74,7 @@ void w_thread_terminate(_Inout_ w_thread pThread);
  * exit thread
  * @param pExitStatus exit thread with status
 */
-void w_thread_terminate_with_status(_Inout_ w_thread pThread, _In_ const int pExitStatus);
+void w_thread_terminate_with_status(_Inout_ w_thread pThread, _In_ int pExitStatus);
 
 /**
  * get current thread
@@ -100,25 +100,25 @@ W_RESULT w_thread_current_ids_are_equal(_In_ w_thread_id pThread1, _In_ w_thread
  * sleep current thread
  * @param pTime in nanoseconds
 */
-void w_thread_current_sleep_for_nanoseconds(_In_ const double pTime);
+void w_thread_current_sleep_for_nanoseconds(_In_ double pTime);
 
 /**
  * sleep current thread
  * @param pTime in microseconds
  */
-void w_thread_current_sleep_for_microseconds(_In_ const double pTime);
+void w_thread_current_sleep_for_microseconds(_In_ double pTime);
 
 /**
  * sleep current thread
  * @param pTime in milliseconds
  */
-void w_thread_current_sleep_for_milliseconds(_In_ const double pTime);
+void w_thread_current_sleep_for_milliseconds(_In_ double pTime);
 
 /**
  * sleep current thread
  * @param pTime in seconds
 */
-void w_thread_current_sleep_for_seconds(_In_ const double pTime);
+void w_thread_current_sleep_for_seconds(_In_ double pTime);
 
 /**
  * get number of cpus and threads
@@ -146,7 +146,7 @@ void w_thread_get_number_of_cpu_threads(_Inout_ int* pCores,
  * @return result code
 */
 W_RESULT    w_thread_mutex_create(_Inout_ w_mutex* pMutex,
-                                   _In_ const uint32_t pFlags,
+                                   _In_ uint32_t pFlags,
                                    _In_ w_mem_pool pMemPool);
 
 
@@ -187,7 +187,7 @@ W_RESULT    w_thread_mutex_destroy(_In_ w_mutex pMutex);
  * @param pMutex mutex
  * @return memory pool
 */
-w_mem_pool  w_thread_mutex_get_mem_pool(_In_ const w_mutex pMutex);
+w_mem_pool  w_thread_mutex_get_mem_pool(_In_ w_mutex pMutex);
 
 #ifdef __cplusplus
 }

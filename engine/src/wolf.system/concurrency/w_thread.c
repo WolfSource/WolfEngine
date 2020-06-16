@@ -59,7 +59,7 @@ void w_thread_terminate(_Inout_ w_thread pThread)
     apr_thread_exit(pThread, _status);
 }
 
-void w_thread_terminate_with_status(_Inout_ w_thread pThread, _In_ const int pExitStatus)
+void w_thread_terminate_with_status(_Inout_ w_thread pThread, _In_ int pExitStatus)
 {
     //terminate thread
     apr_status_t _status = (apr_status_t)pExitStatus;
@@ -85,22 +85,22 @@ W_RESULT w_thread_current_ids_are_equal(_In_ w_thread_id pThread1, _In_ w_thread
     return (apr_os_thread_equal((apr_os_thread_t)pThread1, (apr_os_thread_t)pThread2) != 0) ? W_SUCCESS : W_FAILURE;
 }
 
-void w_thread_current_sleep_for_nanoseconds(_In_ const double pTime)
+void w_thread_current_sleep_for_nanoseconds(_In_ double pTime)
 {
 	apr_sleep(pTime * 1e-3);
 }
 
-void w_thread_current_sleep_for_microseconds(_In_ const double pTime)
+void w_thread_current_sleep_for_microseconds(_In_ double pTime)
 {
 	apr_sleep(pTime);
 }
 
-void w_thread_current_sleep_for_milliseconds(_In_ const double pTime)
+void w_thread_current_sleep_for_milliseconds(_In_ double pTime)
 {
 	apr_sleep(pTime * 1e+3);
 }
 
-void w_thread_current_sleep_for_seconds(_In_ const double pTime)
+void w_thread_current_sleep_for_seconds(_In_ double pTime)
 {
 	apr_sleep(pTime * 1e+6);
 }
@@ -133,7 +133,7 @@ void w_thread_get_number_of_cpu_threads(_Inout_ int* pCores,
 
 
 W_RESULT    w_thread_mutex_create(_Inout_ w_mutex* pMutex,
-                                  _In_ const uint32_t pFlags,
+                                  _In_ uint32_t pFlags,
                                   _In_ w_mem_pool pMemPool)
 {
     w_mem_pool _pool = NULL;
@@ -195,7 +195,7 @@ W_RESULT    w_thread_mutex_destroy(_In_ w_mutex pMutex)
     return apr_thread_mutex_destroy(pMutex);
 }
  
-w_mem_pool  w_thread_mutex_get_mem_pool(_In_ const w_mutex pMutex)
+w_mem_pool  w_thread_mutex_get_mem_pool(_In_ w_mutex pMutex)
 {
     if (!pMutex)
     {

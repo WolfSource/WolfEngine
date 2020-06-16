@@ -1,29 +1,29 @@
 #include <apr-util/apr_memcache.h>
 #include "w_mem_cache.h"
 
-uint32_t   w_mem_cache_hash(_In_ w_mem_cache pMemCache, _In_z_ const char* pData, _In_ const size_t pDataLen)
+uint32_t   w_mem_cache_hash(_In_ w_mem_cache pMemCache, _In_z_ const char* pData, _In_ size_t pDataLen)
 {
     return apr_memcache_hash(pMemCache, pData, pDataLen);
 }
  
-uint32_t   w_mem_cache_hash_crc32(_In_ void* pBaton, _In_z_ const char* pData, _In_ const size_t pDataLen)
+uint32_t   w_mem_cache_hash_crc32(_In_ void* pBaton, _In_z_ const char* pData, _In_ size_t pDataLen)
 {
     return apr_memcache_hash_crc32(pBaton, pData, pDataLen);
 }
  
-uint32_t   w_mem_cache_hash_default(_In_ void* pBaton, _In_z_ const char* pData, _In_ const size_t pDataLen)
+uint32_t   w_mem_cache_hash_default(_In_ void* pBaton, _In_z_ const char* pData, _In_ size_t pDataLen)
 {
     return apr_memcache_hash_default(pBaton, pData, pDataLen);
 }
  
-w_mem_cache_server   w_mem_cache_find_server_hash(_In_ w_mem_cache pMemCache, _In_ const uint32_t pHash)
+w_mem_cache_server   w_mem_cache_find_server_hash(_In_ w_mem_cache pMemCache, _In_ uint32_t pHash)
 {
     return apr_memcache_find_server_hash(pMemCache, pHash);
 }
  
 w_mem_cache_server   w_mem_cache_find_server_hash_default(_In_ void* pBaton,
                                                          _In_ w_mem_cache pMemCache,
-                                                         _In_ const uint32_t pHash)
+                                                         _In_ uint32_t pHash)
 {
     return apr_memcache_find_server_hash_default(pBaton, pMemCache, pHash);
 }
@@ -98,7 +98,7 @@ W_RESULT    w_mem_cache_multgetp(_In_ w_mem_cache pMemCache,
 W_RESULT    w_mem_cache_set(_In_ w_mem_cache pMemCache,
                             _In_z_ const char* pKey,
                             _In_z_ char * pBaton,
-                            _In_ const size_t pDataSize,
+                            _In_ size_t pDataSize,
                             _In_ uint32_t pTimeOut,
                             _In_ uint16_t pFlags)
 {
@@ -108,7 +108,7 @@ W_RESULT    w_mem_cache_set(_In_ w_mem_cache pMemCache,
 W_RESULT    w_mem_cache_add(_In_ w_mem_cache pMemCache,
                             _In_z_ const char* pKey,
                             _In_z_ char* pBaton,
-                            _In_ const size_t pDataSize,
+                            _In_ size_t pDataSize,
                             _In_ uint32_t pTimeOut,
                             _In_ uint16_t pFlags)
 {
@@ -118,7 +118,7 @@ W_RESULT    w_mem_cache_add(_In_ w_mem_cache pMemCache,
 W_RESULT    w_mem_cache_replace(_In_ w_mem_cache pMemCache,
                                 _In_z_ const char* pKey,
                                 _In_z_ char* pBaton,
-                                _In_ const size_t pDataSize,
+                                _In_ size_t pDataSize,
                                 _In_ uint32_t pTimeOut,
                                 _In_ uint16_t pFlags)
 {
