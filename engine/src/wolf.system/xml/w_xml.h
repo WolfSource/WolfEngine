@@ -137,8 +137,8 @@ void w_xml_quote_element(_In_ w_mem_pool pMemPool,
  * @param pURI The uri to insert
  * @return int The uri's index
  */
-int w_xml_insert_uri(_Inout_    w_array pURIArray,
-                     _Inout_z_  const char* pURI);
+int w_xml_insert_uri(_In_    w_array pURIArray,
+                     _In_z_  const char* pURI);
 
 #ifdef __cplusplus
 }

@@ -1,4 +1,5 @@
 #include "wolf.h"
+#include <curl/curl.h>
 
 static w_mem_pool s_default_memory_pool = NULL;
 
@@ -13,6 +14,8 @@ W_RESULT wolf_initialize()
     //create default memory pool
     apr_pool_create(&s_default_memory_pool, NULL);
     if (!s_default_memory_pool) return W_FAILURE;
+    
+    curl_global_init(CURL_GLOBAL_ALL);
     
     return W_SUCCESS;
 }
@@ -58,6 +61,10 @@ static apr_status_t _child_cleanup(void* p)
 
 void w_free(_In_ const void* pMem)
 {
+    if (!pMem)
+    {
+        return;
+    }
     w_mem_pool _pool = w_get_default_memory_pool();
     if(!_pool)
     {
@@ -122,5 +129,6 @@ char* w_string_concat(int pNumberOfArgs, ...)
 
 void wolf_terminate()
 {
+    curl_global_cleanup();
     apr_terminate();
 }

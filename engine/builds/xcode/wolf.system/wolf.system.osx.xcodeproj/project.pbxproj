@@ -131,6 +131,7 @@
 		2CCFD5822471E56A0030D3AC /* w_timer.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CCFD5802471E56A0030D3AC /* w_timer.h */; };
 		2CCFD5852471E8550030D3AC /* w_async.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CCFD5832471E8550030D3AC /* w_async.h */; };
 		2CCFD5862471E8550030D3AC /* w_async.c in Sources */ = {isa = PBXBuildFile; fileRef = 2CCFD5842471E8550030D3AC /* w_async.c */; };
+		2CEEDB08249A07240050D011 /* libcurl-d.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CEEDB07249A07100050D011 /* libcurl-d.a */; };
 		2CFADC1D248B6F3400409581 /* cr.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFADC1C248B6F3400409581 /* cr.h */; };
 		2CFADC21248FB32E00409581 /* w_cpu.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFADC1F248FB32E00409581 /* w_cpu.h */; };
 		2CFADC22248FB32E00409581 /* w_cpu.c in Sources */ = {isa = PBXBuildFile; fileRef = 2CFADC20248FB32E00409581 /* w_cpu.c */; };
@@ -311,6 +312,7 @@
 		2CCFD5832471E8550030D3AC /* w_async.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_async.h; path = ../../../src/wolf.system/concurrency/w_async.h; sourceTree = "<group>"; };
 		2CCFD5842471E8550030D3AC /* w_async.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = w_async.c; path = ../../../src/wolf.system/concurrency/w_async.c; sourceTree = "<group>"; };
 		2CD617231E59DA3E006FC5DC /* libwolf.system.osx.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libwolf.system.osx.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		2CEEDB07249A07100050D011 /* libcurl-d.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libcurl-d.a"; path = "../../../deps/curl/lib/osx/libcurl-d.a"; sourceTree = "<group>"; };
 		2CFADC1C248B6F3400409581 /* cr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cr.h; path = ../../../src/wolf.system/os/cr.h; sourceTree = "<group>"; };
 		2CFADC1F248FB32E00409581 /* w_cpu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_cpu.h; path = ../../../src/wolf.system/os/w_cpu.h; sourceTree = "<group>"; };
 		2CFADC20248FB32E00409581 /* w_cpu.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = w_cpu.c; path = ../../../src/wolf.system/os/w_cpu.c; sourceTree = "<group>"; };
@@ -374,6 +376,7 @@
 				2C99E7BF23CBA1F700A9720B /* libboost_context.a in Frameworks */,
 				2CABF8142485A32200E5E4D9 /* libnng.a in Frameworks */,
 				2CFADC482490D93200409581 /* libwolfssl.a in Frameworks */,
+				2CEEDB08249A07240050D011 /* libcurl-d.a in Frameworks */,
 				2CABF82424861E6E00E5E4D9 /* libmbedcrypto.a in Frameworks */,
 				2CABF82524861E6E00E5E4D9 /* libmbedtls.a in Frameworks */,
 				2CCFD57A246D4AF10030D3AC /* libaprutil-1.a in Frameworks */,
@@ -705,6 +708,7 @@
 		2CFA170D1E674C850041A83F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2CEEDB07249A07100050D011 /* libcurl-d.a */,
 				2CFADC472490D92200409581 /* libwolfssl.a */,
 				2CABF81B2485B30200E5E4D9 /* libmbedcrypto.a */,
 				2CABF8192485B30200E5E4D9 /* libmbedtls.a */,
@@ -1255,7 +1259,8 @@
 					"$(SRCROOT)/../../../deps/nng/include",
 					"$(SRCROOT)/../../../deps/nng/src",
 					"$(SRCROOT)/../../../deps/tls/include",
-					"$(SRCROOT)/../../../deps/WolfSSL/include/",
+					"$(SRCROOT)/../../../deps/WolfSSL/include",
+					"$(SRCROOT)/../../../deps/curl/include",
 				);
 				INSTALL_PATH = /usr/local/lib;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
@@ -1270,6 +1275,7 @@
 					"$(SRCROOT)/../../../deps/nng/lib/osx/debug",
 					"$(SRCROOT)/../../../deps/tls/lib/osx/debug",
 					"$(SRCROOT)/../../../deps/WolfSSL/lib/osx/",
+					"$(SRCROOT)/../../../deps/curl/lib/osx",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				ONLY_ACTIVE_ARCH = YES;

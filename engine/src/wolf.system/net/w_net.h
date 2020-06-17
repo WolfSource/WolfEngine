@@ -65,11 +65,18 @@ W_RESULT w_net_init(void);
 
 /**
  * parses a URL string into a structured form
- * @param pUrlAddress opened file
+ * @param pUrlAddress opened url
  * @param pURL structured url
  * @return result code
 */
 W_RESULT w_net_url_parse(_In_z_ const char* pUrlAddress, _Inout_ w_url pURL);
+
+/**
+ * encode a URL string
+ * @param pUrlAddress opened url
+ * @return result code
+*/
+const char* w_net_url_encoded(_In_z_ const char* pUrlAddress);
 
 /**
  * free a URL resources
@@ -244,6 +251,34 @@ W_RESULT w_net_run_websocket_server(_In_ bool pSSL,
                                     _In_ ws_on_opened_fn pOnOpened,
                                     _In_ ws_on_message_fn pOnMessage,
                                     _In_ ws_on_closed_fn pOnClosed);
+
+/**
+ * send a http request
+ * @param pURL url
+ * @note The following three parameters will be used for aborting request. The process well be aborted if the transferred bytes (pLowSpeedLimit) are less than specific seconds (pLowSpeedTimeInSec)
+ * @param pLowSpeedLimit set the acceptable bytes for continuing the job.
+ * @param pLowSpeedTimeInSec set the acceptable bytes per seconds for continuing the job
+ * @param pTimeOutInSecs timeout in seconds
+ * @param pResponseCode the response http code
+ * @param pResponseMessage the response message
+ * @param pResponseMessageLength the response message size
+ * @return result code
+*/
+W_RESULT w_net_send_http_request(_In_z_     const char* pURL,
+                                 _In_       size_t pLowSpeedLimit,
+                                 _In_       size_t pLowSpeedTimeInSec,
+                                 _In_       float pTimeOutInSecs,
+                                 _Inout_    long* pResponseCode,
+                                 _Inout_z_  char** pResponseMessage,
+                                 _Inout_    size_t* pResponseMessageLength);
+
+//W_RESULT w_net_send_http_post(_In_z_ const std::string& pURL,
+//                              _In_z_ const std::string& pMessage,
+//                              _In_ const size_t& pMessageLenght,
+//                              _Inout_ std::string& pResult,
+//                              _In_ w_point& pAbortIfSlowerThanNumberOfBytesInSeconds,
+//                              _In_ const uint32_t& pConnectionTimeOutInMilliSeconds,
+//                              _In_z_ std::initializer_list<std::string> pHeaders);
 
 /**
  * convert error code to string message

@@ -14,6 +14,7 @@
 #include <nng/transport/tls/tls.h>
 #include "w_net.h"
 #include <arpa/inet.h>
+#include <curl/curl.h>
 
 const char* _net_error(_In_ W_RESULT pErrorCode,
                        _In_z_ const char* pUserDefinedMessage,
@@ -144,6 +145,35 @@ W_RESULT w_net_url_parse(_In_z_ const char* pUrlAddress, _Inout_ w_url pURL)
     }
     
     return _rt;
+}
+
+const char* w_net_url_encoded(_In_z_ const char* pUrlAddress)
+{
+    char* _encoded = NULL;
+    CURL* _curl = curl_easy_init();
+    if (!_curl)
+    {
+        W_ASSERT(false, "could not create curl handle. trace info: w_net_url_encoded");
+        goto _out;
+    }
+    
+    char* _output = curl_easy_escape(_curl, pUrlAddress, (int)strlen(pUrlAddress));
+    if (_output)
+    {
+        //allocate memory for it from memory pool
+        _encoded = w_alloc(strlen(_output), "w_net_url_encoded");
+        // make a copy and free the original string
+        strcpy(_encoded, _output);
+        curl_free(_output);
+    }
+    
+_out:
+    if (_curl)
+    {
+        curl_easy_cleanup(_curl);
+    }
+    
+    return _encoded;
 }
 
 void w_net_url_free(_Inout_ w_url pURL)
@@ -592,8 +622,159 @@ W_RESULT w_net_run_websocket_server(_In_ bool pSSL,
 
 const char* w_net_error(_In_ W_RESULT pErrorCode)
 {
-    return nng_strerror(pErrorCode);
+    const char* _error_msg = nng_strerror(pErrorCode);
+    if (_error_msg)
+    {
+        return _error_msg;
+    }
+    return curl_easy_strerror(pErrorCode);
 }
+
+typedef struct
+{
+    char*    memory;
+    size_t    size;
+} curl_memory;
+
+static size_t _curl_write_callback(
+    void* pContents,
+    size_t pSize,
+    size_t pNmemb,
+    void* pUserp)
+{
+    size_t _real_size = pSize * pNmemb;
+    if (!_real_size)
+    {
+        W_ASSERT(false, "_real_size is zero. trace info: _curl_write_callback");
+        return 0;
+    }
+    curl_memory* _mem = (curl_memory*)pUserp;
+    _mem->memory = (char*)w_alloc(_mem->size + _real_size + 1, "_curl_write_callback");
+    if (!_mem->memory)
+    {
+        //out of memory
+        W_ASSERT(false, "out of curl_memory. trace info: _curl_write_callback");
+        return 0;
+    }
+
+     memcpy(&(_mem->memory[_mem->size]), pContents, _real_size);
+    _mem->size += _real_size;
+    _mem->memory[_mem->size] = '\0';
+
+    return _real_size;
+}
+
+W_RESULT w_net_send_http_request(_In_z_     const char* pURL,
+                                 _In_       size_t pLowSpeedLimit,
+                                 _In_       size_t pLowSpeedTimeInSec,
+                                 _In_       float pTimeOutInSecs,
+                                 _Inout_    long* pResponseCode,
+                                 _Inout_z_  char** pResponseMessage,
+                                 _Inout_    size_t* pResponseMessageLength)
+{
+    CURLcode _rt;
+    curl_memory* _curl_mem;
+    //create handle
+    CURL* _curl = curl_easy_init();
+    if (!_curl)
+    {
+        _rt = CURLE_FAILED_INIT;
+        W_ASSERT(false, "could not create curl handle. trace info: curl_easy_init");
+        goto _out;
+    }
+    _curl_mem = w_alloc(sizeof(curl_memory), "w_net_send_http_request");
+    if (!_curl_mem)
+    {
+        _rt = CURLE_OUT_OF_MEMORY;
+        goto _out;
+    }
+    
+    _curl_mem->memory = *pResponseMessage;
+    _curl_mem->size = *pResponseMessageLength;
+    
+    double _timeout_in_ms = pTimeOutInSecs / 1000;
+    
+    curl_easy_setopt(_curl, CURLOPT_URL, pURL);
+    curl_easy_setopt(_curl, CURLOPT_FOLLOWLOCATION, 1L);
+    curl_easy_setopt(_curl, CURLOPT_VERBOSE, 1L);
+    curl_easy_setopt(_curl, CURLOPT_CONNECTTIMEOUT_MS, _timeout_in_ms);
+    curl_easy_setopt(_curl, CURLOPT_ACCEPTTIMEOUT_MS, _timeout_in_ms);
+    curl_easy_setopt(_curl, CURLOPT_USERAGENT, "Mozilla/5.0");//libcurl-agent/1.0
+    // abort if slower than bytes/sec
+    curl_easy_setopt(_curl, CURLOPT_LOW_SPEED_LIMIT, pLowSpeedLimit);
+    curl_easy_setopt(_curl, CURLOPT_LOW_SPEED_TIME, pLowSpeedTimeInSec);
+    // store response message
+    curl_easy_setopt(_curl, CURLOPT_WRITEFUNCTION, _curl_write_callback);
+    curl_easy_setopt(_curl, CURLOPT_WRITEDATA, (void*)_curl_mem);
+    
+    /* perform, then store the expected code in 'result'*/
+    _rt = curl_easy_perform(_curl);
+    if (_rt == CURLE_OK)
+    {
+        curl_easy_getinfo(_curl, CURLINFO_RESPONSE_CODE, &pResponseCode);
+        //TODO: do we need to copy ?
+            // _chunk.copyto(pResultPage);
+        //        if (this->size && this->memory)
+        //        {
+        //            pDestination.resize(this->size);
+        //            memcpy(&pDestination[0], &this->memory[0], this->size);
+        //        }
+    }
+    
+_out:
+    w_free(_curl_mem);
+    if (_curl)
+    {
+        curl_easy_cleanup(_curl);
+    }
+    return _rt;
+}
+
+//W_RESULT w_url::send_rest_post(
+//    _In_z_ const std::string& pURL,
+//    _In_z_ const std::string& pMessage,
+//    _In_ const size_t& pMessageLenght,
+//    _Inout_ std::string& pResult,
+//    _In_ w_point& pAbortIfSlowerThanNumberOfBytesInSeconds,
+//    _In_ const uint32_t& pConnectionTimeOutInMilliSeconds,
+//    _In_z_ std::initializer_list<std::string> pHeaders)
+//{
+//    if (!this->_pimp) return W_FAILED;
+//
+//    //copy url data
+//    auto _size = pURL.size();
+//    auto _url = (char*)malloc(pURL.size() * sizeof(char));
+//    if (!_url)
+//    {
+//        wolf::logger.error("could not allocate memory for url");
+//        return W_FAILED;
+//    }
+//    std::memcpy(&_url[0], pURL.data(), _size);
+//    _url[_size] = '\0';
+//
+//    //copy message data
+//    _size = pMessage.size();
+//    auto _msg = (char*)malloc( (pMessage.size() + 1) * sizeof(char));
+//    if (!_msg)
+//    {
+//        wolf::logger.error("could not allocate memory for url");
+//        return W_FAILED;
+//    }
+//    std::memcpy(&_msg[0], pMessage.data(), _size);
+//    _msg[_size] = '\0';
+//
+//    auto _hr = this->_pimp->send_rest_post(
+//        _url,
+//        _msg,
+//        pMessageLenght,
+//        pResult,
+//        pAbortIfSlowerThanNumberOfBytesInSeconds,
+//        pConnectionTimeOutInMilliSeconds,
+//        pHeaders);
+//    //free(_url);
+//
+//    return _hr;
+//}
 
 void w_net_fini(void)
 {
