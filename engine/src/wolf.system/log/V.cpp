@@ -7,7 +7,7 @@ static std::unordered_map<int, w_logger*> s_loggers;
 
 int V_INIT(_In_ const w_log_config* pConfig)
 {
-    auto _l = (w_logger*)w_alloc(sizeof(w_logger), "w_log_init");
+    auto _l = (w_logger*)w_malloc(sizeof(w_logger), "w_log_init");
     if (!_l)
     {
         return -1;
@@ -70,7 +70,7 @@ void VA(
         return;
     }
     
-    char* _buf = (char* )w_alloc(W_MAX_BUFFER_SIZE, "VA");
+    char* _buf = (char* )w_malloc(W_MAX_BUFFER_SIZE, "VA");
     if (_buf)
     {
         va_list _arg_ptr;
@@ -98,7 +98,7 @@ void VALIDATE(
         return;
     }
     
-    char* _buf = (char* )w_alloc(W_MAX_BUFFER_SIZE, "VALIDATE");
+    char* _buf = (char* )w_malloc(W_MAX_BUFFER_SIZE, "VALIDATE");
     if (_buf)
     {
         va_list _arg_ptr;
@@ -134,7 +134,7 @@ void VALIDATE_EX(
         return;
     }
     
-    char* _buf = (char* )w_alloc(W_MAX_BUFFER_SIZE, "VALIDATE_EX");
+    char* _buf = (char* )w_malloc(W_MAX_BUFFER_SIZE, "VALIDATE_EX");
     if (_buf)
     {
         va_list _arg_ptr;

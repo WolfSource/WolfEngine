@@ -20,12 +20,12 @@ w_timer* w_timer_init(_In_ double pStartAfterSec,
                       _In_ w_timer_callback pCallBack)
 {
     //allocate memory from pool
-    w_timer* _timer = (w_timer*)w_alloc(sizeof(w_timer), "w_timer_init::_timer");
+    w_timer* _timer = (w_timer*)w_malloc(sizeof(w_timer), "w_timer_init::_timer");
     if (!_timer)
     {
         return NULL;
     }
-    _timer->t = (w_timer_base*)w_alloc(sizeof(w_timer_base), "w_timer_init::w_timer_base");
+    _timer->t = (w_timer_base*)w_malloc(sizeof(w_timer_base), "w_timer_init::w_timer_base");
     if (!_timer->t)
     {
         w_free(_timer);
@@ -53,12 +53,12 @@ w_timer_periodic* w_timer_init_periodic(_In_ double pStartAfterSec,
                                         _In_ w_timer_periodic_scheduler_callback pSchedulerCallBack)
 {
     //allocate memory from pool
-    w_timer_periodic* _timer = (w_timer_periodic*)w_alloc(sizeof(w_timer_periodic), "w_timer_init_periodic::w_timer_periodic");
+    w_timer_periodic* _timer = (w_timer_periodic*)w_malloc(sizeof(w_timer_periodic), "w_timer_init_periodic::w_timer_periodic");
     if (!_timer)
     {
         return NULL;
     }
-    _timer->t = (w_timer_base_periodic*)w_alloc(sizeof(w_timer_base_periodic), "w_timer_init_periodic::w_timer_base_periodic");
+    _timer->t = (w_timer_base_periodic*)w_malloc(sizeof(w_timer_base_periodic), "w_timer_init_periodic::w_timer_base_periodic");
     if (!_timer->t)
     {
         w_free(_timer);

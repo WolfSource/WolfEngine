@@ -141,7 +141,7 @@ w_mem_pool w_create_memory_pool(void);
  * @param pTraceInfo trace infomation
  * @return memory in void pointer
 */
-void* w_alloc(_In_ const size_t pMemSize, _In_z_ const char* pTraceInfo);
+void* w_malloc(_In_ const size_t pMemSize, _In_z_ const char* pTraceInfo);
 
 /**
  * free memory from default memory pool

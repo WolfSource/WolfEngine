@@ -32,14 +32,14 @@ w_mem_pool w_create_memory_pool(void)
     return (w_mem_pool)_pool;
 }
 
-void* w_alloc(_In_ const size_t pMemSize, _In_z_ const char* pTraceInfo)
+void* w_malloc(_In_ const size_t pMemSize, _In_z_ const char* pTraceInfo)
 {
     w_mem_pool _pool = w_get_default_memory_pool();
     if(!_pool)
     {
         char _buf[W_MAX_BUFFER_SIZE];
         apr_snprintf(_buf, W_MAX_BUFFER_SIZE,
-                     "could not get default memory. trace info: w_alloc from %s\n", pTraceInfo);
+                     "could not get default memory. trace info: w_malloc from %s\n", pTraceInfo);
         W_ASSERT_P(false, "%s", _buf);
         return NULL;
     }

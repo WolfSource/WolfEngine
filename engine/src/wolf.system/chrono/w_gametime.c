@@ -49,7 +49,7 @@ static uint64_t seconds_to_ticks(double pSeconds)
 
 w_gametime w_gametime_init(void)
 {
-    w_gametime_imp* _gametime = (w_gametime_imp*)(w_alloc(sizeof(w_gametime_imp), "w_gametime_init"));
+    w_gametime_imp* _gametime = (w_gametime_imp*)(w_malloc(sizeof(w_gametime_imp), "w_gametime_init"));
     if (!_gametime)
     {
         return NULL;

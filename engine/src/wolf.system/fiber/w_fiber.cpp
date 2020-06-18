@@ -25,13 +25,13 @@ W_RESULT w_fiber_scheduler_init(_In_z_ const char* pSchedulerName,
         goto _return;
     }
     
-    _fibers_info =  (fibers_info*)w_alloc(sizeof(fibers_info), "w_fiber_scheduler_init::_fibers_info");
+    _fibers_info =  (fibers_info*)w_malloc(sizeof(fibers_info), "w_fiber_scheduler_init::_fibers_info");
     if (!_fibers_info)
     {
         goto _return;
     }
     
-    _fibers_info->fibers = (boost::fibers::fiber*)w_alloc(_size_of_tasks * sizeof( boost::fibers::fiber),
+    _fibers_info->fibers = (boost::fibers::fiber*)w_malloc(_size_of_tasks * sizeof( boost::fibers::fiber),
                                                           "w_fiber_scheduler_init::_fibers_info->fibers");
     if (!_fibers_info->fibers)
     {
@@ -68,13 +68,13 @@ scheduler_info*  w_fiber_get_scheduler_info(_In_z_ const char* pSchedulerName)
     auto _name_len = strlen(pSchedulerName);
     auto _number_of_fibers = _find->second->number_of_fibers;
     
-    auto _scheduler_info =  (scheduler_info*)w_alloc(sizeof(scheduler_info), "w_fiber_get_scheduler_info::_scheduler_info");
+    auto _scheduler_info =  (scheduler_info*)w_malloc(sizeof(scheduler_info), "w_fiber_get_scheduler_info::_scheduler_info");
     if (!_scheduler_info)
     {
         return nullptr;
     }
     
-    _scheduler_info->name = (char*)w_alloc(_name_len + 1, "w_fiber_get_scheduler_info::_scheduler_info->name");
+    _scheduler_info->name = (char*)w_malloc(_name_len + 1, "w_fiber_get_scheduler_info::_scheduler_info->name");
     if (!_scheduler_info->name)
     {
         goto _failed;
@@ -83,7 +83,7 @@ scheduler_info*  w_fiber_get_scheduler_info(_In_z_ const char* pSchedulerName)
     _scheduler_info->number_of_fibers = _number_of_fibers;
     if (_number_of_fibers)
     {
-        _scheduler_info->fiber_ids = (size_t*)w_alloc(_number_of_fibers, "w_fiber_get_scheduler_info::_scheduler_info->fiber_ids");
+        _scheduler_info->fiber_ids = (size_t*)w_malloc(_number_of_fibers, "w_fiber_get_scheduler_info::_scheduler_info->fiber_ids");
         if (!_scheduler_info->fiber_ids)
         {
             goto _failed;

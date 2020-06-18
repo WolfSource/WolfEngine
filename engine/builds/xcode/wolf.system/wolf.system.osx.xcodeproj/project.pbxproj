@@ -117,6 +117,8 @@
 		2CABF82424861E6E00E5E4D9 /* libmbedcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CABF81B2485B30200E5E4D9 /* libmbedcrypto.a */; };
 		2CABF82524861E6E00E5E4D9 /* libmbedtls.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CABF8192485B30200E5E4D9 /* libmbedtls.a */; };
 		2CABF82624861E6E00E5E4D9 /* libmbedx509.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CABF81A2485B30200E5E4D9 /* libmbedx509.a */; };
+		2CB15355249BC5BA005A358E /* libjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CB15353249BC5A9005A358E /* libjpeg.a */; };
+		2CB15356249BC5BA005A358E /* libturbojpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CB15354249BC5A9005A358E /* libturbojpeg.a */; };
 		2CB21401247C2D7F0022DA86 /* w_shared_mem.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CB213FF247C2D7F0022DA86 /* w_shared_mem.h */; };
 		2CB21402247C2D7F0022DA86 /* w_shared_mem.c in Sources */ = {isa = PBXBuildFile; fileRef = 2CB21400247C2D7F0022DA86 /* w_shared_mem.c */; };
 		2CB21405247C2E060022DA86 /* w_mem_map.c in Sources */ = {isa = PBXBuildFile; fileRef = 2CB21403247C2E060022DA86 /* w_mem_map.c */; };
@@ -297,6 +299,8 @@
 		2CABF81B2485B30200E5E4D9 /* libmbedcrypto.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libmbedcrypto.a; path = ../../../deps/tls/lib/osx/debug/libmbedcrypto.a; sourceTree = "<group>"; };
 		2CABF82024861CA000E5E4D9 /* convey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = convey.h; path = ../../../src/wolf.system/test/convey.h; sourceTree = "<group>"; };
 		2CABF82124861CA000E5E4D9 /* convey.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = convey.c; path = ../../../src/wolf.system/test/convey.c; sourceTree = "<group>"; };
+		2CB15353249BC5A9005A358E /* libjpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libjpeg.a; path = "../../../deps/libjpeg-turbo/lib/osx/debug/libjpeg.a"; sourceTree = "<group>"; };
+		2CB15354249BC5A9005A358E /* libturbojpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libturbojpeg.a; path = "../../../deps/libjpeg-turbo/lib/osx/debug/libturbojpeg.a"; sourceTree = "<group>"; };
 		2CB213FF247C2D7F0022DA86 /* w_shared_mem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_shared_mem.h; path = ../../../src/wolf.system/memory/w_shared_mem.h; sourceTree = "<group>"; };
 		2CB21400247C2D7F0022DA86 /* w_shared_mem.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = w_shared_mem.c; path = ../../../src/wolf.system/memory/w_shared_mem.c; sourceTree = "<group>"; };
 		2CB21403247C2E060022DA86 /* w_mem_map.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = w_mem_map.c; path = ../../../src/wolf.system/memory/w_mem_map.c; sourceTree = "<group>"; };
@@ -370,6 +374,7 @@
 			files = (
 				2C99E7C023CBA1F700A9720B /* libboost_fiber.a in Frameworks */,
 				2CABF82624861E6E00E5E4D9 /* libmbedx509.a in Frameworks */,
+				2CB15355249BC5BA005A358E /* libjpeg.a in Frameworks */,
 				2CCFD577246D4AB60030D3AC /* libapr-1.a in Frameworks */,
 				2C3756D123B7D320003A6B0A /* libluajit-static.a in Frameworks */,
 				2C3756B223B79802003A6B0A /* libz.a in Frameworks */,
@@ -379,6 +384,7 @@
 				2CEEDB08249A07240050D011 /* libcurl-d.a in Frameworks */,
 				2CABF82424861E6E00E5E4D9 /* libmbedcrypto.a in Frameworks */,
 				2CABF82524861E6E00E5E4D9 /* libmbedtls.a in Frameworks */,
+				2CB15356249BC5BA005A358E /* libturbojpeg.a in Frameworks */,
 				2CCFD57A246D4AF10030D3AC /* libaprutil-1.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -708,6 +714,8 @@
 		2CFA170D1E674C850041A83F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2CB15353249BC5A9005A358E /* libjpeg.a */,
+				2CB15354249BC5A9005A358E /* libturbojpeg.a */,
 				2CEEDB07249A07100050D011 /* libcurl-d.a */,
 				2CFADC472490D92200409581 /* libwolfssl.a */,
 				2CABF81B2485B30200E5E4D9 /* libmbedcrypto.a */,
@@ -1261,6 +1269,7 @@
 					"$(SRCROOT)/../../../deps/tls/include",
 					"$(SRCROOT)/../../../deps/WolfSSL/include",
 					"$(SRCROOT)/../../../deps/curl/include",
+					"$(SRCROOT)/../../../deps/libjpeg-turbo/include",
 				);
 				INSTALL_PATH = /usr/local/lib;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
@@ -1276,6 +1285,7 @@
 					"$(SRCROOT)/../../../deps/tls/lib/osx/debug",
 					"$(SRCROOT)/../../../deps/WolfSSL/lib/osx/",
 					"$(SRCROOT)/../../../deps/curl/lib/osx",
+					"$(SRCROOT)/../../../deps/libjpeg-turbo/lib/osx/debug",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				ONLY_ACTIVE_ARCH = YES;

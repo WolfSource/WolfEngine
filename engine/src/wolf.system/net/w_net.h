@@ -56,6 +56,34 @@ typedef enum
     IPV6     = 4
 } w_tcp_socket_address_family;
 
+typedef enum
+{
+    //  Requests using GET should only retrieve data.
+    GET  = 0,
+    /*
+        The HEAD method asks for a response identical to that of a GET request,
+     but without the response body.
+    */
+    HEAD,
+    /*
+        The POST method is used to submit an entity to the specified resource,
+        often causing a change in state or side effects on the server.
+    */
+    POST,
+    /*  The PUT method replaces all current representations of the target resource with the request payload. */
+    PUT,
+    /*  The DELETE method deletes the specified resource. */
+    DELETE,
+    /*   The CONNECT method establishes a tunnel to the server identified by the target resource. */
+    CONNECT,
+    /*  The OPTIONS method is used to describe the communication options for the target resource. */
+    OPTIONS,
+    /*  The TRACE method performs a message loop-back test along the path to the target resource. */
+    TRACE,
+    /*  The PATCH method is used to apply partial modifications to a resource. */
+    PATCH
+} w_http_request_type;
+
 /**
  * w_net_init is called each time the user enters the library. It ensures that
  * the library is initlialized properly, and also deals with checks such as
@@ -255,6 +283,10 @@ W_RESULT w_net_run_websocket_server(_In_ bool pSSL,
 /**
  * send a http request
  * @param pURL url
+ * @param pHttpRequestType http request type
+ * @param pHttpHeaders array of constant strings which contains http headers(e.g "Accept: application/json")
+ * @param pMessage message (used for example for POST)
+ * @param pMessageLenght message lenght
  * @note The following three parameters will be used for aborting request. The process well be aborted if the transferred bytes (pLowSpeedLimit) are less than specific seconds (pLowSpeedTimeInSec)
  * @param pLowSpeedLimit set the acceptable bytes for continuing the job.
  * @param pLowSpeedTimeInSec set the acceptable bytes per seconds for continuing the job
@@ -262,23 +294,19 @@ W_RESULT w_net_run_websocket_server(_In_ bool pSSL,
  * @param pResponseCode the response http code
  * @param pResponseMessage the response message
  * @param pResponseMessageLength the response message size
- * @return result code
+ * @return curl code
 */
 W_RESULT w_net_send_http_request(_In_z_     const char* pURL,
+                                 _In_       w_http_request_type pHttpRequestType,
+                                 _In_       w_array pHttpHeaders,
+                                 _In_z_     const char* pMessage,
+                                 _In_       size_t pMessageLenght,
                                  _In_       size_t pLowSpeedLimit,
                                  _In_       size_t pLowSpeedTimeInSec,
                                  _In_       float pTimeOutInSecs,
                                  _Inout_    long* pResponseCode,
                                  _Inout_z_  char** pResponseMessage,
                                  _Inout_    size_t* pResponseMessageLength);
-
-//W_RESULT w_net_send_http_post(_In_z_ const std::string& pURL,
-//                              _In_z_ const std::string& pMessage,
-//                              _In_ const size_t& pMessageLenght,
-//                              _Inout_ std::string& pResult,
-//                              _In_ w_point& pAbortIfSlowerThanNumberOfBytesInSeconds,
-//                              _In_ const uint32_t& pConnectionTimeOutInMilliSeconds,
-//                              _In_z_ std::initializer_list<std::string> pHeaders);
 
 /**
  * convert error code to string message

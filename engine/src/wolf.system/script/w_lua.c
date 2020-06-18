@@ -37,7 +37,7 @@ W_RESULT _lua_get_value(_In_    int pIndex,
         }
         case LUA_TBOOLEAN:
         {
-            int* _v = w_alloc(sizeof(int), "_lua_get_value::LUA_TBOOLEAN");
+            int* _v = w_malloc(sizeof(int), "_lua_get_value::LUA_TBOOLEAN");
             if (!_v)
             {
                 return W_FAILURE;
@@ -50,7 +50,7 @@ W_RESULT _lua_get_value(_In_    int pIndex,
         }
         case LUA_TNUMBER:
         {
-            double* _v = w_alloc(sizeof(double), "_lua_get_value::LUA_TNUMBER");
+            double* _v = w_malloc(sizeof(double), "_lua_get_value::LUA_TNUMBER");
             if (!_v)
             {
                 return W_FAILURE;
@@ -82,8 +82,8 @@ W_RESULT _lua_get_value(_In_    int pIndex,
 
 W_RESULT w_lua_init(void)
 {
-    s_last_error = (char*)w_alloc(MAX_BUFFER_SIZE, "w_lua_init");
-    s_function_name = (char*)w_alloc(PATH_MAX, "w_lua_init");
+    s_last_error = (char*)w_malloc(MAX_BUFFER_SIZE, "w_lua_init");
+    s_function_name = (char*)w_malloc(PATH_MAX, "w_lua_init");
     s_function_number_input_parameters = 0;
     
     if (!s_function_name || !s_last_error)

@@ -14,6 +14,8 @@
 #include <libgen.h>
 #endif
 
+#include <turbojpeg.h>
+
 w_file w_io_create_file(_In_z_  const char* pPath,
                         _In_z_  const char* pContent,
                         _In_    bool pBinaryMode,
@@ -254,7 +256,7 @@ const char* w_io_get_base_file_name_from_path(_In_z_ const char* pPath)
     
     if (_index == -1) return "";
     
-    char* _dst_str = w_alloc(_index, "w_io_get_base_file_name_from_path");
+    char* _dst_str = w_malloc(_index, "w_io_get_base_file_name_from_path");
     apr_cpystrn(_dst_str, pPath,_index);
     _dst_str[_index] = '\0';
     
@@ -284,9 +286,8 @@ const char*	w_io_get_file_name(_In_ w_file pFile)
     return _info->name;
 }
 
-void*	w_io_read_file_with_path(_In_z_ const char* pPath)
+w_file_istream w_io_read_file_with_path(_In_z_ const char* pPath)
 {
-    void* _buf = NULL;
     w_mem_pool _pool = w_get_default_memory_pool();
     if(!_pool)
     {
@@ -294,6 +295,11 @@ void*	w_io_read_file_with_path(_In_z_ const char* pPath)
         return NULL;
     }
     
+    w_file_istream _istream = w_malloc(sizeof(w_file_input_stream), "w_io_read_file_with_path");
+    if (!_istream)
+    {
+        return NULL;
+    }
     apr_file_t* _file = NULL;
     apr_status_t _ret = apr_file_open(&_file,
                        pPath,
@@ -303,17 +309,15 @@ void*	w_io_read_file_with_path(_In_z_ const char* pPath)
     if (_ret == APR_SUCCESS)
     {
         //read it all
-        apr_size_t _size_of_file = apr_file_buffer_size_get(_file);
-        apr_size_t _bytes_read = 0;
-        apr_file_read_full(_file, _buf, _size_of_file, &_bytes_read);
+        _istream->size = apr_file_buffer_size_get(_file);
+        apr_file_read_full(_file, _istream->buffer, _istream->size , &_istream->bytes_read);
         apr_file_close(_file);
     }
-    return _buf;
+    return _istream;
 }
 
-void*	w_io_read_file_with_file(_In_z_ w_file pFile)
+w_file_istream	w_io_read_file_with_file(_In_z_ w_file pFile)
 {
-    void* _buf = NULL;
     w_mem_pool _pool = w_get_default_memory_pool();
     if(!_pool)
     {
@@ -321,13 +325,18 @@ void*	w_io_read_file_with_file(_In_z_ w_file pFile)
         return NULL;
     }
     
+    w_file_istream _istream = w_malloc(sizeof(w_file_input_stream), "w_io_read_file_with_file");
+    if (!_istream)
+    {
+        return NULL;
+    }
+    
     //read it all
-    apr_size_t _bytes_read = 0;
-    apr_size_t _size_of_file = apr_file_buffer_size_get(pFile);
-    apr_file_read_full(pFile, _buf, _size_of_file, &_bytes_read);
+    _istream->size = apr_file_buffer_size_get(pFile);
+    apr_file_read_full(pFile, _istream->buffer, _istream->size, &_istream->bytes_read);
     apr_file_close(pFile);
     
-    return _buf;
+    return _istream;
 }
 
 W_RESULT	w_io_delete_file_with_path(_In_ const char* pPath)
@@ -368,7 +377,7 @@ W_RESULT	w_io_delete_file_with_file(_In_ w_file pFile)
 
 char*	w_io_get_current_directory(void)
 {
-    char* _path = (char*)w_alloc(PATH_MAX, "w_io_get_current_directory");
+    char* _path = (char*)w_malloc(PATH_MAX, "w_io_get_current_directory");
 #ifdef W_PLATFORM_UNIX
     if (getcwd(_path, PATH_MAX) == NULL) return NULL;
 #else
@@ -695,7 +704,7 @@ W_RESULT w_io_split_string(_In_z_ char* pString,
 size_t w_io_to_base_64(_Inout_z_ char** pDestinationBuffer,
                        _In_z_ char* pSourceBuffer,
                        _In_z_ size_t pSourceBufferLenght,
-                       _In_ enum base_64_mode pEncodeMode)
+                       _In_ base_64_mode pEncodeMode)
 {
     size_t _encoded_size = 0;
     switch (pEncodeMode)
@@ -742,6 +751,98 @@ size_t w_io_to_base_64(_Inout_z_ char** pDestinationBuffer,
             break;
     }
     return _encoded_size;
+}
+
+W_RESULT w_io_pixels_from_jpeg_stream(_In_z_   const uint8_t* pJpegStream,
+                                      _In_     size_t pJpegStreamLen,
+                                      _In_     w_jpeg_pixel_format pPixelFormat,
+                                      _Out_    int* pWidth,
+                                      _Out_    int* pHeight,
+                                      _Out_    int* pSubSample,
+                                      _Out_    int* pColorSpace,
+                                      _Out_    int* pNumberOfPasses,
+                                      _Out_    uint8_t** pPixels)
+{
+    W_RESULT _rt;
+    tjhandle _tj_handle = NULL;
+    
+    if (pPixelFormat == TJPF_UNKNOWN)
+    {
+        _rt = APR_BADARG;
+        goto out;
+    }
+
+    _tj_handle = tjInitDecompress();
+    if (!_tj_handle)
+    {
+        _rt = W_FAILURE;
+        goto out;
+    }
+
+    if ((_rt = tjDecompressHeader3(_tj_handle,
+                                   pJpegStream,
+                                   pJpegStreamLen,
+                                   pWidth,
+                                   pHeight,
+                                   pSubSample,
+                                   pColorSpace)))
+    {
+        _rt = tjGetErrorCode(_tj_handle);
+        W_ASSERT_P(false, "tjDecompressHeader3 failed. error code %d . error message %s .trace info: w_io_pixels_from_jpeg_stream", _rt, tjGetErrorStr2(_tj_handle));
+        goto out;
+    }
+
+    int _comp;
+    switch (pPixelFormat)
+    {
+        default:
+            _comp = 4;
+        case TJPF_RGB:
+        case TJPF_BGR:
+            _comp = 3;
+            break;
+    }
+
+    size_t _memory_size = (size_t)_comp * (size_t)(*pWidth) * (size_t)(*pHeight) * sizeof(uint8_t);
+    *pPixels = (uint8_t*)w_malloc(_memory_size, "w_io_pixels_from_jpeg_stream");
+    _rt = tjDecompress2(
+        _tj_handle,
+        pJpegStream,
+        pJpegStreamLen,
+        *pPixels,
+        *pWidth,
+        _comp * (*pWidth),
+        *pHeight,
+        pPixelFormat,
+        0);
+out:
+    if (_tj_handle)
+    {
+        tjDestroy(_tj_handle);
+    }
+    return _rt;
+}
+
+W_RESULT w_io_pixels_from_jpeg_file(_In_z_   const char* pJpegFile,
+                                    _In_     size_t pJpegStreamLen,
+                                    _In_     w_jpeg_pixel_format pPixelFormat,
+                                    _Out_    int* pWidth,
+                                    _Out_    int* pHeight,
+                                    _Out_    int* pSubSample,
+                                    _Out_    int* pColorSpace,
+                                    _Out_    int* pNumberOfPasses,
+                                    _Out_    uint8_t** pPixels)
+{
+    w_file_istream _istream = w_io_read_file_with_path(pJpegFile);
+    return w_io_pixels_from_jpeg_stream((const uint8_t*)_istream->buffer,
+                                        _istream->bytes_read,
+                                        pPixelFormat,
+                                        pWidth,
+                                        pHeight,
+                                        pSubSample,
+                                        pColorSpace,
+                                        pNumberOfPasses,
+                                        pPixels);
 }
 
 //apr_dir_read(<#apr_finfo_t *finfo#>, <#apr_int32_t wanted#>, <#apr_dir_t *thedir#>)
@@ -1017,143 +1118,3 @@ size_t w_io_to_base_64(_Inout_z_ char** pDestinationBuffer,
 //
 //    }
 
-
-//
-//#pragma region PNG Methods
-//
-//    //is stream contains png data
-//    inline W_RESULT is_png_file(_Inout_ std::istream& pStream)
-//    {
-//        return w_image::is_png_file(pStream);
-//    }
-//
-//    //is file contains png data
-//    inline W_RESULT is_png_file(_In_z_ const char* pFilePath)
-//    {
-//        return w_image::is_png_file(pFilePath);
-//    }
-//
-//    /*
-//        read png from stream
-//        pState indicates the state
-//         0 means the succeded
-//         1 means file is not png
-//        -1 means the file could not be opened for reading
-//        -2 means internal function error
-//    */
-//    inline uint8_t* read_png_from_stream(_Inout_ std::istream& pStream,
-//        _Out_ int& pWidth,
-//        _Out_ int& pHeight,
-//        _Out_ uint8_t& pColorType,
-//        _Out_ uint8_t& pBitDepth,
-//        _Out_ int& pNumberOfPasses,
-//        _Out_ int& pState,
-//        _In_ const w_png_pixel_format& pPixelFormat = w_png_pixel_format::RGBA_PNG)
-//    {
-//        return w_image::read_png_from_stream(
-//            pStream,
-//            pWidth,
-//            pHeight,
-//            pColorType,
-//            pBitDepth,
-//            pNumberOfPasses,
-//            pState,
-//            pPixelFormat);
-//    }
-//
-//    /*
-//        read png from file
-//        pState indicates the state
-//         0 means the succeded
-//         1 means file is not png
-//        -1 means the file could not be opened for reading
-//        -2 means internal function error
-//    */
-//    inline uint8_t* read_png_from_file(
-//        _In_z_ const char* pFilePath,
-//        _Out_ int& pWidth,
-//        _Out_ int& pHeight,
-//        _Out_ uint8_t& pColorType,
-//        _Out_ uint8_t& pBitDepth,
-//        _Out_ int& pNumberOfPasses,
-//        _Out_ int& pState,
-//        _In_ const w_png_pixel_format& pPixelFormat = w_png_pixel_format::RGBA_PNG)
-//    {
-//        return w_image::read_png_from_file(
-//            pFilePath,
-//            pWidth,
-//            pHeight,
-//            pColorType,
-//            pBitDepth,
-//            pNumberOfPasses,
-//            pState,
-//            pPixelFormat);
-//    }
-//
-//#pragma endregion
-//
-//#pragma region JPEG Methods
-//
-//    /*
-//        read jpg from stream
-//        pState indicates the state
-//         0 means the succeded
-//         1 means file is not jpg
-//        -1 means the file could not be opened for reading
-//        -2 means internal function error
-//    */
-//    inline uint8_t* read_jpeg_from_stream(
-//        _In_z_ std::istream& pStream,
-//        _Out_ int& pWidth,
-//        _Out_ int& pHeight,
-//        _Out_ int& pSubSample,
-//        _Out_ int& pColorSpace,
-//        _Out_ int& pNumberOfPasses,
-//        _Out_ int& pState,
-//        _In_ const w_jpeg_pixel_format& pPixelFormat = w_jpeg_pixel_format::RGB_JPEG)
-//    {
-//        return w_image::read_jpeg_from_stream(
-//            pStream,
-//            pWidth,
-//            pHeight,
-//            pSubSample,
-//            pColorSpace,
-//            pNumberOfPasses,
-//            pState,
-//            pPixelFormat);
-//    }
-//
-//    /*
-//        read jpg from file
-//        pState indicates the state
-//         0 means the succeded
-//         1 means file is not jpg
-//        -1 means the file could not be opened for reading
-//        -2 means internal function error
-//    */
-//    inline uint8_t* read_jpeg_from_file(
-//        _In_z_ const char* pFilePath,
-//        _Out_ int& pWidth,
-//        _Out_ int& pHeight,
-//        _Out_ int& pSubSample,
-//        _Out_ int& pColorSpace,
-//        _Out_ int& pNumberOfPasses,
-//        _Out_ int& pState,
-//        _In_ const w_jpeg_pixel_format& pPixelFormat = w_jpeg_pixel_format::RGB_JPEG)
-//    {
-//        return w_image::read_jpeg_from_file(
-//            pFilePath,
-//            pWidth,
-//            pHeight,
-//            pSubSample,
-//            pColorSpace,
-//            pNumberOfPasses,
-//            pState,
-//            pPixelFormat);
-//    }
-//
-//#pragma endregion
-//
-//}
-//
-//#endif //__W_IO_H__
