@@ -21,10 +21,10 @@ w_logger::w_logger(_In_ const w_log_config* pConfig):
         return;
     }
     //if directory of log is not existed
-    if (w_io_get_is_directory(pConfig->log_path) != W_SUCCESS)
+    if (w_io_dir_check_is_directory(pConfig->log_path) != W_SUCCESS)
     {
         //create the directory of log inside the root directory
-        w_io_create_directory(pConfig->log_path);
+        w_io_dir_create(pConfig->log_path);
     }
     auto _time = w_timespan_init_from_now();
     auto _time_str = w_timespan_to_string(_time);

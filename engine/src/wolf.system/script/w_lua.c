@@ -103,7 +103,7 @@ W_RESULT w_lua_load_file(_In_z_ const char* pPath)
     
 	s_last_error[0] = '\0';
 
-    W_RESULT _is_exists = w_io_get_is_file(pPath);
+    W_RESULT _is_exists = w_io_file_check_is_file(pPath);
     if (_is_exists == W_FAILURE)
     {
         apr_snprintf(s_last_error,

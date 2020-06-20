@@ -119,6 +119,7 @@
 		2CABF82624861E6E00E5E4D9 /* libmbedx509.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CABF81A2485B30200E5E4D9 /* libmbedx509.a */; };
 		2CB15355249BC5BA005A358E /* libjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CB15353249BC5A9005A358E /* libjpeg.a */; };
 		2CB15356249BC5BA005A358E /* libturbojpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CB15354249BC5A9005A358E /* libturbojpeg.a */; };
+		2CB15358249D291C005A358E /* libpng16d.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CB15357249D290C005A358E /* libpng16d.a */; };
 		2CB21401247C2D7F0022DA86 /* w_shared_mem.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CB213FF247C2D7F0022DA86 /* w_shared_mem.h */; };
 		2CB21402247C2D7F0022DA86 /* w_shared_mem.c in Sources */ = {isa = PBXBuildFile; fileRef = 2CB21400247C2D7F0022DA86 /* w_shared_mem.c */; };
 		2CB21405247C2E060022DA86 /* w_mem_map.c in Sources */ = {isa = PBXBuildFile; fileRef = 2CB21403247C2E060022DA86 /* w_mem_map.c */; };
@@ -301,6 +302,7 @@
 		2CABF82124861CA000E5E4D9 /* convey.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = convey.c; path = ../../../src/wolf.system/test/convey.c; sourceTree = "<group>"; };
 		2CB15353249BC5A9005A358E /* libjpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libjpeg.a; path = "../../../deps/libjpeg-turbo/lib/osx/debug/libjpeg.a"; sourceTree = "<group>"; };
 		2CB15354249BC5A9005A358E /* libturbojpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libturbojpeg.a; path = "../../../deps/libjpeg-turbo/lib/osx/debug/libturbojpeg.a"; sourceTree = "<group>"; };
+		2CB15357249D290C005A358E /* libpng16d.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpng16d.a; path = ../../../deps/libpng/lib/osx/libpng16d.a; sourceTree = "<group>"; };
 		2CB213FF247C2D7F0022DA86 /* w_shared_mem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_shared_mem.h; path = ../../../src/wolf.system/memory/w_shared_mem.h; sourceTree = "<group>"; };
 		2CB21400247C2D7F0022DA86 /* w_shared_mem.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = w_shared_mem.c; path = ../../../src/wolf.system/memory/w_shared_mem.c; sourceTree = "<group>"; };
 		2CB21403247C2E060022DA86 /* w_mem_map.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = w_mem_map.c; path = ../../../src/wolf.system/memory/w_mem_map.c; sourceTree = "<group>"; };
@@ -382,6 +384,7 @@
 				2CABF8142485A32200E5E4D9 /* libnng.a in Frameworks */,
 				2CFADC482490D93200409581 /* libwolfssl.a in Frameworks */,
 				2CEEDB08249A07240050D011 /* libcurl-d.a in Frameworks */,
+				2CB15358249D291C005A358E /* libpng16d.a in Frameworks */,
 				2CABF82424861E6E00E5E4D9 /* libmbedcrypto.a in Frameworks */,
 				2CABF82524861E6E00E5E4D9 /* libmbedtls.a in Frameworks */,
 				2CB15356249BC5BA005A358E /* libturbojpeg.a in Frameworks */,
@@ -714,6 +717,7 @@
 		2CFA170D1E674C850041A83F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2CB15357249D290C005A358E /* libpng16d.a */,
 				2CB15353249BC5A9005A358E /* libjpeg.a */,
 				2CB15354249BC5A9005A358E /* libturbojpeg.a */,
 				2CEEDB07249A07100050D011 /* libcurl-d.a */,
@@ -1270,6 +1274,7 @@
 					"$(SRCROOT)/../../../deps/WolfSSL/include",
 					"$(SRCROOT)/../../../deps/curl/include",
 					"$(SRCROOT)/../../../deps/libjpeg-turbo/include",
+					"$(SRCROOT)/../../../deps/libpng/include",
 				);
 				INSTALL_PATH = /usr/local/lib;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
@@ -1286,6 +1291,7 @@
 					"$(SRCROOT)/../../../deps/WolfSSL/lib/osx/",
 					"$(SRCROOT)/../../../deps/curl/lib/osx",
 					"$(SRCROOT)/../../../deps/libjpeg-turbo/lib/osx/debug",
+					"$(SRCROOT)/../../../deps/libpng/lib/osx",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				ONLY_ACTIVE_ARCH = YES;
