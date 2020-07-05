@@ -4,17 +4,7 @@
 
 typedef struct
 {
-#ifdef W_PLATFORM_WIN
-
-    LARGE_INTEGER   frequency;
-    LARGE_INTEGER   last_time;
-    
-#else
-    
     double          last_time;
-    
-#endif
-    
     double          max_delta;
 
     //derived timing data uses a canonical tick format.
@@ -61,34 +51,7 @@ w_gametime w_gametime_init(void)
     _gametime->frame_count = 0;
     _gametime->fixed_time_step = false;
     _gametime->target_elapsed_ticks = (uint64_t)(TICKS_PER_SECOND / 60);
-    
-#if defined(W_PLATFORM_WIN)
-    //Get frequency
-    if (!QueryPerformanceFrequency(&this->_frequency))
-    {
-                    V(W_FAILED,
-                        w_log_type::W_ERROR,
-                        true,
-                        "query performance frequency (on constructor). trace info: {}", this->_name);
-    }
-    
-    //Get performance
-    if (!QueryPerformanceCounter(&this->_last_time))
-    {
-                    V(W_FAILED,
-                        w_log_type::W_ERROR,
-                        true,
-                        "query performance frequency (on constructor). trace info: {}", this->_name);
-    }
-    
-    // Initialize max delta to 1/10 of a second.
-    _gametime->max_delta = (double)(this->_frequency.QuadPart / 10);
-    
-#elif defined(W_PLATFORM_ANDROID) || defined(W_PLATFORM_LINUX) || defined(W_PLATFORM_OSX)
-    
     _gametime->max_delta = 313918.0;
-    
-#endif
     
     //reset it
     w_game_time_reset((w_gametime)_gametime);
@@ -253,11 +216,11 @@ void w_gametime_tick(_In_ w_gametime pGameTime, _In_ w_gametime_tick_callback pO
     //clamp excessively large time deltas (e.g. after paused in the debugger).
     if (_time_delta > _ptr->max_delta)
     {
-        _time_delta = (long long)(_ptr->max_delta);
+        _time_delta = _ptr->max_delta;
     }
     
     // Convert QPC units into a canonical tick format. This cannot overflow due to the previous clamp.
-    _time_delta = (long long)(_time_delta * TICKS_PER_SECOND);
+    _time_delta = _time_delta * TICKS_PER_SECOND;
     
     uint32_t _last_frame_count = _ptr->frame_count;
     if (_ptr->fixed_time_step)
@@ -273,10 +236,10 @@ void w_gametime_tick(_In_ w_gametime pGameTime, _In_ w_gametime_tick_callback pO
     
         if (llabs((int64_t)(_time_delta - _ptr->target_elapsed_ticks)) < TICKS_PER_SECOND / 4000)
         {
-            _time_delta = _ptr->target_elapsed_ticks;
+            _time_delta = (double)_ptr->target_elapsed_ticks;
         }
     
-        _ptr->left_over_ticks += _time_delta;
+        _ptr->left_over_ticks += (uint64_t)_time_delta;
         while (_ptr->left_over_ticks >= _ptr->target_elapsed_ticks)
         {
             _ptr->elapsed_ticks = _ptr->target_elapsed_ticks;

@@ -35,7 +35,8 @@ extern "C" {
 #endif
 
 //http://dev.ariel-networks.com/apr/apr-tutorial/html/apr-tutorial.html#toc1
-#include <apr-1/apr.h>
+
+#include <apr.h>
 #include <apr-1/apr_general.h>
 #include <apr-1/apr_strings.h>
 #include <apr-1/apr_tables.h>

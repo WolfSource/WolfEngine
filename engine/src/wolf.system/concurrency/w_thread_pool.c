@@ -157,12 +157,12 @@ size_t w_thread_pool_thread_max_set(_In_ w_thread_pool pThreadPool, _In_ size_t 
     return apr_thread_pool_thread_max_set((apr_thread_pool_t*)pThreadPool, pCount);
 }
 
-long w_thread_pool_idle_wait_set(_In_ w_thread_pool pThreadPool, _In_ long pTimeOut)
+apr_int64_t w_thread_pool_idle_wait_set(_In_ w_thread_pool pThreadPool, _In_ long pTimeOut)
 {
     return apr_thread_pool_idle_wait_set((apr_thread_pool_t*)pThreadPool, pTimeOut);
 }
 
-long w_thread_pool_idle_wait_get(_In_ w_thread_pool pThreadPool)
+apr_int64_t w_thread_pool_idle_wait_get(_In_ w_thread_pool pThreadPool)
 {
     return apr_thread_pool_idle_wait_get((apr_thread_pool_t*)pThreadPool);
 }

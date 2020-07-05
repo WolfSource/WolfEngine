@@ -14,7 +14,7 @@ extern "C" {
 #endif
 
 #include "wolf.h"
-#include <w_thread.h>
+#include "w_thread.h"
 
 struct w_thread_pool_imp;
 typedef struct w_thread_pool_imp* w_thread_pool;
@@ -190,14 +190,14 @@ size_t   w_thread_pool_thread_max_set(_In_ w_thread_pool pThreadPool, _In_ size_
  * @param pTimeOut The number of microseconds an idle thread should wait till it reaps itself
  * @return The original maximum wait time
 */
-long     w_thread_pool_idle_wait_set(_In_ w_thread_pool pThreadPool, _In_ long pTimeOut);
+apr_int64_t w_thread_pool_idle_wait_set(_In_ w_thread_pool pThreadPool, _In_ long pTimeOut);
 
 /**
  * Access function for the maximum wait time (in microseconds) of an idling thread that exceeds the maximum number of idling threads
  * @param pThreadPool The thread pool
  * @return The current maximum wait time
 */
-long     w_thread_pool_idle_wait_get(_In_ w_thread_pool pThreadPool);
+apr_int64_t w_thread_pool_idle_wait_get(_In_ w_thread_pool pThreadPool);
 
 /**
  * Access function for the maximum number of threads

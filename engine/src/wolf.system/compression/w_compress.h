@@ -51,7 +51,7 @@ W_RESULT w_compress_lz4(_In_    const char* pSrcBuffer,
 W_RESULT w_decompress_lz4(_In_	    const char* pCompressedBuffer,
                           _Inout_	w_compress_result* pDecompressInfo);
 
-#ifdef __WIN32
+#ifdef W_PLATFORM_WIN
 W_RESULT w_compress_lzma(_In_ const uint8_t* pSrcBuffer,
                          _Inout_ w_compress_result* pCompressResult);
 

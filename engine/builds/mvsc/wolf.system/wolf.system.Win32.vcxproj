@@ -19,220 +19,18 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_allocator.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_atomic.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_cstr.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_dso.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_encode.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_env.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_errno.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_escape.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_file_info.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_file_io.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_fnmatch.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_general.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_getopt.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_global_mutex.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_hash.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_inherit.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_lib.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_mmap.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_network_io.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_osx.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_perms_set.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_poll.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_pools.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_portable.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_proc_mutex.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_random.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_ring.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_shm.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_signal.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_skiplist.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_strings.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_support.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_tables.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_thread_cond.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_thread_mutex.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_thread_proc.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_thread_rwlock.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_time.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_user.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_version.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_want.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\apr-1\apr_win32.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\base64\chromiumbase64.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\base64\fastavx512bwbase64.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\base64\fastavxbase64.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\base64\klompavxbase64.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\base64\quicktimebase64.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\base64\scalarbase64.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\chrono\w_chrono.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\chrono\w_timespan.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\compression\lz4\lz4.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\compression\lz4\lz4frame.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\compression\lz4\lz4frame_static.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\compression\lz4\lz4hc.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\compression\lz4\xxhash.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\7z.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\7zAlloc.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\7zBuf.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\7zCrc.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\7zFile.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\7zTypes.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\7zVersion.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Aes.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Alloc.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Bcj2.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Bra.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Compiler.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\CpuArch.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Delta.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\DllSecur.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\LzFind.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\LzFindMt.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\LzHash.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Lzma2Dec.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Lzma2DecMt.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Lzma2Enc.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Lzma86.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\LzmaDec.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\LzmaEnc.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\LzmaLib.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\MtCoder.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\MtDec.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Ppmd.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Ppmd7.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Precomp.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\RotateDefs.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Sha256_lzma.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Sort.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Threads.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Xz.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\XzCrc64.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\XzEnc.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\compression\msgpack\msgpack.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\compression\w_compress.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\compression\zlib\crc32.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\compression\zlib\deflate.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\compression\zlib\gzguts.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\compression\zlib\inffast.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\compression\zlib\inffixed.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\compression\zlib\inflate.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\compression\zlib\inftrees.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\compression\zlib\trees.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\compression\zlib\zconf.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\compression\zlib\zlib.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\compression\zlib\zutil.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\concurrency\w_condition_variable.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\concurrency\w_signal.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\concurrency\w_thread.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\io\w_io.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\json\rapidjson\rapidjson.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\log\spdlog\spdlog.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\log\w_log.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\memory\w_string.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\os\w_platform.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\script\lua\lauxlib.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\script\lua\lua.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\script\lua\luaconf.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\script\lua\luajit.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\script\lua\lualib.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\wolf.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\xml\rapidxml\rapidxml.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\xml\rapidxml\rapidxml_iterators.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\xml\rapidxml\rapidxml_print.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\xml\rapidxml\rapidxml_utils.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\xml\w_xml.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\atomic\win32\apr_atomic.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\dso\win32\dso.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\encoding\apr_encode.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\encoding\apr_escape.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\file_io\unix\copy.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\file_io\unix\fileacc.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\file_io\unix\filepath_util.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\file_io\unix\fullrw.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\file_io\unix\mktemp.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\file_io\unix\tempdir.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\file_io\win32\buffer.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\file_io\win32\dir.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\file_io\win32\filedup.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\file_io\win32\filepath.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\file_io\win32\filestat.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\file_io\win32\filesys.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\file_io\win32\flock.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\file_io\win32\open.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\file_io\win32\pipe.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\file_io\win32\readwrite.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\file_io\win32\seek.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\locks\win32\proc_mutex.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\locks\win32\thread_cond.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\locks\win32\thread_mutex.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\locks\win32\thread_rwlock.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\memory\unix\apr_pools.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\misc\unix\errorcodes.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\misc\unix\getopt.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\misc\unix\otherchild.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\misc\unix\version.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\misc\win32\charset.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\misc\win32\env.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\misc\win32\internal.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\misc\win32\misc.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\misc\win32\rand.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\misc\win32\start.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\misc\win32\utf8.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\mmap\unix\common.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\mmap\win32\mmap.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\network_io\unix\inet_ntop.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\network_io\unix\inet_pton.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\network_io\unix\multicast.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\network_io\unix\sockaddr.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\network_io\unix\socket_util.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\network_io\win32\sendrecv.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\network_io\win32\sockets.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\network_io\win32\sockopt.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\passwd\apr_getpass.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\poll\unix\epoll.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\poll\unix\kqueue.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\poll\unix\poll.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\poll\unix\pollcb.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\poll\unix\pollset.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\poll\unix\port.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\poll\unix\select.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\poll\unix\wakeup.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\poll\unix\z_asio.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\random\unix\apr_random.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\random\unix\sha2.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\random\unix\sha2_glue.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\shmem\win32\shm.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\strings\apr_cpystrn.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\strings\apr_cstr.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\strings\apr_fnmatch.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\strings\apr_snprintf.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\strings\apr_strings.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\strings\apr_strnatcmp.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\strings\apr_strtok.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\tables\apr_hash.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\tables\apr_skiplist.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\tables\apr_tables.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\threadproc\win32\proc.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\threadproc\win32\signals.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\threadproc\win32\thread.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\threadproc\win32\threadpriv.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\time\win32\time.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\time\win32\timestr.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\user\win32\groupinfo.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\apr-1\src\user\win32\userinfo.c" />
     <ClCompile Include="..\..\..\src\wolf.system\base64\chromiumbase64.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\base64\fastavx512bwbase64.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\base64\fastavxbase64.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\base64\fastavx512bwbase64.c">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AdvancedVectorExtensions512</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\base64\fastavxbase64.c">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+    </ClCompile>
     <ClCompile Include="..\..\..\src\wolf.system\base64\klompavxbase64.c" />
     <ClCompile Include="..\..\..\src\wolf.system\base64\quicktimebase64.c" />
     <ClCompile Include="..\..\..\src\wolf.system\base64\scalarbase64.c" />
     <ClCompile Include="..\..\..\src\wolf.system\chrono\w_chrono.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\chrono\w_gametime.c" />
     <ClCompile Include="..\..\..\src\wolf.system\chrono\w_timespan.c" />
     <ClCompile Include="..\..\..\src\wolf.system\compression\lz4\lz4.c" />
     <ClCompile Include="..\..\..\src\wolf.system\compression\lz4\lz4frame.c" />
@@ -288,32 +86,95 @@
     <ClCompile Include="..\..\..\src\wolf.system\compression\msgpack\vrefbuffer.c" />
     <ClCompile Include="..\..\..\src\wolf.system\compression\msgpack\zone.c" />
     <ClCompile Include="..\..\..\src\wolf.system\compression\w_compress.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\concurrency\libev\ev.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\concurrency\libev\event.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\concurrency\w_async.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\concurrency\w_concurrent_queue.c" />
     <ClCompile Include="..\..\..\src\wolf.system\concurrency\w_condition_variable.c" />
     <ClCompile Include="..\..\..\src\wolf.system\concurrency\w_signal.c" />
     <ClCompile Include="..\..\..\src\wolf.system\concurrency\w_thread.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\io\w_io.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\log\spdlog\src\async.cpp" />
-    <ClCompile Include="..\..\..\src\wolf.system\log\spdlog\src\color_sinks.cpp" />
-    <ClCompile Include="..\..\..\src\wolf.system\log\spdlog\src\file_sinks.cpp" />
-    <ClCompile Include="..\..\..\src\wolf.system\log\spdlog\src\fmt.cpp" />
-    <ClCompile Include="..\..\..\src\wolf.system\log\spdlog\src\spdlog.cpp" />
-    <ClCompile Include="..\..\..\src\wolf.system\log\spdlog\src\stdout_sinks.cpp" />
-    <ClCompile Include="..\..\..\src\wolf.system\log\w_log.cpp" />
-    <ClCompile Include="..\..\..\src\wolf.system\memory\w_string.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\concurrency\w_thread_pool.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\concurrency\w_timer.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\fiber\w_fiber.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\wolf.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\xml\w_xml.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\src\wolf.system\base64\chromiumbase64.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\base64\fastavx512bwbase64.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\base64\fastavxbase64.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\base64\klompavxbase64.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\base64\quicktimebase64.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\base64\scalarbase64.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\chrono\w_chrono.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\chrono\w_gametime.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\chrono\w_timespan.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lz4\lz4.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lz4\lz4frame.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lz4\lz4frame_static.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lz4\lz4hc.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lz4\xxhash.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\7z.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\7zAlloc.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\7zBuf.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\7zCrc.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\7zFile.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\7zTypes.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\7zVersion.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Aes.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Alloc.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Bcj2.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Bra.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Compiler.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\CpuArch.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Delta.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\DllSecur.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\LzFind.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\LzFindMt.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\LzHash.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Lzma2Dec.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Lzma2DecMt.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Lzma2Enc.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Lzma86.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\LzmaDec.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\LzmaEnc.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\LzmaLib.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\MtCoder.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\MtDec.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Ppmd.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Ppmd7.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Precomp.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\RotateDefs.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Sha256_lzma.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Sort.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Threads.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Xz.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\XzCrc64.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\XzEnc.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\msgpack\msgpack.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\w_compress.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\concurrency\libev\ev.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\concurrency\libev\event.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\concurrency\libev\ev_vars.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\concurrency\w_async.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\concurrency\w_concurrent_queue.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\concurrency\w_condition_variable.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\concurrency\w_signal.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\concurrency\w_thread.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\concurrency\w_thread_pool.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\concurrency\w_timer.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\fiber\w_fiber.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\os\w_platform.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\wolf.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\src\wolf.system\base64\LICENSE" />
     <None Include="..\..\..\src\wolf.system\compression\lz4\LICENSE" />
     <None Include="..\..\..\src\wolf.system\compression\lz4\README.md" />
-    <None Include="..\..\..\src\wolf.system\xml\rapidxml\manual.html" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\..\src\wolf.system\base64\version.txt" />
-    <Text Include="..\..\..\src\wolf.system\json\rapidjson\version.txt" />
-    <Text Include="..\..\..\src\wolf.system\xml\rapidxml\license.txt" />
-    <Text Include="..\..\..\src\wolf.system\xml\rapidxml\version.txt" />
+    <Text Include="..\..\..\src\wolf.system\concurrency\libev\version.txt" />
+    <Text Include="..\..\..\src\wolf.system\fiber\version.txt" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\..\src\wolf.system\compression\lzma\7zVersion.rc" />
@@ -418,8 +279,8 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.system/apr-1;$(SolutionDir)/../../src/wolf.system/apr-1/arch/win32;$(SolutionDir)/../../src/wolf.system/apr-1/arch/unix;$(SolutionDir)/../../src/wolf.system/apr-1/private;$(SolutionDir)/../../src/wolf.system/compression/zlib;$(SolutionDir)/../../src/wolf.system/compression/msgpack;$(SolutionDir)/../../src/wolf.system/log/;$(SolutionDir)/../../deps/luaJIT/include;$(SolutionDir)/../../deps/libpng/include;$(SolutionDir)/../../deps/libjpeg-turbo/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_WIN32;_WINDOWS;WINNT;APR_DECLARE_EXPORT;libapr_1_EXPORTS;SPDLOG_COMPILED_LIB;SPDLOG_WCHAR_TO_UTF8_SUPPORT;SPDLOG_WCHAR_FILENAMES;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.system/compression/msgpack;$(SolutionDir)/../../deps/apr/include;$(SolutionDir)/../../deps/apr/include/apr-1;$(SolutionDir)/../../deps/apr/include/apr-1/apr/win64;$(SolutionDir)/../../deps/curl/include;$(SolutionDir)/../../deps/zlib/include;$(SolutionDir)/../../deps/zlib/include/zconf/win64;$(SolutionDir)/../../deps/ssh/include;$(SolutionDir)/../../deps/ssh/include/config/win64;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WIN32;_WINDOWS;WINNT;_WIN32_WINNT=0x0600;APR_DECLARE_EXPORT;libapr_1_EXPORTS;HAVE_CONFIG_H;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;CURL_STATICLIB;NO_FSEEKO;ASMV;ASMINF;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
@@ -431,7 +292,7 @@
       <Optimization>Disabled</Optimization>
       <CompileAsWinRT>false</CompileAsWinRT>
       <MinimalRebuild>false</MinimalRebuild>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <WarningLevel>Level3</WarningLevel>
       <CompileAs>Default</CompileAs>
@@ -442,8 +303,8 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>true</AssemblyDebug>
-      <AdditionalLibraryDirectories>$(SolutionDir)/../../deps/luaJIT/lib/windows/x64/debug;$(SolutionDir)/../../deps/libjpeg-turbo/lib/windows/x64/debug;$(SolutionDir)/../../deps/libpng/lib/windows/x64/;$(SolutionDir)/../../deps/zlib/lib/windows/x64/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ws2_32.lib;mswsock.lib;rpcrt4.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;luajit-static.lib;zlibstaticd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)/../../deps/apr/lib/win64/$(Configuration);$(SolutionDir)/../../deps/curl/lib/win64;$(SolutionDir)/../../deps/zlib/lib/win64;$(SolutionDir)/../../deps/openSSL/lib/win64;$(SolutionDir)/../../deps/ssh/lib/win64/$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>apr-1.lib;aprutil-1.lib;libcurl-d.lib;libssh2.lib;wldap32.lib;winmm.lib;ws2_32.lib;advapi32.lib;libssl.lib;libcrypto.lib;zlibstaticd.lib;crypt32.lib;user32.lib;winspool.lib;kernel32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;Rpcrt4.lib;comdlg32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

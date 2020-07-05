@@ -66,7 +66,7 @@ int clock_gettime(int pX, struct timeval* pTV)
 
 	_time.QuadPart -= _offset.QuadPart;
 	_microseconds = (double)_time.QuadPart / _frequency_to_microseconds;
-	_time.QuadPart = _microseconds;
+	_time.QuadPart = (LONGLONG)_microseconds;
 	pTV->tv_sec = _time.QuadPart / 1000000;
 	pTV->tv_usec = _time.QuadPart % 1000000;
 

@@ -61,7 +61,9 @@ extern "C" {
 #endif
 
 /* we need sys/time.h for struct timeval only */
-#if !defined (WIN32) || defined (__MINGW32__)
+#if defined(WIN32)
+#include <WinSock2.h> //timeval
+#elif !defined (WIN32) || defined (__MINGW32__)
 # include <time.h> /* mingw seems to need this, for whatever reason */
 # include <sys/time.h>
 #endif
