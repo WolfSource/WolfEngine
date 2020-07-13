@@ -9,14 +9,14 @@ unsigned char	s_function_number_input_parameters;
 
 void _VL(_In_ int pHR)
 {
-	if (pHR)
-	{
+    if (pHR)
+    {
         apr_snprintf(s_last_error,
-                     MAX_BUFFER_SIZE,
-                     "lua: %s",
-                     lua_tostring(s_lua, -1));
-		lua_pop(s_lua, 1);
-	}
+            W_MAX_BUFFER_SIZE,
+            "lua: %s",
+            lua_tostring(s_lua, -1));
+        lua_pop(s_lua, 1);
+    }
 }
 
 W_RESULT _lua_get_value(_In_    int pIndex,
@@ -82,7 +82,7 @@ W_RESULT _lua_get_value(_In_    int pIndex,
 
 W_RESULT w_lua_init(void)
 {
-    s_last_error = (char*)w_malloc(MAX_BUFFER_SIZE, "w_lua_init");
+    s_last_error = (char*)w_malloc(W_MAX_BUFFER_SIZE, "w_lua_init");
     s_function_name = (char*)w_malloc(PATH_MAX, "w_lua_init");
     s_function_number_input_parameters = 0;
     
@@ -107,8 +107,8 @@ W_RESULT w_lua_load_file(_In_z_ const char* pPath)
     if (_is_exists == W_FAILURE)
     {
         apr_snprintf(s_last_error,
-                     MAX_BUFFER_SIZE,
-                     "lua: lua file not exists on following path: %s", pPath);
+            W_MAX_BUFFER_SIZE,
+            "lua: lua file not exists on following path: %s", pPath);
         return W_FAILURE;
     }
 
@@ -180,12 +180,12 @@ void w_lua_prepare_function(const char* pFunctionName)
 {
 	s_function_number_input_parameters = 0;
     lua_getglobal(s_lua, pFunctionName);
-	if (lua_isnil(s_lua, -1))
-	{
+    if (lua_isnil(s_lua, -1))
+    {
         apr_snprintf(s_last_error,
-                     MAX_BUFFER_SIZE,
-                     "error function %s is null\n",
-                     pFunctionName);
+            W_MAX_BUFFER_SIZE,
+            "error function %s is null\n",
+            pFunctionName);
         return;
     }
     const size_t _len = strlen(pFunctionName);

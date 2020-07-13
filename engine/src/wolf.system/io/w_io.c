@@ -174,9 +174,9 @@ W_RESULT w_io_file_check_is_file(_In_z_ const char* pPath)
     if (_file)
     {
         fclose(_file);
-        return W_PASSED;
+        return W_SUCCESS;
     }
-    return W_FAILED;
+    return W_FAILURE;
 #endif
 }
 

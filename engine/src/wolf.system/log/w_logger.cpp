@@ -34,7 +34,15 @@ w_logger::w_logger(_In_ const w_log_config* pConfig):
 #if defined(_MSC_VER) && !defined(MinSizeRel)
     _sinks.push_back(std::make_shared<spdlog::sinks::msvc_sink_mt>());
 #endif
+
+#ifdef W_PLATFORM_WIN
+    //convert it to wstring
+    std::string _log_file_path_str(_log_file_path);
+    std::wstring _log_file_path_str_w(_log_file_path_str.begin(), _log_file_path_str.end());
+    _sinks.push_back(std::make_shared<spdlog::sinks::basic_file_sink_mt>(_log_file_path_str_w, true));
+#else
     _sinks.push_back(std::make_shared<spdlog::sinks::basic_file_sink_mt>(_log_file_path, true));
+#endif
     _sinks.push_back(std::make_shared<spdlog::sinks::stdout_sink_mt>());
     
     this->_l = std::make_shared<spdlog::logger>(

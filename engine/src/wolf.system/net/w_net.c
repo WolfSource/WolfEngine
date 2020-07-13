@@ -13,7 +13,13 @@
 #include <nng/supplemental/tls/tls.h>
 #include <nng/transport/tls/tls.h>
 #include "w_net.h"
+
+#ifdef W_PLATFORM_WIN
+
+#else
 #include <arpa/inet.h>
+#endif
+
 #include <curl/curl.h>
 
 const char* _net_error(_In_ W_RESULT pErrorCode,
@@ -677,7 +683,7 @@ W_RESULT w_net_send_http_request(_In_z_     const char* pURL,
                                  _Inout_    size_t* pResponseMessageLength)
 {
     CURLcode _rt;
-    curl_memory* _curl_mem;
+    curl_memory* _curl_mem = NULL;
     //create handle
     CURL* _curl = curl_easy_init();
     if (!_curl)
@@ -702,9 +708,9 @@ W_RESULT w_net_send_http_request(_In_z_     const char* pURL,
     switch (pHttpRequestType)
     {
         default:
-        case GET:
+        case HTTP_GET:
             break;
-        case POST:
+        case HTTP_POST:
             curl_easy_setopt(_curl, CURLOPT_POSTFIELDS, pMessage);
             curl_easy_setopt(_curl, CURLOPT_POSTFIELDSIZE, pMessageLenght);
             curl_easy_setopt(_curl, CURLOPT_POST, 1L);

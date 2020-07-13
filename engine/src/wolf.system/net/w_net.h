@@ -59,29 +59,29 @@ typedef enum
 typedef enum
 {
     //  Requests using GET should only retrieve data.
-    GET  = 0,
+    HTTP_GET  = 0,
     /*
         The HEAD method asks for a response identical to that of a GET request,
      but without the response body.
     */
-    HEAD,
+    HTTP_HEAD,
     /*
         The POST method is used to submit an entity to the specified resource,
         often causing a change in state or side effects on the server.
     */
-    POST,
+    HTTP_POST,
     /*  The PUT method replaces all current representations of the target resource with the request payload. */
-    PUT,
+    HTTP_PUT,
     /*  The DELETE method deletes the specified resource. */
-    DELETE,
+    HTTP_DELETE,
     /*   The CONNECT method establishes a tunnel to the server identified by the target resource. */
-    CONNECT,
+    HTTP_CONNECT,
     /*  The OPTIONS method is used to describe the communication options for the target resource. */
-    OPTIONS,
+    HTTP_OPTIONS,
     /*  The TRACE method performs a message loop-back test along the path to the target resource. */
-    TRACE,
+    HTTP_TRACE,
     /*  The PATCH method is used to apply partial modifications to a resource. */
-    PATCH
+    HTTP_PATCH
 } w_http_request_type;
 
 /**

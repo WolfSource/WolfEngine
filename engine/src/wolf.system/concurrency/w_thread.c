@@ -87,22 +87,22 @@ W_RESULT w_thread_current_ids_are_equal(_In_ w_thread_id pThread1, _In_ w_thread
 
 void w_thread_current_sleep_for_nanoseconds(_In_ double pTime)
 {
-	apr_sleep(pTime * 1e-3);
+	apr_sleep((apr_interval_time_t)(pTime * 1e-3));
 }
 
 void w_thread_current_sleep_for_microseconds(_In_ double pTime)
 {
-	apr_sleep(pTime);
+	apr_sleep((apr_interval_time_t)(pTime));
 }
 
 void w_thread_current_sleep_for_milliseconds(_In_ double pTime)
 {
-	apr_sleep(pTime * 1e+3);
+	apr_sleep((apr_interval_time_t)(pTime * 1e+3));
 }
 
 void w_thread_current_sleep_for_seconds(_In_ double pTime)
 {
-	apr_sleep(pTime * 1e+6);
+	apr_sleep((apr_interval_time_t)(pTime * 1e+6));
 }
 
 void w_thread_get_number_of_cpu_threads(_Inout_ int* pCores,

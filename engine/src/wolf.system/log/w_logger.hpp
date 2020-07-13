@@ -18,7 +18,7 @@ class w_logger
 {
 public:
     explicit w_logger(_In_ const w_log_config* pConfig);
-    ~w_logger(void);
+    ~w_logger(void) {};
     
     W_RESULT  write(_In_z_ const char* pFMT);
     
