@@ -28,24 +28,28 @@ typedef struct
  * Initialize timespan with zero.
  * @return a pointer to w_timespan object
  */
+W_SYSTEM_EXPORT 
 w_timespan* w_timespan_init_from_zero(void);
 
 /**
  * Initialize timespan with min value.
  * @return a pointer to w_timespan object
  */
+W_SYSTEM_EXPORT
 w_timespan* w_timespan_init_from_min_value(void);
 
 /**
  * Initialize timespan with max value.
  * @return a pointer to w_timespan object
  */
+W_SYSTEM_EXPORT
 w_timespan* w_timespan_init_from_max_value(void);
 
 /**
  * Initialize timespan with current now
  * @return a pointer to w_timespan object
 */
+W_SYSTEM_EXPORT
 w_timespan* w_timespan_init_from_now(void);
 
 /**
@@ -53,6 +57,7 @@ w_timespan* w_timespan_init_from_now(void);
  * @param pValue is days
  * @return a pointer to w_timespan object
 */
+W_SYSTEM_EXPORT
 w_timespan* w_timespan_init_from_days(_In_ double pValue);
 
 /**
@@ -60,6 +65,7 @@ w_timespan* w_timespan_init_from_days(_In_ double pValue);
  * @param pValue is hours
  * @return a pointer to w_timespan object
 */
+W_SYSTEM_EXPORT
 w_timespan* w_timespan_init_from_hours(_In_ double pValue);
 
 /**
@@ -67,6 +73,7 @@ w_timespan* w_timespan_init_from_hours(_In_ double pValue);
  * @param pValue is minutes
  * @return a pointer to w_timespan object
 */
+W_SYSTEM_EXPORT
 w_timespan* w_timespan_init_from_minutes(_In_ double pValue);
 
 /**
@@ -74,6 +81,7 @@ w_timespan* w_timespan_init_from_minutes(_In_ double pValue);
  * @param pValue is seconds
  * @return a pointer to w_timespan object
 */
+W_SYSTEM_EXPORT
 w_timespan* w_timespan_init_from_seconds(_In_ double pValue);
 
 /**
@@ -81,6 +89,7 @@ w_timespan* w_timespan_init_from_seconds(_In_ double pValue);
  * @param pValue is milliseconds
  * @return a pointer to w_timespan object
 */
+W_SYSTEM_EXPORT
 w_timespan* w_timespan_init_from_milliseconds(_In_ double pValue);
 
 /**
@@ -88,6 +97,7 @@ w_timespan* w_timespan_init_from_milliseconds(_In_ double pValue);
  * @param pValue is const char* with the following format "00:00:00:00:000"
  * @return a pointer to w_timespan object
 */
+W_SYSTEM_EXPORT
 w_timespan* w_timespan_init_from_string(_In_z_ const char* const pValue);
 
 /**
@@ -95,6 +105,7 @@ w_timespan* w_timespan_init_from_string(_In_z_ const char* const pValue);
  * @param pValue is ticks
  * @return a pointer to w_timespan object
  */
+W_SYSTEM_EXPORT
 w_timespan* w_timespan_init_from_ticks(_In_ int64_t pValue);
 
 /**
@@ -104,6 +115,7 @@ w_timespan* w_timespan_init_from_ticks(_In_ int64_t pValue);
  * @param pSeconds is number of seconds
  * @return a pointer to w_timespan object
  */
+W_SYSTEM_EXPORT
 w_timespan* w_timespan_init_from_shorttime(_In_ int pHours,
                                            _In_ int pMinutes,
                                            _In_ int pSeconds);
@@ -117,6 +129,7 @@ w_timespan* w_timespan_init_from_shorttime(_In_ int pHours,
  * @param pMilliseconds is number of milliseconds
  * @return a pointer to w_timespan object
  */
+W_SYSTEM_EXPORT
 w_timespan* w_timespan_init_from_longtime(_In_ int pDays,
                                           _In_ int pHours,
                                           _In_ int pMinutes,
@@ -128,6 +141,7 @@ w_timespan* w_timespan_init_from_longtime(_In_ int pDays,
  * @param pValue is number of days
  * @return a pointer to w_timespan object
 */
+W_SYSTEM_EXPORT
 w_timespan* w_timespan_init_from_string(const char* const pValue);
 
 
@@ -136,6 +150,7 @@ w_timespan* w_timespan_init_from_string(const char* const pValue);
  * @param pValue is number of days
  * @return a pointer to w_timespan object
 */
+W_SYSTEM_EXPORT
 w_timespan* w_timespan_init_from_wstring(const wchar_t* const pValue);
 
 /**
@@ -144,6 +159,7 @@ w_timespan* w_timespan_init_from_wstring(const wchar_t* const pValue);
  * @param pRValue right parameter which will be added to left parameter
  * @return result of pLValue + pRValue
 */
+W_SYSTEM_EXPORT
 w_timespan* w_timespan_add(_Inout_ w_timespan* pLValue, _In_ const w_timespan* const pRValue);
 
 /**
@@ -151,6 +167,7 @@ w_timespan* w_timespan_add(_Inout_ w_timespan* pLValue, _In_ const w_timespan* c
  * @param pLValue left parameter
  * @param pRValue right parameter which will be added to left parameter
 */
+W_SYSTEM_EXPORT
 void w_timespan_add_by_ref(_Inout_ w_timespan* pLValue, _In_ const w_timespan* const pRValue);
 
 
@@ -159,6 +176,7 @@ void w_timespan_add_by_ref(_Inout_ w_timespan* pLValue, _In_ const w_timespan* c
  * @param pValue timespan parameter
  * @return string as const char*
 */
+W_SYSTEM_EXPORT
 const char* w_timespan_to_string(_In_ const w_timespan* const pValue);
 
 /**
@@ -166,6 +184,7 @@ const char* w_timespan_to_string(_In_ const w_timespan* const pValue);
  * @param pValue timespan parameter
  * @return string as const char*
 */
+W_SYSTEM_EXPORT
 const wchar_t* w_timespan_to_wstring(_In_ const w_timespan* const pValue);
 
 
@@ -176,6 +195,7 @@ const wchar_t* w_timespan_to_wstring(_In_ const w_timespan* const pValue);
  * @param pValue timespan parameter
  * @return days as a constant int
 */
+W_SYSTEM_EXPORT
 int w_timespan_get_days(_In_ const w_timespan* const pValue);
 
 /**
@@ -183,6 +203,7 @@ int w_timespan_get_days(_In_ const w_timespan* const pValue);
  * @param pValue timespan parameter
  * @return total days as a constant double
 */
+W_SYSTEM_EXPORT
 double w_timespan_get_total_days(_In_ const w_timespan* const pValue);
 
 /**
@@ -190,6 +211,7 @@ double w_timespan_get_total_days(_In_ const w_timespan* const pValue);
  * @param pValue timespan parameter
  * @return hours as a constant int
 */
+W_SYSTEM_EXPORT
 int w_timespan_get_hours(_In_ const w_timespan* const pValue);
 
 /**
@@ -197,6 +219,7 @@ int w_timespan_get_hours(_In_ const w_timespan* const pValue);
  * @param pValue timespan parameter
  * @return total hours as a constant double
 */
+W_SYSTEM_EXPORT
 double w_timespan_get_total_hours(_In_ const w_timespan* const pValue);
 
 /**
@@ -204,6 +227,7 @@ double w_timespan_get_total_hours(_In_ const w_timespan* const pValue);
  * @param pValue timespan parameter
  * @return minutes as a constant int
 */
+W_SYSTEM_EXPORT
 int w_timespan_get_minutes(_In_ const w_timespan* const pValue);
 
 /**
@@ -211,6 +235,7 @@ int w_timespan_get_minutes(_In_ const w_timespan* const pValue);
  * @param pValue timespan parameter
  * @return total minutes as a constant double
 */
+W_SYSTEM_EXPORT
 double w_timespan_get_total_minutes(_In_ const w_timespan* const pValue);
 
 /**
@@ -218,6 +243,7 @@ double w_timespan_get_total_minutes(_In_ const w_timespan* const pValue);
  * @param pValue timespan parameter
  * @return seconds as a constant int
 */
+W_SYSTEM_EXPORT
 int w_timespan_get_seconds(_In_ const w_timespan* const pValue);
 
 /**
@@ -225,6 +251,7 @@ int w_timespan_get_seconds(_In_ const w_timespan* const pValue);
  * @param pValue timespan parameter
  * @return total seconds as a constant double
 */
+W_SYSTEM_EXPORT
 double w_timespan_get_total_seconds(_In_ const w_timespan* const pValue);
 
 /**
@@ -232,6 +259,7 @@ double w_timespan_get_total_seconds(_In_ const w_timespan* const pValue);
  * @param pValue timespan parameter
  * @return milliseconds as a constant int
 */
+W_SYSTEM_EXPORT
 int w_timespan_get_milliseconds(_In_ const w_timespan* const pValue);
 
 /**
@@ -239,18 +267,21 @@ int w_timespan_get_milliseconds(_In_ const w_timespan* const pValue);
  * @param pValue timespan parameter
  * @return total milliseconds as a constant double
 */
+W_SYSTEM_EXPORT
 double w_timespan_get_total_milliseconds(_In_ const w_timespan* const pValue);
 
 /**
  * get current date time in chars
  * @return current time in the following Day-Month-Year Hour:Min:Sec
  */
+W_SYSTEM_EXPORT
 const char* w_timespan_get_current_date_time_string(void);
 
 /**
  * get current date time in wide chars
  * @return current time in the following Day-Month-Year Hour:Min:Sec
 */
+W_SYSTEM_EXPORT
 const wchar_t* w_timespan_get_current_date_time_wstring(void);
 
 #pragma endregion

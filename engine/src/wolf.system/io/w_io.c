@@ -392,7 +392,7 @@ W_RESULT	w_io_file_delete(_In_ w_file pFile)
 
 char*	w_io_dir_get_current(void)
 {
-    char* _path = (char*)w_malloc(PATH_MAX, "w_io_get_current_directory");
+    char* _path = (char*)w_malloc(W_PATH_MAX, "w_io_get_current_directory");
 #ifdef W_PLATFORM_UNIX
     if (getcwd(_path, PATH_MAX) == NULL) return NULL;
 #else

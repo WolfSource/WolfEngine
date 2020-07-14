@@ -1,4 +1,6 @@
 #include "w_chrono.h"
+#include <time.h>
+
 #ifdef W_PLATFORM_WIN
 #include <WinSock2.h> //just for timeval
 //dump define

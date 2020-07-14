@@ -1,0 +1,444 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\wolf.system\base64\chromiumbase64.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\base64\fastavx512bwbase64.c">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AdvancedVectorExtensions512</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\base64\fastavxbase64.c">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\base64\klompavxbase64.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\base64\quicktimebase64.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\base64\scalarbase64.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\chrono\w_chrono.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\chrono\w_gametime.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\chrono\w_timespan.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lz4\lz4.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lz4\lz4frame.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lz4\lz4hc.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lz4\xxhash.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\7zAlloc.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\7zArcIn.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\7zBuf.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\7zBuf2.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\7zCrc.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\7zCrcOpt.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\7zDec.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\7zFile.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\7zStream.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\Aes.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\AesOpt.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\Alloc.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\Bcj2.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\Bcj2Enc.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\Bra.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\Bra86.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\BraIA64.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\CpuArch.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\Delta.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\DllSecur.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\LzFind.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\LzFindMt.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\Lzma2Dec.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\Lzma2DecMt.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\Lzma2Enc.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\Lzma86Dec.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\Lzma86Enc.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\LzmaDec.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\LzmaEnc.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\LzmaLib.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\MtCoder.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\MtDec.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\Ppmd7.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\Ppmd7Dec.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\Ppmd7Enc.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\Sha256_lzma.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\Sort.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\Threads.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\Xz.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\XzCrc64.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\XzCrc64Opt.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\XzDec.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\XzEnc.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\XzIn.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\compression\msgpack\objectc.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\compression\msgpack\unpack.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\compression\msgpack\version.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\compression\msgpack\vrefbuffer.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\compression\msgpack\zone.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\compression\w_compress.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\concurrency\libev\ev.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\concurrency\libev\event.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\concurrency\w_async.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\concurrency\w_concurrent_queue.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\concurrency\w_condition_variable.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\concurrency\w_signal.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\concurrency\w_thread.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\concurrency\w_thread_pool.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\concurrency\w_timer.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\fiber\w_fiber.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.system\io\w_io.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\log\spdlog\src\async.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.system\log\spdlog\src\color_sinks.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.system\log\spdlog\src\file_sinks.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.system\log\spdlog\src\fmt.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.system\log\spdlog\src\spdlog.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.system\log\spdlog\src\stdout_sinks.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.system\log\V.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.system\log\w_logger.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.system\memory\w_mem_cache.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\memory\w_mem_map.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\memory\w_redis.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\memory\w_shared_mem.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\net\ws\uSockets\context.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\net\ws\uSockets\crypto\openssl.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\net\ws\uSockets\crypto\wolfssl.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\net\ws\uSockets\eventing\epoll_kqueue.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\net\ws\uSockets\eventing\gcd.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\net\ws\uSockets\eventing\libuv.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\net\ws\uSockets\loop.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\net\ws\uSockets\socket.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\net\ws\uws.cpp">
+      <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">stdcpplatest</LanguageStandard>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\net\ws\ws.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.system\net\w_net.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\script\w_lua.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\wolf.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\xml\expat\xmlparse.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\xml\expat\xmlrole.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\xml\expat\xmltok.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\xml\expat\xmltok_impl.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\xml\expat\xmltok_ns.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\xml\w_xml.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\src\wolf.system\base64\chromiumbase64.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\base64\fastavx512bwbase64.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\base64\fastavxbase64.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\base64\klompavxbase64.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\base64\quicktimebase64.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\base64\scalarbase64.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\chrono\w_chrono.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\chrono\w_gametime.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\chrono\w_timespan.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lz4\lz4.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lz4\lz4frame.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lz4\lz4frame_static.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lz4\lz4hc.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lz4\xxhash.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\7z.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\7zAlloc.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\7zBuf.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\7zCrc.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\7zFile.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\7zTypes.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\7zVersion.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Aes.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Alloc.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Bcj2.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Bra.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Compiler.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\CpuArch.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Delta.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\DllSecur.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\LzFind.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\LzFindMt.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\LzHash.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Lzma2Dec.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Lzma2DecMt.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Lzma2Enc.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Lzma86.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\LzmaDec.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\LzmaEnc.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\LzmaLib.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\MtCoder.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\MtDec.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Ppmd.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Ppmd7.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Precomp.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\RotateDefs.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Sha256_lzma.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Sort.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Threads.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\Xz.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\XzCrc64.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\XzEnc.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\msgpack\msgpack.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\compression\w_compress.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\concurrency\libev\ev.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\concurrency\libev\event.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\concurrency\libev\ev_vars.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\concurrency\w_async.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\concurrency\w_concurrent_queue.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\concurrency\w_condition_variable.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\concurrency\w_signal.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\concurrency\w_thread.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\concurrency\w_thread_pool.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\concurrency\w_timer.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\fiber\w_fiber.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\io\w_io.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\json\rapidjson\rapidjson.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\log\V.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\log\w_logger.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\log\w_log_config.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\memory\w_mem_cache.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\memory\w_mem_map.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\memory\w_redis.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\memory\w_shared_mem.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\net\ws\uSockets\internal\eventing\epoll_kqueue.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\net\ws\uSockets\internal\eventing\gcd.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\net\ws\uSockets\internal\eventing\libuv.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\net\ws\uSockets\internal\internal.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\net\ws\uSockets\internal\loop_data.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\net\ws\uSockets\internal\networking\bsd.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\net\ws\uSockets\libusockets.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\net\ws\uWebSockets\App.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\net\ws\uWebSockets\AsyncSocket.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\net\ws\uWebSockets\AsyncSocketData.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\net\ws\uWebSockets\BloomFilter.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\net\ws\uWebSockets\f2\function2.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\net\ws\uWebSockets\HttpContext.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\net\ws\uWebSockets\HttpContextData.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\net\ws\uWebSockets\HttpParser.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\net\ws\uWebSockets\HttpResponse.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\net\ws\uWebSockets\HttpResponseData.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\net\ws\uWebSockets\HttpRouter.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\net\ws\uWebSockets\Loop.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\net\ws\uWebSockets\LoopData.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\net\ws\uWebSockets\PerMessageDeflate.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\net\ws\uWebSockets\ProxyParser.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\net\ws\uWebSockets\TopicTree.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\net\ws\uWebSockets\Utilities.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\net\ws\uWebSockets\WebSocket.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\net\ws\uWebSockets\WebSocketContext.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\net\ws\uWebSockets\WebSocketContextData.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\net\ws\uWebSockets\WebSocketData.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\net\ws\uWebSockets\WebSocketExtensions.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\net\ws\uWebSockets\WebSocketHandshake.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\net\ws\uWebSockets\WebSocketProtocol.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\net\ws\uws.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\net\ws\ws.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\net\w_net.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\os\cr.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\os\w_platform.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\script\lua\lauxlib.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\script\lua\lua.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\script\lua\luaconf.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\script\lua\luajit.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\script\lua\lualib.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\script\w_lua.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\wolf.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\xml\expat\ascii.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\xml\expat\asciitab.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\xml\expat\config\win64\expat_config.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\xml\expat\expat.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\xml\expat\expat_external.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\xml\expat\iasciitab.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\xml\expat\internal.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\xml\expat\latin1tab.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\xml\expat\nametab.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\xml\expat\siphash.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\xml\expat\utf8tab.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\xml\expat\winconfig.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\xml\expat\xmlrole.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\xml\expat\xmltok.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\xml\expat\xmltok_impl.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\xml\w_xml.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\src\wolf.system\base64\LICENSE" />
+    <None Include="..\..\..\src\wolf.system\compression\lz4\LICENSE" />
+    <None Include="..\..\..\src\wolf.system\compression\lz4\README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\..\..\src\wolf.system\base64\version.txt" />
+    <Text Include="..\..\..\src\wolf.system\concurrency\libev\version.txt" />
+    <Text Include="..\..\..\src\wolf.system\fiber\version.txt" />
+    <Text Include="..\..\..\src\wolf.system\net\ws\uSockets\version.txt" />
+    <Text Include="..\..\..\src\wolf.system\net\ws\uWebSockets\f2\LICENSE.txt" />
+    <Text Include="..\..\..\src\wolf.system\net\ws\uWebSockets\version.txt" />
+    <Text Include="..\..\..\src\wolf.system\xml\expat\version.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\..\..\src\wolf.system\compression\lzma\7zVersion.rc" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{C7EAFC1C-9CFD-4C25-8AE9-C1373DD5DF35}</ProjectGuid>
+    <SccProjectName>SAK</SccProjectName>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccProvider>SAK</SccProvider>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>WolfSystemWin</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>wolf.system.win</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <PlatformToolset>v142</PlatformToolset>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <PlatformToolset>v142</PlatformToolset>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>
+    </LinkIncremental>
+    <OutDir>$(SolutionDir)/../../../bin/$(Platform)/$(Configuration)/Win32/</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)/../../../bin/$(Platform)/$(Configuration)/Win32/</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <TargetExt>.dll</TargetExt>
+    <OutDir>$(SolutionDir)/../../../bin/win/$(Platform)/$(Configuration)/</OutDir>
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(SolutionDir)/../../../bin/win/$(Platform)/$(Configuration)/</OutDir>
+    <TargetExt>.dll</TargetExt>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>__WOLF_SYSTEM__;_DEBUG;__WIN32;GLM_FORCE_DEPTH_ZERO_TO_ONE;NN_HAVE_WINDOWS;NN_STATIC_LIB;NN_HAVE_CONDVAR=1;NN_MAX_SOCKETS=512;__LUA__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)/../../dependencies/tbb/oss/windows/lib/ia32/vc14;$(SolutionDir)/../../dependencies/luaJIT/lib/windows/x86/debug;$(SolutionDir)/../../dependencies/nanomsg/lib/windows/x86/debug/;$(SolutionDir)/../../dependencies/msgpack/lib/windows/x86/debug/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;RAPIDJSON_ENDIAN;NDEBUG;_WINDOWS;_USRDLL;WOLFSYSTEMWIN32_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.system/log;$(SolutionDir)/../../src/wolf.system/compression/msgpack;$(SolutionDir)/../../src/wolf.system/net/ws/uSockets;$(SolutionDir)/../../src/wolf.system/xml/expat;$(SolutionDir)/../../src/wolf.system/xml/expat/config/win64;$(SolutionDir)/../../deps/apr/include;$(SolutionDir)/../../deps/apr/include/apr-1;$(SolutionDir)/../../deps/apr/include/apr-1/apr/win64;$(SolutionDir)/../../deps/curl/include;$(SolutionDir)/../../deps/zlib/include;$(SolutionDir)/../../deps/zlib/include/zconf/win64;$(SolutionDir)/../../deps/ssh/include;$(SolutionDir)/../../deps/ssh/include/config/win64;$(SolutionDir)/../../deps/boost/include;$(SolutionDir)/../../deps/libjpeg-turbo/include;$(SolutionDir)/../../deps/libpng/include;$(SolutionDir)/../../deps/luaJIT/include;$(SolutionDir)/../../deps/libuv/include;$(SolutionDir)/../../deps/openSSL/include;$(SolutionDir)/../../deps/nng/include;$(SolutionDir)/../../deps/nng/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WIN32;_WINDOWS;WINNT;_WIN32_WINNT=0x0600;APR_DECLARE_EXPORT;libapr_1_EXPORTS;APU_DECLARE_STATIC;APR_DECLARE_STATIC;APU_DSO_MODULE_BUILD;XML_STATIC;HAVE_CONFIG_H;_CRT_RAND_S;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;CURL_STATICLIB;NO_FSEEKO;ASMV;ASMINF;USE_JMP;HAVE_EXPAT_CONFIG_H;expat_EXPORTS;SPDLOG_COMPILED_LIB;SPDLOG_WCHAR_FILENAMES;LIBUS_USE_LIBUV;LIBUS_USE_OPENSSL;NNG_PRIVATE;NNG_ENABLE_STATS;NNG_MAX_TASKQ_THREADS=16;NNG_LITTLE_ENDIAN;NNG_PLATFORM_WINDOWS;NNG_HAVE_CONDVAR=1;NNG_HAVE_SNPRINTF=1;NNG_HAVE_STRNLEN=1;NNG_TRANSPORT_WS;NNG_TRANSPORT_WSS;NNG_SUPP_HTTP;NNG_STATIC_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
+      <SDLCheck>
+      </SDLCheck>
+      <Optimization>Disabled</Optimization>
+      <CompileAsWinRT>false</CompileAsWinRT>
+      <MinimalRebuild>false</MinimalRebuild>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <WarningLevel>Level3</WarningLevel>
+      <CompileAs>Default</CompileAs>
+      <UseFullPaths>false</UseFullPaths>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AssemblyDebug>true</AssemblyDebug>
+      <AdditionalLibraryDirectories>$(SolutionDir)/../../deps/apr/lib/win64/$(Configuration);$(SolutionDir)/../../deps/curl/lib/win64;$(SolutionDir)/../../deps/zlib/lib/win64;$(SolutionDir)/../../deps/openSSL/lib/win64;$(SolutionDir)/../../deps/ssh/lib/win64/$(Configuration);$(SolutionDir)/../../deps/boost/lib/win64/$(Configuration);$(SolutionDir)/../../deps/libjpeg-turbo/lib/win64/$(Configuration);$(SolutionDir)/../../deps/libpng/lib/win64;$(SolutionDir)/../../deps/luaJIT/lib/win64/$(Configuration);$(SolutionDir)/../../deps/libuv/lib/win64/$(Configuration);$(SolutionDir)/../../deps/tls/lib/win64/$(Configuration);$(SolutionDir)/../../deps/nng/lib/win64/$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>apr-1.lib;aprutil-1.lib;libcurl-d.lib;libssh2.lib;wldap32.lib;winmm.lib;wsock32.lib;ws2_32.lib;advapi32.lib;libssl.lib;libcrypto.lib;zlibstaticd.lib;crypt32.lib;user32.lib;winspool.lib;kernel32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;Rpcrt4.lib;comdlg32.lib;libboost_context-vc142-mt-gd-x64-1_73.lib;libboost_fiber-vc142-mt-gd-x64-1_73.lib;jpeg-static.lib;turbojpeg-static.lib;libpng16_staticd.lib;luajit-static.lib;uv_a.lib;iphlpapi.lib;userenv.lib;psapi.lib;mbedcrypto.lib;mbedtls.lib;mbedx509.lib;nng.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;WIN32;__WIN32;_USRDLL;_WINDLL;__WOLF_SYSTEM__;GLM_FORCE_DEPTH_ZERO_TO_ONE;ASIO_STANDALONE;NN_HAVE_WINDOWS;NN_STATIC_LIB;NN_HAVE_CONDVAR=1;NN_MAX_SOCKETS=512;__LUA__;LZ4_DLL_EXPORT;NO_FSEEKO;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;BUILDING_LIBCURL;CURL_HIDDEN_SYMBOLS;HAVE_CONFIG_H;PNG_NO_CONFIG_H;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.system/curl/src;$(SolutionDir)/../../deps/boost/include;$(SolutionDir)/../../deps/luaJIT/include;$(SolutionDir)/../../deps/nanomsg/include;$(SolutionDir)/../../deps/libjpeg-turbo/include;$(SolutionDir)/../../deps/libpng/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
+      <SDLCheck>false</SDLCheck>
+      <CompileAsWinRT>false</CompileAsWinRT>
+      <DebugInformationFormat>None</DebugInformationFormat>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>$(SolutionDir)/../../deps/luaJIT/lib/windows/x64/release;$(SolutionDir)/../../deps/libjpeg-turbo/lib/windows/x64/release;$(SolutionDir)/../../deps/libpng/lib/windows/x64/;$(SolutionDir)/../../deps/zlib/lib/windows/x64/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>No</GenerateDebugInformation>
+      <AdditionalDependencies>Kernel32.lib;advapi32.lib;ws2_32.lib;wldap32.lib;winmm.lib;crypt32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;mswsock.lib;luajit-static.lib;jpeg-static.lib;turbojpeg-static.lib;libpng16_static.lib;zlibstaticd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AssemblyDebug>false</AssemblyDebug>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <FullProgramDatabaseFile>false</FullProgramDatabaseFile>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -65,8 +65,7 @@ extern "C" {
 #define W_SAFE_DELETE_ARRAY(ar)     { if (ar) { delete[] ar; ar = NULL;              } }
 #define W_SAFE_RELEASE(x)           { if (x)  { x->release(); delete x; x = NULL;    } }
 
-#ifdef __cplusplus
-#if defined(__WIN32) && !defined(__WOLF_SYSTEM_STATIC_LIB)
+#if defined(W_PLATFORM_WIN) && !defined(__WOLF_SYSTEM_STATIC_LIB)
     //DLL export
     #ifndef W_SYSTEM_EXPORT
     #define W_SYSTEM_EXPORT __declspec(dllexport)
@@ -76,7 +75,6 @@ extern "C" {
     #ifndef W_SYSTEM_EXPORT
     #define W_SYSTEM_EXPORT
     #endif
-#endif
 #endif
 
 #ifdef _MSC_VER
@@ -93,8 +91,8 @@ extern "C" {
 
 #endif
 
-#ifndef PATH_MAX
-#define PATH_MAX 256
+#ifndef W_PATH_MAX
+#define W_PATH_MAX 256
 #endif
 
 #ifndef W_MAX_BUFFER_SIZE
@@ -117,7 +115,16 @@ extern "C" {
 typedef void (*w_job)(void*);
 typedef int W_RESULT;
 //typedef apr_off_t w_offset;
-typedef __darwin_off_t w_offset;
+
+typedef
+#ifdef W_PLATFORM_WIN
+__int64
+#elif defined W_PLATFORM_OSX
+__darwin_off_t
+#else
+
+#endif
+w_offset;
 
 typedef struct apr_pool_t* w_mem_pool;
 typedef struct apr_file_t* w_file;
@@ -130,18 +137,21 @@ typedef struct apr_hash_t* w_hash;
  * initialize wolf
  * @return W_RESULT as a result
 */
+W_SYSTEM_EXPORT
 W_RESULT wolf_initialize(void);
 
 /**
  * get default memory pool
  * @return memory pool
 */
+W_SYSTEM_EXPORT
 w_mem_pool w_get_default_memory_pool(void);
 
 /**
  * create memory pool
  * @return memory pool
 */
+W_SYSTEM_EXPORT
 w_mem_pool w_create_memory_pool(void);
 
 /**
@@ -150,12 +160,14 @@ w_mem_pool w_create_memory_pool(void);
  * @param pTraceInfo trace infomation
  * @return memory in void pointer
 */
+W_SYSTEM_EXPORT
 void* w_malloc(_In_ const size_t pMemSize, _In_z_ const char* pTraceInfo);
 
 /**
  * free memory from default memory pool
  * @param pMem the memory which is need to be free
 */
+W_SYSTEM_EXPORT
 void w_free(_In_ const void* pMem);
 
 /**
@@ -163,6 +175,7 @@ void w_free(_In_ const void* pMem);
  * @param pSource the constant string
  * @return allocated string from default memory pool
 */
+W_SYSTEM_EXPORT
 char* w_string(_In_ const char* pSource);
 
 /**
@@ -170,11 +183,13 @@ char* w_string(_In_ const char* pSource);
  * @param pNumberOfArgs the number of argumans
  * @return concated string
 */
+W_SYSTEM_EXPORT
 char* w_string_concat(_In_ const int pNumberOfArgs, ...);
 
 /**
  * release all resources of wolf
 */
+W_SYSTEM_EXPORT
 void wolf_terminate(void);
 
 #ifdef __cplusplus

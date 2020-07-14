@@ -1,8 +1,9 @@
 #include "w_timespan.h"
-#include <apr.h>
-#include <apr-1/apr_general.h>
 #include <time.h>
 
+//TODO: REMOVE these includes
+#include <apr.h>
+#include <apr-1/apr_general.h>
 
 #define TICKS_PER_MILLISECOND	10000
 #define TICKS_PER_SECOND		TICKS_PER_MILLISECOND * 1000
@@ -75,12 +76,13 @@ int64_t _interval(_In_ double pValue, _In_ int pScale, _Inout_ bool* pOverflowed
         *pOverflowed = true;
         return -1;
     }
+    *pOverflowed = false;
     return (int64_t)(_millis) * TICKS_PER_MILLISECOND;
 }
 
 w_timespan* w_timespan_init_from_zero(void)
 {
-    w_timespan* _timespan = (w_timespan*)malloc(sizeof(w_timespan));
+    w_timespan* _timespan = (w_timespan*)w_malloc(sizeof(w_timespan), "w_timespan_init_from_zero");
     _timespan->ticks = 0;
     _timespan->overflowed = false;
     return _timespan;
@@ -88,7 +90,7 @@ w_timespan* w_timespan_init_from_zero(void)
 
 w_timespan* w_timespan_init_from_min_value(void)
 {
-    w_timespan* _timespan = (w_timespan*)malloc(sizeof(w_timespan));
+    w_timespan* _timespan = (w_timespan*)w_malloc(sizeof(w_timespan), "w_timespan_init_from_min_value");
     _timespan->ticks = LLONG_MIN;
     _timespan->overflowed = false;
     return _timespan;
@@ -96,7 +98,7 @@ w_timespan* w_timespan_init_from_min_value(void)
 
 w_timespan* w_timespan_init_from_max_value(void)
 {
-    w_timespan* _timespan = (w_timespan*)malloc(sizeof(w_timespan));
+    w_timespan* _timespan = (w_timespan*)w_malloc(sizeof(w_timespan), "w_timespan_init_from_max_value");
     _timespan->ticks = LLONG_MAX;
     _timespan->overflowed = false;
     return _timespan;
@@ -118,42 +120,42 @@ w_timespan* w_timespan_init_from_now(void)
 
 w_timespan* w_timespan_init_from_days(_In_ double pValue)
 {
-    w_timespan* _timespan = (w_timespan*)malloc(sizeof(w_timespan));
+    w_timespan* _timespan = (w_timespan*)w_malloc(sizeof(w_timespan), "w_timespan_init_from_days");
     _timespan->ticks = _interval(pValue, MILLIS_PER_DAY, &_timespan->overflowed);
     return _timespan;
 }
 
 w_timespan* w_timespan_init_from_hours(_In_ double pValue)
 {
-    w_timespan* _timespan = (w_timespan*)malloc(sizeof(w_timespan));
+    w_timespan* _timespan = (w_timespan*)w_malloc(sizeof(w_timespan), "w_timespan_init_from_hours");
     _timespan->ticks = _interval(pValue, MILLIS_PER_HOUR, &_timespan->overflowed);
     return _timespan;
 }
 
 w_timespan* w_timespan_init_from_minutes(_In_ double pValue)
 {
-    w_timespan* _timespan = (w_timespan*)malloc(sizeof(w_timespan));
+    w_timespan* _timespan = (w_timespan*)w_malloc(sizeof(w_timespan), "w_timespan_init_from_minutes");
     _timespan->ticks = _interval(pValue, MILLIS_PER_MINUTE, &_timespan->overflowed);
     return _timespan;
 }
 
 w_timespan* w_timespan_init_from_seconds(_In_ double pValue)
 {
-    w_timespan* _timespan = (w_timespan*)malloc(sizeof(w_timespan));
+    w_timespan* _timespan = (w_timespan*)w_malloc(sizeof(w_timespan), "w_timespan_init_from_seconds");
     _timespan->ticks = _interval(pValue, MILLIS_PER_SECOND, &_timespan->overflowed);
     return _timespan;
 }
 
 w_timespan* w_timespan_init_from_milliseconds(_In_ double pValue)
 {
-    w_timespan* _timespan = (w_timespan*)malloc(sizeof(w_timespan));
+    w_timespan* _timespan = (w_timespan*)w_malloc(sizeof(w_timespan), "w_timespan_init_from_milliseconds");
     _timespan->ticks = _interval(pValue, 1, &_timespan->overflowed);
     return _timespan;
 }
 
 w_timespan* w_timespan_init_from_ticks(_In_ int64_t pTicks)
 {
-    w_timespan* _timespan = (w_timespan*)malloc(sizeof(w_timespan));
+    w_timespan* _timespan = (w_timespan*)w_malloc(sizeof(w_timespan), "w_timespan_init_from_ticks");
     if(pTicks > LLONG_MAX || LLONG_MAX < LLONG_MIN)
     {
         _timespan->overflowed = true;
@@ -171,7 +173,7 @@ w_timespan* w_timespan_init_from_shorttime(_In_ int pHours,
                                            _In_ int pMinutes,
                                            _In_ int pSeconds)
 {
-    w_timespan* _timespan = (w_timespan*)malloc(sizeof(w_timespan));
+    w_timespan* _timespan = (w_timespan*)w_malloc(sizeof(w_timespan), "w_timespan_init_from_shorttime");
     _timespan->ticks = _time_to_ticks(
                                       0,
                                       pHours,
@@ -188,7 +190,7 @@ w_timespan* w_timespan_init_from_longtime(_In_ int pDays,
                                           _In_ int pSeconds,
                                           _In_ int pMilliseconds)
 {
-    w_timespan* _timespan = (w_timespan*)malloc(sizeof(w_timespan));
+    w_timespan* _timespan = (w_timespan*)w_malloc(sizeof(w_timespan), "w_timespan_init_from_shorttime");
     _timespan->ticks = _time_to_ticks(
                                       pDays,
                                       pHours,
@@ -309,7 +311,7 @@ w_timespan* w_timespan_add(_Inout_ w_timespan* pLValue, _In_ const w_timespan* p
 {
     W_ASSERT(!pLValue || !pRValue, "input parameters of timespan_add function are NULL. trace info: timespan_add");
     
-    w_timespan* _timespan = (w_timespan*)malloc(sizeof(w_timespan));
+    w_timespan* _timespan = (w_timespan*)w_malloc(sizeof(w_timespan), "w_timespan_add");
     
     _timespan->ticks = pLValue->ticks + pRValue->ticks;
     // Overflow if signs of operands was identical and result's sign was opposite.
@@ -321,6 +323,7 @@ w_timespan* w_timespan_add(_Inout_ w_timespan* pLValue, _In_ const w_timespan* p
         _timespan->overflowed = true;
         W_ASSERT(false, "timespan overflowed in timespan_add");
     }
+    _timespan->overflowed = false;
     return _timespan;
 }
 
@@ -338,12 +341,13 @@ void w_timespan_add_by_ref(_Inout_ w_timespan* pLValue, _In_ const w_timespan* p
         pLValue->overflowed = true;
         W_ASSERT(false, "timespan overflowed. trace info: timespan_add");
     }
+    pLValue->overflowed = false;
     pLValue->ticks = _result;
 }
 
 const char* w_timespan_to_string(_In_ const w_timespan* const pValue)
 {
-    char* _str = (char*)malloc(PATH_MAX);
+    char* _str = (char*)w_malloc(W_PATH_MAX, "w_timespan_to_string");
     sprintf(_str, "%d:%d:%d:%d:%03d",
             w_timespan_get_days(pValue),
             w_timespan_get_hours(pValue),
@@ -355,8 +359,8 @@ const char* w_timespan_to_string(_In_ const w_timespan* const pValue)
 
 const wchar_t* w_timespan_to_wstring(_In_ const w_timespan* const pValue)
 {
-    wchar_t* _str = (wchar_t*)malloc(PATH_MAX);
-    swprintf(_str, PATH_MAX, L"%d:%d:%d:%d:%03d",
+    wchar_t* _str = (wchar_t*)w_malloc(W_PATH_MAX, "w_timespan_to_wstring");
+    swprintf(_str, W_PATH_MAX, L"%d:%d:%d:%d:%03d",
             w_timespan_get_days(pValue),
             w_timespan_get_hours(pValue),
             w_timespan_get_minutes(pValue),
@@ -423,7 +427,7 @@ double w_timespan_get_total_milliseconds(_In_ const w_timespan* const pValue)
 const char* w_timespan_get_current_date_time_string()
 {
     //get current time
-    char* _str = (char*)malloc(PATH_MAX);
+    char* _str = (char*)w_malloc(w_timespan_to_wstring, "w_timespan_get_current_date_time_string");
 
     time_t t = time(0);
 #if defined(W_PLATFORM_UNIX)
@@ -454,7 +458,7 @@ const char* w_timespan_get_current_date_time_string()
 const wchar_t* w_timespan_get_current_date_time_wstring()
 {
     //get current time
-    wchar_t* _str = (wchar_t*)malloc(PATH_MAX);
+    wchar_t* _str = (wchar_t*)w_malloc(W_PATH_MAX, "w_timespan_get_current_date_time_wstring");
 
     time_t t = time(0);
 #if defined(W_PLATFORM_UNIX)
@@ -469,7 +473,7 @@ const wchar_t* w_timespan_get_current_date_time_wstring()
 #else
         struct tm _now;
         localtime_s(&_now, &t);
-        swprintf(_str, PATH_MAX, L"%d:%d:%d %d:%d:%d",
+        swprintf(_str, W_PATH_MAX, L"%d:%d:%d %d:%d:%d",
             _now.tm_mday,
             _now.tm_mon,
             _now.tm_year + 1900,
