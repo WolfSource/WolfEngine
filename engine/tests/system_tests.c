@@ -22,7 +22,7 @@ Main({
         //testing timespan
         printf("testing w_timespan");
         w_timespan* _t_0 = w_timespan_init_from_zero();
-        So(_t_0->ticks == 0);
+        So(_t_0->ticks == 0 && !_t_0->overflowed);
 
         w_timespan* _t_now = w_timespan_init_from_now();
         So(_t_now->ticks != 0);
