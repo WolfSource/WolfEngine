@@ -1,4 +1,6 @@
 #include "wolf.h"
+#include <apr.h>
+#include <apr-1/apr_strings.h>
 #include <curl/curl.h>
 
 static w_mem_pool s_default_memory_pool = NULL;

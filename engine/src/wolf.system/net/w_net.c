@@ -1,3 +1,5 @@
+#include <apr.h>
+#include <apr-1/apr_general.h>
 #include <nng/nng.h>
 #include <core/nng_impl.h>
 #include <nng/protocol/pipeline0/push.h>

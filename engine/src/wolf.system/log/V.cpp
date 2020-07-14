@@ -1,4 +1,10 @@
 #include "V.h"
+#include <apr.h>
+#include <apr-1/apr_general.h>
+#include <apr-1/apr_strings.h>
+#include <apr-1/apr_tables.h>
+#include <apr-1/apr_file_io.h>
+#include <apr-1/apr_hash.h>
 #include "w_logger.hpp"
 #include <unordered_map>
 #include <cstdarg>

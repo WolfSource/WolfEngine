@@ -42,12 +42,12 @@ extern "C" {
 
 //http://dev.ariel-networks.com/apr/apr-tutorial/html/apr-tutorial.html#toc1
 
-#include <apr.h>
-#include <apr-1/apr_general.h>
-#include <apr-1/apr_strings.h>
-#include <apr-1/apr_tables.h>
-#include <apr-1/apr_file_io.h>
-#include <apr-1/apr_hash.h>
+//#include <apr.h>
+//#include <apr-1/apr_general.h>
+//#include <apr-1/apr_strings.h>
+//#include <apr-1/apr_tables.h>
+//#include <apr-1/apr_file_io.h>
+//#include <apr-1/apr_hash.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <wchar.h>
@@ -114,15 +114,17 @@ extern "C" {
 #define W_FAILURE APR_EGENERAL
 #endif
 
-typedef apr_status_t W_RESULT;
 typedef void (*w_job)(void*);
-typedef apr_pool_t* w_mem_pool;
-typedef apr_file_t* w_file;
-typedef apr_finfo_t* w_file_info;
-typedef apr_array_header_t* w_array;
-typedef apr_table_t* w_map;
-typedef apr_off_t w_offset;
-typedef apr_hash_t* w_hash;
+typedef int W_RESULT;
+//typedef apr_off_t w_offset;
+typedef __darwin_off_t w_offset;
+
+typedef struct apr_pool_t* w_mem_pool;
+typedef struct apr_file_t* w_file;
+typedef struct apr_finfo_t* w_file_info;
+typedef struct apr_array_header_t* w_array;
+typedef struct apr_table_t* w_map;
+typedef struct apr_hash_t* w_hash;
 
 /**
  * initialize wolf

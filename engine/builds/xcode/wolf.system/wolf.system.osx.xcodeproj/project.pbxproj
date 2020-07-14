@@ -106,8 +106,6 @@
 		2CABF8112485A26B00E5E4D9 /* w_net.c in Sources */ = {isa = PBXBuildFile; fileRef = 2CABF80F2485A26A00E5E4D9 /* w_net.c */; };
 		2CABF8122485A26B00E5E4D9 /* w_net.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CABF8102485A26B00E5E4D9 /* w_net.h */; };
 		2CABF8142485A32200E5E4D9 /* libnng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CABF8132485A30F00E5E4D9 /* libnng.a */; };
-		2CABF82224861CA000E5E4D9 /* convey.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CABF82024861CA000E5E4D9 /* convey.h */; };
-		2CABF82324861CA000E5E4D9 /* convey.c in Sources */ = {isa = PBXBuildFile; fileRef = 2CABF82124861CA000E5E4D9 /* convey.c */; };
 		2CABF82424861E6E00E5E4D9 /* libmbedcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CABF81B2485B30200E5E4D9 /* libmbedcrypto.a */; };
 		2CABF82524861E6E00E5E4D9 /* libmbedtls.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CABF8192485B30200E5E4D9 /* libmbedtls.a */; };
 		2CABF82624861E6E00E5E4D9 /* libmbedx509.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CABF81A2485B30200E5E4D9 /* libmbedx509.a */; };
@@ -282,8 +280,6 @@
 		2CABF8192485B30200E5E4D9 /* libmbedtls.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libmbedtls.a; path = ../../../deps/tls/lib/osx/debug/libmbedtls.a; sourceTree = "<group>"; };
 		2CABF81A2485B30200E5E4D9 /* libmbedx509.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libmbedx509.a; path = ../../../deps/tls/lib/osx/debug/libmbedx509.a; sourceTree = "<group>"; };
 		2CABF81B2485B30200E5E4D9 /* libmbedcrypto.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libmbedcrypto.a; path = ../../../deps/tls/lib/osx/debug/libmbedcrypto.a; sourceTree = "<group>"; };
-		2CABF82024861CA000E5E4D9 /* convey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = convey.h; path = ../../../src/wolf.system/test/convey.h; sourceTree = "<group>"; };
-		2CABF82124861CA000E5E4D9 /* convey.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = convey.c; path = ../../../src/wolf.system/test/convey.c; sourceTree = "<group>"; };
 		2CB15353249BC5A9005A358E /* libjpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libjpeg.a; path = "../../../deps/libjpeg-turbo/lib/osx/debug/libjpeg.a"; sourceTree = "<group>"; };
 		2CB15354249BC5A9005A358E /* libturbojpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libturbojpeg.a; path = "../../../deps/libjpeg-turbo/lib/osx/debug/libturbojpeg.a"; sourceTree = "<group>"; };
 		2CB15357249D290C005A358E /* libpng16d.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpng16d.a; path = ../../../deps/libpng/lib/osx/libpng16d.a; sourceTree = "<group>"; };
@@ -625,15 +621,6 @@
 			name = net;
 			sourceTree = "<group>";
 		};
-		2CABF81F24861C5F00E5E4D9 /* test */ = {
-			isa = PBXGroup;
-			children = (
-				2CABF82124861CA000E5E4D9 /* convey.c */,
-				2CABF82024861CA000E5E4D9 /* convey.h */,
-			);
-			name = test;
-			sourceTree = "<group>";
-		};
 		2CB213FE247C2D620022DA86 /* memory */ = {
 			isa = PBXGroup;
 			children = (
@@ -665,7 +652,6 @@
 				2CABF80E24840FD200E5E4D9 /* net */,
 				2C89856023A15C0B0062D70A /* os */,
 				2C89855D23A15BED0062D70A /* script */,
-				2CABF81F24861C5F00E5E4D9 /* test */,
 				2C30BD2B23AA200A00D24778 /* xml */,
 				2C89898D23A193A40062D70A /* wolf.c */,
 				2C89893623A1790F0062D70A /* wolf.h */,
@@ -883,7 +869,6 @@
 				2CFADCC424917C3600409581 /* BloomFilter.h in Headers */,
 				2C37522323AFD0EF003A6B0A /* fastavx512bwbase64.h in Headers */,
 				2C99E7B123C33AD400A9720B /* ev_vars.h in Headers */,
-				2CABF82224861CA000E5E4D9 /* convey.h in Headers */,
 				2CABF8122485A26B00E5E4D9 /* w_net.h in Headers */,
 				2C30BAE423A42CFD009FC330 /* w_io.h in Headers */,
 				2CCFD5852471E8550030D3AC /* w_async.h in Headers */,
@@ -1015,7 +1000,6 @@
 				2C898544239E763C0062D70A /* objectc.c in Sources */,
 				2CFADC22248FB32E00409581 /* w_cpu.c in Sources */,
 				2C4CACEB23BD5A970084D392 /* fmt.cpp in Sources */,
-				2CABF82324861CA000E5E4D9 /* convey.c in Sources */,
 				2CFADC8824917B9F00409581 /* openssl.c in Sources */,
 				2C898543239E763C0062D70A /* version.c in Sources */,
 				2C37522B23AFD0EF003A6B0A /* quicktimebase64.c in Sources */,

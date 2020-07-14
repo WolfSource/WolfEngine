@@ -1,4 +1,12 @@
 #include "w_compress.h"
+
+#include <apr.h>
+#include <apr-1/apr_general.h>
+#include <apr-1/apr_strings.h>
+#include <apr-1/apr_tables.h>
+#include <apr-1/apr_file_io.h>
+#include <apr-1/apr_hash.h>
+
 #include "lz4/lz4.h"
 
 #ifdef W_PLATFORM_WIN
