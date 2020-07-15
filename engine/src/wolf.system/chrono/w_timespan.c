@@ -230,6 +230,7 @@ w_timespan* w_timespan_init_from_string(const char* const pValue)
                 _seconds = atoi(_number);
             }
             _i++;
+            _c++;
         }
         _number[_j++] = pValue[_c++];
     }
@@ -290,6 +291,7 @@ w_timespan* w_timespan_init_from_wstring(const wchar_t* const pValue)
                 }
             }
             _i++;
+            _c++;
         }
         _number[_j++] = pValue[_c++];
     }
