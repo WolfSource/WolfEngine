@@ -42,6 +42,7 @@ typedef struct
  * @param pCallBack callback function
  * @return pointer to timer
 */
+W_SYSTEM_EXPORT
 w_timer* w_timer_init(_In_ double pStartAfterSec,
                       _In_ double pTimeOutInSec,
                       _In_ w_timer_callback pCallBack);
@@ -50,6 +51,7 @@ w_timer* w_timer_init(_In_ double pStartAfterSec,
  * restart a timer
  * @param pTimer pointer to timer
 */
+W_SYSTEM_EXPORT
 void w_timer_restart(_In_ w_timer* pTimer);
 
 /**
@@ -60,6 +62,7 @@ void w_timer_restart(_In_ w_timer* pTimer);
  * @param pSchedulerCallBack scheduler callback
  * @return pointer to timer
 */
+W_SYSTEM_EXPORT
 w_timer_periodic* w_timer_init_periodic(_In_ double pStartAfterSec,
                                         _In_ double pIntervalInSec,
                                         _In_ w_timer_periodic_callback pCallBack,
@@ -69,12 +72,14 @@ w_timer_periodic* w_timer_init_periodic(_In_ double pStartAfterSec,
  * release a timer
  * @param pTimer timer to release
 */
+W_SYSTEM_EXPORT
 void w_timer_free(_In_ w_timer* pTimer);
 
 /**
  * release a timer periodic
  * @param pTimer timer periodic to release
 */
+W_SYSTEM_EXPORT
 void w_timer_periodic_free(_In_ w_timer_periodic* pTimer);
 
 #ifdef __cplusplus

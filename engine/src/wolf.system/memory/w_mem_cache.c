@@ -1,5 +1,5 @@
-#include <apr-util/apr_memcache.h>
 #include "w_mem_cache.h"
+#include <apr-util/apr_memcache.h>
 
 uint32_t   w_mem_cache_hash(_In_ w_mem_cache pMemCache, _In_z_ const char* pData, _In_ size_t pDataLen)
 {

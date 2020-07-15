@@ -1,4 +1,5 @@
 #include "w_logger.hpp"
+#include <apr-1/apr_general.h>
 #include <io/w_io.h>
 #include <chrono/w_timespan.h>
 #include <time.h>
@@ -6,10 +7,12 @@
 
 #include "spdlog/sinks/basic_file_sink.h"
 #include "spdlog/sinks/stdout_sinks.h"
+
 #ifndef MinSizeRel
 #ifdef _MSC_VER
     #include "spdlog/sinks/msvc_sink.h"
 #endif
+
 #endif
 
 w_logger::w_logger(_In_ const w_log_config* pConfig):

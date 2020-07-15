@@ -1,5 +1,9 @@
 #include "w_io.h"
+
+#include <apr-1/apr_general.h>
 #include <apr-1/apr_strings.h>
+#include <apr-1/apr_file_info.h>
+#include <apr-1/apr_file_io.h>
 
 #include "base64/chromiumbase64.h"
 #include "base64/fastavx512bwbase64.h"

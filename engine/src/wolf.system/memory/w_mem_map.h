@@ -32,6 +32,7 @@ typedef struct apr_mmap_t* w_mem_map;
  * @param pMemPool The pool to use when creating the memory map.
  * @return result code
  */
+W_SYSTEM_EXPORT
 W_RESULT     w_mem_map_create(_Inout_ w_mem_map* pNewMemMap,
                               _In_ w_file pFile,
                               _In_ w_offset pOffset,
@@ -46,6 +47,7 @@ W_RESULT     w_mem_map_create(_Inout_ w_mem_map* pNewMemMap,
  * @param pMemPool The pool to use for new memory map.
  * @return result code
 */
+W_SYSTEM_EXPORT
 W_RESULT     w_mem_map_dup(_Inout_ w_mem_map* pNewMemMap, _In_ w_mem_map pOldMemMap, _In_ w_mem_pool pMemPool);
 
 /**
@@ -53,6 +55,7 @@ W_RESULT     w_mem_map_dup(_Inout_ w_mem_map* pNewMemMap, _In_ w_mem_map pOldMem
  * @param pMemoryMap The mmap'ed file.
  * @return result code
 */
+W_SYSTEM_EXPORT
 W_RESULT     w_mem_map_delete(_In_ w_mem_map pMemoryMap);
 
 /**
@@ -62,6 +65,7 @@ W_RESULT     w_mem_map_delete(_In_ w_mem_map pMemoryMap);
  * @param pOffset The offset to move to.
  * @return result code
 */
+W_SYSTEM_EXPORT
 W_RESULT     w_mem_map_offset(_Inout_ void** pAddress, _In_ w_mem_map pMemoryMap, _In_ w_offset pOffset);
 
 #ifdef __cplusplus

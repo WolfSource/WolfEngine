@@ -131,9 +131,9 @@ W_RESULT w_lua_load_file(_In_z_ const char* pPath)
 	return W_SUCCESS;
 }
 
-W_RESULT w_lua_load_from_stream(const char* pBuffer)
+W_RESULT w_lua_load_from_stream(const char* pBufferStream)
 {
-	if (!pBuffer)
+	if (!pBufferStream)
     {
         W_ASSERT(false, "pBuffer is NULL. trace info: w_lua_load_file");
         return W_FAILURE;
@@ -149,8 +149,8 @@ W_RESULT w_lua_load_from_stream(const char* pBuffer)
 	luaL_openlibs(s_lua);
 
 	//load the lua buffer
-	const size_t _buffer_size = strlen(pBuffer);
-	int _ret = luaL_loadbuffer(s_lua, pBuffer, _buffer_size, pBuffer);
+	const size_t _buffer_size = strlen(pBufferStream);
+	int _ret = luaL_loadbuffer(s_lua, pBufferStream, _buffer_size, pBufferStream);
 	if (_ret)
 	{
 		_VL(_ret);

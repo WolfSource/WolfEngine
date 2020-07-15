@@ -24,6 +24,7 @@ typedef void w_signal_handler(int);
  * create w_signal
  * @return signal number
 */
+W_SYSTEM_EXPORT
 int w_signal_init(void);
 
 /**
@@ -31,6 +32,7 @@ int w_signal_init(void);
  * @param pSigno signal number
  * @return description
 */
+W_SYSTEM_EXPORT
 const char* w_signal_get_desc(_In_ int pSigno);
 
 /**
@@ -39,6 +41,7 @@ const char* w_signal_get_desc(_In_ int pSigno);
  * @param pHandler signal handler
  * @return the function to get called
 */
+W_SYSTEM_EXPORT
 w_signal_handler* w_signal_set_handler(_In_ int pSigno, _In_ w_signal_handler* pHandler);
 
 /**
@@ -46,6 +49,7 @@ w_signal_handler* w_signal_set_handler(_In_ int pSigno, _In_ w_signal_handler* p
  * @param pSigno signal number info
  * @return result
 */
+W_SYSTEM_EXPORT
 W_RESULT w_signal_block(_In_ int pSigno);
 
 /**
@@ -53,6 +57,7 @@ W_RESULT w_signal_block(_In_ int pSigno);
  * @param pSigno signal number info
  * @return result
 */
+W_SYSTEM_EXPORT
 W_RESULT w_signal_unblock(_In_ int pSigno);
 
 

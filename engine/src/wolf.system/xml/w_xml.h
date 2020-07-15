@@ -15,16 +15,17 @@ extern "C" {
 
 #include <wolf.h>
 
-typedef apr_xml_attr* w_xml_attr;
-typedef apr_xml_elem* w_xml_elem;
-typedef apr_xml_doc* w_xml_doc;
-typedef apr_xml_parser* w_xml_parser;
+typedef struct apr_xml_attr* w_xml_attr;
+typedef struct apr_xml_elem* w_xml_elem;
+typedef struct apr_xml_doc* w_xml_doc;
+typedef struct apr_xml_parser* w_xml_parser;
 
 /**
  * Create an XML parser
  * @param pMemPool The pool for allocating the parser and the parse results.
  * @return The new parser.
  */
+W_SYSTEM_EXPORT
 w_xml_parser w_xml_parser_init(_In_ w_mem_pool pMemPool);
 
 /**
@@ -36,6 +37,7 @@ w_xml_parser w_xml_parser_init(_In_ w_mem_pool pMemPool);
  * @param pBufferLength Buffer length which would be suitable
  * @return result code
  */
+W_SYSTEM_EXPORT
 W_RESULT    w_xml_parse_file(_In_       w_mem_pool pMemPool,
                              _Inout_    w_xml_parser* pParser,
                              _Inout_    w_xml_doc* pDoc,
@@ -50,6 +52,7 @@ W_RESULT    w_xml_parse_file(_In_       w_mem_pool pMemPool,
  * @return Any errors found during parsing.
  * @remark Use w_xml_parser_get_error() to get more error information.
  */
+W_SYSTEM_EXPORT
 W_RESULT    w_xml_parser_feed(_In_      w_xml_parser pParser,
                               _In_z_    const char* pData,
                               _In_      size_t pLen);
@@ -61,6 +64,7 @@ W_RESULT    w_xml_parser_feed(_In_      w_xml_parser pParser,
  * @return Any errors found during the final stage of parsing.
  * @remark Use w_xml_parser_get_error() to get more error information.
  */
+W_SYSTEM_EXPORT
 W_RESULT    w_xml_parser_done(_In_      w_xml_parser pParser,
                               _Inout_   w_xml_doc* pPDOC);
 
@@ -71,6 +75,7 @@ W_RESULT    w_xml_parser_done(_In_      w_xml_parser pParser,
  * @param pErrorBufferSize The length of the error text buffer.
  * @return The error buffer
  */
+W_SYSTEM_EXPORT
 char*       w_xml_parser_get_error(_In_      w_xml_parser pParser,
                                    _Inout_   char* pErrorBuffer,
                                    _In_      size_t pErrorBufferSize);
@@ -91,6 +96,7 @@ char*       w_xml_parser_get_error(_In_      w_xml_parser pParser,
  * @param pBuffer Buffer to put the converted text into
  * @param pSize Size of the converted text
  */
+W_SYSTEM_EXPORT
 void        w_xml_to_text(_In_ w_mem_pool pMemPool,
                           _In_ const w_xml_elem pElemenet,
                           _In_ int pStyle,
@@ -105,6 +111,7 @@ void        w_xml_to_text(_In_ w_mem_pool pMemPool,
  * @param pElemenet The XML element to empty
  * @return the string that was stored in the XML element
  */
+W_SYSTEM_EXPORT
 const char* w_xml_empty_element(_In_ w_mem_pool pMemPool,
                                 _In_ const w_xml_elem pElemenet);
 
@@ -119,6 +126,7 @@ const char* w_xml_empty_element(_In_ w_mem_pool pMemPool,
  * @note If the string does not contain special characters, it is not
  * duplicated into the pool and the original string is returned.
  */
+W_SYSTEM_EXPORT
 const char* w_xml_quote_string(_In_ w_mem_pool pMemPool,
                                _In_z_ const char* pString,
                                _In_ int pQuotes);
@@ -128,6 +136,7 @@ const char* w_xml_quote_string(_In_ w_mem_pool pMemPool,
  * @param pMemPool The pool to allocate out of
  * @param pElement The element to quote
  */
+W_SYSTEM_EXPORT
 void w_xml_quote_element(_In_ w_mem_pool pMemPool,
                          _In_ w_xml_elem pElement);
 
@@ -137,6 +146,7 @@ void w_xml_quote_element(_In_ w_mem_pool pMemPool,
  * @param pURI The uri to insert
  * @return int The uri's index
  */
+W_SYSTEM_EXPORT
 int w_xml_insert_uri(_In_    w_array pURIArray,
                      _In_z_  const char* pURI);
 

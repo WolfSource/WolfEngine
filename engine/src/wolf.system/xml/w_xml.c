@@ -1,8 +1,5 @@
-#include <apr-util/apr_xml.h>
 #include "w_xml.h"
-
-//#include <io/w_io.h>
-
+#include <apr-util/apr_xml.h>
 
 w_xml_parser w_xml_parser_init(_In_ w_mem_pool pMemPool)
 {

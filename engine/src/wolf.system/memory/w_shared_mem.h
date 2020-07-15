@@ -16,7 +16,7 @@ extern "C" {
 #include "wolf.h"
 
 //forward declaration
-typedef apr_shm_t* w_shared_mem;
+typedef struct apr_shm_t* w_shared_mem;
 
 /**
  * Create and make accessible a shared memory segment with default properties.
@@ -40,6 +40,7 @@ typedef apr_shm_t* w_shared_mem;
  * @return result code
  *
 */
+W_SYSTEM_EXPORT
 W_RESULT    w_shared_mem_create(_Inout_ w_shared_mem* pSharedMem,
                                 _In_ size_t pReqSize,
                                 _In_z_ const char* pFileName,
@@ -70,6 +71,7 @@ W_RESULT    w_shared_mem_create(_Inout_ w_shared_mem* pSharedMem,
  *         function will return the first usable byte of memory.
  * @return result code
 */
+W_SYSTEM_EXPORT
 W_RESULT    w_shared_mem_create_ex(_Inout_ w_shared_mem* pSharedMem,
                                    _In_ size_t pReqSize,
                                    _In_z_ const char* pFileName,
@@ -91,6 +93,7 @@ W_RESULT    w_shared_mem_create_ex(_Inout_ w_shared_mem* pSharedMem,
  * also removes the named resource.
  * @return result code
 */
+W_SYSTEM_EXPORT
 W_RESULT    w_shared_mem_remove(_In_z_ const char* pFileName, _In_ w_mem_pool pMemPool);
 
 /**
@@ -107,6 +110,7 @@ W_RESULT    w_shared_mem_remove(_In_z_ const char* pFileName, _In_ w_mem_pool pM
  * also removes the named resource.
  * @return result code
 */
+W_SYSTEM_EXPORT
 W_RESULT    w_shared_mem_delete(_In_ w_shared_mem pSharedMem);
 
 /**
@@ -114,6 +118,7 @@ W_RESULT    w_shared_mem_delete(_In_ w_shared_mem pSharedMem);
  * @param pSharedMem The shared memory segment structure to destroy.
  * @return result code
 */
+W_SYSTEM_EXPORT
 W_RESULT    w_shared_mem_destroy(_In_ w_shared_mem pSharedMem);
 
 /**
@@ -123,6 +128,7 @@ W_RESULT    w_shared_mem_destroy(_In_ w_shared_mem pSharedMem);
  * @param pMemPool the pool from which to allocate the shared memory structure for this process.
  * @return result code
 */
+W_SYSTEM_EXPORT
 W_RESULT    w_shared_mem_attach(_Inout_ w_shared_mem* pSharedMem,
                                 _In_z_ const char* pFileName,
                                 _In_ w_mem_pool pMemPool);
@@ -135,6 +141,7 @@ W_RESULT    w_shared_mem_attach(_Inout_ w_shared_mem* pSharedMem,
  * @param pFlags mask of APR_SHM_*
  * @return result code
 */
+W_SYSTEM_EXPORT
 W_RESULT    w_shared_mem_attach_ex(_Inout_ w_shared_mem* pSharedMem,
                                    _In_z_ const char* pFileName,
                                    _In_ w_mem_pool pMemPool,
@@ -145,6 +152,7 @@ W_RESULT    w_shared_mem_attach_ex(_Inout_ w_shared_mem* pSharedMem,
  * @param pSharedMem The shared memory structure representing the segment to detach from.
  * @return result code
 */
+W_SYSTEM_EXPORT
 W_RESULT    w_shared_mem_detach(_In_ w_shared_mem pSharedMem);
  
 /**
@@ -155,6 +163,7 @@ W_RESULT    w_shared_mem_detach(_In_ w_shared_mem pSharedMem);
  * @param pSharedMem The shared memory segment from which to retrieve the base address.
  * @return address, aligned by APR_ALIGN_DEFAULT.
 */
+W_SYSTEM_EXPORT
 void*       w_shared_mem_get_base_addr(_In_ const w_shared_mem pSharedMem);
 
 /**
@@ -162,6 +171,7 @@ void*       w_shared_mem_get_base_addr(_In_ const w_shared_mem pSharedMem);
  * @param pSharedMem The shared memory segment from which to retrieve the segment length.
  * @return size in bytes
 */
+W_SYSTEM_EXPORT
 size_t      w_shared_mem_get_size(_In_ const w_shared_mem pSharedMem);
 
 /**
@@ -169,6 +179,7 @@ size_t      w_shared_mem_get_size(_In_ const w_shared_mem pSharedMem);
  * @param pSharedMem The shared memory segment
  * @return memory pool
 */
+W_SYSTEM_EXPORT
 w_mem_pool  w_shared_mem_get_mem_pool(_In_ const w_shared_mem pSharedMem);
 
 #ifdef __cplusplus

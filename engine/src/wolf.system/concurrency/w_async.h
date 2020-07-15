@@ -34,6 +34,7 @@ typedef struct
  * @param pAsyncCallBack callback async
  * @return result code
 */
+W_SYSTEM_EXPORT
 W_RESULT w_async_init(_In_ w_async* pAsync, _In_ w_async_callback pAsyncCallBack);
 
 /**
@@ -41,6 +42,7 @@ W_RESULT w_async_init(_In_ w_async* pAsync, _In_ w_async_callback pAsyncCallBack
  * @param pAsync async
  * @return result code
 */
+W_SYSTEM_EXPORT
 W_RESULT w_async_start(_In_ w_async* pAsync);
 
 /**
@@ -48,6 +50,7 @@ W_RESULT w_async_start(_In_ w_async* pAsync);
  * @param pAsync async
  * @return result code
 */
+W_SYSTEM_EXPORT
 W_RESULT w_async_send(_In_ w_async* pAsync);
 
 #ifdef __cplusplus

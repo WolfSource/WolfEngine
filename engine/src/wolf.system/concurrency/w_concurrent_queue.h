@@ -24,6 +24,7 @@ typedef struct apr_queue_t* w_concurrent_queue;
  * @param pQueueCapacity maximum size of the queue
  * @param pMemPool pool to allocate queue from
 */
+W_SYSTEM_EXPORT
 W_RESULT  w_concurrent_queue_init(_Inout_ w_concurrent_queue* pQueue,
                                   _In_ uint32_t pQueueCapacity,
                                   _In_ w_mem_pool pMemPool);
@@ -37,6 +38,7 @@ W_RESULT  w_concurrent_queue_init(_Inout_ w_concurrent_queue* pQueue,
  * @returns APR_EOF the queue has been terminated
  * @returns W_SUCCESS on a successful push
 */
+W_SYSTEM_EXPORT
 W_RESULT  w_concurrent_queue_push(_In_ w_concurrent_queue pQueue, _In_ void* pData);
 
 /**
@@ -48,6 +50,7 @@ W_RESULT  w_concurrent_queue_push(_In_ w_concurrent_queue pQueue, _In_ void* pDa
  * @returns APR_EOF if the queue has been terminated
  * @returns W_SUCCESS on a successful pop
 */
+W_SYSTEM_EXPORT
 W_RESULT  w_concurrent_queue_pop(_In_ w_concurrent_queue pQueue, _Inout_ void** pData);
 
 /**
@@ -60,6 +63,7 @@ W_RESULT  w_concurrent_queue_pop(_In_ w_concurrent_queue pQueue, _Inout_ void** 
  * @returns APR_EOF the queue has been terminated
  * @returns W_SUCCESS on a successful push
 */
+W_SYSTEM_EXPORT
 W_RESULT  w_concurrent_queue_trypush(_In_ w_concurrent_queue pQueue, _In_ void* pData);
 
 /**
@@ -72,6 +76,7 @@ W_RESULT  w_concurrent_queue_trypush(_In_ w_concurrent_queue pQueue, _In_ void* 
  * @returns APR_EOF the queue has been terminated
  * @returns W_SUCCESS on a successful pop
 */
+W_SYSTEM_EXPORT
 W_RESULT  w_concurrent_queue_trypop(_In_ w_concurrent_queue pQueue, _Inout_ void** pData);
 
 /**
@@ -82,6 +87,7 @@ W_RESULT  w_concurrent_queue_trypop(_In_ w_concurrent_queue pQueue, _Inout_ void
  * @param pQueue the queue
  * @returns the size of the queue
 */
+W_SYSTEM_EXPORT
 uint32_t  w_concurrent_queue_size(_In_ w_concurrent_queue pQueue);
 
 /**
@@ -89,6 +95,7 @@ uint32_t  w_concurrent_queue_size(_In_ w_concurrent_queue pQueue);
  * @param pQueue the queue
  * @return result
 */
+W_SYSTEM_EXPORT
 W_RESULT  w_concurrent_queue_interrupt_all(_In_ w_concurrent_queue pQueue);
 
 /**
@@ -96,6 +103,7 @@ W_RESULT  w_concurrent_queue_interrupt_all(_In_ w_concurrent_queue pQueue);
  * @param pQueue the queue
  * @return result
 */
+W_SYSTEM_EXPORT
 W_RESULT  w_concurrent_queue_term(_In_ w_concurrent_queue pQueue);
 
 #ifdef __cplusplus

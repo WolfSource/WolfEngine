@@ -19,7 +19,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\tests\convey.c" />
     <ClCompile Include="..\..\..\tests\system_tests.c" />
   </ItemGroup>
   <ItemGroup>

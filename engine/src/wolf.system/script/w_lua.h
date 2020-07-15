@@ -20,6 +20,7 @@ extern "C" {
  * initialize lua resources
  * @return result
 */
+W_SYSTEM_EXPORT
 W_RESULT w_lua_init(void);
 
 /**
@@ -27,6 +28,7 @@ W_RESULT w_lua_init(void);
  * @param pFilePath file path
  * @return result
 */
+W_SYSTEM_EXPORT
 W_RESULT w_lua_load_file(_In_z_ const char* pFilePath);
 
 /**
@@ -34,12 +36,14 @@ W_RESULT w_lua_load_file(_In_z_ const char* pFilePath);
  * @param pBuffer buffer
  * @return result
 */
-W_RESULT w_lua_load_from_buffer(_In_z_ const char* pBuffer);
+W_SYSTEM_EXPORT
+W_RESULT w_lua_load_from_stream(_In_z_ const char* pBufferStream);
 
 /**
  * run lua
  * @return result
 */
+W_SYSTEM_EXPORT
 W_RESULT w_lua_run(void);
 
 /**
@@ -47,17 +51,20 @@ W_RESULT w_lua_run(void);
  * @param pFunc lua function
  * @param pLuaFunctionName lua function name
 */
+W_SYSTEM_EXPORT
 void w_lua_bind_to_cfunction(_In_ lua_CFunction pFunc, _In_z_ const char* pLuaFunctionName);
 
 /**
  * prepare lua function
  * @param pFunctionName name of function
 */
+W_SYSTEM_EXPORT
 void w_lua_prepare_function(const char* pFunctionName);
 
 /**
  * execute lua function
 */
+W_SYSTEM_EXPORT
 void w_lua_execute_void_function(void);
 
 /**
@@ -65,6 +72,7 @@ void w_lua_execute_void_function(void);
  * @param pResult is result of the function
  * @return result
 */
+W_SYSTEM_EXPORT
 W_RESULT w_lua_execute_function_with_one_result(_In_ void** pResult);
 
 /**
@@ -73,6 +81,7 @@ W_RESULT w_lua_execute_function_with_one_result(_In_ void** pResult);
  * @param pResult2 is the second result of the function
  * @return result
 */
+W_SYSTEM_EXPORT
 W_RESULT w_lua_execute_function_with_two_results(_In_ void** pResult1, _In_ void** pResult2);
 
 /**
@@ -82,6 +91,7 @@ W_RESULT w_lua_execute_function_with_two_results(_In_ void** pResult1, _In_ void
  * @param pResult3 is the third result of the function
  * @return result
 */
+W_SYSTEM_EXPORT
 W_RESULT w_lua_execute_function_with_three_results(_In_ void** pResult1,
                                                    _In_ void** pResult2,
                                                    _In_ void** pResult3);
@@ -90,12 +100,14 @@ W_RESULT w_lua_execute_function_with_three_results(_In_ void** pResult1,
  * return the lua state for custom operation
  * @return pointer to lua_State
 */
+W_SYSTEM_EXPORT
 lua_State*  w_lua_get_state(void);
 
 /**
  * return the last error
  * @return last error
 */
+W_SYSTEM_EXPORT
 const char* w_lua_get_last_error(void);
 
 /**
@@ -104,6 +116,7 @@ const char* w_lua_get_last_error(void);
  * @param pValue value of variable
  * @return result
 */
+W_SYSTEM_EXPORT
 W_RESULT    w_lua_get_global_variable(_In_z_ const char* pVariableName, _Inout_ void* pValue);
 
 /**
@@ -122,6 +135,7 @@ W_RESULT    w_lua_get_global_variable(_In_z_ const char* pVariableName, _Inout_ 
             LUA_INTEGER         9
  * @return result
 */
+W_SYSTEM_EXPORT
 W_RESULT w_lua_set_parameter_function(_In_ const void* pValue, _In_ int pValueType);
 
 /**
@@ -141,6 +155,7 @@ W_RESULT w_lua_set_parameter_function(_In_ const void* pValue, _In_ int pValueTy
  * @param pValue value of variable
  * @return result
 */
+W_SYSTEM_EXPORT
 W_RESULT w_lua_set_global_variable(_In_z_   const char* pVariableName,
                                    _In_     int         pVariableType,
                                    _In_     const void* pValue);
@@ -150,12 +165,14 @@ W_RESULT w_lua_set_global_variable(_In_z_   const char* pVariableName,
  * @param pPath path
  * @return result
 */
+W_SYSTEM_EXPORT
 W_RESULT w_lua_set_lua_path(_In_z_ const char* pPath);
 
 /**
  * release lua resources
  * @return result
 */
+W_SYSTEM_EXPORT
 W_RESULT w_lua_free(void);
 
 

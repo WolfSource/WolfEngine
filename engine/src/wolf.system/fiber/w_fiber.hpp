@@ -25,6 +25,7 @@ template<typename w_arg>
  * @param pFiberTasks tasks of fibers
  * @return result as W_RESULT
 */
+W_SYSTEM_EXPORT
 W_RESULT w_fiber_scheduler_init(_In_z_ const char* pSchedulerName,
                                 _In_ std::initializer_list<const w_arg&> pFiberTasks);
 
@@ -33,6 +34,7 @@ W_RESULT w_fiber_scheduler_init(_In_z_ const char* pSchedulerName,
  * @param pSchedulerName name of fibers scheduler
  * @return scheduler information
 */
+W_SYSTEM_EXPORT
 scheduler_info*  w_fiber_get_scheduler_info(_In_z_ const char* pSchedulerName);
 
 /**
@@ -41,6 +43,7 @@ scheduler_info*  w_fiber_get_scheduler_info(_In_z_ const char* pSchedulerName);
  * @param pFiberIndex index of fiber in scheduler
  * @return result as W_RESULT
 */
+W_SYSTEM_EXPORT
 W_RESULT w_fiber_is_joinable(_In_z_ const char* pSchedulerName,
                              _In_ const size_t pFiberIndex);
 
@@ -50,6 +53,7 @@ W_RESULT w_fiber_is_joinable(_In_z_ const char* pSchedulerName,
  * @param pFiberIndex index of fiber in scheduler
  * @return result as W_RESULT
 */
+W_SYSTEM_EXPORT
 W_RESULT w_fiber_join(_In_z_ const char* pSchedulerName,
                       _In_ const size_t pFiberIndex);
 
@@ -59,6 +63,7 @@ W_RESULT w_fiber_join(_In_z_ const char* pSchedulerName,
  * @param pFiberIndex index of fiber in scheduler
  * @return result as W_RESULT
 */
+W_SYSTEM_EXPORT
 W_RESULT w_fiber_detach(_In_z_ const char* pSchedulerName,
                         _In_ const size_t pFiberIndex);
 
@@ -69,6 +74,7 @@ W_RESULT w_fiber_detach(_In_z_ const char* pSchedulerName,
  * @param pFiberIndex index of fiber in scheduler
  * @return result as W_RESULT
 */
+W_SYSTEM_EXPORT
 W_RESULT w_fiber_swap(_In_z_ const char* pSchedulerName,
                       _In_   const size_t pFiberIndex,
                       _In_  const size_t pAnotherFiberIndex);
@@ -81,6 +87,7 @@ W_RESULT w_fiber_swap(_In_z_ const char* pSchedulerName,
  * @param pAnotherFiberIndex index of another fiber in another scheduler
  * @return result as W_RESULT
 */
+W_SYSTEM_EXPORT
 W_RESULT w_fiber_swap(_In_z_ const char* pSchedulerName,
                       _In_ const size_t pFiberIndex,
                       _In_z_ const char* pAnotherSchedulerName,

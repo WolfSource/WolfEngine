@@ -16,9 +16,9 @@ extern "C" {
 #include "wolf.h"
 
 //forward declaration
-typedef apr_redis_t* w_redis;
-typedef apr_redis_server_t* w_redis_server;
-typedef apr_redis_stats_t* w_redis_stats;
+typedef struct apr_redis_t* w_redis;
+typedef struct apr_redis_server_t* w_redis_server;
+typedef struct apr_redis_stats_t* w_redis_stats;
 
 /**
  * Creates a CRC32 hash used to split keys between servers
@@ -28,6 +28,7 @@ typedef apr_redis_stats_t* w_redis_stats;
  * @return CRC32 hash of data
  * @remark The CRC32 hash is not compatible with old redisd clients.
  */
+W_SYSTEM_EXPORT
 uint32_t w_redis_hash(_In_ w_redis pRedisClient,
                       _In_z_ const char* pData,
                       _In_ size_t pDataLen);
@@ -39,6 +40,7 @@ uint32_t w_redis_hash(_In_ w_redis pRedisClient,
  * @param pDataLen Length of the data to use
  * @return pure CRC32 hash of data
 */
+W_SYSTEM_EXPORT
 uint32_t w_redis_hash_crc32(_In_ void* pBaton,
                             _In_z_ const char* pData,
                             _In_ size_t pDataLen);
@@ -50,6 +52,7 @@ uint32_t w_redis_hash_crc32(_In_ void* pBaton,
  * @param pDataLen Length of the data to use
  * @return hash
 */
+W_SYSTEM_EXPORT
 uint32_t w_redis_hash_default(_In_ void* pBaton,
                               _In_ const char* pData,
                               _In_ size_t pDataLen);
@@ -60,6 +63,7 @@ uint32_t w_redis_hash_default(_In_ void* pBaton,
  * @param pHash Hashed value of a Key
  * @return server that controls specified hash
  */
+W_SYSTEM_EXPORT
 w_redis_server w_redis_find_server_hash(_In_ w_redis pRedisClient,
                                         _In_ uint32_t pHash);
 
@@ -70,6 +74,7 @@ w_redis_server w_redis_find_server_hash(_In_ w_redis pRedisClient,
  * @param pHash the specific hash
  * @return server that controls specified hash
 */
+W_SYSTEM_EXPORT
 w_redis_server w_redis_find_server_hash_default(_In_ void* pBaton,
                                                 _In_ w_redis pRedisClient,
                                                 _In_ uint32_t pHash);
@@ -82,6 +87,7 @@ w_redis_server w_redis_find_server_hash_default(_In_ void* pBaton,
  * @remark Adding servers is not thread safe, and should be done once at startup.
  * @warning Changing servers after startup may cause keys to go to different servers.
  */
+W_SYSTEM_EXPORT
 W_RESULT w_redis_add_server(_In_ w_redis pRedisClient,
                             _In_ w_redis_server pServer);
 
@@ -93,6 +99,7 @@ W_RESULT w_redis_add_server(_In_ w_redis pRedisClient,
  * @param pPort Port of the server
  * @return Server with matching Hostname and Port, or NULL if none was found.
  */
+W_SYSTEM_EXPORT
 w_redis_server w_redis_find_server(_In_ w_redis pRedisClient,
                                    _In_z_ const char* pHost,
                                    _In_ uint16_t pPort);
@@ -103,6 +110,7 @@ w_redis_server w_redis_find_server(_In_ w_redis pRedisClient,
  * @param pRedisServer Server to Activate
  * @return result code
  */
+W_SYSTEM_EXPORT
 W_RESULT w_redis_enable_server(_In_ w_redis pRedisClient,
                                _In_ w_redis_server pRedisServer);
 
@@ -112,6 +120,7 @@ W_RESULT w_redis_enable_server(_In_ w_redis pRedisClient,
  * @param pRedisServer Server to Disable
  * @return result code
  */
+W_SYSTEM_EXPORT
 W_RESULT w_redis_disable_server(_In_ w_redis pRedisClient,
                                 _In_ w_redis_server pRedisServer);
 
@@ -129,6 +138,7 @@ W_RESULT w_redis_disable_server(_In_ w_redis pRedisClient,
  * @return result code
  * @remark pMin, pSMax, and pMax are only used when APR_HAS_THREADS
  */
+W_SYSTEM_EXPORT
 W_RESULT w_redis_server_init(_In_ w_mem_pool pMemPool,
                              _In_z_ const char* pHost,
                              _In_ uint16_t pPort,
@@ -146,6 +156,7 @@ W_RESULT w_redis_server_init(_In_ w_mem_pool pMemPool,
  * @param pRedisClient  location of the new redis client object
  * @return result code
  */
+W_SYSTEM_EXPORT
 W_RESULT w_redis_init(_In_ w_mem_pool pMemPool,
                       _In_ uint16_t pMaxServers,
                       _In_ uint32_t pFlags,
@@ -161,6 +172,7 @@ W_RESULT w_redis_init(_In_ w_mem_pool pMemPool,
  * @param pFlags any flags set by the client for this key
  * @return result code
  */
+W_SYSTEM_EXPORT
 W_RESULT w_redis_get(_In_ w_redis pRedisClient,
                      _In_ w_mem_pool pMemPool,
                      _In_z_ const char* pKey,
@@ -176,6 +188,7 @@ W_RESULT w_redis_get(_In_ w_redis pRedisClient,
  * @param pDataSize   length of data at baton
  * @param pFlags any flags set by the client for this key
  */
+W_SYSTEM_EXPORT
 W_RESULT w_redis_set(_In_ w_redis pRedisClient,
                      _In_z_ const char* pKey,
                      _In_z_ char* pBaton,
@@ -192,6 +205,7 @@ W_RESULT w_redis_set(_In_ w_redis pRedisClient,
  * @param pFlags any flags set by the client for this key
  * @return result code
  */
+W_SYSTEM_EXPORT
 W_RESULT w_redis_setex(_In_ w_redis pRedisClient,
                        _In_z_ const char* pKey,
                        _In_z_ char* pBaton,
@@ -206,6 +220,7 @@ W_RESULT w_redis_setex(_In_ w_redis pRedisClient,
  * @param pTimeOut time for the delete to stop other clients from adding
  * @return result code
  */
+W_SYSTEM_EXPORT
 W_RESULT w_redis_delete(_In_ w_redis pRedisClient,
                         _In_z_ const char* pKey,
                         _In_ uint32_t pTimeOut);
@@ -217,6 +232,7 @@ W_RESULT w_redis_delete(_In_ w_redis pRedisClient,
  * @param pBaton location to store server version string
  * @return result code
  */
+W_SYSTEM_EXPORT
 W_RESULT w_redis_version(_In_ w_redis_server pRedisServer,
                          _In_ w_mem_pool pMemPool,
                          _Inout_ char** pBaton);
@@ -228,6 +244,7 @@ W_RESULT w_redis_version(_In_ w_redis_server pRedisServer,
  * @param pBaton location to store server INFO response string
  * @return result code
  */
+W_SYSTEM_EXPORT
 W_RESULT w_redis_info(_In_ w_redis_server pRedisServer,
                       _In_ w_mem_pool pMemPool,
                       _Inout_ char** pBaton);
@@ -240,6 +257,7 @@ W_RESULT w_redis_info(_In_ w_redis_server pRedisServer,
  * @param pNewValue new value after incrementing
  * @return result code
  */
+W_SYSTEM_EXPORT
 W_RESULT w_redis_incr(_In_ w_redis pRedisClient,
                       _In_z_ const char* pKey,
                       _In_ int32_t pIncrementNumber,
@@ -252,6 +270,7 @@ W_RESULT w_redis_incr(_In_ w_redis pRedisClient,
  * @param pNewValue new value after decrementing
  * @return result code
  */
+W_SYSTEM_EXPORT
 W_RESULT w_redis_decr(_In_ w_redis pRedisClient,
                       _In_z_ const char* pKey,
                       _In_ int32_t pIncrementNumber,
@@ -262,6 +281,7 @@ W_RESULT w_redis_decr(_In_ w_redis pRedisClient,
  * @param pRedisServer Server to ping
  * @return result code
  */
+W_SYSTEM_EXPORT
 W_RESULT w_redis_ping(_In_ w_redis_server pRedisServer);
 
 /**
@@ -272,6 +292,7 @@ W_RESULT w_redis_ping(_In_ w_redis_server pRedisServer);
  * @param pValues hash of apr_redis_value_t keyed by strings, contains the result of the multiget call.
  * @return result code
  */
+W_SYSTEM_EXPORT
 W_RESULT w_redis_multiget(_In_ w_redis pRedisClient,
                           _In_ w_mem_pool pTempPool,
                           _In_ w_mem_pool pDataPool,
@@ -283,6 +304,7 @@ W_RESULT w_redis_multiget(_In_ w_redis pRedisClient,
  * @param pMemPool memory pool to allocate answer from
  * @param pStats location of the new statistics structure
  */
+W_SYSTEM_EXPORT
 W_RESULT w_redis_get_stats(_In_ w_redis_server pRedisServer,
                            _In_ w_mem_pool pMemPool,
                            _Inout_ w_redis_stats* pStats);

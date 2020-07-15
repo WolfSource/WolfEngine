@@ -1,5 +1,5 @@
-#include <apr-util/apr_redis.h>
 #include "w_redis.h"
+#include <apr-util/apr_redis.h>
 
 uint32_t w_redis_hash(_In_ w_redis pRedisClient,
                       _In_z_ const char* pData,
