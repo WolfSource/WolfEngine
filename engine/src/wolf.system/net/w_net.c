@@ -244,36 +244,40 @@ W_RESULT w_net_open_tcp_socket(_In_z_ const char* pEndPoint,
     
     W_RESULT _rt = W_SUCCESS;
     
+    nng_socket* _nng_socket = (nng_socket*)pSocket->s;
+    nng_dialer* _nng_dialer = (nng_dialer*)pSocket->d;
+    nng_listener* _nng_listener = (nng_listener*)pSocket->l;
+
     switch (pSocketMode)
     {
         case one_way_pusher:
-            _rt = nng_push0_open(&pSocket->s);
+            _rt = nng_push0_open(_nng_socket);
             break;
         case one_way_puller:
-            _rt = nng_pull0_open(&pSocket->s);
+            _rt = nng_pull0_open(_nng_socket);
             break;
         case two_way_dialer:
         case two_way_listener:
-            _rt = nng_pair_open(&pSocket->s);
+            _rt = nng_pair_open(_nng_socket);
             break;
         case req_rep_dialer:
-            _rt = nng_req0_open(&pSocket->s);
+            _rt = nng_req0_open(_nng_socket);
             break;
         case req_rep_listener:
-            _rt = nng_rep0_open(&pSocket->s);
+            _rt = nng_rep0_open(_nng_socket);
             break;
         case pub_sub_broadcaster:
-            _rt = nng_pub0_open(&pSocket->s);
+            _rt = nng_pub0_open(_nng_socket);
             break;
         case pub_sub_subscriber:
-            _rt = nng_sub0_open(&pSocket->s);
-            _rt = nng_setopt(pSocket->s, NNG_OPT_SUB_SUBSCRIBE, "", 0);
+            _rt = nng_sub0_open(_nng_socket);
+            _rt = nng_setopt(*_nng_socket, NNG_OPT_SUB_SUBSCRIBE, "", 0);
             break;
         case survey_respond_server:
-            _rt = nng_surveyor0_open(&pSocket->s);
+            _rt = nng_surveyor0_open(_nng_socket);
             break;
         case survey_respond_client:
-            _rt = nng_respondent0_open(&pSocket->s);
+            _rt = nng_respondent0_open(_nng_socket);
             break;
         case bus_node:
             break;
@@ -286,14 +290,14 @@ W_RESULT w_net_open_tcp_socket(_In_z_ const char* pEndPoint,
     }
     
     //set options
-    _rt = nng_setopt_bool(pSocket->s, NNG_OPT_TCP_NODELAY, pNoDelayOption);
+    _rt = nng_setopt_bool(*_nng_socket, NNG_OPT_TCP_NODELAY, pNoDelayOption);
     if(_rt)
     {
         _net_error(_rt, "could not set socket no delay option", _trace_info);
         goto out;
     }
     
-    _rt = nng_setopt_bool(pSocket->s, NNG_OPT_TCP_KEEPALIVE, pKeepAliveOption);
+    _rt = nng_setopt_bool(*_nng_socket, NNG_OPT_TCP_KEEPALIVE, pKeepAliveOption);
     if(_rt)
     {
         _net_error(_rt, "could not set socket keep alive option", _trace_info);
@@ -312,8 +316,7 @@ W_RESULT w_net_open_tcp_socket(_In_z_ const char* pEndPoint,
         case survey_respond_client:
         {
             //create dialer
-            
-            _rt = nng_dialer_create(&pSocket->d, pSocket->s, pEndPoint);
+            _rt = nng_dialer_create(_nng_dialer, *_nng_socket, pEndPoint);
             if(_rt)
             {
                 _net_error(_rt, "could not create dialer object", _trace_info);
@@ -321,14 +324,14 @@ W_RESULT w_net_open_tcp_socket(_In_z_ const char* pEndPoint,
             }
         
             //set dialer options
-            _rt = nng_dialer_setopt_bool(pSocket->d, NNG_OPT_TCP_NODELAY, pNoDelayOption);
+            _rt = nng_dialer_setopt_bool(*_nng_dialer, NNG_OPT_TCP_NODELAY, pNoDelayOption);
             if(_rt)
             {
                 _net_error(_rt, "could not set dialer no delay option", _trace_info);
                 break;
             }
         
-            _rt = nng_dialer_setopt_bool(pSocket->d, NNG_OPT_TCP_KEEPALIVE, pKeepAliveOption);
+            _rt = nng_dialer_setopt_bool(*_nng_dialer, NNG_OPT_TCP_KEEPALIVE, pKeepAliveOption);
             if(_rt)
             {
                 _net_error(_rt, "could not set dialer keep alive option", _trace_info);
@@ -337,14 +340,14 @@ W_RESULT w_net_open_tcp_socket(_In_z_ const char* pEndPoint,
             
             if(pTLS)
             {
-                _init_dialer_tls(pSocket->d,
+                _init_dialer_tls(*_nng_dialer,
                                  pTLSServerName,
                                  pOwnCert,
                                  pCert,
                                  pKey);
             }
             
-            _rt = nng_dialer_start(pSocket->d, (pAsync ? NNG_FLAG_NONBLOCK : 0));
+            _rt = nng_dialer_start(*_nng_dialer, (pAsync ? NNG_FLAG_NONBLOCK : 0));
             if (_rt)
             {
                 _net_error(_rt, "could not start dialer", _trace_info);
@@ -360,7 +363,7 @@ W_RESULT w_net_open_tcp_socket(_In_z_ const char* pEndPoint,
         case survey_respond_server:
         {
             //create listener
-            _rt = nng_listener_create(&pSocket->l, pSocket->s, pEndPoint);
+            _rt = nng_listener_create(_nng_listener, *_nng_socket, pEndPoint);
             if(_rt)
             {
                 _net_error(_rt, "could not create listener object", _trace_info);
@@ -368,14 +371,14 @@ W_RESULT w_net_open_tcp_socket(_In_z_ const char* pEndPoint,
             }
        
             //set listener options
-            _rt = nng_listener_setopt_bool(pSocket->l, NNG_OPT_TCP_NODELAY, pNoDelayOption);
+            _rt = nng_listener_setopt_bool(*_nng_listener, NNG_OPT_TCP_NODELAY, pNoDelayOption);
             if(_rt)
             {
                 _net_error(_rt, "could not set listener no delay option", _trace_info);
                 break;
             }
        
-            _rt = nng_listener_setopt_bool(pSocket->l, NNG_OPT_TCP_KEEPALIVE, pKeepAliveOption);
+            _rt = nng_listener_setopt_bool(*_nng_listener, NNG_OPT_TCP_KEEPALIVE, pKeepAliveOption);
             if(_rt)
             {
                 _net_error(_rt, "could not set listener keep alive option", _trace_info);
@@ -384,14 +387,14 @@ W_RESULT w_net_open_tcp_socket(_In_z_ const char* pEndPoint,
        
             if (pTLS)
             {
-                _rt = _init_listener_tls(pSocket->l, pAuthMode, pCert, pKey);
+                _rt = _init_listener_tls(*_nng_listener, pAuthMode, pCert, pKey);
                 if (_rt)
                 {
                     _net_error(_rt, "_init_listener_tls failed", _trace_info);
                     break;
                 }
             }
-            _rt = nng_listener_start(pSocket->l, (pAsync ? NNG_FLAG_NONBLOCK : 0));
+            _rt = nng_listener_start(*_nng_listener, (pAsync ? NNG_FLAG_NONBLOCK : 0));
             if (_rt)
             {
                 _net_error(_rt, "could not start listener", _trace_info);
@@ -407,11 +410,19 @@ W_RESULT w_net_open_tcp_socket(_In_z_ const char* pEndPoint,
     }
     
 out:
-    
-    nng_dialer_close(pSocket->d);
-    nng_listener_close(pSocket->l);
-    nng_close(pSocket->s);
-    
+    if (_nng_dialer)
+    {
+        nng_dialer_close(*_nng_dialer);
+    }
+    if (_nng_listener)
+    {
+        nng_listener_close(*_nng_listener);
+    }
+    if (_nng_socket)
+    {
+        nng_close(*_nng_socket);
+    }
+
     return _rt;
 }
 
@@ -423,9 +434,22 @@ W_RESULT w_net_close_tcp_socket(_Inout_ w_socket_tcp* pSocket)
         return NNG_ENOARG;
     }
     
-    nng_dialer_close(pSocket->d);
-    nng_listener_close(pSocket->l);
-    nng_close(pSocket->s);
+    nng_socket* _nng_socket = (nng_socket*)pSocket->s;
+    nng_dialer* _nng_dialer = (nng_dialer*)pSocket->d;
+    nng_listener* _nng_listener = (nng_listener*)pSocket->l;
+
+    if (_nng_dialer)
+    {
+        nng_dialer_close(*_nng_dialer);
+    }
+    if (_nng_listener)
+    {
+        nng_listener_close(*_nng_listener);
+    }
+    if (_nng_socket)
+    {
+        nng_close(*_nng_socket);
+    }
     
     return W_SUCCESS;
 }
@@ -435,21 +459,34 @@ W_RESULT w_net_open_udp_socket(_In_z_ const char* pEndPoint, _Inout_ w_socket_ud
     W_RESULT _rt = W_SUCCESS;
     w_url _url = NULL;
     
+    if (!pSocket)
+    {
+        return W_FAILURE;
+    }
+    nni_sockaddr* _sa = (nni_sockaddr*)pSocket->sa;
+    if (!_sa)
+    {
+        return W_FAILURE;
+    }
+    nni_plat_udp* _udp_protocol = (nni_plat_udp*)pSocket->u;
+
+    int _addr_hex = inet_addr(_url->u_hostname);
+    int _port = atoi(_url->u_port);
     _rt = w_net_url_parse(pEndPoint, _url);
     if(_rt)
     {
         goto out;
     }
-    
-    int _addr_hex = inet_addr(_url->u_hostname);
-    int _port = atoi(_url->u_port);
-    
-    pSocket->s.s_in.sa_family = NNG_AF_INET;
-    pSocket->s.s_in.sa_addr = htons(_addr_hex);
-    pSocket->s.s_in.sa_port = htons(_port);
+  
+    if (_sa)
+    {
+        _sa->s_in.sa_family = NNG_AF_INET;
+        _sa->s_in.sa_addr = htons(_addr_hex);
+        _sa->s_in.sa_port = htons(_port);
+    }
 
     //open udp socket
-    _rt = nni_plat_udp_open(&pSocket->u, &pSocket->s);
+    _rt = nni_plat_udp_open(&_udp_protocol, _sa);
     if(_rt)
     {
         goto out;
@@ -462,7 +499,6 @@ W_RESULT w_net_open_udp_socket(_In_z_ const char* pEndPoint, _Inout_ w_socket_ud
         goto out;
     }
     
-    
 out:
     w_net_url_free(_url);
     return _rt;
@@ -470,8 +506,22 @@ out:
 
 void w_net_close_udp_socket(_Inout_ w_socket_udp* pSocket)
 {
-    nng_aio_free(pSocket->a);
-    nni_plat_udp_close(pSocket->u);
+    if (!pSocket)
+    {
+        return;
+    }
+
+    nni_plat_udp* _udp_protocol = (nni_plat_udp*)pSocket->u;
+    nng_aio* _aio = (nng_aio*)pSocket->a;
+
+    if (_aio)
+    {
+        nng_aio_free(_aio);
+    }
+    if (_udp_protocol)
+    {
+        nni_plat_udp_close(_udp_protocol);
+    }
 }
 
 W_RESULT _io_udp_socket(_In_ w_socket_mode pSocketMode,
@@ -491,16 +541,20 @@ W_RESULT _io_udp_socket(_In_ w_socket_mode pSocketMode,
     size_t _sent_len = 0;
     const size_t _buf_len = (pSocketMode == two_way_dialer ? (*pMessageLength + 1) : *pMessageLength);
     
-    pSocket->i.iov_buf = pMessage;
-    pSocket->i.iov_len = _buf_len;
-    
-    _rt = nng_aio_set_iov(pSocket->a, 1, &pSocket->i);
+    nni_sockaddr* _sa = (nni_sockaddr*)pSocket->sa;
+    nni_plat_udp* _udp = (nni_plat_udp*)pSocket->u;
+    nng_aio* _aio = (nng_aio*)pSocket->a;
+    nng_iov* _iov = (nng_iov*)pSocket->i;
+    _iov->iov_buf = pMessage;
+    _iov->iov_len = _buf_len;
+
+    _rt = nng_aio_set_iov(_aio, 1, _iov);
     if (_rt)
     {
         _net_error(_rt, "nng_aio_set_iov failed", _trace_info);
         goto out;
     }
-    _rt = nng_aio_set_input(pSocket->a, 0, &pSocket->s);
+    _rt = nng_aio_set_input(_aio, 0, _sa);
     if (_rt)
     {
         _net_error(_rt, "nng_aio_set_input failed", _trace_info);
@@ -510,24 +564,24 @@ W_RESULT _io_udp_socket(_In_ w_socket_mode pSocketMode,
     //send buffer over udp
     if (pSocketMode == two_way_dialer)
     {
-        nni_plat_udp_send(pSocket->u, pSocket->a);
+        nni_plat_udp_send(_udp, _aio);
     }
     else
     {
-        nni_plat_udp_recv(pSocket->u, pSocket->a);
+        nni_plat_udp_recv(_udp, _aio);
     }
     
     //wait
-    nng_aio_wait(pSocket->a);
+    nng_aio_wait(_aio);
 
-    _rt = nng_aio_result(pSocket->a);
+    _rt = nng_aio_result(_aio);
     if (_rt)
     {
         _net_error(_rt, "nng_aio_result failed", _trace_info);
         goto out;
     }
     
-    _sent_len = nng_aio_count(pSocket->a);
+    _sent_len = nng_aio_count(_aio);
     if (_sent_len != _buf_len)
     {
         _net_error(_rt, "length of the sent buffer is not equal to inputted buffer", _trace_info);
@@ -549,7 +603,8 @@ W_RESULT w_net_send_msg(_Inout_ w_socket_tcp* pSocket,
         return NNG_ENOARG;
     }
     
-    return nng_send(pSocket->s,
+    nng_socket* _nng_socket = (nng_socket*)pSocket->s;
+    return nng_send(*_nng_socket,
                     pMessage,
                     pMessageLength + 1 /* 1 for '/0'*/,
                     pAsync ? NNG_FLAG_NONBLOCK : 0);
@@ -565,7 +620,8 @@ W_RESULT w_net_receive_msg(_Inout_ w_socket_tcp* pSocket,
         return NNG_ENOARG;
     }
     
-    return nng_recv(pSocket->s, &pMessage, pMessageLength, NNG_FLAG_ALLOC);
+    nng_socket* _nng_socket = (nng_socket*)pSocket->s;
+    return nng_recv(*_nng_socket, &pMessage, pMessageLength, NNG_FLAG_ALLOC);
 }
 
 W_RESULT w_net_send_msg_udp(_Inout_ w_socket_udp* pSocket,

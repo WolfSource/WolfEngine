@@ -17,14 +17,15 @@ extern "C" {
 #include "ws/ws.h"
 
 //forward declaration
-struct nng_socket;
-struct nng_dialer;
-struct nng_listener;
-struct nng_aio;
-struct nng_iov;
-struct nni_plat_udp;
-
 typedef struct nng_url* w_url;
+typedef struct nng_socket* w_socket;
+typedef struct nng_dialer* w_dialer;
+typedef struct nng_listener* w_listener;
+typedef struct nni_plat_udp* w_udp_protocol;
+typedef struct nng_aio* w_aio;
+typedef struct nng_iov* w_iov;
+typedef union nni_sockaddr* w_socket_address;
+
 typedef enum {
     one_way_pusher,
     one_way_puller,
@@ -39,21 +40,19 @@ typedef enum {
     bus_node
 } w_socket_mode;
 
-typedef nng_sockaddr* w_socket_address;
-
 typedef struct
 {
-    nng_socket      s;
-    nng_dialer      d;
-    nng_listener    l;
+    w_socket        s;
+    w_dialer        d;
+    w_listener      l;
 } w_socket_tcp;
 
 typedef struct
 {
-    nng_sockaddr    s;
-    nni_plat_udp*   u;
-    nng_aio*        a;
-    nng_iov         i;
+    w_socket_address    sa;
+    w_udp_protocol      u;
+    w_aio               a;
+    w_iov               i;
 } w_socket_udp;
 
 typedef enum
