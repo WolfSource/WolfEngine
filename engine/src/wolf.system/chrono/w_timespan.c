@@ -1,10 +1,6 @@
 #include "w_timespan.h"
 #include <time.h>
 
-//TODO: REMOVE these includes
-#include <apr.h>
-#include <apr-1/apr_general.h>
-
 #define TICKS_PER_MILLISECOND	10000
 #define TICKS_PER_SECOND		TICKS_PER_MILLISECOND * 1000
 #define TICKS_PER_MINUTE		TICKS_PER_SECOND * 60
@@ -33,7 +29,7 @@ long _timespan_w_wcstol(const wchar_t* const pValue, bool* pError)
         *pError = true;
         return -1;
     }
-    if(_long < INT_MIN || _long > INT_MAX)
+    if (_long < INT_MIN || _long > INT_MAX)
     {
         W_ASSERT(false, "strtol got error. trace info: _timespan_w_wcstol");
         *pError = true;
@@ -43,18 +39,18 @@ long _timespan_w_wcstol(const wchar_t* const pValue, bool* pError)
 }
 
 int64_t _time_to_ticks(_In_ int64_t pDays,
-                       _In_ int64_t pHours,
-                       _In_ int64_t pMinutes,
-                       _In_ int64_t pSeconds,
-                       _In_ int64_t pMilliSeconds,
-                       _Inout_ bool* pOverflowed)
+    _In_ int64_t pHours,
+    _In_ int64_t pMinutes,
+    _In_ int64_t pSeconds,
+    _In_ int64_t pMilliSeconds,
+    _Inout_ bool* pOverflowed)
 {
     int64_t _total_milliSeconds = pDays * 864 * 100000 +
-                                  pHours * 36 * 100000 +
-                                  pMinutes * 60 * 1000 +
-                                  pSeconds * 1000 +
-                                  pMilliSeconds;
-                              
+        pHours * 36 * 100000 +
+        pMinutes * 60 * 1000 +
+        pSeconds * 1000 +
+        pMilliSeconds;
+
     if (_total_milliSeconds > MAX_MILLISECONDS || _total_milliSeconds < MIN_MILLISECONDS)
     {
         W_ASSERT(false, "timespan overflowed. trace info: _timespan_time_to_ticks");
@@ -77,7 +73,7 @@ int64_t _interval(_In_ double pValue, _In_ int pScale, _Inout_ bool* pOverflowed
         return -1;
     }
     *pOverflowed = false;
-    return (int64_t)(_millis) * TICKS_PER_MILLISECOND;
+    return (int64_t)(_millis)*TICKS_PER_MILLISECOND;
 }
 
 w_timespan* w_timespan_init_from_zero(void)
@@ -110,11 +106,11 @@ w_timespan* w_timespan_init_from_now(void)
     time_t t = time(0);
 #ifdef W_PLATFORM_UNIX
     struct tm* _now = localtime(&t);
-	return w_timespan_init_from_shorttime(_now->tm_hour, _now->tm_min, _now->tm_sec);
+    return w_timespan_init_from_shorttime(_now->tm_hour, _now->tm_min, _now->tm_sec);
 #else
     struct tm _now;
     localtime_s(&_now, &t);
-	return w_timespan_init_from_shorttime(_now.tm_hour, _now.tm_min, _now.tm_sec);
+    return w_timespan_init_from_shorttime(_now.tm_hour, _now.tm_min, _now.tm_sec);
 #endif
 }
 
@@ -156,7 +152,7 @@ w_timespan* w_timespan_init_from_milliseconds(_In_ double pValue)
 w_timespan* w_timespan_init_from_ticks(_In_ int64_t pTicks)
 {
     w_timespan* _timespan = (w_timespan*)w_malloc(sizeof(w_timespan), "w_timespan_init_from_ticks");
-    if(pTicks > LLONG_MAX || LLONG_MAX < LLONG_MIN)
+    if (pTicks > LLONG_MAX || LLONG_MAX < LLONG_MIN)
     {
         _timespan->overflowed = true;
         W_ASSERT(false, "timespan overflowed. trace info: init_timespan_with_ticks");
@@ -170,34 +166,34 @@ w_timespan* w_timespan_init_from_ticks(_In_ int64_t pTicks)
 }
 
 w_timespan* w_timespan_init_from_shorttime(_In_ int pHours,
-                                           _In_ int pMinutes,
-                                           _In_ int pSeconds)
+    _In_ int pMinutes,
+    _In_ int pSeconds)
 {
     w_timespan* _timespan = (w_timespan*)w_malloc(sizeof(w_timespan), "w_timespan_init_from_shorttime");
     _timespan->ticks = _time_to_ticks(
-                                      0,
-                                      pHours,
-                                      pMinutes,
-                                      pSeconds,
-                                      0,
-                                      &_timespan->overflowed);
+        0,
+        pHours,
+        pMinutes,
+        pSeconds,
+        0,
+        &_timespan->overflowed);
     return _timespan;
 }
 
 w_timespan* w_timespan_init_from_longtime(_In_ int pDays,
-                                          _In_ int pHours,
-                                          _In_ int pMinutes,
-                                          _In_ int pSeconds,
-                                          _In_ int pMilliseconds)
+    _In_ int pHours,
+    _In_ int pMinutes,
+    _In_ int pSeconds,
+    _In_ int pMilliseconds)
 {
     w_timespan* _timespan = (w_timespan*)w_malloc(sizeof(w_timespan), "w_timespan_init_from_shorttime");
     _timespan->ticks = _time_to_ticks(
-                                      pDays,
-                                      pHours,
-                                      pMinutes,
-                                      pSeconds,
-                                      pMilliseconds,
-                                      &_timespan->overflowed);
+        pDays,
+        pHours,
+        pMinutes,
+        pSeconds,
+        pMilliseconds,
+        &_timespan->overflowed);
     return _timespan;
 }
 
@@ -212,7 +208,7 @@ w_timespan* w_timespan_init_from_string(const char* const pValue)
         {
             _number[_j] = '\0';
             _j = 0;
-            
+
             if (_i == 0)
             {
                 _days = atoi(_number);
@@ -234,8 +230,8 @@ w_timespan* w_timespan_init_from_string(const char* const pValue)
         }
         _number[_j++] = pValue[_c++];
     }
-    
-    if(_j)
+
+    if (_j)
     {
         _number[_j] = '\0';
         _milliseconds = atoi(_number);
@@ -257,7 +253,7 @@ w_timespan* w_timespan_init_from_wstring(const wchar_t* const pValue)
         {
             _number[_j] = L'\0';
             _j = 0;
-            
+
             if (_i == 0)
             {
                 _temp = _timespan_w_wcstol(_number, &_error);
@@ -295,8 +291,8 @@ w_timespan* w_timespan_init_from_wstring(const wchar_t* const pValue)
         }
         _number[_j++] = pValue[_c++];
     }
-    
-    if(_j)
+
+    if (_j)
     {
         _number[_j] = L'\0';
         _temp = _timespan_w_wcstol(_number, &_error);
@@ -311,10 +307,13 @@ w_timespan* w_timespan_init_from_wstring(const wchar_t* const pValue)
 
 w_timespan* w_timespan_add(_Inout_ w_timespan* pLValue, _In_ const w_timespan* pRValue)
 {
-    W_ASSERT(!pLValue || !pRValue, "input parameters of timespan_add function are NULL. trace info: timespan_add");
-    
+    W_ASSERT(pLValue || pRValue, "input parameters of timespan_add function are NULL. trace info: timespan_add");
+
     w_timespan* _timespan = (w_timespan*)w_malloc(sizeof(w_timespan), "w_timespan_add");
-    
+    if (!_timespan)
+    {
+        return NULL;
+    }
     _timespan->ticks = pLValue->ticks + pRValue->ticks;
     // Overflow if signs of operands was identical and result's sign was opposite.
     // >> 63 gives the sign bit (either 64 1's or 64 0's).
@@ -331,8 +330,8 @@ w_timespan* w_timespan_add(_Inout_ w_timespan* pLValue, _In_ const w_timespan* p
 
 void w_timespan_add_by_ref(_Inout_ w_timespan* pLValue, _In_ const w_timespan* pRValue)
 {
-    W_ASSERT(!pLValue || !pRValue, "input parameters of timespan_add_by_ref function are NULL. trace info: timespan_add");
-    
+    W_ASSERT(pLValue || pRValue, "input parameters of timespan_add_by_ref function are NULL. trace info: timespan_add");
+
     int64_t _result = pLValue->ticks + pRValue->ticks;
     // Overflow if signs of operands was identical and result's sign was opposite.
     // >> 63 gives the sign bit (either 64 1's or 64 0's).
@@ -350,24 +349,33 @@ void w_timespan_add_by_ref(_Inout_ w_timespan* pLValue, _In_ const w_timespan* p
 const char* w_timespan_to_string(_In_ const w_timespan* const pValue)
 {
     char* _str = (char*)w_malloc(W_PATH_MAX, "w_timespan_to_string");
+    if (!_str)
+    {
+        return NULL;
+    }
+
     sprintf(_str, "%d:%d:%d:%d:%03d",
-            w_timespan_get_days(pValue),
-            w_timespan_get_hours(pValue),
-            w_timespan_get_minutes(pValue),
-            w_timespan_get_seconds(pValue),
-            w_timespan_get_milliseconds(pValue));
+        w_timespan_get_days(pValue),
+        w_timespan_get_hours(pValue),
+        w_timespan_get_minutes(pValue),
+        w_timespan_get_seconds(pValue),
+        w_timespan_get_milliseconds(pValue));
     return _str;
 }
 
 const wchar_t* w_timespan_to_wstring(_In_ const w_timespan* const pValue)
 {
     wchar_t* _str = (wchar_t*)w_malloc(W_PATH_MAX, "w_timespan_to_wstring");
+    if (!_str)
+    {
+        return NULL;
+    }
     swprintf(_str, W_PATH_MAX, L"%d:%d:%d:%d:%03d",
-            w_timespan_get_days(pValue),
-            w_timespan_get_hours(pValue),
-            w_timespan_get_minutes(pValue),
-            w_timespan_get_seconds(pValue),
-            w_timespan_get_milliseconds(pValue));
+        w_timespan_get_days(pValue),
+        w_timespan_get_hours(pValue),
+        w_timespan_get_minutes(pValue),
+        w_timespan_get_seconds(pValue),
+        w_timespan_get_milliseconds(pValue));
     return _str;
 }
 
@@ -430,28 +438,31 @@ const char* w_timespan_get_current_date_time_string()
 {
     //get current time
     char* _str = (char*)w_malloc(w_timespan_to_wstring, "w_timespan_get_current_date_time_string");
-
+    if (!_str)
+    {
+        return NULL;
+    }
     time_t t = time(0);
 #if defined(W_PLATFORM_UNIX)
-        struct tm* _now = localtime(&t);
-        sprintf(_str, "%02d_%02d_%04d__%02d_%02d_%02d",
-                _now->tm_mday,
-                _now->tm_mon,
-                _now->tm_year + 1900,
-                _now->tm_hour,
-                _now->tm_min,
-                _now->tm_sec);
+    struct tm* _now = localtime(&t);
+    sprintf(_str, "%02d_%02d_%04d__%02d_%02d_%02d",
+        _now->tm_mday,
+        _now->tm_mon,
+        _now->tm_year + 1900,
+        _now->tm_hour,
+        _now->tm_min,
+        _now->tm_sec);
 
 #else
-        struct tm _now;
-        localtime_s(&_now, &t);
-        sprintf(_str, "%02d_%02d_%04d__%02d_%02d_%02d",
-            _now.tm_mday,
-            _now.tm_mon,
-            _now.tm_year + 1900,
-            _now.tm_hour,
-            _now.tm_min,
-            _now.tm_sec);
+    struct tm _now;
+    localtime_s(&_now, &t);
+    sprintf(_str, "%02d_%02d_%04d__%02d_%02d_%02d",
+        _now.tm_mday,
+        _now.tm_mon,
+        _now.tm_year + 1900,
+        _now.tm_hour,
+        _now.tm_min,
+        _now.tm_sec);
 #endif
 
     return _str;
@@ -461,27 +472,30 @@ const wchar_t* w_timespan_get_current_date_time_wstring()
 {
     //get current time
     wchar_t* _str = (wchar_t*)w_malloc(W_PATH_MAX, "w_timespan_get_current_date_time_wstring");
-
+    if (!_str)
+    {
+        return NULL;
+    }
     time_t t = time(0);
 #if defined(W_PLATFORM_UNIX)
-        struct tm* _now = localtime(&t);
-        swprintf(_str, PATH_MAX, L"%d:%d:%d %d:%d:%d",
-                _now->tm_mday,
-                _now->tm_mon,
-                _now->tm_year + 1900,
-                _now->tm_hour,
-                _now->tm_min,
-                _now->tm_sec);
+    struct tm* _now = localtime(&t);
+    swprintf(_str, PATH_MAX, L"%d:%d:%d %d:%d:%d",
+        _now->tm_mday,
+        _now->tm_mon,
+        _now->tm_year + 1900,
+        _now->tm_hour,
+        _now->tm_min,
+        _now->tm_sec);
 #else
-        struct tm _now;
-        localtime_s(&_now, &t);
-        swprintf(_str, W_PATH_MAX, L"%d:%d:%d %d:%d:%d",
-            _now.tm_mday,
-            _now.tm_mon,
-            _now.tm_year + 1900,
-            _now.tm_hour,
-            _now.tm_min,
-            _now.tm_sec);
+    struct tm _now;
+    localtime_s(&_now, &t);
+    swprintf(_str, W_PATH_MAX, L"%d:%d:%d %d:%d:%d",
+        _now.tm_mday,
+        _now.tm_mon,
+        _now.tm_year + 1900,
+        _now.tm_hour,
+        _now.tm_min,
+        _now.tm_sec);
 #endif
 
     return _str;
