@@ -17,7 +17,14 @@ extern "C" {
 #include "ws/ws.h"
 
 //forward declaration
-typedef nng_url* w_url;
+struct nng_socket;
+struct nng_dialer;
+struct nng_listener;
+struct nng_aio;
+struct nng_iov;
+struct nni_plat_udp;
+
+typedef struct nng_url* w_url;
 typedef enum {
     one_way_pusher,
     one_way_puller,
@@ -89,6 +96,7 @@ typedef enum
  * the library is initlialized properly, and also deals with checks such as
  * whether the process has forked since last initialization.
 */
+W_SYSTEM_EXPORT
 W_RESULT w_net_init(void);
 
 /**
@@ -97,6 +105,7 @@ W_RESULT w_net_init(void);
  * @param pURL structured url
  * @return result code
 */
+W_SYSTEM_EXPORT
 W_RESULT w_net_url_parse(_In_z_ const char* pUrlAddress, _Inout_ w_url pURL);
 
 /**
@@ -104,12 +113,14 @@ W_RESULT w_net_url_parse(_In_z_ const char* pUrlAddress, _Inout_ w_url pURL);
  * @param pUrlAddress opened url
  * @return result code
 */
+W_SYSTEM_EXPORT
 const char* w_net_url_encoded(_In_z_ const char* pUrlAddress);
 
 /**
  * free a URL resources
  * @param pURL structured url
 */
+W_SYSTEM_EXPORT
 void w_net_url_free(_Inout_ w_url pURL);
 
 /**
@@ -121,6 +132,7 @@ void w_net_url_free(_Inout_ w_url pURL);
  * @param pSocketAddress socket address information
  * @return result code
 */
+W_SYSTEM_EXPORT
 W_RESULT w_net_resolve(_In_z_ const char* pURL,
                        _In_z_ const char* pPort,
                        _In_ w_tcp_socket_address_family pSocketAddressFamily,
@@ -150,6 +162,7 @@ W_RESULT w_net_resolve(_In_z_ const char* pURL,
  * @param pSocket a tcp socket created
  * @return result code
 */
+W_SYSTEM_EXPORT
 W_RESULT w_net_open_tcp_socket(_In_z_ const char* pEndPoint,
                                     _In_ w_socket_mode pSocketMode,
                                     _In_ bool pNoDelayOption,
@@ -168,6 +181,7 @@ W_RESULT w_net_open_tcp_socket(_In_z_ const char* pEndPoint,
  * @param pSocket tcp socket
  * @return result code
 */
+W_SYSTEM_EXPORT
 W_RESULT w_net_close_tcp_socket(_Inout_ w_socket_tcp* pSocket);
 
 /**
@@ -176,6 +190,7 @@ W_RESULT w_net_close_tcp_socket(_Inout_ w_socket_tcp* pSocket);
  * @param pSocket a udp socket created
  * @return result code
 */
+W_SYSTEM_EXPORT
 W_RESULT w_net_open_udp_socket(_In_z_ const char* pEndPoint,
                                _Inout_ w_socket_udp* pSocket);
 
@@ -183,6 +198,7 @@ W_RESULT w_net_open_udp_socket(_In_z_ const char* pEndPoint,
  * close a udp socket
  * @param pSocket a udp socket
 */
+W_SYSTEM_EXPORT
 void w_net_close_udp_socket(_Inout_ w_socket_udp* pSocket);
 
 /**
@@ -193,6 +209,7 @@ void w_net_close_udp_socket(_Inout_ w_socket_udp* pSocket);
  * @param pAsync asynchronous mode
  * @return result code
 */
+W_SYSTEM_EXPORT
 W_RESULT w_net_send_msg(_Inout_ w_socket_tcp* pSocket,
                         _In_z_ char* pMessage,
                         _In_ size_t pMessageLength,
@@ -205,6 +222,7 @@ W_RESULT w_net_send_msg(_Inout_ w_socket_tcp* pSocket,
  * @param pMessageLength length of message
  * @return result code
 */
+W_SYSTEM_EXPORT
 W_RESULT w_net_receive_msg(_Inout_ w_socket_tcp* pSocket,
                            _Inout_ char* pMessage,
                            _Inout_ size_t* pMessageLength);
@@ -216,6 +234,7 @@ W_RESULT w_net_receive_msg(_Inout_ w_socket_tcp* pSocket,
  * @param pMessageLength length of the send buffer
  * @return result code
 */
+W_SYSTEM_EXPORT
 W_RESULT w_net_send_msg_udp(_Inout_ w_socket_udp* pSocket,
                             _In_z_ char* pMessage,
                             _In_z_ size_t pMessageLength);
@@ -227,6 +246,7 @@ W_RESULT w_net_send_msg_udp(_Inout_ w_socket_udp* pSocket,
  * @param pMessageLength length of the recieved buffer
  * @return result code
 */
+W_SYSTEM_EXPORT
 W_RESULT w_net_receive_msg_udp(_Inout_ w_socket_udp* pSocket,
                                _In_z_ char* pMessage,
                                _In_z_ size_t* pMessageLength);
@@ -265,6 +285,7 @@ W_RESULT w_net_receive_msg_udp(_Inout_ w_socket_udp* pSocket,
  * @param pOnClosed on closed callback
  * @return result code
 */
+W_SYSTEM_EXPORT
 W_RESULT w_net_run_websocket_server(_In_ bool pSSL,
                                     _In_z_ const char* pCertFilePath,
                                     _In_z_ const char* pPrivateKeyFilePath,
@@ -296,6 +317,7 @@ W_RESULT w_net_run_websocket_server(_In_ bool pSSL,
  * @param pResponseMessageLength the response message size
  * @return curl code
 */
+W_SYSTEM_EXPORT
 W_RESULT w_net_send_http_request(_In_z_     const char* pURL,
                                  _In_       w_http_request_type pHttpRequestType,
                                  _In_       w_array pHttpHeaders,
@@ -313,12 +335,14 @@ W_RESULT w_net_send_http_request(_In_z_     const char* pURL,
  * @param pErrorCode error code
  * @return string message of error code
 */
+W_SYSTEM_EXPORT
 const char* w_net_error(_In_ W_RESULT pErrorCode);
 
 /**
  * w_net_fini is used to terminate the library, freeing certain global resources.
  * This should only be called during at exit or just before releasing dll
 */
+W_SYSTEM_EXPORT
 void w_net_fini(void);
 
 #ifdef __cplusplus
