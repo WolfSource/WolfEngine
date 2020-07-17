@@ -15,6 +15,7 @@ extern "C" {
 
 #include "wolf.h"
 #include "ws/ws.h"
+#include "concurrency/libev/ev.h"
 
 //forward declaration
 typedef struct nng_url* w_url;
@@ -89,6 +90,10 @@ typedef enum
     /*  The PATCH method is used to apply partial modifications to a resource. */
     HTTP_PATCH
 } w_http_request_type;
+
+// quic receive callback
+typedef void (*quic_receive_callback)(EV_P_ ev_io* /*w*/, int /*revents*/);
+typedef void (*quic_debug_log_callback)(const char* /*pLine*/, void* /*pArgp*/);
 
 /**
  * w_net_init is called each time the user enters the library. It ensures that
@@ -199,6 +204,25 @@ W_RESULT w_net_open_udp_socket(_In_z_ const char* pEndPoint,
 */
 W_SYSTEM_EXPORT
 void w_net_close_udp_socket(_Inout_ w_socket_udp* pSocket);
+
+/**
+ * create a server based on QUIC protocol
+ * @return result
+*/
+W_SYSTEM_EXPORT
+W_RESULT w_net_open_quic_socket(_In_z_  const char* pAddress, 
+                                _In_    int pPort,
+                                _In_z_  const char* pCertFilePath,
+                                _In_z_  const char* pPrivateKeyFilePath,
+                                _In_    quic_debug_log_callback pQuicDebugLogCallback,
+                                _In_    quic_receive_callback pQuicReceiveCallback);
+
+/**
+ * create a server based on QUIC protocol
+ * @return result
+*/
+W_SYSTEM_EXPORT
+W_RESULT w_net_close_quic_socket(void);
 
 /**
  * send a message via tcp socket
@@ -328,6 +352,7 @@ W_RESULT w_net_send_http_request(_In_z_     const char* pURL,
                                  _Inout_    long* pResponseCode,
                                  _Inout_z_  char** pResponseMessage,
                                  _Inout_    size_t* pResponseMessageLength);
+
 
 /**
  * convert error code to string message

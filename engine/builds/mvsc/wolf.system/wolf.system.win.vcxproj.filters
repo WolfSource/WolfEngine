@@ -100,6 +100,9 @@
     <Filter Include="net\ws\uWebSockets\f2">
       <UniqueIdentifier>{54612a69-6dda-4333-ac28-f41ee00ad79c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="hash">
+      <UniqueIdentifier>{8a0cfddb-b687-45fa-9234-2b6f39c0b790}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\src\wolf.system\base64\chromiumbase64.c">
@@ -319,9 +322,6 @@
     <ClCompile Include="..\..\..\src\wolf.system\concurrency\w_thread_pool.c">
       <Filter>concurrency</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\fiber\w_fiber.cpp">
-      <Filter>fiber</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\wolf.system\io\w_io.c">
       <Filter>io</Filter>
     </ClCompile>
@@ -414,6 +414,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\src\wolf.system\net\w_net.c">
       <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\fiber\w_fiber.cpp">
+      <Filter>fiber</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -609,9 +612,6 @@
     </ClInclude>
     <ClInclude Include="..\..\..\src\wolf.system\concurrency\w_thread_pool.h">
       <Filter>concurrency</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\fiber\w_fiber.hpp">
-      <Filter>fiber</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\wolf.system\io\w_io.h">
       <Filter>io</Filter>
@@ -810,6 +810,27 @@
     </ClInclude>
     <ClInclude Include="..\..\..\src\wolf.system\net\w_net.h">
       <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\hash\utarray.h">
+      <Filter>hash</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\hash\uthash.h">
+      <Filter>hash</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\hash\utlist.h">
+      <Filter>hash</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\hash\utringbuffer.h">
+      <Filter>hash</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\hash\utstack.h">
+      <Filter>hash</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\hash\utstring.h">
+      <Filter>hash</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\fiber\w_fiber.hpp">
+      <Filter>fiber</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

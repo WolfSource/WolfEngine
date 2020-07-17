@@ -1,5 +1,8 @@
+#include "w_net.h"
+
 #include <apr.h>
 #include <apr-1/apr_general.h>
+
 #include <nng/nng.h>
 #include <core/nng_impl.h>
 #include <nng/protocol/pipeline0/push.h>
@@ -14,7 +17,20 @@
 #include <nng/supplemental/util/platform.h>
 #include <nng/supplemental/tls/tls.h>
 #include <nng/transport/tls/tls.h>
-#include "w_net.h"
+
+#include "io/w_io.h"
+
+#include <quiche.h>
+#include <concurrency/libev/ev.h>
+#include <hash/uthash.h>
+
+#define     QUICHE_MAX_DATAGRAM_SIZE 1350
+
+struct quiche_connection 
+{
+    int             s;
+    struct conn_io* h;
+};
 
 #ifdef W_PLATFORM_WIN
 
@@ -457,7 +473,7 @@ W_RESULT w_net_close_tcp_socket(_Inout_ w_socket_tcp* pSocket)
 W_RESULT w_net_open_udp_socket(_In_z_ const char* pEndPoint, _Inout_ w_socket_udp* pSocket)
 {
     W_RESULT _rt = W_SUCCESS;
-    w_url _url = NULL;
+    nng_url* _url = NULL;
     
     if (!pSocket)
     {
@@ -470,7 +486,8 @@ W_RESULT w_net_open_udp_socket(_In_z_ const char* pEndPoint, _Inout_ w_socket_ud
     }
     nni_plat_udp* _udp_protocol = (nni_plat_udp*)pSocket->u;
 
-    int _addr_hex = inet_addr(_url->u_hostname);
+    _url = (nng_url*)w_malloc(sizeof(nng_url), "");
+    unsigned long _addr_hex = inet_addr(_url->u_hostname);
     int _port = atoi(_url->u_port);
     _rt = w_net_url_parse(pEndPoint, _url);
     if(_rt)
@@ -684,16 +701,6 @@ W_RESULT w_net_run_websocket_server(_In_ bool pSSL,
     return _rt;
 }
 
-const char* w_net_error(_In_ W_RESULT pErrorCode)
-{
-    const char* _error_msg = nng_strerror(pErrorCode);
-    if (_error_msg)
-    {
-        return _error_msg;
-    }
-    return curl_easy_strerror(pErrorCode);
-}
-
 typedef struct
 {
     char*    memory;
@@ -829,6 +836,202 @@ _out:
         curl_easy_cleanup(_curl);
     }
     return _rt;
+}
+
+W_RESULT w_net_open_quic_socket(_In_z_  const char* pAddress, 
+                                _In_    int pPort,
+                                _In_z_  const char* pCertFilePath,
+                                _In_z_  const char* pPrivateKeyFilePath,
+                                _In_    quic_debug_log_callback pQuicDebugLogCallback,
+                                _In_    quic_receive_callback pQuicReceiveCallback)
+{
+    const char* _trace_info = "w_net_open_quic_socket";
+    
+    if (!pQuicReceiveCallback)
+    {
+        W_ASSERT_P(false, "quic_receive_callback no set. trace info: %s", _trace_info);
+        return APR_BADARG;
+    }
+
+    W_RESULT _ret = W_SUCCESS;
+    quiche_config* _quiche_config = NULL;
+    struct addrinfo* _address_info = NULL;
+
+#ifdef W_PLATFORM_WIN
+    SOCKET
+#else
+    int
+#endif
+    _socket = 0;
+
+    struct quiche_connection _quiche_con = { 0 };
+    const struct addrinfo _hints =
+    {
+        .ai_family = PF_UNSPEC,
+        .ai_socktype = SOCK_DGRAM,
+        .ai_protocol = IPPROTO_UDP
+    };
+
+    //convert integer port to string
+    char* _port = w_malloc(6, _trace_info);//max port number is 65329
+    if (!_port)
+    {
+        return W_FAILURE;
+    }
+    snprintf(_port, 6, "%d", pPort);
+
+#ifdef W_PLATFORM_WIN
+    WSADATA _wsa_data;
+    WORD _version_requested = MAKEWORD(2, 2);
+    int _result = WSAStartup(_version_requested, &_wsa_data);
+    if (_result)
+    {
+        _ret = W_FAILURE;
+        W_ASSERT_P(false, "WSAStartup failed. trace info: %s", _trace_info);
+        goto out;
+    }
+    if (getaddrinfo(pAddress, _port, &_hints, &_address_info) != 0)
+    {
+        _ret = W_FAILURE;
+        W_ASSERT_P(false, "failed to resolve host. trace info: %s", _trace_info);
+        goto out;
+    }
+#else
+    if (getaddrinfo(pAddress, _port, &_address_info, &_local) != 0)
+    {
+        _ret = W_FAILURE;
+        W_ASSERT_P(false, "failed to resolve host. trace info: %s", _trace_info);
+        goto out;
+    }
+#endif
+
+    //enable quic debug logging
+    if (pQuicDebugLogCallback)
+    {
+        quiche_enable_debug_logging(pQuicDebugLogCallback, NULL);
+    }
+
+    //create socket
+    _socket = socket(_address_info->ai_family, SOCK_DGRAM, 0);
+    if (_socket == 0)
+    {
+        _ret = W_FAILURE;
+        W_ASSERT_P(false, "failed to create a socket. trace info: %s", _trace_info);
+        goto out;
+    }
+
+    //set non blocking option
+    const u_long _non_blocking_enabled = TRUE;
+    if (ioctlsocket(_socket, FIONBIO, &_non_blocking_enabled) != 0)
+    {
+        _ret = W_FAILURE;
+        W_ASSERT_P(false, "failed to make non-blocking socket. trace info: %s", _trace_info);
+        goto out;
+    }
+
+    //bind socket to address
+    if (bind(_socket, _address_info->ai_addr, _address_info->ai_addrlen) < 0)
+    {
+        _ret = W_FAILURE;
+        W_ASSERT_P(false, "failed to connect socket. trace info: %s", _trace_info);
+        goto out;
+    }
+
+    //create quic config
+    _quiche_config = quiche_config_new(QUICHE_PROTOCOL_VERSION);
+    if (_quiche_config == NULL) 
+    {
+        _ret = W_FAILURE;
+        W_ASSERT_P(false, "failed to create config. trace info: %s", _trace_info);
+        goto out;
+    }
+
+    //check enable ssl
+    if (w_io_file_check_is_file(pCertFilePath) == W_SUCCESS &&
+        w_io_file_check_is_file(pPrivateKeyFilePath) == W_SUCCESS)
+    {
+        _ret = quiche_config_load_cert_chain_from_pem_file(_quiche_config, pCertFilePath);
+        if (_ret)
+        {
+            _ret = W_FAILURE;
+            W_ASSERT_P(false, "failed to load cert chain from pem file for quic. trace info: %s", _trace_info);
+            goto out;
+        }
+        _ret = quiche_config_load_priv_key_from_pem_file(_quiche_config, pPrivateKeyFilePath);
+        if (_ret)
+        {
+            _ret = W_FAILURE;
+            W_ASSERT_P(false, "failed to load private key from pem file for quic. trace info: %s", _trace_info);
+            goto out;
+        }
+    }
+
+    //use quic draft 27
+    _ret = quiche_config_set_application_protos(_quiche_config,
+        (uint8_t*)"\x05hq-29\x05hq-28\x05hq-27\x08http/0.9", 27);
+    if (_ret)
+    {
+        _ret = W_FAILURE;
+        W_ASSERT_P(false, "failed to set quic application protos. trace info: %s", _trace_info);
+        goto out;
+    }
+
+    quiche_config_set_max_idle_timeout(_quiche_config, 5000);
+    quiche_config_set_max_udp_payload_size(_quiche_config, QUICHE_MAX_DATAGRAM_SIZE);
+    quiche_config_set_initial_max_data(_quiche_config, 10000000);
+    quiche_config_set_initial_max_stream_data_bidi_local(_quiche_config, 1000000);
+    quiche_config_set_initial_max_stream_data_bidi_remote(_quiche_config, 1000000);
+    quiche_config_set_initial_max_streams_bidi(_quiche_config, 100);
+    quiche_config_set_cc_algorithm(_quiche_config, QUICHE_CC_RENO);
+
+    int _handle = _open_osfhandle(_socket, 0);
+    //TODO: check hadnle result, 0 or 1 means fail?
+    if (_handle)
+    {
+        _ret = W_FAILURE;
+        W_ASSERT_P(false, "failed to open_osfhandle. trace info: %s", _trace_info);
+        goto out;
+    }
+    _quiche_con.s = _socket;
+    _quiche_con.h = NULL;
+    
+    ev_io _ev_watcher;
+    struct ev_loop* _ev_loop = ev_default_loop(0);
+    ev_io_init(&_ev_watcher, pQuicReceiveCallback, _socket, EV_READ);
+    ev_io_start(_ev_loop, &_ev_watcher);
+    _ev_watcher.data = &_quiche_con;//access to _quiche_con from ev_io->data
+    ev_loop(_ev_loop, 0);
+
+out:
+    w_free(_port);
+    if (_address_info)
+    {
+        freeaddrinfo(_address_info);
+    }
+    if (_socket)
+    {
+        closesocket(_socket);
+    }
+    if (_quiche_config)
+    {
+        quiche_config_free(_quiche_config);
+    }
+    return _ret;
+}
+
+W_RESULT w_net_close_quic_socket(void)
+{
+    return 0;
+}
+
+const char* w_net_error(_In_ W_RESULT pErrorCode)
+{
+    const char* _error_msg = nng_strerror(pErrorCode);
+    if (_error_msg)
+    {
+        return _error_msg;
+    }
+    return curl_easy_strerror(pErrorCode);
 }
 
 void w_net_fini(void)
