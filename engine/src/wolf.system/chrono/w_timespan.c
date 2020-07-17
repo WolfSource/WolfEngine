@@ -1,5 +1,6 @@
 #include "w_timespan.h"
 #include <time.h>
+#include <apr-1/apr_general.h>
 
 #define TICKS_PER_MILLISECOND	10000
 #define TICKS_PER_SECOND		TICKS_PER_MILLISECOND * 1000
