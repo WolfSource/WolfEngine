@@ -38,7 +38,9 @@ typedef enum {
     pub_sub_subscriber,
     survey_respond_server,
     survey_respond_client,
-    bus_node
+    bus_node,
+    quic_dialer,
+    quic_listener
 } w_socket_mode;
 
 typedef struct
@@ -209,21 +211,27 @@ void w_net_close_udp_socket(_Inout_ w_socket_udp* pSocket);
  * create a server based on QUIC protocol
  * @param pAddress , host address
  * @param pPort , host port
- * @param pCertFilePath , path of certificate chain file
- * @param pPrivateKeyFilePath , path of private key file
- * @param pEV , pointer to ev loop, use ev_break to stop the loop
+ * @param pSocketMode , the socket mode. only the following enums will be accepted 
+   <PRE>
+        quic_dialer
+        quic_listener
+   </PRE>
+ * @param pCertFilePath , path of certificate chain file. Will be used when pSocketMode set to quic_listener  
+ * @param pPrivateKeyFilePath , path of private key file. Will be used when pSocketMode set to quic_listener
+ * @param pEV , a pointer to ev loop, use ev_break to stop this loop from another thread
  * @param pQuicDebugLogCallback , quic debugger call back. set NULL if you don't want to use debugger
- * @param pQuicReceiveCallback , quic receiver call back
+ * @param pQuicIOFunCallback , quic receiver call back
  * @return result
 */
 W_SYSTEM_EXPORT
 W_RESULT w_net_open_quic_socket(_In_z_  const char* pAddress, 
                                 _In_    int pPort,
+                                _In_    w_socket_mode pSocketMode,
                                 _In_z_  const char* pCertFilePath,
                                 _In_z_  const char* pPrivateKeyFilePath,
                                 _Inout_ struct ev_loop** pEV,
                                 _In_    quic_debug_log_callback pQuicDebugLogCallback,
-                                _In_    quic_receive_callback pQuicReceiveCallback);
+                                _In_    quic_receive_callback pQuicIOFunCallback);
 
 /**
  * send a message via tcp socket

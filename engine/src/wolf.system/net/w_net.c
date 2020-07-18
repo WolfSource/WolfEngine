@@ -24,12 +24,25 @@
 #include <concurrency/libev/ev.h>
 #include <hash/uthash.h>
 
+#ifdef W_PLATFORM_WIN
+#include <wincrypt.h>
+#endif
+
+#define     QUICHE_LOCAL_CONN_ID_LEN 16
 #define     QUICHE_MAX_DATAGRAM_SIZE 1350
 
-struct quiche_connection 
+typedef struct
 {
     int             s;
-    struct conn_io* h;
+    struct conn_io* c;
+    ev_timer        t;
+} quiche_data;
+
+struct quiche_connection_io
+{
+    ev_timer timer;
+    int sock;
+    quiche_conn* conn;
 };
 
 #ifdef W_PLATFORM_WIN
@@ -255,6 +268,12 @@ W_RESULT w_net_open_tcp_socket(_In_z_ const char* pEndPoint,
     if (!pSocket || !pEndPoint)
     {
         W_ASSERT(false, "pSocket is NULL! trace info: w_net_open_pair_tcp_socket");
+        return NNG_ENOARG;
+    }
+    if (pSocketMode == quic_dialer || 
+        pSocketMode == quic_listener)
+    {
+        W_ASSERT(false, "pSocketMode not supported! trace info: w_net_open_tcp_socket");
         return NNG_ENOARG;
     }
     
@@ -553,6 +572,11 @@ W_RESULT _io_udp_socket(_In_ w_socket_mode pSocketMode,
         W_ASSERT(false, "parameters are NULL. trace info: _io_udp_socket");
         return NNG_ENOARG;
     }
+    if (pSocketMode != two_way_dialer && pSocketMode != two_way_listener)
+    {
+        W_ASSERT(false, "pSocketMode must be one of the following enums: two_way_dialer or two_way_dialer. trace info: _io_udp_socket");
+        return NNG_ENOARG;
+    }
     
     W_RESULT _rt = W_SUCCESS;
     size_t _sent_len = 0;
@@ -840,18 +864,24 @@ _out:
 
 W_RESULT w_net_open_quic_socket(_In_z_  const char* pAddress, 
                                 _In_    int pPort,
+                                _In_    w_socket_mode pSocketMode,
                                 _In_z_  const char* pCertFilePath,
                                 _In_z_  const char* pPrivateKeyFilePath,
                                 _Inout_ struct ev_loop** pEV,
                                 _In_    quic_debug_log_callback pQuicDebugLogCallback,
-                                _In_    quic_receive_callback pQuicReceiveCallback)
+                                _In_    quic_receive_callback pQuicIOFunCallback)
 {
     const char* _trace_info = "w_net_open_quic_socket";
     
-    if (!pQuicReceiveCallback)
+    if (!pQuicIOFunCallback)
     {
-        W_ASSERT_P(false, "quic_receive_callback no set. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "QuicIOFunCallback no set. trace info: %s", _trace_info);
         return APR_BADARG;
+    }
+    if (pSocketMode != quic_dialer && pSocketMode != quic_listener)
+    {
+        W_ASSERT(false, "pSocketMode must be one of the following enums: quic_dialer or quic_listener. trace info: w_net_open_quic_socket");
+        return NNG_ENOARG;
     }
 
     W_RESULT _ret = W_SUCCESS;
@@ -865,7 +895,9 @@ W_RESULT w_net_open_quic_socket(_In_z_  const char* pAddress,
 #endif
     _socket = 0;
 
-    struct quiche_connection _quiche_con = { 0 };
+    quiche_data* _quiche_data = NULL;
+    quiche_conn* _quiche_conn = NULL;
+
     const struct addrinfo _hints =
     {
         .ai_family = PF_UNSPEC,
@@ -940,16 +972,34 @@ W_RESULT w_net_open_quic_socket(_In_z_  const char* pAddress,
         goto out;
     }
 
-    //bind socket to address
-    if (bind(_socket, _address_info->ai_addr, _address_info->ai_addrlen) < 0)
+    uint32_t _quic_version;
+    if (pSocketMode == quic_listener)
     {
-        _ret = W_FAILURE;
-        W_ASSERT_P(false, "failed to connect socket. trace info: %s", _trace_info);
-        goto out;
+        //bind socket to address
+        if (bind(_socket, _address_info->ai_addr, _address_info->ai_addrlen) < 0)
+        {
+            _ret = W_FAILURE;
+            W_ASSERT_P(false, "failed to bind socket. trace info: %s", _trace_info);
+            goto out;
+        }
+
+        _quic_version = QUICHE_PROTOCOL_VERSION;
+    }
+    else
+    {
+        //connect to endpoint address
+        if (connect(_socket, _address_info->ai_addr, _address_info->ai_addrlen) < 0)
+        {
+            _ret = W_FAILURE;
+            W_ASSERT_P(false, "failed to connect endpoint socket. trace info: %s", _trace_info);
+            goto out;
+        }
+
+        _quic_version = 0xbabababa;
     }
 
     //create quic config
-    _quiche_config = quiche_config_new(QUICHE_PROTOCOL_VERSION);
+    _quiche_config = quiche_config_new(_quic_version);
     if (_quiche_config == NULL) 
     {
         _ret = W_FAILURE;
@@ -957,23 +1007,26 @@ W_RESULT w_net_open_quic_socket(_In_z_  const char* pAddress,
         goto out;
     }
 
-    //check enable ssl
-    if (w_io_file_check_is_file(pCertFilePath) == W_SUCCESS &&
-        w_io_file_check_is_file(pPrivateKeyFilePath) == W_SUCCESS)
+    if (pSocketMode == quic_listener)
     {
-        _ret = quiche_config_load_cert_chain_from_pem_file(_quiche_config, pCertFilePath);
-        if (_ret)
+        //check enable ssl
+        if (w_io_file_check_is_file(pCertFilePath) == W_SUCCESS &&
+            w_io_file_check_is_file(pPrivateKeyFilePath) == W_SUCCESS)
         {
-            _ret = W_FAILURE;
-            W_ASSERT_P(false, "failed to load cert chain from pem file for quic. trace info: %s", _trace_info);
-            goto out;
-        }
-        _ret = quiche_config_load_priv_key_from_pem_file(_quiche_config, pPrivateKeyFilePath);
-        if (_ret)
-        {
-            _ret = W_FAILURE;
-            W_ASSERT_P(false, "failed to load private key from pem file for quic. trace info: %s", _trace_info);
-            goto out;
+            _ret = quiche_config_load_cert_chain_from_pem_file(_quiche_config, pCertFilePath);
+            if (_ret)
+            {
+                _ret = W_FAILURE;
+                W_ASSERT_P(false, "failed to load cert chain from pem file for quic. trace info: %s", _trace_info);
+                goto out;
+            }
+            _ret = quiche_config_load_priv_key_from_pem_file(_quiche_config, pPrivateKeyFilePath);
+            if (_ret)
+            {
+                _ret = W_FAILURE;
+                W_ASSERT_P(false, "failed to load private key from pem file for quic. trace info: %s", _trace_info);
+                goto out;
+            }
         }
     }
 
@@ -987,14 +1040,90 @@ W_RESULT w_net_open_quic_socket(_In_z_  const char* pAddress,
         goto out;
     }
 
-    quiche_config_set_max_idle_timeout(_quiche_config, 5000);
     quiche_config_set_max_udp_payload_size(_quiche_config, QUICHE_MAX_DATAGRAM_SIZE);
+    quiche_config_set_max_idle_timeout(_quiche_config, 5000);
     quiche_config_set_initial_max_data(_quiche_config, 10000000);
     quiche_config_set_initial_max_stream_data_bidi_local(_quiche_config, 1000000);
-    quiche_config_set_initial_max_stream_data_bidi_remote(_quiche_config, 1000000);
     quiche_config_set_initial_max_streams_bidi(_quiche_config, 100);
-    quiche_config_set_cc_algorithm(_quiche_config, QUICHE_CC_RENO);
 
+    if (pSocketMode == quic_listener)
+    {
+        quiche_config_set_initial_max_stream_data_bidi_remote(_quiche_config, 1000000);
+        quiche_config_set_cc_algorithm(_quiche_config, QUICHE_CC_RENO);
+    }
+    else
+    {
+        quiche_config_set_initial_max_stream_data_uni(_quiche_config, 1000000);
+        quiche_config_set_initial_max_streams_uni(_quiche_config, 100);
+        quiche_config_set_disable_active_migration(_quiche_config, true);
+
+#ifdef W_PLATFORM_WIN
+        if (getenv("SSLKEYLOGFILE"))
+        {
+            quiche_config_log_keys(_quiche_config);
+        }
+
+        size_t _size_of_scid = QUICHE_LOCAL_CONN_ID_LEN * sizeof(uint8_t);
+        uint8_t* _scid = (uint8_t*)w_malloc(_size_of_scid, "w_net_open_quic_socket");
+
+        HCRYPTPROV _crypto;
+        ULONG     _i;
+
+        if (CryptAcquireContext(
+            &_crypto,
+            NULL,
+            NULL,
+            PROV_RSA_FULL,
+            CRYPT_VERIFYCONTEXT) == FALSE)
+        {
+            _ret = W_FAILURE;
+            W_ASSERT_P(
+                false,
+                "CryptAcquireContext failed. trace info: %s",
+                _trace_info);
+            goto out;
+        }
+
+        if (CryptGenRandom(_crypto, _size_of_scid, (BYTE*)_scid) == FALSE)
+        {
+            _ret = W_FAILURE;
+            W_ASSERT_P(
+                false,
+                "CryptGenRandom failed. trace info: %s",
+                _trace_info);
+            goto out;
+        }
+#else
+
+
+#endif
+
+        _quiche_conn = quiche_connect(
+            pAddress,
+            (const uint8_t*)_scid,
+            sizeof(_scid),
+            _quiche_config);
+        if (_quiche_conn == NULL)
+        {
+            _ret = W_FAILURE;
+            W_ASSERT_P(
+                false,
+                "failed to create quiche conn. trace info: %s",
+                _trace_info);
+            goto out;
+        }
+    }
+
+    _quiche_data = (quiche_data*)w_malloc(sizeof(quiche_data*), _trace_info);
+    if (!_quiche_data)
+    {
+        _ret = W_FAILURE;
+        goto out;
+    }
+
+    _quiche_data->s = _socket;
+    _quiche_data->c = _quiche_conn;
+        
 #ifdef W_PLATFORM_WIN
     int _handle = _open_osfhandle(_socket, 0);
     //TODO: check hadnle result, 0 or 1 means fail?
@@ -1006,14 +1135,11 @@ W_RESULT w_net_open_quic_socket(_In_z_  const char* pAddress,
     }
 #endif
 
-    _quiche_con.s = _socket;
-    _quiche_con.h = NULL;
-    
     ev_io _ev_watcher;
     *pEV = ev_default_loop(0);
-    ev_io_init(&_ev_watcher, pQuicReceiveCallback, _socket, EV_READ);
+    ev_io_init(&_ev_watcher, pQuicIOFunCallback, _socket, EV_READ);
     ev_io_start(*pEV, &_ev_watcher);
-    _ev_watcher.data = &_quiche_con;//access to _quiche_con from ev_io->data
+    _ev_watcher.data = &_quiche_data;//access to _quiche_con from ev_io->data
     ev_loop(*pEV, 0);
 
 out:
@@ -1025,6 +1151,10 @@ out:
     if (_socket)
     {
         closesocket(_socket);
+    }
+    if (_quiche_conn)
+    {
+        quiche_conn_free(_quiche_conn);
     }
     if (_quiche_config)
     {
