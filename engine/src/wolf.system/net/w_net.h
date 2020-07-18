@@ -207,6 +207,13 @@ void w_net_close_udp_socket(_Inout_ w_socket_udp* pSocket);
 
 /**
  * create a server based on QUIC protocol
+ * @param pAddress , host address
+ * @param pPort , host port
+ * @param pCertFilePath , path of certificate chain file
+ * @param pPrivateKeyFilePath , path of private key file
+ * @param pEV , pointer to ev loop, use ev_break to stop the loop
+ * @param pQuicDebugLogCallback , quic debugger call back. set NULL if you don't want to use debugger
+ * @param pQuicReceiveCallback , quic receiver call back
  * @return result
 */
 W_SYSTEM_EXPORT
@@ -214,15 +221,9 @@ W_RESULT w_net_open_quic_socket(_In_z_  const char* pAddress,
                                 _In_    int pPort,
                                 _In_z_  const char* pCertFilePath,
                                 _In_z_  const char* pPrivateKeyFilePath,
+                                _Inout_ struct ev_loop** pEV,
                                 _In_    quic_debug_log_callback pQuicDebugLogCallback,
                                 _In_    quic_receive_callback pQuicReceiveCallback);
-
-/**
- * create a server based on QUIC protocol
- * @return result
-*/
-W_SYSTEM_EXPORT
-W_RESULT w_net_close_quic_socket(void);
 
 /**
  * send a message via tcp socket

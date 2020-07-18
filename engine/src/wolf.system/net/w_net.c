@@ -842,6 +842,7 @@ W_RESULT w_net_open_quic_socket(_In_z_  const char* pAddress,
                                 _In_    int pPort,
                                 _In_z_  const char* pCertFilePath,
                                 _In_z_  const char* pPrivateKeyFilePath,
+                                _Inout_ struct ev_loop** pEV,
                                 _In_    quic_debug_log_callback pQuicDebugLogCallback,
                                 _In_    quic_receive_callback pQuicReceiveCallback)
 {
@@ -913,7 +914,13 @@ W_RESULT w_net_open_quic_socket(_In_z_  const char* pAddress,
 
     //create socket
     _socket = socket(_address_info->ai_family, SOCK_DGRAM, 0);
-    if (_socket == 0)
+    if (
+#ifdef W_PLATFORM_WIN
+        _socket == 0
+#else
+        _socket < 0
+#endif
+        )
     {
         _ret = W_FAILURE;
         W_ASSERT_P(false, "failed to create a socket. trace info: %s", _trace_info);
@@ -921,8 +928,12 @@ W_RESULT w_net_open_quic_socket(_In_z_  const char* pAddress,
     }
 
     //set non blocking option
+#ifdef W_PLATFORM_WIN
     const u_long _non_blocking_enabled = TRUE;
     if (ioctlsocket(_socket, FIONBIO, &_non_blocking_enabled) != 0)
+#else
+    if (fcntl(_socket, F_SETFL, O_NONBLOCK) != 0)
+#endif
     {
         _ret = W_FAILURE;
         W_ASSERT_P(false, "failed to make non-blocking socket. trace info: %s", _trace_info);
@@ -984,6 +995,7 @@ W_RESULT w_net_open_quic_socket(_In_z_  const char* pAddress,
     quiche_config_set_initial_max_streams_bidi(_quiche_config, 100);
     quiche_config_set_cc_algorithm(_quiche_config, QUICHE_CC_RENO);
 
+#ifdef W_PLATFORM_WIN
     int _handle = _open_osfhandle(_socket, 0);
     //TODO: check hadnle result, 0 or 1 means fail?
     if (_handle)
@@ -992,15 +1004,17 @@ W_RESULT w_net_open_quic_socket(_In_z_  const char* pAddress,
         W_ASSERT_P(false, "failed to open_osfhandle. trace info: %s", _trace_info);
         goto out;
     }
+#endif
+
     _quiche_con.s = _socket;
     _quiche_con.h = NULL;
     
     ev_io _ev_watcher;
-    struct ev_loop* _ev_loop = ev_default_loop(0);
+    *pEV = ev_default_loop(0);
     ev_io_init(&_ev_watcher, pQuicReceiveCallback, _socket, EV_READ);
-    ev_io_start(_ev_loop, &_ev_watcher);
+    ev_io_start(*pEV, &_ev_watcher);
     _ev_watcher.data = &_quiche_con;//access to _quiche_con from ev_io->data
-    ev_loop(_ev_loop, 0);
+    ev_loop(*pEV, 0);
 
 out:
     w_free(_port);
