@@ -212,9 +212,93 @@ size_t w_process::get_number_of_running_instances_from_process(_In_z_ const wcha
 	}
 	CloseHandle(_snapshot);
 
-#else
+#elif defined __APPLE__
+
+	pid_t pids[2048];
+         std::wstring _input_name, _compare_name;
+         _input_name = std::wstring(name);
+         size_t size = 0;
+
+	int bytes = proc_listpids(PROC_ALL_PIDS, 0, pids, sizeof(pids));
+	int n_proc = bytes / sizeof(pids[0]);
+	int i;
+	for (i = 0; i < n_proc; i++) 
+	{
+		struct proc_bsdinfo proc;
+		int st = proc_pidinfo(pids[i], PROC_PIDTBSDINFO, 0, &proc, sizeof(proc));
+		if (st == sizeof(proc)) 
+		{
+                	size = std::strlen(proc.pbi_name);
+                	if (size > 0) 
+			{
+                    		_compare_name.resize(size);
+                    		std::mbstowcs(&_compare_name[0], proc.pbi_name, size);
+                	}
+
+                if (!wcscmp(_input_name.data(), _compare_name.data())) 
+		{
+			_exists++;
+		}
+	}
+#elif defined __linux
+	 DIR* dir;
+         struct dirent* ent;
+         char* endptr;
+         char buf[512];
+         std::wstring _input_name, _compare_name;
+         _input_name = std::wstring(name);
+         size_t size = 0;
+
+         if (!(dir = opendir("/proc"))) {
+             perror("can't open /proc");
+              return num;
+         }
+
+         while((ent = readdir(dir)) != NULL)
+         {
+             /* if endptr is not a null character, the directory is not
+              * entirely numeric, so ignore it */
+             long lpid = strtol(ent->d_name, &endptr, 10);
+             if (*endptr != '\0')
+             {
+                 continue;
+             }
+
+             /* try to open the cmdline file */
+             snprintf(buf, sizeof(buf), "/proc/%ld/cmdline", lpid);
+             FILE* fp = fopen(buf, "r");
+
+             if (fp)
+             {
+                 if (fgets(buf, sizeof(buf), fp) != NULL)
+                 {
+                     /* check the first token in the file, the program name */
+                     char* first = strtok(buf, " ");
+
+                     size = std::strlen(buf);
+                      if (size > 0)
+                      {
+                          _compare_name.resize(size);
+                          std::mbstowcs(&_compare_name[0], buf, size);
+                      }
 
 
+                     auto _tmp = std::string(buf);
+                     auto pos = _compare_name.find_last_of('/');
+                     std::wstring _file = _compare_name;
+                     if(pos != std::wstring::npos)
+                      _file = _compare_name.substr(pos+1);
+                     if (!wcscmp((const wchar_t*)_file.data(), (const wchar_t*)_input_name.data()))
+                     {
+                        _exists++;
+                     }
+                 }
+                 fclose(fp);
+             }
+
+         }
+
+         closedir(dir);
 #endif
 
 	return _exists;
