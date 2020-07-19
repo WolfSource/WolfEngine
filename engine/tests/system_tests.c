@@ -11,7 +11,7 @@ Main({
 printf("testing chrono");
 Convey("chrono", {
 
-    //testing timespan
+    //testing w_timespan
    printf("testing w_timespan");
     w_timespan* _t_0 = w_timespan_init_from_zero();
     So(_t_0->ticks == 0 && !_t_0->overflowed);
@@ -105,5 +105,6 @@ Convey("chrono", {
 
 //terminate wolf
 wolf_terminate();
+
     })
 
