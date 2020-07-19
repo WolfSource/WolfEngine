@@ -20,9 +20,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\tests\system_tests.c" />
+    <ClCompile Include="convey.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\tests\convey.h" />
+    <ClInclude Include="convey.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{C7EAFC1C-9CFD-4C25-8AE9-C1373DD5DF35}</ProjectGuid>
@@ -151,6 +152,8 @@
       <AdditionalLibraryDirectories>$(SolutionDir)/../../../bin/win/$(Platform)/$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>wolf.system.win.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
+      <EntryPointSymbol>
+      </EntryPointSymbol>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

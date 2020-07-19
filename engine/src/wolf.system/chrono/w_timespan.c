@@ -3,14 +3,14 @@
 #include <apr-1/apr_general.h>
 
 #define TICKS_PER_MILLISECOND	10000
-#define TICKS_PER_SECOND		TICKS_PER_MILLISECOND * 1000
-#define TICKS_PER_MINUTE		TICKS_PER_SECOND * 60
-#define TICKS_PER_HOUR			TICKS_PER_MINUTE * 60
-#define TICKS_PER_DAY			TICKS_PER_HOUR * 24
+#define TICKS_PER_SECOND		10000000
+#define TICKS_PER_MINUTE		600000000
+#define TICKS_PER_HOUR			36000000000
+#define TICKS_PER_DAY			864000000000
 #define MILLIS_PER_SECOND		1000
-#define MILLIS_PER_MINUTE		MILLIS_PER_SECOND * 60
-#define MILLIS_PER_HOUR			MILLIS_PER_MINUTE * 60
-#define MILLIS_PER_DAY			MILLIS_PER_HOUR * 24
+#define MILLIS_PER_MINUTE		60000
+#define MILLIS_PER_HOUR			3600000
+#define MILLIS_PER_DAY			86400000
 
 static const double MILLI_SECONDS_PER_TICK = 1.0 / TICKS_PER_MILLISECOND;
 static const double SECONDS_PER_TICK = 1.0 / TICKS_PER_SECOND;
@@ -258,7 +258,7 @@ w_timespan* w_timespan_init_from_wstring(const wchar_t* const pValue)
             if (_i == 0)
             {
                 _temp = _timespan_w_wcstol(_number, &_error);
-                if (!_error)
+                if (_error)
                 {
                     _days = (int)_temp;
                 }
@@ -266,7 +266,7 @@ w_timespan* w_timespan_init_from_wstring(const wchar_t* const pValue)
             else if (_i == 1)
             {
                 _temp = _timespan_w_wcstol(_number, &_error);
-                if (!_error)
+                if (_error)
                 {
                     _hours = (int)_temp;
                 }
@@ -274,7 +274,7 @@ w_timespan* w_timespan_init_from_wstring(const wchar_t* const pValue)
             else if (_i == 2)
             {
                 _temp = _timespan_w_wcstol(_number, &_error);
-                if (!_error)
+                if (_error)
                 {
                     _minutes = (int)_temp;
                 }
@@ -282,7 +282,7 @@ w_timespan* w_timespan_init_from_wstring(const wchar_t* const pValue)
             else if (_i == 3)
             {
                 _temp = _timespan_w_wcstol(_number, &_error);
-                if (!_error)
+                if (_error)
                 {
                     _seconds = (int)_temp;
                 }
@@ -297,7 +297,7 @@ w_timespan* w_timespan_init_from_wstring(const wchar_t* const pValue)
     {
         _number[_j] = L'\0';
         _temp = _timespan_w_wcstol(_number, &_error);
-        if (!_error)
+        if (_error)
         {
             _milliseconds = (int)_temp;
         }
