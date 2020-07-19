@@ -504,7 +504,7 @@ namespace wolf::system::io
 	}
 
 	//Get date time - format: Day(xx)Mon(xx)Year(xxxx)Hour(xx)Min(xx)Sec(xx)MiliSec(xxx)
-	inline std::string get_date_time_str()
+	inline std::string get_date_time_str(_In_ const bool& pNeedMilliSec = true)
 	{
 		std::string _date_time_str;
 
@@ -512,7 +512,8 @@ namespace wolf::system::io
 
 		SYSTEMTIME _time;
 		GetLocalTime(&_time);
-		long _ms = (_time.wSecond * 1000) + _time.wMilliseconds;
+
+		long _ms = pNeedMilliSec ? ((_time.wSecond * 1000) + _time.wMilliseconds) : 0;
 
 		auto _sec_str = std::to_string(_time.wSecond);
 		auto _min_str = std::to_string(_time.wMinute);
@@ -529,7 +530,8 @@ namespace wolf::system::io
 
 		struct timeval tp;
 		gettimeofday(&tp, NULL);
-		long _ms = tp.tv_sec * 1000 + tp.tv_usec / 1000;
+		
+		long _ms = pNeedMilliSec ? (tp.tv_sec * 1000 + tp.tv_usec / 1000) : 0;
 
 		auto _sec_str = std::to_string(_now.tm_sec);
 		auto _min_str = std::to_string(_now.tm_min);
@@ -540,13 +542,16 @@ namespace wolf::system::io
 		auto _year_str = std::to_string(1900 + _now.tm_year);
 #endif
 
-		std::string _ms_str = std::to_string(_ms).substr(0, 3);
-
-		//format of ms (xxx)
-		const auto _ms_str_size = _ms_str.size();
-		if (_ms_str_size < 1) _ms_str = "000";
-		else if (_ms_str_size < 2) _ms_str = "00" + _ms_str;
-		else if (_ms_str_size < 3) _ms_str = "0" + _ms_str;
+		std::string _ms_str;
+		if (pNeedMilliSec)
+		{
+			_ms_str = std::to_string(_ms).substr(0, 3);
+			//format of ms (xxx)
+			const auto _ms_str_size = _ms_str.size();
+			if (_ms_str_size < 1) _ms_str = "000";
+			else if (_ms_str_size < 2) _ms_str = "00" + _ms_str;
+			else if (_ms_str_size < 3) _ms_str = "0" + _ms_str;
+		}
 
 		//format of second (xx)
 		const auto _sec_str_size = _sec_str.size();
@@ -575,8 +580,12 @@ namespace wolf::system::io
 
 		std::stringstream _str;
 		_str << _day_str << _mon_str << _year_str <<
-			_hr_str << _min_str << _sec_str << _ms_str;
-
+			_hr_str << _min_str << _sec_str;
+		
+		if (pNeedMilliSec)
+		{
+			_str << _ms_str;
+		}
 		_date_time_str = _str.str();
 
 		//clear sstream
@@ -586,10 +595,10 @@ namespace wolf::system::io
 		return _date_time_str;
 	}
 
-	//Get a date time - format: mm-dd-year-hour-min-sec
-	inline std::wstring get_date_time_strW()
+	//Get date time - format: Day(xx)Mon(xx)Year(xxxx)Hour(xx)Min(xx)Sec(xx)MiliSec(xxx)
+	inline std::wstring get_date_time_strW(_In_ const bool& pNeedMilliSec = true)
 	{
-		auto _str = wolf::system::io::get_date_time_str();
+		auto _str = wolf::system::io::get_date_time_str(pNeedMilliSec);
 		return std::wstring(_str.begin(), _str.end());
 	}
 
