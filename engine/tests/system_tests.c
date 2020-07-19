@@ -12,7 +12,7 @@ printf("testing chrono");
 Convey("chrono", {
 
     //testing w_timespan
-   printf("testing w_timespan");
+    printf("testing w_timespan");
     w_timespan* _t_0 = w_timespan_init_from_zero();
     So(_t_0->ticks == 0 && !_t_0->overflowed);
 
@@ -60,7 +60,7 @@ Convey("chrono", {
 
     w_timespan_add_by_ref(_t_long, _t_short);
     So(_t_long->ticks == 2812300100000);
-     
+
     const char* _time_to_string = w_timespan_to_string(_t_short);
     const char* _time_origin = "0:2:2:2:000";
     int result = strcmp(_time_to_string, _time_origin);
@@ -75,10 +75,10 @@ Convey("chrono", {
     So(_get_days == 3);
 
     double _get_total_days = w_timespan_get_total_days(_t_tick);
-    So(_get_total_days ==5.7870370370370368e-12);
+    So(_get_total_days == 5.7870370370370368e-12);
 
     int _get_hours = w_timespan_get_hours(_t_short);
-    So(_get_hours ==2);
+    So(_get_hours == 2);
 
     double _get_total_hours = w_timespan_get_total_hours(_t_short);
     So(_get_total_hours == 2.0338888888888889);
@@ -99,12 +99,13 @@ Convey("chrono", {
     So(_get_milliseconds == 0);
 
     double _get_total_milliseconds = w_timespan_get_total_milliseconds(_t_short);
-    So(_get_total_milliseconds ==7322000.0000000000);
-
+    So(_get_total_milliseconds == 7322000.0000000000);
 });
 
 //terminate wolf
 wolf_terminate();
+
+printf("\n\nALL TESTS WERE PASSED SUCCESSFULLY\n\n");
 
     })
 
