@@ -1,8 +1,5 @@
 #include "w_timespan.h"
 #include <time.h>
-
-//TODO: REMOVE these includes
-#include <apr.h>
 #include <apr-1/apr_general.h>
 
 #define TICKS_PER_MILLISECOND	10000
@@ -314,7 +311,10 @@ w_timespan* w_timespan_add(_Inout_ w_timespan* pLValue, _In_ const w_timespan* p
     W_ASSERT(pLValue || pRValue, "input parameters of timespan_add function are NULL. trace info: timespan_add");
 
     w_timespan* _timespan = (w_timespan*)w_malloc(sizeof(w_timespan), "w_timespan_add");
-
+    if (!_timespan)
+    {
+        return NULL;
+    }
     _timespan->ticks = pLValue->ticks + pRValue->ticks;
     // Overflow if signs of operands was identical and result's sign was opposite.
     // >> 63 gives the sign bit (either 64 1's or 64 0's).
@@ -350,6 +350,11 @@ void w_timespan_add_by_ref(_Inout_ w_timespan* pLValue, _In_ const w_timespan* p
 const char* w_timespan_to_string(_In_ const w_timespan* const pValue)
 {
     char* _str = (char*)w_malloc(W_PATH_MAX, "w_timespan_to_string");
+    if (!_str)
+    {
+        return NULL;
+    }
+
     sprintf(_str, "%d:%d:%d:%d:%03d",
         w_timespan_get_days(pValue),
         w_timespan_get_hours(pValue),
@@ -362,6 +367,10 @@ const char* w_timespan_to_string(_In_ const w_timespan* const pValue)
 const wchar_t* w_timespan_to_wstring(_In_ const w_timespan* const pValue)
 {
     wchar_t* _str = (wchar_t*)w_malloc(W_PATH_MAX, "w_timespan_to_wstring");
+    if (!_str)
+    {
+        return NULL;
+    }
     swprintf(_str, W_PATH_MAX, L"%d:%d:%d:%d:%03d",
         w_timespan_get_days(pValue),
         w_timespan_get_hours(pValue),
@@ -429,8 +438,11 @@ double w_timespan_get_total_milliseconds(_In_ const w_timespan* const pValue)
 const char* w_timespan_get_current_date_time_string()
 {
     //get current time
-    char* _str = (char*)w_malloc(W_PATH_MAX, "w_timespan_get_current_date_time_string");
-
+    char* _str = (char*)w_malloc(w_timespan_to_wstring, "w_timespan_get_current_date_time_string");
+    if (!_str)
+    {
+        return NULL;
+    }
     time_t t = time(0);
 #if defined(W_PLATFORM_UNIX)
     struct tm* _now = localtime(&t);
@@ -461,7 +473,10 @@ const wchar_t* w_timespan_get_current_date_time_wstring()
 {
     //get current time
     wchar_t* _str = (wchar_t*)w_malloc(W_PATH_MAX, "w_timespan_get_current_date_time_wstring");
-
+    if (!_str)
+    {
+        return NULL;
+    }
     time_t t = time(0);
 #if defined(W_PLATFORM_UNIX)
     struct tm* _now = localtime(&t);

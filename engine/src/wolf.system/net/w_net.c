@@ -1,5 +1,8 @@
+#include "w_net.h"
+
 #include <apr.h>
 #include <apr-1/apr_general.h>
+
 #include <nng/nng.h>
 #include <core/nng_impl.h>
 #include <nng/protocol/pipeline0/push.h>
@@ -14,7 +17,33 @@
 #include <nng/supplemental/util/platform.h>
 #include <nng/supplemental/tls/tls.h>
 #include <nng/transport/tls/tls.h>
-#include "w_net.h"
+
+#include "io/w_io.h"
+
+#include <quiche.h>
+#include <concurrency/libev/ev.h>
+#include <hash/uthash.h>
+
+#ifdef W_PLATFORM_WIN
+#include <wincrypt.h>
+#endif
+
+#define     QUICHE_LOCAL_CONN_ID_LEN 16
+#define     QUICHE_MAX_DATAGRAM_SIZE 1350
+
+typedef struct
+{
+    int             s;
+    struct conn_io* c;
+    ev_timer        t;
+} quiche_data;
+
+struct quiche_connection_io
+{
+    ev_timer timer;
+    int sock;
+    quiche_conn* conn;
+};
 
 #ifdef W_PLATFORM_WIN
 
@@ -241,39 +270,49 @@ W_RESULT w_net_open_tcp_socket(_In_z_ const char* pEndPoint,
         W_ASSERT(false, "pSocket is NULL! trace info: w_net_open_pair_tcp_socket");
         return NNG_ENOARG;
     }
+    if (pSocketMode == quic_dialer || 
+        pSocketMode == quic_listener)
+    {
+        W_ASSERT(false, "pSocketMode not supported! trace info: w_net_open_tcp_socket");
+        return NNG_ENOARG;
+    }
     
     W_RESULT _rt = W_SUCCESS;
     
+    nng_socket* _nng_socket = (nng_socket*)pSocket->s;
+    nng_dialer* _nng_dialer = (nng_dialer*)pSocket->d;
+    nng_listener* _nng_listener = (nng_listener*)pSocket->l;
+
     switch (pSocketMode)
     {
         case one_way_pusher:
-            _rt = nng_push0_open(&pSocket->s);
+            _rt = nng_push0_open(_nng_socket);
             break;
         case one_way_puller:
-            _rt = nng_pull0_open(&pSocket->s);
+            _rt = nng_pull0_open(_nng_socket);
             break;
         case two_way_dialer:
         case two_way_listener:
-            _rt = nng_pair_open(&pSocket->s);
+            _rt = nng_pair_open(_nng_socket);
             break;
         case req_rep_dialer:
-            _rt = nng_req0_open(&pSocket->s);
+            _rt = nng_req0_open(_nng_socket);
             break;
         case req_rep_listener:
-            _rt = nng_rep0_open(&pSocket->s);
+            _rt = nng_rep0_open(_nng_socket);
             break;
         case pub_sub_broadcaster:
-            _rt = nng_pub0_open(&pSocket->s);
+            _rt = nng_pub0_open(_nng_socket);
             break;
         case pub_sub_subscriber:
-            _rt = nng_sub0_open(&pSocket->s);
-            _rt = nng_setopt(pSocket->s, NNG_OPT_SUB_SUBSCRIBE, "", 0);
+            _rt = nng_sub0_open(_nng_socket);
+            _rt = nng_setopt(*_nng_socket, NNG_OPT_SUB_SUBSCRIBE, "", 0);
             break;
         case survey_respond_server:
-            _rt = nng_surveyor0_open(&pSocket->s);
+            _rt = nng_surveyor0_open(_nng_socket);
             break;
         case survey_respond_client:
-            _rt = nng_respondent0_open(&pSocket->s);
+            _rt = nng_respondent0_open(_nng_socket);
             break;
         case bus_node:
             break;
@@ -286,14 +325,14 @@ W_RESULT w_net_open_tcp_socket(_In_z_ const char* pEndPoint,
     }
     
     //set options
-    _rt = nng_setopt_bool(pSocket->s, NNG_OPT_TCP_NODELAY, pNoDelayOption);
+    _rt = nng_setopt_bool(*_nng_socket, NNG_OPT_TCP_NODELAY, pNoDelayOption);
     if(_rt)
     {
         _net_error(_rt, "could not set socket no delay option", _trace_info);
         goto out;
     }
     
-    _rt = nng_setopt_bool(pSocket->s, NNG_OPT_TCP_KEEPALIVE, pKeepAliveOption);
+    _rt = nng_setopt_bool(*_nng_socket, NNG_OPT_TCP_KEEPALIVE, pKeepAliveOption);
     if(_rt)
     {
         _net_error(_rt, "could not set socket keep alive option", _trace_info);
@@ -312,8 +351,7 @@ W_RESULT w_net_open_tcp_socket(_In_z_ const char* pEndPoint,
         case survey_respond_client:
         {
             //create dialer
-            
-            _rt = nng_dialer_create(&pSocket->d, pSocket->s, pEndPoint);
+            _rt = nng_dialer_create(_nng_dialer, *_nng_socket, pEndPoint);
             if(_rt)
             {
                 _net_error(_rt, "could not create dialer object", _trace_info);
@@ -321,14 +359,14 @@ W_RESULT w_net_open_tcp_socket(_In_z_ const char* pEndPoint,
             }
         
             //set dialer options
-            _rt = nng_dialer_setopt_bool(pSocket->d, NNG_OPT_TCP_NODELAY, pNoDelayOption);
+            _rt = nng_dialer_setopt_bool(*_nng_dialer, NNG_OPT_TCP_NODELAY, pNoDelayOption);
             if(_rt)
             {
                 _net_error(_rt, "could not set dialer no delay option", _trace_info);
                 break;
             }
         
-            _rt = nng_dialer_setopt_bool(pSocket->d, NNG_OPT_TCP_KEEPALIVE, pKeepAliveOption);
+            _rt = nng_dialer_setopt_bool(*_nng_dialer, NNG_OPT_TCP_KEEPALIVE, pKeepAliveOption);
             if(_rt)
             {
                 _net_error(_rt, "could not set dialer keep alive option", _trace_info);
@@ -337,14 +375,14 @@ W_RESULT w_net_open_tcp_socket(_In_z_ const char* pEndPoint,
             
             if(pTLS)
             {
-                _init_dialer_tls(pSocket->d,
+                _init_dialer_tls(*_nng_dialer,
                                  pTLSServerName,
                                  pOwnCert,
                                  pCert,
                                  pKey);
             }
             
-            _rt = nng_dialer_start(pSocket->d, (pAsync ? NNG_FLAG_NONBLOCK : 0));
+            _rt = nng_dialer_start(*_nng_dialer, (pAsync ? NNG_FLAG_NONBLOCK : 0));
             if (_rt)
             {
                 _net_error(_rt, "could not start dialer", _trace_info);
@@ -360,7 +398,7 @@ W_RESULT w_net_open_tcp_socket(_In_z_ const char* pEndPoint,
         case survey_respond_server:
         {
             //create listener
-            _rt = nng_listener_create(&pSocket->l, pSocket->s, pEndPoint);
+            _rt = nng_listener_create(_nng_listener, *_nng_socket, pEndPoint);
             if(_rt)
             {
                 _net_error(_rt, "could not create listener object", _trace_info);
@@ -368,14 +406,14 @@ W_RESULT w_net_open_tcp_socket(_In_z_ const char* pEndPoint,
             }
        
             //set listener options
-            _rt = nng_listener_setopt_bool(pSocket->l, NNG_OPT_TCP_NODELAY, pNoDelayOption);
+            _rt = nng_listener_setopt_bool(*_nng_listener, NNG_OPT_TCP_NODELAY, pNoDelayOption);
             if(_rt)
             {
                 _net_error(_rt, "could not set listener no delay option", _trace_info);
                 break;
             }
        
-            _rt = nng_listener_setopt_bool(pSocket->l, NNG_OPT_TCP_KEEPALIVE, pKeepAliveOption);
+            _rt = nng_listener_setopt_bool(*_nng_listener, NNG_OPT_TCP_KEEPALIVE, pKeepAliveOption);
             if(_rt)
             {
                 _net_error(_rt, "could not set listener keep alive option", _trace_info);
@@ -384,14 +422,14 @@ W_RESULT w_net_open_tcp_socket(_In_z_ const char* pEndPoint,
        
             if (pTLS)
             {
-                _rt = _init_listener_tls(pSocket->l, pAuthMode, pCert, pKey);
+                _rt = _init_listener_tls(*_nng_listener, pAuthMode, pCert, pKey);
                 if (_rt)
                 {
                     _net_error(_rt, "_init_listener_tls failed", _trace_info);
                     break;
                 }
             }
-            _rt = nng_listener_start(pSocket->l, (pAsync ? NNG_FLAG_NONBLOCK : 0));
+            _rt = nng_listener_start(*_nng_listener, (pAsync ? NNG_FLAG_NONBLOCK : 0));
             if (_rt)
             {
                 _net_error(_rt, "could not start listener", _trace_info);
@@ -407,11 +445,19 @@ W_RESULT w_net_open_tcp_socket(_In_z_ const char* pEndPoint,
     }
     
 out:
-    
-    nng_dialer_close(pSocket->d);
-    nng_listener_close(pSocket->l);
-    nng_close(pSocket->s);
-    
+    if (_nng_dialer)
+    {
+        nng_dialer_close(*_nng_dialer);
+    }
+    if (_nng_listener)
+    {
+        nng_listener_close(*_nng_listener);
+    }
+    if (_nng_socket)
+    {
+        nng_close(*_nng_socket);
+    }
+
     return _rt;
 }
 
@@ -423,9 +469,22 @@ W_RESULT w_net_close_tcp_socket(_Inout_ w_socket_tcp* pSocket)
         return NNG_ENOARG;
     }
     
-    nng_dialer_close(pSocket->d);
-    nng_listener_close(pSocket->l);
-    nng_close(pSocket->s);
+    nng_socket* _nng_socket = (nng_socket*)pSocket->s;
+    nng_dialer* _nng_dialer = (nng_dialer*)pSocket->d;
+    nng_listener* _nng_listener = (nng_listener*)pSocket->l;
+
+    if (_nng_dialer)
+    {
+        nng_dialer_close(*_nng_dialer);
+    }
+    if (_nng_listener)
+    {
+        nng_listener_close(*_nng_listener);
+    }
+    if (_nng_socket)
+    {
+        nng_close(*_nng_socket);
+    }
     
     return W_SUCCESS;
 }
@@ -433,23 +492,37 @@ W_RESULT w_net_close_tcp_socket(_Inout_ w_socket_tcp* pSocket)
 W_RESULT w_net_open_udp_socket(_In_z_ const char* pEndPoint, _Inout_ w_socket_udp* pSocket)
 {
     W_RESULT _rt = W_SUCCESS;
-    w_url _url = NULL;
+    nng_url* _url = NULL;
     
+    if (!pSocket)
+    {
+        return W_FAILURE;
+    }
+    nni_sockaddr* _sa = (nni_sockaddr*)pSocket->sa;
+    if (!_sa)
+    {
+        return W_FAILURE;
+    }
+    nni_plat_udp* _udp_protocol = (nni_plat_udp*)pSocket->u;
+
+    _url = (nng_url*)w_malloc(sizeof(nng_url), "");
+    unsigned long _addr_hex = inet_addr(_url->u_hostname);
+    int _port = atoi(_url->u_port);
     _rt = w_net_url_parse(pEndPoint, _url);
     if(_rt)
     {
         goto out;
     }
-    
-    int _addr_hex = inet_addr(_url->u_hostname);
-    int _port = atoi(_url->u_port);
-    
-    pSocket->s.s_in.sa_family = NNG_AF_INET;
-    pSocket->s.s_in.sa_addr = htons(_addr_hex);
-    pSocket->s.s_in.sa_port = htons(_port);
+  
+    if (_sa)
+    {
+        _sa->s_in.sa_family = NNG_AF_INET;
+        _sa->s_in.sa_addr = htons(_addr_hex);
+        _sa->s_in.sa_port = htons(_port);
+    }
 
     //open udp socket
-    _rt = nni_plat_udp_open(&pSocket->u, &pSocket->s);
+    _rt = nni_plat_udp_open(&_udp_protocol, _sa);
     if(_rt)
     {
         goto out;
@@ -462,7 +535,6 @@ W_RESULT w_net_open_udp_socket(_In_z_ const char* pEndPoint, _Inout_ w_socket_ud
         goto out;
     }
     
-    
 out:
     w_net_url_free(_url);
     return _rt;
@@ -470,8 +542,22 @@ out:
 
 void w_net_close_udp_socket(_Inout_ w_socket_udp* pSocket)
 {
-    nng_aio_free(pSocket->a);
-    nni_plat_udp_close(pSocket->u);
+    if (!pSocket)
+    {
+        return;
+    }
+
+    nni_plat_udp* _udp_protocol = (nni_plat_udp*)pSocket->u;
+    nng_aio* _aio = (nng_aio*)pSocket->a;
+
+    if (_aio)
+    {
+        nng_aio_free(_aio);
+    }
+    if (_udp_protocol)
+    {
+        nni_plat_udp_close(_udp_protocol);
+    }
 }
 
 W_RESULT _io_udp_socket(_In_ w_socket_mode pSocketMode,
@@ -486,21 +572,30 @@ W_RESULT _io_udp_socket(_In_ w_socket_mode pSocketMode,
         W_ASSERT(false, "parameters are NULL. trace info: _io_udp_socket");
         return NNG_ENOARG;
     }
+    if (pSocketMode != two_way_dialer && pSocketMode != two_way_listener)
+    {
+        W_ASSERT(false, "pSocketMode must be one of the following enums: two_way_dialer or two_way_dialer. trace info: _io_udp_socket");
+        return NNG_ENOARG;
+    }
     
     W_RESULT _rt = W_SUCCESS;
     size_t _sent_len = 0;
     const size_t _buf_len = (pSocketMode == two_way_dialer ? (*pMessageLength + 1) : *pMessageLength);
     
-    pSocket->i.iov_buf = pMessage;
-    pSocket->i.iov_len = _buf_len;
-    
-    _rt = nng_aio_set_iov(pSocket->a, 1, &pSocket->i);
+    nni_sockaddr* _sa = (nni_sockaddr*)pSocket->sa;
+    nni_plat_udp* _udp = (nni_plat_udp*)pSocket->u;
+    nng_aio* _aio = (nng_aio*)pSocket->a;
+    nng_iov* _iov = (nng_iov*)pSocket->i;
+    _iov->iov_buf = pMessage;
+    _iov->iov_len = _buf_len;
+
+    _rt = nng_aio_set_iov(_aio, 1, _iov);
     if (_rt)
     {
         _net_error(_rt, "nng_aio_set_iov failed", _trace_info);
         goto out;
     }
-    _rt = nng_aio_set_input(pSocket->a, 0, &pSocket->s);
+    _rt = nng_aio_set_input(_aio, 0, _sa);
     if (_rt)
     {
         _net_error(_rt, "nng_aio_set_input failed", _trace_info);
@@ -510,24 +605,24 @@ W_RESULT _io_udp_socket(_In_ w_socket_mode pSocketMode,
     //send buffer over udp
     if (pSocketMode == two_way_dialer)
     {
-        nni_plat_udp_send(pSocket->u, pSocket->a);
+        nni_plat_udp_send(_udp, _aio);
     }
     else
     {
-        nni_plat_udp_recv(pSocket->u, pSocket->a);
+        nni_plat_udp_recv(_udp, _aio);
     }
     
     //wait
-    nng_aio_wait(pSocket->a);
+    nng_aio_wait(_aio);
 
-    _rt = nng_aio_result(pSocket->a);
+    _rt = nng_aio_result(_aio);
     if (_rt)
     {
         _net_error(_rt, "nng_aio_result failed", _trace_info);
         goto out;
     }
     
-    _sent_len = nng_aio_count(pSocket->a);
+    _sent_len = nng_aio_count(_aio);
     if (_sent_len != _buf_len)
     {
         _net_error(_rt, "length of the sent buffer is not equal to inputted buffer", _trace_info);
@@ -549,7 +644,8 @@ W_RESULT w_net_send_msg(_Inout_ w_socket_tcp* pSocket,
         return NNG_ENOARG;
     }
     
-    return nng_send(pSocket->s,
+    nng_socket* _nng_socket = (nng_socket*)pSocket->s;
+    return nng_send(*_nng_socket,
                     pMessage,
                     pMessageLength + 1 /* 1 for '/0'*/,
                     pAsync ? NNG_FLAG_NONBLOCK : 0);
@@ -565,7 +661,8 @@ W_RESULT w_net_receive_msg(_Inout_ w_socket_tcp* pSocket,
         return NNG_ENOARG;
     }
     
-    return nng_recv(pSocket->s, &pMessage, pMessageLength, NNG_FLAG_ALLOC);
+    nng_socket* _nng_socket = (nng_socket*)pSocket->s;
+    return nng_recv(*_nng_socket, &pMessage, pMessageLength, NNG_FLAG_ALLOC);
 }
 
 W_RESULT w_net_send_msg_udp(_Inout_ w_socket_udp* pSocket,
@@ -626,16 +723,6 @@ W_RESULT w_net_run_websocket_server(_In_ bool pSSL,
     }
     
     return _rt;
-}
-
-const char* w_net_error(_In_ W_RESULT pErrorCode)
-{
-    const char* _error_msg = nng_strerror(pErrorCode);
-    if (_error_msg)
-    {
-        return _error_msg;
-    }
-    return curl_easy_strerror(pErrorCode);
 }
 
 typedef struct
@@ -773,6 +860,322 @@ _out:
         curl_easy_cleanup(_curl);
     }
     return _rt;
+}
+
+W_RESULT w_net_open_quic_socket(_In_z_  const char* pAddress, 
+                                _In_    int pPort,
+                                _In_    w_socket_mode pSocketMode,
+                                _In_z_  const char* pCertFilePath,
+                                _In_z_  const char* pPrivateKeyFilePath,
+                                _Inout_ struct ev_loop** pEV,
+                                _In_    quic_debug_log_callback pQuicDebugLogCallback,
+                                _In_    quic_receive_callback pQuicIOFunCallback)
+{
+    const char* _trace_info = "w_net_open_quic_socket";
+    
+    if (!pQuicIOFunCallback)
+    {
+        W_ASSERT_P(false, "QuicIOFunCallback no set. trace info: %s", _trace_info);
+        return APR_BADARG;
+    }
+    if (pSocketMode != quic_dialer && pSocketMode != quic_listener)
+    {
+        W_ASSERT(false, "pSocketMode must be one of the following enums: quic_dialer or quic_listener. trace info: w_net_open_quic_socket");
+        return NNG_ENOARG;
+    }
+
+    W_RESULT _ret = W_SUCCESS;
+    quiche_config* _quiche_config = NULL;
+    struct addrinfo* _address_info = NULL;
+
+#ifdef W_PLATFORM_WIN
+    SOCKET
+#else
+    int
+#endif
+    _socket = 0;
+
+    quiche_data* _quiche_data = NULL;
+    quiche_conn* _quiche_conn = NULL;
+
+    const struct addrinfo _hints =
+    {
+        .ai_family = PF_UNSPEC,
+        .ai_socktype = SOCK_DGRAM,
+        .ai_protocol = IPPROTO_UDP
+    };
+
+    //convert integer port to string
+    char* _port = w_malloc(6, _trace_info);//max port number is 65329
+    if (!_port)
+    {
+        return W_FAILURE;
+    }
+    snprintf(_port, 6, "%d", pPort);
+
+#ifdef W_PLATFORM_WIN
+    WSADATA _wsa_data;
+    WORD _version_requested = MAKEWORD(2, 2);
+    int _result = WSAStartup(_version_requested, &_wsa_data);
+    if (_result)
+    {
+        _ret = W_FAILURE;
+        W_ASSERT_P(false, "WSAStartup failed. trace info: %s", _trace_info);
+        goto out;
+    }
+    if (getaddrinfo(pAddress, _port, &_hints, &_address_info) != 0)
+    {
+        _ret = W_FAILURE;
+        W_ASSERT_P(false, "failed to resolve host. trace info: %s", _trace_info);
+        goto out;
+    }
+#else
+    if (getaddrinfo(pAddress, _port, &_address_info, &_local) != 0)
+    {
+        _ret = W_FAILURE;
+        W_ASSERT_P(false, "failed to resolve host. trace info: %s", _trace_info);
+        goto out;
+    }
+#endif
+
+    //enable quic debug logging
+    if (pQuicDebugLogCallback)
+    {
+        quiche_enable_debug_logging(pQuicDebugLogCallback, NULL);
+    }
+
+    //create socket
+    _socket = socket(_address_info->ai_family, SOCK_DGRAM, 0);
+    if (
+#ifdef W_PLATFORM_WIN
+        _socket == 0
+#else
+        _socket < 0
+#endif
+        )
+    {
+        _ret = W_FAILURE;
+        W_ASSERT_P(false, "failed to create a socket. trace info: %s", _trace_info);
+        goto out;
+    }
+
+    //set non blocking option
+#ifdef W_PLATFORM_WIN
+    const u_long _non_blocking_enabled = TRUE;
+    if (ioctlsocket(_socket, FIONBIO, &_non_blocking_enabled) != 0)
+#else
+    if (fcntl(_socket, F_SETFL, O_NONBLOCK) != 0)
+#endif
+    {
+        _ret = W_FAILURE;
+        W_ASSERT_P(false, "failed to make non-blocking socket. trace info: %s", _trace_info);
+        goto out;
+    }
+
+    uint32_t _quic_version;
+    if (pSocketMode == quic_listener)
+    {
+        //bind socket to address
+        if (bind(_socket, _address_info->ai_addr, _address_info->ai_addrlen) < 0)
+        {
+            _ret = W_FAILURE;
+            W_ASSERT_P(false, "failed to bind socket. trace info: %s", _trace_info);
+            goto out;
+        }
+
+        _quic_version = QUICHE_PROTOCOL_VERSION;
+    }
+    else
+    {
+        //connect to endpoint address
+        if (connect(_socket, _address_info->ai_addr, _address_info->ai_addrlen) < 0)
+        {
+            _ret = W_FAILURE;
+            W_ASSERT_P(false, "failed to connect endpoint socket. trace info: %s", _trace_info);
+            goto out;
+        }
+
+        _quic_version = 0xbabababa;
+    }
+
+    //create quic config
+    _quiche_config = quiche_config_new(_quic_version);
+    if (_quiche_config == NULL) 
+    {
+        _ret = W_FAILURE;
+        W_ASSERT_P(false, "failed to create config. trace info: %s", _trace_info);
+        goto out;
+    }
+
+    if (pSocketMode == quic_listener)
+    {
+        //check enable ssl
+        if (w_io_file_check_is_file(pCertFilePath) == W_SUCCESS &&
+            w_io_file_check_is_file(pPrivateKeyFilePath) == W_SUCCESS)
+        {
+            _ret = quiche_config_load_cert_chain_from_pem_file(_quiche_config, pCertFilePath);
+            if (_ret)
+            {
+                _ret = W_FAILURE;
+                W_ASSERT_P(false, "failed to load cert chain from pem file for quic. trace info: %s", _trace_info);
+                goto out;
+            }
+            _ret = quiche_config_load_priv_key_from_pem_file(_quiche_config, pPrivateKeyFilePath);
+            if (_ret)
+            {
+                _ret = W_FAILURE;
+                W_ASSERT_P(false, "failed to load private key from pem file for quic. trace info: %s", _trace_info);
+                goto out;
+            }
+        }
+    }
+
+    //use quic draft 27
+    _ret = quiche_config_set_application_protos(_quiche_config,
+        (uint8_t*)"\x05hq-29\x05hq-28\x05hq-27\x08http/0.9", 27);
+    if (_ret)
+    {
+        _ret = W_FAILURE;
+        W_ASSERT_P(false, "failed to set quic application protos. trace info: %s", _trace_info);
+        goto out;
+    }
+
+    quiche_config_set_max_udp_payload_size(_quiche_config, QUICHE_MAX_DATAGRAM_SIZE);
+    quiche_config_set_max_idle_timeout(_quiche_config, 5000);
+    quiche_config_set_initial_max_data(_quiche_config, 10000000);
+    quiche_config_set_initial_max_stream_data_bidi_local(_quiche_config, 1000000);
+    quiche_config_set_initial_max_streams_bidi(_quiche_config, 100);
+
+    if (pSocketMode == quic_listener)
+    {
+        quiche_config_set_initial_max_stream_data_bidi_remote(_quiche_config, 1000000);
+        quiche_config_set_cc_algorithm(_quiche_config, QUICHE_CC_RENO);
+    }
+    else
+    {
+        quiche_config_set_initial_max_stream_data_uni(_quiche_config, 1000000);
+        quiche_config_set_initial_max_streams_uni(_quiche_config, 100);
+        quiche_config_set_disable_active_migration(_quiche_config, true);
+
+#ifdef W_PLATFORM_WIN
+        if (getenv("SSLKEYLOGFILE"))
+        {
+            quiche_config_log_keys(_quiche_config);
+        }
+
+        size_t _size_of_scid = QUICHE_LOCAL_CONN_ID_LEN * sizeof(uint8_t);
+        uint8_t* _scid = (uint8_t*)w_malloc(_size_of_scid, "w_net_open_quic_socket");
+
+        HCRYPTPROV _crypto;
+        ULONG     _i;
+
+        if (CryptAcquireContext(
+            &_crypto,
+            NULL,
+            NULL,
+            PROV_RSA_FULL,
+            CRYPT_VERIFYCONTEXT) == FALSE)
+        {
+            _ret = W_FAILURE;
+            W_ASSERT_P(
+                false,
+                "CryptAcquireContext failed. trace info: %s",
+                _trace_info);
+            goto out;
+        }
+
+        if (CryptGenRandom(_crypto, _size_of_scid, (BYTE*)_scid) == FALSE)
+        {
+            _ret = W_FAILURE;
+            W_ASSERT_P(
+                false,
+                "CryptGenRandom failed. trace info: %s",
+                _trace_info);
+            goto out;
+        }
+#else
+
+
+#endif
+
+        _quiche_conn = quiche_connect(
+            pAddress,
+            (const uint8_t*)_scid,
+            sizeof(_scid),
+            _quiche_config);
+        if (_quiche_conn == NULL)
+        {
+            _ret = W_FAILURE;
+            W_ASSERT_P(
+                false,
+                "failed to create quiche conn. trace info: %s",
+                _trace_info);
+            goto out;
+        }
+    }
+
+    _quiche_data = (quiche_data*)w_malloc(sizeof(quiche_data*), _trace_info);
+    if (!_quiche_data)
+    {
+        _ret = W_FAILURE;
+        goto out;
+    }
+
+    _quiche_data->s = _socket;
+    _quiche_data->c = _quiche_conn;
+        
+#ifdef W_PLATFORM_WIN
+    int _handle = _open_osfhandle(_socket, 0);
+    //TODO: check hadnle result, 0 or 1 means fail?
+    if (_handle)
+    {
+        _ret = W_FAILURE;
+        W_ASSERT_P(false, "failed to open_osfhandle. trace info: %s", _trace_info);
+        goto out;
+    }
+#endif
+
+    ev_io _ev_watcher;
+    *pEV = ev_default_loop(0);
+    ev_io_init(&_ev_watcher, pQuicIOFunCallback, _socket, EV_READ);
+    ev_io_start(*pEV, &_ev_watcher);
+    _ev_watcher.data = &_quiche_data;//access to _quiche_con from ev_io->data
+    ev_loop(*pEV, 0);
+
+out:
+    w_free(_port);
+    if (_address_info)
+    {
+        freeaddrinfo(_address_info);
+    }
+    if (_socket)
+    {
+        closesocket(_socket);
+    }
+    if (_quiche_conn)
+    {
+        quiche_conn_free(_quiche_conn);
+    }
+    if (_quiche_config)
+    {
+        quiche_config_free(_quiche_config);
+    }
+    return _ret;
+}
+
+W_RESULT w_net_close_quic_socket(void)
+{
+    return 0;
+}
+
+const char* w_net_error(_In_ W_RESULT pErrorCode)
+{
+    const char* _error_msg = nng_strerror(pErrorCode);
+    if (_error_msg)
+    {
+        return _error_msg;
+    }
+    return curl_easy_strerror(pErrorCode);
 }
 
 void w_net_fini(void)
