@@ -2,27 +2,6 @@
 #include "w_chrono.h"
 #include <math.h>
 
-typedef struct
-{
-    double          last_time;
-    double          max_delta;
-
-    //derived timing data uses a canonical tick format.
-    uint64_t        elapsed_ticks;
-    uint64_t        total_ticks;
-    uint64_t        left_over_ticks;
-
-    //members for tracking the framerate.
-    uint32_t        frame_count;
-    uint32_t        fps;
-    uint32_t        frames_this_second;
-    double          seconds_counter;
-
-    //members for configuring fixed timestep mode.
-    bool            fixed_time_step;
-    uint64_t        target_elapsed_ticks;
-    
-} w_gametime_imp;
 
 //integer format represents time using 10,000,000 ticks per second.
 static const double TICKS_PER_SECOND = 10000000;

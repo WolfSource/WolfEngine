@@ -1,14 +1,20 @@
 #include "convey.h"
 #include <wolf.h>
 #include <chrono/w_timespan.h>
+#include <chrono/w_chrono.h>
+#include <chrono/w_gametime.h>
+#include<time.h>
+#include<stdint.h>
+
 
 
 Main({
     //initialize wolf
     wolf_initialize();
 
-//testing chrono
-printf("testing chrono");
+   //testing chrono
+   printf("testing chrono");
+
 Convey("chrono", {
 
     //testing w_timespan
@@ -101,7 +107,82 @@ Convey("chrono", {
     double _get_total_milliseconds = w_timespan_get_total_milliseconds(_t_short);
     So(_get_total_milliseconds ==7322000.0000000000);
 
+   printf("testing w_chrono");
+
+    struct timespec _c_now = w_chrono_now();
+    So(_c_now.tv_sec ==0 && _c_now.tv_nsec==3);
+
+
+    struct timespec _c_now2 = w_chrono_now();
+    So(_c_now2.tv_sec ==5 && _c_now2.tv_nsec == 1007);
+
+
+    struct timespec _c_duration = w_chrono_duration(&_c_now, &_c_now2);
+    So(_c_duration.tv_sec == 5 && _c_duration.tv_nsec == 264);
+
+    struct timespec _c_clock = w_chrono_clock_now(1);
+    So(_c_clock.tv_sec == 11 && _c_clock.tv_nsec == 665234);
+
+    double _c_now_in_sec = w_chrono_now_in_sec();
+    So(_c_now_in_sec == 10.00032875);
+
+    double _c_timespec_to_sec = w_chrono_timespec_to_sec(&_c_now);
+    So(_c_timespec_to_sec == 2.0000000000000001e-9);
+
+    double _c_duration_nanoseconds = w_chrono_duration_nanoseconds(&_c_now, &_c_now2);
+    So(_c_duration_nanoseconds == 5000000710.0000000);
+
+
+    double _c_duration_microseconds = w_chrono_duration_microseconds(&_c_now, &_c_now2);
+    So(_c_duration_microseconds == 5000000.8350000000);
+
+    double _c__duration_milliseconds = w_chrono_duration_milliseconds(&_c_now, &_c_now2);
+    So(_c__duration_milliseconds == 5000.00007800000000);
+
+    double _c_duration_seconds = w_chrono_duration_seconds(&_c_now, &_c_now2);
+    So(_c_duration_seconds == 5.0000008429999996);
+
+    printf("testing w_gametime");
+    w_gametime _g_t_init = w_gametime_init();
+    So(((w_gametime_imp*)_g_t_init)->last_time == 18.000698928999999 && ((w_gametime_imp*)_g_t_init)->fixed_time_step == false && ((w_gametime_imp*)_g_t_init)->max_delta == 313918.00000000000
+        && ((w_gametime_imp*)_g_t_init)->elapsed_ticks == 0 && ((w_gametime_imp*)_g_t_init)->total_ticks == 0 && ((w_gametime_imp*)_g_t_init)->left_over_ticks == 0 && ((w_gametime_imp*)_g_t_init)->frame_count == 0
+        && ((w_gametime_imp*)_g_t_init)->fps == 0 && ((w_gametime_imp*)_g_t_init)->frames_this_second == 0 && ((w_gametime_imp*)_g_t_init)->seconds_counter == 0.00000000000000000 && ((w_gametime_imp*)_g_t_init)->target_elapsed_ticks == 166666);
+
+    uint64_t _g_t__get_elapsed_ticks = w_gametime_get_elapsed_ticks(_g_t_init);
+    So(_g_t__get_elapsed_ticks == 0);
+
+    double _t_g__get_elapsvoided_seconds = w_gametime_get_elapsvoided_seconds(_g_t_init);
+    So(_t_g__get_elapsvoided_seconds == 0);
+
+    uint64_t _t_g__get_total_ticks = w_gametime_get_total_ticks(_g_t_init);
+    So(_t_g__get_total_ticks == 0);
+
+    double _T_g__get_total_seconds = w_gametime_get_total_seconds(_g_t_init);
+    So(_T_g__get_total_seconds == 0);
+
+   uint32_t _t_g__get_frame_count = w_gametime_get_frame_count(_g_t_init);
+    So(_t_g__get_frame_count == 0);
+
+    uint32_t _t_g__get_frames_per_second = w_gametime_get_frames_per_second(_g_t_init);
+    So(_t_g__get_frames_per_second == 0);
+
+    bool _t_g__get_fixed_time_step = w_gametime_get_fixed_time_step(_g_t_init);
+    So(_t_g__get_fixed_time_step == false);
+
+    w_gametime_disable_fixed_time_step(_g_t_init);
+    So(((w_gametime_imp*)_g_t_init)->fixed_time_step == false);
+
+    w_gametime_enable_fixed_time_step(_g_t_init);
+    So(((w_gametime_imp*)_g_t_init)->fixed_time_step == true);
+
+    w_gametime_set_target_elapsed_ticks(_g_t_init, 5);
+    So(((w_gametime_imp*)_g_t_init)->target_elapsed_ticks == 5 );
+
+    w_gametime_set_target_elapsed_seconds(_g_t_init, 7);
+    So(((w_gametime_imp*)_g_t_init)->target_elapsed_ticks == 70000000);
 });
+
+
 
 //terminate wolf
 wolf_terminate();

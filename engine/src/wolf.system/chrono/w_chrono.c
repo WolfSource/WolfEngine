@@ -28,7 +28,7 @@ LARGE_INTEGER _get_file_time_offset()
 	return (_t);
 }
 
-int clock_gettime(int pX, struct timeval* pTV)
+int clock_gettime(int pX, struct timespec* pTV)
 {
 	LARGE_INTEGER           _time;
 	FILETIME				_file_time;
@@ -70,10 +70,11 @@ int clock_gettime(int pX, struct timeval* pTV)
 	_microseconds = (double)_time.QuadPart / _frequency_to_microseconds;
 	_time.QuadPart = (LONGLONG)_microseconds;
 	pTV->tv_sec = _time.QuadPart / 1000000;
-	pTV->tv_usec = _time.QuadPart % 1000000;
+	pTV->tv_nsec = _time.QuadPart % 1000000;
 
 	return 0;
 }
+
 
 #endif
 
