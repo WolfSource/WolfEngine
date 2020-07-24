@@ -77,12 +77,16 @@ w_thread w_thread_get_current(void)
 
 w_thread_id w_thread_get_current_id(void)
 {
-    return (w_thread_id)apr_os_thread_current();
+    apr_os_thread_t _current_os_thread = apr_os_thread_current();
+    return (apr_os_thread_t*)(&_current_os_thread);
 }
 
 W_RESULT w_thread_current_ids_are_equal(_In_ w_thread_id pThread1, _In_ w_thread_id pThread2)
 {
-    return (apr_os_thread_equal((apr_os_thread_t)pThread1, (apr_os_thread_t)pThread2) != 0) ? W_SUCCESS : W_FAILURE;
+    apr_os_thread_t* _t1 = (apr_os_thread_t*)pThread1;
+    apr_os_thread_t* _t2 = (apr_os_thread_t*)pThread2;
+
+    return (apr_os_thread_equal(*_t1, *_t2) != 0) ? W_SUCCESS : W_FAILURE;
 }
 
 void w_thread_current_sleep_for_nanoseconds(_In_ double pTime)

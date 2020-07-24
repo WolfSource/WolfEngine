@@ -28,7 +28,7 @@ LARGE_INTEGER _get_file_time_offset()
 	return (_t);
 }
 
-int clock_gettime(int pX, struct timeval* pTV)
+int clock_gettime(int pX, struct timespec* pTV)
 {
 	LARGE_INTEGER           _time;
 	FILETIME				_file_time;
@@ -48,7 +48,7 @@ int clock_gettime(int pX, struct timeval* pTV)
 			QueryPerformanceCounter(&_offset);
 			_frequency_to_microseconds = (double)_performance_frequency.QuadPart / 1000000.;
 		}
-		else 
+		else
 		{
 			_offset = _get_file_time_offset();
 			_frequency_to_microseconds = 10.;
@@ -58,7 +58,7 @@ int clock_gettime(int pX, struct timeval* pTV)
 	{
 		QueryPerformanceCounter(&_time);
 	}
-	else 
+	else
 	{
 		GetSystemTimeAsFileTime(&_file_time);
 		_time.QuadPart = _file_time.dwHighDateTime;
@@ -70,87 +70,88 @@ int clock_gettime(int pX, struct timeval* pTV)
 	_microseconds = (double)_time.QuadPart / _frequency_to_microseconds;
 	_time.QuadPart = (LONGLONG)_microseconds;
 	pTV->tv_sec = _time.QuadPart / 1000000;
-	pTV->tv_usec = _time.QuadPart % 1000000;
+	pTV->tv_nsec = _time.QuadPart % 1000000;
 
 	return 0;
 }
+
 
 #endif
 
 struct timespec w_chrono_now(void)
 {
-    struct timespec _time;
-    clock_gettime(CLOCK_MONOTONIC, &_time);
-    return _time;
+	struct timespec _time;
+	clock_gettime(CLOCK_MONOTONIC, &_time);
+	return _time;
 }
 
 struct timespec w_chrono_clock_now(_In_ int pClockType)
 {
-    struct timespec _time;
-    clock_gettime(pClockType, &_time);
-    return _time;
+	struct timespec _time;
+	clock_gettime(pClockType, &_time);
+	return _time;
 }
 
 struct timespec w_chrono_duration(_In_ const struct timespec* pT1,
-                                  _In_ const struct timespec* pT2)
+	_In_ const struct timespec* pT2)
 {
-    struct timespec _diff;
-    if (!pT1 || !pT2)
-    {
-        _diff.tv_sec = -1;
-        _diff.tv_nsec = -1;
-    }
-    else
-    {
-        if ( pT2->tv_nsec - pT1->tv_nsec < 0)
-        {
-            _diff.tv_sec = pT2->tv_sec - pT1->tv_sec - 1;
-            _diff.tv_nsec = 1e+9 + pT2->tv_nsec - pT1->tv_nsec;
-        }
-        else
-        {
-            _diff.tv_sec = pT2->tv_sec - pT1->tv_sec;
-            _diff.tv_nsec = pT2->tv_nsec - pT1->tv_nsec;
-        }
-    }
-    return _diff;
+	struct timespec _diff;
+	if (!pT1 || !pT2)
+	{
+		_diff.tv_sec = -1;
+		_diff.tv_nsec = -1;
+	}
+	else
+	{
+		if (pT2->tv_nsec - pT1->tv_nsec < 0)
+		{
+			_diff.tv_sec = pT2->tv_sec - pT1->tv_sec - 1;
+			_diff.tv_nsec = 1e+9 + pT2->tv_nsec - pT1->tv_nsec;
+		}
+		else
+		{
+			_diff.tv_sec = pT2->tv_sec - pT1->tv_sec;
+			_diff.tv_nsec = pT2->tv_nsec - pT1->tv_nsec;
+		}
+	}
+	return _diff;
 }
 
 double w_chrono_now_in_sec(void)
 {
-    struct timespec _now = w_chrono_now();
-    return (double)_now.tv_sec + (double)_now.tv_nsec / 1000000000.0;
+	struct timespec _now = w_chrono_now();
+	return (double)_now.tv_sec + (double)_now.tv_nsec / 1000000000.0;
 }
 
 double w_chrono_timespec_to_sec(_In_ const struct timespec* pT)
 {
-    return (double)pT->tv_sec + (double)pT->tv_nsec / 1000000000.0;
+	return (double)pT->tv_sec + (double)pT->tv_nsec / 1000000000.0;
 }
 
 double w_chrono_duration_nanoseconds(_In_ const struct timespec* pT1,
-                                     _In_ const struct timespec* pT2)
+	_In_ const struct timespec* pT2)
 {
-    struct timespec _diff = w_chrono_duration(pT1, pT2);
-    return (double)(_diff.tv_sec * 1e+9 + _diff.tv_nsec);
+	struct timespec _diff = w_chrono_duration(pT1, pT2);
+	return (double)(_diff.tv_sec * 1e+9 + _diff.tv_nsec);
 }
 
 double w_chrono_duration_microseconds(_In_ const struct timespec* pT1,
-                                      _In_ const struct timespec* pT2)
+	_In_ const struct timespec* pT2)
 {
-    struct timespec _diff = w_chrono_duration(pT1, pT2);
-    return (double)_diff.tv_sec * 1e+6 + (double)(_diff.tv_nsec * 1e-3);
+	struct timespec _diff = w_chrono_duration(pT1, pT2);
+	return (double)_diff.tv_sec * 1e+6 + (double)(_diff.tv_nsec * 1e-3);
 }
 
 double w_chrono_duration_milliseconds(_In_ const struct timespec* pT1,
-                                      _In_ const struct timespec* pT2)
+	_In_ const struct timespec* pT2)
 {
-    struct timespec _diff = w_chrono_duration(pT1, pT2);
-    return (double)_diff.tv_sec * 1e+3 + (double)(_diff.tv_nsec * 1e-6);
+	struct timespec _diff = w_chrono_duration(pT1, pT2);
+	return (double)_diff.tv_sec * 1e+3 + (double)(_diff.tv_nsec * 1e-6);
 }
 
 double w_chrono_duration_seconds(_In_ const struct timespec* pT1,
-                                 _In_ const struct timespec* pT2)
+	_In_ const struct timespec* pT2)
 {
-    struct timespec _diff = w_chrono_duration(pT1, pT2);
-    return (double)_diff.tv_sec + (double)(_diff.tv_nsec * 1e-9);
+	struct timespec _diff = w_chrono_duration(pT1, pT2);
+	return (double)_diff.tv_sec + (double)(_diff.tv_nsec * 1e-9);
 }

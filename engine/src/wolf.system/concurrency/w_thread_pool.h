@@ -209,7 +209,7 @@ size_t   w_thread_pool_thread_max_set(_In_ w_thread_pool pThreadPool, _In_ size_
  * @return The original maximum wait time
 */
 W_SYSTEM_EXPORT
-apr_int64_t w_thread_pool_idle_wait_set(_In_ w_thread_pool pThreadPool, _In_ long pTimeOut);
+int64_t w_thread_pool_idle_wait_set(_In_ w_thread_pool pThreadPool, _In_ long pTimeOut);
 
 /**
  * Access function for the maximum wait time (in microseconds) of an idling thread that exceeds the maximum number of idling threads
@@ -217,7 +217,7 @@ apr_int64_t w_thread_pool_idle_wait_set(_In_ w_thread_pool pThreadPool, _In_ lon
  * @return The current maximum wait time
 */
 W_SYSTEM_EXPORT
-apr_int64_t w_thread_pool_idle_wait_get(_In_ w_thread_pool pThreadPool);
+int64_t w_thread_pool_idle_wait_get(_In_ w_thread_pool pThreadPool);
 
 /**
  * Access function for the maximum number of threads

@@ -1,6 +1,14 @@
 #include "convey.h"
 #include <wolf.h>
+
 #include <chrono/w_timespan.h>
+#include <chrono/w_chrono.h>
+#include <chrono/w_gametime.h>
+
+#include <concurrency/w_thread.h>
+
+#include <time.h>
+#include <stdint.h>
 
 
 Main({
@@ -9,10 +17,11 @@ Main({
 
 //testing chrono
 printf("testing chrono");
+
 Convey("chrono", {
 
     //testing w_timespan
-    printf("testing w_timespan");
+   printf("testing w_timespan");
     w_timespan* _t_0 = w_timespan_init_from_zero();
     So(_t_0->ticks == 0 && !_t_0->overflowed);
 
@@ -100,12 +109,73 @@ Convey("chrono", {
 
     double _get_total_milliseconds = w_timespan_get_total_milliseconds(_t_short);
     So(_get_total_milliseconds == 7322000.0000000000);
+
+    printf("testing w_chrono");
+
+    struct timespec _c1_now = w_chrono_now();
+  
+    //sleep for 3 seconds
+    w_thread_current_sleep_for_seconds(3);
+
+    struct timespec _c2_now = w_chrono_now();
+
+    //check the duration
+    struct timespec _duration = w_chrono_duration(&_c1_now, &_c2_now);
+    So(_duration.tv_sec == 3);
+
+    double _nano_duration = w_chrono_duration_nanoseconds(&_c1_now, &_c2_now);
+    So(_nano_duration > 3000000000 && _nano_duration < 3100000000);
+
+    double _micro_duration = w_chrono_duration_microseconds(&_c1_now, &_c2_now);
+    So((int)_micro_duration > 3000000 && (int)_micro_duration < 3100000);
+
+    double _milli_duration = w_chrono_duration_milliseconds(&_c1_now, &_c2_now);
+    So((int)_milli_duration == 3000);
+
+    double _sec_duration = w_chrono_duration_seconds(&_c1_now, &_c2_now);
+    So((int)_sec_duration == 3);
+
+    printf("testing w_gametime");
+    w_gametime _g_t_init = w_gametime_init();
+    
+    uint64_t _g_t__get_elapsed_ticks = w_gametime_get_elapsed_ticks(_g_t_init);
+    So(_g_t__get_elapsed_ticks == 0);
+
+    double _t_g__get_elapsvoided_seconds = w_gametime_get_elapsvoided_seconds(_g_t_init);
+    So(_t_g__get_elapsvoided_seconds == 0);
+
+    uint64_t _t_g__get_total_ticks = w_gametime_get_total_ticks(_g_t_init);
+    So(_t_g__get_total_ticks == 0);
+
+    double _T_g__get_total_seconds = w_gametime_get_total_seconds(_g_t_init);
+    So(_T_g__get_total_seconds == 0);
+
+    uint32_t _t_g__get_frame_count = w_gametime_get_frame_count(_g_t_init);
+    So(_t_g__get_frame_count == 0);
+
+    uint32_t _t_g__get_frames_per_second = w_gametime_get_frames_per_second(_g_t_init);
+    So(_t_g__get_frames_per_second == 0);
+
+    bool _t_g__get_fixed_time_step = w_gametime_get_fixed_time_step(_g_t_init);
+    So(_t_g__get_fixed_time_step == false);
+
+    w_gametime_disable_fixed_time_step(_g_t_init);
+    So(((w_gametime_imp*)_g_t_init)->fixed_time_step == false);
+
+    w_gametime_enable_fixed_time_step(_g_t_init);
+    So(((w_gametime_imp*)_g_t_init)->fixed_time_step == true);
+
+    w_gametime_set_target_elapsed_ticks(_g_t_init, 5);
+    So(((w_gametime_imp*)_g_t_init)->target_elapsed_ticks == 5);
+
+    w_gametime_set_target_elapsed_seconds(_g_t_init, 7);
+    So(((w_gametime_imp*)_g_t_init)->target_elapsed_ticks == 70000000);
 });
+
 
 //terminate wolf
 wolf_terminate();
 
-printf("\n\nALL TESTS WERE PASSED SUCCESSFULLY\n\n");
+printf("\n\nThe tests where completed successfully.\n\n");
 
     })
-

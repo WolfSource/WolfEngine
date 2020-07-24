@@ -503,4 +503,3 @@ const wchar_t* w_timespan_get_current_date_time_wstring()
 }
 
 #pragma endregion
-

@@ -15,7 +15,6 @@ extern "C" {
 
 #include "wolf.h"
 #include "ws/ws.h"
-#include "concurrency/libev/ev.h"
 
 //forward declaration
 typedef struct nng_url* w_url;
@@ -94,7 +93,7 @@ typedef enum
 } w_http_request_type;
 
 // quic receive callback
-typedef void (*quic_receive_callback)(EV_P_ ev_io* /*w*/, int /*revents*/);
+typedef void (*quic_io_callback)(void);
 typedef void (*quic_debug_log_callback)(const char* /*pLine*/, void* /*pArgp*/);
 
 /**
@@ -218,9 +217,7 @@ void w_net_close_udp_socket(_Inout_ w_socket_udp* pSocket);
    </PRE>
  * @param pCertFilePath , path of certificate chain file. Will be used when pSocketMode set to quic_listener  
  * @param pPrivateKeyFilePath , path of private key file. Will be used when pSocketMode set to quic_listener
- * @param pEV , a pointer to ev loop, use ev_break to stop this loop from another thread
  * @param pQuicDebugLogCallback , quic debugger call back. set NULL if you don't want to use debugger
- * @param pQuicIOFunCallback , quic receiver call back
  * @return result
 */
 W_SYSTEM_EXPORT
@@ -229,9 +226,7 @@ W_RESULT w_net_open_quic_socket(_In_z_  const char* pAddress,
                                 _In_    w_socket_mode pSocketMode,
                                 _In_z_  const char* pCertFilePath,
                                 _In_z_  const char* pPrivateKeyFilePath,
-                                _Inout_ struct ev_loop** pEV,
-                                _In_    quic_debug_log_callback pQuicDebugLogCallback,
-                                _In_    quic_receive_callback pQuicIOFunCallback);
+                                _In_    quic_debug_log_callback pQuicDebugLogCallback);
 
 /**
  * send a message via tcp socket

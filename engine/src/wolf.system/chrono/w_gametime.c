@@ -2,27 +2,6 @@
 #include "w_chrono.h"
 #include <math.h>
 
-typedef struct
-{
-    double          last_time;
-    double          max_delta;
-
-    //derived timing data uses a canonical tick format.
-    uint64_t        elapsed_ticks;
-    uint64_t        total_ticks;
-    uint64_t        left_over_ticks;
-
-    //members for tracking the framerate.
-    uint32_t        frame_count;
-    uint32_t        fps;
-    uint32_t        frames_this_second;
-    double          seconds_counter;
-
-    //members for configuring fixed timestep mode.
-    bool            fixed_time_step;
-    uint64_t        target_elapsed_ticks;
-    
-} w_gametime_imp;
 
 //integer format represents time using 10,000,000 ticks per second.
 static const double TICKS_PER_SECOND = 10000000;
@@ -44,7 +23,7 @@ w_gametime w_gametime_init(void)
     {
         return NULL;
     }
-    
+
     //initialize it
     _gametime->elapsed_ticks = 0;
     _gametime->total_ticks = 0;
@@ -52,10 +31,10 @@ w_gametime w_gametime_init(void)
     _gametime->fixed_time_step = false;
     _gametime->target_elapsed_ticks = (uint64_t)(TICKS_PER_SECOND / 60);
     _gametime->max_delta = 313918.0;
-    
+
     //reset it
     w_game_time_reset((w_gametime)_gametime);
-    
+
     return (w_gametime)_gametime;
 }
 
@@ -65,9 +44,9 @@ void w_game_time_reset(_In_ w_gametime pGameTime)
     {
         return;
     }
-    
+
     w_gametime_imp* _ptr = (w_gametime_imp*)pGameTime;
-    
+
     _ptr->last_time = w_chrono_now_in_sec();
     _ptr->left_over_ticks = 0;
     _ptr->fps = 0;
@@ -205,23 +184,23 @@ void w_gametime_tick(_In_ w_gametime pGameTime, _In_ w_gametime_tick_callback pO
         W_ASSERT(false, "could not convert w_gametime to w_gametime_imp");
         return;
     }
-    
+
     // Query the current time.
     double _current_time = w_chrono_now_in_sec();
     double _time_delta = _current_time - _ptr->last_time;
-    
+
     _ptr->last_time = _current_time;
     _ptr->seconds_counter += _time_delta;
-    
+
     //clamp excessively large time deltas (e.g. after paused in the debugger).
     if (_time_delta > _ptr->max_delta)
     {
         _time_delta = _ptr->max_delta;
     }
-    
+
     // Convert QPC units into a canonical tick format. This cannot overflow due to the previous clamp.
     _time_delta = _time_delta * TICKS_PER_SECOND;
-    
+
     uint32_t _last_frame_count = _ptr->frame_count;
     if (_ptr->fixed_time_step)
     {
@@ -233,12 +212,12 @@ void w_gametime_tick(_In_ w_gametime pGameTime, _In_ w_gametime_tick_callback pO
             accumulate enough tiny errors that it would drop a frame. It is better to just round
             small deviations down to zero to leave things running smoothly.
         */
-    
+
         if (llabs((int64_t)(_time_delta - _ptr->target_elapsed_ticks)) < TICKS_PER_SECOND / 4000)
         {
             _time_delta = (double)_ptr->target_elapsed_ticks;
         }
-    
+
         _ptr->left_over_ticks += (uint64_t)_time_delta;
         while (_ptr->left_over_ticks >= _ptr->target_elapsed_ticks)
         {
@@ -246,7 +225,7 @@ void w_gametime_tick(_In_ w_gametime pGameTime, _In_ w_gametime_tick_callback pO
             _ptr->total_ticks += _ptr->target_elapsed_ticks;
             _ptr->left_over_ticks -= _ptr->target_elapsed_ticks;
             _ptr->frame_count++;
-            
+
             if (pOnTickCallBack)
             {
                 pOnTickCallBack(pGameTime);
@@ -260,7 +239,7 @@ void w_gametime_tick(_In_ w_gametime pGameTime, _In_ w_gametime_tick_callback pO
         _ptr->total_ticks += (uint64_t)_time_delta;
         _ptr->left_over_ticks = 0;
         _ptr->frame_count++;
-    
+
         if (pOnTickCallBack)
         {
             pOnTickCallBack(pGameTime);
@@ -268,7 +247,7 @@ void w_gametime_tick(_In_ w_gametime pGameTime, _In_ w_gametime_tick_callback pO
     }
     // Track the current framerate.
     _ptr->frames_this_second += (_ptr->frame_count - _last_frame_count);
-    
+
     if (_ptr->seconds_counter >= 1)
     {
         _ptr->fps = _ptr->frames_this_second;
@@ -276,7 +255,3 @@ void w_gametime_tick(_In_ w_gametime pGameTime, _In_ w_gametime_tick_callback pO
         _ptr->seconds_counter = fmod(_ptr->seconds_counter, (double)1);
     }
 }
-
-
-
-

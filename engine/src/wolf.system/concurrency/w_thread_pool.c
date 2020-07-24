@@ -1,5 +1,6 @@
 #include "w_thread_pool.h"
 #include <apr-1/apr_thread_proc.h>
+#include <apr-1/apr_portable.h>
 #include <apr-util/apr_thread_pool.h>
 
 w_thread_pool w_thread_pool_init(_In_ size_t pMinThreads,
@@ -157,12 +158,12 @@ size_t w_thread_pool_thread_max_set(_In_ w_thread_pool pThreadPool, _In_ size_t 
     return apr_thread_pool_thread_max_set((apr_thread_pool_t*)pThreadPool, pCount);
 }
 
-apr_int64_t w_thread_pool_idle_wait_set(_In_ w_thread_pool pThreadPool, _In_ long pTimeOut)
+int64_t w_thread_pool_idle_wait_set(_In_ w_thread_pool pThreadPool, _In_ long pTimeOut)
 {
     return apr_thread_pool_idle_wait_set((apr_thread_pool_t*)pThreadPool, pTimeOut);
 }
 
-apr_int64_t w_thread_pool_idle_wait_get(_In_ w_thread_pool pThreadPool)
+int64_t w_thread_pool_idle_wait_get(_In_ w_thread_pool pThreadPool)
 {
     return apr_thread_pool_idle_wait_get((apr_thread_pool_t*)pThreadPool);
 }

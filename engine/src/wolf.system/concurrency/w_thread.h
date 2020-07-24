@@ -15,13 +15,12 @@ extern "C" {
 #endif
 
 #include "wolf.h"
-#include <apr-1/apr_portable.h>
 
 //forward declaration
 typedef struct apr_thread_t* w_thread;
 typedef struct apr_thread_once_t* w_thread_once_flag;
-typedef apr_os_thread_t w_thread_id;
-typedef apr_thread_mutex_t* w_mutex;
+typedef struct apr_thread_mutex_t* w_mutex;
+typedef struct apr_os_thread_t* w_thread_id;
 
 typedef void* (*w_thread_job)(w_thread,void*);
 typedef void (*w_thread_once_job)(void);
