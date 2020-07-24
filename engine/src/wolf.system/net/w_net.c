@@ -1423,7 +1423,8 @@ W_RESULT w_net_open_quic_socket(_In_z_  const char* pAddress,
     if (pSocketMode == quic_listener)
     {
         //check enable ssl
-        if (w_io_file_check_is_file(pCertFilePath) == W_SUCCESS &&
+        if (pCertFilePath && pPrivateKeyFilePath && 
+            w_io_file_check_is_file(pCertFilePath) == W_SUCCESS &&
             w_io_file_check_is_file(pPrivateKeyFilePath) == W_SUCCESS)
         {
             _ret = quiche_config_load_cert_chain_from_pem_file(_quiche_connection->c, pCertFilePath);
@@ -1542,9 +1543,8 @@ W_RESULT w_net_open_quic_socket(_In_z_  const char* pAddress,
     _quiche_connection->cio = _quiche_connection_io;
         
 #ifdef W_PLATFORM_WIN
-    int _handle = _open_osfhandle(_socket, 0);
-    //TODO: check hadnle result, 0 or 1 means fail?
-    if (_handle)
+    int _osf_handle = _open_osfhandle(_socket, 0);
+    if (_osf_handle < 0)
     {
         _ret = W_FAILURE;
         W_ASSERT_P(false, "failed to open_osfhandle. trace info: %s", _trace_info);
@@ -1552,16 +1552,19 @@ W_RESULT w_net_open_quic_socket(_In_z_  const char* pAddress,
     }
 #endif
 
-    ev_io _ev_watcher;
-    struct ev_loop* _ev_loop = ev_default_loop(0);
-    ev_io_init(
-        &_ev_watcher, 
-        (pSocketMode == quic_listener) ? _quiche_listener_callback : _quiche_dialer_callback,
-        _socket, 
-        EV_READ);
-    ev_io_start(_ev_loop, &_ev_watcher);
-    _ev_watcher.data = &_quiche_connection;//access to _quiche_con from ev_io->data
-    ev_loop(_ev_loop, 0);
+    struct ev_loop* _ev_loop = EV_DEFAULT;
+    if (_ev_loop)
+    {
+        ev_io _ev_watcher;
+        ev_io_init(
+            &_ev_watcher,
+            (pSocketMode == quic_listener) ? _quiche_listener_callback : _quiche_dialer_callback,
+            _osf_handle,
+            EV_READ);
+        ev_io_start(_ev_loop, &_ev_watcher);
+        _ev_watcher.data = &_quiche_connection;//access to _quiche_con from ev_io->data
+        ev_loop(_ev_loop, 0);
+    }
 
 out:
     w_free(_port);
