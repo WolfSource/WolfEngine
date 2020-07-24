@@ -158,24 +158,11 @@ Convey("chrono", {
 
     bool _t_g__get_fixed_time_step = w_gametime_get_fixed_time_step(_g_t_init);
     So(_t_g__get_fixed_time_step == false);
-
-    w_gametime_disable_fixed_time_step(_g_t_init);
-    So(((w_gametime_imp*)_g_t_init)->fixed_time_step == false);
-
-    w_gametime_enable_fixed_time_step(_g_t_init);
-    So(((w_gametime_imp*)_g_t_init)->fixed_time_step == true);
-
-    w_gametime_set_target_elapsed_ticks(_g_t_init, 5);
-    So(((w_gametime_imp*)_g_t_init)->target_elapsed_ticks == 5);
-
-    w_gametime_set_target_elapsed_seconds(_g_t_init, 7);
-    So(((w_gametime_imp*)_g_t_init)->target_elapsed_ticks == 70000000);
 });
-
 
 //terminate wolf
 wolf_terminate();
 
-printf("\n\nThe tests where completed successfully.\n\n");
+printf("\n\nAll tests where completed successfully.\n\n");
 
     })
