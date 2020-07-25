@@ -1562,7 +1562,7 @@ W_RESULT w_net_open_quic_socket(_In_z_  const char* pAddress,
             _osf_handle,
             EV_READ);
         ev_io_start(_ev_loop, &_ev_watcher);
-        _ev_watcher.data = &_quiche_connection;//access to _quiche_con from ev_io->data
+        _ev_watcher.data = _quiche_connection;//access to _quiche_con from ev_io->data
         ev_loop(_ev_loop, 0);
     }
 
