@@ -206,7 +206,6 @@ Convey("compression", {
 Convey("concurrency", {
 
 
-    printf("testing w_concurrent_queue");
 
 
 
@@ -255,6 +254,20 @@ Convey("concurrency", {
    W_RESULT _condition_variable_init = w_condition_variable_init(&pcond);
    So(_condition_variable_init == W_SUCCESS);
 
+   W_RESULT _rt;
+   w_condition_variable pcond2 = NULL;
+   if ((_rt = w_condition_variable_init(&pcond2)) == W_SUCCESS)
+   {
+       w_mem_pool _mem = w_get_default_memory_pool();
+
+       w_mutex _mutex = NULL;
+       if ((_rt = w_thread_mutex_create(&_mutex, 0, _mem)) == W_SUCCESS)
+       {
+           w_timespan* _t_millisec = w_timespan_init_from_milliseconds(5000);
+           W_RESULT _condition_variable_wait_for = w_condition_variable_wait_for(pcond2, _mutex, _t_millisec);
+           So(_condition_variable_wait_for != 0);
+       }
+   }
    w_mutex pMutex = (w_mutex)malloc(sizeof(w_mutex));
    // W_RESULT _condition_variable_wait = w_condition_variable_wait( pcond,  pMutex);
    // So(_condition_variable_wait == W_SUCCESS);
@@ -306,7 +319,7 @@ Convey("concurrency", {
     So(_thread_once_call == W_SUCCESS);
 
     w_mutex Mutex1 = (w_mutex)malloc(sizeof(w_mutex));
-    W_RESULT _thread_mutex_create = w_thread_mutex_create(&Mutex1, "APR_THREAD_MUTEX_DEFAULT", _pool);
+    W_RESULT _thread_mutex_create = w_thread_mutex_create(&Mutex1, 0, _pool);
     So(_thread_mutex_create == W_SUCCESS);
 
     W_RESULT   thread_mutex_destroy = w_thread_mutex_destroy(Mutex1);
