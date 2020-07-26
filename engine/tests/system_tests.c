@@ -382,7 +382,7 @@ Convey("concurrency", {
      size_t _thread_pool_busy_count = w_thread_pool_busy_count(_thread_pool_init);
      So(_thread_pool_busy_count != 0);
 
-     /*sometimes the result is in test but sometimes is not*/
+     /*sometimes the result is ok in test but sometimes is not*/
      size_t _thread_pool_idle_count = w_thread_pool_idle_count(_thread_pool_init);
      So(_thread_pool_idle_count == 0);
 
@@ -391,7 +391,7 @@ Convey("concurrency", {
      So(_thread_pool_idle_max_set == 0);
 
 
-     /*sometimes the result is in test but sometimes is not*/
+     /*sometimes the result is ok in test but sometimes is not*/
      size_t _thread_pool_tasks_run_count = w_thread_pool_tasks_run_count(_thread_pool_init);
      So(_thread_pool_tasks_run_count == 0);
 
@@ -407,7 +407,7 @@ Convey("concurrency", {
      size_t _thread_pool_idle_max_get = w_thread_pool_idle_max_get(_thread_pool_init);
      So(_thread_pool_idle_max_get != 0);
 
-     /*in my debug projrct is ok but here is not ok*/
+     /*in my debug project is ok but here is not ok*/
      /*size_t thread_pool_thread_max_set = w_thread_pool_thread_max_set(_thread_pool_init, pCount);
      So(thread_pool_thread_max_set == 0);*/
 
