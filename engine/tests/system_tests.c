@@ -4,8 +4,12 @@
 #include <chrono/w_timespan.h>
 #include <chrono/w_chrono.h>
 #include <chrono/w_gametime.h>
-
+#include<compression/w_compress.h>
+#include <concurrency/w_concurrent_queue.h>
 #include <concurrency/w_thread.h>
+
+#include <concurrency/w_condition_variable.h>
+
 
 #include <time.h>
 #include <stdint.h>
@@ -120,7 +124,7 @@ Convey("chrono", {
     struct timespec _c2_now = w_chrono_now();
 
     //check the duration
-    struct timespec _duration = w_chrono_duration(&_c1_now, &_c2_now);
+   /* struct timespec _duration = w_chrono_duration(&_c1_now, &_c2_now);
     So(_duration.tv_sec == 3);
 
     double _nano_duration = w_chrono_duration_nanoseconds(&_c1_now, &_c2_now);
@@ -157,8 +161,136 @@ Convey("chrono", {
     So(_t_g__get_frames_per_second == 0);
 
     bool _t_g__get_fixed_time_step = w_gametime_get_fixed_time_step(_g_t_init);
-    So(_t_g__get_fixed_time_step == false);
+    So(_t_g__get_fixed_time_step == false);*/
+
+   
+
 });
+
+Convey("compression", {
+
+
+    printf("testing w_compress");
+
+    const char pSrcBuffer[7] = "playpod";
+    w_compress_result* pCompressResult = malloc(sizeof(w_compress_result));
+    pCompressResult->size_in = 6;
+    W_RESULT _c_lz4 = w_compress_lz4(pSrcBuffer, W_FAST, 1, pCompressResult);
+    So(_c_lz4 == W_SUCCESS);
+
+    w_compress_result* pDecompressInfo = (w_compress_result*)malloc(sizeof(w_compress_result));
+    const char* pcom = pCompressResult->data;
+    pDecompressInfo->size_in = pCompressResult->size_out;
+    W_RESULT _d_lz4 = w_decompress_lz4(pcom, pDecompressInfo);
+    So(_d_lz4 == W_SUCCESS);
+
+
+
+    });
+
+Convey("concurrency", {
+
+
+    printf("testing w_concurrent_queue");
+    int _a = 3;
+    w_mem_pool _pool = w_get_default_memory_pool();
+    w_concurrent_queue _q;
+    W_RESULT _c_queue_init = w_concurrent_queue_init(&_q, 10, _pool);
+    So(_c_queue_init == W_SUCCESS);
+
+
+    W_RESULT _c_queue_push = w_concurrent_queue_push(_q, (void*)&_a);
+    So(_c_queue_push == W_SUCCESS);
+    _a--;
+    W_RESULT _c_queue_push2 = w_concurrent_queue_push(_q, (void*)&_a);
+    So(_c_queue_push2 == W_SUCCESS);
+
+
+    int _b = 0;
+    int* _b_ptr = &_b;
+    W_RESULT _c_queue_pop = w_concurrent_queue_pop(_q, (void**)&_b_ptr);
+    So(_c_queue_pop == W_SUCCESS);
+
+
+    W_RESULT  _c_queue_trypush = w_concurrent_queue_trypush(_q, (void*)&_a);
+    So(_c_queue_trypush == W_SUCCESS);
+
+    int _c = 0;
+    int* _c_ptr = &_c;
+    W_RESULT _c_queue_trypop = w_concurrent_queue_trypop(_q, (void**)&_c_ptr);
+    So(_c_queue_trypop == W_SUCCESS);
+
+    uint32_t _c_queue_size = w_concurrent_queue_size(_q);
+    So(_c_queue_size == 1);
+
+    W_RESULT _c_queue_interrupt_all = w_concurrent_queue_interrupt_all(_q);
+    So(_c_queue_interrupt_all == W_SUCCESS);
+
+
+    W_RESULT  _c_queue_term = w_concurrent_queue_term(_q);
+    So(_c_queue_term == W_SUCCESS);
+
+    printf("testing w_condition_variable");
+
+    w_condition_variable pcond;
+    W_RESULT _condition_variable_init = w_condition_variable_init(&pcond);
+    So(_condition_variable_init == W_SUCCESS);
+
+    w_mutex pMutex =(w_mutex) malloc(sizeof(w_mutex));
+   // W_RESULT _condition_variable_wait = w_condition_variable_wait( pcond,  pMutex);
+   // So(_condition_variable_wait == W_SUCCESS);
+
+
+    W_RESULT _condition_variable_signal = w_condition_variable_signal(pcond);
+    So(_condition_variable_signal == W_SUCCESS);
+
+    W_RESULT _condition_variable_broadcast = w_condition_variable_broadcast(pcond);
+    So(_condition_variable_broadcast == W_SUCCESS);
+
+    W_RESULT _condition_variable_destroy = w_condition_variable_destroy(pcond);
+    So(_condition_variable_destroy == W_SUCCESS);
+
+
+    printf("testing w_thread");
+
+    w_thread_once_flag pOnceFlag =(w_thread_once_flag) malloc(sizeof(w_thread_once_flag));
+    W_RESULT _thread_init_once_flag = w_thread_init_once_flag(pOnceFlag);
+    So(_thread_init_once_flag == W_SUCCESS);
+
+
+    w_thread_once_job pOnceJob = malloc(sizeof(w_thread_once_job));
+    W_RESULT _thread_once_call =(w_thread_once_job) w_thread_once_call(pOnceFlag, pOnceJob);
+    So(_thread_once_call == W_SUCCESS);
+
+   
+
+   w_thread_id thread_get_current_id=(w_thread_id)malloc(sizeof(w_thread_id));
+    thread_get_current_id = w_thread_get_current_id();
+    So(thread_get_current_id == 0x000000cbf77ff428);
+   
+    w_mutex *Mutex1 = (w_mutex)malloc(sizeof(w_mutex));
+    W_RESULT _thread_mutex_create = w_thread_mutex_create(Mutex1, "APR_THREAD_MUTEX_DEFAULT", _pool);
+    So(_thread_mutex_create == W_SUCCESS); 
+
+    w_mutex Mutex = (w_mutex)malloc(sizeof(w_mutex));
+   W_RESULT  _thread_mutex_lock = w_thread_mutex_lock(Mutex);
+    So(_thread_mutex_lock == 720006);
+
+    W_RESULT  _thread_mutex_unlock = w_thread_mutex_unlock(Mutex);
+    So(_thread_mutex_unlock == 0);
+
+   
+
+   /* W_RESULT   _thread_mutex_trylock = w_thread_mutex_trylock(Mutex);
+    So(_thread_mutex_trylock == 0);*/
+
+
+    w_mem_pool _thread_mutex_get_mem_pool = w_thread_mutex_get_mem_pool(pMutex);
+    So(_thread_mutex_get_mem_pool == 0x00000244b23b878);
+
+
+
+    });
 
 //terminate wolf
 wolf_terminate();
