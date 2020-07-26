@@ -49,17 +49,17 @@ typedef struct
 
 struct quic_connection
 {
-    int                             s;//socket
-    struct conn_io*                 cio;//connection io
-    quiche_config*                  c;//config
+    int                             socket;//socket
+    struct conn_io*                 connection_io;//connection io
+    quiche_config*                  config;//config
 };
 
 struct conn_io
 {
-    ev_timer                        t;//timer
-    int                             s;//socket
-    uint8_t                         cid[QUICHE_LOCAL_CONN_ID_LEN];//connection id
-    quiche_conn*                    c;//quiche connection
+    ev_timer                        timer;//timer
+    int                             socket;//socket
+    uint8_t                         connection_id[QUICHE_LOCAL_CONN_ID_LEN];//connection id
+    quiche_conn*                    connection;//quiche connection
     struct sockaddr_storage         peer_addr;//peer address
     socklen_t                       peer_addr_len;//peer address len
     UT_hash_handle                  hh;//hash handle
@@ -883,7 +883,7 @@ static void flush_egress(struct ev_loop* loop, struct conn_io* conn_io)
     static uint8_t out[QUICHE_MAX_DATAGRAM_SIZE];
     while (1)
     {
-        ssize_t written = quiche_conn_send(conn_io->c, out, sizeof(out));
+        ssize_t written = quiche_conn_send(conn_io->connection, out, sizeof(out));
 
         if (written == QUICHE_ERR_DONE) {
             fprintf(stderr, "done writing\n");
@@ -895,7 +895,7 @@ static void flush_egress(struct ev_loop* loop, struct conn_io* conn_io)
             return;
         }
 
-        ssize_t sent = sendto(conn_io->s, (const char*)out, written, 0,
+        ssize_t sent = sendto(conn_io->socket, (const char*)out, written, 0,
             (struct sockaddr*)&conn_io->peer_addr,
             conn_io->peer_addr_len);
         if (sent != written) {
@@ -906,9 +906,9 @@ static void flush_egress(struct ev_loop* loop, struct conn_io* conn_io)
         fprintf(stderr, "sent %zd bytes\n", sent);
     }
 
-    double t = quiche_conn_timeout_as_nanos(conn_io->c) / 1e9f;
-    conn_io->t.repeat = t;
-    ev_timer_again(loop, &conn_io->t);
+    double t = quiche_conn_timeout_as_nanos(conn_io->connection) / 1e9f;
+    conn_io->timer.repeat = t;
+    ev_timer_again(loop, &conn_io->timer);
 }
 
 static void ev_timeout_callback(EV_P_ ev_timer* w, int pRevents)
@@ -919,22 +919,22 @@ static void ev_timeout_callback(EV_P_ ev_timer* w, int pRevents)
         return;
     }
 
-    quiche_conn_on_timeout(tmp->cio->c);
+    quiche_conn_on_timeout(tmp->connection_io->connection);
     fprintf(stderr, "timeout\n");
     flush_egress(loop, tmp);
 
-    if (quiche_conn_is_closed(tmp->cio->c))
+    if (quiche_conn_is_closed(tmp->connection_io->connection))
     {
         quiche_stats stats;
 
-        quiche_conn_stats(tmp->cio->c, &stats);
+        quiche_conn_stats(tmp->connection_io->connection, &stats);
         //logger(stderr, "connection closed, recv=%zu sent=%zu lost=%zu rtt=%" PRIu64 "ns cwnd=%zu\n",
           //  stats.recv, stats.sent, stats.lost, stats.rtt, stats.cwnd);
 
-        HASH_DELETE(hh, tmp->cio, tmp->cio);
+        HASH_DELETE(hh, tmp->connection_io, tmp->connection_io);
 
-        ev_timer_stop(loop, &tmp->cio->t);
-        quiche_conn_free(tmp->c);
+        ev_timer_stop(loop, &tmp->connection_io->timer);
+        quiche_conn_free(tmp->config);
         free(tmp);
 
         return;
@@ -1009,17 +1009,17 @@ static struct conn_io* _quiche_create_conn(
         return NULL;
     }
 
-    if (CryptGenRandom(p, QUICHE_LOCAL_CONN_ID_LEN, (BYTE*)conn_io->cid) == FALSE) 
+    if (CryptGenRandom(p, QUICHE_LOCAL_CONN_ID_LEN, (BYTE*)conn_io->connection_id) == FALSE)
     {
         perror("RandBytes(): CryptGenRandom failed.");
         return NULL;
     }
 
     quiche_conn* conn = quiche_accept(
-        conn_io->cid, 
+        conn_io->connection_id,
         QUICHE_LOCAL_CONN_ID_LEN,
         odcid, odcid_len, 
-        pQuicConnection->c);
+        pQuicConnection->config);
     if (conn == NULL)
     {
         fprintf(stderr, "failed to create connection\n");
@@ -1027,13 +1027,17 @@ static struct conn_io* _quiche_create_conn(
     }
 
     //copy socket
-    conn_io->s = pQuicConnection->s;
-    conn_io->c = conn;
+    conn_io->socket = pQuicConnection->socket;
+    conn_io->connection = conn;
 
-    ev_init(&conn_io->t, ev_timeout_callback);
-    conn_io->t.data = pQuicConnection;
+    ev_init(&conn_io->timer, ev_timeout_callback);
+    conn_io->timer.data = pQuicConnection;
 
-    HASH_ADD(hh, pQuicConnection->cio, cid, QUICHE_LOCAL_CONN_ID_LEN, conn_io);
+    HASH_ADD(hh, 
+        pQuicConnection->connection_io, 
+        connection_id,
+        QUICHE_LOCAL_CONN_ID_LEN, 
+        conn_io);
 
     //logger(stderr, "new connection\n");
 
@@ -1063,7 +1067,7 @@ static void _quiche_listener_callback(EV_P_ ev_io* pIO, int pRevents)
         memset(&peer_addr, 0, peer_addr_len);
 
         ssize_t read = recvfrom(
-            _qc->s,
+            _qc->socket,
             (char*)buf,
             sizeof(buf),
             0,
@@ -1073,7 +1077,7 @@ static void _quiche_listener_callback(EV_P_ ev_io* pIO, int pRevents)
         {
             if (WSAGetLastError() == WSAEWOULDBLOCK)
             {
-                W_ASSERT(false, "recvfrom blocked");
+                //logger("recvfrom blocked");
                 break;
             }
             //logger ("failed to read");
@@ -1113,7 +1117,7 @@ static void _quiche_listener_callback(EV_P_ ev_io* pIO, int pRevents)
             continue;
         }
 
-        HASH_FIND(hh, _qc->cio, dcid, dcid_len, conn_io);
+        HASH_FIND(hh, _qc->connection_io, dcid, dcid_len, conn_io);
 
         if (conn_io == NULL)
         {
@@ -1131,7 +1135,7 @@ static void _quiche_listener_callback(EV_P_ ev_io* pIO, int pRevents)
                 }
 
                 ssize_t sent = sendto(
-                    _qc->s,
+                    _qc->socket,
                     (const char*)out,
                     written,
                     0,
@@ -1170,7 +1174,7 @@ static void _quiche_listener_callback(EV_P_ ev_io* pIO, int pRevents)
                 }
 
                 ssize_t sent = sendto(
-                    _qc->s,
+                    _qc->socket,
                     (const char*)out,
                     written, 0,
                     (struct sockaddr*)&peer_addr, peer_addr_len);
@@ -1193,53 +1197,65 @@ static void _quiche_listener_callback(EV_P_ ev_io* pIO, int pRevents)
                 continue;
             }
 
-            _qc->cio = _quiche_create_conn(
-                _qc->c,
+            _qc->connection_io = _quiche_create_conn(
+                _qc,
                 dcid, dcid_len,
                 odcid, odcid_len);
-            if (conn_io == NULL)
+            if (_qc->connection_io == NULL)
             {
                 continue;
             }
 
-            memcpy(&_qc->cio->peer_addr, &peer_addr, peer_addr_len);
-            conn_io->peer_addr_len = peer_addr_len;
+            memcpy(&_qc->connection_io->peer_addr, 
+                &peer_addr, 
+                peer_addr_len);
+            _qc->connection_io->peer_addr_len = peer_addr_len;
         }
 
-        ssize_t done = quiche_conn_recv(_qc->cio, buf, read);
+        quiche_conn* _qcon = _qc->connection_io->connection;
+        if (!_qcon)
+        {
+            W_ASSERT(false, "quiche_conn is NULL!");
+            continue;
+        }
+        ssize_t done = quiche_conn_recv(_qcon, buf, read);
         if (done < 0)
         {
-            W_ASSERT_P(false, "failed to process packet: %zd\n", done);
+            //logger(false, "failed to process packet: %zd", done);
             continue;
         }
 
         //loggerfprintf(stderr, "recv %zd bytes\n", done);
 
-        if (quiche_conn_is_established(conn_io->c))
+        if (quiche_conn_is_established(_qcon))
         {
             uint64_t s = 0;
 
-            quiche_stream_iter* readable = quiche_conn_readable(conn_io->c);
+            quiche_stream_iter* readable = quiche_conn_readable(_qcon);
 
             while (quiche_stream_iter_next(readable, &s))
             {
                 fprintf(stderr, "stream %" PRIu64 " is readable\n", s);
 
                 bool fin = false;
-                ssize_t recv_len = quiche_conn_stream_recv(
-                    conn_io->c, s,
-                    buf, sizeof(buf),
-                    &fin);
-                if (recv_len < 0)
+                for (size_t i = 0; i < 100; i++)
                 {
-                    break;
+                    ssize_t recv_len = quiche_conn_stream_recv(
+                        _qcon,
+                        s,
+                        buf, sizeof(buf),
+                        &fin);
+                    if (recv_len < 0)
+                    {
+                        break;
+                    }
+                    printf("\n\n%s\n\n", buf);
                 }
-
                 if (fin)
                 {
                     static const char* resp = "byez\n";
                     quiche_conn_stream_send(
-                        conn_io->c, s,
+                        conn_io->connection, s,
                         (uint8_t*)resp,
                         5, true);
                 }
@@ -1248,22 +1264,22 @@ static void _quiche_listener_callback(EV_P_ ev_io* pIO, int pRevents)
         }
     }
 
-    HASH_ITER(hh, _qc->cio, conn_io, tmp)
+    HASH_ITER(hh, _qc->connection_io, conn_io, tmp)
     {
         flush_egress(loop, conn_io);
 
-        if (quiche_conn_is_closed(conn_io->c))
+        if (quiche_conn_is_closed(conn_io->connection))
         {
             quiche_stats stats;
 
-            quiche_conn_stats(conn_io->c, &stats);
+            quiche_conn_stats(conn_io->connection, &stats);
             fprintf(stderr, "connection closed, recv=%zu sent=%zu lost=%zu rtt=%" PRIu64 "ns cwnd=%zu\n",
                 stats.recv, stats.sent, stats.lost, stats.rtt, stats.cwnd);
 
-            HASH_DELETE(hh, _qc->cio, conn_io);
+            HASH_DELETE(hh, _qc->connection_io, conn_io);
 
-            ev_timer_stop(loop, &conn_io->t);
-            quiche_conn_free(conn_io->c);
+            ev_timer_stop(loop, &conn_io->timer);
+            quiche_conn_free(conn_io->connection);
             free(conn_io);
         }
     }
@@ -1412,8 +1428,8 @@ W_RESULT w_net_open_quic_socket(_In_z_  const char* pAddress,
     }
 
     //create quiche config
-    _quiche_connection->c = quiche_config_new(_quic_version);
-    if (_quiche_connection->c == NULL)
+    _quiche_connection->config = quiche_config_new(_quic_version);
+    if (_quiche_connection->config == NULL)
     {
         _ret = W_FAILURE;
         W_ASSERT_P(false, "failed to create config. trace info: %s", _trace_info);
@@ -1427,14 +1443,14 @@ W_RESULT w_net_open_quic_socket(_In_z_  const char* pAddress,
             w_io_file_check_is_file(pCertFilePath) == W_SUCCESS &&
             w_io_file_check_is_file(pPrivateKeyFilePath) == W_SUCCESS)
         {
-            _ret = quiche_config_load_cert_chain_from_pem_file(_quiche_connection->c, pCertFilePath);
+            _ret = quiche_config_load_cert_chain_from_pem_file(_quiche_connection->config, pCertFilePath);
             if (_ret)
             {
                 _ret = W_FAILURE;
                 W_ASSERT_P(false, "failed to load cert chain from pem file for quic. trace info: %s", _trace_info);
                 goto out;
             }
-            _ret = quiche_config_load_priv_key_from_pem_file(_quiche_connection->c, pPrivateKeyFilePath);
+            _ret = quiche_config_load_priv_key_from_pem_file(_quiche_connection->config, pPrivateKeyFilePath);
             if (_ret)
             {
                 _ret = W_FAILURE;
@@ -1445,7 +1461,8 @@ W_RESULT w_net_open_quic_socket(_In_z_  const char* pAddress,
     }
 
     //use quic draft 27
-    _ret = quiche_config_set_application_protos(_quiche_connection->c,
+    _ret = quiche_config_set_application_protos(
+        _quiche_connection->config,
         (uint8_t*)"\x05hq-29\x05hq-28\x05hq-27\x08http/0.9", 27);
     if (_ret)
     {
@@ -1454,27 +1471,27 @@ W_RESULT w_net_open_quic_socket(_In_z_  const char* pAddress,
         goto out;
     }
 
-    quiche_config_set_max_udp_payload_size(_quiche_connection->c, QUICHE_MAX_DATAGRAM_SIZE);
-    quiche_config_set_max_idle_timeout(_quiche_connection->c, 5000);
-    quiche_config_set_initial_max_data(_quiche_connection->c, 10000000);
-    quiche_config_set_initial_max_stream_data_bidi_local(_quiche_connection->c, 1000000);
-    quiche_config_set_initial_max_streams_bidi(_quiche_connection->c, 100);
+    quiche_config_set_max_udp_payload_size(_quiche_connection->config, QUICHE_MAX_DATAGRAM_SIZE);
+    quiche_config_set_max_idle_timeout(_quiche_connection->config, 5000);
+    quiche_config_set_initial_max_data(_quiche_connection->config, 10000000);
+    quiche_config_set_initial_max_stream_data_bidi_local(_quiche_connection->config, 1000000);
+    quiche_config_set_initial_max_streams_bidi(_quiche_connection->config, 100);
 
     if (pSocketMode == quic_listener)
     {
-        quiche_config_set_initial_max_stream_data_bidi_remote(_quiche_connection->c, 1000000);
-        quiche_config_set_cc_algorithm(_quiche_connection->c, QUICHE_CC_RENO);
+        quiche_config_set_initial_max_stream_data_bidi_remote(_quiche_connection->config, 1000000);
+        quiche_config_set_cc_algorithm(_quiche_connection->config, QUICHE_CC_RENO);
     }
     else
     {
-        quiche_config_set_initial_max_stream_data_uni(_quiche_connection->c, 1000000);
-        quiche_config_set_initial_max_streams_uni(_quiche_connection->c, 100);
-        quiche_config_set_disable_active_migration(_quiche_connection->c, true);
+        quiche_config_set_initial_max_stream_data_uni(_quiche_connection->config, 1000000);
+        quiche_config_set_initial_max_streams_uni(_quiche_connection->config, 100);
+        quiche_config_set_disable_active_migration(_quiche_connection->config, true);
 
 #ifdef W_PLATFORM_WIN
         if (getenv("SSLKEYLOGFILE"))
         {
-            quiche_config_log_keys(_quiche_connection->c);
+            quiche_config_log_keys(_quiche_connection->config);
         }
 
         size_t _size_of_scid = QUICHE_LOCAL_CONN_ID_LEN * sizeof(uint8_t);
@@ -1523,12 +1540,12 @@ W_RESULT w_net_open_quic_socket(_In_z_  const char* pAddress,
             goto out;
         }
 
-        _quiche_connection_io->c = quiche_connect(
+        _quiche_connection_io->connection = quiche_connect(
             pAddress,
             (const uint8_t*)_scid,
             sizeof(_scid),
-            _quiche_connection->c);
-        if (_quiche_connection_io->c == NULL)
+            _quiche_connection->config);
+        if (_quiche_connection_io->connection == NULL)
         {
             _ret = W_FAILURE;
             W_ASSERT_P(
@@ -1539,8 +1556,8 @@ W_RESULT w_net_open_quic_socket(_In_z_  const char* pAddress,
         }
     }
 
-    _quiche_connection->s = _socket;
-    _quiche_connection->cio = _quiche_connection_io;
+    _quiche_connection->socket = _socket;
+    _quiche_connection->connection_io = _quiche_connection_io;
         
 #ifdef W_PLATFORM_WIN
     int _osf_handle = _open_osfhandle(_socket, 0);
@@ -1578,16 +1595,16 @@ out:
     }
     if (_quiche_connection)
     {
-        if (_quiche_connection->cio)
+        if (_quiche_connection->connection_io)
         {
-            quiche_conn_free(_quiche_connection->cio->c);
+            quiche_conn_free(_quiche_connection->connection_io->connection);
         }
-        w_free(_quiche_connection->cio);
+        w_free(_quiche_connection->connection_io);
         w_free(_quiche_connection);
     }
-    if (_quiche_connection->c)
+    if (_quiche_connection->config)
     {
-        quiche_config_free(_quiche_connection->c);
+        quiche_config_free(_quiche_connection->config);
     }
     return _ret;
 }
