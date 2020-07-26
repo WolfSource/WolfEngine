@@ -124,7 +124,7 @@ Convey("chrono", {
     struct timespec _c2_now = w_chrono_now();
 
     //check the duration
-   /* struct timespec _duration = w_chrono_duration(&_c1_now, &_c2_now);
+    struct timespec _duration = w_chrono_duration(&_c1_now, &_c2_now);
     So(_duration.tv_sec == 3);
 
     double _nano_duration = w_chrono_duration_nanoseconds(&_c1_now, &_c2_now);
@@ -161,9 +161,7 @@ Convey("chrono", {
     So(_t_g__get_frames_per_second == 0);
 
     bool _t_g__get_fixed_time_step = w_gametime_get_fixed_time_step(_g_t_init);
-    So(_t_g__get_fixed_time_step == false);*/
-
-   
+    So(_t_g__get_fixed_time_step == false);   
 
 });
 
@@ -184,6 +182,11 @@ Convey("compression", {
     W_RESULT _d_lz4 = w_decompress_lz4(pcom, pDecompressInfo);
     So(_d_lz4 == W_SUCCESS);
 
+//#ifdef W_PLATFROM_WIN
+//
+//    //lzma
+//
+//#endif
 
 
     });
@@ -266,7 +269,7 @@ Convey("concurrency", {
 
    w_thread_id thread_get_current_id=(w_thread_id)malloc(sizeof(w_thread_id));
     thread_get_current_id = w_thread_get_current_id();
-    So(thread_get_current_id == 0x000000cbf77ff428);
+    So(thread_get_current_id != 0);
    
     w_mutex *Mutex1 = (w_mutex)malloc(sizeof(w_mutex));
     W_RESULT _thread_mutex_create = w_thread_mutex_create(Mutex1, "APR_THREAD_MUTEX_DEFAULT", _pool);
@@ -286,9 +289,7 @@ Convey("concurrency", {
 
 
     w_mem_pool _thread_mutex_get_mem_pool = w_thread_mutex_get_mem_pool(pMutex);
-    So(_thread_mutex_get_mem_pool == 0x00000244b23b878);
-
-
+    So(_thread_mutex_get_mem_pool != 0);
 
     });
 
