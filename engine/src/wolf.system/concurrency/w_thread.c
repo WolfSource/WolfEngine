@@ -20,7 +20,7 @@ W_RESULT w_thread_once_call(_Inout_ w_thread_once_flag pOnceFlag, _In_ w_thread_
     return _status == APR_SUCCESS ? W_SUCCESS : W_FAILURE;
 }
 
-W_RESULT w_thread_create(_Inout_ w_thread     pThread,
+W_RESULT w_thread_create(_Inout_ w_thread*    pThread,
                          _In_    w_thread_job pJob,
                          _In_    void*        pJobArgs)
 {
@@ -33,7 +33,7 @@ W_RESULT w_thread_create(_Inout_ w_thread     pThread,
     apr_threadattr_create(&_attr, _pool);
     
     //create thread
-    apr_thread_create(&pThread, _attr, pJob, pJobArgs, _pool);
+    apr_thread_create(pThread, _attr, pJob, pJobArgs, _pool);
     
     return W_SUCCESS;
 }

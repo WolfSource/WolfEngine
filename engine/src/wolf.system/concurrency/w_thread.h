@@ -50,7 +50,7 @@ W_RESULT w_thread_once_call(_Inout_ w_thread_once_flag pOnceFlag, _In_ w_thread_
  * @return result
 */
 W_SYSTEM_EXPORT
-W_RESULT w_thread_create(_Inout_   w_thread      pThread,
+W_RESULT w_thread_create(_Inout_   w_thread*     pThread,
                          _In_      w_thread_job  pJob,
                          _In_      void*         pJobArgs);
 
