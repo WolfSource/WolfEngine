@@ -880,6 +880,7 @@ _out:
 
 static void flush_egress(struct ev_loop* loop, struct conn_io* conn_io)
 {
+   
     static uint8_t out[QUICHE_MAX_DATAGRAM_SIZE];
     while (1)
     {
@@ -1046,8 +1047,9 @@ static struct conn_io* _quiche_create_conn(
 
 static void _quiche_listener_callback(EV_P_ ev_io* pIO, int pRevents)
 {
+    
     const char* _trace_info = "quiche_listener_callback";
-
+    
     struct quic_connection* _qc = (struct quic_connection*)pIO->data;
     if (!_qc)
     {
@@ -1055,7 +1057,7 @@ static void _quiche_listener_callback(EV_P_ ev_io* pIO, int pRevents)
             "missing quiche_connection. trace info: %s", _trace_info);
         return;
     }
-
+    
     struct conn_io* tmp, * conn_io = NULL;
     static uint8_t buf[QUICHE_MAX_BUFFER_SIZE];
     static uint8_t out[QUICHE_MAX_DATAGRAM_SIZE];
@@ -1078,9 +1080,11 @@ static void _quiche_listener_callback(EV_P_ ev_io* pIO, int pRevents)
             if (WSAGetLastError() == WSAEWOULDBLOCK)
             {
                 //logger("recvfrom blocked");
+                
                 break;
             }
             //logger ("failed to read");
+            
             return;
         }
 
@@ -1219,16 +1223,21 @@ static void _quiche_listener_callback(EV_P_ ev_io* pIO, int pRevents)
             continue;
         }
         ssize_t done = quiche_conn_recv(_qcon, buf, read);
-        if (done < 0)
-        {
+        
+        
+        if (done < 0) {
+            printf("failed to process packet: %zd", done);
+
             //logger(false, "failed to process packet: %zd", done);
             continue;
         }
+        printf("recv %zd bytes\n", done);
 
         //loggerfprintf(stderr, "recv %zd bytes\n", done);
 
         if (quiche_conn_is_established(_qcon))
         {
+           
             uint64_t s = 0;
 
             quiche_stream_iter* readable = quiche_conn_readable(_qcon);
@@ -1287,6 +1296,7 @@ static void _quiche_listener_callback(EV_P_ ev_io* pIO, int pRevents)
 
 static void _quiche_dialer_callback(EV_P_ ev_io* pIO, int pRevents)
 {
+
     struct conn_io* tmp, * conn_io = NULL;
 
 }
@@ -1299,7 +1309,6 @@ W_RESULT w_net_open_quic_socket(_In_z_  const char* pAddress,
                                 _In_    quic_debug_log_callback pQuicDebugLogCallback)
 {
     const char* _trace_info = "w_net_open_quic_socket";
-    
     if (pSocketMode != quic_dialer && pSocketMode != quic_listener)
     {
         W_ASSERT(false, "pSocketMode must be one of the following enums: quic_dialer or quic_listener. trace info: w_net_open_quic_socket");
@@ -1572,6 +1581,7 @@ W_RESULT w_net_open_quic_socket(_In_z_  const char* pAddress,
     struct ev_loop* _ev_loop = EV_DEFAULT;
     if (_ev_loop)
     {
+
         ev_io _ev_watcher;
         ev_io_init(
             &_ev_watcher,
