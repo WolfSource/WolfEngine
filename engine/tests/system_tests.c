@@ -383,13 +383,13 @@ Convey("concurrency", {
      size_t _thread_pool_threads_count = w_thread_pool_threads_count(_thread_pool_init);
      So(_thread_pool_threads_count != 0);
 
-
+     /*
      size_t _thread_pool_busy_count = w_thread_pool_busy_count(_thread_pool_init);
      So(_thread_pool_busy_count != 0);
 
-     /*sometimes the result is ok in test but sometimes is not*/
-    /* size_t _thread_pool_idle_count = w_thread_pool_idle_count(_thread_pool_init);
-     So(_thread_pool_idle_count == 0);*/
+     size_t _thread_pool_idle_count = w_thread_pool_idle_count(_thread_pool_init);
+     So(_thread_pool_idle_count == 0);
+     */
 
      int pCount = 2;
      size_t _thread_pool_idle_max_set = w_thread_pool_idle_max_set(_thread_pool_init,(size_t)pCount);
