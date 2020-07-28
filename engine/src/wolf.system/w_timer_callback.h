@@ -24,7 +24,7 @@ namespace wolf
 		class w_timer_callback
 		{
 		public:
-			w_timer_callback() {};
+			w_timer_callback():_thread(nullptr) {};
 			~w_timer_callback() {};
 
 			template <class T>
@@ -34,18 +34,22 @@ namespace wolf
 				pFunc();
 			}
 
-			template <class T>
-			void do_async(int pIntervalMilliSeconds, T&& pFunc)
+			template <class T, typename... Args>
+			void do_async(int pIntervalMilliSeconds, T&& pFunc, Args... pArgs)
 			{
-				std::thread  t([pIntervalMilliSeconds, &pFunc]()
-				{
-					w_thread::sleep_current_thread(pIntervalMilliSeconds);
-					pFunc();
-				});
-				t.detach();
+                _thread = new w_thread();
+                _thread->add_job([pIntervalMilliSeconds, &pFunc, pArgs...]()
+                {
+                    w_thread::sleep_current_thread(pIntervalMilliSeconds);
+                    pFunc(pArgs...);
+                });
 			}
+            
+        private:
+            w_thread* _thread;
 		};
 	}
 }
 
 #endif //__W_TIMER_CALLBACK_H__
+
