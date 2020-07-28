@@ -884,8 +884,8 @@ static void flush_egress(struct ev_loop* loop, struct conn_io* conn_io)
     static uint8_t out[QUICHE_MAX_DATAGRAM_SIZE];
     while (1)
     {
-        ssize_t written = quiche_conn_send(conn_io->connection, out, sizeof(out));
 
+        ssize_t written = quiche_conn_send(conn_io->connection, out, sizeof(out));
         if (written == QUICHE_ERR_DONE) {
             fprintf(stderr, "done writing\n");
             break;
@@ -922,7 +922,7 @@ static void ev_timeout_callback(EV_P_ ev_timer* w, int pRevents)
 
     quiche_conn_on_timeout(tmp->connection_io->connection);
     fprintf(stderr, "timeout\n");
-    flush_egress(loop, tmp);
+    flush_egress(loop, tmp->connection_io);
 
     if (quiche_conn_is_closed(tmp->connection_io->connection))
     {
@@ -1226,18 +1226,16 @@ static void _quiche_listener_callback(EV_P_ ev_io* pIO, int pRevents)
         
         
         if (done < 0) {
-            printf("failed to process packet: %zd", done);
 
             //logger(false, "failed to process packet: %zd", done);
             continue;
         }
-        printf("recv %zd bytes\n", done);
 
         //loggerfprintf(stderr, "recv %zd bytes\n", done);
 
         if (quiche_conn_is_established(_qcon))
         {
-           
+
             uint64_t s = 0;
 
             quiche_stream_iter* readable = quiche_conn_readable(_qcon);
@@ -1259,6 +1257,7 @@ static void _quiche_listener_callback(EV_P_ ev_io* pIO, int pRevents)
                         break;
                     }
                     printf("\n\n%s\n\n", buf);
+
                 }
                 if (fin)
                 {
@@ -1267,9 +1266,11 @@ static void _quiche_listener_callback(EV_P_ ev_io* pIO, int pRevents)
                         conn_io->connection, s,
                         (uint8_t*)resp,
                         5, true);
+
                 }
             }
             quiche_stream_iter_free(readable);
+
         }
     }
 
