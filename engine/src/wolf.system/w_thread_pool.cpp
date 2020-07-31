@@ -22,7 +22,7 @@ void w_thread_pool::wait_for(_In_ const size_t& pThreadIndex)
 {
     if (pThreadIndex < this->_threads.size())
     {
-        this->_threads[pThreadIndex].wait();
+        this->_threads[pThreadIndex].wait_until_complete();
     }
 }
 
@@ -30,7 +30,7 @@ void w_thread_pool::wait_all()
 {
     for (auto& _t : this->_threads)
     {
-        _t.wait();
+        _t.wait_until_complete();
     }
 }
 
