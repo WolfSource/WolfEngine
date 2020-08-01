@@ -14,7 +14,7 @@
 #include<concurrency/w_timer.h>
 #include<concurrency/w_async.h>
 #include<concurrency/libev/ev.h>
-
+#include<io/w_io.h>
 #include <time.h>
 #include <stdint.h>
 
@@ -442,6 +442,79 @@ Convey("concurrency", {
         So(thread_pool_free != 0);
       });
 
+Convey("io", { 
+    /*TODO for contents of file*/
+    const char m[2] = "hi";
+    const char pathcreate[12] = "E:\\file.txt";
+    w_file _io_file_create = w_io_file_create(pathcreate, m, false , false , false , false ,false ,false , false);
+
+    W_RESULT _io_file_save = w_io_file_save(pathcreate, m, false, false, false, false, false, false, false); 
+    So(_io_file_save ==0 );
+
+    w_file_info _io_file_get_info = w_io_file_get_info(_io_file_create);
+    So(_io_file_get_info != 0);
+    
+    const char* _io_file_get_extension_from_path = w_io_file_get_extension_from_path(pathcreate);
+    const char* _extention = "txt";
+    int result_extention = strcmp(_io_file_get_extension_from_path, _extention);
+    So(result_extention == 0);
+
+
+    const char* _io_file_get_extension = w_io_file_get_extension(_io_file_create);
+    const char* _extention1 = "txt";
+    int result_extention1 = strcmp(_io_file_get_extension, _extention1);
+    So(result_extention1 == 0); 
+
+    const char* _io_file_get_base_name = w_io_file_get_base_name(_io_file_create);
+    const char* _base = "E:\\file.txt";
+    int  result_base = strcmp(_io_file_get_base_name, _base);
+    So(result_base == 0);
+
+    W_RESULT _io_file_check_is_file = w_io_file_check_is_file(pathcreate);
+    So(_io_file_check_is_file !=0);
+
+   w_file_istream _io_file_read_full_from_path = w_io_file_read_full_from_path(pathcreate);
+   So(_io_file_read_full_from_path ->size == 4096 && _io_file_read_full_from_path->bytes_read == 0 && _io_file_read_full_from_path->buffer!=0);
+
+   w_file_istream _io_file_read_nbytes_from_path = w_io_file_read_nbytes_from_path(pathcreate, 0);
+   So(_io_file_read_nbytes_from_path->size == 4096 && _io_file_read_nbytes_from_path->bytes_read == 0 && _io_file_read_nbytes_from_path->buffer != 0);
+
+   w_file_istream _io_file_read_full = w_io_file_read_full(_io_file_create);
+   So(_io_file_read_full->size ==0 && _io_file_read_full->bytes_read == 0);
+
+
+   w_file_istream _io_file_read_nbytes = w_io_file_read_nbytes(_io_file_create, 0);
+   So(_io_file_read_nbytes->size == 0 && _io_file_read_nbytes->bytes_read == 0 && _io_file_read_nbytes->buffer != 0);
+
+   //W_RESULT	_io_file_delete_from_path = w_io_file_delete_from_path(pathcreate);
+   //So(_io_file_delete_from_path==0);
+
+   long _io_to_hex = w_io_to_hex("0ABC546");
+   So(_io_to_hex == 11257158);
+
+   const wchar_t* pString2 = "HELLO";
+   const wchar_t* pEndWith2 = "H";
+   W_RESULT _io_string_has_start_with = w_io_string_has_start_with(pString2, pEndWith2);
+   So(_io_string_has_start_with  == 0);
+
+   const wchar_t* pString3 = "HELLO";
+   const wchar_t* pEndWith3 = "O";
+   W_RESULT _io_string_has_end_with = w_io_string_has_end_with(pString3, pEndWith3);
+   So(_io_string_has_end_with == 1);
+
+  const wchar_t* pString1 = L"HELLO";
+  const wchar_t* pEndWith1 = L"H";
+  W_RESULT _io_wstring_has_start_with = w_io_wstring_has_start_with(pString1, pEndWith1);
+  So(_io_wstring_has_start_with == 0);
+
+
+  const wchar_t* pString = L"HELLO";
+  const wchar_t* pEndWith = L"O";
+  W_RESULT _io_wstring_has_end_with = w_io_wstring_has_end_with(pString, pEndWith);
+  So(_io_wstring_has_end_with == 1);
+
+
+    });
 //terminate wolf
 wolf_terminate();
 
