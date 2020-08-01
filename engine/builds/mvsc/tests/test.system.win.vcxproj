@@ -20,7 +20,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\tests\system_tests.c" />
-    <ClCompile Include="convey.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="convey.h" />
@@ -81,7 +80,7 @@
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <TargetExt>.dll</TargetExt>
+    <TargetExt>.exe</TargetExt>
     <OutDir>$(SolutionDir)/../../../bin/win/$(Platform)/$(Configuration)/</OutDir>
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>

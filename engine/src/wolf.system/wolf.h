@@ -130,7 +130,6 @@ typedef struct apr_pool_t* w_mem_pool;
 typedef struct apr_file_t* w_file;
 typedef struct apr_finfo_t* w_file_info;
 typedef struct apr_array_header_t* w_array;
-typedef struct apr_table_t* w_map;
 typedef struct apr_hash_t* w_hash;
 
 /**
