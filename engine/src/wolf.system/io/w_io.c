@@ -262,7 +262,7 @@ const char* w_io_file_get_base_name_from_path(_In_z_ const char* pPath)
     }
     
     if (_index == -1) return "";
-    
+    _index += 1;
     char* _dst_str = w_malloc(_index, "w_io_get_base_file_name_from_path");
     apr_cpystrn(_dst_str, pPath,_index);
     _dst_str[_index] = '\0';

@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\tests\system_tests.c" />
+    <ClCompile Include="convey.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="convey.h" />
