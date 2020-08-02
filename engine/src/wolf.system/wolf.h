@@ -40,14 +40,6 @@ extern "C" {
 
 #endif
 
-//http://dev.ariel-networks.com/apr/apr-tutorial/html/apr-tutorial.html#toc1
-
-//#include <apr.h>
-//#include <apr-1/apr_general.h>
-//#include <apr-1/apr_strings.h>
-//#include <apr-1/apr_tables.h>
-//#include <apr-1/apr_file_io.h>
-//#include <apr-1/apr_hash.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <wchar.h>
@@ -101,8 +93,8 @@ extern "C" {
 
 #define WOLF_MAJOR_VERSION 2    // Making incompatible API changes
 #define WOLF_MINOR_VERSION 0    // Adding functionality in a backwards - compatible manner
-#define WOLF_PATCH_VERSION 0    // bug fixes
-#define WOLF_DEBUG_VERSION 0    // for debugging
+#define WOLF_PATCH_VERSION 11   // bug fixes
+#define WOLF_DEBUG_VERSION 38   // for debugging
 
 #ifndef W_SUCCESS
 #define W_SUCCESS 0
@@ -112,7 +104,7 @@ extern "C" {
 #define W_FAILURE APR_EGENERAL
 #endif
 
-typedef void (*w_job)(void*);
+//typedef void (*w_job)(void*);
 typedef int W_RESULT;
 //typedef apr_off_t w_offset;
 

@@ -421,6 +421,9 @@
     <ClCompile Include="..\..\..\src\wolf.system\memory\w_table.c">
       <Filter>memory</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\memory\w_hash.c">
+      <Filter>memory</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\wolf.system\base64\chromiumbase64.h">
@@ -836,6 +839,9 @@
       <Filter>memory\hash</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\wolf.system\memory\w_table.h">
+      <Filter>memory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\memory\w_hash.h">
       <Filter>memory</Filter>
     </ClInclude>
   </ItemGroup>

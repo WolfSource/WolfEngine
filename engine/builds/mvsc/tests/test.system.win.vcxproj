@@ -19,10 +19,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\tests\system_tests.c" />
+    <ClInclude Include="convey.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="convey.h" />
+    <ClCompile Include="..\..\..\tests\convey.c" />
+    <ClCompile Include="..\..\..\tests\system.c" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{C7EAFC1C-9CFD-4C25-8AE9-C1373DD5DF35}</ProjectGuid>
@@ -31,7 +32,7 @@
     <SccLocalPath>SAK</SccLocalPath>
     <SccProvider>SAK</SccProvider>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>WolfSystemWin32</RootNamespace>
+    <RootNamespace>TestSystemWin</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />

@@ -72,7 +72,7 @@ struct conn_io
     UT_hash_handle                  hh;//hash handle
 };
 
-static struct quic_connection* s_conns = NULL;
+static struct quic_connection* s_quic_conns = NULL;
 
 #pragma endregion
 
@@ -656,14 +656,14 @@ out:
     return _rt;
 }
 
-W_RESULT w_net_send_msg(_Inout_ w_socket_tcp* pSocket,
+W_RESULT w_net_send_msg_tcp(_Inout_ w_socket_tcp* pSocket,
     _In_z_ char* pMessage,
     _In_ size_t pMessageLength,
     _In_ bool pAsync)
 {
     if (!pSocket || !pMessage || pMessageLength == 0)
     {
-        W_ASSERT(false, "parameters are NULL trace info: w_net_send_msg");
+        W_ASSERT(false, "parameters are NULL trace info: w_net_send_msg_tcp");
         return NNG_ENOARG;
     }
 
@@ -674,13 +674,13 @@ W_RESULT w_net_send_msg(_Inout_ w_socket_tcp* pSocket,
         pAsync ? NNG_FLAG_NONBLOCK : 0);
 }
 
-W_RESULT w_net_receive_msg(_Inout_ w_socket_tcp* pSocket,
+W_RESULT w_net_receive_msg_tcp(_Inout_ w_socket_tcp* pSocket,
     _Inout_ char* pMessage,
     _Inout_ size_t* pMessageLength)
 {
     if (!pSocket)
     {
-        W_ASSERT(false, "parameters are NULL. trace info: w_net_receive_msg");
+        W_ASSERT(false, "parameters are NULL. trace info: w_net_receive_msg_tcp");
         return NNG_ENOARG;
     }
 
@@ -935,7 +935,7 @@ static void ev_timeout_callback(EV_P_ ev_timer* w, int pRevents)
         //logger(stderr, "connection closed, recv=%zu sent=%zu lost=%zu rtt=%" PRIu64 "ns cwnd=%zu\n",
           //  stats.recv, stats.sent, stats.lost, stats.rtt, stats.cwnd);
 
-        HASH_DELETE(hh, s_conns->connection_io, _conn_io);
+        HASH_DELETE(hh, s_quic_conns->connection_io, _conn_io);
 
         ev_timer_stop(loop, &_conn_io->timer);
         quiche_conn_free(_conn_io->connection);
@@ -1043,7 +1043,7 @@ static struct conn_io* _quiche_create_conn(
         _tmp->connection_id,
         QUICHE_LOCAL_CONN_ID_LEN,
         odcid, odcid_len,
-        s_conns->config);
+        s_quic_conns->config);
     if (_quich_con == NULL)
     {
         W_ASSERT_P(false,
@@ -1053,14 +1053,14 @@ static struct conn_io* _quiche_create_conn(
     }
 
     //copy socket
-    _tmp->socket = s_conns->socket;
+    _tmp->socket = s_quic_conns->socket;
     _tmp->connection = _quich_con;
 
     ev_init(&_tmp->timer, ev_timeout_callback);
     _tmp->timer.data = _tmp;
 
     HASH_ADD(hh,
-        s_conns->connection_io,
+        s_quic_conns->connection_io,
         connection_id,
         QUICHE_LOCAL_CONN_ID_LEN,
         _tmp);
@@ -1074,19 +1074,10 @@ static void _quiche_listener_callback(EV_P_ ev_io* pIO, int pRevents)
 {
     const char* _trace_info = "quiche_listener_callback";
 
-    /*struct quic_connection* _qc = (struct quic_connection*)pIO->data;
-    if (!_qc)
-    {
-        W_ASSERT_P(false,
-            "missing quiche_connection. trace info: %s", _trace_info);
-        return;
-    }*/
-
-    struct conn_io* tmp, * conn_io = NULL;
+    quic_stream_callback_fn _stream_callback = (quic_stream_callback_fn)pIO->data;
+    struct conn_io* _tmp, *_conn_io = NULL;
     static uint8_t buf[QUICHE_MAX_BUFFER_SIZE];
     static uint8_t out[QUICHE_MAX_DATAGRAM_SIZE];
-
-    struct conn_io* _conn_io = NULL;
 
     while (1)
     {
@@ -1095,7 +1086,7 @@ static void _quiche_listener_callback(EV_P_ ev_io* pIO, int pRevents)
         memset(&peer_addr, 0, peer_addr_len);
 
         ssize_t read = recvfrom(
-            s_conns->socket,
+            s_quic_conns->socket,
             (char*)buf,
             sizeof(buf),
             0,
@@ -1147,9 +1138,9 @@ static void _quiche_listener_callback(EV_P_ ev_io* pIO, int pRevents)
             continue;
         }
 
-        HASH_FIND(hh, s_conns->connection_io, dcid, dcid_len, conn_io);
+        HASH_FIND(hh, s_quic_conns->connection_io, dcid, dcid_len, _conn_io);
 
-        if (conn_io == NULL)
+        if (_conn_io == NULL)
         {
             if (!quiche_version_is_supported(version))
             {
@@ -1165,7 +1156,7 @@ static void _quiche_listener_callback(EV_P_ ev_io* pIO, int pRevents)
                 }
 
                 ssize_t sent = sendto(
-                    s_conns->socket,
+                    s_quic_conns->socket,
                     (const char*)out,
                     written,
                     0,
@@ -1204,7 +1195,7 @@ static void _quiche_listener_callback(EV_P_ ev_io* pIO, int pRevents)
                 }
 
                 ssize_t sent = sendto(
-                    s_conns->socket,
+                    s_quic_conns->socket,
                     (const char*)out,
                     written, 0,
                     (struct sockaddr*)&peer_addr, peer_addr_len);
@@ -1227,18 +1218,18 @@ static void _quiche_listener_callback(EV_P_ ev_io* pIO, int pRevents)
                 continue;
             }
 
-            conn_io = _quiche_create_conn(
+            _conn_io = _quiche_create_conn(
                 dcid, dcid_len,
                 odcid, odcid_len);
-            if (conn_io == NULL)
+            if (_conn_io == NULL)
             {
                 continue;
             }
 
-            memcpy(&conn_io->peer_addr,
+            memcpy(&_conn_io->peer_addr,
                 &peer_addr,
                 peer_addr_len);
-            conn_io->peer_addr_len = peer_addr_len;
+            _conn_io->peer_addr_len = peer_addr_len;
         }
 
         //quiche_conn* _qcon = _qc->connection_io->connection;
@@ -1247,34 +1238,34 @@ static void _quiche_listener_callback(EV_P_ ev_io* pIO, int pRevents)
         //    W_ASSERT(false, "quiche_conn is NULL!");
         //    continue;
         //}
-        ssize_t done = quiche_conn_recv(conn_io->connection, buf, read);
-
-
-        if (done < 0) {
-
+        ssize_t done = quiche_conn_recv(_conn_io->connection, buf, read);
+        if (done < 0) 
+        {
             //logger(false, "failed to process packet: %zd", done);
             continue;
         }
 
         //loggerfprintf(stderr, "recv %zd bytes\n", done);
 
-        if (quiche_conn_is_established(conn_io->connection))
+        if (quiche_conn_is_established(_conn_io->connection))
         {
-
-            uint64_t s = 0;
-
-            quiche_stream_iter* readable = quiche_conn_readable(conn_io->connection);
-
-            while (quiche_stream_iter_next(readable, &s))
+            uint64_t _quic_stream_index = 0;
+            quiche_stream_iter* _readable_stream = quiche_conn_readable(_conn_io->connection);
+            while (quiche_stream_iter_next(_readable_stream, &_quic_stream_index))
             {
-                fprintf(stderr, "stream %" PRIu64 " is readable\n", s);
+                fprintf(stderr, "stream %" PRIu64 " is readable\n", _quic_stream_index);
 
-                bool fin = false;
+                if (_stream_callback)
+                {
+                    _stream_callback(_conn_io->connection_id, _quic_stream_index);
+                }
+
+                /*bool fin = false;
                 for (size_t i = 0; i < 100; i++)
                 {
                     ssize_t recv_len = quiche_conn_stream_recv(
-                        conn_io->connection,
-                        s,
+                        _conn_io->connection,
+                        _quic_stream_index,
                         buf, sizeof(buf),
                         &fin);
                     if (recv_len < 0)
@@ -1282,42 +1273,40 @@ static void _quiche_listener_callback(EV_P_ ev_io* pIO, int pRevents)
                         break;
                     }
                     printf("\n\n%s\n\n", buf);
-
                 }
                 if (fin)
                 {
                     static const char* resp = "byez\n";
                     quiche_conn_stream_send(
-                        conn_io->connection,
-                        s,
+                        _conn_io->connection,
+                        _quic_stream_index,
                         (uint8_t*)resp,
                         5,
                         true);
 
-                }
+                }*/
             }
-            quiche_stream_iter_free(readable);
-
+            quiche_stream_iter_free(_readable_stream);
         }
     }
 
-    HASH_ITER(hh, s_conns->connection_io, conn_io, tmp)
+    HASH_ITER(hh, s_quic_conns->connection_io, _conn_io, _tmp)
     {
-        flush_egress(loop, conn_io);
+        flush_egress(loop, _conn_io);
 
-        if (quiche_conn_is_closed(conn_io->connection))
+        if (quiche_conn_is_closed(_conn_io->connection))
         {
             quiche_stats stats;
 
-            quiche_conn_stats(conn_io->connection, &stats);
-            fprintf(stderr, "connection closed, recv=%zu sent=%zu lost=%zu rtt=%" PRIu64 "ns cwnd=%zu\n",
-                stats.recv, stats.sent, stats.lost, stats.rtt, stats.cwnd);
+            quiche_conn_stats(_conn_io->connection, &stats);
+           // fprintf(stderr, "connection closed, recv=%zu sent=%zu lost=%zu rtt=%" PRIu64 "ns cwnd=%zu\n",
+             //   stats.recv, stats.sent, stats.lost, stats.rtt, stats.cwnd);
 
-            HASH_DELETE(hh, s_conns->connection_io, conn_io);
+            HASH_DELETE(hh, s_quic_conns->connection_io, _conn_io);
 
-            ev_timer_stop(loop, &conn_io->timer);
-            quiche_conn_free(conn_io->connection);
-            w_free(conn_io);
+            ev_timer_stop(loop, &_conn_io->timer);
+            quiche_conn_free(_conn_io->connection);
+            w_free(_conn_io);
         }
     }
 }
@@ -1334,7 +1323,8 @@ W_RESULT w_net_open_quic_socket(_In_z_  const char* pAddress,
     _In_    w_socket_mode pSocketMode,
     _In_z_  const char* pCertFilePath,
     _In_z_  const char* pPrivateKeyFilePath,
-    _In_    quic_debug_log_callback pQuicDebugLogCallback)
+    _In_    quic_debug_log_callback_fn pQuicDebugLogCallback,
+    _In_    quic_stream_callback_fn pQuicStreamCallback)
 {
     const char* _trace_info = "w_net_open_quic_socket";
     if (pSocketMode != quic_dialer && pSocketMode != quic_listener)
@@ -1602,8 +1592,8 @@ W_RESULT w_net_open_quic_socket(_In_z_  const char* pAddress,
     _c.socket = _socket;
     _c.connection_io = _quiche_connection_io;
 
-    s_conns = &_c;
-    s_conns->config = _quiche_config;
+    s_quic_conns = &_c;
+    s_quic_conns->config = _quiche_config;
 
 #ifdef W_PLATFORM_WIN
     int _osf_handle = _open_osfhandle(_socket, 0);
@@ -1625,7 +1615,7 @@ W_RESULT w_net_open_quic_socket(_In_z_  const char* pAddress,
             _osf_handle,
             EV_READ);
         ev_io_start(_ev_loop, &_ev_watcher);
-        _ev_watcher.data = &_c;//access to _quiche_con from ev_io->data
+        _ev_watcher.data = pQuicStreamCallback;// &_c;//access to _quiche_con from ev_io->data
         ev_loop(_ev_loop, 0);
     }
 
@@ -1643,17 +1633,65 @@ out:
     {
         quiche_config_free(_quiche_config);
     }
-    if (s_conns)
+    if (s_quic_conns)
     {
-        s_conns->config = NULL;
-        if (s_conns->connection_io)
+        s_quic_conns->config = NULL;
+        if (s_quic_conns->connection_io)
         {
-            quiche_conn_free(s_conns->connection_io->connection);
+            quiche_conn_free(s_quic_conns->connection_io->connection);
         }
-        w_free(s_conns->connection_io);
-        w_free(s_conns);
+        w_free(s_quic_conns->connection_io);
+        w_free(s_quic_conns);
     }
     return _ret;
+}
+
+size_t w_net_send_msg_quic(_In_ uint8_t* pConnectionID,
+    _In_ uint64_t pStreamIndex,
+    _In_ w_buffer_ptr pBuffer,
+    _In_ bool pFinish)
+{
+    //get quich connection based on pConnectionID
+    if (!s_quic_conns || !s_quic_conns->connection_io)
+    {
+        return 0;
+    }
+    quiche_conn* _qc = s_quic_conns->connection_io->connection;
+    if (!_qc)
+    {
+        return 0;
+    }
+    return quiche_conn_stream_send(
+        _qc,
+        pStreamIndex,
+        pBuffer->data,
+        pBuffer->len,
+        pFinish);
+}
+
+size_t w_net_receive_msg_quic(
+    _In_ uint8_t* pConnectionID,
+    _In_ uint64_t pStreamIndex,
+    _Inout_ w_buffer_ptr pReceiveBuffer,
+    _Inout_ bool* pIsStreamFinished)
+{
+    //get quich connection based on pConnectionID
+    if (!s_quic_conns || !s_quic_conns->connection_io || !pReceiveBuffer)
+    {
+        return 0;
+    }
+    quiche_conn* _qc = s_quic_conns->connection_io->connection;
+    if (!_qc)
+    {
+        return 0;
+    }
+  
+    return quiche_conn_stream_recv(
+        _qc,
+        pStreamIndex,
+        pReceiveBuffer->data, 
+        pReceiveBuffer->len,
+        pIsStreamFinished);
 }
 
 #pragma endregion

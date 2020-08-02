@@ -1,6 +1,9 @@
 #include "wolf.h"
+
+//http://dev.ariel-networks.com/apr/apr-tutorial/html/apr-tutorial.html#toc1
 #include <apr.h>
 #include <apr-1/apr_strings.h>
+
 #include <curl/curl.h>
 
 static w_mem_pool s_default_memory_pool = NULL;

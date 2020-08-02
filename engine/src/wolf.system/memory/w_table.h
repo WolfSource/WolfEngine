@@ -19,6 +19,7 @@ extern "C" {
 typedef struct apr_table_t* w_table;
 typedef struct apr_table_entry_t* w_table_entry_iterator;
 typedef int (w_table_do_callback)(void* /*rec*/, const char* /*pKey*/, const char* /*pValue*/);
+
 /*
  * Make a new table.
  * @param pTable , The new table

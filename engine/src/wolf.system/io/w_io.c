@@ -161,7 +161,10 @@ W_RESULT w_io_file_save(_In_z_  const char* pPath,
     _ret = apr_file_write(_file, pContent, &_buffer_len);
     
 __return:
-    apr_file_close(_file);
+    if (_file)
+    {
+        apr_file_close(_file);
+    }
     return _ret == APR_SUCCESS ? W_SUCCESS : W_FAILURE;
 }
 
@@ -262,7 +265,8 @@ const char* w_io_file_get_base_name_from_path(_In_z_ const char* pPath)
     }
     
     if (_index == -1) return "";
-    
+    _index++;
+
     char* _dst_str = w_malloc(_index, "w_io_get_base_file_name_from_path");
     apr_cpystrn(_dst_str, pPath,_index);
     _dst_str[_index] = '\0';
