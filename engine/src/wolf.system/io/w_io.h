@@ -445,7 +445,6 @@ W_RESULT w_io_pixels_from_jpeg_stream(_In_z_   const uint8_t* pJpegStream,
 */
 W_SYSTEM_EXPORT
 W_RESULT w_io_pixels_from_jpeg_file(_In_z_   const char* pJpegFile,
-                                    _In_     size_t pJpegStreamLen,
                                     _In_     w_jpeg_pixel_format pPixelFormat,
                                     _Out_    int* pWidth,
                                     _Out_    int* pHeight,
