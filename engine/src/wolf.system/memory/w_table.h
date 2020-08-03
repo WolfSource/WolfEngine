@@ -28,6 +28,7 @@ typedef int (w_table_do_callback)(void* /*rec*/, const char* /*pKey*/, const cha
  * @return result
  * @warning This table can only store text data
  */
+W_SYSTEM_EXPORT
 W_RESULT                        w_table_init(_Inout_ w_table* pTable, _In_ size_t pInitSize, _In_ w_mem_pool pMemPool);
 
 /*
@@ -38,6 +39,7 @@ W_RESULT                        w_table_init(_Inout_ w_table* pTable, _In_ size_
  * @param pMakeACopy true means when adding data, this table makes a copy of both the key and the value.
   * @return result
  */
+W_SYSTEM_EXPORT
 W_RESULT                        w_table_set(_In_ w_table pTable, char* pKey, char* pValue, bool pMakeACopy);
 
 /**
@@ -46,6 +48,7 @@ W_RESULT                        w_table_set(_In_ w_table pTable, char* pKey, cha
  * @param pKey , The key of the data being removed (case does not matter)
  * @return result
  */
+W_SYSTEM_EXPORT
 W_RESULT                        w_table_unset(_In_ w_table pTable, char* pKey);
 
 /**
@@ -56,6 +59,7 @@ W_RESULT                        w_table_unset(_In_ w_table pTable, char* pKey);
 * @return result
 * @remark When adding data, this function makes a copy of both the key and the value.
 */
+W_SYSTEM_EXPORT
 W_RESULT                        w_table_add(_In_ w_table pTable, char* pKey, char* pValue);
 
 /**
@@ -63,6 +67,7 @@ W_RESULT                        w_table_add(_In_ w_table pTable, char* pKey, cha
 * @param pTable , The table to get size
 * @return result
 */
+W_SYSTEM_EXPORT
 int                             w_table_get_size(_In_ w_table pTable);
 
 /**
@@ -72,6 +77,7 @@ int                             w_table_get_size(_In_ w_table pTable);
 * @param pArg , The data to pass as the first argument to the function
 * @return FALSE if one of the comp() iterations returned zero; TRUE if all iterations returned non-zero
 */
+W_SYSTEM_EXPORT
 int                             w_table_do(
     _In_ w_table pTable,
     _In_ w_table_do_callback pCallBack,
@@ -85,6 +91,7 @@ int                             w_table_do(
 * @param pKeys keys to filter (char*)
 * @return FALSE if one of the comp() iterations returned zero; TRUE if all iterations returned non-zero
 */
+W_SYSTEM_EXPORT
 int                             w_table_do_with_filter(
     _In_ w_table pTable,
     _In_ w_table_do_callback pCallBack,
@@ -96,6 +103,7 @@ int                             w_table_do_with_filter(
 * @param pTable , The table to iterate over
 * @return table entry iterator
 */
+W_SYSTEM_EXPORT
 const w_table_entry_iterator    w_table_get_entry(_In_ w_table pTable);
 
 /**
@@ -104,6 +112,7 @@ const w_table_entry_iterator    w_table_get_entry(_In_ w_table pTable);
 * @param pIndex , The index of pair
 * @return key
 */
+W_SYSTEM_EXPORT
 char*                           w_table_get_key(_In_ const w_table_entry_iterator pTableEntry, _In_ size_t pIndex);
 
 /**
@@ -112,6 +121,7 @@ char*                           w_table_get_key(_In_ const w_table_entry_iterato
 * @param pIndex , The index of pair
 * @return value
 */
+W_SYSTEM_EXPORT
 char*                           w_table_get_value(_In_ const w_table_entry_iterator pTableEntry, _In_ size_t pIndex);
 
 /**
@@ -120,6 +130,7 @@ char*                           w_table_get_value(_In_ const w_table_entry_itera
 * @param pIndex , The index of pair
 * @return key check sum
 */
+W_SYSTEM_EXPORT
 size_t                          w_table_get_key_checksum(_In_ const w_table_entry_iterator pTableEntry, _In_ size_t pIndex);
 
 #ifdef __cplusplus
