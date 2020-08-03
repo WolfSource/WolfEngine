@@ -83,10 +83,6 @@ extern "C" {
 
 #endif
 
-#ifndef W_PATH_MAX
-#define W_PATH_MAX 256
-#endif
-
 #ifndef W_MAX_BUFFER_SIZE
 #define W_MAX_BUFFER_SIZE 4096
 #endif

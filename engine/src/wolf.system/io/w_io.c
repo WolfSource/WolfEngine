@@ -299,11 +299,11 @@ const char* w_io_file_get_basename_from_path(_In_z_ const char* pFilePath)
     char* _s = (char*)w_malloc(_len, "w_io_file_get_basename_from_path");
     strcpy(_s, pFilePath);
 
-#ifdef W_PLATFORM_UNIX
-    return basename(_s);
-#else
+#ifdef W_PLATFORM_WIN
     PathStripPathA(_s);
     return _s;
+#else
+    return basename(_s);
 #endif
 }
 
@@ -442,11 +442,11 @@ W_RESULT	w_io_file_delete(_In_ w_file pFile)
 
 char*	w_io_dir_get_current(void)
 {
-    char* _path = (char*)w_malloc(W_PATH_MAX, "w_io_get_current_directory");
-#ifdef W_PLATFORM_UNIX
-    if (getcwd(_path, PATH_MAX) == NULL) return NULL;
+    char* _path = (char*)w_malloc(W_MAX_BUFFER_SIZE, "w_io_get_current_directory");
+#ifdef W_PLATFORM_WIN
+    GetCurrentDirectoryA(W_MAX_BUFFER_SIZE, _path);
 #else
-    //convert get_current_directoryW(); to char*
+    if (getcwd(_path, PATH_MAX) == NULL) return NULL;
 #endif
     return _path;
 }

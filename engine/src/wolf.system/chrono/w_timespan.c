@@ -349,7 +349,7 @@ void w_timespan_add_by_ref(_Inout_ w_timespan* pLValue, _In_ const w_timespan* p
 
 const char* w_timespan_to_string(_In_ const w_timespan* const pValue)
 {
-    char* _str = (char*)w_malloc(W_PATH_MAX, "w_timespan_to_string");
+    char* _str = (char*)w_malloc(W_MAX_BUFFER_SIZE, "w_timespan_to_string");
     if (!_str)
     {
         return NULL;
@@ -366,12 +366,12 @@ const char* w_timespan_to_string(_In_ const w_timespan* const pValue)
 
 const wchar_t* w_timespan_to_wstring(_In_ const w_timespan* const pValue)
 {
-    wchar_t* _str = (wchar_t*)w_malloc(W_PATH_MAX, "w_timespan_to_wstring");
+    wchar_t* _str = (wchar_t*)w_malloc(W_MAX_BUFFER_SIZE, "w_timespan_to_wstring");
     if (!_str)
     {
         return NULL;
     }
-    swprintf(_str, W_PATH_MAX, L"%d:%d:%d:%d:%03d",
+    swprintf(_str, W_MAX_BUFFER_SIZE, L"%d:%d:%d:%d:%03d",
         w_timespan_get_days(pValue),
         w_timespan_get_hours(pValue),
         w_timespan_get_minutes(pValue),
@@ -444,17 +444,8 @@ const char* w_timespan_get_current_date_time_string()
         return NULL;
     }
     time_t t = time(0);
-#if defined(W_PLATFORM_UNIX)
-    struct tm* _now = localtime(&t);
-    sprintf(_str, "%02d_%02d_%04d__%02d_%02d_%02d",
-        _now->tm_mday,
-        _now->tm_mon,
-        _now->tm_year + 1900,
-        _now->tm_hour,
-        _now->tm_min,
-        _now->tm_sec);
 
-#else
+#ifdef W_PLATFORM_WIN
     struct tm _now;
     localtime_s(&_now, &t);
     sprintf(_str, "%02d_%02d_%04d__%02d_%02d_%02d",
@@ -464,6 +455,15 @@ const char* w_timespan_get_current_date_time_string()
         _now.tm_hour,
         _now.tm_min,
         _now.tm_sec);
+#else
+    struct tm* _now = localtime(&t);
+    sprintf(_str, "%02d_%02d_%04d__%02d_%02d_%02d",
+        _now->tm_mday,
+        _now->tm_mon,
+        _now->tm_year + 1900,
+        _now->tm_hour,
+        _now->tm_min,
+        _now->tm_sec);
 #endif
 
     return _str;
@@ -472,31 +472,31 @@ const char* w_timespan_get_current_date_time_string()
 const wchar_t* w_timespan_get_current_date_time_wstring()
 {
     //get current time
-    wchar_t* _str = (wchar_t*)w_malloc(W_PATH_MAX, "w_timespan_get_current_date_time_wstring");
+    wchar_t* _str = (wchar_t*)w_malloc(W_MAX_BUFFER_SIZE, "w_timespan_get_current_date_time_wstring");
     if (!_str)
     {
         return NULL;
     }
     time_t t = time(0);
-#if defined(W_PLATFORM_UNIX)
-    struct tm* _now = localtime(&t);
-    swprintf(_str, PATH_MAX, L"%d:%d:%d %d:%d:%d",
-        _now->tm_mday,
-        _now->tm_mon,
-        _now->tm_year + 1900,
-        _now->tm_hour,
-        _now->tm_min,
-        _now->tm_sec);
-#else
+#ifdef W_PLATFORM_WIN
     struct tm _now;
     localtime_s(&_now, &t);
-    swprintf(_str, W_PATH_MAX, L"%d:%d:%d %d:%d:%d",
+    swprintf(_str, W_MAX_BUFFER_SIZE, L"%d:%d:%d %d:%d:%d",
         _now.tm_mday,
         _now.tm_mon,
         _now.tm_year + 1900,
         _now.tm_hour,
         _now.tm_min,
         _now.tm_sec);
+#else
+    struct tm* _now = localtime(&t);
+    swprintf(_str, W_MAX_BUFFER_SIZE, L"%d:%d:%d %d:%d:%d",
+        _now->tm_mday,
+        _now->tm_mon,
+        _now->tm_year + 1900,
+        _now->tm_hour,
+        _now->tm_min,
+        _now->tm_sec);
 #endif
 
     return _str;
