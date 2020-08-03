@@ -26,8 +26,8 @@ void s_quic_stream_callback(uint8_t* pConnectionID, uint64_t pStreamIndex)
     if (_stream_finished)
     {
         static const char* _resp = "bye\n";
-        strcpy(_b.data, _resp);
         _b.len = strlen(_resp);
+        memcpy(_b.data, _resp, _b.len);
         w_net_send_msg_quic(
             pConnectionID,
             pStreamIndex,
