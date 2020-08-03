@@ -23,6 +23,12 @@
 #define PNG_BYTES_TO_CHECK  4
 #define PNG_PAGING_SIZE     8
 
+struct png_context {
+    void* data;
+    int len;
+    int pos;
+};
+
 w_file w_io_file_create(_In_z_  const char* pPath,
                         _In_z_  const char* pContent,
                         _In_    bool pBinaryMode,
@@ -161,10 +167,7 @@ W_RESULT w_io_file_save(_In_z_  const char* pPath,
     _ret = apr_file_write(_file, pContent, &_buffer_len);
     
 __return:
-    if (_file)
-    {
-        apr_file_close(_file);
-    }
+    apr_file_close(_file);
     return _ret == APR_SUCCESS ? W_SUCCESS : W_FAILURE;
 }
 
@@ -265,8 +268,7 @@ const char* w_io_file_get_base_name_from_path(_In_z_ const char* pPath)
     }
     
     if (_index == -1) return "";
-    _index++;
-
+    
     char* _dst_str = w_malloc(_index, "w_io_get_base_file_name_from_path");
     apr_cpystrn(_dst_str, pPath,_index);
     _dst_str[_index] = '\0';
@@ -319,16 +321,22 @@ w_file_istream w_io_file_read_nbytes_from_path(_In_z_ const char* pPath, _In_ si
     apr_file_t* _file = NULL;
     apr_status_t _ret = apr_file_open(&_file,
                        pPath,
-                       APR_FOPEN_READ | APR_FOPEN_BUFFERED,
-                       0,
+                       APR_READ,
+                       APR_OS_DEFAULT,
                        _pool);
     if (_ret == APR_SUCCESS)
     {
         //read it all
-        _istream->size = apr_file_buffer_size_get(_file);
-        _istream->bytes_read = pNBytes;
-        apr_file_read(_file, _istream->buffer, &_istream->bytes_read);
-        apr_file_close(_file);
+        apr_finfo_t _finfo;
+        _ret = apr_file_info_get(&_finfo, APR_FINFO_NORM, _file);
+        if (_ret == APR_SUCCESS)
+        {
+            _istream->size = _finfo.size;
+            _istream->buffer = w_malloc(_istream->size, "w_io_file_read_nbytes_from_path(file buffer)");
+            _istream->bytes_read = _istream->size;
+            apr_file_read(_file, _istream->buffer, &_istream->bytes_read);
+            apr_file_close(_file);
+        }
     }
     return _istream;
 }
@@ -875,7 +883,6 @@ out:
 }
 
 W_RESULT w_io_pixels_from_jpeg_file(_In_z_   const char* pJpegFile,
-                                    _In_     size_t pJpegStreamLen,
                                     _In_     w_jpeg_pixel_format pPixelFormat,
                                     _Out_    int* pWidth,
                                     _Out_    int* pHeight,
@@ -915,9 +922,17 @@ static  void _png_user_read_data(
     png_bytep pData,
     png_size_t pLength)
 {
+    struct png_context* context;
+
+    context = png_get_io_ptr(pPngPtr);
+    if (pLength > context->pos + context->len)
+        pLength = context->len - context->pos;
+    memcpy(pData, (char*)context->data + context->pos, pLength);
+    context->pos += pLength;
+
     //cast istream
-    png_voidp _io = png_get_io_ptr(pPngPtr);
-    memcpy(pData, _io, pLength);
+    //png_voidp _io = png_get_io_ptr(pPngPtr);
+    //memcpy(pData, _io, pLength);
 }
 
 W_RESULT w_io_pixels_from_png_stream(_In_   w_file_istream pFileStream,
@@ -929,7 +944,7 @@ W_RESULT w_io_pixels_from_png_stream(_In_   w_file_istream pFileStream,
                                      _Out_  int* pNumberOfPasses,
                                      _Out_  uint8_t** pPixels)
 {
-    if(!png_sig_cmp(pFileStream->buffer, 0, PNG_BYTES_TO_CHECK))
+    if(png_sig_cmp(pFileStream->buffer, 0, PNG_BYTES_TO_CHECK))
     {
         W_ASSERT(false, "file stream does not contain png data. trace info: w_io_pixels_from_png_stream::png_sig_cmp");
         return APR_BADARG;
@@ -962,7 +977,14 @@ W_RESULT w_io_pixels_from_png_stream(_In_   w_file_istream pFileStream,
         return W_FAILURE;
     }
 
-    png_set_read_fn(_png_ptr, pFileStream->buffer, _png_user_read_data);//png_init_io(_png_ptr, _file);
+    struct png_context context;
+
+    context.data = pFileStream->buffer;
+    context.len = pFileStream->bytes_read;
+    context.pos = PNG_PAGING_SIZE;
+
+    png_set_read_fn(_png_ptr, &context, &_png_user_read_data);//png_init_io(_png_ptr, _file);
+    //png_init_io(_png_ptr, )
     png_set_sig_bytes(_png_ptr, PNG_PAGING_SIZE);
     png_read_info(_png_ptr, _info_ptr);
 
@@ -1022,7 +1044,7 @@ W_RESULT w_io_pixels_from_png_stream(_In_   w_file_istream pFileStream,
     {
         w_free(*pPixels);
     }
-    *pPixels = (uint8_t*)w_malloc(_comp * (size_t)(*pWidth) * (size_t)(*pHeight) * sizeof(uint8_t),
+    (*pPixels) = (uint8_t*)w_malloc(_comp * (size_t)(*pWidth) * (size_t)(*pHeight) * sizeof(uint8_t),
                                   "w_io_pixels_from_png_stream");
     
     size_t _bytes_per_row = png_get_rowbytes(_png_ptr, _info_ptr);
@@ -1049,9 +1071,9 @@ W_RESULT w_io_pixels_from_png_stream(_In_   w_file_istream pFileStream,
                 const uint8_t _b = _raw_data[_byte_index++];
                 _byte_index++;//alpha ignored
 
-                *pPixels[_k] = _r;
-                *pPixels[_k + 1] = _g;
-                *pPixels[_k + 2] = _b;
+                (*pPixels)[_k] = _r;
+                (*pPixels)[_k + 1] = _g;
+                (*pPixels)[_k + 2] = _b;
 
                 _k += _comp;
             }
@@ -1072,9 +1094,9 @@ W_RESULT w_io_pixels_from_png_stream(_In_   w_file_istream pFileStream,
                 const uint8_t _b = _raw_data[_byte_index++];
                 _byte_index++;//alpha ignored
 
-                *pPixels[_k] = _b;
-                *pPixels[_k + 1] = _g;
-                *pPixels[_k + 2] = _r;
+                (*pPixels)[_k] = _b;
+                (*pPixels)[_k + 1] = _g;
+                (*pPixels)[_k + 2] = _r;
 
                 _k += _comp;
             }
@@ -1095,10 +1117,10 @@ W_RESULT w_io_pixels_from_png_stream(_In_   w_file_istream pFileStream,
                 const uint8_t _b = _raw_data[_byte_index++];
                 const uint8_t _a = _raw_data[_byte_index++];
 
-                *pPixels[_k] = _r;
-                *pPixels[_k + 1] = _g;
-                *pPixels[_k + 2] = _b;
-                *pPixels[_k + 3] = _a;
+                (*pPixels)[_k] = _r;
+                (*pPixels)[_k + 1] = _g;
+                (*pPixels)[_k + 2] = _b;
+                (*pPixels)[_k + 3] = _a;
 
                 _k += _comp;
             }
@@ -1119,10 +1141,10 @@ W_RESULT w_io_pixels_from_png_stream(_In_   w_file_istream pFileStream,
                 const uint32_t _b = _raw_data[_byte_index++];
                 const uint32_t _a = _raw_data[_byte_index++];
 
-                *pPixels[_k] = _b;
-                *pPixels[_k + 1] = _g;
-                *pPixels[_k + 2] = _r;
-                *pPixels[_k + 3] = _a;
+                (*pPixels)[_k] = _b;
+                (*pPixels)[_k + 1] = _g;
+                (*pPixels)[_k + 2] = _r;
+                (*pPixels)[_k + 3] = _a;
 
                 _k += _comp;
             }
