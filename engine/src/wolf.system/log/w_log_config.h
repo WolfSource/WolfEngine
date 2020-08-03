@@ -18,10 +18,10 @@ typedef enum w_log_type
 
 typedef struct w_log_config
 {
-	char*	            app_name = nullptr;
-	char*	            log_path = nullptr;
-	enum w_log_type	    flush_level = w_log_type::W_INFO;
-	bool		        log_to_std_out = true;
+	char*	            app_name;
+	char*	            log_directory_path;
+	enum w_log_type	    flush_level;
+	bool		        log_to_std_out;
 } w_log_config;
 
 
