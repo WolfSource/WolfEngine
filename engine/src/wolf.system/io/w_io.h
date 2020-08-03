@@ -195,20 +195,36 @@ W_SYSTEM_EXPORT
 const char* w_io_file_get_name(_In_ w_file pFile);
 
 /**
- * pick off base name in filename before dot(without extension) from path
+ * pick off basename in filename 
  * @param pPath path of file
  * @return base file name
 */
 W_SYSTEM_EXPORT
-const char* w_io_file_get_base_name_from_path(_In_z_ const char* pPath);
+const char* w_io_file_get_basename_from_path(_In_z_ const char* pPath);
 
 /**
- * pick off base name in filename before dot(without extension) from file
+ * pick off basename in filename
  * @param pFile path of file
  * @return base file name
 */
 W_SYSTEM_EXPORT
-const char* w_io_file_get_base_name(_In_ w_file pFile);
+const char* w_io_file_get_basename(_In_ w_file pFile);
+
+/**
+ * pick off basename without extension in filename
+ * @param pPath path of file
+ * @return base file name
+*/
+W_SYSTEM_EXPORT
+const char* w_io_file_get_basename_without_extension_from_path(_In_z_ const char* pPath);
+
+/**
+ * pick off basename without extension in filename
+ * @param pFile path of file
+ * @return base file name
+*/
+W_SYSTEM_EXPORT
+const char* w_io_file_get_basename_without_extension(_In_ w_file pFile);
 
 /**
  * read the whole file with given path

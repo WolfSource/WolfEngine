@@ -16,6 +16,8 @@
 #include "base64/linuxbase64.h"
 #include <sys/stat.h>
 #include <libgen.h>
+#elif defined(W_PLATFORM_WIN)
+#include <shlwapi.h>
 #endif
 
 #include <turbojpeg.h>
@@ -176,21 +178,26 @@ out:
 
 W_RESULT w_io_file_check_is_file(_In_z_ const char* pPath)
 {
-#ifdef W_PLATFORM_UNIX
-    struct stat _stat;
-    int _ret = stat(pPath, &_stat);
-    return _ret == -1 ? W_FAILURE : W_SUCCESS;
-#else
-    //on Windows
-    FILE* _file = NULL;
-    fopen_s(&_file, pPath, "r");
-    if (_file)
+    w_mem_pool _pool = w_get_default_memory_pool();
+    if (!_pool)
     {
-        fclose(_file);
+        W_ASSERT(false, "could not get default memory. trace info: w_io_file_check_is_file");
+        return W_FAILURE;
+    }
+
+    apr_file_t* _file = NULL;
+    apr_status_t _ret = apr_file_open(
+        &_file,
+        pPath,
+        APR_READ,
+        APR_OS_DEFAULT,
+        _pool);
+    if (_ret == APR_SUCCESS)
+    {
+        apr_file_close(_file);
         return W_SUCCESS;
     }
     return W_FAILURE;
-#endif
 }
 
 w_file_info w_io_file_get_info_from_path(_In_z_ const char* pPath)
@@ -256,12 +263,12 @@ const char* w_io_file_get_extension(_In_ w_file pFile)
     return w_io_file_get_extension_from_path(_info->fname);
 }
 
-const char* w_io_file_get_base_name_from_path(_In_z_ const char* pPath)
+const char* w_io_file_get_name_from_path(_In_z_ const char* pPath)
 {
     // traverse from right
     size_t _len = strlen(pPath);
     size_t _index = -1;
-    for (size_t i = _len - 1; i >= 0; i--)
+    for (size_t i = _len - 1; i > 0; i--)
     {
         if (pPath[i] == '.')
         {
@@ -280,27 +287,44 @@ const char* w_io_file_get_base_name_from_path(_In_z_ const char* pPath)
     return _dst_str;
 }
 
-const char* w_io_file_get_base_name(_In_ w_file pFile)
+const char* w_io_file_get_name(_In_ w_file pFile)
 {
     apr_finfo_t* _info = w_io_file_get_info(pFile);
-    return _info->fname;
+    return w_io_file_get_name_from_path(_info->fname);
 }
 
-const char* w_io_file_get_name_from_path(_In_z_ const char* pFilePath)
+const char* w_io_file_get_basename_from_path(_In_z_ const char* pFilePath)
 {
+    size_t _len = strlen(pFilePath);
+    char* _s = (char*)w_malloc(_len, "w_io_file_get_basename_from_path");
+    strcpy(_s, pFilePath);
+
 #ifdef W_PLATFORM_UNIX
-    char* _s = strdup(pFilePath);
     return basename(_s);
 #else
-    
+    PathStripPathA(_s);
+    return _s;
 #endif
 }
 
-const char*	w_io_file_get_name(_In_ w_file pFile)
+const char*	w_io_file_get_basename(_In_ w_file pFile)
 {
     apr_finfo_t* _info = w_io_file_get_info(pFile);
-    if (!_info) return "";
-    return _info->name;
+    if (!_info) return NULL;
+    return w_io_file_get_basename_from_path(_info->fname);
+}
+
+const char* w_io_file_get_basename_without_extension_from_path(_In_z_ const char* pPath)
+{
+    const char* _basename = w_io_file_get_basename_from_path(pPath);
+    return w_io_file_get_name_from_path(_basename);
+}
+
+const char* w_io_file_get_basename_without_extension(_In_ w_file pFile)
+{
+    apr_finfo_t* _info = w_io_file_get_info(pFile);
+    if (!_info) return NULL;
+    return w_io_file_get_basename_without_extension_from_path(_info->fname);
 }
 
 w_file_istream w_io_file_read_full_from_path(_In_z_ const char* pPath)
