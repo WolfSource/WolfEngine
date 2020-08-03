@@ -9,7 +9,7 @@ static std::unordered_map<int, w_logger*> s_loggers;
 
 int V_INIT(_In_ const w_log_config* pConfig)
 {
-    auto _l = (w_logger*)w_malloc(sizeof(w_logger), "w_log_init");
+    auto _l = new w_logger(pConfig);
     if (!_l)
     {
         return -1;

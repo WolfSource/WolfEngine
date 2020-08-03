@@ -174,18 +174,24 @@ void w_timespan_add_by_ref(_Inout_ w_timespan* pLValue, _In_ const w_timespan* c
 /**
  * convert timespan to characters
  * @param pValue timespan parameter
+ * @param pSplitCharacter split character for example ":"
  * @return string as const char*
 */
 W_SYSTEM_EXPORT
-const char* w_timespan_to_string(_In_ const w_timespan* const pValue);
+const char* w_timespan_to_string(
+	_In_ const w_timespan* const pValue,
+	_In_z_ const char* pSplitCharacter);
 
 /**
  * convert timespan to wide characters
  * @param pValue timespan parameter
+ * @param pSplitCharacter split character for example L":"
  * @return string as const char*
 */
 W_SYSTEM_EXPORT
-const wchar_t* w_timespan_to_wstring(_In_ const w_timespan* const pValue);
+const wchar_t* w_timespan_to_wstring(
+	_In_ const w_timespan* const pValue,
+	_In_z_ const wchar_t* pSplitCharacter);
 
 
 #pragma region Getters

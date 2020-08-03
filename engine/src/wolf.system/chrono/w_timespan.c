@@ -347,7 +347,9 @@ void w_timespan_add_by_ref(_Inout_ w_timespan* pLValue, _In_ const w_timespan* p
     pLValue->ticks = _result;
 }
 
-const char* w_timespan_to_string(_In_ const w_timespan* const pValue)
+const char* w_timespan_to_string(
+    _In_ const w_timespan* const pValue,
+    _In_z_ const char* pSplitCharacter)
 {
     char* _str = (char*)w_malloc(W_MAX_BUFFER_SIZE, "w_timespan_to_string");
     if (!_str)
@@ -355,27 +357,37 @@ const char* w_timespan_to_string(_In_ const w_timespan* const pValue)
         return NULL;
     }
 
-    sprintf(_str, "%d:%d:%d:%d:%03d",
+    sprintf(_str, "%d%s%d%s%d%s%d%s%03d",
         w_timespan_get_days(pValue),
+        pSplitCharacter,
         w_timespan_get_hours(pValue),
+        pSplitCharacter,
         w_timespan_get_minutes(pValue),
+        pSplitCharacter,
         w_timespan_get_seconds(pValue),
+        pSplitCharacter,
         w_timespan_get_milliseconds(pValue));
     return _str;
 }
 
-const wchar_t* w_timespan_to_wstring(_In_ const w_timespan* const pValue)
+const wchar_t* w_timespan_to_wstring(
+    _In_ const w_timespan* const pValue,
+    _In_z_ const wchar_t* pSplitCharacter)
 {
     wchar_t* _str = (wchar_t*)w_malloc(W_MAX_BUFFER_SIZE, "w_timespan_to_wstring");
     if (!_str)
     {
         return NULL;
     }
-    swprintf(_str, W_MAX_BUFFER_SIZE, L"%d:%d:%d:%d:%03d",
+    swprintf(_str, "%d%s%d%s%d%s%d%s%03d",
         w_timespan_get_days(pValue),
+        pSplitCharacter,
         w_timespan_get_hours(pValue),
+        pSplitCharacter,
         w_timespan_get_minutes(pValue),
+        pSplitCharacter,
         w_timespan_get_seconds(pValue),
+        pSplitCharacter,
         w_timespan_get_milliseconds(pValue));
     return _str;
 }

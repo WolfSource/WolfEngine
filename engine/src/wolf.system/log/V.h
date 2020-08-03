@@ -31,6 +31,7 @@ extern "C" {
  * @param pConfig is the configuration of log
  * @return log stream ID
 */
+W_SYSTEM_EXPORT
 int  V_INIT(_In_ const w_log_config* pConfig);
 
 /**
@@ -39,6 +40,7 @@ int  V_INIT(_In_ const w_log_config* pConfig);
  * @param pLogType type of the log
  * @param pFMT fmt
 */
+W_SYSTEM_EXPORT
 void V(_In_     const W_RESULT pResult,
        _In_     w_log_type pLogType,
        _In_z_   const char* pFMT);
@@ -49,6 +51,7 @@ void V(_In_     const W_RESULT pResult,
  * @param pLogType type of the log
  * @param pFMT fmt
 */
+W_SYSTEM_EXPORT
 void VA(
 	_In_	    W_RESULT pResult,
     _In_        w_log_type pLogType,
@@ -62,6 +65,7 @@ void VA(
  * @param pTerminateProgram terminate the program
  * @param pFMT fmt
 */
+W_SYSTEM_EXPORT
 void VALIDATE(
     _In_        W_RESULT pResult,
     _In_        w_log_type pLogType,
@@ -72,11 +76,13 @@ void VALIDATE(
 /**
  * flush the log file
 */
+W_SYSTEM_EXPORT
 W_RESULT  V_FLUSH(void);
 
 /**
  * flush the specific log file
 */
+W_SYSTEM_EXPORT
 W_RESULT  V_FLUSH_EX(_In_ int pLogID);
 
 #ifdef __cplusplus
