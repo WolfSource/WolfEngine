@@ -169,3 +169,20 @@ W_RESULT  V_FLUSH_EX(_In_ int pLogID)
     if (s_loggers.find(pLogID) == s_loggers.end()) return W_FAILURE;
     return s_loggers[pLogID]->flush();
 }
+
+W_RESULT  V_TERMINATE(_In_ int pLogID)
+{
+    //get the logger object based on log ID
+    auto _iter = s_loggers.find(pLogID);
+    if (_iter == s_loggers.end()) return W_FAILURE;
+
+    auto _ptr = s_loggers[pLogID];
+    if (_ptr)
+    {
+        delete _ptr;
+        _ptr = nullptr;
+    }
+    s_loggers.erase(_iter);
+
+    return W_SUCCESS;
+}

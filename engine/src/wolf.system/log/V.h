@@ -29,7 +29,7 @@ extern "C" {
 /**
  * initialize the log file and create a log file inside a Log folder
  * @param pConfig is the configuration of log
- * @return log stream ID
+ * @return log ID
 */
 W_SYSTEM_EXPORT
 int  V_INIT(_In_ const w_log_config* pConfig);
@@ -81,9 +81,19 @@ W_RESULT  V_FLUSH(void);
 
 /**
  * flush the specific log file
+ * @param pLogID the id of log
+ * @return result
 */
 W_SYSTEM_EXPORT
 W_RESULT  V_FLUSH_EX(_In_ int pLogID);
+
+/**
+ * terminate the specific log file
+ * @param pLogID the id of log
+ * @return result
+*/
+W_SYSTEM_EXPORT
+W_RESULT  V_TERMINATE(_In_ int pLogID);
 
 #ifdef __cplusplus
 }
