@@ -117,7 +117,7 @@ W_RESULT w_io_file_save(_In_z_  const char* pPath,
     if(!_pool)
     {
         W_ASSERT(false, "could not get default memory. trace info: w_io_create_directory");
-        goto __return;
+        goto out;
     }
     
     _flags = APR_FOPEN_CREATE | // create file if not there
@@ -161,13 +161,16 @@ W_RESULT w_io_file_save(_In_z_  const char* pPath,
     );
     if (_ret != APR_SUCCESS)
     {
-        goto __return;
+        goto out;
     }
     _buffer_len = strlen(pContent);
     _ret = apr_file_write(_file, pContent, &_buffer_len);
     
-__return:
-    apr_file_close(_file);
+out:
+    if (_file)
+    {
+        apr_file_close(_file);
+    }
     return _ret == APR_SUCCESS ? W_SUCCESS : W_FAILURE;
 }
 
@@ -268,7 +271,8 @@ const char* w_io_file_get_base_name_from_path(_In_z_ const char* pPath)
     }
     
     if (_index == -1) return "";
-    
+    _index++;
+
     char* _dst_str = w_malloc(_index, "w_io_get_base_file_name_from_path");
     apr_cpystrn(_dst_str, pPath,_index);
     _dst_str[_index] = '\0';
@@ -348,6 +352,12 @@ w_file_istream w_io_file_read_full(_In_ w_file pFile)
 
 w_file_istream	w_io_file_read_nbytes(_In_ w_file pFile, _In_ size_t pNBytes)
 {
+    if (!pFile)
+    {
+        W_ASSERT(false, "badd arg. trace info: w_io_file_read_nbytes");
+        return NULL;
+    }
+
     w_mem_pool _pool = w_get_default_memory_pool();
     if(!_pool)
     {
