@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\tests\quic_server.c" />
+    <ClCompile Include="..\..\..\tests\quic_server.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{D519D1D6-E188-48C7-A0ED-1E2F156D0091}</ProjectGuid>

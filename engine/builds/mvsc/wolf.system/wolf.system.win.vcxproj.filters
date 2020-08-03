@@ -103,6 +103,15 @@
     <Filter Include="memory\hash">
       <UniqueIdentifier>{e288fa0c-cad1-4a9e-bacb-1afb1bc356f1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="json\rapidjson\error">
+      <UniqueIdentifier>{ce372a16-d9c4-4536-8a4e-2ccaae871e5f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="json\rapidjson\internal">
+      <UniqueIdentifier>{d4f64ed8-289c-42ac-8d4c-84bfdb3d2473}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="json\rapidjson\msinttypes">
+      <UniqueIdentifier>{9f58969d-89f2-4083-97fb-b8072254c76b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\src\wolf.system\base64\chromiumbase64.c">
@@ -622,9 +631,6 @@
     <ClInclude Include="..\..\..\src\wolf.system\io\w_io.h">
       <Filter>io</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\json\rapidjson\rapidjson.hpp">
-      <Filter>json\rapidjson</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\wolf.system\log\V.h">
       <Filter>log</Filter>
     </ClInclude>
@@ -844,6 +850,117 @@
     <ClInclude Include="..\..\..\src\wolf.system\memory\w_hash.h">
       <Filter>memory</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\json\rapidjson\rapidjson.h">
+      <Filter>json\rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\json\rapidjson\writer.h">
+      <Filter>json\rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\json\rapidjson\stringbuffer.h">
+      <Filter>json\rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\json\rapidjson\document.h">
+      <Filter>json\rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\json\rapidjson\allocators.h">
+      <Filter>json\rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\json\rapidjson\cursorstreamwrapper.h">
+      <Filter>json\rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\json\rapidjson\encodedstream.h">
+      <Filter>json\rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\json\rapidjson\encodings.h">
+      <Filter>json\rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\json\rapidjson\filereadstream.h">
+      <Filter>json\rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\json\rapidjson\filewritestream.h">
+      <Filter>json\rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\json\rapidjson\fwd.h">
+      <Filter>json\rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\json\rapidjson\istreamwrapper.h">
+      <Filter>json\rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\json\rapidjson\memorybuffer.h">
+      <Filter>json\rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\json\rapidjson\memorystream.h">
+      <Filter>json\rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\json\rapidjson\ostreamwrapper.h">
+      <Filter>json\rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\json\rapidjson\pointer.h">
+      <Filter>json\rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\json\rapidjson\prettywriter.h">
+      <Filter>json\rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\json\rapidjson\reader.h">
+      <Filter>json\rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\json\rapidjson\schema.h">
+      <Filter>json\rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\json\rapidjson\stream.h">
+      <Filter>json\rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\json\rapidjson\error\en.h">
+      <Filter>json\rapidjson\error</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\json\rapidjson\error\error.h">
+      <Filter>json\rapidjson\error</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\json\rapidjson\internal\biginteger.h">
+      <Filter>json\rapidjson\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\json\rapidjson\internal\clzll.h">
+      <Filter>json\rapidjson\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\json\rapidjson\internal\diyfp.h">
+      <Filter>json\rapidjson\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\json\rapidjson\internal\dtoa.h">
+      <Filter>json\rapidjson\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\json\rapidjson\internal\ieee754.h">
+      <Filter>json\rapidjson\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\json\rapidjson\internal\itoa.h">
+      <Filter>json\rapidjson\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\json\rapidjson\internal\meta.h">
+      <Filter>json\rapidjson\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\json\rapidjson\internal\pow10.h">
+      <Filter>json\rapidjson\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\json\rapidjson\internal\regex.h">
+      <Filter>json\rapidjson\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\json\rapidjson\internal\stack.h">
+      <Filter>json\rapidjson\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\json\rapidjson\internal\strfunc.h">
+      <Filter>json\rapidjson\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\json\rapidjson\internal\strtod.h">
+      <Filter>json\rapidjson\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\json\rapidjson\internal\swap.h">
+      <Filter>json\rapidjson\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\json\rapidjson\msinttypes\inttypes.h">
+      <Filter>json\rapidjson\msinttypes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\json\rapidjson\msinttypes\stdint.h">
+      <Filter>json\rapidjson\msinttypes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\src\wolf.system\base64\LICENSE">
@@ -877,6 +994,9 @@
     </Text>
     <Text Include="..\..\..\src\wolf.system\net\ws\uWebSockets\f2\LICENSE.txt">
       <Filter>net\ws\uWebSockets\f2</Filter>
+    </Text>
+    <Text Include="..\..\..\src\wolf.system\json\rapidjson\version.txt">
+      <Filter>json\rapidjson</Filter>
     </Text>
   </ItemGroup>
   <ItemGroup>

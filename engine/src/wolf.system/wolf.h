@@ -89,8 +89,8 @@ extern "C" {
 
 #define WOLF_MAJOR_VERSION 2    // Making incompatible API changes
 #define WOLF_MINOR_VERSION 0    // Adding functionality in a backwards - compatible manner
-#define WOLF_PATCH_VERSION 11   // bug fixes
-#define WOLF_DEBUG_VERSION 38   // for debugging
+#define WOLF_PATCH_VERSION 18   // bug fixes
+#define WOLF_DEBUG_VERSION 44   // for debugging
 
 #ifndef W_SUCCESS
 #define W_SUCCESS 0
