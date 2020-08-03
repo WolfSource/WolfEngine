@@ -97,7 +97,7 @@ extern "C" {
 #endif
 
 #ifndef W_FAILURE
-#define W_FAILURE APR_EGENERAL
+#define W_FAILURE 1
 #endif
 
 //typedef void (*w_job)(void*);
