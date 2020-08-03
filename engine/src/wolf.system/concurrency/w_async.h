@@ -35,15 +35,7 @@ typedef struct
  * @return result code
 */
 W_SYSTEM_EXPORT
-W_RESULT w_async_init(_In_ w_async** pAsync, _In_ w_async_callback pAsyncCallBack);
-
-/**
- * create a async
- * @param pAsync async
- * @return result code
-*/
-W_SYSTEM_EXPORT
-W_RESULT w_async_start(_In_ w_async* pAsync);
+W_RESULT w_async_init(_Inout_ w_async* pAsync, _In_ w_async_callback pAsyncCallBack);
 
 /**
  * create a async

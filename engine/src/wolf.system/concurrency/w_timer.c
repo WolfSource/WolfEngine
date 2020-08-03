@@ -15,42 +15,61 @@
 //  return now + (3600. - fmod (now, 3600.));
 //}
 
-w_timer* w_timer_init(_In_ double pStartAfterSec,
-                      _In_ double pTimeOutInSec,
-                      _In_ w_timer_callback pCallBack)
+W_RESULT w_timer_init(
+    _Inout_ w_timer_ptr pTimer,
+    _In_ double pStartAfterSec,
+    _In_ double pTimeOutInSec,
+    _In_ w_timer_callback pCallBack)
 {
-    //allocate memory from pool
-    w_timer* _timer = (w_timer*)w_malloc(sizeof(w_timer), "w_timer_init::_timer");
-    if (!_timer)
+    if (!pTimer)
     {
-        return NULL;
+        return;
     }
-    _timer->t = (w_timer_base*)w_malloc(sizeof(w_timer_base), "w_timer_init::w_timer_base");
-    if (!_timer->t)
+    
+    pTimer->t = (w_timer_base*)w_malloc(sizeof(w_timer_base), "w_timer_init::w_timer_base");
+    if (!pTimer->t)
     {
-        w_free(_timer);
-        return NULL;
+        return W_FAILURE;
     }
-    _timer->l = EV_DEFAULT;
+    pTimer->l = EV_DEFAULT;
     
     //init, start ev_timer and run the loop
-    ev_timer_init (_timer->t, pCallBack, pStartAfterSec, pTimeOutInSec);
-    ev_timer_start (_timer->l, _timer->t);
+    ev_timer_init (pTimer->t, pCallBack, pStartAfterSec, pTimeOutInSec);
+    ev_timer_start (pTimer->l, pTimer->t);
+    pTimer->t->data = pTimer;
+
+    ev_run(pTimer->l, 0);
     
-    ev_run (_timer->l, 0);
-    
-    return _timer;
+    return W_SUCCESS;
 }
 
-void w_timer_restart(_In_ w_timer* pTimer)
+W_RESULT w_timer_restart(_In_ w_timer_ptr pTimer)
 {
+    if (!pTimer)
+    {
+        return W_FAILURE;
+    }
     ev_timer_again(pTimer->l, pTimer->t);
+    return W_SUCCESS;
 }
 
-w_timer_periodic* w_timer_init_periodic(_In_ double pStartAfterSec,
-                                        _In_ double pIntervalInSec,
-                                        _In_ w_timer_periodic_callback pCallBack,
-                                        _In_ w_timer_periodic_scheduler_callback pSchedulerCallBack)
+W_RESULT w_timer_break(_In_ w_timer_ptr pTimer, _In_ uint8_t pHow)
+{
+    if (!pTimer || pHow > 2)
+    {
+        return W_FAILURE;
+    }
+
+    ev_break(pTimer->l, pHow);
+
+    return W_SUCCESS;
+}
+
+w_timer_periodic_ptr w_timer_init_periodic(
+    _In_ double pStartAfterSec,
+    _In_ double pIntervalInSec,
+    _In_ w_timer_periodic_callback pCallBack,
+    _In_ w_timer_periodic_scheduler_callback pSchedulerCallBack)
 {
     //allocate memory from pool
     w_timer_periodic* _timer = (w_timer_periodic*)w_malloc(sizeof(w_timer_periodic), "w_timer_init_periodic::w_timer_periodic");
@@ -72,12 +91,12 @@ w_timer_periodic* w_timer_init_periodic(_In_ double pStartAfterSec,
     return _timer;
 }
 
-void w_timer_free(_In_ w_timer* pTimer)
+void w_timer_terminate(_In_ w_timer_ptr pTimer)
 {
     ev_loop_destroy(pTimer->l);
 }
 
-void w_timer_periodic_free(_In_ w_timer_periodic* pTimer)
+void w_timer_periodic_terminate(_In_ w_timer_periodic_ptr pTimer)
 {
     ev_loop_destroy(pTimer->l);
 }
