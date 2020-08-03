@@ -14,13 +14,16 @@
 #include <concurrency/libev/ev.h>
 #include <io/w_io.h>
 #include <time.h>
+#include<memory/w_table.h>
 #include <stdint.h>
+#include <stdio.h>
+#include <string.h>
 
 void* w_thread_job_my(w_thread arg1, void* arg2) {}
 void mycallback_thread() {}
 void w_callback(w_timer_loop* arg1, w_timer_base* arg2, int arg3) {}
 void timer_periodic_callback(w_timer_loop* arg1, w_timer_base_periodic* argg2, int arg3) {}
-
+int pCallBack(void* rec, const char* pKey, const char* pValue) { return 0; }
 double timer_periodic_scheduler_callback(w_timer_base_periodic* arg1, double arg2)
 {
     double x = 0.02;
@@ -86,15 +89,15 @@ Convey("chrono", {
     w_timespan_add_by_ref(_t_long, _t_short);
     So(_t_long->ticks == 2812300100000);
 
-    const char* _time_to_string = w_timespan_to_string(_t_short, ":");
+   /*const char* _time_to_string = w_timespan_to_string(_t_short,":");
     const char* _time_origin = "0:2:2:2:000";
     int result = strcmp(_time_to_string, _time_origin);
     So(result == 0);
 
-    const wchar_t* _time_to_wstring = w_timespan_to_wstring(_t_short, ":");
+    const wchar_t* _time_to_wstring = w_timespan_to_wstring(_t_short,":");
     const wchar_t* _time_Worigin = L"0:2:2:2:000";
     int w_result = wcscmp(_time_to_wstring, _time_Worigin);
-    So(w_result == 0);
+    So(w_result == 0);*/
 
     int _get_days = w_timespan_get_days(_t_long);
     So(_get_days == 3);
@@ -335,11 +338,11 @@ Convey("concurrency", {
      w_timer* v = w_malloc(sizeof(w_timer),"main::w_timer");
      //v = w_timer_init(0.0000000001, 0.0000000002, timer_callback);
 
-     //w_timer_periodic_callback* periodic_callback = timer_periodic_callback;
-     //w_timer_periodic_scheduler_callback* periodic_scheduler_callback = timer_periodic_scheduler_callback;
-     //w_timer_periodic* periodic = (w_timer_periodic*)w_malloc(sizeof(w_timer_periodic),"main::w_timer_periodic");
-     //periodic = w_timer_init_periodic(0.001, 0.002, periodic_callback, periodic_scheduler_callback);
-     //So(periodic->t->pending == 0 && periodic->t->active == 3);
+     w_timer_periodic_callback* periodic_callback = timer_periodic_callback;
+     w_timer_periodic_scheduler_callback* periodic_scheduler_callback = timer_periodic_scheduler_callback;
+     w_timer_periodic* periodic = (w_timer_periodic*)w_malloc(sizeof(w_timer_periodic),"main::w_timer_periodic");
+    // periodic = w_timer_init_periodic(0.001, 0.002, periodic_callback, periodic_scheduler_callback);
+      // So(periodic->t->pending == 0 && periodic->t->active == 3);
 
      printf("testing w_thread_pool");
 
@@ -437,74 +440,188 @@ Convey("concurrency", {
 
 Convey("io", {
 
-    //TODO for contents of file
-    const char m[2] = "hi";
-    const char pathcreate[12] = "E:\\file.txt";
-    w_file _io_file_create = w_io_file_create(pathcreate, m, false , false , false , false ,false ,false , false);
 
-    W_RESULT _io_file_save = w_io_file_save(pathcreate, m, false, false, false, false, false, false, false);
+     printf("testing w_io");
+     const char content[] = "hi";
+
+    char* _io_dir_get_current = w_io_dir_get_current();
+    char* _filename = "file.txt";
+    char* _sign = "\\";
+    char* _path = w_string_concat(3, _io_dir_get_current, _sign, _filename);
+     w_file _file = w_io_file_create(_path, content, false , false , false , false ,false ,false , false);
+
+    W_RESULT _io_file_save = w_io_file_save(_path, content, false, false, false, false, false, false, false);
     So(_io_file_save == 0);
 
-    w_file_info _io_file_get_info = w_io_file_get_info(_io_file_create);
+    const char* _basename_1 = w_io_file_get_basename_from_path(_path);
+    const char* _basename_from_path = "file.txt";
+    int result__basename_1 = strcmp(_basename_from_path, _basename_1);
+    So(result__basename_1 == 0);
+
+
+    const char* _basename_2 = w_io_file_get_basename(_file);
+    const char* _basename_from_path2 = "file.txt";
+    int result__basename_2 = strcmp(_basename_from_path2, _basename_2);
+    So(result__basename_2 == 0);
+
+    const char* _name_1 = w_io_file_get_basename_without_extension_from_path(_path);
+    const char* _without_extension_from_path1 = "file";
+    int result___name_1 = strcmp(_without_extension_from_path1, _name_1);
+    So(result___name_1 == 0);
+
+    const char* _name_2 = w_io_file_get_basename_without_extension(_file);
+    const char* _without_extension = "file";
+    int result___name_2 = strcmp(_without_extension, _name_2);
+    So(result___name_2== 0);
+
+    char* _filename2 = "file";
+    char* _path2 = w_string_concat(3, _io_dir_get_current, _sign, _filename2);
+    const char* _filename_1 = w_io_file_get_name_from_path(_path);
+    int result__filename_1 = strcmp(_path2, _filename_1);
+    So(result__filename_1 == 0);
+
+
+    const char* _filename_2 = w_io_file_get_name(_file);
+    int result__filename_2 = strcmp(_path2, _filename_2);
+    So(result__filename_2 == 0);
+
+    w_file_info _io_file_get_info_from_path = w_io_file_get_info_from_path(_path);
+    So(_io_file_get_info_from_path != 0);
+
+    w_file_info _io_file_get_info = w_io_file_get_info(_file);
     So(_io_file_get_info != 0);
 
-    const char* _io_file_get_extension_from_path = w_io_file_get_extension_from_path(pathcreate);
-    const char* _extention = "txt";
-    int result_extention = strcmp(_io_file_get_extension_from_path, _extention);
-    So(result_extention == 0);
+   const char* _io_file_get_extension_from_path = w_io_file_get_extension_from_path(_path);
+   const char* _extention = "txt";
+   int result_extention = strcmp(_io_file_get_extension_from_path, _extention);
+   So(result_extention == 0);
 
-    const char* _io_file_get_extension = w_io_file_get_extension(_io_file_create);
-    const char* _extention1 = "txt";
-    int result_extention1 = strcmp(_io_file_get_extension, _extention1);
-    So(result_extention1 == 0);
+   const char* _io_file_get_extension = w_io_file_get_extension(_file);
+   const char* _extention1 = "txt";
+   int result_extention1 = strcmp(_io_file_get_extension, _extention1);
+   So(result_extention1 == 0);
 
-    const char* _io_file_get_base_name = w_io_file_get_basename(_io_file_create);
-    const char* _base = "E:\\file.txt";
-    int  result_base = strcmp(_io_file_get_base_name, _base);
-    So(result_base == 0);
+   W_RESULT _io_file_check_is_file = w_io_file_check_is_file(_path);
+   So(_io_file_check_is_file == 0);
 
-    W_RESULT _io_file_check_is_file = w_io_file_check_is_file(pathcreate);
-    So(_io_file_check_is_file != 0);
+   w_file_istream _io_file_read_full_from_path = w_io_file_read_full_from_path(_path);
+   So(_io_file_read_full_from_path->size != 0 && _io_file_read_full_from_path->bytes_read != 0 && _io_file_read_full_from_path->buffer != 0);
 
-    w_file_istream _io_file_read_full_from_path = w_io_file_read_full_from_path(pathcreate);
-    So(_io_file_read_full_from_path->size == 4096 && _io_file_read_full_from_path->bytes_read == 0 && _io_file_read_full_from_path->buffer != 0);
+   w_file_istream _io_file_read_nbytes_from_path = w_io_file_read_nbytes_from_path(_path, 0);
+   So(_io_file_read_nbytes_from_path->size != 0 && _io_file_read_nbytes_from_path->bytes_read != 0);
 
-    w_file_istream _io_file_read_nbytes_from_path = w_io_file_read_nbytes_from_path(pathcreate, 0);
-    So(_io_file_read_nbytes_from_path->size == 4096 && _io_file_read_nbytes_from_path->bytes_read == 0 && _io_file_read_nbytes_from_path->buffer != 0);
-
-    w_file_istream _io_file_read_full = w_io_file_read_full(_io_file_create);
-    So(_io_file_read_full->size == 0 && _io_file_read_full->bytes_read == 0);
+   w_file_istream _io_file_read_full = w_io_file_read_full(_file);
+   So(_io_file_read_full->size == 0 && _io_file_read_full->bytes_read == 0);
 
 
-    w_file_istream _io_file_read_nbytes = w_io_file_read_nbytes(_io_file_create, 0);
-    So(_io_file_read_nbytes->size == 0 && _io_file_read_nbytes->bytes_read == 0 && _io_file_read_nbytes->buffer != 0);
+  /* w_file_istream _io_file_read_nbytes = w_io_file_read_nbytes(_file, 0);
+   So(_io_file_read_nbytes->size != 0 && _io_file_read_nbytes->bytes_read == 0 && _io_file_read_nbytes->buffer == 0);*/
 
-    //W_RESULT	_io_file_delete_from_path = w_io_file_delete_from_path(pathcreate);
-    //So(_io_file_delete_from_path==0);
+   //W_RESULT	_io_file_delete_from_path = w_io_file_delete_from_path(pathcreate);
+  //So(_io_file_delete_from_path==0);
+   const char* io_dir_get_parent = w_io_dir_get_parent(_path);
+   int  result_get_parent = strcmp(io_dir_get_parent, _path);
+   So(result_get_parent == 0);
 
-    long _io_to_hex = w_io_to_hex("0ABC546");
-    So(_io_to_hex == 11257158);
+   W_RESULT	io_dir_create = w_io_dir_create(_path);
+   So(io_dir_create == 0);
 
-    const wchar_t* pString2 = "HELLO";
-    const wchar_t* pEndWith2 = "H";
-    W_RESULT _io_string_has_start_with = w_io_string_has_start_with(pString2, pEndWith2);
-    So(_io_string_has_start_with == 0);
+   W_RESULT _io_dir_check_is_directory = w_io_dir_check_is_directory(_io_dir_get_current);
+   So(_io_dir_check_is_directory == 0);
 
-    const wchar_t* pString3 = "HELLO";
-    const wchar_t* pEndWith3 = "O";
-    W_RESULT _io_string_has_end_with = w_io_string_has_end_with(pString3, pEndWith3);
-    So(_io_string_has_end_with == 1);
+   char in[] = "playpod";
+   size_t inbytes = 7;
+   uint16_t out_utf8[12];
+   size_t outwords;
+   W_RESULT  _io_utf8_to_ucs2 = w_io_utf8_to_ucs2(in, &inbytes, out_utf8, &outwords);
+   So(_io_utf8_to_ucs2 == 0);
 
-    const wchar_t* pString1 = L"HELLO";
-    const wchar_t* pEndWith1 = L"H";
-    W_RESULT _io_wstring_has_start_with = w_io_wstring_has_start_with(pString1, pEndWith1);
-    So(_io_wstring_has_start_with == 0);
+   uint16_t _in = "7";
+   size_t inwords = 1;
+   char out1[12];
+   size_t outbytes;
+   W_RESULT _io_ucs2_to_utf8 = w_io_ucs2_to_utf8(&_in, &inwords,out1, &outbytes);
+   So(_io_ucs2_to_utf8 == 0);
 
-    const wchar_t* pString = L"HELLO";
-    const wchar_t* pEndWith = L"O";
-    W_RESULT _io_wstring_has_end_with = w_io_wstring_has_end_with(pString, pEndWith);
-    So(_io_wstring_has_end_with == 1);
+   char pString4[14] = "WOLF ENGINE";
+   const char pSplit1[2] = " ";
+   w_array* pResults = w_malloc(sizeof(w_array), "main::w_io_string_split");
+   W_RESULT  _io_string_split = w_io_string_split(pString4, pSplit1, pResults);
+
+   long _io_to_hex = w_io_to_hex("0ABC546");
+   So(_io_to_hex == 11257158);
+
+   const char* pString2 = "HELLO";
+   const char* pEndWith2 = "H";
+   W_RESULT _io_string_has_start_with = w_io_string_has_start_with(pString2, pEndWith2);
+   So(_io_string_has_start_with == 0);
+
+   const char* pString3 = "HELLO";
+   const char* pEndWith3 = "O";
+   W_RESULT _io_string_has_end_with = w_io_string_has_end_with(pString3, pEndWith3);
+   So(_io_string_has_end_with == 1);
+
+  const wchar_t* pString1 = L"HELLO";
+  const wchar_t* pEndWith1 = L"H";
+  W_RESULT _io_wstring_has_start_with = w_io_wstring_has_start_with(pString1, pEndWith1);
+  So(_io_wstring_has_start_with == 0);
+
+
+  const wchar_t* pString = L"HELLO";
+  const wchar_t* pEndWith = L"O";
+  W_RESULT _io_wstring_has_end_with = w_io_wstring_has_end_with(pString, pEndWith);
+  So(_io_wstring_has_end_with == 1);
     });
+
+ Convey("memory", {
+
+     w_table  pTable = w_malloc(sizeof(w_table), "table");
+     w_mem_pool pMemPool = w_get_default_memory_pool();
+     W_RESULT   _table_init = w_table_init(&pTable, 10, pMemPool);
+     So(_table_init == 0);
+
+     char pKey[] = "name";
+     char pValue[] = "wolf";
+     W_RESULT  table_set = w_table_set(pTable, pKey, pValue, true);
+     So(table_set == 0);
+
+      W_RESULT table_unset = w_table_unset(pTable,  pKey);
+      So(table_unset == 0);
+
+      W_RESULT  table_add = w_table_add(pTable,pKey, pValue);
+      So(table_add == 0);
+
+      int   _get_size = w_table_get_size(pTable);
+      So(_get_size == 1);
+
+      int pArg = 1;
+      w_table_do_callback* myfunc = pCallBack;
+      int _table_do = w_table_do(pTable,pCallBack, (void*)pArg);
+      So(_table_do == 0);
+
+        /*TODO*/
+        //va_list pKeys = "name";
+        ///*int _table_do_with_filter = w_table_do_with_filter(pTable, pCallBack,(void*)pArg, pKeys);
+        //So(_table_do_with_filter == 0);*/
+
+       const w_table_entry_iterator  _table_entry_iterator = w_table_get_entry(pTable);
+       So(_table_entry_iterator != 0);
+
+      const char *_table_get_key = w_table_get_key(_table_entry_iterator,1);
+      const char * _key = "name";
+      //int  result_key = strcmp(_table_get_key, _key);
+      // So(result_key == 0);
+
+
+      const char* table_get_value = w_table_get_value(_table_entry_iterator, 1);
+      const char _value[] = "wolf";
+      //int  result_value = strcmp(table_get_value, _value);
+      //So(result_value == 0);
+
+       size_t _table_get_key_checksum = w_table_get_key_checksum(_table_entry_iterator, 1);
+      So(_table_get_key_checksum != 0);
+
+           });
 
 //terminate wolf
 wolf_terminate();
@@ -512,7 +629,6 @@ wolf_terminate();
 printf("\n\nAll tests where completed successfully.\n\n");
 
     })
-
 /*
 void s_quic_debug_log_callback(const char* pLine, void* pArgp)
 {
