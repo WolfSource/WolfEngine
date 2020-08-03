@@ -86,12 +86,12 @@ Convey("chrono", {
     w_timespan_add_by_ref(_t_long, _t_short);
     So(_t_long->ticks == 2812300100000);
 
-    const char* _time_to_string = w_timespan_to_string(_t_short);
+    const char* _time_to_string = w_timespan_to_string(_t_short, ":");
     const char* _time_origin = "0:2:2:2:000";
     int result = strcmp(_time_to_string, _time_origin);
     So(result == 0);
 
-    const wchar_t* _time_to_wstring = w_timespan_to_wstring(_t_short);
+    const wchar_t* _time_to_wstring = w_timespan_to_wstring(_t_short, ":");
     const wchar_t* _time_Worigin = L"0:2:2:2:000";
     int w_result = wcscmp(_time_to_wstring, _time_Worigin);
     So(w_result == 0);
@@ -335,11 +335,11 @@ Convey("concurrency", {
      w_timer* v = w_malloc(sizeof(w_timer),"main::w_timer");
      //v = w_timer_init(0.0000000001, 0.0000000002, timer_callback);
 
-     w_timer_periodic_callback* periodic_callback = timer_periodic_callback;
-     w_timer_periodic_scheduler_callback* periodic_scheduler_callback = timer_periodic_scheduler_callback;
-     w_timer_periodic* periodic = (w_timer_periodic*)w_malloc(sizeof(w_timer_periodic),"main::w_timer_periodic");
-     periodic = w_timer_init_periodic(0.001, 0.002, periodic_callback, periodic_scheduler_callback);
-     So(periodic->t->pending == 0 && periodic->t->active == 3);
+     //w_timer_periodic_callback* periodic_callback = timer_periodic_callback;
+     //w_timer_periodic_scheduler_callback* periodic_scheduler_callback = timer_periodic_scheduler_callback;
+     //w_timer_periodic* periodic = (w_timer_periodic*)w_malloc(sizeof(w_timer_periodic),"main::w_timer_periodic");
+     //periodic = w_timer_init_periodic(0.001, 0.002, periodic_callback, periodic_scheduler_callback);
+     //So(periodic->t->pending == 0 && periodic->t->active == 3);
 
      printf("testing w_thread_pool");
 
@@ -458,7 +458,7 @@ Convey("io", {
     int result_extention1 = strcmp(_io_file_get_extension, _extention1);
     So(result_extention1 == 0);
 
-    const char* _io_file_get_base_name = w_io_file_get_base_name(_io_file_create);
+    const char* _io_file_get_base_name = w_io_file_get_basename(_io_file_create);
     const char* _base = "E:\\file.txt";
     int  result_base = strcmp(_io_file_get_base_name, _base);
     So(result_base == 0);
