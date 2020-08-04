@@ -19,16 +19,18 @@
 #include <stdio.h>
 #include <string.h>
 
-void* w_thread_job_my(w_thread arg1, void* arg2) {}
-void mycallback_thread() {}
-void w_callback(w_timer_loop* arg1, w_timer_base* arg2, int arg3) {}
-void timer_periodic_callback(w_timer_loop* arg1, w_timer_base_periodic* argg2, int arg3) {}
+void* w_thread_job_my(w_thread arg1, void* arg2) { return NULL; }
+void mycallback_thread() { printf("%s", "ok"); }
+void mycallback(EV_P_ w_async_base* arg1, int arg2) { printf("%s", "ok"); }
+
 int pCallBack(void* rec, const char* pKey, const char* pValue) { return 0; }
-double timer_periodic_scheduler_callback(w_timer_base_periodic* arg1, double arg2)
+void s_timer_callback(w_timer_loop* pLoop, w_timer_base* pTimer, int pRevents)
 {
-    double x = 0.02;
-    return x;
+    w_timer_ptr _t = (w_timer_ptr)pTimer->data;
+    w_timer_break(_t, 2);
+    printf("timer");
 }
+
 
 Main({
     //initialize wolf
@@ -89,15 +91,17 @@ Convey("chrono", {
     w_timespan_add_by_ref(_t_long, _t_short);
     So(_t_long->ticks == 2812300100000);
 
-    /*const char* _time_to_string = w_timespan_to_string(_t_short,":");
+    const char* _time_to_string = w_timespan_to_string(_t_short,":");
      const char* _time_origin = "0:2:2:2:000";
      int result = strcmp(_time_to_string, _time_origin);
      So(result == 0);
 
-     const wchar_t* _time_to_wstring = w_timespan_to_wstring(_t_short,":");
-     const wchar_t* _time_Worigin = L"0:2:2:2:000";
+
+    const wchar_t* s = L":";
+    const wchar_t* _time_to_wstring = w_timespan_to_wstring(_t_short,s);
+    const wchar_t* _time_Worigin = L"0:2:2:2:000";
      int w_result = wcscmp(_time_to_wstring, _time_Worigin);
-     So(w_result == 0);*/
+     So(w_result == 0);
 
      int _get_days = w_timespan_get_days(_t_long);
      So(_get_days == 3);
@@ -204,6 +208,14 @@ Convey("chrono", {
      });
 
  Convey("concurrency", {
+
+     printf("testing w_asunc");
+     w_async* pAsync = (w_async*)w_malloc(sizeof(w_async),"main::w_async");
+     W_RESULT _async_init = w_async_init(pAsync, mycallback);
+     So(_async_init == 0);
+
+     W_RESULT _async_send = w_async_send(pAsync);
+     So(_async_send == 0);
 
     printf("testing w_concurrent_queue");
     int _a = 3;
@@ -334,15 +346,16 @@ Convey("chrono", {
 
       printf("testing w_timer");
 
-      w_timer_callback* timer_callback = w_callback;
-      w_timer* v = w_malloc(sizeof(w_timer),"main::w_timer");
-      //v = w_timer_init(0.0000000001, 0.0000000002, timer_callback);
+      static w_timer _t;
+      W_RESULT _timer_init = w_timer_init(&_t, 1, 10, s_timer_callback);
+      So(_timer_init == 0);
 
-      w_timer_periodic_callback* periodic_callback = timer_periodic_callback;
-      w_timer_periodic_scheduler_callback* periodic_scheduler_callback = timer_periodic_scheduler_callback;
-      w_timer_periodic* periodic = (w_timer_periodic*)w_malloc(sizeof(w_timer_periodic),"main::w_timer_periodic");
-      // periodic = w_timer_init_periodic(0.001, 0.002, periodic_callback, periodic_scheduler_callback);
-        // So(periodic->t->pending == 0 && periodic->t->active == 3);
+      W_RESULT _timer_restart = w_timer_restart(&_t);
+      So(_timer_restart == 0);
+
+      uint8_t pHow = "0";
+      W_RESULT timer_break = w_timer_break(&_t, pHow);
+      So(timer_break == 1);
 
        printf("testing w_thread_pool");
 
@@ -571,6 +584,59 @@ Convey("chrono", {
      const wchar_t* pEndWith = L"O";
      W_RESULT _io_wstring_has_end_with = w_io_wstring_has_end_with(pString, pEndWith);
      So(_io_wstring_has_end_with == 1);
+
+     char* _filename3 = "pic.png";
+     char* _path1 = w_string_concat(3, _io_dir_get_current, _sign, _filename3);
+     w_file_istream _istream2 = w_io_file_read_full_from_path(_path1);
+     W_RESULT _io_stream_is_png = w_io_stream_is_png(_istream2);
+     So(_io_stream_is_png == 0);
+
+     W_RESULT _io_file_is_png = w_io_file_is_png(_path1);
+     So(_io_file_is_png == 0);
+
+     int pWidth1;
+     int pHeight1;
+     int pNumberOfPasses1;
+     uint8_t pColorType1 = 0;
+     uint8_t pBitDepth1 = 0;
+     uint8_t* pPixels1;
+     w_file_istream _fs = w_io_file_read_full_from_path(_path1);
+     W_RESULT io_pixels_from_png_stream = w_io_pixels_from_png_stream(_fs, RGBA_PNG, &pWidth1, &pHeight1, &pColorType1, &pBitDepth1, &pNumberOfPasses1, &pPixels1);
+     So(io_pixels_from_png_stream == 0);
+
+     W_RESULT _io_pixels_from_png_file = w_io_pixels_from_png_file(_path1, RGBA_PNG, &pWidth1, &pHeight1, &pColorType1, &pBitDepth1, &pNumberOfPasses1, &pPixels1);
+     So(_io_pixels_from_png_file == 0);
+
+     char* _filename4 = "download.jpeg";
+     char* _path3 = w_string_concat(3, _io_dir_get_current, _sign, _filename4);
+     w_file_istream _istream = w_io_file_read_full_from_path(_path3);
+     char* pDestinationBuffer = w_malloc(_istream->size*2, "");
+
+     
+ 
+     W_RESULT _io_file_is_jpeg = w_io_file_is_jpeg(_path3);
+     So(_io_file_is_jpeg == 0);
+
+     W_RESULT _io_stream_is_jpeg = w_io_stream_is_jpeg(_istream);
+     So(_io_stream_is_jpeg == 0);
+
+    
+
+     int pWidth;
+     int pHeight;
+     int pSubSample;
+     int pColorSpace;
+     int pNumberOfPasses;
+     uint8_t* pPixels;
+     W_RESULT _io_pixels_from_jpeg_stream = w_io_pixels_from_jpeg_stream((const uint8_t*)_istream->buffer, _istream->bytes_read, RGBX_JPEG, &pWidth, &pHeight, &pSubSample, &pColorSpace, &pNumberOfPasses, &pPixels);
+     So(_io_pixels_from_jpeg_stream == 0);
+
+     W_RESULT _io_pixels_from_jpeg_file = w_io_pixels_from_jpeg_file(_path3, RGB_JPEG, &pWidth, &pHeight, &pSubSample, &pColorSpace, &pNumberOfPasses, &pPixels);
+     So(_io_pixels_from_jpeg_file == 0);
+
+    size_t _io_to_base_64 = w_io_to_base_64(&pDestinationBuffer, _istream->buffer, _istream->size, chromium);
+     So(_io_to_base_64 == 9360);
+    
        });
 
     Convey("memory", {
