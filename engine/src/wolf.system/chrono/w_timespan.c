@@ -379,7 +379,7 @@ const wchar_t* w_timespan_to_wstring(
     {
         return NULL;
     }
-    swprintf(_str, "%d%s%d%s%d%s%d%s%03d",
+    swprintf(_str, W_MAX_BUFFER_SIZE,L"%d%ls%d%ls%d%ls%d%ls%03d",
         w_timespan_get_days(pValue),
         pSplitCharacter,
         w_timespan_get_hours(pValue),
