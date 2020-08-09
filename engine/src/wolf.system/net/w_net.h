@@ -119,7 +119,7 @@ extern "C" {
      * @return result code
     */
     W_SYSTEM_EXPORT
-        W_RESULT w_net_url_parse(_In_z_ const char* pUrlAddress, _Inout_ w_url pURL);
+        W_RESULT w_net_url_parse(_In_z_ const char* pUrlAddress, _Inout_ w_url *pURL);
 
     /**
      * encode a URL string
