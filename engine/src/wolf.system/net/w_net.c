@@ -176,7 +176,7 @@ W_RESULT w_net_init(void)
     return nni_init();
 }
 
-W_RESULT w_net_url_parse(_In_z_ const char* pUrlAddress, _Inout_ w_url pURL)
+W_RESULT w_net_url_parse(_In_z_ const char* pUrlAddress, _Inout_ w_url *pURL)
 {
     const char* _trace_info = "w_net_url_parse";
 
@@ -186,7 +186,7 @@ W_RESULT w_net_url_parse(_In_z_ const char* pUrlAddress, _Inout_ w_url pURL)
         return NNG_ENOARG;
     }
 
-    W_RESULT _rt = nng_url_parse(&pURL, pUrlAddress);
+    W_RESULT _rt = nng_url_parse(pURL, pUrlAddress);
     if (_rt)
     {
         _net_error(_rt, "nng_url_parse got error", _trace_info);
@@ -511,7 +511,7 @@ W_RESULT w_net_close_tcp_socket(_Inout_ w_socket_tcp* pSocket)
 
 W_RESULT w_net_open_udp_socket(_In_z_ const char* pEndPoint, _Inout_ w_socket_udp* pSocket)
 {
-    W_RESULT _rt = W_SUCCESS;
+W_RESULT _rt = W_SUCCESS;
     nng_url* _url = NULL;
 
     if (!pSocket)
@@ -526,9 +526,12 @@ W_RESULT w_net_open_udp_socket(_In_z_ const char* pEndPoint, _Inout_ w_socket_ud
     nni_plat_udp* _udp_protocol = (nni_plat_udp*)pSocket->u;
 
     _url = (nng_url*)w_malloc(sizeof(nng_url), "");
+
+
+    _rt = w_net_url_parse(pEndPoint, &_url);
     unsigned long _addr_hex = inet_addr(_url->u_hostname);
     int _port = atoi(_url->u_port);
-    _rt = w_net_url_parse(pEndPoint, _url);
+
     if (_rt)
     {
         goto out;
@@ -537,7 +540,7 @@ W_RESULT w_net_open_udp_socket(_In_z_ const char* pEndPoint, _Inout_ w_socket_ud
     if (_sa)
     {
         _sa->s_in.sa_family = NNG_AF_INET;
-        _sa->s_in.sa_addr = htons(_addr_hex);
+        _sa->s_in.sa_addr = _addr_hex;//htonl(_addr_hex);
         _sa->s_in.sa_port = htons(_port);
     }
 
