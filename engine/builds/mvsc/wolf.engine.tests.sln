@@ -7,7 +7,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test.system.win", "tests\te
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "net", "net", "{4092C134-C22A-4916-86C3-2FF315902485}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test.quic.server..win", "tests\test.quic.server..win.vcxproj", "{D519D1D6-E188-48C7-A0ED-1E2F156D0091}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test.quic.client.win", "tests\test.quic.client.win.vcxproj", "{A0FD08A3-5AC3-4905-B6BA-CBD0337551AC}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test.quic.server.win", "tests\test.quic.server.win.vcxproj", "{D519D1D6-E188-48C7-A0ED-1E2F156D0091}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,6 +27,14 @@ Global
 		{C7EAFC1C-9CFD-4C25-8AE9-C1373DD5DF35}.Release|x64.Build.0 = Release|x64
 		{C7EAFC1C-9CFD-4C25-8AE9-C1373DD5DF35}.Release|x86.ActiveCfg = Release|Win32
 		{C7EAFC1C-9CFD-4C25-8AE9-C1373DD5DF35}.Release|x86.Build.0 = Release|Win32
+		{A0FD08A3-5AC3-4905-B6BA-CBD0337551AC}.Debug|x64.ActiveCfg = Debug|x64
+		{A0FD08A3-5AC3-4905-B6BA-CBD0337551AC}.Debug|x64.Build.0 = Debug|x64
+		{A0FD08A3-5AC3-4905-B6BA-CBD0337551AC}.Debug|x86.ActiveCfg = Debug|Win32
+		{A0FD08A3-5AC3-4905-B6BA-CBD0337551AC}.Debug|x86.Build.0 = Debug|Win32
+		{A0FD08A3-5AC3-4905-B6BA-CBD0337551AC}.Release|x64.ActiveCfg = Release|x64
+		{A0FD08A3-5AC3-4905-B6BA-CBD0337551AC}.Release|x64.Build.0 = Release|x64
+		{A0FD08A3-5AC3-4905-B6BA-CBD0337551AC}.Release|x86.ActiveCfg = Release|Win32
+		{A0FD08A3-5AC3-4905-B6BA-CBD0337551AC}.Release|x86.Build.0 = Release|Win32
 		{D519D1D6-E188-48C7-A0ED-1E2F156D0091}.Debug|x64.ActiveCfg = Debug|x64
 		{D519D1D6-E188-48C7-A0ED-1E2F156D0091}.Debug|x64.Build.0 = Debug|x64
 		{D519D1D6-E188-48C7-A0ED-1E2F156D0091}.Debug|x86.ActiveCfg = Debug|Win32
@@ -38,6 +48,7 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{A0FD08A3-5AC3-4905-B6BA-CBD0337551AC} = {4092C134-C22A-4916-86C3-2FF315902485}
 		{D519D1D6-E188-48C7-A0ED-1E2F156D0091} = {4092C134-C22A-4916-86C3-2FF315902485}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution

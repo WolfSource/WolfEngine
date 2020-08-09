@@ -4,6 +4,8 @@
 *.idb
 *.pdb
 *.ipch
+*.ilk
+*.recipe
 *.res
 *.enc
 *.vscode

@@ -101,7 +101,8 @@ extern "C" {
 
     // quic receive callback
     typedef void (*quic_debug_log_callback_fn)(const char* /*pLine*/, void* /*pArgp*/);
-    typedef void (*quic_stream_callback_fn)(uint8_t* /*pConnectionID*/, uint64_t /*pStreamIndex*/);
+    typedef W_RESULT (*quic_stream_callback_fn)(uint8_t* /*pConnectionID*/, uint64_t /*pStreamIndex*/,
+        const uint8_t* /*pProtocol*/, const size_t /*pProtocol*/);
 
     /**
      * w_net_init is called each time the user enters the library. It ensures that
@@ -188,6 +189,7 @@ extern "C" {
             _In_z_ const char* pKey,
             _Inout_ w_socket_tcp* pSocket);
 
+
     /**
      * close a tcp socket
      * @param pSocket tcp socket
@@ -235,8 +237,15 @@ extern "C" {
             _In_z_  const char* pCertFilePath,
             _In_z_  const char* pPrivateKeyFilePath,
             _In_    quic_debug_log_callback_fn pQuicDebugLogCallback,
-            _In_    quic_stream_callback_fn pQuicStreamCallback);
+            _In_    quic_stream_callback_fn pQuicReceivingStreamCallback,
+            _In_    quic_stream_callback_fn pQuicSendingStreamCallback);
 
+    /**
+     * Close quic socket
+     * @return result
+    */
+    W_SYSTEM_EXPORT
+        W_RESULT w_net_close_quic_socket();
 
     /**
      * Writes data to a stream of quic protocol
@@ -415,7 +424,7 @@ extern "C" {
      * This should only be called during at exit or just before releasing dll
     */
     W_SYSTEM_EXPORT
-        void w_net_fini(void);
+        void w_net_terminate(void);
 
 #ifdef __cplusplus
 }

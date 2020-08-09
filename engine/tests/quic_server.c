@@ -1,4 +1,5 @@
 #include <wolf.h>
+#include <io/w_io.h>
 #include <net/w_net.h>
 
 #define MAX_BUFFER_SIZE 65535
@@ -8,7 +9,11 @@ void s_quic_debug_log_callback(const char* pLine, void* pArgp)
     printf("%s", pLine);
 }
 
-void s_quic_stream_callback(uint8_t* pConnectionID, uint64_t pStreamIndex)
+void s_quic_receiving_stream_callback(
+    uint8_t* pConnectionID, 
+    uint64_t pStreamIndex, 
+    const uint8_t* pProtocol,
+    const size_t pProtocolLen)
 {
     printf("\nstream index is %d", pStreamIndex);
 
@@ -33,22 +38,28 @@ void s_quic_stream_callback(uint8_t* pConnectionID, uint64_t pStreamIndex)
             pStreamIndex,
             &_b,
             _stream_finished);
-
     }
+
+    return W_SUCCESS;
 }
 
 int main()
 {
     wolf_initialize();
 
+    const char* _current_dir = w_io_dir_get_current();
+    char* _crt = w_string_concat(2, _current_dir, "/cert.crt");
+    char* _key = w_string_concat(2, _current_dir, "/cert.key");
+
     w_net_open_quic_socket(
         "localhost",
         5555,
         quic_listener,
-        "D:/SourceCodes/PlayPod/playpod.quiche/samples/client_server_quiche/server_quiche/cert.crt",
-        "D:/SourceCodes/PlayPod/playpod.quiche/samples/client_server_quiche/server_quiche/cert.key",
+        _crt,
+        _key,
         s_quic_debug_log_callback,
-        s_quic_stream_callback);
+        s_quic_receiving_stream_callback,
+        NULL);
 
     wolf_terminate();
 
