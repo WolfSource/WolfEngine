@@ -176,7 +176,7 @@ W_RESULT w_net_init(void)
     return nni_init();
 }
 
-W_RESULT w_net_url_parse(_In_z_ const char* pUrlAddress, _Inout_ w_url* pURL)
+W_RESULT w_net_url_parse(_In_z_ const char* pUrlAddress, _Inout_ w_url *pURL)
 {
     const char* _trace_info = "w_net_url_parse";
 
@@ -511,7 +511,7 @@ W_RESULT w_net_close_tcp_socket(_Inout_ w_socket_tcp* pSocket)
 
 W_RESULT w_net_open_udp_socket(_In_z_ const char* pEndPoint, _Inout_ w_socket_udp* pSocket)
 {
-    W_RESULT _rt = W_SUCCESS;
+W_RESULT _rt = W_SUCCESS;
     nng_url* _url = NULL;
 
     if (!pSocket)
