@@ -9,9 +9,9 @@ void s_quic_debug_log_callback(const char* pLine, void* pArgp)
     printf("%s", pLine);
 }
 
-void s_quic_receiving_stream_callback(
-    uint8_t* pConnectionID, 
-    uint64_t pStreamIndex, 
+W_RESULT s_quic_receiving_stream_callback(
+    uint8_t* pConnectionID,
+    uint64_t pStreamIndex,
     const uint8_t* pProtocol,
     const size_t pProtocolLen)
 {
@@ -19,7 +19,7 @@ void s_quic_receiving_stream_callback(
 
     w_buffer _b;
     _b.len = MAX_BUFFER_SIZE;
-    _b.data = (uint8_t*)w_malloc(sizeof(uint8_t), "s_quic_stream_callback");
+    _b.data = new uint8_t [100];
 
     bool _stream_finished = false;
     size_t _len = w_net_receive_msg_quic(
@@ -27,6 +27,8 @@ void s_quic_receiving_stream_callback(
         pStreamIndex,
         &_b,
         &_stream_finished);
+
+    printf("\n client data: %s \n", (char*)_b.data);
 
     if (_stream_finished)
     {
@@ -40,6 +42,7 @@ void s_quic_receiving_stream_callback(
             _stream_finished);
     }
 
+    delete _b.data;
     return W_SUCCESS;
 }
 
