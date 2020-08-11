@@ -302,7 +302,7 @@ extern "C" {
     W_SYSTEM_EXPORT
         W_RESULT w_net_receive_msg_tcp(
             _Inout_ w_socket_tcp* pSocket,
-            _Inout_ char* pMessage,
+            _Inout_ char** pMessage,
             _Inout_ size_t* pMessageLength);
 
     /**
