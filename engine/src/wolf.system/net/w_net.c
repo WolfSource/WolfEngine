@@ -2,7 +2,7 @@
 
 #include <apr.h>
 #include <apr-1/apr_general.h>
-
+#include<apr_tables.h>
 #include <nng/nng.h>
 #include <core/nng_impl.h>
 #include <nng/protocol/pipeline0/push.h>
@@ -674,7 +674,7 @@ W_RESULT w_net_send_msg_tcp(_Inout_ w_socket_tcp* pSocket,
 }
 
 W_RESULT w_net_receive_msg_tcp(_Inout_ w_socket_tcp* pSocket,
-    _Inout_ char* pMessage,
+    _Inout_ char** pMessage,
     _Inout_ size_t* pMessageLength)
 {
     if (!pSocket)
@@ -684,7 +684,7 @@ W_RESULT w_net_receive_msg_tcp(_Inout_ w_socket_tcp* pSocket,
     }
 
     nng_socket* _nng_socket = (nng_socket*)pSocket->s;
-    return nng_recv(*_nng_socket, &pMessage, pMessageLength, NNG_FLAG_ALLOC);
+    return nng_recv(*_nng_socket, pMessage, pMessageLength, NNG_FLAG_ALLOC);
 }
 
 W_RESULT w_net_send_msg_udp(_Inout_ w_socket_udp* pSocket,
@@ -839,7 +839,9 @@ W_RESULT w_net_send_http_request(_In_z_     const char* pURL,
     //set http header
     struct curl_slist* _headers = NULL;
     const char** _ppt;
-    while ((_ppt = apr_array_pop(pHttpHeaders)))
+    apr_array_header_t* temp;
+    temp = ((apr_array_header_t*)&pHttpHeaders);
+    while ((_ppt = apr_array_pop(temp)))
     {
         _headers = curl_slist_append(_headers, *_ppt);
     }
