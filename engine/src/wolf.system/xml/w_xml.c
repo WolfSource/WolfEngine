@@ -209,5 +209,7 @@ void w_xml_quote_element(_In_ w_mem_pool pMemPool,
 int w_xml_insert_uri(_In_    w_array pURIArray,
                      _In_z_  const char* pURI)
 {       
-    return apr_xml_insert_uri(pURIArray, pURI);
+     apr_array_header_t *temp;
+    temp = ((apr_array_header_t*)&pURIArray);
+    return apr_xml_insert_uri(temp, pURI);
 }
