@@ -3,6 +3,13 @@
 
 
 
+void pOnListened(int arg1) { printf("%s", "ok_listen"); }
+void pOnOpened(void) { printf("%s", "ok_open"); }
+void pOnClosed(const char * arg1,int arg2) { printf("%s", "ok_close"); }
+const char* pOnMessage(const char* arg1, int* arg2) {
+	char* x = "ok_message";
+	printf("%s", x);
+}
 int main() {
 	wolf_initialize();
 	W_RESULT  _net_init = w_net_init();
@@ -53,6 +60,51 @@ int main() {
 		const char* s = "|";
 		const char* s1 = "ping";
 		snprintf(buf_sender_message, sizeof buf_sender_message, "%d%s%s", request_nbr, s, s1);
+
+         ws_on_listened_fn _listen = &pOnListened;
+	ws_on_opened_fn _open = &pOnOpened;
+	ws_on_closed_fn _close = &pOnClosed;
+	ws_on_message_fn _message = &pOnMessage;
+	W_RESULT _net_run_websocket_server =w_net_run_websocket_server(false,
+		NULL,
+		NULL,
+		NULL,
+		"/*",
+		5555,
+		16,
+		16*1024,
+		120,
+		1*1024*1024,
+		_listen,
+		_open,
+		_message,
+		_close);
+	
+	
+	w_array y=w_malloc(sizeof(w_array),"");
+		y->elt_size = 1;
+		y->nelts = 1;
+		y->nalloc = 1;
+		y->elts = "Accept:application/json";
+		y->pool =w_get_default_memory_pool() ;
+		
+	size_t pLowSpeedLimit = 12;
+	size_t pLowSpeedTimeInSec = 30000;
+	long pResponseCode = 2;
+	float pTimeOutInSecs = 0.00003;
+	char* pResponseMessage = "ok";
+	size_t pResponseMessageLength = strlen(pResponseMessage);
+	W_RESULT _net_send_http_request = w_net_send_http_request(pURL,
+		HTTP_GET,
+		y,
+		pMessage,
+		pMessageLenght,
+		pLowSpeedLimit,
+		pLowSpeedTimeInSec,
+		pTimeOutInSecs,
+		&pResponseCode,
+		&pResponseMessage,
+		&pResponseMessageLength);
 
 		const char* sender_message = buf_sender_message;
 		void* mm = (void*)sender_message;
