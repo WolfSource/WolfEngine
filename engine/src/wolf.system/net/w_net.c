@@ -674,7 +674,7 @@ W_RESULT w_net_send_msg_tcp(_Inout_ w_socket_tcp* pSocket,
 }
 
 W_RESULT w_net_receive_msg_tcp(_Inout_ w_socket_tcp* pSocket,
-    _Inout_ char* pMessage,
+    _Inout_ char** pMessage,
     _Inout_ size_t* pMessageLength)
 {
     if (!pSocket)
@@ -684,7 +684,7 @@ W_RESULT w_net_receive_msg_tcp(_Inout_ w_socket_tcp* pSocket,
     }
 
     nng_socket* _nng_socket = (nng_socket*)pSocket->s;
-    return nng_recv(*_nng_socket, &pMessage, pMessageLength, NNG_FLAG_ALLOC);
+    return nng_recv(*_nng_socket, pMessage, pMessageLength, NNG_FLAG_ALLOC);
 }
 
 W_RESULT w_net_send_msg_udp(_Inout_ w_socket_udp* pSocket,
