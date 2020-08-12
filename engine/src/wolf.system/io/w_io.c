@@ -748,7 +748,9 @@ W_RESULT w_io_string_split(_In_z_ char* pString,
     {
         w_free(*pResults);
     }
-    *pResults = apr_array_make(_mem_pool, 32, sizeof(const char*));
+     apr_array_header_t *temp;
+    temp = ((apr_array_header_t*)&pResults);
+    temp = apr_array_make(_mem_pool, 32, sizeof(const char*));
     if (!*pResults)
     {
         W_ASSERT(false, "could not create array. trace info: w_io_split_string_then_convert_to_chars");
@@ -759,7 +761,7 @@ W_RESULT w_io_string_split(_In_z_ char* pString,
     // loop through the string and extract all other splits
     while( _splits != NULL )
     {
-        *(const char**)apr_array_push(*pResults) = _splits;
+        *(const char**)apr_array_push(temp) = _splits;
        _splits = strtok(NULL, pSplit);
     }
     
