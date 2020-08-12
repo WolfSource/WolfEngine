@@ -68,7 +68,7 @@ W_RESULT  w_concurrent_queue_interrupt_all(_In_ w_concurrent_queue pQueue)
     return _rt;
 }
 
-W_RESULT  w_concurrent_queue_term(_In_ w_concurrent_queue pQueue)
+W_RESULT  w_concurrent_queue_terminate(_In_ w_concurrent_queue pQueue)
 {
     apr_status_t _rt = apr_queue_term((apr_queue_t*)pQueue);
     if (_rt != APR_SUCCESS)

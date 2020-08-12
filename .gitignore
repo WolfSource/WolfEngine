@@ -13,7 +13,7 @@
 *.advixeexp
 *.dflgadvixe
 *.infoadvixe
-/bin/win32/
+/bin/win/
 /bin/osx/
 /bin/linux/
 /docs/extra/

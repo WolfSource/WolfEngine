@@ -9,7 +9,7 @@ W_RESULT    w_shared_mem_create(_Inout_ w_shared_mem* pSharedMem,
     if (!pMemPool)
     {
         //get default thread pool
-        pMemPool = w_get_default_memory_pool();
+        pMemPool = w_mem_pool_get_default();
         if (!pMemPool)
         {
             W_ASSERT(false, "could not get default memory pool. trace info: w_shared_mem_create");
@@ -28,7 +28,7 @@ W_RESULT    w_shared_mem_create_ex(_Inout_ w_shared_mem* pSharedMem,
     if (!pMemPool)
     {
         //get default thread pool
-        pMemPool = w_get_default_memory_pool();
+        pMemPool = w_mem_pool_get_default();
         if (!pMemPool)
         {
             W_ASSERT(false, "could not get default memory pool. trace info: w_shared_mem_create_ex");
@@ -80,7 +80,7 @@ W_RESULT    w_shared_mem_attach(_Inout_ w_shared_mem* pSharedMem,
     if (!pMemPool)
     {
         //get default thread pool
-        pMemPool = w_get_default_memory_pool();
+        pMemPool = w_mem_pool_get_default();
         if (!pMemPool)
         {
             W_ASSERT(false, "could not get default memory pool. trace info: w_shared_mem_attach");
@@ -104,7 +104,7 @@ W_RESULT    w_shared_mem_attach_ex(_Inout_ w_shared_mem* pSharedMem,
     if (!pMemPool)
     {
         //get default thread pool
-        pMemPool = w_get_default_memory_pool();
+        pMemPool = w_mem_pool_get_default();
         if (!pMemPool)
         {
             W_ASSERT(false, "could not get default memory pool. trace info: w_shared_mem_attach_ex");

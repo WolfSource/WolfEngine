@@ -9,18 +9,19 @@
 
 #pragma once
 
-typedef enum w_log_type
+typedef enum
 {
-    W_INFO = 0,
+	W_DEBUG = 0,
+    W_INFO,
     W_WARNING,
     W_ERROR
 } w_log_type;
 
 typedef struct w_log_config
 {
-	char*	            app_name;
+	const char*	        app_name;
 	char*	            log_directory_path;
-	enum w_log_type	    flush_level;
+	w_log_type			flush_level;
 	bool		        log_to_std_out;
 } w_log_config;
 

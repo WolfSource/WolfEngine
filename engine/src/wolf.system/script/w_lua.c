@@ -418,7 +418,7 @@ W_RESULT w_lua_set_global_variable(_In_z_ const char*   pVariableName,
 
 W_RESULT w_lua_set_lua_path(_In_z_ const char* pPath)
 {
-    w_mem_pool _pool = w_get_default_memory_pool();
+    w_mem_pool _pool = w_mem_pool_get_default();
     if(!_pool)
     {
         W_ASSERT(false, "could not get default memory. trace info: w_string_create");

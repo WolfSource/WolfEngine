@@ -562,6 +562,7 @@ out:
     w_net_url_free(_url);
     return _rt;
 }
+
 void w_net_close_udp_socket(_Inout_ w_socket_udp* pSocket)
 {
     if (!pSocket)

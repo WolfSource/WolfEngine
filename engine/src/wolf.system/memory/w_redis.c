@@ -124,7 +124,7 @@ W_RESULT w_redis_server_init(_In_ w_mem_pool pMemPool,
     else
     {
         //get default thread pool
-        _pool = w_get_default_memory_pool();
+        _pool = w_mem_pool_get_default();
         if (!_pool)
         {
             W_ASSERT(false, "could not get default memory pool. trace info: w_redis_server_create");
@@ -155,7 +155,7 @@ W_RESULT w_redis_init(_In_ w_mem_pool pMemPool,
     else
     {
         //get default thread pool
-        _pool = w_get_default_memory_pool();
+        _pool = w_mem_pool_get_default();
         if (!_pool)
         {
             W_ASSERT(false, "could not get default memory pool. trace info: w_redis_create");
@@ -189,7 +189,7 @@ W_RESULT w_redis_get(_In_ w_redis pRedisClient,
     else
     {
         //get default thread pool
-        _pool = w_get_default_memory_pool();
+        _pool = w_mem_pool_get_default();
         if (!_pool)
         {
             W_ASSERT(false, "could not get default memory pool. trace info: w_redis_get");
@@ -274,7 +274,7 @@ W_RESULT w_redis_version(_In_ w_redis_server pRedisServer,
     else
     {
         //get default thread pool
-        _pool = w_get_default_memory_pool();
+        _pool = w_mem_pool_get_default();
         if (!_pool)
         {
             W_ASSERT(false, "could not get default memory pool. trace info: w_redis_version");
@@ -297,7 +297,7 @@ W_RESULT w_redis_info(_In_ w_redis_server pRedisServer,
     else
     {
         //get default thread pool
-        _pool = w_get_default_memory_pool();
+        _pool = w_mem_pool_get_default();
         if (!_pool)
         {
             W_ASSERT(false, "could not get default memory pool. trace info: w_redis_info");
@@ -383,7 +383,7 @@ W_RESULT w_redis_get_stats(_In_ w_redis_server pRedisServer,
     else
     {
         //get default thread pool
-        _pool = w_get_default_memory_pool();
+        _pool = w_mem_pool_get_default();
         if (!_pool)
         {
             W_ASSERT(false, "could not get default memory pool. trace info: w_redis_get_stats");

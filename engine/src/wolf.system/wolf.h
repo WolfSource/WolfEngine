@@ -100,7 +100,6 @@ extern "C" {
 #define W_FAILURE 1
 #endif
 
-//typedef void (*w_job)(void*);
 typedef int W_RESULT;
 //typedef apr_off_t w_offset;
 
@@ -139,14 +138,22 @@ W_RESULT wolf_initialize(void);
  * @return memory pool
 */
 W_SYSTEM_EXPORT
-w_mem_pool w_get_default_memory_pool(void);
+w_mem_pool w_mem_pool_get_default(void);
 
 /**
  * create memory pool
  * @return memory pool
 */
 W_SYSTEM_EXPORT
-w_mem_pool w_create_memory_pool(void);
+w_mem_pool w_mem_pool_create(void);
+
+/**
+ * terminate memory pool
+ * @return memory pool
+*/
+W_SYSTEM_EXPORT
+void w_mem_pool_terminate(_In_ w_mem_pool pMemPool);
+
 
 /**
  * allocate memory from default memory pool

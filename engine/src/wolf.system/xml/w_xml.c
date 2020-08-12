@@ -11,7 +11,7 @@ w_xml_parser w_xml_parser_init(_In_ w_mem_pool pMemPool)
     else
     {
         //get default thread pool
-        _pool = w_get_default_memory_pool();
+        _pool = w_mem_pool_get_default();
         if (!_pool)
         {
             W_ASSERT(false, "could not get default memory pool. trace info: apr_xml_parser_create");
@@ -36,7 +36,7 @@ W_RESULT   w_xml_parse_file(_In_    w_mem_pool pMemPool,
     else
     {
         //get default thread pool
-        _pool = w_get_default_memory_pool();
+        _pool = w_mem_pool_get_default();
         if (!_pool)
         {
             W_ASSERT(false, "could not get default memory pool. trace info: apr_xml_parser_create");
@@ -102,7 +102,7 @@ void        w_xml_to_text(_In_ w_mem_pool pMemPool,
     else
     {
         //get default thread pool
-        _pool = w_get_default_memory_pool();
+        _pool = w_mem_pool_get_default();
         if (!_pool)
         {
             W_ASSERT(false, "could not get default memory pool. trace info: w_xml_to_text");
@@ -135,7 +135,7 @@ const char* w_xml_empty_element(_In_ w_mem_pool pMemPool,
     else
     {
         //get default thread pool
-        _pool = w_get_default_memory_pool();
+        _pool = w_mem_pool_get_default();
         if (!_pool)
         {
             W_ASSERT(false, "could not get default memory pool. trace info: w_xml_empty_element");
@@ -163,7 +163,7 @@ const char* w_xml_quote_string(_In_ w_mem_pool pMemPool,
     else
     {
         //get default thread pool
-        _pool = w_get_default_memory_pool();
+        _pool = w_mem_pool_get_default();
         if (!_pool)
         {
             W_ASSERT(false, "could not get default memory pool. trace info: w_xml_empty_element");
@@ -190,7 +190,7 @@ void w_xml_quote_element(_In_ w_mem_pool pMemPool,
     else
     {
         //get default thread pool
-        _pool = w_get_default_memory_pool();
+        _pool = w_mem_pool_get_default();
         if (!_pool)
         {
             W_ASSERT(false, "could not get default memory pool. trace info: w_xml_quote_element");

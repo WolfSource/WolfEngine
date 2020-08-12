@@ -219,7 +219,7 @@ Convey("chrono", {
 
     printf("testing w_concurrent_queue");
     int _a = 3;
-    w_mem_pool _pool = w_get_default_memory_pool();
+    w_mem_pool _pool = w_mem_pool_get_default();
     w_concurrent_queue _q;
     W_RESULT _c_queue_init = w_concurrent_queue_init(&_q, 10, _pool);
     So(_c_queue_init == W_SUCCESS);
@@ -266,7 +266,7 @@ Convey("chrono", {
     w_condition_variable pcond2 = NULL;
     if ((_rt = w_condition_variable_init(&pcond2)) == W_SUCCESS)
     {
-        w_mem_pool _mem = w_get_default_memory_pool();
+        w_mem_pool _mem = w_mem_pool_get_default();
 
         w_mutex _mutex = NULL;
         if ((_rt = w_thread_mutex_create(&_mutex, 0, _mem)) == W_SUCCESS)
@@ -359,7 +359,7 @@ Convey("chrono", {
 
        printf("testing w_thread_pool");
 
-       w_mem_pool _pool4 = w_get_default_memory_pool();
+       w_mem_pool _pool4 = w_mem_pool_get_default();
        size_t pMinThreads = 3;
        size_t pMaxThreads = 6;
        w_thread_pool _thread_pool_init = w_thread_pool_init(pMinThreads, pMaxThreads, _pool4);
@@ -642,7 +642,7 @@ Convey("chrono", {
     Convey("memory", {
 
         w_table  pTable = w_malloc(sizeof(w_table), "table");
-        w_mem_pool pMemPool = w_get_default_memory_pool();
+        w_mem_pool pMemPool = w_mem_pool_get_default();
         W_RESULT   _table_init = w_table_init(&pTable, 10, pMemPool);
         So(_table_init == 0);
 

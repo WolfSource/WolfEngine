@@ -11,7 +11,7 @@ W_RESULT w_table_init(_Inout_ w_table* pTable, _In_ size_t pInitSize, _In_ w_mem
     else
     {
         //get default thread pool
-        _pool = w_get_default_memory_pool();
+        _pool = w_mem_pool_get_default();
         if (!_pool)
         {
             W_ASSERT(false, "could not get default memory pool. trace info: w_table_init");

@@ -104,7 +104,7 @@ W_RESULT  w_concurrent_queue_interrupt_all(_In_ w_concurrent_queue pQueue);
  * @return result
 */
 W_SYSTEM_EXPORT
-W_RESULT  w_concurrent_queue_term(_In_ w_concurrent_queue pQueue);
+W_RESULT  w_concurrent_queue_terminate(_In_ w_concurrent_queue pQueue);
 
 #ifdef __cplusplus
 }

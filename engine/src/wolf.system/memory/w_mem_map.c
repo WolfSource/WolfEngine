@@ -16,7 +16,7 @@ W_RESULT    w_mem_map_create(_Inout_ w_mem_map* pNewMemMap,
     else
     {
         //get default thread pool
-        _pool = w_get_default_memory_pool();
+        _pool = w_mem_pool_get_default();
         if (!_pool)
         {
             W_ASSERT(false, "could not get default memory pool. trace info: w_mem_map_create");
@@ -40,7 +40,7 @@ W_RESULT    w_mem_map_dup(_Inout_ w_mem_map* pNewMemMap,
     else
     {
         //get default thread pool
-        _pool = w_get_default_memory_pool();
+        _pool = w_mem_pool_get_default();
         if (!_pool)
         {
             W_ASSERT(false, "could not get default memory pool. trace info: w_mem_map_dup");

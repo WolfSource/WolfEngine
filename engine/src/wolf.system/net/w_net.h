@@ -108,6 +108,7 @@ extern "C" {
      * w_net_init is called each time the user enters the library. It ensures that
      * the library is initlialized properly, and also deals with checks such as
      * whether the process has forked since last initialization.
+     * @return result code
     */
     W_SYSTEM_EXPORT
         W_RESULT w_net_init(void);

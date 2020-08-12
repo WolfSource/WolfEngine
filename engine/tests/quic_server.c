@@ -15,13 +15,14 @@ W_RESULT s_quic_receiving_stream_callback(
     const uint8_t* pProtocol,
     const size_t pProtocolLen)
 {
-    printf("\nstream index is %d", pStreamIndex);
+    printf("\nstream %llu is readable\n", pStreamIndex);
 
     w_buffer _b;
     _b.len = MAX_BUFFER_SIZE;
-    _b.data = new uint8_t [100];
+    _b.data = (uint8_t*)w_malloc(sizeof(uint8_t), "s_quic_stream_callback");
 
     bool _stream_finished = false;
+
     size_t _len = w_net_receive_msg_quic(
         pConnectionID,
         pStreamIndex,
@@ -30,20 +31,36 @@ W_RESULT s_quic_receiving_stream_callback(
 
     printf("\n client data: %s \n", (char*)_b.data);
 
-    if (_stream_finished)
-    {
-        static const char* _resp = "bye\n";
-        _b.len = strlen(_resp);
-        memcpy(_b.data, _resp, _b.len);
-        w_net_send_msg_quic(
-            pConnectionID,
-            pStreamIndex,
-            &_b,
-            _stream_finished);
-    }
+    static const char* _resp = "success\n";
+    _b.len = strlen(_resp);
+    memcpy(_b.data, _resp, _b.len);
+    w_net_send_msg_quic(
+        pConnectionID,
+        pStreamIndex,
+        &_b,
+        _stream_finished);
 
-    delete _b.data;
+    //if (_stream_finished)
+    //{
+    //    static const char* _resp = "success\n";
+    //    _b.len = strlen(_resp);
+    //    memcpy(_b.data, _resp, _b.len);
+    //    w_net_send_msg_quic(
+    //        pConnectionID,
+    //        pStreamIndex,
+    //        &_b,
+    //        _stream_finished);
+    //}
+
     return W_SUCCESS;
+}
+
+W_RESULT s_quic_sending_stream_callback(
+    uint8_t* pConnectionID,
+    uint64_t pStreamIndex,
+    const uint8_t* pProtocol,
+    const size_t pProtocolLen)
+{
 }
 
 int main()
@@ -62,7 +79,7 @@ int main()
         _key,
         s_quic_debug_log_callback,
         s_quic_receiving_stream_callback,
-        NULL);
+        s_quic_sending_stream_callback);
 
     wolf_terminate();
 

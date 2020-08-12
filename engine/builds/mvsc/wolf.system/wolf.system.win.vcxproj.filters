@@ -352,12 +352,6 @@
     <ClCompile Include="..\..\..\src\wolf.system\log\spdlog\src\stdout_sinks.cpp">
       <Filter>log\spdlog\src</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\log\V.cpp">
-      <Filter>log</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\log\w_logger.cpp">
-      <Filter>log</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\wolf.system\memory\w_mem_cache.c">
       <Filter>memory</Filter>
     </ClCompile>
@@ -432,6 +426,12 @@
     </ClCompile>
     <ClCompile Include="..\..\..\src\wolf.system\memory\w_hash.c">
       <Filter>memory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\log\w_log.cpp">
+      <Filter>log</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\log\logger.cpp">
+      <Filter>log</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -631,13 +631,7 @@
     <ClInclude Include="..\..\..\src\wolf.system\io\w_io.h">
       <Filter>io</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\log\V.h">
-      <Filter>log</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\wolf.system\log\w_log_config.h">
-      <Filter>log</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\log\w_logger.hpp">
       <Filter>log</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\wolf.system\memory\w_mem_cache.h">
@@ -960,6 +954,12 @@
     </ClInclude>
     <ClInclude Include="..\..\..\src\wolf.system\json\rapidjson\msinttypes\stdint.h">
       <Filter>json\rapidjson\msinttypes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\log\w_log.h">
+      <Filter>log</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\log\logger.hpp">
+      <Filter>log</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

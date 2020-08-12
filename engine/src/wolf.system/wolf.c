@@ -2,6 +2,7 @@
 
 //http://dev.ariel-networks.com/apr/apr-tutorial/html/apr-tutorial.html#toc1
 #include <apr.h>
+#include <apr-1/apr_pools.h>
 #include <apr-1/apr_strings.h>
 
 #include <curl/curl.h>
@@ -25,21 +26,29 @@ W_RESULT wolf_initialize()
     return W_SUCCESS;
 }
 
-w_mem_pool w_get_default_memory_pool(void)
+w_mem_pool w_mem_pool_get_default(void)
 {
     return s_default_memory_pool;
 }
 
-w_mem_pool w_create_memory_pool(void)
+w_mem_pool w_mem_pool_create(void)
 {
     apr_pool_t* _pool;
     apr_pool_create(&_pool, NULL);
     return (w_mem_pool)_pool;
 }
 
+void w_mem_pool_terminate(_In_ w_mem_pool pMemPool)
+{
+    if (pMemPool)
+    {
+        apr_pool_destroy(pMemPool);
+    }
+}
+
 void* w_malloc(_In_ const size_t pMemSize, _In_z_ const char* pTraceInfo)
 {
-    w_mem_pool _pool = w_get_default_memory_pool();
+    w_mem_pool _pool = w_mem_pool_get_default();
     if(!_pool)
     {
         char _buf[W_MAX_BUFFER_SIZE];
@@ -70,7 +79,7 @@ void w_free(_In_ const void* pMem)
     {
         return;
     }
-    w_mem_pool _pool = w_get_default_memory_pool();
+    w_mem_pool _pool = w_mem_pool_get_default();
     if(!_pool)
     {
         char _buf[W_MAX_BUFFER_SIZE];
@@ -84,7 +93,7 @@ void w_free(_In_ const void* pMem)
 
 char* w_string(_In_ const char* pSource)
 {
-    w_mem_pool _pool = w_get_default_memory_pool();
+    w_mem_pool _pool = w_mem_pool_get_default();
     if(!_pool)
     {
         W_ASSERT(false, "could not get default memory. trace info: w_string_create");
@@ -103,7 +112,7 @@ char* w_string_concat(int pNumberOfArgs, ...)
     char* _str = "";
     if (pNumberOfArgs == 0) return _str;
     
-    w_mem_pool _pool = w_get_default_memory_pool();
+    w_mem_pool _pool = w_mem_pool_get_default();
     if(!_pool)
     {
         W_ASSERT(false, "could not get default memory. trace info: w_string_create");

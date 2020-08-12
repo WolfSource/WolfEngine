@@ -5,7 +5,7 @@
 W_RESULT w_thread_init_once_flag(_Inout_ w_thread_once_flag pOnceFlag)
 {
     //get default thread pool
-    w_mem_pool _pool = w_get_default_memory_pool();
+    w_mem_pool _pool = w_mem_pool_get_default();
     if (!_pool) return W_FAILURE;
     
     //create once flag
@@ -25,7 +25,7 @@ W_RESULT w_thread_create(_Inout_ w_thread*    pThread,
                          _In_    void*        pJobArgs)
 {
     //get default thread pool
-    w_mem_pool _pool = w_get_default_memory_pool();
+    w_mem_pool _pool = w_mem_pool_get_default();
     if (!_pool) return W_FAILURE;
     
     //create default attribute thread
@@ -148,7 +148,7 @@ W_RESULT    w_thread_mutex_create(_Inout_ w_mutex* pMutex,
     else
     {
         //get default thread pool
-        _pool = w_get_default_memory_pool();
+        _pool = w_mem_pool_get_default();
         if (!_pool)
         {
             W_ASSERT(false, "could not get default memory pool. trace info: w_thread_mutex_create");

@@ -19,22 +19,23 @@ W_RESULT s_quic_sending_stream_callback(
     if (!_req_sent)
     {
         static w_buffer _b;
-        _b.data = (uint8_t*)("GET / index.html\r\n");
+        _b.data = (uint8_t*)("GET / index.html\0");
         _b.len = strlen((const char*)_b.data);
 
         size_t _len = w_net_send_msg_quic(
             pConnectionID,
             pStreamIndex,
             &_b,
-            false);
-        //_req_sent = true;
+            true);
+        _req_sent = true;
 
-        printf("\np is %d", pProtocol);
+        printf("\np is %p", pProtocol);
     }
 
     return W_SUCCESS;
 }
 
+w_buffer* _buffer = NULL;
 W_RESULT s_quic_receiving_stream_callback(
     uint8_t* pConnectionID,
     uint64_t pStreamIndex,
@@ -42,10 +43,11 @@ W_RESULT s_quic_receiving_stream_callback(
     const size_t pProtocolLen)
 {
     bool _fin = false;
+    
     w_buffer _b;
-    _b.len = MAX_BUFFER_SIZE;
-    _b.data = new uint8_t[20];
-
+    _b.len = MAX_BUFFER_SIZE;	    
+    _b.data = (uint8_t*)w_malloc(sizeof(uint8_t), "s_quic_r_stream_callback");
+    
     size_t _recv_len = w_net_receive_msg_quic(
         pConnectionID,
         pStreamIndex,
@@ -53,7 +55,6 @@ W_RESULT s_quic_receiving_stream_callback(
         &_fin);
     if (_recv_len < 0)
     {
-        delete _b.data;
         return W_FAILURE;
     }
 
@@ -63,8 +64,6 @@ W_RESULT s_quic_receiving_stream_callback(
     {
         _ret = w_net_close_quic_socket();
     }
-
-    delete _b.data;
     return _ret;
 }
 

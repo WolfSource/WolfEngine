@@ -45,7 +45,7 @@ w_file w_io_file_create(_In_z_  const char* pPath,
     apr_file_t* _file = NULL;
     apr_size_t  _buffer_len = 0;
     apr_int32_t _flags = 0;
-    w_mem_pool _pool = w_get_default_memory_pool();
+    w_mem_pool _pool = w_mem_pool_get_default();
     if(!_pool)
     {
         W_ASSERT(false, "could not get default memory. trace info: w_io_create_directory");
@@ -115,7 +115,7 @@ W_RESULT w_io_file_save(_In_z_  const char* pPath,
     apr_file_t* _file = NULL;
     apr_size_t  _buffer_len = 0;
     apr_int32_t _flags = 0;
-    w_mem_pool _pool = w_get_default_memory_pool();
+    w_mem_pool _pool = w_mem_pool_get_default();
     if(!_pool)
     {
         W_ASSERT(false, "could not get default memory. trace info: w_io_create_directory");
@@ -178,7 +178,7 @@ out:
 
 W_RESULT w_io_file_check_is_file(_In_z_ const char* pPath)
 {
-    w_mem_pool _pool = w_get_default_memory_pool();
+    w_mem_pool _pool = w_mem_pool_get_default();
     if (!_pool)
     {
         W_ASSERT(false, "could not get default memory. trace info: w_io_file_check_is_file");
@@ -202,7 +202,7 @@ W_RESULT w_io_file_check_is_file(_In_z_ const char* pPath)
 
 w_file_info w_io_file_get_info_from_path(_In_z_ const char* pPath)
 {
-    w_mem_pool _pool = w_get_default_memory_pool();
+    w_mem_pool _pool = w_mem_pool_get_default();
     if(!_pool)
     {
         W_ASSERT(false, "could not get default memory. trace info: w_io_get_file_info_from_path");
@@ -229,7 +229,7 @@ w_file_info w_io_file_get_info_from_path(_In_z_ const char* pPath)
 */
 w_file_info w_io_file_get_info(_In_ w_file pFile)
 {
-    w_mem_pool _pool = w_get_default_memory_pool();
+    w_mem_pool _pool = w_mem_pool_get_default();
     if(!_pool)
     {
         W_ASSERT(false, "could not get default memory. trace info: w_io_get_file_info");
@@ -334,7 +334,7 @@ w_file_istream w_io_file_read_full_from_path(_In_z_ const char* pPath)
 
 w_file_istream w_io_file_read_nbytes_from_path(_In_z_ const char* pPath, _In_ size_t pNBytes)
 {
-    w_mem_pool _pool = w_get_default_memory_pool();
+    w_mem_pool _pool = w_mem_pool_get_default();
     if(!_pool)
     {
         W_ASSERT(false, "could not get default memory. trace info: w_io_file_read_nbytes_from_path");
@@ -382,7 +382,7 @@ w_file_istream	w_io_file_read_nbytes(_In_ w_file pFile, _In_ size_t pNBytes)
         return NULL;
     }
 
-    w_mem_pool _pool = w_get_default_memory_pool();
+    w_mem_pool _pool = w_mem_pool_get_default();
     if(!_pool)
     {
         W_ASSERT(false, "could not get default memory. trace info: w_io_file_read_nbytes");
@@ -412,7 +412,7 @@ W_RESULT	w_io_file_delete_from_path(_In_ const char* pPath)
         return W_FAILURE;
     }
     
-    w_mem_pool _pool = w_get_default_memory_pool();
+    w_mem_pool _pool = w_mem_pool_get_default();
     if(!_pool)
     {
         W_ASSERT(false, "could not get default memory. trace info: w_io_file_delete_from_path");
@@ -429,7 +429,7 @@ W_RESULT	w_io_file_delete(_In_ w_file pFile)
         W_ASSERT(false, "could not get default memory. trace info: w_io_delete_file_with_file");
         return W_FAILURE;
     }
-    w_mem_pool _pool = w_get_default_memory_pool();
+    w_mem_pool _pool = w_mem_pool_get_default();
     if(!_pool)
     {
         W_ASSERT(false, "could not get default memory. trace info: w_io_delete_file_with_file");
@@ -453,7 +453,7 @@ char*	w_io_dir_get_current(void)
 
 W_RESULT	w_io_dir_check_is_directory(_In_z_ const char* pPath)
 {
-    w_mem_pool _pool = w_get_default_memory_pool();
+    w_mem_pool _pool = w_mem_pool_get_default();
     if(!_pool)
     {
         W_ASSERT(false, "could not get default memory. trace info: w_io_get_is_directory");
@@ -490,7 +490,7 @@ const char* w_io_dir_get_parent(_In_z_ const char* pPath)
 
 W_RESULT	w_io_dir_create(_In_z_ const char* pPath)
 {
-    w_mem_pool _pool = w_get_default_memory_pool();
+    w_mem_pool _pool = w_mem_pool_get_default();
     if(!_pool)
     {
         W_ASSERT(false, "could not get default memory. trace info: w_io_create_directory");
@@ -737,7 +737,7 @@ W_RESULT w_io_string_split(_In_z_ char* pString,
                            _In_z_ const char* pSplit,
                            _Out_ w_array* pResults)
 {
-    w_mem_pool _mem_pool = w_get_default_memory_pool();
+    w_mem_pool _mem_pool = w_mem_pool_get_default();
     if (!_mem_pool)
     {
         W_ASSERT(false, "could not get default memory pool. trace info: w_io_split_string_then_convert_to_chars");
