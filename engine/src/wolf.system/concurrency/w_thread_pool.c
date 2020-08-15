@@ -20,7 +20,7 @@ w_thread_pool w_thread_pool_init(_In_ size_t pMinThreads,
     
     return (w_thread_pool)_thread_pool;
 }
-  
+
 W_RESULT  w_thread_pool_free(_In_ w_thread_pool pThreadPool)
 {
     return apr_thread_pool_destroy((apr_thread_pool_t*)pThreadPool) == APR_SUCCESS;
