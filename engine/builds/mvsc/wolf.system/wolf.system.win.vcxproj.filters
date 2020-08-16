@@ -328,9 +328,6 @@
     <ClCompile Include="..\..\..\src\wolf.system\concurrency\w_concurrent_queue.c">
       <Filter>concurrency</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\concurrency\w_thread_pool.c">
-      <Filter>concurrency</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\wolf.system\io\w_io.c">
       <Filter>io</Filter>
     </ClCompile>
@@ -432,6 +429,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\src\wolf.system\log\logger.cpp">
       <Filter>log</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\concurrency\w_thread_pool.c">
+      <Filter>concurrency</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
