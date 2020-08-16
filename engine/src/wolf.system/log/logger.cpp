@@ -71,13 +71,13 @@ logger::logger(_In_ const w_log_config* pConfig):
     switch (pConfig->flush_level)
     {
     default:
-    case W_DEBUG:
-    case W_INFO:
+    case W_LOG_DEBUG:
+    case W_LOG_INFO:
         break;
-    case W_WARNING:
+    case W_LOG_WARNING:
         _level = spdlog::level::level_enum::warn;
         break;
-    case W_ERROR:
+    case W_LOG_ERROR:
         _level = spdlog::level::level_enum::err;
         break;
     }
@@ -100,18 +100,18 @@ W_RESULT  logger::write(_In_ const w_log_type pLogType,
     switch (pLogType)
     {
     default:
-    case W_DEBUG:
+    case W_LOG_DEBUG:
 #if defined(DEBUG) || defined(_DEBUG)
         this->_l->info(pFMT);
 #endif
         break;
-    case W_INFO:
+    case W_LOG_INFO:
         this->_l->info(pFMT);
         break;
-    case W_WARNING:
+    case W_LOG_WARNING:
         this->_l->warn(pFMT);
         break;
-    case W_ERROR:
+    case W_LOG_ERROR:
         this->_l->error(pFMT);
         break;
     }
@@ -126,18 +126,18 @@ W_RESULT  logger::write(_In_ const w_log_type pLogType,
     switch (pLogType)
     {
     default:
-    case W_DEBUG:
+    case W_LOG_DEBUG:
 #if defined(DEBUG) || defined(_DEBUG)
         this->_l->info(pFMT);
 #endif
         break;
-    case W_INFO:
+    case W_LOG_INFO:
         this->_l->info(pFMT);
         break;
-    case W_WARNING:
+    case W_LOG_WARNING:
         this->_l->warn(pFMT);
         break;
-    case W_ERROR:
+    case W_LOG_ERROR:
         this->_l->error(pFMT);
         break;
     }
@@ -154,18 +154,18 @@ W_RESULT logger::write(_In_ const w_log_type pLogType,
     switch (pLogType)
     {
     default:
-    case W_DEBUG:
+    case W_LOG_DEBUG:
 #if defined(DEBUG) || defined(_DEBUG)
         this->_l->info(pFMT);
 #endif
         break;
-    case w_log_type::W_INFO:
+    case W_LOG_INFO:
         this->_l->info(pFMT, pArgs...);
         break;
-    case w_log_type::W_WARNING:
+    case W_LOG_WARNING:
         this->_l->warn(pFMT, pArgs...);
         break;
-    case w_log_type::W_ERROR:
+    case W_LOG_ERROR:
         this->_l->error(pFMT, pArgs...);
         break;
     }
@@ -182,18 +182,18 @@ W_RESULT logger::write(_In_ const w_log_type pLogType,
     switch (pLogType)
     {
     default:
-    case W_DEBUG:
+    case W_LOG_DEBUG:
 #if defined(DEBUG) || defined(_DEBUG)
         this->_l->info(pFMT);
 #endif
         break;
-    case w_log_type::W_INFO:
+    case W_LOG_INFO:
         this->_l->info(pFMT, pArgs...);
         break;
-    case w_log_type::W_WARNING:
+    case W_LOG_WARNING:
         this->_l->warn(pFMT, pArgs...);
         break;
-    case w_log_type::W_ERROR:
+    case W_LOG_ERROR:
         this->_l->error(pFMT, pArgs...);
         break;
     }
