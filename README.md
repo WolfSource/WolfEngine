@@ -1,4 +1,4 @@
-### [Wolf 2](https://github.com/WolfEngine/Wolf.Engine/tree/2.0) is the next major release which is under development for better better memory management, safe concurrency and memory safety.
+### [Wolf 2](https://github.com/WolfEngine/Wolf.Engine/tree/2.0) is the next major release which is under development for better memory management, safe concurrency and memory safety.
 
 # Wolf Engine [![GPL v3 licensed](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://github.com/WolfEngine/Wolf.Engine/blob/master/LICENSE.md) 
 <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/master/Logo.png" width="256" height="256" alt="WolfEngine"/>
