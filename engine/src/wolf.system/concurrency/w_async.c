@@ -41,7 +41,7 @@ W_RESULT w_async_init(_Inout_ w_async* pAsync, _In_ w_async_callback pAsyncCallB
     return W_SUCCESS;
 }
 
-W_RESULT w_async_send(_In_ w_async* pAsync)
+W_RESULT w_async_send(_In_ w_async* pAsync, _In_ void* pArg)
 {
     if (!pAsync || !pAsync->l || !pAsync->a)
     {
@@ -55,6 +55,10 @@ W_RESULT w_async_send(_In_ w_async* pAsync)
         return W_FAILURE;
     }
     
+    if (pArg)
+    {
+        pAsync->a->data = pArg;
+    }
     ev_async_send(pAsync->l, pAsync->a);
     
     return W_SUCCESS;

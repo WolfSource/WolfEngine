@@ -43,7 +43,7 @@ W_RESULT w_async_init(_Inout_ w_async* pAsync, _In_ w_async_callback pAsyncCallB
  * @return result code
 */
 W_SYSTEM_EXPORT
-W_RESULT w_async_send(_In_ w_async* pAsync);
+W_RESULT w_async_send(_In_ w_async* pAsync, _In_ void* pArg);
 
 #ifdef __cplusplus
 }
