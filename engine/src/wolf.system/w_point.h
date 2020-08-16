@@ -9,55 +9,20 @@
 
 #pragma once
 
-#include "w_std.h"
-#include "python_exporter/w_boost_python_helper.h"
-
-struct w_point
+typedef struct
 {
     long x;
     long y;
-};
+} w_point;
 
-struct w_point_f
+typedef struct
 {
     float x;
     float y;
-};
+} w_point_f;
 
-struct w_point_t
+typedef struct 
 {
-    uint32_t x;
-    uint32_t y;
-};
-
-inline bool operator == (const w_point& lValue, const w_point& rValue)
-{
-    return lValue.x == rValue.x && lValue.y == rValue.y;
-}
-
-inline bool operator != (const w_point& lValue, const w_point& rValue)
-{
-    return !(lValue == rValue);
-}
-
-inline bool operator == (const w_point_f& lValue, const w_point_f& rValue)
-{
-    return lValue.x == rValue.x && lValue.y == rValue.y;
-}
-
-inline bool operator != (const w_point_f& lValue, const w_point_f& rValue)
-{
-    return !(lValue == rValue);
-}
-
-inline bool operator == (const w_point_t& lValue, const w_point_t& rValue)
-{
-    return lValue.x == rValue.x && lValue.y == rValue.y;
-}
-
-inline bool operator != (const w_point_t& lValue, const w_point_t& rValue)
-{
-    return !(lValue == rValue);
-}
-
-#include "python_exporter/py_point.h"
+    unsigned int x;
+    unsigned int y;
+} w_point_t;

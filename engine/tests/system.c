@@ -31,6 +31,19 @@ void s_timer_callback(w_timer_loop* pLoop, w_timer_base* pTimer, int pRevents)
     printf("timer");
 }
 
+//int main()
+//{
+//    w_mem_pool _pool = w_mem_pool_get_default();
+//    size_t pMinThreads = 3;
+//    size_t pMaxThreads = 6;
+//    w_thread_pool _t_pool = w_thread_pool_init(pMinThreads, pMaxThreads, _pool);
+//    
+//    w_concurrent_queue _q = NULL;
+//    w_concurrent_queue_init(&_q, 10, _pool);
+//    w_concurrent_queue_push(_q, (void*)10);
+//
+//    return 0;
+//}
 
 Main({
     //initialize wolf
@@ -253,8 +266,8 @@ Convey("chrono", {
     So(_c_queue_interrupt_all == W_SUCCESS);
 
 
-    W_RESULT  _c_queue_term = w_concurrent_queue_term(_q);
-    So(_c_queue_term == W_SUCCESS);
+    //W_RESULT  _c_queue_term = w_concurrent_queue_term(_q);
+    //So(_c_queue_term == W_SUCCESS);
 
     printf("testing w_condition_variable");
 
@@ -457,7 +470,8 @@ Convey("chrono", {
        printf("testing w_io");
        const char content[] = "hi";
 
-      char* _io_dir_get_current = w_io_dir_get_current();
+       char* _io_dir_get_current = (char*)w_malloc(W_MAX_BUFFER_SIZE, "testing w_io");
+      w_io_dir_get_current(_io_dir_get_current);
       char* _filename = "file.txt";
       char* _sign = "\\";
       char* _path = w_string_concat(3, _io_dir_get_current, _sign, _filename);
@@ -587,56 +601,58 @@ Convey("chrono", {
 
      char* _filename3 = "pic.png";
      char* _path1 = w_string_concat(3, _io_dir_get_current, _sign, _filename3);
-     w_file_istream _istream2 = w_io_file_read_full_from_path(_path1);
-     W_RESULT _io_stream_is_png = w_io_stream_is_png(_istream2);
-     So(_io_stream_is_png == 0);
+     if (w_io_file_check_is_file(_path1) == W_SUCCESS)
+     {
+         w_file_istream _istream2 = w_io_file_read_full_from_path(_path1);
+         W_RESULT _io_stream_is_png = w_io_stream_is_png(_istream2);
+         So(_io_stream_is_png == 0);
 
-     W_RESULT _io_file_is_png = w_io_file_is_png(_path1);
-     So(_io_file_is_png == 0);
+         W_RESULT _io_file_is_png = w_io_file_is_png(_path1);
+         So(_io_file_is_png == 0);
 
-     int pWidth1;
-     int pHeight1;
-     int pNumberOfPasses1;
-     uint8_t pColorType1 = 0;
-     uint8_t pBitDepth1 = 0;
-     uint8_t* pPixels1;
-     w_file_istream _fs = w_io_file_read_full_from_path(_path1);
-     W_RESULT io_pixels_from_png_stream = w_io_pixels_from_png_stream(_fs, RGBA_PNG, &pWidth1, &pHeight1, &pColorType1, &pBitDepth1, &pNumberOfPasses1, &pPixels1);
-     So(io_pixels_from_png_stream == 0);
+         int pWidth1;
+         int pHeight1;
+         int pNumberOfPasses1;
+         uint8_t pColorType1 = 0;
+         uint8_t pBitDepth1 = 0;
+         uint8_t* pPixels1;
+         w_file_istream _fs = w_io_file_read_full_from_path(_path1);
+         W_RESULT io_pixels_from_png_stream = w_io_pixels_from_png_stream(_fs, RGBA_PNG, &pWidth1, &pHeight1, &pColorType1, &pBitDepth1, &pNumberOfPasses1, &pPixels1);
+         So(io_pixels_from_png_stream == 0);
 
-     W_RESULT _io_pixels_from_png_file = w_io_pixels_from_png_file(_path1, RGBA_PNG, &pWidth1, &pHeight1, &pColorType1, &pBitDepth1, &pNumberOfPasses1, &pPixels1);
-     So(_io_pixels_from_png_file == 0);
+         W_RESULT _io_pixels_from_png_file = w_io_pixels_from_png_file(_path1, RGBA_PNG, &pWidth1, &pHeight1, &pColorType1, &pBitDepth1, &pNumberOfPasses1, &pPixels1);
+         So(_io_pixels_from_png_file == 0);
+     }
 
      char* _filename4 = "download.jpeg";
      char* _path3 = w_string_concat(3, _io_dir_get_current, _sign, _filename4);
-     w_file_istream _istream = w_io_file_read_full_from_path(_path3);
-     char* pDestinationBuffer = w_malloc(_istream->size*2, "");
+     if (w_io_file_check_is_file(_path3) == W_SUCCESS)
+     {
+         w_file_istream _istream = w_io_file_read_full_from_path(_path3);
+         char* pDestinationBuffer = w_malloc(_istream->size * 2, "");
 
-     
- 
-     W_RESULT _io_file_is_jpeg = w_io_file_is_jpeg(_path3);
-     So(_io_file_is_jpeg == 0);
+         W_RESULT _io_file_is_jpeg = w_io_file_is_jpeg(_path3);
+         So(_io_file_is_jpeg == 0);
 
-     W_RESULT _io_stream_is_jpeg = w_io_stream_is_jpeg(_istream);
-     So(_io_stream_is_jpeg == 0);
+         W_RESULT _io_stream_is_jpeg = w_io_stream_is_jpeg(_istream);
+         So(_io_stream_is_jpeg == 0);
 
-    
+         int pWidth;
+         int pHeight;
+         int pSubSample;
+         int pColorSpace;
+         int pNumberOfPasses;
+         uint8_t* pPixels;
+         W_RESULT _io_pixels_from_jpeg_stream = w_io_pixels_from_jpeg_stream((const uint8_t*)_istream->buffer, _istream->bytes_read, RGBX_JPEG, &pWidth, &pHeight, &pSubSample, &pColorSpace, &pNumberOfPasses, &pPixels);
+         So(_io_pixels_from_jpeg_stream == 0);
 
-     int pWidth;
-     int pHeight;
-     int pSubSample;
-     int pColorSpace;
-     int pNumberOfPasses;
-     uint8_t* pPixels;
-     W_RESULT _io_pixels_from_jpeg_stream = w_io_pixels_from_jpeg_stream((const uint8_t*)_istream->buffer, _istream->bytes_read, RGBX_JPEG, &pWidth, &pHeight, &pSubSample, &pColorSpace, &pNumberOfPasses, &pPixels);
-     So(_io_pixels_from_jpeg_stream == 0);
+         W_RESULT _io_pixels_from_jpeg_file = w_io_pixels_from_jpeg_file(_path3, RGB_JPEG, &pWidth, &pHeight, &pSubSample, &pColorSpace, &pNumberOfPasses, &pPixels);
+         So(_io_pixels_from_jpeg_file == 0);
 
-     W_RESULT _io_pixels_from_jpeg_file = w_io_pixels_from_jpeg_file(_path3, RGB_JPEG, &pWidth, &pHeight, &pSubSample, &pColorSpace, &pNumberOfPasses, &pPixels);
-     So(_io_pixels_from_jpeg_file == 0);
-
-    size_t _io_to_base_64 = w_io_to_base_64(&pDestinationBuffer, _istream->buffer, _istream->size, chromium);
-     So(_io_to_base_64 == 9360);
-    
+         size_t _io_to_base_64 = w_io_to_base_64(&pDestinationBuffer, _istream->buffer, _istream->size, chromium);
+         So(_io_to_base_64 == 9360);
+     }
+        
        });
 
     Convey("memory", {

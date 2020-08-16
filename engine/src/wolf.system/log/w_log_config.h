@@ -11,10 +11,10 @@
 
 typedef enum
 {
-	W_DEBUG = 0,
-    W_INFO,
-    W_WARNING,
-    W_ERROR
+	W_LOG_DEBUG = 0,
+    W_LOG_INFO,
+    W_LOG_WARNING,
+    W_LOG_ERROR
 } w_log_type;
 
 typedef struct w_log_config

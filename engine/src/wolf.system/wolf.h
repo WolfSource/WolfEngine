@@ -56,6 +56,7 @@ extern "C" {
 #define W_SAFE_DELETE(x)            { if (x)  { delete x; x = NULL;                  } }
 #define W_SAFE_DELETE_ARRAY(ar)     { if (ar) { delete[] ar; ar = NULL;              } }
 #define W_SAFE_RELEASE(x)           { if (x)  { x->release(); delete x; x = NULL;    } }
+#define W_ARRAY_SIZE(ar)	        (size_t)((sizeof(ar) / sizeof(ar[0])))
 
 #if defined(W_PLATFORM_WIN) && !defined(__WOLF_SYSTEM_STATIC_LIB)
     //DLL export

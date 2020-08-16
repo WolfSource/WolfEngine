@@ -440,15 +440,14 @@ W_RESULT	w_io_file_delete(_In_ w_file pFile)
     return _ret == APR_SUCCESS ? W_SUCCESS : W_FAILURE;
 }
 
-char*	w_io_dir_get_current(void)
+void w_io_dir_get_current(_Inout_z_ char* pPath)
 {
-    char* _path = (char*)w_malloc(W_MAX_BUFFER_SIZE, "w_io_get_current_directory");
+    if (!pPath) return;
 #ifdef W_PLATFORM_WIN
-    GetCurrentDirectoryA(W_MAX_BUFFER_SIZE, _path);
+    GetCurrentDirectoryA(W_MAX_BUFFER_SIZE, pPath);
 #else
-    if (getcwd(_path, PATH_MAX) == NULL) return NULL;
+    if (getcwd(pPath, PATH_MAX) == NULL) return NULL;
 #endif
-    return _path;
 }
 
 W_RESULT	w_io_dir_check_is_directory(_In_z_ const char* pPath)

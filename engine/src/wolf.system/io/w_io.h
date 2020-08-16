@@ -278,10 +278,10 @@ W_RESULT w_io_file_delete(_In_ w_file pFile);
 
 /**
  * get current directory in char
- * @return current directory path
+ * @param the current directory path which must be stored
 */
 W_SYSTEM_EXPORT
-char* w_io_dir_get_current(void);
+void w_io_dir_get_current(_Inout_z_ char* pPath);
 
 /**
  * check whether this path belongs to a directory
