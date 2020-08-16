@@ -21,12 +21,10 @@
 /engine/builds/mvsc/.vs/*
 /engine/deps/*
 !/engine/deps/*.zip
-!/engine/deps/boost.zip.001
-!/engine/deps/boost.zip.002
-!/engine/deps/boost.zip.003
-!/engine/deps/boost.zip.004
 !/engine/deps/vulkan.zip.001
 !/engine/deps/vulkan.zip.002
+!/engine/deps/ffmpeg.zip.001
+!/engine/deps/ffmpeg.zip.002
 
 # Compiled Object files
 *.slo
