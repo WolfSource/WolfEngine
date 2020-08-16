@@ -26,200 +26,200 @@
 #define PNG_PAGING_SIZE     8
 
 struct png_context {
-    void* data;
-    int len;
-    int pos;
+	void* data;
+	int len;
+	int pos;
 };
 
 w_file w_io_file_create(_In_z_  const char* pPath,
-                        _In_z_  const char* pContent,
-                        _In_    bool pBinaryMode,
-                        _In_    bool pBufferedMode,
-                        _In_    bool pNoneBlockMode,
-                        _In_    bool pMultiThreadedMode,
-                        _In_    bool pOpenAppendMode,
-                        _In_    bool pIsLargFile,
-                        _In_    bool pErrorIfFileExists)
+	_In_z_  const char* pContent,
+	_In_    bool pBinaryMode,
+	_In_    bool pBufferedMode,
+	_In_    bool pNoneBlockMode,
+	_In_    bool pMultiThreadedMode,
+	_In_    bool pOpenAppendMode,
+	_In_    bool pIsLargFile,
+	_In_    bool pErrorIfFileExists)
 {
-    apr_status_t _ret = APR_SUCCESS;
-    apr_file_t* _file = NULL;
-    apr_size_t  _buffer_len = 0;
-    apr_int32_t _flags = 0;
-    w_mem_pool _pool = w_mem_pool_get_default();
-    if(!_pool)
-    {
-        W_ASSERT(false, "could not get default memory. trace info: w_io_create_directory");
-        return NULL;
-    }
-    
-    _flags = APR_FOPEN_CREATE | // create file if not there
-             APR_FOPEN_WRITE;   // open for writing
-    
-    if (pBinaryMode)
-    {
-        _flags |= APR_FOPEN_BINARY; // binary mode (ignored on UNIX)
-    }
-    if (pBufferedMode)
-    {
-        _flags |= APR_FOPEN_BUFFERED; // buffered mode
-    }
-    if (pNoneBlockMode)
-    {
-        _flags |= APR_FOPEN_NONBLOCK; // none blocked mode
-    }
-    if (pMultiThreadedMode)
-    {
-        _flags |= APR_FOPEN_XTHREAD; // allow multiple threads to use file
-    }
-    if (pOpenAppendMode)
-    {
-        _flags |= APR_FOPEN_APPEND; // binary mode (ignored on UNIX)
-    }
-    if (pIsLargFile)
-    {
-        _flags |= APR_FOPEN_LARGEFILE; // binary mode (ignored on UNIX)
-    }
-    if (pErrorIfFileExists)
-    {
-         _flags |= APR_FOPEN_EXCL; // binary mode (ignored on UNIX)
-    }
-    
-    _ret = apr_file_open(
-        &_file, // new file handle
-        pPath, // file name
-        _flags,
-        APR_OS_DEFAULT | 0, // permissions
-        _pool // memory pool to use
-    );
-    if (_ret != APR_SUCCESS)
-    {
-        return NULL;
-    }
-    _buffer_len = strlen(pContent);
-    _ret = apr_file_write(_file, pContent, &_buffer_len);
-    
-    return _file;
+	apr_status_t _ret = APR_SUCCESS;
+	apr_file_t* _file = NULL;
+	apr_size_t  _buffer_len = 0;
+	apr_int32_t _flags = 0;
+	w_mem_pool _pool = w_mem_pool_get_default();
+	if (!_pool)
+	{
+		W_ASSERT(false, "could not get default memory. trace info: w_io_create_directory");
+		return NULL;
+	}
+
+	_flags = APR_FOPEN_CREATE | // create file if not there
+		APR_FOPEN_WRITE;   // open for writing
+
+	if (pBinaryMode)
+	{
+		_flags |= APR_FOPEN_BINARY; // binary mode (ignored on UNIX)
+	}
+	if (pBufferedMode)
+	{
+		_flags |= APR_FOPEN_BUFFERED; // buffered mode
+	}
+	if (pNoneBlockMode)
+	{
+		_flags |= APR_FOPEN_NONBLOCK; // none blocked mode
+	}
+	if (pMultiThreadedMode)
+	{
+		_flags |= APR_FOPEN_XTHREAD; // allow multiple threads to use file
+	}
+	if (pOpenAppendMode)
+	{
+		_flags |= APR_FOPEN_APPEND; // binary mode (ignored on UNIX)
+	}
+	if (pIsLargFile)
+	{
+		_flags |= APR_FOPEN_LARGEFILE; // binary mode (ignored on UNIX)
+	}
+	if (pErrorIfFileExists)
+	{
+		_flags |= APR_FOPEN_EXCL; // binary mode (ignored on UNIX)
+	}
+
+	_ret = apr_file_open(
+		&_file, // new file handle
+		pPath, // file name
+		_flags,
+		APR_OS_DEFAULT | 0, // permissions
+		_pool // memory pool to use
+	);
+	if (_ret != APR_SUCCESS)
+	{
+		return NULL;
+	}
+	_buffer_len = strlen(pContent);
+	_ret = apr_file_write(_file, pContent, &_buffer_len);
+
+	return _file;
 }
 
 W_RESULT w_io_file_save(_In_z_  const char* pPath,
-                        _In_z_  const char* pContent,
-                        _In_    bool pBinaryMode,
-                        _In_    bool pBufferedMode,
-                        _In_    bool pNoneBlockMode,
-                        _In_    bool pMultiThreadedMode,
-                        _In_    bool pOpenAppendMode,
-                        _In_    bool pIsLargFile,
-                        _In_    bool pErrorIfFileExists)
+	_In_z_  const char* pContent,
+	_In_    bool pBinaryMode,
+	_In_    bool pBufferedMode,
+	_In_    bool pNoneBlockMode,
+	_In_    bool pMultiThreadedMode,
+	_In_    bool pOpenAppendMode,
+	_In_    bool pIsLargFile,
+	_In_    bool pErrorIfFileExists)
 {
-    apr_status_t _ret = APR_SUCCESS;
-    apr_file_t* _file = NULL;
-    apr_size_t  _buffer_len = 0;
-    apr_int32_t _flags = 0;
-    w_mem_pool _pool = w_mem_pool_get_default();
-    if(!_pool)
-    {
-        W_ASSERT(false, "could not get default memory. trace info: w_io_create_directory");
-        goto out;
-    }
-    
-    _flags = APR_FOPEN_CREATE | // create file if not there
-             APR_FOPEN_WRITE;   // open for writing
-    
-    if (pBinaryMode)
-    {
-        _flags |= APR_FOPEN_BINARY; // binary mode (ignored on UNIX)
-    }
-    if (pBufferedMode)
-    {
-        _flags |= APR_FOPEN_BUFFERED; // buffered mode
-    }
-    if (pNoneBlockMode)
-    {
-        _flags |= APR_FOPEN_NONBLOCK; // none blocked mode
-    }
-    if (pMultiThreadedMode)
-    {
-        _flags |= APR_FOPEN_XTHREAD; // allow multiple threads to use file
-    }
-    if (pOpenAppendMode)
-    {
-        _flags |= APR_FOPEN_APPEND; // binary mode (ignored on UNIX)
-    }
-    if (pIsLargFile)
-    {
-        _flags |= APR_FOPEN_LARGEFILE; // binary mode (ignored on UNIX)
-    }
-    if (pErrorIfFileExists)
-    {
-         _flags |= APR_FOPEN_EXCL; // binary mode (ignored on UNIX)
-    }
-    
-    _ret = apr_file_open(
-        &_file, // new file handle
-        pPath, // file name
-        _flags,
-        APR_OS_DEFAULT | 0, // permissions
-        _pool // memory pool to use
-    );
-    if (_ret != APR_SUCCESS)
-    {
-        goto out;
-    }
-    _buffer_len = strlen(pContent);
-    _ret = apr_file_write(_file, pContent, &_buffer_len);
-    
+	apr_status_t _ret = APR_SUCCESS;
+	apr_file_t* _file = NULL;
+	apr_size_t  _buffer_len = 0;
+	apr_int32_t _flags = 0;
+	w_mem_pool _pool = w_mem_pool_get_default();
+	if (!_pool)
+	{
+		W_ASSERT(false, "could not get default memory. trace info: w_io_create_directory");
+		goto out;
+	}
+
+	_flags = APR_FOPEN_CREATE | // create file if not there
+		APR_FOPEN_WRITE;   // open for writing
+
+	if (pBinaryMode)
+	{
+		_flags |= APR_FOPEN_BINARY; // binary mode (ignored on UNIX)
+	}
+	if (pBufferedMode)
+	{
+		_flags |= APR_FOPEN_BUFFERED; // buffered mode
+	}
+	if (pNoneBlockMode)
+	{
+		_flags |= APR_FOPEN_NONBLOCK; // none blocked mode
+	}
+	if (pMultiThreadedMode)
+	{
+		_flags |= APR_FOPEN_XTHREAD; // allow multiple threads to use file
+	}
+	if (pOpenAppendMode)
+	{
+		_flags |= APR_FOPEN_APPEND; // binary mode (ignored on UNIX)
+	}
+	if (pIsLargFile)
+	{
+		_flags |= APR_FOPEN_LARGEFILE; // binary mode (ignored on UNIX)
+	}
+	if (pErrorIfFileExists)
+	{
+		_flags |= APR_FOPEN_EXCL; // binary mode (ignored on UNIX)
+	}
+
+	_ret = apr_file_open(
+		&_file, // new file handle
+		pPath, // file name
+		_flags,
+		APR_OS_DEFAULT | 0, // permissions
+		_pool // memory pool to use
+	);
+	if (_ret != APR_SUCCESS)
+	{
+		goto out;
+	}
+	_buffer_len = strlen(pContent);
+	_ret = apr_file_write(_file, pContent, &_buffer_len);
+
 out:
-    if (_file)
-    {
-        apr_file_close(_file);
-    }
-    return _ret == APR_SUCCESS ? W_SUCCESS : W_FAILURE;
+	if (_file)
+	{
+		apr_file_close(_file);
+	}
+	return _ret == APR_SUCCESS ? W_SUCCESS : W_FAILURE;
 }
 
 W_RESULT w_io_file_check_is_file(_In_z_ const char* pPath)
 {
-    w_mem_pool _pool = w_mem_pool_get_default();
-    if (!_pool)
-    {
-        W_ASSERT(false, "could not get default memory. trace info: w_io_file_check_is_file");
-        return W_FAILURE;
-    }
+	w_mem_pool _pool = w_mem_pool_get_default();
+	if (!_pool)
+	{
+		W_ASSERT(false, "could not get default memory. trace info: w_io_file_check_is_file");
+		return W_FAILURE;
+	}
 
-    apr_file_t* _file = NULL;
-    apr_status_t _ret = apr_file_open(
-        &_file,
-        pPath,
-        APR_READ,
-        APR_OS_DEFAULT,
-        _pool);
-    if (_ret == APR_SUCCESS)
-    {
-        apr_file_close(_file);
-        return W_SUCCESS;
-    }
-    return W_FAILURE;
+	apr_file_t* _file = NULL;
+	apr_status_t _ret = apr_file_open(
+		&_file,
+		pPath,
+		APR_READ,
+		APR_OS_DEFAULT,
+		_pool);
+	if (_ret == APR_SUCCESS)
+	{
+		apr_file_close(_file);
+		return W_SUCCESS;
+	}
+	return W_FAILURE;
 }
 
 w_file_info w_io_file_get_info_from_path(_In_z_ const char* pPath)
 {
-    w_mem_pool _pool = w_mem_pool_get_default();
-    if(!_pool)
-    {
-        W_ASSERT(false, "could not get default memory. trace info: w_io_get_file_info_from_path");
-        return NULL;
-    }
-    
-    apr_finfo_t* _info = apr_palloc(_pool, sizeof(apr_finfo_t));
-    if(!_info)
-    {
-        W_ASSERT(false, "could not allocate memory for apr_finfo_t. trace info: w_io_get_file_info_from_path");
-        return NULL;
-    }
-    
-    apr_status_t _ret = apr_stat(_info, pPath, APR_FINFO_NORM, _pool);
-    if (_ret == APR_SUCCESS) return _info;
-    
-    return NULL;
+	w_mem_pool _pool = w_mem_pool_get_default();
+	if (!_pool)
+	{
+		W_ASSERT(false, "could not get default memory. trace info: w_io_get_file_info_from_path");
+		return NULL;
+	}
+
+	apr_finfo_t* _info = apr_palloc(_pool, sizeof(apr_finfo_t));
+	if (!_info)
+	{
+		W_ASSERT(false, "could not allocate memory for apr_finfo_t. trace info: w_io_get_file_info_from_path");
+		return NULL;
+	}
+
+	apr_status_t _ret = apr_stat(_info, pPath, APR_FINFO_NORM, _pool);
+	if (_ret == APR_SUCCESS) return _info;
+
+	return NULL;
 }
 
 /**
@@ -229,276 +229,276 @@ w_file_info w_io_file_get_info_from_path(_In_z_ const char* pPath)
 */
 w_file_info w_io_file_get_info(_In_ w_file pFile)
 {
-    w_mem_pool _pool = w_mem_pool_get_default();
-    if(!_pool)
-    {
-        W_ASSERT(false, "could not get default memory. trace info: w_io_get_file_info");
-        return NULL;
-    }
-    
-    apr_finfo_t* _info = apr_palloc(_pool, sizeof(apr_finfo_t));
-    if(!_info)
-    {
-        W_ASSERT(false, "could not allocate memory for apr_finfo_t. trace info: w_io_get_file_info");
-        return NULL;
-    }
-    
-    apr_status_t _ret = apr_file_info_get(_info, APR_FINFO_NORM, pFile);
-    if (_ret == APR_SUCCESS) return _info;
+	w_mem_pool _pool = w_mem_pool_get_default();
+	if (!_pool)
+	{
+		W_ASSERT(false, "could not get default memory. trace info: w_io_get_file_info");
+		return NULL;
+	}
 
-    return NULL;
+	apr_finfo_t* _info = apr_palloc(_pool, sizeof(apr_finfo_t));
+	if (!_info)
+	{
+		W_ASSERT(false, "could not allocate memory for apr_finfo_t. trace info: w_io_get_file_info");
+		return NULL;
+	}
+
+	apr_status_t _ret = apr_file_info_get(_info, APR_FINFO_NORM, pFile);
+	if (_ret == APR_SUCCESS) return _info;
+
+	return NULL;
 }
 
 const char* w_io_file_get_extension_from_path(_In_z_ const char* pFilePath)
 {
-    const char* _dot = strrchr(pFilePath, '.');
-    if(!_dot || _dot == pFilePath) return "";
-    return _dot + 1;
+	const char* _dot = strrchr(pFilePath, '.');
+	if (!_dot || _dot == pFilePath) return "";
+	return _dot + 1;
 }
 
 const char* w_io_file_get_extension(_In_ w_file pFile)
 {
-    apr_finfo_t* _info = w_io_file_get_info(pFile);
-    if (!_info) return "";
-    return w_io_file_get_extension_from_path(_info->fname);
+	apr_finfo_t* _info = w_io_file_get_info(pFile);
+	if (!_info) return "";
+	return w_io_file_get_extension_from_path(_info->fname);
 }
 
 const char* w_io_file_get_name_from_path(_In_z_ const char* pPath)
 {
-    // traverse from right
-    size_t _len = strlen(pPath);
-    size_t _index = -1;
-    for (size_t i = _len - 1; i > 0; i--)
-    {
-        if (pPath[i] == '.')
-        {
-            _index = i;
-            break;
-        }
-    }
-    
-    if (_index == -1) return "";
-    _index++;
+	// traverse from right
+	size_t _len = strlen(pPath);
+	size_t _index = -1;
+	for (size_t i = _len - 1; i > 0; i--)
+	{
+		if (pPath[i] == '.')
+		{
+			_index = i;
+			break;
+		}
+	}
 
-    char* _dst_str = w_malloc(_index, "w_io_get_base_file_name_from_path");
-    apr_cpystrn(_dst_str, pPath,_index);
-    _dst_str[_index] = '\0';
-    
-    return _dst_str;
+	if (_index == -1) return "";
+	_index++;
+
+	char* _dst_str = w_malloc(_index, "w_io_get_base_file_name_from_path");
+	apr_cpystrn(_dst_str, pPath, _index);
+	_dst_str[_index] = '\0';
+
+	return _dst_str;
 }
 
 const char* w_io_file_get_name(_In_ w_file pFile)
 {
-    apr_finfo_t* _info = w_io_file_get_info(pFile);
-    return w_io_file_get_name_from_path(_info->fname);
+	apr_finfo_t* _info = w_io_file_get_info(pFile);
+	return w_io_file_get_name_from_path(_info->fname);
 }
 
 const char* w_io_file_get_basename_from_path(_In_z_ const char* pFilePath)
 {
-    size_t _len = strlen(pFilePath);
-    char* _s = (char*)w_malloc(_len, "w_io_file_get_basename_from_path");
-    strcpy(_s, pFilePath);
+	size_t _len = strlen(pFilePath);
+	char* _s = (char*)w_malloc(_len, "w_io_file_get_basename_from_path");
+	strcpy(_s, pFilePath);
 
 #ifdef W_PLATFORM_WIN
-    PathStripPathA(_s);
-    return _s;
+	PathStripPathA(_s);
+	return _s;
 #else
-    return basename(_s);
+	return basename(_s);
 #endif
 }
 
-const char*	w_io_file_get_basename(_In_ w_file pFile)
+const char* w_io_file_get_basename(_In_ w_file pFile)
 {
-    apr_finfo_t* _info = w_io_file_get_info(pFile);
-    if (!_info) return NULL;
-    return w_io_file_get_basename_from_path(_info->fname);
+	apr_finfo_t* _info = w_io_file_get_info(pFile);
+	if (!_info) return NULL;
+	return w_io_file_get_basename_from_path(_info->fname);
 }
 
 const char* w_io_file_get_basename_without_extension_from_path(_In_z_ const char* pPath)
 {
-    const char* _basename = w_io_file_get_basename_from_path(pPath);
-    return w_io_file_get_name_from_path(_basename);
+	const char* _basename = w_io_file_get_basename_from_path(pPath);
+	return w_io_file_get_name_from_path(_basename);
 }
 
 const char* w_io_file_get_basename_without_extension(_In_ w_file pFile)
 {
-    apr_finfo_t* _info = w_io_file_get_info(pFile);
-    if (!_info) return NULL;
-    return w_io_file_get_basename_without_extension_from_path(_info->fname);
+	apr_finfo_t* _info = w_io_file_get_info(pFile);
+	if (!_info) return NULL;
+	return w_io_file_get_basename_without_extension_from_path(_info->fname);
 }
 
 w_file_istream w_io_file_read_full_from_path(_In_z_ const char* pPath)
 {
-    return w_io_file_read_nbytes_from_path(pPath, 0);
+	return w_io_file_read_nbytes_from_path(pPath, 0);
 }
 
 w_file_istream w_io_file_read_nbytes_from_path(_In_z_ const char* pPath, _In_ size_t pNBytes)
 {
-    w_mem_pool _pool = w_mem_pool_get_default();
-    if(!_pool)
-    {
-        W_ASSERT(false, "could not get default memory. trace info: w_io_file_read_nbytes_from_path");
-        return NULL;
-    }
-    
-    w_file_istream _istream = w_malloc(sizeof(w_file_input_stream), "w_io_file_read_nbytes_from_path");
-    if (!_istream)
-    {
-        return NULL;
-    }
-    apr_file_t* _file = NULL;
-    apr_status_t _ret = apr_file_open(&_file,
-                       pPath,
-                       APR_READ,
-                       APR_OS_DEFAULT,
-                       _pool);
-    if (_ret == APR_SUCCESS)
-    {
-        //read it all
-        apr_finfo_t _finfo;
-        _ret = apr_file_info_get(&_finfo, APR_FINFO_NORM, _file);
-        if (_ret == APR_SUCCESS)
-        {
-            _istream->size = _finfo.size;
-            _istream->buffer = w_malloc(_istream->size, "w_io_file_read_nbytes_from_path(file buffer)");
-            _istream->bytes_read = _istream->size;
-            apr_file_read(_file, _istream->buffer, &_istream->bytes_read);
-            apr_file_close(_file);
-        }
-    }
-    return _istream;
+	w_mem_pool _pool = w_mem_pool_get_default();
+	if (!_pool)
+	{
+		W_ASSERT(false, "could not get default memory. trace info: w_io_file_read_nbytes_from_path");
+		return NULL;
+	}
+
+	w_file_istream _istream = w_malloc(sizeof(w_file_input_stream), "w_io_file_read_nbytes_from_path");
+	if (!_istream)
+	{
+		return NULL;
+	}
+	apr_file_t* _file = NULL;
+	apr_status_t _ret = apr_file_open(&_file,
+		pPath,
+		APR_READ,
+		APR_OS_DEFAULT,
+		_pool);
+	if (_ret == APR_SUCCESS)
+	{
+		//read it all
+		apr_finfo_t _finfo;
+		_ret = apr_file_info_get(&_finfo, APR_FINFO_NORM, _file);
+		if (_ret == APR_SUCCESS)
+		{
+			_istream->size = _finfo.size;
+			_istream->buffer = w_malloc(_istream->size, "w_io_file_read_nbytes_from_path(file buffer)");
+			_istream->bytes_read = _istream->size;
+			apr_file_read(_file, _istream->buffer, &_istream->bytes_read);
+			apr_file_close(_file);
+		}
+	}
+	return _istream;
 }
 
 w_file_istream w_io_file_read_full(_In_ w_file pFile)
 {
-    return w_io_file_read_nbytes(pFile, 0);
+	return w_io_file_read_nbytes(pFile, 0);
 }
 
 w_file_istream	w_io_file_read_nbytes(_In_ w_file pFile, _In_ size_t pNBytes)
 {
-    if (!pFile)
-    {
-        W_ASSERT(false, "badd arg. trace info: w_io_file_read_nbytes");
-        return NULL;
-    }
+	if (!pFile)
+	{
+		W_ASSERT(false, "badd arg. trace info: w_io_file_read_nbytes");
+		return NULL;
+	}
 
-    w_mem_pool _pool = w_mem_pool_get_default();
-    if(!_pool)
-    {
-        W_ASSERT(false, "could not get default memory. trace info: w_io_file_read_nbytes");
-        return NULL;
-    }
-    
-    w_file_istream _istream = w_malloc(sizeof(w_file_input_stream), "w_io_file_read_nbytes");
-    if (!_istream)
-    {
-        return NULL;
-    }
-    
-    //read it all
-    _istream->size = apr_file_buffer_size_get(pFile);
-    _istream->bytes_read = pNBytes;
-    apr_file_read(pFile, _istream->buffer, &_istream->bytes_read);
-    apr_file_close(pFile);
-    
-    return _istream;
+	w_mem_pool _pool = w_mem_pool_get_default();
+	if (!_pool)
+	{
+		W_ASSERT(false, "could not get default memory. trace info: w_io_file_read_nbytes");
+		return NULL;
+	}
+
+	w_file_istream _istream = w_malloc(sizeof(w_file_input_stream), "w_io_file_read_nbytes");
+	if (!_istream)
+	{
+		return NULL;
+	}
+
+	//read it all
+	_istream->size = apr_file_buffer_size_get(pFile);
+	_istream->bytes_read = pNBytes;
+	apr_file_read(pFile, _istream->buffer, &_istream->bytes_read);
+	apr_file_close(pFile);
+
+	return _istream;
 }
 
 W_RESULT	w_io_file_delete_from_path(_In_ const char* pPath)
 {
-    if (!pPath)
-    {
-        W_ASSERT(false, "pPath is NULL. trace info: w_io_file_delete_from_path");
-        return W_FAILURE;
-    }
-    
-    w_mem_pool _pool = w_mem_pool_get_default();
-    if(!_pool)
-    {
-        W_ASSERT(false, "could not get default memory. trace info: w_io_file_delete_from_path");
-        return W_FAILURE;
-    }
-    apr_status_t _ret = apr_file_remove(pPath, _pool);
-    return _ret == APR_SUCCESS ? W_SUCCESS : W_FAILURE;
+	if (!pPath)
+	{
+		W_ASSERT(false, "pPath is NULL. trace info: w_io_file_delete_from_path");
+		return W_FAILURE;
+	}
+
+	w_mem_pool _pool = w_mem_pool_get_default();
+	if (!_pool)
+	{
+		W_ASSERT(false, "could not get default memory. trace info: w_io_file_delete_from_path");
+		return W_FAILURE;
+	}
+	apr_status_t _ret = apr_file_remove(pPath, _pool);
+	return _ret == APR_SUCCESS ? W_SUCCESS : W_FAILURE;
 }
 
 W_RESULT	w_io_file_delete(_In_ w_file pFile)
 {
-    if (!pFile)
-    {
-        W_ASSERT(false, "could not get default memory. trace info: w_io_delete_file_with_file");
-        return W_FAILURE;
-    }
-    w_mem_pool _pool = w_mem_pool_get_default();
-    if(!_pool)
-    {
-        W_ASSERT(false, "could not get default memory. trace info: w_io_delete_file_with_file");
-        return W_FAILURE;
-    }
-    apr_finfo_t* _file = w_io_file_get_info(pFile);
-    apr_status_t _ret = apr_file_remove(_file->fname, _pool);
-    return _ret == APR_SUCCESS ? W_SUCCESS : W_FAILURE;
+	if (!pFile)
+	{
+		W_ASSERT(false, "could not get default memory. trace info: w_io_delete_file_with_file");
+		return W_FAILURE;
+	}
+	w_mem_pool _pool = w_mem_pool_get_default();
+	if (!_pool)
+	{
+		W_ASSERT(false, "could not get default memory. trace info: w_io_delete_file_with_file");
+		return W_FAILURE;
+	}
+	apr_finfo_t* _file = w_io_file_get_info(pFile);
+	apr_status_t _ret = apr_file_remove(_file->fname, _pool);
+	return _ret == APR_SUCCESS ? W_SUCCESS : W_FAILURE;
 }
 
 void w_io_dir_get_current(_Inout_z_ char* pPath)
 {
-    if (!pPath) return;
+	if (!pPath) return;
 #ifdef W_PLATFORM_WIN
-    GetCurrentDirectoryA(W_MAX_BUFFER_SIZE, pPath);
+	GetCurrentDirectoryA(W_MAX_BUFFER_SIZE, pPath);
 #else
-    if (getcwd(pPath, PATH_MAX) == NULL) return NULL;
+	if (getcwd(pPath, PATH_MAX) == NULL) return NULL;
 #endif
 }
 
 W_RESULT	w_io_dir_check_is_directory(_In_z_ const char* pPath)
 {
-    w_mem_pool _pool = w_mem_pool_get_default();
-    if(!_pool)
-    {
-        W_ASSERT(false, "could not get default memory. trace info: w_io_get_is_directory");
-        return W_FAILURE;
-    }
-    
-    //open a directory
-    apr_dir_t* _dir = NULL;
-    apr_status_t _ret = apr_dir_open(&_dir, pPath, _pool);
-    return _ret == APR_SUCCESS ? W_SUCCESS : W_FAILURE;
+	w_mem_pool _pool = w_mem_pool_get_default();
+	if (!_pool)
+	{
+		W_ASSERT(false, "could not get default memory. trace info: w_io_get_is_directory");
+		return W_FAILURE;
+	}
+
+	//open a directory
+	apr_dir_t* _dir = NULL;
+	apr_status_t _ret = apr_dir_open(&_dir, pPath, _pool);
+	return _ret == APR_SUCCESS ? W_SUCCESS : W_FAILURE;
 }
 
 const char* w_io_dir_get_parent(_In_z_ const char* pPath)
 {
 #ifdef W_PLATFORM_UNIX
-    char* _s = strdup(pPath);
-    return dirname(_s);
+	char* _s = strdup(pPath);
+	return dirname(_s);
 #else
-    apr_size_t _size = 0;
-    for (int i = (int)strlen(pPath) - 1; i >= 0; i--)
-    {
-        if (pPath[i] == '\\' || pPath[i] == '/')
-        {
-            _size = (apr_size_t)i;
-            break;
-        }
-    }
-    //copy strings
-    if (_size == 0) return "";
+	apr_size_t _size = 0;
+	for (int i = (int)strlen(pPath) - 1; i >= 0; i--)
+	{
+		if (pPath[i] == '\\' || pPath[i] == '/')
+		{
+			_size = (apr_size_t)i;
+			break;
+		}
+	}
+	//copy strings
+	if (_size == 0) return "";
 
-    return w_string(pPath);
+	return w_string(pPath);
 #endif
 }
 
 W_RESULT	w_io_dir_create(_In_z_ const char* pPath)
 {
-    w_mem_pool _pool = w_mem_pool_get_default();
-    if(!_pool)
-    {
-        W_ASSERT(false, "could not get default memory. trace info: w_io_create_directory");
-        return W_FAILURE;
-    }
-    
-    //create a directory
-    apr_status_t _ret = apr_dir_make_recursive(pPath, APR_OS_DEFAULT, _pool);
-    return _ret == APR_SUCCESS ? W_SUCCESS : W_FAILURE;
+	w_mem_pool _pool = w_mem_pool_get_default();
+	if (!_pool)
+	{
+		W_ASSERT(false, "could not get default memory. trace info: w_io_create_directory");
+		return W_FAILURE;
+	}
+
+	//create a directory
+	apr_status_t _ret = apr_dir_make_recursive(pPath, APR_OS_DEFAULT, _pool);
+	return _ret == APR_SUCCESS ? W_SUCCESS : W_FAILURE;
 }
 
 W_RESULT	w_io_utf8_to_ucs2(
@@ -556,13 +556,13 @@ W_RESULT	w_io_utf8_to_ucs2(
 				else {
 					/* Reject values of excessive leading 0 bits
 					 */
-					if (!newch && !((unsigned char)* in & 0077 & (mask << 1)))
+					if (!newch && !((unsigned char)*in & 0077 & (mask << 1)))
 						return APR_BADARG;
 					if (expect == 2) {
 						/* Reject values D800-DFFF when not utf16 encoded
 						 * (may not be an appropriate restriction for ucs-4)
 						 */
-						if (newch == 0015 && ((unsigned char)* in & 0040))
+						if (newch == 0015 && ((unsigned char)*in & 0040))
 							return APR_BADARG;
 					}
 					else if (expect == 3) {
@@ -570,7 +570,7 @@ W_RESULT	w_io_utf8_to_ucs2(
 						 */
 						if (newch > 4)
 							return APR_BADARG;
-						if (newch == 4 && ((unsigned char)* in & 0060))
+						if (newch == 4 && ((unsigned char)*in & 0060))
 							return APR_BADARG;
 					}
 				}
@@ -582,7 +582,7 @@ W_RESULT	w_io_utf8_to_ucs2(
 				while (expect--)
 				{
 					/* Multibyte Continuation must be legal */
-					if (((ch = (unsigned char) * (in++)) & 0300) != 0200)
+					if (((ch = (unsigned char)*(in++)) & 0300) != 0200)
 						return APR_BADARG;
 					newch <<= 6;
 					newch |= (ch & 0077);
@@ -666,7 +666,7 @@ W_RESULT w_io_ucs2_to_utf8(
 			require = newch >> 11;
 			need = 1;
 			while (require)
-                (void)(require >>= 5), ++need;
+				(void)(require >>= 5), ++need;
 			if (need >= *outbytes)
 				break; /* Insufficient buffer */
 			*inwords -= (need > 2) + 1;
@@ -695,522 +695,535 @@ W_RESULT w_io_ucs2_to_utf8(
 
 long w_io_to_hex(_In_z_ const char* pHexStr)
 {
-    return strtol(pHexStr, NULL, 16);
+	return strtol(pHexStr, NULL, 16);
+}
+
+W_RESULT w_io_LPCWSTR_to_LPCSTR(
+	_In_	LPCWSTR pIn,
+	_In_	size_t pInLen,
+	_Out_	LPCSTR* pOut,
+	_Out_	size_t* pOutLen)
+{
+	(*pOutLen) = pInLen + 1; // +1 for null terminator
+	(*pOut) = (LPCSTR)w_malloc((*pOutLen), "w_io_LPCWSTR_to_LPCSTR");
+	size_t charsConverted = 0;
+
+	return wcstombs_s(&charsConverted, (*pOut), (*pOutLen), pIn, pInLen);
 }
 
 W_RESULT w_io_string_has_start_with(_In_z_ const char* pString, _In_z_ const char* pStartWith)
 {
-    return strncmp(pStartWith, pString, strlen(pStartWith));
+	return strncmp(pStartWith, pString, strlen(pStartWith));
 }
 
 W_RESULT w_io_string_has_end_with(_In_z_ const char* pString, _In_z_ const char* pEndWith)
 {
-    size_t _str_size = strlen(pString);
-    size_t _str_end_size = strlen(pEndWith);
-    
-    if (_str_size >= _str_end_size)
-    {
-        return strncmp(pString + _str_size - _str_end_size, pEndWith, _str_end_size) == 0;
-    }
-    return W_FAILURE;
+	size_t _str_size = strlen(pString);
+	size_t _str_end_size = strlen(pEndWith);
+
+	if (_str_size >= _str_end_size)
+	{
+		return strncmp(pString + _str_size - _str_end_size, pEndWith, _str_end_size) == 0;
+	}
+	return W_FAILURE;
 }
 
 W_RESULT w_io_wstring_has_start_with(_In_z_ const wchar_t* pString, _In_z_ const wchar_t* pStartWith)
 {
-    return wcsncmp(pStartWith, pString, wcslen(pStartWith));
+	return wcsncmp(pStartWith, pString, wcslen(pStartWith));
 }
 
 W_RESULT w_io_wstring_has_end_with(_In_z_ const wchar_t* pString, _In_z_ const wchar_t* pEndWith)
 {
-    size_t _str_size = wcslen(pString);
-    size_t _str_end_size = wcslen(pEndWith);
-    
-    if (_str_size >= _str_end_size)
-    {
-        return wcsncmp(pString + _str_size - _str_end_size, pEndWith, _str_end_size) == 0;
-    }
-    return W_FAILURE;
+	size_t _str_size = wcslen(pString);
+	size_t _str_end_size = wcslen(pEndWith);
+
+	if (_str_size >= _str_end_size)
+	{
+		return wcsncmp(pString + _str_size - _str_end_size, pEndWith, _str_end_size) == 0;
+	}
+	return W_FAILURE;
 }
 
 W_RESULT w_io_string_split(_In_z_ char* pString,
-                           _In_z_ const char* pSplit,
-                           _Out_ w_array* pResults)
+	_In_z_ const char* pSplit,
+	_Out_ w_array* pResults)
 {
-    w_mem_pool _mem_pool = w_mem_pool_get_default();
-    if (!_mem_pool)
-    {
-        W_ASSERT(false, "could not get default memory pool. trace info: w_io_split_string_then_convert_to_chars");
-        return W_FAILURE;
-    }
-    //create array with default size
-    if (*pResults)
-    {
-        w_free(*pResults);
-    }
-     apr_array_header_t *temp;
-    temp = ((apr_array_header_t*)&pResults);
-    temp = apr_array_make(_mem_pool, 32, sizeof(const char*));
-    if (!*pResults)
-    {
-        W_ASSERT(false, "could not create array. trace info: w_io_split_string_then_convert_to_chars");
-        return W_FAILURE;
-    }
+	w_mem_pool _mem_pool = w_mem_pool_get_default();
+	if (!_mem_pool)
+	{
+		W_ASSERT(false, "could not get default memory pool. trace info: w_io_split_string_then_convert_to_chars");
+		return W_FAILURE;
+	}
+	//create array with default size
+	if (*pResults)
+	{
+		w_free(*pResults);
+	}
+	apr_array_header_t* temp;
+	temp = ((apr_array_header_t*)&pResults);
+	temp = apr_array_make(_mem_pool, 32, sizeof(const char*));
+	if (!*pResults)
+	{
+		W_ASSERT(false, "could not create array. trace info: w_io_split_string_then_convert_to_chars");
+		return W_FAILURE;
+	}
 
-    char* _splits = strtok(pString, pSplit);
-    // loop through the string and extract all other splits
-    while( _splits != NULL )
-    {
-        *(const char**)apr_array_push(temp) = _splits;
-       _splits = strtok(NULL, pSplit);
-    }
-    
-    return W_SUCCESS;
+	char* _splits = strtok(pString, pSplit);
+	// loop through the string and extract all other splits
+	while (_splits != NULL)
+	{
+		*(const char**)apr_array_push(temp) = _splits;
+		_splits = strtok(NULL, pSplit);
+	}
+
+	return W_SUCCESS;
 }
 
 size_t w_io_to_base_64(_Inout_z_ char** pDestinationBuffer,
-                       _In_z_ char* pSourceBuffer,
-                       _In_z_ size_t pSourceBufferLenght,
-                       _In_ base_64_mode pEncodeMode)
+	_In_z_ char* pSourceBuffer,
+	_In_z_ size_t pSourceBufferLenght,
+	_In_ base_64_mode pEncodeMode)
 {
-    size_t _encoded_size = 0;
-    switch (pEncodeMode)
-    {
-        case chromium:
-            _encoded_size = chromium_base64_encode(
-                *pDestinationBuffer,
-                pSourceBuffer,
-                pSourceBufferLenght);
-            break;
-        case klomp_avx:
-            klomp_avx2_base64_encode(
-                pSourceBuffer,
-                pSourceBufferLenght,
-                *pDestinationBuffer,
-                &_encoded_size);
-            break;
-        case fast_avx:
-            _encoded_size = fast_avx2_base64_encode(
-                *pDestinationBuffer,
-                pSourceBuffer,
-                pSourceBufferLenght);
-            break;
-        case fast_avx512:
+	size_t _encoded_size = 0;
+	switch (pEncodeMode)
+	{
+	case chromium:
+		_encoded_size = chromium_base64_encode(
+			*pDestinationBuffer,
+			pSourceBuffer,
+			pSourceBufferLenght);
+		break;
+	case klomp_avx:
+		klomp_avx2_base64_encode(
+			pSourceBuffer,
+			pSourceBufferLenght,
+			*pDestinationBuffer,
+			&_encoded_size);
+		break;
+	case fast_avx:
+		_encoded_size = fast_avx2_base64_encode(
+			*pDestinationBuffer,
+			pSourceBuffer,
+			pSourceBufferLenght);
+		break;
+	case fast_avx512:
 #if USE_AVX512 != 0 && ((defined(_MSC_VER) && _MSC_VER >= 1911) || (defined(__INTEL_COMPILER) && __INTEL_COMPILER >= 1600) || (defined(__clang__) && __clang_major__ >= 4) || (defined(__GNUC__) && __GNUC__ >= 5))
-            _encoded_size = fast_avx512bw_base64_encode(
-                pDestinationBuffer,
-                pSourceBuffer,
-                pSourceBufferLenght);
+		_encoded_size = fast_avx512bw_base64_encode(
+			pDestinationBuffer,
+			pSourceBuffer,
+			pSourceBufferLenght);
 #endif
-            break;
-        case quick_time:
-            _encoded_size = (size_t)(quicktime_base64_encode(
-                *pDestinationBuffer,
-                pSourceBuffer,
-                (int)pSourceBufferLenght));
-            break;
-        case scalar:
-            scalar_base64_encode(
-                pSourceBuffer,
-                pSourceBufferLenght,
-                *pDestinationBuffer,
-                &_encoded_size);
-            break;
-    }
-    return _encoded_size;
+		break;
+	case quick_time:
+		_encoded_size = (size_t)(quicktime_base64_encode(
+			*pDestinationBuffer,
+			pSourceBuffer,
+			(int)pSourceBufferLenght));
+		break;
+	case scalar:
+		scalar_base64_encode(
+			pSourceBuffer,
+			pSourceBufferLenght,
+			*pDestinationBuffer,
+			&_encoded_size);
+		break;
+	}
+	return _encoded_size;
 }
 
 W_RESULT w_io_file_is_jpeg(_In_ const char* pFilePath)
 {
-    w_file_istream _istream = w_io_file_read_full_from_path(pFilePath);
-    return w_io_stream_is_jpeg(_istream);
+	w_file_istream _istream = w_io_file_read_full_from_path(pFilePath);
+	return w_io_stream_is_jpeg(_istream);
 }
 
 W_RESULT w_io_stream_is_jpeg(_In_ w_file_istream pFileStream)
 {
-    tjhandle _tj_handle = tjInitDecompress();
-    
-    if (!_tj_handle)
-    {
-        return W_FAILURE;
-    }
+	tjhandle _tj_handle = tjInitDecompress();
 
-    int _width, _height, _sub_sample, _color_space;
-    W_RESULT _rt = tjDecompressHeader3(_tj_handle,
-                                       pFileStream->buffer,
-                                       pFileStream->bytes_read,
-                                       &_width,
-                                       &_height,
-                                       &_sub_sample,
-                                       &_color_space);
-    tjDestroy(_tj_handle);
-    
-    return _rt;
+	if (!_tj_handle)
+	{
+		return W_FAILURE;
+	}
+
+	int _width, _height, _sub_sample, _color_space;
+	W_RESULT _rt = tjDecompressHeader3(_tj_handle,
+		pFileStream->buffer,
+		pFileStream->bytes_read,
+		&_width,
+		&_height,
+		&_sub_sample,
+		&_color_space);
+	tjDestroy(_tj_handle);
+
+	return _rt;
 }
 
 W_RESULT w_io_pixels_from_jpeg_stream(_In_z_   const uint8_t* pJpegStream,
-                                      _In_     size_t pJpegStreamLen,
-                                      _In_     w_jpeg_pixel_format pPixelFormat,
-                                      _Out_    int* pWidth,
-                                      _Out_    int* pHeight,
-                                      _Out_    int* pSubSample,
-                                      _Out_    int* pColorSpace,
-                                      _Out_    int* pNumberOfPasses,
-                                      _Out_    uint8_t** pPixels)
+	_In_     size_t pJpegStreamLen,
+	_In_     w_jpeg_pixel_format pPixelFormat,
+	_Out_    int* pWidth,
+	_Out_    int* pHeight,
+	_Out_    int* pSubSample,
+	_Out_    int* pColorSpace,
+	_Out_    int* pNumberOfPasses,
+	_Out_    uint8_t** pPixels)
 {
-    W_RESULT _rt;
-    tjhandle _tj_handle = NULL;
-    
-    if (pPixelFormat == TJPF_UNKNOWN)
-    {
-        _rt = APR_BADARG;
-        goto out;
-    }
+	W_RESULT _rt;
+	tjhandle _tj_handle = NULL;
 
-    _tj_handle = tjInitDecompress();
-    if (!_tj_handle)
-    {
-        _rt = W_FAILURE;
-        goto out;
-    }
+	if (pPixelFormat == TJPF_UNKNOWN)
+	{
+		_rt = APR_BADARG;
+		goto out;
+	}
 
-    if ((_rt = tjDecompressHeader3(_tj_handle,
-                                   pJpegStream,
-                                   pJpegStreamLen,
-                                   pWidth,
-                                   pHeight,
-                                   pSubSample,
-                                   pColorSpace)))
-    {
-        _rt = tjGetErrorCode(_tj_handle);
-        W_ASSERT_P(false, "tjDecompressHeader3 failed. error code %d . error message %s .trace info: w_io_pixels_from_jpeg_stream", _rt, tjGetErrorStr2(_tj_handle));
-        goto out;
-    }
+	_tj_handle = tjInitDecompress();
+	if (!_tj_handle)
+	{
+		_rt = W_FAILURE;
+		goto out;
+	}
 
-    int _comp;
-    switch (pPixelFormat)
-    {
-        default:
-            _comp = 4;
-        case TJPF_RGB:
-        case TJPF_BGR:
-            _comp = 3;
-            break;
-    }
+	if ((_rt = tjDecompressHeader3(_tj_handle,
+		pJpegStream,
+		pJpegStreamLen,
+		pWidth,
+		pHeight,
+		pSubSample,
+		pColorSpace)))
+	{
+		_rt = tjGetErrorCode(_tj_handle);
+		W_ASSERT_P(false, "tjDecompressHeader3 failed. error code %d . error message %s .trace info: w_io_pixels_from_jpeg_stream", _rt, tjGetErrorStr2(_tj_handle));
+		goto out;
+	}
 
-    size_t _memory_size = (size_t)_comp * (size_t)(*pWidth) * (size_t)(*pHeight) * sizeof(uint8_t);
-    *pPixels = (uint8_t*)w_malloc(_memory_size, "w_io_pixels_from_jpeg_stream");
-    _rt = tjDecompress2(
-        _tj_handle,
-        pJpegStream,
-        pJpegStreamLen,
-        *pPixels,
-        *pWidth,
-        _comp * (*pWidth),
-        *pHeight,
-        pPixelFormat,
-        0);
+	int _comp;
+	switch (pPixelFormat)
+	{
+	default:
+		_comp = 4;
+	case TJPF_RGB:
+	case TJPF_BGR:
+		_comp = 3;
+		break;
+	}
+
+	size_t _memory_size = (size_t)_comp * (size_t)(*pWidth) * (size_t)(*pHeight) * sizeof(uint8_t);
+	*pPixels = (uint8_t*)w_malloc(_memory_size, "w_io_pixels_from_jpeg_stream");
+	_rt = tjDecompress2(
+		_tj_handle,
+		pJpegStream,
+		pJpegStreamLen,
+		*pPixels,
+		*pWidth,
+		_comp * (*pWidth),
+		*pHeight,
+		pPixelFormat,
+		0);
 out:
-    if (_tj_handle)
-    {
-        tjDestroy(_tj_handle);
-    }
-    return _rt;
+	if (_tj_handle)
+	{
+		tjDestroy(_tj_handle);
+	}
+	return _rt;
 }
 
 W_RESULT w_io_pixels_from_jpeg_file(_In_z_   const char* pJpegFile,
-                                    _In_     w_jpeg_pixel_format pPixelFormat,
-                                    _Out_    int* pWidth,
-                                    _Out_    int* pHeight,
-                                    _Out_    int* pSubSample,
-                                    _Out_    int* pColorSpace,
-                                    _Out_    int* pNumberOfPasses,
-                                    _Out_    uint8_t** pPixels)
+	_In_     w_jpeg_pixel_format pPixelFormat,
+	_Out_    int* pWidth,
+	_Out_    int* pHeight,
+	_Out_    int* pSubSample,
+	_Out_    int* pColorSpace,
+	_Out_    int* pNumberOfPasses,
+	_Out_    uint8_t** pPixels)
 {
-    w_file_istream _istream = w_io_file_read_full_from_path(pJpegFile);
-    return w_io_pixels_from_jpeg_stream((const uint8_t*)_istream->buffer,
-                                        _istream->bytes_read,
-                                        pPixelFormat,
-                                        pWidth,
-                                        pHeight,
-                                        pSubSample,
-                                        pColorSpace,
-                                        pNumberOfPasses,
-                                        pPixels);
+	w_file_istream _istream = w_io_file_read_full_from_path(pJpegFile);
+	return w_io_pixels_from_jpeg_stream((const uint8_t*)_istream->buffer,
+		_istream->bytes_read,
+		pPixelFormat,
+		pWidth,
+		pHeight,
+		pSubSample,
+		pColorSpace,
+		pNumberOfPasses,
+		pPixels);
 }
 
 W_RESULT w_io_stream_is_png(_In_ w_file_istream pFileStream)
 {
-    uint8_t _buf[PNG_BYTES_TO_CHECK];
-    memcpy(_buf, pFileStream->buffer, PNG_BYTES_TO_CHECK);
-    //Compare the first PNG_BYTES_TO_CHECK bytes of the signature.
-    return png_sig_cmp(_buf, 0, PNG_BYTES_TO_CHECK);
+	uint8_t _buf[PNG_BYTES_TO_CHECK];
+	memcpy(_buf, pFileStream->buffer, PNG_BYTES_TO_CHECK);
+	//Compare the first PNG_BYTES_TO_CHECK bytes of the signature.
+	return png_sig_cmp(_buf, 0, PNG_BYTES_TO_CHECK);
 }
 
 W_RESULT w_io_file_is_png(_In_z_ const char* pFilePath)
 {
-    w_file_istream _fs = w_io_file_read_nbytes_from_path(pFilePath, PNG_BYTES_TO_CHECK);
-    return png_sig_cmp(_fs->buffer, 0, PNG_BYTES_TO_CHECK);
+	w_file_istream _fs = w_io_file_read_nbytes_from_path(pFilePath, PNG_BYTES_TO_CHECK);
+	return png_sig_cmp(_fs->buffer, 0, PNG_BYTES_TO_CHECK);
 }
 
 static  void _png_user_read_data(
-    png_structp pPngPtr,
-    png_bytep pData,
-    png_size_t pLength)
+	png_structp pPngPtr,
+	png_bytep pData,
+	png_size_t pLength)
 {
-    struct png_context* context;
+	struct png_context* context;
 
-    context = png_get_io_ptr(pPngPtr);
-    if (pLength > context->pos + context->len)
-        pLength = context->len - context->pos;
-    memcpy(pData, (char*)context->data + context->pos, pLength);
-    context->pos += pLength;
+	context = png_get_io_ptr(pPngPtr);
+	if (pLength > context->pos + context->len)
+		pLength = context->len - context->pos;
+	memcpy(pData, (char*)context->data + context->pos, pLength);
+	context->pos += pLength;
 
-    //cast istream
-    //png_voidp _io = png_get_io_ptr(pPngPtr);
-    //memcpy(pData, _io, pLength);
+	//cast istream
+	//png_voidp _io = png_get_io_ptr(pPngPtr);
+	//memcpy(pData, _io, pLength);
 }
 
 W_RESULT w_io_pixels_from_png_stream(_In_   w_file_istream pFileStream,
-                                     _In_   w_png_pixel_format pPixelFormat,
-                                     _Out_  int* pWidth,
-                                     _Out_  int* pHeight,
-                                     _Out_  uint8_t* pColorType,
-                                     _Out_  uint8_t* pBitDepth,
-                                     _Out_  int* pNumberOfPasses,
-                                     _Out_  uint8_t** pPixels)
+	_In_   w_png_pixel_format pPixelFormat,
+	_Out_  int* pWidth,
+	_Out_  int* pHeight,
+	_Out_  uint8_t* pColorType,
+	_Out_  uint8_t* pBitDepth,
+	_Out_  int* pNumberOfPasses,
+	_Out_  uint8_t** pPixels)
 {
-    if(png_sig_cmp(pFileStream->buffer, 0, PNG_BYTES_TO_CHECK))
-    {
-        W_ASSERT(false, "file stream does not contain png data. trace info: w_io_pixels_from_png_stream::png_sig_cmp");
-        return APR_BADARG;
-    }
+	if (png_sig_cmp(pFileStream->buffer, 0, PNG_BYTES_TO_CHECK))
+	{
+		W_ASSERT(false, "file stream does not contain png data. trace info: w_io_pixels_from_png_stream::png_sig_cmp");
+		return APR_BADARG;
+	}
 
-    //initialize stuff
-    png_structp _png_ptr = png_create_read_struct(
-        PNG_LIBPNG_VER_STRING,
-        NULL,
-        NULL,
-        NULL);
-    if (!_png_ptr)
-    {
-        W_ASSERT(false, "could not create png pointer. trace info: w_io_pixels_from_png_stream::png_create_read_struct");
-        return W_FAILURE;
-    }
+	//initialize stuff
+	png_structp _png_ptr = png_create_read_struct(
+		PNG_LIBPNG_VER_STRING,
+		NULL,
+		NULL,
+		NULL);
+	if (!_png_ptr)
+	{
+		W_ASSERT(false, "could not create png pointer. trace info: w_io_pixels_from_png_stream::png_create_read_struct");
+		return W_FAILURE;
+	}
 
-    png_infop _info_ptr = png_create_info_struct(_png_ptr);
-    if (!_info_ptr)
-    {
-        W_ASSERT(false, "could not create info struct. trace info: w_io_pixels_from_png_stream::png_create_info_struct");
-        return W_FAILURE;
-    }
+	png_infop _info_ptr = png_create_info_struct(_png_ptr);
+	if (!_info_ptr)
+	{
+		W_ASSERT(false, "could not create info struct. trace info: w_io_pixels_from_png_stream::png_create_info_struct");
+		return W_FAILURE;
+	}
 
-    if (setjmp(png_jmpbuf(_png_ptr)))
-    {
-        png_destroy_read_struct(&_png_ptr, &_info_ptr, (png_infopp)0);
-        
-        W_ASSERT(false, "failed on setjmp. trace info: w_io_pixels_from_png_stream::setjmp");
-        return W_FAILURE;
-    }
+	if (setjmp(png_jmpbuf(_png_ptr)))
+	{
+		png_destroy_read_struct(&_png_ptr, &_info_ptr, (png_infopp)0);
 
-    struct png_context context;
+		W_ASSERT(false, "failed on setjmp. trace info: w_io_pixels_from_png_stream::setjmp");
+		return W_FAILURE;
+	}
 
-    context.data = pFileStream->buffer;
-    context.len = pFileStream->bytes_read;
-    context.pos = PNG_PAGING_SIZE;
+	struct png_context context;
 
-    png_set_read_fn(_png_ptr, &context, &_png_user_read_data);//png_init_io(_png_ptr, _file);
-    //png_init_io(_png_ptr, )
-    png_set_sig_bytes(_png_ptr, PNG_PAGING_SIZE);
-    png_read_info(_png_ptr, _info_ptr);
+	context.data = pFileStream->buffer;
+	context.len = pFileStream->bytes_read;
+	context.pos = PNG_PAGING_SIZE;
 
-    *pWidth = (int)png_get_image_width(_png_ptr, _info_ptr);
-    *pHeight = (int)png_get_image_height(_png_ptr, _info_ptr);
-    *pColorType = png_get_color_type(_png_ptr, _info_ptr);
-    *pBitDepth = png_get_bit_depth(_png_ptr, _info_ptr);
-    *pNumberOfPasses = png_set_interlace_handling(_png_ptr);
+	png_set_read_fn(_png_ptr, &context, &_png_user_read_data);//png_init_io(_png_ptr, _file);
+	//png_init_io(_png_ptr, )
+	png_set_sig_bytes(_png_ptr, PNG_PAGING_SIZE);
+	png_read_info(_png_ptr, _info_ptr);
 
-    //check bit depth
-    if (*pBitDepth == 16)
-    {
-        png_set_strip_16(_png_ptr);
-    }
+	*pWidth = (int)png_get_image_width(_png_ptr, _info_ptr);
+	*pHeight = (int)png_get_image_height(_png_ptr, _info_ptr);
+	*pColorType = png_get_color_type(_png_ptr, _info_ptr);
+	*pBitDepth = png_get_bit_depth(_png_ptr, _info_ptr);
+	*pNumberOfPasses = png_set_interlace_handling(_png_ptr);
 
-    if (*pColorType == PNG_COLOR_TYPE_PALETTE)
-    {
-        png_set_palette_to_rgb(_png_ptr);
-    }
+	//check bit depth
+	if (*pBitDepth == 16)
+	{
+		png_set_strip_16(_png_ptr);
+	}
 
-    // PNG_COLOR_TYPE_GRAY_ALPHA is always 8 or 16 bit depth.
-    if (*pColorType == PNG_COLOR_TYPE_GRAY && *pBitDepth < 8)
-    {
-        png_set_expand_gray_1_2_4_to_8(_png_ptr);
-    }
+	if (*pColorType == PNG_COLOR_TYPE_PALETTE)
+	{
+		png_set_palette_to_rgb(_png_ptr);
+	}
 
-    if (png_get_valid(_png_ptr, _info_ptr, PNG_INFO_tRNS))
-    {
-        png_set_tRNS_to_alpha(_png_ptr);
-    }
+	// PNG_COLOR_TYPE_GRAY_ALPHA is always 8 or 16 bit depth.
+	if (*pColorType == PNG_COLOR_TYPE_GRAY && *pBitDepth < 8)
+	{
+		png_set_expand_gray_1_2_4_to_8(_png_ptr);
+	}
 
-    // These color_type don't have an alpha channel then fill it with 0xff.
-    if (*pColorType == PNG_COLOR_TYPE_RGB ||
-        *pColorType == PNG_COLOR_TYPE_GRAY ||
-        *pColorType == PNG_COLOR_TYPE_PALETTE)
-    {
-        png_set_filler(_png_ptr, 0xFF, PNG_FILLER_AFTER);
-    }
+	if (png_get_valid(_png_ptr, _info_ptr, PNG_INFO_tRNS))
+	{
+		png_set_tRNS_to_alpha(_png_ptr);
+	}
 
-    if (*pColorType == PNG_COLOR_TYPE_GRAY || *pColorType == PNG_COLOR_TYPE_GRAY_ALPHA)
-    {
-        png_set_gray_to_rgb(_png_ptr);
-    }
+	// These color_type don't have an alpha channel then fill it with 0xff.
+	if (*pColorType == PNG_COLOR_TYPE_RGB ||
+		*pColorType == PNG_COLOR_TYPE_GRAY ||
+		*pColorType == PNG_COLOR_TYPE_PALETTE)
+	{
+		png_set_filler(_png_ptr, 0xFF, PNG_FILLER_AFTER);
+	}
 
-    png_read_update_info(_png_ptr, _info_ptr);
+	if (*pColorType == PNG_COLOR_TYPE_GRAY || *pColorType == PNG_COLOR_TYPE_GRAY_ALPHA)
+	{
+		png_set_gray_to_rgb(_png_ptr);
+	}
 
-    //now data must be rgba
-    size_t _comp = 4;
-    if (pPixelFormat == RGB_PNG ||
-        pPixelFormat == BGR_PNG)
-    {
-        _comp = 3;
-    }
+	png_read_update_info(_png_ptr, _info_ptr);
 
-    //allocate memory
-    if (pPixels && *pPixels)
-    {
-        w_free(*pPixels);
-    }
-    (*pPixels) = (uint8_t*)w_malloc(_comp * (size_t)(*pWidth) * (size_t)(*pHeight) * sizeof(uint8_t),
-                                  "w_io_pixels_from_png_stream");
-    
-    size_t _bytes_per_row = png_get_rowbytes(_png_ptr, _info_ptr);
-    uint8_t* _raw_data = (uint8_t*)w_malloc(_bytes_per_row, "w_io_pixels_from_png_stream");
+	//now data must be rgba
+	size_t _comp = 4;
+	if (pPixelFormat == RGB_PNG ||
+		pPixelFormat == BGR_PNG)
+	{
+		_comp = 3;
+	}
 
-    //pixels counter
-    uint32_t _k = 0;
+	//allocate memory
+	if (pPixels && *pPixels)
+	{
+		w_free(*pPixels);
+	}
+	(*pPixels) = (uint8_t*)w_malloc(_comp * (size_t)(*pWidth) * (size_t)(*pHeight) * sizeof(uint8_t),
+		"w_io_pixels_from_png_stream");
 
-    //read single row at a time and then convert it to desired pixel format
-    switch (pPixelFormat)
-    {
-    case RGB_PNG:
-        for (int i = 0; i < (*pHeight); ++i)
-        {
-            png_read_row(_png_ptr, (png_bytep)_raw_data, NULL);
+	size_t _bytes_per_row = png_get_rowbytes(_png_ptr, _info_ptr);
+	uint8_t* _raw_data = (uint8_t*)w_malloc(_bytes_per_row, "w_io_pixels_from_png_stream");
 
-            //const int _row_offset = i * (*pWidth);
+	//pixels counter
+	uint32_t _k = 0;
 
-            size_t _byte_index = 0;
-            for (int j = 0; j < (*pWidth); ++j)
-            {
-                const uint8_t _r = _raw_data[_byte_index++];
-                const uint8_t _g = _raw_data[_byte_index++];
-                const uint8_t _b = _raw_data[_byte_index++];
-                _byte_index++;//alpha ignored
+	//read single row at a time and then convert it to desired pixel format
+	switch (pPixelFormat)
+	{
+	case RGB_PNG:
+		for (int i = 0; i < (*pHeight); ++i)
+		{
+			png_read_row(_png_ptr, (png_bytep)_raw_data, NULL);
 
-                (*pPixels)[_k] = _r;
-                (*pPixels)[_k + 1] = _g;
-                (*pPixels)[_k + 2] = _b;
+			//const int _row_offset = i * (*pWidth);
 
-                _k += _comp;
-            }
-        }
-        break;
-    case BGR_PNG:
-        for (int i = 0; i < *pHeight; ++i)
-        {
-            png_read_row(_png_ptr, (png_bytep)_raw_data, NULL);
+			size_t _byte_index = 0;
+			for (int j = 0; j < (*pWidth); ++j)
+			{
+				const uint8_t _r = _raw_data[_byte_index++];
+				const uint8_t _g = _raw_data[_byte_index++];
+				const uint8_t _b = _raw_data[_byte_index++];
+				_byte_index++;//alpha ignored
 
-            //const auto _row_offset = i * pWidth;
+				(*pPixels)[_k] = _r;
+				(*pPixels)[_k + 1] = _g;
+				(*pPixels)[_k + 2] = _b;
 
-            size_t _byte_index = 0;
-            for (int j = 0; j < *pWidth; ++j)
-            {
-                const uint8_t _r = _raw_data[_byte_index++];
-                const uint8_t _g = _raw_data[_byte_index++];
-                const uint8_t _b = _raw_data[_byte_index++];
-                _byte_index++;//alpha ignored
+				_k += _comp;
+			}
+		}
+		break;
+	case BGR_PNG:
+		for (int i = 0; i < *pHeight; ++i)
+		{
+			png_read_row(_png_ptr, (png_bytep)_raw_data, NULL);
 
-                (*pPixels)[_k] = _b;
-                (*pPixels)[_k + 1] = _g;
-                (*pPixels)[_k + 2] = _r;
+			//const auto _row_offset = i * pWidth;
 
-                _k += _comp;
-            }
-        }
-        break;
-    case RGBA_PNG:
-        for (int i = 0; i < *pHeight; ++i)
-        {
-            png_read_row(_png_ptr, (png_bytep)_raw_data, NULL);
+			size_t _byte_index = 0;
+			for (int j = 0; j < *pWidth; ++j)
+			{
+				const uint8_t _r = _raw_data[_byte_index++];
+				const uint8_t _g = _raw_data[_byte_index++];
+				const uint8_t _b = _raw_data[_byte_index++];
+				_byte_index++;//alpha ignored
 
-            //const auto _row_offset = i * (*pWidth);
+				(*pPixels)[_k] = _b;
+				(*pPixels)[_k + 1] = _g;
+				(*pPixels)[_k + 2] = _r;
 
-            uint32_t _byte_index = 0;
-            for (int j = 0; j < (*pWidth); ++j)
-            {
-                const uint8_t _r = _raw_data[_byte_index++];
-                const uint8_t _g = _raw_data[_byte_index++];
-                const uint8_t _b = _raw_data[_byte_index++];
-                const uint8_t _a = _raw_data[_byte_index++];
+				_k += _comp;
+			}
+		}
+		break;
+	case RGBA_PNG:
+		for (int i = 0; i < *pHeight; ++i)
+		{
+			png_read_row(_png_ptr, (png_bytep)_raw_data, NULL);
 
-                (*pPixels)[_k] = _r;
-                (*pPixels)[_k + 1] = _g;
-                (*pPixels)[_k + 2] = _b;
-                (*pPixels)[_k + 3] = _a;
+			//const auto _row_offset = i * (*pWidth);
 
-                _k += _comp;
-            }
-        }
-        break;
-    case BGRA_PNG:
-        for (int i = 0; i < *pHeight; ++i)
-        {
-            png_read_row(_png_ptr, (png_bytep)_raw_data, NULL);
+			uint32_t _byte_index = 0;
+			for (int j = 0; j < (*pWidth); ++j)
+			{
+				const uint8_t _r = _raw_data[_byte_index++];
+				const uint8_t _g = _raw_data[_byte_index++];
+				const uint8_t _b = _raw_data[_byte_index++];
+				const uint8_t _a = _raw_data[_byte_index++];
 
-            //const auto _row_offset = i * pWidth;
+				(*pPixels)[_k] = _r;
+				(*pPixels)[_k + 1] = _g;
+				(*pPixels)[_k + 2] = _b;
+				(*pPixels)[_k + 3] = _a;
 
-            uint32_t _byte_index = 0;
-            for (int j = 0; j < *pWidth; ++j)
-            {
-                const uint32_t _r = _raw_data[_byte_index++];
-                const uint32_t _g = _raw_data[_byte_index++];
-                const uint32_t _b = _raw_data[_byte_index++];
-                const uint32_t _a = _raw_data[_byte_index++];
+				_k += _comp;
+			}
+		}
+		break;
+	case BGRA_PNG:
+		for (int i = 0; i < *pHeight; ++i)
+		{
+			png_read_row(_png_ptr, (png_bytep)_raw_data, NULL);
 
-                (*pPixels)[_k] = _b;
-                (*pPixels)[_k + 1] = _g;
-                (*pPixels)[_k + 2] = _r;
-                (*pPixels)[_k + 3] = _a;
+			//const auto _row_offset = i * pWidth;
 
-                _k += _comp;
-            }
-        }
-        break;
-    };
+			uint32_t _byte_index = 0;
+			for (int j = 0; j < *pWidth; ++j)
+			{
+				const uint32_t _r = _raw_data[_byte_index++];
+				const uint32_t _g = _raw_data[_byte_index++];
+				const uint32_t _b = _raw_data[_byte_index++];
+				const uint32_t _a = _raw_data[_byte_index++];
 
-    png_destroy_read_struct(&_png_ptr, &_info_ptr, (png_infopp)0);
-    w_free(_raw_data);
-    
-    return W_SUCCESS;
+				(*pPixels)[_k] = _b;
+				(*pPixels)[_k + 1] = _g;
+				(*pPixels)[_k + 2] = _r;
+				(*pPixels)[_k + 3] = _a;
+
+				_k += _comp;
+			}
+		}
+		break;
+	};
+
+	png_destroy_read_struct(&_png_ptr, &_info_ptr, (png_infopp)0);
+	w_free(_raw_data);
+
+	return W_SUCCESS;
 }
 
 W_RESULT w_io_pixels_from_png_file(_In_   const char* pFilePath,
-                                   _In_   w_png_pixel_format pPixelFormat,
-                                   _Out_  int* pWidth,
-                                   _Out_  int* pHeight,
-                                   _Out_  uint8_t* pColorType,
-                                   _Out_  uint8_t* pBitDepth,
-                                   _Out_  int* pNumberOfPasses,
-                                   _Out_  uint8_t** pPixels)
+	_In_   w_png_pixel_format pPixelFormat,
+	_Out_  int* pWidth,
+	_Out_  int* pHeight,
+	_Out_  uint8_t* pColorType,
+	_Out_  uint8_t* pBitDepth,
+	_Out_  int* pNumberOfPasses,
+	_Out_  uint8_t** pPixels)
 {
-    w_file_istream _fs = w_io_file_read_full_from_path(pFilePath);
-    return w_io_pixels_from_png_stream(_fs,
-                                       pPixelFormat,
-                                       pWidth,
-                                       pHeight,
-                                       pColorType,
-                                       pBitDepth,
-                                       pNumberOfPasses,
-                                       pPixels);
+	w_file_istream _fs = w_io_file_read_full_from_path(pFilePath);
+	return w_io_pixels_from_png_stream(_fs,
+		pPixelFormat,
+		pWidth,
+		pHeight,
+		pColorType,
+		pBitDepth,
+		pNumberOfPasses,
+		pPixels);
 }
 
 //apr_dir_read(<#apr_finfo_t *finfo#>, <#apr_int32_t wanted#>, <#apr_dir_t *thedir#>)
@@ -1485,4 +1498,3 @@ W_RESULT w_io_pixels_from_png_file(_In_   const char* pFilePath,
 //            std::back_inserter(pData));
 //
 //    }
-
