@@ -80,6 +80,27 @@ int w_table_get_size(_In_ w_table pTable)
     return _header->nelts;
 }
 
+int w_table_is_empty(_In_ w_table pTable)
+{
+    if (!pTable)
+    {
+        W_ASSERT(false, "Missing pTable. trace info: w_table_get_size");
+        return -1;
+    }
+    const apr_array_header_t* _header = apr_table_elts(pTable);
+    return apr_is_empty_table(_header);
+}
+
+void w_table_clear(_In_ w_table pTable)
+{
+    if (!pTable)
+    {
+        W_ASSERT(false, "Missing pTable. trace info: w_table_get_size");
+        return;
+    }
+    apr_table_clear(pTable);
+}
+
 int w_table_do(_In_ w_table pTable,
                _In_ w_table_do_callback pCallBack,
                _In_ void* pArg)
