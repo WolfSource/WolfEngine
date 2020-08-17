@@ -43,7 +43,7 @@ w_array w_array_init(
 
 const void* w_array_get_element(_Inout_ w_array pArray, _In_ int pElementIndex)
 {
-    if (!pArray || pElementIndex >= pArray->elt_size)
+    if (!pArray || !pElementIndex >= pArray->elt_size)
     {
         return NULL;
     }
