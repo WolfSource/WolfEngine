@@ -2,50 +2,75 @@
 	Project			 : Wolf Engine. Copyright(c) Pooya Eimandar (https://PooyaEimandar.github.io) . All rights reserved.
 	Source			 : Please direct any bug to https://github.com/WolfEngine/Wolf.Engine/issues
 	Website			 : https://WolfEngine.App
-	Name			 : w_xml.h
-	Description		 : XML serializer & parser using rapid xml "https://github.com/dwd/rapidxml"
+	Name			 : w_process.h
+	Description		 : enum all OS processes
 	Comment          :
 */
 
 #pragma once
 
-#include "w_system_export.h"
-#include "w_std.h"
-
-namespace wolf::system
-{
-	struct w_process_info
-	{
-#ifdef __WIN32
-		PROCESS_INFORMATION info;
+#ifdef __cplusplus
+extern "C" {
 #endif
-		std::error_code		error_code;
-	};
 
-	class w_process
+#include <wolf.h>
+
+	typedef struct
 	{
-	public:
-		//kill process by proces ID
-		WSYS_EXP static W_RESULT kill_process_by_ID(_In_ const unsigned long& pProcessID);
-		//print process name based on proces ID
-		WSYS_EXP static std::wstring get_process_name_by_ID(_In_ const unsigned long& pProcessID);
-		//enumurate all processes
-		WSYS_EXP static const std::wstring enum_all_processes();
-		//check whether two instances of same process is running
-		WSYS_EXP static bool check_for_number_of_running_instances_from_process(_In_z_ const wchar_t* pProcessName,
-			_In_ size_t pNumberOfRunningInstnacesToBeChecked = 1);
-		//get number of running instances the process
-		WSYS_EXP static size_t get_number_of_running_instances_from_process(_In_z_ const wchar_t* pProcessName);
-		//create a process
-		WSYS_EXP static w_process_info* create_process(
-			_In_z_ const wchar_t* pPathtoProcess,
-			_In_z_ const wchar_t* pCmdsArg,
-			_In_z_ const wchar_t* pCurrentDirectoryPath,
-			_In_  const long long pWaitAfterRunningProcess = 0,
-			_In_ DWORD pCreationFlags = 0);
-		//kill a process
-		WSYS_EXP static bool kill_process(_In_ w_process_info* pProcessInfo);
-		//kill all process by name
-		WSYS_EXP static bool kill_all_processes(_In_z_ std::initializer_list<const wchar_t*> pProcessNames);
-	};
+#ifdef W_PLATFORM_WIN
+		PROCESS_INFORMATION		info;
+		HWND					handle;
+		wchar_t*				class_name;
+		wchar_t*				title_name;
+		wchar_t*				process_name;
+		DWORD					error_code;
+#endif
+	} w_process_info;
+
+	/**
+	 * release resources of process info
+	 * @param pProcessInfo , a pointer to process info
+	 * @return result
+	*/
+	W_RESULT w_process_info_terminate(_Inout_ w_process_info* pProcessInfo);
+
+	/**
+	 * kill process by proces ID
+	 * @param pProcessID process ID
+	 * @return result
+	*/
+	W_RESULT w_process_kill_by_id(_In_ unsigned long pProcessID);
+
+	/**
+	 * get a process name based on process id
+	 * @param pProcessID process ID
+	 * @return result
+	*/
+	const wchar_t* w_process_get_name_by_id(_In_ unsigned long pProcessID);
+
+	/**
+	 * enumurate all processes 
+	 * @return name of all processes
+	*/
+	//const wchar_t* w_process_enum_all_processes();
+		
+	////check whether two instances of same process is running
+	//WSYS_EXP static bool check_for_number_of_running_instances_from_process(_In_z_ const wchar_t* pProcessName,
+	//	_In_ size_t pNumberOfRunningInstnacesToBeChecked = 1);
+	////get number of running instances the process
+	//WSYS_EXP static size_t get_number_of_running_instances_from_process(_In_z_ const wchar_t* pProcessName);
+	////create a process
+	//WSYS_EXP static w_process_info* create_process(
+	//	_In_z_ const wchar_t* pPathtoProcess,
+	//	_In_z_ const wchar_t* pCmdsArg,
+	//	_In_z_ const wchar_t* pCurrentDirectoryPath,
+	//	_In_  const long long pWaitAfterRunningProcess = 0,
+	//	_In_ DWORD pCreationFlags = 0);
+	////kill a process
+	//WSYS_EXP static bool kill_process(_In_ w_process_info* pProcessInfo);
+	////kill all process by name
+	//WSYS_EXP static bool kill_all_processes(_In_z_ std::initializer_list<const wchar_t*> pProcessNames);
+
+#ifdef __cplusplus
 }
+#endif

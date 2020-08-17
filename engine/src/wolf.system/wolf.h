@@ -117,16 +117,7 @@ w_offset;
 typedef struct apr_pool_t* w_mem_pool;
 typedef struct apr_file_t* w_file;
 typedef struct apr_finfo_t* w_file_info;
-typedef struct apr_hash_t* w_hash;
 
-struct  w_header_array {
-    w_mem_pool pool;
-    int 	elt_size;
-    int 	nelts;
-    int 	nalloc;
-    char* elts;
-};
-typedef struct  w_header_array* w_array;
 /**
  * initialize wolf
  * @return W_RESULT as a result

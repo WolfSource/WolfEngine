@@ -433,6 +433,15 @@
     <ClCompile Include="..\..\..\src\wolf.system\concurrency\w_thread_pool.c">
       <Filter>concurrency</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\os\w_window.c">
+      <Filter>os</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\os\w_process.c">
+      <Filter>os</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\memory\w_array.c">
+      <Filter>memory</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\wolf.system\base64\chromiumbase64.h">
@@ -960,6 +969,15 @@
     </ClInclude>
     <ClInclude Include="..\..\..\src\wolf.system\log\logger.hpp">
       <Filter>log</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\os\w_window.h">
+      <Filter>os</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\os\w_process.h">
+      <Filter>os</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\memory\w_array.h">
+      <Filter>memory</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

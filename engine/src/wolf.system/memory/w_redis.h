@@ -14,6 +14,7 @@ extern "C" {
 #endif
 
 #include "wolf.h"
+#include <memory/w_hash.h>
 
 //forward declaration
 typedef struct apr_redis_t* w_redis;

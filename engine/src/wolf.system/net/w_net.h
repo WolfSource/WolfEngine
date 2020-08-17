@@ -15,6 +15,7 @@ extern "C" {
 
 #include "wolf.h"
 #include "ws/ws.h"
+#include <memory/w_array.h>
 
     //forward declaration
     typedef struct nng_url* w_url;

@@ -105,6 +105,7 @@
     <ClCompile Include="..\..\..\src\wolf.system\log\spdlog\src\stdout_sinks.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\log\w_log.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\log\logger.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.system\memory\w_array.c" />
     <ClCompile Include="..\..\..\src\wolf.system\memory\w_hash.c" />
     <ClCompile Include="..\..\..\src\wolf.system\memory\w_table.c" />
     <ClCompile Include="..\..\..\src\wolf.system\memory\w_mem_cache.c" />
@@ -124,6 +125,8 @@
     </ClCompile>
     <ClCompile Include="..\..\..\src\wolf.system\net\ws\ws.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\net\w_net.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\os\w_process.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\os\w_window.c" />
     <ClCompile Include="..\..\..\src\wolf.system\script\w_lua.c" />
     <ClCompile Include="..\..\..\src\wolf.system\wolf.c" />
     <ClCompile Include="..\..\..\src\wolf.system\xml\expat\xmlparse.c" />
@@ -245,6 +248,7 @@
     <ClInclude Include="..\..\..\src\wolf.system\memory\hash\utringbuffer.h" />
     <ClInclude Include="..\..\..\src\wolf.system\memory\hash\utstack.h" />
     <ClInclude Include="..\..\..\src\wolf.system\memory\hash\utstring.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\memory\w_array.h" />
     <ClInclude Include="..\..\..\src\wolf.system\memory\w_hash.h" />
     <ClInclude Include="..\..\..\src\wolf.system\memory\w_table.h" />
     <ClInclude Include="..\..\..\src\wolf.system\memory\w_mem_cache.h" />
@@ -287,6 +291,8 @@
     <ClInclude Include="..\..\..\src\wolf.system\net\w_net.h" />
     <ClInclude Include="..\..\..\src\wolf.system\os\cr.h" />
     <ClInclude Include="..\..\..\src\wolf.system\os\w_platform.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\os\w_process.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\os\w_window.h" />
     <ClInclude Include="..\..\..\src\wolf.system\script\lua\lauxlib.h" />
     <ClInclude Include="..\..\..\src\wolf.system\script\lua\lua.h" />
     <ClInclude Include="..\..\..\src\wolf.system\script\lua\luaconf.h" />

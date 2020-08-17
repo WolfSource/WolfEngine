@@ -14,6 +14,7 @@ extern "C" {
 #endif
 
 #include <wolf.h>
+#include <memory/w_array.h>
 
 typedef struct apr_xml_attr* w_xml_attr;
 typedef struct apr_xml_elem* w_xml_elem;

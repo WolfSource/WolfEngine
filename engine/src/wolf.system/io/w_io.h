@@ -14,6 +14,7 @@ extern "C" {
 #endif
 
 #include "wolf.h"
+#include <memory/w_array.h>
 
 typedef struct
 {

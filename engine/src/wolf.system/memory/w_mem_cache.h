@@ -14,6 +14,7 @@ extern "C" {
 #endif
 
 #include "wolf.h"
+#include <memory/w_hash.h>
 
 //forward declaration
 typedef struct apr_memcache_server_t* w_mem_cache_server;
