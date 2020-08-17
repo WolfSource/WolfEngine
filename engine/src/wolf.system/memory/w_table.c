@@ -124,7 +124,7 @@ int w_table_do_with_filter(
         W_ASSERT(false, "Missing pTable. trace info: w_table_do_with_filter");
         return FALSE;
     }
-    return apr_table_do(pCallBack, pArg, pTable, pKeys);
+    return apr_table_do(pCallBack, pArg, pTable, pKeys,NULL);
 }
 
 const w_table_entry_iterator w_table_get_entry(_In_ w_table pTable)
