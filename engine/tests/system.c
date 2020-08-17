@@ -23,7 +23,11 @@ void* w_thread_job_my(w_thread arg1, void* arg2) { return NULL; }
 void mycallback_thread() { printf("%s", "ok"); }
 void mycallback(EV_P_ w_async_base* arg1, int arg2) { printf("%s", "ok"); }
 
-int pCallBack(void* rec, const char* pKey, const char* pValue) { return 0; }
+int pCallBack(void* rec, const char* pKey, const char* pValue) { 
+    const char* label = rec;
+    printf("callback[%s]: %s %s\n", label, pKey, pValue);
+    return TRUE;
+ }
 void s_timer_callback(w_timer_loop* pLoop, w_timer_base* pTimer, int pRevents)
 {
     w_timer_ptr _t = (w_timer_ptr)pTimer->data;
@@ -676,16 +680,21 @@ Convey("chrono", {
          int   _get_size = w_table_get_size(pTable);
          So(_get_size == 1);
 
-         int pArg = 1;
+         int _table_empty = w_table_is_empty(pTable);
+         So(_table_empty == 0);
+
+
+         char* pArg = "data";
          w_table_do_callback* myfunc = pCallBack;
-         int _table_do = w_table_do(pTable,pCallBack, (void*)pArg);
-         So(_table_do == 0);
+         int _table_do = w_table_do(pTable, pCallBack, (void*)pArg);
+         So(_table_do == 1);
 
-         /*TODO*/
-         //va_list pKeys = "name";
-         ///*int _table_do_with_filter = w_table_do_with_filter(pTable, pCallBack,(void*)pArg, pKeys);
-         //So(_table_do_with_filter == 0);*/
+         
+        va_list pKeys = "name";
+         int _table_do_with_filter = w_table_do_with_filter(pTable, pCallBack,(void*)pArg, pKeys);
+         So(_table_do_with_filter == 1);
 
+        
         const w_table_entry_iterator  _table_entry_iterator = w_table_get_entry(pTable);
         So(_table_entry_iterator != 0);
 
