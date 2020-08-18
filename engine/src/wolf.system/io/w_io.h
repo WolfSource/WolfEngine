@@ -346,15 +346,11 @@ W_RESULT w_io_ucs2_to_utf8(
 W_SYSTEM_EXPORT
 long w_io_to_hex(_In_z_ const char* pHexStr);
 
-#ifdef W_PLATFORM_WIN
-
 W_SYSTEM_EXPORT
-W_RESULT w_io_LPCWSTR_to_LPCSTR(
-    _In_	LPCWSTR pIn,
+W_RESULT w_io_wchar_ptr_to_char_ptr(
+    _In_	wchar_t* pIn,
     _In_	size_t pInLen,
-    _Out_	LPCSTR* pOut,
-    _Out_	size_t* pOutLen);
-#endif
+    _Out_	char** pOut);
 
 /**
  * check "pString" string starts with "pStartWith" string

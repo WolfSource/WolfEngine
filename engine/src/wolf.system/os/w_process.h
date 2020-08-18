@@ -20,9 +20,9 @@ extern "C" {
 #ifdef W_PLATFORM_WIN
 		PROCESS_INFORMATION		info;
 		HWND					handle;
-		wchar_t*				class_name;
-		wchar_t*				title_name;
-		wchar_t*				process_name;
+		wchar_t* class_name;
+		wchar_t* title_name;
+		wchar_t* process_name;
 		DWORD					error_code;
 #endif
 	} w_process_info;
@@ -32,28 +32,41 @@ extern "C" {
 	 * @param pProcessInfo , a pointer to process info
 	 * @return result
 	*/
-	W_RESULT w_process_info_terminate(_Inout_ w_process_info* pProcessInfo);
+	W_SYSTEM_EXPORT
+		W_RESULT w_process_info_terminate(_Inout_ w_process_info* pProcessInfo);
 
 	/**
 	 * kill process by proces ID
 	 * @param pProcessID process ID
 	 * @return result
 	*/
-	W_RESULT w_process_kill_by_id(_In_ unsigned long pProcessID);
+	W_SYSTEM_EXPORT
+		W_RESULT w_process_kill_by_id(_In_ unsigned long pProcessID);
 
 	/**
 	 * get a process name based on process id
 	 * @param pProcessID process ID
 	 * @return result
 	*/
-	const wchar_t* w_process_get_name_by_id(_In_ unsigned long pProcessID);
+	W_SYSTEM_EXPORT
+		const wchar_t* w_process_get_name_by_id(_In_ unsigned long pProcessID);
 
 	/**
-	 * enumurate all processes 
-	 * @return name of all processes
+	 * enumurate all processes
+	 * @param pProcessLists which will be updated
+	 * @return result 
 	*/
-	//const wchar_t* w_process_enum_all_processes();
-		
+	W_SYSTEM_EXPORT
+		W_RESULT w_process_enum_all_processes(_Inout_ char** pProcessLists);
+
+	/**
+	 * enumurate all processes in wide characters
+	 * @param pProcessLists which will be updated
+	 * @return results
+	*/
+	W_SYSTEM_EXPORT
+		W_RESULT w_process_enum_all_processesW(_Inout_ wchar_t** pProcessLists);
+
 	////check whether two instances of same process is running
 	//WSYS_EXP static bool check_for_number_of_running_instances_from_process(_In_z_ const wchar_t* pProcessName,
 	//	_In_ size_t pNumberOfRunningInstnacesToBeChecked = 1);

@@ -29,9 +29,16 @@ logger::logger(_In_ const w_log_config* pConfig):
         //create the directory of log inside the root directory
         w_io_dir_create(pConfig->log_directory_path);
     }
+    auto _mem_pool = w_mem_pool_get_default();
     auto _time = w_timespan_init_from_now();
     auto _time_str = w_timespan_to_string(_time, "_");
-    auto _log_file_path = w_string_concat(4, pConfig->log_directory_path, "/" , _time_str, ".wLog");
+    auto _log_file_path = w_strcat(
+        _mem_pool, 
+        pConfig->log_directory_path, 
+        "/" , 
+        _time_str, 
+        ".wLog",
+        NULL);
 
     std::vector<spdlog::sink_ptr> _sinks;
 #if defined(_MSC_VER) && !defined(MinSizeRel)

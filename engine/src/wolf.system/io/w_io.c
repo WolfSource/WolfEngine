@@ -483,7 +483,10 @@ const char* w_io_dir_get_parent(_In_z_ const char* pPath)
     //copy strings
     if (_size == 0) return "";
 
-    return w_string(pPath);
+    char* _dst = w_malloc(_size + 1, "w_io_dir_get_parent");//size + '\0'
+    apr_cpystrn(_dst, pPath, _size);
+    _dst[_size] = '\0';
+    return _dst;
 #endif
 }
 
@@ -700,16 +703,28 @@ long w_io_to_hex(_In_z_ const char* pHexStr)
 
 #ifdef W_PLATFORM_WIN
 
-W_RESULT w_io_LPCWSTR_to_LPCSTR(
-    _In_	LPCWSTR pIn,
+W_RESULT w_io_wchar_ptr_to_char_ptr(
+    _In_	wchar_t* pIn,
     _In_	size_t pInLen,
-    _Out_	LPCSTR* pOut,
-    _Out_	size_t* pOutLen)
+    _Out_	char** pOut)
 {
-    (*pOutLen) = pInLen + 1; // +1 for null terminator
-    (*pOut) = (LPCSTR)w_malloc((*pOutLen), "w_io_LPCWSTR_to_LPCSTR");
-    size_t charsConverted = 0;
-    return wcstombs_s(&charsConverted, (*pOut), (*pOutLen), pIn, pInLen);
+    if (!pIn || !pOut || pInLen == 0)
+    {
+        *pOut = NULL;
+        return APR_BADARG;
+    }
+
+    size_t _chars_onverted = 0;
+    size_t _wide_char_mem_size = (pInLen * 2) + 1; // +1 for null terminator
+    (*pOut) = (char*)w_malloc(_wide_char_mem_size, "w_io_wchar_ptr_to_char_ptr");
+    (*pOut)[_wide_char_mem_size - 1] = '\0';
+
+    return (wcstombs_s(
+        &_chars_onverted,
+        *pOut,
+        _wide_char_mem_size,
+        pIn,
+        pInLen) == 0) ? W_SUCCESS : W_FAILURE;
 }
 
 #endif

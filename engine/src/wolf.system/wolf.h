@@ -161,23 +161,23 @@ void* w_malloc(_In_ const size_t pMemSize, _In_z_ const char* pTraceInfo);
  * @param pMem the memory which is need to be free
 */
 W_SYSTEM_EXPORT
-void w_free(_In_ const void* pMem);
+void w_free(_In_ const void* pMemory);
 
 /**
- * initialize a string
- * @param pSource the constant string
- * @return allocated string from default memory pool
+ * concatenate two or more char*
+ * @param pMemPool , The pool to use. set NULL to use default memory pool. 
+ * @return result chars
 */
 W_SYSTEM_EXPORT
-char* w_string(_In_ const char* pSource);
+char* w_strcat(_In_ w_mem_pool pMemPool, ...);
 
 /**
- * initialize a string
- * @param pNumberOfArgs the number of argumans
- * @return concated string
+ * concatenate two or more wchar_t*
+ * @param pMemPool , The pool to use. set NULL to use default memory pool.
+ * @return concated chars
 */
 W_SYSTEM_EXPORT
-char* w_string_concat(_In_ const int pNumberOfArgs, ...);
+wchar_t* w_wstrcat(w_mem_pool* pMemPool, ...);
 
 /**
  * release all resources of wolf

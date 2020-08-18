@@ -1,5 +1,6 @@
 #include "w_process.h"
 #include <apr-1/apr_general.h>
+#include <io/w_io.h>
 
 #ifdef W_PLATFORM_WIN
 #include <tlhelp32.h>//for checking process
@@ -58,6 +59,7 @@ const wchar_t* w_process_get_name_by_id(_In_ unsigned long pProcessID)
 	// Get a handle to the process.
 	HANDLE _process = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, pProcessID);
 
+	int _ = sizeof(_process_name) / sizeof(TCHAR);
 	// Get the process name.
 	if (_process)
 	{
@@ -66,7 +68,8 @@ const wchar_t* w_process_get_name_by_id(_In_ unsigned long pProcessID)
 
 		if (EnumProcessModules(_process, &hMod, sizeof(hMod), &cbNeeded))
 		{
-			GetModuleBaseName(_process, hMod, _process_name, sizeof(_process_name) / sizeof(TCHAR));
+			int _ = sizeof(_process_name) / sizeof(TCHAR);
+			GetModuleBaseName(_process, hMod, _process_name, _);
 		}
 
 		CloseHandle(_process);
@@ -80,42 +83,79 @@ const wchar_t* w_process_get_name_by_id(_In_ unsigned long pProcessID)
 #endif
 
 }
-//
-//const wchar_t* w_process_enum_all_processes()
-//{
-//#ifdef W_PLATFORM_WIN
-//	DWORD _processes[1024], _needed, _number_of_processes;
-//
-//	if (!EnumProcesses(_processes, sizeof(_processes), &_needed)) return L"";
-//
-//	// Calculate how many process identifiers were returned.
-//	_number_of_processes = _needed / sizeof(DWORD);
-//
-//	// Print the name and process identifier for each process.
-//	//s_processes_list.str(L"");
-//	//s_processes_list.clear();
-//	//s_processes_list << L"Process Name : Process ID\n";
-//
-//	wchar_t* _process_name;
-//	for (size_t i = 0; i < _number_of_processes; i++)
-//	{
-//		if (_processes[i] != 0)
-//		{
-//			_process_name = w_process_get_name_by_id(_processes[i]);
-//			// Print the process name and identifier.
-//			s_processes_list << _process_name << L" " << _processes[i] << "\n";
-//		}
-//	}
-//
-//	s_processes_list << "\0";
-//	std::wstring _result = s_processes_list.str();
-//
-//	s_processes_list.str(L"");
-//	s_processes_list.clear();
-//
-//	return _result;
-//#endif
-//}
+
+W_RESULT w_process_enum_all_processesW(_Inout_ wchar_t** pProcessLists)
+{
+	const char* _trace_info = "w_process_enum_all_processes";
+	char* _process_names = w_malloc(sizeof(char), _trace_info);
+	if (!_process_names)
+	{
+		W_ASSERT_P(false,
+			"could not allocate memory for _process_names. trace info: %s", _trace_info);
+		return W_FAILURE;
+	}
+	wchar_t* _process_id_tmp = w_malloc(MAX_PATH, _trace_info);
+	if (!_process_id_tmp)
+	{
+		W_ASSERT_P(false,
+			"could not allocate memory for _process_id_tmp. trace info: %s", _trace_info);
+		return W_FAILURE;
+	}
+
+#ifdef W_PLATFORM_WIN
+
+	DWORD _processes[1024], _needed, _number_of_processes;
+	if (!EnumProcesses(_processes, sizeof(_processes), &_needed)) return "";
+
+	// Calculate how many process identifiers were returned.
+	_number_of_processes = _needed / sizeof(DWORD);
+
+	// Print the name and process identifier for each process.
+	*pProcessLists = w_wstrcat(
+		NULL,
+		*pProcessLists,
+		L"Process Name : Process ID\n",
+		NULL);
+
+	wchar_t* _process_name, _process_id;
+
+	for (size_t i = 0; i < _number_of_processes; i++)
+	{
+		_ultow(_processes[i], _process_id_tmp, 10);
+		//_process_name = w_process_get_name_by_id(_processes[i]);
+		//print the process name and id
+		*pProcessLists = w_wstrcat(
+			NULL,
+			*pProcessLists,
+			L"_process_name",
+			L" : ",
+			_process_id_tmp,
+			L"\n",
+			NULL);
+	}
+
+	w_free(_process_id_tmp);
+
+#endif
+
+	return W_SUCCESS;
+}
+
+W_RESULT w_process_enum_all_processes(_Inout_ char** pProcessLists)
+{
+	wchar_t* _process_lists = L"";
+	if (w_process_enum_all_processesW(&_process_lists) == W_SUCCESS)
+	{
+		size_t _len = wcslen(_process_lists);
+		size_t _dst_len;
+		return w_io_wchar_ptr_to_char_ptr(
+			_process_lists,
+			_len,
+			pProcessLists);
+	}
+
+	return W_FAILURE;
+}
 
 //static std::wstringstream ProcessesList;
 
