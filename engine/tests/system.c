@@ -15,6 +15,7 @@
 #include <io/w_io.h>
 #include <time.h>
 #include <memory/w_table.h>
+#include<memory/w_table.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
@@ -712,18 +713,37 @@ Convey("chrono", {
         size_t _table_get_key_checksum = w_table_get_key_checksum(_table_entry_iterator, 1);
        So(_table_get_key_checksum != 0);
         
-       printf("w_array");
+        printf("w_array");
         
-       int pInitSize = 20;
-       int pSizeOfEachElement = 2;
+       int pInitSize = 36;
+       int pSizeOfEachElement = sizeof(char*) + sizeof(int);
        w_mem_pool Pool_memory = w_mem_pool_get_default();
        w_array array = w_array_init(pInitSize, pSizeOfEachElement, Pool_memory);
        So(array != 0);
 
+       struct List {
+           int a;
+           char* b;
+       };
+       struct List  x;
 
-       /*TODO*/
-       int pElementIndex = 1;
-       const void* get = w_array_get_element(array, pElementIndex);
+       x.a = 1;
+       x.b = "23";
+
+       void* _array_append = w_array_append(array,&x);
+       So(_array_append != 0x0000000000000000);
+
+       int pElementIndex = 0;
+       void* _array_get_element = w_array_get_element(array, pElementIndex);
+       So(_array_get_element != 0x0000000000000000);
+
+      
+       void* _array_remove = w_array_remove(array);
+       So(_array_remove != 0x0000000000000000);
+
+       int _array_is_empty = w_array_is_empty(array);
+       So(_array_is_empty ==1);
+
     });
 
     //terminate wolf
