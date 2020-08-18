@@ -26,7 +26,7 @@ extern "C" {
     int 	nalloc;
     char* elts;
 };*/
-
+W_SYSTEM_EXPORT
     w_array w_array_init(
         _In_ int pInitSize,
         _In_ int pSizeOfEachElement,
@@ -37,6 +37,7 @@ extern "C" {
      * @param pElementIndex The index of element.
      * @return Location for the an element is avaieble in the array, else it will return NULL
     */
+    W_SYSTEM_EXPORT
     const void* w_array_get_element(_Inout_ w_array pArray, _In_ int pElementIndex);
 
     /**
@@ -47,6 +48,7 @@ extern "C" {
      * @remark If there are no free spots in the array,
               then this function will, allocate new space for the new element.
     */
+    W_SYSTEM_EXPORT
     void* w_array_append(_Inout_ w_array pArray, _In_ void* pItem);
 
     /**
@@ -55,6 +57,7 @@ extern "C" {
      * @return Location of the element in the array.
      * @remark If there are no elements in the array, NULL is returned.
      */
+    W_SYSTEM_EXPORT
     void* w_array_remove(_Inout_ w_array pArrayIter);
 
     /**
@@ -62,11 +65,13 @@ extern "C" {
      * @param pTable , The table to check
      * @return result
      */
+    W_SYSTEM_EXPORT
     int w_array_is_empty(_In_ w_array pArray);
 
     /**
      * Remove all elements.
      */
+    W_SYSTEM_EXPORT
     void w_array_clear(_Inout_ w_array pArray);
 
 #ifdef __cplusplus
