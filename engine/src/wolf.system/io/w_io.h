@@ -344,7 +344,17 @@ W_RESULT w_io_ucs2_to_utf8(
  * @return result decimal
 */
 W_SYSTEM_EXPORT
-long w_io_to_hex(const char* pHexStr);
+long w_io_to_hex(_In_z_ const char* pHexStr);
+
+#ifdef W_PLATFORM_WIN
+
+W_SYSTEM_EXPORT
+W_RESULT w_io_LPCWSTR_to_LPCSTR(
+    _In_	LPCWSTR pIn,
+    _In_	size_t pInLen,
+    _Out_	LPCSTR* pOut,
+    _Out_	size_t* pOutLen);
+#endif
 
 /**
  * check "pString" string starts with "pStartWith" string
@@ -529,6 +539,7 @@ W_RESULT w_io_pixels_from_png_file(_In_   const char* pFilePath,
                                    _Out_  uint8_t* pBitDepth,
                                    _Out_  int* pNumberOfPasses,
                                    _Out_  uint8_t** pPixels);
+
 
 #ifdef __cplusplus
 }

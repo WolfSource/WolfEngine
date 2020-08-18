@@ -96,3 +96,88 @@ void* w_hash_get(
     }
     return apr_hash_get(pHash, pKey, pKeyLen);
 }
+
+w_hash w_hash_clone(
+    _In_ w_hash pSourceHash,
+    _In_ w_mem_pool pMemPool)
+{
+    const char* _trace_info = "w_hash_copy";
+    w_mem_pool _pool = NULL;
+    if (pMemPool)
+    {
+        _pool = pMemPool;
+    }
+    else
+    {
+        //get default thread pool
+        _pool = w_mem_pool_get_default();
+        if (!_pool)
+        {
+            W_ASSERT_P(false,
+                "could not get default memory pool. trace info: %s",
+                _trace_info);
+            return W_FAILURE;
+        }
+    }
+    return (w_hash)apr_hash_copy(_pool, pSourceHash);
+}
+
+w_hash w_hash_merge(
+    _In_ const w_hash pHash1,
+    _In_ const w_hash pHash2,
+    _In_ w_hash_merger pHashMergerFunction,
+    _In_ const void* pCustomUserData,
+    _In_ w_mem_pool pMemPool)
+{
+    const char* _trace_info = "w_hash_merge";
+    w_mem_pool _pool = NULL;
+    if (pMemPool)
+    {
+        _pool = pMemPool;
+    }
+    else
+    {
+        //get default thread pool
+        _pool = w_mem_pool_get_default();
+        if (!_pool)
+        {
+            W_ASSERT_P(false,
+                "could not get default memory pool. trace info: %s",
+                _trace_info);
+            return W_FAILURE;
+        }
+    }
+    return apr_hash_merge(_pool, pHash1, pHash2, pHashMergerFunction, pCustomUserData);
+}
+
+w_hash_index w_hash_first(
+    _In_ w_hash pHash,
+    _In_ w_mem_pool pMemPool)
+{
+    const char* _trace_info = "w_hash_first";
+    w_mem_pool _pool = NULL;
+    if (pMemPool)
+    {
+        _pool = pMemPool;
+    }
+    else
+    {
+        //get default thread pool
+        _pool = w_mem_pool_get_default();
+        if (!_pool)
+        {
+            W_ASSERT_P(false,
+                "could not get default memory pool. trace info: %s",
+                _trace_info);
+            return W_FAILURE;
+        }
+    }
+
+    return apr_hash_first(_pool, pHash);
+}
+
+w_hash_index w_hash_next(w_hash_index pHashIndex)
+{
+    apr_hash_index_t* apr_hash_next(apr_hash_index_t * hi)
+
+}

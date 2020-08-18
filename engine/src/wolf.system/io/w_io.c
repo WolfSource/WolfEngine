@@ -698,6 +698,22 @@ long w_io_to_hex(_In_z_ const char* pHexStr)
     return strtol(pHexStr, NULL, 16);
 }
 
+#ifdef W_PLATFORM_WIN
+
+W_RESULT w_io_LPCWSTR_to_LPCSTR(
+    _In_	LPCWSTR pIn,
+    _In_	size_t pInLen,
+    _Out_	LPCSTR* pOut,
+    _Out_	size_t* pOutLen)
+{
+    (*pOutLen) = pInLen + 1; // +1 for null terminator
+    (*pOut) = (LPCSTR)w_malloc((*pOutLen), "w_io_LPCWSTR_to_LPCSTR");
+    size_t charsConverted = 0;
+    return wcstombs_s(&charsConverted, (*pOut), (*pOutLen), pIn, pInLen);
+}
+
+#endif
+
 W_RESULT w_io_string_has_start_with(_In_z_ const char* pString, _In_z_ const char* pStartWith)
 {
     return strncmp(pStartWith, pString, strlen(pStartWith));
