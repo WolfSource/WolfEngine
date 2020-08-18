@@ -111,6 +111,21 @@ w_hash w_hash_merge(
     _In_ const void* pCustomUserData,
     _In_ w_mem_pool pMemPool);
 
+
+/**
+ * Merge two hash tables into one new hash table. The values of the overlay
+ * hash override the values of the base if both have the same key. 
+   Both hash tables must use the same hash function.
+ * @param pBase The table that represents the initial values of the new table
+ * @param pOverlay The table to add to the initial table
+ * @param pMemPool The pool to use for the new hash table
+ * @return A new hash table containing all of the data from the two passed in
+ */
+w_hash w_hash_overlay(
+    _In_ const w_hash pBase,
+    _In_ const w_hash pOverlay,
+    _In_ w_mem_pool pMemPool);
+
 /**
  * Start iterating over the entries in a hash table.
  * @param pHash The hash table
@@ -142,34 +157,70 @@ w_hash_index w_hash_first(
     _In_ w_mem_pool pMemPool);
 
 /**
-
+ * Continue iterating over the entries in a hash table.
+ * @param pHashIndex The iteration state
+ * @return a pointer to the updated iteration state. NULL if there are no more entries.
  */
-w_hash_index w_hash_next(w_hash_index pHashIndex);
+w_hash_index w_hash_next(_In_ w_hash_index pHashIndex);
 
-/*
-
-apr_hashfunc_default(const char* key, apr_ssize_t* klen)
-
-
-
-
-
-void 	apr_hash_this(apr_hash_index_t* hi, const void** key, apr_ssize_t* klen, void** val)
-
-const void* apr_hash_this_key(apr_hash_index_t* hi)
-
-apr_ssize_t 	apr_hash_this_key_len(apr_hash_index_t* hi)
-
-void* apr_hash_this_val(apr_hash_index_t* hi)
-
+/**
+ * Get the current entry's details from the iteration state.
+ * @param pHashIndex The iteration state
+ * @param pKey Return pointer for the pointer to the key.
+ * @param pKeyLen Return pointer for the key length.
+ * @param pValue Return pointer for the associated value.
+ * @remark The return pointers should point to a variable that will be set to 
+        the corresponding data, or they may be NULL if the data isn't interesting.
+ */
+void w_hash_this(
+    _In_ w_hash_index pHashIndex,
+    _Inout_ const void** pKey,
+    _Inout_ size_t* pKeyLen,
+    _Inout_ void** pValue);
 
 
-apr_hash_t* apr_hash_overlay(apr_pool_t* p, const apr_hash_t* overlay, const apr_hash_t* base)
+/**
+ * Get the current entry's key from the iteration state.
+ * @param pHashIndex The iteration state
+ * @return The pointer to the key
+ */
+const void* w_hash_this_key(_In_ w_hash_index pHashIndex);
 
+/**
+ * Get the current entry's key length from the iteration state.
+ * @param pHashIndex The iteration state
+ * @return The key length
+ */
+size_t w_hash_this_key_len(_In_ w_hash_index pHashIndex);
 
-int 	apr_hash_do(apr_hash_do_callback_fn_t* comp, void* rec, const apr_hash_t* ht)
+/**
+ * Get the current entry's value from the iteration state.
+ * @param pHashIndex The iteration state
+ * @return The pointer to the value
+ */
+void* w_hash_this_val(w_hash_index pHashIndex);
 
-apr_pool_t* apr_hash_pool_get(const apr_hash_t* thehash)*/
+/**
+ * Iterate over a hash table running the provided function once for every
+ * element in the hash table. The @param comp function will be invoked for
+ * every element in the hash table.
+ * @param pHashCompareFunc The function to run
+ * @param pRec The data to pass as the first argument to the function
+ * @param pHash The hash table to iterate over
+ * @return 0 if one of the pHashCompareFunc() iterations returned zero; 
+        1 if all iterations returned non-zero
+ */
+int w_hash_do(
+    _In_ w_hash_do_callback_fn* pHashCompareFunc,
+    _In_ void* pRec,
+    _In_ const w_hash pHash);
+
+/**
+ * Get a pointer to the pool which the hash table was created in
+ * @param pHash the hash
+ * @return memory pool 
+ */
+w_mem_pool w_hash_get_mem_pool(_In_ const w_hash pHash);
 
 #ifdef __cplusplus
 }

@@ -150,6 +150,32 @@ w_hash w_hash_merge(
     return apr_hash_merge(_pool, pHash1, pHash2, pHashMergerFunction, pCustomUserData);
 }
 
+w_hash w_hash_overlay(
+    _In_ const w_hash pBase,
+    _In_ const w_hash pOverlay,
+    _In_ w_mem_pool pMemPool)
+{
+    const char* _trace_info = "w_hash_overlay";
+    w_mem_pool _pool = NULL;
+    if (pMemPool)
+    {
+        _pool = pMemPool;
+    }
+    else
+    {
+        //get default thread pool
+        _pool = w_mem_pool_get_default();
+        if (!_pool)
+        {
+            W_ASSERT_P(false,
+                "could not get default memory pool. trace info: %s",
+                _trace_info);
+            return W_FAILURE;
+        }
+    }
+    return apr_hash_overlay(pBase, pOverlay, _pool);
+}
+
 w_hash_index w_hash_first(
     _In_ w_hash pHash,
     _In_ w_mem_pool pMemPool)
@@ -176,8 +202,71 @@ w_hash_index w_hash_first(
     return apr_hash_first(_pool, pHash);
 }
 
-w_hash_index w_hash_next(w_hash_index pHashIndex)
+w_hash_index w_hash_next(_In_ w_hash_index pHashIndex)
 {
-    apr_hash_index_t* apr_hash_next(apr_hash_index_t * hi)
+    if (!pHashIndex)
+    {
+        return NULL;
+    }
+    return apr_hash_next(pHashIndex);
+}
 
+void w_hash_this(
+    _In_ w_hash_index pHashIndex,
+    _Inout_ const void** pKey,
+    _Inout_ size_t* pKeyLen,
+    _Inout_ void** pValue)
+{
+    if (pHashIndex)
+    {
+        apr_hash_this(
+            pHashIndex,
+            pKey,
+            pKeyLen,
+            pValue);
+    }
+}
+
+const void* w_hash_this_key(_In_ w_hash_index pHashIndex)
+{
+    if (!pHashIndex)
+    {
+        return NULL;
+    }
+    return apr_hash_this_key(pHashIndex);
+}
+
+void* w_hash_this_val(w_hash_index pHashIndex)
+{
+    if (!pHashIndex)
+    {
+        return NULL;
+    }
+    return apr_hash_this_val(pHashIndex);
+}
+
+int w_hash_do(
+    _In_ w_hash_do_callback_fn* pHashCallbackDo,
+    _In_ void* pRec,
+    _In_ const w_hash pHash)
+{
+    if (!pHashCallbackDo || !pHash) return 0;
+    
+    return apr_hash_do(pHashCallbackDo, pRec, pHash);
+}
+
+size_t w_hash_this_key_len(_In_ w_hash_index pHashIndex)
+{
+    if (!pHashIndex) return 0;
+    
+    return apr_hash_this_key_len(pHashIndex);
+}
+
+w_mem_pool w_hash_get_mem_pool(_In_ const w_hash pHash)
+{
+    if (!pHash)
+    {
+        return NULL;
+    }
+    return apr_hash_pool_get(pHash);
 }
