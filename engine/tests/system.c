@@ -711,8 +711,20 @@ Convey("chrono", {
 
         size_t _table_get_key_checksum = w_table_get_key_checksum(_table_entry_iterator, 1);
        So(_table_get_key_checksum != 0);
+        
+       printf("w_array");
+        
+       int pInitSize = 20;
+       int pSizeOfEachElement = 2;
+       w_mem_pool Pool_memory = w_mem_pool_get_default();
+       w_array array = w_array_init(pInitSize, pSizeOfEachElement, Pool_memory);
+       So(array != 0);
 
-            });
+
+       /*TODO*/
+       int pElementIndex = 1;
+       const void* get = w_array_get_element(array, pElementIndex);
+    });
 
     //terminate wolf
     wolf_terminate();
