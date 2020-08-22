@@ -28,6 +28,7 @@ typedef void* (*w_hash_merger)(w_mem_pool /*pMemPool*/, const void* /*pKey*/, si
  * @param pool The pool to allocate the hash table out of. Set NULL to use default memory pool.
  * @return The hash table just created
  */
+ W_SYSTEM_EXPORT
 w_hash w_hash_init(_In_ w_mem_pool pMemPool);
 
 /**
@@ -36,6 +37,7 @@ w_hash w_hash_init(_In_ w_mem_pool pMemPool);
  * @param pHashCustomFunc A custom hash function.
  * @return The hash table just created
  */
+ W_SYSTEM_EXPORT   
 w_hash w_hash_make_custom(
     _In_ w_mem_pool pMemPool,
     _In_ w_hash_custom_fn pHashCustomFunc);
@@ -45,12 +47,14 @@ w_hash w_hash_make_custom(
   * @param pHash The hash table
   * @return The number of key/value pairs in the hash table.
   */
+ W_SYSTEM_EXPORT
 uint32_t w_hash_size(_In_ w_hash pHash);
 
 /**
  * Clear any key/value pairs in the hash table.
  * @param pHash , The hash table
  */
+  W_SYSTEM_EXPORT
 void 	w_hash_clear(_In_ w_hash pHash);
 
 /**
@@ -63,6 +67,7 @@ void 	w_hash_clear(_In_ w_hash pHash);
             The key is stored as is, and so must have a lifetime
             at least as long as the hash table's pool.
  */
+ W_SYSTEM_EXPORT
 void w_hash_set(
     _In_ w_hash pHash,
     _In_ const void* pKey,
@@ -76,6 +81,7 @@ void w_hash_set(
  * @param pKeyLen Length of the key. Can be APR_HASH_KEY_STRING to use the string length.
  * @return Returns NULL if the key is not present.
  */
+W_SYSTEM_EXPORT
 void* w_hash_get(
     _In_ w_hash pHash, 
     _In_z_ const void* pKey, 
@@ -87,6 +93,7 @@ void* w_hash_get(
  * @param pMemPool The pool from which to allocate the new hash table
  * @return Returns The hash table just created.
  */
+ W_SYSTEM_EXPORT
 w_hash w_hash_clone(
     _In_ w_hash pSourceHash,
     _In_ w_mem_pool pMemPool);
@@ -104,6 +111,7 @@ w_hash w_hash_clone(
  * @param pMemPool The pool to use for the new hash table
  * @return A new hash table containing all of the data from the two passed in
  */
+ W_SYSTEM_EXPORT
 w_hash w_hash_merge(
     _In_ const w_hash pHash1,
     _In_ const w_hash pHash2,
@@ -121,6 +129,7 @@ w_hash w_hash_merge(
  * @param pMemPool The pool to use for the new hash table
  * @return A new hash table containing all of the data from the two passed in
  */
+ W_SYSTEM_EXPORT
 w_hash w_hash_overlay(
     _In_ const w_hash pBase,
     _In_ const w_hash pOverlay,
@@ -152,6 +161,7 @@ w_hash w_hash_overlay(
  * }
  * @endcode
  */
+ W_SYSTEM_EXPORT   
 w_hash_index w_hash_first(
     _In_ w_hash pHash,
     _In_ w_mem_pool pMemPool);
@@ -161,6 +171,7 @@ w_hash_index w_hash_first(
  * @param pHashIndex The iteration state
  * @return a pointer to the updated iteration state. NULL if there are no more entries.
  */
+W_SYSTEM_EXPORT    
 w_hash_index w_hash_next(_In_ w_hash_index pHashIndex);
 
 /**
@@ -172,6 +183,7 @@ w_hash_index w_hash_next(_In_ w_hash_index pHashIndex);
  * @remark The return pointers should point to a variable that will be set to 
         the corresponding data, or they may be NULL if the data isn't interesting.
  */
+ W_SYSTEM_EXPORT   
 void w_hash_this(
     _In_ w_hash_index pHashIndex,
     _Inout_ const void** pKey,
@@ -184,6 +196,7 @@ void w_hash_this(
  * @param pHashIndex The iteration state
  * @return The pointer to the key
  */
+ W_SYSTEM_EXPORT   
 const void* w_hash_this_key(_In_ w_hash_index pHashIndex);
 
 /**
@@ -191,6 +204,7 @@ const void* w_hash_this_key(_In_ w_hash_index pHashIndex);
  * @param pHashIndex The iteration state
  * @return The key length
  */
+ W_SYSTEM_EXPORT   
 size_t w_hash_this_key_len(_In_ w_hash_index pHashIndex);
 
 /**
@@ -198,6 +212,7 @@ size_t w_hash_this_key_len(_In_ w_hash_index pHashIndex);
  * @param pHashIndex The iteration state
  * @return The pointer to the value
  */
+W_SYSTEM_EXPORT    
 void* w_hash_this_val(w_hash_index pHashIndex);
 
 /**
@@ -210,6 +225,7 @@ void* w_hash_this_val(w_hash_index pHashIndex);
  * @return 0 if one of the pHashCompareFunc() iterations returned zero; 
         1 if all iterations returned non-zero
  */
+ W_SYSTEM_EXPORT
 int w_hash_do(
     _In_ w_hash_do_callback_fn* pHashCompareFunc,
     _In_ void* pRec,
@@ -220,6 +236,7 @@ int w_hash_do(
  * @param pHash the hash
  * @return memory pool 
  */
+ W_SYSTEM_EXPORT   
 w_mem_pool w_hash_get_mem_pool(_In_ const w_hash pHash);
 
 #ifdef __cplusplus
