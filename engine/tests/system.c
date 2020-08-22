@@ -16,6 +16,7 @@
 #include <time.h>
 #include <memory/w_table.h>
 #include<memory/w_array.h>
+#include<memory/w_hash.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
@@ -34,6 +35,17 @@ void s_timer_callback(w_timer_loop* pLoop, w_timer_base* pTimer, int pRevents)
     w_timer_ptr _t = (w_timer_ptr)pTimer->data;
     w_timer_break(_t, 2);
     printf("timer");
+}
+void* _hash_func(w_mem_pool pMemPool, const void* pKey, size_t pLen, const void* pHash1Value, const void* pHash2Value, const void* pData)
+{
+    printf("%s", "ok");
+    return NULL;
+
+}
+int hash_do_callback_fn(void* pRec, const void* pKey, size_t pLen, const void* pValue)
+{
+    printf("%s", "ok2");
+    return 1;
 }
 
 //int main()
@@ -743,6 +755,75 @@ Convey("chrono", {
 
        int _array_is_empty = w_array_is_empty(array);
        So(_array_is_empty ==1);
+        
+         printf("w_hash");
+
+       w_mem_pool Pool_memory_hash = w_mem_pool_get_default();
+       w_hash _hash_init = w_hash_init(Pool_memory);
+       So(_hash_init !=0);
+
+       w_hash _hash_init_2 = w_hash_init(Pool_memory);
+       So(_hash_init_2 !=0);
+
+       char* pKey_1 = "name";
+       size_t pKeyLen = strlen(pKey_1);
+       char* pValue_1 = "wolf";
+
+       char* pKey_2 = "family";
+       size_t pKeyLen_2 = strlen(pKey_2);
+       char* pValue_2 = "engine";
+
+
+       w_hash_set(_hash_init,pKey_1,pKeyLen,pValue_1);
+       w_hash_set(_hash_init,pKey_2,pKeyLen_2,pValue_2);
+       w_hash_set(_hash_init_2,pKey_2,pKeyLen_2,pValue_2);
+
+       uint32_t _hash_size = w_hash_size(_hash_init);
+       So(_hash_size == 2);
+
+       void* hash_get = w_hash_get( _hash_init, pKey_1, pKeyLen);
+       So(hash_get !=0);
+
+       w_hash _hash_clone = w_hash_clone(_hash_init, Pool_memory_hash);
+       So(_hash_clone != 0);
+
+       w_hash_merger pHashMergerFunction = &_hash_func;
+       int  pCustomUserData = 12;
+       w_hash hash_merge = w_hash_merge(_hash_init, _hash_init_2,pHashMergerFunction, &pCustomUserData, Pool_memory_hash);
+       So(hash_merge != 0);
+
+       w_mem_pool Pool_memory_3 = w_mem_pool_get_default();
+
+       w_hash_index _hash_first = w_hash_first(_hash_init,Pool_memory_3);
+       So(_hash_first != 0);
+
+       w_hash_index hash_next = w_hash_next(_hash_first);
+       So(hash_next != 0);
+
+       void* hash_this_key = w_hash_this_key(_hash_first);
+       const char* _key_hash = "family";
+       char* key = (char*)hash_this_key;
+       int  result_key_hash = strcmp(key, _key_hash);
+       So(result_key_hash == 0);
+
+       void* hash_this_val = w_hash_this_val(_hash_first);
+       const char* _val_hash = "engine";
+       char* val = (char*)hash_this_val;
+       int  result_val_hash = strcmp(val, _val_hash);
+       So(result_val_hash == 0);
+
+       int pRec = 1;
+       w_hash_do_callback_fn* pHashCallbackDo = hash_do_callback_fn;
+       int _hash_do= w_hash_do(pHashCallbackDo, &pRec,_hash_init);
+       So(_hash_do !=0);
+
+
+       size_t _hash_this_key_len = w_hash_this_key_len(_hash_first);
+       So(_hash_this_key_len == 6);
+
+       w_mem_pool _hash_get_mem_pool = w_hash_get_mem_pool(_hash_init);
+       So(_hash_get_mem_pool != 0);
+
     });
 
     //terminate wolf
