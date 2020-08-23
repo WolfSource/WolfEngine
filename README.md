@@ -6,7 +6,7 @@
 <p>The&nbsp;<b>Wolf Engine</b>&nbsp;is the next
 generation of&nbsp;<a href="https://persianengine.codeplex.com/">Persian Game Engine</a>&nbsp;which is a
 cross-platform open source game engine created by&nbsp;<a href="http://pooyaeimandar.com/">Pooya Eimandar</a>.
-The Wolf is a comprehensive set of C++ open source libraries for realtime rendering, realtime streaming and game developing, which is support <b>Lua</b> as an embedded script language and <b>Python</b> as a binding language.</p>
+The Wolf is a comprehensive set of C/C++ open source libraries for realtime rendering, realtime streaming and game developing, which is support <b>Lua</b> as an embedded script language and <b>Python</b> as a binding language.</p>
 
 <!--pyWolf-->
 # pyWolf [![LGPL licensed](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](https://github.com/WolfEngine/Wolf.Engine/blob/master/LICENSE.md)
