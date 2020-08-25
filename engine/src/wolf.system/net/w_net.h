@@ -45,7 +45,7 @@ extern "C" {
 
     typedef struct
     {
-        uint8_t*    data;
+        uint8_t* data;
         size_t      len;
     } w_buffer;
     typedef w_buffer* w_buffer_ptr;
@@ -102,7 +102,7 @@ extern "C" {
 
     // quic receive callback
     typedef void (*quic_debug_log_callback_fn)(const char* /*pLine*/, void* /*pArgp*/);
-    typedef W_RESULT (*quic_stream_callback_fn)(uint8_t* /*pConnectionID*/, uint64_t /*pStreamIndex*/,
+    typedef W_RESULT(*quic_stream_callback_fn)(uint8_t* /*pConnectionID*/, uint64_t /*pStreamIndex*/,
         const uint8_t* /*pProtocol*/, const size_t /*pProtocol*/);
 
     /**
@@ -121,15 +121,18 @@ extern "C" {
      * @return result code
     */
     W_SYSTEM_EXPORT
-        W_RESULT w_net_url_parse(_In_z_ const char* pUrlAddress, _Inout_ w_url *pURL);
+        W_RESULT w_net_url_parse(_In_z_ const char* pUrlAddress, _Inout_ w_url* pURL);
 
     /**
      * encode a URL string
+     * @param pMemPool The pool to allocate out of
      * @param pUrlAddress opened url
      * @return result code
     */
     W_SYSTEM_EXPORT
-        const char* w_net_url_encoded(_In_z_ const char* pUrlAddress);
+        const char* w_net_url_encoded(
+            _Inout_ w_mem_pool pMemPool,
+            _In_z_ const char* pUrlAddress);
 
     /**
      * free a URL resources
@@ -202,12 +205,15 @@ extern "C" {
 
     /**
      * create and open a tcp socket
+     * @param pMemPool The pool to allocate out of
      * @param pEndPoint endpoint address like udp://127.0.x.1:1234
      * @param pSocket a udp socket created
      * @return result code
     */
     W_SYSTEM_EXPORT
-        W_RESULT w_net_open_udp_socket(_In_z_ const char* pEndPoint,
+        W_RESULT w_net_open_udp_socket(
+            _Inout_ w_mem_pool pMemPool,
+            _In_z_ const char* pEndPoint,
             _Inout_ w_socket_udp* pSocket);
 
     /**
@@ -219,6 +225,7 @@ extern "C" {
 
     /**
      * create a server based on QUIC protocol
+     * @param pMemPool The pool to allocate out of
      * @param pAddress , host address
      * @param pPort , host port
      * @param pSocketMode , the socket mode. only the following enums will be accepted
@@ -233,6 +240,7 @@ extern "C" {
     */
     W_SYSTEM_EXPORT
         W_RESULT w_net_open_quic_socket(
+            _Inout_ w_mem_pool pMemPool,
             _In_z_  const char* pAddress,
             _In_    int pPort,
             _In_    w_socket_mode pSocketMode,
@@ -385,6 +393,7 @@ extern "C" {
 
     /**
      * send a http request
+     * @param pMemPool The pool to allocate out of
      * @param pURL url
      * @param pHttpRequestType http request type
      * @param pHttpHeaders array of constant strings which contains http headers(e.g "Accept: application/json")
@@ -400,7 +409,9 @@ extern "C" {
      * @return curl code
     */
     W_SYSTEM_EXPORT
-        W_RESULT w_net_send_http_request(_In_z_     const char* pURL,
+        W_RESULT w_net_send_http_request(
+            _Inout_    w_mem_pool pMemPool,
+            _In_z_     const char* pURL,
             _In_       w_http_request_type pHttpRequestType,
             _In_       w_array pHttpHeaders,
             _In_z_     const char* pMessage,

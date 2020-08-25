@@ -86,7 +86,7 @@ W_RESULT ws_run(_In_ ws pWS,
 /**
  * free websocket object
 */
-void ws_free(_In_ ws pWS);
+void ws_free(_Inout_ ws pWS);
 
 #ifdef __cplusplus
 }

@@ -15,12 +15,14 @@ extern "C" {
 
 #include "w_timespan.h"
 
+    typedef struct timespec w_timespec;
+
     /**
      * get current timespec
      * @return a pointer time as timespec
      */
     W_SYSTEM_EXPORT
-        struct timespec w_chrono_now(void);
+        w_timespec w_chrono_now(void);
 
     /**
      * get current timespec
@@ -35,7 +37,7 @@ extern "C" {
      * @return a pointer to w_timespan object
      */
     W_SYSTEM_EXPORT
-        struct timespec w_chrono_clock_now(_In_ int pClockType);
+        w_timespec w_chrono_clock_now(_In_ int pClockType);
 
     /**
      * get current time in seconds
@@ -49,7 +51,7 @@ extern "C" {
      * @return seconds
     */
     W_SYSTEM_EXPORT
-        double w_chrono_timespec_to_sec(_In_ const struct timespec* pT);
+        double w_chrono_timespec_to_sec(_In_ const w_timespec* pT);
 
     /**
      * get duration between two times
@@ -58,8 +60,9 @@ extern "C" {
      * @return a pointer to w_timespan object
      */
     W_SYSTEM_EXPORT
-        struct timespec w_chrono_duration(_In_ const struct timespec* pT1,
-            _In_ const struct timespec* pT2);
+        w_timespec w_chrono_duration(
+            _In_ const w_timespec* pT1,
+            _In_ const w_timespec* pT2);
 
     /**
      * get duration in total nanoseconds
@@ -68,8 +71,9 @@ extern "C" {
      * @return total nanoseconds
      */
     W_SYSTEM_EXPORT
-        double w_chrono_duration_nanoseconds(_In_ const struct timespec* pT1,
-            _In_ const struct timespec* pT2);
+        double w_chrono_duration_nanoseconds(
+            _In_ const w_timespec* pT1,
+            _In_ const w_timespec* pT2);
 
     /**
      * get duration in total microseconds
@@ -78,8 +82,9 @@ extern "C" {
      * @return total microseconds
      */
     W_SYSTEM_EXPORT
-        double w_chrono_duration_microseconds(_In_ const struct timespec* pT1,
-            _In_ const struct timespec* pT2);
+        double w_chrono_duration_microseconds(
+            _In_ const w_timespec* pT1,
+            _In_ const w_timespec* pT2);
 
     /**
      * get duration in total milliseconds
@@ -88,8 +93,9 @@ extern "C" {
      * @return total milliseconds
      */
     W_SYSTEM_EXPORT
-        double w_chrono_duration_milliseconds(_In_ const struct timespec* pT1,
-            _In_ const struct timespec* pT2);
+        double w_chrono_duration_milliseconds(
+            _In_ const w_timespec* pT1,
+            _In_ const w_timespec* pT2);
 
     /**
      * get duration in total seconds
@@ -98,8 +104,9 @@ extern "C" {
      * @return total seconds
      */
     W_SYSTEM_EXPORT
-        double w_chrono_duration_seconds(_In_ const struct timespec* pT1,
-            _In_ const struct timespec* pT2);
+        double w_chrono_duration_seconds(
+            _In_ const w_timespec* pT1,
+            _In_ const w_timespec* pT2);
 
 #ifdef __cplusplus
 }

@@ -29,7 +29,7 @@ extern "C" {
 /**
  * initialize the log file and create a log file inside a Log folder
  * @param pConfig is the configuration of log
- * @return log ID
+ * @return log ID, -1 means function failed
 */
 W_SYSTEM_EXPORT
 int  w_log_init(_In_ const w_log_config* pConfig);
@@ -153,11 +153,11 @@ W_SYSTEM_EXPORT
 W_RESULT  w_log_flush_ex(_In_ int pLogID);
 
 /**
- * terminate all logs
+ * this function will terminate all logs
  * @return result
 */
 W_SYSTEM_EXPORT
-W_RESULT  w_log_terminate();
+W_RESULT  w_log_terminate_all();
 
 /**
  * terminate the specific log file

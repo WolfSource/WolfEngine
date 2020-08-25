@@ -1,7 +1,7 @@
 #ifndef _WIN32
 
 #include "w_signal.h"
-#include <apr-1/apr_signal.h>
+#include <apr-2/apr_signal.h>
 
 int w_signal_init()
 {

@@ -1,53 +1,28 @@
 #include "w_hash.h"
 #include <apr-1/apr_hash.h>
 
-w_hash w_hash_init(w_mem_pool pMemPool)
+w_hash w_hash_init(_Inout_ w_mem_pool pMemPool)
 {
     const char* _trace_info = "w_hash_init";
-    w_mem_pool _pool = NULL;
-    if (pMemPool)
+    if (!pMemPool)
     {
-        _pool = pMemPool;
+        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
+        return APR_BADARG;
     }
-    else
-    {
-        //get default thread pool
-        _pool = w_mem_pool_get_default();
-        if (!_pool)
-        {
-            W_ASSERT_P(false,
-                "could not get default memory pool. trace info: %s",
-                _trace_info);
-            return W_FAILURE;
-        }
-    }
-    return (w_hash)apr_hash_make((apr_pool_t*)_pool);
+    return apr_hash_make(pMemPool);
 }
 
 w_hash w_hash_make_custom(
-    _In_ w_mem_pool pMemPool,
+    _Inout_ w_mem_pool pMemPool,
     _In_ w_hash_custom_fn pHashCustomFunc)
 {
     const char* _trace_info = "w_hash_make_custom";
-    w_mem_pool _pool = NULL;
-    if (pMemPool)
+    if (!pMemPool)
     {
-        _pool = pMemPool;
+        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
+        return APR_BADARG;
     }
-    else
-    {
-        //get default thread pool
-        _pool = w_mem_pool_get_default();
-        if (!_pool)
-        {
-            W_ASSERT_P(false,
-                "could not get default memory pool. trace info: %s",
-                _trace_info);
-            return W_FAILURE;
-        }
-    }
-
-    return (w_hash)apr_hash_make_custom((apr_pool_t*)_pool, pHashCustomFunc);
+    return apr_hash_make_custom(pMemPool, pHashCustomFunc);
 }
 
 void w_hash_set(
@@ -98,108 +73,67 @@ void* w_hash_get(
 }
 
 w_hash w_hash_clone(
-    _In_ w_hash pSourceHash,
-    _In_ w_mem_pool pMemPool)
+    _Inout_ w_mem_pool pMemPool,
+    _In_ w_hash pSourceHash)
 {
     const char* _trace_info = "w_hash_copy";
-    w_mem_pool _pool = NULL;
-    if (pMemPool)
+    if (!pMemPool)
     {
-        _pool = pMemPool;
+        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
+        return APR_BADARG;
     }
-    else
-    {
-        //get default thread pool
-        _pool = w_mem_pool_get_default();
-        if (!_pool)
-        {
-            W_ASSERT_P(false,
-                "could not get default memory pool. trace info: %s",
-                _trace_info);
-            return W_FAILURE;
-        }
-    }
-    return (w_hash)apr_hash_copy(_pool, pSourceHash);
+
+    return (w_hash)apr_hash_copy(pMemPool, pSourceHash);
 }
 
 w_hash w_hash_merge(
+    _Inout_ w_mem_pool pMemPool,
     _In_ const w_hash pHash1,
     _In_ const w_hash pHash2,
     _In_ w_hash_merger pHashMergerFunction,
-    _In_ const void* pCustomUserData,
-    _In_ w_mem_pool pMemPool)
+    _In_ const void* pCustomUserData)
 {
     const char* _trace_info = "w_hash_merge";
-    w_mem_pool _pool = NULL;
-    if (pMemPool)
+    if (!pMemPool)
     {
-        _pool = pMemPool;
+        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
+        return APR_BADARG;
     }
-    else
-    {
-        //get default thread pool
-        _pool = w_mem_pool_get_default();
-        if (!_pool)
-        {
-            W_ASSERT_P(false,
-                "could not get default memory pool. trace info: %s",
-                _trace_info);
-            return W_FAILURE;
-        }
-    }
-    return apr_hash_merge(_pool, pHash1, pHash2, pHashMergerFunction, pCustomUserData);
+
+    return apr_hash_merge(
+        pMemPool,
+        pHash1, 
+        pHash2, 
+        pHashMergerFunction, 
+        pCustomUserData);
 }
 
 w_hash w_hash_overlay(
+    _Inout_ w_mem_pool pMemPool,
     _In_ const w_hash pBase,
-    _In_ const w_hash pOverlay,
-    _In_ w_mem_pool pMemPool)
+    _In_ const w_hash pOverlay)
 {
     const char* _trace_info = "w_hash_overlay";
-    w_mem_pool _pool = NULL;
-    if (pMemPool)
+    if (!pMemPool)
     {
-        _pool = pMemPool;
+        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
+        return APR_BADARG;
     }
-    else
-    {
-        //get default thread pool
-        _pool = w_mem_pool_get_default();
-        if (!_pool)
-        {
-            W_ASSERT_P(false,
-                "could not get default memory pool. trace info: %s",
-                _trace_info);
-            return W_FAILURE;
-        }
-    }
-    return apr_hash_overlay(pBase, pOverlay, _pool);
+    return apr_hash_overlay(pBase, pOverlay, pMemPool);
 }
 
 w_hash_index w_hash_first(
-    _In_ w_hash pHash,
-    _In_ w_mem_pool pMemPool)
+    _Inout_ w_mem_pool pMemPool,
+    _In_ w_hash pHash)
 {
     const char* _trace_info = "w_hash_first";
-    w_mem_pool _pool = NULL;
-    if (pMemPool)
+    if (!pMemPool)
     {
-        _pool = pMemPool;
-    }
-    else
-    {
-        //get default thread pool
-        _pool = w_mem_pool_get_default();
-        if (!_pool)
-        {
-            W_ASSERT_P(false,
-                "could not get default memory pool. trace info: %s",
-                _trace_info);
-            return W_FAILURE;
-        }
-    }
+        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
+        return APR_BADARG;
 
-    return apr_hash_first(_pool, pHash);
+    }
+    return apr_hash_first(pMemPool, pHash);
 }
 
 w_hash_index w_hash_next(_In_ w_hash_index pHashIndex)

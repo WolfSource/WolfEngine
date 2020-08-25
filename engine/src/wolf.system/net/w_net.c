@@ -2,7 +2,7 @@
 
 #include <apr.h>
 #include <apr-1/apr_general.h>
-#include<apr_tables.h>
+#include <apr_tables.h>
 #include <nng/nng.h>
 #include <core/nng_impl.h>
 #include <nng/protocol/pipeline0/push.h>
@@ -34,8 +34,9 @@
 
 typedef struct
 {
-    char* memory;
-    size_t    size;
+    w_mem_pool  pool;
+    char*       memory;
+    size_t      size;
 } curl_memory;
 
 
@@ -204,8 +205,17 @@ W_RESULT w_net_url_parse(_In_z_ const char* pUrlAddress, _Inout_ w_url *pURL)
     return _rt;
 }
 
-const char* w_net_url_encoded(_In_z_ const char* pUrlAddress)
+const char* w_net_url_encoded(
+    _Inout_ w_mem_pool pMemPool,
+    _In_z_ const char* pUrlAddress)
 {
+    const char* _trace_info = "w_net_url_encoded";
+    if (!pMemPool)
+    {
+        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
+        return APR_BADARG;
+    }
+
     char* _encoded = NULL;
     CURL* _curl = curl_easy_init();
     if (!_curl)
@@ -218,7 +228,7 @@ const char* w_net_url_encoded(_In_z_ const char* pUrlAddress)
     if (_output)
     {
         //allocate memory for it from memory pool
-        _encoded = w_malloc(strlen(_output), "w_net_url_encoded");
+        _encoded = w_malloc(pMemPool, strlen(_output), "w_net_url_encoded");
         // make a copy and free the original string
         strcpy(_encoded, _output);
         curl_free(_output);
@@ -509,9 +519,19 @@ W_RESULT w_net_close_tcp_socket(_Inout_ w_socket_tcp* pSocket)
     return W_SUCCESS;
 }
 
-W_RESULT w_net_open_udp_socket(_In_z_ const char* pEndPoint, _Inout_ w_socket_udp* pSocket)
+W_RESULT w_net_open_udp_socket(
+    _Inout_ w_mem_pool pMemPool,
+    _In_z_ const char* pEndPoint, 
+    _Inout_ w_socket_udp* pSocket)
 {
-W_RESULT _rt = W_SUCCESS;
+    const char* _trace_info = "w_net_open_udp_socket";
+    if (!pMemPool)
+    {
+        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
+        return APR_BADARG;
+    }
+
+    W_RESULT _rt = W_SUCCESS;
     nng_url* _url = NULL;
 
     if (!pSocket)
@@ -525,8 +545,7 @@ W_RESULT _rt = W_SUCCESS;
     }
     nni_plat_udp* _udp_protocol = (nni_plat_udp*)pSocket->u;
 
-    _url = (nng_url*)w_malloc(sizeof(nng_url), "");
-
+    _url = (nng_url*)w_malloc(pMemPool, sizeof(nng_url), _trace_info);
 
     _rt = w_net_url_parse(pEndPoint, &_url);
     unsigned long _addr_hex = inet_addr(_url->u_hostname);
@@ -754,18 +773,30 @@ static size_t _curl_write_callback(
     size_t pNmemb,
     void* pUserp)
 {
+    const char* _trace_info = "_curl_write_callback";
+
     size_t _real_size = pSize * pNmemb;
     if (!_real_size)
     {
-        W_ASSERT(false, "_real_size is zero. trace info: _curl_write_callback");
+        W_ASSERT_P(false, "_real_size is zero. trace info: %s", _trace_info);
         return 0;
     }
     curl_memory* _mem = (curl_memory*)pUserp;
-    _mem->memory = (char*)w_malloc(_mem->size + _real_size + 1, "_curl_write_callback");
+    if (!_mem)
+    {
+        W_ASSERT_P(false, "missing curl memory. trace info: %s", _trace_info);
+        return 0;
+    }
+    _mem->memory = (char*)w_malloc(
+        _mem->pool,
+        _mem->size + _real_size + 1, 
+        "_curl_write_callback");
     if (!_mem->memory)
     {
         //out of memory
-        W_ASSERT(false, "out of curl_memory. trace info: _curl_write_callback");
+        W_ASSERT_P(false, 
+            "out of curl_memory. trace info: %s",
+            _trace_info);
         return 0;
     }
 
@@ -776,7 +807,9 @@ static size_t _curl_write_callback(
     return _real_size;
 }
 
-W_RESULT w_net_send_http_request(_In_z_     const char* pURL,
+W_RESULT w_net_send_http_request(
+    _Inout_    w_mem_pool pMemPool,
+    _In_z_     const char* pURL,
     _In_       w_http_request_type pHttpRequestType,
     _In_       w_array pHttpHeaders,
     _In_z_     const char* pMessage,
@@ -788,6 +821,13 @@ W_RESULT w_net_send_http_request(_In_z_     const char* pURL,
     _Inout_z_  char** pResponseMessage,
     _Inout_    size_t* pResponseMessageLength)
 {
+    const char* _trace_info = "w_net_send_http_request";
+    if (!pMemPool)
+    {
+        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
+        return APR_BADARG;
+    }
+
     CURLcode _rt;
     curl_memory* _curl_mem = NULL;
     //create handle
@@ -798,7 +838,10 @@ W_RESULT w_net_send_http_request(_In_z_     const char* pURL,
         W_ASSERT(false, "could not create curl handle. trace info: curl_easy_init");
         goto _out;
     }
-    _curl_mem = w_malloc(sizeof(curl_memory), "w_net_send_http_request");
+    _curl_mem = w_malloc(
+        pMemPool,
+        sizeof(curl_memory), 
+        "w_net_send_http_request");
     if (!_curl_mem)
     {
         _rt = CURLE_OUT_OF_MEMORY;
@@ -806,6 +849,7 @@ W_RESULT w_net_send_http_request(_In_z_     const char* pURL,
     }
 
     _curl_mem->memory = *pResponseMessage;
+    _curl_mem->pool = pMemPool;
     _curl_mem->size = *pResponseMessageLength;
 
     double _timeout_in_ms = pTimeOutInSecs / 1000;
@@ -1458,7 +1502,9 @@ void w_free_s_quic_conns()
     }
 }
 
-W_RESULT w_net_open_quic_socket(_In_z_  const char* pAddress,
+W_RESULT w_net_open_quic_socket(
+    _Inout_ w_mem_pool pMemPool,
+    _In_z_  const char* pAddress,
     _In_    int pPort,
     _In_    w_socket_mode pSocketMode,
     _In_z_  const char* pCertFilePath,
@@ -1468,6 +1514,12 @@ W_RESULT w_net_open_quic_socket(_In_z_  const char* pAddress,
     _In_    quic_stream_callback_fn pQuicSendingStreamCallback)
 {
     const char* _trace_info = "w_net_open_quic_socket";
+    if (!pMemPool)
+    {
+        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
+        return APR_BADARG;
+    }
+
     if (pSocketMode != quic_dialer && pSocketMode != quic_listener)
     {
         W_ASSERT(false, "pSocketMode must be one of the following enums: quic_dialer or quic_listener. trace info: w_net_open_quic_socket");
@@ -1495,7 +1547,7 @@ W_RESULT w_net_open_quic_socket(_In_z_  const char* pAddress,
     };
 
     //convert integer port to string
-    char* _port = w_malloc(6, _trace_info);//max port number is 65329
+    char* _port = w_malloc(pMemPool, 6, _trace_info);//max port number is 65329
     if (!_port)
     {
         return W_FAILURE;
@@ -1697,7 +1749,10 @@ W_RESULT w_net_open_quic_socket(_In_z_  const char* pAddress,
 
 #endif
 
-        _quiche_connection_io = (struct conn_io*)w_malloc(sizeof(struct conn_io), _trace_info);
+        _quiche_connection_io = (struct conn_io*)w_malloc(
+            pMemPool, 
+            sizeof(struct conn_io), 
+            _trace_info);
         if (_quiche_connection_io == NULL)
         {
             _ret = W_FAILURE;

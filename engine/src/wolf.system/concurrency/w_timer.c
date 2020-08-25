@@ -16,19 +16,23 @@
 //}
 
 W_RESULT w_timer_init(
+    _Inout_ w_mem_pool pMemPool,
     _Inout_ w_timer_ptr pTimer,
     _In_ double pStartAfterSec,
     _In_ double pTimeOutInSec,
     _In_ w_timer_callback pCallBack)
 {
-    if (!pTimer)
+    const char* _trace_info = "w_timer_init";
+    if (!pMemPool || !pTimer)
     {
-        return;
+        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        return W_FAILURE;
     }
     
-    pTimer->t = (w_timer_base*)w_malloc(sizeof(w_timer_base), "w_timer_init::w_timer_base");
+    pTimer->t = (w_timer_base*)w_malloc(pMemPool, sizeof(w_timer_base));
     if (!pTimer->t)
     {
+        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
         return W_FAILURE;
     }
     pTimer->l = EV_DEFAULT;
@@ -65,39 +69,39 @@ W_RESULT w_timer_break(_In_ w_timer_ptr pTimer, _In_ uint8_t pHow)
     return W_SUCCESS;
 }
 
-w_timer_periodic_ptr w_timer_init_periodic(
-    _In_ double pStartAfterSec,
-    _In_ double pIntervalInSec,
-    _In_ w_timer_periodic_callback pCallBack,
-    _In_ w_timer_periodic_scheduler_callback pSchedulerCallBack)
-{
-    //allocate memory from pool
-    w_timer_periodic* _timer = (w_timer_periodic*)w_malloc(sizeof(w_timer_periodic), "w_timer_init_periodic::w_timer_periodic");
-    if (!_timer)
-    {
-        return NULL;
-    }
-    _timer->t = (w_timer_base_periodic*)w_malloc(sizeof(w_timer_base_periodic), "w_timer_init_periodic::w_timer_base_periodic");
-    if (!_timer->t)
-    {
-        w_free(_timer);
-        return NULL;
-    }
-    _timer->l = EV_DEFAULT;
-    
-    ev_periodic_init (_timer->t, pCallBack, pStartAfterSec, pIntervalInSec, pSchedulerCallBack);
-    ev_periodic_start (_timer->l, _timer->t);
-    
-    return _timer;
-}
+//w_timer_periodic_ptr w_timer_init_periodic(
+//    _In_ double pStartAfterSec,
+//    _In_ double pIntervalInSec,
+//    _In_ w_timer_periodic_callback pCallBack,
+//    _In_ w_timer_periodic_scheduler_callback pSchedulerCallBack)
+//{
+//    //allocate memory from pool
+//    w_timer_periodic* _timer = (w_timer_periodic*)w_malloc(sizeof(w_timer_periodic), "w_timer_init_periodic::w_timer_periodic");
+//    if (!_timer)
+//    {
+//        return NULL;
+//    }
+//    _timer->t = (w_timer_base_periodic*)w_malloc(sizeof(w_timer_base_periodic), "w_timer_init_periodic::w_timer_base_periodic");
+//    if (!_timer->t)
+//    {
+//        w_free(_timer);
+//        return NULL;
+//    }
+//    _timer->l = EV_DEFAULT;
+//    
+//    ev_periodic_init (_timer->t, pCallBack, pStartAfterSec, pIntervalInSec, pSchedulerCallBack);
+//    ev_periodic_start (_timer->l, _timer->t);
+//    
+//    return _timer;
+//}
 
 void w_timer_terminate(_In_ w_timer_ptr pTimer)
 {
     ev_loop_destroy(pTimer->l);
 }
 
-void w_timer_periodic_terminate(_In_ w_timer_periodic_ptr pTimer)
-{
-    ev_loop_destroy(pTimer->l);
-}
+//void w_timer_periodic_terminate(_In_ w_timer_periodic_ptr pTimer)
+//{
+//    ev_loop_destroy(pTimer->l);
+//}
 

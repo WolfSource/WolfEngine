@@ -28,12 +28,64 @@ extern "C" {
 	} w_process_info;
 
 	/**
-	 * release resources of process info
-	 * @param pProcessInfo , a pointer to process info
+	 * get number of instances for a specific process
+	 * @param pProcessName the name of process
+	 * @return number of processes
+	*/
+	W_SYSTEM_EXPORT
+		size_t w_process_get_count_of_instances(_In_z_ const wchar_t* pProcessName);
+
+	/**
+	 * get a process name based on process id
+	 * @param pMemPool The pool to allocate out of
+	 * @param pProcessID process ID
 	 * @return result
 	*/
 	W_SYSTEM_EXPORT
-		W_RESULT w_process_info_terminate(_Inout_ w_process_info* pProcessInfo);
+		const wchar_t* w_process_get_process_name_by_id(
+			_Inout_ w_mem_pool pMemPool,
+			_In_ unsigned long pProcessID);
+
+	/**
+	 * enumurate all processes names and print all in wide characters
+	 * @param pMemPool The pool to allocate out of
+	 * @param pProcessLists which will be updated
+	 * @return results
+	*/
+	W_SYSTEM_EXPORT
+		W_RESULT w_process_print_allW(
+			_Inout_ w_mem_pool pMemPool,
+			_Inout_ wchar_t** pProcessLists);
+
+	/**
+	 * enumurate all processes names
+	 * @param pMemPool The pool to allocate out of
+	 * @param pProcessLists which will be updated
+	 * @return result
+	*/
+	W_SYSTEM_EXPORT
+		W_RESULT w_process_print_all(
+			_Inout_ w_mem_pool pMemPool,
+			_Inout_ char** pProcessLists);
+
+	/**
+	 * create a process
+	 * @param pPathToProcess , the path to the process
+	 * @param pCmdsArg , command args
+	 * @param pCurrentDirectoryPath , the current directory path of process
+	 * @param pWaitAfterRunningProcess , wait in seconds after running the process
+	 * @param pCreationFlags , the creation flags
+	 * @param pProcessInfo , the output process info
+	 * @return result
+	*/
+	//W_SYSTEM_EXPORT
+	//	W_RESULT w_process_create(
+	//		_In_z_ const wchar_t* pPathToProcess,
+	//		_In_z_ const wchar_t* pCmdsArg,
+	//		_In_z_ const wchar_t* pCurrentDirectoryPath,
+	//		_In_  const double pWaitAfterRunningProcess,
+	//		_In_ DWORD pCreationFlags,
+	//		_Out_ w_process_info** pProcessInfo);
 
 	/**
 	 * kill process by proces ID
@@ -44,45 +96,12 @@ extern "C" {
 		W_RESULT w_process_kill_by_id(_In_ unsigned long pProcessID);
 
 	/**
-	 * get a process name based on process id
-	 * @param pProcessID process ID
+	 * release resources of process info
+	 * @param pProcessInfo , a pointer to process info
 	 * @return result
 	*/
 	W_SYSTEM_EXPORT
-		const wchar_t* w_process_get_name_by_id(_In_ unsigned long pProcessID);
-
-	/**
-	 * enumurate all processes
-	 * @param pProcessLists which will be updated
-	 * @return result 
-	*/
-	W_SYSTEM_EXPORT
-		W_RESULT w_process_enum_all_processes(_Inout_ char** pProcessLists);
-
-	/**
-	 * enumurate all processes in wide characters
-	 * @param pProcessLists which will be updated
-	 * @return results
-	*/
-	W_SYSTEM_EXPORT
-		W_RESULT w_process_enum_all_processesW(_Inout_ wchar_t** pProcessLists);
-
-	////check whether two instances of same process is running
-	//WSYS_EXP static bool check_for_number_of_running_instances_from_process(_In_z_ const wchar_t* pProcessName,
-	//	_In_ size_t pNumberOfRunningInstnacesToBeChecked = 1);
-	////get number of running instances the process
-	//WSYS_EXP static size_t get_number_of_running_instances_from_process(_In_z_ const wchar_t* pProcessName);
-	////create a process
-	//WSYS_EXP static w_process_info* create_process(
-	//	_In_z_ const wchar_t* pPathtoProcess,
-	//	_In_z_ const wchar_t* pCmdsArg,
-	//	_In_z_ const wchar_t* pCurrentDirectoryPath,
-	//	_In_  const long long pWaitAfterRunningProcess = 0,
-	//	_In_ DWORD pCreationFlags = 0);
-	////kill a process
-	//WSYS_EXP static bool kill_process(_In_ w_process_info* pProcessInfo);
-	////kill all process by name
-	//WSYS_EXP static bool kill_all_processes(_In_z_ std::initializer_list<const wchar_t*> pProcessNames);
+		W_RESULT w_process_info_terminate(_Inout_ w_process_info* pProcessInfo);
 
 #ifdef __cplusplus
 }

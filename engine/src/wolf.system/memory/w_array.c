@@ -3,11 +3,17 @@
 #include <apr_strings.h>
 
 w_array w_array_init(
+    _Inout_ w_mem_pool pMemPool,
     _In_ int pInitSize,
-    _In_ int pSizeOfEachElement,
-    _In_ w_mem_pool pMemPool)
+    _In_ int pSizeOfEachElement)
 {
     const char* _trace_info = "w_array_init";
+    if (!pMemPool)
+    {
+        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
+        return APR_BADARG;
+
+    }
 
     if (pInitSize < 0 || pSizeOfEachElement < 0)
     {
@@ -15,24 +21,6 @@ w_array w_array_init(
             "bad arguments. trace info: %s",
             _trace_info);
         return NULL;
-    }
-
-    w_mem_pool _pool = NULL;
-    if (pMemPool)
-    {
-        _pool = pMemPool;
-    }
-    else
-    {
-        //get default thread pool
-        _pool = w_mem_pool_get_default();
-        if (!_pool)
-        {
-            W_ASSERT_P(false,
-                "could not get default memory pool. trace info: %s",
-                _trace_info);
-            return NULL;
-        }
     }
 
     return (w_array)apr_array_make(

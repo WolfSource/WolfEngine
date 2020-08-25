@@ -61,7 +61,7 @@ W_RESULT ws_run(_In_ ws pWS,
     return _rt;
 }
 
-void ws_free(ws pWS)
+void ws_free(_Inout_ ws pWS)
 {
     if (pWS)
     {

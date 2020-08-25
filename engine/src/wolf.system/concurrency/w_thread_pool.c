@@ -1,23 +1,32 @@
 #include "w_thread_pool.h"
-#include <apr-1/apr_thread_proc.h>
-#include <apr-1/apr_portable.h>
+#include <apr-2/apr_thread_proc.h>
+#include <apr-2/apr_portable.h>
 #include <apr-util/apr_thread_pool.h>
 
-w_thread_pool w_thread_pool_init(_In_ size_t pMinThreads,
-                                 _In_ size_t pMaxThreads,
-                                 _In_ w_mem_pool pMemoryPool)
+w_thread_pool w_thread_pool_init(
+    _Inout_ w_mem_pool pMemoryPool,
+    _In_ size_t pMinThreads,
+    _In_ size_t pMaxThreads)
 {
-    apr_thread_pool_t* _thread_pool;
-    apr_status_t _ret = apr_thread_pool_create (&_thread_pool,
-                                                pMinThreads,
-                                                pMaxThreads,
-                                                (apr_pool_t*)pMemoryPool);
-    if (_ret != APR_SUCCESS)
+    const char* _trace_info = "w_thread_pool_init";
+    if (!pMemoryPool)
     {
-        W_ASSERT(false, "error happened, trace info: w_thread_pool_create\n");
+        W_ASSERT_P(false, "missing memory pool, trace info: %s", _trace_info);
         return NULL;
     }
-    
+
+    apr_thread_pool_t* _thread_pool;
+    apr_status_t _ret = apr_thread_pool_create(
+        &_thread_pool,
+        pMinThreads,
+        pMaxThreads,
+        pMemoryPool);
+    if (_ret != APR_SUCCESS)
+    {
+        W_ASSERT_P(false, "error happened, trace info: %s", _trace_info);
+        return NULL;
+    }
+
     return (w_thread_pool)_thread_pool;
 }
 
@@ -86,7 +95,7 @@ W_RESULT w_thread_pool_top(_In_ w_thread_pool pThreadPool,
     return W_SUCCESS;
 }
 
-W_RESULT w_thread_pool_tasks_cancel(_In_ w_thread_pool pThreadPool, void* pOwner)
+W_RESULT w_thread_pool_tasks_cancel(_In_ w_thread_pool pThreadPool, _In_ void* pOwner)
 {
     apr_status_t _ret = apr_thread_pool_tasks_cancel((apr_thread_pool_t*)pThreadPool, pOwner);
     if (_ret != APR_SUCCESS)

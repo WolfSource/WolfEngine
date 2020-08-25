@@ -20,18 +20,19 @@ extern "C" {
 
     /**
      * Create a thread pool
-     * @param pMinThreads The number of threads to be created initially, this number
-     * will also be used as the initial value for the maximum number of idle threads.
+     * @param pMemPool The pool to allocate the hash table out of.
+     * @param pMinThreads The number of threads to be created initially, 
+                this number will also be used as the initial value for 
+                the maximum number of idle threads.
      * @param pMaxThreads The maximum number of threads that can be created
-     * @param pMemoryPool The pool to use
      * @return The pointer in which to return the newly created apr_thread_pool
      * object, or NULL if thread pool creation fails
     */
     W_SYSTEM_EXPORT
         w_thread_pool w_thread_pool_init(
+            _Inout_ w_mem_pool pMemoryPool,
             _In_ size_t pMinThreads,
-            _In_ size_t pMaxThreads,
-            _In_ w_mem_pool pMemPool);
+            _In_ size_t pMaxThreads);
 
     /**
      * Destroy and free the thread pool and stop all the threads

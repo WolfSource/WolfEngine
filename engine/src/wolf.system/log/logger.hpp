@@ -17,9 +17,11 @@
 class logger
 {
 public:
-    explicit logger(_In_ const w_log_config* pConfig);
+    explicit logger(void) {};
     ~logger(void) {};
     
+    W_RESULT  init(_In_ const w_log_config* pConfig);
+
     W_RESULT  write(_In_z_ const char* pFMT);
 
     W_RESULT  write(_In_ const w_log_type pLogType,

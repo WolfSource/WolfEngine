@@ -37,3 +37,40 @@
 
 #endif
 
+#ifdef W_PLATFORM_WIN
+
+    #include <SDKDDKVer.h>
+
+    #ifndef WIN32_LEAN_AND_MEAN
+        #define WIN32_LEAN_AND_MEAN
+    #endif
+
+    #ifndef NOMINMAX 
+        #define NOMINMAX 
+    #endif
+
+    #include <Windows.h>
+    #include <WinSock2.h>
+    #include <ws2ipdef.h>
+
+    //DLL export
+    #ifndef W_SYSTEM_EXPORT
+        #define W_SYSTEM_EXPORT __declspec(dllexport)
+    #endif
+
+    #define WOLF_MAIN()                                                                                    \
+        int APIENTRY WinMain(HINSTANCE pHInstance, HINSTANCE pPrevHInstance, PSTR pSTR, int pCmdshow)
+#else
+
+    //dummy
+    #ifndef W_SYSTEM_EXPORT
+        #define W_SYSTEM_EXPORT
+    #endif
+
+    #include <unistd.h>
+    #define WOLF_MAIN()                                                                                    \
+        int main(int pArgc, const char * pArgv[])
+
+#endif
+
+typedef int W_RESULT;

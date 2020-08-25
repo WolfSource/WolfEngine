@@ -1,9 +1,10 @@
 #include "w_redis.h"
 #include <apr-util/apr_redis.h>
 
-uint32_t w_redis_hash(_In_ w_redis pRedisClient,
-                      _In_z_ const char* pData,
-                      _In_ size_t pDataLen)
+uint32_t w_redis_hash(
+    _In_ w_redis pRedisClient,
+    _In_z_ const char* pData,
+    _In_ size_t pDataLen)
 {
     if (!pRedisClient || pData || pDataLen == 0)
     {
@@ -13,9 +14,10 @@ uint32_t w_redis_hash(_In_ w_redis pRedisClient,
     return apr_redis_hash(pRedisClient, pData, pDataLen);
 }
 
-uint32_t w_redis_hash_crc32(_In_ void* pBaton,
-                            _In_z_ const char* pData,
-                            _In_ size_t pDataLen)
+uint32_t w_redis_hash_crc32(
+    _In_ void* pBaton,
+    _In_z_ const char* pData,
+    _In_ size_t pDataLen)
 {
     if (!pBaton || pData || pDataLen == 0)
     {
@@ -25,9 +27,10 @@ uint32_t w_redis_hash_crc32(_In_ void* pBaton,
     return apr_redis_hash_crc32(pBaton, pData, pDataLen);
 }
 
-uint32_t w_redis_hash_default(_In_ void* pBaton,
-                              _In_ const char* pData,
-                              _In_ size_t pDataLen)
+uint32_t w_redis_hash_default(
+    _In_ void* pBaton,
+    _In_ const char* pData,
+    _In_ size_t pDataLen)
 {
     if (!pBaton || pData || pDataLen == 0)
     {
@@ -37,8 +40,9 @@ uint32_t w_redis_hash_default(_In_ void* pBaton,
     return apr_redis_hash_default(pBaton, pData, pDataLen);
 }
 
-w_redis_server w_redis_find_server_hash(_In_ w_redis pRedisClient,
-                                        _In_ uint32_t pHash)
+w_redis_server w_redis_find_server_hash(
+    _In_ w_redis pRedisClient,
+    _In_ uint32_t pHash)
 {
     if (!pRedisClient || pHash == 0)
     {
@@ -48,9 +52,10 @@ w_redis_server w_redis_find_server_hash(_In_ w_redis pRedisClient,
     return apr_redis_find_server_hash(pRedisClient, pHash);
 }
 
-w_redis_server w_redis_find_server_hash_default(_In_ void* pBaton,
-                                                _In_ w_redis pRedisClient,
-                                                _In_ uint32_t pHash)
+w_redis_server w_redis_find_server_hash_default(
+    _In_ void* pBaton,
+    _In_ w_redis pRedisClient,
+    _In_ uint32_t pHash)
 {
     if (!pRedisClient || pHash == 0)
     {
@@ -61,8 +66,9 @@ w_redis_server w_redis_find_server_hash_default(_In_ void* pBaton,
     return apr_redis_find_server_hash_default(pBaton, pRedisClient, pHash);
 }
 
-W_RESULT w_redis_add_server(_In_ w_redis pRedisClient,
-                            _In_ w_redis_server pServer)
+W_RESULT w_redis_add_server(
+    _In_ w_redis pRedisClient,
+    _In_ w_redis_server pServer)
 {
     if (!pRedisClient || !pServer)
     {
@@ -72,9 +78,10 @@ W_RESULT w_redis_add_server(_In_ w_redis pRedisClient,
     return apr_redis_add_server(pRedisClient, pServer);
 }
 
-w_redis_server w_redis_find_server(_In_ w_redis pRedisClient,
-                                   _In_z_ const char* pHost,
-                                   _In_ uint16_t pPort)
+w_redis_server w_redis_find_server(
+    _In_ w_redis pRedisClient,
+    _In_z_ const char* pHost,
+    _In_ uint16_t pPort)
 {
     if (!pRedisClient || !pHost)
     {
@@ -84,8 +91,9 @@ w_redis_server w_redis_find_server(_In_ w_redis pRedisClient,
     return apr_redis_find_server(pRedisClient, pHost, pPort);
 }
 
-W_RESULT w_redis_enable_server(_In_ w_redis pRedisClient,
-                               _In_ w_redis_server pRedisServer)
+W_RESULT w_redis_enable_server(
+    _In_ w_redis pRedisClient,
+    _In_ w_redis_server pRedisServer)
 {
     if (!pRedisClient || !pRedisServer)
     {
@@ -95,8 +103,9 @@ W_RESULT w_redis_enable_server(_In_ w_redis pRedisClient,
     return apr_redis_enable_server(pRedisClient, pRedisServer);
 }
 
-W_RESULT w_redis_disable_server(_In_ w_redis pRedisClient,
-                                _In_ w_redis_server pRedisServer)
+W_RESULT w_redis_disable_server(
+    _In_ w_redis pRedisClient,
+    _In_ w_redis_server pRedisServer)
 {
     if (!pRedisClient || !pRedisServer)
     {
@@ -106,32 +115,24 @@ W_RESULT w_redis_disable_server(_In_ w_redis pRedisClient,
     return apr_redis_disable_server(pRedisClient, pRedisServer);
 }
 
-W_RESULT w_redis_server_init(_In_ w_mem_pool pMemPool,
-                             _In_z_ const char* pHost,
-                             _In_ uint16_t pPort,
-                             _In_ uint32_t pMin,
-                             _In_ uint32_t pSMax,
-                             _In_ uint32_t pMax,
-                             _In_ uint32_t pTTL,
-                             _In_ uint32_t pReadWriteTimeOut,
-                             _Inout_ w_redis_server* pNewServerLocation)
+W_RESULT w_redis_server_init(
+    _Inout_ w_mem_pool pMemPool,
+    _In_z_ const char* pHost,
+    _In_ uint16_t pPort,
+    _In_ uint32_t pMin,
+    _In_ uint32_t pSMax,
+    _In_ uint32_t pMax,
+    _In_ uint32_t pTTL,
+    _In_ uint32_t pReadWriteTimeOut,
+    _Inout_ w_redis_server* pNewServerLocation)
 {
-    w_mem_pool _pool = NULL;
-    if (pMemPool)
+    const char* _trace_info = "w_redis_server_init";
+    if (!pMemPool)
     {
-        _pool = pMemPool;
+        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
+        return APR_BADARG;
     }
-    else
-    {
-        //get default thread pool
-        _pool = w_mem_pool_get_default();
-        if (!_pool)
-        {
-            W_ASSERT(false, "could not get default memory pool. trace info: w_redis_server_create");
-            return W_FAILURE;
-        }
-    }
-    return apr_redis_server_create(_pool,
+    return apr_redis_server_create(pMemPool,
                                    pHost,
                                    pPort,
                                    pMin,
@@ -142,62 +143,46 @@ W_RESULT w_redis_server_init(_In_ w_mem_pool pMemPool,
                                    pNewServerLocation);
 }
 
-W_RESULT w_redis_init(_In_ w_mem_pool pMemPool,
+W_RESULT w_redis_init(_Inout_ w_mem_pool pMemPool,
                       _In_ uint16_t pMaxServers,
                       _In_ uint32_t pFlags,
                       _Inout_ w_redis* pRedisClient)
 {
-    w_mem_pool _pool = NULL;
-    if (pMemPool)
+    const char* _trace_info = "w_redis_init";
+    if (!pMemPool)
     {
-        _pool = pMemPool;
+        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
+        return APR_BADARG;
     }
-    else
-    {
-        //get default thread pool
-        _pool = w_mem_pool_get_default();
-        if (!_pool)
-        {
-            W_ASSERT(false, "could not get default memory pool. trace info: w_redis_create");
-            return W_FAILURE;
-        }
-    }
-    return apr_redis_create(_pool,
+    return apr_redis_create(pMemPool,
                             pMaxServers,
                             pFlags,
                             pRedisClient);
 }
 
-W_RESULT w_redis_get(_In_ w_redis pRedisClient,
-                     _In_ w_mem_pool pMemPool,
-                     _In_z_ const char* pKey,
-                     _Inout_ char** pBaton,
-                     _Inout_ size_t* pLen,
-                     _Inout_ uint16_t* pFlags)
+W_RESULT w_redis_get(
+    _Inout_ w_mem_pool pMemPool,
+    _In_ w_redis pRedisClient,
+    _In_z_ const char* pKey,
+    _Inout_ char** pBaton,
+    _Inout_ size_t* pLen,
+    _Inout_ uint16_t* pFlags)
 {
+    const char* _trace_info = "w_redis_init";
+    if (!pMemPool)
+    {
+        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
+        return APR_BADARG;
+    }
+
     if (!pKey)
     {
         W_ASSERT(false, "missing parameters!. trace info: w_redis_get");
         return W_FAILURE;
     }
     
-    w_mem_pool _pool = NULL;
-    if (pMemPool)
-    {
-        _pool = pMemPool;
-    }
-    else
-    {
-        //get default thread pool
-        _pool = w_mem_pool_get_default();
-        if (!_pool)
-        {
-            W_ASSERT(false, "could not get default memory pool. trace info: w_redis_get");
-            return W_FAILURE;
-        }
-    }
     return apr_redis_getp(pRedisClient,
-                          _pool,
+                          pMemPool,
                           pKey,
                           pBaton,
                           pLen,
@@ -256,56 +241,39 @@ W_RESULT w_redis_delete(_In_ w_redis pRedisClient,
                             pTimeOut);
 }
 
-W_RESULT w_redis_version(_In_ w_redis_server pRedisServer,
-                         _In_ w_mem_pool pMemPool,
-                         _Inout_ char** pBaton)
+W_RESULT w_redis_version(
+    _Inout_ w_mem_pool pMemPool,
+    _In_ w_redis_server pRedisServer,
+    _Inout_ char** pBaton)
 {
+    const char* _trace_info = "w_redis_version";
+    if (!pMemPool)
+    {
+        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
+        return APR_BADARG;
+    }
+
     if (!pRedisServer)
     {
         W_ASSERT(false, "missing parameters!. trace info: w_redis_delete");
         return W_FAILURE;
     }
-    
-    w_mem_pool _pool = NULL;
-    if (pMemPool)
-    {
-        _pool = pMemPool;
-    }
-    else
-    {
-        //get default thread pool
-        _pool = w_mem_pool_get_default();
-        if (!_pool)
-        {
-            W_ASSERT(false, "could not get default memory pool. trace info: w_redis_version");
-            return W_FAILURE;
-        }
-    }
-    
-    return apr_redis_version(pRedisServer, _pool, pBaton);
+        
+    return apr_redis_version(pRedisServer, pMemPool, pBaton);
 }
 
-W_RESULT w_redis_info(_In_ w_redis_server pRedisServer,
-                      _In_ w_mem_pool pMemPool,
-                      _Inout_ char** pBaton)
-{
-    w_mem_pool _pool = NULL;
-    if (pMemPool)
+W_RESULT w_redis_info(
+    _Inout_ w_mem_pool pMemPool,
+    _In_ w_redis_server pRedisServer,
+    _Inout_ char** pBaton)
+{   
+    const char* _trace_info = "w_redis_info";
+    if (!pMemPool)
     {
-        _pool = pMemPool;
+        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
+        return APR_BADARG;
     }
-    else
-    {
-        //get default thread pool
-        _pool = w_mem_pool_get_default();
-        if (!_pool)
-        {
-            W_ASSERT(false, "could not get default memory pool. trace info: w_redis_info");
-            return W_FAILURE;
-        }
-    }
-    
-    return apr_redis_info(pRedisServer, _pool, pBaton);
+    return apr_redis_info(pRedisServer, pMemPool, pBaton);
 }
 
 W_RESULT w_redis_incr(_In_ w_redis pRedisClient,
@@ -365,33 +333,25 @@ W_RESULT w_redis_multiget(_In_ w_redis pRedisClient,
     return apr_redis_multgetp(pRedisClient, pTempPool, pDataPool, pValues);
 }
 
-W_RESULT w_redis_get_stats(_In_ w_redis_server pRedisServer,
-                           _In_ w_mem_pool pMemPool,
-                           _Inout_ w_redis_stats* pStats)
+W_RESULT w_redis_get_stats(
+    _Inout_ w_mem_pool pMemPool,
+    _In_ w_redis_server pRedisServer,
+    _Inout_ w_redis_stats* pStats)
 {
+    const char* _trace_info = "w_redis_get_stats";
+    if (!pMemPool)
+    {
+        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
+        return APR_BADARG;
+    }
+
     if (!pRedisServer)
     {
         W_ASSERT(false, "missing parameters!. trace info: w_redis_get_stats");
         return W_FAILURE;
     }
-    
-    w_mem_pool _pool = NULL;
-    if (pMemPool)
-    {
-        _pool = pMemPool;
-    }
-    else
-    {
-        //get default thread pool
-        _pool = w_mem_pool_get_default();
-        if (!_pool)
-        {
-            W_ASSERT(false, "could not get default memory pool. trace info: w_redis_get_stats");
-            return W_FAILURE;
-        }
-    }
-    
-    return apr_redis_stats(pRedisServer, _pool, pStats);
+        
+    return apr_redis_stats(pRedisServer, pMemPool, pStats);
 }
 
 

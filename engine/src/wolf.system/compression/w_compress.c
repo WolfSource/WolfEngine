@@ -1,11 +1,11 @@
 #include "w_compress.h"
 
 #include <apr.h>
-#include <apr-1/apr_general.h>
-#include <apr-1/apr_strings.h>
-#include <apr-1/apr_tables.h>
-#include <apr-1/apr_file_io.h>
-#include <apr-1/apr_hash.h>
+#include <apr-2/apr_general.h>
+#include <apr-2/apr_strings.h>
+#include <apr-2/apr_tables.h>
+#include <apr-2/apr_file_io.h>
+#include <apr-2/apr_hash.h>
 
 #include "lz4/lz4.h"
 
@@ -143,19 +143,16 @@ W_RESULT w_decompress_lz4(_In_      const char* pCompressedBuffer,
 
 static void* _lzma_alloc(ISzAllocPtr pPtr, size_t pSize)
 {
-	return w_malloc(pSize, "_lzma_alloc");
+	return w_malloc(NULL, pSize);
 }
 static void _lzma_free(ISzAllocPtr pPtr, void* pAddr)
 {
-	if (pAddr)
-	{
-		w_free(pAddr);
-	}
+	w_free(NULL, pAddr);
 }
 
 static ISzAlloc _alloc_funcs = { _lzma_alloc, _lzma_free };
 
-int w_compress_lzma(const uint8_t* pSourceBuffer, w_compress_result* pCompressInfo)
+int w_compress_lzma(_In_ const uint8_t* pSourceBuffer, _Inout_ w_compress_result* pCompressInfo)
 {
 	// set up properties
 	CLzmaEncProps _props;
@@ -181,7 +178,7 @@ int w_compress_lzma(const uint8_t* pSourceBuffer, w_compress_result* pCompressIn
 	//   (a smarter implementation would use a growing buffer,
 	//    but this requires a bunch of fuckery that is out of
 	///   scope for this simple example)
-	SizeT _output_size_64 = pCompressInfo->size_in * 2.0f;
+	SizeT _output_size_64 = pCompressInfo->size_in * 2;
 	if (_output_size_64 < 1024)
 	{
 		_output_size_64 = 1024;
@@ -207,20 +204,21 @@ int w_compress_lzma(const uint8_t* pSourceBuffer, w_compress_result* pCompressIn
 		// tricky: we have to generate the LZMA header
 		// 5 bytes properties + 8 byte uncompressed size
 		pCompressInfo->data = (char*)malloc((_output_size_64 + 13) * sizeof(char));
-
-		memcpy(pCompressInfo->data, _props_encoded, 5);
-		for (int i = 0; i < 8; i++)
+		if (pCompressInfo->data)
 		{
-			pCompressInfo->data[5 + i] = (pCompressInfo->size_in >> (i * 8)) & 0xFF;
+			memcpy(pCompressInfo->data, _props_encoded, 5);
+			for (int i = 0; i < 8; i++)
+			{
+				pCompressInfo->data[5 + i] = (pCompressInfo->size_in >> (i * 8)) & 0xFF;
+			}
+			memcpy(pCompressInfo->data + 13, _compress_mem, _output_size_64);
 		}
-		memcpy(pCompressInfo->data + 13, _compress_mem, _output_size_64);
-
 		return 0;
 	}
 	return 1;
 }
 
-int w_decompress_lzma(const uint8_t* pCompressedBuffer, w_compress_result* pDeCompressInfo)
+int w_decompress_lzma(_In_ const uint8_t* pCompressedBuffer, _Inout_ w_compress_result* pDeCompressInfo)
 {
 	pDeCompressInfo->size_out = 0;
 	if (pDeCompressInfo->size_in < 13)

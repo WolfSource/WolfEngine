@@ -22,14 +22,18 @@ extern "C" {
 
     /*
      * Make a new table.
-     * @param pTable , The new table
-     * @param pInitSize , The number of elements in the initial table.
-     * @param pMemPool , The memory pool to allocate. set NULL to use default pool.
+     * @param pMemPool The pool to allocate out of
+     * @param pTable The new table
+     * @param pInitSize The number of elements in the initial table.
+     * @param pMemPool The memory pool to allocate. set NULL to use default pool.
      * @return result
      * @warning This table can only store text data
      */
     W_SYSTEM_EXPORT
-        W_RESULT                        w_table_init(_Inout_ w_table* pTable, _In_ size_t pInitSize, _In_ w_mem_pool pMemPool);
+        W_RESULT    w_table_init(
+            _Inout_ w_mem_pool pMemPool,
+            _Inout_ w_table* pTable,
+            _In_ size_t pInitSize);
 
     /*
      * Add a key/value pair to a table. this will overwrite the old data
@@ -40,7 +44,7 @@ extern "C" {
       * @return result
      */
     W_SYSTEM_EXPORT
-        W_RESULT                        w_table_set(_In_ w_table pTable, char* pKey, char* pValue, bool pMakeACopy);
+        W_RESULT    w_table_set(_In_ w_table pTable, char* pKey, char* pValue, bool pMakeACopy);
 
     /**
      * Remove data from the table.
@@ -49,7 +53,7 @@ extern "C" {
      * @return result
      */
     W_SYSTEM_EXPORT
-        W_RESULT                        w_table_unset(_In_ w_table pTable, char* pKey);
+        W_RESULT    w_table_unset(_In_ w_table pTable, char* pKey);
 
     /**
     * Add data to a table, regardless of whether there is another element with the same key.
@@ -60,7 +64,7 @@ extern "C" {
     * @remark When adding data, this function makes a copy of both the key and the value.
     */
     W_SYSTEM_EXPORT
-        W_RESULT                        w_table_add(_In_ w_table pTable, char* pKey, char* pValue);
+        W_RESULT    w_table_add(_In_ w_table pTable, char* pKey, char* pValue);
 
     /**
     * get the number of active elements in the table
@@ -68,7 +72,7 @@ extern "C" {
     * @return result
     */
     W_SYSTEM_EXPORT
-        int                             w_table_get_size(_In_ w_table pTable);
+        int         w_table_get_size(_In_ w_table pTable);
 
     /**
     * check table is empty
@@ -76,13 +80,13 @@ extern "C" {
     * @return result
     */
     W_SYSTEM_EXPORT
-        int                             w_table_is_empty(_In_ w_table pTable);
+        int         w_table_is_empty(_In_ w_table pTable);
 
     /**
     * clear the table
     */
     W_SYSTEM_EXPORT
-        void                            w_table_clear(_In_ w_table pTable);
+        void        w_table_clear(_In_ w_table pTable);
 
     /**
     * Iterate over a table running the provided function once for every element in the table.
@@ -92,7 +96,7 @@ extern "C" {
     * @return FALSE if one of the comp() iterations returned zero; TRUE if all iterations returned non-zero
     */
     W_SYSTEM_EXPORT
-        int                             w_table_do(
+        int         w_table_do(
             _In_ w_table pTable,
             _In_ w_table_do_callback pCallBack,
             _In_ void* pArg);
@@ -106,7 +110,7 @@ extern "C" {
     * @return FALSE if one of the comp() iterations returned zero; TRUE if all iterations returned non-zero
     */
     W_SYSTEM_EXPORT
-        int                             w_table_do_with_filter(
+        int         w_table_do_with_filter(
             _In_ w_table pTable,
             _In_ w_table_do_callback pCallBack,
             _In_ void* pArg,
@@ -127,7 +131,9 @@ extern "C" {
     * @return key
     */
     W_SYSTEM_EXPORT
-        char* w_table_get_key(_In_ const w_table_entry_iterator pTableEntry, _In_ size_t pIndex);
+        char* w_table_get_key(
+            _In_ const w_table_entry_iterator pTableEntry,
+            _In_ size_t pIndex);
 
     /**
     * get value by index
@@ -136,7 +142,9 @@ extern "C" {
     * @return value
     */
     W_SYSTEM_EXPORT
-        char* w_table_get_value(_In_ const w_table_entry_iterator pTableEntry, _In_ size_t pIndex);
+        char* w_table_get_value(
+            _In_ const w_table_entry_iterator pTableEntry,
+            _In_ size_t pIndex);
 
     /**
     * get key checksum
@@ -145,7 +153,7 @@ extern "C" {
     * @return key check sum
     */
     W_SYSTEM_EXPORT
-        size_t                          w_table_get_key_checksum(_In_ const w_table_entry_iterator pTableEntry, _In_ size_t pIndex);
+        size_t          w_table_get_key_checksum(_In_ const w_table_entry_iterator pTableEntry, _In_ size_t pIndex);
 
 #ifdef __cplusplus
 }

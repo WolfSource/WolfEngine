@@ -18,19 +18,18 @@ extern "C" {
     //typedef struct apr_array* w_array;
     typedef struct apr_array_header_t* w_array;
 
-    /*struct  w_header_array
-{
-    w_mem_pool pool;
-    int 	elt_size;
-    int 	nelts;
-    int 	nalloc;
-    char* elts;
-};*/
-W_SYSTEM_EXPORT
-    w_array w_array_init(
-        _In_ int pInitSize,
-        _In_ int pSizeOfEachElement,
-        _In_ w_mem_pool pMemPool);
+    /**
+    * create an array
+    * @param pMemPool The pool to allocate the hash table out of.
+    * @param pInitSize The initial size.
+    * @param pSizeOfEachElement size of each element.
+    * @return array
+    */
+    W_SYSTEM_EXPORT
+        w_array w_array_init(
+            _Inout_ w_mem_pool pMemPool,
+            _In_ int pInitSize,
+            _In_ int pSizeOfEachElement);
 
     /**
      * get an element by index.
@@ -38,7 +37,7 @@ W_SYSTEM_EXPORT
      * @return Location for the an element is avaieble in the array, else it will return NULL
     */
     W_SYSTEM_EXPORT
-    const void* w_array_get_element(_Inout_ w_array pArray, _In_ int pElementIndex);
+        const void* w_array_get_element(_Inout_ w_array pArray, _In_ int pElementIndex);
 
     /**
      * Add a new element to an array (as a first-in, last-out stack).
@@ -49,7 +48,7 @@ W_SYSTEM_EXPORT
               then this function will, allocate new space for the new element.
     */
     W_SYSTEM_EXPORT
-    void* w_array_append(_Inout_ w_array pArray, _In_ void* pItem);
+        void* w_array_append(_Inout_ w_array pArray, _In_ void* pItem);
 
     /**
      * Remove an element from an array.
@@ -58,7 +57,7 @@ W_SYSTEM_EXPORT
      * @remark If there are no elements in the array, NULL is returned.
      */
     W_SYSTEM_EXPORT
-    void* w_array_remove(_Inout_ w_array pArrayIter);
+        void* w_array_remove(_Inout_ w_array pArrayIter);
 
     /**
      * check table is empty
@@ -66,13 +65,13 @@ W_SYSTEM_EXPORT
      * @return result
      */
     W_SYSTEM_EXPORT
-    int w_array_is_empty(_In_ w_array pArray);
+        int w_array_is_empty(_In_ w_array pArray);
 
     /**
      * Remove all elements.
      */
     W_SYSTEM_EXPORT
-    void w_array_clear(_Inout_ w_array pArray);
+        void w_array_clear(_Inout_ w_array pArray);
 
 #ifdef __cplusplus
 }

@@ -14,8 +14,10 @@ typedef struct
 std::unordered_map<const char*, fibers_info*> s_schedulers;
 
 template<typename w_arg>
-W_RESULT w_fiber_scheduler_init(_In_z_ const char* pSchedulerName,
-                                _In_ std::initializer_list<const w_arg&> pFiberTasks)
+W_RESULT w_fiber_scheduler_init(
+    _Inout_ w_mem_pool pMemPool,
+    _In_z_ const char* pSchedulerName,
+    _In_ std::initializer_list<const w_arg&> pFiberTasks)
 {
     fibers_info* _fibers_info = nullptr;
     size_t _i = 0;
@@ -26,14 +28,15 @@ W_RESULT w_fiber_scheduler_init(_In_z_ const char* pSchedulerName,
         goto _return;
     }
     
-    _fibers_info =  (fibers_info*)w_malloc(sizeof(fibers_info), "w_fiber_scheduler_init::_fibers_info");
+    _fibers_info =  (fibers_info*)w_malloc(pMemPool, sizeof(fibers_info));
     if (!_fibers_info)
     {
         goto _return;
     }
     
-    _fibers_info->fibers = (boost::fibers::fiber*)w_malloc(_size_of_tasks * sizeof( boost::fibers::fiber),
-                                                          "w_fiber_scheduler_init::_fibers_info->fibers");
+    _fibers_info->fibers = (boost::fibers::fiber*)w_malloc(
+        pMemPool,
+        _size_of_tasks * sizeof( boost::fibers::fiber));
     if (!_fibers_info->fibers)
     {
         goto _return;
@@ -58,7 +61,9 @@ _return:
     return W_SUCCESS;
 }
 
-scheduler_info*  w_fiber_get_scheduler_info(_In_z_ const char* pSchedulerName)
+scheduler_info*  w_fiber_get_scheduler_info(
+    _Inout_ w_mem_pool pMemPool,
+    _In_z_ const char* pSchedulerName)
 {
     auto _find = s_schedulers.find(pSchedulerName);
     if (_find == s_schedulers.end())
@@ -69,13 +74,13 @@ scheduler_info*  w_fiber_get_scheduler_info(_In_z_ const char* pSchedulerName)
     auto _name_len = strlen(pSchedulerName);
     auto _number_of_fibers = _find->second->number_of_fibers;
     
-    auto _scheduler_info =  (scheduler_info*)w_malloc(sizeof(scheduler_info), "w_fiber_get_scheduler_info::_scheduler_info");
+    auto _scheduler_info =  (scheduler_info*)w_malloc(pMemPool, sizeof(scheduler_info));
     if (!_scheduler_info)
     {
         return nullptr;
     }
     
-    _scheduler_info->name = (char*)w_malloc(_name_len + 1, "w_fiber_get_scheduler_info::_scheduler_info->name");
+    _scheduler_info->name = (char*)w_malloc(pMemPool, _name_len + 1);
     if (!_scheduler_info->name)
     {
         goto _failed;
@@ -84,7 +89,7 @@ scheduler_info*  w_fiber_get_scheduler_info(_In_z_ const char* pSchedulerName)
     _scheduler_info->number_of_fibers = _number_of_fibers;
     if (_number_of_fibers)
     {
-        _scheduler_info->fiber_ids = (size_t*)w_malloc(_number_of_fibers, "w_fiber_get_scheduler_info::_scheduler_info->fiber_ids");
+        _scheduler_info->fiber_ids = (size_t*)w_malloc(pMemPool, _number_of_fibers * sizeof(size_t));
         if (!_scheduler_info->fiber_ids)
         {
             goto _failed;
@@ -95,7 +100,7 @@ scheduler_info*  w_fiber_get_scheduler_info(_In_z_ const char* pSchedulerName)
         for (size_t i = 0; i < _number_of_fibers; ++i)
         {
             _id_str = boost::lexical_cast<std::string>(_find->second->fibers[i].get_id());
-            sscanf(_id_str.c_str(), "%lx", &_id);
+            sscanf(_id_str.c_str(), "%llu", &_id);
             _scheduler_info->fiber_ids[i] = _id;
         }
     }
@@ -111,9 +116,9 @@ scheduler_info*  w_fiber_get_scheduler_info(_In_z_ const char* pSchedulerName)
 _failed:
     if(_scheduler_info)
     {
-        w_free(_scheduler_info);
-        w_free(_scheduler_info->name);
-        w_free(_scheduler_info->fiber_ids);
+        w_free(pMemPool, _scheduler_info);
+        w_free(pMemPool, _scheduler_info->name);
+        w_free(pMemPool, _scheduler_info->fiber_ids);
     }
     return nullptr;
 }

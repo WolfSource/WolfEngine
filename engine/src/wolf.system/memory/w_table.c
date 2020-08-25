@@ -1,24 +1,19 @@
 #include "w_table.h"
 #include <apr-1/apr_tables.h>
 
-W_RESULT w_table_init(_Inout_ w_table* pTable, _In_ size_t pInitSize, _In_ w_mem_pool pMemPool)
+W_RESULT w_table_init(
+    _Inout_ w_mem_pool pMemPool,
+    _Inout_ w_table* pTable, 
+    _In_ size_t pInitSize)
 {
-    w_mem_pool _pool = NULL;
-    if (pMemPool)
+    const char* _trace_info = "w_table_init";
+    if (!pMemPool)
     {
-        _pool = pMemPool;
+        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
+        return APR_BADARG;
     }
-    else
-    {
-        //get default thread pool
-        _pool = w_mem_pool_get_default();
-        if (!_pool)
-        {
-            W_ASSERT(false, "could not get default memory pool. trace info: w_table_init");
-            return W_FAILURE;
-        }
-    }
-    *pTable = apr_table_make(_pool, pInitSize);
+
+    *pTable = apr_table_make(pMemPool, pInitSize);
     if (*pTable)
     {
         return W_SUCCESS;
@@ -138,17 +133,23 @@ const w_table_entry_iterator w_table_get_entry(_In_ w_table pTable)
     return (const apr_table_entry_t*)_header->elts;
 }
 
-char* w_table_get_key(_In_ const w_table_entry_iterator pTableEntry, _In_ size_t pIndex)
+char* w_table_get_key(
+    _In_ const w_table_entry_iterator pTableEntry, 
+    _In_ size_t pIndex)
 {
     return pTableEntry ? pTableEntry[pIndex].key : NULL;
 }
 
-char* w_table_get_value(_In_ const w_table_entry_iterator pTableEntry, _In_ size_t pIndex)
+char* w_table_get_value(
+    _In_ const w_table_entry_iterator pTableEntry, 
+    _In_ size_t pIndex)
 {
     return pTableEntry ? pTableEntry[pIndex].val : NULL;
 }
 
-size_t w_table_get_key_checksum(_In_ const w_table_entry_iterator pTableEntry, _In_ size_t pIndex)
+size_t w_table_get_key_checksum(
+    _In_ const w_table_entry_iterator pTableEntry, 
+    _In_ size_t pIndex)
 {
     return pTableEntry ? pTableEntry[pIndex].key_checksum : 0;
 }

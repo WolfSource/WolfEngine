@@ -17,33 +17,36 @@ extern "C" {
 #include "libev/ev.h"
 #include "w_thread.h"
 
-typedef ev_async w_async_base;
-typedef struct ev_loop w_async_loop;
-typedef void w_async_callback(EV_P_ w_async_base*, int /*revents*/);
+    typedef ev_async w_async_base;
+    typedef struct ev_loop w_async_loop;
+    typedef void w_async_callback(EV_P_ w_async_base*, int /*revents*/);
 
-typedef struct
-{
-    w_async_base*               a;
-    w_async_loop*               l;
-    w_thread                    t;
-} w_async;
+    typedef struct
+    {
+        w_async_base* a;
+        w_async_loop* l;
+        w_thread                    t;
+    } w_async;
 
-/**
- * create a async
- * @param pAsync async
- * @param pAsyncCallBack callback async
- * @return result code
-*/
-W_SYSTEM_EXPORT
-W_RESULT w_async_init(_Inout_ w_async* pAsync, _In_ w_async_callback pAsyncCallBack);
+    /**
+     * create a async
+     * @param pAsync async
+     * @param pAsyncCallBack callback async
+     * @return result code
+    */
+    W_SYSTEM_EXPORT
+        W_RESULT w_async_init(
+            _Inout_ w_mem_pool pMemPool,
+            _Inout_ w_async* pAsync, 
+            _In_ w_async_callback pAsyncCallBack);
 
-/**
- * create a async
- * @param pAsync async
- * @return result code
-*/
-W_SYSTEM_EXPORT
-W_RESULT w_async_send(_In_ w_async* pAsync, _In_ void* pArg);
+    /**
+     * create a async
+     * @param pAsync async
+     * @return result code
+    */
+    W_SYSTEM_EXPORT
+        W_RESULT w_async_send(_In_ w_async* pAsync, _In_ void* pArg);
 
 #ifdef __cplusplus
 }

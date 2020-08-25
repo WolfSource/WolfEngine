@@ -1,16 +1,22 @@
 #include "w_thread.h"
-#include <apr-1/apr_thread_proc.h>
-#include <apr-1/apr_portable.h>
+#include <apr-2/apr_thread_proc.h>
+#include <apr-2/apr_portable.h>
 
-W_RESULT w_thread_init_once_flag(_Inout_ w_thread_once_flag pOnceFlag)
+W_RESULT w_thread_init_once_flag(
+    _Inout_ w_mem_pool pMemPool,
+    _Inout_ w_thread_once_flag pOnceFlag)
 {
-    //get default thread pool
-    w_mem_pool _pool = w_mem_pool_get_default();
-    if (!_pool) return W_FAILURE;
-    
-    //create once flag
-    apr_status_t _status = apr_thread_once_init(&pOnceFlag, _pool);
-    return _status == APR_SUCCESS ? W_SUCCESS : W_FAILURE;
+    const char* _trace_info = "w_thread_init_once_flag";
+    if (pMemPool)
+    {
+        apr_pool_t* _pool = w_mem_pool_get_apr_pool(pMemPool);
+        if (_pool)
+        {
+            return apr_thread_once_init(&pOnceFlag, _pool);
+        }
+    }
+    W_ASSERT_P(false, "bad args. trace info %s", _trace_info);
+    return APR_BADARG;
 }
 
 W_RESULT w_thread_once_call(_Inout_ w_thread_once_flag pOnceFlag, _In_ w_thread_once_job pOnceJob)
@@ -20,22 +26,28 @@ W_RESULT w_thread_once_call(_Inout_ w_thread_once_flag pOnceFlag, _In_ w_thread_
     return _status == APR_SUCCESS ? W_SUCCESS : W_FAILURE;
 }
 
-W_RESULT w_thread_create(_Inout_ w_thread*    pThread,
-                         _In_    w_thread_job pJob,
-                         _In_    void*        pJobArgs)
+W_RESULT w_thread_create(
+    _Inout_ w_mem_pool   pMemPool,
+    _Inout_ w_thread*    pThread,
+    _In_    w_thread_job pJob,
+    _In_    void*        pJobArgs)
 {
-    //get default thread pool
-    w_mem_pool _pool = w_mem_pool_get_default();
-    if (!_pool) return W_FAILURE;
-    
-    //create default attribute thread
-    apr_threadattr_t* _attr;
-    apr_threadattr_create(&_attr, _pool);
-    
-    //create thread
-    apr_thread_create(pThread, _attr, pJob, pJobArgs, _pool);
-    
-    return W_SUCCESS;
+    const char* _trace_info = "w_thread_create";
+    if (pMemPool)
+    {
+        apr_pool_t* _pool = w_mem_pool_get_apr_pool(pMemPool);
+        if (_pool)
+        {
+            //create default attribute thread
+            apr_threadattr_t* _attr;
+            apr_threadattr_create(&_attr, _pool);
+
+            //create thread
+            return apr_thread_create(pThread, _attr, pJob, pJobArgs, _pool);
+        }
+    }
+    W_ASSERT_P(false, "bad args. trace info %s", _trace_info);
+    return APR_BADARG;
 }
 
 W_RESULT w_thread_join(_Inout_ w_thread pThread)
@@ -78,7 +90,7 @@ w_thread w_thread_get_current(void)
 w_thread_id w_thread_get_current_id(void)
 {
     apr_os_thread_t _current_os_thread = apr_os_thread_current();
-    return (apr_os_thread_t*)(&_current_os_thread);
+    return (void*)_current_os_thread;
 }
 
 W_RESULT w_thread_current_ids_are_equal(_In_ w_thread_id pThread1, _In_ w_thread_id pThread2)
@@ -140,23 +152,17 @@ W_RESULT    w_thread_mutex_create(_Inout_ w_mutex* pMutex,
                                   _In_ uint32_t pFlags,
                                   _In_ w_mem_pool pMemPool)
 {
-    w_mem_pool _pool = NULL;
+    const char* _trace_info = "w_thread_mutex_create";
     if (pMemPool)
     {
-        _pool = pMemPool;
-    }
-    else
-    {
-        //get default thread pool
-        _pool = w_mem_pool_get_default();
-        if (!_pool)
+        apr_pool_t* _pool = w_mem_pool_get_apr_pool(pMemPool);
+        if (_pool)
         {
-            W_ASSERT(false, "could not get default memory pool. trace info: w_thread_mutex_create");
-            return W_FAILURE;
+            return apr_thread_mutex_create(pMutex, pFlags, _pool);
         }
     }
-    
-    return apr_thread_mutex_create(pMutex, pFlags, _pool);
+    W_ASSERT_P(false, "bad args. trace info %s", _trace_info);
+    return APR_BADARG;
 }
  
 W_RESULT    w_thread_mutex_lock(_In_ w_mutex pMutex)

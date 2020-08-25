@@ -1,5 +1,5 @@
 #include "w_async.h"
-#include "apr-1/apr_general.h"
+#include "apr-2/apr_general.h"
 
 void* _thread_job(w_thread pThread, void* pArgs)
 {
@@ -20,13 +20,19 @@ void* _thread_job(w_thread pThread, void* pArgs)
     return NULL;
 }
 
-W_RESULT w_async_init(_Inout_ w_async* pAsync, _In_ w_async_callback pAsyncCallBack)
+W_RESULT w_async_init(
+    _Inout_ w_mem_pool pMemPool,
+    _Inout_ w_async* pAsync, 
+    _In_ w_async_callback pAsyncCallBack)
 {
-    if (!pAsync)
+    const char* _trace_info = "w_condition_variable_init";
+    if (!pMemPool || !pAsync)
     {
-        return W_FAILURE;
+        W_ASSERT_P(false, "missing parameters. trace info %s", _trace_info);
+        return APR_BADARG;
     }
-    pAsync->a = (w_async_base*)w_malloc(sizeof(w_async_base), "w_async_init");
+
+    pAsync->a = (w_async_base*)w_malloc(pMemPool, sizeof(w_async_base));
     if (!pAsync->a)
     {
         return W_FAILURE;

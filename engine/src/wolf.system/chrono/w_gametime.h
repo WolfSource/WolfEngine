@@ -17,7 +17,7 @@ extern "C" {
 #include "w_chrono.h"
 
     //forward declaration
-    typedef struct w_gametime_imp* w_gametime;
+    typedef struct w_gametime_t* w_gametime;
     typedef void w_gametime_tick_callback(w_gametime);
 
     /**
@@ -25,13 +25,13 @@ extern "C" {
      * @return pointer to object of w_gametime
     */
     W_SYSTEM_EXPORT
-        w_gametime w_gametime_init(void);
+        w_gametime w_gametime_init(_Inout_ w_mem_pool pMemPool);
 
     /**
      * reset game time
      */
     W_SYSTEM_EXPORT
-        void w_game_time_reset(_In_ w_gametime pGameTime);
+        void w_game_time_reset(_Inout_ w_gametime pGameTime);
 
     /**
      * Get elapsed ticks since the previous tick call.
@@ -45,7 +45,7 @@ extern "C" {
      * @return elapsed time
     */
     W_SYSTEM_EXPORT
-        double w_gametime_get_elapsvoided_seconds(_In_ w_gametime pGameTime);
+        double w_gametime_get_elapsed_seconds(_In_ w_gametime pGameTime);
 
     /**
      * Get total ticks since the start.

@@ -20,6 +20,7 @@ typedef struct apr_mmap_t* w_mem_map;
 
 /**
  * Create a new memory mapped file out of an existing file.
+ * @param pMemPool The pool to allocate out of
  * @param pNewMemMap The newly created memory mapped file.
  * @param pFile The file to turn into an memory map.
  * @param pOffset The offset into the file to start the data pointer at.
@@ -33,22 +34,26 @@ typedef struct apr_mmap_t* w_mem_map;
  * @return result code
  */
 W_SYSTEM_EXPORT
-W_RESULT     w_mem_map_create(_Inout_ w_mem_map* pNewMemMap,
-                              _In_ w_file pFile,
-                              _In_ w_offset pOffset,
-                              _In_ size_t pSize,
-                              _In_ int pFlag,
-                              _In_ w_mem_pool pMemPool);
+W_RESULT     w_mem_map_create(
+    _Inout_ w_mem_pool pMemPool,
+    _Inout_ w_mem_map* pNewMemMap,
+    _In_ w_file pFile,
+    _In_ w_offset pOffset,
+    _In_ size_t pSize,
+    _In_ int pFlag);
 
 /**
  * Duplicate the specified Mmemory MAP.
+ * @param pMemPool The pool to allocate out of
  * @param pNewMemMap The structure to duplicate into.
  * @param pOldMemMap The memory map to duplicate.
- * @param pMemPool The pool to use for new memory map.
  * @return result code
 */
 W_SYSTEM_EXPORT
-W_RESULT     w_mem_map_dup(_Inout_ w_mem_map* pNewMemMap, _In_ w_mem_map pOldMemMap, _In_ w_mem_pool pMemPool);
+W_RESULT     w_mem_map_dup(
+    _Inout_ w_mem_pool pMemPool,
+    _Inout_ w_mem_map* pNewMemMap, 
+    _In_ w_mem_map pOldMemMap);
 
 /**
  * Remove a memory map.
@@ -66,7 +71,10 @@ W_RESULT     w_mem_map_delete(_In_ w_mem_map pMemoryMap);
  * @return result code
 */
 W_SYSTEM_EXPORT
-W_RESULT     w_mem_map_offset(_Inout_ void** pAddress, _In_ w_mem_map pMemoryMap, _In_ w_offset pOffset);
+W_RESULT     w_mem_map_offset(
+    _Inout_ void** pAddress, 
+    _In_ w_mem_map pMemoryMap, 
+    _In_ w_offset pOffset);
 
 #ifdef __cplusplus
 }

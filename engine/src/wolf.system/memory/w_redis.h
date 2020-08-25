@@ -30,9 +30,10 @@ typedef struct apr_redis_stats_t* w_redis_stats;
  * @remark The CRC32 hash is not compatible with old redisd clients.
  */
 W_SYSTEM_EXPORT
-uint32_t w_redis_hash(_In_ w_redis pRedisClient,
-                      _In_z_ const char* pData,
-                      _In_ size_t pDataLen);
+uint32_t w_redis_hash(
+    _In_ w_redis pRedisClient,
+    _In_z_ const char* pData,
+    _In_ size_t pDataLen);
 
 /**
  * Creates pure CRC32 Hash. Used by some clients
@@ -42,9 +43,10 @@ uint32_t w_redis_hash(_In_ w_redis pRedisClient,
  * @return pure CRC32 hash of data
 */
 W_SYSTEM_EXPORT
-uint32_t w_redis_hash_crc32(_In_ void* pBaton,
-                            _In_z_ const char* pData,
-                            _In_ size_t pDataLen);
+uint32_t w_redis_hash_crc32(
+    _In_ void* pBaton,
+    _In_z_ const char* pData,
+    _In_ size_t pDataLen);
 
 /**
  * hash compatible with the standard Perl Client.
@@ -54,9 +56,10 @@ uint32_t w_redis_hash_crc32(_In_ void* pBaton,
  * @return hash
 */
 W_SYSTEM_EXPORT
-uint32_t w_redis_hash_default(_In_ void* pBaton,
-                              _In_ const char* pData,
-                              _In_ size_t pDataLen);
+uint32_t w_redis_hash_default(
+    _In_ void* pBaton,
+    _In_ const char* pData,
+    _In_ size_t pDataLen);
 
 /**
  * Picks a server based on a hash
@@ -65,8 +68,9 @@ uint32_t w_redis_hash_default(_In_ void* pBaton,
  * @return server that controls specified hash
  */
 W_SYSTEM_EXPORT
-w_redis_server w_redis_find_server_hash(_In_ w_redis pRedisClient,
-                                        _In_ uint32_t pHash);
+w_redis_server w_redis_find_server_hash(
+    _In_ w_redis pRedisClient,
+    _In_ uint32_t pHash);
 
 /**
  * Server selection compatible with the standard Perl Client.
@@ -76,9 +80,10 @@ w_redis_server w_redis_find_server_hash(_In_ w_redis pRedisClient,
  * @return server that controls specified hash
 */
 W_SYSTEM_EXPORT
-w_redis_server w_redis_find_server_hash_default(_In_ void* pBaton,
-                                                _In_ w_redis pRedisClient,
-                                                _In_ uint32_t pHash);
+w_redis_server w_redis_find_server_hash_default(
+    _In_ void* pBaton,
+    _In_ w_redis pRedisClient,
+    _In_ uint32_t pHash);
 
 /**
  * Adds a server to a client object
@@ -89,8 +94,9 @@ w_redis_server w_redis_find_server_hash_default(_In_ void* pBaton,
  * @warning Changing servers after startup may cause keys to go to different servers.
  */
 W_SYSTEM_EXPORT
-W_RESULT w_redis_add_server(_In_ w_redis pRedisClient,
-                            _In_ w_redis_server pServer);
+W_RESULT w_redis_add_server(
+    _In_ w_redis pRedisClient,
+    _In_ w_redis_server pServer);
 
 
 /**
@@ -101,9 +107,10 @@ W_RESULT w_redis_add_server(_In_ w_redis pRedisClient,
  * @return Server with matching Hostname and Port, or NULL if none was found.
  */
 W_SYSTEM_EXPORT
-w_redis_server w_redis_find_server(_In_ w_redis pRedisClient,
-                                   _In_z_ const char* pHost,
-                                   _In_ uint16_t pPort);
+w_redis_server w_redis_find_server(
+    _In_ w_redis pRedisClient,
+    _In_z_ const char* pHost,
+    _In_ uint16_t pPort);
 
 /**
  * Enables a Server for use again
@@ -112,8 +119,9 @@ w_redis_server w_redis_find_server(_In_ w_redis pRedisClient,
  * @return result code
  */
 W_SYSTEM_EXPORT
-W_RESULT w_redis_enable_server(_In_ w_redis pRedisClient,
-                               _In_ w_redis_server pRedisServer);
+W_RESULT w_redis_enable_server(
+    _In_ w_redis pRedisClient,
+    _In_ w_redis_server pRedisServer);
 
 /**
  * Disable a Server
@@ -122,12 +130,13 @@ W_RESULT w_redis_enable_server(_In_ w_redis pRedisClient,
  * @return result code
  */
 W_SYSTEM_EXPORT
-W_RESULT w_redis_disable_server(_In_ w_redis pRedisClient,
-                                _In_ w_redis_server pRedisServer);
+W_RESULT w_redis_disable_server(
+    _In_ w_redis pRedisClient,
+    _In_ w_redis_server pRedisServer);
 
 /**
  * Creates a new Server Object
- * @param pMemPool Pool to use
+ * @param pMemPool The pool to allocate out of
  * @param pHost hostname of the server
  * @param pPort port of the server
  * @param pMin  minimum number of client sockets to open
@@ -140,33 +149,35 @@ W_RESULT w_redis_disable_server(_In_ w_redis pRedisClient,
  * @remark pMin, pSMax, and pMax are only used when APR_HAS_THREADS
  */
 W_SYSTEM_EXPORT
-W_RESULT w_redis_server_init(_In_ w_mem_pool pMemPool,
-                             _In_z_ const char* pHost,
-                             _In_ uint16_t pPort,
-                             _In_ uint32_t pMin,
-                             _In_ uint32_t pSMax,
-                             _In_ uint32_t pMax,
-                             _In_ uint32_t pTTL,
-                             _In_ uint32_t pReadWriteTimeOut,
-                             _Inout_ w_redis_server* pNewServerLocation);
+W_RESULT w_redis_server_init(
+    _Inout_ w_mem_pool pMemPool,
+    _In_z_ const char* pHost,
+    _In_ uint16_t pPort,
+    _In_ uint32_t pMin,
+    _In_ uint32_t pSMax,
+    _In_ uint32_t pMax,
+    _In_ uint32_t pTTL,
+    _In_ uint32_t pReadWriteTimeOut,
+    _Inout_ w_redis_server* pNewServerLocation);
 /**
  * Creates a new redisd client object
- * @param pMemPool Pool to use
+ * @param pMemPool The pool to allocate out of
  * @param pMaxServers maximum number of servers
  * @param pFlags Not currently used
  * @param pRedisClient  location of the new redis client object
  * @return result code
  */
 W_SYSTEM_EXPORT
-W_RESULT w_redis_init(_In_ w_mem_pool pMemPool,
-                      _In_ uint16_t pMaxServers,
-                      _In_ uint32_t pFlags,
-                      _Inout_ w_redis* pRedisClient);
+W_RESULT w_redis_init(
+    _Inout_ w_mem_pool pMemPool,
+    _In_ uint16_t pMaxServers,
+    _In_ uint32_t pFlags,
+    _Inout_ w_redis* pRedisClient);
 
 /**
  * Gets a value from the server
+ * @param pMemPool The pool to allocate out of
  * @param pRedisClient client to use
- * @param pMemPool Pool to use
  * @param pKey null terminated string containing the key
  * @param pBaton location of the allocated value
  * @param pLen   length of data at baton
@@ -174,12 +185,13 @@ W_RESULT w_redis_init(_In_ w_mem_pool pMemPool,
  * @return result code
  */
 W_SYSTEM_EXPORT
-W_RESULT w_redis_get(_In_ w_redis pRedisClient,
-                     _In_ w_mem_pool pMemPool,
-                     _In_z_ const char* pKey,
-                     _Inout_ char ** pBaton,
-                     _Inout_ size_t* pLen,
-                     _Inout_ uint16_t* pFlags);
+W_RESULT w_redis_get(
+    _Inout_ w_mem_pool pMemPool,
+    _In_ w_redis pRedisClient,
+    _In_z_ const char* pKey,
+    _Inout_ char ** pBaton,
+    _Inout_ size_t* pLen,
+    _Inout_ uint16_t* pFlags);
 
 /**
  * Sets a value by key on the server
@@ -190,11 +202,12 @@ W_RESULT w_redis_get(_In_ w_redis pRedisClient,
  * @param pFlags any flags set by the client for this key
  */
 W_SYSTEM_EXPORT
-W_RESULT w_redis_set(_In_ w_redis pRedisClient,
-                     _In_z_ const char* pKey,
-                     _In_z_ char* pBaton,
-                     _In_ size_t pDataSize,
-                     _In_ uint16_t pFlags);
+W_RESULT w_redis_set(
+    _In_ w_redis pRedisClient,
+    _In_z_ const char* pKey,
+    _In_z_ char* pBaton,
+    _In_ size_t pDataSize,
+    _In_ uint16_t pFlags);
 
 /**
  * Sets a value by key on the server
@@ -207,12 +220,13 @@ W_RESULT w_redis_set(_In_ w_redis pRedisClient,
  * @return result code
  */
 W_SYSTEM_EXPORT
-W_RESULT w_redis_setex(_In_ w_redis pRedisClient,
-                       _In_z_ const char* pKey,
-                       _In_z_ char* pBaton,
-                       _In_ size_t pDataSize,
-                       _In_ uint32_t pTimeOut,
-                       _In_ uint16_t pFlags);
+W_RESULT w_redis_setex(
+    _In_ w_redis pRedisClient,
+    _In_z_ const char* pKey,
+    _In_z_ char* pBaton,
+    _In_ size_t pDataSize,
+    _In_ uint32_t pTimeOut,
+    _In_ uint16_t pFlags);
 
 /**
  * Deletes a key from a server
@@ -222,33 +236,36 @@ W_RESULT w_redis_setex(_In_ w_redis pRedisClient,
  * @return result code
  */
 W_SYSTEM_EXPORT
-W_RESULT w_redis_delete(_In_ w_redis pRedisClient,
-                        _In_z_ const char* pKey,
-                        _In_ uint32_t pTimeOut);
+W_RESULT w_redis_delete(
+    _In_ w_redis pRedisClient,
+    _In_z_ const char* pKey,
+    _In_ uint32_t pTimeOut);
 
 /**
  * Query a server's version
+ * @param pMemPool The pool to allocate out of
  * @param pRedisServer server to query
- * @param pMemPool Pool to allocate answer from
  * @param pBaton location to store server version string
  * @return result code
  */
 W_SYSTEM_EXPORT
-W_RESULT w_redis_version(_In_ w_redis_server pRedisServer,
-                         _In_ w_mem_pool pMemPool,
-                         _Inout_ char** pBaton);
+W_RESULT w_redis_version(
+    _Inout_ w_mem_pool pMemPool,
+    _In_ w_redis_server pRedisServer,
+    _Inout_ char** pBaton);
 
 /**
  * Query a server's INFO
+ * @param pMemPool The pool to allocate out of
  * @param pRedisServer server to query
- * @param pMemPool Pool to allocate answer from
  * @param pBaton location to store server INFO response string
  * @return result code
  */
 W_SYSTEM_EXPORT
-W_RESULT w_redis_info(_In_ w_redis_server pRedisServer,
-                      _In_ w_mem_pool pMemPool,
-                      _Inout_ char** pBaton);
+W_RESULT w_redis_info(
+    _Inout_ w_mem_pool pMemPool,
+    _In_ w_redis_server pRedisServer,
+    _Inout_ char** pBaton);
 
 /**
  * Increments a value
@@ -259,10 +276,11 @@ W_RESULT w_redis_info(_In_ w_redis_server pRedisServer,
  * @return result code
  */
 W_SYSTEM_EXPORT
-W_RESULT w_redis_incr(_In_ w_redis pRedisClient,
-                      _In_z_ const char* pKey,
-                      _In_ int32_t pIncrementNumber,
-                      _Inout_ uint32_t* pNewValue);
+W_RESULT w_redis_incr(
+    _In_ w_redis pRedisClient,
+    _In_z_ const char* pKey,
+    _In_ int32_t pIncrementNumber,
+    _Inout_ uint32_t* pNewValue);
 /**
  * Decrements a value
  * @param pRedisClient client to use
@@ -272,10 +290,11 @@ W_RESULT w_redis_incr(_In_ w_redis pRedisClient,
  * @return result code
  */
 W_SYSTEM_EXPORT
-W_RESULT w_redis_decr(_In_ w_redis pRedisClient,
-                      _In_z_ const char* pKey,
-                      _In_ int32_t pIncrementNumber,
-                      _Inout_ uint32_t* pNewValue);
+W_RESULT w_redis_decr(
+    _In_ w_redis pRedisClient,
+    _In_z_ const char* pKey,
+    _In_ int32_t pIncrementNumber,
+    _Inout_ uint32_t* pNewValue);
 
 /**
  * Pings the server
@@ -294,21 +313,23 @@ W_RESULT w_redis_ping(_In_ w_redis_server pRedisServer);
  * @return result code
  */
 W_SYSTEM_EXPORT
-W_RESULT w_redis_multiget(_In_ w_redis pRedisClient,
-                          _In_ w_mem_pool pTempPool,
-                          _In_ w_mem_pool pDataPool,
-                          _Inout_ w_hash pValues);
+W_RESULT w_redis_multiget(
+    _In_ w_redis pRedisClient,
+    _In_ w_mem_pool pTempPool,
+    _In_ w_mem_pool pDataPool,
+    _Inout_ w_hash pValues);
 
 /**
  * Query a server for statistics
+ * @param pMemPool The pool to allocate out of
  * @param pRedisServer server to query
- * @param pMemPool memory pool to allocate answer from
  * @param pStats location of the new statistics structure
  */
 W_SYSTEM_EXPORT
-W_RESULT w_redis_get_stats(_In_ w_redis_server pRedisServer,
-                           _In_ w_mem_pool pMemPool,
-                           _Inout_ w_redis_stats* pStats);
+W_RESULT w_redis_get_stats(
+    _Inout_ w_mem_pool pMemPool,
+    _In_ w_redis_server pRedisServer,
+    _Inout_ w_redis_stats* pStats);
 
 
 #ifdef __cplusplus

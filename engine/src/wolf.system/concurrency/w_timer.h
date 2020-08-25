@@ -46,6 +46,7 @@ typedef w_timer_periodic* w_timer_periodic_ptr;
 */
 W_SYSTEM_EXPORT
 W_RESULT w_timer_init(
+    _Inout_ w_mem_pool pMemPool,
     _Inout_ w_timer_ptr pTimer,
     _In_ double pStartAfterSec,
     _In_ double pTimeOutInSec,

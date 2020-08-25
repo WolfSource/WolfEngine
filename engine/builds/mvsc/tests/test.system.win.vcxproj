@@ -22,7 +22,6 @@
     <ClInclude Include="convey.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\tests\convey.c" />
     <ClCompile Include="..\..\..\tests\system.c" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

@@ -1,113 +1,47 @@
 #include "wolf.h"
+#include "memory/rpmalloc/rpmalloc.h"
 
 //http://dev.ariel-networks.com/apr/apr-tutorial/html/apr-tutorial.html#toc1
-#include <apr.h>
-#include <apr-1/apr_pools.h>
-#include <apr-1/apr_strings.h>
+#include <apr-2/apr.h>
+#include <apr-2/apr_strings.h>
 
 #include <curl/curl.h>
 
 // this is used to cache lengths in apr_pwstrcat
 #define MAX_SAVED_LENGTHS  6
 
-static w_mem_pool s_default_memory_pool = NULL;
-
 W_RESULT wolf_initialize()
 {
-    apr_status_t _ret = apr_initialize();
-    if(_ret != APR_SUCCESS)
+    rpmalloc_config_t _config = { 0 };
+
+    //enable huge page size just for WINDOWS, MAC and LINUX
+#if defined(W_PLATFORM_WIN) || defined(W_PLATFORM_OSX) || defined(W_PLATFORM_LINUX)
+    _config.enable_huge_pages = 1;
+#endif
+
+    if (apr_initialize() ||
+        curl_global_init(CURL_GLOBAL_ALL) ||
+        rpmalloc_initialize_config(&_config))
     {
-        return _ret;
+        return W_FAILURE;
     }
-    
-    //create default memory pool
-    apr_pool_create(&s_default_memory_pool, NULL);
-    if (!s_default_memory_pool) return W_FAILURE;
-    
-    curl_global_init(CURL_GLOBAL_ALL);
-    
     return W_SUCCESS;
-}
-
-w_mem_pool w_mem_pool_get_default(void)
-{
-    return s_default_memory_pool;
-}
-
-w_mem_pool w_mem_pool_create(void)
-{
-    apr_pool_t* _pool;
-    apr_pool_create(&_pool, NULL);
-    return (w_mem_pool)_pool;
-}
-
-void w_mem_pool_terminate(_In_ w_mem_pool pMemPool)
-{
-    if (pMemPool)
-    {
-        apr_pool_destroy(pMemPool);
-    }
-}
-
-void* w_malloc(_In_ const size_t pMemSize, _In_z_ const char* pTraceInfo)
-{
-    w_mem_pool _pool = w_mem_pool_get_default();
-    if(!_pool)
-    {
-        char _buf[W_MAX_BUFFER_SIZE];
-        apr_snprintf(_buf, W_MAX_BUFFER_SIZE,
-                     "could not get default memory. trace info: w_malloc from %s\n", pTraceInfo);
-        W_ASSERT_P(false, "%s", _buf);
-        return NULL;
-    }
-     
-    return apr_palloc(_pool, pMemSize);
-}
-
-static apr_status_t _plain_cleanup(void* p)
-{
-    fprintf(stderr,"plain clean up: pid=%d\n",(int)getpid());
-    return APR_SUCCESS;
-}
-
-static apr_status_t _child_cleanup(void* p)
-{
-    fprintf(stderr,"child clean up: pid=%d\n",(int)getpid());
-    return APR_SUCCESS;
-}
-
-void w_free(_In_ const void* pMemory)
-{
-    if (!pMemory)
-    {
-        return;
-    }
-    w_mem_pool _pool = w_mem_pool_get_default();
-    if(!_pool)
-    {
-        W_ASSERT(false, "could not get default memory. trace info: w_free");
-        return;
-    }
-    apr_pool_cleanup_register(_pool, pMemory, _plain_cleanup, _child_cleanup);
 }
 
 char* w_strcat(_In_ w_mem_pool pMemPool, ...)
 {
-    w_mem_pool _pool;
-    if (pMemPool)
+    const char* _trace_info = "w_strcat";
+    if (!pMemPool)
     {
-        _pool = pMemPool;
-    }
-    else
-    {
-        _pool = w_mem_pool_get_default();
+        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
+        return NULL;
     }
 
     char* cp, * argp, * res;
     apr_size_t saved_lengths[MAX_SAVED_LENGTHS];
     int nargs = 0;
 
-    /* Pass one --- find length of required string */
+    //pass one, find length of required string
 
     apr_size_t len = 0;
     va_list adummy;
@@ -126,13 +60,17 @@ char* w_strcat(_In_ w_mem_pool pMemPool, ...)
 
     va_end(adummy);
 
-    /* Allocate the required string */
-
+    //allocate the required string
+    w_apr_pool _pool = w_mem_pool_get_apr_pool(pMemPool);
+    if (!_pool)
+    {
+        W_ASSERT_P(false, "missing apr memory pool. trace info: %s", _trace_info);
+        return NULL;
+    }
     res = (char*)apr_palloc(_pool, len + 1);
     cp = res;
 
-    /* Pass two --- copy the argument strings into the result space */
-
+    //pass two, copy the argument strings into the result space
     va_start(adummy, pMemPool);
 
     nargs = 0;
@@ -142,7 +80,8 @@ char* w_strcat(_In_ w_mem_pool pMemPool, ...)
         {
             len = saved_lengths[nargs++];
         }
-        else {
+        else 
+        {
             len = strlen(argp);
         }
 
@@ -152,16 +91,21 @@ char* w_strcat(_In_ w_mem_pool pMemPool, ...)
 
     va_end(adummy);
 
-    /* Return the result string */
-
+    //return the result string
     *cp = '\0';
 
     return res;
 }
 
-wchar_t* w_wstrcat(w_mem_pool* pMemPool, ...)
+wchar_t* w_wstrcat(_In_ w_mem_pool pMemPool, ...)
 {
     const char* _trace_info = "w_wstrcat";
+    if (!pMemPool)
+    {
+        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
+        return NULL;
+    }
+
     char* _dst = "";
 
     wchar_t* _w;
@@ -169,6 +113,14 @@ wchar_t* w_wstrcat(w_mem_pool* pMemPool, ...)
     size_t _w_len, _len, _ret_len = 0;
     bool _got_error = false;
 
+    w_mem_pool _local_pool = NULL;
+    if (w_mem_pool_init(&_local_pool, W_MEM_POOL_FAST_EXTEND) != W_SUCCESS)
+    {
+        W_ASSERT_P(false, "could not allocate local memory pool. trace info: %s", _trace_info);
+        return NULL;
+    }
+
+    //iterate over args
     va_list _args;
     va_start(_args, pMemPool);
     while ((_w = va_arg(_args, wchar_t*)) != NULL)
@@ -178,7 +130,7 @@ wchar_t* w_wstrcat(w_mem_pool* pMemPool, ...)
         if (_w_len)
         {
             _len = _w_len * 2;
-            _src = w_malloc(_len, _trace_info);
+            _src = w_malloc(_local_pool, _len);
             if (!_src)
             {
                 _got_error = true;
@@ -186,18 +138,18 @@ wchar_t* w_wstrcat(w_mem_pool* pMemPool, ...)
             }
             wcstombs_s(NULL, _src, _len, _w, _w_len);
             _dst = w_strcat(pMemPool, _dst, _src);
-            w_free(_src);
         }
     }
     va_end(_args);
 
+    wchar_t* _ret = NULL;
     if (_got_error)
     {
-        return NULL;
+        goto out;
     }
 
     //convert char* to wchar_t*
-    wchar_t* _ret = w_malloc(sizeof(wchar_t) * _ret_len + 1, _trace_info);
+    _ret = w_malloc(pMemPool, sizeof(wchar_t) * _ret_len + 1);
     if (!_ret)
     {
         W_ASSERT_P(
@@ -208,11 +160,15 @@ wchar_t* w_wstrcat(w_mem_pool* pMemPool, ...)
     mbstowcs(_ret, _dst, _ret_len);
     _ret[_ret_len] = L'\0';
 
+out:
+    //terminate local memory pool
+    w_mem_pool_fini(&_local_pool);
     return _ret;
 }
 
 void wolf_terminate()
 {
     curl_global_cleanup();
+    rpmalloc_finalize();
     apr_terminate();
 }

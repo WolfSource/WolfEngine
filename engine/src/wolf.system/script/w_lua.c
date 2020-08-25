@@ -19,10 +19,19 @@ void _VL(_In_ int pHR)
     }
 }
 
-W_RESULT _lua_get_value(_In_    int pIndex,
-                        _Inout_ void* pValue,
-                        _Inout_ char* pExpectedType)
+W_RESULT _lua_get_value(
+    _Inout_ w_mem_pool pMemPool,
+    _In_    int pIndex,
+    _Inout_ void* pValue,
+    _Inout_ char* pExpectedType)
 {
+    const char* _trace_info = "_lua_get_value";
+    if (!pMemPool)
+    {
+        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
+        return APR_BADARG;
+    }
+
     int _type = lua_type(s_lua, pIndex);
     switch (_type)
     {
@@ -37,7 +46,10 @@ W_RESULT _lua_get_value(_In_    int pIndex,
         }
         case LUA_TBOOLEAN:
         {
-            int* _v = w_malloc(sizeof(int), "_lua_get_value::LUA_TBOOLEAN");
+            int* _v = w_malloc(
+                pMemPool,
+                sizeof(int), 
+                "_lua_get_value::LUA_TBOOLEAN");
             if (!_v)
             {
                 return W_FAILURE;
@@ -50,7 +62,10 @@ W_RESULT _lua_get_value(_In_    int pIndex,
         }
         case LUA_TNUMBER:
         {
-            double* _v = w_malloc(sizeof(double), "_lua_get_value::LUA_TNUMBER");
+            double* _v = w_malloc(
+                pMemPool,
+                sizeof(double), 
+                "_lua_get_value::LUA_TNUMBER");
             if (!_v)
             {
                 return W_FAILURE;
@@ -80,12 +95,19 @@ W_RESULT _lua_get_value(_In_    int pIndex,
     }
 }
 
-W_RESULT w_lua_init(void)
+W_RESULT w_lua_init(_Inout_ w_mem_pool pMemPool)
 {
-    s_last_error = (char*)w_malloc(W_MAX_BUFFER_SIZE, "w_lua_init");
-    s_function_name = (char*)w_malloc(W_MAX_BUFFER_SIZE, "w_lua_init");
+    const char* _trace_info = "w_lua_init";
+    if (!pMemPool)
+    {
+        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
+        return APR_BADARG;
+    }
+
+    s_last_error = (char*)w_malloc(pMemPool, W_MAX_BUFFER_SIZE, "w_lua_init");
+    s_function_name = (char*)w_malloc(pMemPool, W_MAX_BUFFER_SIZE, "w_lua_init");
     s_function_number_input_parameters = 0;
-    
+
     if (!s_function_name || !s_last_error)
     {
         return W_FAILURE;
@@ -131,7 +153,7 @@ W_RESULT w_lua_load_file(_In_z_ const char* pPath)
 	return W_SUCCESS;
 }
 
-W_RESULT w_lua_load_from_stream(const char* pBufferStream)
+W_RESULT w_lua_load_from_stream(_In_z_ const char* pBufferStream)
 {
 	if (!pBufferStream)
     {
@@ -170,13 +192,15 @@ W_RESULT w_lua_run(void)
 	return W_SUCCESS;
 }
 
-void w_lua_bind_to_cfunction(lua_CFunction pFunc, const char* pLuaFunctionName)
+void w_lua_bind_to_cfunction(
+    _In_ lua_CFunction pFunc, 
+    _In_z_ const char* pLuaFunctionName)
 {
 	lua_pushcfunction(s_lua, pFunc);
 	lua_setglobal(s_lua, pLuaFunctionName);
 }
 
-void w_lua_prepare_function(const char* pFunctionName)
+void w_lua_prepare_function(_In_z_ const char* pFunctionName)
 {
 	s_function_number_input_parameters = 0;
     lua_getglobal(s_lua, pFunctionName);
@@ -198,13 +222,22 @@ void w_lua_execute_void_function()
     _VL(_hr);
 }
 
-W_RESULT w_lua_execute_function_with_one_result(_In_ void** pResult)
+W_RESULT w_lua_execute_function_with_one_result(
+    _Inout_ w_mem_pool pMemPool,
+    _In_ void** pResult)
 {
+    const char* _trace_info = "w_lua_execute_function_with_one_result";
+    if (!pMemPool)
+    {
+        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
+        return APR_BADARG;
+    }
+
     int _hr = lua_pcall(s_lua, s_function_number_input_parameters, 1, 0);
     _VL(_hr);
 
     char* _requested_type_error = NULL;
-    if (_lua_get_value(-1, pResult, _requested_type_error) == W_FAILURE)
+    if (_lua_get_value(pMemPool, -1, pResult, _requested_type_error) == W_FAILURE)
     {
         apr_snprintf(
             s_last_error,
@@ -221,13 +254,23 @@ W_RESULT w_lua_execute_function_with_one_result(_In_ void** pResult)
     return W_SUCCESS;
 }
 
-W_RESULT w_lua_execute_function_with_two_results(_In_ void** pResult1, _In_ void** pResult2)
+W_RESULT w_lua_execute_function_with_two_results(
+    _Inout_ w_mem_pool pMemPool,
+    _In_ void** pResult1, 
+    _In_ void** pResult2)
 {
+    const char* _trace_info = "w_lua_execute_function_with_two_results";
+    if (!pMemPool)
+    {
+        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
+        return APR_BADARG;
+    }
+
     int _hr = lua_pcall(s_lua, s_function_number_input_parameters, 2, 0);
     _VL(_hr);
 
     char* _requested_type_error = NULL;
-    if(_lua_get_value(-2, pResult1, _requested_type_error) == W_FAILURE)
+    if(_lua_get_value(pMemPool, -2, pResult1, _requested_type_error) == W_FAILURE)
     {
         apr_snprintf(
             s_last_error, 
@@ -238,7 +281,7 @@ W_RESULT w_lua_execute_function_with_two_results(_In_ void** pResult1, _In_ void
         return W_FAILURE;
     }
     
-    if (_lua_get_value(-1, pResult2, _requested_type_error) == W_FAILURE)
+    if (_lua_get_value(pMemPool, -1, pResult2, _requested_type_error) == W_FAILURE)
     {
         apr_snprintf(
             s_last_error,
@@ -252,15 +295,28 @@ W_RESULT w_lua_execute_function_with_two_results(_In_ void** pResult1, _In_ void
     return W_SUCCESS;
 }
 
-W_RESULT w_lua_execute_function_with_three_results(_In_ void** pResult1,
-                                                   _In_ void** pResult2,
-                                                   _In_ void** pResult3)
+W_RESULT w_lua_execute_function_with_three_results(
+    _Inout_ w_mem_pool pMemPool,
+    _In_ void** pResult1,
+    _In_ void** pResult2,
+    _In_ void** pResult3)
 {
+    const char* _trace_info = "w_lua_execute_function_with_three_results";
+    if (!pMemPool)
+    {
+        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
+        return APR_BADARG;
+    }
+
     int _hr = lua_pcall(s_lua, s_function_number_input_parameters, 3, 0);
     _VL(_hr);
 
     char* _requested_type_error = NULL;
-    if (_lua_get_value(-3, pResult1, _requested_type_error) == W_FAILURE)
+    if (_lua_get_value(
+        pMemPool, 
+        -3, 
+        pResult1, 
+        _requested_type_error) == W_FAILURE)
     {
         apr_snprintf(
             s_last_error,
@@ -271,7 +327,11 @@ W_RESULT w_lua_execute_function_with_three_results(_In_ void** pResult1,
         return W_FAILURE;
     }
     
-    if (_lua_get_value(-2, pResult2, _requested_type_error) == W_FAILURE)
+    if (_lua_get_value(
+        pMemPool, 
+        -2, 
+        pResult2, 
+        _requested_type_error) == W_FAILURE)
     {
         apr_snprintf(
             s_last_error,
@@ -282,7 +342,11 @@ W_RESULT w_lua_execute_function_with_three_results(_In_ void** pResult1,
         return W_FAILURE;
     }
     
-    if (_lua_get_value(-1, pResult3, _requested_type_error) == W_FAILURE)
+    if (_lua_get_value(
+        pMemPool,
+        -1, 
+        pResult3, 
+        _requested_type_error) == W_FAILURE)
     {
         apr_snprintf(
             s_last_error,
@@ -306,7 +370,10 @@ const char* w_lua_get_last_error()
     return s_last_error;
 }
 
-W_RESULT w_lua_get_global_variable(_In_z_ const char* pVariableName, _Inout_ void* pValue)
+W_RESULT w_lua_get_global_variable(
+    _Inout_ w_mem_pool pMemPool,
+    _In_z_ const char* pVariableName, 
+    _Inout_ void* pValue)
 {
     lua_getglobal(s_lua, pVariableName);
     if (lua_isnil(s_lua, -1))
@@ -321,7 +388,7 @@ W_RESULT w_lua_get_global_variable(_In_z_ const char* pVariableName, _Inout_ voi
     else
     {
         char* _requested_type_error = NULL;
-        if (_lua_get_value(-1, pValue, _requested_type_error) == W_FAILURE)
+        if (_lua_get_value(pMemPool, -1, pValue, _requested_type_error) == W_FAILURE)
         {
             apr_snprintf(
                 s_last_error,
@@ -416,23 +483,26 @@ W_RESULT w_lua_set_global_variable(_In_z_ const char*   pVariableName,
     }
 }
 
-W_RESULT w_lua_set_lua_path(_In_z_ const char* pPath)
+W_RESULT w_lua_set_lua_path(
+    _Inout_ w_mem_pool pMemPool,
+    _In_z_ const char* pPath)
 {
-    w_mem_pool _pool = w_mem_pool_get_default();
-    if(!_pool)
+    const char* _trace_info = "w_lua_set_lua_path";
+    if (!pMemPool)
     {
-        W_ASSERT(false, "could not get default memory. trace info: w_string_create");
-        return W_FAILURE;
+        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
+        return APR_BADARG;
     }
     
     lua_getglobal(s_lua, "package");
     lua_getfield(s_lua, -1, "path"); // get field "path" from table at top of stack (-1)
     const char* _cur_path = lua_tostring(s_lua, -1); // grab path string from top of stack
-    _cur_path = apr_pstrcat(_pool, _cur_path, ";", pPath, NULL);
+    _cur_path = apr_pstrcat(pMemPool, _cur_path, ";", pPath, NULL);
     lua_pop(s_lua, 1); // get rid of the string on the stack we just pushed on line 5
     lua_pushstring(s_lua, _cur_path); // push the new one
     lua_setfield(s_lua, -2, "path"); // set the field "path" in table at -2 with value at top of stack
     lua_pop(s_lua, 1); // get rid of package table from top of stack
+
     return W_SUCCESS;
 }
 
@@ -443,9 +513,6 @@ W_RESULT w_lua_free()
         lua_pop(s_lua, 1);
         lua_close(s_lua);
     }
-
-    w_free(s_last_error);
-    w_free(s_function_name);
     
     return W_SUCCESS;
 }
