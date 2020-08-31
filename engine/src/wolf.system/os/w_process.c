@@ -1,5 +1,5 @@
 #include "w_process.h"
-#include <apr-1/apr_general.h>
+#include <apr-2/apr_general.h>
 #include <io/w_io.h>
 
 #ifdef W_PLATFORM_WIN
@@ -16,7 +16,7 @@ size_t w_process_get_count_of_instances(_In_z_ const wchar_t* pProcessName)
 	PROCESSENTRY32 _entry;
 	_entry.dwSize = sizeof(PROCESSENTRY32);
 
-	HANDLE _snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, NULL);
+	HANDLE _snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
 	if (_snapshot)
 	{
 		if (Process32First(_snapshot, &_entry))
@@ -133,19 +133,18 @@ const wchar_t* w_process_get_process_name_by_id(
 	const char* _trace_info = "w_process_get_process_name_by_id";
 	if (!pMemPool)
 	{
-		W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
-		return APR_BADARG;
+		W_ASSERT_P(false, "bad args! trace info: %s", _trace_info);
+		return NULL;
 	}
 
 #ifdef W_PLATFORM_WIN
-	wchar_t* _process_name = (wchar_t*)w_malloc(
+	wchar_t* _process_name = w_malloc(
 		pMemPool,
-		MAX_PATH * sizeof(wchar_t),
-		_trace_info);// = L"<unknown>";
+		MAX_PATH * sizeof(wchar_t));// = L"<unknown>";
 	if (!_process_name)
 	{
 		W_ASSERT(false, "could allocate memory. trace info: w_process_get_name_by_id");
-		return W_FAILURE;
+		return NULL;
 	}
 
 	// Get a handle to the process.
@@ -169,15 +168,14 @@ const wchar_t* w_process_get_process_name_by_id(
 		size_t _len = wcslen(_process_name);
 		_name = w_malloc(
 			pMemPool,
-			sizeof(wchar_t) * _len, 
-			_trace_info);
+			sizeof(wchar_t) * _len);
 		if (_name)
 		{
 			_name = wcscpy(_name, _process_name);
 		}
 	}
 
-	w_free(_process_name);
+	w_free(pMemPool, _process_name);
 	return _name;
 #else
 
@@ -189,20 +187,20 @@ W_RESULT w_process_print_allW(
 	_Inout_ w_mem_pool pMemPool,
 	_Inout_ wchar_t** pProcessLists)
 {
-	const char* _trace_info = "w_process_enum_all_processes";
+	const char* _trace_info = "w_process_print_allW";
 	if (!pMemPool)
 	{
-		W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
+		W_ASSERT_P(false, "bad args! trace info: %s", _trace_info);
 		return APR_BADARG;
 	}
-	char* _process_names = w_malloc(pMemPool, sizeof(char), _trace_info);
+	char* _process_names = w_malloc(pMemPool, sizeof(char));
 	if (!_process_names)
 	{
 		W_ASSERT_P(false,
 			"could not allocate memory for _process_names. trace info: %s", _trace_info);
 		return W_FAILURE;
 	}
-	wchar_t* _process_id_tmp = w_malloc(pMemPool, MAX_PATH, _trace_info);
+	wchar_t* _process_id_tmp = w_malloc(pMemPool, MAX_PATH);
 	if (!_process_id_tmp)
 	{
 		W_ASSERT_P(false,
@@ -213,7 +211,7 @@ W_RESULT w_process_print_allW(
 #ifdef W_PLATFORM_WIN
 
 	DWORD _processes[1024], _needed, _number_of_processes;
-	if (!EnumProcesses(_processes, sizeof(_processes), &_needed)) return "";
+	if (!EnumProcesses(_processes, sizeof(_processes), &_needed)) return W_FAILURE;
 
 	// Calculate how many process identifiers were returned.
 	_number_of_processes = _needed / sizeof(DWORD);
@@ -225,7 +223,8 @@ W_RESULT w_process_print_allW(
 		L"Process Name : Process ID\n",
 		NULL);
 
-	wchar_t* _process_name, _process_id;
+	wchar_t* _process_name = NULL;
+	wchar_t* _process_id = NULL;
 
 	for (size_t i = 0; i < _number_of_processes; i++)
 	{
@@ -242,7 +241,7 @@ W_RESULT w_process_print_allW(
 			NULL);
 	}
 
-	w_free(_process_id_tmp);
+	w_free(pMemPool, _process_id_tmp);
 
 #endif
 
@@ -253,12 +252,20 @@ W_RESULT w_process_print_all(
 	_Inout_ w_mem_pool pMemPool,
 	_Inout_ char** pProcessLists)
 {
+	const char* _trace_info = "w_process_print_all";
+	if (!pMemPool)
+	{
+		W_ASSERT_P(false, "bad args! trace info: %s", _trace_info);
+		return W_FAILURE;
+	}
+
 	wchar_t* _process_lists = L"";
 	if (w_process_print_allW(pMemPool, &_process_lists) == W_SUCCESS)
 	{
 		size_t _len = wcslen(_process_lists);
-		size_t _dst_len;
+		size_t _dst_len = 0;
 		return w_io_wchar_ptr_to_char_ptr(
+			pMemPool,
 			_process_lists,
 			_len,
 			pProcessLists);
@@ -314,89 +321,89 @@ W_RESULT w_process_print_all(
 
 #endif
 
-W_RESULT w_process_kill_by_id(_In_ unsigned long pProcessID)
-{
-	W_RESULT _hr = W_SUCCESS;
-
-#ifdef W_PLATFORM_WIN
-
-	// Get a handle to the process.
-	HANDLE _process = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pProcessID);
-
-	// Get the process name.
-	if (_process)
-	{
-		if (!TerminateProcess(_process, 0))
-		{
-			_hr = W_FAILURE;
-		}
-
-		CloseHandle(_process);
-	}
-
-#else
-
-#endif
-
-	return _hr;
-}
-
-W_RESULT w_process_info_terminate(_Inout_ w_process_info* pProcessInfo)
-{
-	if (!pProcessInfo)
-	{
-		return APR_BADARG;
-	}
-
-	w_free(pProcessInfo->class_name);
-	w_free(pProcessInfo->process_name);
-	w_free(pProcessInfo->title_name);
-#ifdef W_PLATFORM_WIN
-	CloseHandle(pProcessInfo->handle);
-#endif
-
-	w_free(pProcessInfo);
-}
-
-//DWORD FindProcessId(const char* processname)
+//W_RESULT w_process_kill_by_id(_In_ unsigned long pProcessID)
 //{
-//	HANDLE hProcessSnap;
-//	PROCESSENTRY32 pe32;
-//	DWORD result = NULL;
+//	W_RESULT _hr = W_SUCCESS;
 //
-//	// Take a snapshot of all processes in the system.
-//	hProcessSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
-//	if (INVALID_HANDLE_VALUE == hProcessSnap) return(FALSE);
+//#ifdef W_PLATFORM_WIN
 //
-//	pe32.dwSize = sizeof(PROCESSENTRY32); // <----- IMPORTANT
+//	// Get a handle to the process.
+//	HANDLE _process = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pProcessID);
 //
-//	// Retrieve information about the first process,
-//	// and exit if unsuccessful
-//	if (!Process32First(hProcessSnap, &pe32))
+//	// Get the process name.
+//	if (_process)
 //	{
-//		CloseHandle(hProcessSnap);          // clean the snapshot object
-//		printf("!!! Failed to gather information on system processes! \n");
-//		return(NULL);
-//	}
-//	LPCSTR pOut;
-//
-//	do
-//	{
-//		w_io_wchar_ptr_to_char_ptr(
-//			pe32.szExeFile,
-//			200,
-//			&pOut);
-//
-//		printf("Checking process %ls\n", pe32.szExeFile);
-//		if (0 == strcmp(processname, (pOut)))
+//		if (!TerminateProcess(_process, 0))
 //		{
-//
-//			result = pe32.th32ProcessID;
-//			break;
+//			_hr = W_FAILURE;
 //		}
-//	} while (Process32Next(hProcessSnap, &pe32));
 //
-//	CloseHandle(hProcessSnap);
+//		CloseHandle(_process);
+//	}
 //
-//	return result;
+//#else
+//
+//#endif
+//
+//	return _hr;
 //}
+//
+//W_RESULT w_process_info_terminate(_Inout_ w_process_info* pProcessInfo)
+//{
+//	if (!pProcessInfo)
+//	{
+//		return APR_BADARG;
+//	}
+//
+//	w_free(pProcessInfo->class_name);
+//	w_free(pProcessInfo->process_name);
+//	w_free(pProcessInfo->title_name);
+//#ifdef W_PLATFORM_WIN
+//	CloseHandle(pProcessInfo->handle);
+//#endif
+//
+//	w_free(pProcessInfo);
+//}
+//
+////DWORD FindProcessId(const char* processname)
+////{
+////	HANDLE hProcessSnap;
+////	PROCESSENTRY32 pe32;
+////	DWORD result = NULL;
+////
+////	// Take a snapshot of all processes in the system.
+////	hProcessSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+////	if (INVALID_HANDLE_VALUE == hProcessSnap) return(FALSE);
+////
+////	pe32.dwSize = sizeof(PROCESSENTRY32); // <----- IMPORTANT
+////
+////	// Retrieve information about the first process,
+////	// and exit if unsuccessful
+////	if (!Process32First(hProcessSnap, &pe32))
+////	{
+////		CloseHandle(hProcessSnap);          // clean the snapshot object
+////		printf("!!! Failed to gather information on system processes! \n");
+////		return(NULL);
+////	}
+////	LPCSTR pOut;
+////
+////	do
+////	{
+////		w_io_wchar_ptr_to_char_ptr(
+////			pe32.szExeFile,
+////			200,
+////			&pOut);
+////
+////		printf("Checking process %ls\n", pe32.szExeFile);
+////		if (0 == strcmp(processname, (pOut)))
+////		{
+////
+////			result = pe32.th32ProcessID;
+////			break;
+////		}
+////	} while (Process32Next(hProcessSnap, &pe32));
+////
+////	CloseHandle(hProcessSnap);
+////
+////	return result;
+////}

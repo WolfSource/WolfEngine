@@ -25,7 +25,7 @@ extern "C" {
     typedef struct nni_plat_udp* w_udp_protocol;
     typedef struct nng_aio* w_aio;
     typedef struct nng_iov* w_iov;
-    typedef union nni_sockaddr* w_socket_address;
+    typedef union nng_sockaddr* w_socket_address;
 
     typedef enum {
         one_way_pusher,
@@ -225,7 +225,6 @@ extern "C" {
 
     /**
      * create a server based on QUIC protocol
-     * @param pMemPool The pool to allocate out of
      * @param pAddress , host address
      * @param pPort , host port
      * @param pSocketMode , the socket mode. only the following enums will be accepted
@@ -240,7 +239,6 @@ extern "C" {
     */
     W_SYSTEM_EXPORT
         W_RESULT w_net_open_quic_socket(
-            _Inout_ w_mem_pool pMemPool,
             _In_z_  const char* pAddress,
             _In_    int pPort,
             _In_    w_socket_mode pSocketMode,
@@ -326,7 +324,7 @@ extern "C" {
         W_RESULT w_net_send_msg_udp(
             _Inout_ w_socket_udp* pSocket,
             _In_z_ char* pMessage,
-            _In_z_ size_t pMessageLength);
+            _In_ size_t pMessageLength);
 
     /**
      * read data from udp socket
@@ -437,7 +435,7 @@ extern "C" {
      * This should only be called during at exit or just before releasing dll
     */
     W_SYSTEM_EXPORT
-        void w_net_terminate(void);
+        void w_net_fini(void);
 
 #ifdef __cplusplus
 }

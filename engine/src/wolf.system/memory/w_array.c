@@ -8,11 +8,11 @@ w_array w_array_init(
     _In_ int pSizeOfEachElement)
 {
     const char* _trace_info = "w_array_init";
-    if (!pMemPool)
+    if (!pMemPool ||
+        w_mem_pool_get_type(pMemPool) != W_MEM_POOL_FAST_EXTEND)
     {
-        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
-        return APR_BADARG;
-
+        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        return NULL;
     }
 
     if (pInitSize < 0 || pSizeOfEachElement < 0)
@@ -23,10 +23,15 @@ w_array w_array_init(
         return NULL;
     }
 
-    return (w_array)apr_array_make(
-        pMemPool,
-        pInitSize,
-        pSizeOfEachElement);
+    apr_pool_t* _pool = w_mem_pool_get_apr_pool(pMemPool);
+    if (_pool)
+    {
+        return (w_array)apr_array_make(
+            _pool,
+            pInitSize,
+            pSizeOfEachElement);
+    }
+    return NULL;
 }
 
 const void* w_array_get_element(_Inout_ w_array pArray, _In_ int pElementIndex)
@@ -63,8 +68,8 @@ int w_array_is_empty(_In_ w_array pArray)
     {
         return 0;
     }
-    const apr_array_header_t* _header = apr_table_elts(pArray);
-    return apr_is_empty_array(_header);
+    //const apr_array_header_t* _header = apr_table_elts((const )pArray);
+    return apr_is_empty_array(pArray);
 }
 
 void w_array_clear(_Inout_ w_array pArray)

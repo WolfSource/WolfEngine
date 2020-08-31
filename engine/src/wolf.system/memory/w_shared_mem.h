@@ -191,7 +191,7 @@ extern "C" {
      * @return memory pool
     */
     W_SYSTEM_EXPORT
-        w_mem_pool  w_shared_mem_get_mem_pool(_In_ const w_shared_mem pSharedMem);
+        w_apr_pool  w_shared_mem_get_mem_pool(_In_ const w_shared_mem pSharedMem);
 
 #ifdef __cplusplus
 }

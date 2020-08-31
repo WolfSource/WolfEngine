@@ -16,6 +16,7 @@ extern "C" {
 #endif
 
 #include <wolf.h>
+#include <memory/w_array.h>
 
 #ifdef W_PLATFORM_ANDROID
 #include <android/native_window.h>
@@ -33,6 +34,13 @@ extern "C" {
         long right;
         long bottom;
     } w_screen_coord;
+
+    /**
+     * enumerate screens
+     * @param pMemPool The pool to allocate out of
+     * @return arrays of w_screen_coord
+     */
+    w_array w_window_enumerate_screens(_Inout_ w_mem_pool pMemPool);
 
 
     //RECT                combined;
@@ -76,7 +84,7 @@ extern "C" {
 //    }
 //#endif
 
-//w_screen_coord* w_window_enumerate_screens();
+
 
 ////store the information of presentation
 //struct w_present_info

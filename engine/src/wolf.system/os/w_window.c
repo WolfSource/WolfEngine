@@ -1,29 +1,53 @@
 #include "w_window.h"
+#include <memory/w_array.h>
 
-////w_screen_coord* screens;
-//static BOOL CALLBACK w_enumerate_screens_callback(HMONITOR pHScreen, HDC pHDC, LPRECT pLRect, LPARAM pLParam)
-//{
-//    auto _this = (w_enumerate_screens*)(pLParam);
-//    if (pLRect)
-//    {
-//        w_screen_coord _screen;
-//        _screen.left = pLRect->left;
-//        _screen.right = pLRect->right;
-//        _screen.top = pLRect->top;
-//        _screen.bottom = pLRect->bottom;
-//        _this->screens.push_back(_rc);
-//    }
-//    //UnionRect(&_this->combined, &_this->combined, pLRect);
-//    return TRUE;
-//}
-//
-//w_screen_coord* w_window_enumerate_screens()
-//{
-//    //SetRectEmpty(&this->combined);
-//
-//    w_screen_coord* _screen;
-//    EnumDisplayMonitors(0, 0, w_enumerate_screens_callback, (LPARAM)this);
-//}
+//w_screen_coord* screens;
+static BOOL CALLBACK w_enumerate_screens_callback(
+    HMONITOR pHScreen,
+    HDC pHDC,
+    LPRECT pLRect,
+    LPARAM pLParam)
+{
+    w_arg* _arg = (w_arg*)pLParam;
+    if (!pLRect || !_arg || !_arg->data || !_arg->pool)
+    {
+        return FALSE;
+    }
+    w_array _array = (w_array)_arg->data;
+    if (!_array)
+    {
+        return FALSE;
+    }
+
+    w_screen_coord* _screen = w_malloc(_arg->pool, sizeof(w_screen_coord));
+    if (_screen)
+    {
+        _screen->left = pLRect->left;
+        _screen->right = pLRect->right;
+        _screen->top = pLRect->top;
+        _screen->bottom = pLRect->bottom;
+
+        w_array_append(_array, _screen);
+    }
+
+    //UnionRect(&_this->combined, &_this->combined, pLRect);
+    return TRUE;
+}
+
+w_array w_window_enumerate_screens(_Inout_ w_mem_pool pMemPool)
+{
+    w_array _screen_coords = w_array_init(pMemPool, 1, sizeof(w_screen_coord));
+    if (_screen_coords)
+    {
+        EnumDisplayMonitors(
+            0, 
+            0, 
+            w_enumerate_screens_callback, 
+            (LPARAM)_screen_coords);
+        return _screen_coords;
+    }
+    return NULL;
+}
 
 //#if !defined(W_PLATFORM_OSX) && !defined(W_PLATFORM_ANDROID)
 //

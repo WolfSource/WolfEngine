@@ -91,7 +91,7 @@ W_RESULT w_timer_break(_In_ w_timer_ptr pTimer, _In_ uint8_t pHow);
  * @param pTimer timer to release
 */
 W_SYSTEM_EXPORT
-void w_timer_terminate(_In_ w_timer_ptr pTimer);
+void w_timer_fini(_In_ w_timer_ptr pTimer);
 
 /**
  * release a timer periodic

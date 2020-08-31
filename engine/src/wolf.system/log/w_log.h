@@ -157,7 +157,7 @@ W_RESULT  w_log_flush_ex(_In_ int pLogID);
  * @return result
 */
 W_SYSTEM_EXPORT
-W_RESULT  w_log_terminate_all();
+W_RESULT  w_log_fini_all();
 
 /**
  * terminate the specific log file
@@ -165,7 +165,7 @@ W_RESULT  w_log_terminate_all();
  * @return result
 */
 W_SYSTEM_EXPORT
-W_RESULT  w_log_terminate_ex(_In_ int pLogID);
+W_RESULT  w_log_fini_ex(_In_ int pLogID);
 
 #ifdef __cplusplus
 }

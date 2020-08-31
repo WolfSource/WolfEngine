@@ -10,7 +10,7 @@
 // this is used to cache lengths in apr_pwstrcat
 #define MAX_SAVED_LENGTHS  6
 
-W_RESULT wolf_initialize()
+W_RESULT wolf_init()
 {
     rpmalloc_config_t _config = { 0 };
 
@@ -166,7 +166,7 @@ out:
     return _ret;
 }
 
-void wolf_terminate()
+void wolf_fini()
 {
     curl_global_cleanup();
     rpmalloc_finalize();

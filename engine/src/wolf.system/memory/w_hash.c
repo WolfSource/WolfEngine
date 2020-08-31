@@ -4,12 +4,17 @@
 w_hash w_hash_init(_Inout_ w_mem_pool pMemPool)
 {
     const char* _trace_info = "w_hash_init";
-    if (!pMemPool)
+    if (!pMemPool || w_mem_pool_get_type(pMemPool) != W_MEM_POOL_FAST_EXTEND)
     {
-        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
-        return APR_BADARG;
+        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        return NULL;
     }
-    return apr_hash_make(pMemPool);
+    apr_pool_t* _pool = w_mem_pool_get_apr_pool(pMemPool);
+    if (_pool)
+    {
+        return apr_hash_make(_pool);
+    }
+    return NULL;
 }
 
 w_hash w_hash_make_custom(
@@ -17,12 +22,17 @@ w_hash w_hash_make_custom(
     _In_ w_hash_custom_fn pHashCustomFunc)
 {
     const char* _trace_info = "w_hash_make_custom";
-    if (!pMemPool)
+    if (!pMemPool || w_mem_pool_get_type(pMemPool) != W_MEM_POOL_FAST_EXTEND)
     {
-        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
-        return APR_BADARG;
+        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        return NULL;
     }
-    return apr_hash_make_custom(pMemPool, pHashCustomFunc);
+    apr_pool_t* _pool = w_mem_pool_get_apr_pool(pMemPool);
+    if (_pool)
+    {
+        return apr_hash_make_custom(_pool, pHashCustomFunc);
+    }
+    return NULL;
 }
 
 void w_hash_set(
@@ -31,12 +41,15 @@ void w_hash_set(
     _In_ size_t pKeyLen,
     _In_z_ const void* pValue)
 {
+    const char* _trace_info = "w_hash_set";
     if (!pHash || !pKey || pKeyLen == 0)
     {
-        return APR_BADARG;
+        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        return;
     }
+
     apr_hash_set(
-        (apr_hash_t*)pHash,
+        pHash,
         pKey,
         pKeyLen,
         pValue);
@@ -44,8 +57,10 @@ void w_hash_set(
 
 uint32_t w_hash_size(_In_ w_hash pHash)
 {
-    if (!pHash) 
+    const char* _trace_info = "w_hash_size";
+    if (!pHash)
     {
+        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
         return 0;
     }
     return apr_hash_count(pHash);
@@ -53,9 +68,11 @@ uint32_t w_hash_size(_In_ w_hash pHash)
 
 void w_hash_clear(_In_ w_hash pHash)
 {
+    const char* _trace_info = "w_hash_clear";
     if (!pHash)
     {
-        return APR_BADARG;
+        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        return;
     }
     apr_hash_clear(pHash);
 }
@@ -65,9 +82,11 @@ void* w_hash_get(
     _In_z_ const void* pKey,
     _In_ size_t pKeyLen)
 {
+    const char* _trace_info = "w_hash_get";
     if (!pHash || !pKey || pKeyLen == 0)
     {
-        return APR_BADARG;
+        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        return NULL;
     }
     return apr_hash_get(pHash, pKey, pKeyLen);
 }
@@ -76,14 +95,20 @@ w_hash w_hash_clone(
     _Inout_ w_mem_pool pMemPool,
     _In_ w_hash pSourceHash)
 {
-    const char* _trace_info = "w_hash_copy";
-    if (!pMemPool)
+    const char* _trace_info = "w_hash_clone";
+    if (!pMemPool || w_mem_pool_get_type(pMemPool) != W_MEM_POOL_FAST_EXTEND)
     {
-        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
-        return APR_BADARG;
+        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        return NULL;
     }
 
-    return (w_hash)apr_hash_copy(pMemPool, pSourceHash);
+    apr_pool_t* _pool = w_mem_pool_get_apr_pool(pMemPool);
+    if (_pool)
+    {
+        return apr_hash_copy(_pool, pSourceHash);
+    }
+
+    return NULL;
 }
 
 w_hash w_hash_merge(
@@ -94,18 +119,23 @@ w_hash w_hash_merge(
     _In_ const void* pCustomUserData)
 {
     const char* _trace_info = "w_hash_merge";
-    if (!pMemPool)
+    if (!pMemPool || w_mem_pool_get_type(pMemPool) != W_MEM_POOL_FAST_EXTEND)
     {
-        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
-        return APR_BADARG;
+        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        return NULL;
     }
 
-    return apr_hash_merge(
-        pMemPool,
-        pHash1, 
-        pHash2, 
-        pHashMergerFunction, 
-        pCustomUserData);
+    apr_pool_t* _pool = w_mem_pool_get_apr_pool(pMemPool);
+    if (_pool)
+    {
+        return apr_hash_merge(
+            _pool,
+            pHash1,
+            pHash2,
+            pHashMergerFunction,
+            pCustomUserData);
+    }
+    return NULL;
 }
 
 w_hash w_hash_overlay(
@@ -114,12 +144,17 @@ w_hash w_hash_overlay(
     _In_ const w_hash pOverlay)
 {
     const char* _trace_info = "w_hash_overlay";
-    if (!pMemPool)
+    if (!pMemPool || w_mem_pool_get_type(pMemPool) != W_MEM_POOL_FAST_EXTEND)
     {
-        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
-        return APR_BADARG;
+        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        return NULL;
     }
-    return apr_hash_overlay(pBase, pOverlay, pMemPool);
+    apr_pool_t* _pool = w_mem_pool_get_apr_pool(pMemPool);
+    if (_pool)
+    {
+        return apr_hash_overlay(_pool, pBase, pOverlay);
+    }
+    return NULL;
 }
 
 w_hash_index w_hash_first(
@@ -127,13 +162,17 @@ w_hash_index w_hash_first(
     _In_ w_hash pHash)
 {
     const char* _trace_info = "w_hash_first";
-    if (!pMemPool)
+    if (!pMemPool || w_mem_pool_get_type(pMemPool) != W_MEM_POOL_FAST_EXTEND)
     {
-        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
-        return APR_BADARG;
-
+        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        return NULL;
     }
-    return apr_hash_first(pMemPool, pHash);
+    apr_pool_t* _pool = w_mem_pool_get_apr_pool(pMemPool);
+    if (_pool)
+    {
+        return apr_hash_first(_pool, pHash);
+    }
+    return NULL;
 }
 
 w_hash_index w_hash_next(_In_ w_hash_index pHashIndex)
@@ -185,7 +224,7 @@ int w_hash_do(
     _In_ const w_hash pHash)
 {
     if (!pHashCallbackDo || !pHash) return 0;
-    
+
     return apr_hash_do(pHashCallbackDo, pRec, pHash);
 }
 
@@ -196,11 +235,11 @@ size_t w_hash_this_key_len(_In_ w_hash_index pHashIndex)
     return apr_hash_this_key_len(pHashIndex);
 }
 
-w_mem_pool w_hash_get_mem_pool(_In_ const w_hash pHash)
+w_apr_pool w_hash_get_mem_pool(_In_ const w_hash pHash)
 {
-    if (!pHash)
+    if (pHash)
     {
-        return NULL;
+        return apr_hash_pool_get(pHash);
     }
-    return apr_hash_pool_get(pHash);
+    return NULL;
 }

@@ -15,21 +15,26 @@
 
 #endif
 
-W_RESULT  logger::init(_In_ const w_log_config* pConfig)
+W_RESULT  logger::init(
+    _Inout_ w_mem_pool pMemPool,
+    _In_ const w_log_config* pConfig)
 {
-    if (!pConfig)
+    if (!pMemPool || !pConfig)
     {
-        //TODO: create default w_log_config and continue
         return APR_BADARG;
     }
+
     //if directory of log is not existed
-    if (w_io_dir_check_is_directory(pConfig->log_directory_path) != W_SUCCESS)
+    if (w_io_dir_check_is_dir(
+        pMemPool,
+        pConfig->log_directory_path) != W_SUCCESS)
     {
         //create the directory of log inside the root directory
-        w_io_dir_create(pConfig->log_directory_path);
+        w_io_dir_create(pMemPool, pConfig->log_directory_path);
     }
-    auto _time = w_timespan_init_from_now();
-    auto _time_str = w_timespan_to_string(_time, "_");
+
+    auto _time = w_timespan_init_from_now(pMemPool);
+    auto _time_str = w_timespan_to_string(pMemPool, _time, "_");
     auto _log_file_path_str =
         std::string(pConfig->log_directory_path) +
         "/" +

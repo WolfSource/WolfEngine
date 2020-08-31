@@ -22,8 +22,6 @@ extern "C" {
 #include <limits.h>
 #include "memory/w_mem_pool.h"
 
-    //#include <errno.h>
-
 #define W_ASSERT(c, fmt)            { if (!c) { printf(fmt); assert(c);} }
 #define W_ASSERT_P(c, fmt, ...)     { if (!c) { printf((fmt), __VA_ARGS__); assert(c);} }
 #define W_SAFE_DELETE(x)            { if (x)  { delete x; x = NULL;                  } }
@@ -32,16 +30,16 @@ extern "C" {
 #define W_ARRAY_SIZE(ar)	        (size_t)((sizeof(ar) / sizeof(ar[0])))
 
 #ifdef _MSC_VER
-    #define ASM __asm
+#define ASM __asm
 #else
 
-    #define ASM __asm__
-    //define dummy SAL
-    #define _In_
-    #define _In_z_
-    #define _Out_
-    #define _Inout_
-    #define _Inout_z_
+#define ASM __asm__
+//define dummy SAL
+#define _In_
+#define _In_z_
+#define _Out_
+#define _Inout_
+#define _Inout_z_
 
 #endif
 
@@ -74,13 +72,18 @@ extern "C" {
 
     typedef struct apr_file_t* w_file;
     typedef struct apr_finfo_t* w_file_info;
+    typedef struct
+    {
+        w_mem_pool  pool;
+        void* data;
+    } w_arg;
 
     /**
      * initialize wolf
      * @return W_RESULT as a result
     */
     W_SYSTEM_EXPORT
-        W_RESULT wolf_initialize(void);
+        W_RESULT wolf_init(void);
 
     /**
      * concatenate two or more char*
@@ -102,7 +105,7 @@ extern "C" {
      * release all resources of wolf
     */
     W_SYSTEM_EXPORT
-        void wolf_terminate(void);
+        void wolf_fini(void);
 
 #ifdef __cplusplus
 }

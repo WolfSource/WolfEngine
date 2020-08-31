@@ -1,5 +1,5 @@
 #include "w_fiber.hpp"
-#include <apr-1/apr_general.h>
+#include <apr-2/apr_general.h>
 #include <unordered_map>
 #include <boost/fiber/all.hpp>
 #include <boost/lexical_cast.hpp>
@@ -19,19 +19,26 @@ W_RESULT w_fiber_scheduler_init(
     _In_z_ const char* pSchedulerName,
     _In_ std::initializer_list<const w_arg&> pFiberTasks)
 {
+    const char* _trace_info = "w_fiber_scheduler_init";
+    if (!pMemPool)
+    {
+        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        return W_FAILURE;
+    }
+
     fibers_info* _fibers_info = nullptr;
     size_t _i = 0;
     
     auto _size_of_tasks = pFiberTasks.size();
     if (!_size_of_tasks)
     {
-        goto _return;
+        goto out;
     }
     
     _fibers_info =  (fibers_info*)w_malloc(pMemPool, sizeof(fibers_info));
     if (!_fibers_info)
     {
-        goto _return;
+        goto out;
     }
     
     _fibers_info->fibers = (boost::fibers::fiber*)w_malloc(
@@ -39,7 +46,7 @@ W_RESULT w_fiber_scheduler_init(
         _size_of_tasks * sizeof( boost::fibers::fiber));
     if (!_fibers_info->fibers)
     {
-        goto _return;
+        goto out;
     }
     
     _fibers_info->number_of_fibers = _size_of_tasks;
@@ -52,11 +59,11 @@ W_RESULT w_fiber_scheduler_init(
     
     s_schedulers[pSchedulerName] = _fibers_info;
     
-_return:
+out:
     if (_fibers_info)
     {
-        w_free(_fibers_info);
-        w_free(_fibers_info->fibers);
+        w_free(pMemPool, _fibers_info);
+        w_free(pMemPool, _fibers_info->fibers);
     }
     return W_SUCCESS;
 }
@@ -100,7 +107,7 @@ scheduler_info*  w_fiber_get_scheduler_info(
         for (size_t i = 0; i < _number_of_fibers; ++i)
         {
             _id_str = boost::lexical_cast<std::string>(_find->second->fibers[i].get_id());
-            sscanf(_id_str.c_str(), "%llu", &_id);
+            int _ret = sscanf(_id_str.c_str(), "%llu", &_id);
             _scheduler_info->fiber_ids[i] = _id;
         }
     }

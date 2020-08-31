@@ -54,7 +54,7 @@ extern "C" {
      * @return result
     */
     W_SYSTEM_EXPORT
-        W_RESULT w_thread_create(
+        W_RESULT w_thread_init(
             _Inout_   w_mem_pool pMemPool,
             _Inout_   w_thread* pThread,
             _In_      w_thread_job  pJob,
@@ -80,14 +80,14 @@ extern "C" {
      * @param pThread thread info
     */
     W_SYSTEM_EXPORT
-        void w_thread_terminate(_Inout_ w_thread pThread);
+        void w_thread_fini(_Inout_ w_thread pThread);
 
     /**
      * exit thread
      * @param pExitStatus exit thread with status
     */
     W_SYSTEM_EXPORT
-        void w_thread_terminate_with_status(
+        void w_thread_fini_with_status(
             _Inout_ w_thread pThread, 
             _In_ int pExitStatus);
 
@@ -173,7 +173,7 @@ extern "C" {
      * @return result code
     */
     W_SYSTEM_EXPORT
-        W_RESULT    w_thread_mutex_create(_Inout_ w_mutex* pMutex,
+        W_RESULT    w_thread_mutex_init(_Inout_ w_mutex* pMutex,
             _In_ uint32_t pFlags,
             _In_ w_mem_pool pMemPool);
 
@@ -212,7 +212,7 @@ extern "C" {
      * @return result code
     */
     W_SYSTEM_EXPORT
-        W_RESULT    w_thread_mutex_destroy(_In_ w_mutex pMutex);
+        W_RESULT    w_thread_mutex_fini(_In_ w_mutex pMutex);
 
     /**
      * Get the pool used by this thread_mutex.

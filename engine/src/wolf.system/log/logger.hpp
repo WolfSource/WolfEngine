@@ -20,7 +20,9 @@ public:
     explicit logger(void) {};
     ~logger(void) {};
     
-    W_RESULT  init(_In_ const w_log_config* pConfig);
+    W_RESULT  init(
+        _Inout_ w_mem_pool pMemPool, 
+        _In_ const w_log_config* pConfig);
 
     W_RESULT  write(_In_z_ const char* pFMT);
 

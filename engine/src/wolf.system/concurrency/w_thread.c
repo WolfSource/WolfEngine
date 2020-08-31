@@ -26,13 +26,13 @@ W_RESULT w_thread_once_call(_Inout_ w_thread_once_flag pOnceFlag, _In_ w_thread_
     return _status == APR_SUCCESS ? W_SUCCESS : W_FAILURE;
 }
 
-W_RESULT w_thread_create(
+W_RESULT w_thread_init(
     _Inout_ w_mem_pool   pMemPool,
     _Inout_ w_thread*    pThread,
     _In_    w_thread_job pJob,
     _In_    void*        pJobArgs)
 {
-    const char* _trace_info = "w_thread_create";
+    const char* _trace_info = "w_thread_init";
     if (pMemPool)
     {
         apr_pool_t* _pool = w_mem_pool_get_apr_pool(pMemPool);
@@ -64,14 +64,14 @@ void w_thread_detach(_Inout_ w_thread pThread)
     apr_thread_detach(pThread);
 }
 
-void w_thread_terminate(_Inout_ w_thread pThread)
+void w_thread_fini(_Inout_ w_thread pThread)
 {
     //terminate thread
     apr_status_t _status = APR_SUCCESS;
     apr_thread_exit(pThread, _status);
 }
 
-void w_thread_terminate_with_status(_Inout_ w_thread pThread, _In_ int pExitStatus)
+void w_thread_fini_with_status(_Inout_ w_thread pThread, _In_ int pExitStatus)
 {
     //terminate thread
     apr_status_t _status = (apr_status_t)pExitStatus;
@@ -148,11 +148,11 @@ void w_thread_get_number_of_cpu_threads(_Inout_ int* pCores,
 }
 
 
-W_RESULT    w_thread_mutex_create(_Inout_ w_mutex* pMutex,
+W_RESULT    w_thread_mutex_init(_Inout_ w_mutex* pMutex,
                                   _In_ uint32_t pFlags,
                                   _In_ w_mem_pool pMemPool)
 {
-    const char* _trace_info = "w_thread_mutex_create";
+    const char* _trace_info = "w_thread_mutex_init";
     if (pMemPool)
     {
         apr_pool_t* _pool = w_mem_pool_get_apr_pool(pMemPool);
@@ -195,7 +195,7 @@ W_RESULT    w_thread_mutex_unlock(_In_ w_mutex pMutex)
      return apr_thread_mutex_unlock(pMutex);
 }
  
-W_RESULT    w_thread_mutex_destroy(_In_ w_mutex pMutex)
+W_RESULT    w_thread_mutex_fini(_In_ w_mutex pMutex)
 {
     if (!pMutex)
     {

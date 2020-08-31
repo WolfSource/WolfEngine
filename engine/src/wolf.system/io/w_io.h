@@ -21,9 +21,9 @@ extern "C" {
         void* buffer;
         size_t  size;
         size_t  bytes_read;
-    } w_file_input_stream;
+    } w_file_istream_t;
 
-    typedef w_file_input_stream* w_file_istream;
+    typedef w_file_istream_t* w_file_istream;
 
     typedef enum
     {
@@ -153,6 +153,7 @@ extern "C" {
 
     /**
      * get file info
+     * @param pMemPool The pool to allocate out of
      * @param pPath path of file
      * @return file info
     */
@@ -163,6 +164,7 @@ extern "C" {
 
     /**
      * get file info
+     * @param pMemPool The pool to allocate out of
      * @param pFile opened file
      * @return file info
     */
@@ -237,6 +239,7 @@ extern "C" {
 
     /**
      * read the whole file with given path
+     * @param pMemPool The pool to allocate out of
      * @param pPath path of file
      * @return content of file, size and bytes read
     */
@@ -247,6 +250,7 @@ extern "C" {
 
     /**
      * read the specific number of bytes from file with given path
+     * @param pMemPool The pool to allocate out of
      * @param pPath path of file
      * @param pNBytes number of bytes to read, set zero to read all the file bytes
      * @return content of file, size and bytes read
@@ -258,17 +262,8 @@ extern "C" {
             _In_ size_t pNBytes);
 
     /**
-     * read the whole file
-     * @param pFile file
-     * @return content of file, size and bytes read
-    */
-    W_SYSTEM_EXPORT
-        w_file_istream w_io_file_read_full(
-            _Inout_ w_mem_pool pMemPool,
-            _In_ w_file pFile);
-
-    /**
      * read the specific number of bytes from file with given path
+     * @param pMemPool The pool to allocate out of
      * @param pFile file
      * @param pNBytes number of bytes to read, set zero to read all the file bytes
      * @return content of file, size and bytes read
@@ -280,20 +275,37 @@ extern "C" {
             _In_ size_t pNBytes);
 
     /**
+    * read the whole file
+    * @param pMemPool The pool to allocate out of
+    * @param pFile file
+    * @return content of file, size and bytes read
+    */
+    W_SYSTEM_EXPORT
+        w_file_istream w_io_file_read_full(
+            _Inout_ w_mem_pool pMemPool,
+            _In_ w_file pFile);
+
+    /**
      * delete a file with given path
+     * @param pMemPool The pool to allocate out of
      * @param pPath path of file
      * @return result
     */
     W_SYSTEM_EXPORT
-        W_RESULT w_io_file_delete_from_path(_In_z_ const char* pPath);
+        W_RESULT w_io_file_delete_from_path(
+            _Inout_ w_mem_pool pMemPool,
+            _In_z_ const char* pPath);
 
     /**
      * delete a file
+     * @param pMemPool The pool to allocate out of
      * @param pFile file which must be deleted
      * @return result
     */
     W_SYSTEM_EXPORT
-        W_RESULT w_io_file_delete(_In_ w_file pFile);
+        W_RESULT w_io_file_delete(
+            _Inout_ w_mem_pool pMemPool,
+            _In_ w_file pFile);
 
     /**
      * get current directory in char
@@ -304,14 +316,18 @@ extern "C" {
 
     /**
      * check whether this path belongs to a directory
+     * @param pMemPool The pool to allocate out of
      * @param pPath path of directory
      * @return result
     */
     W_SYSTEM_EXPORT
-        W_RESULT w_io_dir_check_is_directory(_In_z_ const char* pPath);
+        W_RESULT w_io_dir_check_is_dir(
+            _Inout_ w_mem_pool pMemPool,
+            _In_z_ const char* pPath);
 
     /**
      * get parent directory of given path
+     * @param pMemPool The pool to allocate out of
      * @param pPath path of directory
      * @return parent directory
     */
@@ -322,11 +338,14 @@ extern "C" {
 
     /**
      * create a directory
+     * @param pMemPool The pool to allocate out of
      * @param pPath path of directory
      * @return result
     */
     W_SYSTEM_EXPORT
-        W_RESULT w_io_dir_create(_In_z_ const char* pPath);
+        W_RESULT w_io_dir_create(
+            _Inout_ w_mem_pool  pMemPool,
+            _In_z_ const char* pPath);
 
     /**
      * convert utf8 char* to wchar_t*
@@ -366,12 +385,20 @@ extern "C" {
     W_SYSTEM_EXPORT
         long w_io_to_hex(_In_z_ const char* pHexStr);
 
+    /**
+     * convert wchar to char
+     * @param pMemPool The pool to allocate out of
+     * @param pIn inputs
+     * @param pInLen length of inputs
+     * @param pOut converted outputs
+     * @return result
+    */
     W_SYSTEM_EXPORT
         W_RESULT w_io_wchar_ptr_to_char_ptr(
-            _In_    w_mem_pool pMemPool,
-            _In_	wchar_t* pIn,
-            _In_	size_t pInLen,
-            _Out_	char** pOut);
+            _Inout_     w_mem_pool pMemPool,
+            _In_	    wchar_t* pIn,
+            _In_	    size_t pInLen,
+            _Out_	    char** pOut);
 
     /**
      * check "pString" string starts with "pStartWith" string
@@ -433,7 +460,8 @@ extern "C" {
      * @return size of destination buffer
     */
     W_SYSTEM_EXPORT
-        size_t w_io_to_base_64(_Inout_z_ char** pDestinationBuffer,
+        size_t w_io_to_base_64(
+            _Inout_z_ char** pDestinationBuffer,
             _In_z_ char* pSourceBuffer,
             _In_z_ size_t pSourceBufferLenght,
             _In_ base_64_mode pEncodeMode);
@@ -456,6 +484,7 @@ extern "C" {
 
     /**
      * convert a jpeg stream to pixels format
+     * @param pMemPool The pool to allocate out of
      * @param pJpegStream a stream jpeg format
      * @param pPixelFormat type of pixel format
      * @param pWidth width of jpeg
@@ -468,7 +497,7 @@ extern "C" {
     */
     W_SYSTEM_EXPORT
         W_RESULT w_io_pixels_from_jpeg_stream(
-            _Inout_     w_mem_pool pMemPool,
+            _Inout_  w_mem_pool pMemPool,
             _In_z_   const uint8_t* pJpegStream,
             _In_     size_t pJpegStreamLen,
             _In_     w_jpeg_pixel_format pPixelFormat,
@@ -481,6 +510,7 @@ extern "C" {
 
     /**
      * read pixels from jpeg file
+     * @param pMemPool The pool to allocate out of
      * @param pJpegFile a jpeg file path
      * @param pPixelFormat type of pixel format
      * @param pWidth width of jpeg
@@ -521,6 +551,7 @@ extern "C" {
 
     /**
      * read pixels from png stream
+     * @param pMemPool The pool to allocate out of
      * @param pFileStream a file stream
      * @param pPixelFormat pixel format of png
      * @param pWidth width of png
@@ -545,6 +576,7 @@ extern "C" {
 
     /**
      * read pixels from png file
+     * @param pMemPool The pool to allocate out of
      * @param pFilePath a file stream
      * @param pPixelFormat pixel format of png
      * @param pWidth width of png

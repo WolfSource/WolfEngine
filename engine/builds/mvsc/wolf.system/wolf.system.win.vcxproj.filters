@@ -394,11 +394,56 @@
     <ClCompile Include="..\..\..\src\wolf.system\concurrency\w_timer.c">
       <Filter>concurrency</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\io\w_io.c">
+      <Filter>io</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\log\logger.cpp">
+      <Filter>log</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\log\w_log.cpp">
+      <Filter>log</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\memory\w_array.c">
+      <Filter>memory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\memory\w_hash.c">
+      <Filter>memory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\memory\w_table.c">
+      <Filter>memory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\memory\w_mem_map.c">
+      <Filter>memory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\memory\w_shared_mem.c">
+      <Filter>memory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\memory\w_redis.c">
+      <Filter>memory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\memory\w_mem_cache.c">
+      <Filter>memory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\net\ws\uws.cpp">
+      <Filter>net\ws</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\net\ws\ws.cpp">
+      <Filter>net\ws</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\net\w_net.c">
+      <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\script\w_lua.c">
+      <Filter>script</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\src\wolf.system\fiber\w_fiber.cpp">
       <Filter>fiber</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\io\w_io.c">
-      <Filter>io</Filter>
+    <ClCompile Include="..\..\..\src\wolf.system\os\w_window.c">
+      <Filter>os</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\os\w_process.c">
+      <Filter>os</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -880,9 +925,6 @@
     <ClInclude Include="..\..\..\src\wolf.system\concurrency\w_timer.h">
       <Filter>concurrency</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\fiber\w_fiber.hpp">
-      <Filter>fiber</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\wolf.system\io\w_io.h">
       <Filter>io</Filter>
     </ClInclude>
@@ -894,6 +936,57 @@
     </ClInclude>
     <ClInclude Include="..\..\..\src\wolf.system\io\stb\stb_image_write.h">
       <Filter>io\stb</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\log\logger.hpp">
+      <Filter>log</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\log\w_log.h">
+      <Filter>log</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\log\w_log_config.h">
+      <Filter>log</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\memory\w_array.h">
+      <Filter>memory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\memory\w_hash.h">
+      <Filter>memory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\memory\w_table.h">
+      <Filter>memory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\memory\w_mem_map.h">
+      <Filter>memory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\memory\w_shared_mem.h">
+      <Filter>memory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\memory\w_redis.h">
+      <Filter>memory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\memory\w_mem_cache.h">
+      <Filter>memory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\net\ws\uws.hpp">
+      <Filter>net\ws</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\net\ws\ws.h">
+      <Filter>net\ws</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\net\w_net.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\script\w_lua.h">
+      <Filter>script</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\fiber\w_fiber.hpp">
+      <Filter>fiber</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\os\w_window.h">
+      <Filter>os</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\os\w_process.h">
+      <Filter>os</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -919,9 +1012,6 @@
     </Text>
     <Text Include="..\..\..\src\wolf.system\concurrency\libev\version.txt">
       <Filter>concurrency\libev</Filter>
-    </Text>
-    <Text Include="..\..\..\src\wolf.system\fiber\version.txt">
-      <Filter>fiber</Filter>
     </Text>
     <Text Include="..\..\..\src\wolf.system\xml\expat\version.txt">
       <Filter>xml\expat</Filter>

@@ -1,7 +1,7 @@
 #include "w_net.h"
 
 #include <apr.h>
-#include <apr-1/apr_general.h>
+#include <apr-2/apr_general.h>
 #include <apr_tables.h>
 #include <nng/nng.h>
 #include <core/nng_impl.h>
@@ -18,6 +18,7 @@
 #include <nng/supplemental/tls/tls.h>
 #include <nng/transport/tls/tls.h>
 
+#include <io.h>//_open_osfhandle
 #include "io/w_io.h"
 #include <quiche.h>
 #include <memory/hash/uthash.h>
@@ -39,7 +40,6 @@ typedef struct
     size_t      size;
 } curl_memory;
 
-
 #pragma region QUIC
 
 #define     QUICHE_LOCAL_CONN_ID_LEN            16
@@ -52,15 +52,25 @@ typedef struct
 
 struct quic_connection
 {
-    int                             socket;//socket
-    struct conn_io*                 connection_io;//connection io
-    quiche_config*                  config;//config
+#ifdef W_PLATFORM_WIN
+    SOCKET
+#else
+    int
+#endif
+        socket;//socket
+    struct conn_io* connection_io;//connection io
+    quiche_config* config;//config
 };
 
 struct conn_io
 {
     ev_timer                        timer;//timer
-    int                             socket;//socket
+#ifdef W_PLATFORM_WIN
+    SOCKET
+#else
+    int
+#endif
+        socket;//socket
     uint8_t                         connection_id[QUICHE_LOCAL_CONN_ID_LEN];//connection id
     quiche_conn* connection;//quiche connection
     quic_stream_callback_fn         on_sending_stream_callback_fn;
@@ -213,7 +223,7 @@ const char* w_net_url_encoded(
     if (!pMemPool)
     {
         W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
-        return APR_BADARG;
+        return NULL;
     }
 
     char* _encoded = NULL;
@@ -228,7 +238,7 @@ const char* w_net_url_encoded(
     if (_output)
     {
         //allocate memory for it from memory pool
-        _encoded = w_malloc(pMemPool, strlen(_output), "w_net_url_encoded");
+        _encoded = w_malloc(pMemPool, strlen(_output));
         // make a copy and free the original string
         strcpy(_encoded, _output);
         curl_free(_output);
@@ -527,7 +537,7 @@ W_RESULT w_net_open_udp_socket(
     const char* _trace_info = "w_net_open_udp_socket";
     if (!pMemPool)
     {
-        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "bad args! trace info: %s", _trace_info);
         return APR_BADARG;
     }
 
@@ -545,7 +555,7 @@ W_RESULT w_net_open_udp_socket(
     }
     nni_plat_udp* _udp_protocol = (nni_plat_udp*)pSocket->u;
 
-    _url = (nng_url*)w_malloc(pMemPool, sizeof(nng_url), _trace_info);
+    _url = (nng_url*)w_malloc(pMemPool, sizeof(nng_url));
 
     _rt = w_net_url_parse(pEndPoint, &_url);
     unsigned long _addr_hex = inet_addr(_url->u_hostname);
@@ -707,9 +717,10 @@ W_RESULT w_net_receive_msg_tcp(_Inout_ w_socket_tcp* pSocket,
     return nng_recv(*_nng_socket, pMessage, pMessageLength, NNG_FLAG_ALLOC);
 }
 
-W_RESULT w_net_send_msg_udp(_Inout_ w_socket_udp* pSocket,
+W_RESULT w_net_send_msg_udp(
+    _Inout_ w_socket_udp* pSocket,
     _In_z_ char* pMessage,
-    _In_z_ size_t pMessageLength)
+    _In_ size_t pMessageLength)
 {
     return _io_udp_socket(two_way_dialer, pSocket, pMessage, &pMessageLength);
 }
@@ -736,6 +747,8 @@ W_RESULT w_net_run_websocket_server(_In_ bool pSSL,
     _In_ ws_on_message_fn pOnMessage,
     _In_ ws_on_closed_fn pOnClosed)
 {
+    const char* _trace_info = "w_net_run_websocket_server";
+
     W_RESULT _rt;
 
     ws _ws = ws_init();
@@ -760,7 +773,7 @@ W_RESULT w_net_run_websocket_server(_In_ bool pSSL,
     }
     else
     {
-        W_ASSERT(false, "could not run websocket. trace info: w_net_run_websocket_server");
+        W_ASSERT_P(false, "could not run websocket. trace info: %s", _trace_info);
         _rt = W_FAILURE;
     }
 
@@ -789,12 +802,11 @@ static size_t _curl_write_callback(
     }
     _mem->memory = (char*)w_malloc(
         _mem->pool,
-        _mem->size + _real_size + 1, 
-        "_curl_write_callback");
+        _mem->size + _real_size + 1);
     if (!_mem->memory)
     {
         //out of memory
-        W_ASSERT_P(false, 
+        W_ASSERT_P(false,
             "out of curl_memory. trace info: %s",
             _trace_info);
         return 0;
@@ -822,9 +834,9 @@ W_RESULT w_net_send_http_request(
     _Inout_    size_t* pResponseMessageLength)
 {
     const char* _trace_info = "w_net_send_http_request";
-    if (!pMemPool)
+    if (!pMemPool || !pURL)
     {
-        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
         return APR_BADARG;
     }
 
@@ -838,10 +850,10 @@ W_RESULT w_net_send_http_request(
         W_ASSERT(false, "could not create curl handle. trace info: curl_easy_init");
         goto _out;
     }
+
     _curl_mem = w_malloc(
         pMemPool,
-        sizeof(curl_memory), 
-        "w_net_send_http_request");
+        sizeof(curl_memory));
     if (!_curl_mem)
     {
         _rt = CURLE_OUT_OF_MEMORY;
@@ -917,7 +929,7 @@ W_RESULT w_net_send_http_request(
     }
 
 _out:
-    w_free(_curl_mem);
+    w_free(pMemPool, _curl_mem);
     if (_curl)
     {
         curl_easy_cleanup(_curl);
@@ -962,7 +974,7 @@ static void s_quiche_flush(
             sent = sendto(
                 conn_io->socket,
                 (const char*)_out,
-                _written,
+                (int)_written,
                 0,
                 (struct sockaddr*)&conn_io->peer_addr,
                 conn_io->peer_addr_len);
@@ -972,7 +984,7 @@ static void s_quiche_flush(
             sent = send(
                 conn_io->socket, 
                 (const char*)_out, 
-                _written, 
+                (int)_written, 
                 0);
         }
 
@@ -994,11 +1006,26 @@ static void s_quiche_flush(
     ev_timer_again(loop, &conn_io->timer);
 }
 
-static void s_quiche_create_conn_timeout_callback(EV_P_ ev_timer* w, int pRevents)
+static void s_quiche_create_conn_timeout_callback(EV_P_ ev_timer* pIO, int pRevents)
 {
-    struct conn_io* _conn_io = (struct conn_io*)w->data;
+    const char* _trace_info = "s_quiche_create_conn_timeout_callback";
+    if (!pIO)
+    {
+        W_ASSERT_P("missing pIO. trace info: %s", _trace_info);
+        return;
+    }
+
+    w_arg* _args = (w_arg*)pIO->data;
+    if (!_args)
+    {
+        W_ASSERT_P("missing args! trace info: %s", _trace_info);
+        return;
+    }
+
+    struct conn_io* _conn_io = (struct conn_io*)_args->data;
     if (!_conn_io)
     {
+        W_ASSERT_P("missing conn_io! trace info: %s", _trace_info);
         return;
     }
 
@@ -1018,7 +1045,8 @@ static void s_quiche_create_conn_timeout_callback(EV_P_ ev_timer* w, int pRevent
 
         ev_timer_stop(loop, &_conn_io->timer);
         quiche_conn_free(_conn_io->connection);
-        w_free(_conn_io);
+        w_free(_args->pool, _conn_io);
+        w_free(_args->pool, _args);
 
         return;
     }
@@ -1091,38 +1119,56 @@ static bool s_quiche_validate_token(
 }
 
 static struct conn_io* s_quiche_create_connection(
-    uint8_t* dcid, size_t dcid_len, 
-    uint8_t* odcid, size_t odcid_len) 
+    w_mem_pool pMemPool,
+    uint8_t* dcid, size_t dcid_len,
+    uint8_t* odcid, size_t odcid_len)
 {
-    struct conn_io* conn_io = (struct conn_io*)malloc(sizeof(*conn_io));
-    if (conn_io == NULL) {
-        fprintf(stderr, "failed to allocate connection IO\n");
+    const char* _trace_info = "s_quiche_create_connection";
+    if (!pMemPool || !dcid || !odcid)
+    {
+        W_ASSERT_P("bad args! trace info: %s", _trace_info);
+        return NULL;
+    }
+    w_arg* _args = w_malloc(pMemPool, sizeof(w_arg));
+    if (!_args)
+    {
+        W_ASSERT_P("failed to allocate ev_watcher_data! trace info: %s", _trace_info);
+        return NULL;
+    }
+
+    struct conn_io* conn_io = (struct conn_io*)w_malloc(pMemPool, sizeof(struct conn_io*));
+    if (!conn_io)
+    {
+        W_ASSERT_P("failed to allocate connection IO! trace info: %s", _trace_info);
         return NULL;
     }
 
     memcpy(conn_io->connection_id, dcid, QUICHE_LOCAL_CONN_ID_LEN);
 
     quiche_conn* conn = quiche_accept(
-        conn_io->connection_id, 
+        conn_io->connection_id,
         QUICHE_LOCAL_CONN_ID_LEN,
-        odcid, odcid_len, 
+        odcid, odcid_len,
         s_quic_conns->config);
-    if (conn == NULL) 
+    if (conn == NULL)
     {
-        fprintf(stderr, "failed to create connection\n");
+        W_ASSERT_P("failed to create connection! trace info: %s", _trace_info);
         return NULL;
     }
 
     conn_io->socket = s_quic_conns->socket;
     conn_io->connection = conn;
 
-    ev_init(&conn_io->timer, s_quiche_create_conn_timeout_callback);
-    conn_io->timer.data = conn_io;
+    _args->pool = pMemPool;
+    _args->data = conn_io;
 
-    HASH_ADD(hh, s_quic_conns->connection_io, connection_id, 
+    ev_init(&conn_io->timer, s_quiche_create_conn_timeout_callback);
+    conn_io->timer.data = _args;
+
+    HASH_ADD(hh, s_quic_conns->connection_io, connection_id,
         QUICHE_LOCAL_CONN_ID_LEN, conn_io);
 
-    fprintf(stderr, "new connection\n");
+    //fprintf(stderr, "new connection\n");
 
     return conn_io;
 }
@@ -1130,8 +1176,19 @@ static struct conn_io* s_quiche_create_connection(
 static void s_quiche_listener_callback(EV_P_ ev_io* pIO, int pRevents)
 {
     const char* _trace_info = "quiche_listener_callback";
+    if (!pIO)
+    {
+        W_ASSERT_P("missing pIO. trace info: %s", _trace_info);
+        return;
+    }
+    w_arg* _args = (w_arg*)pIO->data;
+    if (!_args)
+    {
+        W_ASSERT_P("bad arags! trace info: %s", _trace_info);
+        return;
+    }
 
-    quic_stream_callback_fn _stream_callback_fn = (quic_stream_callback_fn)pIO->data;
+    quic_stream_callback_fn _stream_callback_fn = (quic_stream_callback_fn)_args->data;
     
     struct conn_io* _tmp, *_conn_io = NULL;
     static uint8_t buf[QUICHE_MAX_BUFFER_SIZE];
@@ -1214,7 +1271,7 @@ static void s_quiche_listener_callback(EV_P_ ev_io* pIO, int pRevents)
                 ssize_t sent = sendto(
                     s_quic_conns->socket,
                     (const char*)out,
-                    written,
+                    (int)written,
                     0,
                     (struct sockaddr*)&peer_addr, peer_addr_len);
                 if (sent != written)
@@ -1254,7 +1311,7 @@ static void s_quiche_listener_callback(EV_P_ ev_io* pIO, int pRevents)
                 ssize_t sent = sendto(
                     s_quic_conns->socket,
                     (const char*)out,
-                    written, 0,
+                    (int)written, 0,
                     (struct sockaddr*)&peer_addr, peer_addr_len);
                 if (sent != written)
                 {
@@ -1276,6 +1333,7 @@ static void s_quiche_listener_callback(EV_P_ ev_io* pIO, int pRevents)
             }
 
             _conn_io = s_quiche_create_connection(
+                _args->pool,
                 dcid, dcid_len,
                 odcid, odcid_len);
             if (_conn_io == NULL)
@@ -1383,7 +1441,7 @@ static void s_quiche_listener_callback(EV_P_ ev_io* pIO, int pRevents)
 
             ev_timer_stop(loop, &_conn_io->timer);
             quiche_conn_free(_conn_io->connection);
-            w_free(_conn_io);
+            w_free(_args->pool, _conn_io);
         }
     }
 }
@@ -1394,10 +1452,16 @@ static void s_quiche_dialer_callback(EV_P_ ev_io* pIO, int pRevents)
 
     if (!pIO)
     {
-        W_ASSERT_P(false, "pIO in NULL. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "missing pIO. trace info: %s", _trace_info);
         return;
     }
-    struct conn_io* _conn_io = pIO->data;
+    w_arg* _args = (w_arg*)pIO->data;
+    if (!_args)
+    {
+        W_ASSERT_P(false, "missing args. trace info: %s", _trace_info);
+        return;
+    }
+    struct conn_io* _conn_io = (struct conn_io*)_args->data;
     if (!_conn_io)
     {
         W_ASSERT_P(false, "missing conn_io. trace info: %s", _trace_info);
@@ -1488,7 +1552,7 @@ static void s_quiche_dialer_callback(EV_P_ ev_io* pIO, int pRevents)
     s_quiche_flush(loop, _conn_io, quic_dialer);
 }
 
-void w_free_s_quic_conns()
+void w_free_s_quic_conns(_Inout_ w_mem_pool pMemPool)
 {
     if (s_quic_conns)
     {
@@ -1496,14 +1560,13 @@ void w_free_s_quic_conns()
         if (s_quic_conns->connection_io)
         {
             quiche_conn_free(s_quic_conns->connection_io->connection);
-            w_free(s_quic_conns->connection_io);
+            w_free(pMemPool, s_quic_conns->connection_io);
         }
-        w_free(s_quic_conns);
+        w_free(pMemPool, s_quic_conns);
     }
 }
 
 W_RESULT w_net_open_quic_socket(
-    _Inout_ w_mem_pool pMemPool,
     _In_z_  const char* pAddress,
     _In_    int pPort,
     _In_    w_socket_mode pSocketMode,
@@ -1514,21 +1577,28 @@ W_RESULT w_net_open_quic_socket(
     _In_    quic_stream_callback_fn pQuicSendingStreamCallback)
 {
     const char* _trace_info = "w_net_open_quic_socket";
-    if (!pMemPool)
+
+    w_mem_pool _mem_pool = NULL;
+    w_mem_pool_init(&_mem_pool, W_MEM_POOL_ALIGNED_RECLAIM);
+
+    if (!_mem_pool)
     {
-        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
-        return APR_BADARG;
+        W_ASSERT_P(false, "could not create memory pool W_MEM_POOL_ALIGNED_RECLAIM. trace info: %s", _trace_info);
+        return W_FAILURE;
     }
 
     if (pSocketMode != quic_dialer && pSocketMode != quic_listener)
     {
-        W_ASSERT(false, "pSocketMode must be one of the following enums: quic_dialer or quic_listener. trace info: w_net_open_quic_socket");
+        W_ASSERT_P(false,
+            "pSocketMode must be one of the following enums: quic_dialer or quic_listener. trace info: %s",
+            _trace_info);
         return NNG_ENOARG;
     }
 
     W_RESULT _ret = W_SUCCESS;
     quiche_config* _quiche_config = NULL;
     struct addrinfo* _address_info = NULL;
+    w_arg* _ev_watcher_data = NULL;
 
 #ifdef W_PLATFORM_WIN
     SOCKET
@@ -1547,7 +1617,7 @@ W_RESULT w_net_open_quic_socket(
     };
 
     //convert integer port to string
-    char* _port = w_malloc(pMemPool, 6, _trace_info);//max port number is 65329
+    char* _port = w_malloc(_mem_pool, 6);//max port number is 65329
     if (!_port)
     {
         return W_FAILURE;
@@ -1602,7 +1672,7 @@ W_RESULT w_net_open_quic_socket(
 
     //set non blocking option
 #ifdef W_PLATFORM_WIN
-    const u_long _non_blocking_enabled = TRUE;
+    u_long _non_blocking_enabled = TRUE;
     if (ioctlsocket(_socket, FIONBIO, &_non_blocking_enabled) != 0)
 #else
     if (fcntl(_socket, F_SETFL, O_NONBLOCK) != 0)
@@ -1618,7 +1688,7 @@ W_RESULT w_net_open_quic_socket(
     if (pSocketMode == quic_listener)
     {
         //bind socket to address
-        if (bind(_socket, _address_info->ai_addr, _address_info->ai_addrlen) < 0)
+        if (bind(_socket, _address_info->ai_addr, (int)_address_info->ai_addrlen) < 0)
         {
             _ret = W_FAILURE;
             W_ASSERT_P(false, "failed to bind socket. trace info: %s", _trace_info);
@@ -1631,9 +1701,9 @@ W_RESULT w_net_open_quic_socket(
     {
         //connect to endpoint address
         if (connect(
-            _socket, 
-            _address_info->ai_addr, 
-            _address_info->ai_addrlen) < 0)
+            _socket,
+            _address_info->ai_addr,
+            (int)_address_info->ai_addrlen) < 0)
         {
             _ret = W_FAILURE;
             W_ASSERT_P(false, "failed to connect endpoint socket. trace info: %s", _trace_info);
@@ -1718,7 +1788,7 @@ W_RESULT w_net_open_quic_socket(
         uint8_t _scid[QUICHE_LOCAL_CONN_ID_LEN];
 
         HCRYPTPROV _crypto;
-        ULONG     _i;
+        ULONG     _i = 0;
 
         if (CryptAcquireContext(
             &_crypto,
@@ -1750,9 +1820,8 @@ W_RESULT w_net_open_quic_socket(
 #endif
 
         _quiche_connection_io = (struct conn_io*)w_malloc(
-            pMemPool, 
-            sizeof(struct conn_io), 
-            _trace_info);
+            _mem_pool,
+            sizeof(struct conn_io));
         if (_quiche_connection_io == NULL)
         {
             _ret = W_FAILURE;
@@ -1797,12 +1866,20 @@ W_RESULT w_net_open_quic_socket(
     }
 
     struct ev_loop* _ev_loop = EV_DEFAULT;
+    _ev_watcher_data = w_malloc(_mem_pool, sizeof(w_arg));
+    if (!_ev_watcher_data)
+    {
+        _ret = W_FAILURE;
+        W_ASSERT_P(false, "failed to allocate memory for ev_watcher_data. trace info: %s", _trace_info);
+        goto out;
+    }
+
     if (_ev_loop)
     {
-        ev_io _ev_watcher;     
+        ev_io _ev_watcher;
         if (pSocketMode == quic_listener)
         {
-            w_free_s_quic_conns();
+            w_free_s_quic_conns(_mem_pool);
 
             //init ev_io for quic listener
             ev_io_init(
@@ -1813,7 +1890,10 @@ W_RESULT w_net_open_quic_socket(
             ev_io_start(_ev_loop, &_ev_watcher);
 
             //set private data of ev watcher
-            _ev_watcher.data = pQuicReceivingStreamCallback;
+            _ev_watcher_data->pool = _mem_pool;
+            _ev_watcher_data->data = pQuicReceivingStreamCallback;
+
+            _ev_watcher.data = (void*)_ev_watcher_data;
         }
         else
         {
@@ -1826,7 +1906,10 @@ W_RESULT w_net_open_quic_socket(
             ev_io_start(_ev_loop, &_ev_watcher);
 
             //set private data of ev watcher
-            _ev_watcher.data = _quiche_connection_io;
+            _ev_watcher_data->pool = _mem_pool;
+            _ev_watcher_data->data = _quiche_connection_io;
+
+            _ev_watcher.data = _ev_watcher_data;
 
             ev_init(
                 &_quiche_connection_io->timer,
@@ -1848,7 +1931,8 @@ W_RESULT w_net_open_quic_socket(
 
 out:
     //free resources
-    w_free(_port);
+    w_free(_mem_pool, _ev_watcher_data);
+    w_free(_mem_pool, _port);
     if (_address_info)
     {
         freeaddrinfo(_address_info);
@@ -1861,7 +1945,9 @@ out:
     {
         quiche_config_free(_quiche_config);
     }
-    w_free_s_quic_conns();
+    w_free_s_quic_conns(_mem_pool);
+    w_mem_pool_fini(&_mem_pool);
+
     return _ret;
 }
 
@@ -1926,11 +2012,11 @@ size_t w_net_receive_msg_quic(
     {
         return 0;
     }
-  
+
     return quiche_conn_stream_recv(
         _qc,
         pStreamIndex,
-        pReceiveBuffer->data, 
+        pReceiveBuffer->data,
         pReceiveBuffer->len,
         pIsStreamFinished);
 }
@@ -1947,7 +2033,7 @@ const char* w_net_error(_In_ W_RESULT pErrorCode)
     return curl_easy_strerror(pErrorCode);
 }
 
-void w_net_terminate(void)
+void w_net_fini(void)
 {
     nng_fini();
 }

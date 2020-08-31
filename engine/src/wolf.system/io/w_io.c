@@ -1,9 +1,9 @@
 #include "w_io.h"
 
-#include <apr-1/apr_general.h>
-#include <apr-1/apr_strings.h>
-#include <apr-1/apr_file_info.h>
-#include <apr-1/apr_file_io.h>
+#include <apr-2/apr_general.h>
+#include <apr-2/apr_strings.h>
+#include <apr-2/apr_file_info.h>
+#include <apr-2/apr_file_io.h>
 
 #include "base64/chromiumbase64.h"
 #include "base64/fastavx512bwbase64.h"
@@ -46,7 +46,7 @@ w_file w_io_file_create(
     const char* _trace_info = "w_io_file_create";
     if (!pMemPool || w_mem_pool_get_type(pMemPool) != W_MEM_POOL_FAST_EXTEND)
     {
-        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "missing fast extend memory pool. trace info: %s", _trace_info);
         return NULL;
     }
 
@@ -89,25 +89,21 @@ w_file w_io_file_create(
     }
 
     apr_pool_t* _pool = w_mem_pool_get_apr_pool(pMemPool);
-    if (!_pool)
+    if (_pool)
     {
-        W_ASSERT_P(false, "missing apr pool. trace info: %s", _trace_info);
-        return NULL;
+        _ret = apr_file_open(
+            &_file, // new file handle
+            pPath, // file name
+            _flags,
+            APR_OS_DEFAULT | 0, // permissions
+            _pool // memory pool to use
+        );
+        if (_ret == W_SUCCESS)
+        {
+            _buffer_len = strlen(pContent);
+            _ret = apr_file_write(_file, pContent, &_buffer_len);
+        }
     }
-
-    _ret = apr_file_open(
-        &_file, // new file handle
-        pPath, // file name
-        _flags,
-        APR_OS_DEFAULT | 0, // permissions
-        _pool // memory pool to use
-    );
-    if (_ret != APR_SUCCESS)
-    {
-        return NULL;
-    }
-    _buffer_len = strlen(pContent);
-    _ret = apr_file_write(_file, pContent, &_buffer_len);
 
     return _file;
 }
@@ -126,10 +122,10 @@ W_RESULT w_io_file_save(
     const char* _trace_info = "w_io_file_save";
 
     w_mem_pool _mem_pool = NULL;
-    w_mem_pool_create(&_mem_pool);
+    w_mem_pool_init(&_mem_pool, W_MEM_POOL_FAST_EXTEND);
     if (!_mem_pool)
     {
-        W_ASSERT_P(false, "could not create memory pool. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "could not create fast extend memory pool. trace info: %s", _trace_info);
         return APR_BADARG;
     }
 
@@ -173,8 +169,7 @@ W_RESULT w_io_file_save(
     apr_pool_t* _pool = w_mem_pool_get_apr_pool(_mem_pool);
     if (!_pool)
     {
-        W_ASSERT_P(false, "missing apr pool. trace info: %s", _trace_info);
-        return APR_BADARG;
+        return W_FAILURE;
     }
 
     _ret = apr_file_open(
@@ -197,7 +192,7 @@ out:
         apr_file_close(_file);
     }
     //terminate memory pool
-    w_mem_pool_fini(_mem_pool);
+    w_mem_pool_fini(&_mem_pool);
 
     return _ret;
 }
@@ -207,34 +202,32 @@ W_RESULT w_io_file_check_is_file(_In_z_ const char* pPath)
     const char* _trace_info = "w_io_file_check_is_file";
 
     w_mem_pool _mem_pool = NULL;
-    w_mem_pool_create(&_mem_pool);
+    w_mem_pool_init(&_mem_pool, W_MEM_POOL_FAST_EXTEND);
     if (!_mem_pool)
     {
-        W_ASSERT_P(false, "could not create memory pool. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "could not create fast extend memory pool. trace info: %s", _trace_info);
         return APR_BADARG;
     }
 
+    apr_status_t _ret = W_FAILURE;
     apr_pool_t* _pool = w_mem_pool_get_apr_pool(_mem_pool);
-    if (!_pool)
+    if (_pool)
     {
-        W_ASSERT_P(false, "missing apr pool. trace info: %s", _trace_info);
-        return APR_BADARG;
+        apr_file_t* _file = NULL;
+        _ret = apr_file_open(
+            &_file,
+            pPath,
+            APR_READ,
+            APR_OS_DEFAULT,
+            _pool);
+        if (_ret == APR_SUCCESS)
+        {
+            apr_file_close(_file);
+        }
     }
+    w_mem_pool_fini(&_mem_pool);
 
-    apr_file_t* _file = NULL;
-    apr_status_t _ret = apr_file_open(
-        &_file,
-        pPath,
-        APR_READ,
-        APR_OS_DEFAULT,
-        _pool);
-    if (_ret == APR_SUCCESS)
-    {
-        apr_file_close(_file);
-    }
-    w_mem_pool_fini(_mem_pool);
-
-    return _ret == APR_SUCCESS ? W_SUCCESS : W_FAILURE;
+    return _ret;
 }
 
 w_file_info w_io_file_get_info_from_path(
@@ -242,22 +235,30 @@ w_file_info w_io_file_get_info_from_path(
     _In_z_ const char* pPath)
 {
     const char* _trace_info = "w_io_file_get_info_from_path";
+    if (!pMemPool || w_mem_pool_get_type(pMemPool) != W_MEM_POOL_FAST_EXTEND)
+    {
+        W_ASSERT_P(false, "missing fast extend memory pool. trace info: %s", _trace_info);
+        return NULL;
+    }
+
     if (pMemPool)
     {
         apr_finfo_t* _info = (apr_finfo_t*)w_malloc(pMemPool, sizeof(apr_finfo_t));
-        if (_info)
+        if (!_info)
         {
-            apr_pool_t* _pool = w_mem_pool_get_apr_pool(pMemPool);
-            if (_pool)
-            {
-                if (apr_stat(_info, pPath, APR_FINFO_NORM, _pool) == APR_SUCCESS)
-                {
-                    return _info;
-                }
-            }
+            W_ASSERT_P(false,
+                "could not allocate memory for apr_finfo_t for file %s. trace info: %s",
+                pPath,
+                _trace_info);
+            return NULL;
+        }
+        apr_pool_t* _pool = w_mem_pool_get_apr_pool(pMemPool);
+        if (_pool && (apr_stat(_info, pPath, APR_FINFO_NORM, _pool) == APR_SUCCESS))
+        {
+            return _info;
         }
     }
-    W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+    W_ASSERT_P(false, "error just happened. trace info: %s", _trace_info);
     return NULL;
 }
 
@@ -266,24 +267,30 @@ w_file_info w_io_file_get_info(
     _In_ w_file pFile)
 {
     const char* _trace_info = "w_io_file_get_info";
-    if (pMemPool)
+    if (!pMemPool || !pFile)
     {
-        apr_finfo_t* _info = w_malloc(pMemPool, sizeof(apr_finfo_t));
-        if (_info)
-        {
-            if (apr_file_info_get(_info, APR_FINFO_NORM, pFile) == APR_SUCCESS)
-            {
-                return _info;
-            }
-        }
+        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        return NULL;
     }
 
-    W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+    apr_finfo_t* _info = w_malloc(pMemPool, sizeof(apr_finfo_t));
+    if (_info && apr_file_info_get(_info, APR_FINFO_NORM, pFile) == APR_SUCCESS)
+    {
+        return _info;
+    }
+
+    W_ASSERT_P(false, "error just happened. trace info: %s", _trace_info);
     return NULL;
 }
 
 const char* w_io_file_get_extension_from_path(_In_z_ const char* pFilePath)
 {
+    const char* _trace_info = "w_io_file_get_extension_from_path";
+    if (!pFilePath)
+    {
+        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        return NULL;
+    }
     const char* _dot = strrchr(pFilePath, '.');
     if(!_dot || _dot == pFilePath) return "";
     return _dot + 1;
@@ -292,6 +299,11 @@ const char* w_io_file_get_extension_from_path(_In_z_ const char* pFilePath)
 const char* w_io_file_get_extension(_In_ w_file pFile)
 {
     const char* _trace_info = "w_io_file_get_extension";
+    if (!pFile)
+    {
+        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        return NULL;
+    }
 
     w_mem_pool _mem_pool = NULL;
     w_mem_pool_init(&_mem_pool, W_MEM_POOL_ALIGNED_RECLAIM);
@@ -308,12 +320,19 @@ const char* w_io_file_get_extension(_In_ w_file pFile)
         _ret = w_io_file_get_extension_from_path(_info->fname);
     }
     //release memory pool
-    w_mem_pool_fini(_mem_pool);
+    w_mem_pool_fini(&_mem_pool);
     return _ret;
 }
 
 const char* w_io_file_get_name_from_path(_In_z_ const char* pPath)
 {
+    const char* _trace_info = "w_io_file_get_name_from_path";
+    if (!pPath)
+    {
+        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        return NULL;
+    }
+
     // traverse from right
     size_t _len = strlen(pPath);
     size_t _index = -1;
@@ -325,38 +344,52 @@ const char* w_io_file_get_name_from_path(_In_z_ const char* pPath)
             break;
         }
     }
-    
-    if (_index == -1) return "";
+
+    if (_index == -1) return NULL;
     _index++;
 
-    char* _dst_str = w_malloc(_index, "w_io_get_base_file_name_from_path");
-    apr_cpystrn(_dst_str, pPath,_index);
-    _dst_str[_index] = '\0';
-    
+    char* _dst_str = NULL;
+
+    w_mem_pool _mem_pool = NULL;
+    w_mem_pool_init(&_mem_pool, W_MEM_POOL_ALIGNED_RECLAIM);
+    if (_mem_pool)
+    {
+        char* _dst_str = w_malloc(_mem_pool, _index);
+        apr_cpystrn(_dst_str, pPath, _index);
+        _dst_str[_index] = '\0';
+    }
+    w_mem_pool_fini(&_mem_pool);
+
     return _dst_str;
 }
 
 const char* w_io_file_get_name(_In_ w_file pFile)
 {
     const char* _trace_info = "w_io_file_get_name";
+    if (!pFile)
+    {
+        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        return NULL;
+    }
 
+    //create a memory pool
     w_mem_pool _mem_pool = NULL;
-    w_mem_pool_create(&_mem_pool);
+    w_mem_pool_init(&_mem_pool, W_MEM_POOL_ALIGNED_RECLAIM);
     if (!_mem_pool)
     {
-        W_ASSERT_P(false, "could not allocate memory pool. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "could not create fast extend memory pool. trace info: %s", _trace_info);
         return NULL;
     }
 
     const char* _ret = NULL;
     apr_finfo_t* _info = w_io_file_get_info(_mem_pool, pFile);
-    if (!_info)
+    if (_info)
     {
         _ret = w_io_file_get_name_from_path(_info->fname);
     }
 
     //release memory pool
-    w_mem_pool_fini(_mem_pool);
+    w_mem_pool_fini(&_mem_pool);
 
     return _ret;
 }
@@ -372,84 +405,91 @@ const char* w_io_file_get_basename_from_path(_In_z_ const char* pFilePath)
 
     w_mem_pool _mem_pool = NULL;
     w_mem_pool_init(&_mem_pool, W_MEM_POOL_ALIGNED_RECLAIM);
-    if (_mem_pool)
+    if (!_mem_pool)
     {
-        size_t _len = strlen(pFilePath);
-        char* _s = (char*)w_malloc(_mem_pool, _len);
-        strcpy(_s, pFilePath);
-        w_mem_pool_fini(_mem_pool);
+        return NULL;
+    }
+
+    size_t _len = strlen(pFilePath);
+    char* _s = (char*)w_malloc(_mem_pool, _len);
+    strcpy(_s, pFilePath);
+    w_mem_pool_fini(&_mem_pool);
 
 #ifdef W_PLATFORM_WIN
-        PathStripPathA(_s);
-        return _s;
+    PathStripPathA(_s);
+    return _s;
 #else
-        return basename(_s);
+    return basename(_s);
 #endif
-    }
 }
 
 const char* w_io_file_get_basename(_In_ w_file pFile)
 {
     const char* _trace_info = "w_io_file_get_basename";
-
-    w_mem_pool _mem_pool = NULL;
-    W_RESULT _res = w_mem_pool_init(&_mem_pool, W_MEM_POOL_ALIGNED_RECLAIM);
-    if (_res != W_SUCCESS)
+    if (!pFile)
     {
-        W_ASSERT_P(false, "could not allocate memory pool. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
         return NULL;
     }
 
     const char* _ret = NULL;
-    apr_finfo_t* _info = w_io_file_get_info(_mem_pool, pFile);
-    if (_info)
+
+    w_mem_pool _mem_pool = NULL;
+    W_RESULT _res = w_mem_pool_init(&_mem_pool, W_MEM_POOL_ALIGNED_RECLAIM);
+    if (_mem_pool)
     {
-        _ret = w_io_file_get_basename_from_path(_info->name);
+        apr_finfo_t* _info = w_io_file_get_info(_mem_pool, pFile);
+        if (_info)
+        {
+            _ret = w_io_file_get_basename_from_path(_info->name);
+        }
+        w_mem_pool_fini(&_mem_pool);
     }
-    w_mem_pool_fini(_mem_pool);
 
     return _ret;
 }
 
-
-
-
-
-
-
-
-
-
-
-
 const char* w_io_file_get_basename_without_extension_from_path(_In_z_ const char* pPath)
 {
+    const char* _trace_info = "w_io_file_get_basename_without_extension_from_path";
+    if (!pPath)
+    {
+        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        return NULL;
+    }
+
     const char* _basename = w_io_file_get_basename_from_path(pPath);
-    return w_io_file_get_name_from_path(_basename);
+    if (_basename)
+    {
+        return w_io_file_get_name_from_path(_basename);
+    }
+    return NULL;
 }
 
 const char* w_io_file_get_basename_without_extension(_In_ w_file pFile)
 {
     const char* _trace_info = "w_io_file_get_basename_without_extension";
-
-    w_mem_pool _mem_pool;
-    w_mem_pool_create(&_mem_pool);
-    if (!_mem_pool)
+    if (!pFile)
     {
-        W_ASSERT(false, "could not allocate memory pool. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
         return NULL;
     }
 
-    apr_finfo_t* _info = w_io_file_get_info(_mem_pool, pFile);
-    if (!_info)
+    const char* _ret = NULL;
+    w_mem_pool _mem_pool = NULL;
+    w_mem_pool_init(&_mem_pool, W_MEM_POOL_ALIGNED_RECLAIM);
+    if (_mem_pool)
     {
-        w_mem_pool_fini(_mem_pool);
-        return NULL;
+        apr_finfo_t* _info = w_io_file_get_info(_mem_pool, pFile);
+        if (_info)
+        {
+            const char* _name = strdup(_info->fname);
+            _ret = w_io_file_get_basename_without_extension_from_path(_name);
+        }
+        //release memory pool
+        w_mem_pool_fini(&_mem_pool);
     }
-    const char* _name = strdup(_info->fname);
-    //release memory pool
-    w_mem_pool_fini(_mem_pool);
-    return w_io_file_get_basename_without_extension_from_path(_name);
+    return _ret;
 }
 
 w_file_istream w_io_file_read_full_from_path(
@@ -460,43 +500,133 @@ w_file_istream w_io_file_read_full_from_path(
 }
 
 w_file_istream w_io_file_read_nbytes_from_path(
-    _In_ w_mem_pool pMemPool,
-    _In_z_ const char* pPath, 
+    _Inout_ w_mem_pool pMemPool,
+    _In_z_ const char* pPath,
     _In_ size_t pNBytes)
 {
     const char* _trace_info = "w_io_file_read_nbytes_from_path";
-    if (!pMemPool)
+    if (!pMemPool || w_mem_pool_get_type(pMemPool) != W_MEM_POOL_FAST_EXTEND)
     {
-        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
-        return APR_BADARG;
-    }
-
-    w_file_istream _istream = w_mem_pool_malloc(_trace_info, sizeof(w_file_input_stream));
-    if (!_istream)
-    {
+        W_ASSERT_P(false, "missing fast extend memory pool. trace info: %s", _trace_info);
         return NULL;
     }
-    apr_file_t* _file = NULL;
-    apr_status_t _ret = apr_file_open(
-        &_file,
-        pPath,
-        APR_READ,
-        APR_OS_DEFAULT,
-        pMemPool);
-    if (_ret == APR_SUCCESS)
+    if (!pPath)
     {
-        //read it all
-        apr_finfo_t _finfo;
-        _ret = apr_file_info_get(&_finfo, APR_FINFO_NORM, _file);
-        if (_ret == APR_SUCCESS)
+        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        return NULL;
+    }
+
+    w_file_istream _istream = NULL;
+    apr_pool_t* _pool = w_mem_pool_get_apr_pool(pMemPool);
+    if (_pool)
+    {
+        _istream = w_malloc(pMemPool, sizeof(w_file_istream_t));
+        if (!_istream)
         {
-            _istream->size = _finfo.size;
-            _istream->buffer = w_mem_pool_malloc(pMemPool, _istream->size);
+            W_ASSERT_P(false,
+                "could not allocate memory for w_file_input_stream for file: %s. trace info: %s",
+                pPath,
+                _trace_info);
+            return NULL;
+        }
+        else
+        {
+            apr_file_t* _file = NULL;
+            apr_status_t _ret = apr_file_open(
+                &_file,
+                pPath,
+                APR_READ,
+                APR_OS_DEFAULT,
+                _pool);
+            if (_ret != APR_SUCCESS)
+            {
+                W_ASSERT_P(false,
+                    "could not open file: %s. trace info: %s",
+                    pPath,
+                    _trace_info);
+                return NULL;
+            }
+
+            if (pNBytes)
+            {
+                _istream->size = pNBytes;
+            }
+            else
+            {
+                //read it all
+                apr_finfo_t _finfo;
+                _ret = apr_file_info_get(&_finfo, APR_FINFO_NORM, _file);
+                if (_ret)
+                {
+                    W_ASSERT_P(false,
+                        "could not get file info for file: %s. trace info: %s",
+                        pPath,
+                        _trace_info);
+                    apr_file_close(_file);
+                    return NULL;
+                }
+                _istream->size = _finfo.size;
+            }
+            _istream->buffer = w_malloc(pMemPool, _istream->size);
             _istream->bytes_read = _istream->size;
             apr_file_read(_file, _istream->buffer, &_istream->bytes_read);
             apr_file_close(_file);
         }
     }
+
+    return _istream;
+}
+
+w_file_istream	w_io_file_read_nbytes(
+    _Inout_ w_mem_pool pMemPool,
+    _In_ w_file pFile,
+    _In_ size_t pNBytes)
+{
+    const char* _trace_info = "w_io_file_read_nbytes";
+    if (!pMemPool || w_mem_pool_get_type(pMemPool) != W_MEM_POOL_FAST_EXTEND)
+    {
+        W_ASSERT_P(false, "missing fast extend memory pool. trace info: %s", _trace_info);
+        return NULL;
+    }
+    if (!pFile)
+    {
+        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        return NULL;
+    }
+
+    w_file_istream _istream = w_malloc(pMemPool, sizeof(w_file_istream_t));
+    if (!_istream)
+    {
+        W_ASSERT_P(false,
+            "could not allocate memory for w_file_input_stream. trace info: %s",
+            _trace_info);
+        return NULL;
+    }
+
+    if (pNBytes)
+    {
+        _istream->size = pNBytes;
+    }
+    else
+    {
+        //read it all
+        apr_finfo_t _finfo;
+        apr_status_t _ret = apr_file_info_get(&_finfo, APR_FINFO_NORM, pFile);
+        if (_ret)
+        {
+            W_ASSERT_P(false,
+                "could not get file info for file: %s. trace info: %s",
+                _finfo.fname,
+                _trace_info);
+            return NULL;
+        }
+        _istream->size = _finfo.size;
+    }
+    _istream->buffer = w_malloc(pMemPool, _istream->size);
+    _istream->bytes_read = _istream->size;
+    apr_file_read(pFile, _istream->buffer, &_istream->bytes_read);
+    apr_file_close(pFile);
+
     return _istream;
 }
 
@@ -507,73 +637,44 @@ w_file_istream w_io_file_read_full(
     return w_io_file_read_nbytes(pMemPool, pFile, 0);
 }
 
-w_file_istream	w_io_file_read_nbytes(
+W_RESULT w_io_file_delete_from_path(
     _Inout_ w_mem_pool pMemPool,
-    _In_ w_file pFile, 
-    _In_ size_t pNBytes)
-{
-    const char* _trace_info = "w_io_file_read_nbytes";
-    if (!pFile || !pMemPool)
-    {
-        W_ASSERT(false, "bad parameters. trace info: %s", _trace_info);
-        return NULL;
-    }
-    
-    w_file_istream _istream = w_mem_pool_malloc(pMemPool, sizeof(w_file_input_stream));
-    if (!_istream)
-    {
-        W_ASSERT(false, "could not allocate memory for w_file_input_stream. trace info: %s", _trace_info);
-        return NULL;
-    }
-    
-    //read it all
-    _istream->size = apr_file_buffer_size_get(pFile);
-    _istream->bytes_read = pNBytes;
-    apr_file_read(pFile, _istream->buffer, &_istream->bytes_read);
-    apr_file_close(pFile);
-    
-    return _istream;
-}
-
-W_RESULT w_io_file_delete_from_path(_In_z_ const char* pPath)
+    _In_z_ const char* pPath)
 {
     const char* _trace_info = "w_io_file_delete_from_path";
-    if (!pPath)
+    if (!pPath || !pMemPool)
     {
-        W_ASSERT(false, "missing path. trace info: %s", _trace_info);
-        return NULL;
+        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        return APR_BADARG;
     }
-    apr_status_t _ret = 1;
-    w_mem_pool _mem_pool;
-    w_mem_pool_create(_mem_pool);
-    if (_mem_pool)
+    apr_pool_t* _pool = w_mem_pool_get_apr_pool(pMemPool);
+    if (_pool)
     {
-        _ret = apr_file_remove(pPath, _mem_pool);
-        w_mem_pool_fini(_mem_pool);
+        return apr_file_remove(pPath, _pool);
     }
-    return _ret;
+    return W_FAILURE;
 }
 
-W_RESULT	w_io_file_delete(_In_ w_file pFile)
+W_RESULT	w_io_file_delete(
+    _Inout_ w_mem_pool pMemPool,
+    _In_ w_file pFile)
 {
     const char* _trace_info = "w_io_file_delete";
-    if (!pFile)
+    if (!pFile || !pMemPool)
     {
-        W_ASSERT_P(false, "missing file. trace info: %s", _trace_info);
-        return W_FAILURE;
+        W_ASSERT_P(false, "bad args file. trace info: %s", _trace_info);
+        return APR_BADARG;
     }
 
-    apr_status_t _ret = 1;
-    w_mem_pool _mem_pool;
-    w_mem_pool_create(_mem_pool);
-    if (_mem_pool)
+    apr_status_t _ret = W_FAILURE;
+    apr_finfo_t* _file = w_io_file_get_info(pMemPool, pFile);
+    if (_file)
     {
-        apr_finfo_t* _file = w_io_file_get_info(_mem_pool, pFile);
-        if (_file)
+        apr_pool_t* _pool = w_mem_pool_get_apr_pool(pMemPool);
+        if (_pool)
         {
-            _ret = apr_file_remove(_file->fname, _mem_pool);
+            _ret = apr_file_remove(_file->fname, _pool);
         }
-        w_mem_pool_fini(_mem_pool);
     }
     return _ret;
 }
@@ -588,18 +689,20 @@ void w_io_dir_get_current(_Inout_z_ char* pPath)
 #endif
 }
 
-W_RESULT	w_io_dir_check_is_directory(_In_z_ const char* pPath)
+W_RESULT	w_io_dir_check_is_dir(
+    _Inout_ w_mem_pool pMemPool,
+    _In_z_ const char* pPath)
 {
-    const char* _trace_info = "w_io_dir_check_is_directory";
-    if (!pPath)
+    const char* _trace_info = "w_io_dir_check_is_dir";
+    if (!pPath || !pMemPool || w_mem_pool_get_type(pMemPool) != W_MEM_POOL_FAST_EXTEND)
     {
         W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
         return W_FAILURE;
     }
 
     W_RESULT _ret = W_FAILURE;
-    w_mem_pool _pool = NULL;
-    if (w_mem_pool_init(&_pool, W_MEM_POOL_ALIGNED_RECLAIM) == W_SUCCESS)
+    apr_pool_t* _pool = w_mem_pool_get_apr_pool(pMemPool);
+    if (_pool)
     {
         //open a directory
         apr_dir_t* _dir = NULL;
@@ -608,7 +711,6 @@ W_RESULT	w_io_dir_check_is_directory(_In_z_ const char* pPath)
         {
             apr_dir_close(_dir);
         }
-        w_mem_pool_fini(_pool);
     }
     return _ret;
 }
@@ -617,6 +719,13 @@ const char* w_io_dir_get_parent(
     _Inout_ w_mem_pool  pMemPool,
     _In_z_ const char* pPath)
 {
+    const char* _trace_info = "w_io_dir_check_is_dir";
+    if (!pPath || !pMemPool)
+    {
+        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        return NULL;
+    }
+
 #ifdef W_PLATFORM_UNIX
     char* _s = strdup(pPath);
     return dirname(_s);
@@ -633,23 +742,32 @@ const char* w_io_dir_get_parent(
     //copy strings
     if (_size == 0) return "";
 
-    char* _dst = w_mem_pool_malloc(pMemPool, _size + 1);//size + '\0'
+    char* _dst = w_malloc(pMemPool, _size + 1);//size + '\0'
     apr_cpystrn(_dst, pPath, _size);
     _dst[_size] = '\0';
     return _dst;
 #endif
 }
 
-W_RESULT	w_io_dir_create(_In_z_ const char* pPath)
+W_RESULT	w_io_dir_create(
+    _Inout_ w_mem_pool  pMemPool,
+    _In_z_ const char* pPath)
 {
+    const char* _trace_info = "w_io_dir_create";
+    if (!pPath || !pMemPool)
+    {
+        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        return APR_BADARG;
+    }
+
     W_RESULT _ret = W_FAILURE;
-    w_mem_pool _pool = NULL;
-    if (w_mem_pool_init(&_pool, W_MEM_POOL_ALIGNED_RECLAIM) == W_SUCCESS)
+    apr_pool_t* _pool = w_mem_pool_get_apr_pool(pMemPool);
+    if (_pool)
     {
         //create a directory
         _ret = apr_dir_make_recursive(pPath, APR_OS_DEFAULT, _pool);
-        w_mem_pool_fini(&_pool);
     }
+
     return _ret;
 }
 
@@ -853,12 +971,12 @@ long w_io_to_hex(_In_z_ const char* pHexStr)
 #ifdef W_PLATFORM_WIN
 
 W_RESULT w_io_wchar_ptr_to_char_ptr(
-    _In_ w_mem_pool pMemPool,
+    _Inout_ w_mem_pool pMemPool,
     _In_	wchar_t* pIn,
     _In_	size_t pInLen,
     _Out_	char** pOut)
 {
-    if (!pIn || !pOut || pInLen == 0)
+    if (!pIn || !pOut || pInLen == 0 || !pMemPool)
     {
         *pOut = NULL;
         return APR_BADARG;
@@ -866,15 +984,18 @@ W_RESULT w_io_wchar_ptr_to_char_ptr(
 
     size_t _chars_onverted = 0;
     size_t _wide_char_mem_size = (pInLen * 2) + 1; // +1 for null terminator
-    (*pOut) = (char*)w_mem_pool_malloc(pMemPool, _wide_char_mem_size);
-    (*pOut)[_wide_char_mem_size - 1] = '\0';
-
-    return (wcstombs_s(
-        &_chars_onverted,
-        *pOut,
-        _wide_char_mem_size,
-        pIn,
-        pInLen) == 0) ? W_SUCCESS : W_FAILURE;
+    (*pOut) = (char*)w_malloc(pMemPool, _wide_char_mem_size);
+    if ((*pOut))
+    {
+        (*pOut)[_wide_char_mem_size - 1] = '\0';
+        return (wcstombs_s(
+            &_chars_onverted,
+            *pOut,
+            _wide_char_mem_size,
+            pIn,
+            pInLen) == 0) ? W_SUCCESS : W_FAILURE;
+    }
+    return W_FAILURE;
 }
 
 #endif
@@ -917,19 +1038,19 @@ W_RESULT w_io_string_split(
     _In_ w_mem_pool pMemPool,
     _In_z_ char* pString,
     _In_z_ const char* pSplit,
-    _Out_ w_array** pResults)
+    _Out_ w_array* pResults)
 {
     const char* _trace_info = "w_io_string_split";
     if (!pMemPool || !pString || ! pSplit)
     {
-        W_ASSERT(false, "missing parameters. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "missing parameters. trace info: %s", _trace_info);
         return APR_BADARG;
     }
 
     *pResults = w_array_init(pMemPool, 32, sizeof(const char*));
     if (!*pResults)
     {
-        W_ASSERT(false, "could not create array. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "could not create array. trace info: %s", _trace_info);
         return W_FAILURE;
     }
 
@@ -1005,7 +1126,7 @@ W_RESULT w_io_file_is_jpeg(_In_ const char* pFilePath)
     {
         w_file_istream _istream = w_io_file_read_full_from_path(_pool, pFilePath);
         _ret = w_io_stream_is_jpeg(_istream);
-        w_mem_pool_fini(_pool);
+        w_mem_pool_fini(&_pool);
     }
     return _ret;
 }
@@ -1022,7 +1143,7 @@ W_RESULT w_io_stream_is_jpeg(_In_ w_file_istream pFileStream)
     int _width, _height, _sub_sample, _color_space;
     W_RESULT _rt = tjDecompressHeader3(_tj_handle,
                                        pFileStream->buffer,
-                                       pFileStream->bytes_read,
+                                       (int)pFileStream->bytes_read,
                                        &_width,
                                        &_height,
                                        &_sub_sample,
@@ -1033,7 +1154,7 @@ W_RESULT w_io_stream_is_jpeg(_In_ w_file_istream pFileStream)
 }
 
 W_RESULT w_io_pixels_from_jpeg_stream(
-    _Inout_     w_mem_pool pMemPool,
+    _Inout_  w_mem_pool pMemPool,
     _In_z_   const uint8_t* pJpegStream,
     _In_     size_t pJpegStreamLen,
     _In_     w_jpeg_pixel_format pPixelFormat,
@@ -1044,10 +1165,17 @@ W_RESULT w_io_pixels_from_jpeg_stream(
     _Out_    int* pNumberOfPasses,
     _Out_    uint8_t** pPixels)
 {
+    *pWidth = 0;
+    *pHeight = 0;
+    *pSubSample = 0;
+    *pColorSpace = 0;
+    *pNumberOfPasses = 0;
+    *pPixels = NULL;
+
     const char* _trace_info = "w_io_pixels_from_jpeg_stream";
-    if (!pMemPool)
+    if (!pMemPool || !pJpegStream || !pJpegStreamLen)
     {
-        W_ASSERT(false, "missing memory pool. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
         return W_FAILURE;
     }
     W_RESULT _rt;
@@ -1068,14 +1196,17 @@ W_RESULT w_io_pixels_from_jpeg_stream(
 
     if ((_rt = tjDecompressHeader3(_tj_handle,
                                    pJpegStream,
-                                   pJpegStreamLen,
+                                   (int)pJpegStreamLen,
                                    pWidth,
                                    pHeight,
                                    pSubSample,
                                    pColorSpace)))
     {
         _rt = tjGetErrorCode(_tj_handle);
-        W_ASSERT_P(false, "tjDecompressHeader3 failed. error code %d . error message %s .trace info: w_io_pixels_from_jpeg_stream", _rt, tjGetErrorStr2(_tj_handle));
+        W_ASSERT_P(false, 
+            "tjDecompressHeader3 failed. error code %d . error message %s .trace info: w_io_pixels_from_jpeg_stream", 
+            _rt, 
+            tjGetErrorStr2(_tj_handle));
         goto out;
     }
 
@@ -1091,11 +1222,11 @@ W_RESULT w_io_pixels_from_jpeg_stream(
     }
 
     size_t _memory_size = (size_t)_comp * (size_t)(*pWidth) * (size_t)(*pHeight) * sizeof(uint8_t);
-    *pPixels = (uint8_t*)w_mem_pool_malloc(pMemPool, _memory_size);
+    *pPixels = (uint8_t*)w_malloc(pMemPool, _memory_size);
     _rt = tjDecompress2(
         _tj_handle,
         pJpegStream,
-        pJpegStreamLen,
+        (unsigned long)pJpegStreamLen,
         *pPixels,
         *pWidth,
         _comp * (*pWidth),
@@ -1121,7 +1252,18 @@ W_RESULT w_io_pixels_from_jpeg_file(
     _Out_    int* pNumberOfPasses,
     _Out_    uint8_t** pPixels)
 {
+    *pWidth = 0;
+    *pHeight = 0;
+    *pSubSample = 0;
+    *pColorSpace = 0;
+    *pNumberOfPasses = 0;
+    *pPixels = NULL;
+
     W_RESULT _ret = W_FAILURE;
+    if (!pMemPool || !pJpegFile)
+    {
+        return _ret;
+    }
     w_file_istream _istream = w_io_file_read_full_from_path(pMemPool, pJpegFile);
     if (_istream)
     {
@@ -1142,6 +1284,10 @@ W_RESULT w_io_pixels_from_jpeg_file(
 
 W_RESULT w_io_stream_is_png(_In_ w_file_istream pFileStream)
 {
+    if (!pFileStream)
+    {
+        return W_FAILURE;
+    }
     uint8_t _buf[PNG_BYTES_TO_CHECK];
     memcpy(_buf, pFileStream->buffer, PNG_BYTES_TO_CHECK);
     //Compare the first PNG_BYTES_TO_CHECK bytes of the signature.
@@ -1163,7 +1309,7 @@ W_RESULT w_io_file_is_png(_In_z_ const char* pFilePath)
         {
             _ret = png_sig_cmp(_fs->buffer, 0, PNG_BYTES_TO_CHECK);
         }
-        w_mem_pool_fini(_pool);
+        w_mem_pool_fini(&_pool);
     }
     return _ret;
 }
@@ -1171,7 +1317,7 @@ W_RESULT w_io_file_is_png(_In_z_ const char* pFilePath)
 static  void _png_user_read_data(
     png_structp pPngPtr,
     png_bytep pData,
-    png_size_t pLength)
+    int pLength)
 {
     struct png_context* context;
 
@@ -1201,12 +1347,16 @@ W_RESULT w_io_pixels_from_png_stream(
 
     if (!pMemPool)
     {
-        W_ASSERT(false, "file stream does not contain png data. trace info: %s::png_sig_cmp", _trace_info);
+        W_ASSERT_P(false, 
+            "file stream does not contain png data. trace info: %s::png_sig_cmp", 
+            _trace_info);
         return APR_BADARG;
     }
-    if(png_sig_cmp(pFileStream->buffer, 0, PNG_BYTES_TO_CHECK))
+    if (png_sig_cmp(pFileStream->buffer, 0, PNG_BYTES_TO_CHECK))
     {
-        W_ASSERT(false, "file stream does not contain png data. trace info: %s::png_sig_cmp", _trace_info);
+        W_ASSERT_P(false,
+            "file stream does not contain png data. trace info: %s::png_sig_cmp",
+            _trace_info);
         return APR_BADARG;
     }
 
@@ -1218,32 +1368,41 @@ W_RESULT w_io_pixels_from_png_stream(
         NULL);
     if (!_png_ptr)
     {
-        W_ASSERT(false, "could not create png pointer. trace info: %s::png_create_read_struct", _trace_info);
+        W_ASSERT_P(false,
+            "could not create png pointer. trace info: %s::png_create_read_struct",
+            _trace_info);
         return W_FAILURE;
     }
 
     png_infop _info_ptr = png_create_info_struct(_png_ptr);
     if (!_info_ptr)
     {
-        W_ASSERT(false, "could not create info struct. trace info: %s::png_create_info_struct", _trace_info);
+        W_ASSERT_P(false, 
+            "could not create info struct. trace info: %s::png_create_info_struct", 
+            _trace_info);
         return W_FAILURE;
     }
 
     if (setjmp(png_jmpbuf(_png_ptr)))
     {
         png_destroy_read_struct(&_png_ptr, &_info_ptr, (png_infopp)0);
-        
-        W_ASSERT(false, "failed on setjmp. trace info: %s::setjmp", _trace_info);
+
+        W_ASSERT_P(false, 
+            "failed on setjmp. trace info: %s", 
+            _trace_info);
         return W_FAILURE;
     }
 
     struct png_context context;
 
     context.data = pFileStream->buffer;
-    context.len = pFileStream->bytes_read;
+    context.len = (int)pFileStream->bytes_read;
     context.pos = PNG_PAGING_SIZE;
 
-    png_set_read_fn(_png_ptr, &context, &_png_user_read_data);//png_init_io(_png_ptr, _file);
+    png_set_read_fn(
+        _png_ptr, 
+        (png_voidp)(&context), 
+        (png_rw_ptr)(&_png_user_read_data));//png_init_io(_png_ptr, _file);
     //png_init_io(_png_ptr, )
     png_set_sig_bytes(_png_ptr, PNG_PAGING_SIZE);
     png_read_info(_png_ptr, _info_ptr);
@@ -1300,14 +1459,10 @@ W_RESULT w_io_pixels_from_png_stream(
     }
 
     //allocate memory
-    if (pPixels && *pPixels)
-    {
-        w_free(pMemPool, *pPixels);
-    }
-    (*pPixels) = (uint8_t*)w_mem_pool_malloc(
+    (*pPixels) = (uint8_t*)w_malloc(
         pMemPool,
         _comp * (size_t)(*pWidth) * (size_t)(*pHeight) * sizeof(uint8_t));
-    
+
     size_t _bytes_per_row = png_get_rowbytes(_png_ptr, _info_ptr);
     uint8_t* _raw_data = (uint8_t*)w_malloc(pMemPool, _bytes_per_row);
 
@@ -1336,7 +1491,7 @@ W_RESULT w_io_pixels_from_png_stream(
                 (*pPixels)[_k + 1] = _g;
                 (*pPixels)[_k + 2] = _b;
 
-                _k += _comp;
+                _k += (uint32_t)_comp;
             }
         }
         break;
@@ -1359,7 +1514,7 @@ W_RESULT w_io_pixels_from_png_stream(
                 (*pPixels)[_k + 1] = _g;
                 (*pPixels)[_k + 2] = _r;
 
-                _k += _comp;
+                _k += (uint32_t)_comp;
             }
         }
         break;
@@ -1383,7 +1538,7 @@ W_RESULT w_io_pixels_from_png_stream(
                 (*pPixels)[_k + 2] = _b;
                 (*pPixels)[_k + 3] = _a;
 
-                _k += _comp;
+                _k += (uint32_t)_comp;
             }
         }
         break;
@@ -1407,7 +1562,7 @@ W_RESULT w_io_pixels_from_png_stream(
                 (*pPixels)[_k + 2] = _r;
                 (*pPixels)[_k + 3] = _a;
 
-                _k += _comp;
+                _k += (uint32_t)_comp;
             }
         }
         break;
@@ -1415,7 +1570,7 @@ W_RESULT w_io_pixels_from_png_stream(
 
     png_destroy_read_struct(&_png_ptr, &_info_ptr, (png_infopp)0);
     w_free(pMemPool, _raw_data);
-    
+
     return W_SUCCESS;
 }
 
@@ -1431,6 +1586,24 @@ W_RESULT w_io_pixels_from_png_file(
     _Out_  uint8_t** pPixels)
 {
     W_RESULT _ret = W_FAILURE;
+    
+    const char* _trace_info = "w_io_pixels_from_png_file";
+
+    if (!pMemPool || !pFilePath)
+    {
+        W_ASSERT_P(false,
+            "bad args. trace info: %s::png_sig_cmp",
+            _trace_info);
+        return APR_BADARG;
+    }
+
+    *pWidth = 0;
+    *pHeight = 0;
+    *pColorType = 0;
+    *pBitDepth = 0;
+    *pNumberOfPasses = 0;
+    *pPixels = NULL;
+
     w_file_istream _fs = w_io_file_read_full_from_path(pMemPool, pFilePath);
     if (_fs)
     {
@@ -1447,6 +1620,11 @@ W_RESULT w_io_pixels_from_png_file(
     }
     return _ret;
 }
+
+
+
+
+
 
 //apr_dir_read(<#apr_finfo_t *finfo#>, <#apr_int32_t wanted#>, <#apr_dir_t *thedir#>)
 //#if defined(__cpp_lib_filesystem) || defined(__cpp_lib_experimental_filesystem)

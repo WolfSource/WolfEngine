@@ -48,8 +48,7 @@ W_RESULT _lua_get_value(
         {
             int* _v = w_malloc(
                 pMemPool,
-                sizeof(int), 
-                "_lua_get_value::LUA_TBOOLEAN");
+                sizeof(int));
             if (!_v)
             {
                 return W_FAILURE;
@@ -64,8 +63,7 @@ W_RESULT _lua_get_value(
         {
             double* _v = w_malloc(
                 pMemPool,
-                sizeof(double), 
-                "_lua_get_value::LUA_TNUMBER");
+                sizeof(double));
             if (!_v)
             {
                 return W_FAILURE;
@@ -100,12 +98,12 @@ W_RESULT w_lua_init(_Inout_ w_mem_pool pMemPool)
     const char* _trace_info = "w_lua_init";
     if (!pMemPool)
     {
-        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
         return APR_BADARG;
     }
 
-    s_last_error = (char*)w_malloc(pMemPool, W_MAX_BUFFER_SIZE, "w_lua_init");
-    s_function_name = (char*)w_malloc(pMemPool, W_MAX_BUFFER_SIZE, "w_lua_init");
+    s_last_error = (char*)w_malloc(pMemPool, W_MAX_BUFFER_SIZE);
+    s_function_name = (char*)w_malloc(pMemPool, W_MAX_BUFFER_SIZE);
     s_function_number_input_parameters = 0;
 
     if (!s_function_name || !s_last_error)
@@ -119,7 +117,7 @@ W_RESULT w_lua_load_file(_In_z_ const char* pPath)
 {
     if (!pPath)
     {
-        W_ASSERT(false, "pPath is NULL. trace info: w_lua_load_file");
+        W_ASSERT(false, "bad args! trace info: w_lua_load_file");
         return W_FAILURE;
     }
     
@@ -157,7 +155,7 @@ W_RESULT w_lua_load_from_stream(_In_z_ const char* pBufferStream)
 {
 	if (!pBufferStream)
     {
-        W_ASSERT(false, "pBuffer is NULL. trace info: w_lua_load_file");
+        W_ASSERT(false, "bad args! trace info: w_lua_load_file");
         return W_FAILURE;
     }
 
@@ -451,7 +449,7 @@ W_RESULT _lua_set_value(_Inout_ void* pValue, _In_ int pValueType)
     }
 }
 
-W_RESULT w_lua_set_parameter_function(_In_ const void* pValue, _In_ int pValueType)
+W_RESULT w_lua_set_parameter_function(_In_ void* pValue, _In_ int pValueType)
 {
     s_function_number_input_parameters++;
     return _lua_set_value(pValue, pValueType);
@@ -459,7 +457,7 @@ W_RESULT w_lua_set_parameter_function(_In_ const void* pValue, _In_ int pValueTy
 
 W_RESULT w_lua_set_global_variable(_In_z_ const char*   pVariableName,
                                    _In_   int           pVariableType,
-                                   _In_   const void*   pValue)
+                                   _In_   void*         pValue)
 {
     lua_getglobal(s_lua, pVariableName);
     if (lua_isnil(s_lua, -1))
@@ -493,11 +491,17 @@ W_RESULT w_lua_set_lua_path(
         W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
         return APR_BADARG;
     }
-    
+    apr_pool_t* _pool = w_mem_pool_get_apr_pool(pMemPool);
+    if (!_pool)
+    {
+        W_ASSERT_P(false, "missing apr pool. trace info: %s", _trace_info);
+        return APR_BADARG;
+    }
+
     lua_getglobal(s_lua, "package");
     lua_getfield(s_lua, -1, "path"); // get field "path" from table at top of stack (-1)
     const char* _cur_path = lua_tostring(s_lua, -1); // grab path string from top of stack
-    _cur_path = apr_pstrcat(pMemPool, _cur_path, ";", pPath, NULL);
+    _cur_path = apr_pstrcat(_pool, _cur_path, ";", pPath, NULL);
     lua_pop(s_lua, 1); // get rid of the string on the stack we just pushed on line 5
     lua_pushstring(s_lua, _cur_path); // push the new one
     lua_setfield(s_lua, -2, "path"); // set the field "path" in table at -2 with value at top of stack

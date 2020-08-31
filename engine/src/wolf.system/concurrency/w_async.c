@@ -41,10 +41,12 @@ W_RESULT w_async_init(
     // This loop sits in the thread
     pAsync->l = ev_loop_new(0);
     ev_async_init(pAsync->a, pAsyncCallBack);
-    w_thread_create(&pAsync->t, &_thread_job, (void*)pAsync->l);
-    ev_async_start(pAsync->l, pAsync->a);
-
-    return W_SUCCESS;
+    if (w_thread_init(pMemPool, &pAsync->t, &_thread_job, (void*)pAsync->l) == W_SUCCESS)
+    {
+        ev_async_start(pAsync->l, pAsync->a);
+        return W_SUCCESS;
+    }
+    return W_FAILURE;
 }
 
 W_RESULT w_async_send(_In_ w_async* pAsync, _In_ void* pArg)

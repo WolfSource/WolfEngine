@@ -10,7 +10,7 @@ typedef struct
     char*           buf;//buffer 
     logger*         log;//logger
     w_mutex         mutex;//mutex
-    w_mem_pool      pool;//memory pool
+    w_mem_pool      mem_pool;//memory pool
 }w_logger;
 static std::unordered_map<int, w_logger*> s_loggers;
 
@@ -22,13 +22,14 @@ int w_log_init(
 
     //create a w_mem_pool
     w_mem_pool _mem_pool;
-    w_mem_pool_create(_mem_pool);
+    w_mem_pool_init(&_mem_pool, W_MEM_POOL_FAST_EXTEND);
     if (!_mem_pool)
     {
         W_ASSERT_P(false, "could not create memory pool for w_logger. trace info: %s", _trace_info);
         return -1;
     }
-    auto _w_logger = (w_logger*)w_mem_pool_malloc(_mem_pool, sizeof(w_logger));
+
+    auto _w_logger = (w_logger*)w_malloc(_mem_pool, sizeof(w_logger));
     if (!_w_logger)
     {
         W_ASSERT_P(
@@ -37,10 +38,10 @@ int w_log_init(
             _trace_info);
         goto out;
     }
-    _w_logger->pool = _mem_pool;
+    _w_logger->mem_pool = _mem_pool;
 
     //create a log file
-    _w_logger->log = (logger*)w_mem_pool_malloc(_mem_pool, sizeof(logger));
+    _w_logger->log = (logger*)w_malloc(_mem_pool, sizeof(logger));
     if (!_w_logger->log)
     {
         W_ASSERT_P(
@@ -50,7 +51,7 @@ int w_log_init(
         goto out;
     }
     //initialize the log file
-    if (_w_logger->log->init(pConfig) != W_SUCCESS)
+    if (_w_logger->log->init(_mem_pool, pConfig) != W_SUCCESS)
     {
         W_ASSERT_P(
             false,
@@ -59,7 +60,7 @@ int w_log_init(
         goto out;
     }
 
-    _w_logger->buf = (char*)w_mem_pool_malloc(_mem_pool, W_MAX_BUFFER_SIZE);
+    _w_logger->buf = (char*)w_malloc(_mem_pool, W_MAX_BUFFER_SIZE);
     if (_w_logger->buf)
     {
         W_ASSERT_P(
@@ -70,7 +71,7 @@ int w_log_init(
     }
 
     //create a mutex
-    w_thread_mutex_create(
+    w_thread_mutex_init(
         &_w_logger->mutex,
         0x0,
         _mem_pool);
@@ -94,7 +95,7 @@ int w_log_init(
         constexpr int _min = 1, _max = INT_MAX - 1;
         for (size_t i = 0; i < 3; ++i)
         {
-            srand(time(NULL));
+            srand((unsigned int)time(NULL));
             _log_id = _min + (rand() % static_cast<int>(_max - _min + 1));
             if (s_loggers.find(_log_id) == s_loggers.end())
             {
@@ -111,12 +112,16 @@ out:
         {
             if (_w_logger->mutex)
             {
-                w_thread_mutex_destroy(_w_logger->mutex);
+                w_thread_mutex_fini(_w_logger->mutex);
+                _w_logger->mutex = nullptr;
+            }
+            if (_w_logger->mem_pool)
+            {
+                w_mem_pool_fini(&_w_logger->mem_pool);
+                _w_logger->mem_pool = nullptr;
             }
             _w_logger = nullptr;
         }
-        //release the pool of _w_logger
-        w_mem_pool_terminate(_mem_pool);
     }
     else
     {
@@ -279,7 +284,7 @@ void VALIDATE(
     
     if (pTerminateProgram)
     {
-        wolf_terminate();
+        wolf_fini();
         std::exit(EXIT_FAILURE);
     }
 }
@@ -314,7 +319,7 @@ void VALIDATE_EX(
     
     if (pTerminateProgram)
     {
-        wolf_terminate();
+        wolf_fini();
         std::exit(EXIT_FAILURE);
     }
 }
@@ -343,7 +348,7 @@ W_RESULT  w_log_flush_ex(_In_ int pLogID)
     return W_FAILURE;
 }
 
-W_RESULT  w_log_terminate_all()
+W_RESULT  w_log_fini_all()
 {
     for (auto i = 0; i < s_loggers.size(); ++i)
     {
@@ -353,15 +358,15 @@ W_RESULT  w_log_terminate_all()
             if (_ptr->mutex)
             {
                 //release mutex
-                w_thread_mutex_destroy(_ptr->mutex);
+                w_thread_mutex_fini(_ptr->mutex);
                 _ptr->mutex = nullptr;
             }
 
-            if (_ptr->pool)
+            if (_ptr->mem_pool)
             {
                 //release memory pool
-                w_mem_pool_terminate(_ptr->pool);
-                _ptr->pool = nullptr;
+                w_mem_pool_fini(&_ptr->mem_pool);
+                _ptr->mem_pool = nullptr;
             }
         }
     }
@@ -369,7 +374,7 @@ W_RESULT  w_log_terminate_all()
     return W_SUCCESS;
 }
 
-W_RESULT  w_log_terminate_ex(_In_ int pLogID)
+W_RESULT  w_log_fini_ex(_In_ int pLogID)
 {
     //get the logger object based on log ID
     auto _iter = s_loggers.find(pLogID);
@@ -381,15 +386,15 @@ W_RESULT  w_log_terminate_ex(_In_ int pLogID)
         if (_ptr->mutex)
         {
             //release mutex
-            w_thread_mutex_destroy(_ptr->mutex);
+            w_thread_mutex_fini(_ptr->mutex);
             _ptr->mutex = nullptr;
         }
 
-        if (_ptr->pool)
+        if (_ptr->mem_pool)
         {
             //release memory pool
-            w_mem_pool_terminate(_ptr->pool);
-            _ptr->pool = nullptr;
+            w_mem_pool_fini(&_ptr->mem_pool);
+            _ptr->mem_pool = nullptr;
         }
     }
 

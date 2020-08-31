@@ -7,35 +7,42 @@ W_RESULT w_table_init(
     _In_ size_t pInitSize)
 {
     const char* _trace_info = "w_table_init";
-    if (!pMemPool)
+    if (!pMemPool || w_mem_pool_get_type(pMemPool) != W_MEM_POOL_FAST_EXTEND)
     {
-        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
         return APR_BADARG;
     }
 
-    *pTable = apr_table_make(pMemPool, pInitSize);
-    if (*pTable)
+    apr_pool_t* _pool = w_mem_pool_get_apr_pool(pMemPool);
+    if (_pool)
     {
-        return W_SUCCESS;
+        *pTable = apr_table_make(_pool, (int)pInitSize);
+        if (*pTable)
+        {
+            return W_SUCCESS;
+        }
     }
     return W_FAILURE;
 }
 
 W_RESULT w_table_set(_In_ w_table pTable, char* pKey, char* pValue, bool pMakeACopy)
 {
-    if (!pTable)
+    const char* _trace_info = "w_table_set";
+
+    if (!pTable || !pKey)
     {
-        W_ASSERT(false, "Missing pTable. trace info: w_table_set");
+        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
         return APR_BADARG;
     }
 
     if (pMakeACopy)
     {
+        // make a copy
         apr_table_set(pTable, pKey, pValue);
     }
     else
     {
-        //no copy
+        // no copy
         apr_table_setn(pTable, pKey, pValue);
     }
 
@@ -44,9 +51,10 @@ W_RESULT w_table_set(_In_ w_table pTable, char* pKey, char* pValue, bool pMakeAC
 
 W_RESULT w_table_unset(_In_ w_table pTable, char* pKey)
 {
-    if (!pTable)
+    const char* _trace_info = "w_table_unset";
+    if (!pTable || !pKey)
     {
-        W_ASSERT(false, "Missing pTable. trace info: w_table_unset");
+        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
         return APR_BADARG;
     }
     apr_table_unset(pTable, pKey);
@@ -55,9 +63,10 @@ W_RESULT w_table_unset(_In_ w_table pTable, char* pKey)
 
 W_RESULT w_table_add(_In_ w_table pTable, char* pKey, char* pValue)
 {
+    const char* _trace_info = "w_table_add";
     if (!pTable)
     {
-        W_ASSERT(false, "Missing pTable. trace info: w_table_add");
+        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
         return APR_BADARG;
     }
     apr_table_add(pTable, pKey, pValue);
@@ -66,9 +75,10 @@ W_RESULT w_table_add(_In_ w_table pTable, char* pKey, char* pValue)
 
 int w_table_get_size(_In_ w_table pTable)
 {
+    const char* _trace_info = "w_table_get_size";
     if (!pTable)
     {
-        W_ASSERT(false, "Missing pTable. trace info: w_table_get_size");
+        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
         return -1;
     }
     const apr_array_header_t* _header = apr_table_elts(pTable);
@@ -77,20 +87,21 @@ int w_table_get_size(_In_ w_table pTable)
 
 int w_table_is_empty(_In_ w_table pTable)
 {
+    const char* _trace_info = "w_table_is_empty";
     if (!pTable)
     {
-        W_ASSERT(false, "Missing pTable. trace info: w_table_get_size");
+        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
         return -1;
     }
-    const apr_array_header_t* _header = apr_table_elts(pTable);
-    return apr_is_empty_table(_header);
+    return apr_is_empty_table(pTable);
 }
 
 void w_table_clear(_In_ w_table pTable)
 {
+    const char* _trace_info = "w_table_clear";
     if (!pTable)
     {
-        W_ASSERT(false, "Missing pTable. trace info: w_table_get_size");
+        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
         return;
     }
     apr_table_clear(pTable);
@@ -100,9 +111,10 @@ int w_table_do(_In_ w_table pTable,
                _In_ w_table_do_callback pCallBack,
                _In_ void* pArg)
 {
+    const char* _trace_info = "w_table_do";
     if (!pTable)
     {
-        W_ASSERT(false, "Missing pTable. trace info: w_table_do");
+        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
         return FALSE;
     }
     return apr_table_do(pCallBack, pArg, pTable, NULL);
@@ -114,27 +126,29 @@ int w_table_do_with_filter(
     _In_ void* pArg,
     _In_ va_list pKeys)
 {
+    const char* _trace_info = "w_table_do_with_filter";
     if (!pTable)
     {
-        W_ASSERT(false, "Missing pTable. trace info: w_table_do_with_filter");
+        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
         return FALSE;
     }
-    return apr_table_do(pCallBack, pArg, pTable, pKeys,NULL);
+    return apr_table_do(pCallBack, pArg, pTable, pKeys, NULL);
 }
 
 const w_table_entry_iterator w_table_get_entry(_In_ w_table pTable)
 {
+    const char* _trace_info = "w_table_get_entry";
     if (!pTable)
     {
-        W_ASSERT(false, "Missing pTable. trace info: w_table_get_entry");
+        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
         return FALSE;
     }
     const apr_array_header_t* _header = apr_table_elts(pTable);
-    return (const apr_table_entry_t*)_header->elts;
+    return (const w_table_entry_iterator)_header->elts;
 }
 
 char* w_table_get_key(
-    _In_ const w_table_entry_iterator pTableEntry, 
+    _In_ const w_table_entry_iterator pTableEntry,
     _In_ size_t pIndex)
 {
     return pTableEntry ? pTableEntry[pIndex].key : NULL;

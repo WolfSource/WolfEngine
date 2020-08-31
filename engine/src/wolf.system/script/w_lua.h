@@ -154,7 +154,7 @@ extern "C" {
     */
     W_SYSTEM_EXPORT
         W_RESULT w_lua_set_parameter_function(
-            _In_ const void* pValue,
+            _In_ void* pValue,
             _In_ int pValueType);
 
     /**
@@ -178,7 +178,7 @@ extern "C" {
         W_RESULT w_lua_set_global_variable(
             _In_z_   const char* pVariableName,
             _In_     int         pVariableType,
-            _In_     const void* pValue);
+            _In_     void*       pValue);
 
     /**
      * set lua path
