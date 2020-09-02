@@ -43,12 +43,12 @@ extern "C" {
         quic_listener
     } w_socket_mode;
 
-    typedef struct
+    typedef struct w_buffer_t
     {
-        uint8_t* data;
+        uint8_t*    data;
         size_t      len;
-    } w_buffer;
-    typedef w_buffer* w_buffer_ptr;
+    } w_buffer_t;
+    typedef w_buffer_t* w_buffer;
 
     typedef struct
     {
@@ -267,7 +267,7 @@ extern "C" {
         size_t w_net_send_msg_quic(
             _In_ uint8_t* pConnectionID,
             _In_ uint64_t pStreamIndex,
-            _In_ w_buffer_ptr pBuffer,
+            _In_ w_buffer pBuffer,
             _In_ bool pFinish);
 
     /**
@@ -282,7 +282,7 @@ extern "C" {
         size_t w_net_receive_msg_quic(
             _In_ uint8_t* pConnectionID,
             _In_ uint64_t pStreamIndex,
-            _Inout_ w_buffer_ptr pReceiveBuffer,
+            _Inout_ w_buffer pReceiveBuffer,
             _Inout_ bool* pIsStreamFinished);
 
     /**

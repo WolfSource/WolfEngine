@@ -4,26 +4,31 @@
 
 W_RESULT w_thread_init_once_flag(
     _Inout_ w_mem_pool pMemPool,
-    _Inout_ w_thread_once_flag pOnceFlag)
+    _Inout_ w_thread_once_flag* pOnceFlag)
 {
     const char* _trace_info = "w_thread_init_once_flag";
-    if (pMemPool)
+    if (!pMemPool || w_mem_pool_get_type(pMemPool) != W_MEM_POOL_FAST_EXTEND)
     {
-        apr_pool_t* _pool = w_mem_pool_get_apr_pool(pMemPool);
-        if (_pool)
-        {
-            return apr_thread_once_init(&pOnceFlag, _pool);
-        }
+        W_ASSERT_P(false, "bad args. trace info %s", _trace_info);
+        return APR_BADARG;
     }
-    W_ASSERT_P(false, "bad args. trace info %s", _trace_info);
-    return APR_BADARG;
+
+    apr_pool_t* _pool = w_mem_pool_get_apr_pool(pMemPool);
+    if (_pool)
+    {
+        return apr_thread_once_init(&(*pOnceFlag), _pool);
+    }
+    return W_FAILURE;
 }
 
 W_RESULT w_thread_once_call(_Inout_ w_thread_once_flag pOnceFlag, _In_ w_thread_once_job pOnceJob)
-{    
+{
+    if (!pOnceFlag || !pOnceJob)
+    {
+        return APR_BADARG;
+    }
     //create once flag
-    apr_status_t _status = apr_thread_once(pOnceFlag, pOnceJob);
-    return _status == APR_SUCCESS ? W_SUCCESS : W_FAILURE;
+    return apr_thread_once(pOnceFlag, pOnceJob);
 }
 
 W_RESULT w_thread_init(
@@ -90,13 +95,28 @@ w_thread w_thread_get_current(void)
 w_thread_id w_thread_get_current_id(void)
 {
     apr_os_thread_t _current_os_thread = apr_os_thread_current();
-    return (void*)_current_os_thread;
+
+    apr_os_thread_t* _dst = NULL;
+    //allocate memory for it
+    w_mem_pool _mem_pool = NULL;
+    w_mem_pool_init(&_mem_pool, W_MEM_POOL_ALIGNED_RECLAIM);
+    if (_mem_pool)
+    {
+        size_t _size = sizeof(apr_os_thread_t);
+        _dst = w_malloc(_mem_pool, _size);
+        if (_dst)
+        {
+            memcpy(_dst, &_current_os_thread, _size);
+        }
+    }
+    w_mem_pool_fini(&_mem_pool);
+    return (void*)_dst;
 }
 
 W_RESULT w_thread_current_ids_are_equal(_In_ w_thread_id pThread1, _In_ w_thread_id pThread2)
 {
-    apr_os_thread_t* _t1 = (apr_os_thread_t*)pThread1;
-    apr_os_thread_t* _t2 = (apr_os_thread_t*)pThread2;
+    apr_os_thread_t* _t1 = pThread1;
+    apr_os_thread_t* _t2 = pThread2;
 
     return (apr_os_thread_equal(*_t1, *_t2) != 0) ? W_SUCCESS : W_FAILURE;
 }
@@ -148,9 +168,10 @@ void w_thread_get_number_of_cpu_threads(_Inout_ int* pCores,
 }
 
 
-W_RESULT    w_thread_mutex_init(_Inout_ w_mutex* pMutex,
-                                  _In_ uint32_t pFlags,
-                                  _In_ w_mem_pool pMemPool)
+W_RESULT    w_thread_mutex_init(
+    _Inout_ w_mem_pool pMemPool,
+    _Inout_ w_mutex* pMutex,
+    _In_ uint32_t pFlags)
 {
     const char* _trace_info = "w_thread_mutex_init";
     if (pMemPool)

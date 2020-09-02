@@ -69,7 +69,7 @@ void* w_malloc(
 	_Inout_ w_mem_pool pMemPool,
 	_In_ size_t pMemSize)
 {
-	if (!pMemPool || pMemPool->type == W_MEM_POOL_ALIGNED_RECLAIM)
+	if (!pMemSize || !pMemPool || pMemPool->type == W_MEM_POOL_ALIGNED_RECLAIM)
 	{
 		return rpmalloc(pMemSize);
 	}
@@ -85,7 +85,7 @@ void* w_calloc(
 	_Inout_ w_mem_pool pMemPool,
 	_In_ size_t pMemSize)
 {
-	if (!pMemPool || pMemPool->type == W_MEM_POOL_ALIGNED_RECLAIM)
+	if (!pMemSize || !pMemPool || pMemPool->type == W_MEM_POOL_ALIGNED_RECLAIM)
 	{
 		return rpcalloc(1, pMemSize);
 	}

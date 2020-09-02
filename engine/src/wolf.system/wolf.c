@@ -61,13 +61,7 @@ char* w_strcat(_In_ w_mem_pool pMemPool, ...)
     va_end(adummy);
 
     //allocate the required string
-    w_apr_pool _pool = w_mem_pool_get_apr_pool(pMemPool);
-    if (!_pool)
-    {
-        W_ASSERT_P(false, "missing apr memory pool. trace info: %s", _trace_info);
-        return NULL;
-    }
-    res = (char*)apr_palloc(_pool, len + 1);
+    res = (char*)w_malloc(pMemPool, len + 1);
     cp = res;
 
     //pass two, copy the argument strings into the result space

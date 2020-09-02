@@ -445,6 +445,12 @@
     <ClCompile Include="..\..\..\src\wolf.system\os\w_process.c">
       <Filter>os</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\concurrency\w_thread_pool.c">
+      <Filter>concurrency</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\concurrency\w_concurrent_queue.c">
+      <Filter>concurrency</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\wolf.system\base64\chromiumbase64.h">
@@ -987,6 +993,12 @@
     </ClInclude>
     <ClInclude Include="..\..\..\src\wolf.system\os\w_process.h">
       <Filter>os</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\concurrency\w_thread_pool.h">
+      <Filter>concurrency</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\concurrency\w_concurrent_queue.h">
+      <Filter>concurrency</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

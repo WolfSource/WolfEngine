@@ -85,7 +85,7 @@ w_timespan w_timespan_init_from_zero(_Inout_ w_mem_pool pMemPool)
         W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
         return NULL;
     }
-    w_timespan _timespan = w_malloc(pMemPool, sizeof(w_timespan));
+    w_timespan _timespan = w_malloc(pMemPool, sizeof(w_timespan_t));
     if (_timespan)
     {
         _timespan->ticks = 0;
@@ -102,7 +102,7 @@ w_timespan w_timespan_init_from_min_value(_Inout_ w_mem_pool pMemPool)
         W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
         return NULL;
     }
-    w_timespan _timespan = (w_timespan)w_malloc(pMemPool, sizeof(w_timespan));
+    w_timespan _timespan = (w_timespan)w_malloc(pMemPool, sizeof(w_timespan_t));
     if (_timespan)
     {
         _timespan->ticks = LLONG_MIN;
@@ -119,7 +119,7 @@ w_timespan w_timespan_init_from_max_value(_Inout_ w_mem_pool pMemPool)
         W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
         return NULL;
     }
-    w_timespan _timespan = (w_timespan)w_malloc(pMemPool, sizeof(w_timespan));
+    w_timespan _timespan = (w_timespan)w_malloc(pMemPool, sizeof(w_timespan_t));
     if (_timespan)
     {
         _timespan->ticks = LLONG_MAX;
@@ -152,7 +152,7 @@ w_timespan w_timespan_init_from_days(
         W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
         return NULL;
     }
-    w_timespan _timespan = (w_timespan)w_malloc(pMemPool, sizeof(w_timespan));
+    w_timespan _timespan = (w_timespan)w_malloc(pMemPool, sizeof(w_timespan_t));
     if (_timespan)
     {
         _timespan->ticks = _interval(pValue, MILLIS_PER_DAY, &_timespan->overflowed);
@@ -170,7 +170,7 @@ w_timespan w_timespan_init_from_hours(
         W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
         return NULL;
     }
-    w_timespan _timespan = (w_timespan)w_malloc(pMemPool, sizeof(w_timespan));
+    w_timespan _timespan = (w_timespan)w_malloc(pMemPool, sizeof(w_timespan_t));
     if (_timespan)
     {
         _timespan->ticks = _interval(pValue, MILLIS_PER_HOUR, &_timespan->overflowed);
@@ -188,7 +188,7 @@ w_timespan w_timespan_init_from_minutes(
         W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
         return NULL;
     }
-    w_timespan _timespan = (w_timespan)w_malloc(pMemPool, sizeof(w_timespan));
+    w_timespan _timespan = (w_timespan)w_malloc(pMemPool, sizeof(w_timespan_t));
     if (_timespan)
     {
         _timespan->ticks = _interval(pValue, MILLIS_PER_MINUTE, &_timespan->overflowed);
@@ -206,7 +206,7 @@ w_timespan w_timespan_init_from_seconds(
         W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
         return NULL;
     }
-    w_timespan _timespan = (w_timespan)w_malloc(pMemPool, sizeof(w_timespan));
+    w_timespan _timespan = (w_timespan)w_malloc(pMemPool, sizeof(w_timespan_t));
     if (_timespan)
     {
         _timespan->ticks = _interval(pValue, MILLIS_PER_SECOND, &_timespan->overflowed);
@@ -224,7 +224,7 @@ w_timespan w_timespan_init_from_milliseconds(
         W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
         return NULL;
     }
-    w_timespan _timespan = (w_timespan)w_malloc(pMemPool, sizeof(w_timespan));
+    w_timespan _timespan = (w_timespan)w_malloc(pMemPool, sizeof(w_timespan_t));
     if (_timespan)
     {
         _timespan->ticks = _interval(pValue, 1, &_timespan->overflowed);
@@ -242,7 +242,7 @@ w_timespan w_timespan_init_from_ticks(
         W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
         return NULL;
     }
-    w_timespan _timespan = (w_timespan)w_malloc(pMemPool, sizeof(w_timespan));
+    w_timespan _timespan = (w_timespan)w_malloc(pMemPool, sizeof(w_timespan_t));
     if (_timespan)
     {
         if (pTicks > LLONG_MAX || LLONG_MAX < LLONG_MIN)
@@ -271,7 +271,7 @@ w_timespan w_timespan_init_from_shorttime(
         W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
         return NULL;
     }
-    w_timespan _timespan = (w_timespan)w_malloc(pMemPool, sizeof(w_timespan));
+    w_timespan _timespan = (w_timespan)w_malloc(pMemPool, sizeof(w_timespan_t));
     if (_timespan)
     {
         _timespan->ticks = _time_to_ticks(
@@ -299,7 +299,7 @@ w_timespan w_timespan_init_from_longtime(
         W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
         return NULL;
     }
-    w_timespan _timespan = (w_timespan)w_malloc(pMemPool, sizeof(w_timespan));
+    w_timespan _timespan = (w_timespan)w_malloc(pMemPool, sizeof(w_timespan_t));
     if (_timespan)
     {
         _timespan->ticks = _time_to_ticks(
@@ -446,7 +446,7 @@ w_timespan w_timespan_add(
 {
     W_ASSERT(pLValue || pRValue, "input parameters of timespan_add function are NULL. trace info: timespan_add");
 
-    w_timespan _timespan = (w_timespan)w_malloc(pMemPool, sizeof(w_timespan));
+    w_timespan _timespan = (w_timespan)w_malloc(pMemPool, sizeof(w_timespan_t));
     if (!_timespan)
     {
         return NULL;

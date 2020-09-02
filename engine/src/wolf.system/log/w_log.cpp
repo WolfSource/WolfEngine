@@ -71,11 +71,10 @@ int w_log_init(
     }
 
     //create a mutex
-    w_thread_mutex_init(
+    if (w_thread_mutex_init(
+        _mem_pool,
         &_w_logger->mutex,
-        0x0,
-        _mem_pool);
-    if (!_w_logger->mutex)
+        0x0))
     {
         W_ASSERT_P(
             false,

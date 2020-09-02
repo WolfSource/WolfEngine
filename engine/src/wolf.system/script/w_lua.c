@@ -1,5 +1,5 @@
 #include "w_lua.h"
-#include <apr-1/apr_strings.h>
+#include <apr-2/apr_strings.h>
 #include <io/w_io.h>
 
 lua_State*		s_lua;

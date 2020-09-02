@@ -2,6 +2,7 @@
 #include <net/w_net.h>
 
 #define MAX_BUFFER_SIZE 65535
+w_mem_pool s_mem_pool = NULL;
 
 void s_quic_debug_log_callback(const char* pLine, void* pArgp)
 {
@@ -18,7 +19,7 @@ W_RESULT s_quic_sending_stream_callback(
 {
     if (!_req_sent)
     {
-        static w_buffer _b;
+        static w_buffer_t _b;
         _b.data = (uint8_t*)("GET / index.html\0");
         _b.len = strlen((const char*)_b.data);
 
@@ -35,7 +36,7 @@ W_RESULT s_quic_sending_stream_callback(
     return W_SUCCESS;
 }
 
-w_buffer* _buffer = NULL;
+w_buffer_t _buffer;
 W_RESULT s_quic_receiving_stream_callback(
     uint8_t* pConnectionID,
     uint64_t pStreamIndex,
@@ -44,14 +45,16 @@ W_RESULT s_quic_receiving_stream_callback(
 {
     bool _fin = false;
     
-    w_buffer _b;
-    _b.len = MAX_BUFFER_SIZE;	    
-    _b.data = (uint8_t*)w_malloc(sizeof(uint8_t), "s_quic_r_stream_callback");
-    
+    _buffer.len = MAX_BUFFER_SIZE;
+    if (!_buffer.data)
+    {
+        _buffer.data = (uint8_t*)w_malloc(s_mem_pool, sizeof(uint8_t));
+    }
+
     size_t _recv_len = w_net_receive_msg_quic(
         pConnectionID,
         pStreamIndex,
-        &_b,
+        &_buffer,
         &_fin);
     if (_recv_len < 0)
     {
@@ -69,7 +72,9 @@ W_RESULT s_quic_receiving_stream_callback(
 
 int main()
 {
-    wolf_initialize();
+    wolf_init();
+
+    w_mem_pool_init(&s_mem_pool, W_MEM_POOL_ALIGNED_RECLAIM);
 
     w_net_open_quic_socket(
         "localhost",
@@ -81,7 +86,8 @@ int main()
         s_quic_receiving_stream_callback,
         s_quic_sending_stream_callback);
 
-    wolf_terminate();
+    w_mem_pool_fini(&s_mem_pool);
+    wolf_fini();
 
     return 0;
 }

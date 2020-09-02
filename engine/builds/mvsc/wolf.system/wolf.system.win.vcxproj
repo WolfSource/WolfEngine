@@ -89,9 +89,11 @@
     <ClCompile Include="..\..\..\src\wolf.system\concurrency\libev\ev.c" />
     <ClCompile Include="..\..\..\src\wolf.system\concurrency\libev\event.c" />
     <ClCompile Include="..\..\..\src\wolf.system\concurrency\w_async.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\concurrency\w_concurrent_queue.c" />
     <ClCompile Include="..\..\..\src\wolf.system\concurrency\w_condition_variable.c" />
     <ClCompile Include="..\..\..\src\wolf.system\concurrency\w_signal.c" />
     <ClCompile Include="..\..\..\src\wolf.system\concurrency\w_thread.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\concurrency\w_thread_pool.c" />
     <ClCompile Include="..\..\..\src\wolf.system\concurrency\w_timer.c" />
     <ClCompile Include="..\..\..\src\wolf.system\fiber\w_fiber.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\io\w_io.c" />
@@ -190,10 +192,12 @@
     <ClInclude Include="..\..\..\src\wolf.system\concurrency\libev\ev.h" />
     <ClInclude Include="..\..\..\src\wolf.system\concurrency\libev\event.h" />
     <ClInclude Include="..\..\..\src\wolf.system\concurrency\libev\ev_vars.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\concurrency\w_concurrent_queue.h" />
     <ClInclude Include="..\..\..\src\wolf.system\concurrency\w_async.h" />
     <ClInclude Include="..\..\..\src\wolf.system\concurrency\w_condition_variable.h" />
     <ClInclude Include="..\..\..\src\wolf.system\concurrency\w_signal.h" />
     <ClInclude Include="..\..\..\src\wolf.system\concurrency\w_thread.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\concurrency\w_thread_pool.h" />
     <ClInclude Include="..\..\..\src\wolf.system\concurrency\w_timer.h" />
     <ClInclude Include="..\..\..\src\wolf.system\fiber\w_fiber.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\io\stb\stb_image.h" />

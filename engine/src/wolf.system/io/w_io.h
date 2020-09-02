@@ -309,10 +309,11 @@ extern "C" {
 
     /**
      * get current directory in char
+     * @param pMemPool The pool to allocate out of
      * @param the current directory path which must be stored
     */
     W_SYSTEM_EXPORT
-        void w_io_dir_get_current(_Inout_z_ char* pPath);
+        char* w_io_dir_get_current(_Inout_ w_mem_pool pMemPool);
 
     /**
      * check whether this path belongs to a directory

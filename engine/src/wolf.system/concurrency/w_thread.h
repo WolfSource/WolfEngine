@@ -22,18 +22,21 @@ extern "C" {
     typedef struct apr_thread_mutex_t* w_mutex;
     typedef void* w_thread_id;
 
-    typedef void* (*w_thread_job)(w_thread, void*);
+    typedef void* (__stdcall* w_thread_job)(w_thread, void*);
     typedef void (*w_thread_once_job)(void);
+
+    
 
     /**
      * create once flag
+     * @param pMemPool the pool from which to allocate the once flag
      * @param pOnceFlag create once flag
      * @return result
     */
     W_SYSTEM_EXPORT
         W_RESULT w_thread_init_once_flag(
             _Inout_ w_mem_pool pMemPool,
-            _Inout_ w_thread_once_flag pOnceFlag);
+            _Inout_ w_thread_once_flag* pOnceFlag);
 
     /**
      * Run the specified function one time, regardless of how many threads call it.
@@ -48,6 +51,7 @@ extern "C" {
 
     /**
      * create a thread
+     * @param pMemPool the pool from which to allocate the thread
      * @param pThread thread info
      * @param pJob thread job
      * @param pJobArgs thread arguments as void*
@@ -173,10 +177,10 @@ extern "C" {
      * @return result code
     */
     W_SYSTEM_EXPORT
-        W_RESULT    w_thread_mutex_init(_Inout_ w_mutex* pMutex,
-            _In_ uint32_t pFlags,
-            _In_ w_mem_pool pMemPool);
-
+        W_RESULT    w_thread_mutex_init(
+            _Inout_ w_mem_pool pMemPool,
+            _Inout_ w_mutex* pMutex,
+            _In_ uint32_t pFlags);
 
     /**
      * Acquire the lock for the given mutex. If the mutex is already locked,

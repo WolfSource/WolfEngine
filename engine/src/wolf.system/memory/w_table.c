@@ -1,5 +1,5 @@
 #include "w_table.h"
-#include <apr-1/apr_tables.h>
+#include <apr-2/apr_tables.h>
 
 W_RESULT w_table_init(
     _Inout_ w_mem_pool pMemPool,

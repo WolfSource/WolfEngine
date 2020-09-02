@@ -21,12 +21,13 @@ extern "C" {
     typedef struct ev_loop w_async_loop;
     typedef void w_async_callback(EV_P_ w_async_base*, int /*revents*/);
 
-    typedef struct
+    typedef struct w_async_t
     {
         w_async_base* a;
         w_async_loop* l;
         w_thread                    t;
-    } w_async;
+    } w_async_t;
+    typedef struct w_async_t* w_async;
 
     /**
      * create a async
@@ -46,7 +47,7 @@ extern "C" {
      * @return result code
     */
     W_SYSTEM_EXPORT
-        W_RESULT w_async_send(_In_ w_async* pAsync, _In_ void* pArg);
+        W_RESULT w_async_send(_In_ w_async pAsync, _In_ void* pArg);
 
 #ifdef __cplusplus
 }

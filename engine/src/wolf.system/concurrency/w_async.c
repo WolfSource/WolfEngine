@@ -28,28 +28,37 @@ W_RESULT w_async_init(
     const char* _trace_info = "w_condition_variable_init";
     if (!pMemPool || !pAsync)
     {
-        W_ASSERT_P(false, "missing parameters. trace info %s", _trace_info);
+        W_ASSERT_P(false, "bad args! trace info %s", _trace_info);
         return APR_BADARG;
     }
 
-    pAsync->a = (w_async_base*)w_malloc(pMemPool, sizeof(w_async_base));
-    if (!pAsync->a)
+    *pAsync = NULL;
+    w_async _async = w_malloc(pMemPool, sizeof(w_async_t));
+    if (!_async)
+    {
+        W_ASSERT_P(false, "bad args! trace info %s", _trace_info);
+        return APR_BADARG;
+    }
+    *pAsync = _async;
+
+    _async->a = (w_async_base*)w_malloc(pMemPool, sizeof(w_async_base));
+    if (!_async->a)
     {
         return W_FAILURE;
     }
 
     // This loop sits in the thread
-    pAsync->l = ev_loop_new(0);
-    ev_async_init(pAsync->a, pAsyncCallBack);
-    if (w_thread_init(pMemPool, &pAsync->t, &_thread_job, (void*)pAsync->l) == W_SUCCESS)
+    _async->l = ev_loop_new(0);
+    ev_async_init(_async->a, pAsyncCallBack);
+    if (w_thread_init(pMemPool, &_async->t, &_thread_job, (void*)_async->l) == W_SUCCESS)
     {
-        ev_async_start(pAsync->l, pAsync->a);
+        ev_async_start(_async->l, _async->a);
         return W_SUCCESS;
     }
     return W_FAILURE;
 }
 
-W_RESULT w_async_send(_In_ w_async* pAsync, _In_ void* pArg)
+W_RESULT w_async_send(_In_ w_async pAsync, _In_ void* pArg)
 {
     if (!pAsync || !pAsync->l || !pAsync->a)
     {

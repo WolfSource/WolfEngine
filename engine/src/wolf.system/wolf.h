@@ -72,7 +72,7 @@ extern "C" {
 
     typedef struct apr_file_t* w_file;
     typedef struct apr_finfo_t* w_file_info;
-    typedef struct
+    typedef struct w_arg
     {
         w_mem_pool  pool;
         void* data;
@@ -87,7 +87,8 @@ extern "C" {
 
     /**
      * concatenate two or more char*
-     * @param pMemPool , The pool to use. set NULL to use default memory pool.
+     * @param pMemPool The memory pool
+     * @note make sure to append NULL
      * @return result chars
     */
     W_SYSTEM_EXPORT
@@ -95,7 +96,8 @@ extern "C" {
 
     /**
      * concatenate two or more wchar_t*
-     * @param pMemPool , The pool to use. set NULL to use default memory pool.
+     * @param pMemPool The memory pool
+     * @note make sure to append NULL
      * @return concated chars
     */
     W_SYSTEM_EXPORT

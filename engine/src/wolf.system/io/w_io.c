@@ -679,14 +679,36 @@ W_RESULT	w_io_file_delete(
     return _ret;
 }
 
-void w_io_dir_get_current(_Inout_z_ char* pPath)
+char* w_io_dir_get_current(_Inout_ w_mem_pool pMemPool)
 {
-    if (!pPath) return;
+    char* _dir = NULL;
+
+    if (pMemPool)
+    {
+        char* _tmp = w_malloc(pMemPool, sizeof(W_MAX_BUFFER_SIZE));
+        if (_tmp)
+        {
 #ifdef W_PLATFORM_WIN
-    GetCurrentDirectoryA(W_MAX_BUFFER_SIZE, pPath);
+            GetCurrentDirectoryA(W_MAX_BUFFER_SIZE, _tmp);
 #else
-    if (getcwd(pPath, PATH_MAX) == NULL) return NULL;
+            if (getcwd(_tmp, W_MAX_BUFFER_SIZE) == NULL)
+            {
+                w_free(_dir);
+                return NULL;
+            }
 #endif
+            size_t _len = strlen(_tmp);
+            if (_len)
+            {
+                _dir = w_malloc(pMemPool, _len + 1);
+                memcpy(_dir, _tmp, _len);
+                _dir[_len] = '\0';
+            }
+            w_free(pMemPool, _tmp);
+        }
+    }
+
+    return _dir;
 }
 
 W_RESULT	w_io_dir_check_is_dir(
