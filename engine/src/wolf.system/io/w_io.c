@@ -679,8 +679,13 @@ W_RESULT	w_io_file_delete(
     return _ret;
 }
 
-char* w_io_dir_get_current(_Inout_ w_mem_pool pMemPool)
+W_RESULT w_io_dir_get_current(_Inout_ w_mem_pool pMemPool, _Inout_ char** pDir)
 {
+    if (!pDir)
+    {
+        return APR_BADARG;
+    }
+
     char* _dir = NULL;
 
     if (pMemPool)
@@ -694,7 +699,6 @@ char* w_io_dir_get_current(_Inout_ w_mem_pool pMemPool)
             if (getcwd(_tmp, W_MAX_BUFFER_SIZE) == NULL)
             {
                 w_free(_dir);
-                return NULL;
             }
 #endif
             size_t _len = strlen(_tmp);
@@ -703,12 +707,13 @@ char* w_io_dir_get_current(_Inout_ w_mem_pool pMemPool)
                 _dir = w_malloc(pMemPool, _len + 1);
                 memcpy(_dir, _tmp, _len);
                 _dir[_len] = '\0';
+                *pDir = _dir;
             }
             w_free(pMemPool, _tmp);
         }
     }
 
-    return _dir;
+    return W_SUCCESS;
 }
 
 W_RESULT	w_io_dir_check_is_dir(

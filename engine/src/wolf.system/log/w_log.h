@@ -28,11 +28,14 @@ extern "C" {
 
 /**
  * initialize the log file and create a log file inside a Log folder
+ * @param pMemPool The pool to allocate out of
  * @param pConfig is the configuration of log
  * @return log ID, -1 means function failed
 */
 W_SYSTEM_EXPORT
-int  w_log_init(_In_ const w_log_config* pConfig);
+int  w_log_init(
+    _Inout_ w_mem_pool pMemPool,
+    _In_ const w_log_config* pConfig);
 
 /**
  * Write a message in to the default log file
@@ -157,7 +160,7 @@ W_RESULT  w_log_flush_ex(_In_ int pLogID);
  * @return result
 */
 W_SYSTEM_EXPORT
-W_RESULT  w_log_fini_all();
+W_RESULT  w_log_fini();
 
 /**
  * terminate the specific log file

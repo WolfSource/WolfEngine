@@ -15,13 +15,13 @@
 
 #endif
 
-W_RESULT  logger::init(
+logger::logger(
     _Inout_ w_mem_pool pMemPool,
     _In_ const w_log_config* pConfig)
 {
     if (!pMemPool || !pConfig)
     {
-        return APR_BADARG;
+        return;
     }
 
     //if directory of log is not existed
@@ -61,7 +61,7 @@ W_RESULT  logger::init(
         end(_sinks));
     if (!this->_l)
     {
-        return W_FAILURE;
+        return;
     }
 
     this->_l->info(
@@ -90,8 +90,6 @@ W_RESULT  logger::init(
     }
     this->_l->set_level(_level);
     this->_l->flush_on(_level);
-
-    return W_SUCCESS;
 }
 
 W_RESULT  logger::write(_In_z_ const char* pFMT)
@@ -101,7 +99,8 @@ W_RESULT  logger::write(_In_z_ const char* pFMT)
     return W_SUCCESS;
 }
 
-W_RESULT  logger::write(_In_ const w_log_type pLogType,
+W_RESULT  logger::write(
+    _In_ const w_log_type pLogType,
     _In_z_ const char* pFMT)
 {
     //get first log

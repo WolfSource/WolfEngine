@@ -25,6 +25,7 @@ extern "C" {
         */
         W_MEM_POOL_FAST_EXTEND = 0x00,
         /*
+            Not Stable yet! 
             This memory pool is optimized for reclaiming;
             It's a fast lock free thread caching 16-byte aligned memory allocator.
             It has support for huge/large pages on Windows, Linux and MacOS.

@@ -131,7 +131,7 @@ wchar_t* w_wstrcat(_In_ w_mem_pool pMemPool, ...)
                 break;
             }
             wcstombs_s(NULL, _src, _len, _w, _w_len);
-            _dst = w_strcat(pMemPool, _dst, _src);
+            _dst = w_strcat(pMemPool, _dst, _src, NULL);
         }
     }
     va_end(_args);

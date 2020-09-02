@@ -117,16 +117,13 @@ void w_mem_pool_fini(_Inout_ w_mem_pool* pMemPool)
 		return;
 	}
 
-	w_mem_pool _ptr = *pMemPool;
-	switch (_ptr->type)
+	switch ((*pMemPool)->type)
 	{
 	default:
 	case W_MEM_POOL_FAST_EXTEND:
-		if (_ptr->apr)
+		if ((*pMemPool)->apr)
 		{
-			apr_pool_destroy(_ptr->apr);
-			_ptr->apr = NULL;
-
+			apr_pool_destroy((*pMemPool)->apr);
 			//decrease number of ref counts of apr pools
 			apr_atomic_dec64(&s_number_apr_pool_ref_counts);
 		}
