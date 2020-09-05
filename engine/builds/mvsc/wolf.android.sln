@@ -10,9 +10,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_documents", "_documents", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "system", "system", "{79A733CF-F241-4D90-82E1-BA1F2EFDABF0}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wolf.system.android.NativeActivity", "wolf.system\wolf.system.android\wolf.system.android.NativeActivity\wolf.system.android.NativeActivity.vcxproj", "{E553512A-46AC-4103-9C94-4A3F91C5891E}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wolf.android.NativeActivity", "wolf.android\wolf.android.NativeActivity\wolf.android.NativeActivity.vcxproj", "{E553512A-46AC-4103-9C94-4A3F91C5891E}"
 EndProject
-Project("{39E2626F-3545-4960-A6E8-258AD8476CE5}") = "wolf.system.android.Packaging", "wolf.system\wolf.system.android\wolf.system.android.Packaging\wolf.system.android.Packaging.androidproj", "{EEAAC993-A3B1-4901-AD25-E36E4C8B321B}"
+Project("{39E2626F-3545-4960-A6E8-258AD8476CE5}") = "wolf.android.Packaging", "wolf.android\wolf.android.Packaging\wolf.android.Packaging.androidproj", "{EEAAC993-A3B1-4901-AD25-E36E4C8B321B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

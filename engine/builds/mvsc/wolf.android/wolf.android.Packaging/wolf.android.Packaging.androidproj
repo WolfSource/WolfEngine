@@ -125,9 +125,7 @@
     <AntProjectPropertiesFile Include="project.properties" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\wolf.system.android.NativeActivity\wolf.system.android.NativeActivity.vcxproj">
-      <Project>{e553512a-46ac-4103-9c94-4a3f91c5891e}</Project>
-    </ProjectReference>
+    <ProjectReference Include="..\wolf.android.NativeActivity\wolf.android.NativeActivity.vcxproj" />
   </ItemGroup>
   <Import Project="$(AndroidTargetsPath)\Android.targets" />
   <ImportGroup Label="ExtensionTargets" />
