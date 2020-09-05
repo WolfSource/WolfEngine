@@ -74,23 +74,24 @@ int main()
 
     char* _current_dir = NULL;
 
-    w_mem_pool_init(&s_mem_pool, W_MEM_POOL_FAST_EXTEND);
+    w_mem_pool_init(&s_mem_pool);
     if (s_mem_pool)
     {
-        _current_dir = w_io_dir_get_current(s_mem_pool);
-
-        char* _crt = w_strcat(s_mem_pool, _current_dir, "/cert.crt", NULL);
-        char* _key = w_strcat(s_mem_pool, _current_dir, "/cert.key", NULL);
-
-        w_net_open_quic_socket(
-            "localhost",
-            5555,
-            quic_listener,
-            _crt,
-            _key,
-            s_quic_debug_log_callback,
-            s_quic_receiving_stream_callback,
-            s_quic_sending_stream_callback);
+        W_RESULT _ret = w_io_dir_get_current(s_mem_pool, &_current_dir);
+        if (_ret == W_SUCCESS)
+        {
+            char* _crt = w_strcat(s_mem_pool, _current_dir, "/cert.crt", NULL);
+            char* _key = w_strcat(s_mem_pool, _current_dir, "/cert.key", NULL);
+            w_net_open_quic_socket(
+                "localhost",
+                5555,
+                quic_listener,
+                _crt,
+                _key,
+                s_quic_debug_log_callback,
+                s_quic_receiving_stream_callback,
+                s_quic_sending_stream_callback);
+        }
     }
     w_mem_pool_fini(&s_mem_pool);
     wolf_fini();

@@ -74,7 +74,7 @@ int main()
 {
     wolf_init();
 
-    w_mem_pool_init(&s_mem_pool, W_MEM_POOL_ALIGNED_RECLAIM);
+    w_mem_pool_init(&s_mem_pool);
 
     w_net_open_quic_socket(
         "localhost",
