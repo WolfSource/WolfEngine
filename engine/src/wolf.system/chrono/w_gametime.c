@@ -2,7 +2,7 @@
 #include "w_chrono.h"
 #include <math.h>
 
-struct w_gametime_t
+typedef struct w_gametime_t
 {
     double          last_time;
     double          max_delta;
@@ -21,7 +21,7 @@ struct w_gametime_t
     //members for configuring fixed timestep mode.
     bool            fixed_time_step;
     uint64_t        target_elapsed_ticks;
-};
+} w_gametime_t;
 
 //integer format represents time using 10,000,000 ticks per second.
 static const double TICKS_PER_SECOND = 10000000;

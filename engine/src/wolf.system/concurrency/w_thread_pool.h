@@ -12,15 +12,12 @@
 #include <wolf.h>
 #include "w_thread.h"
 
-//#include "apu.h"
-//#include "apr_thread_proc.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-    typedef struct apr_thread_pool w_thread_pool_t;
-    typedef w_thread_pool_t* w_thread_pool;
+    typedef struct apr_thread_pool apr_thread_pool_t;
+    typedef apr_thread_pool_t* w_thread_pool;
 
 
 #define W_THREAD_TASK_PRIORITY_LOWEST 0

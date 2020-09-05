@@ -5,10 +5,10 @@
 
 static  volatile apr_uint64_t				s_number_apr_pool_ref_counts = 0;
 
-struct w_mem_pool_t
+typedef struct w_mem_pool_t
 {
 	apr_pool_t*				apr;
-};
+} w_mem_pool_t;
 
 W_RESULT w_mem_pool_init(_Inout_ w_mem_pool* pMemPool)
 {

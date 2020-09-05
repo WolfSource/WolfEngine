@@ -60,7 +60,11 @@ extern "C" {
 
     typedef struct apr_file_t* w_file;
     typedef struct apr_finfo_t* w_file_info;
-
+    typedef struct w_arg
+    {
+        void* data;
+        w_mem_pool pool;
+    } w_arg;
 
     /**
      * initialize wolf

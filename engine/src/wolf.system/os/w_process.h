@@ -109,14 +109,12 @@ extern "C" {
 		W_RESULT w_process_kill_by_info(_In_ w_process_info pProcessInfo);
 
 	/**
-	 * release resources of process info
+	 * release handle of process
 	 * @param pProcessInfo , a pointer to process info
 	 * @return result
 	*/
 	W_SYSTEM_EXPORT
-		W_RESULT w_process_info_fini(
-			_Inout_ w_mem_pool pMemPool,
-			_Inout_ w_process_info pProcessInfo);
+		W_RESULT w_process_info_fini(_Inout_ w_process_info pProcessInfo);
 
 #ifdef __cplusplus
 }

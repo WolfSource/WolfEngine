@@ -1349,7 +1349,7 @@ W_RESULT w_io_file_is_png(_In_z_ const char* pFilePath)
     W_RESULT _ret = W_FAILURE;
 
     w_mem_pool _pool = NULL;
-    if( w_mem_pool_init(&_pool, W_MEM_POOL_ALIGNED_RECLAIM) == W_SUCCESS)
+    if( w_mem_pool_init(&_pool) == W_SUCCESS)
     {
         w_file_istream _fs = w_io_file_read_nbytes_from_path(
             _pool,
@@ -1397,8 +1397,8 @@ W_RESULT w_io_pixels_from_png_stream(
 
     if (!pMemPool)
     {
-        W_ASSERT_P(false, 
-            "file stream does not contain png data. trace info: %s::png_sig_cmp", 
+        W_ASSERT_P(false,
+            "file stream does not contain png data. trace info: %s::png_sig_cmp",
             _trace_info);
         return APR_BADARG;
     }
@@ -1427,8 +1427,8 @@ W_RESULT w_io_pixels_from_png_stream(
     png_infop _info_ptr = png_create_info_struct(_png_ptr);
     if (!_info_ptr)
     {
-        W_ASSERT_P(false, 
-            "could not create info struct. trace info: %s::png_create_info_struct", 
+        W_ASSERT_P(false,
+            "could not create info struct. trace info: %s::png_create_info_struct",
             _trace_info);
         return W_FAILURE;
     }
@@ -1437,8 +1437,8 @@ W_RESULT w_io_pixels_from_png_stream(
     {
         png_destroy_read_struct(&_png_ptr, &_info_ptr, (png_infopp)0);
 
-        W_ASSERT_P(false, 
-            "failed on setjmp. trace info: %s", 
+        W_ASSERT_P(false,
+            "failed on setjmp. trace info: %s",
             _trace_info);
         return W_FAILURE;
     }
@@ -1450,8 +1450,8 @@ W_RESULT w_io_pixels_from_png_stream(
     context.pos = PNG_PAGING_SIZE;
 
     png_set_read_fn(
-        _png_ptr, 
-        (png_voidp)(&context), 
+        _png_ptr,
+        (png_voidp)(&context),
         (png_rw_ptr)(&_png_user_read_data));//png_init_io(_png_ptr, _file);
     //png_init_io(_png_ptr, )
     png_set_sig_bytes(_png_ptr, PNG_PAGING_SIZE);
@@ -1513,8 +1513,15 @@ W_RESULT w_io_pixels_from_png_stream(
         pMemPool,
         _comp * (size_t)(*pWidth) * (size_t)(*pHeight) * sizeof(uint8_t));
 
+    w_mem_pool _mem_pool = NULL;
+    w_mem_pool_init(&_mem_pool);
+    if (!_mem_pool)
+    {
+        return W_FAILURE;
+    }
+
     size_t _bytes_per_row = png_get_rowbytes(_png_ptr, _info_ptr);
-    uint8_t* _raw_data = (uint8_t*)w_malloc(pMemPool, _bytes_per_row);
+    uint8_t* _raw_data = (uint8_t*)w_malloc(_mem_pool, _bytes_per_row);
 
     //pixels counter
     uint32_t _k = 0;
@@ -1619,7 +1626,7 @@ W_RESULT w_io_pixels_from_png_stream(
     };
 
     png_destroy_read_struct(&_png_ptr, &_info_ptr, (png_infopp)0);
-    w_free(pMemPool, _raw_data);
+    w_mem_pool_fini(&_mem_pool);// free _raw_data
 
     return W_SUCCESS;
 }

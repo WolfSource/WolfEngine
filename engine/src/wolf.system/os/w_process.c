@@ -1,5 +1,5 @@
 #include "w_process.h"
-#include <apr-2/apr_general.h>
+#include <apr-1/apr_general.h>
 #include <io/w_io.h>
 
 #ifdef W_PLATFORM_WIN
@@ -174,8 +174,6 @@ W_RESULT w_process_get_name_by_id(
 			*pProcessName = wcscpy(*pProcessName, _process_name);
 		}
 	}
-
-	w_free(pMemPool, _process_name);
 #else
 
 #endif
@@ -246,7 +244,7 @@ W_RESULT w_process_print_allW(
 			NULL);
 	}
 
-	w_free(pMemPool, _process_id_tmp);
+	//w_free(pMemPool, _process_id_tmp);
 
 #endif
 
@@ -386,23 +384,16 @@ W_RESULT w_process_kill_by_info(_In_ w_process_info pProcessInfo)
 	return W_SUCCESS;
 }
 
-W_RESULT w_process_info_fini(
-	_Inout_ w_mem_pool pMemPool,
-	_Inout_ w_process_info pProcessInfo)
+W_RESULT w_process_info_fini(_Inout_ w_process_info pProcessInfo)
 {
-	if (!pProcessInfo || !pMemPool)
+	if (!pProcessInfo)
 	{
 		return APR_BADARG;
 	}
 
-	w_free(pMemPool, pProcessInfo->class_name);
-	w_free(pMemPool, pProcessInfo->process_name);
-	w_free(pMemPool, pProcessInfo->title_name);
 #ifdef W_PLATFORM_WIN
 	CloseHandle(pProcessInfo->handle);
 #endif
-
-	w_free(pMemPool, pProcessInfo);
 
 	return W_SUCCESS;
 }

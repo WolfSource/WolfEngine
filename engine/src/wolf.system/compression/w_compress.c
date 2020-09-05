@@ -1,11 +1,11 @@
 #include "w_compress.h"
 
 #include <apr.h>
-#include <apr-2/apr_general.h>
-#include <apr-2/apr_strings.h>
-#include <apr-2/apr_tables.h>
-#include <apr-2/apr_file_io.h>
-#include <apr-2/apr_hash.h>
+#include <apr-1/apr_general.h>
+#include <apr-1/apr_strings.h>
+#include <apr-1/apr_tables.h>
+#include <apr-1/apr_file_io.h>
+#include <apr-1/apr_hash.h>
 
 #include "lz4/lz4.h"
 
@@ -39,18 +39,12 @@ W_RESULT w_compress_lz4(_In_       const char* pSrcBuffer,
 #endif
 
 		_compressed_buffer_size =
-#ifdef W_PLATFORM_ANDROID
-			LZ4_compress_fast
-#else
-			LZ4_compress_fast_force
-
-#endif
-			(pSrcBuffer,
+			LZ4_compress_fast(
+				pSrcBuffer,
 				pResult->data,
 				pResult->size_in,
 				_max_dst_size,
 				pAcceleration);
-
 #ifdef __clang__
         #pragma clang diagnostic pop
 #endif
@@ -151,11 +145,11 @@ W_RESULT w_decompress_lz4(_In_      const char* pCompressedBuffer,
 
 static void* _lzma_alloc(ISzAllocPtr pPtr, size_t pSize)
 {
-	return w_malloc(NULL, pSize);
+	return malloc(pSize);
 }
 static void _lzma_free(ISzAllocPtr pPtr, void* pAddr)
 {
-	w_free(NULL, pAddr);
+	free(pAddr);
 }
 
 static ISzAlloc _alloc_funcs = { _lzma_alloc, _lzma_free };

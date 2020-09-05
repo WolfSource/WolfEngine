@@ -1,5 +1,5 @@
 #include "w_fiber.hpp"
-#include <apr-2/apr_general.h>
+#include <apr-1/apr_general.h>
 #include <unordered_map>
 #include <boost/fiber/all.hpp>
 #include <boost/lexical_cast.hpp>
@@ -121,12 +121,6 @@ scheduler_info*  w_fiber_get_scheduler_info(
     return _scheduler_info;
     
 _failed:
-    if(_scheduler_info)
-    {
-        w_free(pMemPool, _scheduler_info);
-        w_free(pMemPool, _scheduler_info->name);
-        w_free(pMemPool, _scheduler_info->fiber_ids);
-    }
     return nullptr;
 }
 
