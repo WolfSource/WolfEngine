@@ -18,13 +18,12 @@
 
 
 #include "w_concurrent_queue.h"
-#include <apr-2/apu.h>
-#include <apr-2/apr_errno.h>
-#include <apr-2/apr_portable.h>
-#include <apr-2/apr_thread_mutex.h>
-#include <apr-2/apr_thread_cond.h>
-#include <apr-2/apr_errno.h>
-#include <apr-2/apr_pools.h>
+#include <apr-1/apr_errno.h>
+#include <apr-1/apr_portable.h>
+#include <apr-1/apr_thread_mutex.h>
+#include <apr-1/apr_thread_cond.h>
+#include <apr-1/apr_errno.h>
+#include <apr-1/apr_pools.h>
 
 /* 
  * define this to get debug messages
@@ -78,7 +77,7 @@ static void Q_DBG(char*msg, apr_queue_t *q)
  */
 static apr_status_t s_queue_destroy(void* pData)
 {
-    w_concurrent_queue _queue = pData;
+    w_concurrent_queue _queue = (w_concurrent_queue_t*)pData;
 
     /* Ignore errors here, we can't do anything about them anyway. */
     apr_thread_cond_destroy(_queue->not_empty);
@@ -93,7 +92,7 @@ W_RESULT w_concurrent_queue_init(
     _Inout_ w_concurrent_queue* pQueue,
     _In_ uint32_t pQueueCapacity)
 {
-    if (!pMemPool || !pQueue || w_mem_pool_get_type(pMemPool) != W_MEM_POOL_FAST_EXTEND)
+    if (!pMemPool || !pQueue)
     {
         return APR_BADARG;
     }
@@ -104,7 +103,7 @@ W_RESULT w_concurrent_queue_init(
     {
         return APR_BADARG;
     }
-    w_concurrent_queue _queue = apr_palloc(_pool, sizeof(w_concurrent_queue_t));
+    w_concurrent_queue _queue = (w_concurrent_queue_t*)apr_palloc(_pool, sizeof(w_concurrent_queue_t));
     if (!_queue)
     {
         return APR_BADARG;
@@ -134,7 +133,7 @@ W_RESULT w_concurrent_queue_init(
     }
 
     /* Set all the data in the queue to NULL */
-    _queue->data = apr_pcalloc(_pool, pQueueCapacity * sizeof(void*));
+    _queue->data = (void**)apr_pcalloc(_pool, pQueueCapacity * sizeof(void*));
     _queue->bounds = pQueueCapacity;
     _queue->nelts = 0;
     _queue->in = 0;

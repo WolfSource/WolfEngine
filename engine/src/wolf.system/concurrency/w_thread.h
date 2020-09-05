@@ -22,7 +22,13 @@ extern "C" {
     typedef struct apr_thread_mutex_t* w_mutex;
     typedef void* w_thread_id;
 
-    typedef void* (__stdcall* w_thread_job)(w_thread, void*);
+    typedef void* (
+#if defined(W_PLATFORM_ANDROID) 
+#else
+    __stdcall 
+#endif
+        *w_thread_job)(w_thread, void*);
+
     typedef void (*w_thread_once_job)(void);
 
     
@@ -148,6 +154,7 @@ extern "C" {
     W_SYSTEM_EXPORT
         void w_thread_current_sleep_for_seconds(_In_ double pTime);
 
+#if !defined(W_PLATFORM_ANDROID) && !defined(W_PLATFORM_IOS)
     /**
      * get number of cpus and threads
      * @param pCores is number of CPU Cores
@@ -159,6 +166,7 @@ extern "C" {
             _Inout_ int* pCores,
             _Inout_ int* pThreads,
             _Inout_ int* pActualThreads);
+#endif
 
     /**
      * Create and initialize a mutex that can be used to synchronize threads.

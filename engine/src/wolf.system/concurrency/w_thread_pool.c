@@ -18,10 +18,10 @@
 
 #include "w_thread_pool.h"
 #include <assert.h>
-#include <apr-2/apr_thread_pool.h>
-#include <apr-2/apr_ring.h>
-#include <apr-2/apr_thread_cond.h>
-#include <apr-2/apr_portable.h>
+#include <apr-1/apr_thread_pool.h>
+#include <apr-1/apr_ring.h>
+#include <apr-1/apr_thread_cond.h>
+#include <apr-1/apr_portable.h>
 
 #define TASK_PRIORITY_SEGS 4
 #define TASK_PRIORITY_SEG(x) (((x)->dispatch.priority & 0xFF) / 64)

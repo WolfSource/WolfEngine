@@ -23,7 +23,7 @@ W_RESULT w_compress_lz4(_In_       const char* pSrcBuffer,
     
     //allocate size for compressed data
     const int _max_dst_size = LZ4_compressBound((int)(pResult->size_in));
-    pResult->data = malloc(_max_dst_size);
+    pResult->data = (char*)malloc(_max_dst_size);
     if (!pResult->data)
     {
         W_ASSERT(false, "allocating memory for compressed buffer. trace info: w_compress_lz4");
@@ -37,12 +37,20 @@ W_RESULT w_compress_lz4(_In_       const char* pSrcBuffer,
         #pragma clang diagnostic push
         #pragma clang diagnostic ignored "-Wstrict-prototypes"
 #endif
-        _compressed_buffer_size = LZ4_compress_fast_force(
-            pSrcBuffer,
-            pResult->data,
-            pResult->size_in,
-            _max_dst_size,
-            pAcceleration);
+
+		_compressed_buffer_size =
+#ifdef W_PLATFORM_ANDROID
+			LZ4_compress_fast
+#else
+			LZ4_compress_fast_force
+
+#endif
+			(pSrcBuffer,
+				pResult->data,
+				pResult->size_in,
+				_max_dst_size,
+				pAcceleration);
+
 #ifdef __clang__
         #pragma clang diagnostic pop
 #endif

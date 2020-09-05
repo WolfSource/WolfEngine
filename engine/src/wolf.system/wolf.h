@@ -29,20 +29,6 @@ extern "C" {
 #define W_SAFE_RELEASE(x)           { if (x)  { x->release(); delete x; x = NULL;    } }
 #define W_ARRAY_SIZE(ar)	        (size_t)((sizeof(ar) / sizeof(ar[0])))
 
-#ifdef _MSC_VER
-#define ASM __asm
-#else
-
-#define ASM __asm__
-//define dummy SAL
-#define _In_
-#define _In_z_
-#define _Out_
-#define _Inout_
-#define _Inout_z_
-
-#endif
-
 #ifndef W_MAX_BUFFER_SIZE
 #define W_MAX_BUFFER_SIZE 4096
 #endif
@@ -65,6 +51,8 @@ extern "C" {
         __int64
 #elif defined W_PLATFORM_OSX
         __darwin_off_t
+#elif defined W_PLATFORM_ANDROID
+        __kernel_off_t
 #else
 
 #endif
@@ -72,11 +60,7 @@ extern "C" {
 
     typedef struct apr_file_t* w_file;
     typedef struct apr_finfo_t* w_file_info;
-    typedef struct w_arg
-    {
-        w_mem_pool  pool;
-        void* data;
-    } w_arg;
+
 
     /**
      * initialize wolf
@@ -94,6 +78,8 @@ extern "C" {
     W_SYSTEM_EXPORT
         char* w_strcat(_In_ w_mem_pool pMemPool, ...);
 
+#if defined(W_PLATFORM_WIN) || defined(W_PLATFORM_OSX) || defined(W_PLATFORM_LINUX)
+
     /**
      * concatenate two or more wchar_t*
      * @param pMemPool The memory pool
@@ -103,6 +89,8 @@ extern "C" {
     W_SYSTEM_EXPORT
         wchar_t* w_wstrcat(_In_ w_mem_pool pMemPool, ...);
 
+#endif
+    
     /**
      * release all resources of wolf
     */

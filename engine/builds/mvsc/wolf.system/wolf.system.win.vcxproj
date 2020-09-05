@@ -105,7 +105,6 @@
     <ClCompile Include="..\..\..\src\wolf.system\log\spdlog\src\spdlog.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\log\spdlog\src\stdout_sinks.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\log\w_log.cpp" />
-    <ClCompile Include="..\..\..\src\wolf.system\memory\rpmalloc\rpmalloc.c" />
     <ClCompile Include="..\..\..\src\wolf.system\memory\w_array.c" />
     <ClCompile Include="..\..\..\src\wolf.system\memory\w_hash.c" />
     <ClCompile Include="..\..\..\src\wolf.system\memory\w_mem_cache.c" />
@@ -250,7 +249,6 @@
     <ClInclude Include="..\..\..\src\wolf.system\memory\hash\utringbuffer.h" />
     <ClInclude Include="..\..\..\src\wolf.system\memory\hash\utstack.h" />
     <ClInclude Include="..\..\..\src\wolf.system\memory\hash\utstring.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\memory\rpmalloc\rpmalloc.h" />
     <ClInclude Include="..\..\..\src\wolf.system\memory\w_array.h" />
     <ClInclude Include="..\..\..\src\wolf.system\memory\w_hash.h" />
     <ClInclude Include="..\..\..\src\wolf.system\memory\w_mem_cache.h" />
@@ -324,8 +322,7 @@
     <None Include="..\..\..\src\wolf.system\base64\LICENSE" />
     <None Include="..\..\..\src\wolf.system\compression\lz4\LICENSE" />
     <None Include="..\..\..\src\wolf.system\compression\lz4\README.md" />
-    <None Include="..\..\..\src\wolf.system\memory\rpmalloc\CHANGELOG" />
-    <None Include="..\..\..\src\wolf.system\memory\rpmalloc\LICENSE" />
+    <None Include="..\..\..\src\wolf.system\concurrency\libev\README" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\..\src\wolf.system\base64\version.txt" />
@@ -440,7 +437,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.system/log;$(SolutionDir)/../../src/wolf.system/compression/msgpack;$(SolutionDir)/../../src/wolf.system/net/ws/uSockets;$(SolutionDir)/../../src/wolf.system/xml/expat;$(SolutionDir)/../../src/wolf.system/xml/expat/config/win64;$(SolutionDir)/../../deps/apr/include;$(SolutionDir)/../../deps/apr/include/apr-2;$(SolutionDir)/../../deps/curl/include;$(SolutionDir)/../../deps/zlib/include;$(SolutionDir)/../../deps/zlib/include/zconf/win64;$(SolutionDir)/../../deps/ssh/include;$(SolutionDir)/../../deps/ssh/include/config/win64;$(SolutionDir)/../../deps/boost/include;$(SolutionDir)/../../deps/libjpeg-turbo/include;$(SolutionDir)/../../deps/libpng/include;$(SolutionDir)/../../deps/luaJIT/include;$(SolutionDir)/../../deps/libuv/include;$(SolutionDir)/../../deps/openSSL/include;$(SolutionDir)/../../deps/nng/include;$(SolutionDir)/../../deps/nng/src;$(SolutionDir)/../../deps/quiche/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.system/xml/expat;$(SolutionDir)/../../src/wolf.system/xml/expat/config/win64;$(SolutionDir)/../../deps/apr/include;$(SolutionDir)/../../deps/apr/include/apr-1;$(SolutionDir)/../../deps/apr/include/apr-1/apr/win;$(SolutionDir)/../../src/wolf.system/log;$(SolutionDir)/../../src/wolf.system/compression/msgpack;$(SolutionDir)/../../src/wolf.system/net/ws/uSockets;$(SolutionDir)/../../deps/curl/include;$(SolutionDir)/../../deps/zlib/include;$(SolutionDir)/../../deps/zlib/include/zconf/win64;$(SolutionDir)/../../deps/ssh/include;$(SolutionDir)/../../deps/ssh/include/config/win64;$(SolutionDir)/../../deps/boost/include;$(SolutionDir)/../../deps/libjpeg-turbo/include;$(SolutionDir)/../../deps/libpng/include;$(SolutionDir)/../../deps/luaJIT/include;$(SolutionDir)/../../deps/libuv/include;$(SolutionDir)/../../deps/openSSL/include;$(SolutionDir)/../../deps/nng/include;$(SolutionDir)/../../deps/nng/src;$(SolutionDir)/../../deps/quiche/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>DEBUG;_DEBUG;WIN32;_WIN32;_WINDOWS;WINNT;_WIN32_WINNT=0x0600;APR_DECLARE_EXPORT;libapr_1_EXPORTS;APU_DECLARE_STATIC;APU_DSO_MODULE_BUILD;XML_STATIC;HAVE_CONFIG_H;_CRT_RAND_S;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;CURL_STATICLIB;NO_FSEEKO;ASMV;ASMINF;USE_JMP;HAVE_EXPAT_CONFIG_H;expat_EXPORTS;SPDLOG_COMPILED_LIB;SPDLOG_WCHAR_FILENAMES;LIBUS_USE_LIBUV;LIBUS_USE_OPENSSL;NNG_PRIVATE;NNG_ENABLE_STATS;NNG_MAX_TASKQ_THREADS=16;NNG_LITTLE_ENDIAN;NNG_PLATFORM_WINDOWS;NNG_HAVE_CONDVAR=1;NNG_HAVE_SNPRINTF=1;NNG_HAVE_STRNLEN=1;NNG_TRANSPORT_WS;NNG_TRANSPORT_WSS;NNG_SUPP_HTTP;NNG_STATIC_LIB;EV_STANDALONE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>

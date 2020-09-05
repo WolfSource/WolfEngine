@@ -1,5 +1,5 @@
 #include "w_table.h"
-#include <apr-2/apr_tables.h>
+#include <apr-1/apr_tables.h>
 
 W_RESULT w_table_init(
     _Inout_ w_mem_pool pMemPool,
@@ -7,7 +7,7 @@ W_RESULT w_table_init(
     _In_ size_t pInitSize)
 {
     const char* _trace_info = "w_table_init";
-    if (!pMemPool || w_mem_pool_get_type(pMemPool) != W_MEM_POOL_FAST_EXTEND)
+    if (!pMemPool)
     {
         W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
         return APR_BADARG;

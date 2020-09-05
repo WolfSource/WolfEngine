@@ -1,22 +1,16 @@
 #include "w_mem_pool.h"
-#include <wolf.h>
-#include <apr-2/apr_pools.h>
-#include <apr-2/apr_portable.h>
-#include <apr-2/apr_atomic.h>
-#include "rpmalloc/rpmalloc.h"
+#include <stdlib.h>
+#include <apr-1/apr_pools.h>
+#include <apr-1/apr_atomic.h>
 
 static  volatile apr_uint64_t				s_number_apr_pool_ref_counts = 0;
-static  volatile apr_uint64_t				s_number_reclaim_pool_ref_counts = 0;
 
 struct w_mem_pool_t
 {
-	w_mem_pool_type			type;
 	apr_pool_t*				apr;
 };
 
-W_RESULT w_mem_pool_init(
-	_Inout_ w_mem_pool* pMemPool,
-	_In_ w_mem_pool_type pType)
+W_RESULT w_mem_pool_init(_Inout_ w_mem_pool* pMemPool)
 {
 	if (pMemPool && *pMemPool)
 	{
@@ -28,40 +22,24 @@ W_RESULT w_mem_pool_init(
 		}
 	}
 
-	W_RESULT _ret = W_FAILURE;
-	*pMemPool = malloc(sizeof(struct w_mem_pool_t));
+	W_RESULT _ret = 1;
+	*pMemPool = (w_mem_pool_t*)malloc(sizeof(struct w_mem_pool_t));
 	if (!(*pMemPool))
 	{
 		return _ret;
 	}
 
-	_ret = W_SUCCESS;
-	(*pMemPool)->type = pType;
-	switch (pType)
+	_ret = 0;
+
+	apr_pool_create(&((*pMemPool)->apr), NULL);
+	apr_allocator_t* _allocator = apr_pool_allocator_get((*pMemPool)->apr);
+	if (_allocator)
 	{
-	default:
-	case W_MEM_POOL_FAST_EXTEND:
-	{
-		apr_pool_create(&((*pMemPool)->apr), NULL);
-		apr_allocator_t* _allocator = apr_pool_allocator_get((*pMemPool)->apr);
-		if (_allocator)
-		{
-			apr_allocator_max_free_set(_allocator, 32);
-		}
-		//increase number of ref counts of apr pools
-		apr_atomic_inc64(&s_number_apr_pool_ref_counts);
-		break;
+		apr_allocator_max_free_set(_allocator, 32);
 	}
-	case W_MEM_POOL_ALIGNED_RECLAIM:
-	{
-		(*pMemPool)->apr = NULL;
-		//create aligned memory allocator
-		rpmalloc_thread_initialize();
-		//increase number of ref counts of reclaim pools
-		apr_atomic_inc64(&s_number_reclaim_pool_ref_counts);
-		break;
-	}
-	}
+	//increase number of ref counts of apr pools
+	apr_atomic_inc64(&s_number_apr_pool_ref_counts);
+
 	return _ret;
 }
 
@@ -69,12 +47,7 @@ void* w_malloc(
 	_Inout_ w_mem_pool pMemPool,
 	_In_ size_t pMemSize)
 {
-	if (!pMemSize || !pMemPool || pMemPool->type == W_MEM_POOL_ALIGNED_RECLAIM)
-	{
-		return rpmalloc(pMemSize);
-	}
-	
-	if (pMemPool->type == W_MEM_POOL_FAST_EXTEND && pMemPool->apr)
+	if (pMemSize && pMemPool && pMemPool->apr)
 	{
 		return apr_palloc(pMemPool->apr, pMemSize);
 	}
@@ -85,29 +58,11 @@ void* w_calloc(
 	_Inout_ w_mem_pool pMemPool,
 	_In_ size_t pMemSize)
 {
-	if (!pMemSize || !pMemPool || pMemPool->type == W_MEM_POOL_ALIGNED_RECLAIM)
-	{
-		return rpcalloc(1, pMemSize);
-	}
-
-	if (pMemPool->type == W_MEM_POOL_FAST_EXTEND && pMemPool->apr)
+	if (!pMemSize && pMemPool && pMemPool->apr)
 	{
 		return apr_pcalloc(pMemPool->apr, pMemSize);
 	}
 	return NULL;
-}
-
-W_RESULT w_free(
-	_Inout_ w_mem_pool pMemPool,
-	_In_ void* pMemoryAddress)
-{
-	if (pMemoryAddress && (!pMemPool || pMemPool->type == W_MEM_POOL_ALIGNED_RECLAIM))
-	{
-		rpfree(pMemoryAddress);
-		return W_SUCCESS;
-	}
-
-	return W_FAILURE;
 }
 
 void w_mem_pool_fini(_Inout_ w_mem_pool* pMemPool)
@@ -117,24 +72,9 @@ void w_mem_pool_fini(_Inout_ w_mem_pool* pMemPool)
 		return;
 	}
 
-	switch ((*pMemPool)->type)
-	{
-	default:
-	case W_MEM_POOL_FAST_EXTEND:
-		if ((*pMemPool)->apr)
-		{
-			apr_pool_destroy((*pMemPool)->apr);
-			//decrease number of ref counts of apr pools
-			apr_atomic_dec64(&s_number_apr_pool_ref_counts);
-		}
-		break;
-	case W_MEM_POOL_ALIGNED_RECLAIM:
-	{
-		rpmalloc_thread_finalize();
-		apr_atomic_dec64(&s_number_reclaim_pool_ref_counts);
-		break;
-	}
-	}
+	apr_pool_destroy((*pMemPool)->apr);
+	//decrease number of ref counts of apr pools
+	apr_atomic_dec64(&s_number_apr_pool_ref_counts);
 
 	free((*pMemPool));
 	*pMemPool = NULL;
@@ -142,30 +82,10 @@ void w_mem_pool_fini(_Inout_ w_mem_pool* pMemPool)
 
 void w_mem_pool_apr_clear(_Inout_ w_mem_pool pMemPool)
 {
-	if (pMemPool->type == W_MEM_POOL_FAST_EXTEND)
+	if (pMemPool && pMemPool->apr)
 	{
 		apr_pool_clear(pMemPool->apr);
 	}
-}
-
-size_t	w_mem_pool_aligned_reclaim_get_usable_size(
-	_In_ w_mem_pool pMemPool,
-	_In_ void* pPtr)
-{
-	if (pMemPool && pMemPool->type == W_MEM_POOL_ALIGNED_RECLAIM)
-	{
-		return rpmalloc_usable_size(pPtr);
-	}
-	return 0;
-}
-
-w_mem_pool_type	w_mem_pool_get_type(_In_ w_mem_pool pMemPool)
-{
-	if (pMemPool)
-	{
-		return pMemPool->type;
-	}
-	return W_MEM_POOL_UNKNOWN;
 }
 
 w_apr_pool w_mem_pool_get_apr_pool(_Inout_ w_mem_pool pMemPool)
@@ -177,19 +97,10 @@ w_apr_pool w_mem_pool_get_apr_pool(_Inout_ w_mem_pool pMemPool)
 	return NULL;
 }
 
-size_t w_mem_pool_get_ref_counts(_In_ w_mem_pool_type pMemPoolType)
+size_t w_mem_pool_get_ref_counts()
 {
-	switch (pMemPoolType)
-	{
-	case W_MEM_POOL_FAST_EXTEND:
-		apr_atomic_read64(&s_number_apr_pool_ref_counts);
-		return (size_t)s_number_apr_pool_ref_counts;
-	case W_MEM_POOL_ALIGNED_RECLAIM:
-		apr_atomic_read64(&s_number_reclaim_pool_ref_counts);
-		return (size_t)s_number_reclaim_pool_ref_counts;
-	}
-
-	return 0;
+	apr_atomic_read64(&s_number_apr_pool_ref_counts);
+	return (size_t)s_number_apr_pool_ref_counts;
 }
 
 #pragma region my old mem pool

@@ -1,6 +1,6 @@
 #include "w_timespan.h"
 #include <time.h>
-#include <apr-2/apr_general.h>
+#include <apr-1/apr_general.h>
 
 #define TICKS_PER_MILLISECOND	10000
 #define TICKS_PER_SECOND		10000000
@@ -85,7 +85,7 @@ w_timespan w_timespan_init_from_zero(_Inout_ w_mem_pool pMemPool)
         W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
         return NULL;
     }
-    w_timespan _timespan = w_malloc(pMemPool, sizeof(w_timespan_t));
+    w_timespan _timespan = (w_timespan_t*)w_malloc(pMemPool, sizeof(w_timespan_t));
     if (_timespan)
     {
         _timespan->ticks = 0;

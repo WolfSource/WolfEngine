@@ -112,9 +112,6 @@
     <Filter Include="json\rapidjson\msinttypes">
       <UniqueIdentifier>{9f58969d-89f2-4083-97fb-b8072254c76b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="memory\rpmalloc">
-      <UniqueIdentifier>{6166f10a-9cc6-4ca4-b792-f11893fc9523}</UniqueIdentifier>
-    </Filter>
     <Filter Include="io\stb">
       <UniqueIdentifier>{e97cc25f-1053-41d3-a8b0-9f4987b030bf}</UniqueIdentifier>
     </Filter>
@@ -366,9 +363,6 @@
     </ClCompile>
     <ClCompile Include="..\..\..\src\wolf.system\chrono\w_chrono.c">
       <Filter>chrono</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\memory\rpmalloc\rpmalloc.c">
-      <Filter>memory\rpmalloc</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\wolf.system\chrono\w_gametime.c">
       <Filter>chrono</Filter>
@@ -904,9 +898,6 @@
     <ClInclude Include="..\..\..\src\wolf.system\chrono\w_chrono.h">
       <Filter>chrono</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\memory\rpmalloc\rpmalloc.h">
-      <Filter>memory\rpmalloc</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\wolf.system\chrono\w_gametime.h">
       <Filter>chrono</Filter>
     </ClInclude>
@@ -1011,11 +1002,8 @@
     <None Include="..\..\..\src\wolf.system\compression\lz4\README.md">
       <Filter>compression\lz4</Filter>
     </None>
-    <None Include="..\..\..\src\wolf.system\memory\rpmalloc\LICENSE">
-      <Filter>memory\rpmalloc</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\memory\rpmalloc\CHANGELOG">
-      <Filter>memory\rpmalloc</Filter>
+    <None Include="..\..\..\src\wolf.system\concurrency\libev\README">
+      <Filter>concurrency\libev</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

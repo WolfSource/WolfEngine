@@ -1,13 +1,13 @@
 #include "w_thread.h"
-#include <apr-2/apr_thread_proc.h>
-#include <apr-2/apr_portable.h>
+#include <apr-1/apr_thread_proc.h>
+#include <apr-1/apr_portable.h>
 
 W_RESULT w_thread_init_once_flag(
     _Inout_ w_mem_pool pMemPool,
     _Inout_ w_thread_once_flag* pOnceFlag)
 {
     const char* _trace_info = "w_thread_init_once_flag";
-    if (!pMemPool || w_mem_pool_get_type(pMemPool) != W_MEM_POOL_FAST_EXTEND)
+    if (!pMemPool)
     {
         W_ASSERT_P(false, "bad args. trace info %s", _trace_info);
         return APR_BADARG;
@@ -99,11 +99,11 @@ w_thread_id w_thread_get_current_id(void)
     apr_os_thread_t* _dst = NULL;
     //allocate memory for it
     w_mem_pool _mem_pool = NULL;
-    w_mem_pool_init(&_mem_pool, W_MEM_POOL_ALIGNED_RECLAIM);
+    w_mem_pool_init(&_mem_pool);
     if (_mem_pool)
     {
         size_t _size = sizeof(apr_os_thread_t);
-        _dst = w_malloc(_mem_pool, _size);
+        _dst = (apr_os_thread_t*)w_malloc(_mem_pool, _size);
         if (_dst)
         {
             memcpy(_dst, &_current_os_thread, _size);
@@ -115,8 +115,8 @@ w_thread_id w_thread_get_current_id(void)
 
 W_RESULT w_thread_current_ids_are_equal(_In_ w_thread_id pThread1, _In_ w_thread_id pThread2)
 {
-    apr_os_thread_t* _t1 = pThread1;
-    apr_os_thread_t* _t2 = pThread2;
+    apr_os_thread_t* _t1 = (apr_os_thread_t*)pThread1;
+    apr_os_thread_t* _t2 = (apr_os_thread_t*)pThread2;
 
     return (apr_os_thread_equal(*_t1, *_t2) != 0) ? W_SUCCESS : W_FAILURE;
 }
@@ -141,17 +141,18 @@ void w_thread_current_sleep_for_seconds(_In_ double pTime)
 	apr_sleep((apr_interval_time_t)(pTime * 1e+6));
 }
 
+#if !defined(W_PLATFORM_ANDROID) && !defined(W_PLATFORM_IOS)
 void w_thread_get_number_of_cpu_threads(_Inout_ int* pCores,
                                         _Inout_ int* pThreads,
                                         _Inout_ int* pActualThreads)
 {
-#ifdef _WIN32
+#ifdef W_PLATFORM_WIN
 	SYSTEM_INFO _sys_info;
 	GetSystemInfo(&_sys_info);
 	*pCores = (int)_sys_info.dwNumberOfProcessors;
 	*pThreads = 2;
 	*pActualThreads = (*pCores) * (*pThreads);
-#else
+#elif defined(W_PLATFORM_OSX) || defined(W_PLATFORM_LINUX)
     unsigned int _a = 11, _b = 0, _c = 1, _d = 0;
 
     ASM volatile("cpuid"
@@ -166,7 +167,7 @@ void w_thread_get_number_of_cpu_threads(_Inout_ int* pCores,
     *pActualThreads = _d;
 #endif
 }
-
+#endif
 
 W_RESULT    w_thread_mutex_init(
     _Inout_ w_mem_pool pMemPool,

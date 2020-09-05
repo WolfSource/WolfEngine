@@ -38,7 +38,7 @@ static uint64_t seconds_to_ticks(double pSeconds)
 
 w_gametime w_gametime_init(_Inout_ w_mem_pool pMemPool)
 {
-    w_gametime _gametime = w_malloc(pMemPool, sizeof(struct w_gametime_t));
+    w_gametime _gametime = (w_gametime_t*)w_malloc(pMemPool, sizeof(struct w_gametime_t));
     if (!_gametime)
     {
         return NULL;

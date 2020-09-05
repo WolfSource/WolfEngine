@@ -1,15 +1,22 @@
 #include "w_io.h"
+#include <apr-1/apr_general.h>
+#include <apr-1/apr_strings.h>
+#include <apr-1/apr_file_info.h>
+#include <apr-1/apr_file_io.h>
 
-#include <apr-2/apr_general.h>
-#include <apr-2/apr_strings.h>
-#include <apr-2/apr_file_info.h>
-#include <apr-2/apr_file_io.h>
+#if !defined(W_PLATFORM_ANDROID) && !defined(W_PLATFORM_IOS)
 
-#include "base64/chromiumbase64.h"
+#include <turbojpeg.h>
+#include <png.h>
+
 #include "base64/fastavx512bwbase64.h"
 #include "base64/fastavxbase64.h"
 #include "base64/klompavxbase64.h"
 #include "base64/quicktimebase64.h"
+
+#endif
+
+#include "base64/chromiumbase64.h"
 #include "base64/scalarbase64.h"
 
 #ifdef W_PLATFORM_UNIX
@@ -20,8 +27,6 @@
 #include <shlwapi.h>
 #endif
 
-#include <turbojpeg.h>
-#include <png.h>
 #define PNG_BYTES_TO_CHECK  4
 #define PNG_PAGING_SIZE     8
 
@@ -44,7 +49,7 @@ w_file w_io_file_create(
     _In_    bool pErrorIfFileExists)
 {
     const char* _trace_info = "w_io_file_create";
-    if (!pMemPool || w_mem_pool_get_type(pMemPool) != W_MEM_POOL_FAST_EXTEND)
+    if (!pMemPool)
     {
         W_ASSERT_P(false, "missing fast extend memory pool. trace info: %s", _trace_info);
         return NULL;
@@ -122,7 +127,7 @@ W_RESULT w_io_file_save(
     const char* _trace_info = "w_io_file_save";
 
     w_mem_pool _mem_pool = NULL;
-    w_mem_pool_init(&_mem_pool, W_MEM_POOL_FAST_EXTEND);
+    w_mem_pool_init(&_mem_pool);
     if (!_mem_pool)
     {
         W_ASSERT_P(false, "could not create fast extend memory pool. trace info: %s", _trace_info);
@@ -202,7 +207,7 @@ W_RESULT w_io_file_check_is_file(_In_z_ const char* pPath)
     const char* _trace_info = "w_io_file_check_is_file";
 
     w_mem_pool _mem_pool = NULL;
-    w_mem_pool_init(&_mem_pool, W_MEM_POOL_FAST_EXTEND);
+    w_mem_pool_init(&_mem_pool);
     if (!_mem_pool)
     {
         W_ASSERT_P(false, "could not create fast extend memory pool. trace info: %s", _trace_info);
@@ -235,7 +240,7 @@ w_file_info w_io_file_get_info_from_path(
     _In_z_ const char* pPath)
 {
     const char* _trace_info = "w_io_file_get_info_from_path";
-    if (!pMemPool || w_mem_pool_get_type(pMemPool) != W_MEM_POOL_FAST_EXTEND)
+    if (!pMemPool)
     {
         W_ASSERT_P(false, "missing fast extend memory pool. trace info: %s", _trace_info);
         return NULL;
@@ -243,7 +248,9 @@ w_file_info w_io_file_get_info_from_path(
 
     if (pMemPool)
     {
-        apr_finfo_t* _info = (apr_finfo_t*)w_malloc(pMemPool, sizeof(apr_finfo_t));
+        apr_finfo_t* _info = (apr_finfo_t*)w_malloc(
+            pMemPool, 
+            sizeof(apr_finfo_t));
         if (!_info)
         {
             W_ASSERT_P(false,
@@ -273,7 +280,9 @@ w_file_info w_io_file_get_info(
         return NULL;
     }
 
-    apr_finfo_t* _info = w_malloc(pMemPool, sizeof(apr_finfo_t));
+    apr_finfo_t* _info = (apr_finfo_t*)w_malloc(
+        pMemPool, 
+        sizeof(apr_finfo_t));
     if (_info && apr_file_info_get(_info, APR_FINFO_NORM, pFile) == APR_SUCCESS)
     {
         return _info;
@@ -306,7 +315,7 @@ const char* w_io_file_get_extension(_In_ w_file pFile)
     }
 
     w_mem_pool _mem_pool = NULL;
-    w_mem_pool_init(&_mem_pool, W_MEM_POOL_ALIGNED_RECLAIM);
+    w_mem_pool_init(&_mem_pool);
     if (!_mem_pool)
     {
         W_ASSERT_P(false, "could not allocate memory pool. trace info: %s", _trace_info);
@@ -351,10 +360,10 @@ const char* w_io_file_get_name_from_path(_In_z_ const char* pPath)
     char* _dst_str = NULL;
 
     w_mem_pool _mem_pool = NULL;
-    w_mem_pool_init(&_mem_pool, W_MEM_POOL_ALIGNED_RECLAIM);
+    w_mem_pool_init(&_mem_pool);
     if (_mem_pool)
     {
-        char* _dst_str = w_malloc(_mem_pool, _index);
+        char* _dst_str = (char*)w_malloc(_mem_pool, _index);
         apr_cpystrn(_dst_str, pPath, _index);
         _dst_str[_index] = '\0';
     }
@@ -374,7 +383,7 @@ const char* w_io_file_get_name(_In_ w_file pFile)
 
     //create a memory pool
     w_mem_pool _mem_pool = NULL;
-    w_mem_pool_init(&_mem_pool, W_MEM_POOL_ALIGNED_RECLAIM);
+    w_mem_pool_init(&_mem_pool);
     if (!_mem_pool)
     {
         W_ASSERT_P(false, "could not create fast extend memory pool. trace info: %s", _trace_info);
@@ -404,7 +413,7 @@ const char* w_io_file_get_basename_from_path(_In_z_ const char* pFilePath)
     }
 
     w_mem_pool _mem_pool = NULL;
-    w_mem_pool_init(&_mem_pool, W_MEM_POOL_ALIGNED_RECLAIM);
+    w_mem_pool_init(&_mem_pool);
     if (!_mem_pool)
     {
         return NULL;
@@ -435,7 +444,7 @@ const char* w_io_file_get_basename(_In_ w_file pFile)
     const char* _ret = NULL;
 
     w_mem_pool _mem_pool = NULL;
-    W_RESULT _res = w_mem_pool_init(&_mem_pool, W_MEM_POOL_ALIGNED_RECLAIM);
+    W_RESULT _res = w_mem_pool_init(&_mem_pool);
     if (_mem_pool)
     {
         apr_finfo_t* _info = w_io_file_get_info(_mem_pool, pFile);
@@ -477,7 +486,7 @@ const char* w_io_file_get_basename_without_extension(_In_ w_file pFile)
 
     const char* _ret = NULL;
     w_mem_pool _mem_pool = NULL;
-    w_mem_pool_init(&_mem_pool, W_MEM_POOL_ALIGNED_RECLAIM);
+    w_mem_pool_init(&_mem_pool);
     if (_mem_pool)
     {
         apr_finfo_t* _info = w_io_file_get_info(_mem_pool, pFile);
@@ -505,7 +514,7 @@ w_file_istream w_io_file_read_nbytes_from_path(
     _In_ size_t pNBytes)
 {
     const char* _trace_info = "w_io_file_read_nbytes_from_path";
-    if (!pMemPool || w_mem_pool_get_type(pMemPool) != W_MEM_POOL_FAST_EXTEND)
+    if (!pMemPool)
     {
         W_ASSERT_P(false, "missing fast extend memory pool. trace info: %s", _trace_info);
         return NULL;
@@ -520,7 +529,7 @@ w_file_istream w_io_file_read_nbytes_from_path(
     apr_pool_t* _pool = w_mem_pool_get_apr_pool(pMemPool);
     if (_pool)
     {
-        _istream = w_malloc(pMemPool, sizeof(w_file_istream_t));
+        _istream = (w_file_istream_t*)w_malloc(pMemPool, sizeof(w_file_istream_t));
         if (!_istream)
         {
             W_ASSERT_P(false,
@@ -583,7 +592,7 @@ w_file_istream	w_io_file_read_nbytes(
     _In_ size_t pNBytes)
 {
     const char* _trace_info = "w_io_file_read_nbytes";
-    if (!pMemPool || w_mem_pool_get_type(pMemPool) != W_MEM_POOL_FAST_EXTEND)
+    if (!pMemPool)
     {
         W_ASSERT_P(false, "missing fast extend memory pool. trace info: %s", _trace_info);
         return NULL;
@@ -594,7 +603,9 @@ w_file_istream	w_io_file_read_nbytes(
         return NULL;
     }
 
-    w_file_istream _istream = w_malloc(pMemPool, sizeof(w_file_istream_t));
+    w_file_istream _istream = (w_file_istream_t*)w_malloc(
+        pMemPool, 
+        sizeof(w_file_istream_t));
     if (!_istream)
     {
         W_ASSERT_P(false,
@@ -681,37 +692,42 @@ W_RESULT	w_io_file_delete(
 
 W_RESULT w_io_dir_get_current(_Inout_ w_mem_pool pMemPool, _Inout_ char** pDir)
 {
-    if (!pDir)
+    if (!pDir || !pMemPool)
     {
         return APR_BADARG;
     }
 
     char* _dir = NULL;
 
-    if (pMemPool)
+    w_mem_pool _pool = NULL;
+    w_mem_pool_init(&_pool);
+    if (!_pool)
     {
-        char* _tmp = w_malloc(pMemPool, sizeof(W_MAX_BUFFER_SIZE));
-        if (_tmp)
-        {
+        return W_FAILURE;
+    }
+
+    char* _tmp = (char*)w_malloc(_pool, sizeof(W_MAX_BUFFER_SIZE));
+    if (_tmp)
+    {
 #ifdef W_PLATFORM_WIN
-            GetCurrentDirectoryA(W_MAX_BUFFER_SIZE, _tmp);
+        GetCurrentDirectoryA(W_MAX_BUFFER_SIZE, _tmp);
 #else
-            if (getcwd(_tmp, W_MAX_BUFFER_SIZE) == NULL)
-            {
-                w_free(_dir);
-            }
+        if (getcwd(_tmp, W_MAX_BUFFER_SIZE) == NULL)
+        {
+            return W_FAILURE;
+        }
 #endif
-            size_t _len = strlen(_tmp);
-            if (_len)
-            {
-                _dir = w_malloc(pMemPool, _len + 1);
-                memcpy(_dir, _tmp, _len);
-                _dir[_len] = '\0';
-                *pDir = _dir;
-            }
-            w_free(pMemPool, _tmp);
+        size_t _len = strlen(_tmp);
+        if (_len)
+        {
+            _dir = (char*)w_malloc(pMemPool, _len + 1);
+            memcpy(_dir, _tmp, _len);
+            _dir[_len] = '\0';
+            *pDir = _dir;
         }
     }
+
+    w_mem_pool_fini(&_pool);
 
     return W_SUCCESS;
 }
@@ -721,7 +737,7 @@ W_RESULT	w_io_dir_check_is_dir(
     _In_z_ const char* pPath)
 {
     const char* _trace_info = "w_io_dir_check_is_dir";
-    if (!pPath || !pMemPool || w_mem_pool_get_type(pMemPool) != W_MEM_POOL_FAST_EXTEND)
+    if (!pPath || !pMemPool)
     {
         W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
         return W_FAILURE;
@@ -1093,63 +1109,70 @@ W_RESULT w_io_string_split(
 }
 
 size_t w_io_to_base_64(_Inout_z_ char** pDestinationBuffer,
-                       _In_z_ char* pSourceBuffer,
-                       _In_z_ size_t pSourceBufferLenght,
-                       _In_ base_64_mode pEncodeMode)
+    _In_z_ char* pSourceBuffer,
+    _In_z_ size_t pSourceBufferLenght,
+    _In_ base_64_mode pEncodeMode)
 {
     size_t _encoded_size = 0;
     switch (pEncodeMode)
     {
-        case chromium:
-            _encoded_size = chromium_base64_encode(
-                *pDestinationBuffer,
-                pSourceBuffer,
-                pSourceBufferLenght);
-            break;
-        case klomp_avx:
-            klomp_avx2_base64_encode(
-                pSourceBuffer,
-                pSourceBufferLenght,
-                *pDestinationBuffer,
-                &_encoded_size);
-            break;
-        case fast_avx:
-            _encoded_size = fast_avx2_base64_encode(
-                *pDestinationBuffer,
-                pSourceBuffer,
-                pSourceBufferLenght);
-            break;
-        case fast_avx512:
+    case chromium:
+        _encoded_size = chromium_base64_encode(
+            *pDestinationBuffer,
+            pSourceBuffer,
+            pSourceBufferLenght);
+        break;
+    case scalar:
+        scalar_base64_encode(
+            pSourceBuffer,
+            pSourceBufferLenght,
+            *pDestinationBuffer,
+            &_encoded_size);
+        break;
+
+#if !defined(W_PLATFORM_ANDROID) && !defined(W_PLATFORM_IOS)
+
+    case klomp_avx:
+        klomp_avx2_base64_encode(
+            pSourceBuffer,
+            pSourceBufferLenght,
+            *pDestinationBuffer,
+            &_encoded_size);
+        break;
+    case fast_avx:
+        _encoded_size = fast_avx2_base64_encode(
+            *pDestinationBuffer,
+            pSourceBuffer,
+            pSourceBufferLenght);
+        break;
+    case fast_avx512:
 #if USE_AVX512 != 0 && ((defined(_MSC_VER) && _MSC_VER >= 1911) || (defined(__INTEL_COMPILER) && __INTEL_COMPILER >= 1600) || (defined(__clang__) && __clang_major__ >= 4) || (defined(__GNUC__) && __GNUC__ >= 5))
-            _encoded_size = fast_avx512bw_base64_encode(
-                pDestinationBuffer,
-                pSourceBuffer,
-                pSourceBufferLenght);
+        _encoded_size = fast_avx512bw_base64_encode(
+            pDestinationBuffer,
+            pSourceBuffer,
+            pSourceBufferLenght);
 #endif
-            break;
-        case quick_time:
-            _encoded_size = (size_t)(quicktime_base64_encode(
-                *pDestinationBuffer,
-                pSourceBuffer,
-                (int)pSourceBufferLenght));
-            break;
-        case scalar:
-            scalar_base64_encode(
-                pSourceBuffer,
-                pSourceBufferLenght,
-                *pDestinationBuffer,
-                &_encoded_size);
-            break;
+        break;
+    case quick_time:
+        _encoded_size = (size_t)(quicktime_base64_encode(
+            *pDestinationBuffer,
+            pSourceBuffer,
+            (int)pSourceBufferLenght));
+        break;
+
+#endif
     }
     return _encoded_size;
 }
+
+#if !defined(W_PLATFORM_ANDROID) && !defined(W_PLATFORM_IOS)
 
 W_RESULT w_io_file_is_jpeg(_In_ const char* pFilePath)
 {
     W_RESULT _ret = W_FAILURE;
 
     w_mem_pool _pool = NULL;
-    if (w_mem_pool_init(&_pool, W_MEM_POOL_ALIGNED_RECLAIM) == W_SUCCESS)
+    if (w_mem_pool_init(&_pool) == W_SUCCESS)
     {
         w_file_istream _istream = w_io_file_read_full_from_path(_pool, pFilePath);
         _ret = w_io_stream_is_jpeg(_istream);
@@ -1648,8 +1671,7 @@ W_RESULT w_io_pixels_from_png_file(
     return _ret;
 }
 
-
-
+#endif
 
 
 

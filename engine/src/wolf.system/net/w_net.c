@@ -1,7 +1,7 @@
 #include "w_net.h"
 
 #include <apr.h>
-#include <apr-2/apr_general.h>
+#include <apr-1/apr_general.h>
 #include <apr_tables.h>
 #include <nng/nng.h>
 #include <core/nng_impl.h>
@@ -929,7 +929,6 @@ W_RESULT w_net_send_http_request(
     }
 
 _out:
-    w_free(pMemPool, _curl_mem);
     if (_curl)
     {
         curl_easy_cleanup(_curl);

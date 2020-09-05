@@ -1,5 +1,5 @@
 #include "w_condition_variable.h"
-#include <apr-2/apr_thread_cond.h>
+#include <apr-1/apr_thread_cond.h>
 
 W_RESULT w_condition_variable_init(
     _Inout_ w_mem_pool pMemPool,

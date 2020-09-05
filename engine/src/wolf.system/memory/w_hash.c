@@ -1,10 +1,10 @@
 #include "w_hash.h"
-#include <apr-2/apr_hash.h>
+#include <apr-1/apr_hash.h>
 
 w_hash w_hash_init(_Inout_ w_mem_pool pMemPool)
 {
     const char* _trace_info = "w_hash_init";
-    if (!pMemPool || w_mem_pool_get_type(pMemPool) != W_MEM_POOL_FAST_EXTEND)
+    if (!pMemPool)
     {
         W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
         return NULL;
@@ -22,7 +22,7 @@ w_hash w_hash_make_custom(
     _In_ w_hash_custom_fn pHashCustomFunc)
 {
     const char* _trace_info = "w_hash_make_custom";
-    if (!pMemPool || w_mem_pool_get_type(pMemPool) != W_MEM_POOL_FAST_EXTEND)
+    if (!pMemPool)
     {
         W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
         return NULL;
@@ -96,7 +96,7 @@ w_hash w_hash_clone(
     _In_ w_hash pSourceHash)
 {
     const char* _trace_info = "w_hash_clone";
-    if (!pMemPool || w_mem_pool_get_type(pMemPool) != W_MEM_POOL_FAST_EXTEND)
+    if (!pMemPool)
     {
         W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
         return NULL;
@@ -119,7 +119,7 @@ w_hash w_hash_merge(
     _In_ const void* pCustomUserData)
 {
     const char* _trace_info = "w_hash_merge";
-    if (!pMemPool || w_mem_pool_get_type(pMemPool) != W_MEM_POOL_FAST_EXTEND)
+    if (!pMemPool)
     {
         W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
         return NULL;
@@ -144,7 +144,7 @@ w_hash w_hash_overlay(
     _In_ const w_hash pOverlay)
 {
     const char* _trace_info = "w_hash_overlay";
-    if (!pMemPool || w_mem_pool_get_type(pMemPool) != W_MEM_POOL_FAST_EXTEND)
+    if (!pMemPool)
     {
         W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
         return NULL;
@@ -162,7 +162,7 @@ w_hash_index w_hash_first(
     _In_ w_hash pHash)
 {
     const char* _trace_info = "w_hash_first";
-    if (!pMemPool || w_mem_pool_get_type(pMemPool) != W_MEM_POOL_FAST_EXTEND)
+    if (!pMemPool)
     {
         W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
         return NULL;
@@ -195,7 +195,11 @@ void w_hash_this(
         apr_hash_this(
             pHashIndex,
             pKey,
+#ifdef W_PLATFORM_WIN
             pKeyLen,
+#else
+            (int*)pKeyLen,
+#endif
             pValue);
     }
 }

@@ -1,27 +1,24 @@
 #include "wolf.h"
-#include "memory/rpmalloc/rpmalloc.h"
 
 //http://dev.ariel-networks.com/apr/apr-tutorial/html/apr-tutorial.html#toc1
-#include <apr-2/apr.h>
-#include <apr-2/apr_strings.h>
+#include <apr.h>
+#include <apr-1/apr_strings.h>
 
+#if defined(W_PLATFORM_WIN) || defined(W_PLATFORM_OSX) || defined(W_PLATFORM_LINUX)
 #include <curl/curl.h>
+#endif
 
 // this is used to cache lengths in apr_pwstrcat
 #define MAX_SAVED_LENGTHS  6
 
 W_RESULT wolf_init()
 {
-    rpmalloc_config_t _config = { 0 };
-
-    //enable huge page size just for WINDOWS, MAC and LINUX
+    if (apr_initialize()
+        // initialize curl
 #if defined(W_PLATFORM_WIN) || defined(W_PLATFORM_OSX) || defined(W_PLATFORM_LINUX)
-    _config.enable_huge_pages = 1;
+        || curl_global_init(CURL_GLOBAL_ALL)
 #endif
-
-    if (apr_initialize() ||
-        curl_global_init(CURL_GLOBAL_ALL) ||
-        rpmalloc_initialize_config(&_config))
+        )
     {
         return W_FAILURE;
     }
@@ -48,10 +45,10 @@ char* w_strcat(_In_ w_mem_pool pMemPool, ...)
 
     va_start(adummy, pMemPool);
 
-    while ((cp = va_arg(adummy, char*)) != NULL) 
+    while ((cp = va_arg(adummy, char*)) != NULL)
     {
         apr_size_t cplen = strlen(cp);
-        if (nargs < MAX_SAVED_LENGTHS) 
+        if (nargs < MAX_SAVED_LENGTHS)
         {
             saved_lengths[nargs++] = cplen;
         }
@@ -68,13 +65,13 @@ char* w_strcat(_In_ w_mem_pool pMemPool, ...)
     va_start(adummy, pMemPool);
 
     nargs = 0;
-    while ((argp = va_arg(adummy, char*)) != NULL) 
+    while ((argp = va_arg(adummy, char*)) != NULL)
     {
-        if (nargs < MAX_SAVED_LENGTHS) 
+        if (nargs < MAX_SAVED_LENGTHS)
         {
             len = saved_lengths[nargs++];
         }
-        else 
+        else
         {
             len = strlen(argp);
         }
@@ -90,6 +87,8 @@ char* w_strcat(_In_ w_mem_pool pMemPool, ...)
 
     return res;
 }
+
+#if defined(W_PLATFORM_WIN) || defined(W_PLATFORM_OSX) || defined(W_PLATFORM_LINUX)
 
 wchar_t* w_wstrcat(_In_ w_mem_pool pMemPool, ...)
 {
@@ -108,9 +107,11 @@ wchar_t* w_wstrcat(_In_ w_mem_pool pMemPool, ...)
     bool _got_error = false;
 
     w_mem_pool _local_pool = NULL;
-    if (w_mem_pool_init(&_local_pool, W_MEM_POOL_FAST_EXTEND) != W_SUCCESS)
+    if (w_mem_pool_init(&_local_pool) != W_SUCCESS)
     {
-        W_ASSERT_P(false, "could not allocate local memory pool. trace info: %s", _trace_info);
+        W_ASSERT_P(false, 
+            "could not allocate local memory pool. trace info: %s", 
+            _trace_info);
         return NULL;
     }
 
@@ -148,7 +149,8 @@ wchar_t* w_wstrcat(_In_ w_mem_pool pMemPool, ...)
     {
         W_ASSERT_P(
             false,
-            "could not get allocate memory for wchar*. trace info: %s", _trace_info);
+            "could not get allocate memory for wchar*. trace info: %s", 
+            _trace_info);
         return NULL;
     }
     mbstowcs(_ret, _dst, _ret_len);
@@ -160,9 +162,12 @@ out:
     return _ret;
 }
 
+#endif
+
 void wolf_fini()
 {
+#if defined(W_PLATFORM_WIN) || defined(W_PLATFORM_OSX) || defined(W_PLATFORM_LINUX)
     curl_global_cleanup();
-    rpmalloc_finalize();
+#endif
     apr_terminate();
 }

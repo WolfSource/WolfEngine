@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29306.81
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.779
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test.system.win", "tests\test.system.win.vcxproj", "{C7EAFC1C-9CFD-4C25-8AE9-C1373DD5DF35}"
 EndProject
@@ -11,34 +11,52 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test.quic.client.win", "tes
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test.quic.server.win", "tests\test.quic.server.win.vcxproj", "{D519D1D6-E188-48C7-A0ED-1E2F156D0091}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "win", "win", "{3BC2C1D6-3F83-429A-9378-941010DD9F32}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|ARM = Debug|ARM
+		Debug|ARM64 = Debug|ARM64
 		Debug|x64 = Debug|x64
 		Debug|x86 = Debug|x86
+		Release|ARM = Release|ARM
+		Release|ARM64 = Release|ARM64
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C7EAFC1C-9CFD-4C25-8AE9-C1373DD5DF35}.Debug|ARM.ActiveCfg = Debug|Win32
+		{C7EAFC1C-9CFD-4C25-8AE9-C1373DD5DF35}.Debug|ARM64.ActiveCfg = Debug|Win32
 		{C7EAFC1C-9CFD-4C25-8AE9-C1373DD5DF35}.Debug|x64.ActiveCfg = Debug|x64
 		{C7EAFC1C-9CFD-4C25-8AE9-C1373DD5DF35}.Debug|x64.Build.0 = Debug|x64
 		{C7EAFC1C-9CFD-4C25-8AE9-C1373DD5DF35}.Debug|x86.ActiveCfg = Debug|Win32
 		{C7EAFC1C-9CFD-4C25-8AE9-C1373DD5DF35}.Debug|x86.Build.0 = Debug|Win32
+		{C7EAFC1C-9CFD-4C25-8AE9-C1373DD5DF35}.Release|ARM.ActiveCfg = Release|Win32
+		{C7EAFC1C-9CFD-4C25-8AE9-C1373DD5DF35}.Release|ARM64.ActiveCfg = Release|Win32
 		{C7EAFC1C-9CFD-4C25-8AE9-C1373DD5DF35}.Release|x64.ActiveCfg = Release|x64
 		{C7EAFC1C-9CFD-4C25-8AE9-C1373DD5DF35}.Release|x64.Build.0 = Release|x64
 		{C7EAFC1C-9CFD-4C25-8AE9-C1373DD5DF35}.Release|x86.ActiveCfg = Release|Win32
 		{C7EAFC1C-9CFD-4C25-8AE9-C1373DD5DF35}.Release|x86.Build.0 = Release|Win32
+		{A0FD08A3-5AC3-4905-B6BA-CBD0337551AC}.Debug|ARM.ActiveCfg = Debug|Win32
+		{A0FD08A3-5AC3-4905-B6BA-CBD0337551AC}.Debug|ARM64.ActiveCfg = Debug|Win32
 		{A0FD08A3-5AC3-4905-B6BA-CBD0337551AC}.Debug|x64.ActiveCfg = Debug|x64
 		{A0FD08A3-5AC3-4905-B6BA-CBD0337551AC}.Debug|x64.Build.0 = Debug|x64
 		{A0FD08A3-5AC3-4905-B6BA-CBD0337551AC}.Debug|x86.ActiveCfg = Debug|Win32
 		{A0FD08A3-5AC3-4905-B6BA-CBD0337551AC}.Debug|x86.Build.0 = Debug|Win32
+		{A0FD08A3-5AC3-4905-B6BA-CBD0337551AC}.Release|ARM.ActiveCfg = Release|Win32
+		{A0FD08A3-5AC3-4905-B6BA-CBD0337551AC}.Release|ARM64.ActiveCfg = Release|Win32
 		{A0FD08A3-5AC3-4905-B6BA-CBD0337551AC}.Release|x64.ActiveCfg = Release|x64
 		{A0FD08A3-5AC3-4905-B6BA-CBD0337551AC}.Release|x64.Build.0 = Release|x64
 		{A0FD08A3-5AC3-4905-B6BA-CBD0337551AC}.Release|x86.ActiveCfg = Release|Win32
 		{A0FD08A3-5AC3-4905-B6BA-CBD0337551AC}.Release|x86.Build.0 = Release|Win32
+		{D519D1D6-E188-48C7-A0ED-1E2F156D0091}.Debug|ARM.ActiveCfg = Debug|Win32
+		{D519D1D6-E188-48C7-A0ED-1E2F156D0091}.Debug|ARM64.ActiveCfg = Debug|Win32
 		{D519D1D6-E188-48C7-A0ED-1E2F156D0091}.Debug|x64.ActiveCfg = Debug|x64
 		{D519D1D6-E188-48C7-A0ED-1E2F156D0091}.Debug|x64.Build.0 = Debug|x64
 		{D519D1D6-E188-48C7-A0ED-1E2F156D0091}.Debug|x86.ActiveCfg = Debug|Win32
 		{D519D1D6-E188-48C7-A0ED-1E2F156D0091}.Debug|x86.Build.0 = Debug|Win32
+		{D519D1D6-E188-48C7-A0ED-1E2F156D0091}.Release|ARM.ActiveCfg = Release|Win32
+		{D519D1D6-E188-48C7-A0ED-1E2F156D0091}.Release|ARM64.ActiveCfg = Release|Win32
 		{D519D1D6-E188-48C7-A0ED-1E2F156D0091}.Release|x64.ActiveCfg = Release|x64
 		{D519D1D6-E188-48C7-A0ED-1E2F156D0091}.Release|x64.Build.0 = Release|x64
 		{D519D1D6-E188-48C7-A0ED-1E2F156D0091}.Release|x86.ActiveCfg = Release|Win32
@@ -48,6 +66,8 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{C7EAFC1C-9CFD-4C25-8AE9-C1373DD5DF35} = {3BC2C1D6-3F83-429A-9378-941010DD9F32}
+		{4092C134-C22A-4916-86C3-2FF315902485} = {3BC2C1D6-3F83-429A-9378-941010DD9F32}
 		{A0FD08A3-5AC3-4905-B6BA-CBD0337551AC} = {4092C134-C22A-4916-86C3-2FF315902485}
 		{D519D1D6-E188-48C7-A0ED-1E2F156D0091} = {4092C134-C22A-4916-86C3-2FF315902485}
 	EndGlobalSection

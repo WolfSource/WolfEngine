@@ -1,6 +1,6 @@
 #include "w_array.h"
-#include <apr_tables.h>
-#include <apr_strings.h>
+#include <apr-1/apr_tables.h>
+#include <apr-1/apr_strings.h>
 
 w_array w_array_init(
     _Inout_ w_mem_pool pMemPool,
@@ -8,8 +8,7 @@ w_array w_array_init(
     _In_ int pSizeOfEachElement)
 {
     const char* _trace_info = "w_array_init";
-    if (!pMemPool ||
-        w_mem_pool_get_type(pMemPool) != W_MEM_POOL_FAST_EXTEND)
+    if (!pMemPool)
     {
         W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
         return NULL;

@@ -21,13 +21,13 @@
 
     #define W_PLATFORM_IOS
 
+#elif defined(__ANDROID_API__)
+
+    #define W_PLATFORM_ANDROID
+
 #elif defined(__linux) || defined(__linux__)
 
     #define W_PLATFORM_LINUX
-
-#elif defined(_ANDROID)
-
-    #define W_PLATFORM_ANDROID
 
 #endif
 
@@ -74,3 +74,17 @@
 #endif
 
 typedef int W_RESULT;
+
+#ifdef _MSC_VER
+#define ASM __asm
+#else
+
+#define ASM __asm__
+//define dummy SAL
+#define _In_
+#define _In_z_
+#define _Out_
+#define _Inout_
+#define _Inout_z_
+
+#endif

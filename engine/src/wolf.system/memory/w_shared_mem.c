@@ -1,5 +1,5 @@
 #include "w_shared_mem.h"
-#include <apr-2/apr_shm.h>
+#include <apr-1/apr_shm.h>
 
 W_RESULT    w_shared_mem_create(
     _Inout_ w_mem_pool pMemPool,
@@ -8,7 +8,7 @@ W_RESULT    w_shared_mem_create(
     _In_z_ const char* pFileName)
 {
     const char* _trace_info = "w_shared_mem_create";
-    if (!pMemPool || !pReqSize || w_mem_pool_get_type(pMemPool) != W_MEM_POOL_FAST_EXTEND)
+    if (!pMemPool || !pReqSize)
     {
         W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
         return APR_BADARG;
@@ -31,7 +31,7 @@ W_RESULT    w_shared_mem_create_ex(
 {
     const char* _trace_info = "w_shared_mem_create_ex";
 
-    if (!pMemPool || !pReqSize || w_mem_pool_get_type(pMemPool) != W_MEM_POOL_FAST_EXTEND)
+    if (!pMemPool || !pReqSize)
     {
         W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
         return APR_BADARG;
@@ -56,7 +56,7 @@ W_RESULT    w_shared_mem_remove(
 {
     const char* _trace_info = "w_shared_mem_remove";
 
-    if (!pMemPool || !pFileName || w_mem_pool_get_type(pMemPool) != W_MEM_POOL_FAST_EXTEND)
+    if (!pMemPool || !pFileName)
     {
         W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
         return APR_BADARG;
@@ -98,7 +98,7 @@ W_RESULT    w_shared_mem_attach(
     _In_z_ const char* pFileName)
 {
     const char* _trace_info = "w_shared_mem_attach";
-    if (!pMemPool || !pSharedMem || !*pSharedMem || w_mem_pool_get_type(pMemPool) != W_MEM_POOL_FAST_EXTEND)
+    if (!pMemPool || !pSharedMem || !*pSharedMem)
     {
         W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
         return APR_BADARG;
@@ -122,7 +122,7 @@ W_RESULT    w_shared_mem_attach_ex(
     _In_ int pFlags)
 {
     const char* _trace_info = "w_shared_mem_attach_ex";
-    if (!pMemPool || !pSharedMem || !*pSharedMem || !pFileName || w_mem_pool_get_type(pMemPool) != W_MEM_POOL_FAST_EXTEND)
+    if (!pMemPool || !pSharedMem || !*pSharedMem || !pFileName)
     {
         W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
         return APR_BADARG;

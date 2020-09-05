@@ -28,11 +28,13 @@ extern "C" {
     typedef enum
     {
         chromium,
+        scalar,
+#if !defined(W_PLATFORM_ANDROID) && !defined(W_PLATFORM_IOS)
         klomp_avx,
         fast_avx,
         fast_avx512,
         quick_time,
-        scalar
+#endif
     } base_64_mode;
 
     typedef enum
@@ -468,6 +470,9 @@ extern "C" {
             _In_z_ size_t pSourceBufferLenght,
             _In_ base_64_mode pEncodeMode);
 
+
+#if !defined(W_PLATFORM_ANDROID) && !defined(W_PLATFORM_IOS)
+
     /**
      * is file stream contains jpeg data
      * @param pFilePath path to the file
@@ -600,6 +605,8 @@ extern "C" {
             _Out_  uint8_t* pBitDepth,
             _Out_  int* pNumberOfPasses,
             _Out_  uint8_t** pPixels);
+
+#endif
 
 
 #ifdef __cplusplus

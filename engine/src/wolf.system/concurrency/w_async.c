@@ -1,5 +1,5 @@
 #include "w_async.h"
-#include "apr-2/apr_general.h"
+#include "apr-1/apr_general.h"
 
 void* _thread_job(w_thread pThread, void* pArgs)
 {
@@ -33,7 +33,7 @@ W_RESULT w_async_init(
     }
 
     *pAsync = NULL;
-    w_async _async = w_malloc(pMemPool, sizeof(w_async_t));
+    w_async _async = (w_async_t*)w_malloc(pMemPool, sizeof(w_async_t));
     if (!_async)
     {
         W_ASSERT_P(false, "bad args! trace info %s", _trace_info);

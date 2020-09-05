@@ -1,5 +1,5 @@
 #include "w_mem_map.h"
-#include <apr-2/apr_mmap.h>
+#include <apr-1/apr_mmap.h>
 
 W_RESULT    w_mem_map_create(
     _Inout_ w_mem_pool pMemPool,
@@ -10,10 +10,7 @@ W_RESULT    w_mem_map_create(
     _In_ int pFlag)
 {
     const char* _trace_info = "w_mem_map_create";
-    if (!pMemPool ||
-        w_mem_pool_get_type(pMemPool) != W_MEM_POOL_FAST_EXTEND ||
-        !pNewMemMap ||
-        !*pNewMemMap)
+    if (!pMemPool || !pNewMemMap || !*pNewMemMap)
     {
         W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
         return APR_BADARG;
@@ -39,11 +36,7 @@ W_RESULT    w_mem_map_dup(
     _In_ w_mem_map pOldMemMap)
 {
     const char* _trace_info = "w_mem_map_dup";
-    if (!pMemPool ||
-        w_mem_pool_get_type(pMemPool) != W_MEM_POOL_FAST_EXTEND ||
-        !pNewMemMap ||
-        !*pNewMemMap ||
-        !pOldMemMap)
+    if (!pMemPool || !pNewMemMap || !*pNewMemMap || !pOldMemMap)
     {
         W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
         return APR_BADARG;
