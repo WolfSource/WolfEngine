@@ -46,6 +46,10 @@ extern "C" {
 #define W_FAILURE 1
 #endif
 
+#ifndef W_BAD_ARG
+#define W_BAD_ARG 70013//Same as APR_BADARG
+#endif
+
     typedef
 #ifdef W_PLATFORM_WIN
         __int64

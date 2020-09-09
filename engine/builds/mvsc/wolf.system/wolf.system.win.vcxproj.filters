@@ -49,9 +49,6 @@
     <Filter Include="log\spdlog\src">
       <UniqueIdentifier>{4e22882a-b662-4834-9acd-ae1fd69d9a51}</UniqueIdentifier>
     </Filter>
-    <Filter Include="memory">
-      <UniqueIdentifier>{32d0e330-0fb9-4df2-a4c6-01de252119f2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="xml">
       <UniqueIdentifier>{d88c4a7f-0f0c-4f8f-b2e9-b669364fd88d}</UniqueIdentifier>
     </Filter>
@@ -69,6 +66,18 @@
     </Filter>
     <Filter Include="script\lua">
       <UniqueIdentifier>{defd0ee5-e239-4f2f-9e0e-38bee0c7baf3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="json\rapidjson\error">
+      <UniqueIdentifier>{ce372a16-d9c4-4536-8a4e-2ccaae871e5f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="json\rapidjson\internal">
+      <UniqueIdentifier>{d4f64ed8-289c-42ac-8d4c-84bfdb3d2473}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="json\rapidjson\msinttypes">
+      <UniqueIdentifier>{9f58969d-89f2-4083-97fb-b8072254c76b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="io\stb">
+      <UniqueIdentifier>{e97cc25f-1053-41d3-a8b0-9f4987b030bf}</UniqueIdentifier>
     </Filter>
     <Filter Include="net">
       <UniqueIdentifier>{a20f5909-cfb2-4b6b-b880-e4afe65198ef}</UniqueIdentifier>
@@ -100,20 +109,11 @@
     <Filter Include="net\ws\uWebSockets\f2">
       <UniqueIdentifier>{54612a69-6dda-4333-ac28-f41ee00ad79c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="memory">
+      <UniqueIdentifier>{32d0e330-0fb9-4df2-a4c6-01de252119f2}</UniqueIdentifier>
+    </Filter>
     <Filter Include="memory\hash">
       <UniqueIdentifier>{e288fa0c-cad1-4a9e-bacb-1afb1bc356f1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="json\rapidjson\error">
-      <UniqueIdentifier>{ce372a16-d9c4-4536-8a4e-2ccaae871e5f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="json\rapidjson\internal">
-      <UniqueIdentifier>{d4f64ed8-289c-42ac-8d4c-84bfdb3d2473}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="json\rapidjson\msinttypes">
-      <UniqueIdentifier>{9f58969d-89f2-4083-97fb-b8072254c76b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="io\stb">
-      <UniqueIdentifier>{e97cc25f-1053-41d3-a8b0-9f4987b030bf}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -301,24 +301,6 @@
     <ClCompile Include="..\..\..\src\wolf.system\concurrency\libev\event.c">
       <Filter>concurrency\libev</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\log\spdlog\src\async.cpp">
-      <Filter>log\spdlog\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\log\spdlog\src\color_sinks.cpp">
-      <Filter>log\spdlog\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\log\spdlog\src\file_sinks.cpp">
-      <Filter>log\spdlog\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\log\spdlog\src\fmt.cpp">
-      <Filter>log\spdlog\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\log\spdlog\src\spdlog.cpp">
-      <Filter>log\spdlog\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\log\spdlog\src\stdout_sinks.cpp">
-      <Filter>log\spdlog\src</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\wolf.system\xml\expat\xmlparse.c">
       <Filter>xml\expat</Filter>
     </ClCompile>
@@ -444,6 +426,30 @@
     </ClCompile>
     <ClCompile Include="..\..\..\src\wolf.system\concurrency\w_concurrent_queue.c">
       <Filter>concurrency</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\memory\w_string_view.c">
+      <Filter>memory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\log\spdlog\src\async.cpp">
+      <Filter>log\spdlog\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\log\spdlog\src\cfg.cpp">
+      <Filter>log\spdlog\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\log\spdlog\src\color_sinks.cpp">
+      <Filter>log\spdlog\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\log\spdlog\src\file_sinks.cpp">
+      <Filter>log\spdlog\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\log\spdlog\src\fmt.cpp">
+      <Filter>log\spdlog\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\log\spdlog\src\spdlog.cpp">
+      <Filter>log\spdlog\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\log\spdlog\src\stdout_sinks.cpp">
+      <Filter>log\spdlog\src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -990,6 +996,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\src\wolf.system\concurrency\w_concurrent_queue.h">
       <Filter>concurrency</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\memory\w_string_view.h">
+      <Filter>memory</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

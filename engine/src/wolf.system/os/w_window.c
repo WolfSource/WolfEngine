@@ -19,7 +19,7 @@ static BOOL CALLBACK w_enumerate_screens_callback(
         return FALSE;
     }
 
-    w_screen_coord* _screen = w_malloc(_arg->pool, sizeof(w_screen_coord));
+    w_screen_coord _screen = w_malloc(_arg->pool, sizeof(w_screen_coord_t));
     if (_screen)
     {
         _screen->left = pLRect->left;
@@ -36,7 +36,7 @@ static BOOL CALLBACK w_enumerate_screens_callback(
 
 w_array w_window_enumerate_screens(_Inout_ w_mem_pool pMemPool)
 {
-    w_array _screen_coords = w_array_init(pMemPool, 1, sizeof(w_screen_coord));
+    w_array _screen_coords = w_array_init(pMemPool, 1, sizeof(w_screen_coord_t));
     if (_screen_coords)
     {
         EnumDisplayMonitors(

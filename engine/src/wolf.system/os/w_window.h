@@ -27,20 +27,22 @@ extern "C" {
 
     //#include "python_exporter/w_boost_python_helper.h"
 
-    typedef struct
+    typedef struct w_screen_coord_t
     {
         long left;
         long top;
         long right;
         long bottom;
-    } w_screen_coord;
+    } w_screen_coord_t;
+    typedef w_screen_coord_t* w_screen_coord;
 
     /**
      * enumerate screens
      * @param pMemPool The pool to allocate out of
      * @return arrays of w_screen_coord
      */
-    w_array w_window_enumerate_screens(_Inout_ w_mem_pool pMemPool);
+    W_SYSTEM_EXPORT
+        w_array w_window_enumerate_screens(_Inout_ w_mem_pool pMemPool);
 
 
     //RECT                combined;

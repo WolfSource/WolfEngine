@@ -22,6 +22,7 @@ W_RESULT wolf_init()
     {
         return W_FAILURE;
     }
+    
     return W_SUCCESS;
 }
 

@@ -17,10 +17,11 @@
 
 W_RESULT w_timer_init(
     _Inout_ w_mem_pool pMemPool,
-    _Inout_ w_timer_ptr pTimer,
+    _Inout_ w_timer* pTimer,
     _In_ double pStartAfterSec,
     _In_ double pTimeOutInSec,
-    _In_ w_timer_callback pCallBack)
+    _In_ w_timer_callback pCallBack,
+    _In_ void* pUserData)
 {
     const char* _trace_info = "w_timer_init";
     if (!pMemPool || !pTimer)
@@ -28,26 +29,35 @@ W_RESULT w_timer_init(
         W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
         return W_FAILURE;
     }
-    
-    pTimer->t = (w_timer_base*)w_malloc(pMemPool, sizeof(w_timer_base));
-    if (!pTimer->t)
+
+    *pTimer = NULL;
+
+    w_timer _timer = (w_timer)w_malloc(pMemPool, sizeof(w_timer_t));
+    if (!_timer)
+    {
+        return W_FAILURE;
+    }
+
+    _timer->t = (w_timer_base*)w_malloc(pMemPool, sizeof(w_timer_base));
+    if (!_timer->t)
     {
         W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
         return W_FAILURE;
     }
-    pTimer->l = EV_DEFAULT;
-    
-    //init, start ev_timer and run the loop
-    ev_timer_init (pTimer->t, pCallBack, pStartAfterSec, pTimeOutInSec);
-    ev_timer_start (pTimer->l, pTimer->t);
-    pTimer->t->data = pTimer;
+    _timer->l = EV_DEFAULT;
 
-    ev_run(pTimer->l, 0);
-    
+    //init, start ev_timer and run the loop
+    ev_timer_init(_timer->t, pCallBack, pStartAfterSec, pTimeOutInSec);
+    ev_timer_start(_timer->l, _timer->t);
+    _timer->t->data = _timer;
+
+    *pTimer = _timer;
+    ev_run(_timer->l, 0);
+
     return W_SUCCESS;
 }
 
-W_RESULT w_timer_restart(_In_ w_timer_ptr pTimer)
+W_RESULT w_timer_restart(_In_ w_timer pTimer)
 {
     if (!pTimer)
     {
@@ -57,7 +67,7 @@ W_RESULT w_timer_restart(_In_ w_timer_ptr pTimer)
     return W_SUCCESS;
 }
 
-W_RESULT w_timer_break(_In_ w_timer_ptr pTimer, _In_ uint8_t pHow)
+W_RESULT w_timer_break(_In_ w_timer pTimer, _In_ uint8_t pHow)
 {
     if (!pTimer || pHow > 2)
     {
@@ -95,7 +105,7 @@ W_RESULT w_timer_break(_In_ w_timer_ptr pTimer, _In_ uint8_t pHow)
 //    return _timer;
 //}
 
-void w_timer_fini(_In_ w_timer_ptr pTimer)
+void w_timer_fini(_In_ w_timer pTimer)
 {
     ev_loop_destroy(pTimer->l);
 }
