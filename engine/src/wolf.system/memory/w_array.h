@@ -32,6 +32,14 @@ extern "C" {
             _In_ int pSizeOfEachElement);
 
     /**
+     * get size of an array
+     * @param pArray the array
+     * @return size of array
+     */
+    W_SYSTEM_EXPORT
+        size_t w_array_get_size(_In_ w_array pArray);
+
+    /**
      * get an element by index.
      * @param pElementIndex The index of element.
      * @return Location for the an element is avaieble in the array, else it will return NULL

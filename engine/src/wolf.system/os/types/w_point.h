@@ -9,19 +9,19 @@
 
 #pragma once
 
-typedef struct
+typedef struct w_point
 {
     long x;
     long y;
 } w_point;
 
-typedef struct
+typedef struct w_point_f
 {
     float x;
     float y;
 } w_point_f;
 
-typedef struct 
+typedef struct w_point_t
 {
     unsigned int x;
     unsigned int y;

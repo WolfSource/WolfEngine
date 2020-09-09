@@ -246,7 +246,7 @@ int main()
 //     });
 
 // Convey("concurrency", {
-//printf("testing w_asunc");
+//printf("testing w_async");
 //
 //w_mem_pool _mem_pool = NULL;
 //w_mem_pool_init(&_mem_pool, W_MEM_POOL_FAST_EXTEND);

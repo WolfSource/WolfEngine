@@ -1079,7 +1079,7 @@ W_RESULT w_io_wstring_has_end_with(_In_z_ const wchar_t* pString, _In_z_ const w
 
 W_RESULT w_io_string_split(
     _In_ w_mem_pool pMemPool,
-    _In_z_ char* pString,
+    _In_z_ const char* pString,
     _In_z_ const char* pSplit,
     _Out_ w_array* pResults)
 {

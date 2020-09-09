@@ -1,6 +1,7 @@
 #include "w_process.h"
 #include <apr-1/apr_general.h>
 #include <io/w_io.h>
+#include <memory/w_string_view.h>
 
 #ifdef W_PLATFORM_WIN
 #include <tlhelp32.h>//for checking process
@@ -128,7 +129,7 @@ size_t w_process_get_count_of_instances(_In_z_ const wchar_t* pProcessName)
 
 W_RESULT w_process_get_name_by_id(
 	_Inout_ w_mem_pool pMemPool,
-	_In_ unsigned long pProcessID,
+	_In_ DWORD pProcessID,
 	_Inout_ wchar_t** pProcessName)
 {
 	const char* _trace_info = "w_process_get_process_name_by_id";
@@ -333,7 +334,229 @@ W_RESULT w_process_create(
 
 #endif
 
-W_RESULT w_process_kill_by_id(_In_ unsigned long pProcessID)
+W_RESULT w_process_kill_by_info(_In_ w_process_info pProcessInfo)
+{
+	if (!pProcessInfo || !pProcessInfo->info)
+	{
+		return APR_BADARG;
+	}
+
+	if (!TerminateProcess(pProcessInfo->info->hProcess, 0))
+	{
+		return W_FAILURE;
+	}
+
+	if (!CloseHandle(pProcessInfo->info->hThread))
+	{
+		return W_FAILURE;
+	}
+	if (!CloseHandle(pProcessInfo->info->hProcess))
+	{
+		return W_FAILURE;
+	}
+
+	return W_SUCCESS;
+}
+
+W_RESULT w_process_kill_by_name_as_admin(
+	_In_z_ const wchar_t* pProcessName,
+	_In_z_ const wchar_t* pUserName,
+	_In_z_ const wchar_t* pPassword,
+	_In_ bool pTerminateChildProcesses)
+{
+	w_mem_pool _mem_pool = NULL;
+	w_mem_pool_init(&_mem_pool);
+
+	if (!_mem_pool)
+	{
+		return W_FAILURE;
+	}
+
+	W_RESULT _ret = W_FAILURE;
+	wchar_t* _cmd = (wchar_t*)w_malloc(_mem_pool, W_MAX_BUFFER_SIZE * sizeof(wchar_t));
+	if (!_cmd)
+	{
+		goto exit;
+	}
+
+#ifdef W_PLATFORM_WIN
+
+	swprintf_s(_cmd, W_MAX_BUFFER_SIZE,
+		L"taskkill /IM %s /U %s /P %s /F",
+		pProcessName, pUserName, pPassword);
+
+	if (pTerminateChildProcesses)
+	{
+		_cmd = w_wstrcat(_mem_pool, _cmd, L" /T", NULL);
+	}
+	_wsystem(_cmd);
+
+	_ret = W_SUCCESS;
+
+#else
+
+
+#endif
+
+exit:
+	w_mem_pool_fini(&_mem_pool);
+	return _ret;
+}
+
+W_RESULT w_process_kill_by_name(
+	_In_z_ const wchar_t* pProcessName,
+	_In_ bool pTerminateChildProcesses)
+{
+	w_mem_pool _mem_pool = NULL;
+	w_mem_pool_init(&_mem_pool);
+
+	if (!_mem_pool)
+	{
+		return W_FAILURE;
+	}
+
+	W_RESULT _ret = W_FAILURE;
+	wchar_t* _cmd = (wchar_t*)w_malloc(_mem_pool, W_MAX_BUFFER_SIZE * sizeof(wchar_t));
+	if (!_cmd)
+	{
+		goto exit;
+	}
+
+#ifdef W_PLATFORM_WIN
+
+	swprintf_s(_cmd, W_MAX_BUFFER_SIZE,
+		L"taskkill /IM %s /F",
+		pProcessName);
+
+	if (pTerminateChildProcesses)
+	{
+		_cmd = w_wstrcat(_mem_pool, _cmd, L" /T", NULL);
+	}
+	_wsystem(_cmd);
+
+	_ret = W_SUCCESS;
+
+#else
+
+
+#endif
+
+exit:
+	w_mem_pool_fini(&_mem_pool);
+	return _ret;
+}
+
+W_RESULT w_process_kill_by_id_as_admin(
+	_In_ DWORD pProcessID,
+	_In_z_ const wchar_t* pUserName,
+	_In_z_ const wchar_t* pPassword,
+	_In_ bool pTerminateChildProcesses)
+{
+	w_mem_pool _mem_pool = NULL;
+	w_mem_pool_init(&_mem_pool);
+
+	if (!_mem_pool)
+	{
+		return W_FAILURE;
+	}
+
+	W_RESULT _ret = W_FAILURE;
+	wchar_t* _cmd = (wchar_t*)w_malloc(_mem_pool, W_MAX_BUFFER_SIZE * sizeof(wchar_t));
+	if (!_cmd)
+	{
+		goto exit;
+	}
+
+#ifdef W_PLATFORM_WIN
+
+	swprintf_s(_cmd, W_MAX_BUFFER_SIZE,
+		L"taskkill /PID %lu /U %s /P %s /F",
+		pProcessID, pUserName, pPassword);
+
+	if (pTerminateChildProcesses)
+	{
+		_cmd = w_wstrcat(_mem_pool, _cmd, L" /T", NULL);
+	}
+	_wsystem(_cmd);
+
+	_ret = W_SUCCESS;
+
+#else
+
+
+#endif
+
+exit:
+	w_mem_pool_fini(&_mem_pool);
+	return _ret;
+}
+
+W_RESULT w_process_kill_by_id(
+	_In_ DWORD pProcessID,
+	_In_ bool pTerminateChildProcesses)
+{
+	w_mem_pool _mem_pool = NULL;
+	w_mem_pool_init(&_mem_pool);
+
+	if (!_mem_pool)
+	{
+		return W_FAILURE;
+	}
+
+	W_RESULT _ret = W_FAILURE;
+	wchar_t* _cmd = (wchar_t*)w_malloc(_mem_pool, W_MAX_BUFFER_SIZE * sizeof(wchar_t));
+	if (!_cmd)
+	{
+		goto exit;
+	}
+
+#ifdef W_PLATFORM_WIN
+
+	swprintf_s(_cmd, W_MAX_BUFFER_SIZE,
+		L"taskkill /PID %lu /F",
+		pProcessID);
+
+	if (pTerminateChildProcesses)
+	{
+		_cmd = w_wstrcat(_mem_pool, _cmd, L" /T", NULL);
+	}
+	_wsystem(_cmd);
+
+	_ret = W_SUCCESS;
+
+#else
+
+
+#endif
+
+exit:
+	w_mem_pool_fini(&_mem_pool);
+	return _ret;
+}
+
+W_RESULT w_process_kill_all(
+	_In_ w_mem_pool pMemPool,
+	_In_ ...)
+{
+	W_RESULT _hr = W_SUCCESS;
+
+	wchar_t* _c = NULL;
+	va_list _arg_ptr;
+	va_start(_arg_ptr, pMemPool);
+	while ((_c = va_arg(_arg_ptr, wchar_t*)) != NULL)
+	{
+		if (w_process_kill_by_name(_c, true) != W_SUCCESS)
+		{
+			_hr = W_FAILURE;
+		}
+	}
+	va_end(_arg_ptr);
+
+	return _hr;
+}
+
+
+W_RESULT w_process_kill_by_id_handle(_In_ DWORD pProcessID)
 {
 	W_RESULT _hr = W_SUCCESS;
 
@@ -358,30 +581,6 @@ W_RESULT w_process_kill_by_id(_In_ unsigned long pProcessID)
 #endif
 
 	return _hr;
-}
-
-W_RESULT w_process_kill_by_info(_In_ w_process_info pProcessInfo)
-{
-	if (!pProcessInfo || !pProcessInfo->info)
-	{
-		return APR_BADARG;
-	}
-
-	if (!TerminateProcess(pProcessInfo->info->hProcess, 0))
-	{
-		return W_FAILURE;
-	}
-
-	if (!CloseHandle(pProcessInfo->info->hThread))
-	{
-		return W_FAILURE;
-	}
-	if (!CloseHandle(pProcessInfo->info->hProcess))
-	{
-		return W_FAILURE;
-	}
-
-	return W_SUCCESS;
 }
 
 W_RESULT w_process_info_fini(_Inout_ w_process_info pProcessInfo)
@@ -440,111 +639,3 @@ W_RESULT w_process_info_fini(_Inout_ w_process_info pProcessInfo)
 //
 //	return result;
 //}
-
-
-
-
-
-//
-//
-//bool w_process::kill_all_processes(_In_ std::initializer_list<const wchar_t*> pProcessNames)
-//{
-//	W_RESULT _hr = W_PASSED;
-//
-//#ifdef __WIN32
-//	DWORD aProcesses[1024], cbNeeded, cProcesses;
-//	unsigned int i;
-//
-//	if (!EnumProcesses(aProcesses, sizeof(aProcesses), &cbNeeded)) return L"";
-//
-//	// Calculate how many process identifiers were returned.
-//	cProcesses = cbNeeded / sizeof(DWORD);
-//
-//	DWORD _process_id = 0;
-//	std::wstring _process_name;
-//	for (i = 0; i < cProcesses; i++)
-//	{
-//		_process_id = aProcesses[i];
-//		if (_process_id != 0)
-//		{
-//			_process_name = get_process_name_by_ID(_process_id);
-//			for (auto _name : pProcessNames)
-//			{
-//				if (wcscmp(_process_name.c_str(), _name) == 0)
-//				{
-//					if (kill_process_by_ID(_process_id) == W_FAILED)
-//					{
-//						_hr = W_FAILED;
-//					}
-//				}
-//			}
-//
-//		}
-//	}
-//
-//#endif
-//
-//	return _hr == W_PASSED;
-//}
-//
-//bool w_process::force_kill_process_by_name(_In_z_ const std::wstring pProcessName,
-//	_In_ const bool pTerminateChildProcesses)
-//{
-//	std::wstring _cmd = L"taskkill /IM " + pProcessName + L" /F";
-//	if (pTerminateChildProcesses)
-//	{
-//		_cmd += L" /T";
-//	}
-//	_wsystem(_cmd.c_str());
-//	return true;
-//}
-//
-//bool w_process::force_kill_process_by_name_as_admin(
-//	_In_z_ const std::wstring pProcessName,
-//	_In_z_ const std::wstring pUserNameName,
-//	_In_z_ const std::wstring pPassword,
-//	_In_ const bool pTerminateChildProcesses)
-//{
-//	std::wstring _cmd = L"taskkill /IM " + pProcessName +
-//		L" /U " + pUserNameName +
-//		L" /P " + pPassword +
-//		L" /F";
-//	if (pTerminateChildProcesses)
-//	{
-//		_cmd += L" /T";
-//	}
-//	_wsystem(_cmd.c_str());
-//	return true;
-//}
-//
-//bool w_process::force_kill_process(_In_z_ const DWORD pProcessID,
-//	_In_ const bool pTerminateChildProcesses)
-//{
-//	std::wstring _cmd = L"taskkill /PID " + std::to_wstring(pProcessID) + L" /F";
-//	if (pTerminateChildProcesses)
-//	{
-//		_cmd += L" /T";
-//	}
-//	_wsystem(_cmd.c_str());
-//	return true;
-//}
-//
-//bool w_process::force_kill_process_by_name_as_admin(
-//	_In_ const DWORD pProcessID,
-//	_In_z_ const std::wstring pUserNameName,
-//	_In_z_ const std::wstring pPassword,
-//	_In_ const bool pTerminateChildProcesses)
-//{
-//	std::wstring _cmd = L"taskkill /PID " + std::to_wstring(pProcessID) +
-//		L" /U " + pUserNameName +
-//		L" /P " + pPassword +
-//		L" /F";
-//	if (pTerminateChildProcesses)
-//	{
-//		_cmd += L" /T";
-//	}
-//	_wsystem(_cmd.c_str());
-//	return true;
-//}
-//
-//#endif
