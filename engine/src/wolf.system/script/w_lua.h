@@ -196,7 +196,7 @@ extern "C" {
      * @return result
     */
     W_SYSTEM_EXPORT
-        W_RESULT w_lua_free(void);
+        W_RESULT w_lua_fini(void);
 
 #ifdef __cplusplus
 }

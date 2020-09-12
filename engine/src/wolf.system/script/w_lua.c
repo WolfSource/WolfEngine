@@ -510,7 +510,7 @@ W_RESULT w_lua_set_lua_path(
     return W_SUCCESS;
 }
 
-W_RESULT w_lua_free()
+W_RESULT w_lua_fini()
 {
     if (s_lua)
     {
