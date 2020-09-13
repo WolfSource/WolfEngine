@@ -77,6 +77,30 @@ W_RESULT w_async_send(_In_ w_async pAsync, _In_ void* pArg)
         pAsync->a->data = pArg;
     }
     ev_async_send(pAsync->l, pAsync->a);
-    
+
+    return W_SUCCESS;
+}
+
+W_RESULT w_async_start(_In_ w_async pAsync)
+{
+    if (!pAsync || !pAsync->l || !pAsync->a)
+    {
+        W_ASSERT(false, "pAsync is NULL!. trace info: w_async_send");
+        return W_BAD_ARG;
+    }
+
+    ev_async_start(pAsync->l, pAsync->a);
+    return W_SUCCESS;
+}
+
+W_RESULT w_async_stop(_In_ w_async pAsync)
+{
+    if (!pAsync || !pAsync->l || !pAsync->a)
+    {
+        W_ASSERT(false, "pAsync is NULL!. trace info: w_async_send");
+        return W_BAD_ARG;
+    }
+
+    ev_async_stop(pAsync->l, pAsync->a);
     return W_SUCCESS;
 }

@@ -27,16 +27,16 @@ logger::logger(
     //if directory of log is not existed
     if (w_io_dir_check_is_dir(
         pMemPool,
-        pConfig->log_directory_path) != W_SUCCESS)
+        pConfig->log_dir_path) != W_SUCCESS)
     {
         //create the directory of log inside the root directory
-        w_io_dir_create(pMemPool, pConfig->log_directory_path);
+        w_io_dir_create(pMemPool, pConfig->log_dir_path);
     }
 
     auto _time = w_timespan_init_from_now(pMemPool);
     auto _time_str = w_timespan_to_string(pMemPool, _time, "_");
     auto _log_file_path_str =
-        std::string(pConfig->log_directory_path) +
+        std::string(pConfig->log_dir_path) +
         "/" +
         std::string(_time_str) +
         ".wLog";

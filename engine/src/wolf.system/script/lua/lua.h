@@ -47,11 +47,8 @@
 #define LUA_ERRMEM	4
 #define LUA_ERRERR	5
 
-
 typedef struct lua_State lua_State;
-
 typedef int (*lua_CFunction) (lua_State *L);
-
 
 /*
 ** functions that read/write blocks when loading/dumping Lua chunks

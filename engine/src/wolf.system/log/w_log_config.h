@@ -20,7 +20,7 @@ typedef enum
 typedef struct w_log_config
 {
 	const char*	        app_name;
-	char*	            log_directory_path;
+	char*	            log_dir_path;
 	w_log_type			flush_level;
 	bool		        log_to_std_out;
 } w_log_config;

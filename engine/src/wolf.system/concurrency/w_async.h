@@ -49,6 +49,22 @@ extern "C" {
     W_SYSTEM_EXPORT
         W_RESULT w_async_send(_In_ w_async pAsync, _In_ void* pArg);
 
+    /**
+     * start async
+     * @param pAsync async
+     * @return result code
+    */
+    W_SYSTEM_EXPORT
+        W_RESULT w_async_start(_In_ w_async pAsync);
+
+    /**
+     * stop async
+     * @param pAsync async
+     * @return result code
+    */
+    W_SYSTEM_EXPORT
+        W_RESULT w_async_stop(_In_ w_async pAsync);
+
 #ifdef __cplusplus
 }
 #endif
