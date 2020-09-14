@@ -798,7 +798,7 @@ W_RESULT w_thread_pool_push(
     _In_ w_thread_job pThreadJob,
     _In_ void* pParam,
     _In_ uint8_t pPriority,
-    _In_ void* pOwner)
+    _In_opt_ void* pOwner)
 {
     if (!pThreadPool)
     {
@@ -812,7 +812,7 @@ W_RESULT w_thread_pool_schedule(
     _In_ w_thread_job pThreadJob,
     _In_ void* pParam,
     _In_ int64_t pTime,
-    _In_ void* pOwner)
+    _In_opt_ void* pOwner)
 {
     if (!pThreadPool)
     {

@@ -451,6 +451,9 @@
     <ClCompile Include="..\..\..\src\wolf.system\log\spdlog\src\stdout_sinks.cpp">
       <Filter>log\spdlog\src</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\memory\w_atomic.c">
+      <Filter>memory</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\wolf.system\base64\chromiumbase64.h">
@@ -998,6 +1001,9 @@
       <Filter>concurrency</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\wolf.system\memory\w_string_view.h">
+      <Filter>memory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\memory\w_atomic.h">
       <Filter>memory</Filter>
     </ClInclude>
   </ItemGroup>

@@ -68,7 +68,7 @@ extern "C" {
             _Inout_   w_mem_pool pMemPool,
             _Inout_   w_thread* pThread,
             _In_      w_thread_job  pJob,
-            _In_      void* pJobArgs);
+            _In_opt_  void* pJobArgs);
 
     /**
      * join a thread
@@ -86,18 +86,20 @@ extern "C" {
         void w_thread_detach(_Inout_ w_thread pThread);
 
     /**
-     * terminate thread
-     * @param pThread thread info
+     * exit thread
+     * @note call this function within itself
+     * @param pThread thread
     */
     W_SYSTEM_EXPORT
-        void w_thread_fini(_Inout_ w_thread pThread);
+        void w_thread_exit(_Inout_ w_thread pThread);
 
     /**
      * exit thread
+     * @note call this function within itself
      * @param pExitStatus exit thread with status
     */
     W_SYSTEM_EXPORT
-        void w_thread_fini_with_status(
+        void w_thread_exit_with_status(
             _Inout_ w_thread pThread, 
             _In_ int pExitStatus);
 

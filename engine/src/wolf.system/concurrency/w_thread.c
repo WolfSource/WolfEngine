@@ -32,10 +32,10 @@ W_RESULT w_thread_once_call(_Inout_ w_thread_once_flag pOnceFlag, _In_ w_thread_
 }
 
 W_RESULT w_thread_init(
-    _Inout_ w_mem_pool   pMemPool,
-    _Inout_ w_thread*    pThread,
-    _In_    w_thread_job pJob,
-    _In_    void*        pJobArgs)
+    _Inout_  w_mem_pool   pMemPool,
+    _Inout_  w_thread*    pThread,
+    _In_     w_thread_job pJob,
+    _In_opt_ void*        pJobArgs)
 {
     const char* _trace_info = "w_thread_init";
     if (pMemPool)
@@ -69,14 +69,14 @@ void w_thread_detach(_Inout_ w_thread pThread)
     apr_thread_detach(pThread);
 }
 
-void w_thread_fini(_Inout_ w_thread pThread)
+void w_thread_exit(_Inout_ w_thread pThread)
 {
     //terminate thread
     apr_status_t _status = APR_SUCCESS;
     apr_thread_exit(pThread, _status);
 }
 
-void w_thread_fini_with_status(_Inout_ w_thread pThread, _In_ int pExitStatus)
+void w_thread_exit_with_status(_Inout_ w_thread pThread, _In_ int pExitStatus)
 {
     //terminate thread
     apr_status_t _status = (apr_status_t)pExitStatus;

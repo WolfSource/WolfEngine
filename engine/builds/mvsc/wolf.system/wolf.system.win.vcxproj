@@ -107,6 +107,7 @@
     <ClCompile Include="..\..\..\src\wolf.system\log\spdlog\src\stdout_sinks.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\log\w_log.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\memory\w_array.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\memory\w_atomic.c" />
     <ClCompile Include="..\..\..\src\wolf.system\memory\w_hash.c" />
     <ClCompile Include="..\..\..\src\wolf.system\memory\w_mem_cache.c" />
     <ClCompile Include="..\..\..\src\wolf.system\memory\w_mem_map.c" />
@@ -252,6 +253,7 @@
     <ClInclude Include="..\..\..\src\wolf.system\memory\hash\utstack.h" />
     <ClInclude Include="..\..\..\src\wolf.system\memory\hash\utstring.h" />
     <ClInclude Include="..\..\..\src\wolf.system\memory\w_array.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\memory\w_atomic.h" />
     <ClInclude Include="..\..\..\src\wolf.system\memory\w_hash.h" />
     <ClInclude Include="..\..\..\src\wolf.system\memory\w_mem_cache.h" />
     <ClInclude Include="..\..\..\src\wolf.system\memory\w_mem_map.h" />

@@ -1,4 +1,6 @@
 #include "w_lua.h"
+#include "lua/lualib.h"
+#include "lua/lauxlib.h"
 #include <apr-1/apr_strings.h>
 #include <io/w_io.h>
 
@@ -22,7 +24,7 @@ void _VL(_In_ int pHR)
 W_RESULT _lua_get_value(
     _Inout_ w_mem_pool pMemPool,
     _In_    int pIndex,
-    _Inout_ void* pValue,
+    _Inout_ void** pValue,
     _Inout_ char* pExpectedType)
 {
     const char* _trace_info = "_lua_get_value";
@@ -32,16 +34,16 @@ W_RESULT _lua_get_value(
         return APR_BADARG;
     }
 
+    *pValue = NULL;
     int _type = lua_type(s_lua, pIndex);
     switch (_type)
     {
         default:
-            apr_snprintf(pExpectedType, W_MAX_BUFFER_SIZE, "unknown");
+            pExpectedType = w_strcat(pMemPool, "unknown", NULL);
             return W_FAILURE;
         case LUA_TNIL:
         {
-            pValue = NULL;
-            apr_snprintf(pExpectedType, W_MAX_BUFFER_SIZE, "NULL");
+            pExpectedType = w_strcat(pMemPool, "NULL", NULL);
             return W_SUCCESS;
         }
         case LUA_TBOOLEAN:
@@ -55,8 +57,8 @@ W_RESULT _lua_get_value(
             }
             
             *_v = lua_toboolean(s_lua, pIndex);
-            pValue = (void*)_v;
-            apr_snprintf(pExpectedType, W_MAX_BUFFER_SIZE, "BOOLEAN");
+            *pValue = (void*)_v;
+            pExpectedType = w_strcat(pMemPool, "BOOLEAN", NULL);
             return W_SUCCESS;
         }
         case LUA_TNUMBER:
@@ -70,24 +72,24 @@ W_RESULT _lua_get_value(
             }
             
             *_v = lua_tonumber(s_lua, pIndex);
-            pValue = (void*)_v;
-            apr_snprintf(pExpectedType, W_MAX_BUFFER_SIZE, "NUMBER");
+            *pValue = (void*)_v;
+            pExpectedType = w_strcat(pMemPool, "NUMBER", NULL);
             return W_SUCCESS;
         }
         case LUA_TSTRING:
         {
-            pValue = (void*)lua_tostring(s_lua, pIndex);
-            apr_snprintf(pExpectedType, W_MAX_BUFFER_SIZE, "STRING");
+            *pValue = (void*)lua_tostring(s_lua, pIndex);
+            pExpectedType = w_strcat(pMemPool, "STRING", NULL);
             return W_SUCCESS;
         }
         case LUA_TTABLE:
         {
-            apr_snprintf(pExpectedType, W_MAX_BUFFER_SIZE, "TTABLE");
+            pExpectedType = w_strcat(pMemPool, "TTABLE", NULL);
             return W_SUCCESS;
         }
         case LUA_TUSERDATA:
         {
-            apr_snprintf(pExpectedType, W_MAX_BUFFER_SIZE, "USERDATA");
+            pExpectedType = w_strcat(pMemPool, "USERDATA", NULL);
             return W_SUCCESS;
         }
     }
@@ -160,7 +162,7 @@ W_RESULT w_lua_load_from_stream(_In_z_ const char* pBufferStream)
     }
 
 	//initialize lua
-	s_lua = luaL_newstate();
+    s_lua = lua_open();
 	if (!s_lua)
 	{
 		_VL(1);
@@ -371,7 +373,7 @@ const char* w_lua_get_last_error()
 W_RESULT w_lua_get_global_variable(
     _Inout_ w_mem_pool pMemPool,
     _In_z_ const char* pVariableName, 
-    _Inout_ void* pValue)
+    _Inout_ void** pValue)
 {
     lua_getglobal(s_lua, pVariableName);
     if (lua_isnil(s_lua, -1))

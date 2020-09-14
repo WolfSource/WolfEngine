@@ -58,7 +58,7 @@ void* w_calloc(
 	_Inout_ w_mem_pool pMemPool,
 	_In_ size_t pMemSize)
 {
-	if (!pMemSize && pMemPool && pMemPool->apr)
+	if (pMemSize && pMemPool && pMemPool->apr)
 	{
 		return apr_pcalloc(pMemPool->apr, pMemSize);
 	}

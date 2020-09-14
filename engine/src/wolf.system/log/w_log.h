@@ -26,149 +26,149 @@ extern "C" {
 
 #endif
 
-/**
- * initialize the log file and create a log file inside a Log folder
- * @param pMemPool The pool to allocate out of
- * @param pConfig is the configuration of log
- * @return log ID, -1 means function failed
-*/
-W_SYSTEM_EXPORT
-int  w_log_init(
-    _Inout_ w_mem_pool pMemPool,
-    _In_ const w_log_config* pConfig);
+    /**
+     * initialize the log file and create a log file inside a Log folder
+     * @param pMemPool The pool to allocate out of
+     * @param pConfig is the configuration of log
+     * @return log ID, -1 means function failed
+    */
+    W_SYSTEM_EXPORT
+        int  w_log_init(
+            _Inout_ w_mem_pool pMemPool,
+            _In_ const w_log_config* pConfig);
 
-/**
- * Write a message in to the default log file
- * @param pLogType type of the log
- * @param pFMT fmt
-*/
-W_SYSTEM_EXPORT
-void LOG(
-    _In_     w_log_type pLogType,
-    _In_z_   const char* pFMT);
+    /**
+     * Write a message in to the default log file
+     * @param pLogType type of the log
+     * @param pFMT fmt
+    */
+    W_SYSTEM_EXPORT
+        void LOG(
+            _In_     w_log_type pLogType,
+            _In_z_   const char* pFMT);
 
-/**
- * Write a message in to the default log file
- * @param pLogType type of the log
- * @param pLogID the id of the log
- * @param pFMT fmt
-*/
-W_SYSTEM_EXPORT
-void LOG_EX(
-    _In_     w_log_type pLogType,
-    _In_     int pLogID,
-    _In_z_   const char* pFMT);
+    /**
+     * Write a message in to the default log file
+     * @param pLogType type of the log
+     * @param pLogID the id of the log
+     * @param pFMT fmt
+    */
+    W_SYSTEM_EXPORT
+        void LOG_EX(
+            _In_     w_log_type pLogType,
+            _In_     int pLogID,
+            _In_z_   const char* pFMT);
 
-/**
- * Write a message in to the default log file
- * @param pLogType type of the log
- * @param pFMT fmt
-*/
-W_SYSTEM_EXPORT
-void LOG_P(
-    _In_     w_log_type pLogType,
-    _In_z_   const char* pFMT,
-    _In_     ...);
+    /**
+     * Write a message in to the default log file
+     * @param pLogType type of the log
+     * @param pFMT fmt
+    */
+    W_SYSTEM_EXPORT
+        void LOG_P(
+            _In_     w_log_type pLogType,
+            _In_z_   const char* pFMT,
+            _In_     ...);
 
-/**
- * Write a message in to the specific log file
- * @param pLogType type of the log
- * @param pLogID the id of the log
- * @param pFMT fmt
-*/
-W_SYSTEM_EXPORT
-void LOG_P_EX(
-    _In_     w_log_type pLogType,
-    _In_     int pLogID,
-    _In_z_   const char* pFMT,
-    _In_     ...);
+    /**
+     * Write a message in to the specific log file
+     * @param pLogType type of the log
+     * @param pLogID the id of the log
+     * @param pFMT fmt
+    */
+    W_SYSTEM_EXPORT
+        void LOG_P_EX(
+            _In_     w_log_type pLogType,
+            _In_     int pLogID,
+            _In_z_   const char* pFMT,
+            _In_     ...);
 
-/**
- * Validate W_RESULT and write a message in to the default log file if the W_RESULT is not equal to W_SUCCESS
- * @param pResult result
- * @param pLogType type of the log
- * @param pFMT fmt
-*/
-W_SYSTEM_EXPORT
-void V(
-    _In_	    W_RESULT pResult,
-    _In_        w_log_type pLogType,
-    _In_z_	    const char* pFMT);
+    /**
+     * Validate W_RESULT and write a message in to the default log file if the W_RESULT is not equal to W_SUCCESS
+     * @param pResult result
+     * @param pLogType type of the log
+     * @param pFMT fmt
+    */
+    W_SYSTEM_EXPORT
+        void V(
+            _In_	    W_RESULT pResult,
+            _In_        w_log_type pLogType,
+            _In_z_	    const char* pFMT);
 
-/**
- * Validate W_RESULT and write a message in to the default log file if the W_RESULT is not equal to W_SUCCESS
- * @param pResult result
- * @param pLogType type of the log
- * @param pFMT fmt
-*/
-W_SYSTEM_EXPORT
-void VA(
-	_In_	    W_RESULT pResult,
-    _In_        w_log_type pLogType,
-	_In_z_	    const char* pFMT,
-    _In_        ...);
+    /**
+     * Validate W_RESULT and write a message in to the default log file if the W_RESULT is not equal to W_SUCCESS
+     * @param pResult result
+     * @param pLogType type of the log
+     * @param pFMT fmt
+    */
+    W_SYSTEM_EXPORT
+        void VA(
+            _In_	    W_RESULT pResult,
+            _In_        w_log_type pLogType,
+            _In_z_	    const char* pFMT,
+            _In_        ...);
 
-/**
- * Validate W_RESULT and write a message in to the default log file if the W_RESULT is not equal to W_SUCCESS
- * @param pResult result
- * @param pLogType type of the log
- * @param pTerminateProgram terminate the program
- * @param pFMT fmt
-*/
-W_SYSTEM_EXPORT
-void VALIDATE(
-    _In_        W_RESULT pResult,
-    _In_        w_log_type pLogType,
-    _In_        bool pTerminateProgram,
-    _In_z_      const char* pFMT,
-    _In_        ...);
+    /**
+     * Validate W_RESULT and write a message in to the default log file if the W_RESULT is not equal to W_SUCCESS
+     * @param pResult result
+     * @param pLogType type of the log
+     * @param pTerminateProgram terminate the program
+     * @param pFMT fmt
+    */
+    W_SYSTEM_EXPORT
+        void VALIDATE(
+            _In_        W_RESULT pResult,
+            _In_        w_log_type pLogType,
+            _In_        bool pTerminateProgram,
+            _In_z_      const char* pFMT,
+            _In_        ...);
 
-/**
- * Validate W_RESULT and write a message in to the specific log file if the W_RESULT is not equal to W_SUCCESS
- * @param pResult result
- * @param pLogID the id of the log
- * @param pLogType type of the log
- * @param pTerminateProgram terminate the program
- * @param pFMT fmt
-*/
-W_SYSTEM_EXPORT
-void VALIDATE_EX(
-    _In_        W_RESULT pResult,
-    _In_        int pLogID,
-    _In_        w_log_type pLogType,
-    _In_        bool pTerminateProgram,
-    _In_z_      const char* pFMT,
-    _In_        ...);
+    /**
+     * Validate W_RESULT and write a message in to the specific log file if the W_RESULT is not equal to W_SUCCESS
+     * @param pResult result
+     * @param pLogID the id of the log
+     * @param pLogType type of the log
+     * @param pTerminateProgram terminate the program
+     * @param pFMT fmt
+    */
+    W_SYSTEM_EXPORT
+        void VALIDATE_EX(
+            _In_        W_RESULT pResult,
+            _In_        int pLogID,
+            _In_        w_log_type pLogType,
+            _In_        bool pTerminateProgram,
+            _In_z_      const char* pFMT,
+            _In_        ...);
 
-/**
- * flush the default log file
- * @return result
-*/
-W_SYSTEM_EXPORT
-W_RESULT  w_log_flush(void);
+    /**
+     * flush the default log file
+     * @return result
+    */
+    W_SYSTEM_EXPORT
+        W_RESULT  w_log_flush(void);
 
-/**
- * flush the specific log file
- * @param pLogID the id of log
- * @return result
-*/
-W_SYSTEM_EXPORT
-W_RESULT  w_log_flush_ex(_In_ int pLogID);
+    /**
+     * flush the specific log file
+     * @param pLogID the id of log
+     * @return result
+    */
+    W_SYSTEM_EXPORT
+        W_RESULT  w_log_flush_ex(_In_ int pLogID);
 
-/**
- * this function will terminate all logs
- * @return result
-*/
-W_SYSTEM_EXPORT
-W_RESULT  w_log_fini();
+    /**
+     * this function will terminate all logs
+     * @return result
+    */
+    W_SYSTEM_EXPORT
+        W_RESULT  w_log_fini();
 
-/**
- * terminate the specific log file
- * @param pLogID the id of log
- * @return result
-*/
-W_SYSTEM_EXPORT
-W_RESULT  w_log_fini_ex(_In_ int pLogID);
+    /**
+     * terminate the specific log file
+     * @param pLogID the id of log
+     * @return result
+    */
+    W_SYSTEM_EXPORT
+        W_RESULT  w_log_fini_ex(_In_ int pLogID);
 
 #ifdef __cplusplus
 }

@@ -2,6 +2,10 @@
 #include <time.h>
 #include <apr-1/apr_general.h>
 
+#ifdef W_PLATFORM_WIN
+#include <windows.h>
+#endif
+
 #define TICKS_PER_MILLISECOND	10000
 #define TICKS_PER_SECOND		10000000
 #define TICKS_PER_MINUTE		600000000
@@ -136,9 +140,24 @@ w_timespan w_timespan_init_from_now(_Inout_ w_mem_pool pMemPool)
     struct tm* _now = localtime(&t);
     return w_timespan_init_from_shorttime(pMemPool, _now->tm_hour, _now->tm_min, _now->tm_sec);
 #else
-    struct tm _now;
-    localtime_s(&_now, &t);
-    return w_timespan_init_from_shorttime(pMemPool, _now.tm_hour, _now.tm_min, _now.tm_sec);
+
+    SYSTEMTIME _sys_time;
+    //structure to store system time (in usual time format)
+    FILETIME _f_time;
+    //structure to store local time (local time in 64 bits)
+    FILETIME _ft_time_stamp;
+    GetSystemTimeAsFileTime(&_ft_time_stamp); //Gets the current system time
+
+    FileTimeToLocalFileTime(&_ft_time_stamp, &_f_time);//convert in local time and store in ltime
+    FileTimeToSystemTime(&_f_time, &_sys_time);//convert in system time and store in stime
+
+     return w_timespan_init_from_longtime(
+         pMemPool, 
+         _sys_time.wDay,
+         _sys_time.wHour, 
+         _sys_time.wMinute, 
+         _sys_time.wSecond, 
+         _sys_time.wMilliseconds);
 #endif
 }
 
