@@ -48,7 +48,7 @@ W_RESULT w_async_init(
     }
 
     // This loop sits in the thread
-    _async->l = ev_loop_new(0);
+    _async->l = ev_default_loop(0);
     ev_async_init(_async->a, pAsyncCallBack);
     if (w_thread_init(pMemPool, &_async->t, &_thread_job, (void*)_async->l) == W_SUCCESS)
     {

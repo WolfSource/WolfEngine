@@ -89,6 +89,7 @@
     <ClCompile Include="..\..\..\src\wolf.system\concurrency\libev\ev.c" />
     <ClCompile Include="..\..\..\src\wolf.system\concurrency\libev\event.c" />
     <ClCompile Include="..\..\..\src\wolf.system\concurrency\w_async.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\concurrency\w_atomic.c" />
     <ClCompile Include="..\..\..\src\wolf.system\concurrency\w_concurrent_queue.c" />
     <ClCompile Include="..\..\..\src\wolf.system\concurrency\w_condition_variable.c" />
     <ClCompile Include="..\..\..\src\wolf.system\concurrency\w_mutex.c" />
@@ -108,7 +109,6 @@
     <ClCompile Include="..\..\..\src\wolf.system\log\spdlog\src\stdout_sinks.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\log\w_log.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\memory\w_array.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\memory\w_atomic.c" />
     <ClCompile Include="..\..\..\src\wolf.system\memory\w_hash.c" />
     <ClCompile Include="..\..\..\src\wolf.system\memory\w_mem_cache.c" />
     <ClCompile Include="..\..\..\src\wolf.system\memory\w_mem_map.c" />
@@ -195,6 +195,7 @@
     <ClInclude Include="..\..\..\src\wolf.system\concurrency\libev\ev.h" />
     <ClInclude Include="..\..\..\src\wolf.system\concurrency\libev\event.h" />
     <ClInclude Include="..\..\..\src\wolf.system\concurrency\libev\ev_vars.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\concurrency\w_atomic.h" />
     <ClInclude Include="..\..\..\src\wolf.system\concurrency\w_concurrent_queue.h" />
     <ClInclude Include="..\..\..\src\wolf.system\concurrency\w_async.h" />
     <ClInclude Include="..\..\..\src\wolf.system\concurrency\w_condition_variable.h" />
@@ -255,7 +256,6 @@
     <ClInclude Include="..\..\..\src\wolf.system\memory\hash\utstack.h" />
     <ClInclude Include="..\..\..\src\wolf.system\memory\hash\utstring.h" />
     <ClInclude Include="..\..\..\src\wolf.system\memory\w_array.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\memory\w_atomic.h" />
     <ClInclude Include="..\..\..\src\wolf.system\memory\w_hash.h" />
     <ClInclude Include="..\..\..\src\wolf.system\memory\w_mem_cache.h" />
     <ClInclude Include="..\..\..\src\wolf.system\memory\w_mem_map.h" />
