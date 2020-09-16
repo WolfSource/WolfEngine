@@ -14,6 +14,7 @@ extern "C" {
 #endif
 
 #include "wolf.h"
+#include <concurrency/w_thread.h>
 #include "libev/ev.h"
 
     typedef ev_timer w_timer_base;
@@ -25,10 +26,18 @@ extern "C" {
 
     typedef struct w_timer_t
     {
-        w_timer_base* t;
+        w_timer_base* ti;
         w_timer_loop* l;
+        w_thread t;//will be used for async mode
     } w_timer_t;
     typedef w_timer_t* w_timer;
+
+    typedef struct w_timer_arg_t
+    {
+        w_timer t;
+        void* d;
+    } w_timer_arg_t;
+    typedef w_timer_arg_t* w_timer_arg;
 
     //typedef struct
     //{
@@ -39,18 +48,22 @@ extern "C" {
 
     /**
      * create a timer
-     * @param pStartAfterSec time before start in seconds
-     * @param pTimeOutInSec timeout in seconds
+     * @param pMemPool the pool from which to allocate the once flag
+     * @param pTimer pointer to timer
+     * @param pTimeOutInSec time out in seconds
+     * @param pRepeatTimes repeat times
+     * @param pIsAsync is async
      * @param pCallBack callback function
      * @param pUserData custome user data
-     * @return pointer to timer
+     * @return result
     */
     W_SYSTEM_EXPORT
         W_RESULT w_timer_init(
             _Inout_ w_mem_pool pMemPool,
             _Inout_ w_timer* pTimer,
-            _In_ double pStartAfterSec,
             _In_ double pTimeOutInSec,
+            _In_ double pRepeatTimes,
+            _In_ int pIsAsync,
             _In_ w_timer_callback pCallBack,
             _In_ void* pUserData);
 

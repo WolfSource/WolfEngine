@@ -22,10 +22,12 @@ extern "C" {
 
     /**
      * Get elapsed ticks since the previous tick call.
+     * @param pMemPool the pool from which to allocate the once flag
+     * @param pGameTime pointer to the game time
      * @return pointer to object of w_gametime
     */
     W_SYSTEM_EXPORT
-        w_gametime w_gametime_init(_Inout_ w_mem_pool pMemPool);
+        W_RESULT w_gametime_init(_Inout_ w_mem_pool pMemPool, _Inout_ w_gametime* pGameTime);
 
     /**
      * reset game time

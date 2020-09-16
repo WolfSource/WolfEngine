@@ -209,11 +209,14 @@ extern "C" {
 
     /**
      * pick off basename in filename
-     * @param pPath path of file
-     * @return base file name
+     * @param pMemPool The pool to allocate out of
+     * @param pFilePath path of file
+     * @return result
     */
     W_SYSTEM_EXPORT
-        const char* w_io_file_get_basename_from_path(_In_z_ const char* pPath);
+        const char* w_io_file_get_basename_from_path(
+            _In_ w_mem_pool pMemPool,
+            _In_z_ const char* pFilePath);
 
     /**
      * pick off basename in filename

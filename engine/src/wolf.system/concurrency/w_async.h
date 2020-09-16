@@ -47,7 +47,7 @@ extern "C" {
      * @return result code
     */
     W_SYSTEM_EXPORT
-        W_RESULT w_async_send(_In_ w_async pAsync, _In_ void* pArg);
+        W_RESULT w_async_send(_In_ w_async pAsync, _In_opt_ void* pArg);
 
     /**
      * start async

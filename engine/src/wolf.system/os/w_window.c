@@ -8,7 +8,7 @@ static BOOL CALLBACK w_enumerate_screens_callback(
     LPRECT pLRect,
     LPARAM pLParam)
 {
-    w_arg* _arg = (w_arg*)pLParam;
+    w_arg _arg = (w_arg)pLParam;
     if (!pLRect || !_arg || !_arg->data || !_arg->pool)
     {
         return FALSE;
@@ -39,11 +39,12 @@ w_array w_window_enumerate_screens(_Inout_ w_mem_pool pMemPool)
     w_array _screen_coords = w_array_init(pMemPool, 1, sizeof(w_screen_coord_t));
     if (_screen_coords)
     {
+        w_arg_t _arg = { pMemPool, _screen_coords };
         EnumDisplayMonitors(
-            0, 
-            0, 
-            w_enumerate_screens_callback, 
-            (LPARAM)_screen_coords);
+            0,
+            0,
+            w_enumerate_screens_callback,
+            (LPARAM)&_arg);
         return _screen_coords;
     }
     return NULL;

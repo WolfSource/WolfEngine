@@ -20,6 +20,12 @@ W_RESULT w_condition_variable_init(
 
 W_RESULT w_condition_variable_wait(_In_ w_condition_variable pCond, _In_ w_mutex pMutex)
 {
+    const char* _trace_info = "w_condition_variable_wait";
+    if (!pCond || !pMutex)
+    {
+        W_ASSERT_P(false, "bad args. trace info %s", _trace_info);
+        return W_BAD_ARG;
+    }
     apr_status_t _ret = apr_thread_cond_wait(pCond, pMutex);
     return _ret == APR_SUCCESS ? W_SUCCESS : W_FAILURE;
 }

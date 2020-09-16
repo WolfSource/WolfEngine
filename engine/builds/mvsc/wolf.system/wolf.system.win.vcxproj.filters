@@ -454,6 +454,9 @@
     <ClCompile Include="..\..\..\src\wolf.system\memory\w_atomic.c">
       <Filter>memory</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\concurrency\w_mutex.c">
+      <Filter>concurrency</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\wolf.system\base64\chromiumbase64.h">
@@ -1005,6 +1008,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\src\wolf.system\memory\w_atomic.h">
       <Filter>memory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\concurrency\w_mutex.h">
+      <Filter>concurrency</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -23,7 +23,7 @@ class uws
     explicit uws(void);
     ~uws(void);
     
-    void run(const bool pSSL,
+    int run(const bool pSSL,
              const char* pCertFilePath,
              const char* pPrivateKeyFilePath,
              const char* pPassPhrase,

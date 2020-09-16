@@ -15,11 +15,57 @@
 //  return now + (3600. - fmod (now, 3600.));
 //}
 
+typedef struct ev_params_t
+{
+    w_timer timer;
+    w_timer_arg arg;
+    double timeout_in_sec;
+    double repeat_times;
+    w_timer_callback* callback;
+    void* pUserData;
+} ev_params_t;
+typedef ev_params_t* ev_params;
+
+static W_RESULT s_ev_run(_In_ ev_params pParams)
+{
+    if (!pParams)
+    {
+        return W_FAILURE;
+    }
+
+    pParams->timer->l = ev_loop_new(0);// EV_DEFAULT;
+
+    //init, start ev_timer and run the loop
+    ev_timer_init(
+        pParams->timer->ti,
+        *pParams->callback,
+        pParams->timeout_in_sec,
+        pParams->repeat_times);
+
+    //store timer and user data into the arg
+    pParams->arg->t = pParams->timer;
+    pParams->arg->d = pParams->pUserData;
+    pParams->timer->ti->data = (void*)pParams->arg;
+
+    ev_timer_start(pParams->timer->l, pParams->timer->ti);
+    //run and block the current thread
+    ev_run(pParams->timer->l, 0);
+
+    return W_SUCCESS;
+}
+
+static void* s_w_thread_job(_In_ w_thread pThread, void* pArg)
+{
+    s_ev_run((ev_params)pArg);
+    return NULL;
+}
+
 W_RESULT w_timer_init(
     _Inout_ w_mem_pool pMemPool,
     _Inout_ w_timer* pTimer,
-    _In_ double pStartAfterSec,
     _In_ double pTimeOutInSec,
+    _In_ double pRepeatTimes,
+    _In_ int pIsAsync,
     _In_ w_timer_callback pCallBack,
     _In_ void* pUserData)
 {
@@ -27,34 +73,53 @@ W_RESULT w_timer_init(
     if (!pMemPool || !pTimer)
     {
         W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
-        return W_FAILURE;
+        return W_BAD_ARG;
     }
 
-    *pTimer = NULL;
-
-    w_timer _timer = (w_timer)w_malloc(pMemPool, sizeof(w_timer_t));
-    if (!_timer)
+    ev_params _ev_param = (ev_params)w_malloc(pMemPool, sizeof(ev_params_t));
+    if (!_ev_param)
     {
+        W_ASSERT_P(false, "could not allocate memory for ev params. trace info: %s", _trace_info);
         return W_FAILURE;
     }
 
-    _timer->t = (w_timer_base*)w_malloc(pMemPool, sizeof(w_timer_base));
-    if (!_timer->t)
+    _ev_param->timer = (w_timer)w_malloc(pMemPool, sizeof(w_timer_t));
+    if (!_ev_param->timer)
     {
-        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "could not allocate memory for timer. trace info: %s", _trace_info);
         return W_FAILURE;
     }
-    _timer->l = EV_DEFAULT;
 
-    //init, start ev_timer and run the loop
-    ev_timer_init(_timer->t, pCallBack, pStartAfterSec, pTimeOutInSec);
-    ev_timer_start(_timer->l, _timer->t);
-    _timer->t->data = _timer;
+    _ev_param->timer->ti = (w_timer_base*)w_malloc(pMemPool, sizeof(w_timer_base));
+    if (!_ev_param->timer->ti)
+    {
+        W_ASSERT_P(false, "could not allocate memory for timer->t. trace info: %s", _trace_info);
+        return W_FAILURE;
+    }
 
-    *pTimer = _timer;
-    ev_run(_timer->l, 0);
+    _ev_param->arg = (w_timer_arg)w_malloc(pMemPool, sizeof(w_timer_arg_t));
+    if (!_ev_param->arg)
+    {
+        W_ASSERT_P(false, "could not allocate memory for timer arg. trace info: %s", _trace_info);
+        return W_FAILURE;
+    }
 
-    return W_SUCCESS;
+    _ev_param->callback = &pCallBack;
+    _ev_param->pUserData = pUserData;
+    _ev_param->repeat_times = pRepeatTimes;
+    _ev_param->timeout_in_sec = pTimeOutInSec;
+
+    if (pIsAsync)
+    {
+        *pTimer = _ev_param->timer;
+        return w_thread_init(
+            pMemPool,
+            &_ev_param->timer->t,
+            s_w_thread_job,
+            (void*)_ev_param);
+    }
+
+    return s_ev_run(_ev_param);
 }
 
 W_RESULT w_timer_restart(_In_ w_timer pTimer)
@@ -63,7 +128,7 @@ W_RESULT w_timer_restart(_In_ w_timer pTimer)
     {
         return W_FAILURE;
     }
-    ev_timer_again(pTimer->l, pTimer->t);
+    ev_timer_again(pTimer->l, pTimer->ti);
     return W_SUCCESS;
 }
 

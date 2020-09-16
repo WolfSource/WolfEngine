@@ -1,4 +1,5 @@
 #include "uws.hpp"
+#include <io/w_io.h>
 
 uws::uws()
 {
@@ -8,7 +9,7 @@ uws::~uws()
 {
 }
 
-void uws::run(const bool pSSL,
+int uws::run(const bool pSSL,
               const char* pCertFilePath,
               const char* pPrivateKeyFilePath,
               const char* pPassPhrase,
@@ -25,11 +26,21 @@ void uws::run(const bool pSSL,
 {
     if(pSSL)
     {
+        if (w_io_file_check_is_file(pCertFilePath))
+        {
+            return W_FAILURE;
+        }
+        if (w_io_file_check_is_file(pPrivateKeyFilePath))
+        {
+            return W_FAILURE;
+        }
+
         uWS::SSLApp(
         {
             .key_file_name = pPrivateKeyFilePath,
             .cert_file_name = pCertFilePath,
-            .passphrase = pPassPhrase
+            .passphrase = pPassPhrase,
+            .ssl_prefer_low_memory_usage = 1
         }).ws<per_ws_data>(pRoot,
         {
             /* Settings */
@@ -45,9 +56,14 @@ void uws::run(const bool pSSL,
             .message = [&](auto* pWS, std::string_view pMessage, uWS::OpCode pOpCode)
             {
                 auto _res = pOnMessage(pMessage.data(), (int*)&pOpCode);
-                if (_res)
+                if (_res == NULL)
                 {
-                    pWS->send(_res, pOpCode);
+                    //close websocket
+                    pWS->close();
+                }
+                else
+                {
+                    pWS->send(_res, pOpCode, /*compress*/true);
                 }
             },
             .drain = [](auto* pWS)
@@ -62,9 +78,9 @@ void uws::run(const bool pSSL,
             {
                 /* Not implemented yet */
             },
-            .close = [&](auto* pWS, int pCode, std::string_view pMessage)
+            .close = [&](auto* pWS, int pExitCode, std::string_view pMessage)
             {
-                pOnClosed(pMessage.data(), pCode);
+                pOnClosed(pMessage.data(), pExitCode);
                 /* You may access ws->getUserData() here */
             }
         }).listen(pPort, [&](auto* pToken)
@@ -95,9 +111,14 @@ void uws::run(const bool pSSL,
             .message = [&](auto* pWS, std::string_view pMessage, uWS::OpCode pOpCode)
             {
                 auto _res = pOnMessage(pMessage.data(), (int*)&pOpCode);
-                if (_res)
+                if (_res == NULL)
                 {
-                    pWS->send(_res, pOpCode);
+                    //close websocket
+                    pWS->close();
+                }
+                else
+                {
+                    pWS->send(_res, pOpCode, /*compress*/true);
                 }
             },
             .drain = [](auto* pWS)
@@ -112,9 +133,9 @@ void uws::run(const bool pSSL,
             {
                 /* Not implemented yet */
             },
-            .close = [&](auto* pWS, int pCode, std::string_view pMessage)
+            .close = [&](auto* pWS, int pExitCode, std::string_view pMessage)
             {
-                pOnClosed(pMessage.data(), pCode);
+                pOnClosed(pMessage.data(), pExitCode);
             }
         }).listen(pPort, [&](auto* pToken)
         {
@@ -124,4 +145,5 @@ void uws::run(const bool pSSL,
             }
         }).run();
     }
+    return W_SUCCESS;
 }

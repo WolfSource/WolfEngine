@@ -27,8 +27,8 @@ W_RESULT s_quic_sending_stream_callback(
             pConnectionID,
             pStreamIndex,
             &_b,
-            true);
-        _req_sent = true;
+            false);
+        _req_sent = false;
 
         printf("\np is %p", pProtocol);
     }
@@ -78,7 +78,7 @@ int main()
 
     w_net_open_quic_socket(
         "localhost",
-        5555,
+        555,
         quic_dialer,
         NULL,
         NULL,

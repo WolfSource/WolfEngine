@@ -1,5 +1,5 @@
 #include "w_log.h"
-#include <concurrency/w_thread.h>
+#include <concurrency/w_mutex.h>
 
 #include "logger.hpp"
 #include <unordered_map>
@@ -57,10 +57,10 @@ int w_log_init(
     }
 
     //create a mutex
-    if (w_thread_mutex_init(
+    if (w_mutex_init(
         pMemPool,
         &_w_logger->mutex,
-        0x0))
+        0))
     {
         W_ASSERT_P(
             false,
@@ -97,7 +97,7 @@ out:
         {
             if (_w_logger->mutex)
             {
-                w_thread_mutex_fini(_w_logger->mutex);
+                w_mutex_fini(_w_logger->mutex);
                 _w_logger->mutex = nullptr;
             }
             if (_w_logger->log)
@@ -343,7 +343,7 @@ W_RESULT  w_log_fini()
             if (_ptr->mutex)
             {
                 //release mutex
-                w_thread_mutex_fini(_ptr->mutex);
+                w_mutex_fini(_ptr->mutex);
                 _ptr->mutex = nullptr;
             }
             if (_ptr->log)
@@ -370,7 +370,7 @@ W_RESULT  w_log_fini_ex(_In_ int pLogID)
         if (_ptr->mutex)
         {
             //release mutex
-            w_thread_mutex_fini(_ptr->mutex);
+            w_mutex_fini(_ptr->mutex);
             _ptr->mutex = nullptr;
         }
 

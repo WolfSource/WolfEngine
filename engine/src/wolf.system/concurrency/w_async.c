@@ -58,17 +58,17 @@ W_RESULT w_async_init(
     return W_FAILURE;
 }
 
-W_RESULT w_async_send(_In_ w_async pAsync, _In_ void* pArg)
+W_RESULT w_async_send(_In_ w_async pAsync, _In_opt_ void* pArg)
 {
     if (!pAsync || !pAsync->l || !pAsync->a)
     {
         W_ASSERT(false, "pAsync is NULL!. trace info: w_async_send");
-        return W_FAILURE;
+        return W_BAD_ARG;
     }
    
     if (ev_async_pending(pAsync->a))
     {
-        W_ASSERT(false, "pAsync is pending!. trace info: w_async_send");
+        //W_ASSERT(false, "pAsync is pending!. trace info: w_async_send");
         return W_FAILURE;
     }
     

@@ -20,10 +20,10 @@ extern "C" {
     struct cws;
     typedef struct cws* ws;
 
-    typedef void(*ws_on_listened_fn)(int);
+    typedef void(*ws_on_listened_fn)(int /*pPort*/);
     typedef void(*ws_on_opened_fn)(void);
-    typedef const char* (*ws_on_message_fn)(const char*, int*);
-    typedef void(*ws_on_closed_fn)(const char*, int);
+    typedef const char* (*ws_on_message_fn)(const char* /*pMessage*/, int* /*pOpCode*/);
+    typedef void(*ws_on_closed_fn)(const char* /*pMessage*/, int /*pCloseCode*/);
 
     /**
      * create a websocket object

@@ -91,6 +91,7 @@
     <ClCompile Include="..\..\..\src\wolf.system\concurrency\w_async.c" />
     <ClCompile Include="..\..\..\src\wolf.system\concurrency\w_concurrent_queue.c" />
     <ClCompile Include="..\..\..\src\wolf.system\concurrency\w_condition_variable.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\concurrency\w_mutex.c" />
     <ClCompile Include="..\..\..\src\wolf.system\concurrency\w_signal.c" />
     <ClCompile Include="..\..\..\src\wolf.system\concurrency\w_thread.c" />
     <ClCompile Include="..\..\..\src\wolf.system\concurrency\w_thread_pool.c" />
@@ -197,6 +198,7 @@
     <ClInclude Include="..\..\..\src\wolf.system\concurrency\w_concurrent_queue.h" />
     <ClInclude Include="..\..\..\src\wolf.system\concurrency\w_async.h" />
     <ClInclude Include="..\..\..\src\wolf.system\concurrency\w_condition_variable.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\concurrency\w_mutex.h" />
     <ClInclude Include="..\..\..\src\wolf.system\concurrency\w_signal.h" />
     <ClInclude Include="..\..\..\src\wolf.system\concurrency\w_thread.h" />
     <ClInclude Include="..\..\..\src\wolf.system\concurrency\w_thread_pool.h" />

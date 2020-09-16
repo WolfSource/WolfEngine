@@ -23,8 +23,10 @@
 #include "base64/linuxbase64.h"
 #include <sys/stat.h>
 #include <libgen.h>
+#include <unistd.h>
 #elif defined(W_PLATFORM_WIN)
 #include <shlwapi.h>
+#include <io.h>
 #endif
 
 #define PNG_BYTES_TO_CHECK  4
@@ -204,7 +206,14 @@ out:
 
 W_RESULT w_io_file_check_is_file(_In_z_ const char* pPath)
 {
-    const char* _trace_info = "w_io_file_check_is_file";
+    const int _F_OK = 0;
+    if (access(pPath, _F_OK) != -1)
+    {
+        return W_SUCCESS;
+    }
+    return W_FAILURE;
+
+    /*const char* _trace_info = "w_io_file_check_is_file";
 
     w_mem_pool _mem_pool = NULL;
     w_mem_pool_init(&_mem_pool);
@@ -230,9 +239,9 @@ W_RESULT w_io_file_check_is_file(_In_z_ const char* pPath)
             apr_file_close(_file);
         }
     }
-    w_mem_pool_fini(&_mem_pool);
+    w_mem_pool_fini(&_mem_pool);*/
 
-    return _ret;
+    // return _ret;
 }
 
 w_file_info w_io_file_get_info_from_path(
@@ -403,33 +412,27 @@ const char* w_io_file_get_name(_In_ w_file pFile)
     return _ret;
 }
 
-const char* w_io_file_get_basename_from_path(_In_z_ const char* pFilePath)
+const char* w_io_file_get_basename_from_path(
+    _In_ w_mem_pool pMemPool,
+    _In_z_ const char* pFilePath)
 {
     const char* _trace_info = "w_io_file_get_basename_from_path";
-    if (!pFilePath)
+    if (!pFilePath || !pMemPool)
     {
         W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
         return NULL;
     }
 
-    w_mem_pool _mem_pool = NULL;
-    w_mem_pool_init(&_mem_pool);
-    if (!_mem_pool)
-    {
-        return NULL;
-    }
-
     size_t _len = strlen(pFilePath);
-    char* _s = (char*)w_malloc(_mem_pool, _len);
+    char* _s = (char*)w_malloc(pMemPool, _len);
     strcpy(_s, pFilePath);
-    w_mem_pool_fini(&_mem_pool);
 
 #ifdef W_PLATFORM_WIN
     PathStripPathA(_s);
-    return _s;
 #else
-    return basename(_s);
+    _s = basename(_s);
 #endif
+    return _s;
 }
 
 const char* w_io_file_get_basename(_In_ w_file pFile)
@@ -445,12 +448,14 @@ const char* w_io_file_get_basename(_In_ w_file pFile)
 
     w_mem_pool _mem_pool = NULL;
     W_RESULT _res = w_mem_pool_init(&_mem_pool);
-    if (_mem_pool)
+    if (_res == W_SUCCESS)
     {
         apr_finfo_t* _info = w_io_file_get_info(_mem_pool, pFile);
         if (_info)
         {
-            _ret = w_io_file_get_basename_from_path(_info->name);
+            _ret = w_io_file_get_basename_from_path(
+                _mem_pool,
+                _info->name);
         }
         w_mem_pool_fini(&_mem_pool);
     }
@@ -461,18 +466,26 @@ const char* w_io_file_get_basename(_In_ w_file pFile)
 const char* w_io_file_get_basename_without_extension_from_path(_In_z_ const char* pPath)
 {
     const char* _trace_info = "w_io_file_get_basename_without_extension_from_path";
+    const char* _ret = NULL;
     if (!pPath)
     {
         W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
-        return NULL;
+        return _ret;
     }
-
-    const char* _basename = w_io_file_get_basename_from_path(pPath);
-    if (_basename)
+    w_mem_pool _mem_pool = NULL;
+    if (w_mem_pool_init(&_mem_pool) == W_SUCCESS)
     {
-        return w_io_file_get_name_from_path(_basename);
+        const char* _basename = w_io_file_get_basename_from_path(
+            _mem_pool,
+            pPath);
+        
+        if (_basename)
+        {
+            _ret = w_io_file_get_name_from_path(_basename);
+        }
+        w_mem_pool_fini(&_mem_pool);
     }
-    return NULL;
+    return _ret;
 }
 
 const char* w_io_file_get_basename_without_extension(_In_ w_file pFile)
@@ -785,6 +798,7 @@ const char* w_io_dir_get_parent(
     //copy strings
     if (_size == 0) return "";
 
+    _size++;
     char* _dst = w_malloc(pMemPool, _size + 1);//size + '\0'
     apr_cpystrn(_dst, pPath, _size);
     _dst[_size] = '\0';
@@ -1097,7 +1111,7 @@ W_RESULT w_io_string_split(
         return W_FAILURE;
     }
 
-    char* _splits = strtok(pString, pSplit);
+    char* _splits = strtok((char*)pString, pSplit);
     // loop through the string and extract all other splits
     while (_splits != NULL)
     {

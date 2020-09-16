@@ -36,12 +36,18 @@ static uint64_t seconds_to_ticks(double pSeconds)
     return (uint64_t)(pSeconds * TICKS_PER_SECOND);
 }
 
-w_gametime w_gametime_init(_Inout_ w_mem_pool pMemPool)
+W_RESULT w_gametime_init(_Inout_ w_mem_pool pMemPool, _Inout_ w_gametime* pGameTime)
 {
+    *pGameTime = NULL;
+    if (!pMemPool)
+    {
+        return W_FAILURE;
+    }
+
     w_gametime _gametime = (w_gametime_t*)w_malloc(pMemPool, sizeof(struct w_gametime_t));
     if (!_gametime)
     {
-        return NULL;
+        return W_FAILURE;
     }
 
     //initialize it
@@ -55,7 +61,9 @@ w_gametime w_gametime_init(_Inout_ w_mem_pool pMemPool)
     //reset it
     w_game_time_reset(_gametime);
 
-    return _gametime;
+    *pGameTime = _gametime;
+
+    return W_SUCCESS;
 }
 
 void w_game_time_reset(_Inout_ w_gametime pGameTime)
