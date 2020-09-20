@@ -1,15 +1,20 @@
 #include "w_timespan.h"
 #include <time.h>
+#include <apr-1/apr_general.h>
+
+#ifdef W_PLATFORM_WIN
+#include <windows.h>
+#endif
 
 #define TICKS_PER_MILLISECOND	10000
-#define TICKS_PER_SECOND		TICKS_PER_MILLISECOND * 1000
-#define TICKS_PER_MINUTE		TICKS_PER_SECOND * 60
-#define TICKS_PER_HOUR			TICKS_PER_MINUTE * 60
-#define TICKS_PER_DAY			TICKS_PER_HOUR * 24
+#define TICKS_PER_SECOND		10000000
+#define TICKS_PER_MINUTE		600000000
+#define TICKS_PER_HOUR			36000000000
+#define TICKS_PER_DAY			864000000000
 #define MILLIS_PER_SECOND		1000
-#define MILLIS_PER_MINUTE		MILLIS_PER_SECOND * 60
-#define MILLIS_PER_HOUR			MILLIS_PER_MINUTE * 60
-#define MILLIS_PER_DAY			MILLIS_PER_HOUR * 24
+#define MILLIS_PER_MINUTE		60000
+#define MILLIS_PER_HOUR			3600000
+#define MILLIS_PER_DAY			86400000
 
 static const double MILLI_SECONDS_PER_TICK = 1.0 / TICKS_PER_MILLISECOND;
 static const double SECONDS_PER_TICK = 1.0 / TICKS_PER_SECOND;
@@ -19,7 +24,7 @@ static const double DAYS_PER_TICK = 1.0 / TICKS_PER_DAY;
 static const int64_t MAX_MILLISECONDS = LLONG_MAX / TICKS_PER_MILLISECOND;
 static const int64_t MIN_MILLISECONDS = LLONG_MIN / TICKS_PER_MILLISECOND;
 
-const long _timespan_w_wcstol(const wchar_t* const pValue, bool* pError)
+long _timespan_w_wcstol(const wchar_t* const pValue, bool* pError)
 {
     wchar_t* _endptr;
     long _long = wcstol(pValue, &_endptr, 0);
@@ -29,7 +34,7 @@ const long _timespan_w_wcstol(const wchar_t* const pValue, bool* pError)
         *pError = true;
         return -1;
     }
-    if(_long < INT_MIN || _long > INT_MAX)
+    if (_long < INT_MIN || _long > INT_MAX)
     {
         W_ASSERT(false, "strtol got error. trace info: _timespan_w_wcstol");
         *pError = true;
@@ -38,19 +43,19 @@ const long _timespan_w_wcstol(const wchar_t* const pValue, bool* pError)
     return _long;
 }
 
-int64_t _time_to_ticks(_In_ const int64_t pDays,
-                       _In_ const int64_t pHours,
-                       _In_ const int64_t pMinutes,
-                       _In_ const int64_t pSeconds,
-                       _In_ const int64_t pMilliSeconds,
-                       _Inout_ bool* pOverflowed)
+int64_t _time_to_ticks(_In_ int64_t pDays,
+    _In_ int64_t pHours,
+    _In_ int64_t pMinutes,
+    _In_ int64_t pSeconds,
+    _In_ int64_t pMilliSeconds,
+    _Inout_ bool* pOverflowed)
 {
     int64_t _total_milliSeconds = pDays * 864 * 100000 +
-                                  pHours * 36 * 100000 +
-                                  pMinutes * 60 * 1000 +
-                                  pSeconds * 1000 +
-                                  pMilliSeconds;
-                              
+        pHours * 36 * 100000 +
+        pMinutes * 60 * 1000 +
+        pSeconds * 1000 +
+        pMilliSeconds;
+
     if (_total_milliSeconds > MAX_MILLISECONDS || _total_milliSeconds < MIN_MILLISECONDS)
     {
         W_ASSERT(false, "timespan overflowed. trace info: _timespan_time_to_ticks");
@@ -61,7 +66,7 @@ int64_t _time_to_ticks(_In_ const int64_t pDays,
     return _total_milliSeconds * TICKS_PER_MILLISECOND;
 }
 
-int64_t _interval(_In_ const double pValue, _In_ const int pScale, _Inout_ bool* pOverflowed)
+int64_t _interval(_In_ double pValue, _In_ int pScale, _Inout_ bool* pOverflowed)
 {
     double _tmp = pValue * pScale;
     double _millis = _tmp + (pValue >= 0 ? 0.5 : -0.5);
@@ -72,132 +77,272 @@ int64_t _interval(_In_ const double pValue, _In_ const int pScale, _Inout_ bool*
         *pOverflowed = true;
         return -1;
     }
-    return (int64_t)(_millis) * TICKS_PER_MILLISECOND;
+    *pOverflowed = false;
+    return (int64_t)(_millis)*TICKS_PER_MILLISECOND;
 }
 
-w_timespan* w_timespan_init_from_zero(void)
+w_timespan w_timespan_init_from_zero(_Inout_ w_mem_pool pMemPool)
 {
-    w_timespan* _timespan = (w_timespan*)malloc(sizeof(w_timespan));
-    _timespan->ticks = 0;
-    _timespan->overflowed = false;
+    const char* _trace_info = "w_timespan_init_from_zero";
+    if (!pMemPool)
+    {
+        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
+        return NULL;
+    }
+    w_timespan _timespan = (w_timespan_t*)w_malloc(pMemPool, sizeof(w_timespan_t));
+    if (_timespan)
+    {
+        _timespan->ticks = 0;
+        _timespan->overflowed = false;
+    }
     return _timespan;
 }
 
-w_timespan* w_timespan_init_from_min_value(void)
+w_timespan w_timespan_init_from_min_value(_Inout_ w_mem_pool pMemPool)
 {
-    w_timespan* _timespan = (w_timespan*)malloc(sizeof(w_timespan));
-    _timespan->ticks = LLONG_MIN;
-    _timespan->overflowed = false;
+    const char* _trace_info = "w_timespan_init_from_min_value";
+    if (!pMemPool)
+    {
+        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
+        return NULL;
+    }
+    w_timespan _timespan = (w_timespan)w_malloc(pMemPool, sizeof(w_timespan_t));
+    if (_timespan)
+    {
+        _timespan->ticks = LLONG_MIN;
+        _timespan->overflowed = false;
+    }
     return _timespan;
 }
 
-w_timespan* w_timespan_init_from_max_value(void)
+w_timespan w_timespan_init_from_max_value(_Inout_ w_mem_pool pMemPool)
 {
-    w_timespan* _timespan = (w_timespan*)malloc(sizeof(w_timespan));
-    _timespan->ticks = LLONG_MAX;
-    _timespan->overflowed = false;
+    const char* _trace_info = "w_timespan_init_from_max_value";
+    if (!pMemPool)
+    {
+        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
+        return NULL;
+    }
+    w_timespan _timespan = (w_timespan)w_malloc(pMemPool, sizeof(w_timespan_t));
+    if (_timespan)
+    {
+        _timespan->ticks = LLONG_MAX;
+        _timespan->overflowed = false;
+    }
     return _timespan;
 }
 
-w_timespan* w_timespan_init_from_now(void)
+w_timespan w_timespan_init_from_now(_Inout_ w_mem_pool pMemPool)
 {
     // get current time
     time_t t = time(0);
 #ifdef W_PLATFORM_UNIX
     struct tm* _now = localtime(&t);
-	return w_timespan_init_from_shorttime(_now->tm_hour, _now->tm_min, _now->tm_sec);
+    return w_timespan_init_from_shorttime(pMemPool, _now->tm_hour, _now->tm_min, _now->tm_sec);
 #else
-    struct tm _now;
-    localtime_s(&_now, &t);
-	return w_timespan_init_from_shorttime(_now.tm_hour, _now.tm_min, _now.tm_sec);
+
+    SYSTEMTIME _sys_time;
+    //structure to store system time (in usual time format)
+    FILETIME _f_time;
+    //structure to store local time (local time in 64 bits)
+    FILETIME _ft_time_stamp;
+    GetSystemTimeAsFileTime(&_ft_time_stamp); //Gets the current system time
+
+    FileTimeToLocalFileTime(&_ft_time_stamp, &_f_time);//convert in local time and store in ltime
+    FileTimeToSystemTime(&_f_time, &_sys_time);//convert in system time and store in stime
+
+     return w_timespan_init_from_longtime(
+         pMemPool, 
+         _sys_time.wDay,
+         _sys_time.wHour, 
+         _sys_time.wMinute, 
+         _sys_time.wSecond, 
+         _sys_time.wMilliseconds);
 #endif
 }
 
-w_timespan* w_timespan_init_from_days(_In_ const double pValue)
+w_timespan w_timespan_init_from_days(
+    _Inout_ w_mem_pool pMemPool,
+    _In_ double pValue)
 {
-    w_timespan* _timespan = (w_timespan*)malloc(sizeof(w_timespan));
-    _timespan->ticks = _interval(pValue, MILLIS_PER_DAY, &_timespan->overflowed);
-    return _timespan;
-}
-
-w_timespan* w_timespan_init_from_hours(_In_ const double pValue)
-{
-    w_timespan* _timespan = (w_timespan*)malloc(sizeof(w_timespan));
-    _timespan->ticks = _interval(pValue, MILLIS_PER_HOUR, &_timespan->overflowed);
-    return _timespan;
-}
-
-w_timespan* w_timespan_init_from_minutes(_In_ const double pValue)
-{
-    w_timespan* _timespan = (w_timespan*)malloc(sizeof(w_timespan));
-    _timespan->ticks = _interval(pValue, MILLIS_PER_MINUTE, &_timespan->overflowed);
-    return _timespan;
-}
-
-w_timespan* w_timespan_init_from_seconds(_In_ const double pValue)
-{
-    w_timespan* _timespan = (w_timespan*)malloc(sizeof(w_timespan));
-    _timespan->ticks = _interval(pValue, MILLIS_PER_SECOND, &_timespan->overflowed);
-    return _timespan;
-}
-
-w_timespan* w_timespan_init_from_milliseconds(_In_ const double pValue)
-{
-    w_timespan* _timespan = (w_timespan*)malloc(sizeof(w_timespan));
-    _timespan->ticks = _interval(pValue, 1, &_timespan->overflowed);
-    return _timespan;
-}
-
-w_timespan* w_timespan_init_from_ticks(_In_ const int64_t pTicks)
-{
-    w_timespan* _timespan = (w_timespan*)malloc(sizeof(w_timespan));
-    if(pTicks > LLONG_MAX || LLONG_MAX < LLONG_MIN)
+    const char* _trace_info = "w_timespan_init_from_days";
+    if (!pMemPool)
     {
-        _timespan->overflowed = true;
-        W_ASSERT(false, "timespan overflowed. trace info: init_timespan_with_ticks");
+        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
+        return NULL;
     }
-    else
+    w_timespan _timespan = (w_timespan)w_malloc(pMemPool, sizeof(w_timespan_t));
+    if (_timespan)
     {
-        _timespan->overflowed = false;
-        _timespan->ticks = pTicks;
+        _timespan->ticks = _interval(pValue, MILLIS_PER_DAY, &_timespan->overflowed);
     }
     return _timespan;
 }
 
-w_timespan* w_timespan_init_from_shorttime(_In_ const int pHours,
-                                           _In_ const int pMinutes,
-                                           _In_ const int pSeconds)
+w_timespan w_timespan_init_from_hours(
+    _Inout_ w_mem_pool pMemPool,
+    _In_ double pValue)
 {
-    w_timespan* _timespan = (w_timespan*)malloc(sizeof(w_timespan));
-    _timespan->ticks = _time_to_ticks(
-                                      0,
-                                      pHours,
-                                      pMinutes,
-                                      pSeconds,
-                                      0,
-                                      &_timespan->overflowed);
+    const char* _trace_info = "w_timespan_init_from_hours";
+    if (!pMemPool)
+    {
+        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
+        return NULL;
+    }
+    w_timespan _timespan = (w_timespan)w_malloc(pMemPool, sizeof(w_timespan_t));
+    if (_timespan)
+    {
+        _timespan->ticks = _interval(pValue, MILLIS_PER_HOUR, &_timespan->overflowed);
+    }
     return _timespan;
 }
 
-w_timespan* w_timespan_init_from_longtime(_In_ const int pDays,
-                                        _In_ const int pHours,
-                                        _In_ const int pMinutes,
-                                        _In_ const int pSeconds,
-                                        _In_ const int pMilliseconds)
+w_timespan w_timespan_init_from_minutes(
+    _Inout_ w_mem_pool pMemPool,
+    _In_ double pValue)
 {
-    w_timespan* _timespan = (w_timespan*)malloc(sizeof(w_timespan));
-    _timespan->ticks = _time_to_ticks(
-                                      pDays,
-                                      pHours,
-                                      pMinutes,
-                                      pSeconds,
-                                      pMilliseconds,
-                                      &_timespan->overflowed);
+    const char* _trace_info = "w_timespan_init_from_minutes";
+    if (!pMemPool)
+    {
+        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
+        return NULL;
+    }
+    w_timespan _timespan = (w_timespan)w_malloc(pMemPool, sizeof(w_timespan_t));
+    if (_timespan)
+    {
+        _timespan->ticks = _interval(pValue, MILLIS_PER_MINUTE, &_timespan->overflowed);
+    }
     return _timespan;
 }
 
-w_timespan* w_timespan_init_from_string(const char* const pValue)
+w_timespan w_timespan_init_from_seconds(
+    _Inout_ w_mem_pool pMemPool,
+    _In_ double pValue)
 {
+    const char* _trace_info = "w_timespan_init_from_seconds";
+    if (!pMemPool)
+    {
+        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
+        return NULL;
+    }
+    w_timespan _timespan = (w_timespan)w_malloc(pMemPool, sizeof(w_timespan_t));
+    if (_timespan)
+    {
+        _timespan->ticks = _interval(pValue, MILLIS_PER_SECOND, &_timespan->overflowed);
+    }
+    return _timespan;
+}
+
+w_timespan w_timespan_init_from_milliseconds(
+    _Inout_ w_mem_pool pMemPool,
+    _In_ double pValue)
+{
+    const char* _trace_info = "w_timespan_init_from_milliseconds";
+    if (!pMemPool)
+    {
+        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
+        return NULL;
+    }
+    w_timespan _timespan = (w_timespan)w_malloc(pMemPool, sizeof(w_timespan_t));
+    if (_timespan)
+    {
+        _timespan->ticks = _interval(pValue, 1, &_timespan->overflowed);
+    }
+    return _timespan;
+}
+
+w_timespan w_timespan_init_from_ticks(
+    _Inout_ w_mem_pool pMemPool,
+    _In_ int64_t pTicks)
+{
+    const char* _trace_info = "w_timespan_init_from_ticks";
+    if (!pMemPool)
+    {
+        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
+        return NULL;
+    }
+    w_timespan _timespan = (w_timespan)w_malloc(pMemPool, sizeof(w_timespan_t));
+    if (_timespan)
+    {
+        if (pTicks > LLONG_MAX || LLONG_MAX < LLONG_MIN)
+        {
+            _timespan->overflowed = true;
+            W_ASSERT(false, "timespan overflowed. trace info: init_timespan_with_ticks");
+        }
+        else
+        {
+            _timespan->overflowed = false;
+            _timespan->ticks = pTicks;
+        }
+    }
+    return _timespan;
+}
+
+w_timespan w_timespan_init_from_shorttime(
+    _Inout_ w_mem_pool pMemPool,
+    _In_ int pHours,
+    _In_ int pMinutes,
+    _In_ int pSeconds)
+{
+    const char* _trace_info = "w_timespan_init_from_shorttime";
+    if (!pMemPool)
+    {
+        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
+        return NULL;
+    }
+    w_timespan _timespan = (w_timespan)w_malloc(pMemPool, sizeof(w_timespan_t));
+    if (_timespan)
+    {
+        _timespan->ticks = _time_to_ticks(
+            0,
+            pHours,
+            pMinutes,
+            pSeconds,
+            0,
+            &_timespan->overflowed);
+    }
+    return _timespan;
+}
+
+w_timespan w_timespan_init_from_longtime(
+    _Inout_ w_mem_pool pMemPool,
+    _In_ int pDays,
+    _In_ int pHours,
+    _In_ int pMinutes,
+    _In_ int pSeconds,
+    _In_ int pMilliseconds)
+{
+    const char* _trace_info = "w_timespan_init_from_longtime";
+    if (!pMemPool)
+    {
+        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
+        return NULL;
+    }
+    w_timespan _timespan = (w_timespan)w_malloc(pMemPool, sizeof(w_timespan_t));
+    if (_timespan)
+    {
+        _timespan->ticks = _time_to_ticks(
+            pDays,
+            pHours,
+            pMinutes,
+            pSeconds,
+            pMilliseconds,
+            &_timespan->overflowed);
+    }
+    return _timespan;
+}
+
+w_timespan w_timespan_init_from_string(
+    _Inout_ w_mem_pool pMemPool,
+    _In_z_ const char* const pValue)
+{
+    const char* _trace_info = "w_timespan_init_from_string";
+    if (!pMemPool)
+    {
+        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
+        return NULL;
+    }
+
     int _days = 0, _hours = 0, _minutes = 0, _seconds = 0, _milliseconds = 0;
     int _c = 0, _i = 0, _j = 0;
     char _number[256];
@@ -207,7 +352,7 @@ w_timespan* w_timespan_init_from_string(const char* const pValue)
         {
             _number[_j] = '\0';
             _j = 0;
-            
+
             if (_i == 0)
             {
                 _days = atoi(_number);
@@ -225,21 +370,31 @@ w_timespan* w_timespan_init_from_string(const char* const pValue)
                 _seconds = atoi(_number);
             }
             _i++;
+            _c++;
         }
         _number[_j++] = pValue[_c++];
     }
-    
-    if(_j)
+
+    if (_j)
     {
         _number[_j] = '\0';
         _milliseconds = atoi(_number);
     }
 
-    return w_timespan_init_from_longtime(_days, _hours, _minutes, _seconds, _milliseconds);
+    return w_timespan_init_from_longtime(pMemPool, _days, _hours, _minutes, _seconds, _milliseconds);
 }
 
-w_timespan* w_timespan_init_from_wstring(const wchar_t* const pValue)
+w_timespan w_timespan_init_from_wstring(
+    _Inout_ w_mem_pool pMemPool,
+    _In_z_ const wchar_t* const pValue)
 {
+    const char* _trace_info = "w_timespan_init_from_wstring";
+    if (!pMemPool)
+    {
+        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
+        return NULL;
+    }
+
     bool _error;
     long _temp;
     int _days = 0, _hours = 0, _minutes = 0, _seconds = 0, _milliseconds = 0;
@@ -251,11 +406,11 @@ w_timespan* w_timespan_init_from_wstring(const wchar_t* const pValue)
         {
             _number[_j] = L'\0';
             _j = 0;
-            
+
             if (_i == 0)
             {
                 _temp = _timespan_w_wcstol(_number, &_error);
-                if (!_error)
+                if (_error)
                 {
                     _days = (int)_temp;
                 }
@@ -263,7 +418,7 @@ w_timespan* w_timespan_init_from_wstring(const wchar_t* const pValue)
             else if (_i == 1)
             {
                 _temp = _timespan_w_wcstol(_number, &_error);
-                if (!_error)
+                if (_error)
                 {
                     _hours = (int)_temp;
                 }
@@ -271,7 +426,7 @@ w_timespan* w_timespan_init_from_wstring(const wchar_t* const pValue)
             else if (_i == 2)
             {
                 _temp = _timespan_w_wcstol(_number, &_error);
-                if (!_error)
+                if (_error)
                 {
                     _minutes = (int)_temp;
                 }
@@ -279,35 +434,42 @@ w_timespan* w_timespan_init_from_wstring(const wchar_t* const pValue)
             else if (_i == 3)
             {
                 _temp = _timespan_w_wcstol(_number, &_error);
-                if (!_error)
+                if (_error)
                 {
                     _seconds = (int)_temp;
                 }
             }
             _i++;
+            _c++;
         }
         _number[_j++] = pValue[_c++];
     }
-    
-    if(_j)
+
+    if (_j)
     {
         _number[_j] = L'\0';
         _temp = _timespan_w_wcstol(_number, &_error);
-        if (!_error)
+        if (_error)
         {
             _milliseconds = (int)_temp;
         }
     }
 
-    return w_timespan_init_from_longtime(_days, _hours, _minutes, _seconds, _milliseconds);
+    return w_timespan_init_from_longtime(pMemPool, _days, _hours, _minutes, _seconds, _milliseconds);
 }
 
-w_timespan* w_timespan_add(_Inout_ w_timespan* pLValue, _In_ const w_timespan* pRValue)
+w_timespan w_timespan_add(
+    _Inout_ w_mem_pool pMemPool,
+    _Inout_ w_timespan pLValue, 
+    _In_ const w_timespan pRValue)
 {
-    W_ASSERT(!pLValue || !pRValue, "input parameters of timespan_add function are NULL. trace info: timespan_add");
-    
-    w_timespan* _timespan = (w_timespan*)malloc(sizeof(w_timespan));
-    
+    W_ASSERT(pLValue || pRValue, "input parameters of timespan_add function are NULL. trace info: timespan_add");
+
+    w_timespan _timespan = (w_timespan)w_malloc(pMemPool, sizeof(w_timespan_t));
+    if (!_timespan)
+    {
+        return NULL;
+    }
     _timespan->ticks = pLValue->ticks + pRValue->ticks;
     // Overflow if signs of operands was identical and result's sign was opposite.
     // >> 63 gives the sign bit (either 64 1's or 64 0's).
@@ -318,13 +480,14 @@ w_timespan* w_timespan_add(_Inout_ w_timespan* pLValue, _In_ const w_timespan* p
         _timespan->overflowed = true;
         W_ASSERT(false, "timespan overflowed in timespan_add");
     }
+    _timespan->overflowed = false;
     return _timespan;
 }
 
-void w_timespan_add_by_ref(_Inout_ w_timespan* pLValue, _In_ const w_timespan* pRValue)
+void w_timespan_add_by_ref(_Inout_ w_timespan pLValue, _In_ const w_timespan pRValue)
 {
-    W_ASSERT(!pLValue || !pRValue, "input parameters of timespan_add_by_ref function are NULL. trace info: timespan_add");
-    
+    W_ASSERT(pLValue || pRValue, "input parameters of timespan_add_by_ref function are NULL. trace info: timespan_add");
+
     int64_t _result = pLValue->ticks + pRValue->ticks;
     // Overflow if signs of operands was identical and result's sign was opposite.
     // >> 63 gives the sign bit (either 64 1's or 64 0's).
@@ -335,81 +498,121 @@ void w_timespan_add_by_ref(_Inout_ w_timespan* pLValue, _In_ const w_timespan* p
         pLValue->overflowed = true;
         W_ASSERT(false, "timespan overflowed. trace info: timespan_add");
     }
+    pLValue->overflowed = false;
     pLValue->ticks = _result;
 }
 
-const char* w_timespan_to_string(_In_ const w_timespan* const pValue)
+const char* w_timespan_to_string(
+    _Inout_ w_mem_pool pMemPool,
+    _In_ const w_timespan pValue,
+    _In_z_ const char* pSplitCharacter)
 {
-    char* _str = (char*)malloc(PATH_MAX);
-    sprintf(_str, "%d:%d:%d:%d:%03d",
-            w_timespan_get_days(pValue),
-            w_timespan_get_hours(pValue),
-            w_timespan_get_minutes(pValue),
-            w_timespan_get_seconds(pValue),
-            w_timespan_get_milliseconds(pValue));
+    const char* _trace_info = "w_timespan_to_string";
+    if (!pMemPool)
+    {
+        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
+        return NULL;
+    }
+    char* _str = (char*)w_malloc(pMemPool, W_MAX_BUFFER_SIZE);
+    if (!_str)
+    {
+        W_ASSERT_P(false, "could not allocate memory for str. trace info: %s", _trace_info);
+        return NULL;
+    }
+
+    sprintf(_str, "%d%s%d%s%d%s%d%s%03d",
+        w_timespan_get_days(pValue),
+        pSplitCharacter,
+        w_timespan_get_hours(pValue),
+        pSplitCharacter,
+        w_timespan_get_minutes(pValue),
+        pSplitCharacter,
+        w_timespan_get_seconds(pValue),
+        pSplitCharacter,
+        w_timespan_get_milliseconds(pValue));
     return _str;
 }
 
-const wchar_t* w_timespan_to_wstring(_In_ const w_timespan* const pValue)
+const wchar_t* w_timespan_to_wstring(
+    _Inout_ w_mem_pool pMemPool,
+    _In_ const w_timespan pValue,
+    _In_z_ const wchar_t* pSplitCharacter)
 {
-    wchar_t* _str = (wchar_t*)malloc(PATH_MAX);
-    swprintf(_str, PATH_MAX, L"%d:%d:%d:%d:%03d",
-            w_timespan_get_days(pValue),
-            w_timespan_get_hours(pValue),
-            w_timespan_get_minutes(pValue),
-            w_timespan_get_seconds(pValue),
-            w_timespan_get_milliseconds(pValue));
+    const char* _trace_info = "w_timespan_to_wstring";
+    if (!pMemPool)
+    {
+        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
+        return NULL;
+    }
+    wchar_t* _str = (wchar_t*)w_malloc(pMemPool, W_MAX_BUFFER_SIZE);
+    if (!_str)
+    {
+        W_ASSERT_P(false, "could not allocate memory for str. trace info: %s", _trace_info);
+        return NULL;
+    }
+
+    swprintf(_str, W_MAX_BUFFER_SIZE,L"%d%ls%d%ls%d%ls%d%ls%03d",
+        w_timespan_get_days(pValue),
+        pSplitCharacter,
+        w_timespan_get_hours(pValue),
+        pSplitCharacter,
+        w_timespan_get_minutes(pValue),
+        pSplitCharacter,
+        w_timespan_get_seconds(pValue),
+        pSplitCharacter,
+        w_timespan_get_milliseconds(pValue));
+
     return _str;
 }
 
 #pragma region Getters
 
-const int w_timespan_get_days(_In_ const w_timespan* const pValue)
+int w_timespan_get_days(_In_ const w_timespan pValue)
 {
     return (int)(pValue->ticks / TICKS_PER_DAY);
 }
 
-const double w_timespan_get_total_days(_In_ const w_timespan* const pValue)
+double w_timespan_get_total_days(_In_ const w_timespan pValue)
 {
     return (double)pValue->ticks * DAYS_PER_TICK;
 }
 
-const int w_timespan_get_hours(_In_ const w_timespan* const pValue)
+int w_timespan_get_hours(_In_ const w_timespan pValue)
 {
     return ((int)(pValue->ticks / TICKS_PER_HOUR) % 24);
 }
 
-const double w_timespan_get_total_hours(_In_ const w_timespan* const pValue)
+double w_timespan_get_total_hours(_In_ const w_timespan pValue)
 {
     return (double)(pValue->ticks) * HOURS_PER_TICK;
 }
 
-const int w_timespan_get_minutes(_In_ const w_timespan* const pValue)
+int w_timespan_get_minutes(_In_ const w_timespan pValue)
 {
     return ((int)(pValue->ticks / TICKS_PER_MINUTE) % 60);
 }
 
-const double w_timespan_get_total_minutes(_In_ const w_timespan* const pValue)
+double w_timespan_get_total_minutes(_In_ const w_timespan pValue)
 {
     return (double)(pValue->ticks) * MINUTES_PER_TICK;
 }
 
-const int w_timespan_get_seconds(_In_ const w_timespan* const pValue)
+int w_timespan_get_seconds(_In_ const w_timespan pValue)
 {
     return ((int)(pValue->ticks / TICKS_PER_SECOND) % 60);
 }
 
-const double w_timespan_get_total_seconds(_In_ const w_timespan* const pValue)
+double w_timespan_get_total_seconds(_In_ const w_timespan pValue)
 {
     return (double)(pValue->ticks) * SECONDS_PER_TICK;
 }
 
-const int w_timespan_get_milliseconds(_In_ const w_timespan* const pValue)
+int w_timespan_get_milliseconds(_In_ const w_timespan pValue)
 {
     return ((int)(pValue->ticks / TICKS_PER_MILLISECOND) % 1000);
 }
 
-const double w_timespan_get_total_milliseconds(_In_ const w_timespan* const pValue)
+double w_timespan_get_total_milliseconds(_In_ const w_timespan pValue)
 {
     double _temp = (double)(pValue->ticks) * MILLI_SECONDS_PER_TICK;
     if (_temp > MAX_MILLISECONDS) return (double)MAX_MILLISECONDS;
@@ -417,66 +620,86 @@ const double w_timespan_get_total_milliseconds(_In_ const w_timespan* const pVal
     return _temp;
 }
 
-const char* w_timespan_get_current_date_time_string()
+const char* w_timespan_get_current_date_time_string(_Inout_ w_mem_pool pMemPool)
 {
+    const char* _trace_info = "w_timespan_get_current_date_time_string";
+    if (!pMemPool)
+    {
+        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
+        return NULL;
+    }
     //get current time
-    char* _str = (char*)malloc(PATH_MAX);
-
+    char* _str = (char*)w_malloc(
+        pMemPool,
+        W_MAX_BUFFER_SIZE);
+    if (!_str)
+    {
+        return NULL;
+    }
     time_t t = time(0);
-#if defined(W_PLATFORM_UNIX)
-        struct tm* _now = localtime(&t);
-        sprintf(_str, "%02d_%02d_%04d__%02d_%02d_%02d",
-                _now->tm_mday,
-                _now->tm_mon,
-                _now->tm_year + 1900,
-                _now->tm_hour,
-                _now->tm_min,
-                _now->tm_sec);
 
+#ifdef W_PLATFORM_WIN
+    struct tm _now;
+    localtime_s(&_now, &t);
+    sprintf(_str, "%02d_%02d_%04d__%02d_%02d_%02d",
+        _now.tm_mday,
+        _now.tm_mon,
+        _now.tm_year + 1900,
+        _now.tm_hour,
+        _now.tm_min,
+        _now.tm_sec);
 #else
-        struct tm _now;
-        localtime_s(&_now, &t);
-        sprintf(_str, "%02d_%02d_%04d__%02d_%02d_%02d",
-            _now.tm_mday,
-            _now.tm_mon,
-            _now.tm_year + 1900,
-            _now.tm_hour,
-            _now.tm_min,
-            _now.tm_sec);
+    struct tm* _now = localtime(&t);
+    sprintf(_str, "%02d_%02d_%04d__%02d_%02d_%02d",
+        _now->tm_mday,
+        _now->tm_mon,
+        _now->tm_year + 1900,
+        _now->tm_hour,
+        _now->tm_min,
+        _now->tm_sec);
 #endif
 
     return _str;
 }
 
-const wchar_t* w_timespan_get_current_date_time_wstring()
+const wchar_t* w_timespan_get_current_date_time_wstring(_Inout_ w_mem_pool pMemPool)
 {
+    const char* _trace_info = "w_timespan_get_current_date_time_wstring";
+    if (!pMemPool)
+    {
+        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
+        return NULL;
+    }
     //get current time
-    wchar_t* _str = (wchar_t*)malloc(PATH_MAX);
+    wchar_t* _str = (wchar_t*)w_malloc(pMemPool, W_MAX_BUFFER_SIZE);
+    if (!_str)
+    {
+        return NULL;
+    }
 
     time_t t = time(0);
-#if defined(W_PLATFORM_UNIX)
-        struct tm* _now = localtime(&t);
-        swprintf(_str, PATH_MAX, L"%d:%d:%d %d:%d:%d",
-                _now->tm_mday,
-                _now->tm_mon,
-                _now->tm_year + 1900,
-                _now->tm_hour,
-                _now->tm_min,
-                _now->tm_sec);
+#ifdef W_PLATFORM_WIN
+    struct tm _now;
+    localtime_s(&_now, &t);
+    swprintf(_str, W_MAX_BUFFER_SIZE, L"%d:%d:%d %d:%d:%d",
+        _now.tm_mday,
+        _now.tm_mon,
+        _now.tm_year + 1900,
+        _now.tm_hour,
+        _now.tm_min,
+        _now.tm_sec);
 #else
-        struct tm _now;
-        localtime_s(&_now, &t);
-        swprintf(_str, PATH_MAX, L"%d:%d:%d %d:%d:%d",
-            _now.tm_mday,
-            _now.tm_mon,
-            _now.tm_year + 1900,
-            _now.tm_hour,
-            _now.tm_min,
-            _now.tm_sec);
+    struct tm* _now = localtime(&t);
+    swprintf(_str, W_MAX_BUFFER_SIZE, L"%d:%d:%d %d:%d:%d",
+        _now->tm_mday,
+        _now->tm_mon,
+        _now->tm_year + 1900,
+        _now->tm_hour,
+        _now->tm_min,
+        _now->tm_sec);
 #endif
 
     return _str;
 }
 
 #pragma endregion
-

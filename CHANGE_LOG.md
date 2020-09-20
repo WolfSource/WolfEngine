@@ -6,7 +6,7 @@
 - DEBUG, RELEASE, MinSizeRelease(does not have assimp and just use wscene files)
 
 # 2.0.0.0
-A major release, rewrite most of wolf.system in pure C
+A major release, rewrite most of wolf.system with pure C
 
 # 1.68.0.9 (2018-10-03)
 A minor release with many compatibility-breaking changes.

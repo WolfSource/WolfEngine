@@ -2,50 +2,188 @@
 	Project			 : Wolf Engine. Copyright(c) Pooya Eimandar (https://PooyaEimandar.github.io) . All rights reserved.
 	Source			 : Please direct any bug to https://github.com/WolfEngine/Wolf.Engine/issues
 	Website			 : https://WolfEngine.App
-	Name			 : w_xml.h
-	Description		 : XML serializer & parser using rapid xml "https://github.com/dwd/rapidxml"
+	Name			 : w_process.h
+	Description		 : enum all OS processes
 	Comment          :
 */
 
 #pragma once
 
-#include "w_system_export.h"
-#include "w_std.h"
-
-namespace wolf::system
-{
-	struct w_process_info
-	{
-#ifdef __WIN32
-		PROCESS_INFORMATION info;
+#ifdef __cplusplus
+extern "C" {
 #endif
-		std::error_code		error_code;
-	};
 
-	class w_process
+#include <wolf.h>
+
+#ifdef W_PLATFORM_OSX
+typedef unsigned long   DWORD;
+#endif
+
+	typedef struct w_process_info_t
 	{
-	public:
-		//kill process by proces ID
-		WSYS_EXP static W_RESULT kill_process_by_ID(_In_ const unsigned long& pProcessID);
-		//print process name based on proces ID
-		WSYS_EXP static std::wstring get_process_name_by_ID(_In_ const unsigned long& pProcessID);
-		//enumurate all processes
-		WSYS_EXP static const std::wstring enum_all_processes();
-		//check whether two instances of same process is running
-		WSYS_EXP static bool check_for_number_of_running_instances_from_process(_In_z_ const wchar_t* pProcessName,
-			_In_ size_t pNumberOfRunningInstnacesToBeChecked = 1);
-		//get number of running instances the process
-		WSYS_EXP static size_t get_number_of_running_instances_from_process(_In_z_ const wchar_t* pProcessName);
-		//create a process
-		WSYS_EXP static w_process_info* create_process(
-			_In_z_ const wchar_t* pPathtoProcess,
+#ifdef W_PLATFORM_WIN
+		PROCESS_INFORMATION* info;
+		HWND					handle;
+		wchar_t* class_name;
+		wchar_t* title_name;
+		wchar_t* process_name;
+		DWORD					error_code;
+#endif
+	} w_process_info_t;
+	typedef w_process_info_t* w_process_info;
+
+	/**
+	 * get number of instances for a specific process
+	 * @param pProcessName the name of process
+	 * @return number of processes
+	*/
+	W_SYSTEM_EXPORT
+		size_t w_process_get_count_of_instances(_In_z_ const wchar_t* pProcessName);
+
+	/**
+	 * get a process name based on process id
+	 * @param pMemPool The pool to allocate out of
+	 * @param pProcessID process ID
+	 * @param pProcessName the process name
+	 * @return result
+	*/
+	W_SYSTEM_EXPORT
+		W_RESULT w_process_get_name_by_id(
+			_Inout_ w_mem_pool pMemPool,
+			_In_ DWORD pProcessID,
+			_Inout_ wchar_t** pProcessName);
+
+	/**
+	 * enumurate all processes names and print all in wide characters
+	 * @param pMemPool The pool to allocate out of
+	 * @param pProcessLists which will be updated
+	 * @return results
+	*/
+	W_SYSTEM_EXPORT
+		W_RESULT w_process_print_allW(
+			_Inout_ w_mem_pool pMemPool,
+			_Inout_ wchar_t** pProcessLists);
+
+	/**
+	 * enumurate all processes names
+	 * @param pMemPool The pool to allocate out of
+	 * @param pProcessLists which will be updated
+	 * @return result
+	*/
+	W_SYSTEM_EXPORT
+		W_RESULT w_process_print_all(
+			_Inout_ w_mem_pool pMemPool,
+			_Inout_ char** pProcessLists);
+
+	/**
+	 * create a process
+	 * @param pMemPool The pool to allocate out of
+	 * @param pPathToProcess , the path to the process
+	 * @param pCmdsArg , command args
+	 * @param pCurrentDirectoryPath , the current directory path of process
+	 * @param pWaitAfterRunningProcess , wait in seconds after running the process
+	 * @param pCreationFlags , the creation flags
+	 * @param pProcessInfo , the output process info
+	 * @return result
+	*/
+	W_SYSTEM_EXPORT
+		W_RESULT w_process_create(
+			_Inout_ w_mem_pool pMemPool,
+			_In_z_ const wchar_t* pPathToProcess,
 			_In_z_ const wchar_t* pCmdsArg,
 			_In_z_ const wchar_t* pCurrentDirectoryPath,
-			_In_  const long long pWaitAfterRunningProcess = 0,
-			_In_ DWORD pCreationFlags = 0);
-		//kill a process
-		WSYS_EXP static bool kill_process(_In_ w_process_info* pProcessInfo);
-		//kill all process by name
-		WSYS_EXP static bool kill_all_processes(_In_z_ std::initializer_list<const wchar_t*> pProcessNames);
-	};
+			_In_  DWORD pWaitAfterRunningProcess,
+			_In_ DWORD pCreationFlags,
+			_Out_ w_process_info* pProcessInfo);
+
+	/**
+	 * kill process by process info
+	 * @param pProcessID process ID
+	 * @return result
+	*/
+	W_SYSTEM_EXPORT
+		W_RESULT w_process_kill_by_info(_In_ w_process_info pProcessInfo);
+
+	/**
+	 * kill process by name as administrator
+	 * @param pProcessName process name
+	 * @param pUserName administrator's user name
+	 * @param pPassword administrator's password
+	 * @param pTerminateChildProcesses terminate child processes
+	 * @return result
+	*/
+	W_SYSTEM_EXPORT
+		W_RESULT w_process_kill_by_name_as_admin(
+			_In_z_ const wchar_t* pProcessName,
+			_In_z_ const wchar_t* pUserName,
+			_In_z_ const wchar_t* pPassword,
+			_In_ bool pTerminateChildProcesses);
+
+	/**
+	 * kill process by name
+	 * @param pProcessName process name
+	 * @param pTerminateChildProcesses terminate child processes
+	 * @return result
+	*/
+	W_SYSTEM_EXPORT
+		W_RESULT w_process_kill_by_name(
+			_In_z_ const wchar_t* pProcessName,
+			_In_ bool pTerminateChildProcesses);
+
+	/**
+	 * kill process by id as an administrator
+	 * @param pProcessID process id
+	 * @param pTerminateChildProcesses terminate child processes
+	 * @param pUserName administrator's user name
+	 * @param pPassword administrator's password
+	 * @return result
+	*/
+	W_SYSTEM_EXPORT
+		W_RESULT w_process_kill_by_id_as_admin(
+			_In_ DWORD pProcessID,
+			_In_z_ const wchar_t* pUserName,
+			_In_z_ const wchar_t* pPassword,
+			_In_ bool pTerminateChildProcesses);
+
+	/**
+	 * kill process by id
+	 * @param pProcessID process id
+	 * @param pTerminateChildProcesses terminate child processes
+	 * @return result
+	*/
+	W_SYSTEM_EXPORT
+		W_RESULT w_process_kill_by_id(
+			_In_ DWORD pProcessID,
+			_In_ bool pTerminateChildProcesses);
+
+	/**
+	 * kill process by id with OpenProcess
+	 * @param pProcessID process id
+	 * @return result
+	*/
+	W_SYSTEM_EXPORT
+		W_RESULT w_process_kill_by_id_handle(_In_ DWORD pProcessID);
+
+
+	/**
+	 * kill all processes by name
+	 * @param pMemPool The pool to allocate out of
+	 * @param ... list of processes which are going to kill (like L"p.exe", L"a.exe")
+	 * @return result
+	*/
+	W_SYSTEM_EXPORT
+		W_RESULT w_process_kill_all(
+			_In_ w_mem_pool pMemPool,
+			_In_ ...);
+
+	/**
+	 * release handle of process
+	 * @param pProcessInfo , a pointer to process info
+	 * @return result
+	*/
+	W_SYSTEM_EXPORT
+		W_RESULT w_process_info_fini(_Inout_ w_process_info pProcessInfo);
+
+#ifdef __cplusplus
 }
+#endif

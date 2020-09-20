@@ -1,49 +1,56 @@
 #include "w_condition_variable.h"
 #include <apr-1/apr_thread_cond.h>
 
-W_RESULT w_condition_variable_init(_Inout_ w_condition_variable** pCond)
+W_RESULT w_condition_variable_init(
+    _Inout_ w_mem_pool pMemPool,
+    _Inout_ w_condition_variable* pCond)
 {
-    w_mem_pool _pool = w_get_default_memory_pool();
-    if(!_pool)
+    const char* _trace_info = "w_condition_variable_init";
+    if (pMemPool)
     {
-        W_ASSERT(false, "could not get default memory pool. trace info: w_condition_variable_init");
-        return W_FAILURE;
+        apr_pool_t* _pool = w_mem_pool_get_apr_pool(pMemPool);
+        if (_pool)
+        {
+            return apr_thread_cond_create(pCond, _pool);
+        }
     }
-    
-    apr_status_t _rt = apr_thread_cond_create(pCond, _pool);
-    return _rt == APR_SUCCESS ? W_SUCCESS : W_FAILURE;
+    W_ASSERT_P(false, "bad args. trace info %s", _trace_info);
+    return APR_BADARG;
 }
 
-W_RESULT w_condition_variable_wait(_In_ w_condition_variable* pCond, _In_ w_mutex* pMutex)
+W_RESULT w_condition_variable_wait(_In_ w_condition_variable pCond, _In_ w_mutex pMutex)
 {
+    const char* _trace_info = "w_condition_variable_wait";
+    if (!pCond || !pMutex)
+    {
+        W_ASSERT_P(false, "bad args. trace info %s", _trace_info);
+        return W_BAD_ARG;
+    }
     apr_status_t _ret = apr_thread_cond_wait(pCond, pMutex);
     return _ret == APR_SUCCESS ? W_SUCCESS : W_FAILURE;
 }
 
-W_RESULT w_condition_variable_wait_for(_Inout_  w_condition_variable* pCond,
-                                       _Inout_  w_mutex* pMutex,
-                                       _In_     w_timespan* pTimeout)
+W_RESULT w_condition_variable_wait_for(
+    _Inout_  w_condition_variable pCond,
+    _Inout_  w_mutex pMutex,
+    _In_     w_timespan pTimeout)
 {
-    long _micro_secs = (int64_t)(w_timespan_get_total_milliseconds(pTimeout) * 1000);
-    apr_status_t _ret = apr_thread_cond_timedwait(pCond, pMutex, _micro_secs);
-    return _ret == APR_SUCCESS ? W_SUCCESS : W_FAILURE;
+    apr_interval_time_t _micro_secs = (apr_interval_time_t)(w_timespan_get_total_milliseconds(pTimeout) * 1000);
+    return apr_thread_cond_timedwait(pCond, pMutex, _micro_secs);
 }
 
-W_RESULT w_condition_variable_signal(_In_ w_condition_variable* pCond)
+W_RESULT w_condition_variable_signal(_In_ w_condition_variable pCond)
 {
-    apr_status_t _ret = apr_thread_cond_signal(pCond);
-    return _ret == APR_SUCCESS ? W_SUCCESS : W_FAILURE;
+    return apr_thread_cond_signal(pCond);
 }
  
-W_RESULT w_condition_variable_broadcast(_In_ w_condition_variable* pCond)
+W_RESULT w_condition_variable_broadcast(_In_ w_condition_variable pCond)
 {
-    apr_status_t _ret = apr_thread_cond_broadcast(pCond);
-    return _ret == APR_SUCCESS ? W_SUCCESS : W_FAILURE;
+    return apr_thread_cond_broadcast(pCond);
 }
  
-W_RESULT w_condition_variable_destroy(_In_ w_condition_variable* pCond)
+W_RESULT w_condition_variable_destroy(_In_ w_condition_variable pCond)
 {
-    apr_status_t _ret = apr_thread_cond_destroy(pCond);
-    return _ret == APR_SUCCESS ? W_SUCCESS : W_FAILURE;
+    return apr_thread_cond_destroy(pCond);
 }
  

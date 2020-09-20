@@ -1,62 +1,79 @@
 #include "w_mem_map.h"
 #include <apr-1/apr_mmap.h>
 
-W_RESULT    w_mem_map_create(_Inout_ w_mem_map* pNewMemMap,
-                              _In_ w_file pFile,
-                              _In_ w_offset pOffset,
-                              _In_ size_t pSize,
-                              _In_ int pFlag,
-                              _In_ w_mem_pool pMemPool)
-{    
-    w_mem_pool _pool = NULL;
-    if (pMemPool)
+W_RESULT    w_mem_map_create(
+    _Inout_ w_mem_pool pMemPool,
+    _Inout_ w_mem_map* pNewMemMap,
+    _In_ w_file pFile,
+    _In_ w_offset pOffset,
+    _In_ size_t pSize,
+    _In_ int pFlag)
+{
+    const char* _trace_info = "w_mem_map_create";
+    if (!pMemPool || !pNewMemMap || !*pNewMemMap)
     {
-        _pool = pMemPool;
+        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        return APR_BADARG;
     }
-    else
+
+    apr_pool_t* _pool = w_mem_pool_get_apr_pool(pMemPool);
+    if (_pool)
     {
-        //get default thread pool
-        _pool = w_get_default_memory_pool();
-        if (!_pool)
-        {
-            W_ASSERT(false, "could not get default memory pool. trace info: w_mem_map_create");
-            return W_FAILURE;
-        }
+        return apr_mmap_create(
+            pNewMemMap,
+            pFile,
+            pOffset,
+            pSize,
+            pFlag,
+            _pool);
     }
-    
-    return apr_mmap_create((apr_mmap_t**)pNewMemMap, pFile, pOffset, pSize, pFlag, _pool);
+    return W_FAILURE;
 }
 
-
-W_RESULT    w_mem_map_dup(_Inout_ w_mem_map* pNewMemMap,
-                          _In_ w_mem_map pOldMemMap,
-                          _In_ w_mem_pool pMemPool)
+W_RESULT    w_mem_map_dup(
+    _Inout_ w_mem_pool pMemPool,
+    _Inout_ w_mem_map* pNewMemMap,
+    _In_ w_mem_map pOldMemMap)
 {
-    w_mem_pool _pool = NULL;
-    if (pMemPool)
+    const char* _trace_info = "w_mem_map_dup";
+    if (!pMemPool || !pNewMemMap || !*pNewMemMap || !pOldMemMap)
     {
-        _pool = pMemPool;
+        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        return APR_BADARG;
     }
-    else
+
+    apr_pool_t* _pool = w_mem_pool_get_apr_pool(pMemPool);
+    if (_pool)
     {
-        //get default thread pool
-        _pool = w_get_default_memory_pool();
-        if (!_pool)
-        {
-            W_ASSERT(false, "could not get default memory pool. trace info: w_mem_map_dup");
-            return W_FAILURE;
-        }
+        return apr_mmap_dup(
+            pNewMemMap,
+            pOldMemMap,
+            _pool);
     }
-    
-    return apr_mmap_dup((apr_mmap_t**)pNewMemMap, (apr_mmap_t*)pOldMemMap, _pool);
+    return W_FAILURE;
 }
 
 W_RESULT     w_mem_map_delete(_In_ w_mem_map pMemoryMap)
 {
-     return apr_mmap_delete(pMemoryMap);
+    const char* _trace_info = "w_mem_map_delete";
+    if (!pMemoryMap)
+    {
+        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        return W_FAILURE;
+    }
+    return apr_mmap_delete(pMemoryMap);
 }
 
-W_RESULT     w_mem_map_offset(void** pAddress, w_mem_map pMemoryMap, w_offset pOffset)
+W_RESULT     w_mem_map_offset(
+    _Inout_ void** pAddress,
+    _In_ w_mem_map pMemoryMap,
+    _In_ w_offset pOffset)
 {
+    const char* _trace_info = "w_mem_map_delete";
+    if (!pAddress || !*pAddress || pMemoryMap)
+    {
+        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        return W_FAILURE;
+    }
     return apr_mmap_offset(pAddress, pMemoryMap, pOffset);
 }

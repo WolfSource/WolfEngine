@@ -1,4 +1,5 @@
 #include "w_async.h"
+#include "apr-1/apr_general.h"
 
 void* _thread_job(w_thread pThread, void* pArgs)
 {
@@ -19,53 +20,87 @@ void* _thread_job(w_thread pThread, void* pArgs)
     return NULL;
 }
 
-W_RESULT w_async_init(_In_ w_async* pAsync, _In_ w_async_callback pAsyncCallBack)
+W_RESULT w_async_init(
+    _Inout_ w_mem_pool pMemPool,
+    _Inout_ w_async* pAsync, 
+    _In_ w_async_callback pAsyncCallBack)
 {
-    if (!pAsync || !pAsync->l || !pAsync->a)
+    const char* _trace_info = "w_condition_variable_init";
+    if (!pMemPool || !pAsync)
     {
-        W_ASSERT(false, "pAsync is NULL!. trace info: w_async_init");
+        W_ASSERT_P(false, "bad args! trace info %s", _trace_info);
+        return APR_BADARG;
+    }
+
+    *pAsync = NULL;
+    w_async _async = (w_async_t*)w_malloc(pMemPool, sizeof(w_async_t));
+    if (!_async)
+    {
+        W_ASSERT_P(false, "bad args! trace info %s", _trace_info);
+        return APR_BADARG;
+    }
+    *pAsync = _async;
+
+    _async->a = (w_async_base*)w_malloc(pMemPool, sizeof(w_async_base));
+    if (!_async->a)
+    {
         return W_FAILURE;
     }
-    
+
     // This loop sits in the thread
-    pAsync->l = ev_loop_new(0);
-    ev_async_init(pAsync->a, pAsyncCallBack);
-    w_thread_create(pAsync->t, &_thread_job, (void*)pAsync->l);
-    
-    return W_SUCCESS;
+    _async->l = ev_loop_new(0);
+    ev_async_init(_async->a, pAsyncCallBack);
+    if (w_thread_init(pMemPool, &_async->t, &_thread_job, (void*)_async->l) == W_SUCCESS)
+    {
+        ev_async_start(_async->l, _async->a);
+        return W_SUCCESS;
+    }
+    return W_FAILURE;
 }
 
-W_RESULT w_async_start(_In_ w_async* pAsync)
-{
-    if (!pAsync || !pAsync->l || !pAsync->a)
-    {
-        W_ASSERT(false, "pAsync is NULL!. trace info: w_async_start");
-        return W_FAILURE;
-    }
-    
-    if (pAsync->l && pAsync->a)
-    {
-        ev_async_start(pAsync->l, pAsync->a);
-    }
-    
-    return W_SUCCESS;
-}
-
-W_RESULT w_async_send(_In_ w_async* pAsync)
+W_RESULT w_async_send(_In_ w_async pAsync, _In_opt_ void* pArg)
 {
     if (!pAsync || !pAsync->l || !pAsync->a)
     {
         W_ASSERT(false, "pAsync is NULL!. trace info: w_async_send");
-        return W_FAILURE;
+        return W_BAD_ARG;
     }
    
-    if (ev_async_pending(pAsync->a) == 0)
+    if (ev_async_pending(pAsync->a))
     {
-        W_ASSERT(false, "pAsync is pending!. trace info: w_async_send");
+        //W_ASSERT(false, "pAsync is pending!. trace info: w_async_send");
         return W_FAILURE;
     }
     
+    if (pArg)
+    {
+        pAsync->a->data = pArg;
+    }
     ev_async_send(pAsync->l, pAsync->a);
-    
+
+    return W_SUCCESS;
+}
+
+W_RESULT w_async_start(_In_ w_async pAsync)
+{
+    if (!pAsync || !pAsync->l || !pAsync->a)
+    {
+        W_ASSERT(false, "pAsync is NULL!. trace info: w_async_send");
+        return W_BAD_ARG;
+    }
+
+    ev_async_start(pAsync->l, pAsync->a);
+    return W_SUCCESS;
+}
+
+W_RESULT w_async_stop(_In_ w_async pAsync)
+{
+    if (!pAsync || !pAsync->l || !pAsync->a)
+    {
+        W_ASSERT(false, "pAsync is NULL!. trace info: w_async_send");
+        return W_BAD_ARG;
+    }
+
+    ev_async_stop(pAsync->l, pAsync->a);
     return W_SUCCESS;
 }

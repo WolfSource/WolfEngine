@@ -1,83 +1,76 @@
-#include "w_log.hpp"
-#include <io/w_io.h>
-#include <chrono/w_timespan.h>
+#include "w_log.h"
+#include <concurrency/w_mutex.h>
+
+#include "logger.hpp"
 #include <unordered_map>
-#include <time.h>
 #include <cstdarg>
 
-#include "spdlog/spdlog.h"
-#include "spdlog/sinks/basic_file_sink.h"
-#include "spdlog/sinks/stdout_sinks.h"
-#ifndef MinSizeRel
-#ifdef _MSC_VER
-    #include "spdlog/sinks/msvc_sink.h"
-#endif
-#endif
-
-////Declaration of extern objects as shared
-//#if defined(__WIN32) && !defined(__STATIC_LIB)
-//#pragma data_seg (".shared")
-//#endif
-//
-//wolf::system::w_logger wolf::logger;
-//std::wstring wolf::content_path;
-//wolf::system::w_inputs_manager wolf::inputs_manager;
-//std::map<uint32_t, float> wolf::windows_frame_time_in_sec;
-//
-//void wolf::release_heap_data()
-//{
-//	//release all loggers
-//	curl_global_cleanup();
-//	spdlog::drop_all();
-//    logger.release();
-//	content_path.clear();
-//    inputs_manager.reset();
-//    windows_frame_time_in_sec.clear();
-//}
-//
-//#if defined(__WIN32) && !defined(__STATIC_LIB)
-//#pragma data_seg ()
-//#pragma comment(linker,"/SECTION:.shared,RWS")
-//#endif
-
-static std::unordered_map<int, std::shared_ptr<spdlog::logger>> s_loggers;
-static constexpr int s_id = 0;
-
-int w_log_init(_In_ const w_log_config* pConfig)
+typedef struct
 {
-    if(!pConfig)
-    {
-        return -1;
-    }
-    //if directory of log is not existed
-    if (w_io_get_is_directory(pConfig->log_path) != W_SUCCESS)
-    {
-        //create the directory of log inside the root directory
-        w_io_create_directory(pConfig->log_path);
-    }
-    auto _time = w_timespan_init_from_now();
-    auto _time_str = w_timespan_to_string(_time);
-    auto _log_file_path = w_string_concat(3, pConfig->log_path, _time_str, ".wLog");
+    char*           buf;//buffer 
+    logger*         log;//logger
+    w_mutex         mutex;//mutex
+}w_logger;
+static std::unordered_map<int, w_logger*> s_loggers;
 
-    std::vector<spdlog::sink_ptr> _sinks;
-#if defined(_MSC_VER) && !defined(MinSizeRel)
-    _sinks.push_back(std::make_shared<spdlog::sinks::msvc_sink_mt>());
-#endif
-    _sinks.push_back(std::make_shared<spdlog::sinks::basic_file_sink_mt>(_log_file_path, true));
-    _sinks.push_back(std::make_shared<spdlog::sinks::stdout_sink_mt>());
-    
-    auto _logger = std::make_shared<spdlog::logger>(
-                pConfig->app_name,
-                begin(_sinks),
-                end(_sinks));
-    if (!_logger)
+int w_log_init(
+    _Inout_ w_mem_pool pMemPool,
+    _In_ const w_log_config* pConfig)
+{
+    if (!pMemPool)
     {
         return -1;
     }
-    
+
+    int _log_id = -1;
+    const char* _trace_info = "w_log_init";
+
+    auto _w_logger = (w_logger*)w_malloc(pMemPool, sizeof(w_logger));
+    if (!_w_logger)
+    {
+        W_ASSERT_P(
+            false,
+            "could not allocate memory from pool for _w_logger. trace info: %s",
+            _trace_info);
+        goto out;
+    }
+
+    //create a log file
+    _w_logger->log = new logger(pMemPool, pConfig);
+    if (!_w_logger->log)
+    {
+        W_ASSERT_P(
+            false,
+            "could not allocate memory from pool for _w_logger->l. trace info: %s",
+            _trace_info);
+        goto out;
+    }
+
+    _w_logger->buf = (char*)w_malloc(pMemPool, W_MAX_BUFFER_SIZE);
+    if (!_w_logger->buf)
+    {
+        W_ASSERT_P(
+            false,
+            "could not allocate memory from pool for _w_logger->buf. trace info: %s",
+            _trace_info);
+        goto out;
+    }
+
+    //create a mutex
+    if (w_mutex_init(
+        pMemPool,
+        &_w_logger->mutex,
+        0))
+    {
+        W_ASSERT_P(
+            false,
+            "could not create mutex for _w_logger->mutex. trace info: %s",
+            _trace_info);
+        goto out;
+    }
+
     //replace or create a new log
     //remember the first log is the default one
-    int _log_id = -1;
     if (s_loggers.empty())
     {
         _log_id = 0;
@@ -87,7 +80,7 @@ int w_log_init(_In_ const w_log_config* pConfig)
         constexpr int _min = 1, _max = INT_MAX - 1;
         for (size_t i = 0; i < 3; ++i)
         {
-            srand(time(NULL));
+            srand((unsigned int)time(NULL));
             _log_id = _min + (rand() % static_cast<int>(_max - _min + 1));
             if (s_loggers.find(_log_id) == s_loggers.end())
             {
@@ -95,270 +88,301 @@ int w_log_init(_In_ const w_log_config* pConfig)
             }
         }
     }
-    
+
+out:
     if (_log_id == -1)
     {
-        return -1;
-    }
-    
-    s_loggers[_log_id] = _logger;
-    
-    _logger->info(
-                "Project: \"Wolf Engine(https://WolfEngine.App). "\
-                "Copyright(c) Pooya Eimandar(https://PooyaEimandar.github.io). All rights reserved.\". "\
-                "Contact: \"Pooya@WolfEngine.App\" "\
-                "Version: {}.{}.{}.{}",
-                  WOLF_MAJOR_VERSION,
-                  WOLF_MINOR_VERSION,
-                  WOLF_PATCH_VERSION,
-                  WOLF_DEBUG_VERSION);
-    
-    if (pConfig->flush_level)
-    {
-        _logger->set_level(spdlog::level::level_enum::warn);
-        _logger->flush_on(spdlog::level::level_enum::warn);
+        //release logger
+        if (_w_logger)
+        {
+            if (_w_logger->mutex)
+            {
+                w_mutex_fini(_w_logger->mutex);
+                _w_logger->mutex = nullptr;
+            }
+            if (_w_logger->log)
+            {
+                delete  _w_logger->log;
+                _w_logger->log = nullptr;
+            }
+            _w_logger = nullptr;
+        }
     }
     else
     {
-        _logger->flush_on(spdlog::level::level_enum::info);
+        s_loggers[_log_id] = _w_logger;
     }
-    
+
     return _log_id;
 }
-  
-W_RESULT w_log_flush(void)
+
+void LOG(
+    _In_     w_log_type pLogType,
+    _In_z_   const char* pFMT)
 {
-    //get first log
-    if (s_loggers.find(s_id) == s_loggers.end()) return W_FAILURE;
-    s_loggers[s_id]->flush();
-    return W_SUCCESS;
+    if (!s_loggers.size())
+    {
+        W_ASSERT(false, "default logger could not find. trace info: w_log::LOG");
+        return;
+    }
+    if (s_loggers[0] && s_loggers[0]->log)
+    {
+        s_loggers[0]->log->write(pLogType, pFMT);
+    }
 }
 
-W_RESULT w_log_flush(_In_ const int pLogID)
+void LOG_EX(
+    _In_     w_log_type pLogType,
+    _In_     int pLogID,
+    _In_z_   const char* pFMT)
+{
+    if (s_loggers.find(pLogID) == s_loggers.end())
+    {
+        W_ASSERT(false, "logger could not find. trace info: w_log::LOG_EX");
+        return;
+    }
+
+    if (s_loggers[0] && s_loggers[0]->log)
+    {
+        s_loggers[0]->log->write(pLogType, pFMT);
+    }
+}
+
+void LOG_P(
+    _In_     w_log_type pLogType,
+    _In_z_   const char* pFMT,
+    _In_     ...)
+{
+    if (!s_loggers.size())
+    {
+        W_ASSERT(false, "default logger could not find. trace info: w_log::LOG_P");
+        return;
+    }
+
+    if (s_loggers[0] &&
+        s_loggers[0]->log &&
+        s_loggers[0]->buf)
+    {
+        va_list _arg_ptr;
+        va_start(_arg_ptr, pFMT);
+        vsnprintf(s_loggers[0]->buf, W_MAX_BUFFER_SIZE - 1, pFMT, _arg_ptr);
+        va_end(_arg_ptr);
+
+        s_loggers[0]->log->write(pLogType, s_loggers[0]->buf);
+    }
+}
+
+void LOG_P_EX(
+    _In_     w_log_type pLogType,
+    _In_     int pLogID,
+    _In_z_   const char* pFMT,
+    _In_     ...)
+{
+    if (s_loggers.find(pLogID) == s_loggers.end())
+    {
+        W_ASSERT(false, "logger could not find. trace info: w_log::LOG_P_EX");
+        return;
+    }
+
+    if (s_loggers[pLogID] &&
+        s_loggers[pLogID]->log &&
+        s_loggers[pLogID]->buf)
+    {
+        va_list _arg_ptr;
+        va_start(_arg_ptr, pFMT);
+        vsnprintf(s_loggers[pLogID]->buf, W_MAX_BUFFER_SIZE - 1, pFMT, _arg_ptr);
+        va_end(_arg_ptr);
+
+        s_loggers[pLogID]->log->write(pLogType, s_loggers[pLogID]->buf);
+    }
+}
+
+void V(
+    _In_        W_RESULT pResult,
+    _In_        w_log_type pLogType,
+    _In_z_      const char* pFMT)
+{
+    if (pResult == W_SUCCESS) return;
+    if (!s_loggers.size())
+    {
+        W_ASSERT(false, "default logger could not find. trace info: w_log::V");
+        return;
+    }
+
+    if (s_loggers[0] && s_loggers[0]->log)
+    {
+        s_loggers[0]->log->write(pLogType, pFMT);
+    }
+}
+
+void VA(
+    _In_        W_RESULT pResult,
+    _In_        w_log_type pLogType,
+    _In_z_      const char* pFMT,
+    _In_        ...)
+{
+    if (pResult == W_SUCCESS) return;
+    if (!s_loggers.size())
+    {
+        W_ASSERT(false, "default logger could not find. trace info: w_log::VA");
+        return;
+    }
+
+    if (s_loggers[0] &&
+        s_loggers[0]->log &&
+        s_loggers[0]->buf)
+    {
+        va_list _arg_ptr;
+        va_start(_arg_ptr, pFMT);
+        vsnprintf(s_loggers[0]->buf, W_MAX_BUFFER_SIZE - 1, pFMT, _arg_ptr);
+        va_end(_arg_ptr);
+
+        s_loggers[0]->log->write(pLogType, s_loggers[0]->buf);
+    }
+}
+
+void VALIDATE(
+    _In_        W_RESULT pResult,
+    _In_        w_log_type pLogType,
+    _In_        bool pTerminateProgram,
+    _In_z_      const char* pFMT,
+    _In_        ...)
+{
+    if (pResult == W_SUCCESS) return;
+    if (!s_loggers.size())
+    {
+        W_ASSERT(false, "default logger could not find. trace info: w_log::VALIDATE");
+        return;
+    }
+    
+    if (s_loggers[0] &&
+        s_loggers[0]->log &&
+        s_loggers[0]->buf)
+    {
+        va_list _arg_ptr;
+        va_start(_arg_ptr, pFMT);
+        vsnprintf(s_loggers[0]->buf, W_MAX_BUFFER_SIZE - 1, pFMT, _arg_ptr);
+        va_end(_arg_ptr);
+
+        s_loggers[0]->log->write(pLogType, s_loggers[0]->buf);
+    }
+    
+    if (pTerminateProgram)
+    {
+        wolf_fini();
+        std::exit(EXIT_FAILURE);
+    }
+}
+
+void VALIDATE_EX(
+    _In_        W_RESULT pResult,
+    _In_        int pLogID,
+    _In_        w_log_type pLogType,
+    _In_        bool pTerminateProgram,
+    _In_z_      const char* pFMT,
+    _In_        ...)
+{
+    if (pResult == W_SUCCESS) return;
+    
+    if (s_loggers.find(pLogID) == s_loggers.end())
+    {
+        W_ASSERT(false, "logger could not find. trace info: w_log::VALIDATE_EX");
+        return;
+    }
+    
+    if (s_loggers[pLogID] &&
+        s_loggers[pLogID]->log &&
+        s_loggers[pLogID]->buf)
+    {
+        va_list _arg_ptr;
+        va_start(_arg_ptr, pFMT);
+        vsnprintf(s_loggers[pLogID]->buf, W_MAX_BUFFER_SIZE - 1, pFMT, _arg_ptr);
+        va_end(_arg_ptr);
+
+        s_loggers[pLogID]->log->write(pLogType, s_loggers[pLogID]->buf);
+    }
+    
+    if (pTerminateProgram)
+    {
+        wolf_fini();
+        std::exit(EXIT_FAILURE);
+    }
+}
+
+W_RESULT  w_log_flush(void)
+{
+    //get first log
+    if (!s_loggers.size()) return W_FAILURE;
+   
+    if (s_loggers[0] && s_loggers[0]->log)
+    {
+        return s_loggers[0]->log->flush();
+    }
+    return W_FAILURE;
+}
+
+W_RESULT  w_log_flush_ex(_In_ int pLogID)
 {
     //get the logger object based on log ID
     if (s_loggers.find(pLogID) == s_loggers.end()) return W_FAILURE;
-    s_loggers[pLogID]->flush();
+    
+    if (s_loggers[pLogID] && s_loggers[pLogID]->log)
+    {
+        return s_loggers[pLogID]->log->flush();
+    }
+    return W_FAILURE;
+}
+
+W_RESULT  w_log_fini()
+{
+    for (auto i = 0; i < s_loggers.size(); ++i)
+    {
+        auto _ptr = s_loggers[i];
+        if (_ptr)
+        {
+            if (_ptr->mutex)
+            {
+                //release mutex
+                w_mutex_fini(_ptr->mutex);
+                _ptr->mutex = nullptr;
+            }
+            if (_ptr->log)
+            {
+                //release logger
+                delete  _ptr->log;
+                _ptr->log = nullptr;
+            }
+        }
+    }
+    s_loggers.clear();
     return W_SUCCESS;
 }
 
-W_RESULT  w_log(_In_z_ const char* pFMT)
+W_RESULT  w_log_fini_ex(_In_ int pLogID)
 {
-    //get first log
-    if (s_loggers.find(s_id) == s_loggers.end()) return W_FAILURE;
-    s_loggers[s_id]->info(pFMT);
+    //get the logger object based on log ID
+    auto _iter = s_loggers.find(pLogID);
+    if (_iter == s_loggers.end()) return W_FAILURE;
+
+    auto _ptr = s_loggers[pLogID];
+    if (_ptr)
+    {
+        if (_ptr->mutex)
+        {
+            //release mutex
+            w_mutex_fini(_ptr->mutex);
+            _ptr->mutex = nullptr;
+        }
+
+        if (_ptr->log)
+        {
+            //release logger
+            delete  _ptr->log;
+            _ptr->log = nullptr;
+        }
+    }
+
+    s_loggers.erase(_iter);
+
     return W_SUCCESS;
-}
-
-W_RESULT  w_log(_In_ const w_log_type pLogType, _In_z_ const char* pFMT)
-{
-    //get first log
-    if (s_loggers.find(s_id) == s_loggers.end()) return W_FAILURE;
-    switch (pLogType)
-    {
-        default:
-        case w_log_type::W_INFO:
-            s_loggers[s_id]->info(pFMT);
-            break;
-        case w_log_type::W_WARNING:
-            s_loggers[s_id]->warn(pFMT);
-            break;
-        case w_log_type::W_ERROR:
-            s_loggers[s_id]->error(pFMT);
-            break;
-    }
-    return W_SUCCESS;
-}
-
-W_RESULT  w_log(_In_ const w_log_type pLogType,
-                _In_ const int pLogID,
-                _In_z_ const char* pFMT)
-{
-    if (s_loggers.find(pLogID) == s_loggers.end()) return W_FAILURE;
-    switch (pLogType)
-    {
-        default:
-        case w_log_type::W_INFO:
-            s_loggers[pLogID]->info(pFMT);
-            break;
-        case w_log_type::W_WARNING:
-            s_loggers[pLogID]->warn(pFMT);
-            break;
-        case w_log_type::W_ERROR:
-            s_loggers[pLogID]->error(pFMT);
-            break;
-    }
-    return W_SUCCESS;
-}
-
-template<typename... w_args>
-W_RESULT w_log(_In_ const w_log_type pLogType, _In_z_ const char* pFMT, _In_ const w_args&... pArgs)
-{
-    //get first log
-    if (s_loggers.find(s_id) == s_loggers.end()) return W_FAILURE;
-    switch (pLogType)
-    {
-        default:
-        case w_log_type::W_INFO:
-            s_loggers[s_id]->info(pFMT, pArgs...);
-            break;
-        case w_log_type::W_WARNING:
-            s_loggers[s_id]->warn(pFMT, pArgs...);
-            break;
-        case w_log_type::W_ERROR:
-            s_loggers[s_id]->error(pFMT, pArgs...);
-            break;
-    }
-    return W_SUCCESS;
-}
-
-template<typename... w_args>
-W_RESULT  w_log(_In_ const w_log_type pLogType,
-                _In_ const int pLogID,
-                _In_z_ const char* pFMT,
-                _In_ const w_args&... pArgs)
-{
-    if (s_loggers.find(pLogID) == s_loggers.end()) return W_FAILURE;
-    switch (pLogType)
-    {
-        default:
-        case w_log_type::W_INFO:
-            s_loggers[pLogID]->info(pFMT, pArgs...);
-            break;
-        case w_log_type::W_WARNING:
-            s_loggers[pLogID]->warn(pFMT, pArgs...);
-            break;
-        case w_log_type::W_ERROR:
-            s_loggers[pLogID]->error(pFMT, pArgs...);
-            break;
-    }
-    return W_SUCCESS;
-}
-
-void V(_In_ const W_RESULT pResult, _In_z_ const char* pFMT)
-{
-    if (pResult == W_SUCCESS) return;
-    if (s_loggers.find(s_id) == s_loggers.end()) return;
-    s_loggers[s_id]->info(pFMT);
-}
-
-template<typename... w_args>
-void V(
-    _In_    W_RESULT pResult,
-    _In_z_    const char* pFMT,
-    _In_    const w_args&... pArgs)
-{
-    if (pResult == W_SUCCESS) return;
-    if (s_loggers.find(s_id) == s_loggers.end()) return;
-    s_loggers[s_id]->info(pFMT, pArgs...);
-}
-
-void V(
-    _In_    W_RESULT pResult,
-    _In_    w_log_type pLogType,
-    _In_z_  const char* pFMT)
-{
-    if (pResult == W_SUCCESS) return;
-    if (s_loggers.find(s_id) == s_loggers.end()) return;
-
-    switch (pLogType)
-    {
-    default:
-    case w_log_type::W_INFO:
-        s_loggers[s_id]->info(pFMT);
-        break;
-    case w_log_type::W_WARNING:
-        s_loggers[s_id]->warn(pFMT);
-        break;
-    case w_log_type::W_ERROR:
-        s_loggers[s_id]->error(pFMT);
-        break;
-    }
-}
-
-template<typename... w_args>
-void V(
-    _In_    W_RESULT pResult,
-    _In_    w_log_type pLogType,
-    _In_z_    const char* pFMT,
-    _In_    const w_args&... pArgs)
-{
-    if (pResult == W_SUCCESS) return;
-    if (s_loggers.find(s_id) == s_loggers.end()) return;
-
-    switch (pLogType)
-    {
-    default:
-    case w_log_type::W_INFO:
-        s_loggers[s_id]->info(pFMT, pArgs...);
-        break;
-    case w_log_type::W_WARNING:
-        s_loggers[s_id]->warn(pFMT, pArgs...);
-        break;
-    case w_log_type::W_ERROR:
-        s_loggers[s_id]->error(pFMT, pArgs...);
-        break;
-    }
-}
-
-void V(
-    _In_    W_RESULT pResult,
-    _In_    w_log_type pLogType,
-    _In_    bool pTerminateProgram,
-    _In_z_  const char* pFMT)
-{
-    if (pResult == W_SUCCESS) return;
-    if (s_loggers.find(s_id) == s_loggers.end()) return;
-
-    switch (pLogType)
-    {
-    default:
-    case w_log_type::W_INFO:
-        s_loggers[s_id]->info(pFMT);
-        break;
-    case w_log_type::W_WARNING:
-        s_loggers[s_id]->warn(pFMT);
-        break;
-    case w_log_type::W_ERROR:
-        s_loggers[s_id]->error(pFMT);
-        break;
-    }
-
-    if (pTerminateProgram)
-    {
-        wolf_terminate();
-        std::exit(EXIT_FAILURE);
-    }
-}
-
-template<typename... w_args>
-void V(
-    _In_    W_RESULT pResult,
-    _In_    w_log_type pLogType,
-    _In_    bool pTerminateProgram,
-    _In_z_  const char* pFMT,
-    _In_    const w_args&... pArgs)
-{
-    if (pResult == W_SUCCESS) return;
-    if (s_loggers.find(s_id) == s_loggers.end()) return;
-
-    switch (pLogType)
-    {
-    default:
-    case w_log_type::W_INFO:
-        s_loggers[s_id]->info(pFMT, pArgs...);
-        break;
-    case w_log_type::W_WARNING:
-        s_loggers[s_id]->warn(pFMT, pArgs...);
-        break;
-    case w_log_type::W_ERROR:
-        s_loggers[s_id]->error(pFMT, pArgs...);
-        break;
-    }
-
-    if (pTerminateProgram)
-    {
-        wolf_terminate();
-        std::exit(EXIT_FAILURE);
-    }
 }

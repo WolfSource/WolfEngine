@@ -66,6 +66,10 @@ extern "C" {
 # include <sys/time.h>
 #endif
 
+#if defined(WIN32)
+#include <WinSock2.h> //just for timeval
+#endif
+
 struct event_base;
 
 #define EVLIST_TIMEOUT  0x01

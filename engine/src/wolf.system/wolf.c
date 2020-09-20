@@ -1,126 +1,178 @@
 #include "wolf.h"
 
-static w_mem_pool s_default_memory_pool = NULL;
+//http://dev.ariel-networks.com/apr/apr-tutorial/html/apr-tutorial.html#toc1
+#include <apr.h>
+#include <apr-1/apr_strings.h>
 
-W_RESULT wolf_initialize()
+#if defined(W_PLATFORM_WIN) || defined(W_PLATFORM_OSX) || defined(W_PLATFORM_LINUX)
+#include <curl/curl.h>
+#endif
+
+// this is used to cache lengths in apr_pwstrcat
+#define MAX_SAVED_LENGTHS  6
+
+W_RESULT wolf_init()
 {
-    apr_status_t _ret = apr_initialize();
-    if(_ret != APR_SUCCESS)
+    if (apr_initialize()
+        // initialize curl
+#if defined(W_PLATFORM_WIN) || defined(W_PLATFORM_OSX) || defined(W_PLATFORM_LINUX)
+        || curl_global_init(CURL_GLOBAL_ALL)
+#endif
+        )
     {
-        return _ret;
+        return W_FAILURE;
     }
-    
-    //create default memory pool
-    apr_pool_create(&s_default_memory_pool, NULL);
-    if (!s_default_memory_pool) return W_FAILURE;
     
     return W_SUCCESS;
 }
 
-w_mem_pool w_get_default_memory_pool(void)
+char* w_strcat(_In_ w_mem_pool pMemPool, ...)
 {
-    return s_default_memory_pool;
-}
-
-w_mem_pool w_create_memory_pool(void)
-{
-    apr_pool_t* _pool;
-    apr_pool_create(&_pool, NULL);
-    return (w_mem_pool)_pool;
-}
-
-void* w_alloc(_In_ const size_t pMemSize, _In_z_ const char* pTraceInfo)
-{
-    w_mem_pool _pool = w_get_default_memory_pool();
-    if(!_pool)
+    const char* _trace_info = "w_strcat";
+    if (!pMemPool)
     {
-        char _buf[W_MAX_BUFFER_SIZE];
-        apr_snprintf(_buf, W_MAX_BUFFER_SIZE,
-                     "could not get default memory. trace info: w_alloc from %s\n", pTraceInfo);
-        W_ASSERT_P(false, "%s", _buf);
+        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
         return NULL;
     }
-     
-    return apr_palloc(_pool, pMemSize);
-}
 
-static apr_status_t _plain_cleanup(void* p)
-{
-    fprintf(stderr,"plain clean up: pid=%d\n",(int)getpid());
-    return APR_SUCCESS;
-}
+    char* cp, * argp, * res;
+    apr_size_t saved_lengths[MAX_SAVED_LENGTHS];
+    int nargs = 0;
 
-static apr_status_t _child_cleanup(void* p)
-{
-    fprintf(stderr,"child clean up: pid=%d\n",(int)getpid());
-    return APR_SUCCESS;
-}
+    //pass one, find length of required string
 
-void w_free(_In_ const void* pMem)
-{
-    w_mem_pool _pool = w_get_default_memory_pool();
-    if(!_pool)
-    {
-        char _buf[W_MAX_BUFFER_SIZE];
-        apr_snprintf(_buf, W_MAX_BUFFER_SIZE,
-                     "could not get default memory. trace info: w_free\n");
-        W_ASSERT_P(false, "%s", _buf);
-        return;
-    }
-    apr_pool_cleanup_register(_pool, pMem, _plain_cleanup, _child_cleanup);
-}
+    apr_size_t len = 0;
+    va_list adummy;
 
-char* w_string(_In_ const char* pSource)
-{
-    w_mem_pool _pool = w_get_default_memory_pool();
-    if(!_pool)
-    {
-        W_ASSERT(false, "could not get default memory. trace info: w_string_create");
-        return NULL;
-    }
-        
-    size_t _size = strlen(pSource) + 1;
-    char* _dst = apr_palloc(_pool, _size);
-    apr_cpystrn(_dst, pSource, _size);
-    _dst[_size] = '\0';
-    return _dst;
-}
+    va_start(adummy, pMemPool);
 
-char* w_string_concat(int pNumberOfArgs, ...)
-{
-    char* _str = "";
-    if (pNumberOfArgs == 0) return _str;
-    
-    w_mem_pool _pool = w_get_default_memory_pool();
-    if(!_pool)
+    while ((cp = va_arg(adummy, char*)) != NULL)
     {
-        W_ASSERT(false, "could not get default memory. trace info: w_string_create");
-        return NULL;
-    }
-    
-    va_list _arg_list;
-    va_start(_arg_list, pNumberOfArgs);
-    
-    if (pNumberOfArgs == 1)
-    {
-        _str = (char*)va_arg(_arg_list, char*);
-    }
-    else
-    {
-        int i = 0;
-        do
+        apr_size_t cplen = strlen(cp);
+        if (nargs < MAX_SAVED_LENGTHS)
         {
-            char* _s1 = va_arg(_arg_list, char*);
-            _str = apr_pstrcat(_pool, _str, _s1, NULL);
-            i++;
-        } while (i < pNumberOfArgs);
-        va_end(_arg_list);
+            saved_lengths[nargs++] = cplen;
+        }
+        len += cplen;
     }
-    
-    return _str;
+
+    va_end(adummy);
+
+    //allocate the required string
+    res = (char*)w_malloc(pMemPool, len + 1);
+    cp = res;
+
+    //pass two, copy the argument strings into the result space
+    va_start(adummy, pMemPool);
+
+    nargs = 0;
+    while ((argp = va_arg(adummy, char*)) != NULL)
+    {
+        if (nargs < MAX_SAVED_LENGTHS)
+        {
+            len = saved_lengths[nargs++];
+        }
+        else
+        {
+            len = strlen(argp);
+        }
+
+        memcpy(cp, argp, len);
+        cp += len;
+    }
+
+    va_end(adummy);
+
+    //return the result string
+    *cp = '\0';
+
+    return res;
 }
 
-void wolf_terminate()
+#if defined(W_PLATFORM_WIN) || defined(W_PLATFORM_OSX) || defined(W_PLATFORM_LINUX)
+
+wchar_t* w_wstrcat(_In_ w_mem_pool pMemPool, ...)
 {
+    const char* _trace_info = "w_wstrcat";
+    if (!pMemPool)
+    {
+        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
+        return NULL;
+    }
+
+    char* _dst = "";
+
+    wchar_t* _w;
+    char* _src;
+    size_t _w_len, _len, _ret_len = 0;
+    bool _got_error = false;
+
+    w_mem_pool _local_pool = NULL;
+    if (w_mem_pool_init(&_local_pool) != W_SUCCESS)
+    {
+        W_ASSERT_P(false, 
+            "could not allocate local memory pool. trace info: %s", 
+            _trace_info);
+        return NULL;
+    }
+
+    //iterate over args
+    va_list _args;
+    va_start(_args, pMemPool);
+    while ((_w = va_arg(_args, wchar_t*)) != NULL)
+    {
+        _w_len = wcslen(_w);
+        _ret_len += _w_len;
+        if (_w_len)
+        {
+            _len = _w_len * 2;
+            _src = w_malloc(_local_pool, _len);
+            if (!_src)
+            {
+                _got_error = true;
+                break;
+            }
+#ifdef W_PLATFORM_WIN
+            wcstombs_s(NULL, _src, _len, _w, _w_len);
+#elif defined W_PLATFORM_OSX
+            _len = wcstombs ( _src, _w, _w_len );
+#endif
+            _dst = w_strcat(pMemPool, _dst, _src, NULL);
+        }
+    }
+    va_end(_args);
+
+    wchar_t* _ret = NULL;
+    if (_got_error)
+    {
+        goto out;
+    }
+
+    //convert char* to wchar_t*
+    _ret = w_malloc(pMemPool, sizeof(wchar_t) * _ret_len + 1);
+    if (!_ret)
+    {
+        W_ASSERT_P(
+            false,
+            "could not get allocate memory for wchar*. trace info: %s", 
+            _trace_info);
+        return NULL;
+    }
+    mbstowcs(_ret, _dst, _ret_len);
+    _ret[_ret_len] = L'\0';
+
+out:
+    //terminate local memory pool
+    w_mem_pool_fini(&_local_pool);
+    return _ret;
+}
+
+#endif
+
+void wolf_fini()
+{
+#if defined(W_PLATFORM_WIN) || defined(W_PLATFORM_OSX) || defined(W_PLATFORM_LINUX)
+    curl_global_cleanup();
+#endif
     apr_terminate();
 }
