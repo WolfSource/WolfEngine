@@ -116,8 +116,13 @@ static W_RESULT _init_dialer_tls(_In_ nng_dialer pDialer,
     _In_z_ const char* pCert,
     _In_z_ const char* pPrivateKey)
 {
+    W_RESULT _rt = W_FAILURE;
+    if (!pOwnCert || !pCert || !pPrivateKey)
+    {
+        return _rt;
+    }
+
     nng_tls_config* _cfg;
-    W_RESULT _rt;
 
     if ((_rt = nng_tls_config_alloc(&_cfg, NNG_TLS_MODE_CLIENT)) != 0)
     {
@@ -715,12 +720,12 @@ out:
     return _rt;
 }
 
-W_RESULT w_net_send_msg_tcp(_Inout_ w_socket_tcp* pSocket,
-    _In_z_ char* pMessage,
-    _In_ size_t pMessageLength,
+int w_net_send_msg_tcp(
+    _Inout_ w_socket_tcp* pSocket,
+    _In_ w_buffer pBuffer,
     _In_ bool pAsync)
 {
-    if (!pSocket || !pMessage || pMessageLength == 0)
+    if (!pSocket || !pBuffer)
     {
         W_ASSERT(false, "parameters are NULL trace info: w_net_send_msg_tcp");
         return NNG_ENOARG;
@@ -728,8 +733,8 @@ W_RESULT w_net_send_msg_tcp(_Inout_ w_socket_tcp* pSocket,
 
     nng_socket* _nng_socket = (nng_socket*)pSocket->s;
     return nng_send(*_nng_socket,
-        pMessage,
-        pMessageLength + 1 /* 1 for '/0'*/,
+        pBuffer->data,
+        pBuffer->len + 1 /* 1 for '/0'*/,
         pAsync ? NNG_FLAG_NONBLOCK : 0);
 }
 

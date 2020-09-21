@@ -290,26 +290,24 @@ extern "C" {
     /**
      * send a message via tcp socket
      * @param pSocket a tcp socket
-     * @param pMessage message buffer
-     * @param pMessageLength length of message
+     * @param pBuffer buffer
      * @param pAsync asynchronous mode
-     * @return result code
+     * @return number of sent bytes
     */
     W_SYSTEM_EXPORT
-        W_RESULT w_net_send_msg_tcp(
+        int w_net_send_msg_tcp(
             _Inout_ w_socket_tcp* pSocket,
-            _In_z_ char* pMessage,
-            _In_ size_t pMessageLength,
+            _In_ w_buffer pBuffer,
             _In_ bool pAsync);
 
     /**
      * receive a message via tcp socket
      * @param pSocket a tcp socket
      * @param pBuffer message buffer
-     * @return result code
+     * @return number of received bytes
     */
     W_SYSTEM_EXPORT
-        W_RESULT w_net_receive_msg_tcp(
+        int w_net_receive_msg_tcp(
             _Inout_ w_socket_tcp* pSocket,
             _Inout_ w_buffer pBuffer);
 
