@@ -134,7 +134,7 @@ extern "C" {
         W_RESULT w_lua_get_global_variable(
             _Inout_ w_mem_pool pMemPool,
             _In_z_ const char* pVariableName,
-            _Inout_ void* pValue);
+            _Inout_ void** pValue);
 
     /**
      * set function parameter

@@ -2,6 +2,7 @@
 #include <memory/w_array.h>
 
 //w_screen_coord* screens;
+#ifdef W_PLATFORM_WIN
 static BOOL CALLBACK w_enumerate_screens_callback(
     HMONITOR pHScreen,
     HDC pHDC,
@@ -33,18 +34,21 @@ static BOOL CALLBACK w_enumerate_screens_callback(
     //UnionRect(&_this->combined, &_this->combined, pLRect);
     return TRUE;
 }
+#endif
 
 w_array w_window_enumerate_screens(_Inout_ w_mem_pool pMemPool)
 {
     w_array _screen_coords = w_array_init(pMemPool, 1, sizeof(w_screen_coord_t));
     if (_screen_coords)
     {
+#ifdef W_PLATFORM_WIN
         w_arg_t _arg = { pMemPool, _screen_coords };
         EnumDisplayMonitors(
             0,
             0,
             w_enumerate_screens_callback,
             (LPARAM)&_arg);
+#endif
         return _screen_coords;
     }
     return NULL;

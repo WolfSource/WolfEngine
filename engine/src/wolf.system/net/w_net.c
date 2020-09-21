@@ -18,7 +18,9 @@
 #include <nng/supplemental/tls/tls.h>
 #include <nng/transport/tls/tls.h>
 
+#ifdef W_PLATFORM_WIN
 #include <io.h>//_open_osfhandle
+#endif
 #include "io/w_io.h"
 #include <quiche.h>
 #include <memory/hash/uthash.h>
@@ -32,6 +34,12 @@
 #endif
 
 #include <curl/curl.h>
+
+#ifdef W_PLATFORM_OSX
+#define SOCKET_ERROR    (-1)
+#include <netdb.h>
+#include <sys/fcntl.h>
+#endif
 
 typedef struct
 {
@@ -751,7 +759,7 @@ W_RESULT w_net_run_websocket_server(_In_ bool pSSL,
 
     W_RESULT _rt;
 
-    ws _ws = ws_init();
+    /* ws _ws = ws_init();
     if (_ws)
     {
         _rt = ws_run(_ws,
@@ -776,7 +784,7 @@ W_RESULT w_net_run_websocket_server(_In_ bool pSSL,
         W_ASSERT_P(false, "could not run websocket. trace info: %s", _trace_info);
         _rt = W_FAILURE;
     }
-
+*/
     return _rt;
 }
 
@@ -1164,7 +1172,11 @@ static void s_quiche_listener_callback(EV_P_ ev_io* pIO, int pRevents)
             &peer_addr_len);
         if (read == SOCKET_ERROR)
         {
+#ifdef W_PLATFORM_WIN
             if (WSAGetLastError() == WSAEWOULDBLOCK)
+#elif defined W_PLATFORM_OSX
+            if (errno == EWOULDBLOCK)
+#endif
             {
                 //logger("recvfrom blocked");
                 break;
@@ -1423,7 +1435,11 @@ static void s_quiche_dialer_callback(EV_P_ ev_io* pIO, int pRevents)
         ssize_t _read = recv(_conn_io->socket, buf, sizeof(buf), 0);
         if (_read == SOCKET_ERROR)
         {
+#ifdef W_PLATFORM_WIN
             if (WSAGetLastError() == WSAEWOULDBLOCK)
+#elif defined W_PLATFORM_OSX
+            if (errno == EWOULDBLOCK)
+#endif
             {
                 //logger (stderr, "recv would block\n");
                 break;
@@ -1532,6 +1548,10 @@ W_RESULT w_net_open_quic_socket(_In_z_  const char* pAddress,
     W_RESULT _ret = W_SUCCESS;
     quiche_config* _quiche_config = NULL;
     struct addrinfo* _address_info = NULL;
+    
+#ifdef W_PLATFORM_OSX
+    struct addrinfo *_local;
+#endif
 
 #ifdef W_PLATFORM_WIN
     SOCKET
@@ -1715,10 +1735,10 @@ W_RESULT w_net_open_quic_socket(_In_z_  const char* pAddress,
         {
             quiche_config_log_keys(_quiche_config);
         }
+        
+        uint8_t _scid[QUICHE_LOCAL_CONN_ID_LEN];
 
 #ifdef W_PLATFORM_WIN
-
-        uint8_t _scid[QUICHE_LOCAL_CONN_ID_LEN];
 
         HCRYPTPROV _crypto;
 
@@ -1748,6 +1768,17 @@ W_RESULT w_net_open_quic_socket(_In_z_  const char* pAddress,
         }
 #else
 
+        int rng = open("../../../deps/quiche/boringssl/src/crypto/fipsmodule/rand/urandom.c", O_RDONLY);
+        if (rng < 0) {
+            perror("failed to open /dev/urandom");
+            return -1;
+        }
+
+        ssize_t rand_len = read(rng, &_scid, sizeof(_scid));
+        if (rand_len < 0) {
+            perror("failed to create connection ID");
+            return -1;
+        }
 
 #endif
 
@@ -1804,11 +1835,19 @@ W_RESULT w_net_open_quic_socket(_In_z_  const char* pAddress,
             w_free_s_quic_conns();
 
             //init ev_io for quic listener
+#ifdef W_PLATFORM_WIN
             ev_io_init(
                 &_ev_watcher,
                 s_quiche_listener_callback,
                 _osf_handle,
                 EV_READ);
+#elif defined W_PLATFORM_OSX
+            ev_io_init(
+                &_ev_watcher,
+                s_quiche_listener_callback,
+                _quiche_connection_io->socket,
+                EV_READ);
+#endif
             ev_io_start(_ev_loop, &_ev_watcher);
 
             //set private data of ev watcher
@@ -1817,11 +1856,19 @@ W_RESULT w_net_open_quic_socket(_In_z_  const char* pAddress,
         else
         {
             //init ev_io for quic dialer
+#ifdef W_PLATFORM_WIN
             ev_io_init(
                 &_ev_watcher,
                 s_quiche_dialer_callback,
                 _osf_handle,
                 EV_READ);
+#elif defined W_PLATFORM_OSX
+            ev_io_init(
+                &_ev_watcher,
+                s_quiche_dialer_callback,
+                _quiche_connection_io->socket,
+                EV_READ);
+#endif
             ev_io_start(_ev_loop, &_ev_watcher);
 
             //set private data of ev watcher
@@ -1854,7 +1901,11 @@ out:
     }
     if (_socket)
     {
+#ifdef W_PLATFORM_WIN
         closesocket(_socket);
+#elif defined W_PLATFORM_OSX
+        close(_socket);
+#endif
     }
     if (_quiche_config)
     {
