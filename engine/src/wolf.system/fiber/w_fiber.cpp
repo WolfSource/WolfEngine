@@ -62,8 +62,8 @@ W_RESULT w_fiber_scheduler_init(
 out:
     if (_fibers_info)
     {
-        w_free(pMemPool, _fibers_info);
-        w_free(pMemPool, _fibers_info->fibers);
+        //w_free(pMemPool, _fibers_info);
+        //w_free(pMemPool, _fibers_info->fibers);
     }
     return W_SUCCESS;
 }

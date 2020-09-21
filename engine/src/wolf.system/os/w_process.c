@@ -8,6 +8,10 @@
 #include <psapi.h>//list all processes
 #endif
 
+#ifdef W_PLATFORM_OSX
+#define MAX_PATH 206
+#endif
+
 size_t w_process_get_count_of_instances(_In_z_ const wchar_t* pProcessName)
 {
 	size_t _instances = 0;
@@ -34,7 +38,7 @@ size_t w_process_get_count_of_instances(_In_z_ const wchar_t* pProcessName)
 	}
 
 #elif defined W_PLATFORM_OSX
-
+/*
 	pid_t pids[2048];
 	std::wstring _input_name, _compare_name;
 	_input_name = std::wstring(name);
@@ -61,7 +65,7 @@ size_t w_process_get_count_of_instances(_In_z_ const wchar_t* pProcessName)
 				_instances++;
 			}
 		}
-
+*/
 #elif defined W_PLATFORM_LINUX
 
 	DIR* dir;
@@ -336,6 +340,7 @@ W_RESULT w_process_create(
 
 W_RESULT w_process_kill_by_info(_In_ w_process_info pProcessInfo)
 {
+#ifdef W_PLATFORM_WIN
 	if (!pProcessInfo || !pProcessInfo->info)
 	{
 		return APR_BADARG;
@@ -354,7 +359,7 @@ W_RESULT w_process_kill_by_info(_In_ w_process_info pProcessInfo)
 	{
 		return W_FAILURE;
 	}
-
+#endif
 	return W_SUCCESS;
 }
 

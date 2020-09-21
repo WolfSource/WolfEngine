@@ -15,6 +15,10 @@ extern "C" {
 
 #include <wolf.h>
 
+#ifdef W_PLATFORM_OSX
+typedef unsigned long   DWORD;
+#endif
+
 	typedef struct w_process_info_t
 	{
 #ifdef W_PLATFORM_WIN

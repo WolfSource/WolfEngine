@@ -132,7 +132,11 @@ wchar_t* w_wstrcat(_In_ w_mem_pool pMemPool, ...)
                 _got_error = true;
                 break;
             }
+#ifdef W_PLATFORM_WIN
             wcstombs_s(NULL, _src, _len, _w, _w_len);
+#elif defined W_PLATFORM_OSX
+            _len = wcstombs ( _src, _w, _w_len );
+#endif
             _dst = w_strcat(pMemPool, _dst, _src, NULL);
         }
     }

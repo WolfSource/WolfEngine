@@ -153,6 +153,7 @@ void w_thread_get_number_of_cpu_threads(_Inout_ int* pCores,
 	*pThreads = 2;
 	*pActualThreads = (*pCores) * (*pThreads);
 #elif defined(W_PLATFORM_OSX) || defined(W_PLATFORM_LINUX)
+    /*
     unsigned int _a = 11, _b = 0, _c = 1, _d = 0;
 
     ASM volatile("cpuid"
@@ -165,6 +166,7 @@ void w_thread_get_number_of_cpu_threads(_Inout_ int* pCores,
     *pCores = _a;
     *pThreads = _b;
     *pActualThreads = _d;
+     */
 #endif
 }
 #endif

@@ -7,7 +7,30 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2C0354EE24AEAAA6005E1479 /* libcurl-d.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CEEDB07249A07100050D011 /* libcurl-d.a */; };
+		05BC21C525129351007D6218 /* libcurl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 05BC21C425129351007D6218 /* libcurl.a */; };
+		05BC21C725129626007D6218 /* libquiche.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 05BC21C625129626007D6218 /* libquiche.a */; };
+		05BC21E3251296DA007D6218 /* w_shared_mem.h in Headers */ = {isa = PBXBuildFile; fileRef = 05BC21C8251296D8007D6218 /* w_shared_mem.h */; };
+		05BC21E5251296DA007D6218 /* w_mem_map.h in Headers */ = {isa = PBXBuildFile; fileRef = 05BC21CA251296D9007D6218 /* w_mem_map.h */; };
+		05BC21E7251296DA007D6218 /* w_mem_cache.h in Headers */ = {isa = PBXBuildFile; fileRef = 05BC21CC251296D9007D6218 /* w_mem_cache.h */; };
+		05BC21E8251296DA007D6218 /* w_mem_pool.h in Headers */ = {isa = PBXBuildFile; fileRef = 05BC21CD251296D9007D6218 /* w_mem_pool.h */; };
+		05BC21EA251296DA007D6218 /* w_table.c in Sources */ = {isa = PBXBuildFile; fileRef = 05BC21CF251296D9007D6218 /* w_table.c */; };
+		05BC21EB251296DA007D6218 /* w_hash.h in Headers */ = {isa = PBXBuildFile; fileRef = 05BC21D0251296D9007D6218 /* w_hash.h */; };
+		05BC21EC251296DA007D6218 /* w_mem_cache.c in Sources */ = {isa = PBXBuildFile; fileRef = 05BC21D1251296D9007D6218 /* w_mem_cache.c */; };
+		05BC21ED251296DA007D6218 /* w_array.h in Headers */ = {isa = PBXBuildFile; fileRef = 05BC21D2251296D9007D6218 /* w_array.h */; };
+		05BC21EE251296DA007D6218 /* w_redis.c in Sources */ = {isa = PBXBuildFile; fileRef = 05BC21D3251296D9007D6218 /* w_redis.c */; };
+		05BC21EF251296DA007D6218 /* w_array.c in Sources */ = {isa = PBXBuildFile; fileRef = 05BC21D4251296D9007D6218 /* w_array.c */; };
+		05BC21F0251296DA007D6218 /* w_shared_mem.c in Sources */ = {isa = PBXBuildFile; fileRef = 05BC21D5251296D9007D6218 /* w_shared_mem.c */; };
+		05BC21F1251296DA007D6218 /* w_hash.c in Sources */ = {isa = PBXBuildFile; fileRef = 05BC21D6251296D9007D6218 /* w_hash.c */; };
+		05BC21F2251296DA007D6218 /* w_redis.h in Headers */ = {isa = PBXBuildFile; fileRef = 05BC21D7251296DA007D6218 /* w_redis.h */; };
+		05BC21F3251296DA007D6218 /* utarray.h in Headers */ = {isa = PBXBuildFile; fileRef = 05BC21D9251296DA007D6218 /* utarray.h */; };
+		05BC21F4251296DA007D6218 /* uthash.h in Headers */ = {isa = PBXBuildFile; fileRef = 05BC21DA251296DA007D6218 /* uthash.h */; };
+		05BC21F5251296DA007D6218 /* utlist.h in Headers */ = {isa = PBXBuildFile; fileRef = 05BC21DB251296DA007D6218 /* utlist.h */; };
+		05BC21F6251296DA007D6218 /* utringbuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 05BC21DC251296DA007D6218 /* utringbuffer.h */; };
+		05BC21F7251296DA007D6218 /* utstack.h in Headers */ = {isa = PBXBuildFile; fileRef = 05BC21DD251296DA007D6218 /* utstack.h */; };
+		05BC21F8251296DA007D6218 /* utstring.h in Headers */ = {isa = PBXBuildFile; fileRef = 05BC21DE251296DA007D6218 /* utstring.h */; };
+		05BC21FA251296DA007D6218 /* w_mem_pool.c in Sources */ = {isa = PBXBuildFile; fileRef = 05BC21E0251296DA007D6218 /* w_mem_pool.c */; };
+		05BC21FB251296DA007D6218 /* w_table.h in Headers */ = {isa = PBXBuildFile; fileRef = 05BC21E1251296DA007D6218 /* w_table.h */; };
+		05BC21FC251296DA007D6218 /* w_mem_map.c in Sources */ = {isa = PBXBuildFile; fileRef = 05BC21E2251296DA007D6218 /* w_mem_map.c */; };
 		2C0354F024AEAAD3005E1479 /* libssh2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C0354EF24AEAABF005E1479 /* libssh2.a */; };
 		2C0354F124AEAAE8005E1479 /* libz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C3756AD23B797DC003A6B0A /* libz.a */; };
 		2C069B8A23E21EB8004EB56F /* w_fiber.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C069B8823E21EB8004EB56F /* w_fiber.cpp */; };
@@ -19,11 +42,6 @@
 		2C1D5A6C24AE7A0200AD7F35 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C1D5A6A24AE79EE00AD7F35 /* libcrypto.a */; };
 		2C1D5A6D24AE7A0200AD7F35 /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C1D5A6B24AE79EE00AD7F35 /* libssl.a */; };
 		2C27063924ADD8A800A1BA75 /* libaprutil-1.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CCFD578246D4AD00030D3AC /* libaprutil-1.a */; };
-		2C27064024ADD9B200A1BA75 /* xmlparse.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C27063B24ADD9B200A1BA75 /* xmlparse.c */; };
-		2C27064124ADD9B200A1BA75 /* xmltok_ns.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C27063C24ADD9B200A1BA75 /* xmltok_ns.c */; };
-		2C27064224ADD9B200A1BA75 /* xmltok_impl.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C27063D24ADD9B200A1BA75 /* xmltok_impl.c */; };
-		2C27064324ADD9B200A1BA75 /* xmltok.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C27063E24ADD9B200A1BA75 /* xmltok.c */; };
-		2C27064424ADD9B200A1BA75 /* xmlrole.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C27063F24ADD9B200A1BA75 /* xmlrole.c */; };
 		2C30BAE023A42B2E009FC330 /* w_compress.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C30BADE23A42B2D009FC330 /* w_compress.h */; };
 		2C30BAE123A42B2E009FC330 /* w_compress.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C30BADF23A42B2D009FC330 /* w_compress.c */; };
 		2C30BAE423A42CFD009FC330 /* w_io.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C30BAE223A42CFD009FC330 /* w_io.h */; };
@@ -53,21 +71,6 @@
 		2C3756DB23B7D35C003A6B0A /* luajit.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C3756D623B7D35C003A6B0A /* luajit.h */; };
 		2C3756E223B7F302003A6B0A /* w_lua.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C3756E023B7F302003A6B0A /* w_lua.c */; };
 		2C3756E323B7F302003A6B0A /* w_lua.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C3756E123B7F302003A6B0A /* w_lua.h */; };
-		2C4CACE723BD5A970084D392 /* async.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C4CACE123BD5A970084D392 /* async.cpp */; };
-		2C4CACE823BD5A970084D392 /* file_sinks.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C4CACE223BD5A970084D392 /* file_sinks.cpp */; };
-		2C4CACE923BD5A970084D392 /* spdlog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C4CACE323BD5A970084D392 /* spdlog.cpp */; };
-		2C4CACEA23BD5A970084D392 /* stdout_sinks.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C4CACE423BD5A970084D392 /* stdout_sinks.cpp */; };
-		2C4CACEB23BD5A970084D392 /* fmt.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C4CACE523BD5A970084D392 /* fmt.cpp */; };
-		2C4CACEC23BD5A970084D392 /* color_sinks.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C4CACE623BD5A970084D392 /* color_sinks.cpp */; };
-		2C5540972492758F003C32DD /* ws.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C5540952492758E003C32DD /* ws.cpp */; };
-		2C5540982492758F003C32DD /* ws.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C5540962492758E003C32DD /* ws.h */; };
-		2C55409E2493B2ED003C32DD /* w_logger.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 2C5540992493B2EC003C32DD /* w_logger.hpp */; };
-		2C55409F2493B2ED003C32DD /* V.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C55409A2493B2EC003C32DD /* V.cpp */; };
-		2C5540A02493B2ED003C32DD /* w_log_config.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C55409B2493B2EC003C32DD /* w_log_config.h */; };
-		2C5540A12493B2ED003C32DD /* V.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C55409C2493B2EC003C32DD /* V.h */; };
-		2C5540A22493B2ED003C32DD /* w_logger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C55409D2493B2ED003C32DD /* w_logger.cpp */; };
-		2C78102E24837AA400A1AB40 /* w_redis.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C78102C24837AA400A1AB40 /* w_redis.c */; };
-		2C78102F24837AA400A1AB40 /* w_redis.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C78102D24837AA400A1AB40 /* w_redis.h */; };
 		2C898473239D2FA40062D70A /* w_timespan.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C898471239D2FA40062D70A /* w_timespan.c */; };
 		2C898474239D2FA40062D70A /* w_timespan.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C898472239D2FA40062D70A /* w_timespan.h */; };
 		2C898479239D344C0062D70A /* w_chrono.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C898477239D344C0062D70A /* w_chrono.h */; };
@@ -92,8 +95,6 @@
 		2C89893723A1790F0062D70A /* wolf.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C89893623A1790F0062D70A /* wolf.h */; };
 		2C89898E23A193A40062D70A /* wolf.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C89898D23A193A40062D70A /* wolf.c */; };
 		2C99E78823C2016A00A9720B /* rapidjson.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 2C99E78723C2016A00A9720B /* rapidjson.hpp */; };
-		2C99E79623C201AB00A9720B /* w_xml.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C99E79423C201AB00A9720B /* w_xml.c */; };
-		2C99E79723C201AB00A9720B /* w_xml.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C99E79523C201AB00A9720B /* w_xml.h */; };
 		2C99E79E23C33A3900A9720B /* ev.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C99E79C23C33A3900A9720B /* ev.h */; };
 		2C99E79F23C33A3900A9720B /* ev.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C99E79D23C33A3900A9720B /* ev.c */; };
 		2C99E7A223C33A9F00A9720B /* event.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C99E7A023C33A9E00A9720B /* event.c */; };
@@ -112,12 +113,6 @@
 		2CB15355249BC5BA005A358E /* libjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CB15353249BC5A9005A358E /* libjpeg.a */; };
 		2CB15356249BC5BA005A358E /* libturbojpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CB15354249BC5A9005A358E /* libturbojpeg.a */; };
 		2CB15358249D291C005A358E /* libpng16d.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CB15357249D290C005A358E /* libpng16d.a */; };
-		2CB21401247C2D7F0022DA86 /* w_shared_mem.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CB213FF247C2D7F0022DA86 /* w_shared_mem.h */; };
-		2CB21402247C2D7F0022DA86 /* w_shared_mem.c in Sources */ = {isa = PBXBuildFile; fileRef = 2CB21400247C2D7F0022DA86 /* w_shared_mem.c */; };
-		2CB21405247C2E060022DA86 /* w_mem_map.c in Sources */ = {isa = PBXBuildFile; fileRef = 2CB21403247C2E060022DA86 /* w_mem_map.c */; };
-		2CB21406247C2E060022DA86 /* w_mem_map.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CB21404247C2E060022DA86 /* w_mem_map.h */; };
-		2CB21409247ECB8D0022DA86 /* w_mem_cache.c in Sources */ = {isa = PBXBuildFile; fileRef = 2CB21407247ECB8C0022DA86 /* w_mem_cache.c */; };
-		2CB2140A247ECB8D0022DA86 /* w_mem_cache.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CB21408247ECB8D0022DA86 /* w_mem_cache.h */; };
 		2CCFD577246D4AB60030D3AC /* libapr-1.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C17290F246CBA1F009C03B3 /* libapr-1.a */; };
 		2CCFD57D246DF3F30030D3AC /* w_concurrent_queue.c in Sources */ = {isa = PBXBuildFile; fileRef = 2CCFD57B246DF3F30030D3AC /* w_concurrent_queue.c */; };
 		2CCFD57E246DF3F30030D3AC /* w_concurrent_queue.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CCFD57C246DF3F30030D3AC /* w_concurrent_queue.h */; };
@@ -128,50 +123,33 @@
 		2CFADC1D248B6F3400409581 /* cr.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFADC1C248B6F3400409581 /* cr.h */; };
 		2CFADC21248FB32E00409581 /* w_cpu.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFADC1F248FB32E00409581 /* w_cpu.h */; };
 		2CFADC22248FB32E00409581 /* w_cpu.c in Sources */ = {isa = PBXBuildFile; fileRef = 2CFADC20248FB32E00409581 /* w_cpu.c */; };
-		2CFADC8124917B7E00409581 /* loop.c in Sources */ = {isa = PBXBuildFile; fileRef = 2CFADC7D24917B7E00409581 /* loop.c */; };
-		2CFADC8224917B7E00409581 /* socket.c in Sources */ = {isa = PBXBuildFile; fileRef = 2CFADC7E24917B7E00409581 /* socket.c */; };
-		2CFADC8324917B7E00409581 /* libusockets.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFADC7F24917B7E00409581 /* libusockets.h */; };
-		2CFADC8424917B7E00409581 /* context.c in Sources */ = {isa = PBXBuildFile; fileRef = 2CFADC8024917B7E00409581 /* context.c */; };
-		2CFADC8724917B9F00409581 /* wolfssl.c in Sources */ = {isa = PBXBuildFile; fileRef = 2CFADC8524917B9F00409581 /* wolfssl.c */; };
-		2CFADC8824917B9F00409581 /* openssl.c in Sources */ = {isa = PBXBuildFile; fileRef = 2CFADC8624917B9F00409581 /* openssl.c */; };
-		2CFADC8C24917BB600409581 /* libuv.c in Sources */ = {isa = PBXBuildFile; fileRef = 2CFADC8924917BB600409581 /* libuv.c */; };
-		2CFADC8D24917BB600409581 /* epoll_kqueue.c in Sources */ = {isa = PBXBuildFile; fileRef = 2CFADC8A24917BB600409581 /* epoll_kqueue.c */; };
-		2CFADC8E24917BB600409581 /* gcd.c in Sources */ = {isa = PBXBuildFile; fileRef = 2CFADC8B24917BB600409581 /* gcd.c */; };
-		2CFADC9124917BCA00409581 /* internal.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFADC8F24917BCA00409581 /* internal.h */; };
-		2CFADC9224917BCA00409581 /* loop_data.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFADC9024917BCA00409581 /* loop_data.h */; };
-		2CFADC9624917BE400409581 /* libuv.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFADC9324917BE400409581 /* libuv.h */; };
-		2CFADC9724917BE400409581 /* gcd.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFADC9424917BE400409581 /* gcd.h */; };
-		2CFADC9824917BE400409581 /* epoll_kqueue.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFADC9524917BE400409581 /* epoll_kqueue.h */; };
-		2CFADC9A24917C0200409581 /* bsd.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFADC9924917C0200409581 /* bsd.h */; };
-		2CFADC9D24917C1F00409581 /* function2.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 2CFADC9C24917C1F00409581 /* function2.hpp */; };
-		2CFADCB524917C3600409581 /* App.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFADC9E24917C3500409581 /* App.h */; };
-		2CFADCB624917C3600409581 /* WebSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFADC9F24917C3500409581 /* WebSocket.h */; };
-		2CFADCB724917C3600409581 /* WebSocketHandshake.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFADCA024917C3500409581 /* WebSocketHandshake.h */; };
-		2CFADCB824917C3600409581 /* AsyncSocketData.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFADCA124917C3500409581 /* AsyncSocketData.h */; };
-		2CFADCB924917C3600409581 /* HttpRouter.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFADCA224917C3500409581 /* HttpRouter.h */; };
-		2CFADCBA24917C3600409581 /* HttpParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFADCA324917C3500409581 /* HttpParser.h */; };
-		2CFADCBB24917C3600409581 /* HttpContext.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFADCA424917C3500409581 /* HttpContext.h */; };
-		2CFADCBC24917C3600409581 /* PerMessageDeflate.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFADCA524917C3500409581 /* PerMessageDeflate.h */; };
-		2CFADCBD24917C3600409581 /* ProxyParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFADCA624917C3500409581 /* ProxyParser.h */; };
-		2CFADCBE24917C3600409581 /* WebSocketExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFADCA724917C3500409581 /* WebSocketExtensions.h */; };
-		2CFADCBF24917C3600409581 /* LoopData.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFADCA824917C3500409581 /* LoopData.h */; };
-		2CFADCC024917C3600409581 /* WebSocketContext.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFADCA924917C3500409581 /* WebSocketContext.h */; };
-		2CFADCC124917C3600409581 /* Loop.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFADCAA24917C3500409581 /* Loop.h */; };
-		2CFADCC224917C3600409581 /* WebSocketProtocol.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFADCAB24917C3500409581 /* WebSocketProtocol.h */; };
-		2CFADCC324917C3600409581 /* HttpResponseData.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFADCAC24917C3500409581 /* HttpResponseData.h */; };
-		2CFADCC424917C3600409581 /* BloomFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFADCAD24917C3500409581 /* BloomFilter.h */; };
-		2CFADCC524917C3600409581 /* HttpResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFADCAE24917C3500409581 /* HttpResponse.h */; };
-		2CFADCC624917C3600409581 /* TopicTree.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFADCAF24917C3500409581 /* TopicTree.h */; };
-		2CFADCC724917C3600409581 /* HttpContextData.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFADCB024917C3600409581 /* HttpContextData.h */; };
-		2CFADCC824917C3600409581 /* Utilities.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFADCB124917C3600409581 /* Utilities.h */; };
-		2CFADCC924917C3600409581 /* WebSocketContextData.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFADCB224917C3600409581 /* WebSocketContextData.h */; };
-		2CFADCCA24917C3600409581 /* WebSocketData.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFADCB324917C3600409581 /* WebSocketData.h */; };
-		2CFADCCB24917C3600409581 /* AsyncSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFADCB424917C3600409581 /* AsyncSocket.h */; };
-		2CFADCDC2491888D00409581 /* uws.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 2CFADCDA2491888D00409581 /* uws.hpp */; };
-		2CFADCDD2491888D00409581 /* uws.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CFADCDB2491888D00409581 /* uws.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		05BC21C425129351007D6218 /* libcurl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcurl.a; path = ../../../deps/curl/lib/osx/libcurl.a; sourceTree = "<group>"; };
+		05BC21C625129626007D6218 /* libquiche.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libquiche.a; path = ../../../deps/quiche/lib/iOS/libquiche.a; sourceTree = "<group>"; };
+		05BC21C8251296D8007D6218 /* w_shared_mem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_shared_mem.h; path = ../../../src/wolf.system/memory/w_shared_mem.h; sourceTree = "<group>"; };
+		05BC21CA251296D9007D6218 /* w_mem_map.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_mem_map.h; path = ../../../src/wolf.system/memory/w_mem_map.h; sourceTree = "<group>"; };
+		05BC21CC251296D9007D6218 /* w_mem_cache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_mem_cache.h; path = ../../../src/wolf.system/memory/w_mem_cache.h; sourceTree = "<group>"; };
+		05BC21CD251296D9007D6218 /* w_mem_pool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_mem_pool.h; path = ../../../src/wolf.system/memory/w_mem_pool.h; sourceTree = "<group>"; };
+		05BC21CF251296D9007D6218 /* w_table.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = w_table.c; path = ../../../src/wolf.system/memory/w_table.c; sourceTree = "<group>"; };
+		05BC21D0251296D9007D6218 /* w_hash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_hash.h; path = ../../../src/wolf.system/memory/w_hash.h; sourceTree = "<group>"; };
+		05BC21D1251296D9007D6218 /* w_mem_cache.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = w_mem_cache.c; path = ../../../src/wolf.system/memory/w_mem_cache.c; sourceTree = "<group>"; };
+		05BC21D2251296D9007D6218 /* w_array.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_array.h; path = ../../../src/wolf.system/memory/w_array.h; sourceTree = "<group>"; };
+		05BC21D3251296D9007D6218 /* w_redis.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = w_redis.c; path = ../../../src/wolf.system/memory/w_redis.c; sourceTree = "<group>"; };
+		05BC21D4251296D9007D6218 /* w_array.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = w_array.c; path = ../../../src/wolf.system/memory/w_array.c; sourceTree = "<group>"; };
+		05BC21D5251296D9007D6218 /* w_shared_mem.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = w_shared_mem.c; path = ../../../src/wolf.system/memory/w_shared_mem.c; sourceTree = "<group>"; };
+		05BC21D6251296D9007D6218 /* w_hash.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = w_hash.c; path = ../../../src/wolf.system/memory/w_hash.c; sourceTree = "<group>"; };
+		05BC21D7251296DA007D6218 /* w_redis.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_redis.h; path = ../../../src/wolf.system/memory/w_redis.h; sourceTree = "<group>"; };
+		05BC21D9251296DA007D6218 /* utarray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = utarray.h; sourceTree = "<group>"; };
+		05BC21DA251296DA007D6218 /* uthash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = uthash.h; sourceTree = "<group>"; };
+		05BC21DB251296DA007D6218 /* utlist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = utlist.h; sourceTree = "<group>"; };
+		05BC21DC251296DA007D6218 /* utringbuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = utringbuffer.h; sourceTree = "<group>"; };
+		05BC21DD251296DA007D6218 /* utstack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = utstack.h; sourceTree = "<group>"; };
+		05BC21DE251296DA007D6218 /* utstring.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = utstring.h; sourceTree = "<group>"; };
+		05BC21E0251296DA007D6218 /* w_mem_pool.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = w_mem_pool.c; path = ../../../src/wolf.system/memory/w_mem_pool.c; sourceTree = "<group>"; };
+		05BC21E1251296DA007D6218 /* w_table.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_table.h; path = ../../../src/wolf.system/memory/w_table.h; sourceTree = "<group>"; };
+		05BC21E2251296DA007D6218 /* w_mem_map.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = w_mem_map.c; path = ../../../src/wolf.system/memory/w_mem_map.c; sourceTree = "<group>"; };
 		2C0354EF24AEAABF005E1479 /* libssh2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libssh2.a; path = ../../../deps/ssh/lib/osx/debug/libssh2.a; sourceTree = "<group>"; };
 		2C0354F224B11E05005E1479 /* version.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = version.txt; path = ../../../src/wolf.system/fiber/version.txt; sourceTree = "<group>"; };
 		2C069B8823E21EB8004EB56F /* w_fiber.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_fiber.cpp; path = ../../../src/wolf.system/fiber/w_fiber.cpp; sourceTree = "<group>"; };
@@ -186,11 +164,6 @@
 		2C172918246D41A9009C03B3 /* libapr-1.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libapr-1.0.dylib"; path = "../../../deps/apr/lib/osx/libapr-1.0.dylib"; sourceTree = "<group>"; };
 		2C1D5A6A24AE79EE00AD7F35 /* libcrypto.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcrypto.a; path = ../../../deps/openSSL/lib/osx/libcrypto.a; sourceTree = "<group>"; };
 		2C1D5A6B24AE79EE00AD7F35 /* libssl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libssl.a; path = ../../../deps/openSSL/lib/osx/libssl.a; sourceTree = "<group>"; };
-		2C27063B24ADD9B200A1BA75 /* xmlparse.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = xmlparse.c; path = ../../../src/wolf.system/xml/expat/xmlparse.c; sourceTree = "<group>"; };
-		2C27063C24ADD9B200A1BA75 /* xmltok_ns.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = xmltok_ns.c; path = ../../../src/wolf.system/xml/expat/xmltok_ns.c; sourceTree = "<group>"; };
-		2C27063D24ADD9B200A1BA75 /* xmltok_impl.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = xmltok_impl.c; path = ../../../src/wolf.system/xml/expat/xmltok_impl.c; sourceTree = "<group>"; };
-		2C27063E24ADD9B200A1BA75 /* xmltok.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = xmltok.c; path = ../../../src/wolf.system/xml/expat/xmltok.c; sourceTree = "<group>"; };
-		2C27063F24ADD9B200A1BA75 /* xmlrole.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = xmlrole.c; path = ../../../src/wolf.system/xml/expat/xmlrole.c; sourceTree = "<group>"; };
 		2C30BADE23A42B2D009FC330 /* w_compress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_compress.h; path = ../../../src/wolf.system/compression/w_compress.h; sourceTree = "<group>"; };
 		2C30BADF23A42B2D009FC330 /* w_compress.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = w_compress.c; path = ../../../src/wolf.system/compression/w_compress.c; sourceTree = "<group>"; };
 		2C30BAE223A42CFD009FC330 /* w_io.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_io.h; path = ../../../src/wolf.system/io/w_io.h; sourceTree = "<group>"; };
@@ -221,21 +194,6 @@
 		2C3756D623B7D35C003A6B0A /* luajit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = luajit.h; path = ../../../src/wolf.system/script/lua/luajit.h; sourceTree = "<group>"; };
 		2C3756E023B7F302003A6B0A /* w_lua.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = w_lua.c; path = ../../../src/wolf.system/script/w_lua.c; sourceTree = "<group>"; };
 		2C3756E123B7F302003A6B0A /* w_lua.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_lua.h; path = ../../../src/wolf.system/script/w_lua.h; sourceTree = "<group>"; };
-		2C4CACE123BD5A970084D392 /* async.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = async.cpp; path = ../../../src/wolf.system/log/spdlog/src/async.cpp; sourceTree = "<group>"; };
-		2C4CACE223BD5A970084D392 /* file_sinks.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = file_sinks.cpp; path = ../../../src/wolf.system/log/spdlog/src/file_sinks.cpp; sourceTree = "<group>"; };
-		2C4CACE323BD5A970084D392 /* spdlog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = spdlog.cpp; path = ../../../src/wolf.system/log/spdlog/src/spdlog.cpp; sourceTree = "<group>"; };
-		2C4CACE423BD5A970084D392 /* stdout_sinks.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = stdout_sinks.cpp; path = ../../../src/wolf.system/log/spdlog/src/stdout_sinks.cpp; sourceTree = "<group>"; };
-		2C4CACE523BD5A970084D392 /* fmt.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = fmt.cpp; path = ../../../src/wolf.system/log/spdlog/src/fmt.cpp; sourceTree = "<group>"; };
-		2C4CACE623BD5A970084D392 /* color_sinks.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = color_sinks.cpp; path = ../../../src/wolf.system/log/spdlog/src/color_sinks.cpp; sourceTree = "<group>"; };
-		2C5540952492758E003C32DD /* ws.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ws.cpp; path = ../../../src/wolf.system/net/ws/ws.cpp; sourceTree = "<group>"; };
-		2C5540962492758E003C32DD /* ws.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ws.h; path = ../../../src/wolf.system/net/ws/ws.h; sourceTree = "<group>"; };
-		2C5540992493B2EC003C32DD /* w_logger.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = w_logger.hpp; path = ../../../src/wolf.system/log/w_logger.hpp; sourceTree = "<group>"; };
-		2C55409A2493B2EC003C32DD /* V.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = V.cpp; path = ../../../src/wolf.system/log/V.cpp; sourceTree = "<group>"; };
-		2C55409B2493B2EC003C32DD /* w_log_config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_log_config.h; path = ../../../src/wolf.system/log/w_log_config.h; sourceTree = "<group>"; };
-		2C55409C2493B2EC003C32DD /* V.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = V.h; path = ../../../src/wolf.system/log/V.h; sourceTree = "<group>"; };
-		2C55409D2493B2ED003C32DD /* w_logger.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_logger.cpp; path = ../../../src/wolf.system/log/w_logger.cpp; sourceTree = "<group>"; };
-		2C78102C24837AA400A1AB40 /* w_redis.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = w_redis.c; path = ../../../src/wolf.system/memory/w_redis.c; sourceTree = "<group>"; };
-		2C78102D24837AA400A1AB40 /* w_redis.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_redis.h; path = ../../../src/wolf.system/memory/w_redis.h; sourceTree = "<group>"; };
 		2C898471239D2FA40062D70A /* w_timespan.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = w_timespan.c; path = ../../../src/wolf.system/chrono/w_timespan.c; sourceTree = "<group>"; };
 		2C898472239D2FA40062D70A /* w_timespan.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_timespan.h; path = ../../../src/wolf.system/chrono/w_timespan.h; sourceTree = "<group>"; };
 		2C898477239D344C0062D70A /* w_chrono.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_chrono.h; path = ../../../src/wolf.system/chrono/w_chrono.h; sourceTree = "<group>"; };
@@ -262,8 +220,6 @@
 		2C89893623A1790F0062D70A /* wolf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = wolf.h; path = ../../../src/wolf.system/wolf.h; sourceTree = "<group>"; };
 		2C89898D23A193A40062D70A /* wolf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = wolf.c; path = ../../../src/wolf.system/wolf.c; sourceTree = "<group>"; };
 		2C99E78723C2016A00A9720B /* rapidjson.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = rapidjson.hpp; path = ../../../src/wolf.system/json/rapidjson/rapidjson.hpp; sourceTree = "<group>"; };
-		2C99E79423C201AB00A9720B /* w_xml.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = w_xml.c; path = ../../../src/wolf.system/xml/w_xml.c; sourceTree = "<group>"; };
-		2C99E79523C201AB00A9720B /* w_xml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_xml.h; path = ../../../src/wolf.system/xml/w_xml.h; sourceTree = "<group>"; };
 		2C99E79C23C33A3900A9720B /* ev.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ev.h; path = ../../../src/wolf.system/concurrency/libev/ev.h; sourceTree = "<group>"; };
 		2C99E79D23C33A3900A9720B /* ev.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ev.c; path = ../../../src/wolf.system/concurrency/libev/ev.c; sourceTree = "<group>"; };
 		2C99E7A023C33A9E00A9720B /* event.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = event.c; path = ../../../src/wolf.system/concurrency/libev/event.c; sourceTree = "<group>"; };
@@ -283,12 +239,6 @@
 		2CB15353249BC5A9005A358E /* libjpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libjpeg.a; path = "../../../deps/libjpeg-turbo/lib/osx/debug/libjpeg.a"; sourceTree = "<group>"; };
 		2CB15354249BC5A9005A358E /* libturbojpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libturbojpeg.a; path = "../../../deps/libjpeg-turbo/lib/osx/debug/libturbojpeg.a"; sourceTree = "<group>"; };
 		2CB15357249D290C005A358E /* libpng16d.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpng16d.a; path = ../../../deps/libpng/lib/osx/libpng16d.a; sourceTree = "<group>"; };
-		2CB213FF247C2D7F0022DA86 /* w_shared_mem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_shared_mem.h; path = ../../../src/wolf.system/memory/w_shared_mem.h; sourceTree = "<group>"; };
-		2CB21400247C2D7F0022DA86 /* w_shared_mem.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = w_shared_mem.c; path = ../../../src/wolf.system/memory/w_shared_mem.c; sourceTree = "<group>"; };
-		2CB21403247C2E060022DA86 /* w_mem_map.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = w_mem_map.c; path = ../../../src/wolf.system/memory/w_mem_map.c; sourceTree = "<group>"; };
-		2CB21404247C2E060022DA86 /* w_mem_map.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_mem_map.h; path = ../../../src/wolf.system/memory/w_mem_map.h; sourceTree = "<group>"; };
-		2CB21407247ECB8C0022DA86 /* w_mem_cache.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = w_mem_cache.c; path = ../../../src/wolf.system/memory/w_mem_cache.c; sourceTree = "<group>"; };
-		2CB21408247ECB8D0022DA86 /* w_mem_cache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_mem_cache.h; path = ../../../src/wolf.system/memory/w_mem_cache.h; sourceTree = "<group>"; };
 		2CCFD578246D4AD00030D3AC /* libaprutil-1.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libaprutil-1.a"; path = "../../../deps/apr/lib/osx/debug/libaprutil-1.a"; sourceTree = "<group>"; };
 		2CCFD579246D4AE10030D3AC /* libapr-1.la */ = {isa = PBXFileReference; lastKnownFileType = text; name = "libapr-1.la"; path = "../../../deps/apr/lib/osx/debug/libapr-1.la"; sourceTree = "<group>"; };
 		2CCFD57B246DF3F30030D3AC /* w_concurrent_queue.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = w_concurrent_queue.c; path = ../../../src/wolf.system/concurrency/w_concurrent_queue.c; sourceTree = "<group>"; };
@@ -303,50 +253,6 @@
 		2CFADC1F248FB32E00409581 /* w_cpu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_cpu.h; path = ../../../src/wolf.system/os/w_cpu.h; sourceTree = "<group>"; };
 		2CFADC20248FB32E00409581 /* w_cpu.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = w_cpu.c; path = ../../../src/wolf.system/os/w_cpu.c; sourceTree = "<group>"; };
 		2CFADC472490D92200409581 /* libwolfssl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libwolfssl.a; path = ../../../deps/WolfSSL/lib/osx/libwolfssl.a; sourceTree = "<group>"; };
-		2CFADC7D24917B7E00409581 /* loop.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = loop.c; path = ../../../src/wolf.system/net/ws/uSockets/loop.c; sourceTree = "<group>"; };
-		2CFADC7E24917B7E00409581 /* socket.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = socket.c; path = ../../../src/wolf.system/net/ws/uSockets/socket.c; sourceTree = "<group>"; };
-		2CFADC7F24917B7E00409581 /* libusockets.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = libusockets.h; path = ../../../src/wolf.system/net/ws/uSockets/libusockets.h; sourceTree = "<group>"; };
-		2CFADC8024917B7E00409581 /* context.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = context.c; path = ../../../src/wolf.system/net/ws/uSockets/context.c; sourceTree = "<group>"; };
-		2CFADC8524917B9F00409581 /* wolfssl.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = wolfssl.c; path = ../../../src/wolf.system/net/ws/uSockets/crypto/wolfssl.c; sourceTree = "<group>"; };
-		2CFADC8624917B9F00409581 /* openssl.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = openssl.c; path = ../../../src/wolf.system/net/ws/uSockets/crypto/openssl.c; sourceTree = "<group>"; };
-		2CFADC8924917BB600409581 /* libuv.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = libuv.c; path = ../../../src/wolf.system/net/ws/uSockets/eventing/libuv.c; sourceTree = "<group>"; };
-		2CFADC8A24917BB600409581 /* epoll_kqueue.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = epoll_kqueue.c; path = ../../../src/wolf.system/net/ws/uSockets/eventing/epoll_kqueue.c; sourceTree = "<group>"; };
-		2CFADC8B24917BB600409581 /* gcd.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = gcd.c; path = ../../../src/wolf.system/net/ws/uSockets/eventing/gcd.c; sourceTree = "<group>"; };
-		2CFADC8F24917BCA00409581 /* internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = internal.h; path = ../../../src/wolf.system/net/ws/uSockets/internal/internal.h; sourceTree = "<group>"; };
-		2CFADC9024917BCA00409581 /* loop_data.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = loop_data.h; path = ../../../src/wolf.system/net/ws/uSockets/internal/loop_data.h; sourceTree = "<group>"; };
-		2CFADC9324917BE400409581 /* libuv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = libuv.h; path = ../../../src/wolf.system/net/ws/uSockets/internal/eventing/libuv.h; sourceTree = "<group>"; };
-		2CFADC9424917BE400409581 /* gcd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gcd.h; path = ../../../src/wolf.system/net/ws/uSockets/internal/eventing/gcd.h; sourceTree = "<group>"; };
-		2CFADC9524917BE400409581 /* epoll_kqueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = epoll_kqueue.h; path = ../../../src/wolf.system/net/ws/uSockets/internal/eventing/epoll_kqueue.h; sourceTree = "<group>"; };
-		2CFADC9924917C0200409581 /* bsd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bsd.h; path = ../../../src/wolf.system/net/ws/uSockets/internal/networking/bsd.h; sourceTree = "<group>"; };
-		2CFADC9B24917C1F00409581 /* LICENSE.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = LICENSE.txt; path = ../../../src/wolf.system/net/ws/uWebSockets/f2/LICENSE.txt; sourceTree = "<group>"; };
-		2CFADC9C24917C1F00409581 /* function2.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = function2.hpp; path = ../../../src/wolf.system/net/ws/uWebSockets/f2/function2.hpp; sourceTree = "<group>"; };
-		2CFADC9E24917C3500409581 /* App.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = App.h; path = ../../../src/wolf.system/net/ws/uWebSockets/App.h; sourceTree = "<group>"; };
-		2CFADC9F24917C3500409581 /* WebSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WebSocket.h; path = ../../../src/wolf.system/net/ws/uWebSockets/WebSocket.h; sourceTree = "<group>"; };
-		2CFADCA024917C3500409581 /* WebSocketHandshake.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WebSocketHandshake.h; path = ../../../src/wolf.system/net/ws/uWebSockets/WebSocketHandshake.h; sourceTree = "<group>"; };
-		2CFADCA124917C3500409581 /* AsyncSocketData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AsyncSocketData.h; path = ../../../src/wolf.system/net/ws/uWebSockets/AsyncSocketData.h; sourceTree = "<group>"; };
-		2CFADCA224917C3500409581 /* HttpRouter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HttpRouter.h; path = ../../../src/wolf.system/net/ws/uWebSockets/HttpRouter.h; sourceTree = "<group>"; };
-		2CFADCA324917C3500409581 /* HttpParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HttpParser.h; path = ../../../src/wolf.system/net/ws/uWebSockets/HttpParser.h; sourceTree = "<group>"; };
-		2CFADCA424917C3500409581 /* HttpContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HttpContext.h; path = ../../../src/wolf.system/net/ws/uWebSockets/HttpContext.h; sourceTree = "<group>"; };
-		2CFADCA524917C3500409581 /* PerMessageDeflate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PerMessageDeflate.h; path = ../../../src/wolf.system/net/ws/uWebSockets/PerMessageDeflate.h; sourceTree = "<group>"; };
-		2CFADCA624917C3500409581 /* ProxyParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ProxyParser.h; path = ../../../src/wolf.system/net/ws/uWebSockets/ProxyParser.h; sourceTree = "<group>"; };
-		2CFADCA724917C3500409581 /* WebSocketExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WebSocketExtensions.h; path = ../../../src/wolf.system/net/ws/uWebSockets/WebSocketExtensions.h; sourceTree = "<group>"; };
-		2CFADCA824917C3500409581 /* LoopData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LoopData.h; path = ../../../src/wolf.system/net/ws/uWebSockets/LoopData.h; sourceTree = "<group>"; };
-		2CFADCA924917C3500409581 /* WebSocketContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WebSocketContext.h; path = ../../../src/wolf.system/net/ws/uWebSockets/WebSocketContext.h; sourceTree = "<group>"; };
-		2CFADCAA24917C3500409581 /* Loop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Loop.h; path = ../../../src/wolf.system/net/ws/uWebSockets/Loop.h; sourceTree = "<group>"; };
-		2CFADCAB24917C3500409581 /* WebSocketProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WebSocketProtocol.h; path = ../../../src/wolf.system/net/ws/uWebSockets/WebSocketProtocol.h; sourceTree = "<group>"; };
-		2CFADCAC24917C3500409581 /* HttpResponseData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HttpResponseData.h; path = ../../../src/wolf.system/net/ws/uWebSockets/HttpResponseData.h; sourceTree = "<group>"; };
-		2CFADCAD24917C3500409581 /* BloomFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BloomFilter.h; path = ../../../src/wolf.system/net/ws/uWebSockets/BloomFilter.h; sourceTree = "<group>"; };
-		2CFADCAE24917C3500409581 /* HttpResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HttpResponse.h; path = ../../../src/wolf.system/net/ws/uWebSockets/HttpResponse.h; sourceTree = "<group>"; };
-		2CFADCAF24917C3500409581 /* TopicTree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TopicTree.h; path = ../../../src/wolf.system/net/ws/uWebSockets/TopicTree.h; sourceTree = "<group>"; };
-		2CFADCB024917C3600409581 /* HttpContextData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HttpContextData.h; path = ../../../src/wolf.system/net/ws/uWebSockets/HttpContextData.h; sourceTree = "<group>"; };
-		2CFADCB124917C3600409581 /* Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Utilities.h; path = ../../../src/wolf.system/net/ws/uWebSockets/Utilities.h; sourceTree = "<group>"; };
-		2CFADCB224917C3600409581 /* WebSocketContextData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WebSocketContextData.h; path = ../../../src/wolf.system/net/ws/uWebSockets/WebSocketContextData.h; sourceTree = "<group>"; };
-		2CFADCB324917C3600409581 /* WebSocketData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WebSocketData.h; path = ../../../src/wolf.system/net/ws/uWebSockets/WebSocketData.h; sourceTree = "<group>"; };
-		2CFADCB424917C3600409581 /* AsyncSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AsyncSocket.h; path = ../../../src/wolf.system/net/ws/uWebSockets/AsyncSocket.h; sourceTree = "<group>"; };
-		2CFADCCC24917D1100409581 /* version.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = version.txt; path = ../../../src/wolf.system/net/ws/uSockets/version.txt; sourceTree = "<group>"; };
-		2CFADCCD24917D2F00409581 /* version.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = version.txt; path = ../../../src/wolf.system/net/ws/uWebSockets/version.txt; sourceTree = "<group>"; };
-		2CFADCDA2491888D00409581 /* uws.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = uws.hpp; path = ../../../src/wolf.system/net/ws/uws.hpp; sourceTree = "<group>"; };
-		2CFADCDB2491888D00409581 /* uws.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = uws.cpp; path = ../../../src/wolf.system/net/ws/uws.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -354,6 +260,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				05BC21C725129626007D6218 /* libquiche.a in Frameworks */,
+				05BC21C525129351007D6218 /* libcurl.a in Frameworks */,
 				2C1D5A6D24AE7A0200AD7F35 /* libssl.a in Frameworks */,
 				2C99E7C023CBA1F700A9720B /* libboost_fiber.a in Frameworks */,
 				2CABF82624861E6E00E5E4D9 /* libmbedx509.a in Frameworks */,
@@ -369,7 +277,6 @@
 				2CABF82424861E6E00E5E4D9 /* libmbedcrypto.a in Frameworks */,
 				2CABF82524861E6E00E5E4D9 /* libmbedtls.a in Frameworks */,
 				2CB15356249BC5BA005A358E /* libturbojpeg.a in Frameworks */,
-				2C0354EE24AEAAA6005E1479 /* libcurl-d.a in Frameworks */,
 				2C0354F024AEAAD3005E1479 /* libssh2.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -377,6 +284,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		05BC21D8251296DA007D6218 /* hash */ = {
+			isa = PBXGroup;
+			children = (
+				05BC21D9251296DA007D6218 /* utarray.h */,
+				05BC21DA251296DA007D6218 /* uthash.h */,
+				05BC21DB251296DA007D6218 /* utlist.h */,
+				05BC21DC251296DA007D6218 /* utringbuffer.h */,
+				05BC21DD251296DA007D6218 /* utstack.h */,
+				05BC21DE251296DA007D6218 /* utstring.h */,
+			);
+			name = hash;
+			path = ../../../src/wolf.system/memory/hash;
+			sourceTree = "<group>";
+		};
 		2C1CD488239AD69A0010A12C /* chrono */ = {
 			isa = PBXGroup;
 			children = (
@@ -388,28 +309,6 @@
 				2C898472239D2FA40062D70A /* w_timespan.h */,
 			);
 			name = chrono;
-			sourceTree = "<group>";
-		};
-		2C27063A24ADD8FF00A1BA75 /* expat */ = {
-			isa = PBXGroup;
-			children = (
-				2C27063B24ADD9B200A1BA75 /* xmlparse.c */,
-				2C27063F24ADD9B200A1BA75 /* xmlrole.c */,
-				2C27063D24ADD9B200A1BA75 /* xmltok_impl.c */,
-				2C27063C24ADD9B200A1BA75 /* xmltok_ns.c */,
-				2C27063E24ADD9B200A1BA75 /* xmltok.c */,
-			);
-			name = expat;
-			sourceTree = "<group>";
-		};
-		2C30BD2B23AA200A00D24778 /* xml */ = {
-			isa = PBXGroup;
-			children = (
-				2C27063A24ADD8FF00A1BA75 /* expat */,
-				2C99E79423C201AB00A9720B /* w_xml.c */,
-				2C99E79523C201AB00A9720B /* w_xml.h */,
-			);
-			name = xml;
 			sourceTree = "<group>";
 		};
 		2C37521023AFD0CE003A6B0A /* base64 */ = {
@@ -441,27 +340,6 @@
 				2C3756D323B7D35C003A6B0A /* lualib.h */,
 			);
 			name = lua;
-			sourceTree = "<group>";
-		};
-		2C4CACE023BD5A740084D392 /* spdlog */ = {
-			isa = PBXGroup;
-			children = (
-				2C4CACED23BD5A9A0084D392 /* src */,
-			);
-			name = spdlog;
-			sourceTree = "<group>";
-		};
-		2C4CACED23BD5A9A0084D392 /* src */ = {
-			isa = PBXGroup;
-			children = (
-				2C4CACE123BD5A970084D392 /* async.cpp */,
-				2C4CACE623BD5A970084D392 /* color_sinks.cpp */,
-				2C4CACE223BD5A970084D392 /* file_sinks.cpp */,
-				2C4CACE523BD5A970084D392 /* fmt.cpp */,
-				2C4CACE323BD5A970084D392 /* spdlog.cpp */,
-				2C4CACE423BD5A970084D392 /* stdout_sinks.cpp */,
-			);
-			name = src;
 			sourceTree = "<group>";
 		};
 		2C89847B239E62A70062D70A /* compression */ = {
@@ -555,19 +433,6 @@
 			name = json;
 			sourceTree = "<group>";
 		};
-		2C89855C23A15BE50062D70A /* log */ = {
-			isa = PBXGroup;
-			children = (
-				2C4CACE023BD5A740084D392 /* spdlog */,
-				2C55409D2493B2ED003C32DD /* w_logger.cpp */,
-				2C5540992493B2EC003C32DD /* w_logger.hpp */,
-				2C55409B2493B2EC003C32DD /* w_log_config.h */,
-				2C55409A2493B2EC003C32DD /* V.cpp */,
-				2C55409C2493B2EC003C32DD /* V.h */,
-			);
-			name = log;
-			sourceTree = "<group>";
-		};
 		2C89855D23A15BED0062D70A /* script */ = {
 			isa = PBXGroup;
 			children = (
@@ -614,7 +479,6 @@
 		2CABF80E24840FD200E5E4D9 /* net */ = {
 			isa = PBXGroup;
 			children = (
-				2CFADC7C24917AC800409581 /* ws */,
 				2CABF80F2485A26A00E5E4D9 /* w_net.c */,
 				2CABF8102485A26B00E5E4D9 /* w_net.h */,
 			);
@@ -624,14 +488,23 @@
 		2CB213FE247C2D620022DA86 /* memory */ = {
 			isa = PBXGroup;
 			children = (
-				2CB21407247ECB8C0022DA86 /* w_mem_cache.c */,
-				2CB21408247ECB8D0022DA86 /* w_mem_cache.h */,
-				2CB21403247C2E060022DA86 /* w_mem_map.c */,
-				2CB21404247C2E060022DA86 /* w_mem_map.h */,
-				2C78102C24837AA400A1AB40 /* w_redis.c */,
-				2C78102D24837AA400A1AB40 /* w_redis.h */,
-				2CB21400247C2D7F0022DA86 /* w_shared_mem.c */,
-				2CB213FF247C2D7F0022DA86 /* w_shared_mem.h */,
+				05BC21D8251296DA007D6218 /* hash */,
+				05BC21D4251296D9007D6218 /* w_array.c */,
+				05BC21D2251296D9007D6218 /* w_array.h */,
+				05BC21D6251296D9007D6218 /* w_hash.c */,
+				05BC21D0251296D9007D6218 /* w_hash.h */,
+				05BC21D1251296D9007D6218 /* w_mem_cache.c */,
+				05BC21CC251296D9007D6218 /* w_mem_cache.h */,
+				05BC21E2251296DA007D6218 /* w_mem_map.c */,
+				05BC21CA251296D9007D6218 /* w_mem_map.h */,
+				05BC21E0251296DA007D6218 /* w_mem_pool.c */,
+				05BC21CD251296D9007D6218 /* w_mem_pool.h */,
+				05BC21D3251296D9007D6218 /* w_redis.c */,
+				05BC21D7251296DA007D6218 /* w_redis.h */,
+				05BC21D5251296D9007D6218 /* w_shared_mem.c */,
+				05BC21C8251296D8007D6218 /* w_shared_mem.h */,
+				05BC21CF251296D9007D6218 /* w_table.c */,
+				05BC21E1251296DA007D6218 /* w_table.h */,
 			);
 			name = memory;
 			sourceTree = "<group>";
@@ -647,12 +520,10 @@
 				2C89855923A15BC50062D70A /* fiber */,
 				2C89855A23A15BD30062D70A /* io */,
 				2C89855B23A15BDC0062D70A /* json */,
-				2C89855C23A15BE50062D70A /* log */,
 				2CB213FE247C2D620022DA86 /* memory */,
 				2CABF80E24840FD200E5E4D9 /* net */,
 				2C89856023A15C0B0062D70A /* os */,
 				2C89855D23A15BED0062D70A /* script */,
-				2C30BD2B23AA200A00D24778 /* xml */,
 				2C89898D23A193A40062D70A /* wolf.c */,
 				2C89893623A1790F0062D70A /* wolf.h */,
 				2CD617241E59DA3E006FC5DC /* Products */,
@@ -671,6 +542,8 @@
 		2CFA170D1E674C850041A83F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				05BC21C625129626007D6218 /* libquiche.a */,
+				05BC21C425129351007D6218 /* libcurl.a */,
 				2C0354EF24AEAABF005E1479 /* libssh2.a */,
 				2C1D5A6A24AE79EE00AD7F35 /* libcrypto.a */,
 				2C1D5A6B24AE79EE00AD7F35 /* libssl.a */,
@@ -705,123 +578,6 @@
 			name = db;
 			sourceTree = "<group>";
 		};
-		2CFADC232490288A00409581 /* uSockets */ = {
-			isa = PBXGroup;
-			children = (
-				2CFADC24249028AD00409581 /* crypto */,
-				2CFADC25249028BE00409581 /* eventing */,
-				2CFADC26249028CC00409581 /* internal */,
-				2CFADC8024917B7E00409581 /* context.c */,
-				2CFADC7F24917B7E00409581 /* libusockets.h */,
-				2CFADC7D24917B7E00409581 /* loop.c */,
-				2CFADC7E24917B7E00409581 /* socket.c */,
-				2CFADCCC24917D1100409581 /* version.txt */,
-			);
-			name = uSockets;
-			sourceTree = "<group>";
-		};
-		2CFADC24249028AD00409581 /* crypto */ = {
-			isa = PBXGroup;
-			children = (
-				2CFADC8624917B9F00409581 /* openssl.c */,
-				2CFADC8524917B9F00409581 /* wolfssl.c */,
-			);
-			name = crypto;
-			sourceTree = "<group>";
-		};
-		2CFADC25249028BE00409581 /* eventing */ = {
-			isa = PBXGroup;
-			children = (
-				2CFADC8A24917BB600409581 /* epoll_kqueue.c */,
-				2CFADC8B24917BB600409581 /* gcd.c */,
-				2CFADC8924917BB600409581 /* libuv.c */,
-			);
-			name = eventing;
-			sourceTree = "<group>";
-		};
-		2CFADC26249028CC00409581 /* internal */ = {
-			isa = PBXGroup;
-			children = (
-				2CFADC392490297F00409581 /* eventing */,
-				2CFADC3A2490298700409581 /* networking */,
-				2CFADC8F24917BCA00409581 /* internal.h */,
-				2CFADC9024917BCA00409581 /* loop_data.h */,
-			);
-			name = internal;
-			sourceTree = "<group>";
-		};
-		2CFADC392490297F00409581 /* eventing */ = {
-			isa = PBXGroup;
-			children = (
-				2CFADC9524917BE400409581 /* epoll_kqueue.h */,
-				2CFADC9424917BE400409581 /* gcd.h */,
-				2CFADC9324917BE400409581 /* libuv.h */,
-			);
-			name = eventing;
-			sourceTree = "<group>";
-		};
-		2CFADC3A2490298700409581 /* networking */ = {
-			isa = PBXGroup;
-			children = (
-				2CFADC9924917C0200409581 /* bsd.h */,
-			);
-			name = networking;
-			sourceTree = "<group>";
-		};
-		2CFADC49249175CF00409581 /* uWebSockets */ = {
-			isa = PBXGroup;
-			children = (
-				2CFADC78249175F900409581 /* f2 */,
-				2CFADC9E24917C3500409581 /* App.h */,
-				2CFADCB424917C3600409581 /* AsyncSocket.h */,
-				2CFADCA124917C3500409581 /* AsyncSocketData.h */,
-				2CFADCAD24917C3500409581 /* BloomFilter.h */,
-				2CFADCA424917C3500409581 /* HttpContext.h */,
-				2CFADCB024917C3600409581 /* HttpContextData.h */,
-				2CFADCA324917C3500409581 /* HttpParser.h */,
-				2CFADCAE24917C3500409581 /* HttpResponse.h */,
-				2CFADCAC24917C3500409581 /* HttpResponseData.h */,
-				2CFADCA224917C3500409581 /* HttpRouter.h */,
-				2CFADCAA24917C3500409581 /* Loop.h */,
-				2CFADCA824917C3500409581 /* LoopData.h */,
-				2CFADCA524917C3500409581 /* PerMessageDeflate.h */,
-				2CFADCA624917C3500409581 /* ProxyParser.h */,
-				2CFADCAF24917C3500409581 /* TopicTree.h */,
-				2CFADCB124917C3600409581 /* Utilities.h */,
-				2CFADC9F24917C3500409581 /* WebSocket.h */,
-				2CFADCA924917C3500409581 /* WebSocketContext.h */,
-				2CFADCB224917C3600409581 /* WebSocketContextData.h */,
-				2CFADCB324917C3600409581 /* WebSocketData.h */,
-				2CFADCA724917C3500409581 /* WebSocketExtensions.h */,
-				2CFADCA024917C3500409581 /* WebSocketHandshake.h */,
-				2CFADCAB24917C3500409581 /* WebSocketProtocol.h */,
-				2CFADCCD24917D2F00409581 /* version.txt */,
-			);
-			name = uWebSockets;
-			sourceTree = "<group>";
-		};
-		2CFADC78249175F900409581 /* f2 */ = {
-			isa = PBXGroup;
-			children = (
-				2CFADC9C24917C1F00409581 /* function2.hpp */,
-				2CFADC9B24917C1F00409581 /* LICENSE.txt */,
-			);
-			name = f2;
-			sourceTree = "<group>";
-		};
-		2CFADC7C24917AC800409581 /* ws */ = {
-			isa = PBXGroup;
-			children = (
-				2CFADC232490288A00409581 /* uSockets */,
-				2CFADC49249175CF00409581 /* uWebSockets */,
-				2CFADCDB2491888D00409581 /* uws.cpp */,
-				2CFADCDA2491888D00409581 /* uws.hpp */,
-				2C5540952492758E003C32DD /* ws.cpp */,
-				2C5540962492758E003C32DD /* ws.h */,
-			);
-			name = ws;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -829,89 +585,62 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2CB2140A247ECB8D0022DA86 /* w_mem_cache.h in Headers */,
+				05BC21ED251296DA007D6218 /* w_array.h in Headers */,
 				2C069B8B23E21EB8004EB56F /* w_fiber.hpp in Headers */,
 				2C17289C246C168E009C03B3 /* w_gametime.h in Headers */,
 				2C37522123AFD0EF003A6B0A /* quicktimebase64.h in Headers */,
-				2CFADCBB24917C3600409581 /* HttpContext.h in Headers */,
-				2C99E79723C201AB00A9720B /* w_xml.h in Headers */,
-				2CFADCB624917C3600409581 /* WebSocket.h in Headers */,
+				05BC21EB251296DA007D6218 /* w_hash.h in Headers */,
 				2C37522723AFD0EF003A6B0A /* scalarbase64.h in Headers */,
-				2CFADCC724917C3600409581 /* HttpContextData.h in Headers */,
-				2C5540A02493B2ED003C32DD /* w_log_config.h in Headers */,
-				2C78102F24837AA400A1AB40 /* w_redis.h in Headers */,
-				2CFADCCB24917C3600409581 /* AsyncSocket.h in Headers */,
-				2CFADCC124917C3600409581 /* Loop.h in Headers */,
-				2CFADCC824917C3600409581 /* Utilities.h in Headers */,
-				2CFADCB924917C3600409581 /* HttpRouter.h in Headers */,
-				2CFADCB524917C3600409581 /* App.h in Headers */,
 				2C89848F239E735F0062D70A /* lz4frame.h in Headers */,
 				2C3756BA23B7C1D7003A6B0A /* w_condition_variable.h in Headers */,
-				2CFADC9D24917C1F00409581 /* function2.hpp in Headers */,
-				2CB21401247C2D7F0022DA86 /* w_shared_mem.h in Headers */,
 				2C99E7B623C33AD400A9720B /* ev_wrap.h in Headers */,
 				2C3756D923B7D35C003A6B0A /* lua.h in Headers */,
-				2CFADC9124917BCA00409581 /* internal.h in Headers */,
+				05BC21E5251296DA007D6218 /* w_mem_map.h in Headers */,
 				2C898554239F65E90062D70A /* w_thread.h in Headers */,
-				2CFADCDC2491888D00409581 /* uws.hpp in Headers */,
-				2CB21406247C2E060022DA86 /* w_mem_map.h in Headers */,
 				2C898474239D2FA40062D70A /* w_timespan.h in Headers */,
-				2CFADCB824917C3600409581 /* AsyncSocketData.h in Headers */,
-				2CFADCBD24917C3600409581 /* ProxyParser.h in Headers */,
 				2CCFD5822471E56A0030D3AC /* w_timer.h in Headers */,
 				2C99E78823C2016A00A9720B /* rapidjson.hpp in Headers */,
 				2C99E7B523C33AD400A9720B /* config.h in Headers */,
+				05BC21E8251296DA007D6218 /* w_mem_pool.h in Headers */,
 				2C3756D823B7D35C003A6B0A /* lualib.h in Headers */,
 				2C898492239E735F0062D70A /* lz4frame_static.h in Headers */,
-				2CFADCC924917C3600409581 /* WebSocketContextData.h in Headers */,
 				2C3756E323B7F302003A6B0A /* w_lua.h in Headers */,
-				2CFADCC024917C3600409581 /* WebSocketContext.h in Headers */,
-				2CFADCC424917C3600409581 /* BloomFilter.h in Headers */,
 				2C37522323AFD0EF003A6B0A /* fastavx512bwbase64.h in Headers */,
+				05BC21F6251296DA007D6218 /* utringbuffer.h in Headers */,
+				05BC21F3251296DA007D6218 /* utarray.h in Headers */,
+				05BC21E7251296DA007D6218 /* w_mem_cache.h in Headers */,
 				2C99E7B123C33AD400A9720B /* ev_vars.h in Headers */,
 				2CABF8122485A26B00E5E4D9 /* w_net.h in Headers */,
 				2C30BAE423A42CFD009FC330 /* w_io.h in Headers */,
 				2CCFD5852471E8550030D3AC /* w_async.h in Headers */,
+				05BC21F7251296DA007D6218 /* utstack.h in Headers */,
 				2C3756B623B79EF1003A6B0A /* w_signal.h in Headers */,
 				2C3756DB23B7D35C003A6B0A /* luajit.h in Headers */,
-				2CFADCC224917C3600409581 /* WebSocketProtocol.h in Headers */,
-				2CFADC9824917BE400409581 /* epoll_kqueue.h in Headers */,
+				05BC21E3251296DA007D6218 /* w_shared_mem.h in Headers */,
 				2C898545239E763C0062D70A /* msgpack.h in Headers */,
+				05BC21FB251296DA007D6218 /* w_table.h in Headers */,
+				05BC21F4251296DA007D6218 /* uthash.h in Headers */,
+				05BC21F2251296DA007D6218 /* w_redis.h in Headers */,
 				2C3756D723B7D35C003A6B0A /* lauxlib.h in Headers */,
 				2C898496239E735F0062D70A /* xxhash.h in Headers */,
-				2CFADC9224917BCA00409581 /* loop_data.h in Headers */,
 				2CCFD57E246DF3F30030D3AC /* w_concurrent_queue.h in Headers */,
-				2CFADCC624917C3600409581 /* TopicTree.h in Headers */,
-				2C55409E2493B2ED003C32DD /* w_logger.hpp in Headers */,
-				2CFADC8324917B7E00409581 /* libusockets.h in Headers */,
-				2C5540A12493B2ED003C32DD /* V.h in Headers */,
-				2CFADCB724917C3600409581 /* WebSocketHandshake.h in Headers */,
-				2CFADCBE24917C3600409581 /* WebSocketExtensions.h in Headers */,
 				2C99E79E23C33A3900A9720B /* ev.h in Headers */,
-				2CFADC9A24917C0200409581 /* bsd.h in Headers */,
-				2CFADCBF24917C3600409581 /* LoopData.h in Headers */,
 				2C37522923AFD0EF003A6B0A /* klompavxbase64.h in Headers */,
 				2CFADC1D248B6F3400409581 /* cr.h in Headers */,
-				2CFADCBC24917C3600409581 /* PerMessageDeflate.h in Headers */,
 				2C89893723A1790F0062D70A /* wolf.h in Headers */,
-				2CFADCC524917C3600409581 /* HttpResponse.h in Headers */,
 				2C30BAE023A42B2E009FC330 /* w_compress.h in Headers */,
 				2C37522A23AFD0EF003A6B0A /* chromiumbase64.h in Headers */,
 				2C1728A6246C8935009C03B3 /* w_thread_pool.h in Headers */,
 				2C898493239E735F0062D70A /* lz4.h in Headers */,
-				2C5540982492758F003C32DD /* ws.h in Headers */,
 				2C89848E239E735F0062D70A /* lz4hc.h in Headers */,
+				05BC21F5251296DA007D6218 /* utlist.h in Headers */,
+				05BC21F8251296DA007D6218 /* utstring.h in Headers */,
 				2C99E7A323C33A9F00A9720B /* event.h in Headers */,
 				2C30BAE723A4D599009FC330 /* w_platform.h in Headers */,
-				2CFADCC324917C3600409581 /* HttpResponseData.h in Headers */,
 				2C898479239D344C0062D70A /* w_chrono.h in Headers */,
 				2CFADC21248FB32E00409581 /* w_cpu.h in Headers */,
 				2C37522023AFD0EF003A6B0A /* fastavxbase64.h in Headers */,
 				2C3756DA23B7D35C003A6B0A /* luaconf.h in Headers */,
-				2CFADCBA24917C3600409581 /* HttpParser.h in Headers */,
-				2CFADC9724917BE400409581 /* gcd.h in Headers */,
-				2CFADCCA24917C3600409581 /* WebSocketData.h in Headers */,
-				2CFADC9624917BE400409581 /* libuv.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -974,67 +703,47 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				05BC21F1251296DA007D6218 /* w_hash.c in Sources */,
 				2C3756B523B79EF1003A6B0A /* w_signal.c in Sources */,
-				2C27064024ADD9B200A1BA75 /* xmlparse.c in Sources */,
-				2CFADC8724917B9F00409581 /* wolfssl.c in Sources */,
 				2C37522423AFD0EF003A6B0A /* fastavx512bwbase64.c in Sources */,
 				2C898494239E735F0062D70A /* lz4frame.c in Sources */,
-				2C4CACEA23BD5A970084D392 /* stdout_sinks.cpp in Sources */,
 				2C89847A239D344C0062D70A /* w_chrono.c in Sources */,
-				2C5540A22493B2ED003C32DD /* w_logger.cpp in Sources */,
-				2C4CACE923BD5A970084D392 /* spdlog.cpp in Sources */,
 				2C1728A5246C8935009C03B3 /* w_thread_pool.c in Sources */,
-				2C5540972492758F003C32DD /* ws.cpp in Sources */,
-				2C27064424ADD9B200A1BA75 /* xmlrole.c in Sources */,
 				2C898490239E735F0062D70A /* xxhash.c in Sources */,
 				2C99E7A223C33A9F00A9720B /* event.c in Sources */,
 				2C898540239E763C0062D70A /* unpack.c in Sources */,
 				2C30BAE523A42CFD009FC330 /* w_io.c in Sources */,
 				2CCFD5812471E56A0030D3AC /* w_timer.c in Sources */,
-				2CB21405247C2E060022DA86 /* w_mem_map.c in Sources */,
 				2C3756B923B7C1D7003A6B0A /* w_condition_variable.c in Sources */,
 				2C37521F23AFD0EF003A6B0A /* klompavxbase64.c in Sources */,
 				2CCFD5862471E8550030D3AC /* w_async.c in Sources */,
+				05BC21EE251296DA007D6218 /* w_redis.c in Sources */,
 				2C3756E223B7F302003A6B0A /* w_lua.c in Sources */,
-				2CFADC8C24917BB600409581 /* libuv.c in Sources */,
+				05BC21EC251296DA007D6218 /* w_mem_cache.c in Sources */,
 				2C898544239E763C0062D70A /* objectc.c in Sources */,
+				05BC21FC251296DA007D6218 /* w_mem_map.c in Sources */,
 				2CFADC22248FB32E00409581 /* w_cpu.c in Sources */,
-				2C4CACEB23BD5A970084D392 /* fmt.cpp in Sources */,
-				2CFADC8824917B9F00409581 /* openssl.c in Sources */,
 				2C898543239E763C0062D70A /* version.c in Sources */,
 				2C37522B23AFD0EF003A6B0A /* quicktimebase64.c in Sources */,
 				2C37522823AFD0EF003A6B0A /* chromiumbase64.c in Sources */,
-				2C4CACE723BD5A970084D392 /* async.cpp in Sources */,
-				2CFADC8224917B7E00409581 /* socket.c in Sources */,
+				05BC21EA251296DA007D6218 /* w_table.c in Sources */,
 				2CCFD57D246DF3F30030D3AC /* w_concurrent_queue.c in Sources */,
 				2C17289E246C16F1009C03B3 /* w_gametime.c in Sources */,
-				2C27064324ADD9B200A1BA75 /* xmltok.c in Sources */,
-				2C55409F2493B2ED003C32DD /* V.cpp in Sources */,
 				2C069B8A23E21EB8004EB56F /* w_fiber.cpp in Sources */,
-				2CFADC8E24917BB600409581 /* gcd.c in Sources */,
-				2C99E79623C201AB00A9720B /* w_xml.c in Sources */,
-				2CFADC8424917B7E00409581 /* context.c in Sources */,
+				05BC21FA251296DA007D6218 /* w_mem_pool.c in Sources */,
+				05BC21F0251296DA007D6218 /* w_shared_mem.c in Sources */,
+				05BC21EF251296DA007D6218 /* w_array.c in Sources */,
 				2C898542239E763C0062D70A /* vrefbuffer.c in Sources */,
 				2C898473239D2FA40062D70A /* w_timespan.c in Sources */,
 				2C37522C23AFD0EF003A6B0A /* scalarbase64.c in Sources */,
-				2C27064224ADD9B200A1BA75 /* xmltok_impl.c in Sources */,
-				2CFADC8124917B7E00409581 /* loop.c in Sources */,
-				2C27064124ADD9B200A1BA75 /* xmltok_ns.c in Sources */,
-				2C78102E24837AA400A1AB40 /* w_redis.c in Sources */,
 				2C99E79F23C33A3900A9720B /* ev.c in Sources */,
-				2C4CACEC23BD5A970084D392 /* color_sinks.cpp in Sources */,
-				2CFADC8D24917BB600409581 /* epoll_kqueue.c in Sources */,
 				2C37522623AFD0EF003A6B0A /* fastavxbase64.c in Sources */,
-				2CB21402247C2D7F0022DA86 /* w_shared_mem.c in Sources */,
 				2CABF8112485A26B00E5E4D9 /* w_net.c in Sources */,
 				2C898541239E763C0062D70A /* zone.c in Sources */,
 				2C898491239E735F0062D70A /* lz4.c in Sources */,
-				2CB21409247ECB8D0022DA86 /* w_mem_cache.c in Sources */,
 				2C89898E23A193A40062D70A /* wolf.c in Sources */,
 				2C898495239E735F0062D70A /* lz4hc.c in Sources */,
 				2C30BAE123A42B2E009FC330 /* w_compress.c in Sources */,
-				2CFADCDD2491888D00409581 /* uws.cpp in Sources */,
-				2C4CACE823BD5A970084D392 /* file_sinks.cpp in Sources */,
 				2C898553239F65E90062D70A /* w_thread.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1182,7 +891,6 @@
 				GCC_PREFIX_HEADER = "";
 				GCC_PREPROCESSOR_DEFINITIONS = "";
 				"GCC_PREPROCESSOR_DEFINITIONS[arch=*]" = (
-					"$(inherited)",
 					DEBUG,
 					HAVE_CONFIG_H,
 					BUILDING_LIBCURL,
@@ -1191,10 +899,37 @@
 					HAVE_EXPAT_CONFIG_H,
 					expat_EXPORTS,
 					SPDLOG_COMPILED_LIB,
+					APU_DECLARE_STATIC,
 					SPDLOG_WCHAR_FILENAMES,
 					NNG_PLATFORM_POSIX,
+					APR_DECLARE_EXPORT,
+					APU_DSO_MODULE_BUILD,
 					LIBUS_USE_KQUEUE,
+					CURL_STATICLIB,
 					LIBUS_USE_OPENSSL,
+					_CRT_RAND_S,
+					XML_STATIC,
+					ASMINF,
+					EV_STANDALONE,
+					_CRT_SECURE_NO_DEPRECATE,
+					ASMV,
+					NO_FSEEKO,
+					NNG_LITTLE_ENDIAN,
+					LIBUS_USE_LIBUV,
+					_CRT_SECURE_NO_WARNINGS,
+					NNG_PRIVATE,
+					"NNG_MAX_TASKQ_THREADS=16",
+					"NNG_HAVE_SNPRINTF=1",
+					"NNG_HAVE_CONDVAR=1",
+					"NNG_HAVE_STRNLEN=1",
+					NNG_TRANSPORT_WS,
+					NNG_TRANSPORT_WSS,
+					NNG_SUPP_HTTP,
+					NNG_STATIC_LIB,
+					_CRT_NONSTDC_NO_DEPRECATE,
+					W_PLATFORM_OSX,
+					libapr_1_EXPORTS,
+					LIBUS_USE_LIBUV,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				HEADER_SEARCH_PATHS = "";
@@ -1223,6 +958,10 @@
 					"$(SRCROOT)/../../../deps/libpng/include",
 					"$(SRCROOT)/../../../deps/zlib/include",
 					"$(SRCROOT)/../../../deps/zlib/include/zconf/osx",
+					"$(SRCROOT)/../../../deps/quiche/include",
+					"$(SRCROOT)/../../../deps/quiche/boringssl",
+					"$(SRCROOT)/../../../src/wolf.system/net/ws/uSockets",
+					"$(SRCROOT)/../../../deps/libuv/include",
 				);
 				INSTALL_PATH = /usr/local/lib;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
@@ -1241,6 +980,7 @@
 					"$(SRCROOT)/../../../deps/ssh/lib/osx/debug",
 					"$(SRCROOT)/../../../deps/libjpeg-turbo/lib/osx/debug",
 					"$(SRCROOT)/../../../deps/libpng/lib/osx",
+					"$(SRCROOT)/../../../deps/quiche/lib/osx",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				ONLY_ACTIVE_ARCH = YES;
