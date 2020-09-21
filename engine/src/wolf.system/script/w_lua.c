@@ -3,6 +3,7 @@
 #include "lua/lauxlib.h"
 #include <apr-1/apr_strings.h>
 #include <io/w_io.h>
+#include "log/w_log.h"
 
 lua_State*		s_lua;
 char*		    s_last_error;

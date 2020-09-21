@@ -1,4 +1,5 @@
 #include "wolf.h"
+#include "log/w_log.h"
 
 //http://dev.ariel-networks.com/apr/apr-tutorial/html/apr-tutorial.html#toc1
 #include <apr.h>

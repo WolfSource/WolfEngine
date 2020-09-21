@@ -1,6 +1,7 @@
 #include "w_thread.h"
 #include <apr-1/apr_thread_proc.h>
 #include <apr-1/apr_portable.h>
+#include "log/w_log.h"
 
 W_RESULT w_thread_init_once_flag(
     _Inout_ w_mem_pool pMemPool,

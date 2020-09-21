@@ -1,5 +1,6 @@
 #include "w_shared_mem.h"
 #include <apr-1/apr_shm.h>
+#include "log/w_log.h"
 
 W_RESULT    w_shared_mem_create(
     _Inout_ w_mem_pool pMemPool,

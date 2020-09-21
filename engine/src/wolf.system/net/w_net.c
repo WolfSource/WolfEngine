@@ -3,6 +3,7 @@
 #include <apr.h>
 #include <apr-1/apr_general.h>
 #include <apr_tables.h>
+#include "log/w_log.h"
 #include <nng/nng.h>
 #include <core/nng_impl.h>
 #include <nng/protocol/pipeline0/push.h>
@@ -92,7 +93,7 @@ static struct quic_connection* s_quic_conns = NULL;
 
 #pragma endregion
 
-const char* _net_error(_In_ W_RESULT pErrorCode,
+const char* _nng_error(_In_ W_RESULT pErrorCode,
     _In_z_ const char* pUserDefinedMessage,
     _In_z_ const char* pTraceInfo)
 {
@@ -208,7 +209,7 @@ W_RESULT w_net_url_parse(_In_z_ const char* pUrlAddress, _Inout_ w_url *pURL)
     W_RESULT _rt = nng_url_parse(pURL, pUrlAddress);
     if (_rt)
     {
-        _net_error(_rt, "nng_url_parse got error", _trace_info);
+        _nng_error(_rt, "nng_url_parse got error", _trace_info);
         return _rt;
     }
 
@@ -298,7 +299,9 @@ out:
     return _rt;
 }
 
-W_RESULT w_net_open_tcp_socket(_In_z_ const char* pEndPoint,
+W_RESULT w_net_open_tcp_socket(
+    _In_ w_mem_pool pMemPool,
+    _In_z_ const char* pEndPoint,
     _In_ w_socket_mode pSocketMode,
     _In_ bool pNoDelayOption,
     _In_ bool pKeepAliveOption,
@@ -326,6 +329,25 @@ W_RESULT w_net_open_tcp_socket(_In_z_ const char* pEndPoint,
     }
 
     W_RESULT _rt = W_SUCCESS;
+
+    pSocket->s = (w_socket)w_malloc(pMemPool, sizeof(nng_socket));
+    if (!pSocket->s)
+    {
+        W_ASSERT_P(false, "could not allocate memory for pSocket->s ! trace info: %s", _trace_info);
+        return NNG_ENOARG;
+    }
+    pSocket->d = (w_dialer)w_malloc(pMemPool, sizeof(nng_dialer));
+    if (!pSocket->d)
+    {
+        W_ASSERT_P(false, "could not allocate memory for pSocket->d ! trace info: %s", _trace_info);
+        return NNG_ENOARG;
+    }
+    pSocket->l = (w_listener)w_malloc(pMemPool, sizeof(nng_listener));
+    if (!pSocket->l)
+    {
+        W_ASSERT_P(false, "could not allocate memory for pSocket->l ! trace info: %s", _trace_info);
+        return NNG_ENOARG;
+    }
 
     nng_socket* _nng_socket = (nng_socket*)pSocket->s;
     nng_dialer* _nng_dialer = (nng_dialer*)pSocket->d;
@@ -368,7 +390,7 @@ W_RESULT w_net_open_tcp_socket(_In_z_ const char* pEndPoint,
 
     if (_rt)
     {
-        _net_error(_rt, "could not open socket", _trace_info);
+        _nng_error(_rt, "could not open socket", _trace_info);
         goto out;
     }
 
@@ -376,14 +398,14 @@ W_RESULT w_net_open_tcp_socket(_In_z_ const char* pEndPoint,
     _rt = nng_setopt_bool(*_nng_socket, NNG_OPT_TCP_NODELAY, pNoDelayOption);
     if (_rt)
     {
-        _net_error(_rt, "could not set socket no delay option", _trace_info);
+        _nng_error(_rt, "could not set socket no delay option", _trace_info);
         goto out;
     }
 
     _rt = nng_setopt_bool(*_nng_socket, NNG_OPT_TCP_KEEPALIVE, pKeepAliveOption);
     if (_rt)
     {
-        _net_error(_rt, "could not set socket keep alive option", _trace_info);
+        _nng_error(_rt, "could not set socket keep alive option", _trace_info);
         goto out;
     }
 
@@ -402,7 +424,7 @@ W_RESULT w_net_open_tcp_socket(_In_z_ const char* pEndPoint,
         _rt = nng_dialer_create(_nng_dialer, *_nng_socket, pEndPoint);
         if (_rt)
         {
-            _net_error(_rt, "could not create dialer object", _trace_info);
+            _nng_error(_rt, "could not create dialer object", _trace_info);
             break;
         }
 
@@ -410,14 +432,14 @@ W_RESULT w_net_open_tcp_socket(_In_z_ const char* pEndPoint,
         _rt = nng_dialer_setopt_bool(*_nng_dialer, NNG_OPT_TCP_NODELAY, pNoDelayOption);
         if (_rt)
         {
-            _net_error(_rt, "could not set dialer no delay option", _trace_info);
+            _nng_error(_rt, "could not set dialer no delay option", _trace_info);
             break;
         }
 
         _rt = nng_dialer_setopt_bool(*_nng_dialer, NNG_OPT_TCP_KEEPALIVE, pKeepAliveOption);
         if (_rt)
         {
-            _net_error(_rt, "could not set dialer keep alive option", _trace_info);
+            _nng_error(_rt, "could not set dialer keep alive option", _trace_info);
             break;
         }
 
@@ -433,7 +455,7 @@ W_RESULT w_net_open_tcp_socket(_In_z_ const char* pEndPoint,
         _rt = nng_dialer_start(*_nng_dialer, (pAsync ? NNG_FLAG_NONBLOCK : 0));
         if (_rt)
         {
-            _net_error(_rt, "could not start dialer", _trace_info);
+            _nng_error(_rt, "could not start dialer", _trace_info);
             break;
         }
     }
@@ -449,7 +471,7 @@ W_RESULT w_net_open_tcp_socket(_In_z_ const char* pEndPoint,
         _rt = nng_listener_create(_nng_listener, *_nng_socket, pEndPoint);
         if (_rt)
         {
-            _net_error(_rt, "could not create listener object", _trace_info);
+            _nng_error(_rt, "could not create listener object", _trace_info);
             break;
         }
 
@@ -457,14 +479,14 @@ W_RESULT w_net_open_tcp_socket(_In_z_ const char* pEndPoint,
         _rt = nng_listener_setopt_bool(*_nng_listener, NNG_OPT_TCP_NODELAY, pNoDelayOption);
         if (_rt)
         {
-            _net_error(_rt, "could not set listener no delay option", _trace_info);
+            _nng_error(_rt, "could not set listener no delay option", _trace_info);
             break;
         }
 
         _rt = nng_listener_setopt_bool(*_nng_listener, NNG_OPT_TCP_KEEPALIVE, pKeepAliveOption);
         if (_rt)
         {
-            _net_error(_rt, "could not set listener keep alive option", _trace_info);
+            _nng_error(_rt, "could not set listener keep alive option", _trace_info);
             break;
         }
 
@@ -473,14 +495,14 @@ W_RESULT w_net_open_tcp_socket(_In_z_ const char* pEndPoint,
             _rt = _init_listener_tls(*_nng_listener, pAuthMode, pCert, pKey);
             if (_rt)
             {
-                _net_error(_rt, "_init_listener_tls failed", _trace_info);
+                _nng_error(_rt, "_init_listener_tls failed", _trace_info);
                 break;
             }
         }
         _rt = nng_listener_start(*_nng_listener, (pAsync ? NNG_FLAG_NONBLOCK : 0));
         if (_rt)
         {
-            _net_error(_rt, "could not start listener", _trace_info);
+            _nng_error(_rt, "could not start listener", _trace_info);
             break;
         }
     }
@@ -652,13 +674,13 @@ W_RESULT _io_udp_socket(_In_ w_socket_mode pSocketMode,
     _rt = nng_aio_set_iov(_aio, 1, _iov);
     if (_rt)
     {
-        _net_error(_rt, "nng_aio_set_iov failed", _trace_info);
+        _nng_error(_rt, "nng_aio_set_iov failed", _trace_info);
         goto out;
     }
     _rt = nng_aio_set_input(_aio, 0, _sa);
     if (_rt)
     {
-        _net_error(_rt, "nng_aio_set_input failed", _trace_info);
+        _nng_error(_rt, "nng_aio_set_input failed", _trace_info);
         goto out;
     }
 
@@ -678,14 +700,14 @@ W_RESULT _io_udp_socket(_In_ w_socket_mode pSocketMode,
     _rt = nng_aio_result(_aio);
     if (_rt)
     {
-        _net_error(_rt, "nng_aio_result failed", _trace_info);
+        _nng_error(_rt, "nng_aio_result failed", _trace_info);
         goto out;
     }
 
     _sent_len = nng_aio_count(_aio);
     if (_sent_len != _buf_len)
     {
-        _net_error(_rt, "length of the sent buffer is not equal to inputted buffer", _trace_info);
+        _nng_error(_rt, "length of the sent buffer is not equal to inputted buffer", _trace_info);
         goto out;
     }
 
@@ -711,18 +733,18 @@ W_RESULT w_net_send_msg_tcp(_Inout_ w_socket_tcp* pSocket,
         pAsync ? NNG_FLAG_NONBLOCK : 0);
 }
 
-W_RESULT w_net_receive_msg_tcp(_Inout_ w_socket_tcp* pSocket,
-    _Inout_ char** pMessage,
-    _Inout_ size_t* pMessageLength)
+W_RESULT w_net_receive_msg_tcp(
+    _Inout_ w_socket_tcp* pSocket,
+    _Inout_ w_buffer pBuffer)
 {
-    if (!pSocket)
+    if (!pSocket || !pBuffer)
     {
         W_ASSERT(false, "parameters are NULL. trace info: w_net_receive_msg_tcp");
         return NNG_ENOARG;
     }
 
     nng_socket* _nng_socket = (nng_socket*)pSocket->s;
-    return nng_recv(*_nng_socket, pMessage, pMessageLength, NNG_FLAG_ALLOC);
+    return nng_recv(*_nng_socket, pBuffer->data, pBuffer->len, NNG_FLAG_ALLOC);
 }
 
 W_RESULT w_net_send_msg_udp(

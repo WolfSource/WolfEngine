@@ -1,5 +1,6 @@
 #include "w_hash.h"
 #include <apr-1/apr_hash.h>
+#include "log/w_log.h"
 
 w_hash w_hash_init(_Inout_ w_mem_pool pMemPool)
 {

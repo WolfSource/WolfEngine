@@ -1,6 +1,7 @@
 #include "w_timespan.h"
 #include <time.h>
 #include <apr-1/apr_general.h>
+#include "log/w_log.h"
 
 #ifdef W_PLATFORM_WIN
 #include <windows.h>

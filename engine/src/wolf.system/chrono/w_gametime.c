@@ -1,6 +1,7 @@
 #include "w_gametime.h"
 #include "w_chrono.h"
 #include <math.h>
+#include "log/w_log.h"
 
 typedef struct w_gametime_t
 {

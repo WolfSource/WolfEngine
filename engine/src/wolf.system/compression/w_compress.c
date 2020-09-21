@@ -6,6 +6,7 @@
 #include <apr-1/apr_tables.h>
 #include <apr-1/apr_file_io.h>
 #include <apr-1/apr_hash.h>
+#include "log/w_log.h"
 
 #include "lz4/lz4.h"
 

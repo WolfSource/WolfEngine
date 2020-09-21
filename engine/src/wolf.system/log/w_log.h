@@ -170,6 +170,9 @@ extern "C" {
     W_SYSTEM_EXPORT
         W_RESULT  w_log_fini_ex(_In_ int pLogID);
 
+#define W_ASSERT(c, fmt)            { if (!c) { LOG_P(W_LOG_ERROR, fmt); assert(c);} }
+#define W_ASSERT_P(c, fmt, ...)     { if (!c) { LOG_P(W_LOG_ERROR, (fmt), __VA_ARGS__); assert(c);} }
+
 #ifdef __cplusplus
 }
 #endif

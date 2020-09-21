@@ -1,5 +1,6 @@
 #include "w_mem_map.h"
 #include <apr-1/apr_mmap.h>
+#include "log/w_log.h"
 
 W_RESULT    w_mem_map_create(
     _Inout_ w_mem_pool pMemPool,

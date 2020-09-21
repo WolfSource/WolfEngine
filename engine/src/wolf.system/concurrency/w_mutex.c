@@ -1,5 +1,6 @@
 #include "w_mutex.h"
 #include <apr-1/apr_thread_mutex.h>
+#include "log/w_log.h"
 
 W_RESULT    w_mutex_init(
     _Inout_ w_mem_pool pMemPool,

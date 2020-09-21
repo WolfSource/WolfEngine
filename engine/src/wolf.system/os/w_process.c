@@ -1,5 +1,6 @@
 #include "w_process.h"
 #include <apr-1/apr_general.h>
+#include "log/w_log.h"
 #include <io/w_io.h>
 #include <memory/w_string_view.h>
 
@@ -337,7 +338,7 @@ W_RESULT w_process_create(
 			_arg = w_malloc(_arg_pool, _size);
 			if (!_arg)
 			{
-				w_mem_pool_fini(_arg_pool);
+				w_mem_pool_fini(&_arg_pool);
 				return _ret;
 			}
 			swprintf_s(_arg, _size, L"%s %s", pPathToProcess, pCmdsArg);

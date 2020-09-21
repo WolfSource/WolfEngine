@@ -1,6 +1,7 @@
 #include "w_array.h"
 #include <apr-1/apr_tables.h>
 #include <apr-1/apr_strings.h>
+#include "log/w_log.h"
 
 w_array w_array_init(
     _Inout_ w_mem_pool pMemPool,

@@ -1,5 +1,6 @@
 #include "w_async.h"
 #include "apr-1/apr_general.h"
+#include "log/w_log.h"
 
 void* _thread_job(w_thread pThread, void* pArgs)
 {

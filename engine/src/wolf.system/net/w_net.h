@@ -181,7 +181,9 @@ extern "C" {
      * @return result code
     */
     W_SYSTEM_EXPORT
-        W_RESULT w_net_open_tcp_socket(_In_z_ const char* pEndPoint,
+        W_RESULT w_net_open_tcp_socket(
+            _In_ w_mem_pool pMemPool,
+            _In_z_ const char* pEndPoint,
             _In_ w_socket_mode pSocketMode,
             _In_ bool pNoDelayOption,
             _In_ bool pKeepAliveOption,
@@ -303,15 +305,13 @@ extern "C" {
     /**
      * receive a message via tcp socket
      * @param pSocket a tcp socket
-     * @param pMessage message buffer
-     * @param pMessageLength length of message
+     * @param pBuffer message buffer
      * @return result code
     */
     W_SYSTEM_EXPORT
         W_RESULT w_net_receive_msg_tcp(
             _Inout_ w_socket_tcp* pSocket,
-            _Inout_ char** pMessage,
-            _Inout_ size_t* pMessageLength);
+            _Inout_ w_buffer pBuffer);
 
     /**
      * send data via udp socket

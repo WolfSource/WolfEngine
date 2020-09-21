@@ -22,8 +22,6 @@ extern "C" {
 #include <limits.h>
 #include "memory/w_mem_pool.h"
 
-#define W_ASSERT(c, fmt)            { if (!c) { printf(fmt); assert(c);} }
-#define W_ASSERT_P(c, fmt, ...)     { if (!c) { printf((fmt), __VA_ARGS__); assert(c);} }
 #define W_SAFE_DELETE(x)            { if (x)  { delete x; x = NULL;                  } }
 #define W_SAFE_DELETE_ARRAY(ar)     { if (ar) { delete[] ar; ar = NULL;              } }
 #define W_SAFE_RELEASE(x)           { if (x)  { x->release(); delete x; x = NULL;    } }
