@@ -744,7 +744,7 @@ W_RESULT w_net_receive_msg_tcp(
     }
 
     nng_socket* _nng_socket = (nng_socket*)pSocket->s;
-    return nng_recv(*_nng_socket, pBuffer->data, pBuffer->len, NNG_FLAG_ALLOC);
+    return nng_recv(*_nng_socket, pBuffer->data, &pBuffer->len, NNG_FLAG_ALLOC);
 }
 
 W_RESULT w_net_send_msg_udp(
