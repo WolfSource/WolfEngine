@@ -293,11 +293,23 @@ W_RESULT w_process_create(
 	_In_ DWORD pCreationFlags,
 	_Out_ w_process_info* pProcessInfo)
 {
+	W_RESULT _ret = W_FAILURE;
+	if (!pPathToProcess)
+	{
+		return _ret;
+	}
+
+	size_t _len_path = wcslen(pPathToProcess);
+	if (!_len_path)
+	{
+		return _ret;
+	}
+
 	size_t _size = sizeof(STARTUPINFO);
 	STARTUPINFO* _startup_info = w_malloc(pMemPool, _size);
 	if (!_startup_info)
 	{
-		return W_FAILURE;
+		return _ret;
 	}
 	memset(_startup_info, 0, _size);
 
@@ -305,13 +317,37 @@ W_RESULT w_process_create(
 	PROCESS_INFORMATION* _process_info = w_malloc(pMemPool, _size);
 	if (!_process_info)
 	{
-		return W_FAILURE;
+		return _ret;
 	}
 	memset(_process_info, 0, _size);
 
+	w_mem_pool _arg_pool = NULL;
+	wchar_t* _arg = NULL;
+	if (pCmdsArg)
+	{
+		size_t _len_arg = wcslen(pCmdsArg);
+		if (_len_arg)
+		{
+			w_mem_pool_init(&_arg_pool);
+			if (!_arg_pool)
+			{
+				return _ret;
+			}
+			_size = _len_path + _len_arg + 2;//2 for space and '\0'
+			_arg = w_malloc(_arg_pool, _size);
+			if (!_arg)
+			{
+				w_mem_pool_fini(_arg_pool);
+				return _ret;
+			}
+			swprintf_s(_arg, _size, L"%s %s", pPathToProcess, pCmdsArg);
+			_arg[_size] = '\0';
+		}
+	}
+
 	if (CreateProcessW(
 		(LPCWSTR)pPathToProcess,
-		(LPCWSTR)pCmdsArg,
+		_arg,
 		NULL,
 		NULL,
 		FALSE,
@@ -328,12 +364,21 @@ W_RESULT w_process_create(
 		{
 			(*pProcessInfo)->info = _process_info;
 			(*pProcessInfo)->error_code = GetLastError();
-			return W_SUCCESS;
+			_ret = W_SUCCESS;
 		}
+	}
+	else
+	{
+		pProcessInfo = NULL;
+	}
+
+	if (_arg_pool)
+	{
+		w_mem_pool_fini(&_arg_pool);
 	}
 
 	//logger.error(L"Process ID: \"{}\" could not run with arg \"{}\" . Error code : \"{}\"", pPathtoProcess, pCmdsArg, GetLastError());
-	return W_FAILURE;
+	return _ret;
 }
 
 #endif

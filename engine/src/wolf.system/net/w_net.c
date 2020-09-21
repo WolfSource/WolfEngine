@@ -759,7 +759,7 @@ W_RESULT w_net_run_websocket_server(_In_ bool pSSL,
 
     W_RESULT _rt;
 
-    /* ws _ws = ws_init();
+    ws _ws = ws_init();
     if (_ws)
     {
         _rt = ws_run(_ws,
@@ -784,7 +784,7 @@ W_RESULT w_net_run_websocket_server(_In_ bool pSSL,
         W_ASSERT_P(false, "could not run websocket. trace info: %s", _trace_info);
         _rt = W_FAILURE;
     }
-*/
+
     return _rt;
 }
 

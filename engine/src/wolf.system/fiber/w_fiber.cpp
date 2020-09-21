@@ -19,53 +19,50 @@ W_RESULT w_fiber_scheduler_init(
     _In_z_ const char* pSchedulerName,
     _In_ std::initializer_list<const w_arg&> pFiberTasks)
 {
+    W_RESULT _ret = W_FAILURE;
     const char* _trace_info = "w_fiber_scheduler_init";
     if (!pMemPool)
     {
         W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
-        return W_FAILURE;
+        return _ret;
     }
 
     fibers_info* _fibers_info = nullptr;
     size_t _i = 0;
-    
+
     auto _size_of_tasks = pFiberTasks.size();
     if (!_size_of_tasks)
     {
         goto out;
     }
-    
-    _fibers_info =  (fibers_info*)w_malloc(pMemPool, sizeof(fibers_info));
+
+    _fibers_info = (fibers_info*)w_malloc(pMemPool, sizeof(fibers_info));
     if (!_fibers_info)
     {
         goto out;
     }
-    
+
     _fibers_info->fibers = (boost::fibers::fiber*)w_malloc(
         pMemPool,
-        _size_of_tasks * sizeof( boost::fibers::fiber));
+        _size_of_tasks * sizeof(boost::fibers::fiber));
     if (!_fibers_info->fibers)
     {
         goto out;
     }
-    
+
     _fibers_info->number_of_fibers = _size_of_tasks;
-    
+
     for (auto& _task : pFiberTasks)
     {
         _fibers_info->fibers[_i++](_task);
-        _fibers_info->fibers[_i++].join();        
+        _fibers_info->fibers[_i++].join();
     }
-    
+
     s_schedulers[pSchedulerName] = _fibers_info;
-    
+
+    _ret = W_SUCCESS;
 out:
-    if (_fibers_info)
-    {
-        //w_free(pMemPool, _fibers_info);
-        //w_free(pMemPool, _fibers_info->fibers);
-    }
-    return W_SUCCESS;
+    return _ret;
 }
 
 scheduler_info*  w_fiber_get_scheduler_info(
