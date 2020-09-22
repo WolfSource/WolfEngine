@@ -349,6 +349,15 @@ extern "C" {
             _Inout_ w_socket_udp* pSocket,
             _In_z_ char* pMessage,
             _In_z_ size_t* pMessageLength);
+
+    /**
+     * free msg buffer
+     * @param pBuffer message buffer
+     * @return result code
+    */
+    W_SYSTEM_EXPORT
+        W_RESULT w_net_free_msg(_Inout_ w_buffer pBuffer);
+
     /**
      * run a websocket server and block the current thread
      * @param pSSL enable SSL(based on WolfSSL)

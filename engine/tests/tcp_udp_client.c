@@ -100,6 +100,10 @@ int main()
 		}
 	}
 
+	//udp client
+	{
+
+	}
 
 	//	w_socket_udp udp_socket;
 	//	const char pURL[] = "localhost";

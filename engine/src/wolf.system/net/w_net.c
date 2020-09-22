@@ -866,7 +866,6 @@ W_RESULT w_net_receive_msg_tcp(
 
     nng_socket* _nng_socket = (nng_socket*)pSocket->s;
     int _ret = nng_recv(*_nng_socket, &(pBuffer->data), &(pBuffer->len), NNG_FLAG_ALLOC);
-
     return _ret;
 }
 
@@ -883,6 +882,20 @@ W_RESULT w_net_receive_msg_udp(_Inout_ w_socket_udp* pSocket,
     _In_z_ size_t* pMessageLength)
 {
     return _io_udp_socket(two_way_listener, pSocket, pMessage, pMessageLength);
+}
+
+W_RESULT w_net_free_msg(_Inout_ w_buffer pBuffer)
+{
+    if (!pBuffer)
+    {
+        return W_BAD_ARG;
+    }
+    nng_free(pBuffer->data, pBuffer->len);
+    
+    pBuffer->data = NULL;
+    pBuffer->len = 0;
+
+    return W_SUCCESS;
 }
 
 W_RESULT w_net_run_websocket_server(_In_ bool pSSL,
