@@ -4,6 +4,7 @@
 #include <boost/fiber/all.hpp>
 #include <boost/lexical_cast.hpp>
 #include <string>
+#include "w_log.h"
 
 typedef struct
 {

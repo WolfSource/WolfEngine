@@ -7,6 +7,19 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		05B4A591251A41B800FBA684 /* logger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 05B4A521251A41B600FBA684 /* logger.cpp */; };
+		05B4A592251A41B800FBA684 /* logger.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 05B4A522251A41B600FBA684 /* logger.hpp */; };
+		05B4A5EA251A41B800FBA684 /* async.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 05B4A584251A41B800FBA684 /* async.cpp */; };
+		05B4A5EB251A41B800FBA684 /* cfg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 05B4A585251A41B800FBA684 /* cfg.cpp */; };
+		05B4A5EC251A41B800FBA684 /* color_sinks.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 05B4A586251A41B800FBA684 /* color_sinks.cpp */; };
+		05B4A5ED251A41B800FBA684 /* file_sinks.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 05B4A587251A41B800FBA684 /* file_sinks.cpp */; };
+		05B4A5EE251A41B800FBA684 /* fmt.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 05B4A588251A41B800FBA684 /* fmt.cpp */; };
+		05B4A5EF251A41B800FBA684 /* spdlog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 05B4A589251A41B800FBA684 /* spdlog.cpp */; };
+		05B4A5F0251A41B800FBA684 /* stdout_sinks.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 05B4A58A251A41B800FBA684 /* stdout_sinks.cpp */; };
+		05B4A5F4251A41B800FBA684 /* w_log.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 05B4A58E251A41B800FBA684 /* w_log.cpp */; };
+		05B4A5F5251A41B800FBA684 /* w_log.h in Headers */ = {isa = PBXBuildFile; fileRef = 05B4A58F251A41B800FBA684 /* w_log.h */; };
+		05B4A5F6251A41B800FBA684 /* w_log_config.h in Headers */ = {isa = PBXBuildFile; fileRef = 05B4A590251A41B800FBA684 /* w_log_config.h */; };
+		05B4A6D7251A651500FBA684 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 05B4A6D6251A651500FBA684 /* Foundation.framework */; };
 		05BC1E1425127F48007D6218 /* w_chrono.c in Sources */ = {isa = PBXBuildFile; fileRef = 05BC1E0E25127F48007D6218 /* w_chrono.c */; };
 		05BC1E1525127F48007D6218 /* w_chrono.h in Headers */ = {isa = PBXBuildFile; fileRef = 05BC1E0F25127F48007D6218 /* w_chrono.h */; };
 		05BC1E1625127F48007D6218 /* w_gametime.c in Sources */ = {isa = PBXBuildFile; fileRef = 05BC1E1025127F48007D6218 /* w_gametime.c */; };
@@ -307,6 +320,19 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		05B4A521251A41B600FBA684 /* logger.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = logger.cpp; sourceTree = "<group>"; };
+		05B4A522251A41B600FBA684 /* logger.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = logger.hpp; sourceTree = "<group>"; };
+		05B4A584251A41B800FBA684 /* async.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = async.cpp; sourceTree = "<group>"; };
+		05B4A585251A41B800FBA684 /* cfg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cfg.cpp; sourceTree = "<group>"; };
+		05B4A586251A41B800FBA684 /* color_sinks.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = color_sinks.cpp; sourceTree = "<group>"; };
+		05B4A587251A41B800FBA684 /* file_sinks.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = file_sinks.cpp; sourceTree = "<group>"; };
+		05B4A588251A41B800FBA684 /* fmt.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fmt.cpp; sourceTree = "<group>"; };
+		05B4A589251A41B800FBA684 /* spdlog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = spdlog.cpp; sourceTree = "<group>"; };
+		05B4A58A251A41B800FBA684 /* stdout_sinks.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = stdout_sinks.cpp; sourceTree = "<group>"; };
+		05B4A58E251A41B800FBA684 /* w_log.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = w_log.cpp; sourceTree = "<group>"; };
+		05B4A58F251A41B800FBA684 /* w_log.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = w_log.h; sourceTree = "<group>"; };
+		05B4A590251A41B800FBA684 /* w_log_config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = w_log_config.h; sourceTree = "<group>"; };
+		05B4A6D6251A651500FBA684 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		05BC1E0E25127F48007D6218 /* w_chrono.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = w_chrono.c; sourceTree = "<group>"; };
 		05BC1E0F25127F48007D6218 /* w_chrono.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = w_chrono.h; sourceTree = "<group>"; };
 		05BC1E1025127F48007D6218 /* w_gametime.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = w_gametime.c; sourceTree = "<group>"; };
@@ -524,7 +550,7 @@
 		05BC2093251285AD007D6218 /* stb_image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stb_image.h; sourceTree = "<group>"; };
 		05BC2094251285AD007D6218 /* stb_image_resize.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stb_image_resize.h; sourceTree = "<group>"; };
 		05BC2095251285AD007D6218 /* stb_image_write.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stb_image_write.h; sourceTree = "<group>"; };
-		05BC2096251285AD007D6218 /* w_io.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = w_io.c; sourceTree = "<group>"; };
+		05BC2096251285AD007D6218 /* w_io.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = w_io.c; sourceTree = "<group>"; };
 		05BC2097251285AD007D6218 /* w_io.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = w_io.h; sourceTree = "<group>"; };
 		05BC209F251285C8007D6218 /* allocators.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = allocators.h; sourceTree = "<group>"; };
 		05BC20A0251285C8007D6218 /* cursorstreamwrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cursorstreamwrapper.h; sourceTree = "<group>"; };
@@ -615,6 +641,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				05B4A6D7251A651500FBA684 /* Foundation.framework in Frameworks */,
 				05BC21FD251297B7007D6218 /* libnng.a in Frameworks */,
 				05BC21C325128E11007D6218 /* libapr-1.a in Frameworks */,
 				05BC21C025128DF8007D6218 /* libjpeg.a in Frameworks */,
@@ -633,6 +660,42 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		05B4A520251A41B600FBA684 /* log */ = {
+			isa = PBXGroup;
+			children = (
+				05B4A521251A41B600FBA684 /* logger.cpp */,
+				05B4A522251A41B600FBA684 /* logger.hpp */,
+				05B4A523251A41B600FBA684 /* spdlog */,
+				05B4A58E251A41B800FBA684 /* w_log.cpp */,
+				05B4A58F251A41B800FBA684 /* w_log.h */,
+				05B4A590251A41B800FBA684 /* w_log_config.h */,
+			);
+			name = log;
+			path = ../../../src/wolf.system/log;
+			sourceTree = "<group>";
+		};
+		05B4A523251A41B600FBA684 /* spdlog */ = {
+			isa = PBXGroup;
+			children = (
+				05B4A583251A41B700FBA684 /* src */,
+			);
+			path = spdlog;
+			sourceTree = "<group>";
+		};
+		05B4A583251A41B700FBA684 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				05B4A584251A41B800FBA684 /* async.cpp */,
+				05B4A585251A41B800FBA684 /* cfg.cpp */,
+				05B4A586251A41B800FBA684 /* color_sinks.cpp */,
+				05B4A587251A41B800FBA684 /* file_sinks.cpp */,
+				05B4A588251A41B800FBA684 /* fmt.cpp */,
+				05B4A589251A41B800FBA684 /* spdlog.cpp */,
+				05B4A58A251A41B800FBA684 /* stdout_sinks.cpp */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
 		05BC1E0D25127F48007D6218 /* chrono */ = {
 			isa = PBXGroup;
 			children = (
@@ -1241,6 +1304,7 @@
 		05BC21A925128D1E007D6218 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				05B4A6D6251A651500FBA684 /* Foundation.framework */,
 				05BC21C225128E10007D6218 /* libapr-1.a */,
 				05BC21BE25128DF8007D6218 /* libjpeg.a */,
 				05BC21BF25128DF8007D6218 /* libturbojpeg.a */,
@@ -1261,6 +1325,7 @@
 		2C4CD28B1E8A71450090EE0A = {
 			isa = PBXGroup;
 			children = (
+				05B4A520251A41B600FBA684 /* log */,
 				05BC21A425128BFB007D6218 /* fiber */,
 				05BC219425128B04007D6218 /* script */,
 				05BC2123251286F1007D6218 /* net */,
@@ -1464,6 +1529,7 @@
 				05BC20C9251285C8007D6218 /* cursorstreamwrapper.h in Headers */,
 				05BC208625128237007D6218 /* w_condition_variable.h in Headers */,
 				05BC1FD025128202007D6218 /* greenhills.h in Headers */,
+				05B4A5F5251A41B800FBA684 /* w_log.h in Headers */,
 				05BC1FD825128202007D6218 /* metrowerks.h in Headers */,
 				05BC1FB725128202007D6218 /* parisc.h in Headers */,
 				05BC20E5251285C8007D6218 /* pointer.h in Headers */,
@@ -1498,6 +1564,7 @@
 				05BC1FF825128203007D6218 /* stdc.h in Headers */,
 				05BC210B251285E5007D6218 /* utlist.h in Headers */,
 				05BC1FD925128202007D6218 /* microtec.h in Headers */,
+				05B4A5F6251A41B800FBA684 /* w_log_config.h in Headers */,
 				05BC210A251285E5007D6218 /* uthash.h in Headers */,
 				05BC208A25128237007D6218 /* w_signal.h in Headers */,
 				05BC207425128237007D6218 /* ev.h in Headers */,
@@ -1506,6 +1573,7 @@
 				05BC204625128203007D6218 /* zone.h in Headers */,
 				05BC20DB251285C8007D6218 /* stack.h in Headers */,
 				05BC200325128203007D6218 /* cxx.h in Headers */,
+				05B4A592251A41B800FBA684 /* logger.hpp in Headers */,
 				05BC1FF525128203007D6218 /* hardware.h in Headers */,
 				05BC20D9251285C8007D6218 /* pow10.h in Headers */,
 				05BC203B25128203007D6218 /* sbuffer.h in Headers */,
@@ -1603,10 +1671,13 @@
 			files = (
 				05BC208525128237007D6218 /* w_condition_variable.c in Sources */,
 				05BC1F5025128202007D6218 /* lz4.c in Sources */,
+				05B4A5F4251A41B800FBA684 /* w_log.cpp in Sources */,
 				05BC211D251285E5007D6218 /* w_shared_mem.c in Sources */,
 				05BC1E2D251280DC007D6218 /* w_cpu.c in Sources */,
 				05BC208D25128237007D6218 /* w_thread_pool.c in Sources */,
 				05BC204C25128203007D6218 /* zone.c in Sources */,
+				05B4A5EF251A41B800FBA684 /* spdlog.cpp in Sources */,
+				05B4A5EB251A41B800FBA684 /* cfg.cpp in Sources */,
 				05BC2163251286F2007D6218 /* w_net.c in Sources */,
 				05BC204B25128203007D6218 /* vrefbuffer.c in Sources */,
 				05BC2115251285E5007D6218 /* w_mem_cache.c in Sources */,
@@ -1614,26 +1685,32 @@
 				05BC21A725128BFB007D6218 /* w_fiber.cpp in Sources */,
 				05BC1E34251280DC007D6218 /* w_window.c in Sources */,
 				05BC1F5525128202007D6218 /* lz4hc.c in Sources */,
+				05B4A5ED251A41B800FBA684 /* file_sinks.cpp in Sources */,
 				05BC204925128203007D6218 /* unpack.c in Sources */,
 				05BC208125128237007D6218 /* w_async.c in Sources */,
 				05BC210F251285E5007D6218 /* w_array.c in Sources */,
+				05B4A5EE251A41B800FBA684 /* fmt.cpp in Sources */,
 				05BC1E1625127F48007D6218 /* w_gametime.c in Sources */,
 				05BC208925128237007D6218 /* w_signal.c in Sources */,
+				05B4A5EA251A41B800FBA684 /* async.cpp in Sources */,
 				05BC208F25128237007D6218 /* w_timer.c in Sources */,
 				05BC208325128237007D6218 /* w_concurrent_queue.c in Sources */,
 				05BC207325128237007D6218 /* ev.c in Sources */,
 				05BC2117251285E5007D6218 /* w_mem_map.c in Sources */,
+				05B4A5F0251A41B800FBA684 /* stdout_sinks.cpp in Sources */,
 				05BC1E1825127F48007D6218 /* w_timespan.c in Sources */,
 				05BC209B251285AD007D6218 /* w_io.c in Sources */,
 				05BC204D25128203007D6218 /* w_compress.c in Sources */,
 				05BC204825128203007D6218 /* objectc.c in Sources */,
 				05BC211B251285E5007D6218 /* w_redis.c in Sources */,
+				05B4A591251A41B800FBA684 /* logger.cpp in Sources */,
 				05BC1E32251280DC007D6218 /* w_process.c in Sources */,
 				05BC2113251285E5007D6218 /* w_hash.c in Sources */,
 				05BC1F5225128202007D6218 /* lz4frame.c in Sources */,
 				05BC21A225128B04007D6218 /* w_lua.c in Sources */,
 				05BC208B25128237007D6218 /* w_thread.c in Sources */,
 				05BC204A25128203007D6218 /* version.c in Sources */,
+				05B4A5EC251A41B800FBA684 /* color_sinks.cpp in Sources */,
 				05BC2121251285E5007D6218 /* w_table.c in Sources */,
 				05BC2119251285E5007D6218 /* w_mem_pool.c in Sources */,
 				05BC1E1425127F48007D6218 /* w_chrono.c in Sources */,
@@ -1810,6 +1887,7 @@
 					"$(SRCROOT)/../../../deps/quiche/include",
 					"$(SRCROOT)/../../../deps/quiche/boringssl",
 					"$(SRCROOT)/../../../deps/luaJIT/include",
+					"$(SRCROOT)/../../../src/wolf.system/log",
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(SRCROOT)/../../../deps/apr/lib/iOS",
@@ -1888,6 +1966,7 @@
 					"$(SRCROOT)/../../../deps/quiche/include",
 					"$(SRCROOT)/../../../deps/quiche/boringssl",
 					"$(SRCROOT)/../../../deps/luaJIT/include",
+					"$(SRCROOT)/../../../src/wolf.system/log",
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(SRCROOT)/../../../deps/apr/lib/iOS",

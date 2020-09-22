@@ -322,6 +322,15 @@ extern "C" {
         W_RESULT w_io_dir_get_current(_Inout_ w_mem_pool pMemPool, _Inout_ char** pDir);
 
     /**
+     * get current directory of executable program in char
+     * @param pMemPool The pool to allocate out of
+     * @param the current directory path which must be stored
+     * @return result
+    */
+    W_SYSTEM_EXPORT
+        W_RESULT w_io_dir_get_current_exe(_Inout_ w_mem_pool pMemPool, _Inout_ char** pDir);
+
+    /**
      * check whether this path belongs to a directory
      * @param pMemPool The pool to allocate out of
      * @param pPath path of directory

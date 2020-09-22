@@ -1,5 +1,6 @@
 #include <wolf.h>
 #include <net/w_net.h>
+#include <log/w_log.h>
 
 #define MAX_BUFFER_SIZE 65535
 w_mem_pool s_mem_pool = NULL;
@@ -74,8 +75,18 @@ int main()
 {
     wolf_init();
 
+    char* _current_dir = NULL;
     w_mem_pool_init(&s_mem_pool);
 
+    W_RESULT _ret = w_io_dir_get_current_exe(s_mem_pool, &_current_dir);
+
+    w_log_config _logger_config;
+    w_mem_pool_init(&s_mem_pool);
+    _logger_config.app_name = "test.quic.client";
+    _logger_config.log_dir_path = _current_dir;
+    _logger_config.log_to_std_out = true;
+    
+    w_log_init(s_mem_pool,&_logger_config);
     w_net_open_quic_socket(
         "localhost",
         5555,
