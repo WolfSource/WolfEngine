@@ -78,7 +78,7 @@ int main()
 
     w_net_open_quic_socket(
         "localhost",
-        555,
+        5555,
         quic_dialer,
         NULL,
         NULL,

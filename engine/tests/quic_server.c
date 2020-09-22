@@ -80,9 +80,9 @@ int main()
         W_RESULT _ret = w_io_dir_get_current(s_mem_pool, &_current_dir);
         if (_ret == W_SUCCESS)
         {
-            char* _crt = w_strcat(s_mem_pool, _current_dir, "/cert.crt", NULL);
-            char* _key = w_strcat(s_mem_pool, _current_dir, "/cert.key", NULL);
-            w_net_open_quic_socket(
+            char* _crt = w_strcat(s_mem_pool, _current_dir, "/../cert.crt", NULL);
+            char* _key = w_strcat(s_mem_pool, _current_dir, "/../cert.key", NULL);
+            _ret = w_net_open_quic_socket(
                 "localhost",
                 5555,
                 quic_listener,

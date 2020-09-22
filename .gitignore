@@ -13,6 +13,7 @@
 *.advixeexp
 *.dflgadvixe
 *.infoadvixe
+*.DS_Store
 /bin/win/
 /bin/osx/
 /bin/linux/

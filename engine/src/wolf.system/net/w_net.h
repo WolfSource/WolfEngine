@@ -18,7 +18,6 @@ extern "C" {
 #include <memory/w_array.h>
 
     //forward declaration
-    typedef struct nng_url* w_url;
     typedef struct nng_socket* w_socket;
     typedef struct nng_dialer* w_dialer;
     typedef struct nng_listener* w_listener;
@@ -27,7 +26,24 @@ extern "C" {
     typedef struct nng_iov* w_iov;
     typedef union nng_sockaddr* w_socket_address;
 
-    typedef enum {
+    //base on nng url
+    typedef struct w_url_t
+    {
+        char* rawurl;   // never NULL
+        char* scheme;   // never NULL
+        char* userinfo; // will be NULL if not specified
+        char* host;     // including colon and port
+        char* hostname; // name only, will be "" if not specified
+        char* port;     // port, will be "" if not specified
+        char* path;     // path, will be "" if not specified
+        char* query;    // without '?', will be NULL if not specified
+        char* fragment; // without '#', will be NULL if not specified
+        char* requri;   // includes query and fragment, "" if not specified
+    } w_url_t;
+    typedef struct w_url_t* w_url;
+
+    typedef enum 
+    {
         one_way_pusher,
         one_way_puller,
         two_way_dialer,
@@ -116,12 +132,16 @@ extern "C" {
 
     /**
      * parses a URL string into a structured form
-     * @param pUrlAddress opened url
+     * @param pMemPool The pool to allocate out of
+     * @param pUrlAddress url address
      * @param pURL structured url
      * @return result code
     */
     W_SYSTEM_EXPORT
-        W_RESULT w_net_url_parse(_In_z_ const char* pUrlAddress, _Inout_ w_url* pURL);
+        W_RESULT w_net_url_parse(
+            _In_ w_mem_pool pMemPool,
+            _In_z_ const char* pUrlAddress, 
+            _Inout_ w_url* pURL);
 
     /**
      * encode a URL string
@@ -133,13 +153,6 @@ extern "C" {
         const char* w_net_url_encoded(
             _Inout_ w_mem_pool pMemPool,
             _In_z_ const char* pUrlAddress);
-
-    /**
-     * free a URL resources
-     * @param pURL structured url
-    */
-    W_SYSTEM_EXPORT
-        void w_net_url_free(_Inout_ w_url pURL);
 
     /**
      * Resolve a TCP name asynchronously
@@ -190,10 +203,10 @@ extern "C" {
             _In_ bool pAsync,
             _In_ bool pTLS,
             _In_ int pAuthMode,
-            _In_z_ const char* pTLSServerName,
+            _In_opt_z_ const char* pTLSServerName,
             _In_ bool pOwnCert,
-            _In_z_ const char* pCert,
-            _In_z_ const char* pKey,
+            _In_opt_z_ const char* pCert,
+            _In_opt_z_ const char* pKey,
             _Inout_ w_socket_tcp* pSocket);
 
 

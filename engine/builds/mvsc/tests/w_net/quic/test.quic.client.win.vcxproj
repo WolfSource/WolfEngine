@@ -19,16 +19,16 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\tests\quic_server.c" />
+    <ClCompile Include="..\..\..\..\..\tests\quic_client.c" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{D519D1D6-E188-48C7-A0ED-1E2F156D0091}</ProjectGuid>
+    <ProjectGuid>{A0FD08A3-5AC3-4905-B6BA-CBD0337551AC}</ProjectGuid>
     <SccProjectName>SAK</SccProjectName>
     <SccAuxPath>SAK</SccAuxPath>
     <SccLocalPath>SAK</SccLocalPath>
     <SccProvider>SAK</SccProvider>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>TestQuicServerWin</RootNamespace>
+    <RootNamespace>TestQuicClientWin</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />

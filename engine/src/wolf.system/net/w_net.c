@@ -201,30 +201,148 @@ W_RESULT w_net_init(void)
     return nni_init();
 }
 
-W_RESULT w_net_url_parse(_In_z_ const char* pUrlAddress, _Inout_ w_url *pURL)
+W_RESULT w_net_url_parse(
+    _In_ w_mem_pool pMemPool,
+    _In_z_ const char* pUrlAddress,
+    _Inout_ w_url* pURL)
 {
     const char* _trace_info = "w_net_url_parse";
 
-    if (!pUrlAddress)
+    *pURL = NULL;
+    if (!pMemPool || !pUrlAddress)
     {
-        pURL = NULL;
         return NNG_ENOARG;
     }
 
-    W_RESULT _rt = nng_url_parse(pURL, pUrlAddress);
+    nng_url* _url = NULL;
+    W_RESULT _rt = nng_url_parse(&_url, pUrlAddress);
     if (_rt)
     {
         _nng_error(_rt, "nng_url_parse got error", _trace_info);
         return _rt;
     }
 
-    //check for NULL
-    if (pURL == NULL)
+    //make a copy from url
+    size_t _size = sizeof(nng_url);
+    *pURL = w_calloc(pMemPool, _size);
+    if (!*pURL)
     {
-        W_ASSERT(false,
-            "nng_url_parse got NULL. trace info: w_net_url_parse");
-        return NNG_EINVAL;
+        _nng_error(_rt, "could not allocate memory for pURL", _trace_info);
+        return _rt;
     }
+
+    //make copy
+    if (_url->u_rawurl)
+    {
+        _size = strlen(_url->u_rawurl);
+        if (_size)
+        {
+            (*pURL)->rawurl = w_malloc(pMemPool, _size + 1);
+            memmove((*pURL)->rawurl, _url->u_rawurl, _size);
+            (*pURL)->rawurl[_size] = '\0';
+        }
+    }
+
+    if (_url->u_scheme)
+    {
+        _size = strlen(_url->u_scheme);
+        if (_size)
+        {
+            (*pURL)->scheme = w_malloc(pMemPool, _size + 1);
+            memmove((*pURL)->scheme, _url->u_scheme, _size);
+            (*pURL)->scheme[_size] = '\0';
+        }
+    }
+
+    if (_url->u_userinfo)
+    {
+        _size = strlen(_url->u_userinfo);
+        if (_size)
+        {
+            (*pURL)->userinfo = w_malloc(pMemPool, _size + 1);
+            memmove((*pURL)->userinfo, _url->u_userinfo, _size);
+            (*pURL)->userinfo[_size] = '\0';
+        }
+    }
+
+    if (_url->u_host)
+    {
+        _size = strlen(_url->u_host);
+        if (_size)
+        {
+            (*pURL)->host = w_malloc(pMemPool, _size + 1);
+            memmove((*pURL)->host, _url->u_host, _size);
+            (*pURL)->host[_size] = '\0';
+        }
+    }
+
+    if (_url->u_hostname)
+    {
+        _size = strlen(_url->u_hostname);
+        if (_size)
+        {
+            (*pURL)->hostname = w_malloc(pMemPool, _size + 1);
+            memmove((*pURL)->hostname, _url->u_hostname, _size);
+            (*pURL)->hostname[_size] = '\0';
+        }
+    }
+
+    if (_url->u_port)
+    {
+        _size = strlen(_url->u_port);
+        if (_size)
+        {
+            (*pURL)->port = w_malloc(pMemPool, _size + 1);
+            memmove((*pURL)->port, _url->u_port, _size);
+            (*pURL)->port[_size] = '\0';
+        }
+    }
+
+    if (_url->u_path)
+    {
+        _size = strlen(_url->u_path);
+        if (_size)
+        {
+            (*pURL)->path = w_malloc(pMemPool, _size + 1);
+            memmove((*pURL)->path, _url->u_path, _size);
+            (*pURL)->path[_size] = '\0';
+        }
+    }
+
+    if (_url->u_query)
+    {
+        _size = strlen(_url->u_query);
+        if (_size)
+        {
+            (*pURL)->query = w_malloc(pMemPool, _size + 1);
+            memmove((*pURL)->query, _url->u_query, _size);
+            (*pURL)->query[_size] = '\0';
+        }
+    }
+
+    if (_url->u_fragment)
+    {
+        _size = strlen(_url->u_fragment);
+        if (_size)
+        {
+            (*pURL)->fragment = w_malloc(pMemPool, _size + 1);
+            memmove((*pURL)->fragment, _url->u_fragment, _size);
+            (*pURL)->fragment[_size] = '\0';
+        }
+    }
+
+    if (_url->u_requri)
+    {
+        _size = strlen(_url->u_requri);
+        if (_size)
+        {
+            (*pURL)->requri = w_malloc(pMemPool, _size + 1);
+            memmove((*pURL)->requri, _url->u_requri, _size);
+            (*pURL)->requri[_size] = '\0';
+        }
+    }
+  
+    nng_url_free(_url);
 
     return _rt;
 }
@@ -265,11 +383,6 @@ _out:
     }
 
     return _encoded;
-}
-
-void w_net_url_free(_Inout_ w_url pURL)
-{
-    nng_url_free(pURL);
 }
 
 W_RESULT w_net_resolve(_In_z_ const char* pURL,
@@ -313,10 +426,10 @@ W_RESULT w_net_open_tcp_socket(
     _In_ bool pAsync,
     _In_ bool pTLS,
     _In_ int pAuthMode,
-    _In_z_ const char* pTLSServerName,
+    _In_opt_z_ const char* pTLSServerName,
     _In_ bool pOwnCert,
-    _In_z_ const char* pCert,
-    _In_z_ const char* pKey,
+    _In_opt_z_ const char* pCert,
+    _In_opt_z_ const char* pKey,
     _Inout_ w_socket_tcp* pSocket)
 {
     const char* _trace_info = "w_net_open_tcp_socket";
@@ -566,7 +679,7 @@ W_RESULT w_net_close_tcp_socket(_Inout_ w_socket_tcp* pSocket)
 
 W_RESULT w_net_open_udp_socket(
     _Inout_ w_mem_pool pMemPool,
-    _In_z_ const char* pEndPoint, 
+    _In_z_ const char* pEndPoint,
     _Inout_ w_socket_udp* pSocket)
 {
     const char* _trace_info = "w_net_open_udp_socket";
@@ -576,29 +689,33 @@ W_RESULT w_net_open_udp_socket(
         return APR_BADARG;
     }
 
-    W_RESULT _rt = W_SUCCESS;
-    nng_url* _url = NULL;
-
+    W_RESULT _ret = W_FAILURE;
+    
     if (!pSocket)
     {
-        return W_FAILURE;
+        return _ret;
     }
     nni_sockaddr* _sa = (nni_sockaddr*)pSocket->sa;
     if (!_sa)
     {
-        return W_FAILURE;
+        return _ret;
     }
+
     nni_plat_udp* _udp_protocol = (nni_plat_udp*)pSocket->u;
+    unsigned long _addr_hex = 0;
+    uint16_t _port = 0;    
+    nng_url* _url = NULL;
 
-    _url = (nng_url*)w_malloc(pMemPool, sizeof(nng_url));
-
-    _rt = w_net_url_parse(pEndPoint, &_url);
-    unsigned long _addr_hex = inet_addr(_url->u_hostname);
-    int _port = atoi(_url->u_port);
-
-    if (_rt)
+    _ret = nng_url_parse(&_url, pEndPoint);
+    if (_ret)
     {
         goto out;
+    }
+
+    if (_url && _url->u_hostname)
+    {
+        _addr_hex = inet_addr(_url->u_hostname);
+        _port = atoi(_url->u_port);
     }
 
     if (_sa)
@@ -609,22 +726,21 @@ W_RESULT w_net_open_udp_socket(
     }
 
     //open udp socket
-    _rt = nni_plat_udp_open(&_udp_protocol, _sa);
-    if (_rt)
+    _ret = nni_plat_udp_open(&_udp_protocol, _sa);
+    if (_ret)
     {
         goto out;
     }
 
     //allocate aio
-    _rt = nng_aio_alloc(&pSocket->a, NULL, NULL);
-    if (_rt)
-    {
-        goto out;
-    }
+    _ret = nng_aio_alloc(&pSocket->a, NULL, NULL);
 
 out:
-    w_net_url_free(_url);
-    return _rt;
+    if (_url)
+    {
+        nng_url_free(_url);
+    }
+    return _ret;
 }
 
 void w_net_close_udp_socket(_Inout_ w_socket_udp* pSocket)
@@ -749,7 +865,9 @@ W_RESULT w_net_receive_msg_tcp(
     }
 
     nng_socket* _nng_socket = (nng_socket*)pSocket->s;
-    return nng_recv(*_nng_socket, pBuffer->data, &pBuffer->len, NNG_FLAG_ALLOC);
+    int _ret = nng_recv(*_nng_socket, &(pBuffer->data), &(pBuffer->len), NNG_FLAG_ALLOC);
+
+    return _ret;
 }
 
 W_RESULT w_net_send_msg_udp(
@@ -1024,8 +1142,8 @@ static void s_quiche_flush(
 
         if (sent != _written)
         {
-            W_ASSERT_P(
-                false,
+            LOG_P(
+                W_LOG_WARNING,
                 "Failed to send. Written bytes %zd . trace info: %s",
                 _written,
                 _trace_info);
