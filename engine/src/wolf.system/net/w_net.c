@@ -1681,14 +1681,15 @@ void w_free_s_quic_conns()
     }
 }
 
-W_RESULT w_net_open_quic_socket(_In_z_  const char* pAddress,
-    _In_    int pPort,
-    _In_    w_socket_mode pSocketMode,
-    _In_z_  const char* pCertFilePath,
-    _In_z_  const char* pPrivateKeyFilePath,
-    _In_    quic_debug_log_callback_fn pQuicDebugLogCallback,
-    _In_    quic_stream_callback_fn pQuicReceivingStreamCallback,
-    _In_    quic_stream_callback_fn pQuicSendingStreamCallback)
+W_RESULT w_net_open_quic_socket(
+    _In_z_  const char* pAddress,
+    _In_        int pPort,
+    _In_        w_socket_mode pSocketMode,
+    _In_opt_z_  const char* pCertFilePath,
+    _In_opt_z_  const char* pPrivateKeyFilePath,
+    _In_opt_    quic_debug_log_callback_fn pQuicDebugLogCallback,
+    _In_opt_    quic_stream_callback_fn pQuicReceivingStreamCallback,
+    _In_opt_    quic_stream_callback_fn pQuicSendingStreamCallback)
 {
     const char* _trace_info = "w_net_open_quic_socket";
     if (pSocketMode != quic_dialer && pSocketMode != quic_listener)
