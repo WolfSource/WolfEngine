@@ -52,6 +52,7 @@ namespace wolf::framework
         {
         public:
             w_media_core_pimp() :
+                _name("w_media_core"),
                 _is_media_open(false),
                 _av_format_ctx(nullptr),
                 _av_packet(nullptr),
@@ -61,7 +62,6 @@ namespace wolf::framework
 				_stream_out_frame(nullptr),
                 _frame_max_delay_in_ms(1000)
             {
-				this->_name = "w_media_core";
                 std::memset(&this->_video_codec, 0, sizeof(w_codec));
                 std::memset(&this->_audio_codec, 0, sizeof(w_codec));
 
@@ -694,27 +694,9 @@ namespace wolf::framework
 				_In_ w_signal<void(const w_media_core::w_stream_frame_info&)>& pOnGettingStreamVideoFrame,
 				_In_ w_signal<void(const char*)>& pOnConnectionLost,
 				_In_ w_signal<void(const char*)>& pOnConnectionClosed,
-				_Inout_ bool** pShutDown,
 				_In_ const bool& pListenToLocalPort)
 			{
 				const std::string _trace_info = this->_name + "::open_stream_client";
-
-				if (!pShutDown)
-				{
-					V(W_FAILED, w_log_type::W_ERROR,
-						"open_stream_receiver called with parameter pShutDown == nullptr . trace info: {}", _trace_info);
-					return W_FAILED;
-				}
-				else
-				{
-					bool* _b = *pShutDown;
-					if (*_b == true)
-					{
-						V(W_FAILED, w_log_type::W_ERROR,
-							"open_stream_receiver called with parameter *pShutDown = true . trace info: {}", _trace_info);
-						return W_FAILED;
-					}
-				}
 
 				std::string _fromat_str(pFormatName);
 				std::transform(_fromat_str.begin(), _fromat_str.end(), _fromat_str.begin(), ::tolower);
@@ -738,21 +720,19 @@ namespace wolf::framework
 				auto _socket_time_out = std::to_string(pSocketTimeOut * 1000);
 				av_dict_set(&_av_dic, "stimeout", _socket_time_out.c_str(), 0);//"10000000" 10 second for io socket timeout
 
-				//create an input context
 				AVFormatContext* _stream_in_format_ctx = avformat_alloc_context();
-				if (!_stream_in_format_ctx)
-				{
-					V(W_FAILED, w_log_type::W_ERROR,
-						"allocating context for input stream {}. trace info: {}", pURL, _trace_info);
-					return W_FAILED;
-				}
-				_stream_in_format_ctx->probesize = 100000000;//100MB
-				_stream_in_format_ctx->max_analyze_duration = 100000000;//100MB
+				//create an input context
 				if (avformat_open_input(&_stream_in_format_ctx, pURL, NULL, &_av_dic) < 0)
 				{
 					V(W_FAILED, w_log_type::W_ERROR,
 						"openning context for input stream {}. trace info: {}", pURL, _trace_info);
-					avformat_free_context(_stream_in_format_ctx);
+					return W_FAILED;
+				}
+
+				if (!_stream_in_format_ctx)
+				{
+					V(W_FAILED, w_log_type::W_ERROR,
+						"allocating context for input stream {}. trace info: {}", pURL, _trace_info);
 					return W_FAILED;
 				}
 
@@ -907,26 +887,15 @@ namespace wolf::framework
 					_codec_ctx->width,
 					_codec_ctx->height);
 
+				uint8_t* _picture_buffer = (uint8_t*)(av_malloc(_size_stream_format));
+				AVFrame* _picture = av_frame_alloc();
+				AVFrame* _picture_rgb = av_frame_alloc();
 				int _size_rgb = avpicture_get_size(
 					AV_PIX_FMT_RGB24,
 					_codec_ctx->width,
 					_codec_ctx->height);
 
-				auto _picture_buffer = (uint8_t*)(av_malloc(_size_stream_format));
-				auto _picture = av_frame_alloc();
-				auto _picture_rgb = av_frame_alloc();
 				auto _picture_rgb_buffer = (uint8_t*)(av_malloc(_size_rgb));
-				if (!_picture_buffer || !_picture || !_picture_rgb || !_picture_rgb_buffer)
-				{
-					V(W_FAILED, w_log_type::W_ERROR,
-						"could not allocate memory for picture. trace info: {}", _trace_info);
-					avcodec_close(_stream_in->codec);
-					avcodec_free_context(&_codec_ctx);
-					avformat_free_context(_stream_in_format_ctx);
-					avformat_free_context(_stream_in_frame_ctx);
-					return W_FAILED;
-				}
-
 				avpicture_fill(
 					(AVPicture*)_picture,
 					_picture_buffer,
@@ -951,23 +920,9 @@ namespace wolf::framework
 				_is_stream_live.set_fixed_time_step(true);
 
 				bool _connected = false;
-				//bool _exit = false;
-				while (true)
+				bool _exit = false;
+				while (!_exit)
 				{
-					//check for break
-					if (!pShutDown)
-					{
-						break;
-					}
-					else
-					{
-						bool* _break = *pShutDown;
-						if (*_break)
-						{
-							break;
-						}
-					}
-
 					if (av_read_frame(_stream_in_format_ctx, &_packet) >= 0)
 					{
 						if (!_connected)
@@ -1016,15 +971,7 @@ namespace wolf::framework
 							_time_out -= _is_stream_live.get_elapsed_seconds() * 1000.000f;
 							if (_time_out <= 0)
 							{
-								if (!pShutDown)
-								{
-									*pShutDown = new bool(true);
-								}
-								else
-								{
-									bool* _break = *pShutDown;
-									*_break = true;
-								}
+								_exit = true;
 							}
 						});
 					}
@@ -1032,23 +979,9 @@ namespace wolf::framework
 				//on connection lost
 				pOnConnectionClosed.rise(pURL);
 
-				//free buffers
-				if (_picture_buffer)
-				{
-					av_free(_picture_buffer);
-				}
-				if (_picture)
-				{
-					av_free(_picture);
-				}
-				if (_picture_rgb)
-				{
-					av_free(_picture_rgb);
-				}
-				if (_picture_rgb_buffer)
-				{
-					av_free(_picture_rgb_buffer);
-				}
+				//free pixels				
+				av_free(_picture);
+				av_free(_picture_rgb);
 
 				if (_codec_ctx)
 				{
@@ -1906,7 +1839,7 @@ using namespace wolf::framework;
 
 w_media_core::w_media_core() :
 	_is_released(false),
-	_pimp(std::move(new w_media_core_pimp()))
+	_pimp(new w_media_core_pimp())
 {
 }
 
@@ -1983,7 +1916,6 @@ W_RESULT w_media_core::open_stream_receiver(
 	_In_ w_signal<void(const w_stream_frame_info&)>& pOnGettingStreamVideoFrame,
 	_In_ w_signal<void(const char*)>& pOnConnectionLost,
 	_In_ w_signal<void(const char*)>& pOnConnectionClosed,
-	_Inout_ bool** pShutDown,
 	_In_ const bool& pListenToLocalPort)
 {
 	if (!this->_pimp) return W_FAILED;
@@ -2002,7 +1934,6 @@ W_RESULT w_media_core::open_stream_receiver(
 		pOnGettingStreamVideoFrame,
 		pOnConnectionLost,
 		pOnConnectionClosed,
-		pShutDown,
 		pListenToLocalPort);
 }
 
@@ -2042,10 +1973,7 @@ W_RESULT w_media_core::write_video_frame_to_buffer(
 ULONG w_media_core::release()
 {
     if (this->_is_released) return 1;
-	if (this->_pimp)
-	{
-		delete this->_pimp;
-	}
+    this->_pimp->release_media();
 	this->_is_released = 0;
     return 0;
 }

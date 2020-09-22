@@ -10,11 +10,7 @@
 #pragma once
 
 #include "w_cpipeline_export.h"
-
-#if __cplusplus <= 201402L
 #include <msgpack.hpp>
-#endif
-
 #include <map>
 #include <glm/matrix.hpp>
 #include <glm/gtx/compatibility.hpp>//for int4
@@ -76,10 +72,8 @@ namespace wolf::content_pipeline
 		float	        scale[3];
 		glm::mat4x4     transform;
 
-#if __cplusplus <= 201402L
 		MSGPACK_DEFINE(position, rotation, scale);
-#endif
-        
+
 #ifdef __PYTHON__
 
 		glm::w_vec3		py_get_position() { return glm::w_vec3(this->position[0], this->position[1], this->position[2]); }
@@ -154,10 +148,8 @@ namespace wolf::content_pipeline
 
 		uint32_t        texture_sampler_index = 0;
 
-#if __cplusplus <= 201402L
 		MSGPACK_DEFINE(name, position, rotation, scale, texture_sampler_index);
-#endif
-        
+
 #ifdef __PYTHON__
 		glm::w_vec3		py_get_position() { return glm::w_vec3(this->position[0], this->position[1], this->position[2]); }
 		void			py_set_position(_In_ glm::w_vec3& pValue) { this->position[0] = pValue.get_x(); this->position[1] = pValue.get_y(); this->position[2] = pValue.get_z(); }
@@ -192,10 +184,8 @@ namespace wolf::content_pipeline
 			this->lod_1_indices.clear();
 		}
 
-#if __cplusplus <= 201402L
 		MSGPACK_DEFINE(vertices, indices, textures_path, bounding_box, lod_1_vertices, lod_1_indices);
-#endif
-        
+
 #ifdef __PYTHON__
 
 		boost::python::list					py_get_vertices()
@@ -284,9 +274,8 @@ namespace wolf::content_pipeline
 //                _In_ const bool& pZUp,
 //                _In_ const bool& pInvertNormal);
 
-#if __cplusplus <= 201402L
 		MSGPACK_DEFINE(_name, _instanced_geo_name, _transform, _instances_info, _bounding_box, _meshes);
-#endif
+
 
 #ifdef __PYTHON__
 
@@ -380,7 +369,7 @@ namespace wolf::content_pipeline
 		float													_frame_overlap;
 		bool													_overlapping;
 		float													_overlapping_start_time;
-		//std::vector<collada::c_bone*>							_temp_skeleton;
+		std::vector<collada::c_bone*>							_temp_skeleton;
 		w_transform_info										_transform;
 		//std::vector<w_cpipeline_model>                          _lods;
 		//std::vector<w_cpipeline_model>                          _convex_hulls;
@@ -389,7 +378,7 @@ namespace wolf::content_pipeline
 
 		std::vector<w_cpipeline_mesh>							_meshes;
 
-		//std::vector<collada::c_bone*>							_skeleton;
+		std::vector<collada::c_bone*>							_skeleton;
 		std::vector<std::string>								_bone_names;
 
 		bool                                                    _all_sub_meshes_use_same_texture;

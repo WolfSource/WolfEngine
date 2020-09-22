@@ -16,10 +16,7 @@
 #include <glm/matrix.hpp>
 #include <glm/vec3.hpp>
 #include <w_bounding.h>
-
-#if __cplusplus <= 201402L
 #include <msgpack.hpp>
-#endif
 
 namespace wolf::content_pipeline
 {
@@ -102,13 +99,11 @@ namespace wolf::content_pipeline
 
 #pragma endregion
 
-#if __cplusplus <= 201402L
 		MSGPACK_DEFINE(
 			_name, _camera_target_name, _field_of_view,
 			_near_plane, _far_plane, _up,
 			_position, _look_at);
-#endif
-        
+
 	protected:
 		w_camera_type							_type;
 		std::string								_name;

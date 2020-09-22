@@ -7,7 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2C6858FD20D855E50096C33B /* libwolf.system.osx.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C6858FC20D855E50096C33B /* libwolf.system.osx.dylib */; };
+		2C99E79823C3374200A9720B /* libwolf.system.osx.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C6858FC20D855E50096C33B /* libwolf.system.osx.dylib */; };
+		2C99E79923C3374200A9720B /* libwolf.system.osx.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = 2C6858FC20D855E50096C33B /* libwolf.system.osx.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		2CB495C01E6469BC000B94F6 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CB495BD1E6469BC000B94F6 /* main.cpp */; };
 		2CB495C11E6469BC000B94F6 /* pch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CB495BE1E6469BC000B94F6 /* pch.cpp */; };
 /* End PBXBuildFile section */
@@ -21,6 +22,17 @@
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 1;
+		};
+		2C99E79A23C3374200A9720B /* Embed Libraries */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				2C99E79923C3374200A9720B /* libwolf.system.osx.dylib in Embed Libraries */,
+			);
+			name = "Embed Libraries";
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
@@ -37,7 +49,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2C6858FD20D855E50096C33B /* libwolf.system.osx.dylib in Frameworks */,
+				2C99E79823C3374200A9720B /* libwolf.system.osx.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -81,6 +93,7 @@
 				2C8C836D1E61CA6800A33C70 /* Sources */,
 				2C8C836E1E61CA6800A33C70 /* Frameworks */,
 				2C8C836F1E61CA6800A33C70 /* CopyFiles */,
+				2C99E79A23C3374200A9720B /* Embed Libraries */,
 			);
 			buildRules = (
 			);
@@ -112,6 +125,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 			);
 			mainGroup = 2C8C83681E61CA6800A33C70;

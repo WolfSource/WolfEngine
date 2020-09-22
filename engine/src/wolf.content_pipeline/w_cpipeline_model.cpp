@@ -518,7 +518,7 @@ void w_cpipeline_model::release()
 
     this->_m_bind_pos.clear();
     this->_v_bind_pos.clear();
-
+    
     //release animation containers
     for (auto& iter : this->_animation_containers)
     {
@@ -533,19 +533,19 @@ void w_cpipeline_model::release()
     }
     this->_meshes.clear();
 
-//    //release skeleton
-//    for (auto& iter : this->_skeleton)
-//    {
-//        iter->release();
-//    }
-//    this->_skeleton.clear();
+    //release skeleton
+    for (auto& iter : this->_skeleton)
+    {
+        iter->release();
+    }
+    this->_skeleton.clear();
 
-//    //release temp skeleton
-//    for (auto& iter : this->_temp_skeleton)
-//    {
-//        iter->release();
-//    }
-//    this->_temp_skeleton.clear();
+    //release temp skeleton
+    for (auto& iter : this->_temp_skeleton)
+    {
+        iter->release();
+    }
+    this->_temp_skeleton.clear();
 }
 
 #pragma region Getters

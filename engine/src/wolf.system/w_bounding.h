@@ -12,11 +12,7 @@
 #include "w_system_export.h"
 #include <array>
 #include "glm_extension.h"
-
-#if __cplusplus <= 201402L
 #include "msgpack.hpp"
-#endif
-
 #include "python_exporter/w_boost_python_helper.h"
 
 namespace wolf::system
@@ -48,11 +44,8 @@ namespace wolf::system
 		WSYS_EXP w_containment_type contains(_In_ const w_bounding_sphere& pSphere);
 		WSYS_EXP void get_corners(_Inout_ std::array<glm::vec3, 8> & pCorners);
 		WSYS_EXP glm::vec3 get_center() const;
-        
-#if __cplusplus <= 201402L
 		MSGPACK_DEFINE(min, max, position, rotation);
-#endif
-        
+
 #ifdef __PYTHON__
 
 		//min
@@ -114,10 +107,8 @@ namespace wolf::system
 		WSYS_EXP bool intersects(_In_ const w_bounding_box& pBox);
 		WSYS_EXP w_containment_type contains(_In_ const glm::vec3& pPoit);
 
-#if __cplusplus <= 201402L
 		MSGPACK_DEFINE(center, radius);
-#endif
-        
+
 #ifdef __PYTHON__
 		//center
 		glm::w_vec3 py_get_center() { return glm::w_vec3(this->center[0], this->center[1], this->center[2]); }
@@ -139,10 +130,8 @@ namespace wolf::system
 		WSYS_EXP bool intersects(_In_ const w_bounding_sphere& pSphere);
 		WSYS_EXP bool intersects(_In_ const w_bounding_box& pBox);
 
-#if __cplusplus <= 201402L
 		MSGPACK_DEFINE(_planes);
-#endif
-        
+
 #ifdef __PYTHON__
 		boost::python::list py_get_plans()
 		{
