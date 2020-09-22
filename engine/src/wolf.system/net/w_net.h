@@ -61,7 +61,7 @@ extern "C" {
 
     typedef struct w_buffer_t
     {
-        uint8_t*    data;
+        char*       data;
         size_t      len;
     } w_buffer_t;
     typedef w_buffer_t* w_buffer;
@@ -352,11 +352,11 @@ extern "C" {
 
     /**
      * free msg buffer
-     * @param pBuffer message buffer
+     * @param pMsg message buffer
      * @return result code
     */
     W_SYSTEM_EXPORT
-        W_RESULT w_net_free_msg(_Inout_ w_buffer pBuffer);
+        W_RESULT w_net_free_msg(_Inout_ w_buffer pMsg);
 
     /**
      * run a websocket server and block the current thread
