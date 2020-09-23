@@ -115,6 +115,12 @@
     <Filter Include="memory\hash">
       <UniqueIdentifier>{e288fa0c-cad1-4a9e-bacb-1afb1bc356f1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="db">
+      <UniqueIdentifier>{1fe3bea0-4249-41ab-a778-47be753d4990}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="db\buckets">
+      <UniqueIdentifier>{5c55000e-dcbb-44b6-b356-5c6c64a3ff99}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\src\wolf.system\base64\chromiumbase64.c">
@@ -394,9 +400,6 @@
     <ClCompile Include="..\..\..\src\wolf.system\memory\w_shared_mem.c">
       <Filter>memory</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\memory\w_redis.c">
-      <Filter>memory</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\wolf.system\memory\w_mem_cache.c">
       <Filter>memory</Filter>
     </ClCompile>
@@ -456,6 +459,48 @@
     </ClCompile>
     <ClCompile Include="..\..\..\src\wolf.system\concurrency\w_atomic.c">
       <Filter>concurrency</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\db\buckets\apr_brigade.c">
+      <Filter>db\buckets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\db\buckets\apr_buckets.c">
+      <Filter>db\buckets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\db\buckets\apr_buckets_alloc.c">
+      <Filter>db\buckets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\db\buckets\apr_buckets_eos.c">
+      <Filter>db\buckets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\db\buckets\apr_buckets_file.c">
+      <Filter>db\buckets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\db\buckets\apr_buckets_flush.c">
+      <Filter>db\buckets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\db\buckets\apr_buckets_heap.c">
+      <Filter>db\buckets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\db\buckets\apr_buckets_mmap.c">
+      <Filter>db\buckets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\db\buckets\apr_buckets_pipe.c">
+      <Filter>db\buckets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\db\buckets\apr_buckets_pool.c">
+      <Filter>db\buckets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\db\buckets\apr_buckets_refcount.c">
+      <Filter>db\buckets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\db\buckets\apr_buckets_simple.c">
+      <Filter>db\buckets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\db\buckets\apr_buckets_socket.c">
+      <Filter>db\buckets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\db\buckets\apr_reslist.c">
+      <Filter>db\buckets</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -970,9 +1015,6 @@
     <ClInclude Include="..\..\..\src\wolf.system\memory\w_shared_mem.h">
       <Filter>memory</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\memory\w_redis.h">
-      <Filter>memory</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\wolf.system\memory\w_mem_cache.h">
       <Filter>memory</Filter>
     </ClInclude>
@@ -1011,6 +1053,13 @@
     </ClInclude>
     <ClInclude Include="..\..\..\src\wolf.system\concurrency\w_atomic.h">
       <Filter>concurrency</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\memory\buckets\apu.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\db\buckets\apr_buckets.h">
+      <Filter>db\buckets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\db\buckets\apr_reslist.h">
+      <Filter>db\buckets</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

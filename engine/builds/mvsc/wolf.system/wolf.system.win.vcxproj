@@ -97,6 +97,20 @@
     <ClCompile Include="..\..\..\src\wolf.system\concurrency\w_thread.c" />
     <ClCompile Include="..\..\..\src\wolf.system\concurrency\w_thread_pool.c" />
     <ClCompile Include="..\..\..\src\wolf.system\concurrency\w_timer.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\db\buckets\apr_brigade.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\db\buckets\apr_buckets.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\db\buckets\apr_buckets_alloc.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\db\buckets\apr_buckets_eos.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\db\buckets\apr_buckets_file.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\db\buckets\apr_buckets_flush.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\db\buckets\apr_buckets_heap.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\db\buckets\apr_buckets_mmap.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\db\buckets\apr_buckets_pipe.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\db\buckets\apr_buckets_pool.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\db\buckets\apr_buckets_refcount.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\db\buckets\apr_buckets_simple.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\db\buckets\apr_buckets_socket.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\db\buckets\apr_reslist.c" />
     <ClCompile Include="..\..\..\src\wolf.system\fiber\w_fiber.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\io\w_io.c" />
     <ClCompile Include="..\..\..\src\wolf.system\log\logger.cpp" />
@@ -113,7 +127,6 @@
     <ClCompile Include="..\..\..\src\wolf.system\memory\w_mem_cache.c" />
     <ClCompile Include="..\..\..\src\wolf.system\memory\w_mem_map.c" />
     <ClCompile Include="..\..\..\src\wolf.system\memory\w_mem_pool.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\memory\w_redis.c" />
     <ClCompile Include="..\..\..\src\wolf.system\memory\w_shared_mem.c" />
     <ClCompile Include="..\..\..\src\wolf.system\memory\w_string_view.c" />
     <ClCompile Include="..\..\..\src\wolf.system\memory\w_table.c" />
@@ -204,6 +217,8 @@
     <ClInclude Include="..\..\..\src\wolf.system\concurrency\w_thread.h" />
     <ClInclude Include="..\..\..\src\wolf.system\concurrency\w_thread_pool.h" />
     <ClInclude Include="..\..\..\src\wolf.system\concurrency\w_timer.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\db\buckets\apr_buckets.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\db\buckets\apr_reslist.h" />
     <ClInclude Include="..\..\..\src\wolf.system\fiber\w_fiber.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\io\stb\stb_image.h" />
     <ClInclude Include="..\..\..\src\wolf.system\io\stb\stb_image_resize.h" />
@@ -249,6 +264,7 @@
     <ClInclude Include="..\..\..\src\wolf.system\log\logger.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\log\w_log.h" />
     <ClInclude Include="..\..\..\src\wolf.system\log\w_log_config.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\memory\buckets\apu.h" />
     <ClInclude Include="..\..\..\src\wolf.system\memory\hash\utarray.h" />
     <ClInclude Include="..\..\..\src\wolf.system\memory\hash\uthash.h" />
     <ClInclude Include="..\..\..\src\wolf.system\memory\hash\utlist.h" />
@@ -260,7 +276,6 @@
     <ClInclude Include="..\..\..\src\wolf.system\memory\w_mem_cache.h" />
     <ClInclude Include="..\..\..\src\wolf.system\memory\w_mem_map.h" />
     <ClInclude Include="..\..\..\src\wolf.system\memory\w_mem_pool.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\memory\w_redis.h" />
     <ClInclude Include="..\..\..\src\wolf.system\memory\w_shared_mem.h" />
     <ClInclude Include="..\..\..\src\wolf.system\memory\w_string_view.h" />
     <ClInclude Include="..\..\..\src\wolf.system\memory\w_table.h" />
@@ -444,8 +459,8 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.system/xml/expat;$(SolutionDir)/../../src/wolf.system/xml/expat/config/win64;$(SolutionDir)/../../deps/apr/include;$(SolutionDir)/../../deps/apr/include/apr-1;$(SolutionDir)/../../deps/apr/include/apr-1/apr/win;$(SolutionDir)/../../src/wolf.system/log;$(SolutionDir)/../../src/wolf.system/compression/msgpack;$(SolutionDir)/../../src/wolf.system/net/ws/uSockets;$(SolutionDir)/../../deps/curl/include;$(SolutionDir)/../../deps/zlib/include;$(SolutionDir)/../../deps/zlib/include/zconf/win64;$(SolutionDir)/../../deps/ssh/include;$(SolutionDir)/../../deps/ssh/include/config/win64;$(SolutionDir)/../../deps/boost/include;$(SolutionDir)/../../deps/libjpeg-turbo/include;$(SolutionDir)/../../deps/libpng/include;$(SolutionDir)/../../deps/luaJIT/include;$(SolutionDir)/../../deps/libuv/include;$(SolutionDir)/../../deps/openSSL/include;$(SolutionDir)/../../deps/nng/include;$(SolutionDir)/../../deps/nng/src;$(SolutionDir)/../../deps/quiche/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>DEBUG;_DEBUG;WIN32;_WIN32;_WINDOWS;WINNT;_WIN32_WINNT=0x0600;APR_DECLARE_EXPORT;libapr_1_EXPORTS;APU_DECLARE_STATIC;APU_DSO_MODULE_BUILD;XML_STATIC;HAVE_CONFIG_H;_CRT_RAND_S;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;CURL_STATICLIB;NO_FSEEKO;ASMV;ASMINF;USE_JMP;HAVE_EXPAT_CONFIG_H;expat_EXPORTS;SPDLOG_COMPILED_LIB;SPDLOG_WCHAR_FILENAMES;SPDLOG_USE_WCHAR;LIBUS_USE_LIBUV;LIBUS_USE_OPENSSL;NNG_PRIVATE;NNG_ENABLE_STATS;NNG_MAX_TASKQ_THREADS=16;NNG_LITTLE_ENDIAN;NNG_PLATFORM_WINDOWS;NNG_HAVE_CONDVAR=1;NNG_HAVE_SNPRINTF=1;NNG_HAVE_STRNLEN=1;NNG_TRANSPORT_WS;NNG_TRANSPORT_WSS;NNG_SUPP_HTTP;NNG_STATIC_LIB;EV_STANDALONE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.system/xml/expat;$(SolutionDir)/../../src/wolf.system/xml/expat/config/win/x64;$(SolutionDir)/../../deps/apr/include;$(SolutionDir)/../../deps/apr/include/apr-1;$(SolutionDir)/../../deps/apr/include/apr-1/apr/win/x64;$(SolutionDir)/../../src/wolf.system/log;$(SolutionDir)/../../src/wolf.system/compression/msgpack;$(SolutionDir)/../../src/wolf.system/net/ws/uSockets;$(SolutionDir)/../../deps/curl/include;$(SolutionDir)/../../deps/zlib/include;$(SolutionDir)/../../deps/zlib/include/config/win/x64;$(SolutionDir)/../../deps/ssh2/include;$(SolutionDir)/../../deps/ssh2/include/config/win/x64;$(SolutionDir)/../../deps/boost/include;$(SolutionDir)/../../deps/libjpeg-turbo/include;$(SolutionDir)/../../deps/libpng/include;$(SolutionDir)/../../deps/libpng/include/config/win/x64;$(SolutionDir)/../../deps/luaJIT/include;$(SolutionDir)/../../deps/libuv/include;$(SolutionDir)/../../deps/openSSL/include;$(SolutionDir)/../../deps/nng/include;$(SolutionDir)/../../deps/nng/src;$(SolutionDir)/../../deps/quiche/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>DEBUG;_DEBUG;WIN32;_WIN32;_WINDOWS;WINNT;_WIN32_WINNT=0x0600;APR_DECLARE_EXPORT;libapr_1_EXPORTS;APU_DECLARE_STATIC;APU_DSO_MODULE_BUILD;XML_STATIC;HAVE_CONFIG_H;_CRT_RAND_S;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;CURL_STATICLIB;NO_FSEEKO;ASMV;ASMINF;USE_JMP;expat_EXPORTS;SPDLOG_COMPILED_LIB;SPDLOG_WCHAR_FILENAMES;SPDLOG_USE_WCHAR;LIBUS_USE_LIBUV;LIBUS_USE_OPENSSL;NNG_PRIVATE;NNG_ENABLE_STATS;NNG_MAX_TASKQ_THREADS=16;NNG_LITTLE_ENDIAN;NNG_PLATFORM_WINDOWS;NNG_HAVE_CONDVAR=1;NNG_HAVE_SNPRINTF=1;NNG_HAVE_STRNLEN=1;NNG_TRANSPORT_WS;NNG_TRANSPORT_WSS;NNG_SUPP_HTTP;NNG_STATIC_LIB;EV_STANDALONE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
@@ -468,7 +483,7 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>true</AssemblyDebug>
-      <AdditionalLibraryDirectories>$(SolutionDir)/../../deps/apr/lib/win/$(Platform)/$(Configuration)/;$(SolutionDir)/../../deps/curl/lib/win/$(Platform)/$(Configuration)/;$(SolutionDir)/../../deps/zlib/lib/win/$(Platform)/$(Configuration)/;$(SolutionDir)/../../deps/openSSL/lib/win/$(Platform)/;$(SolutionDir)/../../deps/ssh/lib/win/$(Platform)/$(Configuration)/;$(SolutionDir)/../../deps/boost/lib/win/$(Platform)/$(Configuration)/;$(SolutionDir)/../../deps/libjpeg-turbo/lib/win/$(Platform)/$(Configuration)/;$(SolutionDir)/../../deps/libpng/lib/win/$(Platform)/$(Configuration)/;$(SolutionDir)/../../deps/luaJIT/lib/win/$(Platform)/$(Configuration)/;$(SolutionDir)/../../deps/libuv/lib/win/$(Platform)/$(Configuration)/;$(SolutionDir)/../../deps/tls/lib/win/$(Platform)/$(Configuration)/;$(SolutionDir)/../../deps/nng/lib/win/$(Platform)/$(Configuration)/;$(SolutionDir)/../../deps/quiche/lib/win/$(Platform)/$(Configuration)/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)/../../deps/apr/lib/win/$(Platform)/$(Configuration)/;$(SolutionDir)/../../deps/curl/lib/win/$(Platform)/$(Configuration)/;$(SolutionDir)/../../deps/zlib/lib/win/$(Platform)/$(Configuration)/;$(SolutionDir)/../../deps/openSSL/lib/win/$(Platform)/;$(SolutionDir)/../../deps/ssh2/lib/win/$(Platform)/$(Configuration)/;$(SolutionDir)/../../deps/boost/lib/win/$(Platform)/$(Configuration)/;$(SolutionDir)/../../deps/libjpeg-turbo/lib/win/$(Platform)/$(Configuration)/;$(SolutionDir)/../../deps/libpng/lib/win/$(Platform)/$(Configuration)/;$(SolutionDir)/../../deps/luaJIT/lib/win/$(Platform)/$(Configuration)/;$(SolutionDir)/../../deps/libuv/lib/win/$(Platform)/$(Configuration)/;$(SolutionDir)/../../deps/tls/lib/win/$(Platform)/$(Configuration)/;$(SolutionDir)/../../deps/nng/lib/win/$(Platform)/$(Configuration)/;$(SolutionDir)/../../deps/quiche/lib/win/$(Platform)/$(Configuration)/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>apr-1.lib;bcrypt.lib;ws2_32.lib;mswsock.lib;rpcrt4.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;libcurl-d.lib;libssh2.lib;wldap32.lib;winmm.lib;Shlwapi.lib;wsock32.lib;zlibstaticd.lib;crypt32.lib;libboost_context-vc142-mt-gd-x64-1_74.lib;libboost_fiber-vc142-mt-gd-x64-1_74.lib;jpeg-static.lib;turbojpeg-static.lib;libpng16_staticd.lib;luajit-static.lib;uv_a.lib;iphlpapi.lib;userenv.lib;psapi.lib;mbedcrypto.lib;mbedtls.lib;mbedx509.lib;nng.lib;quiche.dll.lib;libssl.lib;libcrypto.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
