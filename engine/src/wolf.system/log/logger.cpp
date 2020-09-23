@@ -57,7 +57,7 @@ logger::logger(
     std::wstring _log_file_path_str_w(_log_file_path_str.begin(), _log_file_path_str.end());
     _sinks.push_back(std::make_shared<spdlog::sinks::basic_file_sink_mt>(_log_file_path_str_w, true));
 #else
-    _sinks.push_back(std::make_shared<spdlog::sinks::basic_file_sink_mt>(_log_file_path, true));
+    _sinks.push_back(std::make_shared<spdlog::sinks::basic_file_sink_mt>(_log_file_path_str, true));
 #endif
     _sinks.push_back(std::make_shared<spdlog::sinks::stdout_sink_mt>());
 

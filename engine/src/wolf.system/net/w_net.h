@@ -61,7 +61,7 @@ extern "C" {
 
     typedef struct w_buffer_t
     {
-        char*       data;
+        uint8_t*    data;
         size_t      len;
     } w_buffer_t;
     typedef w_buffer_t* w_buffer;
@@ -254,14 +254,15 @@ extern "C" {
     */
     W_SYSTEM_EXPORT
         W_RESULT w_net_open_quic_socket(
-            _In_z_       const char* pAddress,
-            _In_         int pPort,
-            _In_         w_socket_mode pSocketMode,
-            _In_opt_z_   const char* pCertFilePath,
-            _In_opt_z_   const char* pPrivateKeyFilePath,
-            _In_opt_     quic_debug_log_callback_fn pQuicDebugLogCallback,
-            _In_opt_     quic_stream_callback_fn pQuicReceivingStreamCallback,
-            _In_opt_     quic_stream_callback_fn pQuicSendingStreamCallback);
+            W_RESULT w_net_open_quic_socket(
+            _In_z_  const char* pAddress,
+            _In_        int pPort,
+            _In_        w_socket_mode pSocketMode,
+            _In_opt_z_  const char* pCertFilePath,
+            _In_opt_z_  const char* pPrivateKeyFilePath,
+            _In_opt_    quic_debug_log_callback_fn pQuicDebugLogCallback,
+            _In_opt_    quic_stream_callback_fn pQuicReceivingStreamCallback,
+            _In_opt_    quic_stream_callback_fn pQuicSendingStreamCallback);
 
     /**
      * Close quic socket
@@ -349,15 +350,6 @@ extern "C" {
             _Inout_ w_socket_udp* pSocket,
             _In_z_ char* pMessage,
             _In_z_ size_t* pMessageLength);
-
-    /**
-     * free msg buffer
-     * @param pMsg message buffer
-     * @return result code
-    */
-    W_SYSTEM_EXPORT
-        W_RESULT w_net_free_msg(_Inout_ w_buffer pMsg);
-
     /**
      * run a websocket server and block the current thread
      * @param pSSL enable SSL(based on WolfSSL)

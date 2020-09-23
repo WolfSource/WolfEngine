@@ -30,6 +30,11 @@
 #include <io.h>
 #endif
 
+#ifdef W_PLATFORM_OSX
+#include <Foundation/NSString.h>
+#include <Foundation/NSBundle.h>
+#endif
+
 #define PNG_BYTES_TO_CHECK  4
 #define PNG_PAGING_SIZE     8
 
@@ -745,6 +750,81 @@ W_RESULT w_io_dir_get_current(_Inout_ w_mem_pool pMemPool, _Inout_ char** pDir)
 
     return W_SUCCESS;
 }
+
+W_RESULT w_io_dir_get_current_exe(_Inout_ w_mem_pool pMemPool, _Inout_ char** pDir)
+{
+    if (!pDir || !pMemPool)
+    {
+        return APR_BADARG;
+    }
+
+    char* _dir = NULL;
+
+    w_mem_pool _pool = NULL;
+    w_mem_pool_init(&_pool);
+    if (!_pool)
+    {
+        return W_FAILURE;
+    }
+
+    char* _tmp = (char*)w_malloc(_pool, sizeof(W_MAX_BUFFER_SIZE));
+    if (_tmp)
+    {
+#ifdef W_PLATFORM_WIN
+        GetModuleFileName(NULL, _tmp, W_MAX_BUFFER_SIZE);
+        int idx = wcslen(_tmp);
+
+        while (idx >= 0)
+        {
+            if (_tmp[idx] == '/' || _tmp[idx] == '\\')
+            {
+                _tmp[idx] = 0;
+                break;
+            }
+            idx--;
+        }
+#elif defined W_PLATFORM_OSX
+        int size = W_MAX_BUFFER_SIZE;
+        
+        NSString *p = [[NSBundle mainBundle] executablePath];
+        if (p == NULL)
+        {
+            return W_FAILURE;
+        }
+
+        _tmp = (char*) [p UTF8String];
+
+        int idx = strlen(_tmp);
+        while (idx >= 0)
+        {
+            if (_tmp[idx] == '/' || _tmp[idx] == '\\')
+            {
+                _tmp[idx] = 0;
+                break;
+            }
+            idx--;
+        }
+#else
+        if (getcwd(_tmp, W_MAX_BUFFER_SIZE) == NULL)
+        {
+            return W_FAILURE;
+        }
+#endif
+        size_t _len = strlen(_tmp);
+        if (_len)
+        {
+            _dir = (char*)w_malloc(pMemPool, _len + 1);
+            memcpy(_dir, _tmp, _len);
+            _dir[_len] = '\0';
+            *pDir = _dir;
+        }
+    }
+
+    w_mem_pool_fini(&_pool);
+
+    return W_SUCCESS;
+}
+
 
 W_RESULT	w_io_dir_check_is_dir(
     _Inout_ w_mem_pool pMemPool,

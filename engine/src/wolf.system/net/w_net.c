@@ -865,7 +865,9 @@ W_RESULT w_net_receive_msg_tcp(
     }
 
     nng_socket* _nng_socket = (nng_socket*)pSocket->s;
-    return nng_recv(*_nng_socket, &pBuffer->data, &pBuffer->len, NNG_FLAG_ALLOC);
+    int _ret = nng_recv(*_nng_socket, &(pBuffer->data), &(pBuffer->len), NNG_FLAG_ALLOC);
+
+    return _ret;
 }
 
 W_RESULT w_net_send_msg_udp(
@@ -881,15 +883,6 @@ W_RESULT w_net_receive_msg_udp(_Inout_ w_socket_udp* pSocket,
     _In_z_ size_t* pMessageLength)
 {
     return _io_udp_socket(two_way_listener, pSocket, pMessage, pMessageLength);
-}
-
-W_RESULT w_net_free_msg(_Inout_ w_buffer pMsg)
-{
-    if (!pMsg)
-    {
-        return W_BAD_ARG;
-    }
-    nng_free(pMsg->data, pMsg->len);
 }
 
 W_RESULT w_net_run_websocket_server(_In_ bool pSSL,
@@ -910,7 +903,8 @@ W_RESULT w_net_run_websocket_server(_In_ bool pSSL,
     const char* _trace_info = "w_net_run_websocket_server";
 
     W_RESULT _rt;
-
+    
+#ifdef W_PLATFORM_WIN
     ws _ws = ws_init();
     if (_ws)
     {
@@ -936,7 +930,8 @@ W_RESULT w_net_run_websocket_server(_In_ bool pSSL,
         W_ASSERT_P(false, "could not run websocket. trace info: %s", _trace_info);
         _rt = W_FAILURE;
     }
-
+#endif
+    
     return _rt;
 }
 
@@ -1702,10 +1697,6 @@ W_RESULT w_net_open_quic_socket(
     quiche_config* _quiche_config = NULL;
     struct addrinfo* _address_info = NULL;
     
-#ifdef W_PLATFORM_OSX
-    struct addrinfo *_local;
-#endif
-
 #ifdef W_PLATFORM_WIN
     SOCKET
 #else
@@ -1740,20 +1731,14 @@ W_RESULT w_net_open_quic_socket(
         W_ASSERT_P(false, "WSAStartup failed. trace info: %s", _trace_info);
         goto out;
     }
+#endif
+    
     if (getaddrinfo(pAddress, _port, &_hints, &_address_info) != 0)
     {
         _ret = W_FAILURE;
         W_ASSERT_P(false, "failed to resolve host. trace info: %s", _trace_info);
         goto out;
     }
-#else
-    if (getaddrinfo(pAddress, _port, &_address_info, &_local) != 0)
-    {
-        _ret = W_FAILURE;
-        W_ASSERT_P(false, "failed to resolve host. trace info: %s", _trace_info);
-        goto out;
-    }
-#endif
 
     //enable quic debug logging
     if (pQuicDebugLogCallback)
@@ -1921,16 +1906,24 @@ W_RESULT w_net_open_quic_socket(
         }
 #else
 
-        int rng = open("../../../deps/quiche/boringssl/src/crypto/fipsmodule/rand/urandom.c", O_RDONLY);
+        int rng = open("/dev/urandom", O_RDONLY);
         if (rng < 0) {
-            perror("failed to open /dev/urandom");
-            return -1;
+            _ret = W_FAILURE;
+            W_ASSERT_P(
+                false,
+                "failed to open /dev/urandom. trace info: %s",
+                _trace_info);
+            goto out;
         }
 
         ssize_t rand_len = read(rng, &_scid, sizeof(_scid));
         if (rand_len < 0) {
-            perror("failed to create connection ID");
-            return -1;
+            _ret = W_FAILURE;
+            W_ASSERT_P(
+                false,
+                "failed to create connection ID. trace info: %s",
+                _trace_info);
+            goto out;
         }
 
 #endif
@@ -1998,7 +1991,7 @@ W_RESULT w_net_open_quic_socket(
             ev_io_init(
                 &_ev_watcher,
                 s_quiche_listener_callback,
-                _quiche_connection_io->socket,
+                _socket,
                 EV_READ);
 #endif
             ev_io_start(_ev_loop, &_ev_watcher);

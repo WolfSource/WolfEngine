@@ -7,6 +7,21 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		05B4A66C251A44C700FBA684 /* logger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 05B4A5FC251A44C600FBA684 /* logger.cpp */; };
+		05B4A66D251A44C700FBA684 /* logger.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 05B4A5FD251A44C600FBA684 /* logger.hpp */; };
+		05B4A6C5251A44C700FBA684 /* async.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 05B4A65F251A44C600FBA684 /* async.cpp */; };
+		05B4A6C6251A44C700FBA684 /* cfg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 05B4A660251A44C600FBA684 /* cfg.cpp */; };
+		05B4A6C7251A44C700FBA684 /* color_sinks.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 05B4A661251A44C600FBA684 /* color_sinks.cpp */; };
+		05B4A6C8251A44C700FBA684 /* file_sinks.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 05B4A662251A44C700FBA684 /* file_sinks.cpp */; };
+		05B4A6C9251A44C700FBA684 /* fmt.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 05B4A663251A44C700FBA684 /* fmt.cpp */; };
+		05B4A6CA251A44C700FBA684 /* spdlog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 05B4A664251A44C700FBA684 /* spdlog.cpp */; };
+		05B4A6CB251A44C700FBA684 /* stdout_sinks.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 05B4A665251A44C700FBA684 /* stdout_sinks.cpp */; };
+		05B4A6CF251A44C700FBA684 /* w_log.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 05B4A669251A44C700FBA684 /* w_log.cpp */; };
+		05B4A6D0251A44C700FBA684 /* w_log.h in Headers */ = {isa = PBXBuildFile; fileRef = 05B4A66A251A44C700FBA684 /* w_log.h */; };
+		05B4A6D1251A44C700FBA684 /* w_log_config.h in Headers */ = {isa = PBXBuildFile; fileRef = 05B4A66B251A44C700FBA684 /* w_log_config.h */; };
+		05B4A6D4251A45B600FBA684 /* w_mutex.c in Sources */ = {isa = PBXBuildFile; fileRef = 05B4A6D2251A45B600FBA684 /* w_mutex.c */; };
+		05B4A6D5251A45B600FBA684 /* w_mutex.h in Headers */ = {isa = PBXBuildFile; fileRef = 05B4A6D3251A45B600FBA684 /* w_mutex.h */; };
+		05B4A6D9251A681100FBA684 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 05B4A6D8251A681000FBA684 /* Foundation.framework */; };
 		05BC21C525129351007D6218 /* libcurl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 05BC21C425129351007D6218 /* libcurl.a */; };
 		05BC21C725129626007D6218 /* libquiche.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 05BC21C625129626007D6218 /* libquiche.a */; };
 		05BC21E3251296DA007D6218 /* w_shared_mem.h in Headers */ = {isa = PBXBuildFile; fileRef = 05BC21C8251296D8007D6218 /* w_shared_mem.h */; };
@@ -126,6 +141,21 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		05B4A5FC251A44C600FBA684 /* logger.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = logger.cpp; sourceTree = "<group>"; };
+		05B4A5FD251A44C600FBA684 /* logger.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = logger.hpp; sourceTree = "<group>"; };
+		05B4A65F251A44C600FBA684 /* async.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = async.cpp; sourceTree = "<group>"; };
+		05B4A660251A44C600FBA684 /* cfg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cfg.cpp; sourceTree = "<group>"; };
+		05B4A661251A44C600FBA684 /* color_sinks.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = color_sinks.cpp; sourceTree = "<group>"; };
+		05B4A662251A44C700FBA684 /* file_sinks.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = file_sinks.cpp; sourceTree = "<group>"; };
+		05B4A663251A44C700FBA684 /* fmt.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fmt.cpp; sourceTree = "<group>"; };
+		05B4A664251A44C700FBA684 /* spdlog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = spdlog.cpp; sourceTree = "<group>"; };
+		05B4A665251A44C700FBA684 /* stdout_sinks.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = stdout_sinks.cpp; sourceTree = "<group>"; };
+		05B4A669251A44C700FBA684 /* w_log.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = w_log.cpp; sourceTree = "<group>"; };
+		05B4A66A251A44C700FBA684 /* w_log.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = w_log.h; sourceTree = "<group>"; };
+		05B4A66B251A44C700FBA684 /* w_log_config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = w_log_config.h; sourceTree = "<group>"; };
+		05B4A6D2251A45B600FBA684 /* w_mutex.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = w_mutex.c; path = ../../../src/wolf.system/concurrency/w_mutex.c; sourceTree = "<group>"; };
+		05B4A6D3251A45B600FBA684 /* w_mutex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_mutex.h; path = ../../../src/wolf.system/concurrency/w_mutex.h; sourceTree = "<group>"; };
+		05B4A6D8251A681000FBA684 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		05BC21C425129351007D6218 /* libcurl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcurl.a; path = ../../../deps/curl/lib/osx/libcurl.a; sourceTree = "<group>"; };
 		05BC21C625129626007D6218 /* libquiche.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libquiche.a; path = ../../../deps/quiche/lib/iOS/libquiche.a; sourceTree = "<group>"; };
 		05BC21C8251296D8007D6218 /* w_shared_mem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_shared_mem.h; path = ../../../src/wolf.system/memory/w_shared_mem.h; sourceTree = "<group>"; };
@@ -167,7 +197,7 @@
 		2C30BADE23A42B2D009FC330 /* w_compress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_compress.h; path = ../../../src/wolf.system/compression/w_compress.h; sourceTree = "<group>"; };
 		2C30BADF23A42B2D009FC330 /* w_compress.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = w_compress.c; path = ../../../src/wolf.system/compression/w_compress.c; sourceTree = "<group>"; };
 		2C30BAE223A42CFD009FC330 /* w_io.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_io.h; path = ../../../src/wolf.system/io/w_io.h; sourceTree = "<group>"; };
-		2C30BAE323A42CFD009FC330 /* w_io.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = w_io.c; path = ../../../src/wolf.system/io/w_io.c; sourceTree = "<group>"; };
+		2C30BAE323A42CFD009FC330 /* w_io.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = w_io.c; path = ../../../src/wolf.system/io/w_io.c; sourceTree = "<group>"; };
 		2C30BAE623A4D599009FC330 /* w_platform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_platform.h; path = ../../../src/wolf.system/os/w_platform.h; sourceTree = "<group>"; };
 		2C37521123AFD0EE003A6B0A /* klompavxbase64.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = klompavxbase64.c; path = ../../../src/wolf.system/base64/klompavxbase64.c; sourceTree = "<group>"; };
 		2C37521223AFD0EE003A6B0A /* fastavxbase64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fastavxbase64.h; path = ../../../src/wolf.system/base64/fastavxbase64.h; sourceTree = "<group>"; };
@@ -260,6 +290,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				05B4A6D9251A681100FBA684 /* Foundation.framework in Frameworks */,
 				05BC21C725129626007D6218 /* libquiche.a in Frameworks */,
 				05BC21C525129351007D6218 /* libcurl.a in Frameworks */,
 				2C1D5A6D24AE7A0200AD7F35 /* libssl.a in Frameworks */,
@@ -284,6 +315,42 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		05B4A5FB251A44C600FBA684 /* log */ = {
+			isa = PBXGroup;
+			children = (
+				05B4A5FC251A44C600FBA684 /* logger.cpp */,
+				05B4A5FD251A44C600FBA684 /* logger.hpp */,
+				05B4A5FE251A44C600FBA684 /* spdlog */,
+				05B4A669251A44C700FBA684 /* w_log.cpp */,
+				05B4A66A251A44C700FBA684 /* w_log.h */,
+				05B4A66B251A44C700FBA684 /* w_log_config.h */,
+			);
+			name = log;
+			path = ../../../src/wolf.system/log;
+			sourceTree = "<group>";
+		};
+		05B4A5FE251A44C600FBA684 /* spdlog */ = {
+			isa = PBXGroup;
+			children = (
+				05B4A65E251A44C600FBA684 /* src */,
+			);
+			path = spdlog;
+			sourceTree = "<group>";
+		};
+		05B4A65E251A44C600FBA684 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				05B4A65F251A44C600FBA684 /* async.cpp */,
+				05B4A660251A44C600FBA684 /* cfg.cpp */,
+				05B4A661251A44C600FBA684 /* color_sinks.cpp */,
+				05B4A662251A44C700FBA684 /* file_sinks.cpp */,
+				05B4A663251A44C700FBA684 /* fmt.cpp */,
+				05B4A664251A44C700FBA684 /* spdlog.cpp */,
+				05B4A665251A44C700FBA684 /* stdout_sinks.cpp */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
 		05BC21D8251296DA007D6218 /* hash */ = {
 			isa = PBXGroup;
 			children = (
@@ -387,6 +454,8 @@
 		2C898550239F65C70062D70A /* concurrency */ = {
 			isa = PBXGroup;
 			children = (
+				05B4A6D2251A45B600FBA684 /* w_mutex.c */,
+				05B4A6D3251A45B600FBA684 /* w_mutex.h */,
 				2C99E79B23C33A1D00A9720B /* libev */,
 				2CCFD5842471E8550030D3AC /* w_async.c */,
 				2CCFD5832471E8550030D3AC /* w_async.h */,
@@ -512,6 +581,7 @@
 		2CD6171A1E59DA3E006FC5DC = {
 			isa = PBXGroup;
 			children = (
+				05B4A5FB251A44C600FBA684 /* log */,
 				2C37521023AFD0CE003A6B0A /* base64 */,
 				2C1CD488239AD69A0010A12C /* chrono */,
 				2C89847B239E62A70062D70A /* compression */,
@@ -542,6 +612,7 @@
 		2CFA170D1E674C850041A83F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				05B4A6D8251A681000FBA684 /* Foundation.framework */,
 				05BC21C625129626007D6218 /* libquiche.a */,
 				05BC21C425129351007D6218 /* libcurl.a */,
 				2C0354EF24AEAABF005E1479 /* libssh2.a */,
@@ -589,11 +660,13 @@
 				2C069B8B23E21EB8004EB56F /* w_fiber.hpp in Headers */,
 				2C17289C246C168E009C03B3 /* w_gametime.h in Headers */,
 				2C37522123AFD0EF003A6B0A /* quicktimebase64.h in Headers */,
+				05B4A66D251A44C700FBA684 /* logger.hpp in Headers */,
 				05BC21EB251296DA007D6218 /* w_hash.h in Headers */,
 				2C37522723AFD0EF003A6B0A /* scalarbase64.h in Headers */,
 				2C89848F239E735F0062D70A /* lz4frame.h in Headers */,
 				2C3756BA23B7C1D7003A6B0A /* w_condition_variable.h in Headers */,
 				2C99E7B623C33AD400A9720B /* ev_wrap.h in Headers */,
+				05B4A6D0251A44C700FBA684 /* w_log.h in Headers */,
 				2C3756D923B7D35C003A6B0A /* lua.h in Headers */,
 				05BC21E5251296DA007D6218 /* w_mem_map.h in Headers */,
 				2C898554239F65E90062D70A /* w_thread.h in Headers */,
@@ -603,6 +676,7 @@
 				2C99E7B523C33AD400A9720B /* config.h in Headers */,
 				05BC21E8251296DA007D6218 /* w_mem_pool.h in Headers */,
 				2C3756D823B7D35C003A6B0A /* lualib.h in Headers */,
+				05B4A6D5251A45B600FBA684 /* w_mutex.h in Headers */,
 				2C898492239E735F0062D70A /* lz4frame_static.h in Headers */,
 				2C3756E323B7F302003A6B0A /* w_lua.h in Headers */,
 				2C37522323AFD0EF003A6B0A /* fastavx512bwbase64.h in Headers */,
@@ -631,6 +705,7 @@
 				2C30BAE023A42B2E009FC330 /* w_compress.h in Headers */,
 				2C37522A23AFD0EF003A6B0A /* chromiumbase64.h in Headers */,
 				2C1728A6246C8935009C03B3 /* w_thread_pool.h in Headers */,
+				05B4A6D1251A44C700FBA684 /* w_log_config.h in Headers */,
 				2C898493239E735F0062D70A /* lz4.h in Headers */,
 				2C89848E239E735F0062D70A /* lz4hc.h in Headers */,
 				05BC21F5251296DA007D6218 /* utlist.h in Headers */,
@@ -703,6 +778,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				05B4A6C7251A44C700FBA684 /* color_sinks.cpp in Sources */,
+				05B4A6C5251A44C700FBA684 /* async.cpp in Sources */,
 				05BC21F1251296DA007D6218 /* w_hash.c in Sources */,
 				2C3756B523B79EF1003A6B0A /* w_signal.c in Sources */,
 				2C37522423AFD0EF003A6B0A /* fastavx512bwbase64.c in Sources */,
@@ -716,18 +793,24 @@
 				2CCFD5812471E56A0030D3AC /* w_timer.c in Sources */,
 				2C3756B923B7C1D7003A6B0A /* w_condition_variable.c in Sources */,
 				2C37521F23AFD0EF003A6B0A /* klompavxbase64.c in Sources */,
+				05B4A6C9251A44C700FBA684 /* fmt.cpp in Sources */,
 				2CCFD5862471E8550030D3AC /* w_async.c in Sources */,
 				05BC21EE251296DA007D6218 /* w_redis.c in Sources */,
 				2C3756E223B7F302003A6B0A /* w_lua.c in Sources */,
 				05BC21EC251296DA007D6218 /* w_mem_cache.c in Sources */,
 				2C898544239E763C0062D70A /* objectc.c in Sources */,
+				05B4A66C251A44C700FBA684 /* logger.cpp in Sources */,
 				05BC21FC251296DA007D6218 /* w_mem_map.c in Sources */,
 				2CFADC22248FB32E00409581 /* w_cpu.c in Sources */,
 				2C898543239E763C0062D70A /* version.c in Sources */,
 				2C37522B23AFD0EF003A6B0A /* quicktimebase64.c in Sources */,
+				05B4A6C8251A44C700FBA684 /* file_sinks.cpp in Sources */,
 				2C37522823AFD0EF003A6B0A /* chromiumbase64.c in Sources */,
 				05BC21EA251296DA007D6218 /* w_table.c in Sources */,
 				2CCFD57D246DF3F30030D3AC /* w_concurrent_queue.c in Sources */,
+				05B4A6C6251A44C700FBA684 /* cfg.cpp in Sources */,
+				05B4A6CA251A44C700FBA684 /* spdlog.cpp in Sources */,
+				05B4A6CF251A44C700FBA684 /* w_log.cpp in Sources */,
 				2C17289E246C16F1009C03B3 /* w_gametime.c in Sources */,
 				2C069B8A23E21EB8004EB56F /* w_fiber.cpp in Sources */,
 				05BC21FA251296DA007D6218 /* w_mem_pool.c in Sources */,
@@ -741,6 +824,8 @@
 				2CABF8112485A26B00E5E4D9 /* w_net.c in Sources */,
 				2C898541239E763C0062D70A /* zone.c in Sources */,
 				2C898491239E735F0062D70A /* lz4.c in Sources */,
+				05B4A6CB251A44C700FBA684 /* stdout_sinks.cpp in Sources */,
+				05B4A6D4251A45B600FBA684 /* w_mutex.c in Sources */,
 				2C89898E23A193A40062D70A /* wolf.c in Sources */,
 				2C898495239E735F0062D70A /* lz4hc.c in Sources */,
 				2C30BAE123A42B2E009FC330 /* w_compress.c in Sources */,
@@ -875,11 +960,13 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
-				COMBINE_HIDPI_IMAGES = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = NO;
+				COMBINE_HIDPI_IMAGES = NO;
 				COPY_PHASE_STRIP = NO;
 				DEVELOPMENT_TEAM = J2WEUYPJ98;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				EXECUTABLE_PREFIX = lib;
 				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_C_LANGUAGE_STANDARD = c18;
@@ -962,6 +1049,7 @@
 					"$(SRCROOT)/../../../deps/quiche/boringssl",
 					"$(SRCROOT)/../../../src/wolf.system/net/ws/uSockets",
 					"$(SRCROOT)/../../../deps/libuv/include",
+					"$(SRCROOT)/../../../src/wolf.system/log",
 				);
 				INSTALL_PATH = /usr/local/lib;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
@@ -984,7 +1072,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				ONLY_ACTIVE_ARCH = YES;
-				OTHER_CFLAGS = "-fvisibility=hidden";
+				OTHER_CFLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
 				OTHER_LDFLAGS = (
 					"-llber",
@@ -1000,6 +1088,8 @@
 				SYSTEM_HEADER_SEARCH_PATHS = "";
 				USER_HEADER_SEARCH_PATHS = "";
 				USE_HEADERMAP = YES;
+				VALID_ARCHS = "x86_64 i386";
+				"VALID_ARCHS[sdk=*]" = x86_64;
 			};
 			name = Debug;
 		};
@@ -1008,11 +1098,13 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
-				COMBINE_HIDPI_IMAGES = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = NO;
+				COMBINE_HIDPI_IMAGES = NO;
 				COPY_PHASE_STRIP = NO;
 				DEVELOPMENT_TEAM = J2WEUYPJ98;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				EXECUTABLE_PREFIX = lib;
 				FRAMEWORK_SEARCH_PATHS = "";
 				"FRAMEWORK_SEARCH_PATHS[arch=*]" = "";
@@ -1049,7 +1141,7 @@
 				LIBRARY_SEARCH_PATHS = "";
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				ONLY_ACTIVE_ARCH = YES;
-				OTHER_CFLAGS = "-fvisibility=hidden";
+				OTHER_CFLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
 				OTHER_LDFLAGS = (
 					"-llber",
@@ -1065,7 +1157,7 @@
 				SYSTEM_HEADER_SEARCH_PATHS = "";
 				USER_HEADER_SEARCH_PATHS = "";
 				USE_HEADERMAP = YES;
-				"VALID_ARCHS[sdk=*]" = "i386 x86_64";
+				"VALID_ARCHS[sdk=*]" = x86_64;
 			};
 			name = Release;
 		};

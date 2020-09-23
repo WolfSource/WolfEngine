@@ -77,7 +77,8 @@ int main()
     w_mem_pool_init(&s_mem_pool);
     if (s_mem_pool)
     {
-        W_RESULT _ret = w_io_dir_get_current(s_mem_pool, &_current_dir);
+        W_RESULT _ret = w_io_dir_get_current_exe(s_mem_pool, &_current_dir);
+        printf("current path is: %s\n", _current_dir);
         if (_ret == W_SUCCESS)
         {
             char* _crt = w_strcat(s_mem_pool, _current_dir, "/../cert.crt", NULL);

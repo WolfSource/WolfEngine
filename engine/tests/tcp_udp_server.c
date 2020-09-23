@@ -27,43 +27,33 @@ int main()
 		goto exit;
 	}
 
-	//create tcp server
+	w_socket_tcp _tcp_socket = { 0 };
+	_ret = w_net_open_tcp_socket(
+		_mem_pool,
+		ENDPOINT,
+		two_way_listener,
+		false, //no delay
+		false, //keep alive
+		true,//async
+		false, //tls
+		0, //oauth mode
+		NULL, //tls server name
+		false, //own certificate
+		NULL, // crt file path
+		NULL, // key file path
+		&_tcp_socket);
+
+	w_buffer_t _buf = { 0 };
+	_ret = w_net_receive_msg_tcp(&_tcp_socket, &_buf);
+	if (_ret == W_SUCCESS)
 	{
-		w_socket_tcp _tcp_socket = { 0 };
-		_ret = w_net_open_tcp_socket(
-			_mem_pool,
-			ENDPOINT,
-			two_way_listener,
-			false, //no delay
-			false, //keep alive
-			true,//async
-			false, //tls
-			0, //oauth mode
-			NULL, //tls server name
-			false, //own certificate
-			NULL, // crt file path
-			NULL, // key file path
-			&_tcp_socket);
-
-		w_buffer_t _buf;
-		_buf.data = w_malloc(_mem_pool, 1024);
-		_ret = w_net_receive_msg_tcp(&_tcp_socket, &_buf);
-		if (_ret == W_SUCCESS)
-		{
-			printf("%llu bytes recieved via tcp socekt", _buf.len);
-		}
-
-		_ret = w_net_free_msg(&_buf);
-		if (_ret)
-		{
-			printf("could not free buffer");
-		}
-
-		_ret = w_net_close_tcp_socket(&_tcp_socket);
-		if (_ret)
-		{
-			printf("could not close tcp socket");
-		}
+		printf("%llu bytes recieved via tcp socekt", _buf.len);
+	}
+	
+	_ret = w_net_close_tcp_socket(&_tcp_socket);
+	if (_ret)
+	{
+		printf("could not close tcp socket");
 	}
 
 exit:
