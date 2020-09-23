@@ -254,7 +254,6 @@ extern "C" {
     */
     W_SYSTEM_EXPORT
         W_RESULT w_net_open_quic_socket(
-            W_RESULT w_net_open_quic_socket(
             _In_z_  const char* pAddress,
             _In_        int pPort,
             _In_        w_socket_mode pSocketMode,
