@@ -43,7 +43,7 @@ extern "C" {
 	} w_audio_frame_info_t;
 	typedef w_audio_frame_info_t* w_audio_frame_info;
 
-	typedef void w_media_connection_callback(const char* /*url*/);
+	typedef void w_media_connection_callback(const char* /*pUrl*/);
 	typedef void w_media_video_frame_rcv_callback(const w_video_frame_info /*pFrameInfo*/, const uint8_t* /*pFrameBuffer*/);
 	typedef void w_media_audio_frame_rcv_callback(const w_audio_frame_info /*pFrameInfo*/, const uint8_t* /*pFrameBuffer*/);
 
@@ -62,7 +62,6 @@ extern "C" {
 	* @param pMemPool The pool to allocate out of
 	* @param pURL, the rtsp connection
 	* @param pProtocol, "tcp" or "udp"
-	* @param pFormatName, format of streaming, e.g. "rtsp", "udp"
 	* @param pStreamTimeOut, the stream timeout in seconds
 	* @param pSocketTimeOut, ths socket timeout in seconds
 	* @param pListen, listen to local port as puller
@@ -77,7 +76,6 @@ extern "C" {
 			_In_ w_mem_pool pMemPool,
 			_In_z_ const char* pURL,
 			_In_z_ const char* pProtocol,
-			_In_z_ const char* pFormatName,
 			_In_ long long pStreamTimeOut,
 			_In_ long long pSocketTimeOut,
 			_In_ bool pListen,

@@ -197,7 +197,6 @@ W_RESULT w_media_open_stream_receiver(
 	_In_ w_mem_pool pMemPool,
 	_In_z_ const char* pURL,
 	_In_z_ const char* pProtocol,
-	_In_z_ const char* pFormatName,
 	_In_ long long pStreamTimeOut,
 	_In_ long long pSocketTimeOut,
 	_In_ bool pListen,
@@ -216,6 +215,20 @@ W_RESULT w_media_open_stream_receiver(
 
 	W_RESULT _ret = W_FAILURE;
 
+	char _protocol[5];
+	//supported protocols
+	const char* _rtsp = "rtsp";
+	const char* _rtmp = "rtsp";
+
+	if (w_io_string_has_start_with(pURL, _rtsp) == W_SUCCESS)
+	{
+		strcpy(_protocol, _rtsp);
+	}
+	else if (w_io_string_has_start_with(pURL, _rtmp) == W_SUCCESS)
+	{
+		strcpy(_protocol, _rtmp);
+	}
+
 	//create an empty AV dictionary
 	AVDictionary* _av_dic = NULL;
 	{
@@ -228,26 +241,21 @@ W_RESULT w_media_open_stream_receiver(
 			return _ret;
 		}
 
-		w_string _str_protocol = NULL;
-		w_string_init(_local_pool_strings, &_str_protocol, pProtocol);
-
-		w_string _str_fromat = NULL;
-		w_string_init(_local_pool_strings, &_str_fromat, pProtocol);
-
-		w_string_to_lower(&_str_protocol);
-		w_string_to_lower(&_str_fromat);
-
-		if (strcmp(_str_fromat->data, "rtsp") == 0)
+		w_string _str_tcp_udp = NULL;
+		w_string_init(_local_pool_strings, &_str_tcp_udp, pProtocol);
+		w_string_to_lower(&_str_tcp_udp);
+				
+		if (strcmp(_protocol, "rtsp") == 0)
 		{
 			if (pListen)
 			{
 				av_dict_set(&_av_dic, "rtsp_flags", "listen", 0);
 			}
-			if (strcmp(_str_protocol->data, "tcp") == 0)
+			if (strcmp(_str_tcp_udp->data, "tcp") == 0)
 			{
 				av_dict_set(&_av_dic, "rtsp_flags", "prefer_tcp", 0);
 			}
-			av_dict_set(&_av_dic, "rtsp_transport", _str_protocol->data, 0);
+			av_dict_set(&_av_dic, "rtsp_transport", _str_tcp_udp->data, 0);
 		}
 
 		w_mem_pool_fini(&_local_pool_strings);
@@ -294,8 +302,8 @@ W_RESULT w_media_open_stream_receiver(
 	if (avformat_find_stream_info(_avformat_ctx, NULL) < 0)
 	{
 		LOG_P(W_LOG_ERROR,
-			"could not find input stream %s format: %s. trace info: %s",
-			pURL, pFormatName, _trace_info);
+			"could not find input stream %s. trace info: %s",
+			pURL, _trace_info);
 
 		goto exit;
 	}
@@ -307,8 +315,8 @@ W_RESULT w_media_open_stream_receiver(
 	if (_video_stream_index == -1 && !_audio_stream_index == -1)
 	{
 		LOG_P(W_LOG_ERROR,
-			"audio and video not found for stream %s format: %s. trace info: %s",
-			pURL, pFormatName, _trace_info);
+			"audio and video not found for stream %s . trace info: %s",
+			pURL, _trace_info);
 
 		goto exit;
 	}
@@ -336,7 +344,7 @@ W_RESULT w_media_open_stream_receiver(
 		{
 			LOG_P(W_LOG_ERROR,
 				"could not find decoder for codec id: %d input stream: %s. trace info: %s",
-				_codec_id, pURL, pFormatName, _trace_info);
+				_codec_id, pURL, _trace_info);
 
 			goto exit;
 		}
@@ -344,7 +352,7 @@ W_RESULT w_media_open_stream_receiver(
 		{
 			LOG_P(W_LOG_ERROR,
 				"could not open codec id: %d input stream: %s. trace info: %s",
-				_codec_id, pURL, pFormatName, _trace_info);
+				_codec_id, pURL, _trace_info);
 
 			goto exit;
 		}
@@ -366,7 +374,7 @@ W_RESULT w_media_open_stream_receiver(
 		{
 			LOG_P(W_LOG_ERROR,
 				"could not allocate memory for picture buffer. input stream: %s. trace info: %s",
-				pURL, pFormatName, _trace_info);
+				pURL,  _trace_info);
 
 			goto exit;
 		}
@@ -376,7 +384,7 @@ W_RESULT w_media_open_stream_receiver(
 		{
 			LOG_P(W_LOG_ERROR,
 				"could not allocate memory for frame. input stream: %s. trace info: %s",
-				pURL, pFormatName, _trace_info);
+				pURL, _trace_info);
 
 			goto exit;
 		}
@@ -396,7 +404,7 @@ W_RESULT w_media_open_stream_receiver(
 		{
 			LOG_P(W_LOG_ERROR,
 				"could not find decoder for codec id: %d input stream: %s. trace info: %s",
-				_codec_id, pURL, pFormatName, _trace_info);
+				_codec_id, pURL, _trace_info);
 
 			goto exit;
 		}
@@ -404,7 +412,7 @@ W_RESULT w_media_open_stream_receiver(
 		{
 			LOG_P(W_LOG_ERROR,
 				"could not open codec id: %d input stream: %s. trace info: %s",
-				_codec_id, pURL, pFormatName, _trace_info);
+				_codec_id, pURL, _trace_info);
 
 			goto exit;
 		}
@@ -414,7 +422,7 @@ W_RESULT w_media_open_stream_receiver(
 		{
 			LOG_P(W_LOG_ERROR,
 				"could not allocate memory for audio avframe. codec id: %d input stream: %s. trace info: %s",
-				_codec_id, pURL, pFormatName, _trace_info);
+				_codec_id, pURL, _trace_info);
 
 			goto exit;
 		}

@@ -49,6 +49,15 @@
 //    return 1;
 //}
 
+
+void s_on_media_connection_callback(const char* pUrl)
+{
+
+}
+
+void s_on_media_video_frame_rcv_callback(const w_video_frame_info /*pFrameInfo*/, const uint8_t* /*pFrameBuffer*/);
+void s_on_media_audio_frame_rcv_callback(const w_audio_frame_info /*pFrameInfo*/, const uint8_t* /*pFrameBuffer*/);
+
 int main()
 {
     wolf_init();
@@ -59,11 +68,14 @@ int main()
         return W_FAILURE;
     }
 
-    w_media_open_stream_receiver(
+    W_RESULT _ret = w_media_open_stream_receiver(
         _mem_pool,
         "rtsp://playpod.pod.ir:1001/live",
         "tcp",
-        "rtsp",)
+        5000,
+        5000,
+        false,
+        )
 
 
     //terminate wolf
