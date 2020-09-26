@@ -10,7 +10,9 @@ typedef struct w_mem_pool_t
 	apr_pool_t*				apr;
 } w_mem_pool_t;
 
-W_RESULT w_mem_pool_init(_Inout_ w_mem_pool* pMemPool)
+W_RESULT w_mem_pool_init_from_parent(
+	_Inout_ w_mem_pool* pMemPool, 
+	_Inout_opt_ w_mem_pool* pParentMemPool)
 {
 	if (pMemPool && *pMemPool)
 	{
@@ -31,7 +33,13 @@ W_RESULT w_mem_pool_init(_Inout_ w_mem_pool* pMemPool)
 
 	_ret = 0;
 
-	apr_pool_create(&((*pMemPool)->apr), NULL);
+	apr_pool_t* _parent = NULL;
+	if (pParentMemPool && *pParentMemPool)
+	{
+		_parent = (*pParentMemPool)->apr;
+	}
+
+	apr_pool_create(&((*pMemPool)->apr), _parent);
 	apr_allocator_t* _allocator = apr_pool_allocator_get((*pMemPool)->apr);
 	if (_allocator)
 	{
@@ -41,6 +49,11 @@ W_RESULT w_mem_pool_init(_Inout_ w_mem_pool* pMemPool)
 	apr_atomic_inc64(&s_number_apr_pool_ref_counts);
 
 	return _ret;
+}
+
+W_RESULT w_mem_pool_init(_Inout_ w_mem_pool* pMemPool)
+{
+	return w_mem_pool_init_from_parent(pMemPool, NULL);
 }
 
 void* w_malloc(

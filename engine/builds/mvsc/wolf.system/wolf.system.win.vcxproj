@@ -128,7 +128,7 @@
     <ClCompile Include="..\..\..\src\wolf.system\memory\w_mem_map.c" />
     <ClCompile Include="..\..\..\src\wolf.system\memory\w_mem_pool.c" />
     <ClCompile Include="..\..\..\src\wolf.system\memory\w_shared_mem.c" />
-    <ClCompile Include="..\..\..\src\wolf.system\memory\w_string_view.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\memory\w_string.c" />
     <ClCompile Include="..\..\..\src\wolf.system\memory\w_table.c" />
     <ClCompile Include="..\..\..\src\wolf.system\net\ws\uSockets\context.c" />
     <ClCompile Include="..\..\..\src\wolf.system\net\ws\uSockets\crypto\openssl.c" />
@@ -277,7 +277,7 @@
     <ClInclude Include="..\..\..\src\wolf.system\memory\w_mem_map.h" />
     <ClInclude Include="..\..\..\src\wolf.system\memory\w_mem_pool.h" />
     <ClInclude Include="..\..\..\src\wolf.system\memory\w_shared_mem.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\memory\w_string_view.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\memory\w_string.h" />
     <ClInclude Include="..\..\..\src\wolf.system\memory\w_table.h" />
     <ClInclude Include="..\..\..\src\wolf.system\net\ws\uSockets\internal\eventing\epoll_kqueue.h" />
     <ClInclude Include="..\..\..\src\wolf.system\net\ws\uSockets\internal\eventing\gcd.h" />

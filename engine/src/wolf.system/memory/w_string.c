@@ -1,20 +1,23 @@
-#include "w_string_view.h"
+#include "w_string.h"
+#include <log/w_log.h>
 
-w_string_view w_string_init(
+W_RESULT w_string_init(
     _Inout_ w_mem_pool pMemPool,
-    _Inout_ w_string_view* pStringView,
+    _Inout_ w_string* pStringView,
     _In_ const char* pData)
 {
+    const char* _trace_info = "w_string_init";
     if (!pMemPool)
     {
-        return NULL;
+        W_ASSERT_P(false, "bad args! trace info: %s", _trace_info);
+        return W_BAD_ARG;
     }
 
     *pStringView = NULL;
     size_t _len = strlen(pData);
     if (_len)
     {
-        *pStringView = w_malloc(pMemPool, sizeof(w_string_view_t));
+        *pStringView = w_malloc(pMemPool, sizeof(w_string_t));
         if (*pStringView)
         {
             size_t _size = _len + 1;
@@ -23,25 +26,28 @@ w_string_view w_string_init(
             (*pStringView)->data[_len] = '\0';
             (*pStringView)->str_len = _len;
             (*pStringView)->reserved_size = _size;
+            return W_SUCCESS;
         }
     }
-    return (*pStringView);
+    return W_FAILURE;
 }
 
-w_string_view w_string_dup(
+W_RESULT w_string_dup(
     _Inout_ w_mem_pool pMemPool,
-    _Inout_ w_string_view* pDst,
-    _Inout_ w_string_view pSrc)
+    _Inout_ w_string* pDst,
+    _Inout_ w_string pSrc)
 {
+    const char* _trace_info = "w_string_dup";
     if (!pMemPool || !pSrc)
     {
-        return NULL;
+        W_ASSERT_P(false, "bad args! trace info: %s", _trace_info);
+        return W_BAD_ARG;
     }
 
     size_t _len = pSrc->str_len;
     if (!_len)
     {
-        return NULL;
+        return W_FAILURE;
     }
 
     size_t _req_size = _len + 1;
@@ -56,16 +62,16 @@ w_string_view w_string_dup(
         else
         {
             //destination already contains memory, make sure free it first
-            return NULL;
+            return W_FAILURE;
         }
     }
     else
     {
         //allocate memory for string view
-        *pDst = (w_string_view)w_malloc(pMemPool, sizeof(w_string_view_t));
+        *pDst = (w_string)w_malloc(pMemPool, sizeof(w_string_t));
         if (!(*pDst))
         {
-            return NULL;
+            return W_FAILURE;
         }
     }
 
@@ -78,16 +84,31 @@ w_string_view w_string_dup(
     strcpy_s((*pDst)->data, _len, pSrc->data);
     (*pDst)->data[_len] = '\0';
     (*pDst)->str_len = _len;
-    
-    return (*pDst);
+
+    return W_SUCCESS;
 }
 
-W_RESULT w_string_is_empty(_In_ w_string_view pStr)
+W_RESULT w_string_is_empty(_In_ w_string pStr)
 {
     return (pStr->str_len == 0 || pStr->data == NULL || pStr->data[0] == '\0') ? W_SUCCESS : W_FAILURE;
 }
 
-W_RESULT w_string_clear(_Inout_ w_string_view* pStr)
+void w_string_to_lower(_Inout_z_ w_string pString)
+{
+    if (pString)
+    {
+        int _ret = 0;
+        char* _c = pString->data;
+        int _l = pString->str_len;
+        while (_l)
+        {
+            _ret = tolower(_c++);
+            _l--;
+        }
+    }
+}
+
+W_RESULT w_string_clear(_Inout_ w_string* pStr)
 {
     if (!pStr)
     {

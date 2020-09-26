@@ -24,8 +24,10 @@ W_RESULT w_thread_init_once_flag(
 
 W_RESULT w_thread_once_call(_Inout_ w_thread_once_flag pOnceFlag, _In_ w_thread_once_job pOnceJob)
 {
+    const char* _trace_info = "w_thread_once_call";
     if (!pOnceFlag || !pOnceJob)
     {
+        W_ASSERT_P(false, "bad args. trace info %s", _trace_info);
         return APR_BADARG;
     }
     //create once flag

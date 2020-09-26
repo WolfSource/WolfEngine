@@ -2,7 +2,6 @@
 #include <apr-1/apr_general.h>
 #include "log/w_log.h"
 #include <io/w_io.h>
-#include <memory/w_string_view.h>
 
 #ifdef W_PLATFORM_WIN
 #include <tlhelp32.h>//for checking process
@@ -141,7 +140,7 @@ W_RESULT w_process_get_name_by_id(
 	if (!pMemPool)
 	{
 		W_ASSERT_P(false, "bad args! trace info: %s", _trace_info);
-		return W_FAILURE;
+		return W_BAD_ARG;
 	}
 
 #ifdef W_PLATFORM_WIN

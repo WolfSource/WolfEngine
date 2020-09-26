@@ -22,7 +22,6 @@ extern "C" {
     /**
      * create and initialize a memory pool
      * @param pMemPool The pool to allocate out of
-     * @param pType The type of memory pool
      * @note This memory pool is optimized for allocation speed; The downside of
             this design is that there's no way to reclaim memory within a pool.
             So make sure use seperated memory pools, then allocate a pool
@@ -34,6 +33,24 @@ extern "C" {
      */
     W_SYSTEM_EXPORT
         W_RESULT w_mem_pool_init(_Inout_ w_mem_pool* pMemPool);
+
+    /**
+     * create and initialize a memory pool
+     * @param pMemPool The pool to allocate out of
+     * @param pParentMemPool The parent pool
+     * @note This memory pool is optimized for allocation speed; The downside of
+            this design is that there's no way to reclaim memory within a pool.
+            So make sure use seperated memory pools, then allocate a pool
+            per transaction and finally release it once the transaction ends.
+            This memory pool is essentially designed for smaller chunks.
+            If you need a large size of memory chunk, e.g. over several mega bytes,
+            don't use this memory pool and use W_MEM_POOL_LINEAR_RECLAIM type.
+     * @return result code
+     */
+    W_SYSTEM_EXPORT
+        W_RESULT w_mem_pool_init_from_parent(
+            _Inout_ w_mem_pool* pMemPool,
+            _Inout_opt_ w_mem_pool* pParentMemPool);
 
     /**
      * allocate a memory
