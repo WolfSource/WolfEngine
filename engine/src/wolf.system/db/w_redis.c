@@ -1,12 +1,13 @@
 #include "w_redis.h"
+#include "buckets/apr_reslist.h"
 #include <apr-1/apr_errno.h>
 #include <apr-1/apr_network_io.h>
 #include <apr-1/apr_pools.h>
 #include <apr-1/apr_strings.h>
 #include "buckets/apr_buckets.h"
-#include "buckets/apr_reslist.h"
 #include <memory/w_mem_pool.h>
 #include <concurrency/w_thread.h>
+#include<concurrency/w_mutex.h>
 #include <log/w_log.h>
 
 #define BUFFER_SIZE  512
@@ -328,44 +329,42 @@ static apr_status_t conn_connect(w_redis_conn conn)
     return rv;
 }
 
-static apr_status_t
-rc_conn_construct(void** conn_, void* params, w_mem_pool pool)
+ apr_status_t
+rc_conn_construct(void** conn_, void* params, apr_pool_t * pool)
 {
     apr_status_t rv = W_SUCCESS;
     w_redis_conn conn;
-    w_mem_pool np=NULL;
-    w_apr_pool w_np=w_mem_pool_get_apr_pool(np);
-    w_mem_pool tp=NULL;
-    w_apr_pool w_tp = w_mem_pool_get_apr_pool(tp);
+    apr_pool_t* np;
+    apr_pool_t* tp;
     w_redis_server rs = params;
 #if APR_HAVE_SOCKADDR_UN
     apr_int32_t family = rs->host[0] != '/' ? APR_INET : APR_UNIX;
 #else
     apr_int32_t family = APR_INET;
 #endif
-    w_apr_pool w_pool = w_mem_pool_get_apr_pool(pool);
+   // w_apr_pool w_pool = w_mem_pool_get_apr_pool(pool);
 
-    rv = apr_pool_create(&w_np, w_pool);
+    rv = apr_pool_create(&np, pool);
     if (rv != W_SUCCESS) {
         return rv;
     }
 
-    rv = apr_pool_create(&w_tp, w_np);
+    rv = apr_pool_create(&tp, np);
     if (rv != W_SUCCESS) {
-        apr_pool_destroy(w_np);
+        apr_pool_destroy(np);
         return rv;
     }
 
-    conn = apr_palloc(w_np, sizeof(apr_redis_conn_t));
+    conn = apr_palloc(np, sizeof(apr_redis_conn_t));
    
 
-    conn->p = w_np;
-    conn->tp = w_tp;
+    conn->p = np;
+    conn->tp = tp;
 
-    rv = apr_socket_create(&conn->sock, family, SOCK_STREAM, 0, w_np);
+    rv = apr_socket_create(&conn->sock, family, SOCK_STREAM, 0, np);
 
     if (rv != W_SUCCESS) {
-        apr_pool_destroy(w_np);
+        apr_pool_destroy(np);
         return rv;
     }
 
@@ -374,7 +373,7 @@ rc_conn_construct(void** conn_, void* params, w_mem_pool pool)
     conn->rs = rs;
     rv = conn_connect(conn);
     if (rv != W_SUCCESS) {
-        apr_pool_destroy(w_np);
+        apr_pool_destroy(np);
     }
     else {
         *conn_ = conn;
@@ -383,11 +382,11 @@ rc_conn_construct(void** conn_, void* params, w_mem_pool pool)
     return rv;
 }
 #if APR_HAS_THREADS
-static apr_status_t
-rc_conn_destruct(void* conn_, void* params, w_mem_pool pool)
+ apr_status_t
+rc_conn_destruct(void* conn_, void* params, apr_pool_t * pool)
 {
     w_redis_conn conn = (w_redis_conn)conn_;
-    w_apr_pool w_pooltmp = w_mem_pool_get_apr_pool(pool);
+   // w_apr_pool w_pooltmp = w_mem_pool_get_apr_pool(pool);
 
     struct iovec vec[3];
     apr_size_t written;
@@ -429,12 +428,12 @@ static apr_status_t make_server_dead(w_redis rc,
     w_redis_server rs)
 {
 #if APR_HAS_THREADS
-    w_thread_mutex_lock(rs->lock);
+    w_mutex_lock(rs->lock);
 #endif
     rs->status = APR_RC_SERVER_DEAD;
     rs->btime = apr_time_now();
 #if APR_HAS_THREADS
-    w_thread_mutex_unlock(rs->lock);
+    w_mutex_unlock(rs->lock);
 #endif
     return W_SUCCESS;
 }
@@ -562,7 +561,7 @@ w_redis_server w_redis_find_server_hash_default(
                 curtime = apr_time_now();
             }
 #if APR_HAS_THREADS
-            w_thread_mutex_lock(rs->lock);
+            w_mutex_lock(rs->lock);
 #endif
             /* Try the dead server, every 5 seconds */
             if (curtime - rs->btime > apr_time_from_sec(5)) {
@@ -570,13 +569,13 @@ w_redis_server w_redis_find_server_hash_default(
                 if (w_redis_ping(rs) == W_SUCCESS) {
                     make_server_live(pRedisClient, rs);
 #if APR_HAS_THREADS
-                    w_thread_mutex_unlock(rs->lock);
+                    w_mutex_unlock(rs->lock);
 #endif
                     break;
                 }
             }
 #if APR_HAS_THREADS
-            w_thread_mutex_unlock(rs->lock);
+            w_mutex_unlock(rs->lock);
 #endif
         }
         h++;
@@ -681,6 +680,7 @@ W_RESULT w_redis_disable_server(
 
 W_RESULT w_redis_server_init(
     _Inout_ w_mem_pool pMemPool,
+    _Inout_ w_mem_pool pSubPool,
     _In_z_ const char* pHost,
     _In_ uint16_t pPort,
     _In_ uint32_t pMin,
@@ -699,8 +699,8 @@ W_RESULT w_redis_server_init(
     apr_status_t rv = W_SUCCESS;
     w_redis_server server;
 
-   w_mem_pool np=NULL;
-  w_apr_pool w_np = w_mem_pool_get_apr_pool(np);
+  
+  w_apr_pool w_np = w_mem_pool_get_apr_pool(pSubPool);
   w_apr_pool w_pMemPool = w_mem_pool_get_apr_pool(pMemPool);
 
     
@@ -718,7 +718,7 @@ W_RESULT w_redis_server_init(
     server->version.patch = 0;
 
 #if APR_HAS_THREADS
-    rv = w_thread_mutex_init( w_np ,&server->lock, APR_THREAD_MUTEX_DEFAULT);
+    rv = w_mutex_init(pSubPool,&server->lock, APR_THREAD_MUTEX_DEFAULT);
     if (rv != W_SUCCESS) {
         return rv;
     }
@@ -727,7 +727,7 @@ W_RESULT w_redis_server_init(
         pSMax,       /* soft maximum */
         pMax,        /* hard maximum */
         pTTL,        /* Time to live */
-        rc_conn_construct,  /* Make a New Connection */
+        rc_conn_construct ,  /* Make a New Connection */
         rc_conn_destruct,   /* Kill Old Connection */
         server, w_np);
     if (rv != W_SUCCESS) {
@@ -1293,7 +1293,7 @@ W_RESULT w_redis_delete(_In_ w_redis pRedisClient,
 
 #define RV_FIELD "redis_version:"
 W_RESULT w_redis_version(
-    _Inout_ w_mem_pool pMemPool,
+    _Inout_ w_mem_pool pMemPool, _Inout_ w_mem_pool pSubPool,
     _In_ w_redis_server pRedisServer,
     _Inout_ char** pBaton)
 {
@@ -1313,8 +1313,8 @@ W_RESULT w_redis_version(
     apr_status_t rv;
     char* ptr, * eptr;
 
-    w_mem_pool subpool=NULL;
-    w_apr_pool w_subpool = w_mem_pool_get_apr_pool(subpool);
+   
+    w_apr_pool w_subpool = w_mem_pool_get_apr_pool(pSubPool);
     w_apr_pool w_pMemPool = w_mem_pool_get_apr_pool(pMemPool);
 
     /* Have we already obtained the version number? */
@@ -1328,7 +1328,7 @@ W_RESULT w_redis_version(
         /* well, we tried */
         w_subpool = w_pMemPool;
     }
-    rv =w_redis_info(w_subpool, pRedisServer, pBaton);
+    rv =w_redis_info(pSubPool, pRedisServer, pBaton);
 
     if (rv != W_SUCCESS) {
         if (w_subpool != w_pMemPool) {
@@ -1352,9 +1352,9 @@ W_RESULT w_redis_version(
     {
         *pBaton = apr_pstrdup(w_pMemPool, pRedisServer->version.number);
     }
-    if (subpool != w_pMemPool) 
+    if (w_subpool != w_pMemPool)
     {
-        apr_pool_destroy(subpool);
+        apr_pool_destroy(w_subpool);
     }
     return W_SUCCESS;
 }
@@ -1413,7 +1413,7 @@ W_RESULT w_redis_info(
         apr_size_t nl;
         w_apr_pool w_pMemPool = w_mem_pool_get_apr_pool(pMemPool);
 
-        rv = grab_bulk_resp(pRedisServer, NULL, conn, w_pMemPool, pBaton, &nl);
+        rv = grab_bulk_resp(pRedisServer, NULL, conn, pMemPool, pBaton, &nl);
     }
     else {
         rs_bad_conn(pRedisServer, conn);
@@ -1744,7 +1744,7 @@ static void update_stats(char* info, w_redis_stats stats)
 }
 
 W_RESULT w_redis_get_stats(
-    _Inout_ w_mem_pool pMemPool,
+    _Inout_ w_mem_pool pMemPool, _Inout_ w_mem_pool pSubPool,
     _In_ w_redis_server pRedisServer,
     _Inout_ w_redis_stats* pStats)
 {
@@ -1764,8 +1764,8 @@ W_RESULT w_redis_get_stats(
     apr_status_t rv;
     char* info;
     
-    w_mem_pool subpool=NULL;
-    w_apr_pool w_subpool = w_mem_pool_get_apr_pool(subpool);
+    
+    w_apr_pool w_subpool = w_mem_pool_get_apr_pool(pSubPool);
     w_apr_pool w_pMemPool = w_mem_pool_get_apr_pool(pMemPool);
 
     w_redis_stats ret;
@@ -1775,7 +1775,7 @@ W_RESULT w_redis_get_stats(
         /* well, we tried */
         w_subpool = (w_pMemPool);
     }
-    rv = w_redis_info(w_subpool, pRedisServer, &info);
+    rv = w_redis_info(pSubPool, pRedisServer, &info);
 
     if (rv != W_SUCCESS) {
         if (w_subpool != w_pMemPool) {
