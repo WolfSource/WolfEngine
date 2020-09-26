@@ -20,38 +20,50 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
+#include <w_media.h>
 
-void* w_thread_job_my(w_thread arg1, void* arg2) { return NULL; }
-void mycallback_thread() { printf("%s", "ok"); }
-void mycallback(EV_P_ w_async_base* arg1, int arg2) { printf("%s", "ok"); }
-
-int pCallBack(void* rec, const char* pKey, const char* pValue) {
-    const char* label = rec;
-    printf("callback[%s]: %s %s\n", label, pKey, pValue);
-    return TRUE;
-}
-void s_timer_callback(w_timer_loop* pLoop, w_timer_base* pTimer, int pRevents)
-{
-    w_timer_ptr _t = (w_timer_ptr)pTimer->data;
-    w_timer_break(_t, 2);
-    printf("timer");
-}
-void* _hash_func(w_mem_pool pMemPool, const void* pKey, size_t pLen, const void* pHash1Value, const void* pHash2Value, const void* pData)
-{
-    printf("%s", "ok");
-    return NULL;
-
-}
-int hash_do_callback_fn(void* pRec, const void* pKey, size_t pLen, const void* pValue)
-{
-    printf("%s", "ok2");
-    return 1;
-}
+//void* w_thread_job_my(w_thread arg1, void* arg2) { return NULL; }
+//void mycallback_thread() { printf("%s", "ok"); }
+//void mycallback(EV_P_ w_async_base* arg1, int arg2) { printf("%s", "ok"); }
+//
+//int pCallBack(void* rec, const char* pKey, const char* pValue) {
+//    const char* label = rec;
+//    printf("callback[%s]: %s %s\n", label, pKey, pValue);
+//    return TRUE;
+//}
+//void s_timer_callback(w_timer_loop* pLoop, w_timer_base* pTimer, int pRevents)
+//{
+//    w_timer_ptr _t = (w_timer_ptr)pTimer->data;
+//    w_timer_break(_t, 2);
+//    printf("timer");
+//}
+//void* _hash_func(w_mem_pool pMemPool, const void* pKey, size_t pLen, const void* pHash1Value, const void* pHash2Value, const void* pData)
+//{
+//    printf("%s", "ok");
+//    return NULL;
+//
+//}
+//int hash_do_callback_fn(void* pRec, const void* pKey, size_t pLen, const void* pValue)
+//{
+//    printf("%s", "ok2");
+//    return 1;
+//}
 
 int main()
 {
     wolf_init();
 
+    w_mem_pool _mem_pool = NULL;
+    if (w_mem_pool_init(&_mem_pool) != W_SUCCESS)
+    {
+        return W_FAILURE;
+    }
+
+    w_media_open_stream_receiver(
+        _mem_pool,
+        "rtsp://playpod.pod.ir:1001/live",
+        "tcp",
+        "rtsp",)
 
 
     //terminate wolf
