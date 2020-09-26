@@ -9,7 +9,7 @@
 
 #pragma once
 
-typedef enum
+typedef enum w_log_type
 {
 	W_LOG_DEBUG = 0,
     W_LOG_INFO,
