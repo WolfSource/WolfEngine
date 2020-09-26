@@ -131,6 +131,10 @@ static void s_update_clock(av* pCodec)
 
 static void av_fini(av pAV)
 {
+	if (pAV.avframe)
+	{
+		av_free(pAV.avframe);
+	}
 	if (pAV.avcodec_ctx)
 	{
 		avcodec_free_context(&pAV.avcodec_ctx);
@@ -215,7 +219,7 @@ W_RESULT w_media_open_stream_receiver(
 
 	W_RESULT _ret = W_FAILURE;
 
-	char _protocol[5];
+	char _protocol[5] = { 0 };
 	//supported protocols
 	const char* _rtsp = "rtsp";
 	const char* _rtmp = "rtsp";
@@ -243,7 +247,7 @@ W_RESULT w_media_open_stream_receiver(
 
 		w_string _str_tcp_udp = NULL;
 		w_string_init(_local_pool_strings, &_str_tcp_udp, pProtocol);
-		w_string_to_lower(&_str_tcp_udp);
+		w_string_to_lower(_str_tcp_udp);
 				
 		if (strcmp(_protocol, "rtsp") == 0)
 		{
@@ -268,10 +272,7 @@ W_RESULT w_media_open_stream_receiver(
 
 	AVFormatContext* _avformat_ctx = NULL;
 	struct SwsContext* _img_convert_ctx = NULL;
-	uint8_t* _picture_buffer = NULL;
-	AVFrame* _picture = NULL;
-	AVFrame* _picture_rgb = NULL;
-
+	
 	char _buf[MAX_PATH];
 
 #ifdef  W_PLATFORM_WIN
@@ -333,7 +334,7 @@ W_RESULT w_media_open_stream_receiver(
 	}
 
 	//start reading packets from stream
-	av_read_play(_avformat_ctx);
+	//av_read_play(_avformat_ctx);
 
 	//find the codec
 	if (_video_stream_index != -1)
@@ -369,31 +370,39 @@ W_RESULT w_media_open_stream_receiver(
 			_w,
 			_h);
 
-		_picture_buffer = (uint8_t*)(av_malloc(_size_stream_format));
-		if (!_picture_buffer)
+		//_picture_buffer = (uint8_t*)(av_malloc(_size_stream_format));
+		//if (!_picture_buffer)
+		//{
+		//	LOG_P(W_LOG_ERROR,
+		//		"could not allocate memory for picture buffer. input stream: %s. trace info: %s",
+		//		pURL,  _trace_info);
+
+		//	goto exit;
+		//}
+
+		_av_video.avframe = av_frame_alloc();
+		if (!_av_video.avframe)
 		{
 			LOG_P(W_LOG_ERROR,
-				"could not allocate memory for picture buffer. input stream: %s. trace info: %s",
-				pURL,  _trace_info);
-
-			goto exit;
-		}
-
-		_picture = av_frame_alloc();
-		if (!_picture)
-		{
-			LOG_P(W_LOG_ERROR,
-				"could not allocate memory for frame. input stream: %s. trace info: %s",
+				"could not allocate memory for video avframe. input stream: %s. trace info: %s",
 				pURL, _trace_info);
 
 			goto exit;
 		}
-		avpicture_fill(
-			(AVPicture*)_picture,
-			_picture_buffer,
-			_av_video.avcodec_ctx->pix_fmt,
-			_w,
-			_h);
+
+		//if (avpicture_fill(
+		//	(AVPicture*)_av_video.avframe,
+		//	_picture_buffer,
+		//	_av_video.avcodec_ctx->pix_fmt,
+		//	_w,
+		//	_h) < 0)
+		//{
+		//	LOG_P(W_LOG_ERROR,
+		//		"could not fill av picture. input stream: %s. trace info: %s",
+		//		pURL, _trace_info);
+
+		//	goto exit;
+		//}
 	}
 
 	if (_audio_stream_index != -1)
@@ -462,7 +471,7 @@ W_RESULT w_media_open_stream_receiver(
 					_packet.stream_index = _av_video.avstream->id;
 					_ret = avcodec_decode_video2(
 						_av_video.avcodec_ctx,
-						_picture,
+						_av_video.avframe,
 						&_got_packet,
 						&_packet);
 					if (_ret > 0)
@@ -479,7 +488,7 @@ W_RESULT w_media_open_stream_receiver(
 						_video_frame.pts = _av_video.pts;
 						if (pOnVideoFrameRecieved)
 						{
-							pOnVideoFrameRecieved(&_video_frame, _picture->data[0]);
+							pOnVideoFrameRecieved(&_video_frame, _av_video.avframe->data[0]);
 						}
 					}
 				}
@@ -495,7 +504,7 @@ W_RESULT w_media_open_stream_receiver(
 						s_update_pts(&_av_audio, _packet.dts);
 
 						//if decoder failed on decoding packet. continute
-						if (!_got_packet || !_av_audio.avframe) continue;
+						if (!_got_packet) continue;
 
 						s_update_clock(&_av_audio);
 
@@ -543,14 +552,6 @@ exit:
 	}
 
 	//free pixels	
-	if (_picture)
-	{
-		av_free(_picture);
-	}
-	if (_picture_rgb)
-	{
-		av_free(_picture_rgb);
-	}
 	av_fini(_av_video);
 	av_fini(_av_audio);
 	

@@ -1,5 +1,6 @@
 #include "w_string.h"
 #include <log/w_log.h>
+#include <ctype.h>
 
 W_RESULT w_string_init(
     _Inout_ w_mem_pool pMemPool,
@@ -22,7 +23,7 @@ W_RESULT w_string_init(
         {
             size_t _size = _len + 1;
             (*pStringView)->data = w_malloc(pMemPool, _size); //with NULL
-            strcpy_s((*pStringView)->data, _len, pData);
+            strcpy_s((*pStringView)->data, _size, pData);
             (*pStringView)->data[_len] = '\0';
             (*pStringView)->str_len = _len;
             (*pStringView)->reserved_size = _size;
@@ -99,10 +100,11 @@ void w_string_to_lower(_Inout_z_ w_string pString)
     {
         int _ret = 0;
         char* _c = pString->data;
-        int _l = pString->str_len;
+        size_t _l = pString->str_len;
         while (_l)
         {
-            _ret = tolower(_c++);
+            *_c = tolower(*_c);
+            _c++;
             _l--;
         }
     }

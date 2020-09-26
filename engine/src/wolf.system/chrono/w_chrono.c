@@ -104,15 +104,12 @@ w_timespec w_chrono_duration(
 	}
 	else
 	{
-		if (pT2->tv_nsec - pT1->tv_nsec < 0)
+		_diff.tv_sec = pT1->tv_sec - pT2->tv_sec;
+		_diff.tv_nsec = pT1->tv_nsec - pT2->tv_nsec;
+		if (_diff.tv_nsec < 0)
 		{
-			_diff.tv_sec = pT2->tv_sec - pT1->tv_sec - 1;
-			_diff.tv_nsec = (long)(1e+9) + pT2->tv_nsec - pT1->tv_nsec;
-		}
-		else
-		{
-			_diff.tv_sec = pT2->tv_sec - pT1->tv_sec;
-			_diff.tv_nsec = pT2->tv_nsec - pT1->tv_nsec;
+			--_diff.tv_sec;
+			_diff.tv_nsec += 1000000000L;
 		}
 	}
 	return _diff;

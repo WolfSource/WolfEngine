@@ -50,13 +50,34 @@
 //}
 
 
-void s_on_media_connection_callback(const char* pUrl)
+void s_on_connection_est_callback(const char* pUrl)
 {
-
+    printf("%s est", pUrl);
 }
 
-void s_on_media_video_frame_rcv_callback(const w_video_frame_info /*pFrameInfo*/, const uint8_t* /*pFrameBuffer*/);
-void s_on_media_audio_frame_rcv_callback(const w_audio_frame_info /*pFrameInfo*/, const uint8_t* /*pFrameBuffer*/);
+void s_on_connection_lost_callback(const char* pUrl)
+{
+    printf("%s lost", pUrl);
+}
+
+void s_on_connection_closed_callback(const char* pUrl)
+{
+    printf("%s closed", pUrl);
+}
+
+void s_on_media_video_frame_rcv_callback(
+    const w_video_frame_info pFrameInfo, 
+    const uint8_t* pFrameBuffer)
+{
+    //printf("got video");
+}
+
+void s_on_media_audio_frame_rcv_callback(
+    const w_audio_frame_info pFrameInfo,
+    const uint8_t* pFrameBuffer)
+{
+    //printf("got audio");
+}
 
 int main()
 {
@@ -71,12 +92,15 @@ int main()
     W_RESULT _ret = w_media_open_stream_receiver(
         _mem_pool,
         "rtsp://playpod.pod.ir:1001/live",
-        "tcp",
+        "TcP",
         5000,
         5000,
         false,
-        )
-
+        s_on_connection_est_callback,
+        s_on_connection_lost_callback,
+        s_on_connection_closed_callback,
+        s_on_media_video_frame_rcv_callback,
+        s_on_media_audio_frame_rcv_callback);
 
     //terminate wolf
     wolf_fini();

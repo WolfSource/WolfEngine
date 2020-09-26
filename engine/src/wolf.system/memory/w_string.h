@@ -64,7 +64,7 @@ extern "C" {
     * @param pStringLen the len of string
     */
     W_SYSTEM_EXPORT
-        void w_string_to_lower(_Inout_z_ w_string* pString);
+        void w_string_to_lower(_Inout_z_ w_string pString);
 
     /**
      * clear string 

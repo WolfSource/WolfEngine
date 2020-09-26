@@ -57,6 +57,7 @@ extern "C" {
      * get duration between two times
      * @param pT1 is start time
      * @param pT2 is second time
+     * @note pT1 should be greater than pT2
      * @return a pointer to w_timespan object
      */
     W_SYSTEM_EXPORT
