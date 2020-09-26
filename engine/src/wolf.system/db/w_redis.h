@@ -17,8 +17,8 @@
 //*/
 //
 #pragma once
-
 #ifdef __cplusplus
+
 extern "C" {
 #endif
 
@@ -149,6 +149,7 @@ extern "C" {
     /**
      * Creates a new Server Object
      * @param pMemPool The pool to allocate out of
+     * @param pSubPool The pool to allocate out of
      * @param pHost hostname of the server
      * @param pPort port of the server
      * @param pMin  minimum number of client sockets to open
@@ -163,6 +164,7 @@ extern "C" {
     W_SYSTEM_EXPORT
         W_RESULT w_redis_server_init(
             _Inout_ w_mem_pool pMemPool,
+            _Inout_ w_mem_pool pSubPool,
             _In_z_ const char* pHost,
             _In_ uint16_t pPort,
             _In_ uint32_t pMin,
@@ -256,6 +258,7 @@ extern "C" {
     /**
      * Query a server's version
      * @param pMemPool The pool to allocate out of
+     * @param pSubPool The pool to allocate out of
      * @param pRedisServer server to query
      * @param pBaton location to store server version string
      * @return result code
@@ -263,6 +266,7 @@ extern "C" {
     W_SYSTEM_EXPORT
         W_RESULT w_redis_version(
             _Inout_ w_mem_pool pMemPool,
+            _Inout_ w_mem_pool pSubPool,
             _In_ w_redis_server pRedisServer,
             _Inout_ char** pBaton);
 
@@ -334,12 +338,14 @@ extern "C" {
     /**
      * Query a server for statistics
      * @param pMemPool The pool to allocate out of
+     * @param pSubPool The pool to allocate out of
      * @param pRedisServer server to query
      * @param pStats location of the new statistics structure
      */
     W_SYSTEM_EXPORT
         W_RESULT w_redis_get_stats(
             _Inout_ w_mem_pool pMemPool,
+            _Inout_ w_mem_pool pSubPool,
             _In_ w_redis_server pRedisServer,
             _Inout_ w_redis_stats* pStats);
 
@@ -348,3 +354,4 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
