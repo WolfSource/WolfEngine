@@ -54,7 +54,7 @@ extern "C" {
     
     /**
      * Create a hash table.
-     * @param pool The pool to allocate the hash table out of. Set NULL to use default memory pool.
+     * @param pMemPool The pool to allocate the hash table out of.
      * @return The hash table just created
      */
     W_SYSTEM_EXPORT
@@ -112,6 +112,19 @@ extern "C" {
      */
     W_SYSTEM_EXPORT
         void* w_hash_get(
+            _In_ w_hash pHash,
+            _In_z_ const void* pKey,
+            _In_ size_t pKeyLen);
+
+    /**
+     * Remove the value associated with a key in a hash table.
+     * @param pHash The hash table
+     * @param pKey Pointer to the key
+     * @param pKeyLen Length of the key. Can be APR_HASH_KEY_STRING to use the string length.
+     * @return Returns NULL if the key is not present.
+     */
+    W_SYSTEM_EXPORT
+        void w_hash_remove(
             _In_ w_hash pHash,
             _In_z_ const void* pKey,
             _In_ size_t pKeyLen);
