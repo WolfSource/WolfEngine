@@ -305,6 +305,30 @@ extern "C" {
 		double w_timespan_get_total_milliseconds(_In_ const w_timespan pValue);
 
 	/**
+	 * get microseconds of timespan
+	 * @param pValue timespan parameter
+	 * @return microseconds as a constant int
+	*/
+	W_SYSTEM_EXPORT
+		int w_timespan_get_microseconds(_In_ const w_timespan pValue);
+
+	/**
+	 * get total microseconds of timespan
+	 * @param pValue timespan parameter
+	 * @return total microseconds as a constant double
+	*/
+	W_SYSTEM_EXPORT
+		double w_timespan_get_total_microseconds(_In_ const w_timespan pValue);
+
+	/**
+	 * get total nanoseconds of timespan
+	 * @param pValue timespan parameter
+	 * @return total nanoseconds as a constant double
+	*/
+	W_SYSTEM_EXPORT
+		double w_timespan_get_total_nanoseconds(_In_ const w_timespan pValue);
+
+	/**
 	 * get current date time in chars
 	 * @return current time in the following Day-Month-Year Hour:Min:Sec
 	 */
