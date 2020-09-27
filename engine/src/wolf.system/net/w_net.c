@@ -676,7 +676,6 @@ W_RESULT w_net_close_tcp_socket(_Inout_ w_socket_tcp* pSocket)
 
     return W_SUCCESS;
 }
-
 W_RESULT w_net_open_udp_socket(
     _Inout_ w_mem_pool pMemPool,
     _In_z_ const char* pEndPoint,
@@ -690,7 +689,7 @@ W_RESULT w_net_open_udp_socket(
     }
 
     W_RESULT _ret = W_FAILURE;
-    
+
     if (!pSocket)
     {
         return _ret;
@@ -703,7 +702,7 @@ W_RESULT w_net_open_udp_socket(
 
     nni_plat_udp* _udp_protocol = (nni_plat_udp*)pSocket->u;
     unsigned long _addr_hex = 0;
-    uint16_t _port = 0;    
+    uint16_t _port = 0;
     nng_url* _url = NULL;
 
     _ret = nng_url_parse(&_url, pEndPoint);
@@ -865,9 +864,7 @@ W_RESULT w_net_receive_msg_tcp(
     }
 
     nng_socket* _nng_socket = (nng_socket*)pSocket->s;
-    int _ret = nng_recv(*_nng_socket, &(pBuffer->data), &(pBuffer->len), NNG_FLAG_ALLOC);
-
-    return _ret;
+    return nng_recv(*_nng_socket, &pBuffer->data, &pBuffer->len, NNG_FLAG_ALLOC);
 }
 
 W_RESULT w_net_send_msg_udp(
@@ -883,6 +880,16 @@ W_RESULT w_net_receive_msg_udp(_Inout_ w_socket_udp* pSocket,
     _In_z_ size_t* pMessageLength)
 {
     return _io_udp_socket(two_way_listener, pSocket, pMessage, pMessageLength);
+}
+
+W_RESULT w_net_free_msg(_Inout_ w_buffer pMsg)
+{
+    if (!pMsg)
+    {
+        return W_BAD_ARG;
+    }
+    nng_free(pMsg->data, pMsg->len);
+    return W_SUCCESS;
 }
 
 W_RESULT w_net_run_websocket_server(_In_ bool pSSL,

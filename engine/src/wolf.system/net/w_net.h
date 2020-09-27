@@ -42,7 +42,7 @@ extern "C" {
     } w_url_t;
     typedef struct w_url_t* w_url;
 
-    typedef enum 
+    typedef enum
     {
         one_way_pusher,
         one_way_puller,
@@ -61,7 +61,7 @@ extern "C" {
 
     typedef struct w_buffer_t
     {
-        uint8_t*    data;
+        uint8_t* data;
         size_t      len;
     } w_buffer_t;
     typedef w_buffer_t* w_buffer;
@@ -140,7 +140,7 @@ extern "C" {
     W_SYSTEM_EXPORT
         W_RESULT w_net_url_parse(
             _In_ w_mem_pool pMemPool,
-            _In_z_ const char* pUrlAddress, 
+            _In_z_ const char* pUrlAddress,
             _Inout_ w_url* pURL);
 
     /**
@@ -349,6 +349,15 @@ extern "C" {
             _Inout_ w_socket_udp* pSocket,
             _In_z_ char* pMessage,
             _In_z_ size_t* pMessageLength);
+
+    /**
+     * free message
+     * @param pMsg the message buffer
+     * @return result code
+     */
+    W_SYSTEM_EXPORT
+        W_RESULT w_net_free_msg(_Inout_ w_buffer pMsg);
+
     /**
      * run a websocket server and block the current thread
      * @param pSSL enable SSL(based on WolfSSL)

@@ -17,36 +17,6 @@ extern "C" {
 #include "w_media_export.h"
 #include <memory/w_mem_pool.h>
 
-	struct w_media_converter_t;
-	typedef struct w_media_converter_t* w_media_converter;
-
-	typedef struct w_video_frame_info_t
-	{
-		int64_t			index;
-		uint32_t        width;
-		uint32_t        height;
-		int				format;
-		int				line_size;
-		int				pts;
-	} w_video_frame_info_t;
-	typedef w_video_frame_info_t* w_video_frame_info;
-
-	typedef struct w_audio_frame_info_t
-	{
-		int64_t			index;
-		int64_t			channel_layout;
-		int				sample_rate;
-		int				format;
-		int				line_size;
-		int				nb_samples;
-		int				pts;
-	} w_audio_frame_info_t;
-	typedef w_audio_frame_info_t* w_audio_frame_info;
-
-	typedef void w_media_connection_callback(const char* /*pUrl*/);
-	typedef void w_media_video_frame_rcv_callback(const w_video_frame_info /*pFrameInfo*/, const uint8_t* /*pFrameBuffer*/);
-	typedef void w_media_audio_frame_rcv_callback(const w_audio_frame_info /*pFrameInfo*/, const uint8_t* /*pFrameBuffer*/);
-
 	/**
 	 * initialize wolf media core
 	 * @return W_RESULT the result code
@@ -57,76 +27,10 @@ extern "C" {
 			_Inout_ w_mem_pool pMemPool,
 			_Inout_ bool pRegisterNetwork);
 
-	/*
-	* open a stream reciever
-	* @param pMemPool The pool to allocate out of
-	* @param pURL, the rtsp connection
-	* @param pProtocol, "tcp" or "udp"
-	* @param pStreamTimeOut, the stream timeout in seconds
-	* @param pSocketTimeOut, ths socket timeout in seconds
-	* @param pListen, listen to local port as puller
-	* @param pOnConnectionEstablished, will rise when connection esablished.
-	* @param pOnConnectionLost, will rise when connection lost.
-	* @param pOnConnectionClosed, will rise when connection closed.
-	* @param pOnVideoFrameRecieved, will rise when video frame is ready
-	* @param pOnAudioFrameRecieved, will rise when audio frame is ready
-	*/
-	W_MEDIA_EXPORT
-		W_RESULT w_media_open_stream_receiver(
-			_In_ w_mem_pool pMemPool,
-			_In_z_ const char* pURL,
-			_In_z_ const char* pProtocol,
-			_In_ long long pStreamTimeOut,
-			_In_ long long pSocketTimeOut,
-			_In_ bool pListen,
-			_In_opt_ w_media_connection_callback pOnConnectionEstablished,
-			_In_opt_ w_media_connection_callback pOnConnectionLost,
-			_In_opt_ w_media_connection_callback pOnConnectionClosed,
-			_In_opt_ w_media_video_frame_rcv_callback pOnVideoFrameRecieved,
-			_In_opt_ w_media_audio_frame_rcv_callback pOnAudioFrameRecieved);
-
-   /*
-    * convert video
-    * @param pMemPool The pool to allocate out of
-    * @param pSrcFrameInfo, the source video frame info
-    * @param pDstFrameInfo, the destination video frame info
-    * @param pSrcFrameBuffer, the source video frame buffer
-    * @param pDstFrameBuffer, the destination video frame buffer
-    * @param pMediaConverter, pointer to media converter
-	* @return number of converted bytes
-    */
-	W_MEDIA_EXPORT
-		int w_media_convert_video(
-			_In_ w_mem_pool pMemPool,
-			_In_ w_video_frame_info pSrcFrameInfo,
-			_In_ w_video_frame_info pDstFrameInfo,
-			_In_ const uint8_t* const pSrcFrameBuffer,
-			_Inout_ uint8_t** pDstFrameBuffer,
-			_Inout_ w_media_converter* pMediaConverter);
-
-   /*
-	* convert audio
-	* @param pMemPool The pool to allocate out of
-	* @param pSrcFrameInfo, the source audio audio frame info
-	* @param pDstFrameInfo, the destination audio frame info
-	* @param pSrcFrameBuffer, the source audio frame buffer
-	* @param pDstFrameBuffer, the destination audio frame buffer
-	* @param pMediaConverter, pointer to media converter
-	* @return number of converted bytes
-	*/
-	W_MEDIA_EXPORT
-		int w_media_convert_audio(
-			_In_ w_mem_pool pMemPool,
-			_In_ w_audio_frame_info pSrcFrameInfo,
-			_In_ w_audio_frame_info pDstFrameInfo,
-			_In_ const uint8_t* const pSrcFrameBuffer,
-			_Inout_ uint8_t** pDstFrameBuffer,
-			_Inout_ w_media_converter* pMediaConverter);
-
-   /**
-	* shudown wolf media core 
-	* @return W_RESULT the result code
-	*/
+	/**
+	 * shudown wolf media core
+	 * @return W_RESULT the result code
+	 */
 	W_MEDIA_EXPORT
 		W_RESULT w_media_fini(void);
 
