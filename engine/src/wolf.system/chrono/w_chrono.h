@@ -54,10 +54,30 @@ extern "C" {
         double w_chrono_timespec_to_sec(_In_ const w_timespec* pT);
 
     /**
+     * convert timspec to microseconds
+     * @return seconds
+    */
+    W_SYSTEM_EXPORT
+        double w_chrono_timespec_to_microsec(_In_ const w_timespec* pT);
+
+    /**
+     * convert timspec to miliseconds
+     * @return seconds
+    */
+    W_SYSTEM_EXPORT
+        double w_chrono_timespec_to_milisec(_In_ const w_timespec* pT);
+
+    /**
+     * convert timspec to nanoseconds
+     * @return seconds
+    */
+    W_SYSTEM_EXPORT
+        double w_chrono_timespec_to_nanosec(_In_ const w_timespec* pT);
+
+    /**
      * get duration between two times
      * @param pT1 is start time
      * @param pT2 is second time
-     * @note pT1 should be greater than pT2
      * @return a pointer to w_timespan object
      */
     W_SYSTEM_EXPORT
