@@ -92,6 +92,21 @@ void* w_hash_get(
     return apr_hash_get(pHash, pKey, pKeyLen);
 }
 
+void w_hash_remove(
+    _In_ w_hash pHash,
+    _In_z_ const void* pKey,
+    _In_ size_t pKeyLen)
+{
+    const char* _trace_info = "w_hash_remove";
+    if (!pHash || !pKey || pKeyLen == 0)
+    {
+        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        return;
+    }
+
+    apr_hash_set(pHash, pKey, pKeyLen, NULL);
+}
+
 w_hash w_hash_clone(
     _Inout_ w_mem_pool pMemPool,
     _In_ w_hash pSourceHash)
