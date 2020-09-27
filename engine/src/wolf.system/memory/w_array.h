@@ -65,7 +65,7 @@ extern "C" {
      * @remark If there are no elements in the array, NULL is returned.
      */
     W_SYSTEM_EXPORT
-        void* w_array_remove(_Inout_ w_array pArrayIter);
+        void* w_array_pop(_Inout_ w_array pArrayIter);
 
     /**
      * check table is empty
@@ -76,7 +76,9 @@ extern "C" {
         int w_array_is_empty(_In_ w_array pArray);
 
     /**
-     * Remove all elements.
+     * Clear the elements of the array. Note: This function only gets all things ready 
+     * to overwrite the array from the start again. It does not remove the existing elements
+     * from the array.
      */
     W_SYSTEM_EXPORT
         void w_array_clear(_Inout_ w_array pArray);
