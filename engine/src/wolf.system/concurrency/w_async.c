@@ -27,20 +27,20 @@ W_RESULT w_async_init(
     _In_ w_async_callback pAsyncCallBack)
 {
     const char* _trace_info = "w_condition_variable_init";
-    if (!pMemPool || !pAsync)
+    if (!pMemPool)
     {
         W_ASSERT_P(false, "bad args! trace info %s", _trace_info);
         return APR_BADARG;
     }
 
-    *pAsync = NULL;
+    (*pAsync) = NULL;
     w_async _async = (w_async_t*)w_malloc(pMemPool, sizeof(w_async_t));
     if (!_async)
     {
         W_ASSERT_P(false, "bad args! trace info %s", _trace_info);
         return APR_BADARG;
     }
-    *pAsync = _async;
+    (*pAsync) = _async;
 
     _async->a = (w_async_base*)w_malloc(pMemPool, sizeof(w_async_base));
     if (!_async->a)
