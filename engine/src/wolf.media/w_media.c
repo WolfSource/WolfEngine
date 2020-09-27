@@ -14,13 +14,6 @@
 #pragma warning(disable:4996)//for deprecated ffmpeg objects
 #endif
 
-#include <libavcodec/avcodec.h>
-#include <libavformat/avformat.h>
-#include <libswscale/swscale.h>
-#include <libswresample/swresample.h>
-#include <libavutil/imgutils.h>
-#include <libavutil/samplefmt.h>
-
 #pragma region static variables
 
 static bool s_register_network = false;
