@@ -143,7 +143,7 @@
     <Link>
       <AssemblyDebug>true</AssemblyDebug>
       <AdditionalLibraryDirectories>$(SolutionDir)/../../../bin/win/$(Platform)/$(Configuration);$(SolutionDir)/../../deps/ffmpeg/lib/win/$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>wolf.system.win.lib;Shlwapi.lib;avfilter.lib;avdevice.lib;swscale.lib;swresample.lib;postproc.lib;avcodec.lib;avformat.lib;avutil.lib;Mf.lib;Mfplat.lib;Mfuuid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>wolf.system.win.lib;Shlwapi.lib;Mf.lib;Mfplat.lib;Mfuuid.lib;avfilter.lib;avdevice.lib;swscale.lib;swresample.lib;postproc.lib;avcodec.lib;avformat.lib;avutil.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
