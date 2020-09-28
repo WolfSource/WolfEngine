@@ -104,12 +104,34 @@ w_timespec w_chrono_duration(
 	}
 	else
 	{
-		_diff.tv_sec = pT1->tv_sec - pT2->tv_sec;
-		_diff.tv_nsec = pT1->tv_nsec - pT2->tv_nsec;
-		if (_diff.tv_nsec < 0)
+		double _T1_nanoseconds = w_chrono_timespec_to_nanosec(pT1);
+		double _T2_nanoseconds = w_chrono_timespec_to_nanosec(pT2);
+
+		if (_T2_nanoseconds > _T1_nanoseconds)
 		{
-			--_diff.tv_sec;
-			_diff.tv_nsec += 1000000000L;
+			if (pT2->tv_nsec - pT1->tv_nsec < 0)
+			{
+				_diff.tv_sec = pT2->tv_sec - pT1->tv_sec - 1;
+				_diff.tv_nsec = (long)(1e+9) + pT2->tv_nsec - pT1->tv_nsec;
+			}
+			else
+			{
+				_diff.tv_sec = pT2->tv_sec - pT1->tv_sec;
+				_diff.tv_nsec = pT2->tv_nsec - pT1->tv_nsec;
+			}
+		}
+		else
+		{
+			if (pT1->tv_nsec - pT2->tv_nsec < 0)
+			{
+				_diff.tv_sec = pT1->tv_sec - pT2->tv_sec - 1;
+				_diff.tv_nsec = (long)(1e+9) + pT1->tv_nsec - pT2->tv_nsec;
+			}
+			else
+			{
+				_diff.tv_sec = pT1->tv_sec - pT2->tv_sec;
+				_diff.tv_nsec = pT1->tv_nsec - pT2->tv_nsec;
+			}
 		}
 	}
 	return _diff;
@@ -124,6 +146,21 @@ double w_chrono_now_in_sec(void)
 double w_chrono_timespec_to_sec(_In_ const w_timespec* pT)
 {
 	return (double)pT->tv_sec + (double)pT->tv_nsec / 1000000000.0;
+}
+
+double w_chrono_timespec_to_milisec(_In_ const w_timespec* pT)
+{
+	return (double)pT->tv_sec * 1000.0 + (double)pT->tv_nsec / 1000000.0;
+}
+
+double w_chrono_timespec_to_microsec(_In_ const w_timespec* pT)
+{
+	return (double)pT->tv_sec * 1000000.0 + (double)pT->tv_nsec / 1000.0;
+}
+
+double w_chrono_timespec_to_nanosec(_In_ const w_timespec* pT)
+{
+	return (double)pT->tv_sec * 1000000000.0 + (double)pT->tv_nsec;
 }
 
 double w_chrono_duration_nanoseconds(
