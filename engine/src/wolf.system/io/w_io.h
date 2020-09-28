@@ -181,7 +181,7 @@ extern "C" {
      * @return extension of file
     */
     W_SYSTEM_EXPORT
-        const char* w_io_file_get_extension_from_path(_In_z_ const char* pFilePath);
+        const char* w_io_file_get_extension_from_path(_In_z_ const char* pFilePath, _Inout_ w_mem_pool pMemPool);
 
     /**
      * get file extension from file
@@ -189,7 +189,7 @@ extern "C" {
      * @return extension of file
     */
     W_SYSTEM_EXPORT
-        const char* w_io_file_get_extension(_In_ w_file pFile);
+        const char* w_io_file_get_extension(_In_ w_file pFile, _Inout_ w_mem_pool pMemPool);
 
     /**
      * get file name from file path
@@ -197,7 +197,7 @@ extern "C" {
      * @return name of file
     */
     W_SYSTEM_EXPORT
-        const char* w_io_file_get_name_from_path(_In_z_ const char* pFilePath);
+        const char* w_io_file_get_name_from_path(_In_z_ const char* pFilePath, _Inout_ w_mem_pool pMemPool);
 
     /**
      * get file name from file
@@ -205,7 +205,7 @@ extern "C" {
      * @return name of file
     */
     W_SYSTEM_EXPORT
-        const char* w_io_file_get_name(_In_ w_file pFile);
+        const char* w_io_file_get_name(_In_ w_file pFile,_Inout_ w_mem_pool pMemPool);
 
     /**
      * pick off basename in filename
@@ -224,7 +224,7 @@ extern "C" {
      * @return base file name
     */
     W_SYSTEM_EXPORT
-        const char* w_io_file_get_basename(_In_ w_file pFile);
+        const char* w_io_file_get_basename(_In_ w_file pFile, _Inout_ w_mem_pool pMemPool);
 
     /**
      * pick off basename without extension in filename
@@ -232,7 +232,7 @@ extern "C" {
      * @return base file name
     */
     W_SYSTEM_EXPORT
-        const char* w_io_file_get_basename_without_extension_from_path(_In_z_ const char* pPath);
+        const char* w_io_file_get_basename_without_extension_from_path(_In_z_ const char* pPath, _In_ w_mem_pool pMemPool);
 
     /**
      * pick off basename without extension in filename
@@ -240,7 +240,7 @@ extern "C" {
      * @return base file name
     */
     W_SYSTEM_EXPORT
-        const char* w_io_file_get_basename_without_extension(_In_ w_file pFile);
+        const char* w_io_file_get_basename_without_extension(_In_ w_file pFile, _In_ w_mem_pool pMemPool);
 
     /**
      * read the whole file with given path
