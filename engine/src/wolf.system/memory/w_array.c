@@ -36,12 +36,12 @@ w_array w_array_init(
 
 size_t w_array_get_size(_In_ w_array pArray)
 {
-    return pArray ? pArray->elt_size : 0;
+    return pArray ? pArray->nelts : 0;
 }
 
 const void* w_array_get_element(_Inout_ w_array pArray, _In_ int pElementIndex)
 {
-    if (!pArray || pElementIndex >= pArray->elt_size)
+    if (!pArray || pElementIndex >= pArray->nelts)
     {
         return NULL;
     }
@@ -58,7 +58,7 @@ void* w_array_append(_Inout_ w_array pArray, _In_ void* pItem)
     return (*(void**)apr_array_push(pArray) = pItem);
 }
 
-void* w_array_remove(_Inout_ w_array pArray)
+void* w_array_pop(_Inout_ w_array pArray)
 {
     if (!pArray)
     {
