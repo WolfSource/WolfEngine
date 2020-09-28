@@ -288,8 +288,6 @@
 		05BC2118251285E5007D6218 /* w_mem_map.h in Headers */ = {isa = PBXBuildFile; fileRef = 05BC20FE251285E5007D6218 /* w_mem_map.h */; };
 		05BC2119251285E5007D6218 /* w_mem_pool.c in Sources */ = {isa = PBXBuildFile; fileRef = 05BC20FF251285E5007D6218 /* w_mem_pool.c */; };
 		05BC211A251285E5007D6218 /* w_mem_pool.h in Headers */ = {isa = PBXBuildFile; fileRef = 05BC2100251285E5007D6218 /* w_mem_pool.h */; };
-		05BC211B251285E5007D6218 /* w_redis.c in Sources */ = {isa = PBXBuildFile; fileRef = 05BC2101251285E5007D6218 /* w_redis.c */; };
-		05BC211C251285E5007D6218 /* w_redis.h in Headers */ = {isa = PBXBuildFile; fileRef = 05BC2102251285E5007D6218 /* w_redis.h */; };
 		05BC211D251285E5007D6218 /* w_shared_mem.c in Sources */ = {isa = PBXBuildFile; fileRef = 05BC2103251285E5007D6218 /* w_shared_mem.c */; };
 		05BC211E251285E5007D6218 /* w_shared_mem.h in Headers */ = {isa = PBXBuildFile; fileRef = 05BC2104251285E5007D6218 /* w_shared_mem.h */; };
 		05BC2121251285E5007D6218 /* w_table.c in Sources */ = {isa = PBXBuildFile; fileRef = 05BC2107251285E5007D6218 /* w_table.c */; };
@@ -317,6 +315,8 @@
 		05BC21C125128DF8007D6218 /* libturbojpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 05BC21BF25128DF8007D6218 /* libturbojpeg.a */; };
 		05BC21C325128E11007D6218 /* libapr-1.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 05BC21C225128E10007D6218 /* libapr-1.a */; };
 		05BC21FD251297B7007D6218 /* libnng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 05BC21AA25128D1E007D6218 /* libnng.a */; };
+		05E349E42522159B00822309 /* w_string.c in Sources */ = {isa = PBXBuildFile; fileRef = 05E349E22522159B00822309 /* w_string.c */; };
+		05E349E52522159B00822309 /* w_string.h in Headers */ = {isa = PBXBuildFile; fileRef = 05E349E32522159B00822309 /* w_string.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -603,8 +603,6 @@
 		05BC20FE251285E5007D6218 /* w_mem_map.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = w_mem_map.h; sourceTree = "<group>"; };
 		05BC20FF251285E5007D6218 /* w_mem_pool.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = w_mem_pool.c; sourceTree = "<group>"; };
 		05BC2100251285E5007D6218 /* w_mem_pool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = w_mem_pool.h; sourceTree = "<group>"; };
-		05BC2101251285E5007D6218 /* w_redis.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = w_redis.c; sourceTree = "<group>"; };
-		05BC2102251285E5007D6218 /* w_redis.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = w_redis.h; sourceTree = "<group>"; };
 		05BC2103251285E5007D6218 /* w_shared_mem.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = w_shared_mem.c; sourceTree = "<group>"; };
 		05BC2104251285E5007D6218 /* w_shared_mem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = w_shared_mem.h; sourceTree = "<group>"; };
 		05BC2107251285E5007D6218 /* w_table.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = w_table.c; sourceTree = "<group>"; };
@@ -633,6 +631,8 @@
 		05BC21BE25128DF8007D6218 /* libjpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libjpeg.a; path = "../../../deps/libjpeg-turbo/lib/iOS/libjpeg.a"; sourceTree = "<group>"; };
 		05BC21BF25128DF8007D6218 /* libturbojpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libturbojpeg.a; path = "../../../deps/libjpeg-turbo/lib/iOS/libturbojpeg.a"; sourceTree = "<group>"; };
 		05BC21C225128E10007D6218 /* libapr-1.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libapr-1.a"; path = "../../../deps/apr/lib/iOS/libapr-1.a"; sourceTree = "<group>"; };
+		05E349E22522159B00822309 /* w_string.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = w_string.c; sourceTree = "<group>"; };
+		05E349E32522159B00822309 /* w_string.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = w_string.h; sourceTree = "<group>"; };
 		2C4CD2941E8A71450090EE0A /* libwolf.system.iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libwolf.system.iOS.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -1223,6 +1223,8 @@
 		05BC20ED251285E4007D6218 /* memory */ = {
 			isa = PBXGroup;
 			children = (
+				05E349E22522159B00822309 /* w_string.c */,
+				05E349E32522159B00822309 /* w_string.h */,
 				05BC20EE251285E4007D6218 /* hash */,
 				05BC20F5251285E5007D6218 /* w_array.c */,
 				05BC20F6251285E5007D6218 /* w_array.h */,
@@ -1234,8 +1236,6 @@
 				05BC20FE251285E5007D6218 /* w_mem_map.h */,
 				05BC20FF251285E5007D6218 /* w_mem_pool.c */,
 				05BC2100251285E5007D6218 /* w_mem_pool.h */,
-				05BC2101251285E5007D6218 /* w_redis.c */,
-				05BC2102251285E5007D6218 /* w_redis.h */,
 				05BC2103251285E5007D6218 /* w_shared_mem.c */,
 				05BC2104251285E5007D6218 /* w_shared_mem.h */,
 				05BC2107251285E5007D6218 /* w_table.c */,
@@ -1382,7 +1382,6 @@
 				05BC21A325128B04007D6218 /* w_lua.h in Headers */,
 				05BC20D5251285C8007D6218 /* dtoa.h in Headers */,
 				05BC1FEB25128202007D6218 /* test_def.h in Headers */,
-				05BC211C251285E5007D6218 /* w_redis.h in Headers */,
 				05BC21A125128B04007D6218 /* lualib.h in Headers */,
 				05BC203425128203007D6218 /* windows_store.h in Headers */,
 				05BC1FB925128202007D6218 /* ptx.h in Headers */,
@@ -1578,6 +1577,7 @@
 				05BC20D9251285C8007D6218 /* pow10.h in Headers */,
 				05BC203B25128203007D6218 /* sbuffer.h in Headers */,
 				05BC1FE525128202007D6218 /* _exception.h in Headers */,
+				05E349E52522159B00822309 /* w_string.h in Headers */,
 				05BC2118251285E5007D6218 /* w_mem_map.h in Headers */,
 				05BC2099251285AD007D6218 /* stb_image_resize.h in Headers */,
 				05BC20D8251285C8007D6218 /* meta.h in Headers */,
@@ -1677,6 +1677,7 @@
 				05BC208D25128237007D6218 /* w_thread_pool.c in Sources */,
 				05BC204C25128203007D6218 /* zone.c in Sources */,
 				05B4A5EF251A41B800FBA684 /* spdlog.cpp in Sources */,
+				05E349E42522159B00822309 /* w_string.c in Sources */,
 				05B4A5EB251A41B800FBA684 /* cfg.cpp in Sources */,
 				05BC2163251286F2007D6218 /* w_net.c in Sources */,
 				05BC204B25128203007D6218 /* vrefbuffer.c in Sources */,
@@ -1702,7 +1703,6 @@
 				05BC209B251285AD007D6218 /* w_io.c in Sources */,
 				05BC204D25128203007D6218 /* w_compress.c in Sources */,
 				05BC204825128203007D6218 /* objectc.c in Sources */,
-				05BC211B251285E5007D6218 /* w_redis.c in Sources */,
 				05B4A591251A41B800FBA684 /* logger.cpp in Sources */,
 				05BC1E32251280DC007D6218 /* w_process.c in Sources */,
 				05BC2113251285E5007D6218 /* w_hash.c in Sources */,

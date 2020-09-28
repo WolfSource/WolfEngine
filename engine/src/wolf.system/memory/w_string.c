@@ -2,6 +2,10 @@
 #include <log/w_log.h>
 #include <ctype.h>
 
+#ifdef W_PLATFORM_OSX
+#include <string.h>
+#endif
+
 W_RESULT w_string_init(
     _Inout_ w_mem_pool pMemPool,
     _Inout_ w_string* pStringView,
@@ -23,7 +27,11 @@ W_RESULT w_string_init(
         {
             size_t _size = _len + 1;
             (*pStringView)->data = w_malloc(pMemPool, _size); //with NULL
+#ifdef W_PLATFORM_OSX
+            strcpy((*pStringView)->data, pData);
+#else
             strcpy_s((*pStringView)->data, _size, pData);
+#endif
             (*pStringView)->data[_len] = '\0';
             (*pStringView)->str_len = _len;
             (*pStringView)->reserved_size = _size;
@@ -82,7 +90,11 @@ W_RESULT w_string_dup(
         (*pDst)->data = w_malloc(pMemPool, _len + 1); //with NULL
         (*pDst)->reserved_size = _req_size;
     }
+#ifdef W_PLATFORM_OSX
+    strcpy((*pDst)->data, pSrc->data);
+#else
     strcpy_s((*pDst)->data, _len, pSrc->data);
+#endif
     (*pDst)->data[_len] = '\0';
     (*pDst)->str_len = _len;
 

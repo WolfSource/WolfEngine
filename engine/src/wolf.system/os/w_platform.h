@@ -88,5 +88,6 @@ typedef int W_RESULT;
 #define _Inout_z_
 #define _In_opt_
 #define _In_opt_z_
+#define _Inout_opt_
 
 #endif
