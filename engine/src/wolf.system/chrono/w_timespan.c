@@ -7,16 +7,20 @@
 #include <windows.h>
 #endif
 
-#define TICKS_PER_MILLISECOND	10000
-#define TICKS_PER_SECOND		10000000
-#define TICKS_PER_MINUTE		600000000
-#define TICKS_PER_HOUR			36000000000
-#define TICKS_PER_DAY			864000000000
+#define TICKS_PER_NANOSECOND	1
+#define TICKS_PER_MICROSECOND	1000
+#define TICKS_PER_MILLISECOND	1000000
+#define TICKS_PER_SECOND		1000000000
+#define TICKS_PER_MINUTE		60000000000
+#define TICKS_PER_HOUR			3600000000000
+#define TICKS_PER_DAY			86400000000000
 #define MILLIS_PER_SECOND		1000
 #define MILLIS_PER_MINUTE		60000
 #define MILLIS_PER_HOUR			3600000
 #define MILLIS_PER_DAY			86400000
 
+static const double NANO_SECONDS_PER_TICK = 1.0 / TICKS_PER_NANOSECOND;
+static const double MICRO_SECONDS_PER_TICK = 1.0 / TICKS_PER_MICROSECOND;
 static const double MILLI_SECONDS_PER_TICK = 1.0 / TICKS_PER_MILLISECOND;
 static const double SECONDS_PER_TICK = 1.0 / TICKS_PER_SECOND;
 static const double MINUTES_PER_TICK = 1.0 / TICKS_PER_MINUTE;
@@ -24,6 +28,10 @@ static const double HOURS_PER_TICK = 1.0 / TICKS_PER_HOUR;
 static const double DAYS_PER_TICK = 1.0 / TICKS_PER_DAY;
 static const int64_t MAX_MILLISECONDS = LLONG_MAX / TICKS_PER_MILLISECOND;
 static const int64_t MIN_MILLISECONDS = LLONG_MIN / TICKS_PER_MILLISECOND;
+static const int64_t MAX_MICROSECONDS = LLONG_MAX / TICKS_PER_MICROSECOND;
+static const int64_t MIN_MICROSECONDS = LLONG_MIN / TICKS_PER_MICROSECOND;
+static const int64_t MAX_NANOSECONDS = LLONG_MAX / TICKS_PER_NANOSECOND;
+static const int64_t MIN_NANOSECONDS = LLONG_MIN / TICKS_PER_NANOSECOND;
 
 long _timespan_w_wcstol(const wchar_t* const pValue, bool* pError)
 {
@@ -618,6 +626,32 @@ double w_timespan_get_total_milliseconds(_In_ const w_timespan pValue)
     double _temp = (double)(pValue->ticks) * MILLI_SECONDS_PER_TICK;
     if (_temp > MAX_MILLISECONDS) return (double)MAX_MILLISECONDS;
     if (_temp < MIN_MILLISECONDS) return (double)MIN_MILLISECONDS;
+    return _temp;
+}
+
+int w_timespan_get_microseconds(_In_ const w_timespan pValue)
+{
+    return ((int)(pValue->ticks / TICKS_PER_MICROSECOND) % 1000);
+}
+
+double w_timespan_get_total_microseconds(_In_ const w_timespan pValue)
+{
+    double _temp = (double)(pValue->ticks) * MICRO_SECONDS_PER_TICK;
+    if (_temp > MAX_MICROSECONDS) return (double)MAX_MICROSECONDS;
+    if (_temp < MIN_MICROSECONDS) return (double)MIN_MICROSECONDS;
+    return _temp;
+}
+
+int w_timespan_get_nanoseconds(_In_ const w_timespan pValue)
+{
+    return ((int)(pValue->ticks / TICKS_PER_NANOSECOND) % 1000);
+}
+
+double w_timespan_get_total_nanoseconds(_In_ const w_timespan pValue)
+{
+    double _temp = (double)(pValue->ticks) * NANO_SECONDS_PER_TICK;
+    if (_temp > MAX_NANOSECONDS) return (double)MAX_NANOSECONDS;
+    if (_temp < MIN_NANOSECONDS) return (double)MIN_NANOSECONDS;
     return _temp;
 }
 
