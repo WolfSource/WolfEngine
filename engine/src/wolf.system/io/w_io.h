@@ -177,35 +177,47 @@ extern "C" {
 
     /**
      * get file extension from file path
+     * @param pMemPool The pool to allocate out of
      * @param pFilePath path to the file
      * @return extension of file
     */
     W_SYSTEM_EXPORT
-        const char* w_io_file_get_extension_from_path(_In_z_ const char* pFilePath, _Inout_ w_mem_pool pMemPool);
+        const char* w_io_file_get_extension_from_path(
+            _Inout_ w_mem_pool pMemPool, 
+            _In_z_ const char* pFilePath);
 
     /**
      * get file extension from file
+     * @param pMemPool The pool to allocate out of
      * @param pFile path to the file
      * @return extension of file
     */
     W_SYSTEM_EXPORT
-        const char* w_io_file_get_extension(_In_ w_file pFile, _Inout_ w_mem_pool pMemPool);
+        const char* w_io_file_get_extension(
+            _Inout_ w_mem_pool pMemPool, 
+            _In_ w_file pFile);
 
     /**
      * get file name from file path
+     * @param pMemPool The pool to allocate out of
      * @param pFilePath path to the file
      * @return name of file
     */
     W_SYSTEM_EXPORT
-        const char* w_io_file_get_name_from_path(_In_z_ const char* pFilePath, _Inout_ w_mem_pool pMemPool);
+        const char* w_io_file_get_name_from_path(
+            _Inout_ w_mem_pool pMemPool,
+            _In_z_ const char* pFilePath);
 
     /**
      * get file name from file
+     * @param pMemPool The pool to allocate out of
      * @param pFile path to the file
      * @return name of file
     */
     W_SYSTEM_EXPORT
-        const char* w_io_file_get_name(_In_ w_file pFile,_Inout_ w_mem_pool pMemPool);
+        const char* w_io_file_get_name(
+            _Inout_ w_mem_pool pMemPool,
+            _In_ w_file pFile);
 
     /**
      * pick off basename in filename
@@ -215,32 +227,41 @@ extern "C" {
     */
     W_SYSTEM_EXPORT
         const char* w_io_file_get_basename_from_path(
-            _In_ w_mem_pool pMemPool,
+            _Inout_ w_mem_pool pMemPool,
             _In_z_ const char* pFilePath);
 
     /**
      * pick off basename in filename
+     * @param pMemPool The pool to allocate out of
      * @param pFile path of file
      * @return base file name
     */
     W_SYSTEM_EXPORT
-        const char* w_io_file_get_basename(_In_ w_file pFile, _Inout_ w_mem_pool pMemPool);
+        const char* w_io_file_get_basename(
+            _Inout_ w_mem_pool pMemPool,
+            _In_ w_file pFile);
 
     /**
      * pick off basename without extension in filename
+     * @param pMemPool The pool to allocate out of
      * @param pPath path of file
      * @return base file name
     */
     W_SYSTEM_EXPORT
-        const char* w_io_file_get_basename_without_extension_from_path(_In_z_ const char* pPath, _In_ w_mem_pool pMemPool);
+        const char* w_io_file_get_basename_without_extension_from_path(
+            _Inout_ w_mem_pool pMemPool,
+            _In_z_ const char* pPath);
 
     /**
      * pick off basename without extension in filename
+     * @param pMemPool The pool to allocate out of
      * @param pFile path of file
      * @return base file name
     */
     W_SYSTEM_EXPORT
-        const char* w_io_file_get_basename_without_extension(_In_ w_file pFile, _In_ w_mem_pool pMemPool);
+        const char* w_io_file_get_basename_without_extension(
+            _Inout_ w_mem_pool pMemPool,
+            _In_ w_file pFile);
 
     /**
      * read the whole file with given path
@@ -319,7 +340,9 @@ extern "C" {
      * @return result
     */
     W_SYSTEM_EXPORT
-        W_RESULT w_io_dir_get_current(_Inout_ w_mem_pool pMemPool, _Inout_ char** pDir);
+        W_RESULT w_io_dir_get_current(
+            _Inout_ w_mem_pool pMemPool, 
+            _Inout_ char** pDir);
 
     /**
      * get current directory of executable program in char
@@ -328,7 +351,9 @@ extern "C" {
      * @return result
     */
     W_SYSTEM_EXPORT
-        W_RESULT w_io_dir_get_current_exe(_Inout_ w_mem_pool pMemPool, _Inout_ char** pDir);
+        W_RESULT w_io_dir_get_current_exe(
+            _Inout_ w_mem_pool pMemPool, 
+            _Inout_ char** pDir);
 
     /**
      * check whether this path belongs to a directory
@@ -462,7 +487,7 @@ extern "C" {
     */
     W_SYSTEM_EXPORT
         W_RESULT w_io_string_split(
-            _In_ w_mem_pool pMemPool,
+            _Inout_ w_mem_pool pMemPool,
             _In_z_ const char* pString,
             _In_z_ const char* pSplit,
             _Out_ w_array* pResults);

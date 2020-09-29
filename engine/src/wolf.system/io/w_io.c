@@ -307,10 +307,12 @@ w_file_info w_io_file_get_info(
     return NULL;
 }
 
-const char* w_io_file_get_extension_from_path(_In_z_ const char* pFilePath, _Inout_ w_mem_pool pMemPool)
+const char* w_io_file_get_extension_from_path(
+    _Inout_ w_mem_pool pMemPool,
+    _In_z_ const char* pFilePath)
 {
     const char* _trace_info = "w_io_file_get_extension_from_path";
-    if (!pFilePath || !pMemPool)
+    if (!pMemPool || !pFilePath)
     {
         W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
         return NULL;
@@ -320,19 +322,14 @@ const char* w_io_file_get_extension_from_path(_In_z_ const char* pFilePath, _Ino
     return _dot + 1;
 }
 
-const char* w_io_file_get_extension(_In_ w_file pFile, _Inout_ w_mem_pool pMemPool)
+const char* w_io_file_get_extension(
+    _Inout_ w_mem_pool pMemPool,
+    _In_ w_file pFile)
 {
     const char* _trace_info = "w_io_file_get_extension";
-    if (!pFile)
+    if (!pMemPool || !pFile)
     {
         W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
-        return NULL;
-    }
-
-
-    if (!pMemPool)
-    {
-        W_ASSERT_P(false, "could not allocate memory pool. trace info: %s", _trace_info);
         return NULL;
     }
 
@@ -340,16 +337,17 @@ const char* w_io_file_get_extension(_In_ w_file pFile, _Inout_ w_mem_pool pMemPo
     apr_finfo_t* _info = w_io_file_get_info(pMemPool, pFile);
     if (_info)
     {
-        _ret = w_io_file_get_extension_from_path(_info->fname, pMemPool);
+        _ret = w_io_file_get_extension_from_path(pMemPool, _info->fname);
     }
-    //release memory pool
     return _ret;
 }
 
-const char* w_io_file_get_name_from_path(_In_z_ const char* pPath, _Inout_ w_mem_pool pMemPool)
+const char* w_io_file_get_name_from_path(
+    _Inout_ w_mem_pool pMemPool,
+    _In_z_ const char* pPath)
 {
     const char* _trace_info = "w_io_file_get_name_from_path";
-    if (!pPath || !pMemPool)
+    if (!pMemPool || !pPath)
     {
         W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
         return NULL;
@@ -381,19 +379,14 @@ const char* w_io_file_get_name_from_path(_In_z_ const char* pPath, _Inout_ w_mem
     return _dst_str;
 }
 
-const char* w_io_file_get_name(_In_ w_file pFile, _Inout_ w_mem_pool pMemPool)
+const char* w_io_file_get_name(
+    _Inout_ w_mem_pool pMemPool,
+    _In_ w_file pFile)
 {
     const char* _trace_info = "w_io_file_get_name";
-    if (!pFile)
+    if (!pMemPool || !pFile)
     {
         W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
-        return NULL;
-    }
-
-
-    if (!pMemPool)
-    {
-        W_ASSERT_P(false, "could not create fast extend memory pool. trace info: %s", _trace_info);
         return NULL;
     }
 
@@ -401,20 +394,17 @@ const char* w_io_file_get_name(_In_ w_file pFile, _Inout_ w_mem_pool pMemPool)
     apr_finfo_t* _info = w_io_file_get_info(pMemPool, pFile);
     if (_info)
     {
-        _ret = w_io_file_get_name_from_path(_info->fname, pMemPool);
+        _ret = w_io_file_get_name_from_path(pMemPool, _info->fname);
     }
-
-
-
     return _ret;
 }
 
 const char* w_io_file_get_basename_from_path(
-    _In_ w_mem_pool pMemPool,
+    _Inout_ w_mem_pool pMemPool,
     _In_z_ const char* pFilePath)
 {
     const char* _trace_info = "w_io_file_get_basename_from_path";
-    if (!pFilePath || !pMemPool)
+    if (!pMemPool || !pFilePath)
     {
         W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
         return NULL;
@@ -432,10 +422,12 @@ const char* w_io_file_get_basename_from_path(
     return _s;
 }
 
-const char* w_io_file_get_basename(_In_ w_file pFile, _Inout_ w_mem_pool pMemPool)
+const char* w_io_file_get_basename(
+    _Inout_ w_mem_pool pMemPool,
+    _In_ w_file pFile)
 {
     const char* _trace_info = "w_io_file_get_basename";
-    if (!pFile || !pMemPool)
+    if (!pMemPool || !pFile)
     {
         W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
         return NULL;
@@ -454,7 +446,9 @@ const char* w_io_file_get_basename(_In_ w_file pFile, _Inout_ w_mem_pool pMemPoo
     return _ret;
 }
 
-const char* w_io_file_get_basename_without_extension_from_path(_In_z_ const char* pPath, _In_ w_mem_pool pMemPool)
+const char* w_io_file_get_basename_without_extension_from_path(
+    _Inout_ w_mem_pool pMemPool,
+    _In_z_ const char* pPath)
 {
     const char* _trace_info = "w_io_file_get_basename_without_extension_from_path";
     const char* _ret = NULL;
@@ -470,13 +464,15 @@ const char* w_io_file_get_basename_without_extension_from_path(_In_z_ const char
 
     if (_basename)
     {
-        _ret = w_io_file_get_name_from_path(_basename, pMemPool);
+        _ret = w_io_file_get_name_from_path(pMemPool, _basename);
     }
 
     return _ret;
 }
 
-const char* w_io_file_get_basename_without_extension(_In_ w_file pFile, _In_ w_mem_pool pMemPool)
+const char* w_io_file_get_basename_without_extension(
+    _Inout_ w_mem_pool pMemPool,
+    _In_ w_file pFile)
 {
     const char* _trace_info = "w_io_file_get_basename_without_extension";
     if (!pMemPool || !pFile)
@@ -491,7 +487,7 @@ const char* w_io_file_get_basename_without_extension(_In_ w_file pFile, _In_ w_m
     if (_info)
     {
         const char* _name = strdup(_info->fname);
-        _ret = w_io_file_get_basename_without_extension_from_path(_name, pMemPool);
+        _ret = w_io_file_get_basename_without_extension_from_path(pMemPool, _name);
     }
 
     return _ret;
@@ -688,7 +684,7 @@ W_RESULT	w_io_file_delete(
 
 W_RESULT w_io_dir_get_current(_Inout_ w_mem_pool pMemPool, _Inout_ char** pDir)
 {
-    if (!pDir || !pMemPool)
+    if (!pMemPool || !pDir)
     {
         return APR_BADARG;
     }
@@ -748,8 +744,8 @@ W_RESULT w_io_dir_get_current_exe(_Inout_ w_mem_pool pMemPool, _Inout_ char** pD
     if (_tmp)
     {
 #ifdef W_PLATFORM_WIN
-        GetModuleFileName(NULL, _tmp, W_MAX_BUFFER_SIZE);
-        int idx = wcslen(_tmp);
+        GetModuleFileNameA(NULL, _tmp, W_MAX_BUFFER_SIZE);
+        size_t idx = strlen(_tmp);// wcslen(_tmp);
 
         while (idx >= 0)
         {
@@ -1150,7 +1146,7 @@ W_RESULT w_io_wstring_has_end_with(_In_z_ const wchar_t* pString, _In_z_ const w
 }
 
 W_RESULT w_io_string_split(
-    _In_ w_mem_pool pMemPool,
+    _Inout_ w_mem_pool pMemPool,
     _In_z_ const char* pString,
     _In_z_ const char* pSplit,
     _Out_ w_array* pResults)

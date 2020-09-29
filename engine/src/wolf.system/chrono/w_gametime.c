@@ -192,7 +192,7 @@ void w_gametime_set_target_elapsed_seconds(_In_ w_gametime pGameTime, _In_ doubl
 }
 
 
-void w_gametime_tick(_In_ w_gametime pGameTime, _In_ w_gametime_tick_callback pOnTickCallBack)
+void w_gametime_tick(_In_ w_gametime pGameTime, _In_opt_ w_gametime_tick_callback pOnTickCallBack)
 {
     if (!pGameTime)
     {

@@ -65,7 +65,7 @@ extern "C" {
             _In_ double pRepeatTimes,
             _In_ int pIsAsync,
             _In_ w_timer_callback pCallBack,
-            _In_ void* pUserData);
+            _In_opt_ void* pUserData);
 
     /**
      * restart a timer

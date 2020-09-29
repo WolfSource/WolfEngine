@@ -112,7 +112,7 @@ extern "C" {
      * tick function
      */
     W_SYSTEM_EXPORT
-        void w_gametime_tick(_In_ w_gametime pGameTime, _In_ w_gametime_tick_callback pOnTickCallBack);
+        void w_gametime_tick(_In_ w_gametime pGameTime, _In_opt_ w_gametime_tick_callback pOnTickCallBack);
 
 #ifdef __cplusplus
 }

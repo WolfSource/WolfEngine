@@ -68,7 +68,7 @@ W_RESULT w_timer_init(
     _In_ double pRepeatTimes,
     _In_ int pIsAsync,
     _In_ w_timer_callback pCallBack,
-    _In_ void* pUserData)
+    _In_opt_ void* pUserData)
 {
     const char* _trace_info = "w_timer_init";
     if (!pMemPool || !pTimer)

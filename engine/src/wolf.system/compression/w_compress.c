@@ -43,7 +43,7 @@ W_RESULT w_compress_lz4(_In_       const char* pSrcBuffer,
 			LZ4_compress_fast(
 				pSrcBuffer,
 				pResult->data,
-				pResult->size_in,
+				(int)pResult->size_in,
 				_max_dst_size,
 				pAcceleration);
 #ifdef __clang__
@@ -167,7 +167,7 @@ int w_compress_lzma(_In_ const uint8_t* pSourceBuffer, _Inout_ w_compress_result
 	}
 	else
 	{
-		_props.dictSize = pCompressInfo->size_in; //smaller dictionary = faster!
+		_props.dictSize = (UINT32)pCompressInfo->size_in; //smaller dictionary = faster!
 	}
 	_props.fb = 40;
 
@@ -187,7 +187,7 @@ int w_compress_lzma(_In_ const uint8_t* pSourceBuffer, _Inout_ w_compress_result
 		_output_size_64 = 1024;
 	}
 
-	auto _compress_mem = (uint8_t*)malloc(_output_size_64 * sizeof(uint8_t));
+	uint8_t* _compress_mem = (uint8_t*)malloc(_output_size_64 * sizeof(uint8_t));
 	int _lzma_status = LzmaEncode(
 		_compress_mem,
 		&_output_size_64,
