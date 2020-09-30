@@ -853,7 +853,7 @@ int w_net_send_msg_tcp(
         pAsync ? NNG_FLAG_NONBLOCK : 0);
 }
 
-W_RESULT w_net_receive_msg_tcp(
+int w_net_receive_msg_tcp(
     _Inout_ w_socket_tcp* pSocket,
     _Inout_ w_buffer pBuffer)
 {
@@ -867,7 +867,7 @@ W_RESULT w_net_receive_msg_tcp(
     return nng_recv(*_nng_socket, &pBuffer->data, &pBuffer->len, NNG_FLAG_ALLOC);
 }
 
-W_RESULT w_net_send_msg_udp(
+int w_net_send_msg_udp(
     _Inout_ w_socket_udp* pSocket,
     _In_z_ char* pMessage,
     _In_ size_t pMessageLength)
@@ -875,7 +875,7 @@ W_RESULT w_net_send_msg_udp(
     return _io_udp_socket(two_way_dialer, pSocket, pMessage, &pMessageLength);
 }
 
-W_RESULT w_net_receive_msg_udp(_Inout_ w_socket_udp* pSocket,
+int w_net_receive_msg_udp(_Inout_ w_socket_udp* pSocket,
     _In_z_ char* pMessage,
     _In_z_ size_t* pMessageLength)
 {

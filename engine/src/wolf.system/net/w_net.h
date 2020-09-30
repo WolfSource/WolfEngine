@@ -329,10 +329,10 @@ extern "C" {
      * @param pSocket udp socket
      * @param pMessage buffer
      * @param pMessageLength length of the send buffer
-     * @return result code
+     * @return number of received bytes
     */
     W_SYSTEM_EXPORT
-        W_RESULT w_net_send_msg_udp(
+        int w_net_send_msg_udp(
             _Inout_ w_socket_udp* pSocket,
             _In_z_ char* pMessage,
             _In_ size_t pMessageLength);
@@ -342,10 +342,10 @@ extern "C" {
      * @param pSocket udp socket
      * @param pMessage buffer
      * @param pMessageLength length of the recieved buffer
-     * @return result code
+     * @return number of received bytes
     */
     W_SYSTEM_EXPORT
-        W_RESULT w_net_receive_msg_udp(
+        int w_net_receive_msg_udp(
             _Inout_ w_socket_udp* pSocket,
             _In_z_ char* pMessage,
             _In_z_ size_t* pMessageLength);
@@ -353,7 +353,7 @@ extern "C" {
     /**
      * free message
      * @param pMsg the message buffer
-     * @return result code
+     * @return number of received bytes
      */
     W_SYSTEM_EXPORT
         W_RESULT w_net_free_msg(_Inout_ w_buffer pMsg);
