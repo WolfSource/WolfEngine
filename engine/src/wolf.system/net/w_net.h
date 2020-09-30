@@ -172,8 +172,12 @@ extern "C" {
 
     /**
      * create and open a tcp socket
-     * @param pEndPoint endpoint address like tcp://127.0.x.1:1234
+     * @param pEndPoint endpoint address like tcp://0.0.0.0:1234 or tcp://192.168.17.17:1234
      * @param pSocketMode tcp socket mode
+     * @param pSendTimeOutMS, send timeout in milliseconds
+     * @param pRecieveTimeOutMS, recieve timeout in milliseconds
+     * @param pMinReconnectTimeOutMS, reconnect minimum timeout in milliseconds
+     * @param pMaxReconnectTimeOutMS, reconnect maximum timeout in milliseconds
      * @param pNoDelayOption an option for tcp socket
      * @param pKeepAliveOption an option for tcp socket
      * @param pAsync create dialer or listener in async mode
@@ -198,6 +202,10 @@ extern "C" {
             _In_ w_mem_pool pMemPool,
             _In_z_ const char* pEndPoint,
             _In_ w_socket_mode pSocketMode,
+            _In_ int64_t pSendTimeOutMS,
+            _In_ int64_t pRecieveTimeOutMS,
+            _In_ int64_t pMinReconnectTimeOutMS,
+            _In_ int64_t pMaxReconnectTimeOutMS,
             _In_ bool pNoDelayOption,
             _In_ bool pKeepAliveOption,
             _In_ bool pAsync,
@@ -305,10 +313,10 @@ extern "C" {
      * @param pSocket a tcp socket
      * @param pBuffer buffer
      * @param pAsync asynchronous mode
-     * @return number of sent bytes
+     * @return result code
     */
     W_SYSTEM_EXPORT
-        int w_net_send_msg_tcp(
+        W_RESULT w_net_send_msg_tcp(
             _Inout_ w_socket_tcp* pSocket,
             _In_ w_buffer pBuffer,
             _In_ bool pAsync);
@@ -317,10 +325,10 @@ extern "C" {
      * receive a message via tcp socket
      * @param pSocket a tcp socket
      * @param pBuffer message buffer
-     * @return number of received bytes
+     * @return result code
     */
     W_SYSTEM_EXPORT
-        int w_net_receive_msg_tcp(
+        W_RESULT w_net_receive_msg_tcp(
             _Inout_ w_socket_tcp* pSocket,
             _Inout_ w_buffer pBuffer);
 
@@ -443,12 +451,20 @@ extern "C" {
 
 
     /**
-     * convert error code to string message
+     * convert tcp-udp error code to string message
+     * @param pErrorCode error code
+     * @return string message of error code
+     */
+    W_SYSTEM_EXPORT
+        const char* w_net_tcp_udp_get_last_error(_In_ W_RESULT pErrorCode);
+
+    /**
+     * convert curl error code to string message
      * @param pErrorCode error code
      * @return string message of error code
     */
     W_SYSTEM_EXPORT
-        const char* w_net_error(_In_ W_RESULT pErrorCode);
+        const char* w_net_curl_get_last_error(_In_ W_RESULT pErrorCode);
 
     /**
      * w_net_fini is used to terminate the library, freeing certain global resources.

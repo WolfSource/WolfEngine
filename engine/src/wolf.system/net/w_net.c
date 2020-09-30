@@ -421,6 +421,10 @@ W_RESULT w_net_open_tcp_socket(
     _In_ w_mem_pool pMemPool,
     _In_z_ const char* pEndPoint,
     _In_ w_socket_mode pSocketMode,
+    _In_ int64_t pSendTimeOutMS,
+    _In_ int64_t pRecieveTimeOutMS,
+    _In_ int64_t pMinReconnectTimeOutMS,
+    _In_ int64_t pMaxReconnectTimeOutMS,
     _In_ bool pNoDelayOption,
     _In_ bool pKeepAliveOption,
     _In_ bool pAsync,
@@ -527,6 +531,34 @@ W_RESULT w_net_open_tcp_socket(
         goto out;
     }
 
+    _rt = nng_setopt_ms(*_nng_socket, NNG_OPT_SENDTIMEO, pSendTimeOutMS);
+    if (_rt)
+    {
+        _nng_error(_rt, "could not set socket send timeout option", _trace_info);
+        goto out;
+    }
+
+    _rt = nng_setopt_ms(*_nng_socket, NNG_OPT_RECVTIMEO, pRecieveTimeOutMS);
+    if (_rt)
+    {
+        _nng_error(_rt, "could not set socket recieve timeout option", _trace_info);
+        goto out;
+    }
+
+    _rt = nng_setopt_ms(*_nng_socket, NNG_OPT_RECONNMINT, pMinReconnectTimeOutMS);
+    if (_rt)
+    {
+        _nng_error(_rt, "could not set socket reconnect min timeout option", _trace_info);
+        goto out;
+    }
+
+    _rt = nng_setopt_ms(*_nng_socket, NNG_OPT_RECONNMAXT, pMaxReconnectTimeOutMS);
+    if (_rt)
+    {
+        _nng_error(_rt, "could not set socket reconnect max timeout option", _trace_info);
+        goto out;
+    }
+
     switch (pSocketMode)
     {
     default:
@@ -546,20 +578,20 @@ W_RESULT w_net_open_tcp_socket(
             break;
         }
 
-        //set dialer options
-        _rt = nng_dialer_setopt_bool(*_nng_dialer, NNG_OPT_TCP_NODELAY, pNoDelayOption);
-        if (_rt)
-        {
-            _nng_error(_rt, "could not set dialer no delay option", _trace_info);
-            break;
-        }
+        ////set dialer options
+        //_rt = nng_dialer_setopt_bool(*_nng_dialer, NNG_OPT_TCP_NODELAY, pNoDelayOption);
+        //if (_rt)
+        //{
+        //    _nng_error(_rt, "could not set dialer no delay option", _trace_info);
+        //    break;
+        //}
 
-        _rt = nng_dialer_setopt_bool(*_nng_dialer, NNG_OPT_TCP_KEEPALIVE, pKeepAliveOption);
-        if (_rt)
-        {
-            _nng_error(_rt, "could not set dialer keep alive option", _trace_info);
-            break;
-        }
+        //_rt = nng_dialer_setopt_bool(*_nng_dialer, NNG_OPT_TCP_KEEPALIVE, pKeepAliveOption);
+        //if (_rt)
+        //{
+        //    _nng_error(_rt, "could not set dialer keep alive option", _trace_info);
+        //    break;
+        //}
 
         if (pTLS)
         {
@@ -593,20 +625,20 @@ W_RESULT w_net_open_tcp_socket(
             break;
         }
 
-        //set listener options
-        _rt = nng_listener_setopt_bool(*_nng_listener, NNG_OPT_TCP_NODELAY, pNoDelayOption);
-        if (_rt)
-        {
-            _nng_error(_rt, "could not set listener no delay option", _trace_info);
-            break;
-        }
+        ////set listener options
+        //_rt = nng_listener_setopt_bool(*_nng_listener, NNG_OPT_TCP_NODELAY, pNoDelayOption);
+        //if (_rt)
+        //{
+        //    _nng_error(_rt, "could not set listener no delay option", _trace_info);
+        //    break;
+        //}
 
-        _rt = nng_listener_setopt_bool(*_nng_listener, NNG_OPT_TCP_KEEPALIVE, pKeepAliveOption);
-        if (_rt)
-        {
-            _nng_error(_rt, "could not set listener keep alive option", _trace_info);
-            break;
-        }
+        //_rt = nng_listener_setopt_bool(*_nng_listener, NNG_OPT_TCP_KEEPALIVE, pKeepAliveOption);
+        //if (_rt)
+        //{
+        //    _nng_error(_rt, "could not set listener keep alive option", _trace_info);
+        //    break;
+        //}
 
         if (pTLS)
         {
@@ -835,7 +867,7 @@ out:
     return _rt;
 }
 
-int w_net_send_msg_tcp(
+W_RESULT w_net_send_msg_tcp(
     _Inout_ w_socket_tcp* pSocket,
     _In_ w_buffer pBuffer,
     _In_ bool pAsync)
@@ -2140,13 +2172,18 @@ size_t w_net_receive_msg_quic(
 
 #pragma endregion
 
-const char* w_net_error(_In_ W_RESULT pErrorCode)
+const char* w_net_tcp_udp_get_last_error(_In_ W_RESULT pErrorCode)
 {
     const char* _error_msg = nng_strerror(pErrorCode);
     if (_error_msg)
     {
         return _error_msg;
     }
+    return NULL;
+}
+
+const char* w_net_curl_get_last_error(_In_ W_RESULT pErrorCode)
+{
     return curl_easy_strerror(pErrorCode);
 }
 

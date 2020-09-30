@@ -44,6 +44,10 @@ extern "C" {
 #define W_FAILURE 1
 #endif
 
+#ifndef W_TIMEOUT
+#define W_TIMEOUT 5//Same as NNG_ETIMEDOUT
+#endif
+
 #ifndef W_BAD_ARG
 #define W_BAD_ARG 70013//Same as APR_BADARG
 #endif
