@@ -531,32 +531,44 @@ W_RESULT w_net_open_tcp_socket(
         goto out;
     }
 
-    _rt = nng_setopt_ms(*_nng_socket, NNG_OPT_SENDTIMEO, pSendTimeOutMS);
-    if (_rt)
+    if (pSendTimeOutMS >= 0)
     {
-        _nng_error(_rt, "could not set socket send timeout option", _trace_info);
-        goto out;
+        _rt = nng_setopt_ms(*_nng_socket, NNG_OPT_SENDTIMEO, pSendTimeOutMS);
+        if (_rt)
+        {
+            _nng_error(_rt, "could not set socket send timeout option", _trace_info);
+            goto out;
+        }
     }
 
-    _rt = nng_setopt_ms(*_nng_socket, NNG_OPT_RECVTIMEO, pRecieveTimeOutMS);
-    if (_rt)
+    if (pRecieveTimeOutMS >= 0)
     {
-        _nng_error(_rt, "could not set socket recieve timeout option", _trace_info);
-        goto out;
+        _rt = nng_setopt_ms(*_nng_socket, NNG_OPT_RECVTIMEO, pRecieveTimeOutMS);
+        if (_rt)
+        {
+            _nng_error(_rt, "could not set socket recieve timeout option", _trace_info);
+            goto out;
+        }
     }
 
-    _rt = nng_setopt_ms(*_nng_socket, NNG_OPT_RECONNMINT, pMinReconnectTimeOutMS);
-    if (_rt)
+    if (pMinReconnectTimeOutMS >= 0)
     {
-        _nng_error(_rt, "could not set socket reconnect min timeout option", _trace_info);
-        goto out;
+        _rt = nng_setopt_ms(*_nng_socket, NNG_OPT_RECONNMINT, pMinReconnectTimeOutMS);
+        if (_rt)
+        {
+            _nng_error(_rt, "could not set socket reconnect min timeout option", _trace_info);
+            goto out;
+        }
     }
 
-    _rt = nng_setopt_ms(*_nng_socket, NNG_OPT_RECONNMAXT, pMaxReconnectTimeOutMS);
-    if (_rt)
+    if (pMaxReconnectTimeOutMS >= 0)
     {
-        _nng_error(_rt, "could not set socket reconnect max timeout option", _trace_info);
-        goto out;
+        _rt = nng_setopt_ms(*_nng_socket, NNG_OPT_RECONNMAXT, pMaxReconnectTimeOutMS);
+        if (_rt)
+        {
+            _nng_error(_rt, "could not set socket reconnect max timeout option", _trace_info);
+            goto out;
+        }
     }
 
     switch (pSocketMode)
