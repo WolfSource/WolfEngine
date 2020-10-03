@@ -46,7 +46,7 @@ typedef unsigned long   DWORD;
 	 * @return result code
 	*/
 	W_SYSTEM_EXPORT
-		W_RESULT w_process_get_is_process_running(_In_ const unsigned long pProcessID);
+		W_RESULT w_process_get_is_running(_In_ const unsigned long pProcessID);
 
 	/**
 	 * get a process name based on process id

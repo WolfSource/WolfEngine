@@ -112,8 +112,8 @@ extern "C" {
     * </PRE>
     * @note this will block current thread
     */
-    W_SYSTEM_EXPORT
-        void wolf_run(_In_ int pFlags);
+    /*W_SYSTEM_EXPORT
+        void wolf_run(_In_ int pFlags);*/
 
     /**
      * release all resources of wolf

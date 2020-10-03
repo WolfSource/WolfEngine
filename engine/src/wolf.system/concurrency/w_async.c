@@ -2,28 +2,9 @@
 #include "apr-1/apr_general.h"
 #include "log/w_log.h"
 
-void* _thread_job(w_thread pThread, void* pArgs)
-{
-    if (!pArgs)
-    {
-        W_ASSERT(false, "pArgs is NULL!. trace info: async::thread_job");
-        return NULL;
-    }
-    
-    struct ev_loop* _loop = (struct ev_loop*)pArgs;
-    if (!_loop)
-    {
-        W_ASSERT(false, "pArgs is not ev_loop* !. trace info: async::thread_job");
-        return NULL;
-    }
-    
-    ev_loop(_loop, 0);
-    return NULL;
-}
-
 W_RESULT w_async_init(
     _Inout_ w_mem_pool pMemPool,
-    _Inout_ w_async* pAsync, 
+    _Inout_ w_async* pAsync,
     _In_ w_async_callback pAsyncCallBack)
 {
     const char* _trace_info = "w_async_init";
@@ -49,14 +30,12 @@ W_RESULT w_async_init(
     }
 
     // This loop sits in the thread
-    _async->l = ev_default_loop(0);
+    _async->l = ev_default_loop(EVRUN_NOWAIT);
     ev_async_init(_async->a, pAsyncCallBack);
-    if (w_thread_init(pMemPool, &_async->t, &_thread_job, (void*)_async->l) == W_SUCCESS)
-    {
-        ev_async_start(_async->l, _async->a);
-        return W_SUCCESS;
-    }
-    return W_FAILURE;
+    ev_async_start(_async->l, _async->a);
+    ev_run(_async->l, EVRUN_NOWAIT);
+
+    return W_SUCCESS;
 }
 
 W_RESULT w_async_send(_In_ w_async pAsync, _In_opt_ void* pArg)
