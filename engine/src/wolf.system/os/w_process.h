@@ -41,6 +41,14 @@ typedef unsigned long   DWORD;
 		size_t w_process_get_count_of_instances(_In_z_ const wchar_t* pProcessName);
 
 	/**
+	 * check the process is running
+	 * @param pProcessID the id of process
+	 * @return result code
+	*/
+	W_SYSTEM_EXPORT
+		W_RESULT w_process_get_is_process_running(_In_ const unsigned long pProcessID);
+
+	/**
 	 * get a process name based on process id
 	 * @param pMemPool The pool to allocate out of
 	 * @param pProcessID process ID
@@ -94,7 +102,7 @@ typedef unsigned long   DWORD;
 			_In_z_ const wchar_t* pCurrentDirectoryPath,
 			_In_  DWORD pWaitAfterRunningProcess,
 			_In_ DWORD pCreationFlags,
-			_Out_ w_process_info* pProcessInfo);
+			_Inout_opt_ w_process_info* pProcessInfo);
 
 	/**
 	 * kill process by process info

@@ -26,7 +26,7 @@ W_RESULT w_async_init(
     _Inout_ w_async* pAsync, 
     _In_ w_async_callback pAsyncCallBack)
 {
-    const char* _trace_info = "w_condition_variable_init";
+    const char* _trace_info = "w_async_init";
     if (!pMemPool)
     {
         W_ASSERT_P(false, "bad args! trace info %s", _trace_info);

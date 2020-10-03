@@ -131,6 +131,33 @@ size_t w_process_get_count_of_instances(_In_z_ const wchar_t* pProcessName)
 	return _instances;
 }
 
+W_RESULT w_process_get_is_process_running(_In_ const unsigned long pProcessID)
+{
+	W_RESULT _running = W_FAILURE;
+
+	PROCESSENTRY32 _entry;
+	_entry.dwSize = sizeof(PROCESSENTRY32);
+
+	HANDLE _snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+	if (_snapshot)
+	{
+		if (Process32First(_snapshot, &_entry))
+		{
+			while (Process32Next(_snapshot, &_entry))
+			{
+				if (_entry.th32ProcessID == pProcessID)
+				{
+					_running = W_SUCCESS;
+					break;
+				}
+			}
+		}
+		CloseHandle(_snapshot);
+	}
+
+	return _running;
+}
+
 W_RESULT w_process_get_name_by_id(
 	_Inout_ w_mem_pool pMemPool,
 	_In_ DWORD pProcessID,
@@ -291,7 +318,7 @@ W_RESULT w_process_create(
 	_In_z_ const wchar_t* pCurrentDirectoryPath,
 	_In_  DWORD pWaitAfterRunningProcess,
 	_In_ DWORD pCreationFlags,
-	_Out_ w_process_info* pProcessInfo)
+	_Inout_opt_ w_process_info* pProcessInfo)
 {
 	W_RESULT _ret = W_FAILURE;
 	if (!pPathToProcess)
@@ -359,7 +386,7 @@ W_RESULT w_process_create(
 	{
 		WaitForSingleObject(_process_info->hProcess, pWaitAfterRunningProcess);
 
-		*pProcessInfo = w_malloc(pMemPool, sizeof(w_process_info_t));
+		*pProcessInfo = (w_process_info)w_malloc(pMemPool, sizeof(w_process_info_t));
 		if (*pProcessInfo)
 		{
 			(*pProcessInfo)->info = _process_info;
