@@ -1,5 +1,6 @@
 #include "wolf.h"
 #include "log/w_log.h"
+#include <concurrency/libev/ev.h>
 
 //http://dev.ariel-networks.com/apr/apr-tutorial/html/apr-tutorial.html#toc1
 #include <apr.h>
@@ -26,6 +27,8 @@ BOOL APIENTRY DllMain(_In_ HMODULE phModule, _In_ DWORD phl_reason_for_call, _In
     return TRUE;
 }
 #endif
+
+static struct ev_loop* s_main_loop = NULL;
 
 W_RESULT wolf_init()
 {
@@ -185,8 +188,14 @@ out:
 
 #endif
 
+void wolf_run(int pFlags)
+{
+    ev_run(EV_DEFAULT, pFlags);
+}
+
 void wolf_fini()
 {
+    ev_break(s_main_loop, EVBREAK_ALL);
 #if defined(W_PLATFORM_WIN) || defined(W_PLATFORM_OSX) || defined(W_PLATFORM_LINUX)
     curl_global_cleanup();
 #endif

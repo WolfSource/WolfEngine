@@ -102,6 +102,19 @@ extern "C" {
 
 #endif
     
+   /**
+    * run main loop of wolf in order to process signals
+    * @param pFlags the loop flag
+    * <PRE>
+    *     0 = RUN_DEFAULT block the current thread and fetch/handle internal events
+          1 = RUN_NOWAIT fetch/handle events but don't block at all
+          2 = RUN_ONCE	means at most one time. wait for first events and then unblock current thread
+    * </PRE>
+    * @note this will block current thread
+    */
+    W_SYSTEM_EXPORT
+        void wolf_run(_In_ int pFlags);
+
     /**
      * release all resources of wolf
     */
