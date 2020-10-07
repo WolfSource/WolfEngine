@@ -134,7 +134,7 @@ size_t w_process_get_count_of_instances(_In_z_ const wchar_t* pProcessName)
 W_RESULT w_process_get_is_running(_In_ const unsigned long pProcessID)
 {
 	W_RESULT _running = W_FAILURE;
-
+#ifdef W_PLATFORM_WIN
 	PROCESSENTRY32 _entry;
 	_entry.dwSize = sizeof(PROCESSENTRY32);
 
@@ -154,7 +154,7 @@ W_RESULT w_process_get_is_running(_In_ const unsigned long pProcessID)
 		}
 		CloseHandle(_snapshot);
 	}
-
+#endif
 	return _running;
 }
 

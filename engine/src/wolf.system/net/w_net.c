@@ -34,7 +34,9 @@
 #include <arpa/inet.h>
 #endif
 
+#ifndef W_PLATFORM_IOS
 #include <curl/curl.h>
+#endif
 
 #ifdef W_PLATFORM_OSX
 #define SOCKET_ERROR    (-1)
@@ -357,8 +359,9 @@ const char* w_net_url_encoded(
         W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
         return NULL;
     }
-
     char* _encoded = NULL;
+
+#ifndef W_PLATFORM_IOS
     CURL* _curl = curl_easy_init();
     if (!_curl)
     {
@@ -381,7 +384,7 @@ _out:
     {
         curl_easy_cleanup(_curl);
     }
-
+#endif
     return _encoded;
 }
 
@@ -1045,7 +1048,7 @@ W_RESULT w_net_send_http_request(
         W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
         return APR_BADARG;
     }
-
+#ifndef W_PLATFORM_IOS
     CURLcode _rt;
     curl_memory* _curl_mem = NULL;
     //create handle
@@ -1140,6 +1143,8 @@ _out:
         curl_easy_cleanup(_curl);
     }
     return _rt;
+#endif
+    return W_FAILURE;
 }
 
 #pragma region QUIC
@@ -2196,7 +2201,11 @@ const char* w_net_tcp_udp_get_last_error(_In_ W_RESULT pErrorCode)
 
 const char* w_net_curl_get_last_error(_In_ W_RESULT pErrorCode)
 {
+#ifndef W_PLATFORM_IOS
     return curl_easy_strerror(pErrorCode);
+#else
+    return NULL;
+#endif
 }
 
 void w_net_fini(void)

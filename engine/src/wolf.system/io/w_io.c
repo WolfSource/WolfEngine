@@ -17,8 +17,10 @@
 
 #endif
 
+#ifndef W_PLATFORM_IOS
 #include "base64/chromiumbase64.h"
 #include "base64/scalarbase64.h"
+#endif
 
 #ifdef W_PLATFORM_UNIX
 #include "base64/linuxbase64.h"
@@ -1184,6 +1186,7 @@ size_t w_io_to_base_64(_Inout_z_ char** pDestinationBuffer,
     size_t _encoded_size = 0;
     switch (pEncodeMode)
     {
+#ifndef W_PLATFORM_IOS
     case chromium:
         _encoded_size = chromium_base64_encode(
             *pDestinationBuffer,
@@ -1197,7 +1200,7 @@ size_t w_io_to_base_64(_Inout_z_ char** pDestinationBuffer,
             *pDestinationBuffer,
             &_encoded_size);
         break;
-
+#endif
 #if !defined(W_PLATFORM_ANDROID) && !defined(W_PLATFORM_IOS)
 
     case klomp_avx:
