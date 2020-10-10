@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		051CCCF025318452002E059C /* w_atomic.c in Sources */ = {isa = PBXBuildFile; fileRef = 051CCCEE25318452002E059C /* w_atomic.c */; };
+		051CCCF125318452002E059C /* w_atomic.h in Headers */ = {isa = PBXBuildFile; fileRef = 051CCCEF25318452002E059C /* w_atomic.h */; };
+		051CCCF525318546002E059C /* libquiche.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 051CCCF425318529002E059C /* libquiche.a */; };
 		05B4A66C251A44C700FBA684 /* logger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 05B4A5FC251A44C600FBA684 /* logger.cpp */; };
 		05B4A66D251A44C700FBA684 /* logger.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 05B4A5FD251A44C600FBA684 /* logger.hpp */; };
 		05B4A6C5251A44C700FBA684 /* async.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 05B4A65F251A44C600FBA684 /* async.cpp */; };
@@ -23,7 +26,6 @@
 		05B4A6D5251A45B600FBA684 /* w_mutex.h in Headers */ = {isa = PBXBuildFile; fileRef = 05B4A6D3251A45B600FBA684 /* w_mutex.h */; };
 		05B4A6D9251A681100FBA684 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 05B4A6D8251A681000FBA684 /* Foundation.framework */; };
 		05BC21C525129351007D6218 /* libcurl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 05BC21C425129351007D6218 /* libcurl.a */; };
-		05BC21C725129626007D6218 /* libquiche.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 05BC21C625129626007D6218 /* libquiche.a */; };
 		05BC21E3251296DA007D6218 /* w_shared_mem.h in Headers */ = {isa = PBXBuildFile; fileRef = 05BC21C8251296D8007D6218 /* w_shared_mem.h */; };
 		05BC21E5251296DA007D6218 /* w_mem_map.h in Headers */ = {isa = PBXBuildFile; fileRef = 05BC21CA251296D9007D6218 /* w_mem_map.h */; };
 		05BC21E7251296DA007D6218 /* w_mem_cache.h in Headers */ = {isa = PBXBuildFile; fileRef = 05BC21CC251296D9007D6218 /* w_mem_cache.h */; };
@@ -32,11 +34,9 @@
 		05BC21EB251296DA007D6218 /* w_hash.h in Headers */ = {isa = PBXBuildFile; fileRef = 05BC21D0251296D9007D6218 /* w_hash.h */; };
 		05BC21EC251296DA007D6218 /* w_mem_cache.c in Sources */ = {isa = PBXBuildFile; fileRef = 05BC21D1251296D9007D6218 /* w_mem_cache.c */; };
 		05BC21ED251296DA007D6218 /* w_array.h in Headers */ = {isa = PBXBuildFile; fileRef = 05BC21D2251296D9007D6218 /* w_array.h */; };
-		05BC21EE251296DA007D6218 /* w_redis.c in Sources */ = {isa = PBXBuildFile; fileRef = 05BC21D3251296D9007D6218 /* w_redis.c */; };
 		05BC21EF251296DA007D6218 /* w_array.c in Sources */ = {isa = PBXBuildFile; fileRef = 05BC21D4251296D9007D6218 /* w_array.c */; };
 		05BC21F0251296DA007D6218 /* w_shared_mem.c in Sources */ = {isa = PBXBuildFile; fileRef = 05BC21D5251296D9007D6218 /* w_shared_mem.c */; };
 		05BC21F1251296DA007D6218 /* w_hash.c in Sources */ = {isa = PBXBuildFile; fileRef = 05BC21D6251296D9007D6218 /* w_hash.c */; };
-		05BC21F2251296DA007D6218 /* w_redis.h in Headers */ = {isa = PBXBuildFile; fileRef = 05BC21D7251296DA007D6218 /* w_redis.h */; };
 		05BC21F3251296DA007D6218 /* utarray.h in Headers */ = {isa = PBXBuildFile; fileRef = 05BC21D9251296DA007D6218 /* utarray.h */; };
 		05BC21F4251296DA007D6218 /* uthash.h in Headers */ = {isa = PBXBuildFile; fileRef = 05BC21DA251296DA007D6218 /* uthash.h */; };
 		05BC21F5251296DA007D6218 /* utlist.h in Headers */ = {isa = PBXBuildFile; fileRef = 05BC21DB251296DA007D6218 /* utlist.h */; };
@@ -141,6 +141,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		051CCCEE25318452002E059C /* w_atomic.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = w_atomic.c; path = ../../../src/wolf.system/concurrency/w_atomic.c; sourceTree = "<group>"; };
+		051CCCEF25318452002E059C /* w_atomic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_atomic.h; path = ../../../src/wolf.system/concurrency/w_atomic.h; sourceTree = "<group>"; };
+		051CCCF425318529002E059C /* libquiche.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libquiche.a; path = ../../../deps/quiche/lib/osx/libquiche.a; sourceTree = "<group>"; };
 		05B4A5FC251A44C600FBA684 /* logger.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = logger.cpp; sourceTree = "<group>"; };
 		05B4A5FD251A44C600FBA684 /* logger.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = logger.hpp; sourceTree = "<group>"; };
 		05B4A65F251A44C600FBA684 /* async.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = async.cpp; sourceTree = "<group>"; };
@@ -166,11 +169,9 @@
 		05BC21D0251296D9007D6218 /* w_hash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_hash.h; path = ../../../src/wolf.system/memory/w_hash.h; sourceTree = "<group>"; };
 		05BC21D1251296D9007D6218 /* w_mem_cache.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = w_mem_cache.c; path = ../../../src/wolf.system/memory/w_mem_cache.c; sourceTree = "<group>"; };
 		05BC21D2251296D9007D6218 /* w_array.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_array.h; path = ../../../src/wolf.system/memory/w_array.h; sourceTree = "<group>"; };
-		05BC21D3251296D9007D6218 /* w_redis.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = w_redis.c; path = ../../../src/wolf.system/memory/w_redis.c; sourceTree = "<group>"; };
 		05BC21D4251296D9007D6218 /* w_array.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = w_array.c; path = ../../../src/wolf.system/memory/w_array.c; sourceTree = "<group>"; };
 		05BC21D5251296D9007D6218 /* w_shared_mem.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = w_shared_mem.c; path = ../../../src/wolf.system/memory/w_shared_mem.c; sourceTree = "<group>"; };
 		05BC21D6251296D9007D6218 /* w_hash.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = w_hash.c; path = ../../../src/wolf.system/memory/w_hash.c; sourceTree = "<group>"; };
-		05BC21D7251296DA007D6218 /* w_redis.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_redis.h; path = ../../../src/wolf.system/memory/w_redis.h; sourceTree = "<group>"; };
 		05BC21D9251296DA007D6218 /* utarray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = utarray.h; sourceTree = "<group>"; };
 		05BC21DA251296DA007D6218 /* uthash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = uthash.h; sourceTree = "<group>"; };
 		05BC21DB251296DA007D6218 /* utlist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = utlist.h; sourceTree = "<group>"; };
@@ -290,8 +291,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				051CCCF525318546002E059C /* libquiche.a in Frameworks */,
 				05B4A6D9251A681100FBA684 /* Foundation.framework in Frameworks */,
-				05BC21C725129626007D6218 /* libquiche.a in Frameworks */,
 				05BC21C525129351007D6218 /* libcurl.a in Frameworks */,
 				2C1D5A6D24AE7A0200AD7F35 /* libssl.a in Frameworks */,
 				2C99E7C023CBA1F700A9720B /* libboost_fiber.a in Frameworks */,
@@ -454,6 +455,8 @@
 		2C898550239F65C70062D70A /* concurrency */ = {
 			isa = PBXGroup;
 			children = (
+				051CCCEE25318452002E059C /* w_atomic.c */,
+				051CCCEF25318452002E059C /* w_atomic.h */,
 				05B4A6D2251A45B600FBA684 /* w_mutex.c */,
 				05B4A6D3251A45B600FBA684 /* w_mutex.h */,
 				2C99E79B23C33A1D00A9720B /* libev */,
@@ -568,8 +571,6 @@
 				05BC21CA251296D9007D6218 /* w_mem_map.h */,
 				05BC21E0251296DA007D6218 /* w_mem_pool.c */,
 				05BC21CD251296D9007D6218 /* w_mem_pool.h */,
-				05BC21D3251296D9007D6218 /* w_redis.c */,
-				05BC21D7251296DA007D6218 /* w_redis.h */,
 				05BC21D5251296D9007D6218 /* w_shared_mem.c */,
 				05BC21C8251296D8007D6218 /* w_shared_mem.h */,
 				05BC21CF251296D9007D6218 /* w_table.c */,
@@ -612,6 +613,7 @@
 		2CFA170D1E674C850041A83F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				051CCCF425318529002E059C /* libquiche.a */,
 				05B4A6D8251A681000FBA684 /* Foundation.framework */,
 				05BC21C625129626007D6218 /* libquiche.a */,
 				05BC21C425129351007D6218 /* libcurl.a */,
@@ -694,9 +696,9 @@
 				2C898545239E763C0062D70A /* msgpack.h in Headers */,
 				05BC21FB251296DA007D6218 /* w_table.h in Headers */,
 				05BC21F4251296DA007D6218 /* uthash.h in Headers */,
-				05BC21F2251296DA007D6218 /* w_redis.h in Headers */,
 				2C3756D723B7D35C003A6B0A /* lauxlib.h in Headers */,
 				2C898496239E735F0062D70A /* xxhash.h in Headers */,
+				051CCCF125318452002E059C /* w_atomic.h in Headers */,
 				2CCFD57E246DF3F30030D3AC /* w_concurrent_queue.h in Headers */,
 				2C99E79E23C33A3900A9720B /* ev.h in Headers */,
 				2C37522923AFD0EF003A6B0A /* klompavxbase64.h in Headers */,
@@ -795,7 +797,6 @@
 				2C37521F23AFD0EF003A6B0A /* klompavxbase64.c in Sources */,
 				05B4A6C9251A44C700FBA684 /* fmt.cpp in Sources */,
 				2CCFD5862471E8550030D3AC /* w_async.c in Sources */,
-				05BC21EE251296DA007D6218 /* w_redis.c in Sources */,
 				2C3756E223B7F302003A6B0A /* w_lua.c in Sources */,
 				05BC21EC251296DA007D6218 /* w_mem_cache.c in Sources */,
 				2C898544239E763C0062D70A /* objectc.c in Sources */,
@@ -813,6 +814,7 @@
 				05B4A6CF251A44C700FBA684 /* w_log.cpp in Sources */,
 				2C17289E246C16F1009C03B3 /* w_gametime.c in Sources */,
 				2C069B8A23E21EB8004EB56F /* w_fiber.cpp in Sources */,
+				051CCCF025318452002E059C /* w_atomic.c in Sources */,
 				05BC21FA251296DA007D6218 /* w_mem_pool.c in Sources */,
 				05BC21F0251296DA007D6218 /* w_shared_mem.c in Sources */,
 				05BC21EF251296DA007D6218 /* w_array.c in Sources */,
