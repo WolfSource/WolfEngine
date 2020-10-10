@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		05122B302531E31C009C2A56 /* w_window.h in Headers */ = {isa = PBXBuildFile; fileRef = 05122B2C2531E31C009C2A56 /* w_window.h */; };
+		05122B312531E31C009C2A56 /* w_process.c in Sources */ = {isa = PBXBuildFile; fileRef = 05122B2D2531E31C009C2A56 /* w_process.c */; };
+		05122B322531E31C009C2A56 /* w_process.h in Headers */ = {isa = PBXBuildFile; fileRef = 05122B2E2531E31C009C2A56 /* w_process.h */; };
+		05122B332531E31C009C2A56 /* w_window.c in Sources */ = {isa = PBXBuildFile; fileRef = 05122B2F2531E31C009C2A56 /* w_window.c */; };
 		051CCCF025318452002E059C /* w_atomic.c in Sources */ = {isa = PBXBuildFile; fileRef = 051CCCEE25318452002E059C /* w_atomic.c */; };
 		051CCCF125318452002E059C /* w_atomic.h in Headers */ = {isa = PBXBuildFile; fileRef = 051CCCEF25318452002E059C /* w_atomic.h */; };
 		051CCCF525318546002E059C /* libquiche.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 051CCCF425318529002E059C /* libquiche.a */; };
@@ -141,6 +145,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		05122B2C2531E31C009C2A56 /* w_window.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_window.h; path = ../../../src/wolf.system/os/w_window.h; sourceTree = "<group>"; };
+		05122B2D2531E31C009C2A56 /* w_process.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = w_process.c; path = ../../../src/wolf.system/os/w_process.c; sourceTree = "<group>"; };
+		05122B2E2531E31C009C2A56 /* w_process.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_process.h; path = ../../../src/wolf.system/os/w_process.h; sourceTree = "<group>"; };
+		05122B2F2531E31C009C2A56 /* w_window.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = w_window.c; path = ../../../src/wolf.system/os/w_window.c; sourceTree = "<group>"; };
 		051CCCEE25318452002E059C /* w_atomic.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = w_atomic.c; path = ../../../src/wolf.system/concurrency/w_atomic.c; sourceTree = "<group>"; };
 		051CCCEF25318452002E059C /* w_atomic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_atomic.h; path = ../../../src/wolf.system/concurrency/w_atomic.h; sourceTree = "<group>"; };
 		051CCCF425318529002E059C /* libquiche.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libquiche.a; path = ../../../deps/quiche/lib/osx/libquiche.a; sourceTree = "<group>"; };
@@ -518,6 +526,10 @@
 		2C89856023A15C0B0062D70A /* os */ = {
 			isa = PBXGroup;
 			children = (
+				05122B2D2531E31C009C2A56 /* w_process.c */,
+				05122B2E2531E31C009C2A56 /* w_process.h */,
+				05122B2F2531E31C009C2A56 /* w_window.c */,
+				05122B2C2531E31C009C2A56 /* w_window.h */,
 				2CFADC1C248B6F3400409581 /* cr.h */,
 				2CFADC20248FB32E00409581 /* w_cpu.c */,
 				2CFADC1F248FB32E00409581 /* w_cpu.h */,
@@ -658,6 +670,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				05122B322531E31C009C2A56 /* w_process.h in Headers */,
 				05BC21ED251296DA007D6218 /* w_array.h in Headers */,
 				2C069B8B23E21EB8004EB56F /* w_fiber.hpp in Headers */,
 				2C17289C246C168E009C03B3 /* w_gametime.h in Headers */,
@@ -702,6 +715,7 @@
 				2CCFD57E246DF3F30030D3AC /* w_concurrent_queue.h in Headers */,
 				2C99E79E23C33A3900A9720B /* ev.h in Headers */,
 				2C37522923AFD0EF003A6B0A /* klompavxbase64.h in Headers */,
+				05122B302531E31C009C2A56 /* w_window.h in Headers */,
 				2CFADC1D248B6F3400409581 /* cr.h in Headers */,
 				2C89893723A1790F0062D70A /* wolf.h in Headers */,
 				2C30BAE023A42B2E009FC330 /* w_compress.h in Headers */,
@@ -804,6 +818,7 @@
 				05BC21FC251296DA007D6218 /* w_mem_map.c in Sources */,
 				2CFADC22248FB32E00409581 /* w_cpu.c in Sources */,
 				2C898543239E763C0062D70A /* version.c in Sources */,
+				05122B312531E31C009C2A56 /* w_process.c in Sources */,
 				2C37522B23AFD0EF003A6B0A /* quicktimebase64.c in Sources */,
 				05B4A6C8251A44C700FBA684 /* file_sinks.cpp in Sources */,
 				2C37522823AFD0EF003A6B0A /* chromiumbase64.c in Sources */,
@@ -814,6 +829,7 @@
 				05B4A6CF251A44C700FBA684 /* w_log.cpp in Sources */,
 				2C17289E246C16F1009C03B3 /* w_gametime.c in Sources */,
 				2C069B8A23E21EB8004EB56F /* w_fiber.cpp in Sources */,
+				05122B332531E31C009C2A56 /* w_window.c in Sources */,
 				051CCCF025318452002E059C /* w_atomic.c in Sources */,
 				05BC21FA251296DA007D6218 /* w_mem_pool.c in Sources */,
 				05BC21F0251296DA007D6218 /* w_shared_mem.c in Sources */,

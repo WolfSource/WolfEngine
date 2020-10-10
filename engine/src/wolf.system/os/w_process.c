@@ -8,8 +8,12 @@
 #include <psapi.h>//list all processes
 #endif
 
-#ifdef W_PLATFORM_OSX
-#define MAX_PATH 206
+#if defined (W_PLATFORM_OSX) || defined (W_PLATFORM_IOS)
+#define MAX_PATH        206
+#endif
+#if defined (W_PLATFORM_OSX) && !defined (W_PLATFORM_IOS)
+#include <sys/proc_info.h>
+#include <libproc.h>
 #endif
 
 size_t w_process_get_count_of_instances(_In_z_ const wchar_t* pProcessName)
@@ -37,11 +41,10 @@ size_t w_process_get_count_of_instances(_In_z_ const wchar_t* pProcessName)
 		CloseHandle(_snapshot);
 	}
 
-#elif defined W_PLATFORM_OSX
-/*
+#elif defined W_PLATFORM_OSX && !defined (W_PLATFORM_IOS)
 	pid_t pids[2048];
-	std::wstring _input_name, _compare_name;
-	_input_name = std::wstring(name);
+	wchar_t* _input_name, _compare_name[256];
+    _input_name = (wchar_t*)pProcessName;
 	size_t size = 0;
 
 	int bytes = proc_listpids(PROC_ALL_PIDS, 0, pids, sizeof(pids));
@@ -53,19 +56,19 @@ size_t w_process_get_count_of_instances(_In_z_ const wchar_t* pProcessName)
 		int st = proc_pidinfo(pids[i], PROC_PIDTBSDINFO, 0, &proc, sizeof(proc));
 		if (st == sizeof(proc))
 		{
-			size = std::strlen(proc.pbi_name);
+			size = strlen(proc.pbi_name);
 			if (size > 0)
 			{
-				_compare_name.resize(size);
-				std::mbstowcs(&_compare_name[0], proc.pbi_name, size);
+				mbstowcs(&_compare_name[0], proc.pbi_name, size);
 			}
 
-			if (!wcscmp(_input_name.data(), _compare_name.data()))
+			if (!wcscmp(_input_name, _compare_name))
 			{
 				_instances++;
 			}
 		}
-*/
+    }
+
 #elif defined W_PLATFORM_LINUX
 
 	DIR* dir;

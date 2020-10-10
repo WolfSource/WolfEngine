@@ -38,7 +38,7 @@
 #include <curl/curl.h>
 #endif
 
-#ifdef W_PLATFORM_OSX
+#if defined (W_PLATFORM_OSX) || defined (W_PLATFORM_IOS)
 #define SOCKET_ERROR    (-1)
 #include <netdb.h>
 #include <sys/fcntl.h>
@@ -1377,7 +1377,7 @@ static void s_quiche_listener_callback(EV_P_ ev_io* pIO, int pRevents)
         {
 #ifdef W_PLATFORM_WIN
             if (WSAGetLastError() == WSAEWOULDBLOCK)
-#elif defined W_PLATFORM_OSX
+#elif defined (W_PLATFORM_OSX) || defined (W_PLATFORM_IOS)
             if (errno == EWOULDBLOCK)
 #endif
             {
