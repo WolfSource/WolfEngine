@@ -1,33 +1,95 @@
-
+//catch2 for test
 #define CATCH_CONFIG_MAIN
-
-
 #include "catch.hpp"
-#include<wolf.h>
-#include"db/w_redis.h"
+
+#include <wolf.h>
 #include <chrono/w_chrono.h>
 #include <chrono/w_gametime.h>
-#include<compression/w_compress.h>
-#include"concurrency/w_thread.h"
-#include<concurrency/w_async.h>
-#include<concurrency/w_concurrent_queue.h>
-#include<memory/w_array.h>
-#include<memory/w_hash.h>
-#include<memory/w_table.h>
-#include<concurrency/w_condition_variable.h>
-#include<concurrency/w_mutex.h>
-#include<concurrency/w_thread_pool.h>
-#include<memory/w_mem_pool.h>
-#include<concurrency/w_atomic.h>
-#include<memory/w_mem_map.h>
-#include<memory/w_string.h>
-#include<os/w_process.h>
-#include<script/w_lua.h>
-#include<memory/w_shared_mem.h>
-#include<iostream>
-#include<log/w_log.h>
-#include"io/w_io.h"
-#include"system.h"
+#include <compression/w_compress.h>
+#include <concurrency/w_atomic.h>
+#include <concurrency/w_mutex.h>
+#include "concurrency/w_thread.h"
+#include <concurrency/w_async.h>
+#include <concurrency/w_concurrent_queue.h>
+#include <concurrency/w_condition_variable.h>
+#include <concurrency/w_thread_pool.h>
+#include <memory/w_array.h>
+#include <memory/w_hash.h>
+#include <memory/w_table.h>
+#include <memory/w_mem_pool.h>
+#include <memory/w_mem_map.h>
+#include <memory/w_string.h>
+#include <memory/w_shared_mem.h>
+#include <os/w_process.h>
+#include <script/w_lua.h>
+#include <log/w_log.h>
+#include <io/w_io.h>
+
+//#include <db/w_redis.h>
+
+void mycallback(EV_P_ w_async_base* arg1, int arg2) { printf("%s", "ok"); }
+void* _hash_func(w_apr_pool pMemPool, const void* pKey, long long pLen, const void* pHash1Value, const void* pHash2Value, const void* pData)
+{
+    printf("%s", "ok");
+    return NULL;
+
+}
+
+int hash_do_callback_fn(void* pRec, const void* pKey, long long pLen, const void* pValue)
+{
+    printf("%s", "ok2");
+    return 1;
+}
+
+void* w_thread_job_my(w_thread arg1, void* arg2) {
+    printf("%s", "okthresd");
+    return NULL;
+}
+void mycallback_thread() { printf("%s", "okthresd"); }
+
+void g_tick_callback(w_gametime w_game) {
+    printf("%s", "ok");
+}
+
+int pHashCustomFunc_tmp(const char*, long long*)
+{
+    printf("%s", "ok_hash_func");
+    return 0;
+}
+
+int pCallBack(void* rec, const char* pKey, const char* pValue) {
+    const char* label = (const char*)rec;
+    printf("callback[%s]: %s %s\n", label, pKey, pValue);
+    return TRUE;
+}
+int displayLuaFunction(lua_State* l)
+{
+    // number of input arguments
+    int argc = lua_gettop(l);
+
+    // print input arguments
+    std::cout << "[C++] Function called from Lua with " << argc
+        << " input arguments" << std::endl;
+    for (int i = 0; i < argc; i++)
+    {
+        std::cout << " input argument #" << argc - i << ": "
+            << lua_tostring(l, lua_gettop(l)) << std::endl;
+        lua_pop(l, 1);
+    }
+
+    // push to the stack the multiple return values
+    std::cout << "[C++] Returning some values" << std::endl;
+    double value_1 = 3.141592;
+    int pValueType = 3;
+    W_RESULT _lua_set_parameter_function = w_lua_set_parameter_function((void*)&value_1, pValueType);
+
+    const char* value_2 = "See you space cowboy";
+    int pValueType_2 = 4;
+    W_RESULT _lua_set_parameter_function2 = w_lua_set_parameter_function((void*)value_2, pValueType_2);
+
+    // number of return values
+    return 2;
+}
 
 #define W_STATUS_IS_NOTFOUND 70015
 using namespace std;
@@ -43,19 +105,19 @@ uint32_t pMin = 0;
 uint32_t pMax = 1;
 uint32_t pTTL = 60;
 uint32_t pReadWriteTimeOut = 60;
-w_redis_server  pNewServerLocation;
+//w_redis_server  pNewServerLocation;
 uint16_t pMaxServers = 10;
 uint32_t pFlags = 0;
 char* result;
 size_t pLen = NULL;
 char* result_2;
 size_t pLen_2 = NULL;
-w_redis_stats stats;
+//w_redis_stats stats;
 int32_t pIncrementNumber = 1;
 uint32_t pNewValue = NULL;
 void* v = NULL;
 const char* key = NULL;
-w_redis pRedisClient;
+//w_redis pRedisClient;
 const char* prefix = "testredis";
 const char* prefix2 = "testredis2";
 char p[] = "21";
@@ -63,52 +125,53 @@ char pp[] = "271";
 size_t len_p = strlen("21");
 size_t len_pp = strlen("271");
 
-TEST_CASE("w_redis")
-{
-    W_RESULT _redis_init = w_redis_init(_mem_pool, pMaxServers, pFlags, &pRedisClient);
-    REQUIRE(_redis_init == 0);
 
-    W_RESULT _redis_server_init = w_redis_server_init(_mem_pool, _mem_pool_1, pHost, pPort, pMin, pMax, pMax, pTTL, pReadWriteTimeOut, &pNewServerLocation);
-    REQUIRE(_redis_server_init == 0);
-
-    W_RESULT _redis_add_server = w_redis_add_server(pRedisClient, pNewServerLocation);
-    REQUIRE(_redis_add_server == 0);
-
-    W_RESULT _redis_get_stats = w_redis_get_stats(_mem_pool, _mem_pool_1, pNewServerLocation, &stats);
-    REQUIRE(_redis_get_stats == 0);
-    if (_redis_get_stats == W_STATUS_IS_NOTFOUND)
-    {
-        //  Printf(" unable to find the socket in the poll structure");
-    }
-
-    W_RESULT _redis_ping = w_redis_ping(pNewServerLocation);
-    REQUIRE(_redis_ping == 0);
-
-    W_RESULT _redis_setex = w_redis_setex(pRedisClient, prefix2, p, len_p, 10, 27);
-    REQUIRE(_redis_setex == 0);
-
-    W_RESULT _redis_get2 = w_redis_get(_mem_pool, pRedisClient, prefix2, &result_2, &pLen_2, NULL);
-    REQUIRE(_redis_get2 == 0);
-
-    w_redis_server _redis_find_server = w_redis_find_server(pRedisClient, pHost, pPort);
-    REQUIRE(_redis_find_server != 0);
-
-    W_RESULT redis_set = w_redis_set(pRedisClient, prefix, pp, sizeof(pp) - 1, 27);
-    REQUIRE(redis_set == 0);
-
-    W_RESULT _redis_get = w_redis_get(_mem_pool, pRedisClient, prefix, &result, &pLen, NULL);
-    REQUIRE(_redis_get == 0);
-
-    W_RESULT _redis_delete = w_redis_delete(pRedisClient, prefix, 0);
-    REQUIRE(_redis_delete == 0);
-
-
-    W_RESULT redis_disable_server = w_redis_disable_server(pRedisClient, _redis_find_server);
-    REQUIRE(redis_disable_server == 0);
-
-    W_RESULT _redis_enable_server = w_redis_enable_server(pRedisClient, _redis_find_server);
-    REQUIRE(_redis_enable_server == 0);
-}
+//TEST_CASE("w_redis")
+//{
+//    W_RESULT _redis_init = w_redis_init(_mem_pool, pMaxServers, pFlags, &pRedisClient);
+//    REQUIRE(_redis_init == 0);
+//
+//    W_RESULT _redis_server_init = w_redis_server_init(_mem_pool, _mem_pool_1, pHost, pPort, pMin, pMax, pMax, pTTL, pReadWriteTimeOut, &pNewServerLocation);
+//    REQUIRE(_redis_server_init == 0);
+//
+//    W_RESULT _redis_add_server = w_redis_add_server(pRedisClient, pNewServerLocation);
+//    REQUIRE(_redis_add_server == 0);
+//
+//    W_RESULT _redis_get_stats = w_redis_get_stats(_mem_pool, _mem_pool_1, pNewServerLocation, &stats);
+//    REQUIRE(_redis_get_stats == 0);
+//    if (_redis_get_stats == W_STATUS_IS_NOTFOUND)
+//    {
+//        //  Printf(" unable to find the socket in the poll structure");
+//    }
+//
+//    W_RESULT _redis_ping = w_redis_ping(pNewServerLocation);
+//    REQUIRE(_redis_ping == 0);
+//
+//    W_RESULT _redis_setex = w_redis_setex(pRedisClient, prefix2, p, len_p, 10, 27);
+//    REQUIRE(_redis_setex == 0);
+//
+//    W_RESULT _redis_get2 = w_redis_get(_mem_pool, pRedisClient, prefix2, &result_2, &pLen_2, NULL);
+//    REQUIRE(_redis_get2 == 0);
+//
+//    w_redis_server _redis_find_server = w_redis_find_server(pRedisClient, pHost, pPort);
+//    REQUIRE(_redis_find_server != 0);
+//
+//    W_RESULT redis_set = w_redis_set(pRedisClient, prefix, pp, sizeof(pp) - 1, 27);
+//    REQUIRE(redis_set == 0);
+//
+//    W_RESULT _redis_get = w_redis_get(_mem_pool, pRedisClient, prefix, &result, &pLen, NULL);
+//    REQUIRE(_redis_get == 0);
+//
+//    W_RESULT _redis_delete = w_redis_delete(pRedisClient, prefix, 0);
+//    REQUIRE(_redis_delete == 0);
+//
+//
+//    W_RESULT redis_disable_server = w_redis_disable_server(pRedisClient, _redis_find_server);
+//    REQUIRE(redis_disable_server == 0);
+//
+//    W_RESULT _redis_enable_server = w_redis_enable_server(pRedisClient, _redis_find_server);
+//    REQUIRE(_redis_enable_server == 0);
+//}
 
 TEST_CASE("w_chrono")
 {
@@ -341,7 +404,6 @@ TEST_CASE("concurrency/w_atomic")
     REQUIRE(atomic_read64 == 123);
 
 }
-
 
 TEST_CASE("concurrency/w_concurrency")
 {
@@ -901,7 +963,7 @@ TEST_CASE("memory/w_mem_map")
     w_mem_map pNewMemMap_new = (w_mem_map)w_malloc(_mem_pool2, sizeof(w_mem_map));
 
     w_offset flag = 1;
-    W_RESULT  _mem_map_creat = w_mem_map_create(_mem_pool2, &pNewMemMap, _path, 0, 1);
+    W_RESULT  _mem_map_creat = w_mem_map_create(_mem_pool2, &pNewMemMap, _file, 0, 1, 0);
     REQUIRE(_mem_map_creat == 0);
 
     void* pAddress = 0;

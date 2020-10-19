@@ -118,8 +118,8 @@
     <Filter Include="db">
       <UniqueIdentifier>{1fe3bea0-4249-41ab-a778-47be753d4990}</UniqueIdentifier>
     </Filter>
-    <Filter Include="db\buckets">
-      <UniqueIdentifier>{5c55000e-dcbb-44b6-b356-5c6c64a3ff99}</UniqueIdentifier>
+    <Filter Include="memory\buckets">
+      <UniqueIdentifier>{009e75f3-76f0-4c3b-89fe-75803839ea0a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -457,50 +457,50 @@
     <ClCompile Include="..\..\..\src\wolf.system\concurrency\w_atomic.c">
       <Filter>concurrency</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\db\buckets\apr_brigade.c">
-      <Filter>db\buckets</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\db\buckets\apr_buckets.c">
-      <Filter>db\buckets</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\db\buckets\apr_buckets_alloc.c">
-      <Filter>db\buckets</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\db\buckets\apr_buckets_eos.c">
-      <Filter>db\buckets</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\db\buckets\apr_buckets_file.c">
-      <Filter>db\buckets</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\db\buckets\apr_buckets_flush.c">
-      <Filter>db\buckets</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\db\buckets\apr_buckets_heap.c">
-      <Filter>db\buckets</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\db\buckets\apr_buckets_mmap.c">
-      <Filter>db\buckets</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\db\buckets\apr_buckets_pipe.c">
-      <Filter>db\buckets</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\db\buckets\apr_buckets_pool.c">
-      <Filter>db\buckets</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\db\buckets\apr_buckets_refcount.c">
-      <Filter>db\buckets</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\db\buckets\apr_buckets_simple.c">
-      <Filter>db\buckets</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\db\buckets\apr_buckets_socket.c">
-      <Filter>db\buckets</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\db\buckets\apr_reslist.c">
-      <Filter>db\buckets</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\wolf.system\memory\w_string.c">
       <Filter>memory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\memory\buckets\apr_brigade.c">
+      <Filter>memory\buckets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\memory\buckets\apr_buckets.c">
+      <Filter>memory\buckets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\memory\buckets\apr_buckets_alloc.c">
+      <Filter>memory\buckets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\memory\buckets\apr_buckets_eos.c">
+      <Filter>memory\buckets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\memory\buckets\apr_buckets_file.c">
+      <Filter>memory\buckets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\memory\buckets\apr_buckets_flush.c">
+      <Filter>memory\buckets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\memory\buckets\apr_buckets_heap.c">
+      <Filter>memory\buckets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\memory\buckets\apr_buckets_mmap.c">
+      <Filter>memory\buckets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\memory\buckets\apr_buckets_pipe.c">
+      <Filter>memory\buckets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\memory\buckets\apr_buckets_pool.c">
+      <Filter>memory\buckets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\memory\buckets\apr_buckets_refcount.c">
+      <Filter>memory\buckets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\memory\buckets\apr_buckets_simple.c">
+      <Filter>memory\buckets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\memory\buckets\apr_buckets_socket.c">
+      <Filter>memory\buckets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\memory\buckets\apr_reslist.c">
+      <Filter>memory\buckets</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1052,14 +1052,14 @@
       <Filter>concurrency</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\wolf.system\memory\buckets\apu.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\db\buckets\apr_buckets.h">
-      <Filter>db\buckets</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\db\buckets\apr_reslist.h">
-      <Filter>db\buckets</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\wolf.system\memory\w_string.h">
       <Filter>memory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\memory\buckets\apr_buckets.h">
+      <Filter>memory\buckets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\memory\buckets\apr_reslist.h">
+      <Filter>memory\buckets</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
