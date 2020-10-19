@@ -472,7 +472,14 @@ w_timespan w_timespan_add(
     _Inout_ w_timespan pLValue, 
     _In_ const w_timespan pRValue)
 {
-    W_ASSERT(pLValue || pRValue, "input parameters of timespan_add function are NULL. trace info: timespan_add");
+    const char* _trace_info = "w_timespan_add";
+    if (!pLValue || !pRValue)
+    {
+        W_ASSERT_P(false,
+            "input parameters of timespan_add function are NULL. trace info: %s",
+            _trace_info);
+        return NULL;
+    }
 
     w_timespan _timespan = (w_timespan)w_malloc(pMemPool, sizeof(w_timespan_t));
     if (!_timespan)
@@ -495,7 +502,15 @@ w_timespan w_timespan_add(
 
 void w_timespan_add_by_ref(_Inout_ w_timespan pLValue, _In_ const w_timespan pRValue)
 {
-    W_ASSERT(pLValue || pRValue, "input parameters of timespan_add_by_ref function are NULL. trace info: timespan_add");
+    const char* _trace_info = "w_timespan_add_by_ref";
+
+    if (!pLValue || !pRValue)
+    {
+        W_ASSERT_P(false,
+            "input parameters of timespan_add_by_ref function are NULL. trace info: %s",
+            _trace_info);
+        return;
+    }
 
     int64_t _result = pLValue->ticks + pRValue->ticks;
     // Overflow if signs of operands was identical and result's sign was opposite.

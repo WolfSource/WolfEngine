@@ -73,7 +73,7 @@ logger::logger(
     this->_l->info(
         "Project: \"Wolf Engine(https://WolfEngine.App). "\
         "Copyright(c) Pooya Eimandar(https://PooyaEimandar.github.io). All rights reserved.\". "\
-        "Contact: \"Pooya@WolfEngine.App\" "\
+        "Contact: \"Pooya.Eimandar@gmail.com\" "\
         "Version: {}.{}.{}.{}",
         WOLF_MAJOR_VERSION,
         WOLF_MINOR_VERSION,

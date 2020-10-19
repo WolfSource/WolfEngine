@@ -27,11 +27,7 @@ W_RESULT w_string_init(
         {
             size_t _size = _len + 1;
             (*pStringView)->data = w_malloc(pMemPool, _size); //with NULL
-#ifdef W_PLATFORM_WIN
-            strcpy_s((*pStringView)->data, _size, pData); 
-#else
-            strcpy((*pStringView)->data, pData);
-#endif
+            memcpy((*pStringView)->data, pData, _len);
             (*pStringView)->data[_len] = '\0';
             (*pStringView)->str_len = _len;
             (*pStringView)->reserved_size = _size;
@@ -90,11 +86,7 @@ W_RESULT w_string_dup(
         (*pDst)->data = w_malloc(pMemPool, _len + 1); //with NULL
         (*pDst)->reserved_size = _req_size;
     }
-#ifdef W_PLATFORM_WIN
-    strcpy_s((*pDst)->data, _len, pSrc->data); 
-#else
-    strcpy((*pDst)->data, pSrc->data);
-#endif
+    memcpy((*pDst)->data, pSrc->data, _len);
     (*pDst)->data[_len] = '\0';
     (*pDst)->str_len = _len;
 

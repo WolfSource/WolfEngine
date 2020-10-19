@@ -55,12 +55,10 @@ extern "C" {
     typedef
 #ifdef W_PLATFORM_WIN
         __int64
-#elif defined W_PLATFORM_OSX
+#elif defined(W_PLATFORM_OSX) || defined(W_PLATFORM_IOS)
         __darwin_off_t
 #elif defined W_PLATFORM_ANDROID
         __kernel_off_t
-#elif defined W_PLATFORM_IOS
-        __darwin_off_t
 #else
 #endif
         w_offset;
