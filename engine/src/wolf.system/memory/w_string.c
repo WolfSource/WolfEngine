@@ -2,7 +2,7 @@
 #include <log/w_log.h>
 #include <ctype.h>
 
-#ifdef W_PLATFORM_OSX
+#if defined (W_PLATFORM_OSX) || defined (W_PLATFORM_IOS)
 #include <string.h>
 #endif
 

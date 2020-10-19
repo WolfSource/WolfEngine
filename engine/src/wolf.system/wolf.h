@@ -59,8 +59,9 @@ extern "C" {
         __darwin_off_t
 #elif defined W_PLATFORM_ANDROID
         __kernel_off_t
+#elif defined W_PLATFORM_IOS
+        __darwin_off_t
 #else
-
 #endif
         w_offset;
 

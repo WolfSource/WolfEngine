@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		055EEEEF252E32B100091AC4 /* w_atomic.c in Sources */ = {isa = PBXBuildFile; fileRef = 055EEEED252E32B000091AC4 /* w_atomic.c */; };
+		055EEEF0252E32B100091AC4 /* w_atomic.h in Headers */ = {isa = PBXBuildFile; fileRef = 055EEEEE252E32B100091AC4 /* w_atomic.h */; };
 		05B4A591251A41B800FBA684 /* logger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 05B4A521251A41B600FBA684 /* logger.cpp */; };
 		05B4A592251A41B800FBA684 /* logger.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 05B4A522251A41B600FBA684 /* logger.hpp */; };
 		05B4A5EA251A41B800FBA684 /* async.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 05B4A584251A41B800FBA684 /* async.cpp */; };
@@ -320,6 +322,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		055EEEED252E32B000091AC4 /* w_atomic.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = w_atomic.c; sourceTree = "<group>"; };
+		055EEEEE252E32B100091AC4 /* w_atomic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = w_atomic.h; sourceTree = "<group>"; };
 		05B4A521251A41B600FBA684 /* logger.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = logger.cpp; sourceTree = "<group>"; };
 		05B4A522251A41B600FBA684 /* logger.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = logger.hpp; sourceTree = "<group>"; };
 		05B4A584251A41B800FBA684 /* async.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = async.cpp; sourceTree = "<group>"; };
@@ -1098,6 +1102,8 @@
 		05BC204F25128237007D6218 /* concurrency */ = {
 			isa = PBXGroup;
 			children = (
+				055EEEED252E32B000091AC4 /* w_atomic.c */,
+				055EEEEE252E32B100091AC4 /* w_atomic.h */,
 				05BC205025128237007D6218 /* libev */,
 				05BC206225128237007D6218 /* w_async.c */,
 				05BC206325128237007D6218 /* w_async.h */,
@@ -1395,6 +1401,7 @@
 				05BC20EB251285C8007D6218 /* stringbuffer.h in Headers */,
 				05BC1FB825128202007D6218 /* ppc.h in Headers */,
 				05BC203925128203007D6218 /* version_number.h in Headers */,
+				055EEEF0252E32B100091AC4 /* w_atomic.h in Headers */,
 				05BC202525128203007D6218 /* vms.h in Headers */,
 				05BC1FF925128203007D6218 /* stdcpp.h in Headers */,
 				05BC219D25128B04007D6218 /* lauxlib.h in Headers */,
@@ -1675,6 +1682,7 @@
 				05BC211D251285E5007D6218 /* w_shared_mem.c in Sources */,
 				05BC1E2D251280DC007D6218 /* w_cpu.c in Sources */,
 				05BC208D25128237007D6218 /* w_thread_pool.c in Sources */,
+				055EEEEF252E32B100091AC4 /* w_atomic.c in Sources */,
 				05BC204C25128203007D6218 /* zone.c in Sources */,
 				05B4A5EF251A41B800FBA684 /* spdlog.cpp in Sources */,
 				05E349E42522159B00822309 /* w_string.c in Sources */,
@@ -1836,7 +1844,6 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					W_PLATFORM_OSX,
 					EV_STANDALONE,
 					SPDLOG_COMPILED_LIB,
 					APR_DECLARE_EXPORT,
@@ -1847,6 +1854,7 @@
 					HAVE_CONFIG_H,
 					_CRT_SECURE_NO_WARNINGS,
 					_CRT_RAND_S,
+					W_PLATFORM_IOS,
 					_CRT_SECURE_NO_DEPRECATE,
 					CURL_STATICLIB,
 					HAVE_EXPAT_CONFIG_H,
@@ -1860,7 +1868,6 @@
 					LIBUS_USE_OPENSSL,
 					NNG_PRIVATE,
 					NNG_ENABLE_STATS,
-					NNG_LITTLE_ENDIAN,
 					"NNG_MAX_TASKQ_THREADS=16",
 					NNG_PLATFORM_POSIX,
 					"NNG_HAVE_SNPRINTF=1",
@@ -1869,6 +1876,7 @@
 					NNG_TRANSPORT_WS,
 					NNG_TRANSPORT_WSS,
 					NNG_SUPP_HTTP,
+					NNG_LITTLE_ENDIAN,
 					NNG_STATIC_LIB,
 				);
 				HEADER_SEARCH_PATHS = (
@@ -1915,7 +1923,6 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					W_PLATFORM_OSX,
 					EV_STANDALONE,
 					SPDLOG_COMPILED_LIB,
 					APR_DECLARE_EXPORT,
@@ -1926,6 +1933,7 @@
 					HAVE_CONFIG_H,
 					_CRT_SECURE_NO_WARNINGS,
 					_CRT_RAND_S,
+					W_PLATFORM_IOS,
 					_CRT_SECURE_NO_DEPRECATE,
 					CURL_STATICLIB,
 					HAVE_EXPAT_CONFIG_H,
@@ -1939,7 +1947,6 @@
 					LIBUS_USE_OPENSSL,
 					NNG_PRIVATE,
 					NNG_ENABLE_STATS,
-					NNG_LITTLE_ENDIAN,
 					"NNG_MAX_TASKQ_THREADS=16",
 					NNG_PLATFORM_POSIX,
 					"NNG_HAVE_SNPRINTF=1",
@@ -1948,6 +1955,7 @@
 					NNG_TRANSPORT_WS,
 					NNG_TRANSPORT_WSS,
 					NNG_SUPP_HTTP,
+					NNG_LITTLE_ENDIAN,
 					NNG_STATIC_LIB,
 				);
 				HEADER_SEARCH_PATHS = (

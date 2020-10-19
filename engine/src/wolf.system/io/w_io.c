@@ -17,8 +17,10 @@
 
 #endif
 
+#ifndef W_PLATFORM_IOS
 #include "base64/chromiumbase64.h"
 #include "base64/scalarbase64.h"
+#endif
 
 #ifdef W_PLATFORM_UNIX
 #include "base64/linuxbase64.h"
@@ -1079,8 +1081,6 @@ long w_io_to_hex(_In_z_ const char* pHexStr)
     return strtol(pHexStr, NULL, 16);
 }
 
-#ifdef W_PLATFORM_WIN
-
 W_RESULT w_io_wchar_ptr_to_char_ptr(
     _Inout_ w_mem_pool pMemPool,
     _In_	wchar_t* pIn,
@@ -1093,23 +1093,28 @@ W_RESULT w_io_wchar_ptr_to_char_ptr(
         return APR_BADARG;
     }
 
-    size_t _chars_onverted = 0;
     size_t _wide_char_mem_size = (pInLen * 2) + 1; // +1 for null terminator
     (*pOut) = (char*)w_malloc(pMemPool, _wide_char_mem_size);
     if ((*pOut))
     {
         (*pOut)[_wide_char_mem_size - 1] = '\0';
+#ifdef W_PLATFORM_WIN
+        size_t _chars_onverted = 0;
         return (wcstombs_s(
             &_chars_onverted,
             *pOut,
             _wide_char_mem_size,
             pIn,
             pInLen) == 0) ? W_SUCCESS : W_FAILURE;
+#else
+        return (wcstombs(
+            *pOut,
+            pIn,
+            pInLen) == 0) ? W_SUCCESS : W_FAILURE;
+#endif
     }
     return W_FAILURE;
 }
-
-#endif
 
 W_RESULT w_io_string_has_start_with(_In_z_ const char* pString, _In_z_ const char* pStartWith)
 {
@@ -1184,6 +1189,7 @@ size_t w_io_to_base_64(_Inout_z_ char** pDestinationBuffer,
     size_t _encoded_size = 0;
     switch (pEncodeMode)
     {
+#ifndef W_PLATFORM_IOS
     case chromium:
         _encoded_size = chromium_base64_encode(
             *pDestinationBuffer,
@@ -1197,7 +1203,7 @@ size_t w_io_to_base_64(_Inout_z_ char** pDestinationBuffer,
             *pDestinationBuffer,
             &_encoded_size);
         break;
-
+#endif
 #if !defined(W_PLATFORM_ANDROID) && !defined(W_PLATFORM_IOS)
 
     case klomp_avx:

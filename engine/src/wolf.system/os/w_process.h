@@ -15,7 +15,7 @@ extern "C" {
 
 #include <wolf.h>
 
-#ifdef W_PLATFORM_OSX
+#if defined (W_PLATFORM_OSX) || defined (W_PLATFORM_IOS)
 typedef unsigned long   DWORD;
 #endif
 

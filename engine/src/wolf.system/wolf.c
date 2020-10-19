@@ -7,7 +7,9 @@
 #include <apr-1/apr_strings.h>
 
 #if defined(W_PLATFORM_WIN) || defined(W_PLATFORM_OSX) || defined(W_PLATFORM_LINUX)
+#ifndef W_PLATFORM_IOS
 #include <curl/curl.h>
+#endif
 #endif
 
 // this is used to cache lengths in apr_pwstrcat
@@ -34,8 +36,10 @@ W_RESULT wolf_init()
 {
     if (apr_initialize()
         // initialize curl
+#ifndef W_PLATFORM_IOS
 #if defined(W_PLATFORM_WIN) || defined(W_PLATFORM_OSX) || defined(W_PLATFORM_LINUX)
         || curl_global_init(CURL_GLOBAL_ALL)
+#endif
 #endif
         )
     {
@@ -197,7 +201,9 @@ void wolf_fini()
 {
     //ev_break(s_main_loop, EVBREAK_ALL);
 #if defined(W_PLATFORM_WIN) || defined(W_PLATFORM_OSX) || defined(W_PLATFORM_LINUX)
+#ifndef W_PLATFORM_IOS
     curl_global_cleanup();
+#endif
 #endif
     apr_terminate();
 }
