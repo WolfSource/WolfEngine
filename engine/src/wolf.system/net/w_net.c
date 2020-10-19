@@ -99,17 +99,17 @@ const char* _nng_error(_In_ W_RESULT pErrorCode,
     _In_z_ const char* pUserDefinedMessage,
     _In_z_ const char* pTraceInfo)
 {
-    const char* _error_msg = nng_strerror(pErrorCode);
     if (pErrorCode)
     {
-        W_ASSERT_P(false,
-            "%s. error code: %d. error message: %s. trace info: %s.",
-            pUserDefinedMessage,
-            pErrorCode,
-            _error_msg,
-            pTraceInfo);
+        return nng_strerror(pErrorCode);
+        //W_ASSERT_P(false,
+        //    "%s. error code: %d. error message: %s. trace info: %s.",
+        //    pUserDefinedMessage,
+        //    pErrorCode,
+        //    _error_msg,
+        //    pTraceInfo);
     }
-    return _error_msg;
+    return NULL;
 }
 
 static W_RESULT _init_dialer_tls(_In_ nng_dialer pDialer,
