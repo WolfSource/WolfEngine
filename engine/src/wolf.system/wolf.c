@@ -197,6 +197,11 @@ out:
 //    ev_run(EV_DEFAULT, pFlags);
 //}
 
+char* w_strerror(W_RESULT pErrorCode, char* pBuffer, size_t pBufferSize)
+{
+    return apr_strerror((apr_status_t)pErrorCode, pBuffer, pBufferSize);
+}
+
 void wolf_fini()
 {
     //ev_break(s_main_loop, EVBREAK_ALL);

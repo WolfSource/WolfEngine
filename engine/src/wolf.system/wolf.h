@@ -101,6 +101,16 @@ extern "C" {
 
 #endif
     
+    /**
+    * Return a human readable string describing the specified error.
+    * @param pStatCode The error code to get a string for
+    * @param pBuffer A buffer to hold the error string
+    * @param pBufferSize Size of the buffer to hold the string
+    * @return a human readable string describing the specified error.
+    */
+    W_SYSTEM_EXPORT
+        char* w_strerror(_In_ W_RESULT pErrorCode, _Inout_z_  char* pBuffer, _In_ size_t pBufferSize);
+
    /**
     * run main loop of wolf in order to process signals
     * @param pFlags the loop flag

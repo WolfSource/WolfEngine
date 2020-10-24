@@ -1,23 +1,12 @@
+#pragma region Includes
+
 #include "w_net.h"
 
+#include <ws2tcpip.h>
 #include <apr.h>
 #include <apr-1/apr_general.h>
-#include <apr_tables.h>
+#include <apr-1/apr_network_io.h>
 #include "log/w_log.h"
-#include <nng/nng.h>
-#include <core/nng_impl.h>
-#include <nng/protocol/pipeline0/push.h>
-#include <nng/protocol/pipeline0/pull.h>
-#include <nng/protocol/pair1/pair.h>
-#include <nng/protocol/reqrep0/rep.h>
-#include <nng/protocol/reqrep0/req.h>
-#include <nng/protocol/pubsub0/pub.h>
-#include <nng/protocol/pubsub0/sub.h>
-#include <nng/protocol/survey0/survey.h>
-#include <nng/protocol/survey0/respond.h>
-#include <nng/supplemental/util/platform.h>
-#include <nng/supplemental/tls/tls.h>
-#include <nng/transport/tls/tls.h>
 
 #ifdef W_PLATFORM_WIN
 #include <io.h>//_open_osfhandle
@@ -44,14 +33,16 @@
 #include <sys/fcntl.h>
 #endif
 
+#pragma endregion
+
+#pragma region Defines
+
 typedef struct
 {
     w_mem_pool  pool;
     char*       memory;
     size_t      size;
 } curl_memory;
-
-#pragma region QUIC
 
 #define     QUICHE_LOCAL_CONN_ID_LEN            16
 #define     QUICHE_MAX_DATAGRAM_SIZE            1350
@@ -95,848 +86,281 @@ static struct quic_connection* s_quic_conns = NULL;
 
 #pragma endregion
 
-const char* _nng_error(_In_ W_RESULT pErrorCode,
-    _In_z_ const char* pUserDefinedMessage,
-    _In_z_ const char* pTraceInfo)
-{
-    if (pErrorCode)
-    {
-        return nng_strerror(pErrorCode);
-        //W_ASSERT_P(false,
-        //    "%s. error code: %d. error message: %s. trace info: %s.",
-        //    pUserDefinedMessage,
-        //    pErrorCode,
-        //    _error_msg,
-        //    pTraceInfo);
-    }
-    return NULL;
-}
+#pragma region Socket
 
-static W_RESULT _init_dialer_tls(_In_ nng_dialer pDialer,
-    _In_z_ const char* pServerName,
-    _In_ bool pOwnCert,
-    _In_z_ const char* pCert,
-    _In_z_ const char* pPrivateKey)
-{
-    W_RESULT _rt = W_FAILURE;
-    if (!pOwnCert || !pCert || !pPrivateKey)
-    {
-        return _rt;
-    }
-
-    nng_tls_config* _cfg;
-
-    if ((_rt = nng_tls_config_alloc(&_cfg, NNG_TLS_MODE_CLIENT)) != 0)
-    {
-        return _rt;
-    }
-
-    if ((_rt = nng_tls_config_ca_chain(_cfg, pCert, NULL)) != 0)
-    {
-        goto out;
-    }
-
-    if ((_rt = nng_tls_config_server_name(_cfg, pServerName)) != 0)
-    {
-        goto out;
-    }
-    nng_tls_config_auth_mode(_cfg, NNG_TLS_AUTH_MODE_REQUIRED);
-
-    if (pOwnCert)
-    {
-        if ((_rt = nng_tls_config_own_cert(_cfg, pCert, pPrivateKey, NULL)) != 0)
-        {
-            goto out;
-        }
-    }
-
-    _rt = nng_dialer_setopt_ptr(pDialer, NNG_OPT_TLS_CONFIG, _cfg);
-
-out:
-    nng_tls_config_free(_cfg);
-    return _rt;
-}
-
-static W_RESULT _init_listener_tls(_In_ nng_listener pListener,
-    _In_ int pAuthMode,
-    _In_z_ const char* pCert,
-    _In_z_ const char* pPrivateKey)
-{
-    nng_tls_config* _cfg;
-    W_RESULT _rt;
-
-    if ((_rt = nng_tls_config_alloc(&_cfg, NNG_TLS_MODE_SERVER)) != 0)
-    {
-        return _rt;
-    }
-    if ((_rt = nng_tls_config_own_cert(_cfg, pCert, pPrivateKey, NULL)) != 0)
-    {
-        goto out;
-    }
-    if ((_rt = nng_listener_setopt_ptr(pListener, NNG_OPT_TLS_CONFIG, _cfg)) != 0)
-    {
-        goto out;
-    }
-    switch (pAuthMode)
-    {
-    case NNG_TLS_AUTH_MODE_REQUIRED:
-    case NNG_TLS_AUTH_MODE_OPTIONAL:
-        if ((_rt = nng_tls_config_ca_chain(_cfg, pCert, NULL)) != 0)
-        {
-            goto out;
-        }
-        break;
-    default:
-        break;
-    }
-    if ((_rt = nng_tls_config_auth_mode(_cfg, pAuthMode)) != 0)
-    {
-        goto out;
-    }
-out:
-    nng_tls_config_free(_cfg);
-    return W_SUCCESS;
-}
-
-W_RESULT w_net_init(void)
-{
-    return nni_init();
-}
-
-W_RESULT w_net_url_parse(
-    _In_ w_mem_pool pMemPool,
-    _In_z_ const char* pUrlAddress,
-    _Inout_ w_url* pURL)
-{
-    const char* _trace_info = "w_net_url_parse";
-
-    *pURL = NULL;
-    if (!pMemPool || !pUrlAddress)
-    {
-        return NNG_ENOARG;
-    }
-
-    nng_url* _url = NULL;
-    W_RESULT _rt = nng_url_parse(&_url, pUrlAddress);
-    if (_rt)
-    {
-        _nng_error(_rt, "nng_url_parse got error", _trace_info);
-        return _rt;
-    }
-
-    //make a copy from url
-    size_t _size = sizeof(nng_url);
-    *pURL = w_calloc(pMemPool, _size);
-    if (!*pURL)
-    {
-        _nng_error(_rt, "could not allocate memory for pURL", _trace_info);
-        return _rt;
-    }
-
-    //make copy
-    if (_url->u_rawurl)
-    {
-        _size = strlen(_url->u_rawurl);
-        if (_size)
-        {
-            (*pURL)->rawurl = w_malloc(pMemPool, _size + 1);
-            memmove((*pURL)->rawurl, _url->u_rawurl, _size);
-            (*pURL)->rawurl[_size] = '\0';
-        }
-    }
-
-    if (_url->u_scheme)
-    {
-        _size = strlen(_url->u_scheme);
-        if (_size)
-        {
-            (*pURL)->scheme = w_malloc(pMemPool, _size + 1);
-            memmove((*pURL)->scheme, _url->u_scheme, _size);
-            (*pURL)->scheme[_size] = '\0';
-        }
-    }
-
-    if (_url->u_userinfo)
-    {
-        _size = strlen(_url->u_userinfo);
-        if (_size)
-        {
-            (*pURL)->userinfo = w_malloc(pMemPool, _size + 1);
-            memmove((*pURL)->userinfo, _url->u_userinfo, _size);
-            (*pURL)->userinfo[_size] = '\0';
-        }
-    }
-
-    if (_url->u_host)
-    {
-        _size = strlen(_url->u_host);
-        if (_size)
-        {
-            (*pURL)->host = w_malloc(pMemPool, _size + 1);
-            memmove((*pURL)->host, _url->u_host, _size);
-            (*pURL)->host[_size] = '\0';
-        }
-    }
-
-    if (_url->u_hostname)
-    {
-        _size = strlen(_url->u_hostname);
-        if (_size)
-        {
-            (*pURL)->hostname = w_malloc(pMemPool, _size + 1);
-            memmove((*pURL)->hostname, _url->u_hostname, _size);
-            (*pURL)->hostname[_size] = '\0';
-        }
-    }
-
-    if (_url->u_port)
-    {
-        _size = strlen(_url->u_port);
-        if (_size)
-        {
-            (*pURL)->port = w_malloc(pMemPool, _size + 1);
-            memmove((*pURL)->port, _url->u_port, _size);
-            (*pURL)->port[_size] = '\0';
-        }
-    }
-
-    if (_url->u_path)
-    {
-        _size = strlen(_url->u_path);
-        if (_size)
-        {
-            (*pURL)->path = w_malloc(pMemPool, _size + 1);
-            memmove((*pURL)->path, _url->u_path, _size);
-            (*pURL)->path[_size] = '\0';
-        }
-    }
-
-    if (_url->u_query)
-    {
-        _size = strlen(_url->u_query);
-        if (_size)
-        {
-            (*pURL)->query = w_malloc(pMemPool, _size + 1);
-            memmove((*pURL)->query, _url->u_query, _size);
-            (*pURL)->query[_size] = '\0';
-        }
-    }
-
-    if (_url->u_fragment)
-    {
-        _size = strlen(_url->u_fragment);
-        if (_size)
-        {
-            (*pURL)->fragment = w_malloc(pMemPool, _size + 1);
-            memmove((*pURL)->fragment, _url->u_fragment, _size);
-            (*pURL)->fragment[_size] = '\0';
-        }
-    }
-
-    if (_url->u_requri)
-    {
-        _size = strlen(_url->u_requri);
-        if (_size)
-        {
-            (*pURL)->requri = w_malloc(pMemPool, _size + 1);
-            memmove((*pURL)->requri, _url->u_requri, _size);
-            (*pURL)->requri[_size] = '\0';
-        }
-    }
-  
-    nng_url_free(_url);
-
-    return _rt;
-}
-
-const char* w_net_url_encoded(
-    _Inout_ w_mem_pool pMemPool,
-    _In_z_ const char* pUrlAddress)
-{
-    const char* _trace_info = "w_net_url_encoded";
-    if (!pMemPool)
-    {
-        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
-        return NULL;
-    }
-    char* _encoded = NULL;
-
-#ifndef W_PLATFORM_IOS
-    CURL* _curl = curl_easy_init();
-    if (!_curl)
-    {
-        W_ASSERT(false, "could not create curl handle. trace info: w_net_url_encoded");
-        goto _out;
-    }
-
-    char* _output = curl_easy_escape(_curl, pUrlAddress, (int)strlen(pUrlAddress));
-    if (_output)
-    {
-        //allocate memory for it from memory pool
-        _encoded = w_malloc(pMemPool, strlen(_output));
-        // make a copy and free the original string
-        strcpy(_encoded, _output);
-        curl_free(_output);
-    }
-
-_out:
-    if (_curl)
-    {
-        curl_easy_cleanup(_curl);
-    }
-#endif
-    return _encoded;
-}
-
-W_RESULT w_net_resolve(_In_z_ const char* pURL,
-    _In_z_ const char* pPort,
-    _In_ w_tcp_socket_address_family pSocketAddressFamily,
-    _In_ int pBindOrConnect,
+W_RESULT w_net_get_ip_from_hostname(
+    _In_z_ const char* pHostName,
     _Inout_ w_socket_address pSocketAddress)
 {
-    nng_aio* _aio;
-    W_RESULT    _rt;
+    //NOTE: NOT IMPLEMENTED YET
+    //const char* _trace_info = "w_net_get_ip_from_hostname";
 
-    //allocate aio
-    if ((_rt = nng_aio_alloc(&_aio, NULL, NULL)) != 0)
-    {
-        goto out;
-    }
+    //if (!pHostName || !pSocketAddress)
+    //{
+    //    W_ASSERT_P(false, "bad args! trace info: %s", _trace_info);
+    //    return W_BAD_ARG;
+    //}
 
-    //resolve and wait for aio
-    nni_tcp_resolv(pURL, pPort, pSocketAddressFamily, 1, _aio);
-    nng_aio_wait(_aio);
+    //return apr_sockaddr_ip_get(
+    //    pHostName,
+    //    (apr_sockaddr_t*)pSocketAddress);
 
-    //get result
-    if ((_rt = nng_aio_result(_aio)) != 0)
-    {
-        goto out;
-    }
-
-    nni_aio_get_sockaddr(_aio, pSocketAddress);
-
-out:
-    nng_aio_free(_aio);
-    return _rt;
+    return W_FAILURE;
 }
 
-W_RESULT w_net_open_tcp_socket(
+W_RESULT w_net_get_hostname_from_ip(
+    _Inout_ w_socket_address pSocketAddress,
+    _Inout_z_ char** pHostName)
+{
+    //NOTE: NOT IMPLEMENTED YET
+    /*apr_getnameinfo(
+        pHostName,
+        apr_sockaddr_t * sa,
+        apr_int32_t flags);*/
+    return W_FAILURE;
+}
+
+W_RESULT w_net_socket_open(
     _In_ w_mem_pool pMemPool,
-    _In_z_ const char* pEndPoint,
-    _In_ w_socket_mode pSocketMode,
-    _In_ int32_t pSendTimeOutMS,
-    _In_ int32_t pRecieveTimeOutMS,
-    _In_ int32_t pMinReconnectTimeOutMS,
-    _In_ int32_t pMaxReconnectTimeOutMS,
-    _In_ bool pNoDelayOption,
-    _In_ bool pKeepAliveOption,
-    _In_ bool pAsync,
-    _In_ bool pTLS,
-    _In_ int pAuthMode,
-    _In_opt_z_ const char* pTLSServerName,
-    _In_ bool pOwnCert,
-    _In_opt_z_ const char* pCert,
-    _In_opt_z_ const char* pKey,
-    _Inout_ w_socket_tcp* pSocket)
+    _In_opt_z_ const char* pHostName,
+    _In_ int pPort,
+    _In_ w_socket_protocol pProtocol,
+    _In_ w_socket_type pType,
+    _In_ w_socket_family pFamily,
+    _In_opt_ w_socket_options* pOptions,
+    _Inout_ w_socket* pSocket)
 {
-    const char* _trace_info = "w_net_open_tcp_socket";
+    const char* _trace_info = "w_net_open_socket";
+    *pSocket = NULL;
 
-    if (!pSocket || !pEndPoint)
+    if (!pMemPool || 
+        pProtocol == W_SOCKET_PROTOCOL_QUIC_DIALER ||
+        pProtocol == W_SOCKET_PROTOCOL_QUIC_LISTENER)
     {
-        W_ASSERT(false, "pSocket is NULL! trace info: w_net_open_pair_tcp_socket");
-        return NNG_ENOARG;
-    }
-    if (pSocketMode == quic_dialer ||
-        pSocketMode == quic_listener)
-    {
-        W_ASSERT(false, "pSocketMode not supported! trace info: w_net_open_tcp_socket");
-        return NNG_ENOARG;
+        W_ASSERT_P(false, "bad args! trace info: %s", _trace_info);
+        return W_BAD_ARG;
     }
 
-    W_RESULT _rt = W_SUCCESS;
-
-    pSocket->s = (w_socket)w_malloc(pMemPool, sizeof(nng_socket));
-    if (!pSocket->s)
+    apr_socket_t* _s = NULL;
+    apr_sockaddr_t* _sa;
+    apr_pool_t* _mem_pool = (apr_pool_t*)w_mem_pool_get_apr_pool(pMemPool);
+    if (!_mem_pool)
     {
-        W_ASSERT_P(false, "could not allocate memory for pSocket->s ! trace info: %s", _trace_info);
-        return NNG_ENOARG;
-    }
-    pSocket->d = (w_dialer)w_malloc(pMemPool, sizeof(nng_dialer));
-    if (!pSocket->d)
-    {
-        W_ASSERT_P(false, "could not allocate memory for pSocket->d ! trace info: %s", _trace_info);
-        return NNG_ENOARG;
-    }
-    pSocket->l = (w_listener)w_malloc(pMemPool, sizeof(nng_listener));
-    if (!pSocket->l)
-    {
-        W_ASSERT_P(false, "could not allocate memory for pSocket->l ! trace info: %s", _trace_info);
-        return NNG_ENOARG;
+        return W_FAILURE;
     }
 
-    nng_socket* _nng_socket = (nng_socket*)pSocket->s;
-    nng_dialer* _nng_dialer = (nng_dialer*)pSocket->d;
-    nng_listener* _nng_listener = (nng_listener*)pSocket->l;
+    bool _is_listener = (
+        pProtocol == W_SOCKET_PROTOCOL_TCP_LISTENER ||
+        pProtocol == W_SOCKET_PROTOCOL_UDP_LISTENER ||
+        pProtocol == W_SOCKET_PROTOCOL_SCTP_LISTENER);
 
-    switch (pSocketMode)
+    apr_status_t _ret = apr_sockaddr_info_get(
+        &_sa, 
+        pHostName,
+        pFamily == W_SOCKET_FAMILY_IPV4 ? APR_INET : APR_INET6,
+        pPort, 
+        0, 
+        _mem_pool);
+    if (_ret)
     {
-    case one_way_pusher:
-        _rt = nng_push0_open(_nng_socket);
-        break;
-    case one_way_puller:
-        _rt = nng_pull0_open(_nng_socket);
-        break;
-    case two_way_dialer:
-    case two_way_listener:
-        _rt = nng_pair_open(_nng_socket);
-        break;
-    case req_rep_dialer:
-        _rt = nng_req0_open(_nng_socket);
-        break;
-    case req_rep_listener:
-        _rt = nng_rep0_open(_nng_socket);
-        break;
-    case pub_sub_broadcaster:
-        _rt = nng_pub0_open(_nng_socket);
-        break;
-    case pub_sub_subscriber:
-        _rt = nng_sub0_open(_nng_socket);
-        _rt = nng_setopt(*_nng_socket, NNG_OPT_SUB_SUBSCRIBE, "", 0);
-        break;
-    case survey_respond_server:
-        _rt = nng_surveyor0_open(_nng_socket);
-        break;
-    case survey_respond_client:
-        _rt = nng_respondent0_open(_nng_socket);
-        break;
-    case bus_node:
-        break;
+        goto exit;
     }
 
-    if (_rt)
+    _ret = apr_socket_create(
+        &_s, 
+        _sa->family, 
+        pType,
+        pProtocol,
+        _mem_pool);
+    if (_ret)
     {
-        _nng_error(_rt, "could not open socket", _trace_info);
-        goto out;
+        goto exit;
     }
 
-    //set options
-    _rt = nng_setopt_bool(*_nng_socket, NNG_OPT_TCP_NODELAY, pNoDelayOption);
-    if (_rt)
+    if (pOptions)
     {
-        _nng_error(_rt, "could not set socket no delay option", _trace_info);
-        goto out;
+        _ret = apr_socket_opt_set(_s, APR_SO_NONBLOCK, (apr_int32_t)pOptions->non_blocking);
+        if (_ret) goto exit;
+
+        _ret = apr_socket_opt_set(_s, APR_SO_KEEPALIVE, (apr_int32_t)pOptions->keep_alive);
+        if (_ret) goto exit;
+
+        _ret = apr_socket_opt_set(_s, APR_TCP_NODELAY, (apr_int32_t)pOptions->no_delay);
+        if (_ret) goto exit;
+
+        _ret = apr_socket_timeout_set(_s, pOptions->timeout_ms);
+        if (_ret) goto exit;
     }
 
-    _rt = nng_setopt_bool(*_nng_socket, NNG_OPT_TCP_KEEPALIVE, pKeepAliveOption);
-    if (_rt)
+    if (_is_listener)
     {
-        _nng_error(_rt, "could not set socket keep alive option", _trace_info);
-        goto out;
-    }
+        _ret = apr_socket_opt_set(_s, APR_SO_REUSEADDR, 1);
+        if (_ret) goto exit;
 
-    if (pSendTimeOutMS >= 0)
+        _ret = apr_socket_bind(_s, _sa);
+        if (_ret) goto exit;
+
+        _ret = apr_socket_listen(_s, SOMAXCONN);
+        if (_ret) goto exit;
+    }
+    else
     {
-        _rt = nng_setopt_ms(*_nng_socket, NNG_OPT_SENDTIMEO, pSendTimeOutMS);
-        if (_rt)
+        if (pOptions)
         {
-            _nng_error(_rt, "could not set socket send timeout option", _trace_info);
-            goto out;
+            //we have to specify options again 
+            _ret = apr_socket_opt_set(_s, APR_SO_NONBLOCK, (apr_int32_t)pOptions->non_blocking);
+            if (_ret) goto exit;
+
+            _ret = apr_socket_opt_set(_s, APR_SO_KEEPALIVE, (apr_int32_t)pOptions->keep_alive);
+            if (_ret) goto exit;
+
+            _ret = apr_socket_opt_set(_s, APR_TCP_NODELAY, (apr_int32_t)pOptions->no_delay);
+            if (_ret) goto exit;
+
+            _ret = apr_socket_timeout_set(_s, pOptions->timeout_ms);
+            if (_ret) goto exit;
         }
     }
 
-    if (pRecieveTimeOutMS >= 0)
+    *pSocket = _s;
+    return W_SUCCESS;
+
+exit:
+    if (_s)
     {
-        _rt = nng_setopt_ms(*_nng_socket, NNG_OPT_RECVTIMEO, pRecieveTimeOutMS);
-        if (_rt)
-        {
-            _nng_error(_rt, "could not set socket recieve timeout option", _trace_info);
-            goto out;
-        }
+        apr_socket_close(_s);
     }
-
-    if (pMinReconnectTimeOutMS >= 0)
-    {
-        _rt = nng_setopt_ms(*_nng_socket, NNG_OPT_RECONNMINT, pMinReconnectTimeOutMS);
-        if (_rt)
-        {
-            _nng_error(_rt, "could not set socket reconnect min timeout option", _trace_info);
-            goto out;
-        }
-    }
-
-    if (pMaxReconnectTimeOutMS >= 0)
-    {
-        _rt = nng_setopt_ms(*_nng_socket, NNG_OPT_RECONNMAXT, pMaxReconnectTimeOutMS);
-        if (_rt)
-        {
-            _nng_error(_rt, "could not set socket reconnect max timeout option", _trace_info);
-            goto out;
-        }
-    }
-
-    switch (pSocketMode)
-    {
-    default:
-        _rt = NNG_ENOARG;
-        break;
-    case one_way_pusher:
-    case two_way_dialer:
-    case req_rep_dialer:
-    case pub_sub_subscriber:
-    case survey_respond_client:
-    {
-        //create dialer
-        _rt = nng_dialer_create(_nng_dialer, *_nng_socket, pEndPoint);
-        if (_rt)
-        {
-            _nng_error(_rt, "could not create dialer object", _trace_info);
-            break;
-        }
-
-        ////set dialer options
-        //_rt = nng_dialer_setopt_bool(*_nng_dialer, NNG_OPT_TCP_NODELAY, pNoDelayOption);
-        //if (_rt)
-        //{
-        //    _nng_error(_rt, "could not set dialer no delay option", _trace_info);
-        //    break;
-        //}
-
-        //_rt = nng_dialer_setopt_bool(*_nng_dialer, NNG_OPT_TCP_KEEPALIVE, pKeepAliveOption);
-        //if (_rt)
-        //{
-        //    _nng_error(_rt, "could not set dialer keep alive option", _trace_info);
-        //    break;
-        //}
-
-        if (pTLS)
-        {
-            _init_dialer_tls(*_nng_dialer,
-                pTLSServerName,
-                pOwnCert,
-                pCert,
-                pKey);
-        }
-
-        _rt = nng_dialer_start(*_nng_dialer, (pAsync ? NNG_FLAG_NONBLOCK : 0));
-        if (_rt)
-        {
-            _nng_error(_rt, "could not start dialer", _trace_info);
-            break;
-        }
-    }
-    break;
-
-    case one_way_puller:
-    case two_way_listener:
-    case req_rep_listener:
-    case pub_sub_broadcaster:
-    case survey_respond_server:
-    {
-        //create listener
-        _rt = nng_listener_create(_nng_listener, *_nng_socket, pEndPoint);
-        if (_rt)
-        {
-            _nng_error(_rt, "could not create listener object", _trace_info);
-            break;
-        }
-
-        ////set listener options
-        //_rt = nng_listener_setopt_bool(*_nng_listener, NNG_OPT_TCP_NODELAY, pNoDelayOption);
-        //if (_rt)
-        //{
-        //    _nng_error(_rt, "could not set listener no delay option", _trace_info);
-        //    break;
-        //}
-
-        //_rt = nng_listener_setopt_bool(*_nng_listener, NNG_OPT_TCP_KEEPALIVE, pKeepAliveOption);
-        //if (_rt)
-        //{
-        //    _nng_error(_rt, "could not set listener keep alive option", _trace_info);
-        //    break;
-        //}
-
-        if (pTLS)
-        {
-            _rt = _init_listener_tls(*_nng_listener, pAuthMode, pCert, pKey);
-            if (_rt)
-            {
-                _nng_error(_rt, "_init_listener_tls failed", _trace_info);
-                break;
-            }
-        }
-        _rt = nng_listener_start(*_nng_listener, (pAsync ? NNG_FLAG_NONBLOCK : 0));
-        if (_rt)
-        {
-            _nng_error(_rt, "could not start listener", _trace_info);
-            break;
-        }
-    }
-    break;
-    }
-
-    if (_rt == 0)
-    {
-        return W_SUCCESS;
-    }
-
-out:
-    if (_nng_dialer)
-    {
-        nng_dialer_close(*_nng_dialer);
-    }
-    if (_nng_listener)
-    {
-        nng_listener_close(*_nng_listener);
-    }
-    if (_nng_socket)
-    {
-        nng_close(*_nng_socket);
-    }
-
-    return _rt;
+    return (W_RESULT)_ret;
 }
 
-W_RESULT w_net_close_tcp_socket(_Inout_ w_socket_tcp* pSocket)
+W_RESULT w_net_socket_close(_Inout_ w_socket* pSocket)
 {
-    if (!pSocket)
+    const char* _trace_info = "w_net_close_tcp_socket";
+    if (!pSocket || !*pSocket)
     {
-        W_ASSERT(false, "pSocket is NULL! trace info: w_net_close_tcp_socket");
-        return NNG_ENOARG;
+        W_ASSERT_P(false, "bad args! trace info: %s", _trace_info);
+        return W_BAD_ARG;
     }
 
-    nng_socket* _nng_socket = (nng_socket*)pSocket->s;
-    nng_dialer* _nng_dialer = (nng_dialer*)pSocket->d;
-    nng_listener* _nng_listener = (nng_listener*)pSocket->l;
+    apr_socket_t* _s = (apr_socket_t*)(*pSocket);
+    apr_status_t _ret = apr_socket_close(_s);
+    *pSocket = NULL;
 
-    if (_nng_dialer)
+    return (W_RESULT)_ret;
+}
+
+W_RESULT w_net_socket_accept(
+    _Inout_ w_mem_pool pMemPool,
+    _In_ w_socket pSocket,
+    _In_ w_socket_options* pOptions,
+    _In_ bool pAsync,
+    _In_ w_thread_job pOnAcceptCallback)
+{
+    const char* _trace_info = "w_net_socket_accept";
+    if (!pMemPool || !pSocket || !pOnAcceptCallback)
     {
-        nng_dialer_close(*_nng_dialer);
+        W_ASSERT_P(false, "bad args! trace info: %s", _trace_info);
+        return W_BAD_ARG;
     }
-    if (_nng_listener)
+
+    apr_pool_t* _pool = w_mem_pool_get_apr_pool(pMemPool);
+    if (!_pool)
     {
-        nng_listener_close(*_nng_listener);
+        return W_BAD_ARG;
     }
-    if (_nng_socket)
+
+    apr_socket_t* _ns;//new accepted socket
+    apr_status_t _ret = apr_socket_accept(&_ns, pSocket, _pool);
+    if (_ret)
     {
-        nng_close(*_nng_socket);
+        return _ret;
+    }
+
+    if (pOptions)
+    {
+        _ret = apr_socket_opt_set(_ns, APR_SO_NONBLOCK, (apr_int32_t)pOptions->non_blocking);
+        if (_ret) goto exit;
+
+        _ret = apr_socket_opt_set(_ns, APR_SO_KEEPALIVE, (apr_int32_t)pOptions->keep_alive);
+        if (_ret) goto exit;
+
+        _ret = apr_socket_opt_set(_ns, APR_TCP_NODELAY, (apr_int32_t)pOptions->no_delay);
+        if (_ret) goto exit;
+
+        _ret = apr_socket_timeout_set(_ns, pOptions->timeout_ms);
+        if (_ret) goto exit;
+    }
+
+    if (pAsync)
+    {
+        //Create the new thread
+        w_thread _t = NULL;
+        _ret = w_thread_init(pMemPool, &_t, pOnAcceptCallback, _ns);
+        if (_ret)
+        {
+            goto exit;
+        }
+    }
+    else
+    {
+        w_thread _t = w_thread_get_current();
+        pOnAcceptCallback(_t, _ns);
     }
 
     return W_SUCCESS;
-}
-W_RESULT w_net_open_udp_socket(
-    _Inout_ w_mem_pool pMemPool,
-    _In_z_ const char* pEndPoint,
-    _Inout_ w_socket_udp* pSocket)
-{
-    const char* _trace_info = "w_net_open_udp_socket";
-    if (!pMemPool)
+
+exit:
+    if (_ns)
     {
-        W_ASSERT_P(false, "bad args! trace info: %s", _trace_info);
-        return APR_BADARG;
-    }
-
-    W_RESULT _ret = W_FAILURE;
-
-    if (!pSocket)
-    {
-        return _ret;
-    }
-    nni_sockaddr* _sa = (nni_sockaddr*)pSocket->sa;
-    if (!_sa)
-    {
-        return _ret;
-    }
-
-    nni_plat_udp* _udp_protocol = (nni_plat_udp*)pSocket->u;
-    unsigned long _addr_hex = 0;
-    uint16_t _port = 0;
-    nng_url* _url = NULL;
-
-    _ret = nng_url_parse(&_url, pEndPoint);
-    if (_ret)
-    {
-        goto out;
-    }
-
-    if (_url && _url->u_hostname)
-    {
-        _addr_hex = inet_addr(_url->u_hostname);
-        _port = atoi(_url->u_port);
-    }
-
-    if (_sa)
-    {
-        _sa->s_in.sa_family = NNG_AF_INET;
-        _sa->s_in.sa_addr = _addr_hex;//htonl(_addr_hex);
-        _sa->s_in.sa_port = htons(_port);
-    }
-
-    //open udp socket
-    _ret = nni_plat_udp_open(&_udp_protocol, _sa);
-    if (_ret)
-    {
-        goto out;
-    }
-
-    //allocate aio
-    _ret = nng_aio_alloc(&pSocket->a, NULL, NULL);
-
-out:
-    if (_url)
-    {
-        nng_url_free(_url);
+        w_net_socket_close(&_ns);
     }
     return _ret;
 }
 
-void w_net_close_udp_socket(_Inout_ w_socket_udp* pSocket)
+W_RESULT w_net_socket_send(
+    _Inout_ w_socket pSocket,
+    _In_ w_buffer pBuffer)
 {
-    if (!pSocket)
+    const char* _trace_info = "w_net_send";
+    if (!pSocket || !pBuffer || !pBuffer->data || !pBuffer->len)
     {
-        return;
+        W_ASSERT_P(false, "bad args! trace info: %s", _trace_info);
+        return W_BAD_ARG;
     }
 
-    nni_plat_udp* _udp_protocol = (nni_plat_udp*)pSocket->u;
-    nng_aio* _aio = (nng_aio*)pSocket->a;
-
-    if (_aio)
-    {
-        nng_aio_free(_aio);
-    }
-    if (_udp_protocol)
-    {
-        nni_plat_udp_close(_udp_protocol);
-    }
+    return apr_socket_send(
+        pSocket,
+        (char*)pBuffer->data,
+        &pBuffer->len);
 }
 
-W_RESULT _io_udp_socket(_In_ w_socket_mode pSocketMode,
-    _Inout_ w_socket_udp* pSocket,
-    _In_z_ char* pMessage,
-    _Inout_ size_t* pMessageLength)
-{
-    const char* _trace_info = "_io_udp_socket";
-
-    if (!pSocket || !pMessage || !pMessageLength)
-    {
-        W_ASSERT(false, "parameters are NULL. trace info: _io_udp_socket");
-        return NNG_ENOARG;
-    }
-    if (pSocketMode != two_way_dialer && pSocketMode != two_way_listener)
-    {
-        W_ASSERT(false, "pSocketMode must be one of the following enums: two_way_dialer or two_way_dialer. trace info: _io_udp_socket");
-        return NNG_ENOARG;
-    }
-
-    W_RESULT _rt = W_SUCCESS;
-    size_t _sent_len = 0;
-    const size_t _buf_len = (pSocketMode == two_way_dialer ? (*pMessageLength + 1) : *pMessageLength);
-
-    nni_sockaddr* _sa = (nni_sockaddr*)pSocket->sa;
-    nni_plat_udp* _udp = (nni_plat_udp*)pSocket->u;
-    nng_aio* _aio = (nng_aio*)pSocket->a;
-    nng_iov* _iov = (nng_iov*)pSocket->i;
-    _iov->iov_buf = pMessage;
-    _iov->iov_len = _buf_len;
-
-    _rt = nng_aio_set_iov(_aio, 1, _iov);
-    if (_rt)
-    {
-        _nng_error(_rt, "nng_aio_set_iov failed", _trace_info);
-        goto out;
-    }
-    _rt = nng_aio_set_input(_aio, 0, _sa);
-    if (_rt)
-    {
-        _nng_error(_rt, "nng_aio_set_input failed", _trace_info);
-        goto out;
-    }
-
-    //send buffer over udp
-    if (pSocketMode == two_way_dialer)
-    {
-        nni_plat_udp_send(_udp, _aio);
-    }
-    else
-    {
-        nni_plat_udp_recv(_udp, _aio);
-    }
-
-    //wait
-    nng_aio_wait(_aio);
-
-    _rt = nng_aio_result(_aio);
-    if (_rt)
-    {
-        _nng_error(_rt, "nng_aio_result failed", _trace_info);
-        goto out;
-    }
-
-    _sent_len = nng_aio_count(_aio);
-    if (_sent_len != _buf_len)
-    {
-        _nng_error(_rt, "length of the sent buffer is not equal to inputted buffer", _trace_info);
-        goto out;
-    }
-
-out:
-    return _rt;
-}
-
-W_RESULT w_net_send_msg_tcp(
-    _Inout_ w_socket_tcp* pSocket,
-    _In_ w_buffer pBuffer,
-    _In_ bool pAsync)
-{
-    if (!pSocket || !pBuffer)
-    {
-        W_ASSERT(false, "parameters are NULL trace info: w_net_send_msg_tcp");
-        return NNG_ENOARG;
-    }
-
-    nng_socket* _nng_socket = (nng_socket*)pSocket->s;
-    return nng_send(*_nng_socket,
-        pBuffer->data,
-        pBuffer->len + 1 /* 1 for '/0'*/,
-        pAsync ? NNG_FLAG_NONBLOCK : 0);
-}
-
-int w_net_receive_msg_tcp(
-    _Inout_ w_socket_tcp* pSocket,
+W_RESULT w_net_socket_receive(
+    _Inout_ w_socket pSocket,
     _Inout_ w_buffer pBuffer)
 {
+    const char* _trace_info = "w_net_receive_msg";
+
     if (!pSocket || !pBuffer)
     {
-        W_ASSERT(false, "parameters are NULL. trace info: w_net_receive_msg_tcp");
-        return NNG_ENOARG;
+        W_ASSERT_P(false, "bad args! trace info: %s", _trace_info);
+        return W_BAD_ARG;
     }
 
-    nng_socket* _nng_socket = (nng_socket*)pSocket->s;
-    return nng_recv(*_nng_socket, &pBuffer->data, &pBuffer->len, NNG_FLAG_ALLOC);
-}
-
-int w_net_send_msg_udp(
-    _Inout_ w_socket_udp* pSocket,
-    _In_z_ char* pMessage,
-    _In_ size_t pMessageLength)
-{
-    return _io_udp_socket(two_way_dialer, pSocket, pMessage, &pMessageLength);
-}
-
-int w_net_receive_msg_udp(_Inout_ w_socket_udp* pSocket,
-    _In_z_ char* pMessage,
-    _In_z_ size_t* pMessageLength)
-{
-    return _io_udp_socket(two_way_listener, pSocket, pMessage, pMessageLength);
-}
-
-W_RESULT w_net_free_msg(_Inout_ w_buffer pMsg)
-{
-    if (!pMsg)
+    long long _l = (long long)pBuffer->len - 1;// -1 for a '\0'
+    if (_l <= 0)
     {
         return W_BAD_ARG;
     }
-    nng_free(pMsg->data, pMsg->len);
-    return W_SUCCESS;
+
+    apr_size_t _len = _l;
+    apr_status_t _ret = apr_socket_recv(pSocket, pBuffer->data, &_len);
+    if (_ret == APR_EOF || _len == 0) 
+    {
+        return _ret;
+    }
+    pBuffer->data[_len] = '\0';
+    
+    return _ret;
 }
 
 W_RESULT w_net_run_websocket_server(_In_ bool pSSL,
@@ -989,170 +413,14 @@ W_RESULT w_net_run_websocket_server(_In_ bool pSSL,
     return _rt;
 }
 
-static size_t _curl_write_callback(
-    void* pContents,
-    size_t pSize,
-    size_t pNmemb,
-    void* pUserp)
-{
-    const char* _trace_info = "_curl_write_callback";
-
-    size_t _real_size = pSize * pNmemb;
-    if (!_real_size)
-    {
-        W_ASSERT_P(false, "_real_size is zero. trace info: %s", _trace_info);
-        return 0;
-    }
-    curl_memory* _mem = (curl_memory*)pUserp;
-    if (!_mem)
-    {
-        W_ASSERT_P(false, "missing curl memory. trace info: %s", _trace_info);
-        return 0;
-    }
-    _mem->memory = (char*)w_malloc(
-        _mem->pool,
-        _mem->size + _real_size + 1);
-    if (!_mem->memory)
-    {
-        //out of memory
-        W_ASSERT_P(false,
-            "out of curl_memory. trace info: %s",
-            _trace_info);
-        return 0;
-    }
-
-    memcpy(&(_mem->memory[_mem->size]), pContents, _real_size);
-    _mem->size += _real_size;
-    _mem->memory[_mem->size] = '\0';
-
-    return _real_size;
-}
-
-W_RESULT w_net_send_http_request(
-    _Inout_    w_mem_pool pMemPool,
-    _In_z_     const char* pURL,
-    _In_       w_http_request_type pHttpRequestType,
-    _In_       w_array pHttpHeaders,
-    _In_z_     const char* pMessage,
-    _In_       size_t pMessageLenght,
-    _In_       size_t pLowSpeedLimit,
-    _In_       size_t pLowSpeedTimeInSec,
-    _In_       float pTimeOutInSecs,
-    _Inout_    long* pResponseCode,
-    _Inout_z_  char** pResponseMessage,
-    _Inout_    size_t* pResponseMessageLength)
-{
-    const char* _trace_info = "w_net_send_http_request";
-    if (!pMemPool || !pURL)
-    {
-        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
-        return APR_BADARG;
-    }
-#ifndef W_PLATFORM_IOS
-    CURLcode _rt;
-    curl_memory* _curl_mem = NULL;
-    //create handle
-    CURL* _curl = curl_easy_init();
-    if (!_curl)
-    {
-        _rt = CURLE_FAILED_INIT;
-        W_ASSERT(false, "could not create curl handle. trace info: curl_easy_init");
-        goto _out;
-    }
-
-    _curl_mem = w_malloc(
-        pMemPool,
-        sizeof(curl_memory));
-    if (!_curl_mem)
-    {
-        _rt = CURLE_OUT_OF_MEMORY;
-        goto _out;
-    }
-
-    _curl_mem->memory = *pResponseMessage;
-    _curl_mem->pool = pMemPool;
-    _curl_mem->size = *pResponseMessageLength;
-
-    double _timeout_in_ms = pTimeOutInSecs / 1000;
-
-    //now specify the POST data
-    switch (pHttpRequestType)
-    {
-    default:
-    case HTTP_GET:
-        break;
-    case HTTP_POST:
-        curl_easy_setopt(_curl, CURLOPT_POSTFIELDS, pMessage);
-        curl_easy_setopt(_curl, CURLOPT_POSTFIELDSIZE, pMessageLenght);
-        curl_easy_setopt(_curl, CURLOPT_POST, 1L);
-        break;
-    }
-
-    //set curl options
-    curl_easy_setopt(_curl, CURLOPT_URL, pURL);
-    curl_easy_setopt(_curl, CURLOPT_FOLLOWLOCATION, 1L);
-    curl_easy_setopt(_curl, CURLOPT_VERBOSE, 1L);
-    curl_easy_setopt(_curl, CURLOPT_CONNECTTIMEOUT_MS, _timeout_in_ms);
-    curl_easy_setopt(_curl, CURLOPT_ACCEPTTIMEOUT_MS, _timeout_in_ms);
-    curl_easy_setopt(_curl, CURLOPT_USERAGENT, "Mozilla/5.0");//libcurl-agent/1.0
-    // abort if slower than bytes/sec
-    curl_easy_setopt(_curl, CURLOPT_LOW_SPEED_LIMIT, pLowSpeedLimit);
-    curl_easy_setopt(_curl, CURLOPT_LOW_SPEED_TIME, pLowSpeedTimeInSec);
-    // store response message
-    curl_easy_setopt(_curl, CURLOPT_WRITEFUNCTION, _curl_write_callback);
-    curl_easy_setopt(_curl, CURLOPT_WRITEDATA, (void*)_curl_mem);
-
-    //set http header
-    struct curl_slist* _headers = NULL;
-    const char** _ppt;
-    apr_array_header_t* temp;
-    temp = ((apr_array_header_t*)&pHttpHeaders);
-    while ((_ppt = apr_array_pop(temp)))
-    {
-        _headers = curl_slist_append(_headers, *_ppt);
-    }
-    if (_headers)
-    {
-        curl_easy_setopt(_curl, CURLOPT_HTTPHEADER, _headers);
-    }
-
-    // perform, then store the expected code in '_rt'
-    _rt = curl_easy_perform(_curl);
-
-    //free headers
-    if (_headers)
-    {
-        curl_slist_free_all(_headers);
-    }
-
-    if (_rt == CURLE_OK)
-    {
-        curl_easy_getinfo(_curl, CURLINFO_RESPONSE_CODE, &pResponseCode);
-        //TODO: do we need to copy ?
-            // _chunk.copyto(pResultPage);
-        //        if (this->size && this->memory)
-        //        {
-        //            pDestination.resize(this->size);
-        //            memcpy(&pDestination[0], &this->memory[0], this->size);
-        //        }
-    }
-
-_out:
-    if (_curl)
-    {
-        curl_easy_cleanup(_curl);
-    }
-    return _rt;
-#endif
-    return W_FAILURE;
-}
+#pragma endregion
 
 #pragma region QUIC
 
 static void s_quiche_flush(
     struct ev_loop* loop,
     struct conn_io* conn_io,
-    w_socket_mode pSocketMode)
+    w_socket_protocol pProtocol)
 {
     const char* _trace_info = "w_net::s_quiche_flush";
 
@@ -1179,7 +447,7 @@ static void s_quiche_flush(
         }
 
         ssize_t sent;
-        if (pSocketMode == quic_listener)
+        if (pProtocol == W_SOCKET_PROTOCOL_QUIC_LISTENER)
         {
             sent = sendto(
                 conn_io->socket,
@@ -1226,7 +494,7 @@ static void s_quiche_create_conn_timeout_callback(EV_P_ ev_timer* w, int pRevent
 
     quiche_conn_on_timeout(_conn_io->connection);
     //fprintf(stderr, "timeout\n");
-    s_quiche_flush(loop, _conn_io, quic_listener);
+    s_quiche_flush(loop, _conn_io, W_SOCKET_PROTOCOL_QUIC_LISTENER);
 
     if (quiche_conn_is_closed(_conn_io->connection))
     {
@@ -1253,9 +521,9 @@ static void s_quiche_dialler_timeout_callback(EV_P_ ev_timer* w, int revents)
 
     fprintf(stderr, "timeout\n");
 
-    s_quiche_flush(loop, tmp, quic_dialer);
+    s_quiche_flush(loop, tmp, W_SOCKET_PROTOCOL_QUIC_DIALER);
 
-    if (quiche_conn_is_closed(tmp->connection)) 
+    if (quiche_conn_is_closed(tmp->connection))
     {
         quiche_stats stats;
 
@@ -1595,7 +863,7 @@ static void s_quiche_listener_callback(EV_P_ ev_io* pIO, int pRevents)
 
     HASH_ITER(hh, s_quic_conns->connection_io, _conn_io, _tmp)
     {
-        s_quiche_flush(loop, _conn_io, quic_listener);
+        s_quiche_flush(loop, _conn_io, W_SOCKET_PROTOCOL_QUIC_LISTENER);
 
         if (quiche_conn_is_closed(_conn_io->connection))
         {
@@ -1715,7 +983,7 @@ static void s_quiche_dialer_callback(EV_P_ ev_io* pIO, int pRevents)
         }
         quiche_stream_iter_free(_readable);
     }
-    s_quiche_flush(loop, _conn_io, quic_dialer);
+    s_quiche_flush(loop, _conn_io, W_SOCKET_PROTOCOL_QUIC_DIALER);
 }
 
 void w_free_s_quic_conns()
@@ -1732,10 +1000,10 @@ void w_free_s_quic_conns()
     }
 }
 
-W_RESULT w_net_open_quic_socket(
+W_RESULT w_net_quic_open(
     _In_z_  const char* pAddress,
     _In_        int pPort,
-    _In_        w_socket_mode pSocketMode,
+    _In_        w_socket_protocol pProtocol,
     _In_opt_z_  const char* pCertFilePath,
     _In_opt_z_  const char* pPrivateKeyFilePath,
     _In_opt_    quic_debug_log_callback_fn pQuicDebugLogCallback,
@@ -1743,16 +1011,18 @@ W_RESULT w_net_open_quic_socket(
     _In_opt_    quic_stream_callback_fn pQuicSendingStreamCallback)
 {
     const char* _trace_info = "w_net_open_quic_socket";
-    if (pSocketMode != quic_dialer && pSocketMode != quic_listener)
+    if (pProtocol != W_SOCKET_PROTOCOL_QUIC_DIALER && pProtocol != W_SOCKET_PROTOCOL_QUIC_LISTENER)
     {
-        W_ASSERT(false, "pSocketMode must be one of the following enums: quic_dialer or quic_listener. trace info: w_net_open_quic_socket");
-        return NNG_ENOARG;
+        W_ASSERT_P(false,
+            "pSocketMode must be one of the following enums: quic_dialer or quic_listener. trace info: %s",
+            _trace_info);
+        return W_BAD_ARG;
     }
 
     W_RESULT _ret = W_SUCCESS;
     quiche_config* _quiche_config = NULL;
     struct addrinfo* _address_info = NULL;
-    
+
 #ifdef W_PLATFORM_WIN
     SOCKET
 #else
@@ -1788,7 +1058,7 @@ W_RESULT w_net_open_quic_socket(
         goto out;
     }
 #endif
-    
+
     if (getaddrinfo(pAddress, _port, &_hints, &_address_info) != 0)
     {
         _ret = W_FAILURE;
@@ -1832,7 +1102,7 @@ W_RESULT w_net_open_quic_socket(
 
     //bind or connect to endpoint
     uint32_t _quic_version;
-    if (pSocketMode == quic_listener)
+    if (pProtocol == W_SOCKET_PROTOCOL_QUIC_LISTENER)
     {
         //bind socket to address
         if (bind(_socket, _address_info->ai_addr, (int)_address_info->ai_addrlen) < 0)
@@ -1870,7 +1140,7 @@ W_RESULT w_net_open_quic_socket(
     }
 
     //check for ssl
-    if (pSocketMode == quic_listener)
+    if (pProtocol == W_SOCKET_PROTOCOL_QUIC_LISTENER)
     {
         if (pCertFilePath && pPrivateKeyFilePath &&
             w_io_file_check_is_file(pCertFilePath) == W_SUCCESS &&
@@ -1914,7 +1184,7 @@ W_RESULT w_net_open_quic_socket(
     quiche_config_set_initial_max_stream_data_bidi_local(_quiche_config, 1000000);
     quiche_config_set_initial_max_streams_bidi(_quiche_config, 100);
 
-    if (pSocketMode == quic_listener)
+    if (pProtocol == W_SOCKET_PROTOCOL_QUIC_LISTENER)
     {
         quiche_config_set_initial_max_stream_data_bidi_remote(_quiche_config, 1000000);
         quiche_config_set_cc_algorithm(_quiche_config, QUICHE_CC_RENO);
@@ -1929,7 +1199,7 @@ W_RESULT w_net_open_quic_socket(
         {
             quiche_config_log_keys(_quiche_config);
         }
-        
+
         uint8_t _scid[QUICHE_LOCAL_CONN_ID_LEN];
 
 #ifdef W_PLATFORM_WIN
@@ -2032,7 +1302,7 @@ W_RESULT w_net_open_quic_socket(
     if (_ev_loop)
     {
         ev_io _ev_watcher;
-        if (pSocketMode == quic_listener)
+        if (pProtocol == W_SOCKET_PROTOCOL_QUIC_LISTENER)
         {
             w_free_s_quic_conns();
 
@@ -2080,7 +1350,7 @@ W_RESULT w_net_open_quic_socket(
                 &_quiche_connection_io->timer,
                 s_quiche_dialler_timeout_callback);
             _quiche_connection_io->timer.data = _quiche_connection_io;
-            s_quiche_flush(_ev_loop, _quiche_connection_io, pSocketMode);
+            s_quiche_flush(_ev_loop, _quiche_connection_io, pProtocol);
         }
 
         struct quic_connection _c;
@@ -2117,7 +1387,7 @@ out:
     return _ret;
 }
 
-W_RESULT w_net_close_quic_socket()
+W_RESULT w_net_quic_close()
 {
     if (!s_quic_conns || !s_quic_conns->connection_io)
     {
@@ -2139,7 +1409,7 @@ W_RESULT w_net_close_quic_socket()
     return _ret < 0 ? W_FAILURE : W_SUCCESS;
 }
 
-size_t w_net_send_msg_quic(_In_ uint8_t* pConnectionID,
+size_t w_net_quic_send(_In_ uint8_t* pConnectionID,
     _In_ uint64_t pStreamIndex,
     _In_ w_buffer pBuffer,
     _In_ bool pFinish)
@@ -2162,7 +1432,7 @@ size_t w_net_send_msg_quic(_In_ uint8_t* pConnectionID,
         pFinish);
 }
 
-size_t w_net_receive_msg_quic(
+size_t w_net_quic_receive(
     _In_ uint8_t* pConnectionID,
     _In_ uint64_t pStreamIndex,
     _Inout_ w_buffer pReceiveBuffer,
@@ -2189,14 +1459,203 @@ size_t w_net_receive_msg_quic(
 
 #pragma endregion
 
-const char* w_net_tcp_udp_get_last_error(_In_ W_RESULT pErrorCode)
+#pragma region CURL
+
+const char* w_net_url_encoded(
+    _Inout_ w_mem_pool pMemPool,
+    _In_z_ const char* pUrlAddress)
 {
-    const char* _error_msg = nng_strerror(pErrorCode);
-    if (_error_msg)
+    const char* _trace_info = "w_net_url_encoded";
+    if (!pMemPool)
     {
-        return _error_msg;
+        W_ASSERT_P(false, "bad args! trace info: %s", _trace_info);
+        return NULL;
     }
-    return NULL;
+    char* _encoded = NULL;
+
+#ifndef W_PLATFORM_IOS
+    CURL* _curl = curl_easy_init();
+    if (!_curl)
+    {
+        W_ASSERT(false, "could not create curl handle. trace info: w_net_url_encoded");
+        goto _out;
+    }
+
+    char* _output = curl_easy_escape(_curl, pUrlAddress, (int)strlen(pUrlAddress));
+    if (_output)
+    {
+        //allocate memory for it from memory pool
+        _encoded = w_malloc(pMemPool, strlen(_output));
+        // make a copy and free the original string
+        strcpy(_encoded, _output);
+        curl_free(_output);
+    }
+
+_out:
+    if (_curl)
+    {
+        curl_easy_cleanup(_curl);
+    }
+#endif
+    return _encoded;
+}
+
+static size_t _curl_write_callback(
+    void* pContents,
+    size_t pSize,
+    size_t pNmemb,
+    void* pUserp)
+{
+    const char* _trace_info = "_curl_write_callback";
+
+    size_t _real_size = pSize * pNmemb;
+    if (!_real_size)
+    {
+        W_ASSERT_P(false, "_real_size is zero. trace info: %s", _trace_info);
+        return 0;
+    }
+    curl_memory* _mem = (curl_memory*)pUserp;
+    if (!_mem)
+    {
+        W_ASSERT_P(false, "missing curl memory. trace info: %s", _trace_info);
+        return 0;
+    }
+    _mem->memory = (char*)w_malloc(
+        _mem->pool,
+        _mem->size + _real_size + 1);
+    if (!_mem->memory)
+    {
+        //out of memory
+        W_ASSERT_P(false,
+            "out of curl_memory. trace info: %s",
+            _trace_info);
+        return 0;
+    }
+
+    memcpy(&(_mem->memory[_mem->size]), pContents, _real_size);
+    _mem->size += _real_size;
+    _mem->memory[_mem->size] = '\0';
+
+    return _real_size;
+}
+
+W_RESULT w_net_http_send(
+    _Inout_    w_mem_pool pMemPool,
+    _In_z_     const char* pURL,
+    _In_       w_http_request_type pHttpRequestType,
+    _In_       w_array pHttpHeaders,
+    _In_z_     const char* pMessage,
+    _In_       size_t pMessageLenght,
+    _In_       size_t pLowSpeedLimit,
+    _In_       size_t pLowSpeedTimeInSec,
+    _In_       float pTimeOutInSecs,
+    _Inout_    long* pResponseCode,
+    _Inout_z_  char** pResponseMessage,
+    _Inout_    size_t* pResponseMessageLength)
+{
+    const char* _trace_info = "w_net_send_http_request";
+    if (!pMemPool || !pURL)
+    {
+        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        return APR_BADARG;
+    }
+#ifndef W_PLATFORM_IOS
+    CURLcode _rt;
+    curl_memory* _curl_mem = NULL;
+    //create handle
+    CURL* _curl = curl_easy_init();
+    if (!_curl)
+    {
+        _rt = CURLE_FAILED_INIT;
+        W_ASSERT(false, "could not create curl handle. trace info: curl_easy_init");
+        goto _out;
+    }
+
+    _curl_mem = w_malloc(
+        pMemPool,
+        sizeof(curl_memory));
+    if (!_curl_mem)
+    {
+        _rt = CURLE_OUT_OF_MEMORY;
+        goto _out;
+    }
+
+    _curl_mem->memory = *pResponseMessage;
+    _curl_mem->pool = pMemPool;
+    _curl_mem->size = *pResponseMessageLength;
+
+    double _timeout_in_ms = pTimeOutInSecs / 1000;
+
+    //now specify the POST data
+    switch (pHttpRequestType)
+    {
+    default:
+    case HTTP_GET:
+        break;
+    case HTTP_POST:
+        curl_easy_setopt(_curl, CURLOPT_POSTFIELDS, pMessage);
+        curl_easy_setopt(_curl, CURLOPT_POSTFIELDSIZE, pMessageLenght);
+        curl_easy_setopt(_curl, CURLOPT_POST, 1L);
+        break;
+    }
+
+    //set curl options
+    curl_easy_setopt(_curl, CURLOPT_URL, pURL);
+    curl_easy_setopt(_curl, CURLOPT_FOLLOWLOCATION, 1L);
+    curl_easy_setopt(_curl, CURLOPT_VERBOSE, 1L);
+    curl_easy_setopt(_curl, CURLOPT_CONNECTTIMEOUT_MS, _timeout_in_ms);
+    curl_easy_setopt(_curl, CURLOPT_ACCEPTTIMEOUT_MS, _timeout_in_ms);
+    curl_easy_setopt(_curl, CURLOPT_USERAGENT, "Mozilla/5.0");//libcurl-agent/1.0
+    // abort if slower than bytes/sec
+    curl_easy_setopt(_curl, CURLOPT_LOW_SPEED_LIMIT, pLowSpeedLimit);
+    curl_easy_setopt(_curl, CURLOPT_LOW_SPEED_TIME, pLowSpeedTimeInSec);
+    // store response message
+    curl_easy_setopt(_curl, CURLOPT_WRITEFUNCTION, _curl_write_callback);
+    curl_easy_setopt(_curl, CURLOPT_WRITEDATA, (void*)_curl_mem);
+
+    //set http header
+    struct curl_slist* _headers = NULL;
+    const char** _ppt;
+    apr_array_header_t* temp;
+    temp = ((apr_array_header_t*)&pHttpHeaders);
+    while ((_ppt = apr_array_pop(temp)))
+    {
+        _headers = curl_slist_append(_headers, *_ppt);
+    }
+    if (_headers)
+    {
+        curl_easy_setopt(_curl, CURLOPT_HTTPHEADER, _headers);
+    }
+
+    // perform, then store the expected code in '_rt'
+    _rt = curl_easy_perform(_curl);
+
+    //free headers
+    if (_headers)
+    {
+        curl_slist_free_all(_headers);
+    }
+
+    if (_rt == CURLE_OK)
+    {
+        curl_easy_getinfo(_curl, CURLINFO_RESPONSE_CODE, &pResponseCode);
+        //TODO: do we need to copy ?
+            // _chunk.copyto(pResultPage);
+        //        if (this->size && this->memory)
+        //        {
+        //            pDestination.resize(this->size);
+        //            memcpy(&pDestination[0], &this->memory[0], this->size);
+        //        }
+    }
+
+_out:
+    if (_curl)
+    {
+        curl_easy_cleanup(_curl);
+    }
+    return _rt;
+#endif
+    return W_FAILURE;
 }
 
 const char* w_net_curl_get_last_error(_In_ W_RESULT pErrorCode)
@@ -2208,7 +1667,4 @@ const char* w_net_curl_get_last_error(_In_ W_RESULT pErrorCode)
 #endif
 }
 
-void w_net_fini(void)
-{
-    nng_fini();
-}
+#pragma endregion
