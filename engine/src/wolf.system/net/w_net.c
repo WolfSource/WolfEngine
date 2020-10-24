@@ -154,6 +154,13 @@ W_RESULT w_net_socket_open(
         pProtocol == W_SOCKET_PROTOCOL_UDP_LISTENER ||
         pProtocol == W_SOCKET_PROTOCOL_SCTP_LISTENER);
 
+
+    int _protocol = pProtocol;
+    if (_is_listener)
+    {
+        _protocol -= 1;
+    }
+
     apr_status_t _ret = apr_sockaddr_info_get(
         &_sa, 
         pHostName,
@@ -170,7 +177,7 @@ W_RESULT w_net_socket_open(
         &_s, 
         _sa->family, 
         pType,
-        pProtocol,
+        _protocol,
         _mem_pool);
     if (_ret)
     {
@@ -205,6 +212,9 @@ W_RESULT w_net_socket_open(
     }
     else
     {
+        _ret = apr_socket_connect(_s, _sa);
+        if (_ret) goto exit;
+
         if (pOptions)
         {
             //we have to specify options again 
@@ -358,6 +368,7 @@ W_RESULT w_net_socket_receive(
     {
         return _ret;
     }
+    pBuffer->len = _len;
     pBuffer->data[_len] = '\0';
     
     return _ret;
