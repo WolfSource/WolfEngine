@@ -2,13 +2,13 @@
 
 #include "w_net.h"
 
-#include <ws2tcpip.h>
 #include <apr.h>
 #include <apr-1/apr_general.h>
 #include <apr-1/apr_network_io.h>
 #include "log/w_log.h"
 
 #ifdef W_PLATFORM_WIN
+#include <ws2tcpip.h>
 #include <io.h>//_open_osfhandle
 #endif
 #include "io/w_io.h"

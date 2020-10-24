@@ -50,6 +50,10 @@
 		05BC21FA251296DA007D6218 /* w_mem_pool.c in Sources */ = {isa = PBXBuildFile; fileRef = 05BC21E0251296DA007D6218 /* w_mem_pool.c */; };
 		05BC21FB251296DA007D6218 /* w_table.h in Headers */ = {isa = PBXBuildFile; fileRef = 05BC21E1251296DA007D6218 /* w_table.h */; };
 		05BC21FC251296DA007D6218 /* w_mem_map.c in Sources */ = {isa = PBXBuildFile; fileRef = 05BC21E2251296DA007D6218 /* w_mem_map.c */; };
+		05C6804E2544BFC9001C4289 /* w_string.c in Sources */ = {isa = PBXBuildFile; fileRef = 05C6804C2544BFC9001C4289 /* w_string.c */; };
+		05C6804F2544BFC9001C4289 /* w_string.h in Headers */ = {isa = PBXBuildFile; fileRef = 05C6804D2544BFC9001C4289 /* w_string.h */; };
+		05C680532544C02C001C4289 /* w_sigslot.c in Sources */ = {isa = PBXBuildFile; fileRef = 05C680512544C02C001C4289 /* w_sigslot.c */; };
+		05C680542544C02C001C4289 /* w_sigslot.h in Headers */ = {isa = PBXBuildFile; fileRef = 05C680522544C02C001C4289 /* w_sigslot.h */; };
 		2C0354F024AEAAD3005E1479 /* libssh2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C0354EF24AEAABF005E1479 /* libssh2.a */; };
 		2C0354F124AEAAE8005E1479 /* libz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C3756AD23B797DC003A6B0A /* libz.a */; };
 		2C069B8A23E21EB8004EB56F /* w_fiber.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C069B8823E21EB8004EB56F /* w_fiber.cpp */; };
@@ -189,6 +193,10 @@
 		05BC21E0251296DA007D6218 /* w_mem_pool.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = w_mem_pool.c; path = ../../../src/wolf.system/memory/w_mem_pool.c; sourceTree = "<group>"; };
 		05BC21E1251296DA007D6218 /* w_table.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_table.h; path = ../../../src/wolf.system/memory/w_table.h; sourceTree = "<group>"; };
 		05BC21E2251296DA007D6218 /* w_mem_map.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = w_mem_map.c; path = ../../../src/wolf.system/memory/w_mem_map.c; sourceTree = "<group>"; };
+		05C6804C2544BFC9001C4289 /* w_string.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = w_string.c; path = ../../../src/wolf.system/memory/w_string.c; sourceTree = "<group>"; };
+		05C6804D2544BFC9001C4289 /* w_string.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_string.h; path = ../../../src/wolf.system/memory/w_string.h; sourceTree = "<group>"; };
+		05C680512544C02C001C4289 /* w_sigslot.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = w_sigslot.c; path = ../../../src/wolf.system/concurrency/w_sigslot.c; sourceTree = "<group>"; };
+		05C680522544C02C001C4289 /* w_sigslot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_sigslot.h; path = ../../../src/wolf.system/concurrency/w_sigslot.h; sourceTree = "<group>"; };
 		2C0354EF24AEAABF005E1479 /* libssh2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libssh2.a; path = ../../../deps/ssh/lib/osx/debug/libssh2.a; sourceTree = "<group>"; };
 		2C0354F224B11E05005E1479 /* version.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = version.txt; path = ../../../src/wolf.system/fiber/version.txt; sourceTree = "<group>"; };
 		2C069B8823E21EB8004EB56F /* w_fiber.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_fiber.cpp; path = ../../../src/wolf.system/fiber/w_fiber.cpp; sourceTree = "<group>"; };
@@ -463,6 +471,8 @@
 		2C898550239F65C70062D70A /* concurrency */ = {
 			isa = PBXGroup;
 			children = (
+				05C680512544C02C001C4289 /* w_sigslot.c */,
+				05C680522544C02C001C4289 /* w_sigslot.h */,
 				051CCCEE25318452002E059C /* w_atomic.c */,
 				051CCCEF25318452002E059C /* w_atomic.h */,
 				05B4A6D2251A45B600FBA684 /* w_mutex.c */,
@@ -572,6 +582,8 @@
 		2CB213FE247C2D620022DA86 /* memory */ = {
 			isa = PBXGroup;
 			children = (
+				05C6804C2544BFC9001C4289 /* w_string.c */,
+				05C6804D2544BFC9001C4289 /* w_string.h */,
 				05BC21D8251296DA007D6218 /* hash */,
 				05BC21D4251296D9007D6218 /* w_array.c */,
 				05BC21D2251296D9007D6218 /* w_array.h */,
@@ -700,6 +712,7 @@
 				05BC21E7251296DA007D6218 /* w_mem_cache.h in Headers */,
 				2C99E7B123C33AD400A9720B /* ev_vars.h in Headers */,
 				2CABF8122485A26B00E5E4D9 /* w_net.h in Headers */,
+				05C6804F2544BFC9001C4289 /* w_string.h in Headers */,
 				2C30BAE423A42CFD009FC330 /* w_io.h in Headers */,
 				2CCFD5852471E8550030D3AC /* w_async.h in Headers */,
 				05BC21F7251296DA007D6218 /* utstack.h in Headers */,
@@ -729,6 +742,7 @@
 				2C99E7A323C33A9F00A9720B /* event.h in Headers */,
 				2C30BAE723A4D599009FC330 /* w_platform.h in Headers */,
 				2C898479239D344C0062D70A /* w_chrono.h in Headers */,
+				05C680542544C02C001C4289 /* w_sigslot.h in Headers */,
 				2CFADC21248FB32E00409581 /* w_cpu.h in Headers */,
 				2C37522023AFD0EF003A6B0A /* fastavxbase64.h in Headers */,
 				2C3756DA23B7D35C003A6B0A /* luaconf.h in Headers */,
@@ -845,9 +859,11 @@
 				05B4A6CB251A44C700FBA684 /* stdout_sinks.cpp in Sources */,
 				05B4A6D4251A45B600FBA684 /* w_mutex.c in Sources */,
 				2C89898E23A193A40062D70A /* wolf.c in Sources */,
+				05C6804E2544BFC9001C4289 /* w_string.c in Sources */,
 				2C898495239E735F0062D70A /* lz4hc.c in Sources */,
 				2C30BAE123A42B2E009FC330 /* w_compress.c in Sources */,
 				2C898553239F65E90062D70A /* w_thread.c in Sources */,
+				05C680532544C02C001C4289 /* w_sigslot.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
