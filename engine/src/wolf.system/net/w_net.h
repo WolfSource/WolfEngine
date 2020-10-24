@@ -31,7 +31,7 @@ extern "C" {
 
     typedef struct w_socket_options
     {
-        int64_t timeout_ms;
+        int64_t timeout_microseconds;
         bool non_blocking;
         bool no_delay;
         bool keep_alive;

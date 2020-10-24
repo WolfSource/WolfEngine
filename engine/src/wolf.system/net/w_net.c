@@ -188,7 +188,7 @@ W_RESULT w_net_socket_open(
         _ret = apr_socket_opt_set(_s, APR_TCP_NODELAY, (apr_int32_t)pOptions->no_delay);
         if (_ret) goto exit;
 
-        _ret = apr_socket_timeout_set(_s, pOptions->timeout_ms);
+        _ret = apr_socket_timeout_set(_s, pOptions->timeout_microseconds);
         if (_ret) goto exit;
     }
 
@@ -217,7 +217,7 @@ W_RESULT w_net_socket_open(
             _ret = apr_socket_opt_set(_s, APR_TCP_NODELAY, (apr_int32_t)pOptions->no_delay);
             if (_ret) goto exit;
 
-            _ret = apr_socket_timeout_set(_s, pOptions->timeout_ms);
+            _ret = apr_socket_timeout_set(_s, pOptions->timeout_microseconds);
             if (_ret) goto exit;
         }
     }
@@ -287,7 +287,7 @@ W_RESULT w_net_socket_accept(
         _ret = apr_socket_opt_set(_ns, APR_TCP_NODELAY, (apr_int32_t)pOptions->no_delay);
         if (_ret) goto exit;
 
-        _ret = apr_socket_timeout_set(_ns, pOptions->timeout_ms);
+        _ret = apr_socket_timeout_set(_ns, pOptions->timeout_microseconds);
         if (_ret) goto exit;
     }
 
