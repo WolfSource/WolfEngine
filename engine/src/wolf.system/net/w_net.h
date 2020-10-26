@@ -60,9 +60,25 @@ extern "C" {
 
     typedef enum w_socket_family
     {
-        W_SOCKET_FAMILY_IPV4 = 0,
-        W_SOCKET_FAMILY_IPV6,
+        W_SOCKET_FAMILY_UNSPEC = 0,
+        W_SOCKET_FAMILY_IPV4 = 3,
+        W_SOCKET_FAMILY_IPV6 = 4,
     } w_socket_family;
+
+    typedef enum w_socket_connection_mode
+    {
+        ONE_WAY_PUSHER,
+        ONE_WAY_PULLER,
+        TWO_WAY_DIALER,
+        TWO_WAY_LISTENER,
+        REQ_REP_DIALER,
+        REQ_REP_LISTENER,
+        PUB_SUB_BROADCASTER,
+        PUB_SUB_SUBSCRIBER,
+        SURVEY_RESPOND_SERVER,
+        SURVEY_RESPOND_CLIENT,
+        BUS_NODE
+    } w_socket_connection_mode;
 
     typedef enum w_http_request_type
     {
@@ -139,7 +155,7 @@ extern "C" {
         W_RESULT w_net_socket_close(_Inout_ w_socket* pSocket);
 
     /**
-    * accept an incoming new connection 
+    * accept an incoming new connection
     * @param pMemPool The pool for the socket associated storage
     * @param pSocket the pointer to source socket
     * @param pOptions the socket options

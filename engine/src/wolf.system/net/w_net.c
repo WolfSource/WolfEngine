@@ -3,18 +3,22 @@
 #include "w_net.h"
 
 #include <ws2tcpip.h>
+
+//apr
 #include <apr.h>
 #include <apr-1/apr_general.h>
 #include <apr-1/apr_network_io.h>
-#include "log/w_log.h"
 
 #ifdef W_PLATFORM_WIN
 #include <io.h>//_open_osfhandle
 #endif
-#include "io/w_io.h"
+
 #include <quiche.h>
+#include <io/w_io.h>
+#include <log/w_log.h>
 #include <memory/hash/uthash.h>
-#include "concurrency/libev/ev.h"
+#include <concurrency/libev/ev.h>
+#include <concurrency/w_thread.h>
 
 #ifdef W_PLATFORM_WIN
 #include <wincrypt.h>
@@ -141,6 +145,7 @@ W_RESULT w_net_socket_open(
         return W_BAD_ARG;
     }
 
+    int _family;
     apr_socket_t* _s = NULL;
     apr_sockaddr_t* _sa;
     apr_pool_t* _mem_pool = (apr_pool_t*)w_mem_pool_get_apr_pool(pMemPool);
@@ -161,10 +166,22 @@ W_RESULT w_net_socket_open(
         _protocol -= 1;
     }
 
+    if (pFamily == W_SOCKET_FAMILY_UNSPEC)
+    {
+        goto exit;
+    }
+    else if (pFamily == W_SOCKET_FAMILY_IPV4)
+    {
+        _family = APR_INET;
+    }
+    else
+    {
+        _family = APR_INET6;
+    }
     apr_status_t _ret = apr_sockaddr_info_get(
         &_sa, 
         pHostName,
-        pFamily == W_SOCKET_FAMILY_IPV4 ? APR_INET : APR_INET6,
+        _family,
         pPort, 
         0, 
         _mem_pool);
@@ -340,7 +357,7 @@ W_RESULT w_net_socket_send(
 
     return apr_socket_send(
         pSocket,
-        (char*)pBuffer->data,
+        (const char*)pBuffer->data,
         &pBuffer->len);
 }
 
@@ -364,11 +381,11 @@ W_RESULT w_net_socket_receive(
 
     apr_size_t _len = _l;
     apr_status_t _ret = apr_socket_recv(pSocket, pBuffer->data, &_len);
+    pBuffer->len = _len;
     if (_ret == APR_EOF || _len == 0) 
     {
         return _ret;
     }
-    pBuffer->len = _len;
     pBuffer->data[_len] = '\0';
     
     return _ret;
