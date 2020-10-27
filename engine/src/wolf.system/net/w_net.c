@@ -2,16 +2,10 @@
 
 #include "w_net.h"
 
-#include <ws2tcpip.h>
-
 //apr
 #include <apr.h>
 #include <apr-1/apr_general.h>
 #include <apr-1/apr_network_io.h>
-
-#ifdef W_PLATFORM_WIN
-#include <io.h>//_open_osfhandle
-#endif
 
 #include <quiche.h>
 #include <io/w_io.h>
@@ -21,10 +15,16 @@
 #include <concurrency/w_thread.h>
 
 #ifdef W_PLATFORM_WIN
+
+#include <ws2tcpip.h>
+#include <io.h>//_open_osfhandle
 #include <wincrypt.h>
 #include <inttypes.h>
+
 #else
+
 #include <arpa/inet.h>
+
 #endif
 
 #ifndef W_PLATFORM_IOS
