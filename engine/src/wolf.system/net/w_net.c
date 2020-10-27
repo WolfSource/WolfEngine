@@ -349,16 +349,20 @@ W_RESULT w_net_socket_send(
     _In_ w_buffer pBuffer)
 {
     const char* _trace_info = "w_net_send";
-    if (!pSocket || !pBuffer || !pBuffer->data || !pBuffer->len)
+    if (!pSocket || !pBuffer)
     {
         W_ASSERT_P(false, "bad args! trace info: %s", _trace_info);
         return W_BAD_ARG;
     }
 
-    return apr_socket_send(
-        pSocket,
-        (const char*)pBuffer->data,
-        &pBuffer->len);
+    if (pBuffer->data && pBuffer->len)
+    {
+        return apr_socket_send(
+            pSocket,
+            (const char*)pBuffer->data,
+            &pBuffer->len);
+    }
+    return W_FAILURE;
 }
 
 W_RESULT w_net_socket_receive(
