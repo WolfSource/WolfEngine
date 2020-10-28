@@ -97,8 +97,7 @@ out:
         {
             if (_w_logger->mutex)
             {
-                w_mutex_fini(_w_logger->mutex);
-                _w_logger->mutex = nullptr;
+                w_mutex_fini(&_w_logger->mutex);
             }
             if (_w_logger->log)
             {
@@ -343,8 +342,7 @@ W_RESULT  w_log_fini()
             if (_ptr->mutex)
             {
                 //release mutex
-                w_mutex_fini(_ptr->mutex);
-                _ptr->mutex = nullptr;
+                w_mutex_fini(&_ptr->mutex);
             }
             if (_ptr->log)
             {
@@ -370,8 +368,7 @@ W_RESULT  w_log_fini_ex(_In_ int pLogID)
         if (_ptr->mutex)
         {
             //release mutex
-            w_mutex_fini(_ptr->mutex);
-            _ptr->mutex = nullptr;
+            w_mutex_fini(&_ptr->mutex);
         }
 
         if (_ptr->log)

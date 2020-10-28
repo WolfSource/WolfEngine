@@ -50,14 +50,20 @@ W_RESULT    w_mutex_unlock(_In_ w_mutex pMutex)
      return apr_thread_mutex_unlock(pMutex);
 }
  
-W_RESULT    w_mutex_fini(_In_ w_mutex pMutex)
+W_RESULT    w_mutex_fini(_In_ w_mutex* pMutex)
 {
-    if (!pMutex)
+    if (!pMutex || !*pMutex)
     {
         W_ASSERT(false, "mutex is NULL!. trace info: w_thread_mutex_destroy");
         return W_FAILURE;
     }
-    return apr_thread_mutex_destroy(pMutex);
+
+    apr_status_t _ret = apr_thread_mutex_destroy(*pMutex);
+    if (_ret == APR_SUCCESS)
+    {
+        *pMutex = NULL;
+    }
+    return _ret;
 }
  
 w_mem_pool  w_mutex_get_mem_pool(_In_ w_mutex pMutex)

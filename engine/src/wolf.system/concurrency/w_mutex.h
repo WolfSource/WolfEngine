@@ -3,7 +3,7 @@
     Source           : Please direct any bug to https://github.com/WolfEngine/Wolf.Engine/issues
     Website          : https://WolfEngine.App
     Name             : w_mutex.h
-    Description      : a basic wrapper over POSIX or UNIX thread
+    Description      : a basic wrapper over POSIX or UNIX mutex
     Comment          :
 */
 
@@ -75,7 +75,7 @@ extern "C" {
      * @return result code
     */
     W_SYSTEM_EXPORT
-        W_RESULT    w_mutex_fini(_In_ w_mutex pMutex);
+        W_RESULT    w_mutex_fini(_In_ w_mutex* pMutex);
 
     /**
      * Get the pool used by this thread_mutex.
