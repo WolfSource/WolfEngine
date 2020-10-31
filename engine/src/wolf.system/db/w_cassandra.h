@@ -22,11 +22,8 @@ extern "C" {
 #endif
 
 
-#include <stddef.h>
-#include <stdint.h>
+
 #include"wolf.h"
-
-
 
 
     /**
@@ -38,15 +35,17 @@ extern "C" {
 
 
 
+#ifdef __cplusplus
+    extern "C" {
+#endif
 
-
-        typedef struct CassSpeculativeExecutionMetrics_ w_Cass_Speculative_Execution_Metrics;
-        typedef struct CassUuid_ w_CassUuid;
-        typedef struct CassInet_ w_CassInet;
-        typedef struct CassVersion_ w_CassVersion;
-        typedef struct CassMetrics_  w_CassMetrics;
-        typedef struct  CassLogMessage_* w_Cass_Log_Message;
-        typedef struct CassAuthenticatorCallbacks_* w_Cass_Authenticator_Callbacks;
+        typedef struct CassSpeculativeExecutionMetrics_ w_cass_speculative_execution_metrics;
+        typedef struct CassUuid_ w_cass_uuid;
+        typedef struct CassInet_ w_cass_inet;
+        typedef struct CassVersion_ w_cass_version;
+        typedef struct CassMetrics_  w_cass_metrics;
+        typedef struct  CassLogMessage_* w_cass_log_message;
+        typedef struct CassAuthenticatorCallbacks_* w_cass_authenticator_callbacks;
         typedef enum { w_false = 0, w_true = 1 } w_bool_t;
 
 
@@ -84,7 +83,7 @@ extern "C" {
             /**
              * Version 1 (time-based) or version 4 (random) UUID.
              *
-             * @struct w_CassUuid
+             * @struct w_cass_uuid
              */
 
 
@@ -95,7 +94,7 @@ extern "C" {
               *
               * @struct CassCluster
               */
-        typedef struct CassCluster_ w_Cass_Cluster;
+        typedef struct CassCluster_ w_cass_cluster;
 
         /**
          * A session object is used to execute queries and maintains cluster state through
@@ -107,7 +106,7 @@ extern "C" {
          *
          * @struct w_Cass_Session
          */
-        typedef struct CassSession_  w_Cass_Session;
+        typedef struct CassSession_  w_cass_session;
 
         /**
          * A statement object is an executable query. It represents either a regular
@@ -119,7 +118,7 @@ extern "C" {
          *
          * @struct w_Cass_Statement
          */
-        typedef struct CassStatement_  w_Cass_Statement;
+        typedef struct CassStatement_  w_cass_statement;
 
         /**
          * A group of statements that are executed as a single batch.
@@ -130,7 +129,7 @@ extern "C" {
          *
          * @struct w_Cass_Batch
          */
-        typedef struct CassBatch_  w_Cass_Batch;
+        typedef struct CassBatch_  w_cass_batch;
 
         /**
          * The future result of an operation.
@@ -141,7 +140,7 @@ extern "C" {
          *
          * @struct CassFuture
          */
-        typedef struct CassFuture_ w_Cass_Future;
+        typedef struct CassFuture_ w_cass_future;
 
         /**
          * A statement that has been prepared cluster-side (It has been pre-parsed
@@ -152,7 +151,7 @@ extern "C" {
          *
          * @struct w_Cass_Prepared
          */
-        typedef struct CassPrepared_ w_Cass_Prepared;
+        typedef struct CassPrepared_ w_cass_prepared;
 
         /**
          * The result of a query.
@@ -162,35 +161,35 @@ extern "C" {
          *
          * @struct w_Cass_Result
          */
-        typedef struct CassResult_ w_Cass_Result;
+        typedef struct CassResult_ w_cass_result;
 
         /**
          * A error result of a request
          *
          * @struct w_Cass_Error_Result
          */
-        typedef struct CassErrorResult_ w_Cass_Error_Result;
+        typedef struct CassErrorResult_ w_cass_error_result;
 
         /**
          * An object used to iterate over a group of rows, columns or collection values.
          *
          * @struct w_Cass_Iterator
          */
-        typedef struct CassIterator_ w_Cass_Iterator;
+        typedef struct CassIterator_ w_cass_iterator;
 
         /**
          * A collection of column values.
          *
          * @struct w_Cass_Row
          */
-        typedef struct CassRow_  w_Cass_Row;
+        typedef struct CassRow_  w_cass_row;
 
         /**
          * A single primitive value or a collection of values.
          *
          * @struct w_Cass_Value
          */
-        typedef struct CassValue_  w_Cass_Value;
+        typedef struct CassValue_  w_cass_value;
 
         /**
          * A data type used to describe a value, collection or
@@ -198,28 +197,28 @@ extern "C" {
          *
          * @struct w_Cass_Data_Type
          */
-        typedef struct CassDataType_ w_Cass_Data_Type;
+        typedef struct CassDataType_ w_cass_data_type;
 
         /**
          * @struct w_Cass_Function_Meta
          *
          * @cassandra{2.2+}
          */
-        typedef struct CassFunctionMeta_ w_Cass_Function_Meta;
+        typedef struct CassFunctionMeta_ w_cass_function_meta;
 
         /**
          * @struct w_Cass_Aggregate_Meta
          *
          * @cassandra{2.2+}
          */
-        typedef struct CassAggregateMeta_ w_Cass_Aggregate_Meta;
+        typedef struct CassAggregateMeta_ w_cass_aggregate_meta;
 
         /**
          *  A collection of values.
          *
          * @struct w_Cass_Collection
          */
-        typedef struct CassCollection_ w_Cass_Collection;
+        typedef struct CassCollection_ w_cass_collection;
 
         /**
          * A tuple of values.
@@ -228,7 +227,7 @@ extern "C" {
          *
          * @cassandra{2.1+}
          */
-        typedef struct CassTuple_ w_Cass_Tuple;
+        typedef struct CassTuple_ w_cass_tuple;
 
         /**
          * A user defined type.
@@ -237,14 +236,14 @@ extern "C" {
          *
          * @cassandra{2.1+}
          */
-        typedef struct CassUserType_ w_Cass_User_Type;
+        typedef struct CassUserType_ w_cass_user_type;
 
         /**
          * Describes the SSL configuration of a cluster.
          *
          * @struct w_Cass_Ssl
          */
-        typedef struct CassSsl_ w_Cass_Ssl;
+        typedef struct CassSsl_ w_cass_ssl;
 
 
 
@@ -253,21 +252,21 @@ extern "C" {
          *
          * @struct w_Cass_Schema_Meta
          */
-        typedef struct CassSchemaMeta_  w_Cass_Schema_Meta;
+        typedef struct CassSchemaMeta_  w_cass_schema_meta;
 
         /**
          * Keyspace metadata
          *
          * @struct w_Cass_Key_space_Meta
          */
-        typedef struct CassKeyspaceMeta_ w_Cass_Key_space_Meta;
+        typedef struct CassKeyspaceMeta_ w_cass_key_space_meta;
 
         /**
          * Table metadata
          *
          * @struct w_Cass_Table_Meta
          */
-        typedef struct CassTableMeta_ w_Cass_Table_Meta;
+        typedef struct CassTableMeta_ w_cass_table_meta;
 
         /**
          * MaterializedView metadata
@@ -276,21 +275,21 @@ extern "C" {
          *
          * @cassandra{3.0+}
          */
-        typedef struct CassMaterializedViewMeta_  w_Cass_Materialized_View_Meta;
+        typedef struct CassMaterializedViewMeta_  w_cass_materialized_view_meta;
 
         /**
          * Column metadata
          *
          * @struct w_Cass_Column_Meta
          */
-        typedef struct CassColumnMeta_  w_Cass_Column_Meta;
+        typedef struct CassColumnMeta_  w_cass_column_meta;
 
         /**
          * Index metadata
          *
          * @struct w_Cass_Index_Meta
          */
-        typedef struct CassIndexMeta_ w_Cass_Index_Meta;
+        typedef struct CassIndexMeta_ w_cass_index_meta;
 
         /**
          * A UUID generator object.
@@ -299,7 +298,7 @@ extern "C" {
          *
          * @struct w_Cass_Uuid_Gen
          */
-        typedef struct CassUuidGen_ w_Cass_Uuid_Gen;
+        typedef struct CassUuidGen_ w_cass_uuid_gen;
 
         /**
          * Policies that defined the behavior of a request when a server-side
@@ -311,19 +310,19 @@ extern "C" {
          *
          * @cassandra{2.1+}
          */
-        typedef struct CassTimestampGen_ w_Cass_Time_stamp_Gen;
+        typedef struct CassTimestampGen_ w_cass_time_stamp_gen;
 
         /**
          * @struct w_Cass_Retry_Policy
          */
-        typedef struct CassRetryPolicy_ w_Cass_Retry_Policy;
+        typedef struct CassRetryPolicy_ w_cass_retry_policy;
 
         /**
          * @struct w_Cass_Custom_Payload
          *
          * @cassandra{2.2+}
          */
-        typedef struct CassCustomPayload_ w_Cass_Custom_Payload;
+        typedef struct CassCustomPayload_ w_cass_custom_payload;
 
 
 
@@ -341,7 +340,7 @@ extern "C" {
             W_CASS_CONSISTENCY_SERIAL = 0x0008,
             W_CASS_CONSISTENCY_LOCAL_SERIAL = 0x0009,
             W_CASS_CONSISTENCY_LOCAL_ONE = 0x000A
-        } W_Cass_Consistency;
+        } w_cass_consistency;
 
 #define CASS_CONSISTENCY_MAPPING(XX) \
   XX(CASS_CONSISTENCY_UNKNOWN, "UNKNOWN") \
@@ -371,7 +370,7 @@ extern "C" {
             W_CASS_WRITE_TYPE_CAS,
             W_CASS_WRITE_TYPE_VIEW,
             W_CASS_WRITE_TYPE_CDC
-        } w_Cass_WriteType;
+        } w_cass_writetype;
 
 #define CASS_WRITE_TYPE_MAPPING(XX) \
   XX(CASS_WRITE_TYPE_SIMPLE, "SIMPLE") \
@@ -393,14 +392,14 @@ extern "C" {
             W_CASS_COLUMN_TYPE_CLUSTERING_KEY,
             W_CASS_COLUMN_TYPE_STATIC,
             W_CASS_COLUMN_TYPE_COMPACT_VALUE
-        } w_Cass_Column_Type;
+        } w_cass_column_type;
 
         typedef enum {
             W_CASS_INDEX_TYPE_UNKNOWN,
             W_CASS_INDEX_TYPE_KEYS,
             W_CASS_INDEX_TYPE_CUSTOM,
             W_CASS_INDEX_TYPE_COMPOSITES
-        } w_Cass_Index_Type;
+        } w_cass_index_type;
 
 #define W_CASS_VALUE_TYPE_MAPPING(XX) \
   XX(W_CASS_VALUE_TYPE_CUSTOM,  0x0000, "", "") \
@@ -439,25 +438,25 @@ extern "C" {
             /* @cond IGNORE */
             W_CASS_VALUE_TYPE_LAST_ENTRY
             /* @endcond */
-        } w_Cass_Value_Type;
+        } w_cass_value_type;
 
         typedef enum {
             W_CASS_CLUSTERING_ORDER_NONE,
             W_CASS_CLUSTERING_ORDER_ASC,
             W_CASS_CLUSTERING_ORDER_DESC
-        } w_Cass_Clustering_Order;
+        } w_cass_clustering_order;
 
         typedef enum {
             W_CASS_COLLECTION_TYPE_LIST = W_CASS_VALUE_TYPE_LIST,
             W_CASS_COLLECTION_TYPE_MAP = W_CASS_VALUE_TYPE_MAP,
             W_CASS_COLLECTION_TYPE_SET = W_CASS_VALUE_TYPE_SET
-        } w_Cass_Collection_Type;
+        } w_cass_collection_type;
 
         typedef enum {
             W_CASS_BATCH_TYPE_LOGGED = 0x00,
             W_CASS_BATCH_TYPE_UNLOGGED = 0x01,
             W_CASS_BATCH_TYPE_COUNTER = 0x02
-        } w_Cass_Batch_Type;
+        } w_cass_batch_type;
 
         typedef enum {
             W_CASS_ITERATOR_TYPE_RESULT,
@@ -475,7 +474,7 @@ extern "C" {
             W_CASS_ITERATOR_TYPE_COLUMN_META,
             W_CASS_ITERATOR_TYPE_INDEX_META,
             W_CASS_ITERATOR_TYPE_MATERIALIZED_VIEW_META
-        } w_Cass_Iterator_Type;
+        } w_cass_iterator_type;
 
 #define W_CASS_LOG_LEVEL_MAPPING(XX) \
   XX(W_CASS_LOG_DISABLED, "") \
@@ -497,14 +496,14 @@ extern "C" {
             /* @cond IGNORE */
             W_CASS_LOG_LAST_ENTRY
             /* @endcond */
-        } w_Cass_Log_Level;
+        } w_cass_log_level;
 
         typedef enum {
             W_CASS_SSL_VERIFY_NONE = 0x00,
             W_CASS_SSL_VERIFY_PEER_CERT = 0x01,
             W_CASS_SSL_VERIFY_PEER_IDENTITY = 0x02,
             W_CASS_SSL_VERIFY_PEER_IDENTITY_DNS = 0x04
-        } w_Cass_Ssl_Verify_Flags;
+        } w_cass_ssl_verify_flags;
 
         typedef enum  {
             W_CASS_PROTOCOL_VERSION_V1 = 0x01, /**< Deprecated */
@@ -516,7 +515,7 @@ extern "C" {
                                                      driver with DataStax Enterprise */
                                                      W_CASS_PROTOCOL_VERSION_DSEV2 = 0x42  /**< Only supported when using the DSE
                                                                                               driver with DataStax Enterprise */
-        } W_Cass_Protocol_Version;
+        } W_cass_protocol_version;
 
         typedef enum {
             W_CASS_ERROR_SOURCE_NONE,
@@ -524,7 +523,7 @@ extern "C" {
             W_CASS_ERROR_SOURCE_SERVER,
             W_CASS_ERROR_SOURCE_SSL,
             W_CASS_ERROR_SOURCE_COMPRESSION
-        } w_Cass_Error_Source;
+        } w_cass_error_source;
 
 #define W_CASS_ERROR_MAPPING(XX) \
   XX(W_CASS_ERROR_SOURCE_LIB, W_CASS_ERROR_LIB_BAD_PARAMS, 1, "Bad parameters") \
@@ -595,7 +594,7 @@ extern "C" {
 #define CASS_ERROR(source, code) ((source << 24) | code)
 
         typedef enum {
-            W_CASS_OK = 0,
+            W_CASS_OK = W_SUCCESS,
 #define XX_ERROR(source, name, code, _) name = CASS_ERROR(source, code),
             W_CASS_ERROR_MAPPING(XX_ERROR)
 #undef XX_ERROR
@@ -613,8 +612,8 @@ extern "C" {
          *
          * @see cass_future_set_callback()
          */
-        typedef void (*CassFutureCallback)(w_Cass_Future* future,
-            void* data);
+        typedef void (* w_cass_future_callback)(w_cass_future* pFuture,
+            void* pData);
 
         /**
          * Maximum size of a log message
@@ -635,8 +634,8 @@ extern "C" {
          *
          * @see cass_log_set_callback()
          */
-        typedef void (*w_Cass_Log_Callback)(const w_Cass_Log_Message message,
-            void* data);
+        typedef void (*w_cass_log_callback)(const w_cass_log_message pMessage,
+            void* pData);
 
         /**
          * A custom malloc function. This function should allocate "size" bytes and
@@ -644,10 +643,10 @@ extern "C" {
          *
          * @param[in] size The size of the memory to allocate
          *
-         * @see CassFreeFunction
+         * @see w_cass_free_function
          * @see cass_alloc_set_functions()
          */
-        typedef void* (*CassMallocFunction)(size_t size);
+        typedef void* (*w_cass_malloc_function)(size_t pSize);
 
         /**
          * A custom realloc function. This function attempts to change the size of the
@@ -658,11 +657,11 @@ extern "C" {
          * same as "CassMallocFunction"
          * @param[in] size The size of the memory to allocate/resize.
          *
-         * @see CassMallocFunction
-         * @see CassFreeFunction
+         * @see w_cass_malloc_function
+         * @see w_cass_free_function
          * @see cass_alloc_set_functions()
          */
-        typedef void* (*CassReallocFunction)(void* ptr, size_t size);
+        typedef void* (*w_cass_realloc_function)(void* pPtr, size_t pSize);
 
         /**
          * A custom free function. This function deallocates the memory pointed to by
@@ -672,32 +671,32 @@ extern "C" {
          * @param[in] ptr A pointer to memory that should be deallocated. If NULL then
          * this will perform no operation.
          *
-         * @see CassMallocFunction
-         * @see CassReallocFunction
+         * @see w_cass_malloc_function
+         * @see w_cass_realloc_function
          * @see cass_alloc_set_functions()
          */
-        typedef void (*CassFreeFunction)(void* ptr);
+        typedef void (*w_cass_free_function)(void* pPtr);
 
         /**
          * An authenticator.
          *
          * @struct CassAuthenticator
          */
-        typedef struct CassAuthenticator_ W_Cass_Authenticator;
+        typedef struct CassAuthenticator_ w_cass_authenticator;
 
         /**
          * A callback used to initiate an authentication exchange.
          *
          * Use cass_authenticator_set_response() to set the response token.
          *
-         * Use cass_authenticator_set_error() if an error occurred during
+         * Use w_cassandra_authenticator_set_error() if an error occurred during
          * initialization.
          *
          * @param[in] auth
          * @param[in] data
          */
-        typedef void (*CassAuthenticatorInitialCallback)(W_Cass_Authenticator* auth,
-            void* data);
+        typedef void (*w_cass_authenticator_initial_callback)(w_cass_authenticator* pAuth,
+            void* pData);
 
         /**
          * A callback used when an authentication challenge initiated
@@ -705,7 +704,7 @@ extern "C" {
          *
          * Use cass_authenticator_set_response() to set the response token.
          *
-         * Use cass_authenticator_set_error() if an error occurred during the
+         * Use w_cassandra_authenticator_set_error() if an error occurred during the
          * challenge.
          *
          * @param[in] auth
@@ -713,15 +712,15 @@ extern "C" {
          * @param[in] token
          * @param[in] token_size
          */
-        typedef void (*CassAuthenticatorChallengeCallback)(W_Cass_Authenticator* auth,
-            void* data,
-            const char* token,
-            size_t token_size);
+        typedef void (*w_cass_authenticator_challenge_callback)(w_cass_authenticator* pAuth,
+            void* pData,
+            const char* pToken,
+            size_t pTokenSize);
         /**
          * A callback used to indicate the success of the authentication
          * exchange.
          *
-         * Use cass_authenticator_set_error() if an error occurred while evaluating
+         * Use w_cassandra_authenticator_set_error() if an error occurred while evaluating
          * the success token.
          *
          * @param[in] auth
@@ -729,10 +728,10 @@ extern "C" {
          * @param[in] token
          * @param[in] token_size
          */
-        typedef void (*CassAuthenticatorSuccessCallback)(W_Cass_Authenticator* auth,
-            void* data,
-            const char* token,
-            size_t token_size);
+        typedef void (*w_cass_authenticator_success_callback)(w_cass_authenticator* pAuth,
+            void* pData,
+            const char* pToken,
+            size_t pTokenSize);
         /**
          * A callback used to cleanup resources that were acquired during
          * the process of the authentication exchange. This is called after
@@ -741,15 +740,15 @@ extern "C" {
          * @param[in] auth
          * @param[in] data
          */
-        typedef void (*CassAuthenticatorCleanupCallback)(W_Cass_Authenticator* auth,
-            void* data);
+        typedef void (*w_cass_authenticator_cleanup_callback)(w_cass_authenticator* pAuth,
+            void* pData);
 
         /**
          * A callback used to cleanup resources.
          *
          * @param[in] data
          */
-        typedef void (*CassAuthenticatorDataCleanupCallback)(void* data);
+        typedef void (*w_cass_authenticator_data_cleanup_callback)(void* pData);
 
         /**
          * Authenticator callbacks
@@ -761,7 +760,7 @@ extern "C" {
             W_CASS_HOST_LISTENER_EVENT_DOWN,
             W_CASS_HOST_LISTENER_EVENT_ADD,
             W_CASS_HOST_LISTENER_EVENT_REMOVE
-        } W_Cass_Host_List_ener_Event;
+        } w_cass_host_list_ener_event;
 
         /**
          * A callback used to indicate the host state for a node in the cluster.
@@ -769,11 +768,11 @@ extern "C" {
          * @param[in] event
          * @param[in] address
          * @param[in] data
-         * @see cass_cluster_set_host_listener_callback()
+         * @see w_cass_cluster_set_host_listener_callback()
          */
-        typedef void(*CassHostListenerCallback)(W_Cass_Host_List_ener_Event event,
-            const w_CassInet address,
-            void* data);
+        typedef void(* w_cass_host_listener_callback)(w_cass_host_list_ener_event event,
+            const w_cass_inet pAddress,
+            void* pData);
 
         /***********************************************************************************
          *
@@ -786,83 +785,82 @@ extern "C" {
           * configuration options and reuse them across different statement executions.
           * This feature is useful when dealing with different query workloads.
           *
-          * @struct w_CassExecProfile
+          * @struct w_cass_exec_profile
           */
-        typedef struct CassExecProfile_ w_CassExecProfile;
+        typedef struct CassExecProfile_ w_cass_exec_profile;
 
         /**
          * Creates a new execution profile.
          *
-         * @public @memberof w_CassExecProfile
+         * @public @memberof w_cass_exec_profile
          *
          * @return Returns a execution profile that must be freed.
          *
          * @see cass_execution_profile_free()
          */
         W_SYSTEM_EXPORT
-            w_CassExecProfile* w_cassandra_execution_profile_new();
+            w_cass_exec_profile* w_cassandra_execution_profile_new();
 
         /**
          * Frees a execution profile instance.
          *
-         * @public @memberof w_CassExecProfile
+         * @public @memberof w_cass_exec_profile
          *
          * @param[in] profile
          */
-        W_SYSTEM_EXPORT void
-            w_cassandra_execution_profile_free(w_CassExecProfile* profile);
+        W_SYSTEM_EXPORT
+            void w_cassandra_execution_profile_free(_In_ w_cass_exec_profile* pProfile);
 
         /**
          * Sets the timeout waiting for a response from a node.
          *
          * <b>Default:</b> Disabled (uses the cluster request timeout)
          *
-         * @public @memberof w_CassExecProfile
+         * @public @memberof w_cass_exec_profile
          *
          * @param[in] profile
          * @param[in] timeout_ms Request timeout in milliseconds. Use 0 for no timeout
          * or CASS_UINT64_MAX to disable.
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          *
-         * @see cass_statement_set_request_timeout()
+         * @see w_cassandra_statement_set_request_timeout()
          */
-        W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_execution_profile_set_request_timeout(w_CassExecProfile* profile,
-                uint64_t timeout_ms);
+        W_SYSTEM_EXPORT    w_Cass_Error
+            w_cassandra_execution_profile_set_request_timeout(_In_ w_cass_exec_profile* pProfile, _In_ uint64_t pTimeoutMs);
+
 
         /**
          * Sets the consistency level.
          *
          * <b>Default:</b> Disabled (uses the default consistency)
          *
-         * @public @memberof w_CassExecProfile
+         * @public @memberof w_cass_exec_profile
          *
          * @param[in] profile
          * @param[in] consistency
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          *
-         * @see cass_statement_set_consistency()
+         * @see w_cassandra_statement_set_consistency()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_execution_profile_set_consistency(w_CassExecProfile* profile,
-                W_Cass_Consistency consistency);
+            w_cassandra_execution_profile_set_consistency(_In_ w_cass_exec_profile* pProfile, _In_ w_cass_consistency pConsistency);
+
 
         /**
          * Sets the serial consistency level.
          *
          * <b>Default:</b> Disabled (uses the default serial consistency)
          *
-         * @public @memberof w_CassExecProfile
+         * @public @memberof w_cass_exec_profile
          *
          * @param[in] profile
          * @param[in] serial_consistency
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          *
-         * @see cass_statement_set_serial_consistency()
+         * @see w_cassandra_statement_set_serial_consistency()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_execution_profile_set_serial_consistency(w_CassExecProfile* profile,
-                W_Cass_Consistency serial_consistency);
+            w_cassandra_execution_profile_set_serial_consistency(_In_ w_cass_exec_profile* pProfile, _In_ w_cass_consistency pPserialConsistency);
 
         /**
          * Configures the execution profile to use round-robin load balancing.
@@ -873,47 +871,46 @@ extern "C" {
          * <b>Note:</b> Profile-based load balancing policy is disabled by default;
          * cluster load balancing policy is used when profile does not contain a policy.
          *
-         * @public @memberof w_CassExecProfile
+         * @public @memberof w_cass_exec_profile
          *
          * @param[in] profile
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          *
-         * @see cass_cluster_set_load_balance_round_robin()
+         * @see w_cassandra_cluster_set_load_balance_round_robin()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_execution_profile_set_load_balance_round_robin(w_CassExecProfile* profile);
-
-        /**
-         * Configures the execution profile to use DC-aware load balancing.
-         * For each query, all live nodes in a primary 'local' DC are tried first,
-         * followed by any node from other DCs.
-         *
-         * <b>Note:</b> Profile-based load balancing policy is disabled by default;
-         * cluster load balancing policy is used when profile does not contain a policy.
-         *
-         * @deprecated The remote DC settings for DC-aware are not suitable for most
-         * scenarios that require DC failover. There is also unhandled gap between
-         * replication factor number of nodes failing and the full cluster failing. Only
-         * the remote DC settings are being deprecated.
-         *
-         * @public @memberof w_CassExecProfile
-         *
-         * @param[in] profile
-         * @param[in] local_dc The primary data center to try first
-         * @param[in] used_hosts_per_remote_dc The number of hosts used in each remote
-         * DC if no hosts are available in the local dc (<b>deprecated</b>)
-         * @param[in] allow_remote_dcs_for_local_cl Allows remote hosts to be used if no
-         * local dc hosts are available and the consistency level is LOCAL_ONE or
-         * LOCAL_QUORUM (<b>deprecated</b>)
-         * @return CASS_OK if successful, otherwise an error occurred.
-         *
-         * @see cass_cluster_set_load_balance_dc_aware()
-         */
-        W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_execution_profile_set_load_balance_dc_aware(w_CassExecProfile* profile,
-                const char* local_dc,
-                unsigned used_hosts_per_remote_dc,
-                w_bool_t allow_remote_dcs_for_local_cl);
+            w_cassandra_execution_profile_set_load_balance_round_robin(_In_ w_cass_exec_profile* pProfile);
+            /**
+             * Configures the execution profile to use DC-aware load balancing.
+             * For each query, all live nodes in a primary 'local' DC are tried first,
+             * followed by any node from other DCs.
+             *
+             * <b>Note:</b> Profile-based load balancing policy is disabled by default;
+             * cluster load balancing policy is used when profile does not contain a policy.
+             *
+             * @deprecated The remote DC settings for DC-aware are not suitable for most
+             * scenarios that require DC failover. There is also unhandled gap between
+             * replication factor number of nodes failing and the full cluster failing. Only
+             * the remote DC settings are being deprecated.
+             *
+             * @public @memberof w_cass_exec_profile
+             *
+             * @param[in] profile
+             * @param[in] local_dc The primary data center to try first
+             * @param[in] used_hosts_per_remote_dc The number of hosts used in each remote
+             * DC if no hosts are available in the local dc (<b>deprecated</b>)
+             * @param[in] allow_remote_dcs_for_local_cl Allows remote hosts to be used if no
+             * local dc hosts are available and the consistency level is LOCAL_ONE or
+             * LOCAL_QUORUM (<b>deprecated</b>)
+             * @return W_SUCCESS if successful, otherwise an error occurred.
+             *
+             * @see w_cassandra_cluster_set_load_balance_dc_aware()
+             */
+            W_SYSTEM_EXPORT w_Cass_Error
+            w_cassandra_execution_profile_set_load_balance_dc_aware(_In_ w_cass_exec_profile* pProfile
+                , _In_ const char* pLocalDc,
+                _In_ unsigned pUsedHostsPerRemoteDc,
+                _In_ w_bool_t pAllowRemoteCsForLocalCl);
 
         /**
          * Same as cass_execution_profile_set_load_balance_dc_aware(), but with lengths
@@ -924,7 +921,7 @@ extern "C" {
          * replication factor number of nodes failing and the full cluster failing. Only
          * the remote DC settings are being deprecated.
          *
-         * @public @memberof w_CassExecProfile
+         * @public @memberof w_cass_exec_profile
          *
          * @param[in] profile
          * @param[in] local_dc
@@ -933,15 +930,15 @@ extern "C" {
          * @param[in] allow_remote_dcs_for_local_cl (<b>deprecated</b>)
          * @return same as cass_execution_profile_set_load_balance_dc_aware()
          *
-         * @see cass_execution_profile_set_load_balance_dc_aware()
-         * @see cass_cluster_set_load_balance_dc_aware_n()
+         * @see w_cassandra_execution_profile_set_load_balance_dc_aware()
+         * @see w_cassandra_cluster_set_load_balance_dc_aware_n()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_execution_profile_set_load_balance_dc_aware_n(w_CassExecProfile* profile,
-                const char* local_dc,
-                size_t local_dc_length,
-                unsigned used_hosts_per_remote_dc,
-                w_bool_t allow_remote_dcs_for_local_cl);
+            w_cassandra_execution_profile_set_load_balance_dc_aware_n(_In_ w_cass_exec_profile* pProfile
+                , _In_ const char* pLocalDc,
+                _In_ size_t pLocalDcLength,
+                _In_ unsigned pUsedHostsPerRemoteDc,
+                _In_  w_bool_t pAllowRemoteDcsForLocalCl);
 
         /**
          * Configures the execution profile to use token-aware request routing or not.
@@ -960,17 +957,17 @@ extern "C" {
          * unless enabled. This setting is not applicable unless a load balancing policy
          * is enabled on the execution profile.
          *
-         * @public @memberof w_CassExecProfile
+         * @public @memberof w_cass_exec_profile
          *
          * @param[in] profile
          * @param[in] enabled
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          *
-         * @see cass_cluster_set_token_aware_routing()
+         * @see w_cassandra_cluster_set_token_aware_routing()
          */
-        W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_execution_profile_set_token_aware_routing(w_CassExecProfile* profile,
-                w_bool_t enabled);
+        W_SYSTEM_EXPORT 
+            w_Cass_Error  w_cassandra_execution_profile_set_token_aware_routing(_In_ w_cass_exec_profile* pProfile,
+                _In_ w_bool_t pEnabled);
 
         /**
          * Configures the execution profile's token-aware routing to randomly shuffle
@@ -982,17 +979,17 @@ extern "C" {
          *
          * <b>Default:</b> cass_true (enabled).
          *
-         * @public @memberof w_CassExecProfile
+         * @public @memberof w_cass_exec_profile
          *
          * @param[in] profile
          * @param[in] enabled
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          *
-         * @see cass_cluster_set_token_aware_routing_shuffle_replicas()
+         * @see w_cassandra_cluster_set_token_aware_routing_shuffle_replicas()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_execution_profile_set_token_aware_routing_shuffle_replicas(w_CassExecProfile* profile,
-                w_bool_t enabled);
+            w_cassandra_execution_profile_set_token_aware_routing_shuffle_replicas(_In_ w_cass_exec_profile* pProfile,
+                _In_ w_bool_t pEnabled);
 
         /**
          * Configures the execution profile to use latency-aware request routing or not.
@@ -1007,17 +1004,17 @@ extern "C" {
          * base routing policy to determine locality (dc-aware) and/or
          * placement (token-aware) before considering the latency.
          *
-         * @public @memberof w_CassExecProfile
+         * @public @memberof w_cass_exec_profile
          *
          * @param[in] profile
          * @param[in] enabled
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          *
-         * @see cass_cluster_set_latency_aware_routing()
+         * @see w_cassandra_cluster_set_latency_aware_routing()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_execution_profile_set_latency_aware_routing(w_CassExecProfile* profile,
-                w_bool_t enabled);
+            w_cassandra_execution_profile_set_latency_aware_routing(_In_ w_cass_exec_profile* pProfile,
+                _In_ w_bool_t pEnabled);
 
         /**
          * Configures the execution profile's settings for latency-aware request
@@ -1037,7 +1034,7 @@ extern "C" {
          *   <li>min_measured: 50</li>
          * </ul>
          *
-         * @public @memberof w_CassExecProfile
+         * @public @memberof w_cass_exec_profile
          *
          * @param[in] profile
          * @param[in] exclusion_threshold Controls how much worse the latency must be
@@ -1054,17 +1051,17 @@ extern "C" {
          * recomputed.
          * @param[in] min_measured The minimum number of measurements per-host required
          * to be considered by the policy.
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          *
-         * @see cass_cluster_set_latency_aware_routing_settings()
+         * @see w_cassandra_cluster_set_latency_aware_routing_settings()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_execution_profile_set_latency_aware_routing_settings(w_CassExecProfile* profile,
-                double exclusion_threshold,
-                uint64_t scale_ms,
-                uint64_t retry_period_ms,
-                uint64_t update_rate_ms,
-                uint64_t min_measured);
+            w_cassandra_execution_profile_set_latency_aware_routing_settings(_In_ w_cass_exec_profile* pProfile,
+                _In_ double pExclusionThreshold,
+                _In_ uint64_t pScaleMs,
+                _In_ uint64_t pRetryPeriodMs,
+                _In_ uint64_t pUpdateRateMs,
+                _In_ uint64_t pMinMeasured);
 
         /**
          * Sets/Appends whitelist hosts for the execution profile. The first call sets
@@ -1083,39 +1080,39 @@ extern "C" {
          * unless enabled. This setting is not applicable unless a load balancing policy
          * is enabled on the execution profile.
          *
-         * @public @memberof w_CassExecProfile
+         * @public @memberof w_cass_exec_profile
          *
          * @param[in] profile
          * @param[in] hosts A comma delimited list of addresses. An empty string will
          * clear the whitelist hosts. The string is copied into the cluster
          * configuration; the memory pointed to by this parameter can be freed after
          * this call.
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          *
-         * @see cass_cluster_set_whitelist_filtering()
+         * @see w_cassandra_cluster_set_whitelist_filtering()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_execution_profile_set_whitelist_filtering(w_CassExecProfile* profile,
-                const char* hosts);
+            w_cassandra_execution_profile_set_whitelist_filtering(_In_ w_cass_exec_profile* pProfile,
+                _In_ const char* pHosts);
 
         /**
          * Same as cass_execution_profile_set_whitelist_filtering(), but with lengths
          * for string parameters.
          *
-         * @public @memberof w_CassExecProfile
+         * @public @memberof w_cass_exec_profile
          *
          * @param[in] profile
          * @param[in] hosts
          * @param[in] hosts_length
-         * @return same as cass_execution_profile_set_whitelist_filtering()
+         * @return same as w_cassandra_execution_profile_set_whitelist_filtering()
          *
-         * @see cass_execution_profile_set_whitelist_filtering()
-         * @see cass_cluster_set_whitelist_filtering()
+         * @see w_cassandra_execution_profile_set_whitelist_filtering()
+         * @see w_cassandra_cluster_set_whitelist_filtering()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_execution_profile_set_whitelist_filtering_n(w_CassExecProfile* profile,
-                const char* hosts,
-                size_t hosts_length);
+            w_cassandra_execution_profile_set_whitelist_filtering_n(_In_ w_cass_exec_profile* pProfile,
+                _In_ const char* pHosts,
+                _In_ size_t pHostsLength);
 
         /**
          * Sets/Appends blacklist hosts for the execution profile. The first call sets
@@ -1134,118 +1131,118 @@ extern "C" {
          * unless enabled. This setting is not applicable unless a load balancing policy
          * is enabled on the execution profile.
          *
-         * @public @memberof w_CassExecProfile
+         * @public @memberof w_cass_exec_profile
          *
          * @param[in] profile
          * @param[in] hosts A comma delimited list of addresses. An empty string will
          * clear the blacklist hosts. The string is copied into the cluster
          * configuration; the memory pointed to by this parameter can be freed after
          * this call.
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          *
-         * @see cass_cluster_set_blacklist_filtering()
+         * @see w_cassandra_cluster_set_blacklist_filtering()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_execution_profile_set_blacklist_filtering(w_CassExecProfile* profile,
-                const char* hosts);
+            w_cassandra_execution_profile_set_blacklist_filtering(_In_ w_cass_exec_profile* pProfile,
+                _In_ const char* pHosts);
 
         /**
-         * Same as cass_execution_profile_set_blacklist_filtering(), but with lengths
+         * Same as w_cassandra_execution_profile_set_blacklist_filtering(), but with lengths
          * for string parameters.
          *
-         * @public @memberof w_CassExecProfile
+         * @public @memberof w_cass_exec_profile
          *
          * @param[in] profile
          * @param[in] hosts
          * @param[in] hosts_length
-         * @return same as cass_execution_profile_set_blacklist_filtering_hosts()
+         * @return same as w_cassandra_execution_profile_set_blacklist_filtering_hosts()
          *
-         * @see cass_execution_profile_set_blacklist_filtering()
-         * @see cass_cluster_set_blacklist_filtering()
+         * @see w_cassandra_execution_profile_set_blacklist_filtering()
+         * @see w_cassandra_cluster_set_blacklist_filtering()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_execution_profile_set_blacklist_filtering_n(w_CassExecProfile* profile,
-                const char* hosts,
-                size_t hosts_length);
+            w_cassandra_execution_profile_set_blacklist_filtering_n(_In_ w_cass_exec_profile* pProfile,
+                _In_ const char* pHosts,
+                _In_ size_t pHostsLength);
 
         /**
-         * Same as cass_execution_profile_set_whitelist_filtering(), but whitelist all
+         * Same as w_cassandra_execution_profile_set_whitelist_filtering(), but whitelist all
          * hosts of a dc.
          *
          * Examples: "dc1", "dc1,dc2"
          *
-         * @public @memberof w_CassExecProfile
+         * @public @memberof w_cass_exec_profile
          *
          * @param[in] profile
          * @param[in] dcs A comma delimited list of dcs. An empty string will clear the
          * whitelist dcs. The string is copied into the cluster configuration; the
          * memory pointed to by this parameter can be freed after this call.
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          *
-         * @see cass_cluster_set_whitelist_dc_filtering()
+         * @see w_cassandra_cluster_set_whitelist_dc_filtering()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_execution_profile_set_whitelist_dc_filtering(w_CassExecProfile* profile,
-                const char* dcs);
+            w_cassandra_execution_profile_set_whitelist_dc_filtering(_In_ w_cass_exec_profile* pProfile,
+                _In_  const char* pDcs);
 
         /**
-         * Same as cass_execution_profile_set_whitelist_dc_filtering(), but with lengths
+         * Same as w_cassandra_execution_profile_set_whitelist_dc_filtering(), but with lengths
          * for string parameters.
          *
-         * @public @memberof w_CassExecProfile
+         * @public @memberof w_cass_exec_profile
          *
          * @param[in] profile
          * @param[in] dcs
          * @param[in] dcs_length
-         * @return same as cass_execution_profile_set_whitelist_dc_filtering()
+         * @return same as w_cassandra_execution_profile_set_whitelist_dc_filtering()
          *
-         * @see cass_execution_profile_set_whitelist_dc_filtering()
-         * @see cass_cluster_set_whitelist_dc_filtering()
+         * @see w_cassandra_execution_profile_set_whitelist_dc_filtering()
+         * @see w_cassandra_cluster_set_whitelist_dc_filtering()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_execution_profile_set_whitelist_dc_filtering_n(w_CassExecProfile* profile,
-                const char* dcs,
-                size_t dcs_length);
+            w_cassandra_execution_profile_set_whitelist_dc_filtering_n(_In_ w_cass_exec_profile* pProfile,
+                _In_ const char* pDcs,
+                _In_ size_t pDcsLength);
 
         /**
-         * Same as cass_execution_profile_set_blacklist_filtering(), but blacklist all
+         * Same as w_cassandra_execution_profile_set_blacklist_filtering(), but blacklist all
          * hosts of a dc.
          *
          * Examples: "dc1", "dc1,dc2"
          *
-         * @public @memberof w_CassExecProfile
+         * @public @memberof w_cass_exec_profile
          *
          * @param[in] profile
          * @param[in] dcs A comma delimited list of dcs. An empty string will clear the
          * blacklist dcs. The string is copied into the cluster configuration; the
          * memory pointed to by this parameter can be freed after this call.
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          *
-         * @see cass_execution_profile_set_blacklist_filtering()
-         * @see cass_cluster_set_blacklist_dc_filtering()
+         * @see w_cassandra_execution_profile_set_blacklist_filtering()
+         * @see w_cassandra_cluster_set_blacklist_dc_filtering()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_execution_profile_set_blacklist_dc_filtering(w_CassExecProfile* profile,
-                const char* dcs);
+            w_cassandra_execution_profile_set_blacklist_dc_filtering(_In_ w_cass_exec_profile* pProfile,
+                _In_ const char* pDcs);
 
         /**
-         * Same as cass_execution_profile_set_blacklist_dc_filtering(), but with lengths
+         * Same as w_cassandra_execution_profile_set_blacklist_dc_filtering(), but with lengths
          * for string parameters.
          *
-         * @public @memberof w_CassExecProfile
+         * @public @memberof w_cass_exec_profile
          *
          * @param[in] profile
          * @param[in] dcs
          * @param[in] dcs_length
-         * @return same as cass_execution_profile_set_blacklist_dc_filtering()
+         * @return same as w_cassandra_execution_profile_set_blacklist_dc_filtering()
          *
-         * @see cass_execution_profile_set_blacklist_dc_filtering()
-         * @see cass_cluster_set_blacklist_dc_filtering()
+         * @see w_cassandra_execution_profile_set_blacklist_dc_filtering()
+         * @see w_cassandra_cluster_set_blacklist_dc_filtering()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_execution_profile_set_blacklist_dc_filtering_n(w_CassExecProfile* profile,
-                const char* dcs,
-                size_t dcs_length);
+            w_cassandra_execution_profile_set_blacklist_dc_filtering_n(_In_ w_cass_exec_profile* pProfile,
+                _In_  const char* pDcs,
+                _In_   size_t pDcsLength);
 
         /**
          * Sets the execution profile's retry policy.
@@ -1254,17 +1251,17 @@ extern "C" {
          * policy is used when profile does not contain a policy unless the retry policy
          * was explicitly set on the batch/statement request.
          *
-         * @public @memberof w_CassExecProfile
+         * @public @memberof w_cass_exec_profile
          *
          * @param[in] profile
          * @param[in] retry_policy NULL will clear retry policy from execution profile
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          *
-         * @see cass_cluster_set_retry_policy()
+         * @see w_cassandra_cluster_set_retry_policy()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_execution_profile_set_retry_policy(w_CassExecProfile* profile,
-                w_Cass_Retry_Policy* retry_policy);
+            w_cassandra_execution_profile_set_retry_policy(_In_ w_cass_exec_profile* pProfile, 
+                _In_  w_cass_retry_policy* pRetryPolicy);
 
         /**
          * Enable constant speculative executions with the supplied settings for the
@@ -1274,19 +1271,19 @@ extern "C" {
          * default; cluster speculative execution policy is used when profile does not
          * contain a policy.
          *
-         * @public @memberof w_CassExecProfile
+         * @public @memberof w_cass_exec_profile
          *
          * @param[in] profile
          * @param[in] constant_delay_ms
          * @param[in] max_speculative_executions
-         * @return CASS_OK if successful, otherwise an error occurred
+         * @return W_SUCCESS if successful, otherwise an error occurred
          *
-         * @see cass_cluster_set_constant_speculative_execution_policy()
+         * @see w_cassandra_cluster_set_constant_speculative_execution_policy()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_execution_profile_set_constant_speculative_execution_policy(w_CassExecProfile* profile,
-                int64_t constant_delay_ms,
-                int max_speculative_executions);
+            w_cassandra_execution_profile_set_constant_speculative_execution_policy(_In_ w_cass_exec_profile* pProfile,
+                _In_  int64_t pConstantDelayMs,
+                _In_  int pMaxSpeculativeExecutions);
 
         /**
          * Disable speculative executions for the execution profile.
@@ -1295,16 +1292,15 @@ extern "C" {
          * default; cluster speculative execution policy is used when profile does not
          * contain a policy.
          *
-         * @public @memberof w_CassExecProfile
+         * @public @memberof w_cass_exec_profile
          *
          * @param[in] profile
-         * @return CASS_OK if successful, otherwise an error occurred
+         * @return W_SUCCESS if successful, otherwise an error occurred
          *
-         * @see cass_cluster_set_no_speculative_execution_policy()
+         * @see w_cassandra_cluster_set_no_speculative_execution_policy()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_execution_profile_set_no_speculative_execution_policy(w_CassExecProfile* profile);
-
+            w_cassandra_execution_profile_set_no_speculative_execution_policy(_In_ w_cass_exec_profile* pProfile);
         /***********************************************************************************
          *
          * Cluster
@@ -1318,9 +1314,9 @@ extern "C" {
           *
           * @return Returns a cluster that must be freed.
           *
-          * @see cass_cluster_free()
+          * @see w_cassandra_cluster_free()
           */
-        W_SYSTEM_EXPORT w_Cass_Cluster*
+        W_SYSTEM_EXPORT w_cass_cluster*
             w_cassandra_cluster_new();
 
         /**
@@ -1330,8 +1326,7 @@ extern "C" {
          *
          * @param[in] cluster
          */
-        W_SYSTEM_EXPORT void
-            w_cassandra_cluster_free(w_Cass_Cluster* cluster);
+        W_SYSTEM_EXPORT void  w_cassandra_cluster_free(_In_  w_cass_cluster* pCluster);
 
         /**
          * Sets/Appends contact points. This *MUST* be set. The first call sets
@@ -1348,14 +1343,14 @@ extern "C" {
          * names. An empty string will clear the contact points.
          * The string is copied into the cluster configuration; the memory pointed
          * to by this parameter can be freed after this call.
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_cluster_set_contact_points(w_Cass_Cluster* cluster,
-                const char* contact_points);
+            w_cassandra_cluster_set_contact_points(_In_ w_cass_cluster* pCluster,
+                _In_ const char* pContactPoints);
 
         /**
-         * Same as cass_cluster_set_contact_points(), but with lengths for string
+         * Same as w_cassandra_cluster_set_contact_points(), but with lengths for string
          * parameters.
          *
          * @public @memberof w_Cass_Cluster
@@ -1363,14 +1358,14 @@ extern "C" {
          * @param[in] cluster
          * @param[in] contact_points
          * @param[in] contact_points_length
-         * @return same as cass_cluster_set_contact_points()
+         * @return same as w_cassandra_cluster_set_contact_points()
          *
-         * @see cass_cluster_set_contact_points()
+         * @see w_cassandra_cluster_set_contact_points()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_cluster_set_contact_points_n(w_Cass_Cluster* cluster,
-                const char* contact_points,
-                size_t contact_points_length);
+            w_cassandra_cluster_set_contact_points_n(_In_ w_cass_cluster* pCluster, 
+                _In_  const char* pContactPoints,
+                _In_   size_t pContactPointsLength);
 
         /**
          * Sets the port.
@@ -1381,11 +1376,11 @@ extern "C" {
          *
          * @param[in] cluster
          * @param[in] port
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_cluster_set_port(w_Cass_Cluster* cluster,
-                int port);
+            w_cassandra_cluster_set_port(_In_ w_cass_cluster* pCluster,
+                _In_  int pPort);
 
         /**
          * Sets the local address to bind when connecting to the cluster,
@@ -1396,11 +1391,11 @@ extern "C" {
          * @param[in] cluster
          * @param[in] name IP address to bind, or empty string for no binding.
          * Only numeric addresses are supported; no resolution is done.
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_cluster_set_local_address(w_Cass_Cluster* cluster,
-                const char* name);
+            w_cassandra_cluster_set_local_address(_In_ w_cass_cluster* pCluster,
+                _In_ const char* pName);
 
         /**
          * Same as cass_cluster_set_local_address(), but with lengths for string
@@ -1411,14 +1406,14 @@ extern "C" {
          * @param[in] cluster
          * @param[in] name
          * @param[in] name_length
-         * @return same as cass_cluster_set_local_address()
+         * @return same as w_cassandra_cluster_set_local_address()
          *
          * @see cass_cluster_set_local_address()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_cluster_set_local_address_n(w_Cass_Cluster* cluster,
-                const char* name,
-                size_t name_length);
+            w_cassandra_cluster_set_local_address_n(_In_ w_cass_cluster* pCluster, 
+                _In_ const char* pName,
+                _In_ size_t pNameLength);
 
         /**
          * Sets the SSL context and enables SSL.
@@ -1428,11 +1423,11 @@ extern "C" {
          * @param[in] cluster
          * @param[in] ssl
          *
-         * @see cass_ssl_new()
+         * @see w_cassandra_ssl_new()
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_cluster_set_ssl(w_Cass_Cluster* cluster,
-                w_Cass_Ssl* ssl);
+            w_cassandra_cluster_set_ssl(_In_ w_cass_cluster* pCluster, 
+                _In_ w_cass_ssl* pSsl);
 
         /**
          * Sets custom authenticator
@@ -1443,13 +1438,13 @@ extern "C" {
          * @param[in] exchange_callbacks
          * @param[in] cleanup_callback
          * @param[in] data
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_cluster_set_authenticator_callbacks(w_Cass_Cluster* cluster,
-                const w_Cass_Authenticator_Callbacks exchange_callbacks,
-                CassAuthenticatorDataCleanupCallback cleanup_callback,
-                void* data);
+            w_cassandra_cluster_set_authenticator_callbacks(_In_ w_cass_cluster* pCluster,
+                _In_ const w_cass_authenticator_callbacks pExchangeCallbacks,
+                _In_ w_cass_authenticator_data_cleanup_callback pCleanupCallback,
+                _In_ void* pData);
 
         /**
          * Sets the protocol version. The driver will automatically downgrade to the lowest
@@ -1462,13 +1457,13 @@ extern "C" {
          *
          * @param[in] cluster
          * @param[in] protocol_version
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          *
-         * @see cass_cluster_set_use_beta_protocol_version()
+         * @see w_cassandra_cluster_set_use_beta_protocol_version()
          */
         W_SYSTEM_EXPORT 
-            w_Cass_Error w_cassandra_cluster_set_protocol_version(w_Cass_Cluster* cluster,
-                int protocol_version);
+            w_Cass_Error w_cassandra_cluster_set_protocol_version(_In_ w_cass_cluster* pCluster,
+                _In_ int pProtocolVersion);
 
         /**
          * Use the newest beta protocol version. This currently enables the use of
@@ -1481,11 +1476,12 @@ extern "C" {
          *
          * @param[in] cluster
          * @param[in] enable if false the highest non-beta protocol version will be used
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT 
-            w_Cass_Error w_cassandra_cluster_set_use_beta_protocol_version(w_Cass_Cluster* cluster,
-                w_bool_t enable);
+            w_Cass_Error 
+            w_cassandra_cluster_set_use_beta_protocol_version(_In_ w_cass_cluster* pCluster,
+                _In_  w_bool_t pEnable);
 
         /**
          * Sets default consistency level of statement.
@@ -1496,11 +1492,11 @@ extern "C" {
          *
          * @param[in] cluster
          * @param[in] consistency
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT 
-            w_Cass_Error w_cassandra_cluster_set_consistency(w_Cass_Cluster* cluster,
-                W_Cass_Consistency consistency);
+            w_Cass_Error w_cassandra_cluster_set_consistency(_In_ w_cass_cluster* pCluster,
+                _In_  w_cass_consistency pConsistency);
 
         /**
          * Sets default serial consistency level of statement.
@@ -1511,11 +1507,10 @@ extern "C" {
          *
          * @param[in] cluster
          * @param[in] consistency
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT 
-            w_Cass_Error  w_cassandra_cluster_set_serial_consistency(w_Cass_Cluster* cluster,
-                W_Cass_Consistency consistency);
+            w_Cass_Error  w_cassandra_cluster_set_serial_consistency(_In_ w_cass_cluster* pCluster, _In_ w_cass_consistency pConsistency);
 
         /**
          * Sets the number of IO threads. This is the number of threads
@@ -1527,11 +1522,11 @@ extern "C" {
          *
          * @param[in] cluster
          * @param[in] num_threads
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_cluster_set_num_threads_io(w_Cass_Cluster* cluster,
-                unsigned num_threads);
+            w_cassandra_cluster_set_num_threads_io(_In_ w_cass_cluster* pCluster, 
+                _In_ unsigned pNumThreads);
 
         /**
          * Sets the size of the fixed size queue that stores
@@ -1543,11 +1538,11 @@ extern "C" {
          *
          * @param[in] cluster
          * @param[in] queue_size
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_cluster_set_queue_size_io(w_Cass_Cluster* cluster,
-                unsigned queue_size);
+            w_cassandra_cluster_set_queue_size_io(_In_ w_cass_cluster* pCluster,
+                _In_ unsigned pQueueSize);
 
         /**
          * Sets the size of the fixed size queue that stores
@@ -1562,11 +1557,11 @@ extern "C" {
          *
          * @param[in] cluster
          * @param[in] queue_size
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_cluster_set_queue_size_event(w_Cass_Cluster* cluster,
-                unsigned queue_size);
+            w_cassandra_cluster_set_queue_size_event(_In_ w_cass_cluster* pCluster, 
+                _In_ unsigned pQueueSize);
 
         /**
          * Sets the number of connections made to each server in each
@@ -1578,11 +1573,11 @@ extern "C" {
          *
          * @param[in] cluster
          * @param[in] num_connections
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_cluster_set_core_connections_per_host(w_Cass_Cluster* cluster,
-                unsigned num_connections);
+            w_cassandra_cluster_set_core_connections_per_host(_In_ w_cass_cluster* pCluster, 
+                _In_  unsigned pNumConnections);
 
         /**
          * Sets the maximum number of connections made to each server in each
@@ -1597,11 +1592,10 @@ extern "C" {
          *
          * @param[in] cluster
          * @param[in] num_connections
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
-        W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_cluster_set_max_connections_per_host(w_Cass_Cluster* cluster,
-                unsigned num_connections);
+        W_SYSTEM_EXPORT  w_Cass_Error 
+            w_cassandra_cluster_set_max_connections_per_host(_In_ w_cass_cluster* pCluster, _In_ unsigned pNumConnections);
 
         /**
          * Sets the amount of time to wait before attempting to reconnect.
@@ -1615,8 +1609,8 @@ extern "C" {
          * @param[in] wait_time
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_cluster_set_reconnect_wait_time(w_Cass_Cluster* cluster,
-                unsigned wait_time);
+            w_cassandra_cluster_set_reconnect_wait_time(_In_ w_cass_cluster* pCluster, 
+                _In_ unsigned pWaitTime);
 
         /**
          * Configures the cluster to use a reconnection policy that waits a constant
@@ -1629,8 +1623,8 @@ extern "C" {
          * 0 to perform a reconnection immediately.
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_cluster_set_constant_reconnect(w_Cass_Cluster* cluster,
-                uint64_t delay_ms);
+            w_cassandra_cluster_set_constant_reconnect(_In_  w_cass_cluster* pCluster,
+                _In_  uint64_t pDelayMs);
 
         /**
          * Configures the cluster to use a reconnection policy that waits exponentially
@@ -1658,12 +1652,12 @@ extern "C" {
          * scheduling reconnection attempts.
          * @param[in] max_delay_ms The maximum delay to wait between two reconnection
          * attempts.
-         * @return CASS_OK if successful, otherwise error occurred.
+         * @return W_SUCCESS if successful, otherwise error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_cluster_set_exponential_reconnect(w_Cass_Cluster* cluster,
-                uint64_t base_delay_ms,
-                uint64_t max_delay_ms);
+            w_cassandra_cluster_set_exponential_reconnect(_In_ w_cass_cluster* pCluster,
+                _In_ uint64_t pBaseDelayMs,
+                _In_ uint64_t pMaxDelayMs);
 
         /**
          * Sets the amount of time, in microseconds, to wait for new requests to
@@ -1679,11 +1673,11 @@ extern "C" {
          *
          * @param[in] cluster
          * @param[in] delay_us
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_cluster_set_coalesce_delay(w_Cass_Cluster* cluster,
-                int64_t delay_us);
+            w_cassandra_cluster_set_coalesce_delay(_In_ w_cass_cluster* pCluster,
+                _In_ int64_t pDelayUs);
 
         /**
          * Sets the ratio of time spent processing new requests versus handling the I/O
@@ -1697,11 +1691,11 @@ extern "C" {
          *
          * @param[in] cluster
          * @param[in] ratio
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_cluster_set_new_request_ratio(w_Cass_Cluster* cluster,
-                int32_t ratio);
+            w_cassandra_cluster_set_new_request_ratio(_In_ w_cass_cluster* pCluster, 
+                _In_ int32_t pRatio);
 
         /**
          * Sets the maximum number of connections that will be created concurrently.
@@ -1717,12 +1711,12 @@ extern "C" {
          *
          * @param[in] cluster
          * @param[in] num_connections
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT 
             w_Cass_Error
-            w_cassandra_cluster_set_max_concurrent_creation(w_Cass_Cluster* cluster,
-                unsigned num_connections);
+            w_cassandra_cluster_set_max_concurrent_creation(_In_ w_cass_cluster* pCluster,
+                _In_ unsigned pNumConnections);
 
         /**
          * Sets the threshold for the maximum number of concurrent requests in-flight
@@ -1738,11 +1732,11 @@ extern "C" {
          *
          * @param[in] cluster
          * @param[in] num_requests
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_cluster_set_max_concurrent_requests_threshold(w_Cass_Cluster* cluster,
-                unsigned num_requests);
+            w_cassandra_cluster_set_max_concurrent_requests_threshold(_In_ w_cass_cluster* pCluster,
+                _In_  unsigned pNumConnections);
 
         /**
          * Sets the maximum number of requests processed by an IO worker
@@ -1757,11 +1751,11 @@ extern "C" {
          *
          * @param[in] cluster
          * @param[in] num_requests
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_cluster_set_max_requests_per_flush(w_Cass_Cluster* cluster,
-                unsigned num_requests);
+            w_cassandra_cluster_set_max_requests_per_flush(_In_ w_cass_cluster* cluster,
+                _In_ unsigned pNumRequests);
 
         /**
          * Sets the high water mark for the number of bytes outstanding
@@ -1777,11 +1771,11 @@ extern "C" {
          *
          * @param[in] cluster
          * @param[in] num_bytes
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_cluster_set_write_bytes_high_water_mark(w_Cass_Cluster* cluster,
-                unsigned num_bytes);
+            w_cassandra_cluster_set_write_bytes_high_water_mark(_In_ w_cass_cluster* pCluster,
+                _In_  unsigned pNumBytes);
 
         /**
          * Sets the low water mark for number of bytes outstanding on a
@@ -1797,11 +1791,11 @@ extern "C" {
          *
          * @param[in] cluster
          * @param[in] num_bytes
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_cluster_set_write_bytes_low_water_mark(w_Cass_Cluster* cluster,
-                unsigned num_bytes);
+            w_cassandra_cluster_set_write_bytes_low_water_mark(_In_ w_cass_cluster* pCluster,
+                _In_ unsigned pNumBytes);
 
         /**
          * Sets the high water mark for the number of requests queued waiting
@@ -1818,11 +1812,11 @@ extern "C" {
          *
          * @param[in] cluster
          * @param[in] num_requests
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_cluster_set_pending_requests_high_water_mark(w_Cass_Cluster* cluster,
-                unsigned num_requests);
+            w_cassandra_cluster_set_pending_requests_high_water_mark(_In_ w_cass_cluster* pCluster,
+                _In_   unsigned pNumRequests);
 
         /**
          * Sets the low water mark for the number of requests queued waiting
@@ -1839,11 +1833,11 @@ extern "C" {
          *
          * @param[in] cluster
          * @param[in] num_requests
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_cluster_set_pending_requests_low_water_mark(w_Cass_Cluster* cluster,
-                unsigned num_requests);
+            w_cassandra_cluster_set_pending_requests_low_water_mark(_In_ w_cass_cluster* pCluster,
+                _In_  unsigned pNumRequests);
 
         /**
          * Sets the timeout for connecting to a node.
@@ -1856,8 +1850,8 @@ extern "C" {
          * @param[in] timeout_ms Connect timeout in milliseconds
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_cluster_set_connect_timeout(w_Cass_Cluster* cluster,
-                unsigned timeout_ms);
+            w_cassandra_cluster_set_connect_timeout(_In_ w_cass_cluster* pCluster, 
+                _In_  unsigned pTimeoutMs);
 
         /**
          * Sets the timeout for waiting for a response from a node.
@@ -1870,8 +1864,8 @@ extern "C" {
          * @param[in] timeout_ms Request timeout in milliseconds. Use 0 for no timeout.
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_cluster_set_request_timeout(w_Cass_Cluster* cluster,
-                unsigned timeout_ms);
+            w_cassandra_cluster_set_request_timeout(_In_ w_cass_cluster* pCluster,
+                _In_ unsigned pTimeoutMs);
 
         /**
          * Sets the timeout for waiting for DNS name resolution.
@@ -1884,8 +1878,7 @@ extern "C" {
          * @param[in] timeout_ms Request timeout in milliseconds
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_cluster_set_resolve_timeout(w_Cass_Cluster* cluster,
-                unsigned timeout_ms);
+            w_cassandra_cluster_set_resolve_timeout(_In_ w_cass_cluster* pCluster, _In_ unsigned pTimeoutMs);
 
         /**
          * Sets the maximum time to wait for schema agreement after a schema change
@@ -1899,8 +1892,8 @@ extern "C" {
          * @param[in] wait_time_ms Wait time in milliseconds
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_cluster_set_max_schema_wait_time(w_Cass_Cluster* cluster,
-                unsigned wait_time_ms);
+            w_cassandra_cluster_set_max_schema_wait_time(_In_ w_cass_cluster* pCluster,
+                _In_ unsigned pWaitTimeMs);
 
 
         /**
@@ -1912,8 +1905,8 @@ extern "C" {
          * @param[in] max_wait_time_ms
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_cluster_set_tracing_max_wait_time(w_Cass_Cluster* cluster,
-                unsigned max_wait_time_ms);
+            w_cassandra_cluster_set_tracing_max_wait_time(_In_ w_cass_cluster* pCluster,
+                _In_ unsigned pMaxWaitTimeMs);
 
         /**
          * Sets the amount of time to wait between attempts to check to see if tracing is
@@ -1925,8 +1918,8 @@ extern "C" {
          * @param[in] retry_wait_time_ms
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_cluster_set_tracing_retry_wait_time(w_Cass_Cluster* cluster,
-                unsigned retry_wait_time_ms);
+            w_cassandra_cluster_set_tracing_retry_wait_time(_In_ w_cass_cluster* pCluster,
+                _In_ unsigned pRetryWaitTimeMs);
 
         /**
          * Sets the consistency level to use for checking to see if tracing data is
@@ -1938,8 +1931,8 @@ extern "C" {
          * @param[in] consistency
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_cluster_set_tracing_consistency(w_Cass_Cluster* cluster,
-                W_Cass_Consistency consistency);
+            w_cassandra_cluster_set_tracing_consistency(_In_ w_cass_cluster* pCluster,
+                _In_  w_cass_consistency pConsistency);
 
 
         /**
@@ -1952,12 +1945,12 @@ extern "C" {
          * @param[in] password
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_cluster_set_credentials(w_Cass_Cluster* cluster,
-                const char* username,
-                const char* password);
+            w_cassandra_cluster_set_credentials(_In_ w_cass_cluster* pCluster, 
+                _In_ const char* pUsername, 
+                _In_ const char* pPassword);
 
         /**
-         * Same as cass_cluster_set_credentials(), but with lengths for string
+         * Same as w_cassandra_cluster_set_credentials(), but with lengths for string
          * parameters.
          *
          * @public @memberof w_Cass_Cluster
@@ -1967,16 +1960,16 @@ extern "C" {
          * @param[in] username_length
          * @param[in] password
          * @param[in] password_length
-         * @return same as cass_cluster_set_credentials()
+         * @return same as w_cassandra_cluster_set_credentials()
          *
-         * @see cass_cluster_set_credentials();
+         * @see w_cassandra_cluster_set_credentials();
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_cluster_set_credentials_n(w_Cass_Cluster* cluster,
-                const char* username,
-                size_t username_length,
-                const char* password,
-                size_t password_length);
+            w_cassandra_cluster_set_credentials_n(_In_ w_cass_cluster* pCluster,
+                _In_ const char* pUsername,
+                _In_ size_t pUsernameLength,
+                _In_ const char* pPassword,
+                _In_  size_t pPasswordLength) ;
 
         /**
          * Configures the cluster to use round-robin load balancing.
@@ -1989,7 +1982,7 @@ extern "C" {
          * @param[in] cluster
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_cluster_set_load_balance_round_robin(w_Cass_Cluster* cluster);
+            w_cassandra_cluster_set_load_balance_round_robin(_In_ w_cass_cluster * pCluster);
 
         /**
          * Configures the cluster to use DC-aware load balancing.
@@ -2017,17 +2010,17 @@ extern "C" {
          * @param[in] allow_remote_dcs_for_local_cl Allows remote hosts to be used if no
          * local dc hosts are available and the consistency level is LOCAL_ONE or
          * LOCAL_QUORUM (<b>deprecated</b>)
-         * @return CASS_OK if successful, otherwise an error occurred
+         * @return W_SUCCESS if successful, otherwise an error occurred
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_cluster_set_load_balance_dc_aware(w_Cass_Cluster* cluster,
-                const char* local_dc,
-                unsigned used_hosts_per_remote_dc,
-                w_bool_t allow_remote_dcs_for_local_cl);
+            w_cassandra_cluster_set_load_balance_dc_aware(_In_ w_cass_cluster * pCluster,
+                _In_ const char* pLocalDc, 
+                _In_  unsigned pUsedHostsPerRemoteDc,
+                _In_ w_bool_t pAllowRemoteDcsForLocalCl);
 
 
         /**
-         * Same as cass_cluster_set_load_balance_dc_aware(), but with lengths for string
+         * Same as w_cassandra_cluster_set_load_balance_dc_aware(), but with lengths for string
          * parameters.
          *
          * @deprecated The remote DC settings for DC-aware are not suitable for most
@@ -2044,14 +2037,14 @@ extern "C" {
          * @param[in] allow_remote_dcs_for_local_cl (<b>deprecated</b>)
          * @return same as cass_cluster_set_load_balance_dc_aware()
          *
-         * @see cass_cluster_set_load_balance_dc_aware()
+         * @see w_cassandra_cluster_set_load_balance_dc_aware()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_cluster_set_load_balance_dc_aware_n(w_Cass_Cluster* cluster,
-                const char* local_dc,
-                size_t local_dc_length,
-                unsigned used_hosts_per_remote_dc,
-                w_bool_t allow_remote_dcs_for_local_cl);
+            w_cassandra_cluster_set_load_balance_dc_aware_n(_In_ w_cass_cluster * pCluster,
+                _In_ const char* pLocalDc,
+                _In_ size_t pLocalDcLength, 
+                _In_  unsigned pUsedHostsPerRemoteDc,
+                _In_  w_bool_t pAllowRemoteDcsForLocalCl);
 
         /**
          * Configures the cluster to use token-aware request routing or not.
@@ -2072,8 +2065,8 @@ extern "C" {
          * @param[in] enabled
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_cluster_set_token_aware_routing(w_Cass_Cluster* cluster,
-                w_bool_t enabled);
+            w_cassandra_cluster_set_token_aware_routing(_In_ w_cass_cluster* pCluster,
+                _In_ w_bool_t pEnabled);
 
 
         /**
@@ -2092,8 +2085,8 @@ extern "C" {
          * @param[in] enabled
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_cluster_set_token_aware_routing_shuffle_replicas(w_Cass_Cluster* cluster,
-                w_bool_t enabled);
+            w_cassandra_cluster_set_token_aware_routing_shuffle_replicas(_In_ w_cass_cluster* pCluster,
+                _In_  w_bool_t pEnabled);
 
         /**
          * Configures the cluster to use latency-aware request routing or not.
@@ -2110,8 +2103,8 @@ extern "C" {
          * @param[in] enabled
          */
         W_SYSTEM_EXPORT 
-            void   w_cassandra_cluster_set_latency_aware_routing(w_Cass_Cluster* cluster,
-                w_bool_t enabled);
+            void   w_cassandra_cluster_set_latency_aware_routing(_In_ w_cass_cluster* pCluster, 
+                _In_  w_bool_t pEnabled);
 
         /**
          * Configures the settings for latency-aware request routing.
@@ -2141,12 +2134,12 @@ extern "C" {
          * be considered by the policy.
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_cluster_set_latency_aware_routing_settings(w_Cass_Cluster* cluster,
-                double exclusion_threshold,
-                uint64_t scale_ms,
-                uint64_t retry_period_ms,
-                uint64_t update_rate_ms,
-                uint64_t min_measured);
+            w_cassandra_cluster_set_latency_aware_routing_settings(_In_ w_cass_cluster* pCluster,
+                _In_  double pExclusionThreshold,
+                _In_ uint64_t pScaleMs,
+                _In_  uint64_t pRetryPeriodMs,
+                _In_ uint64_t pUpdateRateMs,
+                _In_ uint64_t pMinMeasured);
 
         /**
          * Sets/Appends whitelist hosts. The first call sets the whitelist hosts and
@@ -2169,11 +2162,11 @@ extern "C" {
          * this call.
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_cluster_set_whitelist_filtering(w_Cass_Cluster* cluster,
-                const char* hosts);
+            w_cassandra_cluster_set_whitelist_filtering(_In_ w_cass_cluster* pCluster,
+                _In_ const char* pHosts);
 
         /**
-         * Same as cass_cluster_set_whitelist_filtering(), but with lengths for
+         * Same as w_cassandra_cluster_set_whitelist_filtering(), but with lengths for
          * string parameters.
          *
          * @public @memberof w_Cass_Cluster
@@ -2181,14 +2174,14 @@ extern "C" {
          * @param[in] cluster
          * @param[in] hosts
          * @param[in] hosts_length
-         * @return same as cass_cluster_set_whitelist_filtering()
+         * @return same as w_cassandra_cluster_set_whitelist_filtering()
          *
-         * @see cass_cluster_set_whitelist_filtering()
+         * @see w_cassandra_cluster_set_whitelist_filtering()
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_cluster_set_whitelist_filtering_n(w_Cass_Cluster* cluster,
-                const char* hosts,
-                size_t hosts_length);
+            w_cassandra_cluster_set_whitelist_filtering_n(_In_ w_cass_cluster* pCluster,
+                _In_ const char* pHosts,
+                size_t pHostsLength);
 
         /**
          * Sets/Appends blacklist hosts. The first call sets the blacklist hosts and
@@ -2211,11 +2204,11 @@ extern "C" {
          * this call.
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_cluster_set_blacklist_filtering(w_Cass_Cluster* cluster,
-                const char* hosts);
+            w_cassandra_cluster_set_blacklist_filtering(_In_ w_cass_cluster* pCluster,
+                _In_  const char* pHosts);
 
         /**
-         * Same as cass_cluster_set_blacklist_filtering_hosts(), but with lengths for
+         * Same as w_cassandra_cluster_set_blacklist_filtering_hosts(), but with lengths for
          * string parameters.
          *
          * @public @memberof w_Cass_Cluster
@@ -2223,17 +2216,17 @@ extern "C" {
          * @param[in] cluster
          * @param[in] hosts
          * @param[in] hosts_length
-         * @return same as cass_cluster_set_blacklist_filtering()
+         * @return same as w_cassandra_cluster_set_blacklist_filtering()
          *
-         * @see cass_cluster_set_blacklist_filtering()
+         * @see w_cassandra_cluster_set_blacklist_filtering()
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_cluster_set_blacklist_filtering_n(w_Cass_Cluster* cluster,
-                const char* hosts,
-                size_t hosts_length);
+            w_cassandra_cluster_set_blacklist_filtering_n(_In_ w_cass_cluster* pCluster, 
+                _In_  const char* pHosts, 
+                _In_ size_t pHostsLength);
 
         /**
-         * Same as cass_cluster_set_whitelist_filtering(), but whitelist all hosts of a dc
+         * Same as w_cassandra_cluster_set_whitelist_filtering(), but whitelist all hosts of a dc
          *
          * Examples: "dc1", "dc1,dc2"
          *
@@ -2245,11 +2238,11 @@ extern "C" {
          * memory pointed to by this parameter can be freed after this call.
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_cluster_set_whitelist_dc_filtering(w_Cass_Cluster* cluster,
-                const char* dcs);
+            w_cassandra_cluster_set_whitelist_dc_filtering(_In_ w_cass_cluster* pCluster,
+                _In_ const char* pDcs);
 
         /**
-         * Same as cass_cluster_set_whitelist_dc_filtering(), but with lengths for
+         * Same as w_cassandra_cluster_set_whitelist_dc_filtering(), but with lengths for
          * string parameters.
          *
          * @public @memberof w_Cass_Cluster
@@ -2257,17 +2250,17 @@ extern "C" {
          * @param[in] cluster
          * @param[in] dcs
          * @param[in] dcs_length
-         * @return same as cass_cluster_set_whitelist_dc_filtering()
+         * @return same as w_cassandra_cluster_set_whitelist_dc_filtering()
          *
-         * @see cass_cluster_set_whitelist_dc_filtering()
+         * @see w_cassandra_cluster_set_whitelist_dc_filtering()
          */
         W_SYSTEM_EXPORT void
-            w_cass_cluster_set_whitelist_dc_filtering_n(w_Cass_Cluster* cluster,
-                const char* dcs,
-                size_t dcs_length);
+            w_cassandra_cluster_set_whitelist_dc_filtering_n(_In_ w_cass_cluster* pCluster,
+                _In_ const char* pDcs, 
+                _In_ size_t pDcsLength);
 
         /**
-         * Same as cass_cluster_set_blacklist_filtering(), but blacklist all hosts of a dc
+         * Same as w_cassandra_cluster_set_blacklist_filtering(), but blacklist all hosts of a dc
          *
          * Examples: "dc1", "dc1,dc2"
          *
@@ -2279,11 +2272,11 @@ extern "C" {
          * memory pointed to by this parameter can be freed after this call.
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_cluster_set_blacklist_dc_filtering(w_Cass_Cluster* cluster,
-                const char* dcs);
+            w_cassandra_cluster_set_blacklist_dc_filtering(_In_ w_cass_cluster* pCluster,
+                _In_ const char* pDcs);
 
         /**
-         * Same as cass_cluster_set_blacklist_dc_filtering(), but with lengths for
+         * Same as w_cassandra_cluster_set_blacklist_dc_filtering(), but with lengths for
          * string parameters.
          *
          * @public @memberof w_Cass_Cluster
@@ -2291,14 +2284,14 @@ extern "C" {
          * @param[in] cluster
          * @param[in] dcs
          * @param[in] dcs_length
-         * @return same as cass_cluster_set_blacklist_dc_filtering()
+         * @return same as w_cassandra_cluster_set_blacklist_dc_filtering()
          *
-         * @see cass_cluster_set_blacklist_dc_filtering()
+         * @see w_cassandra_cluster_set_blacklist_dc_filtering()
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_cluster_set_blacklist_dc_filtering_n(w_Cass_Cluster* cluster,
-                const char* dcs,
-                size_t dcs_length);
+            w_cassandra_cluster_set_blacklist_dc_filtering_n(_In_ w_cass_cluster* pCluster,
+                _In_  const char* pDcs,
+                _In_ size_t pDcsLength);
 
         /**
          * Enable/Disable Nagle's algorithm on connections.
@@ -2311,8 +2304,8 @@ extern "C" {
          * @param[in] enabled
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_cluster_set_tcp_nodelay(w_Cass_Cluster* cluster,
-                w_bool_t enabled);
+            w_cassandra_cluster_set_tcp_nodelay(_In_ w_cass_cluster* pCluster,
+                _In_  w_bool_t pEnabled);
 
         /**
          * Enable/Disable TCP keep-alive
@@ -2327,9 +2320,9 @@ extern "C" {
          * `enabled` is false.
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_cluster_set_tcp_keepalive(w_Cass_Cluster* cluster,
-                w_bool_t enabled,
-                unsigned delay_secs);
+            w_cassandra_cluster_set_tcp_keepalive(_In_ w_cass_cluster* pCluster,
+                _In_ w_bool_t pEnabled,
+                _In_ unsigned pDelaySecs);
         /**
          * Sets the timestamp generator used to assign timestamps to all requests
          * unless overridden by setting the timestamp on a statement or a batch.
@@ -2343,12 +2336,12 @@ extern "C" {
          * @param[in] cluster
          * @param[in] timestamp_gen
          *
-         * @see cass_statement_set_timestamp()
-         * @see cass_batch_set_timestamp()
+         * @see w_cassandra_statement_set_timestamp()
+         * @see w_cassandra_batch_set_timestamp()
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_cluster_set_timestamp_gen(w_Cass_Cluster* cluster,
-                w_Cass_Time_stamp_Gen* timestamp_gen);
+            w_cassandra_cluster_set_timestamp_gen(_In_ w_cass_cluster* pCluster,
+                _In_ w_cass_time_stamp_gen* pTimestampGen);
 
         /**
          * Sets the amount of time between heartbeat messages and controls the amount
@@ -2364,8 +2357,8 @@ extern "C" {
          * @param[in] interval_secs Use 0 to disable heartbeat messages
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_cluster_set_connection_heartbeat_interval(w_Cass_Cluster* cluster,
-                unsigned interval_secs);
+            w_cassandra_cluster_set_connection_heartbeat_interval(_In_ w_cass_cluster* pCluster,
+                _In_ unsigned pIntervalSecs);
 
         /**
          * Sets the amount of time a connection is allowed to be without a successful
@@ -2379,15 +2372,15 @@ extern "C" {
          * @param[in] timeout_secs
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_cluster_set_connection_idle_timeout(w_Cass_Cluster* cluster,
-                unsigned timeout_secs);
+            w_cassandra_cluster_set_connection_idle_timeout(_In_ w_cass_cluster* pCluster,
+                _In_  unsigned pTimeoutSecs);
 
         /**
          * Sets the retry policy used for all requests unless overridden by setting
          * a retry policy on a statement or a batch.
          *
          * <b>Default:</b> The same policy as would be created by the function:
-         * cass_retry_policy_default_new(). This policy will retry on a read timeout
+         * w_cassandra_retry_policy_default_new(). This policy will retry on a read timeout
          * if there was enough replicas, but no data present, on a write timeout if a
          * logged batch request failed to write the batch log, and on a unavailable
          * error it retries using a new host. In all other cases the default policy
@@ -2398,18 +2391,18 @@ extern "C" {
          * @param[in] cluster
          * @param[in] retry_policy
          *
-         * @see cass_retry_policy_default_new()
-         * @see cass_statement_set_retry_policy()
-         * @see cass_batch_set_retry_policy()
+         * @see w_cassandra_retry_policy_default_new()
+         * @see w_cassandra_statement_set_retry_policy()
+         * @see w_cassandra_batch_set_retry_policy()
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_cluster_set_retry_policy(w_Cass_Cluster* cluster,
-                w_Cass_Retry_Policy* retry_policy);
+            w_cassandra_cluster_set_retry_policy(_In_ w_cass_cluster* pCluster,
+                _In_ w_cass_retry_policy* pRetryPolicy);
 
         /**
          * Enable/Disable retrieving and updating schema metadata. If disabled
          * this is allows the driver to skip over retrieving and updating schema
-         * metadata and cass_session_get_schema_meta() will always return an empty object.
+         * metadata and w_cassandra_session_get_schema_meta() will always return an empty object.
          * This can be useful for reducing the startup overhead of short-lived sessions.
          *
          * <b>Default:</b> cass_true (enabled).
@@ -2419,11 +2412,11 @@ extern "C" {
          * @param[in] cluster
          * @param[in] enabled
          *
-         * @see cass_session_get_schema_meta()
+         * @see w_cassandra_session_get_schema_meta()
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_cluster_set_use_schema(w_Cass_Cluster* cluster,
-                w_bool_t enabled);
+            w_cassandra_cluster_set_use_schema(_In_ w_cass_cluster* pCluster, 
+                _In_ w_bool_t pEnabled);
 
         /**
          * Enable/Disable retrieving hostnames for IP addresses using reverse IP lookup.
@@ -2437,13 +2430,13 @@ extern "C" {
          *
          * @param[in] cluster
          * @param[in] enabled
-         * @return CASS_OK if successful, otherwise an error occurred
+         * @return W_SUCCESS if successful, otherwise an error occurred
          *
-         * @see cass_cluster_set_resolve_timeout()
+         * @see w_cassandra_cluster_set_resolve_timeout()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_cluster_set_use_hostname_resolution(w_Cass_Cluster* cluster,
-                w_bool_t enabled);
+            w_cassandra_cluster_set_use_hostname_resolution(_In_ w_cass_cluster* pCluster,
+                _In_  w_bool_t pEnabled);
 
         /**
          * Enable/Disable the randomization of the contact points list.
@@ -2457,11 +2450,11 @@ extern "C" {
          *
          * @param[in] cluster
          * @param[in] enabled
-         * @return CASS_OK if successful, otherwise an error occurred
+         * @return W_SUCCESS if successful, otherwise an error occurred
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_cluster_set_use_randomized_contact_points(w_Cass_Cluster* cluster,
-                w_bool_t enabled);
+            w_cassandra_cluster_set_use_randomized_contact_points(_In_ w_cass_cluster* pCluster,
+                _In_  w_bool_t pEnabled);
 
         /**
          * Enable constant speculative executions with the supplied settings.
@@ -2471,12 +2464,12 @@ extern "C" {
          * @param[in] cluster
          * @param[in] constant_delay_ms
          * @param[in] max_speculative_executions
-         * @return CASS_OK if successful, otherwise an error occurred
+         * @return W_SUCCESS if successful, otherwise an error occurred
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_cluster_set_constant_speculative_execution_policy(w_Cass_Cluster* cluster,
-                int64_t constant_delay_ms,
-                int max_speculative_executions);
+            w_cassandra_cluster_set_constant_speculative_execution_policy(_In_ w_cass_cluster* pCluster,
+                _In_ int64_t pConstantDelayMs,
+                _In_ int pMaxSpeculativeExecutions);
 
         /**
          * Disable speculative executions
@@ -2486,10 +2479,10 @@ extern "C" {
          * @public @memberof w_Cass_Cluster
          *
          * @param[in] cluster
-         * @return CASS_OK if successful, otherwise an error occurred
+         * @return W_SUCCESS if successful, otherwise an error occurred
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_cluster_set_no_speculative_execution_policy(w_Cass_Cluster* cluster);
+            w_cassandra_cluster_set_no_speculative_execution_policy(_In_ w_cass_cluster* pCluster);
 
         /**
          * Sets the maximum number of "pending write" objects that will be
@@ -2506,11 +2499,11 @@ extern "C" {
          *
          * @param[in] cluster
          * @param[in] num_objects
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_cluster_set_max_reusable_write_objects(w_Cass_Cluster* cluster,
-                unsigned num_objects);
+            w_cassandra_cluster_set_max_reusable_write_objects(_In_ w_cass_cluster* pCluster,
+                _In_  unsigned pNumObjects);
 
         /**
          * Associates a named execution profile which can be utilized during execution.
@@ -2525,18 +2518,18 @@ extern "C" {
          * @param[in] cluster
          * @param[in] name
          * @param[in] profile
-         * @return CASS_OK if successful, otherwise an error occurred
+         * @return W_SUCCESS if successful, otherwise an error occurred
          *
-         * @see cass_batch_set_execution_profile()
-         * @see cass_statement_set_execution_profile()
+         * @see w_cassandra_batch_set_execution_profile()
+         * @see w_cassandra_statement_set_execution_profile()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_cluster_set_execution_profile(w_Cass_Cluster* cluster,
-                const char* name,
-                w_CassExecProfile* profile);
+            w_cassandra_cluster_set_execution_profile(_In_ w_cass_cluster* pCluster,
+                _In_ const char* pName,
+                _In_  w_cass_exec_profile* pProfile);
 
         /**
-         * Same as cass_cluster_add_execution_profile(), but with lengths for string
+         * Same as w_cassandra_cluster_add_execution_profile(), but with lengths for string
          * parameters.
          *
          * @public @memberof w_Cass_Cluster
@@ -2547,14 +2540,14 @@ extern "C" {
          * @param[in] profile
          * @return same as cass_cluster_set_execution_profile()
          *
-         * @see cass_batch_set_execution_profile()
-         * @see cass_statement_set_execution_profile()
+         * @see w_cassandra_batch_set_execution_profile()
+         * @see w_cassandra_statement_set_execution_profile()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_cluster_set_execution_profile_n(w_Cass_Cluster* cluster,
-                const char* name,
-                size_t name_length,
-                w_CassExecProfile* profile);
+            w_cassandra_cluster_set_execution_profile_n(_In_ w_cass_cluster* pCluster,
+                _In_ const char* pName,
+                _In_ size_t pNameLength,
+                _In_ w_cass_exec_profile* pProfile);
 
         /**
          * Prepare statements on all available hosts.
@@ -2565,11 +2558,11 @@ extern "C" {
          *
          * @param cluster
          * @param enabled
-         * @return CASS_OK if successful, otherwise an error occurred
+         * @return W_SUCCESS if successful, otherwise an error occurred
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_cluster_set_prepare_on_all_hosts(w_Cass_Cluster* cluster,
-                w_bool_t enabled);
+            w_cassandra_cluster_set_prepare_on_all_hosts(_In_ w_cass_cluster* pCluster,
+                _In_ w_bool_t pEnabled);
 
         /**
          * Enable pre-preparing cached prepared statements when existing hosts become
@@ -2585,11 +2578,11 @@ extern "C" {
          *
          * @param cluster
          * @param enabled
-         * @return CASS_OK if successful, otherwise an error occurred
+         * @return W_SUCCESS if successful, otherwise an error occurred
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_cluster_set_prepare_on_up_or_add_host(w_Cass_Cluster* cluster,
-                w_bool_t enabled);
+            w_cassandra_cluster_set_prepare_on_up_or_add_host(_In_ w_cass_cluster* pCluster,
+                _In_ w_bool_t pEnabled);
 
         /**
          * Enable the <b>NO_COMPACT</b> startup option.
@@ -2610,8 +2603,8 @@ extern "C" {
          * @param[in] enabled
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_cluster_set_no_compact(w_Cass_Cluster* cluster,
-                w_bool_t enabled);
+            w_cassandra_cluster_set_no_compact(_In_ w_cass_cluster* pCluster,
+                _In_ w_bool_t pEnabled);
 
         /**
          * Sets a callback for handling host state changes in the cluster.
@@ -2624,12 +2617,12 @@ extern "C" {
          * @param[in] cluster
          * @param[in] callback
          * @param[in] data
-         * @return CASS_OK if successful, otherwise and error occurred
+         * @return W_SUCCESS if successful, otherwise and error occurred
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_cluster_set_host_listener_callback(w_Cass_Cluster* cluster,
-                CassHostListenerCallback callback,
-                void* data);
+            w_cassandra_cluster_set_host_listener_callback(_In_ w_cass_cluster* pCluster,
+                _In_ w_cass_host_listener_callback pCallback,
+                _In_  void* pData);
 
         /**
          * Sets the secure connection bundle path for processing DBaaS credentials.
@@ -2639,62 +2632,62 @@ extern "C" {
          *
          * @param[in] cluster
          * @param[in] path Absolute path to DBaaS credentials file.
-         * @return CASS_OK if successful, otherwise error occured.
+         * @return W_SUCCESS if successful, otherwise error occured.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_cluster_set_cloud_secure_connection_bundle(w_Cass_Cluster* cluster,
-                const char* path);
+            w_cassandra_cluster_set_cloud_secure_connection_bundle(_In_ w_cass_cluster* pCluster,
+                _In_ const char* pPath);
 
         /**
-         * Same as cass_cluster_set_cloud_secure_connection_bundle(), but with lengths
+         * Same as w_cassandra_cluster_set_cloud_secure_connection_bundle(), but with lengths
          * for string parameters.
          *
-         * @see cass_cluster_set_cloud_secure_connection_bundle()
+         * @see w_cassandra_cluster_set_cloud_secure_connection_bundle()
          *
          * @param[in] cluster
          * @param[in] path Absolute path to DBaaS credentials file.
          * @param[in] path_length Length of path variable.
-         * @return CASS_OK if successful, otherwise error occured.
+         * @return W_SUCCESS if successful, otherwise error occured.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_cluster_set_cloud_secure_connection_bundle_n(w_Cass_Cluster* cluster,
-                const char* path,
-                size_t path_length);
+            w_cassandra_cluster_set_cloud_secure_connection_bundle_n(_In_ w_cass_cluster* pCluster, 
+                _In_ const char* pPath, 
+                _In_ size_t pPathLength);
 
         /**
-         * Same as cass_cluster_set_cloud_secure_connection_bundle(), but it does not
+         * Same as w_cassandra_cluster_set_cloud_secure_connection_bundle(), but it does not
          * initialize the underlying SSL library implementation. The SSL library still
          * needs to be initialized, but it's up to the client application to handle
-         * initialization. This is similar to the function cass_ssl_new_no_lib_init(),
+         * initialization. This is similar to the function w_cassandra_ssl_new_no_lib_init(),
          * and its documentation should be used as a reference to properly initialize
          * the underlying SSL library.
          *
-         * @see cass_ssl_new_no_lib_init()
-         * @see cass_cluster_set_cloud_secure_connection_bundle()
+         * @see w_cassandra_ssl_new_no_lib_init()
+         * @see w_cassandra_cluster_set_cloud_secure_connection_bundle()
          *
          * @param[in] cluster
          * @param[in] path Absolute path to DBaaS credentials file.
-         * @return CASS_OK if successful, otherwise error occured.
+         * @return W_SUCCESS if successful, otherwise error occured.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_cluster_set_cloud_secure_connection_bundle_no_ssl_lib_init(w_Cass_Cluster* cluster,
-                const char* path);
+            w_cassandra_cluster_set_cloud_secure_connection_bundle_no_ssl_lib_init(_In_ w_cass_cluster* pCluster,
+                _In_ const char* pPath);
 
         /**
-         * Same as cass_cluster_set_cloud_secure_connection_bundle_no_ssl_lib_init(),
+         * Same as w_cassandra_cluster_set_cloud_secure_connection_bundle_no_ssl_lib_init(),
          * but with lengths for string parameters.
          *
-         * @see cass_cluster_set_cloud_secure_connection_bundle_no_ssl_lib_init()
+         * @see w_cassandra_cluster_set_cloud_secure_connection_bundle_no_ssl_lib_init()
          *
          * @param[in] cluster
          * @param[in] path Absolute path to DBaaS credentials file.
          * @param[in] path_length Length of path variable.
-         * @return CASS_OK if successful, otherwise error occured.
+         * @return W_SUCCESS if successful, otherwise error occured.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_cluster_set_cloud_secure_connection_bundle_no_ssl_lib_init_n(w_Cass_Cluster* cluster,
-                const char* path,
-                size_t path_length);
+            w_cassandra_cluster_set_cloud_secure_connection_bundle_no_ssl_lib_init_n(_In_ w_cass_cluster* pCluster, 
+                _In_  const char* pPath,
+                _In_ size_t pPathLength);
 
         /**
          * Set the application name.
@@ -2709,11 +2702,11 @@ extern "C" {
          * @param[in] application_name
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_cluster_set_application_name(w_Cass_Cluster* cluster,
-                const char* application_name);
+            w_cassandra_cluster_set_application_name(_In_ w_cass_cluster* pCluster, 
+                _In_ const char* pApplicationName);
 
         /**
-         * Same as cass_cluster_set_application_name(), but with lengths for string
+         * Same as w_cassandra_cluster_set_application_name(), but with lengths for string
          * parameters.
          *
          * @public @memberof w_Cass_Cluster
@@ -2723,9 +2716,9 @@ extern "C" {
          * @param[in] application_name_length
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_cluster_set_application_name_n(w_Cass_Cluster* cluster,
-                const char* application_name,
-                size_t application_name_length);
+            w_cassandra_cluster_set_application_name_n(_In_ w_cass_cluster* pCluster, 
+                _In_ const char* pAplicationName,
+                _In_  size_t pApplicationNameLength);
 
         /**
          * Set the application version.
@@ -2742,11 +2735,11 @@ extern "C" {
          */
 
         W_SYSTEM_EXPORT void
-            w_cassandra_cluster_set_application_version(w_Cass_Cluster* cluster,
-                const char* application_version);
+            w_cassandra_cluster_set_application_version(_In_ w_cass_cluster* pCluster,
+                _In_ const char* pApplicationVersion);
 
         /**
-         * Same as cass_cluster_set_application_version(), but with lengths for string
+         * Same as w_cassandra_cluster_set_application_version(), but with lengths for string
          * parameters.
          *
          * @public @memberof w_Cass_Cluster
@@ -2756,9 +2749,9 @@ extern "C" {
          * @param[in] application_version_length
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_cluster_set_application_version_n(w_Cass_Cluster* cluster,
-                const char* application_version,
-                size_t application_version_length);
+            w_cassandra_cluster_set_application_version_n(_In_ w_cass_cluster* pCluster,
+                _In_ const char* pApplicationVersion,
+                _In_ size_t pApplicationVersionLength);
 
         /**
          * Set the client id.
@@ -2767,7 +2760,7 @@ extern "C" {
          * aid in debugging issues with large clusters where there are a lot of client
          * connections.
          *
-         * Default: UUID v4 generated (@see cass_session_get_client_id())
+         * Default: UUID v4 generated (@see w_cassandra_session_get_client_id())
          *
          * @public @memberof w_Cass_Cluster
          *
@@ -2775,7 +2768,8 @@ extern "C" {
          * @param[in] client_id
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_cluster_set_client_id(w_Cass_Cluster* cluster, w_CassUuid client_id);
+            w_cassandra_cluster_set_client_id(_In_ w_cass_cluster* pCluster, 
+                _In_ w_cass_uuid pClientId);
 
         /**
          * Sets the amount of time between monitor reporting event messages.
@@ -2788,8 +2782,8 @@ extern "C" {
          * @param[in] interval_secs Use 0 to disable monitor reporting event messages.
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_cluster_set_monitor_reporting_interval(w_Cass_Cluster* cluster,
-                unsigned interval_secs);
+            w_cassandra_cluster_set_monitor_reporting_interval(_In_ w_cass_cluster* pCluster,
+                _In_   unsigned pIntervalSecs);
 
         /***********************************************************************************
          *
@@ -2804,9 +2798,9 @@ extern "C" {
           *
           * @return Returns a session that must be freed.
           *
-          * @see cass_session_free()
+          * @see w_cassandra_session_free()
           */
-        W_SYSTEM_EXPORT w_Cass_Session*
+        W_SYSTEM_EXPORT w_cass_session*
             w_cassandra_session_new();
 
         /**
@@ -2821,7 +2815,7 @@ extern "C" {
          * @param[in] session
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_session_free(w_Cass_Session* session);
+            w_cassandra_session_free(_In_ w_cass_session* pSession);
 
         /**
          * Connects a session.
@@ -2833,11 +2827,10 @@ extern "C" {
          * is immutable after connection.
          * @return A future that must be freed.
          *
-         * @see cass_session_close()
+         * @see w_cassandra_session_close()
          */
-        W_SYSTEM_EXPORT w_Cass_Future*
-            w_cassandra_session_connect(w_Cass_Session* session,
-                const w_Cass_Cluster* cluster);
+        W_SYSTEM_EXPORT w_cass_future* w_cassandra_session_connect(_In_ w_cass_session* pSession,
+            _In_ const w_cass_cluster* pCluster);
 
         /**
          * Connects a session and sets the keyspace.
@@ -2850,15 +2843,15 @@ extern "C" {
          * @param[in] keyspace
          * @return A future that must be freed.
          *
-         * @see cass_session_close()
+         * @see w_cassandra_session_close()
          */
-        W_SYSTEM_EXPORT w_Cass_Future*
-            w_cassandra_session_connect_keyspace(w_Cass_Session* session,
-                const w_Cass_Cluster* cluster,
-                const char* keyspace);
+        W_SYSTEM_EXPORT w_cass_future*
+            w_cassandra_session_connect_keyspace(_In_ w_cass_session* pSession,
+            _In_ const w_cass_cluster* pCluster,
+            _In_ const char* pKeyspace);
 
         /**
-         * Same as cass_session_connect_keyspace(), but with lengths for string
+         * Same as w_cassandra_session_connect_keyspace(), but with lengths for string
          * parameters.
          *
          * @public @memberof w_Cass_Session
@@ -2867,15 +2860,15 @@ extern "C" {
          * @param[in] cluster
          * @param[in] keyspace
          * @param[in] keyspace_length
-         * @return same as cass_session_connect_keyspace()
+         * @return same as w_cassandra_session_connect_keyspace()
          *
-         * @see cass_session_connect_keyspace()
+         * @see w_cassandra_session_connect_keyspace()
          */
-        W_SYSTEM_EXPORT w_Cass_Future*
-            w_cassandra_session_connect_keyspace_n(w_Cass_Session* session,
-                const w_Cass_Cluster* cluster,
-                const char* keyspace,
-                size_t keyspace_length);
+        W_SYSTEM_EXPORT w_cass_future*
+            w_cassandra_session_connect_keyspace_n(_In_ w_cass_session* pSession, 
+            _In_ const w_cass_cluster* pCluster,
+            _In_  const char* pKeyspace, 
+            _In_ size_t pKeyspaceLength);
 
         /**
          * Closes the session instance, outputs a close future which can
@@ -2887,8 +2880,8 @@ extern "C" {
          * @param[in] session
          * @return A future that must be freed.
          */
-        W_SYSTEM_EXPORT w_Cass_Future*
-            w_cassandra_session_close(w_Cass_Session* session);
+        W_SYSTEM_EXPORT w_cass_future* 
+            w_cassandra_session_close(_In_ w_cass_session* pSession);
 
         /**
          * Create a prepared statement.
@@ -2900,14 +2893,14 @@ extern "C" {
          * memory pointed to by this parameter can be freed after this call.
          * @return A future that must be freed.
          *
-         * @see cass_future_get_prepared()
+         * @see w_cassandra_future_get_prepared()
          */
-        W_SYSTEM_EXPORT w_Cass_Future*
-            w_cassandra_session_prepare(w_Cass_Session* session,
-                const char* query);
+        W_SYSTEM_EXPORT w_cass_future* 
+            w_cassandra_session_prepare(_In_ w_cass_session* pSession,
+                _In_ const char* pQuery);
 
         /**
-         * Same as cass_session_prepare(), but with lengths for string
+         * Same as w_cassandra_session_prepare(), but with lengths for string
          * parameters.
          *
          * @public @memberof w_Cass_Session
@@ -2915,14 +2908,14 @@ extern "C" {
          * @param[in] session
          * @param[in] query
          * @param[in] query_length
-         * @return same as cass_session_prepare()
+         * @return same as w_cassandra_session_prepare()
          *
-         * @see cass_session_prepare()
+         * @see w_cassandra_session_prepare()
          */
-        W_SYSTEM_EXPORT w_Cass_Future*
-            w_cassandra_session_prepare_n(w_Cass_Session* session,
-                const char* query,
-                size_t query_length);
+        W_SYSTEM_EXPORT w_cass_future* 
+            w_cassandra_session_prepare_n(_In_ w_cass_session* pSession,
+            _In_  const char* pQuery,
+                _In_  size_t pQueryLength);
 
         /**
          * Create a prepared statement from an existing statement.
@@ -2937,11 +2930,11 @@ extern "C" {
          * @param[in] statement
          * @return A future that must be freed.
          *
-         * @see cass_future_get_prepared()
+         * @see w_cassandra_future_get_prepared()
          */
-        W_SYSTEM_EXPORT w_Cass_Future*
-            w_cassandra_session_prepare_from_existing(w_Cass_Session* session,
-                w_Cass_Statement* statement);
+        W_SYSTEM_EXPORT w_cass_future*
+            w_cassandra_session_prepare_from_existing(_In_ w_cass_session* pSession,
+            _In_ w_cass_statement* pStatement);
 
         /**
          * Execute a query or bound statement.
@@ -2952,11 +2945,11 @@ extern "C" {
          * @param[in] statement
          * @return A future that must be freed.
          *
-         * @see cass_future_get_result()
+         * @see w_cassandra_future_get_result()
          */
-        W_SYSTEM_EXPORT w_Cass_Future*
-            w_cassandra_session_execute(w_Cass_Session* session,
-                const w_Cass_Statement* statement);
+        W_SYSTEM_EXPORT w_cass_future* 
+            w_cassandra_session_execute(_In_ w_cass_session* pSession,
+            _In_  const w_cass_statement* pStatement);
 
         /**
          * Execute a batch statement.
@@ -2969,11 +2962,11 @@ extern "C" {
          * @param[in] batch
          * @return A future that must be freed.
          *
-         * @see cass_future_get_result()
+         * @see w_cassandra_future_get_result()
          */
-        W_SYSTEM_EXPORT w_Cass_Future*
-            w_cassandra_session_execute_batch(w_Cass_Session* session,
-                const w_Cass_Batch* batch);
+        W_SYSTEM_EXPORT w_cass_future* 
+            w_cassandra_session_execute_batch(_In_ w_cass_session* pSession,
+            _In_ const w_cass_batch* pBatch);
 
         /**
          * Gets a snapshot of this session's schema metadata. The returned
@@ -2986,10 +2979,10 @@ extern "C" {
          * @param[in] session
          * @return A schema instance that must be freed.
          *
-         * @see cass_schema_meta_free()
+         * @see w_cassandra_schema_meta_free()
          */
-        W_SYSTEM_EXPORT const w_Cass_Schema_Meta*
-            w_cassandra_session_get_schema_meta(const w_Cass_Session* session);
+        W_SYSTEM_EXPORT const  w_cass_schema_meta* 
+            w_cassandra_session_get_schema_meta(_In_ const w_cass_session* pSession);
 
         /**
          * Gets a copy of this session's performance/diagnostic metrics.
@@ -3000,8 +2993,8 @@ extern "C" {
          * @param[out] output
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_session_get_metrics(const w_Cass_Session* session,
-                w_CassMetrics* output);
+            w_cassandra_session_get_metrics(_In_ const  w_cass_session* pSession,
+                _Inout_ w_cass_metrics* pOutput);
 
         /**
          * Gets a copy of this session's speculative execution metrics.
@@ -3012,8 +3005,8 @@ extern "C" {
          * @param[out] output
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_session_get_speculative_execution_metrics(const w_Cass_Session* session,
-                w_Cass_Speculative_Execution_Metrics* output);
+            w_cassandra_session_get_speculative_execution_metrics(_In_ const w_cass_session* pSession,
+                _Inout_ w_cass_speculative_execution_metrics* pOutput);
 
         /**
          * Get the client id.
@@ -3023,8 +3016,8 @@ extern "C" {
          * @param[in] session
          * @return Client id.
          */
-        /*W_SYSTEM_EXPORT 
-            w_CassUuid  w_cassandra_session_get_client_id(w_Cass_Session* session);*/
+        W_SYSTEM_EXPORT w_cass_uuid
+            w_cassandra_session_get_client_id(_In_ w_cass_session* pSession);
 
         /***********************************************************************************
          *
@@ -3040,7 +3033,7 @@ extern "C" {
           * @param[in] schema_meta
           */
         W_SYSTEM_EXPORT void
-            w_cassandra_schema_meta_free(const w_Cass_Schema_Meta* schema_meta);
+            w_cassandra_schema_meta_free(_In_ const w_cass_schema_meta* pSchemaMeta);
 
         /**
          * Gets the version of the schema metadata snapshot.
@@ -3052,7 +3045,7 @@ extern "C" {
          * @return The snapshot version.
          */
         W_SYSTEM_EXPORT uint32_t
-            w_cassandra_schema_meta_snapshot_version(const w_Cass_Schema_Meta* schema_meta);
+            w_cassandra_schema_meta_snapshot_version(_In_ const w_cass_schema_meta* pSchemaMeta);
 
         /**
          * Gets the version of the connected Cassandra cluster.
@@ -3063,8 +3056,8 @@ extern "C" {
          *
          * @return Cassandra's version
          */
-        /*W_SYSTEM_EXPORT 
-            w_CassVersion w_cassandra_schema_meta_version(const w_Cass_Schema_Meta* schema_meta);*/
+        W_SYSTEM_EXPORT w_cass_version 
+            w_cassandra_schema_meta_version(_In_ const w_cass_schema_meta* pSchemaMeta);
 
         /**
          * Gets the keyspace metadata for the provided keyspace name.
@@ -3076,12 +3069,12 @@ extern "C" {
          *
          * @return The metadata for a keyspace. NULL if keyspace does not exist.
          */
-        W_SYSTEM_EXPORT const w_Cass_Key_space_Meta*
-            w_cassandra_schema_meta_keyspace_by_name(const w_Cass_Schema_Meta* schema_meta,
-                const char* keyspace);
+        W_SYSTEM_EXPORT const w_cass_key_space_meta* 
+            w_cassandra_schema_meta_keyspace_by_name(_In_ const w_cass_schema_meta* pSchemaMeta,
+            _In_ const char* pKeyspace);
 
         /**
-         * Same as cass_schema_meta_keyspace_by_name(), but with lengths for string
+         * Same as w_cassandra_schema_meta_keyspace_by_name(), but with lengths for string
          * parameters.
          *
          * @public @memberof w_Cass_Schema_Meta
@@ -3089,14 +3082,14 @@ extern "C" {
          * @param[in] schema_meta
          * @param[in] keyspace
          * @param[in] keyspace_length
-         * @return same as cass_schema_meta_keyspace_by_name()
+         * @return same as w_cassandra_schema_meta_keyspace_by_name()
          *
-         * @see cass_schema_meta_keyspace_by_name()
+         * @see w_cassandra_schema_meta_keyspace_by_name()
          */
-        W_SYSTEM_EXPORT const w_Cass_Key_space_Meta*
-            w_cassandra_schema_meta_keyspace_by_name_n(const w_Cass_Schema_Meta* schema_meta,
-                const char* keyspace,
-                size_t keyspace_length);
+        W_SYSTEM_EXPORT const w_cass_key_space_meta*
+            w_cassandra_schema_meta_keyspace_by_name_n(_In_ const w_cass_schema_meta* pSchemaMeta,
+            _In_ const char* pKeyspace,
+                _In_ size_t pKeyspaceLength);
 
         /**
          * Gets the name of the keyspace.
@@ -3108,9 +3101,9 @@ extern "C" {
          * @param[out] name_length
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_keyspace_meta_name(const w_Cass_Key_space_Meta* keyspace_meta,
-                const char** name,
-                size_t* name_length);
+            w_cassandra_keyspace_meta_name(_In_ const w_cass_key_space_meta* pSchemaMeta,
+                _In_ const char** pName,
+                _In_ size_t* pNameLength);
 
 
         /**
@@ -3122,7 +3115,7 @@ extern "C" {
          * @return cass_true is the keyspace is virtual, otherwise cass_false
          */
         W_SYSTEM_EXPORT w_bool_t
-            w_cassandra_keyspace_meta_is_virtual(const w_Cass_Key_space_Meta* keyspace_meta);
+            w_cassandra_keyspace_meta_is_virtual(_In_ const w_cass_key_space_meta* pKeyspaceMeta);
 
         /**
          * Gets the table metadata for the provided table name.
@@ -3134,12 +3127,12 @@ extern "C" {
          *
          * @return The metadata for a table. NULL if table does not exist.
          */
-        W_SYSTEM_EXPORT const w_Cass_Table_Meta*
-            w_cassandra_keyspace_meta_table_by_name(const w_Cass_Key_space_Meta* keyspace_meta,
-                const char* table);
+        W_SYSTEM_EXPORT const w_cass_table_meta*
+            w_cassandra_keyspace_meta_table_by_name(_In_ const w_cass_key_space_meta* pKeyspaceMeta, 
+            _In_ const char* pTable);
 
         /**
-         * Same as cass_keyspace_meta_table_by_name(), but with lengths for string
+         * Same as w_cassandra_keyspace_meta_table_by_name(), but with lengths for string
          * parameters.
          *
          * @public @memberof w_Cass_Key_space_Meta
@@ -3147,14 +3140,14 @@ extern "C" {
          * @param[in] keyspace_meta
          * @param[in] table
          * @param[in] table_length
-         * @return same as cass_keyspace_meta_table_by_name()
+         * @return same as w_cassandra_keyspace_meta_table_by_name()
          *
-         * @see cass_keyspace_meta_table_by_name()
+         * @see w_cassandra_keyspace_meta_table_by_name()
          */
-        W_SYSTEM_EXPORT const w_Cass_Table_Meta*
-            w_cassandra_keyspace_meta_table_by_name_n(const w_Cass_Key_space_Meta* keyspace_meta,
-                const char* table,
-                size_t table_length);
+        W_SYSTEM_EXPORT const w_cass_value* 
+            w_cassandra_keyspace_meta_field_by_name_n(const w_cass_key_space_meta* pKeyspaceMeta,
+            const char* pName,
+            size_t pNameLength);
 
         /**
          * Gets the materialized view metadata for the provided view name.
@@ -3168,12 +3161,12 @@ extern "C" {
          *
          * @return The metadata for a view. NULL if view does not exist.
          */
-        W_SYSTEM_EXPORT const w_Cass_Materialized_View_Meta*
-            w_cassandra_keyspace_meta_materialized_view_by_name(const w_Cass_Key_space_Meta* keyspace_meta,
-                const char* view);
+        W_SYSTEM_EXPORT const w_cass_materialized_view_meta* 
+            w_cassandra_keyspace_meta_materialized_view_by_name(_In_ const w_cass_key_space_meta* pKeyspaceMeta,
+            _In_ const char* pView);
 
         /**
-         * Same as cass_keyspace_meta_materialized_view_by_name(), but with lengths for string
+         * Same as w_cassandra_keyspace_meta_materialized_view_by_name(), but with lengths for string
          * parameters.
          *
          * @cassandra{3.0+}
@@ -3183,14 +3176,14 @@ extern "C" {
          * @param[in] keyspace_meta
          * @param[in] view
          * @param[in] view_length
-         * @return same as cass_keyspace_meta_materialized_view_by_name()
+         * @return same as w_cassandra_keyspace_meta_materialized_view_by_name()
          *
-         * @see cass_keyspace_meta_materialized_view_by_name()
+         * @see w_cassandra_keyspace_meta_materialized_view_by_name()
          */
-        W_SYSTEM_EXPORT const w_Cass_Materialized_View_Meta*
-            w_cassandra_keyspace_meta_materialized_view_by_name_n(const w_Cass_Key_space_Meta* keyspace_meta,
-                const char* view,
-                size_t view_length);
+        W_SYSTEM_EXPORT const w_cass_materialized_view_meta*
+            w_cassandra_keyspace_meta_materialized_view_by_name_n(_In_ const w_cass_key_space_meta* pKeyspaceMeta, 
+                _In_ const char* pView,
+            _In_  size_t pViewLength);
 
         /**
          * Gets the data type for the provided type name.
@@ -3204,12 +3197,12 @@ extern "C" {
          *
          * @return The data type for a user defined type. NULL if type does not exist.
          */
-        W_SYSTEM_EXPORT const w_Cass_Data_Type*
-            w_cass_keyspace_meta_user_type_by_name(const w_Cass_Key_space_Meta* keyspace_meta,
-                const char* type);
+        W_SYSTEM_EXPORT const w_cass_data_type* 
+            w_cassandra_keyspace_meta_user_type_by_name(_In_ const w_cass_key_space_meta* pKeyspaceMeta,
+            _In_  const char* pType);
 
         /**
-         * Same as cass_keyspace_meta_type_by_name(), but with lengths for string
+         * Same as w_cassandra_keyspace_meta_type_by_name(), but with lengths for string
          * parameters.
          *
          * @cassandra{2.1+}
@@ -3219,14 +3212,14 @@ extern "C" {
          * @param[in] keyspace_meta
          * @param[in] type
          * @param[in] type_length
-         * @return same as cass_keyspace_meta_type_by_name()
+         * @return same as w_cassandra_keyspace_meta_type_by_name()
          *
-         * @see cass_keyspace_meta_type_by_name()
+         * @see w_cassandra_keyspace_meta_type_by_name()
          */
-        W_SYSTEM_EXPORT const w_Cass_Data_Type*
-            w_cassandra_keyspace_meta_user_type_by_name_n(const w_Cass_Key_space_Meta* keyspace_meta,
-                const char* type,
-                size_t type_length);
+        W_SYSTEM_EXPORT const w_cass_data_type* 
+            w_cassandra_keyspace_meta_user_type_by_name_n(_In_ const w_cass_key_space_meta* pKeyspaceMeta,
+            _In_ const char* pType,
+            _In_ size_t pTypelength);
 
         /**
          * Gets the function metadata for the provided function name.
@@ -3242,13 +3235,12 @@ extern "C" {
          *
          * @return The data function for a user defined function. NULL if function does not exist.
          */
-        W_SYSTEM_EXPORT const w_Cass_Function_Meta*
-            w_cassandra_keyspace_meta_function_by_name(const w_Cass_Key_space_Meta* keyspace_meta,
-                const char* name,
-                const char* arguments);
+        W_SYSTEM_EXPORT const w_cass_function_meta* w_cassandra_keyspace_meta_function_by_name(_In_ const  w_cass_key_space_meta* pKeyspaceMeta,
+            _In_ const char* pName, 
+            _In_ const char* pArguments);
 
         /**
-         * Same as cass_keyspace_meta_function_by_name(), but with lengths for string
+         * Same as w_cassandra_keyspace_meta_function_by_name(), but with lengths for string
          * parameters.
          *
          * @cassandra{2.2+}
@@ -3260,16 +3252,15 @@ extern "C" {
          * @param[in] name_length
          * @param[in] arguments
          * @param[in] arguments_length
-         * @return same as cass_keyspace_meta_function_by_name()
+         * @return same as w_cassandra_keyspace_meta_function_by_name()
          *
-         * @see cass_keyspace_meta_function_by_name()
+         * @see w_cassandra_keyspace_meta_function_by_name()
          */
-        W_SYSTEM_EXPORT const w_Cass_Function_Meta*
-            w_cassandra_keyspace_meta_function_by_name_n(const w_Cass_Key_space_Meta* keyspace_meta,
-                const char* name,
-                size_t name_length,
-                const char* arguments,
-                size_t arguments_length);
+        W_SYSTEM_EXPORT const w_cass_function_meta* w_cassandra_keyspace_meta_function_by_name_n(_In_ const  w_cass_key_space_meta* pKeyspaceMeta,
+            _In_ const char* pName,
+            _In_ size_t pNameLength,
+            _In_ const char* pArguments, 
+            _In_ size_t pArgumentsLength);
 
         /**
          * Gets the aggregate metadata for the provided aggregate name.
@@ -3285,13 +3276,12 @@ extern "C" {
          *
          * @return The data aggregate for a user defined aggregate. NULL if aggregate does not exist.
          */
-        W_SYSTEM_EXPORT const w_Cass_Aggregate_Meta*
-            w_cassandra_keyspace_meta_aggregate_by_name(const w_Cass_Key_space_Meta* keyspace_meta,
-                const char* name,
-                const char* arguments);
+        W_SYSTEM_EXPORT const w_cass_aggregate_meta* w_cassandra_keyspace_meta_aggregate_by_name(_In_ const w_cass_key_space_meta* pKeyspaceMeta,
+            _In_ const char* pName,
+            _In_ const char* pArguments);
 
         /**
-         * Same as cass_keyspace_meta_aggregate_by_name(), but with lengths for string
+         * Same as w_cassandra_keyspace_meta_aggregate_by_name(), but with lengths for string
          * parameters.
          *
          * @cassandra{2.2+}
@@ -3303,16 +3293,15 @@ extern "C" {
          * @param[in] name_length
          * @param[in] arguments
          * @param[in] arguments_length
-         * @return same as cass_keyspace_meta_aggregate_by_name()
+         * @return same as w_cassandra_keyspace_meta_aggregate_by_name()
          *
-         * @see cass_keyspace_meta_aggregate_by_name()
+         * @see w_cassandra_keyspace_meta_aggregate_by_name()
          */
-        W_SYSTEM_EXPORT const w_Cass_Aggregate_Meta*
-            w_cassandra_keyspace_meta_aggregate_by_name_n(const w_Cass_Key_space_Meta* keyspace_meta,
-                const char* name,
-                size_t name_length,
-                const char* arguments,
-                size_t arguments_length);
+        W_SYSTEM_EXPORT const w_cass_aggregate_meta* w_cassandra_keyspace_meta_aggregate_by_name_n(_In_ const w_cass_key_space_meta* pKeyspaceMeta,
+            _In_ const char* pName,
+            _In_ size_t pNameLength,
+            _In_  const char* pArguments,
+            _In_ size_t pArgumentsLength);
 
         /**
          * Gets a metadata field for the provided name. Metadata fields allow direct
@@ -3324,12 +3313,11 @@ extern "C" {
          * @param[in] name
          * @return A metadata field value. NULL if the field does not exist.
          */
-        W_SYSTEM_EXPORT const w_Cass_Value*
-            w_cassandra_keyspace_meta_field_by_name(const w_Cass_Key_space_Meta* keyspace_meta,
-                const char* name);
+        W_SYSTEM_EXPORT const w_cass_value* w_cassandra_keyspace_meta_field_by_name(_In_ const w_cass_key_space_meta* pKeyspaceMeta, 
+            _In_  const char* pName);
 
         /**
-         * Same as cass_keyspace_meta_field_by_name(), but with lengths for string
+         * Same as w_cassandra_keyspace_meta_field_by_name(), but with lengths for string
          * parameters.
          *
          * @public @memberof w_Cass_Key_space_Meta
@@ -3337,14 +3325,13 @@ extern "C" {
          * @param[in] keyspace_meta
          * @param[in] name
          * @param[in] name_length
-         * @return same as cass_keyspace_meta_field_by_name()
+         * @return same as w_cassandra_keyspace_meta_field_by_name()
          *
-         * @see cass_keyspace_meta_field_by_name()
+         * @see w_cassandra_keyspace_meta_field_by_name()
          */
-        W_SYSTEM_EXPORT const w_Cass_Value*
-            w_cassandra_keyspace_meta_field_by_name_n(const w_Cass_Key_space_Meta* keyspace_meta,
-                const char* name,
-                size_t name_length);
+        W_SYSTEM_EXPORT const w_cass_value* w_cassandra_keyspace_meta_field_by_name_n(_In_ const w_cass_key_space_meta* pKeyspaceMeta, 
+            _In_ const char* pName,
+            _In_ size_t pNameLength);
 
         /**
          * Gets the name of the table.
@@ -3356,9 +3343,9 @@ extern "C" {
          * @param[out] name_length
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_table_meta_name(const w_Cass_Table_Meta* table_meta,
-                const char** name,
-                size_t* name_length);
+            w_cassandra_table_meta_name(_In_ const w_cass_table_meta* pTableMeta,
+                _Inout_ const char** pName,
+                _Inout_ size_t* pNameLength);
 
         /**
          * Determine if the table is a virtual table.
@@ -3366,10 +3353,10 @@ extern "C" {
          * @public @memberof w_Cass_Table_Meta
          *
          * @param[in] table_meta
-         * @return cass_true is the table is virtual, otherwise cass_false
+         * @return w_cassandra_true is the table is virtual, otherwise cass_false
          */
         W_SYSTEM_EXPORT w_bool_t
-            w_cassandra_table_meta_is_virtual(const w_Cass_Table_Meta* table_meta);
+            w_cassandra_table_meta_is_virtual(_In_ const w_cass_table_meta* pTableMeta);
 
         /**
          * Gets the column metadata for the provided column name.
@@ -3381,12 +3368,12 @@ extern "C" {
          *
          * @return The metadata for a column. NULL if column does not exist.
          */
-        W_SYSTEM_EXPORT const w_Cass_Column_Meta*
-            w_cassandra_table_meta_column_by_name(const w_Cass_Table_Meta* table_meta,
-                const char* column);
+        W_SYSTEM_EXPORT const w_cass_column_meta* 
+            w_cassandra_table_meta_column_by_name(_In_ const w_cass_table_meta* pTableMeta,
+                _In_ const char* pColumn);
 
         /**
-         * Same as cass_table_meta_column_by_name(), but with lengths for string
+         * Same as w_cassandra_table_meta_column_by_name(), but with lengths for string
          * parameters.
          *
          * @public @memberof w_Cass_Table_Meta
@@ -3394,14 +3381,14 @@ extern "C" {
          * @param[in] table_meta
          * @param[in] column
          * @param[in] column_length
-         * @return same as cass_table_meta_column_by_name()
+         * @return same as w_cassandra_table_meta_column_by_name()
          *
-         * @see cass_table_meta_column_by_name()
+         * @see w_cassandra_table_meta_column_by_name()
          */
-        W_SYSTEM_EXPORT const w_Cass_Column_Meta*
-            w_cassandra_table_meta_column_by_name_n(const w_Cass_Table_Meta* table_meta,
-                const char* column,
-                size_t column_length);
+        W_SYSTEM_EXPORT const w_cass_column_meta* 
+            w_cassandra_table_meta_column_by_name_n(_In_ const  w_cass_table_meta* pTableMeta,
+            _In_ const char* pColumn,
+            _In_ size_t pColumnLength);
 
         /**
          * Gets the total number of columns for the table.
@@ -3412,7 +3399,7 @@ extern "C" {
          * @return The total column count.
          */
         W_SYSTEM_EXPORT size_t
-            w_cassandra_table_meta_column_count(const w_Cass_Table_Meta* table_meta);
+            w_cassandra_table_meta_column_count(_In_ const w_cass_table_meta* pTableMeta);
 
         /**
          * Gets the column metadata for the provided index.
@@ -3423,9 +3410,9 @@ extern "C" {
          * @param[in] index
          * @return The metadata for a column. NULL returned if the index is out of range.
          */
-        W_SYSTEM_EXPORT const w_Cass_Column_Meta*
-            w_cassandra_table_meta_column(const w_Cass_Table_Meta* table_meta,
-                size_t index);
+        W_SYSTEM_EXPORT const w_cass_column_meta*
+            w_cassandra_table_meta_column(_In_ const w_cass_table_meta* pTableMeta,
+            _In_  size_t pIndex);
 
         /**
          * Gets the index metadata for the provided index name.
@@ -3437,12 +3424,12 @@ extern "C" {
          *
          * @return The metadata for a index. NULL if index does not exist.
          */
-        W_SYSTEM_EXPORT const w_Cass_Index_Meta*
-            w_cassandra_table_meta_index_by_name(const w_Cass_Table_Meta* table_meta,
-                const char* index);
+        W_SYSTEM_EXPORT const w_cass_index_meta* 
+            w_cassandra_table_meta_index_by_name(_In_ const w_cass_table_meta* pTableMeta,
+            _In_ const char* pIndex);
 
         /**
-         * Same as cass_table_meta_index_by_name(), but with lengths for string
+         * Same as w_cassandra_table_meta_index_by_name(), but with lengths for string
          * parameters.
          *
          * @public @memberof w_Cass_Table_Meta
@@ -3450,14 +3437,14 @@ extern "C" {
          * @param[in] table_meta
          * @param[in] index
          * @param[in] index_length
-         * @return same as cass_table_meta_index_by_name()
+         * @return same as w_cassandra_table_meta_index_by_name()
          *
-         * @see cass_table_meta_index_by_name()
+         * @see w_cassandra_table_meta_index_by_name()
          */
-        W_SYSTEM_EXPORT const w_Cass_Index_Meta*
-            w_cassandra_table_meta_index_by_name_n(const w_Cass_Table_Meta* table_meta,
-                const char* index,
-                size_t index_length);
+        W_SYSTEM_EXPORT const w_cass_index_meta*
+            w_cassandra_table_meta_index_by_name_n(_In_ const w_cass_table_meta* pTableMeta, 
+            _In_ const char* pIndex,
+            _In_  size_t pIndexLength);
 
         /**
          * Gets the total number of indexes for the table.
@@ -3468,7 +3455,7 @@ extern "C" {
          * @return The total index count.
          */
         W_SYSTEM_EXPORT size_t
-            w_cassandra_table_meta_index_count(const w_Cass_Table_Meta* table_meta);
+            w_cassandra_table_meta_index_count(_In_ const w_cass_table_meta* pTableMeta);
 
         /**
          * Gets the index metadata for the provided index.
@@ -3479,9 +3466,9 @@ extern "C" {
          * @param[in] index
          * @return The metadata for a index. NULL returned if the index is out of range.
          */
-        W_SYSTEM_EXPORT const w_Cass_Index_Meta*
-            w_cassandra_table_meta_index(const w_Cass_Table_Meta* table_meta,
-                size_t index);
+        W_SYSTEM_EXPORT const w_cass_index_meta*
+            w_cassandra_table_meta_index(_In_ const w_cass_table_meta* pTableMeta,
+            _In_ size_t pIndex);
 
         /**
          * Gets the materialized view metadata for the provided view name.
@@ -3495,12 +3482,12 @@ extern "C" {
          *
          * @return The metadata for a view. NULL if view does not exist.
          */
-        W_SYSTEM_EXPORT const w_Cass_Materialized_View_Meta*
-            w_cassandra_table_meta_materialized_view_by_name(const w_Cass_Table_Meta* table_meta,
-                const char* view);
+        W_SYSTEM_EXPORT const w_cass_materialized_view_meta*
+            w_cassandra_table_meta_materialized_view_by_name(_In_ const w_cass_table_meta* pTableMeta,
+            _In_ const char* pView);
 
         /**
-         * Same as cass_table_meta_materialized_view_by_name(), but with lengths for string
+         * Same as w_cassandra_table_meta_materialized_view_by_name(), but with lengths for string
          * parameters.
          *
          * @cassandra{3.0+}
@@ -3510,14 +3497,14 @@ extern "C" {
          * @param[in] table_meta
          * @param[in] view
          * @param[in] view_length
-         * @return same as cass_table_meta_materialized_view_by_name()
+         * @return same as w_cassandra_table_meta_materialized_view_by_name()
          *
-         * @see cass_table_meta_materialized_view_by_name()
+         * @see w_cassandra_table_meta_materialized_view_by_name()
          */
-        W_SYSTEM_EXPORT const w_Cass_Materialized_View_Meta*
-            w_cassandra_table_meta_materialized_view_by_name_n(const w_Cass_Table_Meta* table_meta,
-                const char* view,
-                size_t view_length);
+        W_SYSTEM_EXPORT const w_cass_materialized_view_meta* 
+            w_cassandra_table_meta_materialized_view_by_name_n(_In_ const w_cass_table_meta* pTableMeta, 
+            _In_ const char* pView,
+                _In_ size_t pViewLength);
 
         /**
          * Gets the total number of views for the table.
@@ -3530,7 +3517,7 @@ extern "C" {
          * @return The total view count.
          */
         W_SYSTEM_EXPORT size_t
-            w_cassandra_table_meta_materialized_view_count(const w_Cass_Table_Meta* table_meta);
+            w_cassandra_table_meta_materialized_view_count(_In_ const w_cass_table_meta* pTableMeta);
 
         /**
          * Gets the materialized view metadata for the provided index.
@@ -3543,9 +3530,9 @@ extern "C" {
          * @param[in] index
          * @return The metadata for a view. NULL returned if the index is out of range.
          */
-        W_SYSTEM_EXPORT const w_Cass_Materialized_View_Meta*
-            w_cassandra_table_meta_materialized_view(const w_Cass_Table_Meta* table_meta,
-                size_t index);
+        W_SYSTEM_EXPORT const w_cass_materialized_view_meta* 
+            w_cassandra_table_meta_materialized_view(_In_ const w_cass_table_meta* pTableMeta,
+            _In_ size_t pIndex);
 
         /**
          * Gets the number of columns for the table's partition key.
@@ -3556,7 +3543,7 @@ extern "C" {
          * @return The count for the number of columns in the partition key.
          */
         W_SYSTEM_EXPORT size_t
-            w_cassandra_table_meta_partition_key_count(const w_Cass_Table_Meta* table_meta);
+            w_cassandra_table_meta_partition_key_count(_In_ const  w_cass_table_meta* pTableMeta);
 
         /**
          * Gets the partition key column metadata for the provided index.
@@ -3567,11 +3554,11 @@ extern "C" {
          * @param[in] index
          * @return The metadata for a column. NULL returned if the index is out of range.
          *
-         * @see cass_table_meta_partition_key_count()
+         * @see w_cassandra_table_meta_partition_key_count()
          */
-        W_SYSTEM_EXPORT const w_Cass_Column_Meta*
-            w_cassandra_table_meta_partition_key(const w_Cass_Table_Meta* table_meta,
-                size_t index);
+        W_SYSTEM_EXPORT const w_cass_column_meta*
+            w_cassandra_table_meta_partition_key(_In_ const w_cass_table_meta* pTableMeta,
+            _In_ size_t pIndex);
 
         /**
          * Gets the number of columns for the table's clustering key.
@@ -3582,7 +3569,7 @@ extern "C" {
          * @return The count for the number of columns in the clustering key.
          */
         W_SYSTEM_EXPORT size_t
-            w_cassandra_table_meta_clustering_key_count(const w_Cass_Table_Meta* table_meta);
+            w_cassandra_table_meta_clustering_key_count(_In_ const w_cass_table_meta* pTableMeta);
 
         /**
          * Gets the clustering key column metadata for the provided index.
@@ -3593,11 +3580,11 @@ extern "C" {
          * @param[in] index
          * @return The metadata for a column. NULL returned if the index is out of range.
          *
-         * @see cass_table_meta_clustering_key_count()
+         * @see w_cassandra_table_meta_clustering_key_count()
          */
-        W_SYSTEM_EXPORT const w_Cass_Column_Meta*
-            w_cassandra_table_meta_clustering_key(const w_Cass_Table_Meta* table_meta,
-                size_t index);
+        W_SYSTEM_EXPORT const w_cass_column_meta* 
+            w_cassandra_table_meta_clustering_key(_In_ const w_cass_table_meta* pTableMeta,
+            _In_ size_t pIndex);
 
         /**
          * Gets the clustering order column metadata for the provided index.
@@ -3609,11 +3596,11 @@ extern "C" {
          * @return The clustering order for a column.
          * CASS_CLUSTERING_ORDER_NONE returned if the index is out of range.
          *
-         * @see cass_table_meta_clustering_key_count()
+         * @see w_cassandra_table_meta_clustering_key_count()
          */
-        W_SYSTEM_EXPORT w_Cass_Clustering_Order
-            w_cassandra_table_meta_clustering_key_order(const w_Cass_Table_Meta* table_meta,
-                size_t index);
+        W_SYSTEM_EXPORT w_cass_clustering_order 
+            w_cassandra_table_meta_clustering_key_order(_In_ const w_cass_table_meta* pTableMeta,
+            _In_ size_t pIndex);
 
         /**
          * Gets a metadata field for the provided name. Metadata fields allow direct
@@ -3625,12 +3612,12 @@ extern "C" {
          * @param[in] name
          * @return A metadata field value. NULL if the field does not exist.
          */
-        W_SYSTEM_EXPORT const w_Cass_Value*
-            w_cassandra_table_meta_field_by_name(const w_Cass_Table_Meta* table_meta,
-                const char* name);
+        W_SYSTEM_EXPORT const w_cass_value* 
+            w_cassandra_table_meta_field_by_name(_In_ const w_cass_table_meta* pTableMeta,
+            _In_ const char* pName);
 
         /**
-         * Same as cass_table_meta_field_by_name(), but with lengths for string
+         * Same as w_cassandra_table_meta_field_by_name(), but with lengths for string
          * parameters.
          *
          * @public @memberof w_Cass_Table_Meta
@@ -3638,14 +3625,14 @@ extern "C" {
          * @param[in] table_meta
          * @param[in] name
          * @param[in] name_length
-         * @return same as cass_table_meta_field_by_name()
+         * @return same as w_cassandra_table_meta_field_by_name()
          *
-         * @see cass_table_meta_field_by_name()
+         * @see w_cassandra_table_meta_field_by_name()
          */
-        W_SYSTEM_EXPORT const w_Cass_Value*
-            w_cassandra_table_meta_field_by_name_n(const w_Cass_Table_Meta* table_meta,
-                const char* name,
-                size_t name_length);
+        W_SYSTEM_EXPORT const w_cass_value* 
+            w_cassandra_table_meta_field_by_name_n(_In_ const w_cass_table_meta* pTableMeta,
+            _In_ const char* pName,
+            _In_ size_t pNameLength);
 
         /**
          * Gets the column metadata for the provided column name.
@@ -3659,12 +3646,12 @@ extern "C" {
          *
          * @return The metadata for a column. NULL if column does not exist.
          */
-        W_SYSTEM_EXPORT const w_Cass_Column_Meta*
-            w_cassandra_materialized_view_meta_column_by_name(const w_Cass_Materialized_View_Meta* view_meta,
-                const char* column);
+        W_SYSTEM_EXPORT const w_cass_column_meta*
+            w_cassandra_materialized_view_meta_column_by_name(_In_ const w_cass_materialized_view_meta* pViewMeta, 
+            _In_ const char* pColumn);
 
         /**
-         * Same as cass_materialized_view_meta_column_by_name(), but with lengths for string
+         * Same as w_cassandra_materialized_view_meta_column_by_name(), but with lengths for string
          * parameters.
          *
          * @cassandra{3.0+}
@@ -3674,14 +3661,14 @@ extern "C" {
          * @param[in] view_meta
          * @param[in] column
          * @param[in] column_length
-         * @return same as cass_materialized_view_meta_column_by_name()
+         * @return same as w_cassandra_materialized_view_meta_column_by_name()
          *
-         * @see cass_materialized_view_meta_column_by_name()
+         * @see w_cassandra_materialized_view_meta_column_by_name()
          */
-        W_SYSTEM_EXPORT const w_Cass_Column_Meta*
-            w_cassandra_materialized_view_meta_column_by_name_n(const w_Cass_Materialized_View_Meta* view_meta,
-                const char* column,
-                size_t column_length);
+        W_SYSTEM_EXPORT const w_cass_column_meta*
+            w_cassandra_materialized_view_meta_column_by_name_n(_In_ const w_cass_materialized_view_meta* pViewMeta, 
+            _In_ const char* pColumn,
+            _In_ size_t pColumnLength);
 
         /**
          * Gets the name of the view.
@@ -3695,9 +3682,9 @@ extern "C" {
          * @param[out] name_length
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_materialized_view_meta_name(const w_Cass_Materialized_View_Meta* view_meta,
-                const char** name,
-                size_t* name_length);
+            w_cassandra_materialized_view_meta_name(_In_ const w_cass_materialized_view_meta* pViewMeta,
+                _Inout_ const char** pName,
+                _Inout_ size_t* pNameLength) ;
 
         /**
          * Gets the base table of the view.
@@ -3710,8 +3697,8 @@ extern "C" {
          *
          * @return The base table for the view.
          */
-        W_SYSTEM_EXPORT const w_Cass_Table_Meta*
-            w_cassandra_materialized_view_meta_base_table(const w_Cass_Materialized_View_Meta* view_meta);
+        W_SYSTEM_EXPORT const w_cass_table_meta*
+            w_cassandra_materialized_view_meta_base_table(_In_ const w_cass_materialized_view_meta* pViewMeta);
 
         /**
          * Gets the total number of columns for the view.
@@ -3724,7 +3711,7 @@ extern "C" {
          * @return The total column count.
          */
         W_SYSTEM_EXPORT size_t
-            w_cassandra_materialized_view_meta_column_count(const w_Cass_Materialized_View_Meta* view_meta);
+            w_cassandra_materialized_view_meta_column_count(_In_ const w_cass_materialized_view_meta* pViewMeta);
 
         /**
          * Gets the column metadata for the provided index.
@@ -3737,9 +3724,9 @@ extern "C" {
          * @param[in] index
          * @return The metadata for a column. NULL returned if the index is out of range.
          */
-        W_SYSTEM_EXPORT const w_Cass_Column_Meta*
-            w_cassandra_materialized_view_meta_column(const w_Cass_Materialized_View_Meta* view_meta,
-                size_t index);
+        W_SYSTEM_EXPORT const w_cass_column_meta* 
+            w_cassandra_materialized_view_meta_column(_In_ const w_cass_materialized_view_meta* pViewMeta,
+            _In_ size_t pIndex);
 
         /**
          * Gets the number of columns for the view's partition key.
@@ -3752,7 +3739,7 @@ extern "C" {
          * @return The count for the number of columns in the partition key.
          */
         W_SYSTEM_EXPORT size_t
-            w_cassandra_materialized_view_meta_partition_key_count(const w_Cass_Materialized_View_Meta* view_meta);
+            w_cassandra_materialized_view_meta_partition_key_count(_In_ const w_cass_materialized_view_meta* pViewMeta);
 
         /**
          * Gets the partition key column metadata for the provided index.
@@ -3765,9 +3752,9 @@ extern "C" {
          * @param[in] index
          * @return The metadata for a column. NULL returned if the index is out of range.
          */
-        W_SYSTEM_EXPORT const w_Cass_Column_Meta*
-            w_cassandra_materialized_view_meta_partition_key(const w_Cass_Materialized_View_Meta* view_meta,
-                size_t index);
+        W_SYSTEM_EXPORT const w_cass_column_meta* 
+            w_cassandra_materialized_view_meta_partition_key(_In_ const w_cass_materialized_view_meta* pViewMeta,
+            _In_ size_t pIndex);
 
         /**
          * Gets the number of columns for the view's clustering key.
@@ -3780,7 +3767,7 @@ extern "C" {
          * @return The count for the number of columns in the clustering key.
          */
         W_SYSTEM_EXPORT size_t
-            w_cassandra_materialized_view_meta_clustering_key_count(const w_Cass_Materialized_View_Meta* view_meta);
+            w_cassandra_materialized_view_meta_clustering_key_count(_In_ const w_cass_materialized_view_meta* pViewMeta);
 
         /**
          * Gets the clustering key column metadata for the provided index.
@@ -3793,9 +3780,9 @@ extern "C" {
          * @param[in] index
          * @return The metadata for a column. NULL returned if the index is out of range.
          */
-        W_SYSTEM_EXPORT const w_Cass_Column_Meta*
-            w_cassandra_materialized_view_meta_clustering_key(const w_Cass_Materialized_View_Meta* view_meta,
-                size_t index);
+        W_SYSTEM_EXPORT const w_cass_column_meta* 
+            w_cassandra_materialized_view_meta_clustering_key(_In_ const w_cass_materialized_view_meta* pViewMeta,
+            _In_ size_t pIndex);
 
         /**
          * Gets the clustering order column metadata for the provided index.
@@ -3807,11 +3794,11 @@ extern "C" {
          * @return The clustering order for a column.
          * CASS_CLUSTERING_ORDER_NONE returned if the index is out of range.
          *
-         * @see cass_materialized_view_meta_clustering_key_count()
+         * @see w_cassandra_materialized_view_meta_clustering_key_count()
          */
-        W_SYSTEM_EXPORT w_Cass_Clustering_Order
-            w_cassandra_materialized_view_meta_clustering_key_order(const w_Cass_Materialized_View_Meta* view_meta,
-                size_t index);
+        W_SYSTEM_EXPORT  w_cass_clustering_order 
+            w_cassandra_materialized_view_meta_clustering_key_order(_In_ const w_cass_materialized_view_meta* pViewMeta, 
+                _In_ size_t pIndex) ;
 
         /**
          * Gets a metadata field for the provided name. Metadata fields allow direct
@@ -3825,12 +3812,12 @@ extern "C" {
          * @param[in] name
          * @return A metadata field value. NULL if the field does not exist.
          */
-        W_SYSTEM_EXPORT const w_Cass_Value*
-            w_cassandra_materialized_view_meta_field_by_name(const w_Cass_Materialized_View_Meta* view_meta,
-                const char* name);
+        W_SYSTEM_EXPORT const w_cass_value* 
+            w_cassandra_materialized_view_meta_field_by_name(_In_ const w_cass_materialized_view_meta* pViewMeta,
+            _In_ const char* pName);
 
         /**
-         * Same as cass_materialized_view_meta_field_by_name(), but with lengths for string
+         * Same as w_cassandra_materialized_view_meta_field_by_name(), but with lengths for string
          * parameters.
          *
          * @cassandra{3.0+}
@@ -3840,14 +3827,14 @@ extern "C" {
          * @param[in] view_meta
          * @param[in] name
          * @param[in] name_length
-         * @return same as cass_materialized_view_meta_field_by_name()
+         * @return same as w_cassandra_materialized_view_meta_field_by_name()
          *
-         * @see cass_materialized_view_meta_field_by_name()
+         * @see w_cassandra_materialized_view_meta_field_by_name()
          */
-        W_SYSTEM_EXPORT const w_Cass_Value*
-            w_cassandra_materialized_view_meta_field_by_name_n(const w_Cass_Materialized_View_Meta* view_meta,
-                const char* name,
-                size_t name_length);
+        W_SYSTEM_EXPORT const w_cass_value* 
+            w_cassandra_materialized_view_meta_field_by_name_n(_In_ const w_cass_materialized_view_meta* pViewMeta, 
+            _In_ const char* pName,
+            _In_ size_t pNameLength);
 
         /**
          * Gets the name of the column.
@@ -3859,9 +3846,9 @@ extern "C" {
          * @param[out] name_length
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_column_meta_name(const w_Cass_Column_Meta* column_meta,
-                const char** name,
-                size_t* name_length);
+            w_cassandra_column_meta_name(_In_ const w_cass_column_meta* pColumnMeta,
+                _Inout_ const char** pName, 
+                _Inout_ size_t* pNameLength) ;
 
         /**
          * Gets the type of the column.
@@ -3871,8 +3858,8 @@ extern "C" {
          * @param[in] column_meta
          * @return The column's type.
          */
-        W_SYSTEM_EXPORT w_Cass_Column_Type
-            w_cassandra_column_meta_type(const w_Cass_Column_Meta* column_meta);
+        W_SYSTEM_EXPORT w_cass_column_type
+            w_cassandra_column_meta_type(_In_ const w_cass_column_meta* pColumnMeta);
 
         /**
          * Gets the data type of the column.
@@ -3882,8 +3869,8 @@ extern "C" {
          * @param[in] column_meta
          * @return The column's data type.
          */
-        W_SYSTEM_EXPORT const w_Cass_Data_Type*
-            w_cassandra_column_meta_data_type(const w_Cass_Column_Meta* column_meta);
+        W_SYSTEM_EXPORT const w_cass_data_type* 
+            w_cassandra_column_meta_data_type(_In_ const w_cass_column_meta* pColumnMeta);
 
         /**
          * Gets a metadata field for the provided name. Metadata fields allow direct
@@ -3895,12 +3882,12 @@ extern "C" {
          * @param[in] name
          * @return A metadata field value. NULL if the field does not exist.
          */
-        W_SYSTEM_EXPORT const w_Cass_Value*
-            w_cassandra_column_meta_field_by_name(const w_Cass_Column_Meta* column_meta,
-                const char* name);
+        W_SYSTEM_EXPORT const w_cass_value* 
+            w_cassandra_column_meta_field_by_name(_In_ const w_cass_column_meta* pColumnMeta,
+            _In_ const char* pName);
 
         /**
-         * Same as cass_column_meta_field_by_name(), but with lengths for string
+         * Same as w_cassandra_column_meta_field_by_name(), but with lengths for string
          * parameters.
          *
          * @public @memberof w_Cass_Column_Meta
@@ -3908,14 +3895,14 @@ extern "C" {
          * @param[in] column_meta
          * @param[in] name
          * @param[in] name_length
-         * @return same as cass_column_meta_field_by_name()
+         * @return same as w_cassandra_column_meta_field_by_name()
          *
-         * @see cass_column_meta_field_by_name()
+         * @see w_cassandra_column_meta_field_by_name()
          */
-        W_SYSTEM_EXPORT const w_Cass_Value*
-            w_cassandra_column_meta_field_by_name_n(const w_Cass_Column_Meta* column_meta,
-                const char* name,
-                size_t name_length);
+        W_SYSTEM_EXPORT const w_cass_value* 
+            w_cassandra_column_meta_field_by_name_n(_In_ const w_cass_column_meta* pColumnMeta, 
+            _In_  const char* pName, 
+                _In_ size_t pNameLength);
 
         /**
          * Gets the name of the index.
@@ -3927,9 +3914,9 @@ extern "C" {
          * @param[out] name_length
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_index_meta_name(const w_Cass_Index_Meta* index_meta,
-                const char** name,
-                size_t* name_length);
+            w_cassandra_index_meta_name(_In_ const w_cass_index_meta* pIndexMeta, 
+                _Inout_ const char** pName,
+                _Inout_ size_t* pNameLength);
 
         /**
          * Gets the type of the index.
@@ -3939,8 +3926,8 @@ extern "C" {
          * @param[in] index_meta
          * @return The index's type.
          */
-        W_SYSTEM_EXPORT w_Cass_Index_Type
-            w_cassandra_index_meta_type(const w_Cass_Index_Meta* index_meta);
+        W_SYSTEM_EXPORT w_cass_index_type 
+            w_cassandra_index_meta_type(_In_ const w_cass_index_meta* pIndexMeta);
 
         /**
          * Gets the target of the index.
@@ -3952,9 +3939,9 @@ extern "C" {
          * @param[out] target_length
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_index_meta_target(const w_Cass_Index_Meta* index_meta,
-                const char** target,
-                size_t* target_length);
+            w_cassandra_index_meta_target(_In_ const w_cass_index_meta* pIndexMeta, 
+                _Inout_ const char** pTarget,
+                _Inout_ size_t* pTargetLength);
 
         /**
          * Gets the options of the index.
@@ -3964,8 +3951,8 @@ extern "C" {
          * @param[in] index_meta
          * @return The index's options.
          */
-        W_SYSTEM_EXPORT const w_Cass_Value*
-            w_cassandra_index_meta_options(const w_Cass_Index_Meta* index_meta);
+        W_SYSTEM_EXPORT const w_cass_value* 
+            w_cassandra_index_meta_options(_In_ const w_cass_index_meta* pIndexMeta);
 
         /**
          * Gets a metadata field for the provided name. Metadata fields allow direct
@@ -3977,12 +3964,12 @@ extern "C" {
          * @param[in] name
          * @return A metadata field value. NULL if the field does not exist.
          */
-        W_SYSTEM_EXPORT const w_Cass_Value*
-            w_cassandra_index_meta_field_by_name(const w_Cass_Index_Meta* index_meta,
-                const char* name);
+        W_SYSTEM_EXPORT const w_cass_value*
+            w_cassandra_index_meta_field_by_name(_In_ const w_cass_index_meta* pIndexMeta,
+            _In_ const char* pName);
 
         /**
-         * Same as cass_index_meta_field_by_name(), but with lengths for string
+         * Same as w_cassandra_index_meta_field_by_name(), but with lengths for string
          * parameters.
          *
          * @public @memberof w_Cass_Index_Meta
@@ -3990,14 +3977,14 @@ extern "C" {
          * @param[in] index_meta
          * @param[in] name
          * @param[in] name_length
-         * @return same as cass_index_meta_field_by_name()
+         * @return same as w_cassandra_index_meta_field_by_name()
          *
-         * @see cass_index_meta_field_by_name()
+         * @see w_cassandra_index_meta_field_by_name()
          */
-        W_SYSTEM_EXPORT const w_Cass_Value*
-            w_cassandra_index_meta_field_by_name_n(const w_Cass_Index_Meta* index_meta,
-                const char* name,
-                size_t name_length);
+        W_SYSTEM_EXPORT const w_cass_value*
+            w_cassandra_index_meta_field_by_name_n(_In_ const  w_cass_index_meta* pIndexMeta,
+            _In_ const char* pName, 
+            _In_ size_t pNameLength);
 
         /**
          * Gets the name of the function.
@@ -4011,9 +3998,9 @@ extern "C" {
          * @param[out] name_length
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_function_meta_name(const w_Cass_Function_Meta* function_meta,
-                const char** name,
-                size_t* name_length);
+            w_cassandra_function_meta_name(_In_ const w_cass_function_meta* pFunctionMeta,
+                _Inout_ const char** pName, 
+                _Inout_  size_t* pNameLength);
 
         /**
          * Gets the full name of the function. The full name includes the
@@ -4029,9 +4016,9 @@ extern "C" {
          * @param[out] full_name_length
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_function_meta_full_name(const w_Cass_Function_Meta* function_meta,
-                const char** full_name,
-                size_t* full_name_length);
+            w_cassandra_function_meta_full_name(_In_ const w_cass_function_meta* pFunctionMeta,
+                _Inout_ const char** pFullName,
+                _Inout_ size_t* pFullNameLength);
 
         /**
          * Gets the body of the function.
@@ -4045,9 +4032,9 @@ extern "C" {
          * @param[out] body_length
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_function_meta_body(const w_Cass_Function_Meta* function_meta,
-                const char** body,
-                size_t* body_length);
+            w_cassandra_function_meta_body(_In_ const w_cass_function_meta* pFunctionMeta,
+                _Inout_ const char** pBody, 
+                _Inout_ size_t* pBodyLength);
 
         /**
          * Gets the language of the function.
@@ -4061,9 +4048,9 @@ extern "C" {
          * @param[out] language_length
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_function_meta_language(const w_Cass_Function_Meta* function_meta,
-                const char** language,
-                size_t* language_length);
+            w_cassandra_function_meta_language(_In_ const w_cass_function_meta* pFunctionMeta, 
+                _Inout_ const char** pLanguage,
+                _Inout_  size_t* pLanguageLength);
 
         /**
          * Gets whether a function is called on "null".
@@ -4076,8 +4063,7 @@ extern "C" {
          * @return cass_true if a function is called on null, otherwise cass_false.
          */
         W_SYSTEM_EXPORT w_bool_t
-            w_cassandra_function_meta_called_on_null_input(const w_Cass_Function_Meta* function_meta);
-
+            w_cassandra_function_meta_called_on_null_input(_In_ const w_cass_function_meta* pFunctionMeta);
         /**
          * Gets the number of arguments this function takes.
          *
@@ -4089,7 +4075,7 @@ extern "C" {
          * @return The number of arguments.
          */
         W_SYSTEM_EXPORT size_t
-            w_cassandra_function_meta_argument_count(const w_Cass_Function_Meta* function_meta);
+            w_cassandra_function_meta_argument_count(_In_ const w_cass_function_meta* pFunctionMeta);
 
         /**
          * Gets the function's argument name and type for the provided index.
@@ -4103,14 +4089,14 @@ extern "C" {
          * @param[out] name
          * @param[out] name_length
          * @param[out] type
-         * @return CASS_OK if successful, otherwise an error occurred
+         * @return W_SUCCESS if successful, otherwise an error occurred
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_function_meta_argument(const w_Cass_Function_Meta* function_meta,
-                size_t index,
-                const char** name,
-                size_t* name_length,
-                const w_Cass_Data_Type** type);
+            w_cassandra_function_meta_argument(_In_ const w_cass_function_meta* pFunctionMeta,
+                _In_ size_t pIndex, 
+                _Inout_ const char** pName, 
+                _Inout_ size_t* pNameLength,
+                _Inout_ const w_cass_data_type** pType);
 
         /**
          * Gets the function's argument and type for the provided name.
@@ -4123,12 +4109,12 @@ extern "C" {
          * @param[in] name
          * @return A data type. NULL if the argument does not exist.
          */
-        W_SYSTEM_EXPORT const w_Cass_Data_Type*
-            w_cassandra_function_meta_argument_type_by_name(const w_Cass_Function_Meta* function_meta,
-                const char* name);
+        W_SYSTEM_EXPORT const w_cass_data_type*
+            w_cassandra_function_meta_argument_type_by_name(_In_ const w_cass_function_meta* pFunctionMeta,
+            _In_ const char* pName);
 
         /**
-         * Same as cass_function_meta_argument_type_by_name(), but with lengths for string
+         * Same as w_cassandra_function_meta_argument_type_by_name(), but with lengths for string
          * parameters.
          *
          * @cassandra{2.2+}
@@ -4138,14 +4124,14 @@ extern "C" {
          * @param[in] function_meta
          * @param[in] name
          * @param[in] name_length
-         * @return same as cass_function_meta_argument_type_by_name()
+         * @return same as w_cassandra_function_meta_argument_type_by_name()
          *
-         * @see cass_function_meta_argument_type_by_name()
+         * @see w_cassandra_function_meta_argument_type_by_name()
          */
-        W_SYSTEM_EXPORT const w_Cass_Data_Type*
-            w_cassandra_function_meta_argument_type_by_name_n(const w_Cass_Function_Meta* function_meta,
-                const char* name,
-                size_t name_length);
+        W_SYSTEM_EXPORT const w_cass_data_type*
+            w_cassandra_function_meta_argument_type_by_name_n(_In_ const w_cass_function_meta* pFunctionMeta,
+            _In_ const char* pName,
+            _In_ size_t pNameLength);
 
         /**
          * Gets the return type of the function.
@@ -4157,8 +4143,8 @@ extern "C" {
          * @param[in] function_meta
          * @return The data type returned by the function.
          */
-        W_SYSTEM_EXPORT const w_Cass_Data_Type*
-            w_cassandra_function_meta_return_type(const w_Cass_Function_Meta* function_meta);
+        W_SYSTEM_EXPORT const w_cass_data_type* 
+            w_cassandra_function_meta_return_type(_In_ const w_cass_function_meta* pFunctionMeta);
 
         /**
          * Gets a metadata field for the provided name. Metadata fields allow direct
@@ -4172,12 +4158,12 @@ extern "C" {
          * @param[in] name
          * @return A metadata field value. NULL if the field does not exist.
          */
-        W_SYSTEM_EXPORT 
-            const w_Cass_Value* w_cassandra_function_meta_field_by_name(const w_Cass_Function_Meta* function_meta,
-                const char* name);
+        W_SYSTEM_EXPORT const w_cass_value* 
+            w_cassandra_function_meta_field_by_name(_In_ const w_cass_function_meta* pFunctionMeta,
+            _In_ const char* pName) ;
 
         /**
-         * Same as cass_function_meta_field_by_name(), but with lengths for string
+         * Same as w_cassandra_function_meta_field_by_name(), but with lengths for string
          * parameters.
          *
          * @cassandra{2.2+}
@@ -4187,14 +4173,12 @@ extern "C" {
          * @param[in] function_meta
          * @param[in] name
          * @param[in] name_length
-         * @return same as cass_function_meta_field_by_name()
+         * @return same as w_cassandra_function_meta_field_by_name()
          *
-         * @see cass_function_meta_field_by_name()
+         * @see w_cassandra_function_meta_field_by_name()
          */
-        W_SYSTEM_EXPORT const w_Cass_Value*
-            w_cassandra_function_meta_field_by_name_n(const w_Cass_Function_Meta* function_meta,
-                const char* name,
-                size_t name_length);
+        W_SYSTEM_EXPORT const w_cass_value* w_cassandra_function_meta_field_by_name_n(_In_ const w_cass_function_meta* pFunctionMeta, 
+            _In_ const char* pName, _In_ size_t pNameLength);
 
         /**
          * Gets the name of the aggregate.
@@ -4208,9 +4192,9 @@ extern "C" {
          * @param[out] name_length
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_aggregate_meta_name(const w_Cass_Aggregate_Meta* aggregate_meta,
-                const char** name,
-                size_t* name_length);
+            w_cassandra_aggregate_meta_name(_In_ const w_cass_aggregate_meta* pAggregateMeta,
+                _Inout_ const char** pName,
+                _Inout_ size_t* pNameLength);
 
         /**
          * Gets the full name of the aggregate. The full name includes the
@@ -4226,9 +4210,9 @@ extern "C" {
          * @param[out] full_name_length
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_aggregate_meta_full_name(const w_Cass_Aggregate_Meta* aggregate_meta,
-                const char** full_name,
-                size_t* full_name_length);
+            w_cassandra_aggregate_meta_full_name(_In_ const w_cass_aggregate_meta* pAggregateMeta, 
+                _Inout_ const char** pFullName,
+                _Inout_ size_t* pFullNameLength);
 
         /**
          * Gets the number of arguments this aggregate takes.
@@ -4241,7 +4225,7 @@ extern "C" {
          * @return The number of arguments.
          */
         W_SYSTEM_EXPORT size_t
-            w_cassandra_aggregate_meta_argument_count(const w_Cass_Aggregate_Meta* aggregate_meta);
+            w_cassandra_aggregate_meta_argument_count(_In_ const w_cass_aggregate_meta* pAggregateMeta);
 
         /**
          * Gets the aggregate's argument type for the provided index.
@@ -4254,9 +4238,10 @@ extern "C" {
          * @param[in] index
          * @return The data type for argument. NULL returned if the index is out of range.
          */
-        W_SYSTEM_EXPORT const w_Cass_Data_Type*
-            w_cassandra_aggregate_meta_argument_type(const w_Cass_Aggregate_Meta* aggregate_meta,
-                size_t index);
+        W_SYSTEM_EXPORT const w_cass_data_type*
+            w_cassandra_aggregate_meta_argument_type(_In_ const w_cass_aggregate_meta* pAggregateMeta,
+            _In_ size_t pIndex);
+
 
         /**
          * Gets the return type of the aggregate.
@@ -4268,8 +4253,8 @@ extern "C" {
          * @param[in] aggregate_meta
          * @return The data type returned by the aggregate.
          */
-        W_SYSTEM_EXPORT const w_Cass_Data_Type*
-            w_cassandra_aggregate_meta_return_type(const w_Cass_Aggregate_Meta* aggregate_meta);
+        W_SYSTEM_EXPORT const w_cass_data_type* 
+            w_cassandra_aggregate_meta_return_type(_In_ const w_cass_aggregate_meta* pAggregateMeta);
 
         /**
          * Gets the state type of the aggregate.
@@ -4281,8 +4266,8 @@ extern "C" {
          * @param[in] aggregate_meta
          * @return The data type of the aggregate's state.
          */
-        W_SYSTEM_EXPORT const w_Cass_Data_Type*
-            w_cassandra_aggregate_meta_state_type(const w_Cass_Aggregate_Meta* aggregate_meta);
+        W_SYSTEM_EXPORT const w_cass_data_type* 
+            w_cassandra_aggregate_meta_state_type(_In_ const w_cass_aggregate_meta* pAggregateMeta);
 
         /**
          * Gets the function metadata for the aggregate's state function.
@@ -4294,8 +4279,8 @@ extern "C" {
          * @param[in] aggregate_meta
          * @return The function metadata for the state function.
          */
-        W_SYSTEM_EXPORT const w_Cass_Function_Meta*
-            w_cassandra_aggregate_meta_state_func(const w_Cass_Aggregate_Meta* aggregate_meta);
+        W_SYSTEM_EXPORT const w_cass_function_meta* 
+            w_cassandra_aggregate_meta_state_func(_In_ const w_cass_aggregate_meta* pAggregateMeta);
 
         /**
          * Gets the function metadata for the aggregates's final function.
@@ -4307,8 +4292,8 @@ extern "C" {
          * @param[in] aggregate_meta
          * @return The function metadata for the final function.
          */
-        W_SYSTEM_EXPORT const w_Cass_Function_Meta*
-            w_cassandra_aggregate_meta_final_func(const w_Cass_Aggregate_Meta* aggregate_meta);
+        W_SYSTEM_EXPORT const w_cass_function_meta* 
+            w_cassandra_aggregate_meta_final_func(_In_ const w_cass_aggregate_meta* pAggregateMeta);
 
         /**
          * Gets the initial condition value for the aggregate.
@@ -4323,8 +4308,8 @@ extern "C" {
          * @param[in] aggregate_meta
          * @return The value of the initial condition.
          */
-        W_SYSTEM_EXPORT const w_Cass_Value*
-            w_cassandra_aggregate_meta_init_cond(const w_Cass_Aggregate_Meta* aggregate_meta);
+        W_SYSTEM_EXPORT const w_cass_value* 
+            w_cassandra_aggregate_meta_init_cond(_In_ const w_cass_aggregate_meta* pAggregateMeta);
 
         /**
          * Gets a metadata field for the provided name. Metadata fields allow direct
@@ -4338,12 +4323,12 @@ extern "C" {
          * @param[in] name
          * @return A metadata field value. NULL if the field does not exist.
          */
-        W_SYSTEM_EXPORT const w_Cass_Value*
-            w_cassandra_aggregate_meta_field_by_name(const w_Cass_Aggregate_Meta* aggregate_meta,
-                const char* name);
+        W_SYSTEM_EXPORT const w_cass_value* 
+            w_cassandra_aggregate_meta_field_by_name(_In_ const w_cass_aggregate_meta* pAggregateMeta,
+                _In_ const char* pName);
 
         /**
-         * Same as cass_aggregate_meta_field_by_name(), but with lengths for string
+         * Same as w_cassandra_aggregate_meta_field_by_name(), but with lengths for string
          * parameters.
          *
          * @cassandra{2.2+}
@@ -4353,14 +4338,14 @@ extern "C" {
          * @param[in] aggregate_meta
          * @param[in] name
          * @param[in] name_length
-         * @return same as cass_aggregate_meta_field_by_name()
+         * @return same as w_cassandra_aggregate_meta_field_by_name()
          *
-         * @see cass_aggregate_meta_field_by_name()
+         * @see w_cassandra_aggregate_meta_field_by_name()
          */
-        W_SYSTEM_EXPORT const w_Cass_Value*
-            w_cassandra_aggregate_meta_field_by_name_n(const w_Cass_Aggregate_Meta* aggregate_meta,
-                const char* name,
-                size_t name_length);
+        W_SYSTEM_EXPORT const w_cass_value* 
+            w_cassandra_aggregate_meta_field_by_name_n(_In_ const w_cass_aggregate_meta* pAggregateMeta,
+            _In_ const char* pName,
+                _In_ size_t pNameLength);
 
         /***********************************************************************************
          *
@@ -4375,9 +4360,9 @@ extern "C" {
           *
           * @return Returns a SSL context that must be freed.
           *
-          * @see cass_ssl_free()
+          * @see w_cassandra_ssl_free()
           */
-        W_SYSTEM_EXPORT w_Cass_Ssl*
+        W_SYSTEM_EXPORT w_cass_ssl*
             w_cassandra_ssl_new();
 
         /**
@@ -4405,10 +4390,10 @@ extern "C" {
          *
          * @return Returns a SSL context that must be freed.
          *
-         * @see cass_ssl_new()
-         * @see cass_ssl_free()
+         * @see w_cassandra_ssl_new()
+         * @see w_cassandra_ssl_free()
          */
-        W_SYSTEM_EXPORT w_Cass_Ssl*
+        W_SYSTEM_EXPORT w_cass_ssl* 
             w_cassandra_ssl_new_no_lib_init();
 
         /**
@@ -4419,7 +4404,7 @@ extern "C" {
          * @param[in] ssl
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_ssl_free(w_Cass_Ssl* ssl);
+            w_cassandra_ssl_free(_In_ w_cass_ssl* pSsl);
 
         /**
          * Adds a trusted certificate. This is used to verify
@@ -4429,14 +4414,14 @@ extern "C" {
          *
          * @param[in] ssl
          * @param[in] cert PEM formatted certificate string
-         * @return CASS_OK if successful, otherwise an error occurred
+         * @return W_SUCCESS if successful, otherwise an error occurred
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_ssl_add_trusted_cert(w_Cass_Ssl* ssl,
-                const char* cert);
+            w_cassandra_ssl_add_trusted_cert(_In_ w_cass_ssl* pSsl, 
+                _In_ const char* pCert);
 
         /**
-         * Same as cass_ssl_add_trusted_cert(), but with lengths for string
+         * Same as w_cassandra_ssl_add_trusted_cert(), but with lengths for string
          * parameters.
          *
          * @public @memberof w_Cass_Ssl
@@ -4444,14 +4429,14 @@ extern "C" {
          * @param[in] ssl
          * @param[in] cert
          * @param[in] cert_length
-         * @return same as cass_ssl_add_trusted_cert()
+         * @return same as w_cassandra_ssl_add_trusted_cert()
          *
-         * @see cass_ssl_add_trusted_cert()
+         * @see w_cassandra_ssl_add_trusted_cert()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_ssl_add_trusted_cert_n(w_Cass_Ssl* ssl,
-                const char* cert,
-                size_t cert_length);
+            w_cassandra_ssl_add_trusted_cert_n(_In_ w_cass_ssl* pSsl,
+                _In_  const char* pCert,
+                _In_ size_t pCertLength);
 
         /**
          * Sets verification performed on the peer's certificate.
@@ -4471,13 +4456,13 @@ extern "C" {
          *
          * @param[in] ssl
          * @param[in] flags
-         * @return CASS_OK if successful, otherwise an error occurred
+         * @return W_SUCCESS if successful, otherwise an error occurred
          *
-         * @see cass_cluster_set_use_hostname_resolution()
+         * @see w_cassandra_cluster_set_use_hostname_resolution()
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_ssl_set_verify_flags(w_Cass_Ssl* ssl,
-                int flags);
+            w_cassandra_ssl_set_verify_flags(_In_ w_cass_ssl* pSsl, 
+                _In_ int pFlags);
 
         /**
          * Set client-side certificate chain. This is used to authenticate
@@ -4488,14 +4473,13 @@ extern "C" {
          *
          * @param[in] ssl
          * @param[in] cert PEM formatted certificate string
-         * @return CASS_OK if successful, otherwise an error occurred
+         * @return W_SUCCESS if successful, otherwise an error occurred
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_ssl_set_cert(w_Cass_Ssl* ssl,
-                const char* cert);
+            w_cassandra_ssl_set_cert(_In_ w_cass_ssl* pSsl, _In_ const char* pCert);
 
         /**
-         * Same as cass_ssl_set_cert(), but with lengths for string
+         * Same as w_cassandra_ssl_set_cert(), but with lengths for string
          * parameters.
          *
          * @public @memberof w_Cass_Ssl
@@ -4505,12 +4489,12 @@ extern "C" {
          * @param[in] cert_length
          * @return same as cass_ssl_set_cert()
          *
-         * @see cass_ssl_set_cert()
+         * @see w_cassandra_ssl_set_cert()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_ssl_set_cert_n(w_Cass_Ssl* ssl,
-                const char* cert,
-                size_t cert_length);
+            w_cassandra_ssl_set_cert_n(_In_ w_cass_ssl* pSsl,
+                _In_  const char* pCert,
+                _In_ size_t pCertLength);
 
         /**
          * Set client-side private key. This is used to authenticate
@@ -4521,15 +4505,15 @@ extern "C" {
          * @param[in] ssl
          * @param[in] key PEM formatted key string
          * @param[in] password used to decrypt key
-         * @return CASS_OK if successful, otherwise an error occurred
+         * @return W_SUCCESS if successful, otherwise an error occurred
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_ssl_set_private_key(w_Cass_Ssl* ssl,
-                const char* key,
-                const char* password);
+            w_cassandra_ssl_set_private_key(_In_ w_cass_ssl* pSsl, 
+                _In_ const char* pKey,
+                _In_ const char* pPassword);
 
         /**
-         * Same as cass_ssl_set_private_key(), but with lengths for string
+         * Same as w_cassandra_ssl_set_private_key(), but with lengths for string
          * parameters.
          *
          * @public @memberof w_Cass_Ssl
@@ -4539,16 +4523,16 @@ extern "C" {
          * @param[in] key_length
          * @param[in] password
          * @param[in] password_length
-         * @return same as cass_ssl_set_private_key()
+         * @return same as w_cassandra_ssl_set_private_key()
          *
-         * @see cass_ssl_set_private_key()
+         * @see w_cassandra_ssl_set_private_key()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_ssl_set_private_key_n(w_Cass_Ssl* ssl,
-                const char* key,
-                size_t key_length,
-                const char* password,
-                size_t password_length);
+            w_cassandra_ssl_set_private_key_n(_In_ w_cass_ssl* pSsl,
+                _In_ const char* pKey, 
+                _In_ size_t pKeyLength,
+                _In_  const char* pPassword,
+                _In_ size_t pPasswordLength);
 
         /***********************************************************************************
          *
@@ -4565,8 +4549,8 @@ extern "C" {
           * @public @memberof W_Cass_Authenticator
           */
         W_SYSTEM_EXPORT void
-            w_cassandra_authenticator_address(const W_Cass_Authenticator* auth,
-                w_CassInet* address);
+            w_cassandra_authenticator_address(_In_ const w_cass_authenticator* pAuth,
+                _Inout_ w_cass_inet* pAddress);
 
         /**
          * Gets the hostname of the host being authenticated.
@@ -4578,8 +4562,8 @@ extern "C" {
          * @return A null-terminated string.
          */
         W_SYSTEM_EXPORT const char*
-            w_cassandra_authenticator_hostname(const W_Cass_Authenticator* auth,
-                size_t* length);
+            w_cassandra_authenticator_hostname(_In_ const w_cass_authenticator* pAuth,
+                _Inout_ size_t* pLength);
 
         /**
          * Gets the class name for the server-side IAuthentication implementation.
@@ -4591,24 +4575,23 @@ extern "C" {
          * @return A null-terminated string.
          */
         W_SYSTEM_EXPORT const char*
-            w_cassandra_authenticator_class_name(const W_Cass_Authenticator* auth,
-                size_t* length);
+            w_cassandra_authenticator_class_name(_In_ const w_cass_authenticator* pAuth,
+                _Inout_ size_t* pLength);
 
         /**
          * Gets the user data created during the authenticator exchange. This
-         * is set using cass_authenticator_set_exchange_data().
+         * is set using w_cassandra_authenticator_set_exchange_data().
          *
          * @public @memberof CassAuthenticator
          *
          * @param[in] auth
          * @return User specified exchange data previously set by
-         * cass_authenticator_set_exchange_data().
+         * w_cassandra_authenticator_set_exchange_data().
          *
-         * @see cass_authenticator_set_exchange_data()
+         * @see w_cassandra_authenticator_set_exchange_data()
          */
         W_SYSTEM_EXPORT void*
-            w_cassandra_authenticator_exchange_data(W_Cass_Authenticator* auth);
-
+            w_cassandra_authenticator_exchange_data(_In_ w_cass_authenticator* pAuth);
         /**
          * Sets the user data to be used during the authenticator exchange.
          *
@@ -4617,11 +4600,11 @@ extern "C" {
          * @param[in] auth
          * @param[in] exchange_data
          *
-         * @see cass_authenticator_exchange_data()
+         * @see w_cassandra_authenticator_exchange_data()
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_authenticator_set_exchange_data(W_Cass_Authenticator* auth,
-                void* exchange_data);
+            w_cassandra_authenticator_set_exchange_data(_In_ w_cass_authenticator* pAuth,
+                _In_ void* pExchangeData);
 
         /**
          * Gets a response token buffer of the provided size.
@@ -4633,8 +4616,7 @@ extern "C" {
          * @return A buffer to copy the response token.
          */
         W_SYSTEM_EXPORT char*
-            w_cassandra_authenticator_response(W_Cass_Authenticator* auth,
-                size_t size);
+            w_cassandra_authenticator_response(_In_ w_cass_authenticator* pAuth, _In_ size_t pSize);
 
         /**
          * Sets the response token.
@@ -4646,9 +4628,9 @@ extern "C" {
          * @param[in] response_size
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_authenticator_set_response(W_Cass_Authenticator* auth,
-                const char* response,
-                size_t response_size);
+            w_cassandra_authenticator_set_response(_In_ w_cass_authenticator* pAuth,
+                _In_ const char* pResponse, 
+                _In_ size_t pResponseSize);
 
         /**
          * Sets an error for the authenticator exchange.
@@ -4659,11 +4641,11 @@ extern "C" {
          * @param[in] message
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_authenticator_set_error(W_Cass_Authenticator* auth,
-                const char* message);
+            w_cassandra_authenticator_set_error(_In_ w_cass_authenticator* pAuth,
+                _In_ const char* pMessage);
 
         /**
-         * Same as cass_authenticator_set_error(), but with lengths for string
+         * Same as w_cassandra_authenticator_set_error(), but with lengths for string
          * parameters.
          *
          * @public @memberof CassAuthenticator
@@ -4672,12 +4654,12 @@ extern "C" {
          * @param[in] message
          * @param[in] message_length
          *
-         * @see cass_authenticator_set_error()
+         * @see w_cassandra_authenticator_set_error()
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_authenticator_set_error_n(W_Cass_Authenticator* auth,
-                const char* message,
-                size_t message_length);
+            w_cassandra_authenticator_set_error_n(_In_ w_cass_authenticator* pAuth, 
+                _In_ const char* pMessage,
+                _In_ size_t pMessageLength);
 
         /***********************************************************************************
          *
@@ -4691,7 +4673,7 @@ extern "C" {
           * @public @memberof w_Cass_Future
           */
         W_SYSTEM_EXPORT void
-            w_cassandra_future_free(w_Cass_Future* future);
+            w_cassandra_future_free(_In_ w_cass_future* pFuture);
 
         /**
          * Sets a callback that is called when a future is set
@@ -4701,12 +4683,12 @@ extern "C" {
          * @param[in] future
          * @param[in] callback
          * @param[in] data
-         * @return CASS_OK if successful, otherwise an error occurred
+         * @return W_SUCCESS if successful, otherwise an error occurred
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_future_set_callback(w_Cass_Future* future,
-                CassFutureCallback callback,
-                void* data);
+            w_cassandra_future_set_callback(_In_ w_cass_future* pFuture,
+                _In_ w_cass_future_callback pCallback,
+                _In_ void* pData);
 
         /**
          * Gets the set status of the future.
@@ -4717,7 +4699,7 @@ extern "C" {
          * @return true if set
          */
         W_SYSTEM_EXPORT w_bool_t
-            w_cassandra_future_ready(w_Cass_Future* future);
+            w_cassandra_future_ready(_In_ w_cass_future* pFuture);
 
         /**
          * Wait for the future to be set with either a result or error.
@@ -4730,7 +4712,7 @@ extern "C" {
          * @param[in] future
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_future_wait(w_Cass_Future* future);
+            w_cassandra_future_wait(_In_ w_cass_future* pFuture);
 
         /**
          * Wait for the future to be set or timeout.
@@ -4742,8 +4724,8 @@ extern "C" {
          * @return false if returned due to timeout
          */
         W_SYSTEM_EXPORT w_bool_t
-            w_cassandra_future_wait_timed(w_Cass_Future* future,
-                w_duration_t timeout_us);
+            w_cassandra_future_wait_timed(_In_ w_cass_future* pFuture, 
+                _In_ w_duration_t pTimeoutUs);
 
         /**
          * Gets the result of a successful future. If the future is not ready this method will
@@ -4753,12 +4735,12 @@ extern "C" {
          *
          * @param[in] future
          * @return w_Cass_Result instance if successful, otherwise NULL for error. The return instance
-         * must be freed using cass_result_free().
+         * must be freed using w_cassandra_result_free().
          *
-         * @see cass_session_execute() and cass_session_execute_batch()
+         * @see w_cassandra_session_execute() and w_cassandra_session_execute_batch()
          */
-        W_SYSTEM_EXPORT const w_Cass_Result*
-            w_cassandra_future_get_result(w_Cass_Future* future);
+        W_SYSTEM_EXPORT const w_cass_result* 
+            w_cassandra_future_get_result (_In_ w_cass_future* pFuture);
 
         /**
          * Gets the error result from a future that failed as a result of a server error. If the
@@ -4769,12 +4751,12 @@ extern "C" {
          * @param[in] future
          * @return w_Cass_ErrorResult instance if the request failed with a server error,
          * otherwise NULL if the request was successful or the failure was not caused by
-         * a server error. The return instance must be freed using cass_error_result_free().
+         * a server error. The return instance must be freed using w_cassandra_error_result_free().
          *
-         * @see cass_session_execute() and cass_session_execute_batch()
+         * @see w_cassandra_session_execute() and w_cassandra_session_execute_batch()
          */
-        W_SYSTEM_EXPORT const w_Cass_Error_Result*
-            w_cassandra_future_get_error_result(w_Cass_Future* future);
+        W_SYSTEM_EXPORT const w_cass_error_result*
+            w_cassandra_future_get_error_result(_In_ w_cass_future* pFuture);
 
         /**
          * Gets the result of a successful future. If the future is not ready this method will
@@ -4785,12 +4767,12 @@ extern "C" {
          *
          * @param[in] future
          * @return w_Cass_Prepared instance if successful, otherwise NULL for error. The return instance
-         * must be freed using cass_prepared_free().
+         * must be freed using w_cassandra_prepared_free().
          *
-         * @see cass_session_prepare()
+         * @see w_cassandra_session_prepare()
          */
-        W_SYSTEM_EXPORT const w_Cass_Prepared*
-            w_cassandra_future_get_prepared(w_Cass_Future* future);
+        W_SYSTEM_EXPORT const w_cass_prepared* 
+            w_cassandra_future_get_prepared(_In_ w_cass_future* pFuture);
 
         /**
          * Gets the error code from future. If the future is not ready this method will
@@ -4801,10 +4783,10 @@ extern "C" {
          * @param[in] future
          * @return CASS_OK if successful, otherwise an error occurred.
          *
-         * @see cass_error_desc()
+         * @see w_cassandra_error_desc()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_future_error_code(w_Cass_Future* future);
+            w_cassandra_future_error_code(_In_ w_cass_future* pFuture);
 
         /**
          * Gets the error message from future. If the future is not ready this method will
@@ -4818,9 +4800,9 @@ extern "C" {
          * @param[out] message_length
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_future_error_message(w_Cass_Future* future,
-                const char** message,
-                size_t* message_length);
+            w_cassandra_future_error_message(_In_ w_cass_future* pFuture,
+                _Inout_ const char** pMessage,
+                _Inout_ size_t* pMessageLength);
 
         /**
          * Gets the tracing ID associated with the request.
@@ -4829,11 +4811,11 @@ extern "C" {
          *
          * @param[in] future
          * @param[out] tracing_id
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_future_tracing_id(w_Cass_Future* future,
-                w_CassUuid* tracing_id);
+            w_cassandra_future_tracing_id(_In_ w_cass_future* pFuture, 
+                _Inout_ w_cass_uuid* pTracingId);
 
         /**
          * Gets a the number of custom payload items from a response future. If the future is not
@@ -4847,7 +4829,7 @@ extern "C" {
          * @return the number of custom payload items.
          */
         W_SYSTEM_EXPORT size_t
-            w_cassandra_future_custom_payload_item_count(w_Cass_Future* future);
+            w_cassandra_future_custom_payload_item_count(_In_ w_cass_future* pFuture);
 
         /**
          * Gets a custom payload item from a response future at the specified index. If the future is not
@@ -4863,15 +4845,15 @@ extern "C" {
          * @param[out] name_length
          * @param[out] value
          * @param[out] value_size
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_future_custom_payload_item(w_Cass_Future* future,
-                size_t index,
-                const char** name,
-                size_t* name_length,
-                const w_byte_t** value,
-                size_t* value_size);
+            w_cassandra_future_custom_payload_item(_In_ w_cass_future* pFuture,
+                _In_ size_t pIndex, 
+                _Inout_ const char** pName, 
+                _Inout_ size_t* pNameLength,
+                _Inout_ const w_byte_t** pValue,
+                _Inout_ size_t* pValueSize);
 
         /***********************************************************************************
          *
@@ -4889,14 +4871,14 @@ extern "C" {
           * @param[in] parameter_count The number of bound parameters.
           * @return Returns a statement that must be freed.
           *
-          * @see cass_statement_free()
+          * @see w_cassandra_statement_free()
           */
-        W_SYSTEM_EXPORT w_Cass_Statement*
-            w_cassandra_statement_new(const char* query,
-                size_t parameter_count);
+        W_SYSTEM_EXPORT w_cass_statement*
+            w_cassandra_statement_new(_In_ const char* pQuery, 
+            _In_ size_t pParameterCount);
 
         /**
-         * Same as cass_statement_new(), but with lengths for string
+         * Same as w_cassandra_statement_new(), but with lengths for string
          * parameters.
          *
          * @public @memberof w_Cass_Statement
@@ -4904,14 +4886,14 @@ extern "C" {
          * @param[in] query
          * @param[in] query_length
          * @param[in] parameter_count
-         * @return same as cass_statement_new()
+         * @return same as w_cassandra_statement_new()
          *
-         * @see cass_statement_new()
+         * @see w_cassandra_statement_new()
          */
-        W_SYSTEM_EXPORT w_Cass_Statement*
-            w_cassandra_statement_new_n(const char* query,
-                size_t query_length,
-                size_t parameter_count);
+        W_SYSTEM_EXPORT w_cass_statement* 
+            w_cassandra_statement_new_n(_In_ const char* pQuery, 
+            _In_ size_t pQueryLength,
+            _In_ size_t pParameterCount);
 
         /**
          * Clear and/or resize the statement's parameters.
@@ -4920,11 +4902,11 @@ extern "C" {
          *
          * @param[in] statement
          * @param[in] count
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_reset_parameters(w_Cass_Statement* statement,
-                size_t count);
+            w_cassandra_statement_reset_parameters(_In_ w_cass_statement* pStatement,
+                _In_ size_t pCount);
 
         /**
          * Frees a statement instance. Statements can be immediately freed after
@@ -4935,7 +4917,7 @@ extern "C" {
          * @param[in] statement
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_statement_free(w_Cass_Statement* statement);
+            w_cassandra_statement_free(_In_ w_cass_statement* pStatement);
 
         /**
          * Adds a key index specifier to this a statement.
@@ -4952,11 +4934,11 @@ extern "C" {
          *
          * @param[in] statement
          * @param[in] index
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_add_key_index(w_Cass_Statement* statement,
-                size_t index);
+            w_cassandra_statement_add_key_index(_In_ w_cass_statement* pStatement, 
+            _In_ size_t pIndex);
 
         /**
          * Sets the statement's keyspace. This is used for token-aware routing and when
@@ -4970,11 +4952,11 @@ extern "C" {
          *
          * @param[in] statement
          * @param[in] keyspace
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_set_keyspace(w_Cass_Statement* statement,
-                const char* keyspace);
+            w_cassandra_statement_set_keyspace(_In_ w_cass_statement* pStatement,
+                _In_ const char* pKeyspace);
 
         /**
          * Same as cass_statement_set_keyspace(), but with lengths for string
@@ -4987,12 +4969,12 @@ extern "C" {
          * @param[in] keyspace_length
          * @return same as cass_statement_set_keyspace()
          *
-         * @see cass_statement_set_keyspace()
+         * @see w_cassandra_statement_set_keyspace()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_set_keyspace_n(w_Cass_Statement* statement,
-                const char* keyspace,
-                size_t keyspace_length);
+            w_cassandra_statement_set_keyspace_n(_In_ w_cass_statement* pStatement,
+                _In_ const char* pKeyspace,
+                _In_ size_t pKeyspaceLength);
 
         /**
          * Sets the statement's consistency level.
@@ -5003,11 +4985,11 @@ extern "C" {
          *
          * @param[in] statement
          * @param[in] consistency
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_set_consistency(w_Cass_Statement* statement,
-                W_Cass_Consistency consistency);
+            w_cassandra_statement_set_consistency(_In_ w_cass_statement* pStatement,
+                _In_ w_cass_consistency pConsistency);
 
         /**
          * Sets the statement's serial consistency level.
@@ -5020,11 +5002,11 @@ extern "C" {
          *
          * @param[in] statement
          * @param[in] serial_consistency
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_set_serial_consistency(w_Cass_Statement* statement,
-                W_Cass_Consistency serial_consistency);
+            w_cassandra_statement_set_serial_consistency(_In_ w_cass_statement* pStatement, 
+                _In_ w_cass_consistency pSerialConsistency);
 
         /**
          * Sets the statement's page size.
@@ -5037,11 +5019,11 @@ extern "C" {
          *
          * @param[in] statement
          * @param[in] page_size
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_set_paging_size(w_Cass_Statement* statement,
-                int page_size);
+            w_cassandra_statement_set_paging_size(_In_ w_cass_statement* pStatement,
+                _In_ int pPageSize);
 
         /**
          * Sets the statement's paging state. This can be used to get the next page of
@@ -5053,11 +5035,11 @@ extern "C" {
          *
          * @param[in] statement
          * @param[in] result
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_set_paging_state(w_Cass_Statement* statement,
-                const w_Cass_Result* result);
+            w_cassandra_statement_set_paging_state(_In_ w_cass_statement* pStatement, 
+                _In_  const w_cass_result* pResult);
 
         /**
          * Sets the statement's paging state. This can be used to get the next page of
@@ -5074,14 +5056,14 @@ extern "C" {
          * @param[in] statement
          * @param[in] paging_state
          * @param[in] paging_state_size
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          *
-         * @see cass_result_paging_state_token()
+         * @see w_cassandra_result_paging_state_token()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_set_paging_state_token(w_Cass_Statement* statement,
-                const char* paging_state,
-                size_t paging_state_size);
+            w_cassandra_statement_set_paging_state_token(_In_ w_cass_statement* pStatement, 
+                _In_ const char* pPagingState,
+                _In_ size_t pPagingStateSize);
 
         /**
          * Sets the statement's timestamp.
@@ -5092,11 +5074,11 @@ extern "C" {
          *
          * @param[in] statement
          * @param[in] timestamp
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_set_timestamp(w_Cass_Statement* statement,
-                int64_t timestamp);
+            w_cassandra_statement_set_timestamp(_In_ w_cass_statement* pStatement, 
+                _In_ int64_t pTimestamp);
 
         /**
          * Sets the statement's timeout for waiting for a response from a node.
@@ -5108,13 +5090,13 @@ extern "C" {
          * @param[in] statement
          * @param[in] timeout_ms Request timeout in milliseconds. Use 0 for no timeout
          * or CASS_UINT64_MAX to disable (to use the cluster-level request timeout).
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          *
-         * @see cass_cluster_set_request_timeout()
+         * @see w_cassandra_cluster_set_request_timeout()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_set_request_timeout(w_Cass_Statement* statement,
-                uint64_t timeout_ms);
+            w_cassandra_statement_set_request_timeout(_In_ w_cass_statement* pStatement,
+                _In_ uint64_t pTimeoutMs);
 
         /**
          * Sets whether the statement is idempotent. Idempotent statements are able to be
@@ -5124,15 +5106,14 @@ extern "C" {
          *
          * @param[in] statement
          * @param[in] is_idempotent
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          *
-         * @see cass_cluster_set_constant_speculative_execution_policy()
-         * @see cass_execution_profile_set_constant_speculative_execution_policy()
+         * @see w_cassandra_cluster_set_constant_speculative_execution_policy()
+         * @see w_cassandra_execution_profile_set_constant_speculative_execution_policy()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_set_is_idempotent(w_Cass_Statement* statement,
-                w_bool_t is_idempotent);
-
+            w_cassandra_statement_set_is_idempotent(_In_ w_cass_statement* pStatement, _In_ w_bool_t pIsIdempotent);
+                
         /**
          * Sets the statement's retry policy.
          *
@@ -5140,11 +5121,11 @@ extern "C" {
          *
          * @param[in] statement
          * @param[in] retry_policy
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_set_retry_policy(w_Cass_Statement* statement,
-                w_Cass_Retry_Policy* retry_policy);
+            w_cassandra_statement_set_retry_policy(_In_ w_cass_statement* pStatement, 
+                _In_ w_cass_retry_policy* pRetryPolicy);
 
         /**
          * Sets the statement's custom payload.
@@ -5155,11 +5136,11 @@ extern "C" {
          *
          * @param[in] statement
          * @param[in] payload
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_set_custom_payload(w_Cass_Statement* statement,
-                const w_Cass_Custom_Payload* payload);
+            w_cassandra_statement_set_custom_payload(_In_ w_cass_statement* pStatement,
+                _In_ const w_cass_custom_payload* pPayload);
 
         /**
          * Sets the execution profile to execute the statement with.
@@ -5170,16 +5151,16 @@ extern "C" {
          *
          * @param[in] statement
          * @param[in] name
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          *
-         * @see cass_cluster_set_execution_profile()
+         * @see w_cassandra_cluster_set_execution_profile()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_set_execution_profile(w_Cass_Statement* statement,
-                const char* name);
+            w_cassandra_statement_set_execution_profile(_In_ w_cass_statement* pStatement,
+                _In_ const char* pName);
 
         /**
-         * Same as cass_statement_set_execution_profile(), but with lengths for string
+         * Same as w_cassandra_statement_set_execution_profile(), but with lengths for string
          * parameters.
          *
          * @public @memberof w_Cass_Statement
@@ -5187,14 +5168,14 @@ extern "C" {
          * @param[in] statement
          * @param[in] name
          * @param[in] name_length
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          *
-         * @see cass_statement_set_execution_profile()
+         * @see w_cassandra_statement_set_execution_profile()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_set_execution_profile_n(w_Cass_Statement* statement,
-                const char* name,
-                size_t name_length);
+            w_cassandra_statement_set_execution_profile_n(_In_ w_cass_statement* pStatement, 
+                _In_ const char* pName,
+                _In_ size_t pNameLength);
 
         /**
          * Sets whether the statement should use tracing.
@@ -5205,11 +5186,11 @@ extern "C" {
          *
          * @param[in] statement
          * @param[in] enabled
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_set_tracing(w_Cass_Statement* statement,
-                w_bool_t enabled);
+            w_cassandra_statement_set_tracing(_In_ w_cass_statement* pStatement,
+                _In_ w_bool_t pEnabled);
 
         /**
          * Sets a specific host that should run the query.
@@ -5225,15 +5206,15 @@ extern "C" {
          * @param[in] statement
          * @param[in] host
          * @param[in] port
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_set_host(w_Cass_Statement* statement,
-                const char* host,
-                int port);
+            w_cassandra_statement_set_host(_In_ w_cass_statement* pStatement,
+                _In_  const char* pHost,
+                _In_ int pPort);
 
         /**
-         * Same as cass_statement_set_host(), but with lengths for string
+         * Same as w_cassandra_statement_set_host(), but with lengths for string
          * parameters.
          *
          * @public @memberof w_Cass_Statement
@@ -5242,16 +5223,16 @@ extern "C" {
          * @param[in] host
          * @param[in] host_length
          * @param[in] port
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_set_host_n(w_Cass_Statement* statement,
-                const char* host,
-                size_t host_length,
-                int port);
+            w_cassandra_statement_set_host_n(_In_ w_cass_statement* pStatement, 
+                _In_ const char* pHost,
+                _In_ size_t pHostLength,
+                _In_ int pPort);
 
         /**
-         * Same as cass_statement_set_host(), but with the `w_CassInet` type
+         * Same as w_cassandra_statement_set_host(), but with the `w_cass_inet` type
          * for the host instead of a string.
          *
          * @public @memberof w_Cass_Statement
@@ -5259,12 +5240,12 @@ extern "C" {
          * @param[in] statement
          * @param[in] host
          * @param[in] port
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_set_host_inet(w_Cass_Statement* statement,
-                const w_CassInet* host,
-                int port);
+            w_cassandra_statement_set_host_inet(_In_ w_cass_statement* pStatement,
+                _In_ const w_cass_inet* pHost,
+                _In_ int pPort);
 
         /**
          * Binds null to a query or bound statement at the specified index.
@@ -5273,30 +5254,30 @@ extern "C" {
          *
          * @param[in] statement
          * @param[in] index
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_bind_null(w_Cass_Statement* statement,
-                size_t index);
+            w_cassandra_statement_bind_null(_In_ w_cass_statement* pStatement,
+                _In_ size_t pIndex);
 
         /**
          * Binds a null to all the values with the specified name.
          *
          * This can only be used with statements created by
-         * cass_prepared_bind() when using Cassandra 2.0 or earlier.
+         * w_cassandra_prepared_bind() when using Cassandra 2.0 or earlier.
          *
          * @public @memberof w_Cass_Statement
          *
          * @param[in] statement
          * @param[in] name
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_bind_null_by_name(w_Cass_Statement* statement,
-                const char* name);
+            w_cassandra_statement_bind_null_by_name(_In_ w_cass_statement* pStatement,
+                _In_ const char* pName);
 
         /**
-         * Same as cass_statement_bind_null_by_name(), but with lengths for string
+         * Same as w_cassandra_statement_bind_null_by_name(), but with lengths for string
          * parameters.
          *
          * @public @memberof w_Cass_Statement
@@ -5304,14 +5285,14 @@ extern "C" {
          * @param[in] statement
          * @param[in] name
          * @param[in] name_length
-         * @return same as cass_statement_bind_null_by_name()
+         * @return same as w_cassandra_statement_bind_null_by_name()
          *
-         * @see cass_statement_bind_null_by_name()
+         * @see w_cassandra_statement_bind_null_by_name()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_bind_null_by_name_n(w_Cass_Statement* statement,
-                const char* name,
-                size_t name_length);
+            w_cassandra_statement_bind_null_by_name_n(_In_ w_cass_statement* pStatement,
+                _In_ const char* pName,
+                _In_ size_t pNameLength);
 
         /**
          * Binds a "tinyint" to a query or bound statement at the specified index.
@@ -5323,12 +5304,12 @@ extern "C" {
          * @param[in] statement
          * @param[in] index
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_bind_int8(w_Cass_Statement* statement,
-                size_t index,
-                int8_t value);
+            w_cassandra_statement_bind_int8(_In_ w_cass_statement* pStatement,
+                _In_  size_t pIndex,
+                _In_ int8_t pValue);
 
         /**
          * Binds a "tinyint" to all the values with the specified name.
@@ -5340,15 +5321,15 @@ extern "C" {
          * @param[in] statement
          * @param[in] name
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_bind_int8_by_name(w_Cass_Statement* statement,
-                const char* name,
-                int8_t value);
+            w_cassandra_statement_bind_int8_by_name(_In_ w_cass_statement* pStatement,
+                _In_ const char* pName,
+                _In_ int8_t pValue);
 
         /**
-         * Same as cass_statement_bind_int8_by_name(), but with lengths for string
+         * Same as w_cassandra_statement_bind_int8_by_name(), but with lengths for string
          * parameters.
          *
          * @cassandra{2.2+}
@@ -5359,15 +5340,15 @@ extern "C" {
          * @param[in] name
          * @param[in] name_length
          * @param[in] value
-         * @return same as cass_statement_bind_int8_by_name()
+         * @return same as w_cassandra_statement_bind_int8_by_name()
          *
-         * @see cass_statement_bind_int8_by_name()
+         * @see w_cassandra_statement_bind_int8_by_name()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_bind_int8_by_name_n(w_Cass_Statement* statement,
-                const char* name,
-                size_t name_length,
-                int8_t value);
+            w_cassandra_statement_bind_int8_by_name_n(_In_ w_cass_statement* pStatement,
+                _In_ const char* pName,
+                _In_ size_t pNameLength,
+                _In_ int8_t pValue);
 
         /**
          * Binds an "smallint" to a query or bound statement at the specified index.
@@ -5379,12 +5360,12 @@ extern "C" {
          * @param[in] statement
          * @param[in] index
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_bind_int16(w_Cass_Statement* statement,
-                size_t index,
-                int16_t value);
+            w_cassandra_statement_bind_int16(_In_ w_cass_statement* pStatement,
+                _In_ size_t pIndex,
+                _In_ int16_t pValue);
 
         /**
          * Binds an "smallint" to all the values with the specified name.
@@ -5396,15 +5377,15 @@ extern "C" {
          * @param[in] statement
          * @param[in] name
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_bind_int16_by_name(w_Cass_Statement* statement,
-                const char* name,
-                int16_t value);
+            w_cassandra_statement_bind_int16_by_name(_In_ w_cass_statement* pStatement,
+                _In_ const char* pName, 
+                _In_ int16_t pValue);
 
         /**
-         * Same as cass_statement_bind_int16_by_name(), but with lengths for string
+         * Same as w_cassandra_statement_bind_int16_by_name(), but with lengths for string
          * parameters.
          *
          * @cassandra{2.2+}
@@ -5415,15 +5396,15 @@ extern "C" {
          * @param[in] name
          * @param[in] name_length
          * @param[in] value
-         * @return same as cass_statement_bind_int16_by_name()
+         * @return same as w_cassandra_statement_bind_int16_by_name()
          *
-         * @see cass_statement_bind_int16_by_name()
+         * @see w_cassandra_statement_bind_int16_by_name()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_bind_int16_by_name_n(w_Cass_Statement* statement,
-                const char* name,
-                size_t name_length,
-                int16_t value);
+            w_cassandra_statement_bind_int16_by_name_n(_In_ w_cass_statement* pStatement,
+                _In_ const char* pName,
+                _In_  size_t pNameLength, 
+                _In_ int16_t pValue);
 
         /**
          * Binds an "int" to a query or bound statement at the specified index.
@@ -5433,33 +5414,33 @@ extern "C" {
          * @param[in] statement
          * @param[in] index
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_bind_int32(w_Cass_Statement* statement,
-                size_t index,
-                int32_t value);
+            w_cassandra_statement_bind_int32(_In_ w_cass_statement* pStatement,
+                _In_  size_t pIndex,
+                _In_ int32_t pValue);
 
         /**
          * Binds an "int" to all the values with the specified name.
          *
          * This can only be used with statements created by
-         * cass_prepared_bind() when using Cassandra 2.0 or earlier.
+         * w_cassandra_prepared_bind() when using Cassandra 2.0 or earlier.
          *
          * @public @memberof w_Cass_Statement
          *
          * @param[in] statement
          * @param[in] name
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_bind_int32_by_name(w_Cass_Statement* statement,
-                const char* name,
-                int32_t value);
+            w_cassandra_statement_bind_int32_by_name(_In_ w_cass_statement* pStatement, 
+                _In_ const char* pName,
+                _In_  int32_t pValue);
 
         /**
-         * Same as cass_statement_bind_int32_by_name(), but with lengths for string
+         * Same as w_cassandra_statement_bind_int32_by_name(), but with lengths for string
          * parameters.
          *
          * @public @memberof w_Cass_Statement
@@ -5468,15 +5449,15 @@ extern "C" {
          * @param[in] name
          * @param[in] name_length
          * @param[in] value
-         * @return same as cass_statement_bind_int32_by_name()
+         * @return same as w_cassandra_statement_bind_int32_by_name()
          *
-         * @see cass_statement_bind_int32_by_name()
+         * @see w_cassandra_statement_bind_int32_by_name()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_bind_int32_by_name_n(w_Cass_Statement* statement,
-                const char* name,
-                size_t name_length,
-                int32_t value);
+            w_cassandra_statement_bind_int32_by_name_n(_In_ w_cass_statement* pStatement, 
+                _In_ const char* pName, 
+                _In_ size_t pNameLength, 
+                _In_ int32_t pValue);
 
         /**
          * Binds a "date" to a query or bound statement at the specified index.
@@ -5488,12 +5469,12 @@ extern "C" {
          * @param[in] statement
          * @param[in] index
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_bind_uint32(w_Cass_Statement* statement,
-                size_t index,
-                uint32_t value);
+            w_cassandra_statement_bind_int64(_In_ w_cass_statement* pStatement,
+                _In_ size_t pIndex,
+                _In_ int64_t pValue);
 
         /**
          * Binds a "date" to all the values with the specified name.
@@ -5505,15 +5486,15 @@ extern "C" {
          * @param[in] statement
          * @param[in] name
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_bind_uint32_by_name(w_Cass_Statement* statement,
-                const char* name,
-                uint32_t value);
+            w_cassandra_statement_bind_uint32_by_name(_In_ w_cass_statement* pStatement,
+                _In_ const char* pName, 
+                _In_ uint32_t pValue);
 
         /**
-         * Same as cass_statement_bind_uint32_by_name(), but with lengths for string
+         * Same as w_cassandra_statement_bind_uint32_by_name(), but with lengths for string
          * parameters.
          *
          * @cassandra{2.2+}
@@ -5524,15 +5505,15 @@ extern "C" {
          * @param[in] name
          * @param[in] name_length
          * @param[in] value
-         * @return same as cass_statement_bind_uint32_by_name()
+         * @return same as w_cassandra_statement_bind_uint32_by_name()
          *
-         * @see cass_statement_bind_uint32_by_name()
+         * @see w_cassandra_statement_bind_uint32_by_name()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_bind_uint32_by_name_n(w_Cass_Statement* statement,
-                const char* name,
-                size_t name_length,
-                uint32_t value);
+            w_cassandra_statement_bind_uint32_by_name_n(_In_ w_cass_statement* pStatement, 
+                _In_ const char* pName,
+                _In_ size_t pNameLength, 
+                _In_ uint32_t pValue);
 
         /**
          * Binds a "bigint", "counter", "timestamp" or "time" to a query or
@@ -5543,34 +5524,34 @@ extern "C" {
          * @param[in] statement
          * @param[in] index
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_bind_int64(w_Cass_Statement* statement,
-                size_t index,
-                int64_t value);
+            w_cassandra_statement_bind_int64(w_cass_statement* pStatement,
+                size_t pIndex,
+                int64_t pValue);
 
         /**
          * Binds a "bigint", "counter", "timestamp" or "time" to all values
          * with the specified name.
          *
          * This can only be used with statements created by
-         * cass_prepared_bind() when using Cassandra 2.0 or earlier.
+         * w_cassandra_prepared_bind() when using Cassandra 2.0 or earlier.
          *
          * @public @memberof w_Cass_Statement
          *
          * @param[in] statement
          * @param[in] name
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_bind_int64_by_name(w_Cass_Statement* statement,
-                const char* name,
-                uint64_t value);
+            w_cassandra_statement_bind_int64_by_name(_In_ w_cass_statement* pStatement,
+                _In_ const char* pName,
+                _In_ uint64_t pValue);
 
         /**
-         * Same as cass_statement_bind_int64_by_name(), but with lengths for string
+         * Same as w_cassandra_statement_bind_int64_by_name(), but with lengths for string
          * parameters.
          *
          * @public @memberof w_Cass_Statement
@@ -5579,15 +5560,15 @@ extern "C" {
          * @param[in] name
          * @param[in] name_length
          * @param[in] value
-         * @return same as cass_statement_bind_int64_by_name(0
+         * @return same as w_cassandra_statement_bind_int64_by_name(0
          *
-         * @see cass_statement_bind_int64_by_name()
+         * @see w_cassandra_statement_bind_int64_by_name()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_bind_int64_by_name_n(w_Cass_Statement* statement,
-                const char* name,
-                size_t name_length,
-                int64_t value);
+            w_cassandra_statement_bind_int64_by_name_n(_In_ w_cass_statement* pStatement,
+                _In_ const char* pName, 
+                _In_ size_t pNameLength,
+                _In_  int64_t pValue);
 
         /**
          * Binds a "float" to a query or bound statement at the specified index.
@@ -5597,33 +5578,33 @@ extern "C" {
          * @param[in] statement
          * @param[in] index
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_bind_float(w_Cass_Statement* statement,
-                size_t index,
-                float value);
+            w_cassandra_statement_bind_float(_In_ w_cass_statement* pStatement,
+                _In_  size_t pIndex,
+                _In_  float pValue);
 
         /**
          * Binds a "float" to all the values with the specified name.
          *
          * This can only be used with statements created by
-         * cass_prepared_bind() when using Cassandra 2.0 or earlier.
+         * w_cassandra_prepared_bind() when using Cassandra 2.0 or earlier.
          *
          * @public @memberof w_Cass_Statement
          *
          * @param[in] statement
          * @param[in] name
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_bind_float_by_name(w_Cass_Statement* statement,
-                const char* name,
-                float value);
+            w_cassandra_statement_bind_float_by_name(_In_ w_cass_statement* pStatement,
+                _In_  const char* pName,
+                _In_  float pValue);
 
         /**
-         * Same as cass_statement_bind_float_by_name(), but with lengths for string
+         * Same as w_cassandra_statement_bind_float_by_name(), but with lengths for string
          * parameters.
          *
          * @public @memberof w_Cass_Statement
@@ -5632,15 +5613,15 @@ extern "C" {
          * @param[in] name
          * @param[in] name_length
          * @param[in] value
-         * @return same as cass_statement_bind_float_by_name()
+         * @return same as w_cassandra_statement_bind_float_by_name()
          *
-         * @see cass_statement_bind_float_by_name()
+         * @see w_cassandra_statement_bind_float_by_name()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_bind_float_by_name_n(w_Cass_Statement* statement,
-                const char* name,
-                size_t name_length,
-                float value);
+            w_cassandra_statement_bind_float_by_name_n(_In_ w_cass_statement* pStatement,
+                _In_ const char* pName,
+                _In_ size_t pNameLength,
+                _In_ float pValue);
 
         /**
          * Binds a "double" to a query or bound statement at the specified index.
@@ -5650,33 +5631,33 @@ extern "C" {
          * @param[in] statement
          * @param[in] index
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_bind_double(w_Cass_Statement* statement,
-                size_t index,
-                double value);
+            w_cassandra_statement_bind_double(_In_ w_cass_statement* pStatement,
+                _In_ size_t pIndex,
+                _In_ double pValue);
 
         /**
          * Binds a "double" to all the values with the specified name.
          *
          * This can only be used with statements created by
-         * cass_prepared_bind() when using Cassandra 2.0 or earlier.
+         * w_cassandra_prepared_bind() when using Cassandra 2.0 or earlier.
          *
          * @public @memberof w_Cass_Statement
          *
          * @param[in] statement
          * @param[in] name
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_bind_double_by_name(w_Cass_Statement* statement,
-                const char* name,
-                double value);
+            w_cassandra_statement_bind_double_by_name(_In_ w_cass_statement* pStatement,
+                _In_ const char* pName,
+                _In_  double pValue);
 
         /**
-         * Same as cass_statement_bind_double_by_name(), but with lengths for string
+         * Same as w_cassandra_statement_bind_double_by_name(), but with lengths for string
          * parameters.
          *
          * @public @memberof w_Cass_Statement
@@ -5685,15 +5666,15 @@ extern "C" {
          * @param[in] name
          * @param[in] name_length
          * @param[in] value
-         * @return same as cass_statement_bind_double_by_name()
+         * @return same as w_cassandra_statement_bind_double_by_name()
          *
-         * @see cass_statement_bind_double_by_name()
+         * @see w_cassandra_statement_bind_double_by_name()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_bind_double_by_name_n(w_Cass_Statement* statement,
-                const char* name,
-                size_t name_length,
-                double value);
+            w_cassandra_statement_bind_double_by_name_n(_In_ w_cass_statement* pStatement,
+                _In_ const char* pName,
+                _In_ size_t pNameLength, 
+                _In_ double pValue);
 
         /**
          * Binds a "boolean" to a query or bound statement at the specified index.
@@ -5703,33 +5684,33 @@ extern "C" {
          * @param[in] statement
          * @param[in] index
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_bind_bool(w_Cass_Statement* statement,
-                size_t index,
-                w_bool_t value);
+            w_cassandra_statement_bind_bool(_In_ w_cass_statement* pStatement,
+                _In_  size_t pIndex, 
+                _In_  w_bool_t pValue);
 
         /**
          * Binds a "boolean" to all the values with the specified name.
          *
          * This can only be used with statements created by
-         * cass_prepared_bind() when using Cassandra 2.0 or earlier.
+         * w_cassandra_prepared_bind() when using Cassandra 2.0 or earlier.
          *
          * @public @memberof w_Cass_Statement
          *
          * @param[in] statement
          * @param[in] name
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_bind_bool_by_name(w_Cass_Statement* statement,
-                const char* name,
-                w_bool_t value);
+            w_cassandra_statement_bind_bool_by_name(_In_ w_cass_statement* pStatement,
+                _In_ const char* pName,
+                _In_ w_bool_t pValue);
 
         /**
-         * Same as cass_statement_bind_bool_by_name(), but with lengths for string
+         * Same as w_cassandra_statement_bind_bool_by_name(), but with lengths for string
          * parameters.
          *
          * @public @memberof w_Cass_Statement
@@ -5738,15 +5719,15 @@ extern "C" {
          * @param[in] name
          * @param[in] name_length
          * @param[in] value
-         * @return same as cass_statement_bind_bool_by_name()
+         * @return same as w_cassandra_statement_bind_bool_by_name()
          *
-         * @see cass_statement_bind_bool_by_name()
+         * @see w_cassandra_statement_bind_bool_by_name()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_bind_bool_by_name_n(w_Cass_Statement* statement,
-                const char* name,
-                size_t name_length,
-                w_bool_t value);
+            w_cassandra_statement_bind_bool_by_name_n(_In_ w_cass_statement* pStatement, 
+                _In_ const char* pName, 
+                _In_ size_t pNameLength, 
+                _In_  w_bool_t pValue);
 
         /**
          * Binds an "ascii", "text" or "varchar" to a query or bound statement
@@ -5758,15 +5739,15 @@ extern "C" {
          * @param[in] index
          * @param[in] value The value is copied into the statement object; the
          * memory pointed to by this parameter can be freed after this call.
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_bind_string(w_Cass_Statement* statement,
-                size_t index,
-                const char* value);
+            w_cassandra_statement_bind_string(_In_ w_cass_statement* pStatement,
+                _In_ size_t pIndex, 
+                _In_  const char* pValue);
 
         /**
-         * Same as cass_statement_bind_string(), but with lengths for string
+         * Same as w_cassandra_statement_bind_string(), but with lengths for string
          * parameters.
          *
          * @public @memberof w_Cass_Statement
@@ -5777,20 +5758,20 @@ extern "C" {
          * @param[in] value_length
          * @return same as cass_statement_bind_string()
          *
-         * @see cass_statement_bind_string()
+         * @see w_cassandra_statement_bind_string()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_bind_string_n(w_Cass_Statement* statement,
-                size_t index,
-                const char* value,
-                size_t value_length);
+            w_cassandra_statement_bind_string_n(_In_ w_cass_statement* pStatement, 
+                _In_ size_t pIndex, 
+                _In_  const char* pValue, 
+                _In_ size_t pValueLength);
 
         /**
          * Binds an "ascii", "text" or "varchar" to all the values
          * with the specified name.
          *
          * This can only be used with statements created by
-         * cass_prepared_bind() when using Cassandra 2.0 or earlier.
+         * w_cassandra_prepared_bind() when using Cassandra 2.0 or earlier.
          *
          * @public @memberof w_Cass_Statement
          *
@@ -5798,15 +5779,15 @@ extern "C" {
          * @param[in] name
          * @param[in] value The value is copied into the statement object; the
          * memory pointed to by this parameter can be freed after this call.
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_bind_string_by_name(w_Cass_Statement* statement,
-                const char* name,
-                const char* value);
+            w_cassandra_statement_bind_string_by_name(_In_ w_cass_statement* pStatement,
+                _In_ const char* pName,
+                _In_ const char* pValue);
 
         /**
-         * Same as cass_statement_bind_string_by_name(), but with lengths for string
+         * Same as w_cassandra_statement_bind_string_by_name(), but with lengths for string
          * parameters.
          *
          * @public @memberof w_Cass_Statement
@@ -5816,16 +5797,16 @@ extern "C" {
          * @param[in] name_length
          * @param[in] value
          * @param[in] value_length
-         * @return same as cass_statement_bind_string_by_name()
+         * @return same as w_cassandra_statement_bind_string_by_name()
          *
-         * @see cass_statement_bind_string_by_name()
+         * @see w_cassandra_statement_bind_string_by_name()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_bind_string_by_name_n(w_Cass_Statement* statement,
-                const char* name,
-                size_t name_length,
-                const char* value,
-                size_t value_length);
+            w_cassandra_statement_bind_string_by_name_n(_In_ w_cass_statement* pStatement,
+                _In_ const char* pName,
+                _In_  size_t pNameLength,
+                _In_ const char* pValue, 
+                _In_  size_t pValueLength);
 
         /**
          * Binds a "blob", "varint" or "custom" to a query or bound statement at the specified index.
@@ -5837,20 +5818,20 @@ extern "C" {
          * @param[in] value The value is copied into the statement object; the
          * memory pointed to by this parameter can be freed after this call.
          * @param[in] value_size
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_bind_bytes(w_Cass_Statement* statement,
-                size_t index,
-                const w_byte_t* value,
-                size_t value_size);
+            w_cassandra_statement_bind_bytes(_In_ w_cass_statement* pStatement,
+                _In_ size_t pIndex, 
+                _In_  const w_byte_t* pValue,
+                _In_ size_t pValueSize) ;
 
         /**
          * Binds a "blob", "varint" or "custom" to all the values with the
          * specified name.
          *
          * This can only be used with statements created by
-         * cass_prepared_bind() when using Cassandra 2.0 or earlier.
+         * w_cassandra_prepared_bind() when using Cassandra 2.0 or earlier.
          *
          * @public @memberof w_Cass_Statement
          *
@@ -5859,16 +5840,16 @@ extern "C" {
          * @param[in] value The value is copied into the statement object; the
          * memory pointed to by this parameter can be freed after this call.
          * @param[in] value_size
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_bind_bytes_by_name(w_Cass_Statement* statement,
-                const char* name,
-                const w_byte_t* value,
-                size_t value_size);
+            w_cassandra_statement_bind_bytes_by_name(_In_ w_cass_statement* pStatement,
+                _In_ const char* pName,
+                _In_ const w_byte_t* pValue,
+                _In_  size_t pValueSize);
 
         /**
-         * Same as cass_statement_bind_bytes_by_name(), but with lengths for string
+         * Same as w_cassandra_statement_bind_bytes_by_name(), but with lengths for string
          * parameters.
          *
          * @public @memberof w_Cass_Statement
@@ -5878,16 +5859,16 @@ extern "C" {
          * @param[in] name_length
          * @param[in] value
          * @param[in] value_size
-         * @return same as cass_statement_bind_bytes_by_name()
+         * @return same as w_cassandra_statement_bind_bytes_by_name()
          *
-         * @see cass_statement_bind_bytes_by_name()
+         * @see w_cassandra_statement_bind_bytes_by_name()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_bind_bytes_by_name_n(w_Cass_Statement* statement,
-                const char* name,
-                size_t name_length,
-                const w_byte_t* value,
-                size_t value_size);
+            w_cassandra_statement_bind_bytes_by_name_n(_In_ w_cass_statement* pStatement,
+                _In_  const char* pName,
+                _In_ size_t pNameLength, 
+                _In_ const w_byte_t* pValue,
+                _In_ size_t pValueSize);
 
         /**
          * Binds a "custom" to a query or bound statement at the specified index.
@@ -5900,16 +5881,16 @@ extern "C" {
          * @param[in] value The value is copied into the statement object; the
          * memory pointed to by this parameter can be freed after this call.
          * @param[in] value_size
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_bind_custom(w_Cass_Statement* statement,
-                size_t index,
-                const char* class_name,
-                const w_byte_t* value,
-                size_t value_size);
+            w_cassandra_statement_bind_custom(_In_ w_cass_statement* pStatement,
+                _In_ size_t pIndex,
+                _In_ const char* pClassName,
+                _In_ const w_byte_t* pValue, 
+                _In_ size_t pValueSize);
         /**
-         * Same as cass_statement_bind_custom(), but with lengths for string
+         * Same as w_cassandra_statement_bind_custom(), but with lengths for string
          * parameters.
          *
          * @public @memberof w_Cass_Statement
@@ -5921,21 +5902,21 @@ extern "C" {
          * @param[in] value The value is copied into the statement object; the
          * memory pointed to by this parameter can be freed after this call.
          * @param[in] value_size
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_bind_custom_n(w_Cass_Statement* statement,
-                size_t index,
-                const char* class_name,
-                size_t class_name_length,
-                const w_byte_t* value,
-                size_t value_size);
+            w_cassandra_statement_bind_custom_n(_In_ w_cass_statement* pStatement,
+                _In_  size_t pIndex,
+                _In_ const char* pClassName,
+                _In_ size_t pClassNameLength,
+                _In_ const w_byte_t* pValue,
+                _In_ size_t pValueSize);
 
         /**
          * Binds a "custom" to all the values with the specified name.
          *
          * This can only be used with statements created by
-         * cass_prepared_bind() when using Cassandra 2.0 or earlier.
+         * w_cassandra_prepared_bind() when using Cassandra 2.0 or earlier.
          *
          * @public @memberof w_Cass_Statement
          *
@@ -5945,17 +5926,17 @@ extern "C" {
          * @param[in] value The value is copied into the statement object; the
          * memory pointed to by this parameter can be freed after this call.
          * @param[in] value_size
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_bind_custom_by_name(w_Cass_Statement* statement,
-                const char* name,
-                const char* class_name,
-                const w_byte_t* value,
-                size_t value_size);
+            w_cassandra_statement_bind_custom_by_name(_In_ w_cass_statement* pStatement,
+                _In_ const char* pName,
+                _In_ const char* pClassName,
+                _In_ const w_byte_t* pValue,
+                _In_ size_t pValueSize);
 
         /**
-         * Same as cass_statement_bind_custom_by_name(), but with lengths for string
+         * Same as w_cassandra_statement_bind_custom_by_name(), but with lengths for string
          * parameters.
          *
          * @public @memberof w_Cass_Statement
@@ -5967,18 +5948,18 @@ extern "C" {
          * @param[in] class_name_length
          * @param[in] value
          * @param[in] value_size
-         * @return same as cass_statement_bind_custom_by_name()
+         * @return same as w_cassandra_statement_bind_custom_by_name()
          *
-         * @see cass_statement_bind_custom_by_name()
+         * @see w_cassandra_statement_bind_custom_by_name()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_bind_custom_by_name_n(w_Cass_Statement* statement,
-                const char* name,
-                size_t name_length,
-                const char* class_name,
-                size_t class_name_length,
-                const w_byte_t* value,
-                size_t value_size);
+            w_cassandra_statement_bind_custom_by_name_n(_In_ w_cass_statement* pStatement, 
+                _In_ const char* pName,
+                _In_ size_t pNameLength,
+                _In_ const char* pClassName, 
+                _In_ size_t pClassNameLength,
+                _In_ const w_byte_t* pValue,
+                _In_ size_t pValueSize);
 
         /**
          * Binds a "uuid" or "timeuuid" to a query or bound statement at the specified index.
@@ -5988,34 +5969,34 @@ extern "C" {
          * @param[in] statement
          * @param[in] index
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_bind_uuid(w_Cass_Statement* statement,
-                size_t index,
-                w_CassUuid value);
+            w_cassandra_statement_bind_uuid(_In_ w_cass_statement* pStatement,
+                _In_ size_t pIndex,
+                _In_ w_cass_uuid pValue);
 
         /**
          * Binds a "uuid" or "timeuuid" to all the values
          * with the specified name.
          *
          * This can only be used with statements created by
-         * cass_prepared_bind() when using Cassandra 2.0 or earlier.
+         * w_cassandra_prepared_bind() when using Cassandra 2.0 or earlier.
          *
          * @public @memberof w_Cass_Statement
          *
          * @param[in] statement
          * @param[in] name
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_bind_uuid_by_name(w_Cass_Statement* statement,
-                const char* name,
-                w_CassUuid value);
+            w_cassandra_statement_bind_uuid_by_name(_In_ w_cass_statement* pStatement,
+                _In_ const char* pName, 
+                _In_ w_cass_uuid pValue);
 
         /**
-         * Same as cass_statement_bind_uuid_by_name(), but with lengths for string
+         * Same as w_cassandra_statement_bind_uuid_by_name(), but with lengths for string
          * parameters.
          *
          * @public @memberof w_Cass_Statement
@@ -6024,15 +6005,15 @@ extern "C" {
          * @param[in] name
          * @param[in] name_length
          * @param[in] value
-         * @return same as cass_statement_bind_uuid_by_name()
+         * @return same as w_cassandra_statement_bind_uuid_by_name()
          *
-         * @see cass_statement_bind_uuid_by_name()
+         * @see w_cassandra_statement_bind_uuid_by_name()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_bind_uuid_by_name_n(w_Cass_Statement* statement,
-                const char* name,
-                size_t name_length,
-                w_CassUuid value);
+            w_cassandra_statement_bind_uuid_by_name_n(_In_ w_cass_statement* pStatement,
+                _In_  const char* pName,
+                _In_ size_t pNameLength,
+                _In_  w_cass_uuid pValue);
 
         /**
          * Binds an "inet" to a query or bound statement at the specified index.
@@ -6042,33 +6023,33 @@ extern "C" {
          * @param[in] statement
          * @param[in] index
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_bind_inet(w_Cass_Statement* statement,
-                size_t index,
-                w_CassInet value);
+            w_cassandra_statement_bind_inet(_In_ w_cass_statement* pStatement,
+                _In_ size_t pIndex, 
+                _In_ w_cass_inet pValue);
 
         /**
          * Binds an "inet" to all the values with the specified name.
          *
          * This can only be used with statements created by
-         * cass_prepared_bind() when using Cassandra 2.0 or earlier.
+         * w_cassandra_prepared_bind() when using Cassandra 2.0 or earlier.
          *
          * @public @memberof w_Cass_Statement
          *
          * @param[in] statement
          * @param[in] name
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_bind_inet_by_name(w_Cass_Statement* statement,
-                const char* name,
-                w_CassInet value);
+            w_cassandra_statement_bind_inet_by_name(_In_ w_cass_statement* pStatement,
+                _In_ const char* pName,
+                _In_ w_cass_inet pValue);
 
         /**
-         * Same as cass_statement_bind_inet_by_name(), but with lengths for string
+         * Same as w_cassandra_statement_bind_inet_by_name(), but with lengths for string
          * parameters.
          *
          * @public @memberof w_Cass_Statement
@@ -6077,15 +6058,15 @@ extern "C" {
          * @param[in] name
          * @param[in] name_length
          * @param[in] value
-         * @return same as cass_statement_bind_inet_by_name()
+         * @return same as w_cassandra_statement_bind_inet_by_name()
          *
-         * @see cass_statement_bind_inet_by_name()
+         * @see w_cassandra_statement_bind_inet_by_name()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_bind_inet_by_name_n(w_Cass_Statement* statement,
-                const char* name,
-                size_t name_length,
-                w_CassInet value);
+            w_cassandra_statement_bind_inet_by_name_n(_In_ w_cass_statement* pStatement,
+                _In_ const char* pName,
+                _In_ size_t pNameLength, 
+                _In_ w_cass_inet pValue);
 
         /**
          * Bind a "decimal" to a query or bound statement at the specified index.
@@ -6098,20 +6079,20 @@ extern "C" {
          * memory pointed to by this parameter can be freed after this call.
          * @param[in] varint_size
          * @param[in] scale
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_bind_decimal(w_Cass_Statement* statement,
-                size_t index,
-                const w_byte_t* varint,
-                size_t varint_size,
-                int32_t scale);
+            w_cassandra_statement_bind_decimal(_In_ w_cass_statement* pStatement,
+                _In_ size_t pIndex,
+                _In_ const w_byte_t* pVarint,
+                _In_ size_t pVarintSize,
+                _In_ int32_t pScale);
 
         /**
          * Binds a "decimal" to all the values with the specified name.
          *
          * This can only be used with statements created by
-         * cass_prepared_bind() when using Cassandra 2.0 or earlier.
+         * w_cassandra_prepared_bind() when using Cassandra 2.0 or earlier.
          *
          * @public @memberof w_Cass_Statement
          *
@@ -6121,17 +6102,17 @@ extern "C" {
          * memory pointed to by this parameter can be freed after this call.
          * @param[in] varint_size
          * @param[in] scale
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_bind_decimal_by_name(w_Cass_Statement* statement,
-                const char* name,
-                const w_byte_t* varint,
-                size_t varint_size,
-                int32_t scale);
+            w_cassandra_statement_bind_decimal_by_name(_In_ w_cass_statement* pStatement,
+                _In_ const char* pName,
+                _In_ const w_byte_t* pVarint,
+                _In_ size_t pVarintSize,
+                _In_ int32_t pScale);
 
         /**
-         * Same as cass_statement_bind_decimal_by_name(), but with lengths for string
+         * Same as w_cassandra_statement_bind_decimal_by_name(), but with lengths for string
          * parameters.
          *
          * @public @memberof w_Cass_Statement
@@ -6142,17 +6123,17 @@ extern "C" {
          * @param[in] varint
          * @param[in] varint_size
          * @param[in] scale
-         * @return same as cass_statement_bind_decimal_by_name()
+         * @return same as w_cassandra_statement_bind_decimal_by_name()
          *
-         * @see cass_statement_bind_decimal_by_name()
+         * @see w_cassandra_statement_bind_decimal_by_name()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_bind_decimal_by_name_n(w_Cass_Statement* statement,
-                const char* name,
-                size_t name_length,
-                const w_byte_t* varint,
-                size_t varint_size,
-                int32_t scale);
+            w_cassandra_statement_bind_decimal_by_name_n(_In_ w_cass_statement* pStatement,
+                _In_ const char* pName,
+                _In_ size_t pNameLength,
+                _In_  const w_byte_t* pVarint, 
+                _In_ size_t pVarintSize,
+                _In_  int32_t pScale);
 
         /**
          * Binds a "duration" to a query or bound statement at the specified index.
@@ -6166,14 +6147,14 @@ extern "C" {
          * @param[in] months
          * @param[in] days
          * @param[in] nanos
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_bind_duration(w_Cass_Statement* statement,
-                size_t index,
-                int32_t months,
-                int32_t days,
-                int64_t nanos);
+            w_cassandra_statement_bind_duration(_In_ w_cass_statement* pStatement,
+                _In_ size_t pIndex,
+                _In_ int32_t pMonths,
+                _In_ int32_t pDays,
+                _In_ int64_t pNanos);
 
         /**
          * Binds a "duration" to all the values with the specified name.
@@ -6187,17 +6168,17 @@ extern "C" {
          * @param[in] months
          * @param[in] days
          * @param[in] nanos
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_bind_duration_by_name(w_Cass_Statement* statement,
-                const char* name,
-                int32_t months,
-                int32_t days,
-                int64_t nanos);
+            w_cassandra_statement_bind_duration_by_name(_In_ w_cass_statement* pStatement,
+                _In_  const char* pName, 
+                _In_ int32_t pMonths,
+                _In_  int32_t pDays, 
+                _In_ int64_t pNanos) ;
 
         /**
-         * Same as cass_statement_bind_duration_by_name(), but with lengths for string
+         * Same as w_cassandra_statement_bind_duration_by_name(), but with lengths for string
          * parameters.
          *
          * @cassandra{3.10+}
@@ -6210,17 +6191,17 @@ extern "C" {
          * @param[in] months
          * @param[in] days
          * @param[in] nanos
-         * @return same as cass_statement_bind_duration_by_name()
+         * @return same as w_cassandra_statement_bind_duration_by_name()
          *
-         * @see cass_statement_bind_duration_by_name()
+         * @see w_cassandra_statement_bind_duration_by_name()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_bind_duration_by_name_n(w_Cass_Statement* statement,
-                const char* name,
-                size_t name_length,
-                int32_t months,
-                int32_t days,
-                int64_t nanos);
+            w_cassandra_statement_bind_duration_by_name_n(_In_ w_cass_statement* pStatement,
+                _In_ const char* pName,
+                _In_ size_t pNameLength,
+                _In_ int32_t pMonths,
+                _In_ int32_t pDays, 
+                _In_ int64_t pNanos);
 
         /**
          * Bind a "list", "map" or "set" to a query or bound statement at the
@@ -6231,34 +6212,34 @@ extern "C" {
          * @param[in] statement
          * @param[in] index
          * @param[in] collection The collection can be freed after this call.
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_bind_collection(w_Cass_Statement* statement,
-                size_t index,
-                const w_Cass_Collection* collection);
+            w_cassandra_statement_bind_collection(_In_ w_cass_statement* pStatement,
+                _In_ size_t pIndex, 
+                _In_ const w_cass_collection* pCollection);
 
         /**
          * Bind a "list", "map" or "set" to all the values with the
          * specified name.
          *
          * This can only be used with statements created by
-         * cass_prepared_bind() when using Cassandra 2.0 or earlier.
+         * w_cassandra_prepared_bind() when using Cassandra 2.0 or earlier.
          *
          * @public @memberof w_Cass_Statement
          *
          * @param[in] statement
          * @param[in] name
          * @param[in] collection The collection can be freed after this call.
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_bind_collection_by_name(w_Cass_Statement* statement,
-                const char* name,
-                const w_Cass_Collection* collection);
+            w_cassandra_statement_bind_collection_by_name(_In_ w_cass_statement* pStatement,
+                _In_ const char* pName,
+                _In_ const w_cass_collection* pCollection);
 
         /**
-         * Same as cass_statement_bind_collection_by_name(), but with lengths for string
+         * Same as w_cassandra_statement_bind_collection_by_name(), but with lengths for string
          * parameters.
          *
          * @public @memberof w_Cass_Statement
@@ -6267,15 +6248,15 @@ extern "C" {
          * @param[in] name
          * @param[in] name_length
          * @param[in] collection
-         * @return same as cass_statement_bind_collection_by_name()
+         * @return same as w_cassandra_statement_bind_collection_by_name()
          *
-         * @see cass_statement_bind_collection_by_name()
+         * @see w_cassandra_statement_bind_collection_by_name()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_bind_collection_by_name_n(w_Cass_Statement* statement,
-                const char* name,
-                size_t name_length,
-                const w_Cass_Collection* collection);
+            w_cassandra_statement_bind_collection_by_name_n(_In_ w_cass_statement* pStatement,
+                _In_ const char* pName, 
+                _In_ size_t pNameLength, 
+                _In_ const w_cass_collection* pCollection);
 
         /**
          * Bind a "tuple" to a query or bound statement at the specified index.
@@ -6287,12 +6268,12 @@ extern "C" {
          * @param[in] statement
          * @param[in] index
          * @param[in] tuple The tuple can be freed after this call.
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_bind_tuple(w_Cass_Statement* statement,
-                size_t index,
-                const w_Cass_Tuple* tuple);
+            w_cassandra_statement_bind_tuple(_In_ w_cass_statement* pStatement,
+                _In_ size_t pIndex,
+                _In_ const w_cass_tuple* pTuple);
 
         /**
          * Bind a "tuple" to all the values with the specified name.
@@ -6304,15 +6285,15 @@ extern "C" {
          * @param[in] statement
          * @param[in] name
          * @param[in] tuple The tuple can be freed after this call.
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_bind_tuple_by_name(w_Cass_Statement* statement,
-                const char* name,
-                const w_Cass_Tuple* tuple);
+            w_cassandra_statement_bind_tuple_by_name(_In_ w_cass_statement* pStatement,
+                _In_ const char* pName,
+                _In_ const w_cass_tuple* pTuple);
 
         /**
-         * Same as cass_statement_bind_tuple_by_name(), but with lengths for string
+         * Same as w_cassandra_statement_bind_tuple_by_name(), but with lengths for string
          * parameters.
          *
          * @cassandra{2.1+}
@@ -6323,15 +6304,15 @@ extern "C" {
          * @param[in] name
          * @param[in] name_length
          * @param[in] tuple
-         * @return same as cass_statement_bind_tuple_by_name()
+         * @return same as w_cassandra_statement_bind_tuple_by_name()
          *
-         * @see cass_statement_bind_tuple_by_name()
+         * @see w_cassandra_statement_bind_tuple_by_name()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_bind_tuple_by_name_n(w_Cass_Statement* statement,
-                const char* name,
-                size_t name_length,
-                const w_Cass_Tuple* tuple);
+            w_cassandra_statement_bind_tuple_by_name_n(_In_ w_cass_statement* pStatement,
+                _In_  const char* pName, 
+                _In_ size_t pNameLength,
+                _In_ const w_cass_tuple* pTuple);
 
         /**
          * Bind a user defined type to a query or bound statement at the
@@ -6344,12 +6325,12 @@ extern "C" {
          * @param[in] statement
          * @param[in] index
          * @param[in] user_type The user type can be freed after this call.
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_bind_user_type(w_Cass_Statement* statement,
-                size_t index,
-                const w_Cass_User_Type* user_type);
+            w_cassandra_statement_bind_user_type(_In_ w_cass_statement* pStatement, 
+                _In_ size_t pIndex,
+                _In_ const w_cass_user_type* pUserType);
         /**
          * Bind a user defined type to a query or bound statement with the
          * specified name.
@@ -6361,15 +6342,15 @@ extern "C" {
          * @param[in] statement
          * @param[in] name
          * @param[in] user_type The user type can be freed after this call.
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_bind_user_type_by_name(w_Cass_Statement* statement,
-                const char* name,
-                const w_Cass_User_Type* user_type);
+            w_cassandra_statement_bind_user_type_by_name(_In_ w_cass_statement* pStatement,
+                _In_  const char* pName,
+                _In_ const w_cass_user_type* pUserType);
 
         /**
-         * Same as cass_statement_bind_user_type_by_name(), but with lengths for string
+         * Same as w_cassandra_statement_bind_user_type_by_name(), but with lengths for string
          * parameters.
          *
          * @cassandra{2.1+}
@@ -6380,15 +6361,15 @@ extern "C" {
          * @param[in] name
          * @param[in] name_length
          * @param[in] user_type
-         * @return same as cass_statement_bind_user_type_by_name()
+         * @return same as w_cassandra_statement_bind_user_type_by_name()
          *
-         * @see cass_statement_bind_collection_by_name()
+         * @see w_cassandra_statement_bind_collection_by_name()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_statement_bind_user_type_by_name_n(w_Cass_Statement* statement,
-                const char* name,
-                size_t name_length,
-                const w_Cass_User_Type* user_type);
+            w_cassandra_statement_bind_user_type_by_name_n(_In_ w_cass_statement* pStatement, 
+                _In_ const char* pName,
+                _In_ size_t pNameLength,
+                _In_ const w_cass_user_type* pUserType);
 
         /***********************************************************************************
          *
@@ -6404,7 +6385,7 @@ extern "C" {
           * @param[in] prepared
           */
         W_SYSTEM_EXPORT void
-            w_cassandra_prepared_free(const w_Cass_Prepared* prepared);
+            w_cassandra_prepared_free(_In_ const w_cass_prepared* pPrepared);
 
         /**
          * Creates a bound statement from a pre-prepared statement.
@@ -6414,10 +6395,10 @@ extern "C" {
          * @param[in] prepared
          * @return Returns a bound statement that must be freed.
          *
-         * @see cass_statement_free()
+         * @see w_cassandra_statement_free()
          */
-        W_SYSTEM_EXPORT w_Cass_Statement*
-            w_cassandra_prepared_bind(const w_Cass_Prepared* prepared);
+        W_SYSTEM_EXPORT w_cass_statement* 
+            w_cassandra_prepared_bind(_In_ const w_cass_prepared* pPrepared);
 
         /**
          * Gets the name of a parameter at the specified index.
@@ -6428,13 +6409,13 @@ extern "C" {
          * @param[in] index
          * @param[out] name
          * @param[out] name_length
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_prepared_parameter_name(const w_Cass_Prepared* prepared,
-                size_t index,
-                const char** name,
-                size_t* name_length);
+            w_cassandra_prepared_parameter_name(_In_ const w_cass_prepared* pPrepared,
+                _In_  size_t pIndex, 
+                _Inout_ const char** pName,
+                _Inout_ size_t* pNameLength);
 
         /**
          * Gets the data type of a parameter at the specified index.
@@ -6446,9 +6427,9 @@ extern "C" {
          * @return Returns a reference to the data type of the parameter. Do not free
          * this reference as it is bound to the lifetime of the prepared.
          */
-        W_SYSTEM_EXPORT const w_Cass_Data_Type*
-            w_cassandra_prepared_parameter_data_type(const w_Cass_Prepared* prepared,
-                size_t index);
+        W_SYSTEM_EXPORT const w_cass_data_type*
+            w_cassandra_prepared_parameter_data_type(_In_ const  w_cass_prepared* pPrepared,
+            _In_  size_t pIndex);
 
         /**
          * Gets the data type of a parameter for the specified name.
@@ -6460,12 +6441,12 @@ extern "C" {
          * @return Returns a reference to the data type of the parameter. Do not free
          * this reference as it is bound to the lifetime of the prepared.
          */
-        W_SYSTEM_EXPORT const w_Cass_Data_Type*
-            w_cassandra_prepared_parameter_data_type_by_name(const w_Cass_Prepared* prepared,
-                const char* name);
+        W_SYSTEM_EXPORT const w_cass_data_type*
+            w_cassandra_prepared_parameter_data_type_by_name(_In_ const w_cass_prepared* pPrepared,
+                _In_ const char* pName);
 
         /**
-         * Same as cass_prepared_parameter_data_type_by_name(), but with lengths for string
+         * Same as w_cassandra_prepared_parameter_data_type_by_name(), but with lengths for string
          * parameters.
          *
          * @public @memberof w_Cass_Prepared
@@ -6476,12 +6457,12 @@ extern "C" {
          * @return Returns a reference to the data type of the parameter. Do not free
          * this reference as it is bound to the lifetime of the prepared.
          *
-         * @see cass_prepared_parameter_data_type_by_name()
+         * @see w_cassandra_prepared_parameter_data_type_by_name()
          */
-        W_SYSTEM_EXPORT const w_Cass_Data_Type*
-            w_cassandra_prepared_parameter_data_type_by_name_n(const w_Cass_Prepared* prepared,
-                const char* name,
-                size_t name_length);
+        W_SYSTEM_EXPORT const w_cass_data_type*
+            w_cassandra_prepared_parameter_data_type_by_name_n(_In_ const w_cass_prepared* pPrepared, 
+            _In_  const char* pName,
+            _In_ size_t pNameLength);
 
         /***********************************************************************************
          *
@@ -6499,10 +6480,10 @@ extern "C" {
           * @param[in] type
           * @return Returns a batch statement that must be freed.
           *
-          * @see cass_batch_free()
+          * @see w_cassandra_batch_free()
           */
-        W_SYSTEM_EXPORT w_Cass_Batch*
-            w_cassandra_batch_new(w_Cass_Batch_Type type);
+        W_SYSTEM_EXPORT w_cass_batch* 
+            w_cassandra_batch_new(_In_ w_cass_batch_type pType);
 
         /**
          * Frees a batch instance. Batches can be immediately freed after being
@@ -6515,7 +6496,7 @@ extern "C" {
          * @param[in] batch
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_batch_free(w_Cass_Batch* batch);
+            w_cassandra_batch_free(_In_ w_cass_batch* pBatch);
 
         /**
          * Sets the batch's keyspace. When using protocol v5 or greater it overrides
@@ -6528,11 +6509,11 @@ extern "C" {
          *
          * @param[in] batch
          * @param[in] keyspace
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_batch_set_keyspace(w_Cass_Batch* batch,
-                const char* keyspace);
+            w_cass_batch_set_keyspace(_In_ w_cass_batch* pBatch,
+                _In_ const char* pKeyspace);
 
         /**
          * Same as cass_batch_set_keyspace(), but with lengths for string
@@ -6545,12 +6526,12 @@ extern "C" {
          * @param[in] keyspace_length
          * @return same as cass_batch_set_keyspace()
          *
-         * @see cass_batch_set_keyspace()
+         * @see w_cassandra_batch_set_keyspace()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_batch_set_keyspace_n(w_Cass_Batch* batch,
-                const char* keyspace,
-                size_t keyspace_length);
+            w_cassandra_batch_set_keyspace_n(_In_ w_cass_batch* pBatch, 
+                _In_  const char* pKeyspace,
+                _In_ size_t pKeyspaceLength);
 
         /**
          * Sets the batch's consistency level
@@ -6561,11 +6542,11 @@ extern "C" {
          *
          * @param[in] batch
          * @param[in] consistency The batch's write consistency.
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_batch_set_consistency(w_Cass_Batch* batch,
-                W_Cass_Consistency consistency);
+            w_cassandra_batch_set_consistency(_In_ w_cass_batch* pBatch,
+                _In_ w_cass_consistency pConsistency);
 
         /**
          * Sets the batch's serial consistency level.
@@ -6578,11 +6559,11 @@ extern "C" {
          *
          * @param[in] batch
          * @param[in] serial_consistency
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_batch_set_serial_consistency(w_Cass_Batch* batch,
-                W_Cass_Consistency serial_consistency);
+            w_cassandra_batch_set_serial_consistency(_In_ w_cass_batch* pBatch, 
+                _In_  w_cass_consistency pSerialConsistency);
 
         /**
          * Sets the batch's timestamp.
@@ -6593,11 +6574,11 @@ extern "C" {
          *
          * @param[in] batch
          * @param[in] timestamp
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_batch_set_timestamp(w_Cass_Batch* batch,
-                int64_t timestamp);
+            w_cassandra_batch_set_timestamp(_In_ w_cass_batch* pBatch, 
+                _In_ int64_t pTimeStamp);
 
         /**
          * Sets the batch's timeout for waiting for a response from a node.
@@ -6609,13 +6590,13 @@ extern "C" {
          * @param[in] batch
          * @param[in] timeout_ms Request timeout in milliseconds. Use 0 for no timeout
          * or CASS_UINT64_MAX to disable (to use the cluster-level request timeout).
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          *
-         * @see cass_cluster_set_request_timeout()
+         * @see w_cassandra_cluster_set_request_timeout()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_batch_set_request_timeout(w_Cass_Batch* batch,
-                uint64_t timeout_ms);
+            w_cassandra_batch_set_request_timeout(_In_ w_cass_batch* pBatch,
+                _In_ uint64_t pTimeOutms);
 
         /**
          * Sets whether the statements in a batch are idempotent. Idempotent batches
@@ -6626,14 +6607,14 @@ extern "C" {
          *
          * @param[in] batch
          * @param[in] is_idempotent
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          *
-         * @see cass_cluster_set_constant_speculative_execution_policy()
-         * @see cass_execution_profile_set_constant_speculative_execution_policy()
+         * @see w_cassandra_cluster_set_constant_speculative_execution_policy()
+         * @see w_cassandra_execution_profile_set_constant_speculative_execution_policy()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_batch_set_is_idempotent(w_Cass_Batch* batch,
-                w_bool_t is_idempotent);
+            w_cassandra_batch_set_is_idempotent(_In_ w_cass_batch* pBatch,
+                _In_  w_bool_t pIsIdempotent);
 
         /**
          * Sets the batch's retry policy.
@@ -6644,11 +6625,11 @@ extern "C" {
          *
          * @param[in] batch
          * @param[in] retry_policy
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_batch_set_retry_policy(w_Cass_Batch* batch,
-                w_Cass_Retry_Policy* retry_policy);
+            w_cassandra_batch_set_retry_policy(_In_ w_cass_batch* pBatch,
+                _In_ w_cass_retry_policy* pRetryPolicy);
 
         /**
          * Sets the batch's custom payload.
@@ -6659,11 +6640,11 @@ extern "C" {
          *
          * @param[in] batch
          * @param[in] payload
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_batch_set_custom_payload(w_Cass_Batch* batch,
-                const w_Cass_Custom_Payload* payload);
+            w_cassandra_batch_set_custom_payload(_In_ w_cass_batch* pBatch,
+                _In_ const w_cass_custom_payload* pPayload);
 
         /**
          * Sets whether the batch should use tracing.
@@ -6674,11 +6655,11 @@ extern "C" {
          *
          * @param[in] batch
          * @param[in] enabled
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_batch_set_tracing(w_Cass_Batch* batch,
-                w_bool_t enabled);
+            w_cassandra_batch_set_tracing(_In_ w_cass_batch* pBatch,
+                _In_ w_bool_t pEnabled);
 
         /**
          * Adds a statement to a batch.
@@ -6689,11 +6670,11 @@ extern "C" {
          *
          * @param[in] batch
          * @param[in] statement
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_batch_add_statement(w_Cass_Batch* batch,
-                w_Cass_Statement* statement);
+            w_cassandra_batch_add_statement(_In_ w_cass_batch* pBatch, 
+                _In_ w_cass_statement* pStatement);
 
         /**
          * Sets the execution profile to execute the batch with.
@@ -6704,16 +6685,16 @@ extern "C" {
          *
          * @param[in] batch
          * @param[in] name
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          *
-         * @see cass_cluster_set_execution_profile()
+         * @see w_cassandra_cluster_set_execution_profile()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_batch_set_execution_profile(w_Cass_Batch* batch,
-                const char* name);
+            w_cassandra_batch_set_execution_profile(_In_ w_cass_batch* pBatch, 
+                _In_ const char* pName);
 
         /**
-         * Same as cass_batch_set_execution_profile(), but with lengths for string
+         * Same as w_cassandra_batch_set_execution_profile(), but with lengths for string
          * parameters.
          *
          * @public @memberof w_Cass_Batch
@@ -6721,14 +6702,14 @@ extern "C" {
          * @param[in] batch
          * @param[in] name
          * @param[in] name_length
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          *
          * @see cass_batch_set_execution_profile()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_batch_set_execution_profile_n(w_Cass_Batch* batch,
-                const char* name,
-                size_t name_length);
+            w_cassandra_batch_set_execution_profile_n(_In_ w_cass_batch* pBatch,
+                _In_ const char* pName, 
+                _In_ size_t pNameLength);
 
         /***********************************************************************************
          *
@@ -6744,10 +6725,10 @@ extern "C" {
           * @param[in] type
           * @return Returns a data type that must be freed.
           *
-          * @see cass_data_type_free()
+          * @see w_cassandra_data_type_free()
           */
-        W_SYSTEM_EXPORT w_Cass_Data_Type*
-            w_cassandra_data_type_new(w_Cass_Value_Type type);
+        W_SYSTEM_EXPORT w_cass_data_type* 
+            w_cassandra_data_type_new(_In_ w_cass_value_type pType);
 
         /**
          * Creates a new data type from an existing data type.
@@ -6757,10 +6738,10 @@ extern "C" {
          * @param[in] data_type
          * @return Returns a data type that must be freed.
          *
-         * @see cass_data_type_free()
+         * @see w_cassandra_data_type_free()
          */
-        W_SYSTEM_EXPORT w_Cass_Data_Type*
-            w_cassandra_data_type_new_from_existing(const w_Cass_Data_Type* data_type);
+        W_SYSTEM_EXPORT w_cass_data_type* 
+            w_cassandra_data_type_new_from_existing(_In_ const w_cass_data_type* pDataType);
 
         /**
          * Creates a new tuple data type.
@@ -6772,10 +6753,10 @@ extern "C" {
          * @param[in] item_count The number of items in the tuple
          * @return Returns a data type that must be freed.
          *
-         * @see cass_data_type_free()
+         * @see w_cassandra_data_type_free()
          */
-        W_SYSTEM_EXPORT w_Cass_Data_Type*
-            w_cassandra_data_type_new_tuple(size_t item_count);
+        W_SYSTEM_EXPORT w_cass_data_type* 
+            w_cassandra_data_type_new_tuple(_In_ size_t ptemCount);
 
         /**
          * Creates a new UDT (user defined type) data type.
@@ -6787,10 +6768,10 @@ extern "C" {
          * @param[in] field_count The number of fields in the UDT
          * @return Returns a data type that must be freed.
          *
-         * @see cass_data_type_free()
+         * @see w_cassandra_data_type_free()
          */
-        W_SYSTEM_EXPORT w_Cass_Data_Type*
-            w_cassandra_data_type_new_udt(size_t field_count);
+        W_SYSTEM_EXPORT w_cass_data_type*
+            w_cassandra_data_type_new_udt(_In_ size_t pFieldCount);
 
         /**
          * Frees a data type instance.
@@ -6800,7 +6781,7 @@ extern "C" {
          * @param[in] data_type
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_data_type_free(w_Cass_Data_Type* data_type);
+            w_cassandra_data_type_free(_In_ w_cass_data_type* pDataType);
 
         /**
          * Gets the value type of the specified data type.
@@ -6808,8 +6789,8 @@ extern "C" {
          * @param[in] data_type
          * @return The value type
          */
-        W_SYSTEM_EXPORT w_Cass_Value_Type
-            w_cassandra_data_type_type(const w_Cass_Data_Type* data_type);
+        W_SYSTEM_EXPORT w_cass_value_type
+            w_cassandra_data_type_type(_In_ const w_cass_data_type* pDataType);
 
         /**
          * Gets whether a data type is frozen.
@@ -6820,7 +6801,7 @@ extern "C" {
          * @return cass_true if the data type is frozen, otherwise cass_false.
          */
         W_SYSTEM_EXPORT w_bool_t
-            w_cassandra_data_type_is_frozen(const w_Cass_Data_Type* data_type);
+            w_cassandra_data_type_is_frozen(_In_ const w_cass_data_type* pDataType);
 
         /**
          * Gets the type name of a UDT data type.
@@ -6830,12 +6811,12 @@ extern "C" {
          * @param[in] data_type
          * @param[out] type_name
          * @param[out] type_name_length
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cass_data_type_type_name(const w_Cass_Data_Type* data_type,
-                const char** type_name,
-                size_t* type_name_length);
+            w_cassandra_data_type_type_name(_In_ const w_cass_data_type* pDataType,
+                _Inout_  const char** pTypeName,
+                _Inout_ size_t* pTypeNameLength);
 
         /**
          * Sets the type name of a UDT data type.
@@ -6844,14 +6825,14 @@ extern "C" {
          *
          * @param[in] data_type
          * @param[in] type_name
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_data_type_set_type_name(w_Cass_Data_Type* data_type,
-                const char* type_name);
+            w_cassandra_data_type_set_type_name(_In_ w_cass_data_type* pDataType,
+                _In_ const char* pTypeName);
 
         /**
-         * Same as cass_data_type_set_type_name(), but with lengths for string
+         * Same as w_cassandra_data_type_set_type_name(), but with lengths for string
          * parameters.
          *
          * @public @memberof w_Cass_Data_Type
@@ -6862,9 +6843,9 @@ extern "C" {
          * @return Returns a data type that must be freed.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_data_type_set_type_name_n(w_Cass_Data_Type* data_type,
-                const char* type_name,
-                size_t type_name_length);
+            w_cassandra_data_type_set_type_name_n(_In_ w_cass_data_type* pDataType, 
+                _In_ const char* pTypeName, 
+                _In_ size_t pTypeNameLength);
 
         /**
          * Gets the type name of a UDT data type.
@@ -6876,12 +6857,12 @@ extern "C" {
          * @param[in] data_type
          * @param[out] keyspace
          * @param[out] keyspace_length
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_data_type_keyspace(const w_Cass_Data_Type* data_type,
-                const char** keyspace,
-                size_t* keyspace_length);
+            w_cassandra_data_type_keyspace(_In_ const w_cass_data_type* pDataType, 
+                _Inout_ const char** pKeyspace,
+                _Inout_ size_t* pKeypaceLength);
 
         /**
          * Sets the keyspace of a UDT data type.
@@ -6892,14 +6873,14 @@ extern "C" {
          *
          * @param[in] data_type
          * @param[in] keyspace
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_data_type_set_keyspace(w_Cass_Data_Type* data_type,
-                const char* keyspace);
+            w_cassandra_data_type_set_keyspace(_In_ w_cass_data_type* pDataType,
+                _In_ const char* pKeyspace);
 
         /**
-         * Same as cass_data_type_set_keyspace(), but with lengths for string
+         * Same as w_cassandra_data_type_set_keyspace(), but with lengths for string
          * parameters.
          *
          * @cassandra{2.1+}
@@ -6912,9 +6893,9 @@ extern "C" {
          * @return Returns a data type that must be freed.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_data_type_set_keyspace_n(w_Cass_Data_Type* data_type,
-                const char* keyspace,
-                size_t keyspace_length);
+            w_cassandra_data_type_set_keyspace_n(_In_ w_cass_data_type* pDataType, 
+                _In_ const char* pKeypace,
+                _In_ size_t pKeypaceLength);
 
         /**
          * Gets the class name of a custom data type.
@@ -6924,12 +6905,12 @@ extern "C" {
          * @param[in] data_type
          * @param[out] class_name
          * @param[out] class_name_length
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_data_type_class_name(const w_Cass_Data_Type* data_type,
-                const char** class_name,
-                size_t* class_name_length);
+            w_cassandra_data_type_class_name(_In_ const w_cass_data_type* pDataType,
+                _Inout_ const char** pClassName,
+                _Inout_ size_t* pClassNameLength);
 
         /**
          * Sets the class name of a custom data type.
@@ -6938,14 +6919,14 @@ extern "C" {
          *
          * @param[in] data_type
          * @param[in] class_name
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_data_type_set_class_name(w_Cass_Data_Type* data_type,
-                const char* class_name);
+            w_cassandra_data_type_set_class_name(_In_ w_cass_data_type* pDataType,
+                _In_ const char* pClassName);
 
         /**
-         * Same as cass_data_type_set_class_name(), but with lengths for string
+         * Same as w_cassandra_data_type_set_class_name(), but with lengths for string
          * parameters.
          *
          * @public @memberof w_Cass_Data_Type
@@ -6956,9 +6937,9 @@ extern "C" {
          * @return Returns a data type that must be freed.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_data_type_set_class_name_n(w_Cass_Data_Type* data_type,
-                const char* class_name,
-                size_t class_name_length);
+            w_cassandra_data_type_set_class_name_n(_In_ w_cass_data_type* pDataType, 
+                _In_ const char* pClassName, 
+                _In_ size_t pClassNameLength);
 
         /**
          * Gets the sub-data type count of a UDT (user defined type), tuple
@@ -6970,13 +6951,13 @@ extern "C" {
          * @return Returns the number of sub-data types
          */
         W_SYSTEM_EXPORT size_t
-            w_cassandra_data_type_sub_type_count(const w_Cass_Data_Type* data_type);
+            w_cassandra_data_type_sub_type_count(_In_ const w_cass_data_type* pDataType);
 
         /**
-         * @deprecated Use cass_data_type_sub_type_count()
+         * @deprecated Use w_cassandra_data_type_sub_type_count()
          */
         W_SYSTEM_EXPORT size_t
-            w_cassandra_data_sub_type_count(const w_Cass_Data_Type* data_type);
+            w_cassandra_data_sub_type_count(const w_cass_data_type* data_type);
 
         /**
          * Gets the sub-data type count of a UDT (user defined type), tuple
@@ -7000,9 +6981,9 @@ extern "C" {
           * reference as it is bound to the lifetime of the parent data type. NULL
           * is returned if the index is out of range.
           */
-        W_SYSTEM_EXPORT const w_Cass_Data_Type*
-            w_cassandra_data_type_sub_data_type(const w_Cass_Data_Type* data_type,
-                size_t index);
+        W_SYSTEM_EXPORT const w_cass_data_type* 
+            w_cassandra_data_type_sub_data_type(_In_ const w_cass_data_type* pDataType,
+            _In_ size_t pIndex);
 
         /**
          * Gets the sub-data type of a UDT (user defined type) at the specified index.
@@ -7017,12 +6998,12 @@ extern "C" {
          * reference as it is bound to the lifetime of the parent data type. NULL
          * is returned if the name doesn't exist.
          */
-        W_SYSTEM_EXPORT const w_Cass_Data_Type*
-            w_cassandra_data_type_sub_data_type_by_name(const w_Cass_Data_Type* data_type,
-                const char* name);
+        W_SYSTEM_EXPORT const w_cass_data_type*
+            w_cassandra_data_type_sub_data_type_by_name(_In_ const w_cass_data_type* pDataType,
+            _In_ const char* pName);
 
         /**
-         * Same as cass_data_type_sub_data_type_by_name(), but with lengths for string
+         * Same as w_cassandra_data_type_sub_data_type_by_name(), but with lengths for string
          * parameters.
          *
          * @cassandra{2.1+}
@@ -7036,10 +7017,9 @@ extern "C" {
          * reference as it is bound to the lifetime of the parent data type. NULL
          * is returned if the name doesn't exist.
          */
-        W_SYSTEM_EXPORT const w_Cass_Data_Type*
-            w_cassandra_data_type_sub_data_type_by_name_n(const w_Cass_Data_Type* data_type,
-                const char* name,
-                size_t name_length);
+        W_SYSTEM_EXPORT const w_cass_data_type* w_cassandra_data_type_sub_data_type_by_name_n(_In_ const w_cass_data_type* pDataType,
+            _In_ const char* pName,
+            _In_ size_t pNameLength);
 
         /**
          * Gets the sub-type name of a UDT (user defined type) at the specified index.
@@ -7052,13 +7032,13 @@ extern "C" {
          * @param[in] index
          * @param[out] name
          * @param[out] name_length
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_data_type_sub_type_name(const w_Cass_Data_Type* data_type,
-                size_t index,
-                const char** name,
-                size_t* name_length);
+            w_cassandra_data_type_sub_type_name(_In_ const w_cass_data_type* pDataType, 
+                _In_ size_t pIndex,
+                _In_  const char** pName, 
+                _In_  size_t* pNameLength);
 
         /**
          * Adds a sub-data type to a tuple or collection.
@@ -7067,11 +7047,11 @@ extern "C" {
          *
          * @param[in] data_type
          * @param[in] sub_data_type
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_data_type_add_sub_type(w_Cass_Data_Type* data_type,
-                const w_Cass_Data_Type* sub_data_type);
+            w_cassandra_data_type_add_sub_type(_In_ w_cass_data_type* pDataType, 
+                _In_ const w_cass_data_type* pSubDataType);
 
         /**
          * Adds a sub-data type to a UDT (user defined type).
@@ -7083,15 +7063,15 @@ extern "C" {
          * @param[in] data_type
          * @param[in] name
          * @param[in] sub_data_type
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_data_type_add_sub_type_by_name(w_Cass_Data_Type* data_type,
-                const char* name,
-                const w_Cass_Data_Type* sub_data_type);
+            w_cassandra_data_type_add_sub_type_by_name(_In_ w_cass_data_type* pDataType,
+                _In_ const char* pName, 
+                _In_ const w_cass_data_type* pSubDataType);
 
         /**
-         * Same as cass_data_type_add_sub_type_by_name(), but with lengths for string
+         * Same as w_cassandra_data_type_add_sub_type_by_name(), but with lengths for string
          * parameters.
          *
          * <b>Note:</b> Only valid for UDT data types.
@@ -7102,13 +7082,13 @@ extern "C" {
          * @param[in] name
          * @param[in] name_length
          * @param[in] sub_data_type
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_data_type_add_sub_type_by_name_n(w_Cass_Data_Type* data_type,
-                const char* name,
-                size_t name_length,
-                const w_Cass_Data_Type* sub_data_type);
+            w_cassandra_data_type_add_sub_type_by_name_n(_In_ w_cass_data_type* pDataType,
+                _In_  const char* pName, 
+                _In_  size_t pNameLength,
+                _In_  const w_cass_data_type* pSubDataType);
 
         /**
          * Adds a sub-data type to a tuple or collection using a value type.
@@ -7117,11 +7097,11 @@ extern "C" {
          *
          * @param[in] data_type
          * @param[in] sub_value_type
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_data_type_add_sub_value_type(w_Cass_Data_Type* data_type,
-                w_Cass_Value_Type sub_value_type);
+            w_cassandra_data_type_add_sub_value_type(_In_ w_cass_data_type* pDataType, 
+                _In_ w_cass_value_type pSubValueType);
 
 
         /**
@@ -7134,12 +7114,12 @@ extern "C" {
          * @param[in] data_type
          * @param[in] name
          * @param[in] sub_value_type
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_data_type_add_sub_value_type_by_name(w_Cass_Data_Type* data_type,
-                const char* name,
-                w_Cass_Value_Type sub_value_type);
+            w_cassandra_data_type_add_sub_value_type_by_name(_In_ w_cass_data_type* pDataType, 
+                _In_  const char* pName, 
+                _In_  w_cass_value_type pSubValueType);
 
         /**
          * Same as cass_data_type_add_sub_value_type_by_name(), but with lengths for string
@@ -7153,13 +7133,13 @@ extern "C" {
          * @param[in] name
          * @param[in] name_length
          * @param[in] sub_value_type
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_data_type_add_sub_value_type_by_name_n(w_Cass_Data_Type* data_type,
-                const char* name,
-                size_t name_length,
-                w_Cass_Value_Type sub_value_type);
+            w_cassandra_data_type_add_sub_value_type_by_name_n(_In_ w_cass_data_type* pDataType,
+                _In_  const char* pName, 
+                _In_  size_t pNameLength,
+                _In_  w_cass_value_type sub_value_type);
 
         /***********************************************************************************
          *
@@ -7176,11 +7156,11 @@ extern "C" {
           * @param[in] item_count The approximate number of items in the collection.
           * @return Returns a collection that must be freed.
           *
-          * @see cass_collection_free()
+          * @see w_cassandra_collection_free()
           */
-        W_SYSTEM_EXPORT w_Cass_Collection*
-            w_cassandra_collection_new(w_Cass_Collection_Type type,
-                size_t item_count);
+        W_SYSTEM_EXPORT w_cass_collection*
+            w_cassandra_collection_new(_In_ w_cass_collection_type pType,
+                _In_ size_t pItemCount);
 
         /**
          * Creates a new collection from an existing data type.
@@ -7191,11 +7171,11 @@ extern "C" {
          * @param[in] item_count The approximate number of items in the collection.
          * @return Returns a collection that must be freed.
          *
-         * @see cass_collection_free();
+         * @see w_cassandra_collection_free();
          */
-        W_SYSTEM_EXPORT w_Cass_Collection*
-            w_cassandra_collection_new_from_data_type(const w_Cass_Data_Type* data_type,
-                size_t item_count);
+        W_SYSTEM_EXPORT w_cass_collection*
+            w_cassandra_collection_new_from_data_type(_In_ const w_cass_data_type* pDataType,
+            _In_ size_t pItemCount);
 
         /**
          * Frees a collection instance.
@@ -7205,7 +7185,7 @@ extern "C" {
          * @param[in] collection
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_collection_free(w_Cass_Collection* collection);
+            w_cassandra_collection_free(_In_ w_cass_collection* pCollection);
 
         /**
          * Gets the data type of a collection.
@@ -7214,8 +7194,8 @@ extern "C" {
          * @return Returns a reference to the data type of the collection. Do not free
          * this reference as it is bound to the lifetime of the collection.
          */
-        W_SYSTEM_EXPORT const w_Cass_Data_Type*
-            w_cassandra_collection_data_type(const w_Cass_Collection* collection);
+        W_SYSTEM_EXPORT const w_cass_data_type* 
+            w_cassandra_collection_data_type(_In_ const w_cass_collection* pCollection);
 
         /**
          * Appends a "tinyint" to the collection.
@@ -7226,11 +7206,11 @@ extern "C" {
          *
          * @param[in] collection
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_collection_append_int8(w_Cass_Collection* collection,
-                int8_t value);
+            w_cassandra_collection_append_int8(_In_ w_cass_collection* pCollection, 
+                _In_ int8_t pValue);
 
         /**
          * Appends an "smallint" to the collection.
@@ -7241,11 +7221,11 @@ extern "C" {
          *
          * @param[in] collection
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_collection_append_int16(w_Cass_Collection* collection,
-                int16_t value);
+            w_cassandra_collection_append_int16(_In_ w_cass_collection* pCollection,
+                _In_ int16_t pValue);
 
         /**
          * Appends an "int" to the collection.
@@ -7254,11 +7234,11 @@ extern "C" {
          *
          * @param[in] collection
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_collection_append_int32(w_Cass_Collection* collection,
-                int32_t value);
+            w_cassandra_collection_append_int32(_In_ w_cass_collection* pCollection,
+                _In_ int32_t pValue);
 
         /**
          * Appends a "date" to the collection.
@@ -7269,11 +7249,11 @@ extern "C" {
          *
          * @param[in] collection
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_collection_append_uint32(w_Cass_Collection* collection,
-                uint32_t value);
+            w_cassandra_collection_append_uint32(_In_ w_cass_collection* pCollection, 
+                _In_ uint32_t pValue);
 
 
         /**
@@ -7284,11 +7264,11 @@ extern "C" {
          *
          * @param[in] collection
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_collection_append_int64(w_Cass_Collection* collection,
-                int64_t value);
+            w_cassandra_collection_append_int64(_In_ w_cass_collection* pCollection,
+                _In_ int64_t pValue);
 
         /**
          * Appends a "float" to the collection.
@@ -7297,11 +7277,11 @@ extern "C" {
          *
          * @param[in] collection
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_collection_append_float(w_Cass_Collection* collection,
-                float value);
+            w_cassandra_collection_append_float(_In_ w_cass_collection* pCollection, 
+                _In_ float pValue);
 
         /**
          * Appends a "double" to the collection.
@@ -7310,11 +7290,11 @@ extern "C" {
          *
          * @param[in] collection
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_collection_append_double(w_Cass_Collection* collection,
-                double value);
+            w_cassandra_collection_append_double(_In_ w_cass_collection* pCollection,
+                _In_ double pValue);
 
         /**
          * Appends a "boolean" to the collection.
@@ -7323,11 +7303,11 @@ extern "C" {
          *
          * @param[in] collection
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_collection_append_bool(w_Cass_Collection* collection,
-                w_bool_t value);
+            w_cassandra_collection_append_bool(_In_ w_cass_collection* pCollection,
+                _In_ w_bool_t pValue);
 
         /**
          * Appends an "ascii", "text" or "varchar" to the collection.
@@ -7337,15 +7317,15 @@ extern "C" {
          * @param[in] collection
          * @param[in] value The value is copied into the collection object; the
          * memory pointed to by this parameter can be freed after this call.
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_collection_append_string(w_Cass_Collection* collection,
-                const char* value);
+            w_cassandra_collection_append_string(_In_ w_cass_collection* pCollection, 
+                _In_  const char* pValue);
 
 
         /**
-         * Same as cass_collection_append_string(), but with lengths for string
+         * Same as w_cassandra_collection_append_string(), but with lengths for string
          * parameters.
          *
          * @public @memberof w_Cass_Collection
@@ -7353,14 +7333,14 @@ extern "C" {
          * @param[in] collection
          * @param[in] value
          * @param[in] value_length
-         * @return same as cass_collection_append_string()
+         * @return same as w_cassandra_collection_append_string()
          *
-         * @see cass_collection_append_string();
+         * @see w_cassandra_collection_append_string();
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_collection_append_string_n(w_Cass_Collection* collection,
-                const char* value,
-                size_t value_length);
+            w_cassandra_collection_append_string_n(_In_ w_cass_collection* pCollection,
+                _In_  const char* pValue, 
+                _In_ size_t pValueLength);
 
         /**
          * Appends a "blob", "varint" or "custom" to the collection.
@@ -7371,12 +7351,12 @@ extern "C" {
          * @param[in] value The value is copied into the collection object; the
          * memory pointed to by this parameter can be freed after this call.
          * @param[in] value_size
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_collection_append_bytes(w_Cass_Collection* collection,
-                const w_byte_t* value,
-                size_t value_size);
+            w_cassandra_collection_append_bytes(_In_ w_cass_collection* pCollection, 
+                _In_  const w_byte_t* pValue, 
+                _In_ size_t pValueSize);
 
         /**
          * Appends a "custom" to the collection.
@@ -7388,16 +7368,16 @@ extern "C" {
          * @param[in] value The value is copied into the collection object; the
          * memory pointed to by this parameter can be freed after this call.
          * @param[in] value_size
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_collection_append_custom(w_Cass_Collection* collection,
-                const char* class_name,
-                const w_byte_t* value,
-                size_t value_size);
+            w_cassandra_collection_append_custom(_In_ w_cass_collection* pCollection, 
+                _In_ const char* pClassName, 
+                _In_  const w_byte_t* pValue,
+                _In_ size_t pValueSize);
 
         /**
-         * Same as cass_collection_append_custom(), but with lengths for string
+         * Same as w_cassandra_collection_append_custom(), but with lengths for string
          * parameters.
          *
          * @public @memberof w_Cass_Collection
@@ -7407,16 +7387,16 @@ extern "C" {
          * @param[in] class_name_length
          * @param[in] value
          * @param[in] value_size
-         * @return same as cass_collection_append_custom()
+         * @return same as w_cassandra_collection_append_custom()
          *
-         * @see cass_collection_append_custom()
+         * @see w_cassandra_collection_append_custom()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_collection_append_custom_n(w_Cass_Collection* collection,
-                const char* class_name,
-                size_t class_name_length,
-                const w_byte_t* value,
-                size_t value_size);
+            w_cassandra_collection_append_custom_n(_In_ w_cass_collection* pCollection,
+                _In_  const char* pClassName,
+                _In_ size_t pClassNameLength,
+                _In_ const w_byte_t* pValue,
+                _In_ size_t pValueSize);
 
         /**
          * Appends a "uuid" or "timeuuid"  to the collection.
@@ -7425,11 +7405,11 @@ extern "C" {
          *
          * @param[in] collection
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_collection_append_uuid(w_Cass_Collection* collection,
-                w_CassUuid value);
+            w_cassandra_collection_append_uuid(_In_ w_cass_collection* pCollection, 
+                _In_ w_cass_uuid pValue);
 
         /**
          * Appends an "inet" to the collection.
@@ -7438,11 +7418,11 @@ extern "C" {
          *
          * @param[in] collection
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_collection_append_inet(w_Cass_Collection* collection,
-                w_CassInet value);
+            w_cassandra_collection_append_inet(_In_ w_cass_collection* pCollection,
+                _In_ w_cass_inet pValue);
 
         /**
          * Appends a "decimal" to the collection.
@@ -7454,13 +7434,13 @@ extern "C" {
          * memory pointed to by this parameter can be freed after this call.
          * @param[in] varint_size
          * @param[in] scale
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_collection_append_decimal(w_Cass_Collection* collection,
-                const w_byte_t* varint,
-                size_t varint_size,
-                int32_t scale);
+            w_cassandra_collection_append_decimal(_In_ w_cass_collection* pCollection,
+                _In_ const w_byte_t* pVarint,
+                _In_ size_t pVarintSize,
+                _In_ int32_t pScale);
 
         /**
          * Appends a "duration" to the collection.
@@ -7473,13 +7453,10 @@ extern "C" {
          * @param[in] months
          * @param[in] days
          * @param[in] nanos
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_collection_append_duration(w_Cass_Collection* collection,
-                int32_t months,
-                int32_t days,
-                int64_t nanos);
+            w_cassandra_collection_append_duration(_In_ w_cass_collection* pCollection, _In_ int32_t pMonths, _In_ int32_t pDays, _In_ int64_t pNanos);
 
         /**
          * Appends a "list", "map" or "set" to the collection.
@@ -7490,11 +7467,11 @@ extern "C" {
          *
          * @param[in] collection
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_collection_append_collection(w_Cass_Collection* collection,
-                const w_Cass_Collection* value);
+            w_cassandra_collection_append_collection(_In_ w_cass_collection* pCollection, 
+                _In_ const w_cass_collection* pValue);
 
         /**
          * Appends a "tuple" to the collection.
@@ -7505,11 +7482,11 @@ extern "C" {
          *
          * @param[in] collection
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_collection_append_tuple(w_Cass_Collection* collection,
-                const w_Cass_Tuple* value);
+            w_cassandra_collection_append_tuple(_In_ w_cass_collection* pCollection,
+                _In_ const w_cass_tuple* pValue);
 
         /**
          * Appends a "udt" to the collection.
@@ -7520,11 +7497,11 @@ extern "C" {
          *
          * @param[in] collection
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_collection_append_user_type(w_Cass_Collection* collection,
-                const w_Cass_User_Type* value);
+            w_cassandra_collection_append_user_type(_In_ w_cass_collection* pCollection,
+                _In_ const w_cass_user_type* pValue);
 
         /***********************************************************************************
          *
@@ -7542,10 +7519,10 @@ extern "C" {
           * @param[in] item_count The number of items in the tuple.
           * @return Returns a tuple that must be freed.
           *
-          * @see cass_tuple_free()
+          * @see w_cassandra_tuple_free()
           */
-        W_SYSTEM_EXPORT w_Cass_Tuple*
-            w_cassandra_tuple_new(size_t item_count);
+        W_SYSTEM_EXPORT w_cass_tuple* 
+            w_cassandra_tuple_new(_In_ size_t pItemCount);
 
         /**
          * Creates a new tuple from an existing data type.
@@ -7557,10 +7534,10 @@ extern "C" {
          * @param[in] data_type
          * @return Returns a tuple that must be freed.
          *
-         * @see cass_tuple_free();
+         * @see w_cassandra_tuple_free();
          */
-        W_SYSTEM_EXPORT w_Cass_Tuple*
-            w_cassandra_tuple_new_from_data_type(const w_Cass_Data_Type* data_type);
+        W_SYSTEM_EXPORT w_cass_tuple*
+            w_cassandra_tuple_new_from_data_type(_In_ const w_cass_data_type* pDataType);
 
         /**
          * Frees a tuple instance.
@@ -7572,7 +7549,7 @@ extern "C" {
          * @param[in] tuple
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_tuple_free(w_Cass_Tuple* tuple);
+            w_cassandra_tuple_free(_In_ w_cass_tuple* pTuple);
 
         /**
          * Gets the data type of a tuple.
@@ -7583,8 +7560,8 @@ extern "C" {
          * @return Returns a reference to the data type of the tuple. Do not free
          * this reference as it is bound to the lifetime of the tuple.
          */
-        W_SYSTEM_EXPORT const w_Cass_Data_Type*
-            w_cassandra_tuple_data_type(const w_Cass_Tuple* tuple);
+        W_SYSTEM_EXPORT  const w_cass_data_type* 
+            w_cassandra_tuple_data_type(_In_ const w_cass_tuple* pTuple);
 
         /**
          * Sets an null in a tuple at the specified index.
@@ -7595,10 +7572,10 @@ extern "C" {
          *
          * @param[in] tuple
          * @param[in] index
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_tuple_set_null(w_Cass_Tuple* tuple, size_t index);
+            w_cassandra_tuple_set_null(_In_ w_cass_tuple* pTuple, _In_  size_t pIndex);
 
         /**
          * Sets a "tinyint" in a tuple at the specified index.
@@ -7610,12 +7587,12 @@ extern "C" {
          * @param[in] tuple
          * @param[in] index
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_tuple_set_int8(w_Cass_Tuple* tuple,
-                size_t index,
-                int8_t value);
+            w_cassandra_tuple_set_int8(_In_ w_cass_tuple* pTuple,
+                _In_ size_t pIndex,
+                int8_t pValue);
 
         /**
          * Sets an "smallint" in a tuple at the specified index.
@@ -7627,12 +7604,12 @@ extern "C" {
          * @param[in] tuple
          * @param[in] index
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_tuple_set_int16(w_Cass_Tuple* tuple,
-                size_t index,
-                int16_t value);
+            w_cassandra_tuple_set_int16(_In_ w_cass_tuple* pTuple,
+                _In_ size_t pIndex, 
+                _In_ int16_t pValue);
 
         /**
          * Sets an "int" in a tuple at the specified index.
@@ -7644,12 +7621,12 @@ extern "C" {
          * @param[in] tuple
          * @param[in] index
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_tuple_set_int32(w_Cass_Tuple* tuple,
-                size_t index,
-                int32_t value);
+            w_cassandra_tuple_set_int32(_In_ w_cass_tuple* pTuple,
+                _In_ size_t pIndex,
+                _In_ int32_t pValue);
 
         /**
          * Sets a "date" in a tuple at the specified index.
@@ -7661,12 +7638,12 @@ extern "C" {
          * @param[in] tuple
          * @param[in] index
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_tuple_set_uint32(w_Cass_Tuple* tuple,
-                size_t index,
-                uint32_t value);
+            w_cassandra_tuple_set_uint32(_In_ w_cass_tuple* pTuple,
+                _In_ size_t pIndex,
+                _In_  uint32_t pValue);
 
         /**
          * Sets a "bigint", "counter", "timestamp" or "time" in a tuple at the
@@ -7679,12 +7656,12 @@ extern "C" {
          * @param[in] tuple
          * @param[in] index
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_tuple_set_int64(w_Cass_Tuple* tuple,
-                size_t index,
-                int64_t value);
+            w_cassandra_tuple_set_int64(_In_ w_cass_tuple* pTuple,
+                _In_ size_t pIndex,
+                _In_ int64_t pValue);
 
         /**
          * Sets a "float" in a tuple at the specified index.
@@ -7696,12 +7673,12 @@ extern "C" {
          * @param[in] tuple
          * @param[in] index
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_tuple_set_float(w_Cass_Tuple* tuple,
-                size_t index,
-                float value);
+            w_cassandra_tuple_set_float(_In_ w_cass_tuple* pTuple,
+                _In_ size_t pIndex,
+                _In_ float pValue);
 
         /**
          * Sets a "double" in a tuple at the specified index.
@@ -7713,12 +7690,12 @@ extern "C" {
          * @param[in] tuple
          * @param[in] index
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_tuple_set_double(w_Cass_Tuple* tuple,
-                size_t index,
-                double value);
+            w_cassandra_tuple_set_double(_In_ w_cass_tuple* pTuple, 
+                _In_ size_t pIndex, 
+                _In_ double pValue);
 
         /**
          * Sets a "boolean" in a tuple at the specified index.
@@ -7730,12 +7707,12 @@ extern "C" {
          * @param[in] tuple
          * @param[in] index
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_tuple_set_bool(w_Cass_Tuple* tuple,
-                size_t index,
-                w_bool_t value);
+            w_cassandra_tuple_set_bool(_In_ w_cass_tuple* pTuple,
+                _In_ size_t pIndex,
+                _In_ w_bool_t pValue);
 
         /**
          * Sets an "ascii", "text" or "varchar" in a tuple at the specified index.
@@ -7748,15 +7725,15 @@ extern "C" {
          * @param[in] index
          * @param[in] value The value is copied into the tuple object; the
          * memory pointed to by this parameter can be freed after this call.
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_tuple_set_string(w_Cass_Tuple* tuple,
-                size_t index,
-                const char* value);
+            w_cassandra_tuple_set_string(_In_ w_cass_tuple* pTuple,
+                _In_ size_t pIndex, 
+                _In_ const char* pValue);
 
         /**
-         * Same as cass_tuple_set_string(), but with lengths for string
+         * Same as w_cassandra_tuple_set_string(), but with lengths for string
          * parameters.
          *
          * @cassandra{2.1+}
@@ -7767,15 +7744,15 @@ extern "C" {
          * @param[in] index
          * @param[in] value
          * @param[in] value_length
-         * @return same as cass_tuple_set_string()
+         * @return same as w_cassandra_tuple_set_string()
          *
-         * @see cass_tuple_set_string();
+         * @see w_cassandra_tuple_set_string();
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_tuple_set_string_n(w_Cass_Tuple* tuple,
-                size_t index,
-                const char* value,
-                size_t value_length);
+            w_cassandra_tuple_set_string_n(_In_ w_cass_tuple* pTuple,
+                _In_  size_t pIndex,
+                _In_ const char* pValue, 
+                _In_ size_t pValueLength);
 
         /**
          * Sets a "blob", "varint" or "custom" in a tuple at the specified index.
@@ -7789,13 +7766,13 @@ extern "C" {
          * @param[in] value The value is copied into the tuple object; the
          * memory pointed to by this parameter can be freed after this call.
          * @param[in] value_size
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_tuple_set_bytes(w_Cass_Tuple* tuple,
-                size_t index,
-                const w_byte_t* value,
-                size_t value_size);
+            w_cassandra_tuple_set_bytes(_In_ w_cass_tuple* pTuple,
+                _In_ size_t pIndex,
+                _In_ const w_byte_t* pValue, 
+                _In_ size_t pValueSize);
 
         /**
          * Sets a "custom" in a tuple at the specified index.
@@ -7808,17 +7785,17 @@ extern "C" {
          * @param[in] value The value is copied into the tuple object; the
          * memory pointed to by this parameter can be freed after this call.
          * @param[in] value_size
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_tuple_set_custom(w_Cass_Tuple* tuple,
-                size_t index,
-                const char* class_name,
-                const w_byte_t* value,
-                size_t value_size);
+            w_cassandra_tuple_set_custom(_In_ w_cass_tuple* pTuple,
+                _In_ size_t pIndex,
+                _In_ const char* pClassName, 
+                _In_ const w_byte_t* pValue,
+                _In_ size_t pValueSize);
 
         /**
-         * Same as cass_tuple_set_custom(), but with lengths for string
+         * Same as w_cassandra_tuple_set_custom(), but with lengths for string
          * parameters.
          *
          * @public @memberof w_Cass_Tuple
@@ -7829,17 +7806,17 @@ extern "C" {
          * @param[in] class_name_length
          * @param[in] value
          * @param[in] value_size
-         * @return same as cass_tuple_set_custom()
+         * @return same as w_cassandra_tuple_set_custom()
          *
-         * @see cass_tuple_set_custom()
+         * @see w_cassandra_tuple_set_custom()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_tuple_set_custom_n(w_Cass_Tuple* tuple,
-                size_t index,
-                const char* class_name,
-                size_t class_name_length,
-                const w_byte_t* value,
-                size_t value_size);
+            w_cassandra_tuple_set_custom_n(_In_ w_cass_tuple* pTuple, 
+                _In_ size_t pIndex, 
+                _In_ const char* pClassName, 
+                _In_  size_t pClassNameLength,
+                _In_ const w_byte_t* pValue,
+                _In_ size_t pValueSize);
 
         /**
          * Sets a "uuid" or "timeuuid" in a tuple at the specified index.
@@ -7851,12 +7828,12 @@ extern "C" {
          * @param[in] tuple
          * @param[in] index
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_tuple_set_uuid(w_Cass_Tuple* tuple,
-                size_t index,
-                w_CassUuid value);
+            w_cassandra_tuple_set_uuid(_In_ w_cass_tuple* pTuple,
+                _In_ size_t pIndex,
+                _In_ w_cass_uuid pValue);
 
         /**
          * Sets an "inet" in a tuple at the specified index.
@@ -7868,12 +7845,12 @@ extern "C" {
          * @param[in] tuple
          * @param[in] index
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_tuple_set_inet(w_Cass_Tuple* tuple,
-                size_t index,
-                w_CassInet value);
+            w_cassandra_tuple_set_inet(_In_ w_cass_tuple* pTuple, 
+                _In_ size_t pIndex,
+                _In_ w_cass_inet pValue);
 
         /**
          * Sets a "decimal" in a tuple at the specified index.
@@ -7888,14 +7865,14 @@ extern "C" {
          * memory pointed to by this parameter can be freed after this call.
          * @param[in] varint_size
          * @param[in] scale
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_tuple_set_decimal(w_Cass_Tuple* tuple,
-                size_t index,
-                const w_byte_t* varint,
-                size_t varint_size,
-                int32_t scale);
+            w_cassandra_tuple_set_decimal(_In_ w_cass_tuple* pTuple, 
+                _In_ size_t pIndex,
+                _In_ const w_byte_t* pVarint,
+                _In_ size_t pVarintSize,
+                _In_ int32_t pScale);
 
         /**
          * Sets a "duration" in a tuple at the specified index.
@@ -7909,14 +7886,14 @@ extern "C" {
          * @param[in] months
          * @param[in] days
          * @param[in] nanos
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_tuple_set_duration(w_Cass_Tuple* tuple,
-                size_t index,
-                int32_t months,
-                int32_t days,
-                int64_t nanos);
+            w_cassandra_tuple_set_duration(_In_ w_cass_tuple* pTuple, 
+                _In_  size_t pIndex, 
+                _In_ int32_t pMonths,
+                _In_ int32_t pDays,
+                _In_ int64_t pNanos); ;
 
         /**
          * Sets a "list", "map" or "set" in a tuple at the specified index.
@@ -7928,12 +7905,12 @@ extern "C" {
          * @param[in] tuple
          * @param[in] index
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_tuple_set_collection(w_Cass_Tuple* tuple,
-                size_t index,
-                const w_Cass_Collection* value);
+            w_cassandra_tuple_set_collection(_In_ w_cass_tuple* pTuple,
+                _In_ size_t pIndex,
+                _In_ const w_cass_collection* pValue); ;
 
         /**
          * Sets a "tuple" in a tuple at the specified index.
@@ -7945,12 +7922,12 @@ extern "C" {
          * @param[in] tuple
          * @param[in] index
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_tuple_set_tuple(w_Cass_Tuple* tuple,
-                size_t index,
-                const w_Cass_Tuple* value);
+            w_cassandra_tuple_set_tuple(_In_ w_cass_tuple* pTuple,
+                _In_ size_t pIndex, 
+                _In_ const w_cass_tuple* pValue);
 
         /**
          * Sets a "udt" in a tuple at the specified index.
@@ -7962,12 +7939,12 @@ extern "C" {
          * @param[in] tuple
          * @param[in] index
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_tuple_set_user_type(w_Cass_Tuple* tuple,
-                size_t index,
-                const w_Cass_User_Type* value);
+            w_cassandra_tuple_set_user_type(_In_ w_cass_tuple* pTuple, 
+                _In_ size_t pIndex,
+                _In_ const w_cass_user_type* pValue);
 
         /***********************************************************************************
          *
@@ -7986,10 +7963,10 @@ extern "C" {
           * @return Returns a user defined type that must be freed. NULL is returned if
           * the data type is not a user defined type.
           *
-          * @see cass_user_type_free()
+          * @see w_cassandra_user_type_free()
           */
-        W_SYSTEM_EXPORT w_Cass_User_Type*
-            w_cassandra_user_type_new_from_data_type(const w_Cass_Data_Type* data_type);
+        W_SYSTEM_EXPORT w_cass_user_type* 
+            w_cassandra_user_type_new_from_data_type(_In_ const w_cass_data_type* pDataType);
 
         /**
          * Frees a user defined type instance.
@@ -8001,7 +7978,7 @@ extern "C" {
          * @param[in] user_type
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_user_type_free(w_Cass_User_Type* user_type);
+            w_cassandra_user_type_free(_In_ w_cass_user_type* pUserType);
 
         /**
          * Gets the data type of a user defined type.
@@ -8013,8 +7990,8 @@ extern "C" {
          * Do not free this reference as it is bound to the lifetime of the
          * user defined type.
          */
-        W_SYSTEM_EXPORT const w_Cass_Data_Type*
-            w_cassandra_user_type_data_type(const w_Cass_User_Type* user_type);
+        W_SYSTEM_EXPORT const w_cass_data_type* 
+            w_cassandra_user_type_data_type(_In_ const w_cass_user_type* pUserType);
 
         /**
          * Sets a null in a user defined type at the specified index.
@@ -8025,11 +8002,10 @@ extern "C" {
          *
          * @param[in] user_type
          * @param[in] index
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_user_type_set_null(w_Cass_User_Type* user_type,
-                size_t index);
+            w_cassandra_user_type_set_null(_In_ w_cass_user_type* pUserType, _In_ size_t pIndex);
 
         /**
          * Sets a null in a user defined type at the specified name.
@@ -8040,14 +8016,14 @@ extern "C" {
          *
          * @param[in] user_type
          * @param[in] name
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_user_type_set_null_by_name(w_Cass_User_Type* user_type,
-                const char* name);
+            w_cassandra_user_type_set_null_by_name(_In_ w_cass_user_type* pUserType, 
+                _In_ const char* pName);
 
         /**
-         * Same as cass_user_type_set_null_by_name(), but with lengths for string
+         * Same as w_cassandra_user_type_set_null_by_name(), but with lengths for string
          * parameters.
          *
          * @cassandra{2.1+}
@@ -8057,14 +8033,14 @@ extern "C" {
          * @param[in] user_type
          * @param[in] name
          * @param[in] name_length
-         * @return same as cass_user_type_set_null_by_name()
+         * @return same as w_cassandra_user_type_set_null_by_name()
          *
-         * @see cass_user_type_set_null_by_name()
+         * @see w_cassandra_user_type_set_null_by_name()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_user_type_set_null_by_name_n(w_Cass_User_Type* user_type,
-                const char* name,
-                size_t name_length);
+            w_cassandra_user_type_set_null_by_name_n(_In_ w_cass_user_type* pUserType,
+                _In_ const char* pName, 
+                _In_ size_t pNameLength);
 
         /**
          * Sets a "tinyint" in a user defined type at the specified index.
@@ -8076,12 +8052,12 @@ extern "C" {
          * @param[in] user_type
          * @param[in] index
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_user_type_set_int8(w_Cass_User_Type* user_type,
-                size_t index,
-                int8_t value);
+            w_cassandra_user_type_set_int8(_In_ w_cass_user_type* pUserType,
+                _In_ size_t pIndex, 
+                _In_ int8_t pValue);
 
         /**
          * Sets a "tinyint" in a user defined type at the specified name.
@@ -8093,15 +8069,15 @@ extern "C" {
          * @param[in] user_type
          * @param[in] name
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_user_type_set_int8_by_name(w_Cass_User_Type* user_type,
-                const char* name,
-                int8_t value);
+            w_cassandra_user_type_set_int8_by_name(_In_ w_cass_user_type* pUserType, 
+                _In_ const char* pName,
+                _In_ int8_t pValue);
 
         /**
-         * Same as cass_user_type_set_int8_by_name(), but with lengths for string
+         * Same as w_cassandra_user_type_set_int8_by_name(), but with lengths for string
          * parameters.
          *
          * @cassandra{2.2+}
@@ -8112,15 +8088,15 @@ extern "C" {
          * @param[in] name
          * @param[in] name_length
          * @param[in] value
-         * @return same as cass_user_type_set_int8_by_name()
+         * @return same as w_cassandra_user_type_set_int8_by_name()
          *
-         * @see cass_user_type_set_int8_by_name()
+         * @see w_cassandra_user_type_set_int8_by_name()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_user_type_set_int8_by_name_n(w_Cass_User_Type* user_type,
-                const char* name,
-                size_t name_length,
-                int8_t value);
+            w_cassandra_user_type_set_int8_by_name_n(_In_ w_cass_user_type* pUserType,
+                _In_  const char* pName, 
+                _In_  size_t pNameLength,
+                _In_ int8_t pValue);
 
         /**
          * Sets an "smallint" in a user defined type at the specified index.
@@ -8132,12 +8108,12 @@ extern "C" {
          * @param[in] user_type
          * @param[in] index
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_user_type_set_int16(w_Cass_User_Type* user_type,
-                size_t index,
-                int16_t value);
+            w_cassandra_user_type_set_int16(_In_ w_cass_user_type* pUserType, 
+                _In_ size_t pIndex,
+                _In_ int16_t pValue);
 
         /**
          * Sets an "smallint" in a user defined type at the specified name.
@@ -8149,15 +8125,15 @@ extern "C" {
          * @param[in] user_type
          * @param[in] name
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_user_type_set_int16_by_name(w_Cass_User_Type* user_type,
-                const char* name,
-                int16_t value);
+            w_cassandra_user_type_set_int16_by_name(_In_ w_cass_user_type* pUserType, 
+                _In_ const char* pName,
+                _In_ int16_t pValue);
 
         /**
-         * Same as cass_user_type_set_int16_by_name(), but with lengths for string
+         * Same as w_cassandra_user_type_set_int16_by_name(), but with lengths for string
          * parameters.
          *
          * @cassandra{2.2+}
@@ -8168,15 +8144,15 @@ extern "C" {
          * @param[in] name
          * @param[in] name_length
          * @param[in] value
-         * @return same as cass_user_type_set_int16_by_name()
+         * @return same as w_cassandra_user_type_set_int16_by_name()
          *
-         * @see cass_user_type_set_int16_by_name()
+         * @see w_cassandra_user_type_set_int16_by_name()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_user_type_set_int16_by_name_n(w_Cass_User_Type* user_type,
-                const char* name,
-                size_t name_length,
-                int16_t value);
+            w_cassandra_user_type_set_int16_by_name_n(_In_ w_cass_user_type* pUserType,
+                _In_ const char* pName,
+                _In_ size_t pNameLength,
+                _In_ int16_t pValue);
 
         /**
          * Sets an "int" in a user defined type at the specified index.
@@ -8188,12 +8164,12 @@ extern "C" {
          * @param[in] user_type
          * @param[in] index
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_user_type_set_int32(w_Cass_User_Type* user_type,
-                size_t index,
-                int32_t value);
+            w_cassandra_user_type_set_int32(_In_ w_cass_user_type* pUserType, 
+                _In_ size_t pIndex,
+                _In_ int32_t pValue);
 
         /**
          * Sets an "int" in a user defined type at the specified name.
@@ -8205,15 +8181,15 @@ extern "C" {
          * @param[in] user_type
          * @param[in] name
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_user_type_set_int32_by_name(w_Cass_User_Type* user_type,
-                const char* name,
-                int32_t value);
+            w_cassandra_user_type_set_int32_by_name(_In_ w_cass_user_type* pUserType,
+                _In_ const char* pName,
+                _In_ int32_t pValue);
 
         /**
-         * Same as cass_user_type_set_int32_by_name(), but with lengths for string
+         * Same as w_cassandra_user_type_set_int32_by_name(), but with lengths for string
          * parameters.
          *
          * @cassandra{2.1+}
@@ -8224,15 +8200,15 @@ extern "C" {
          * @param[in] name
          * @param[in] name_length
          * @param[in] value
-         * @return same as cass_user_type_set_int32_by_name()
+         * @return same as w_cassandra_user_type_set_int32_by_name()
          *
-         * @see cass_user_type_set_int32_by_name()
+         * @see w_cassandra_user_type_set_int32_by_name()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_user_type_set_int32_by_name_n(w_Cass_User_Type* user_type,
-                const char* name,
-                size_t name_length,
-                int32_t value);
+            w_cassandra_user_type_set_int32_by_name_n(_In_ w_cass_user_type* pUserType, 
+                _In_ const char* pName,
+                _In_ size_t pNameLength,
+                int32_t pValue);
 
         /**
          * Sets a "date" in a user defined type at the specified index.
@@ -8244,12 +8220,12 @@ extern "C" {
          * @param[in] user_type
          * @param[in] index
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_user_type_set_uint32(w_Cass_User_Type* user_type,
-                size_t index,
-                uint32_t value);
+            w_cassandra_user_type_set_uint32(_In_ w_cass_user_type* pUserType, 
+                _In_ size_t pIndex, 
+                _In_ uint32_t pValue);
 
         /**
          * Sets a "date" in a user defined type at the specified name.
@@ -8261,15 +8237,15 @@ extern "C" {
          * @param[in] user_type
          * @param[in] name
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_user_type_set_uint32_by_name(w_Cass_User_Type* user_type,
-                const char* name,
-                uint32_t value);
+            w_cassandra_user_type_set_uint32_by_name(_In_ w_cass_user_type* pUserType,
+                _In_ const char* pName, 
+                _In_ uint32_t pValue);
 
         /**
-         * Same as cass_user_type_set_uint32_by_name(), but with lengths for string
+         * Same as w_cassandra_user_type_set_uint32_by_name(), but with lengths for string
          * parameters.
          *
          * @cassandra{2.2+}
@@ -8280,15 +8256,15 @@ extern "C" {
          * @param[in] name
          * @param[in] name_length
          * @param[in] value
-         * @return same as cass_user_type_set_uint32_by_name()
+         * @return same as w_cassandra_user_type_set_uint32_by_name()
          *
-         * @see cass_user_type_set_uint32_by_name()
+         * @see w_cassandra_user_type_set_uint32_by_name()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_user_type_set_uint32_by_name_n(w_Cass_User_Type* user_type,
-                const char* name,
-                size_t name_length,
-                uint32_t value);
+            w_cassandra_user_type_set_uint32_by_name_n(_In_ w_cass_user_type* pUserType, 
+                _In_ const char* pName, 
+                _In_ size_t pNameLength,
+                _In_ uint32_t pValue);
 
 
         /**
@@ -8302,12 +8278,12 @@ extern "C" {
          * @param[in] user_type
          * @param[in] index
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_user_type_set_int64(w_Cass_User_Type* user_type,
-                size_t index,
-                int64_t value);
+            w_cassandra_user_type_set_int64(_In_ w_cass_user_type* pUserType, 
+                _In_ size_t pIndex,
+                _In_ int64_t pValue);
 
         /**
          * Sets an "bigint", "counter", "timestamp" or "time" in a
@@ -8320,15 +8296,15 @@ extern "C" {
          * @param[in] user_type
          * @param[in] name
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_user_type_set_int64_by_name(w_Cass_User_Type* user_type,
-                const char* name,
-                int64_t value);
+            w_cassandra_user_type_set_int64_by_name(_In_ w_cass_user_type* pUserType, 
+                _In_ const char* pName,
+                _In_ int64_t pValue);
 
         /**
-         * Same as cass_user_type_set_int64_by_name(), but with lengths for string
+         * Same as w_cassandra_user_type_set_int64_by_name(), but with lengths for string
          * parameters.
          *
          * @cassandra{2.1+}
@@ -8339,15 +8315,15 @@ extern "C" {
          * @param[in] name
          * @param[in] name_length
          * @param[in] value
-         * @return same as cass_user_type_set_int64_by_name()
+         * @return same as w_cassandra_user_type_set_int64_by_name()
          *
-         * @see cass_user_type_set_int64_by_name()
+         * @see w_cassandra_user_type_set_int64_by_name()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_user_type_set_int64_by_name_n(w_Cass_User_Type* user_type,
-                const char* name,
-                size_t name_length,
-                int64_t value);
+            w_cassandra_user_type_set_int64_by_name_n(_In_ w_cass_user_type* pUserType,
+                _In_ const char* pName,
+                _In_ size_t pNameLength,
+                _In_ int64_t pValue);
 
         /**
          * Sets a "float" in a user defined type at the specified index.
@@ -8359,12 +8335,12 @@ extern "C" {
          * @param[in] user_type
          * @param[in] index
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_user_type_set_float(w_Cass_User_Type* user_type,
-                size_t index,
-                float value);
+            w_cassandra_user_type_set_float_by_name(_In_ w_cass_user_type* pUserType,
+                _In_ const char* pName,
+                _In_ float pValue);
 
         /**
          * Sets a "float" in a user defined type at the specified name.
@@ -8376,15 +8352,16 @@ extern "C" {
          * @param[in] user_type
          * @param[in] name
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_user_type_set_float_by_name(w_Cass_User_Type* user_type,
-                const char* name,
-                float value);
+            w_cassandra_user_type_set_float_by_name_n(_In_ w_cass_user_type* pUserType,
+                _In_ const char* pName, 
+                _In_ size_t pNameLength, 
+                _In_ float pValue);
 
         /**
-         * Same as cass_user_type_set_float_by_name(), but with lengths for string
+         * Same as w_cassandra_user_type_set_float_by_name(), but with lengths for string
          * parameters.
          *
          * @cassandra{2.1+}
@@ -8395,15 +8372,15 @@ extern "C" {
          * @param[in] name
          * @param[in] name_length
          * @param[in] value
-         * @return same as cass_user_type_set_float_by_name()
+         * @return same as w_cassandra_user_type_set_float_by_name()
          *
-         * @see cass_user_type_set_float_by_name()
+         * @see w_cassandra_user_type_set_float_by_name()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_user_type_set_float_by_name_n(w_Cass_User_Type* user_type,
-                const char* name,
-                size_t name_length,
-                float value);
+            w_cassandra_user_type_set_float_by_name_n(_In_ w_cass_user_type* pUserType,
+                _In_ const char* pName,
+                _In_ size_t pNameLength,
+                _In_ float pValue);
 
         /**
          * Sets an "double" in a user defined type at the specified index.
@@ -8415,12 +8392,11 @@ extern "C" {
          * @param[in] user_type
          * @param[in] index
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_user_type_set_double(w_Cass_User_Type* user_type,
-                size_t index,
-                double value);
+            w_cassandra_user_type_set_double(_In_ w_cass_user_type* pUserType, 
+                _In_ size_t pIndex, _In_ double pValue);
 
         /**
          * Sets an "double" in a user defined type at the specified name.
@@ -8432,15 +8408,15 @@ extern "C" {
          * @param[in] user_type
          * @param[in] name
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_user_type_set_double_by_name(w_Cass_User_Type* user_type,
-                const char* name,
-                double value);
+            w_cassandra_user_type_set_double_by_name(_In_ w_cass_user_type* pUserType,
+                _In_ const char* pName, 
+                _In_ double pValue);
 
         /**
-         * Same as cass_user_type_set_double_by_name(), but with lengths for string
+         * Same as w_cassandra_user_type_set_double_by_name(), but with lengths for string
          * parameters.
          *
          * @cassandra{2.1+}
@@ -8451,15 +8427,15 @@ extern "C" {
          * @param[in] name
          * @param[in] name_length
          * @param[in] value
-         * @return same as cass_user_type_set_double_by_name()
+         * @return same as w_cassandra_user_type_set_double_by_name()
          *
-         * @see cass_user_type_set_double_by_name()
+         * @see w_cassandra_user_type_set_double_by_name()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_user_type_set_double_by_name_n(w_Cass_User_Type* user_type,
-                const char* name,
-                size_t name_length,
-                double value);
+            w_cass_user_type_set_double_by_name_n(_In_ w_cass_user_type* pUserType,
+                _In_ const char* pName, 
+                _In_ size_t pNameLength, 
+                _In_ double pValue);
 
         /**
          * Sets a "boolean" in a user defined type at the specified index.
@@ -8471,12 +8447,12 @@ extern "C" {
          * @param[in] user_type
          * @param[in] index
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_user_type_set_bool(w_Cass_User_Type* user_type,
-                size_t index,
-                w_bool_t value);
+            w_cassandra_user_type_set_bool(_In_ w_cass_user_type* pUserType,
+                _In_ size_t pIndex,
+                _In_ w_bool_t pValue);
 
         /**
          * Sets a "boolean" in a user defined type at the specified name.
@@ -8488,15 +8464,15 @@ extern "C" {
          * @param[in] user_type
          * @param[in] name
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_user_type_set_bool_by_name(w_Cass_User_Type* user_type,
-                const char* name,
-                w_bool_t value);
+            w_cassandra_user_type_set_bool_by_name(_In_ w_cass_user_type* pUserType,
+                _In_  const char* pName, 
+                _In_ w_bool_t pValue);
 
         /**
-         * Same as cass_user_type_set_double_by_name(), but with lengths for string
+         * Same as w_cassandra_user_type_set_double_by_name(), but with lengths for string
          * parameters.
          *
          * @cassandra{2.1+}
@@ -8507,15 +8483,15 @@ extern "C" {
          * @param[in] name
          * @param[in] name_length
          * @param[in] value
-         * @return same as cass_user_type_set_double_by_name()
+         * @return same as w_cassandra_user_type_set_double_by_name()
          *
-         * @see cass_user_type_set_double_by_name()
+         * @see w_cassandra_user_type_set_double_by_name()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cass_user_type_set_bool_by_name_n(w_Cass_User_Type* user_type,
-                const char* name,
-                size_t name_length,
-                w_bool_t value);
+            w_cassandra_user_type_set_bool_by_name_n(_In_ w_cass_user_type* pUserType, 
+                _In_ const char* pName, 
+                _In_ size_t pNameLength,
+                _In_ w_bool_t pValue);
 
 
         /**
@@ -8529,15 +8505,15 @@ extern "C" {
          * @param[in] user_type
          * @param[in] index
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_user_type_set_string(w_Cass_User_Type* user_type,
-                size_t index,
-                const char* value);
+            w_cassandra_user_type_set_string(_In_ w_cass_user_type* pUserType,
+                _In_ size_t pIndex,
+                _In_ const char* pValue);
 
         /**
-         * Same as cass_user_type_set_string(), but with lengths for string
+         * Same as w_cassandra_user_type_set_string(), but with lengths for string
          * parameters.
          *
          * @cassandra{2.1+}
@@ -8548,15 +8524,15 @@ extern "C" {
          * @param[in] index
          * @param[in] value
          * @param[in] value_length
-         * @return same as cass_user_type_set_string()
+         * @return same as w_cassandra_user_type_set_string()
          *
-         * @see cass_user_type_set_string()
+         * @see w_cassandra_user_type_set_string()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_user_type_set_string_n(w_Cass_User_Type* user_type,
-                size_t index,
-                const char* value,
-                size_t value_length);
+            w_cassandra_user_type_set_string_n(_In_ w_cass_user_type* pUserType, 
+                _In_ size_t pIndex, 
+                _In_ const char* pValue, 
+                _In_ size_t pValueLength);
 
         /**
          * Sets an "ascii", "text" or "varchar" in a user defined type at the
@@ -8569,15 +8545,15 @@ extern "C" {
          * @param[in] user_type
          * @param[in] name
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_user_type_set_string_by_name(w_Cass_User_Type* user_type,
-                const char* name,
-                const char* value);
+            w_cassandra_user_type_set_string_by_name(_In_ w_cass_user_type* pUserType, 
+                _In_  const char* pName,
+                _In_ const char* pValue);
 
         /**
-         * Same as cass_user_type_set_string_by_name(), but with lengths for string
+         * Same as w_cassandra_user_type_set_string_by_name(), but with lengths for string
          * parameters.
          *
          * @cassandra{2.1+}
@@ -8589,16 +8565,16 @@ extern "C" {
          * @param[in] name_length
          * @param[in] value
          * @param[in] value_length
-         * @return same as cass_user_type_set_string_by_name()
+         * @return same as w_cassandra_user_type_set_string_by_name()
          *
-         * @see cass_user_type_set_string_by_name()
+         * @see w_cassandra_user_type_set_string_by_name()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_user_type_set_string_by_name_n(w_Cass_User_Type* user_type,
-                const char* name,
-                size_t name_length,
-                const char* value,
-                size_t value_length);
+            w_cassandra_user_type_set_string_by_name_n(_In_ w_cass_user_type* pUserType,
+                _In_ const char* pName,
+                _In_ size_t pNameLength, 
+                _In_ const char* pValue,
+                _In_  size_t pValueLength);
 
         /**
          * Sets a "blob" "varint" or "custom" in a user defined type at the specified index.
@@ -8611,13 +8587,13 @@ extern "C" {
          * @param[in] index
          * @param[in] value
          * @param[in] value_size
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_user_type_set_bytes(w_Cass_User_Type* user_type,
-                size_t index,
-                const w_byte_t* value,
-                size_t value_size);
+            w_cassandra_user_type_set_bytes(_In_ w_cass_user_type* pUserType,
+                _In_ size_t pIndex,
+                _In_ const w_byte_t* pValue, 
+                _In_ size_t pValueSize);
 
         /**
          * Sets a "blob", "varint" or "custom" in a user defined type at the specified name.
@@ -8630,16 +8606,16 @@ extern "C" {
          * @param[in] name
          * @param[in] value
          * @param[in] value_size
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_user_type_set_bytes_by_name(w_Cass_User_Type* user_type,
-                const char* name,
-                const w_byte_t* value,
-                size_t value_size);
+            w_cassandra_user_type_set_bytes_by_name(_In_ w_cass_user_type* pUserType,
+                _In_ const char* pName,
+                _In_ const w_byte_t* pValue,
+                _In_ size_t pValueSize);
 
         /**
-         * Same as cass_user_type_set_bytes_by_name(), but with lengths for string
+         * Same as w_cassandra_user_type_set_bytes_by_name(), but with lengths for string
          * parameters.
          *
          * @cassandra{2.1+}
@@ -8651,16 +8627,15 @@ extern "C" {
          * @param[in] name_length
          * @param[in] value
          * @param[in] value_size
-         * @return same as cass_user_type_set_bytes_by_name()
+         * @return same as w_cassandra_user_type_set_bytes_by_name()
          *
-         * @see cass_user_type_set_bytes_by_name()
+         * @see w_cassandra_user_type_set_bytes_by_name()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_user_type_set_bytes_by_name_n(w_Cass_User_Type* user_type,
-                const char* name,
-                size_t name_length,
-                const w_byte_t* value,
-                size_t value_size);
+            w_cassandra_user_type_set_bytes_by_name_n(_In_ w_cass_user_type* pUserType, 
+                _In_ const char* pName, _In_ size_t pNameLength, 
+                _In_ const w_byte_t* pValue,
+                _In_ size_t pValueSize);
 
         /**
          * Sets a "custom" in a user defined type at the specified index.
@@ -8672,17 +8647,17 @@ extern "C" {
          * @param[in] class_name
          * @param[in] value
          * @param[in] value_size
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_user_type_set_custom(w_Cass_User_Type* user_type,
-                size_t index,
-                const char* class_name,
-                const w_byte_t* value,
-                size_t value_size);
+            w_cassandra_user_type_set_custom(_In_ w_cass_user_type* pUserType, 
+                _In_ size_t pIndex,
+                _In_  const char* pClassName,
+                _In_ const w_byte_t* pValue,
+                _In_ size_t pValueSize);
 
         /**
-         * Same as cass_user_type_set_custom(), but with lengths for string
+         * Same as w_cassandra_user_type_set_custom(), but with lengths for string
          * parameters.
          *
          * @public @memberof w_Cass_User_Type
@@ -8693,17 +8668,17 @@ extern "C" {
          * @param[in] class_name_length
          * @param[in] value
          * @param[in] value_size
-         * @return same as cass_user_type_set_custom()
+         * @return same as w_cassandra_user_type_set_custom()
          *
-         * @see cass_user_type_set_custom()
+         * @see w_cassandra_user_type_set_custom()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_user_type_set_custom_n(w_Cass_User_Type* user_type,
-                size_t index,
-                const char* class_name,
-                size_t class_name_length,
-                const w_byte_t* value,
-                size_t value_size);
+            w_cassandra_user_type_set_custom_n(_In_ w_cass_user_type* pUserType,
+                _In_ size_t pIndex,
+                _In_ const char* pClassName, 
+                _In_ size_t pClassNameLength, 
+                _In_  const w_byte_t* pValue,
+                _In_ size_t pValueSize);
 
         /**
          * Sets a "custom" in a user defined type at the specified name.
@@ -8715,17 +8690,17 @@ extern "C" {
          * @param[in] class_name
          * @param[in] value
          * @param[in] value_size
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_user_type_set_custom_by_name(w_Cass_User_Type* user_type,
-                const char* name,
-                const char* class_name,
-                const w_byte_t* value,
-                size_t value_size);
+            w_cassandra_user_type_set_custom_by_name(_In_ w_cass_user_type* pUserType,
+                _In_ const char* pName,
+                _In_ const char* pClassName,
+                _In_ const w_byte_t* pValue,
+                _In_ size_t pValueSize);
 
         /**
-         * Same as cass_user_type_set_custom_by_name(), but with lengths for string
+         * Same as w_cassandra_user_type_set_custom_by_name(), but with lengths for string
          * parameters.
          *
          * @public @memberof w_Cass_User_Type
@@ -8737,18 +8712,18 @@ extern "C" {
          * @param[in] class_name_length
          * @param[in] value
          * @param[in] value_size
-         * @return same as cass_user_type_set_custom_by_name()
+         * @return same as w_cassandra_user_type_set_custom_by_name()
          *
-         * @see cass_user_type_set_custom_by_name()
+         * @see w_cassandra_user_type_set_custom_by_name()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_user_type_set_custom_by_name_n(w_Cass_User_Type* user_type,
-                const char* name,
-                size_t name_length,
-                const char* class_name,
-                size_t class_name_length,
-                const w_byte_t* value,
-                size_t value_size);
+            w_cassandra_user_type_set_custom_by_name_n(_In_ w_cass_user_type* pUserType,
+                _In_ const char* pName, 
+                _In_ size_t pNameLength, 
+                _In_ const char* pClassName,
+                _In_ size_t pClassNameLength, 
+                _In_ const w_byte_t* pValue, 
+                _In_ size_t pValueSize);
 
         /**
          * Sets a "uuid" or "timeuuid" in a user defined type at the specified index.
@@ -8760,12 +8735,12 @@ extern "C" {
          * @param[in] user_type
          * @param[in] index
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_user_type_set_uuid(w_Cass_User_Type* user_type,
-                size_t index,
-                w_CassUuid value);
+            w_cassandra_user_type_set_uuid(_In_ w_cass_user_type* pUserType,
+                _In_ size_t pIndex,
+                _In_ w_cass_uuid pValue);
 
         /**
          * Sets a "uuid" or "timeuuid" in a user defined type at the specified name.
@@ -8777,15 +8752,15 @@ extern "C" {
          * @param[in] user_type
          * @param[in] name
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_user_type_set_uuid_by_name(w_Cass_User_Type* user_type,
-                const char* name,
-                w_CassUuid value);
+            w_cassandra_user_type_set_uuid_by_name(_In_ w_cass_user_type* pUserType, 
+                _In_ const char* pName, 
+                _In_ w_cass_uuid pValue);
 
         /**
-         * Same as cass_user_type_set_uuid_by_name(), but with lengths for string
+         * Same as w_cassandra_user_type_set_uuid_by_name(), but with lengths for string
          * parameters.
          *
          * @cassandra{2.1+}
@@ -8796,15 +8771,15 @@ extern "C" {
          * @param[in] name
          * @param[in] name_length
          * @param[in] value
-         * @return same as cass_user_type_set_uuid_by_name()
+         * @return same as w_cassandra_user_type_set_uuid_by_name()
          *
-         * @see cass_user_type_set_uuid_by_name()
+         * @see w_cassandra_user_type_set_uuid_by_name()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_user_type_set_uuid_by_name_n(w_Cass_User_Type* user_type,
-                const char* name,
-                size_t name_length,
-                w_CassUuid value);
+            w_cassandra_user_type_set_uuid_by_name_n(_In_ w_cass_user_type* pUserType, 
+                _In_ const char* pName, 
+                _In_ size_t pNameLength,
+                _In_ w_cass_uuid pValue);
 
         /**
          * Sets a "inet" in a user defined type at the specified index.
@@ -8816,12 +8791,12 @@ extern "C" {
          * @param[in] user_type
          * @param[in] index
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_user_type_set_inet(w_Cass_User_Type* user_type,
-                size_t index,
-                w_CassInet value);
+            w_cass_user_type_set_inet(_In_ w_cass_user_type* pUserType,
+                _In_  size_t pIndex, 
+                _In_ w_cass_inet pValue);
 
         /**
          * Sets a "inet" in a user defined type at the specified name.
@@ -8833,15 +8808,15 @@ extern "C" {
          * @param[in] user_type
          * @param[in] name
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_user_type_set_inet_by_name(w_Cass_User_Type* user_type,
-                const char* name,
-                w_CassInet value);
+            w_cass_user_type_set_inet_by_name(_In_ w_cass_user_type* pUserType, 
+                _In_ const char* pName,
+                _In_ w_cass_inet pValue);
 
         /**
-         * Same as cass_user_type_set_inet_by_name(), but with lengths for string
+         * Same as w_cassandra_user_type_set_inet_by_name(), but with lengths for string
          * parameters.
          *
          * @cassandra{2.1+}
@@ -8852,15 +8827,15 @@ extern "C" {
          * @param[in] name
          * @param[in] name_length
          * @param[in] value
-         * @return same as cass_user_type_set_inet_by_name()
+         * @return same as w_cassandra_user_type_set_inet_by_name()
          *
-         * @see cass_user_type_set_inet_by_name()
+         * @see w_cassandra_user_type_set_inet_by_name()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_user_type_set_inet_by_name_n(w_Cass_User_Type* user_type,
-                const char* name,
-                size_t name_length,
-                w_CassInet value);
+            w_cassandra_user_type_set_inet_by_name_n(_In_ w_cass_user_type* pUserType,
+                _In_ const char* pName, 
+                _In_ size_t pNameLength, 
+                _In_ w_cass_inet pValue);
 
         /**
          * Sets an "decimal" in a user defined type at the specified index.
@@ -8874,14 +8849,14 @@ extern "C" {
          * @param[in] varint
          * @param[in] varint_size
          * @param[in] scale
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_user_type_set_decimal(w_Cass_User_Type* user_type,
-                size_t index,
-                const w_byte_t* varint,
-                size_t varint_size,
-                int scale);
+            w_cassandra_user_type_set_decimal(_In_ w_cass_user_type* pUserType, 
+                _In_ size_t pIndex, 
+                _In_ const w_byte_t* pVarint, 
+                _In_ size_t pVarintSize, 
+                _In_  int pScale);
 
         /**
          * Sets "decimal" in a user defined type at the specified name.
@@ -8895,17 +8870,17 @@ extern "C" {
          * @param[in] varint
          * @param[in] varint_size
          * @param[in] scale
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_user_type_set_decimal_by_name(w_Cass_User_Type* user_type,
-                const char* name,
-                const w_byte_t* varint,
-                size_t varint_size,
-                int scale);
+            w_cassandra_user_type_set_decimal_by_name(_In_ w_cass_user_type* pUserType, 
+                _In_ const char* pName, 
+                _In_ const w_byte_t* pVarint, 
+                _In_ size_t pVarintSize, 
+                _In_ int pScale);
 
         /**
-         * Same as cass_user_type_set_decimal_by_name(), but with lengths for string
+         * Same as w_cassandra_user_type_set_decimal_by_name(), but with lengths for string
          * parameters.
          *
          * @cassandra{2.1+}
@@ -8918,17 +8893,17 @@ extern "C" {
          * @param[in] varint
          * @param[in] varint_size
          * @param[in] scale
-         * @return same as cass_user_type_set_decimal_by_name()
+         * @return same as w_cassandra_user_type_set_decimal_by_name()
          *
-         * @see cass_user_type_set_decimal_by_name()
+         * @see w_cassandra_user_type_set_decimal_by_name()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_user_type_set_decimal_by_name_n(w_Cass_User_Type* user_type,
-                const char* name,
-                size_t name_length,
-                const w_byte_t* varint,
-                size_t varint_size,
-                int scale);
+            w_cassandra_user_type_set_decimal_by_name_n(_In_ w_cass_user_type* pUserType, 
+                _In_ const char* pName, 
+                _In_ size_t pNameLength, 
+                _In_ const w_byte_t* pVarint,
+                _In_ size_t pVarintSize, 
+                _In_ int pScale);
 
         /**
          * Sets a "duration" in a user defined type at the specified index.
@@ -8942,14 +8917,14 @@ extern "C" {
          * @param[in] months
          * @param[in] days
          * @param[in] nanos
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_user_type_set_duration(w_Cass_User_Type* user_type,
-                size_t index,
-                int32_t months,
-                int32_t days,
-                int64_t nanos);
+            w_cassandra_user_type_set_duration(_In_ w_cass_user_type* pUserType,
+                _In_ size_t pIndex,
+                _In_  int32_t pMonths,
+                _In_ int32_t pDays, 
+                _In_ int64_t pNanos);
 
         /**
          * Sets "duration" in a user defined type at the specified name.
@@ -8963,17 +8938,17 @@ extern "C" {
          * @param[in] months
          * @param[in] days
          * @param[in] nanos
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_user_type_set_duration_by_name(w_Cass_User_Type* user_type,
-                const char* name,
-                int32_t months,
-                int32_t days,
-                int64_t nanos);
+            w_cassandra_user_type_set_duration_by_name(_In_ w_cass_user_type* pUserType,
+                _In_  const char* pName,
+                _In_ int32_t pMonths, 
+                _In_  int32_t pDays,
+                _In_  int64_t pNanos);
 
         /**
-         * Same as cass_user_type_set_duration_by_name(), but with lengths for string
+         * Same as w_cassandra_user_type_set_duration_by_name(), but with lengths for string
          * parameters.
          *
          * @cassandra{3.10+}
@@ -8986,17 +8961,17 @@ extern "C" {
          * @param[in] months
          * @param[in] days
          * @param[in] nanos
-         * @return same as cass_user_type_set_duration_by_name()
+         * @return same as w_cassandra_user_type_set_duration_by_name()
          *
-         * @see cass_user_type_set_duration_by_name()
+         * @see w_cassandra_user_type_set_duration_by_name()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_user_type_set_duration_by_name_n(w_Cass_User_Type* user_type,
-                const char* name,
-                size_t name_length,
-                int32_t months,
-                int32_t days,
-                int64_t nanos);
+            w_cassandra_user_type_set_duration_by_name_n(_In_ w_cass_user_type* pUserType,
+                _In_  const char* pName, 
+                _In_   size_t pNameLength,
+                _In_ int32_t pMonths,
+                _In_ int32_t pDays, 
+                _In_ int64_t pNanos);
 
         /**
          * Sets a "list", "map" or "set" in a user defined type at the
@@ -9009,12 +8984,12 @@ extern "C" {
          * @param[in] user_type
          * @param[in] index
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_user_type_set_collection(w_Cass_User_Type* user_type,
-                size_t index,
-                const w_Cass_Collection* value);
+            w_cassandra_user_type_set_collection(_In_ w_cass_user_type* pUserType, 
+                _In_ size_t pIndex, 
+                _In_ const w_cass_collection* pValue);
 
         /**
          * Sets a "list", "map" or "set" in a user defined type at the
@@ -9027,15 +9002,15 @@ extern "C" {
          * @param[in] user_type
          * @param[in] name
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_user_type_set_collection_by_name(w_Cass_User_Type* user_type,
-                const char* name,
-                const w_Cass_Collection* value);
+            w_cassandra_user_type_set_collection_by_name(_In_ w_cass_user_type* pUserType, 
+                _In_ const char* pName, 
+                _In_ const w_cass_collection* pValue);
 
         /**
-         * Same as cass_user_type_set_collection_by_name(), but with lengths for string
+         * Same as w_cassandra_user_type_set_collection_by_name(), but with lengths for string
          * parameters.
          *
          * @cassandra{2.1+}
@@ -9046,15 +9021,15 @@ extern "C" {
          * @param[in] name
          * @param[in] name_length
          * @param[in] value
-         * @return same as cass_user_type_set_collection_by_name()
+         * @return same as w_cassandra_user_type_set_collection_by_name()
          *
-         * @see cass_user_type_set_collection_by_name()
+         * @see w_cassandra_user_type_set_collection_by_name()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_user_type_set_collection_by_name_n(w_Cass_User_Type* user_type,
-                const char* name,
-                size_t name_length,
-                const w_Cass_Collection* value);
+            w_cassandra_user_type_set_collection_by_name_n(_In_ w_cass_user_type* pUserType, 
+                _In_ const char* pName,
+                _In_ size_t pNameLength,
+                _In_ const w_cass_collection* pValue);
 
         /**
          * Sets a "tuple" in a user defined type at the specified index.
@@ -9066,12 +9041,12 @@ extern "C" {
          * @param[in] user_type
          * @param[in] index
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_user_type_set_tuple(w_Cass_User_Type* user_type,
-                size_t index,
-                const w_Cass_Tuple* value);
+            w_cassandra_user_type_set_tuple(_In_ w_cass_user_type* pUserType,
+                _In_ size_t pIndex, 
+                _In_ const w_cass_tuple* pValue);
 
         /**
          * Sets a "tuple" in a user defined type at the specified name.
@@ -9083,15 +9058,15 @@ extern "C" {
          * @param[in] user_type
          * @param[in] name
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_user_type_set_tuple_by_name(w_Cass_User_Type* user_type,
-                const char* name,
-                const w_Cass_Tuple* value);
+            w_cassandra_user_type_set_tuple_by_name(_In_ w_cass_user_type* pUserType,
+                _In_ const char* pName, 
+                _In_ const w_cass_tuple* pValue);
 
         /**
-         * Same as cass_user_type_set_tuple_by_name(), but with lengths for string
+         * Same as w_cassandra_user_type_set_tuple_by_name(), but with lengths for string
          * parameters.
          *
          * @cassandra{2.1+}
@@ -9102,15 +9077,15 @@ extern "C" {
          * @param[in] name
          * @param[in] name_length
          * @param[in] value
-         * @return same as cass_user_type_set_tuple_by_name()
+         * @return same as w_cassandra_user_type_set_tuple_by_name()
          *
-         * @see cass_user_type_set_tuple_by_name()
+         * @see w_cassandra_user_type_set_tuple_by_name()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_user_type_set_tuple_by_name_n(w_Cass_User_Type* user_type,
-                const char* name,
-                size_t name_length,
-                const w_Cass_Tuple* value);
+            w_cassandra_user_type_set_tuple_by_name_n(_In_ w_cass_user_type* pUserType, 
+                _In_ const char* pName, 
+                _In_ size_t pNameLength, 
+                _In_ const w_cass_tuple* pValue);
 
         /**
          * Sets a user defined type in a user defined type at the specified index.
@@ -9122,12 +9097,12 @@ extern "C" {
          * @param[in] user_type
          * @param[in] index
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_user_type_set_user_type(w_Cass_User_Type* user_type,
-                size_t index,
-                const w_Cass_User_Type* value);
+            w_cassandra_user_type_set_user_type(_In_ w_cass_user_type* pUserType, 
+                _In_ size_t pIndex, 
+                _In_ const w_cass_user_type* pValue);
 
         /**
          * Sets a user defined type in a user defined type at the specified name.
@@ -9139,15 +9114,15 @@ extern "C" {
          * @param[in] user_type
          * @param[in] name
          * @param[in] value
-         * @return CASS_OK if successful, otherwise an error occurred.
+         * @return W_SUCCESS if successful, otherwise an error occurred.
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_user_type_set_user_type_by_name(w_Cass_User_Type* user_type,
-                const char* name,
-                const w_Cass_User_Type* value);
+            w_cass_user_type_set_user_type_by_name(_In_ w_cass_user_type* pUserType,
+                _In_ const char* pName,
+                _In_ const w_cass_user_type* pValue);
 
         /**
-         * Same as cass_user_type_set_user_type_by_name(), but with lengths for string
+         * Same as w_cassandra_user_type_set_user_type_by_name(), but with lengths for string
          * parameters.
          *
          * @cassandra{2.1+}
@@ -9158,15 +9133,15 @@ extern "C" {
          * @param[in] name
          * @param[in] name_length
          * @param[in] value
-         * @return same as cass_user_type_set_user_type_by_name()
+         * @return same as w_cassandra_user_type_set_user_type_by_name()
          *
-         * @see cass_user_type_set_user_type_by_name()
+         * @see w_cassandra_user_type_set_user_type_by_name()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_user_type_set_user_type_by_name_n(w_Cass_User_Type* user_type,
-                const char* name,
-                size_t name_length,
-                const w_Cass_User_Type* value);
+            w_cassandra_user_type_set_user_type_by_name_n(_In_ w_cass_user_type* pUserType, 
+                _In_ const char* pName, 
+                _In_ size_t pNameLength,
+                _In_ const w_cass_user_type* pValue);
 
         /***********************************************************************************
          *
@@ -9185,7 +9160,7 @@ extern "C" {
           * @param[in] result
           */
         W_SYSTEM_EXPORT void
-            w_cassandra_result_free(const w_Cass_Result* result);
+            w_cassandra_result_free(_In_ const w_cass_result* pResult);
 
         /**
          * Gets the number of rows for the specified result.
@@ -9196,7 +9171,7 @@ extern "C" {
          * @return The number of rows in the result.
          */
         W_SYSTEM_EXPORT size_t
-            w_cassandra_result_row_count(const w_Cass_Result* result);
+            w_cassandra_result_row_count(_In_ const w_cass_result* pResult);
 
         /**
          * Gets the number of columns per row for the specified result.
@@ -9207,7 +9182,7 @@ extern "C" {
          * @return The number of columns per row in the result.
          */
         W_SYSTEM_EXPORT size_t
-            w_cassandra_result_column_count(const w_Cass_Result* result);
+            w_cassandra_result_column_count(_In_ const w_cass_result* pResult);
 
         /**
          * Gets the column name at index for the specified result.
@@ -9218,13 +9193,13 @@ extern "C" {
          * @param[in] index
          * @param[out] name The column name at the specified index.
          * @param[out] name_length
-         * @return CASS_OK if successful, otherwise error occurred
+         * @return W_SUCCESS if successful, otherwise error occurred
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_result_column_name(const w_Cass_Result* result,
-                size_t index,
-                const char** name,
-                size_t* name_length);
+            w_cassandra_result_column_name(_In_ const w_cass_result* pResult,
+                _In_  size_t pIndex, 
+                _Inout_ const char** pName,
+                _Inout_  size_t* pNameLength);
 
         /**
          * Gets the column type at index for the specified result.
@@ -9236,9 +9211,9 @@ extern "C" {
          * @return The column type at the specified index. CASS_VALUE_TYPE_UNKNOWN
          * is returned if the index is out of bounds.
          */
-        W_SYSTEM_EXPORT w_Cass_Value_Type
-            w_cassandra_result_column_type(const w_Cass_Result* result,
-                size_t index);
+        W_SYSTEM_EXPORT w_cass_value_type 
+            w_cassandra_result_column_type(_In_ const w_cass_result* pResult,
+                _In_ size_t pIndex);
 
         /**
          * Gets the column data type at index for the specified result.
@@ -9250,8 +9225,8 @@ extern "C" {
          * @return The column type at the specified index. NULL is returned if the
          * index is out of bounds.
          */
-        W_SYSTEM_EXPORT const w_Cass_Data_Type*
-            w_cassandra_result_column_data_type(const w_Cass_Result* result, size_t index);
+        W_SYSTEM_EXPORT const w_cass_data_type* w_cassandra_result_column_data_type(_In_ const w_cass_result* pResult,
+            _In_ size_t pIndex);
 
         /**
          * Gets the first row of the result.
@@ -9261,8 +9236,8 @@ extern "C" {
          * @param[in] result
          * @return The first row of the result. NULL if there are no rows.
          */
-        W_SYSTEM_EXPORT const w_Cass_Row*
-            w_cassandra_result_first_row(const w_Cass_Result* result);
+        W_SYSTEM_EXPORT const w_cass_row* 
+            w_cassandra_result_first_row(_In_ const w_cass_result* pResult);
 
         /**
          * Returns true if there are more pages.
@@ -9275,7 +9250,7 @@ extern "C" {
          * @return cass_true if there are more pages
          */
         W_SYSTEM_EXPORT w_bool_t
-            w_cassandra_result_has_more_pages(const w_Cass_Result* result);
+            w_cassandra_result_has_more_pages(_In_ const w_cass_result* pResult);
 
         /**
          * Gets the raw paging state from the result. The paging state is bound to the
@@ -9293,14 +9268,14 @@ extern "C" {
          * @param[in] result
          * @param[out] paging_state
          * @param[out] paging_state_size
-         * @return CASS_OK if successful, otherwise error occurred
+         * @return W_SUCCESS if successful, otherwise error occurred
          *
-         * @see cass_statement_set_paging_state_token()
+         * @see w_cassandra_statement_set_paging_state_token()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_result_paging_state_token(const w_Cass_Result* result,
-                const char** paging_state,
-                size_t* paging_state_size);
+            w_cassandra_result_paging_state_token(_In_ const w_cass_result* pResult, 
+                _Inout_ const char** pPagingState,
+                _Inout_ size_t* pPagingStateSize);
 
         /***********************************************************************************
          *
@@ -9316,7 +9291,7 @@ extern "C" {
           * @param[in] error_result
           */
         W_SYSTEM_EXPORT void
-            w_cassandra_error_result_free(const w_Cass_Error_Result* error_result);
+            w_cassandra_error_result_free(_In_ const w_cass_error_result* pErrorResult);
 
         /**
          * Gets error code for the error result. This error code will always
@@ -9328,7 +9303,7 @@ extern "C" {
          * @return The server error code
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_error_result_code(const w_Cass_Error_Result* error_result);
+            w_cassandra_error_result_code(_In_ const w_cass_error_result* pErrorResult);
 
         /**
          * Gets consistency that triggered the error result of the
@@ -9349,8 +9324,8 @@ extern "C" {
          * write timeout or an unavailable error result. Undefined for other
          * error result types.
          */
-        W_SYSTEM_EXPORT W_Cass_Consistency
-            w_cassandra_error_result_consistency(const w_Cass_Error_Result* error_result);
+        W_SYSTEM_EXPORT w_cass_consistency
+            w_cassandra_error_result_consistency(_In_ const w_cass_error_result* pErrorResult);
 
         /**
          * Gets the actual number of received responses, received acknowledgments
@@ -9372,7 +9347,7 @@ extern "C" {
          * error. Undefined for other error result types.
          */
         W_SYSTEM_EXPORT int32_t
-            w_cassandra_error_result_responses_received(const w_Cass_Error_Result* error_result);
+            w_cass_error_result_responses_received(_In_ const w_cass_error_result* pErrorResult);
 
         /**
          * Gets required responses, required acknowledgments or required alive nodes
@@ -9395,7 +9370,7 @@ extern "C" {
          * Undefined for other error result types.
          */
         W_SYSTEM_EXPORT int32_t
-            w_cassandra_error_result_responses_required(const w_Cass_Error_Result* error_result);
+            w_cassandra_error_result_responses_required(_In_ const w_cass_error_result* pErrorResult);
 
         /**
          * Gets the number of nodes that experienced failures for the following error types:
@@ -9411,7 +9386,7 @@ extern "C" {
          * @return The number of nodes that failed during a read or write request.
          */
         W_SYSTEM_EXPORT int32_t
-            w_cassandra_error_result_num_failures(const w_Cass_Error_Result* error_result);
+            w_cassandra_error_result_num_failures(_In_ const w_cass_error_result* pErrorResult);
 
         /**
          * Determines whether the actual data was present in the responses from the
@@ -9429,7 +9404,7 @@ extern "C" {
          * read timeout occurred. Undefined for other error result types.
          */
         W_SYSTEM_EXPORT w_bool_t
-            w_cassandra_error_result_data_present(const w_Cass_Error_Result* error_result);
+            w_cassandra_error_result_data_present(_In_ const w_cass_error_result* pErrorResult);
 
         /**
          * Gets the write type of a request for the following error result types:
@@ -9445,8 +9420,8 @@ extern "C" {
          * @return The type of the write that timed out. Undefined for
          * other error result types.
          */
-        W_SYSTEM_EXPORT w_Cass_WriteType
-            w_cassandra_error_result_write_type(const w_Cass_Error_Result* error_result);
+        W_SYSTEM_EXPORT w_cass_writetype
+            w_cassandra_error_result_write_type(_In_ const w_cass_error_result* pErrorResult);
 
         /**
          * Gets the affected keyspace for the following error result types:
@@ -9461,12 +9436,12 @@ extern "C" {
          * @param[in] error_result
          * @param[out] keyspace
          * @param[out] keyspace_length
-         * @return CASS_OK if successful, otherwise error occurred
+         * @return W_SUCCESS if successful, otherwise error occurred
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_error_result_keyspace(const w_Cass_Error_Result* error_result,
-                const char** keyspace,
-                size_t* keyspace_length);
+            w_cassandra_error_result_keyspace(_In_ const w_cass_error_result* pErrorResult, 
+                _Inout_ const char** pKeyspace,
+                _Inout_ size_t* pKeyspaceLength);
 
         /**
          * Gets the affected table for the already exists error
@@ -9477,12 +9452,12 @@ extern "C" {
          * @param[in] error_result
          * @param[out] table
          * @param[out] table_length
-         * @return CASS_OK if successful, otherwise error occurred
+         * @return W_SUCCESS if successful, otherwise error occurred
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_error_result_table(const w_Cass_Error_Result* error_result,
-                const char** table,
-                size_t* table_length);
+            w_cassandra_error_result_table(_In_ const w_cass_error_result* pErrorResult, 
+                _Inout_ const char** pTable,
+                _Inout_ size_t* pTableLength);
 
         /**
          * Gets the affected function for the function failure error
@@ -9495,12 +9470,12 @@ extern "C" {
          * @param[in] error_result
          * @param[out] function
          * @param[out] function_length
-         * @return CASS_OK if successful, otherwise error occurred
+         * @return W_SUCCESS if successful, otherwise error occurred
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_error_result_function(const w_Cass_Error_Result* error_result,
-                const char** function,
-                size_t* function_length);
+            w_cassandra_error_result_function(_In_ const w_cass_error_result* pErrorResult,
+                _Inout_  const char** pFunction,
+                _Inout_ size_t* pFunctionLength);
 
         /**
          * Gets the number of argument types for the function failure error
@@ -9514,7 +9489,7 @@ extern "C" {
          * @return The number of arguments for the affected function.
          */
         W_SYSTEM_EXPORT size_t
-            w_cassandra_error_num_arg_types(const w_Cass_Error_Result* error_result);
+            w_cassandra_error_num_arg_types(_In_ const w_cass_error_result* pErrorResult);
 
         /**
          * Gets the argument type at the specified index for the function failure
@@ -9528,13 +9503,13 @@ extern "C" {
          * @param[in] index
          * @param[out] arg_type
          * @param[out] arg_type_length
-         * @return CASS_OK if successful, otherwise error occurred
+         * @return W_SUCCESS if successful, otherwise error occurred
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_error_result_arg_type(const w_Cass_Error_Result* error_result,
-                size_t index,
-                const char** arg_type,
-                size_t* arg_type_length);
+            w_cassandra_error_result_arg_type(_In_ const w_cass_error_result* pErrorResult,
+                _In_  size_t pIndex, 
+                _Inout_ const char** pArgType, 
+                _Inout_ size_t* pArgTypeLength);
 
         /***********************************************************************************
          *
@@ -9550,7 +9525,7 @@ extern "C" {
           * @param[in] iterator
           */
         W_SYSTEM_EXPORT void
-            w_cassandra_iterator_free(w_Cass_Iterator* iterator);
+            w_cassandra_iterator_free(_In_ w_cass_iterator* pIterator);
 
         /**
          * Gets the type of the specified iterator.
@@ -9560,8 +9535,8 @@ extern "C" {
          * @param[in] iterator
          * @return The type of the iterator.
          */
-        W_SYSTEM_EXPORT w_Cass_Iterator_Type
-            w_cassandra_iterator_type(w_Cass_Iterator* iterator);
+        W_SYSTEM_EXPORT w_cass_iterator_type 
+            w_cassandra_iterator_type(_In_ w_cass_iterator* pIterator);
 
         /**
          * Creates a new iterator for the specified result. This can be
@@ -9572,10 +9547,10 @@ extern "C" {
          * @param[in] result
          * @return A new iterator that must be freed.
          *
-         * @see cass_iterator_free()
+         * @see w_cassandra_iterator_free()
          */
-        W_SYSTEM_EXPORT w_Cass_Iterator*
-            w_cassandra_iterator_from_result(const w_Cass_Result* result);
+        W_SYSTEM_EXPORT w_cass_iterator* 
+            w_cassandra_iterator_from_result(_In_ const w_cass_result* pResult);
 
         /**
          * Creates a new iterator for the specified row. This can be
@@ -9586,10 +9561,10 @@ extern "C" {
          * @param[in] row
          * @return A new iterator that must be freed.
          *
-         * @see cass_iterator_free()
+         * @see w_cassandra_iterator_free()
          */
-        W_SYSTEM_EXPORT w_Cass_Iterator*
-            w_cassandra_iterator_from_row(const w_Cass_Row* row);
+        W_SYSTEM_EXPORT w_cass_iterator* 
+            w_cassandra_iterator_from_row(_In_ const w_cass_row* pRow);
 
         /**
          * Creates a new iterator for the specified collection. This can be
@@ -9601,10 +9576,10 @@ extern "C" {
          * @return A new iterator that must be freed. NULL returned if the
          * value is not a collection.
          *
-         * @see cass_iterator_free()
+         * @see w_cassandra_iterator_free()
          */
-        W_SYSTEM_EXPORT w_Cass_Iterator*
-            w_cassandra_iterator_from_collection(const w_Cass_Value* value);
+        W_SYSTEM_EXPORT  w_cass_iterator* 
+            w_cassandra_iterator_from_collection(_In_ const w_cass_value* pValue);
 
         /**
          * Creates a new iterator for the specified map. This can be
@@ -9616,10 +9591,10 @@ extern "C" {
          * @return A new iterator that must be freed. NULL returned if the
          * value is not a map.
          *
-         * @see cass_iterator_free()
+         * @see w_cassandra_iterator_free()
          */
-        W_SYSTEM_EXPORT w_Cass_Iterator*
-            w_cassandra_iterator_from_map(const w_Cass_Value* value);
+        W_SYSTEM_EXPORT w_cass_iterator* 
+            w_cassandra_iterator_from_map(_In_ const w_cass_value* pValue);
 
         /**
          * Creates a new iterator for the specified tuple. This can be
@@ -9633,10 +9608,10 @@ extern "C" {
          * @return A new iterator that must be freed. NULL returned if the
          * value is not a tuple.
          *
-         * @see cass_iterator_free()
+         * @see w_cassandra_iterator_free()
          */
-        W_SYSTEM_EXPORT w_Cass_Iterator*
-            w_cassandra_iterator_from_tuple(const w_Cass_Value* value);
+        W_SYSTEM_EXPORT w_cass_iterator*
+            w_cassandra_iterator_from_tuple(_In_ const w_cass_value* pValue);
 
         /**
          * Creates a new iterator for the specified user defined type. This can be
@@ -9650,10 +9625,10 @@ extern "C" {
          * @return A new iterator that must be freed. NULL returned if the
          * value is not a user defined type.
          *
-         * @see cass_iterator_free()
+         * @see w_cassandra_iterator_free()
          */
-        W_SYSTEM_EXPORT w_Cass_Iterator*
-            w_cassandra_iterator_fields_from_user_type(const w_Cass_Value* value);
+        W_SYSTEM_EXPORT  w_cass_iterator* 
+            w_cassandra_iterator_fields_from_user_type(_In_ const w_cass_value* pValue);
 
         /**
          * Creates a new iterator for the specified schema metadata.
@@ -9664,11 +9639,11 @@ extern "C" {
          * @param[in] schema_meta
          * @return A new iterator that must be freed.
          *
-         * @see cass_iterator_get_keyspace_meta()
-         * @see cass_iterator_free()
+         * @see w_cassandra_iterator_get_keyspace_meta()
+         * @see w_cassandra_iterator_free()
          */
-        W_SYSTEM_EXPORT w_Cass_Iterator*
-            w_cassandra_iterator_keyspaces_from_schema_meta(const w_Cass_Schema_Meta* schema_meta);
+        W_SYSTEM_EXPORT w_cass_iterator* 
+            w_cassandra_iterator_keyspaces_from_schema_meta(_In_ const w_cass_schema_meta* pSchemaMeta);
 
         /**
          * Creates a new iterator for the specified keyspace metadata.
@@ -9679,11 +9654,11 @@ extern "C" {
          * @param[in] keyspace_meta
          * @return A new iterator that must be freed.
          *
-         * @see cass_iterator_get_table_meta()
-         * @see cass_iterator_free()
+         * @see w_cassandra_iterator_get_table_meta()
+         * @see w_cassandra_iterator_free()
          */
-        W_SYSTEM_EXPORT w_Cass_Iterator*
-            w_cassandra_iterator_tables_from_keyspace_meta(const w_Cass_Key_space_Meta* keyspace_meta);
+        W_SYSTEM_EXPORT  w_cass_iterator*
+            w_cassandra_iterator_tables_from_keyspace_meta(_In_ const w_cass_key_space_meta* pKeyspaceMeta);
 
         /**
          * Creates a new iterator for the specified keyspace metadata.
@@ -9696,11 +9671,11 @@ extern "C" {
          * @param[in] keyspace_meta
          * @return A new iterator that must be freed.
          *
-         * @see cass_iterator_get_materialized_view_meta()
-         * @see cass_iterator_free()
+         * @see w_cassandra_iterator_get_materialized_view_meta()
+         * @see w_cassandra_iterator_free()
          */
-        W_SYSTEM_EXPORT w_Cass_Iterator*
-            w_cassandra_iterator_materialized_views_from_keyspace_meta(const w_Cass_Key_space_Meta* keyspace_meta);
+        W_SYSTEM_EXPORT w_cass_iterator* 
+            w_cassandra_iterator_materialized_views_from_keyspace_meta(_In_ const w_cass_key_space_meta* pKeyspaceMeta);
 
         /**
          * Creates a new iterator for the specified keyspace metadata.
@@ -9713,11 +9688,11 @@ extern "C" {
          * @param[in] keyspace_meta
          * @return A new iterator that must be freed.
          *
-         * @see cass_iterator_get_user_type()
-         * @see cass_iterator_free()
+         * @see w_cassandra_iterator_get_user_type()
+         * @see w_cassandra_iterator_free()
          */
-        W_SYSTEM_EXPORT w_Cass_Iterator*
-            w_cassandra_iterator_user_types_from_keyspace_meta(const w_Cass_Key_space_Meta* keyspace_meta);
+        W_SYSTEM_EXPORT w_cass_iterator* 
+            w_cassandra_iterator_user_types_from_keyspace_meta(_In_ const w_cass_key_space_meta* pKeyspaceMeta);
 
         /**
          * Creates a new iterator for the specified keyspace metadata.
@@ -9730,11 +9705,11 @@ extern "C" {
          * @param[in] keyspace_meta
          * @return A new iterator that must be freed.
          *
-         * @see cass_iterator_get_function_meta()
-         * @see cass_iterator_free()
+         * @see w_cassandra_iterator_get_function_meta()
+         * @see w_cassandra_iterator_free()
          */
-        W_SYSTEM_EXPORT w_Cass_Iterator*
-            w_cassandra_iterator_functions_from_keyspace_meta(const w_Cass_Key_space_Meta* keyspace_meta);
+        W_SYSTEM_EXPORT w_cass_iterator* 
+            w_cassandra_iterator_functions_from_keyspace_meta(_In_ const w_cass_key_space_meta* pKeyspaceMeta);
 
         /**
          * Creates a new iterator for the specified keyspace metadata.
@@ -9747,11 +9722,11 @@ extern "C" {
          * @param[in] keyspace_meta
          * @return A new iterator that must be freed.
          *
-         * @see cass_iterator_get_aggregate_meta()
-         * @see cass_iterator_free()
+         * @see w_cassandra_iterator_get_aggregate_meta()
+         * @see w_cassandra_iterator_free()
          */
-        W_SYSTEM_EXPORT w_Cass_Iterator*
-            w_cassandra_iterator_aggregates_from_keyspace_meta(const w_Cass_Key_space_Meta* keyspace_meta);
+        W_SYSTEM_EXPORT w_cass_iterator* 
+            w_cassandra_iterator_aggregates_from_keyspace_meta(_In_ const w_cass_key_space_meta* pKeyspaceMeta);
 
         /**
          * Creates a new fields iterator for the specified keyspace metadata. Metadata
@@ -9764,12 +9739,12 @@ extern "C" {
          * @param[in] keyspace_meta
          * @return A new iterator that must be freed.
          *
-         * @see cass_iterator_get_meta_field_name()
-         * @see cass_iterator_get_meta_field_value()
-         * @see cass_iterator_free()
+         * @see w_cassandra_iterator_get_meta_field_name()
+         * @see w_cassandra_iterator_get_meta_field_value()
+         * @see w_cassandra_iterator_free()
          */
-        W_SYSTEM_EXPORT w_Cass_Iterator*
-            w_cassandra_iterator_fields_from_keyspace_meta(const w_Cass_Key_space_Meta* keyspace_meta);
+        W_SYSTEM_EXPORT w_cass_iterator* 
+            w_cassandra_iterator_fields_from_keyspace_meta(_In_ const w_cass_key_space_meta* pKeyspaceMeta);
 
         /**
          * Creates a new iterator for the specified table metadata.
@@ -9780,11 +9755,11 @@ extern "C" {
          * @param[in] table_meta
          * @return A new iterator that must be freed.
          *
-         * @see cass_iterator_get_column_meta()
-         * @see cass_iterator_free()
+         * @see w_cassandra_iterator_get_column_meta()
+         * @see w_cassandra_iterator_free()
          */
-        W_SYSTEM_EXPORT w_Cass_Iterator*
-            w_cassandra_iterator_columns_from_table_meta(const w_Cass_Table_Meta* table_meta);
+        W_SYSTEM_EXPORT w_cass_iterator* 
+            w_cassandra_iterator_columns_from_table_meta(_In_ const w_cass_table_meta* pTableMeta);
 
         /**
          * Creates a new iterator for the specified table metadata.
@@ -9795,11 +9770,11 @@ extern "C" {
          * @param[in] table_meta
          * @return A new iterator that must be freed.
          *
-         * @see cass_iterator_get_index_meta()
-         * @see cass_iterator_free()
+         * @see w_cassandra_iterator_get_index_meta()
+         * @see w_cassandra_iterator_free()
          */
-        W_SYSTEM_EXPORT w_Cass_Iterator*
-            w_cassandra_iterator_indexes_from_table_meta(const w_Cass_Table_Meta* table_meta);
+        W_SYSTEM_EXPORT w_cass_iterator* 
+            w_cassandra_iterator_indexes_from_table_meta(_In_ const w_cass_table_meta* pTableMeta);
 
         /**
          * Creates a new iterator for the specified materialized view metadata.
@@ -9812,11 +9787,11 @@ extern "C" {
          * @param[in] table_meta
          * @return A new iterator that must be freed.
          *
-         * @see cass_iterator_get_materialized_view_meta()
-         * @see cass_iterator_free()
+         * @see w_cassandra_iterator_get_materialized_view_meta()
+         * @see w_cassandra_iterator_free()
          */
-        W_SYSTEM_EXPORT w_Cass_Iterator*
-            w_cassandra_iterator_materialized_views_from_table_meta(const w_Cass_Table_Meta* table_meta);
+        W_SYSTEM_EXPORT w_cass_iterator*
+            w_cassandra_iterator_materialized_views_from_table_meta(_In_ const w_cass_table_meta* pTableMeta);
 
         /**
          * Creates a new fields iterator for the specified table metadata. Metadata
@@ -9829,12 +9804,12 @@ extern "C" {
          * @param[in] table_meta
          * @return A new iterator that must be freed.
          *
-         * @see cass_iterator_get_meta_field_name()
-         * @see cass_iterator_get_meta_field_value()
-         * @see cass_iterator_free()
+         * @see w_cassandra_iterator_get_meta_field_name()
+         * @see w_cassandra_iterator_get_meta_field_value()
+         * @see w_cassandra_iterator_free()
          */
-        W_SYSTEM_EXPORT w_Cass_Iterator*
-            w_cassandra_iterator_fields_from_table_meta(const w_Cass_Table_Meta* table_meta);
+        W_SYSTEM_EXPORT w_cass_iterator*
+            w_cassandra_iterator_fields_from_table_meta(_In_ const w_cass_table_meta* pTableMeta);
 
         /**
          * Creates a new iterator for the specified materialized view metadata.
@@ -9847,11 +9822,11 @@ extern "C" {
          * @param[in] view_meta
          * @return A new iterator that must be freed.
          *
-         * @see cass_iterator_get_column_meta()
-         * @see cass_iterator_free()
+         * @see w_cassandra_iterator_get_column_meta()
+         * @see w_cassandra_iterator_free()
          */
-        W_SYSTEM_EXPORT w_Cass_Iterator*
-            w_cassandra_iterator_columns_from_materialized_view_meta(const w_Cass_Materialized_View_Meta* view_meta);
+        W_SYSTEM_EXPORT w_cass_iterator*
+            w_cassandra_iterator_columns_from_materialized_view_meta(_In_ const w_cass_materialized_view_meta* pViewMe);
 
         /**
          * Creates a new fields iterator for the specified materialized view metadata.
@@ -9866,12 +9841,12 @@ extern "C" {
          * @param[in] view_meta
          * @return A new iterator that must be freed.
          *
-         * @see cass_iterator_get_meta_field_name()
-         * @see cass_iterator_get_meta_field_value()
-         * @see cass_iterator_free()
+         * @see w_cassandra_iterator_get_meta_field_name()
+         * @see w_cassandra_iterator_get_meta_field_value()
+         * @see w_cassandra_iterator_free()
          */
-        W_SYSTEM_EXPORT w_Cass_Iterator*
-            w_cassandra_iterator_fields_from_materialized_view_meta(const w_Cass_Materialized_View_Meta* view_meta);
+        W_SYSTEM_EXPORT w_cass_iterator*
+            w_cassandra_iterator_fields_from_materialized_view_meta(_In_ const w_cass_materialized_view_meta* pViewMe);
 
         /**
          * Creates a new fields iterator for the specified column metadata. Metadata
@@ -9884,12 +9859,12 @@ extern "C" {
          * @param[in] column_meta
          * @return A new iterator that must be freed.
          *
-         * @see cass_iterator_get_meta_field_name()
-         * @see cass_iterator_get_meta_field_value()
-         * @see cass_iterator_free()
+         * @see w_cassandra_iterator_get_meta_field_name()
+         * @see w_cassandra_iterator_get_meta_field_value()
+         * @see w_cassandra_iterator_free()
          */
-        W_SYSTEM_EXPORT w_Cass_Iterator*
-            w_cassandra_iterator_fields_from_column_meta(const w_Cass_Column_Meta* column_meta);
+        W_SYSTEM_EXPORT w_cass_iterator*
+            w_cassandra_iterator_fields_from_column_meta(_In_ const w_cass_column_meta* pColumnMeta);
 
         /**
          * Creates a new fields iterator for the specified index metadata. Metadata
@@ -9902,12 +9877,12 @@ extern "C" {
          * @param[in] index_meta
          * @return A new iterator that must be freed.
          *
-         * @see cass_iterator_get_meta_field_name()
-         * @see cass_iterator_get_meta_field_value()
-         * @see cass_iterator_free()
+         * @see w_cassandra_iterator_get_meta_field_name()
+         * @see w_cassandra_iterator_get_meta_field_value()
+         * @see w_cassandra_iterator_free()
          */
-        W_SYSTEM_EXPORT w_Cass_Iterator*
-            w_cassandra_iterator_fields_from_index_meta(const w_Cass_Index_Meta* index_meta);
+        W_SYSTEM_EXPORT w_cass_iterator* 
+            w_cassandra_iterator_fields_from_index_meta(_In_ const w_cass_index_meta* pIndexMeta);
 
         /**
          * Creates a new fields iterator for the specified function metadata. Metadata
@@ -9922,11 +9897,11 @@ extern "C" {
          * @param[in] function_meta
          * @return A new iterator that must be freed.
          *
-         * @see cass_iterator_get_meta_field()
-         * @see cass_iterator_free()
+         * @see w_cassandra_iterator_get_meta_field()
+         * @see w_cassandra_iterator_free()
          */
-        W_SYSTEM_EXPORT w_Cass_Iterator*
-            w_cassandra_iterator_fields_from_function_meta(const w_Cass_Function_Meta* function_meta);
+        W_SYSTEM_EXPORT w_cass_iterator* 
+            w_cassandra_iterator_fields_from_function_meta(_In_ const w_cass_function_meta* pFunctionMeta);
 
         /**
          * Creates a new fields iterator for the specified aggregate metadata. Metadata
@@ -9941,11 +9916,11 @@ extern "C" {
          * @param[in] aggregate_meta
          * @return A new iterator that must be freed.
          *
-         * @see cass_iterator_get_meta_field()
-         * @see cass_iterator_free()
+         * @see w_cassandra_iterator_get_meta_field()
+         * @see w_cassandra_iterator_free()
          */
-        W_SYSTEM_EXPORT w_Cass_Iterator*
-            w_cassandra_iterator_fields_from_aggregate_meta(const w_Cass_Aggregate_Meta* aggregate_meta);
+        W_SYSTEM_EXPORT w_cass_iterator* 
+            w_cassandra_iterator_fields_from_aggregate_meta(_In_ const w_cass_aggregate_meta* pAggregateMeta);
 
         /**
          * Advance the iterator to the next row, column or collection item.
@@ -9956,12 +9931,12 @@ extern "C" {
          * @return false if no more rows, columns or items, otherwise true
          */
         W_SYSTEM_EXPORT w_bool_t
-            w_cassandra_iterator_next(w_Cass_Iterator* iterator);
+            w_cassandra_iterator_next(_In_ w_cass_iterator* pIterator);
 
         /**
          * Gets the row at the result iterator's current position.
          *
-         * Calling cass_iterator_next() will invalidate the previous
+         * Calling w_cassandra_iterator_next() will invalidate the previous
          * row returned by this method.
          *
          * @public @memberof w_Cass_Iterator
@@ -9969,13 +9944,13 @@ extern "C" {
          * @param[in] iterator
          * @return A row
          */
-        W_SYSTEM_EXPORT const w_Cass_Row*
-            w_cassandra_iterator_get_row(const w_Cass_Iterator* iterator);
+        W_SYSTEM_EXPORT const w_cass_row* 
+            w_cassandra_iterator_get_row(_In_ const w_cass_iterator* pIterator);
 
         /**
          * Gets the column value at the row iterator's current position.
          *
-         * Calling cass_iterator_next() will invalidate the previous
+         * Calling w_cassandra_iterator_next() will invalidate the previous
          * column returned by this method.
          *
          * @public @memberof w_Cass_Iterator
@@ -9983,13 +9958,13 @@ extern "C" {
          * @param[in] iterator
          * @return A value
          */
-        W_SYSTEM_EXPORT const w_Cass_Value*
-            w_cassandra_iterator_get_column(const w_Cass_Iterator* iterator);
+        W_SYSTEM_EXPORT const w_cass_value* 
+            w_cassandra_iterator_get_column(_In_ const w_cass_iterator* pIterator);
 
         /**
          * Gets the value at a collection or tuple iterator's current position.
          *
-         * Calling cass_iterator_next() will invalidate the previous
+         * Calling w_cassandra_iterator_next() will invalidate the previous
          * value returned by this method.
          *
          * @public @memberof w_Cass_Iterator
@@ -9997,13 +9972,13 @@ extern "C" {
          * @param[in] iterator
          * @return A value
          */
-        W_SYSTEM_EXPORT const w_Cass_Value*
-            w_cassandra_iterator_get_value(const w_Cass_Iterator* iterator);
+        W_SYSTEM_EXPORT const w_cass_value*
+            w_cassandra_iterator_get_value(_In_ const w_cass_iterator* pIterator);
 
         /**
          * Gets the key at the map iterator's current position.
          *
-         * Calling cass_iterator_next() will invalidate the previous
+         * Calling w_cassandra_iterator_next() will invalidate the previous
          * value returned by this method.
          *
          * @public @memberof w_Cass_Iterator
@@ -10011,14 +9986,14 @@ extern "C" {
          * @param[in] iterator
          * @return A value
          */
-        W_SYSTEM_EXPORT const w_Cass_Value*
-            w_cassandra_iterator_get_map_key(const w_Cass_Iterator* iterator);
+        W_SYSTEM_EXPORT const w_cass_value* 
+            w_cassandra_iterator_get_map_key(_In_ const w_cass_iterator* pIterator);
 
 
         /**
          * Gets the value at the map iterator's current position.
          *
-         * Calling cass_iterator_next() will invalidate the previous
+         * Calling w_cassandra_iterator_next() will invalidate the previous
          * value returned by this method.
          *
          * @public @memberof w_Cass_Iterator
@@ -10026,13 +10001,13 @@ extern "C" {
          * @param[in] iterator
          * @return A value
          */
-        W_SYSTEM_EXPORT const w_Cass_Value*
-            w_cassandra_iterator_get_map_value(const w_Cass_Iterator* iterator);
+        W_SYSTEM_EXPORT const w_cass_value* 
+            w_cassandra_iterator_get_map_value(_In_ const w_cass_iterator* pIterator);
 
         /**
          * Gets the field name at the user type defined iterator's current position.
          *
-         * Calling cass_iterator_next() will invalidate the previous
+         * Calling w_cassandra_iterator_next() will invalidate the previous
          * name returned by this method.
          *
          * @cassandra{2.1+}
@@ -10042,17 +10017,17 @@ extern "C" {
          * @param[in] iterator
          * @param[out] name
          * @param[out] name_length
-         * @return CASS_OK if successful, otherwise error occurred
+         * @return W_SUCCESS if successful, otherwise error occurred
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_iterator_get_user_type_field_name(const w_Cass_Iterator* iterator,
-                const char** name,
-                size_t* name_length);
+            w_cassandra_iterator_get_user_type_field_name(_In_ const w_cass_iterator* pIterator,
+                _Inout_ const char** pName,
+                _Inout_ size_t* pNameLength);
 
         /**
          * Gets the field value at the user type defined iterator's current position.
          *
-         * Calling cass_iterator_next() will invalidate the previous
+         * Calling w_cassandra_iterator_next() will invalidate the previous
          * value returned by this method.
          *
          * @cassandra{2.1+}
@@ -10062,13 +10037,13 @@ extern "C" {
          * @param[in] iterator
          * @return A value
          */
-        W_SYSTEM_EXPORT const w_Cass_Value*
-            w_cassandra_iterator_get_user_type_field_value(const w_Cass_Iterator* iterator);
+        W_SYSTEM_EXPORT const w_cass_value* 
+            w_cassandra_iterator_get_user_type_field_value(_In_ const w_cass_iterator* pIterator);
 
         /**
          * Gets the keyspace metadata entry at the iterator's current position.
          *
-         * Calling cass_iterator_next() will invalidate the previous
+         * Calling w_cassandra_iterator_next() will invalidate the previous
          * value returned by this method.
          *
          * @public @memberof w_Cass_Iterator
@@ -10076,13 +10051,13 @@ extern "C" {
          * @param[in] iterator
          * @return A keyspace metadata entry
          */
-        W_SYSTEM_EXPORT const w_Cass_Key_space_Meta*
-            w_cassandra_iterator_get_keyspace_meta(const w_Cass_Iterator* iterator);
+        W_SYSTEM_EXPORT const w_cass_key_space_meta*
+            w_cassandra_iterator_get_keyspace_meta(_In_ const w_cass_iterator* pIterator);
 
         /**
          * Gets the table metadata entry at the iterator's current position.
          *
-         * Calling cass_iterator_next() will invalidate the previous
+         * Calling w_cassandra_iterator_next() will invalidate the previous
          * value returned by this method.
          *
          * @public @memberof w_Cass_Iterator
@@ -10090,13 +10065,13 @@ extern "C" {
          * @param[in] iterator
          * @return A table metadata entry
          */
-        W_SYSTEM_EXPORT const w_Cass_Table_Meta*
-            w_cassandra_iterator_get_table_meta(const w_Cass_Iterator* iterator);
+        W_SYSTEM_EXPORT const w_cass_table_meta* 
+            w_cassandra_iterator_get_table_meta(_In_ const w_cass_iterator* pIterator);
 
         /**
          * Gets the materialized view metadata entry at the iterator's current position.
          *
-         * Calling cass_iterator_next() will invalidate the previous
+         * Calling w_cassandra_iterator_next() will invalidate the previous
          * value returned by this method.
          *
          * @cassandra{3.0+}
@@ -10106,13 +10081,13 @@ extern "C" {
          * @param[in] iterator
          * @return A materialized view metadata entry
          */
-        W_SYSTEM_EXPORT const w_Cass_Materialized_View_Meta*
-            w_cassandra_iterator_get_materialized_view_meta(const w_Cass_Iterator* iterator);
+        W_SYSTEM_EXPORT const w_cass_materialized_view_meta* 
+            w_cassandra_iterator_get_materialized_view_meta(_In_ const w_cass_iterator* pIterator);
 
         /**
          * Gets the type metadata entry at the iterator's current position.
          *
-         * Calling cass_iterator_next() will invalidate the previous
+         * Calling w_cassandra_iterator_next() will invalidate the previous
          * value returned by this method.
          *
          * @cassandra{2.1+}
@@ -10122,13 +10097,13 @@ extern "C" {
          * @param[in] iterator
          * @return A type metadata entry
          */
-        W_SYSTEM_EXPORT const w_Cass_Data_Type*
-            w_cassandra_iterator_get_user_type(const w_Cass_Iterator* iterator);
+        W_SYSTEM_EXPORT const w_cass_data_type* 
+            w_cassandra_iterator_get_user_type(_In_ const w_cass_iterator* pIterator);
 
         /**
          * Gets the function metadata entry at the iterator's current position.
          *
-         * Calling cass_iterator_next() will invalidate the previous
+         * Calling w_cassandra_iterator_next() will invalidate the previous
          * value returned by this method.
          *
          * @cassandra{2.2+}
@@ -10138,13 +10113,13 @@ extern "C" {
          * @param[in] iterator
          * @return A function metadata entry
          */
-        W_SYSTEM_EXPORT const w_Cass_Function_Meta*
-            w_cassandra_iterator_get_function_meta(const w_Cass_Iterator* iterator);
+        W_SYSTEM_EXPORT const w_cass_function_meta* 
+            w_cassandra_iterator_get_function_meta(_In_ const w_cass_iterator* pIterator);
 
         /**
          * Gets the aggregate metadata entry at the iterator's current position.
          *
-         * Calling cass_iterator_next() will invalidate the previous
+         * Calling w_cassandra_iterator_next() will invalidate the previous
          * value returned by this method.
          *
          * @cassandra{2.2+}
@@ -10154,13 +10129,13 @@ extern "C" {
          * @param[in] iterator
          * @return A aggregate metadata entry
          */
-        W_SYSTEM_EXPORT const w_Cass_Aggregate_Meta*
-            w_cassandra_iterator_get_aggregate_meta(const w_Cass_Iterator* iterator);
+        W_SYSTEM_EXPORT const w_cass_aggregate_meta* 
+            w_cassandra_iterator_get_aggregate_meta(_In_ const w_cass_iterator* pIterator);
 
         /**
          * Gets the column metadata entry at the iterator's current position.
          *
-         * Calling cass_iterator_next() will invalidate the previous
+         * Calling w_cassandra_iterator_next() will invalidate the previous
          * value returned by this method.
          *
          * @public @memberof w_Cass_Iterator
@@ -10168,13 +10143,13 @@ extern "C" {
          * @param[in] iterator
          * @return A column metadata entry
          */
-        W_SYSTEM_EXPORT const w_Cass_Column_Meta*
-            w_cassandra_iterator_get_column_meta(const w_Cass_Iterator* iterator);
+        W_SYSTEM_EXPORT const w_cass_column_meta* 
+            w_cassandra_iterator_get_column_meta(_In_ const w_cass_iterator* pIterator);
 
         /**
          * Gets the index metadata entry at the iterator's current position.
          *
-         * Calling cass_iterator_next() will invalidate the previous
+         * Calling w_cassandra_iterator_next() will invalidate the previous
          * value returned by this method.
          *
          * @public @memberof w_Cass_Iterator
@@ -10182,13 +10157,13 @@ extern "C" {
          * @param[in] iterator
          * @return A index metadata entry
          */
-        W_SYSTEM_EXPORT const w_Cass_Index_Meta*
-            w_cassandra_iterator_get_index_meta(const w_Cass_Iterator* iterator);
+        W_SYSTEM_EXPORT const w_cass_index_meta* 
+            w_cassandra_iterator_get_index_meta(_In_ const w_cass_iterator* pIterator);
 
         /**
          * Gets the metadata field name at the iterator's current position.
          *
-         * Calling cass_iterator_next() will invalidate the previous
+         * Calling w_cassandra_iterator_next() will invalidate the previous
          * value returned by this method.
          *
          * @public @memberof w_Cass_Iterator
@@ -10196,17 +10171,17 @@ extern "C" {
          * @param[in] iterator
          * @param[out] name
          * @param[out] name_length
-         * @return CASS_OK if successful, otherwise error occurred
+         * @return W_SUCCESS if successful, otherwise error occurred
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_iterator_get_meta_field_name(const w_Cass_Iterator* iterator,
-                const char** name,
-                size_t* name_length);
+            w_cassandra_iterator_get_meta_field_name(_In_ const w_cass_iterator* pIterator,
+                _Inout_ const char** pName,
+                _Inout_ size_t* pNameLength);
 
         /**
          * Gets the metadata field value at the iterator's current position.
          *
-         * Calling cass_iterator_next() will invalidate the previous
+         * Calling w_cassandra_iterator_next() will invalidate the previous
          * value returned by this method.
          *
          * @public @memberof w_Cass_Iterator
@@ -10214,8 +10189,8 @@ extern "C" {
          * @param[in] iterator
          * @return A metadata field value
          */
-        W_SYSTEM_EXPORT const w_Cass_Value*
-            w_cassandra_iterator_get_meta_field_value(const w_Cass_Iterator* iterator);
+        W_SYSTEM_EXPORT const w_cass_value* 
+            w_cassandra_iterator_get_meta_field_value(_In_ const w_cass_iterator* pIterator);
 
         /***********************************************************************************
          *
@@ -10233,9 +10208,9 @@ extern "C" {
           * @return The column value at the specified index. NULL is
           * returned if the index is out of bounds.
           */
-        W_SYSTEM_EXPORT const w_Cass_Value*
-            w_cassandra_row_get_column(const w_Cass_Row* row,
-                size_t index);
+        W_SYSTEM_EXPORT const w_cass_value*
+            w_cassandra_row_get_column(_In_ const w_cass_row* pRow,
+                _In_ size_t pIndex);
 
 
         /**
@@ -10248,12 +10223,12 @@ extern "C" {
          * @return The column value for the specified name. NULL is
          * returned if the column does not exist.
          */
-        W_SYSTEM_EXPORT const w_Cass_Value*
-            w_cassandra_row_get_column_by_name(const w_Cass_Row* row,
-                const char* name);
+        W_SYSTEM_EXPORT const w_cass_value* 
+            w_cassandra_row_get_column_by_name(_In_ const w_cass_row* pRow, 
+                _In_ const char* pName);
 
         /**
-         * Same as cass_row_get_column_by_name(), but with lengths for string
+         * Same as w_cassandra_row_get_column_by_name(), but with lengths for string
          * parameters.
          *
          * @public @memberof w_Cass_Row
@@ -10261,14 +10236,14 @@ extern "C" {
          * @param[in] row
          * @param[in] name
          * @param[in] name_length
-         * @return same as cass_row_get_column_by_name()
+         * @return same as w_cassandra_row_get_column_by_name()
          *
-         * @see cass_row_get_column_by_name()
+         * @see w_cassandra_row_get_column_by_name()
          */
-        W_SYSTEM_EXPORT const w_Cass_Value*
-            w_cassandra_row_get_column_by_name_n(const w_Cass_Row* row,
-                const char* name,
-                size_t name_length);
+        W_SYSTEM_EXPORT const w_cass_value* 
+            w_cassandra_row_get_column_by_name_n(_In_ const w_cass_row* pRow, 
+            _In_  const char* pName,
+                _In_ size_t pNameLength);
 
         /***********************************************************************************
          *
@@ -10285,8 +10260,8 @@ extern "C" {
           * @return Returns a reference to the data type of the value.
           * Do not free this reference as it is bound to the lifetime of the value.
           */
-        W_SYSTEM_EXPORT const w_Cass_Data_Type*
-            w_cassandra_value_data_type(const w_Cass_Value* value);
+        W_SYSTEM_EXPORT const w_cass_data_type* 
+            w_cassandra_value_data_type(_In_ const w_cass_value* pValue);
 
         /**
          * Gets an int8 for the specified value.
@@ -10297,11 +10272,11 @@ extern "C" {
          *
          * @param[in] value
          * @param[out] output
-         * @return CASS_OK if successful, otherwise error occurred
+         * @return W_SUCCESS if successful, otherwise error occurred
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_value_get_int8(const w_Cass_Value* value,
-                int8_t* output);
+            w_cassandra_value_get_int8(_In_ const w_cass_value* pValue,
+                _Inout_ int8_t* pOutput);
 
         /**
          * Gets an int16 for the specified value.
@@ -10312,11 +10287,11 @@ extern "C" {
          *
          * @param[in] value
          * @param[out] output
-         * @return CASS_OK if successful, otherwise error occurred
+         * @return W_SUCCESS if successful, otherwise error occurred
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_value_get_int16(const w_Cass_Value* value,
-                int16_t* output);
+            w_cassandra_value_get_int16(_In_ const w_cass_value* pValue,
+                _Inout_ int16_t* pOutput);
 
         /**
          * Gets an int32 for the specified value.
@@ -10325,11 +10300,11 @@ extern "C" {
          *
          * @param[in] value
          * @param[out] output
-         * @return CASS_OK if successful, otherwise error occurred
+         * @return W_SUCCESS if successful, otherwise error occurred
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_value_get_int32(const w_Cass_Value* value,
-                int32_t* output);
+            w_cassandra_value_get_int32(_In_ const w_cass_value* pValue,
+                _Inout_ int32_t* pOutput);
 
         /**
          * Gets an uint32 for the specified value.
@@ -10340,11 +10315,11 @@ extern "C" {
          *
          * @param[in] value
          * @param[out] output
-         * @return CASS_OK if successful, otherwise error occurred
+         * @return W_SUCCESS if successful, otherwise error occurred
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_value_get_uint32(const w_Cass_Value* value,
-                uint32_t* output);
+            w_cassandra_value_get_uint32(_In_ const w_cass_value* pValue, 
+                _Inout_  uint32_t* pOutput);
 
         /**
          * Gets an int64 for the specified value.
@@ -10353,11 +10328,11 @@ extern "C" {
          *
          * @param[in] value
          * @param[out] output
-         * @return CASS_OK if successful, otherwise error occurred
+         * @return W_SUCCESS if successful, otherwise error occurred
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_value_get_int64(const w_Cass_Value* value,
-                int64_t* output);
+            w_cassandra_value_get_int64(_In_ const w_cass_value* pValue,
+                _Inout_ int64_t* pOutput);
 
         /**
          * Gets a float for the specified value.
@@ -10366,11 +10341,11 @@ extern "C" {
          *
          * @param[in] value
          * @param[out] output
-         * @return CASS_OK if successful, otherwise error occurred
+         * @return W_SUCCESS if successful, otherwise error occurred
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_value_get_float(const w_Cass_Value* value,
-                float* output);
+            w_cassandra_value_get_float(_In_ const w_cass_value* pValue, 
+                _Inout_  float* pOutput);
 
         /**
          * Gets a double for the specified value.
@@ -10379,11 +10354,11 @@ extern "C" {
          *
          * @param[in] value
          * @param[out] output
-         * @return CASS_OK if successful, otherwise error occurred
+         * @return W_SUCCESS if successful, otherwise error occurred
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_value_get_double(const w_Cass_Value* value,
-                double* output);
+            w_cassandra_value_get_double(_In_ const w_cass_value* pValue,
+                _Inout_ double* pOutput);
 
         /**
          * Gets a bool for the specified value.
@@ -10392,11 +10367,11 @@ extern "C" {
          *
          * @param[in] value
          * @param[out] output
-         * @return CASS_OK if successful, otherwise error occurred
+         * @return W_SUCCESS if successful, otherwise error occurred
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_value_get_bool(const w_Cass_Value* value,
-                w_bool_t* output);
+            w_cassandra_value_get_bool(_In_ const w_cass_value* pValue,
+                _Inout_ w_bool_t* pOutput);
 
         /**
          * Gets a UUID for the specified value.
@@ -10405,11 +10380,11 @@ extern "C" {
          *
          * @param[in] value
          * @param[out] output
-         * @return CASS_OK if successful, otherwise error occurred
+         * @return W_SUCCESS if successful, otherwise error occurred
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_value_get_uuid(const w_Cass_Value* value,
-                w_CassUuid* output);
+            w_cassandra_value_get_uuid(_In_ const w_cass_value* pValue, 
+                _Inout_  w_cass_uuid* pOutput);
 
         /**
          * Gets an INET for the specified value.
@@ -10418,11 +10393,11 @@ extern "C" {
          *
          * @param[in] value
          * @param[out] output
-         * @return CASS_OK if successful, otherwise error occurred
+         * @return W_SUCCESS if successful, otherwise error occurred
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_value_get_inet(const w_Cass_Value* value,
-                w_CassInet* output);
+            w_cassandra_value_get_inet(_In_ const w_cass_value* pValue, 
+                _Inout_ w_cass_inet* pOutput);
 
         /**
          * Gets a string for the specified value.
@@ -10432,12 +10407,12 @@ extern "C" {
          * @param[in] value
          * @param[out] output
          * @param[out] output_size
-         * @return CASS_OK if successful, otherwise error occurred
+         * @return W_SUCCESS if successful, otherwise error occurred
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_value_get_string(const w_Cass_Value* value,
-                const char** output,
-                size_t* output_size);
+            w_cassandra_value_get_string(_In_ const w_cass_value* pValue, 
+                _Inout_ const char** pOutput,
+                _Inout_ size_t* pOutputSize);
 
         /**
          * Gets the bytes of the specified value.
@@ -10447,12 +10422,12 @@ extern "C" {
          * @param[in] value
          * @param[out] output
          * @param[out] output_size
-         * @return CASS_OK if successful, otherwise error occurred
+         * @return W_SUCCESS if successful, otherwise error occurred
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_value_get_bytes(const w_Cass_Value* value,
-                const w_byte_t** output,
-                size_t* output_size);
+            w_cassandra_value_get_bytes(_In_ const w_cass_value* pValue, 
+                _Inout_ const w_byte_t** pOutput, 
+                _Inout_ size_t* pOutputSize);
 
         /**
          * Gets a decimal for the specified value.
@@ -10463,13 +10438,13 @@ extern "C" {
          * @param[out] varint
          * @param[out] varint_size
          * @param[out] scale
-         * @return CASS_OK if successful, otherwise error occurred
+         * @return W_SUCCESS if successful, otherwise error occurred
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_value_get_decimal(const w_Cass_Value* value,
-                const w_byte_t** varint,
-                size_t* varint_size,
-                int32_t* scale);
+            w_cassandra_value_get_decimal(_In_ const w_cass_value* pValue,
+                _Inout_ const w_byte_t** pVarint,
+                _Inout_ size_t* pVarintSize, 
+                _Inout_ int32_t* pScale);
 
         /**
          * Gets a duration for the specified value.
@@ -10482,13 +10457,13 @@ extern "C" {
          * @param[out] months
          * @param[out] days
          * @param[out] nanos
-         * @return CASS_OK if successful, otherwise error occurred
+         * @return W_SUCCESS if successful, otherwise error occurred
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_value_get_duration(const w_Cass_Value* value,
-                int32_t* months,
-                int32_t* days,
-                int64_t* nanos);
+            w_cassandra_value_get_duration(_In_ const w_cass_value* pValue, 
+                _Inout_ int32_t* pMonths,
+                _Inout_ int32_t* pDays,
+                _Inout_ int64_t* pNanos);
 
         /**
          * Gets the type of the specified value.
@@ -10498,8 +10473,8 @@ extern "C" {
          * @param[in] value
          * @return The type of the specified value.
          */
-        W_SYSTEM_EXPORT w_Cass_Value_Type
-            w_cassandra_value_type(const w_Cass_Value* value);
+        W_SYSTEM_EXPORT w_cass_value_type 
+            w_cassandra_value_type(_In_ const w_cass_value* pValue);
 
         /**
          * Returns true if a specified value is null.
@@ -10510,7 +10485,7 @@ extern "C" {
          * @return true if the value is null, otherwise false.
          */
         W_SYSTEM_EXPORT w_bool_t
-            w_cassandra_value_is_null(const w_Cass_Value* value);
+            w_cassandra_value_is_null(_In_ const w_cass_value* pValue);
 
         /**
          * Returns true if a specified value is a collection.
@@ -10521,7 +10496,7 @@ extern "C" {
          * @return true if the value is a collection, otherwise false.
          */
         W_SYSTEM_EXPORT w_bool_t
-            w_cassandra_value_is_collection(const w_Cass_Value* value);
+            w_cassandra_value_is_collection(_In_ const w_cass_value* pValue);
 
         /**
          * Returns true if a specified value is a duration.
@@ -10532,7 +10507,7 @@ extern "C" {
          * @return true if the value is a duration, otherwise false.
          */
         W_SYSTEM_EXPORT w_bool_t
-            w_cassandra_value_is_duration(const w_Cass_Value* value);
+            w_cassandra_value_is_duration(_In_ const w_cass_value* pValue);
 
         /**
          * Get the number of items in a collection. Works for all collection types.
@@ -10543,7 +10518,7 @@ extern "C" {
          * @return Count of items in a collection. 0 if not a collection.
          */
         W_SYSTEM_EXPORT size_t
-            w_cassandra_value_item_count(const w_Cass_Value* collection);
+            w_cassandra_value_item_count(_In_ const w_cass_value* pCollection);
 
         /**
          * Get the primary sub-type for a collection. This returns the sub-type for a
@@ -10555,8 +10530,8 @@ extern "C" {
          * @return The type of the primary sub-type. CASS_VALUE_TYPE_UNKNOWN
          * returned if not a collection.
          */
-        W_SYSTEM_EXPORT w_Cass_Value_Type
-            w_cassandra_value_primary_sub_type(const w_Cass_Value* collection);
+        W_SYSTEM_EXPORT  w_cass_value_type  
+            w_cassandra_value_primary_sub_type(_In_ const w_cass_value* pCollection);
 
         /**
          * Get the secondary sub-type for a collection. This returns the value type for a
@@ -10568,8 +10543,8 @@ extern "C" {
          * @return The type of the primary sub-type. CASS_VALUE_TYPE_UNKNOWN
          * returned if not a collection or not a map.
          */
-        W_SYSTEM_EXPORT w_Cass_Value_Type
-            w_cassandra_value_secondary_sub_type(const w_Cass_Value* collection);
+        W_SYSTEM_EXPORT w_cass_value_type
+            w_cassandra_value_secondary_sub_type(_In_ const  w_cass_value* pCollection);
 
 
         /***********************************************************************************
@@ -10591,10 +10566,10 @@ extern "C" {
           *
           * @return Returns a UUID generator that must be freed.
           *
-          * @see cass_uuid_gen_free()
-          * @see cass_uuid_gen_new_with_node()
+          * @see w_cassandra_uuid_gen_free()
+          * @see w_cassandra_uuid_gen_new_with_node()
           */
-        W_SYSTEM_EXPORT w_Cass_Uuid_Gen*
+        W_SYSTEM_EXPORT w_cass_uuid_gen*
             w_cassandra_uuid_gen_new();
 
         /**
@@ -10607,10 +10582,10 @@ extern "C" {
          *
          * @return Returns a UUID generator that must be freed.
          *
-         * @see cass_uuid_gen_free()
+         * @see w_cassandra_uuid_gen_free()
          */
-        W_SYSTEM_EXPORT w_Cass_Uuid_Gen*
-            w_cassandra_uuid_gen_new_with_node(uint64_t node);
+        W_SYSTEM_EXPORT w_cass_uuid_gen* 
+            w_cassandra_uuid_gen_new_with_node(_In_ uint64_t pNode);
 
         /**
          * Frees a UUID generator instance.
@@ -10620,7 +10595,7 @@ extern "C" {
          * @param[in] uuid_gen
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_uuid_gen_free(w_Cass_Uuid_Gen* uuid_gen);
+            w_cassandra_uuid_gen_free(_In_ w_cass_uuid_gen* pUuiGen);
 
         /**
          * Generates a V1 (time) UUID.
@@ -10633,8 +10608,8 @@ extern "C" {
          * @param[out] output A V1 UUID for the current time.
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_uuid_gen_time(w_Cass_Uuid_Gen* uuid_gen,
-                w_CassUuid* output);
+            w_cassandra_uuid_gen_time(_In_ w_cass_uuid_gen* pUuiGen, 
+                _Inout_ w_cass_uuid* pOutput);
 
         /**
          * Generates a new V4 (random) UUID
@@ -10647,8 +10622,8 @@ extern "C" {
          * @param output A randomly generated V4 UUID.
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_uuid_gen_random(w_Cass_Uuid_Gen* uuid_gen,
-                w_CassUuid* output);
+            w_cassandra_uuid_gen_random(_In_ w_cass_uuid_gen* pUuiGen, 
+                _Inout_  w_cass_uuid* pOutput);
 
         /**
          * Generates a V1 (time) UUID for the specified time.
@@ -10662,38 +10637,38 @@ extern "C" {
          * @param[out] output A V1 UUID for the specified time.
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_uuid_gen_from_time(w_Cass_Uuid_Gen* uuid_gen,
-                uint64_t timestamp,
-                w_CassUuid* output);
+            w_cassandra_uuid_gen_from_time(_In_ w_cass_uuid_gen* pUuidGen,
+                _In_ uint64_t pTimeStamp, 
+                _Inout_ w_cass_uuid* pOutput);
 
         /**
          * Sets the UUID to the minimum V1 (time) value for the specified time.
          *
-         * @public @memberof w_CassUuid
+         * @public @memberof w_cass_uuid
          *
          * @param[in] time
          * @param[out] output A minimum V1 UUID for the specified time.
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_uuid_min_from_time(uint64_t time,
-                w_CassUuid* output);
+            w_cassandra_uuid_min_from_time(_In_ uint64_t pTime, 
+                _Inout_ w_cass_uuid* pOutput);
 
         /**
          * Sets the UUID to the maximum V1 (time) value for the specified time.
          *
-         * @public @memberof w_CassUuid
+         * @public @memberof w_cass_uuid
          *
          * @param[in] time
          * @param[out] output A maximum V1 UUID for the specified time.
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_uuid_max_from_time(uint64_t time,
-                w_CassUuid* output);
+            w_cassandra_uuid_max_from_time(_In_ uint64_t pTime, 
+                _Inout_ w_cass_uuid* pOutput);
 
         /**
          * Gets the timestamp for a V1 UUID
          *
-         * @public @memberof w_CassUuid
+         * @public @memberof w_cass_uuid
          *
          * @param[in] uuid
          * @return The timestamp in milliseconds since the Epoch
@@ -10701,62 +10676,62 @@ extern "C" {
          * is not V1.
          */
         W_SYSTEM_EXPORT uint64_t
-            w_cassandra_uuid_timestamp(w_CassUuid uuid);
+            w_cassandra_uuid_timestamp(_In_ w_cass_uuid pUuid)  ;
 
         /**
          * Gets the version for a UUID
          *
-         * @public @memberof w_CassUuid
+         * @public @memberof w_cass_uuid
          *
          * @param[in] uuid
          * @return The version of the UUID (1 or 4)
          */
         W_SYSTEM_EXPORT uint8_t
-            w_cassandra_uuid_version(w_CassUuid uuid);
+            w_cassandra_uuid_version(_In_ w_cass_uuid pUuid) ;
 
         /**
          * Returns a null-terminated string for the specified UUID.
          *
-         * @public @memberof w_CassUuid
+         * @public @memberof w_cass_uuid
          *
          * @param[in] uuid
          * @param[out] output A null-terminated string of length CASS_UUID_STRING_LENGTH.
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_uuid_string(w_CassUuid uuid,
-                char* output);
+            w_cassandra_uuid_string(_In_ w_cass_uuid pUuid, 
+                _Inout_ char* pOutput);
 
         /**
          * Returns a UUID for the specified string.
          *
          * Example: "550e8400-e29b-41d4-a716-446655440000"
          *
-         * @public @memberof w_CassUuid
+         * @public @memberof w_cass_uuid
          *
          * @param[in] str
          * @param[out] output
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_uuid_from_string(const char* str,
-                w_CassUuid* output);
+            w_cassandra_uuid_from_string(_In_ const char* pStr,
+                _Inout_ w_cass_uuid* pOutput);
 
         /**
-         * Same as cass_uuid_from_string(), but with lengths for string
+         * Same as w_cassandra_uuid_from_string(), but with lengths for string
          * parameters.
          *
-         * @public @memberof w_CassUuid
+         * @public @memberof w_cass_uuid
          *
          * @param[in] str
          * @param[in] str_length
          * @param[out] output
-         * @return same as cass_uuid_from_string()
+         * @return same as w_cassandra_uuid_from_string()
          *
-         * @see cass_uuid_from_string()
+         * @see w_cassandra_uuid_from_string()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_uuid_from_string_n(const char* str,
-                size_t str_length,
-                w_CassUuid* output);
+            w_cassandra_uuid_from_string_n(_In_ const char* pStr,
+                _In_ size_t pStrLength, 
+                _Inout_ w_cass_uuid* pOutput);
 
         /***********************************************************************************
          *
@@ -10776,9 +10751,9 @@ extern "C" {
           *
           * @return Returns a timestamp generator that must be freed.
           *
-          * @see cass_timestamp_gen_free()
+          * @see w_cassandra_timestamp_gen_free()
           */
-        W_SYSTEM_EXPORT w_Cass_Time_stamp_Gen*
+        W_SYSTEM_EXPORT w_cass_time_stamp_gen* 
             w_cassandra_timestamp_gen_server_side_new();
 
         /**
@@ -10794,7 +10769,7 @@ extern "C" {
          * By default, this timestamp generator will generate warnings if more than
          * 1 second of clock skew is detected. It will print an error every second until
          * the clock skew is resolved. These settings can be changed by using
-         * `cass_timestamp_gen_monotonic_new_with_settings()` to create the generator
+         * `w_cassandra_timestamp_gen_monotonic_new_with_settings()` to create the generator
          * instance.
          *
          * <b>Note:</b> This generator is thread-safe and can be shared by multiple
@@ -10806,14 +10781,14 @@ extern "C" {
          *
          * @return Returns a timestamp generator that must be freed.
          *
-         * @see cass_timestamp_gen_monotonic_new_with_settings();
-         * @see cass_timestamp_gen_free()
+         * @see w_cassandra_timestamp_gen_monotonic_new_with_settings();
+         * @see w_cassandra_timestamp_gen_free()
          */
-        W_SYSTEM_EXPORT w_Cass_Time_stamp_Gen*
+        W_SYSTEM_EXPORT w_cass_time_stamp_gen* 
             w_cassandra_timestamp_gen_monotonic_new();
 
         /**
-         * Same as cass_timestamp_gen_monotonic_new(), but with settings for controlling
+         * Same as w_cassandra_timestamp_gen_monotonic_new(), but with settings for controlling
          * warnings about clock skew.
          *
          * @param warning_threshold_us The amount of clock skew, in microseconds, that
@@ -10824,9 +10799,9 @@ extern "C" {
          * the warning to be triggered every millisecond.
          * @return Returns a timestamp generator that must be freed.
          */
-        W_SYSTEM_EXPORT w_Cass_Time_stamp_Gen*
-            w_cassandra_timestamp_gen_monotonic_new_with_settings(int64_t warning_threshold_us,
-                int64_t warning_interval_ms);
+        W_SYSTEM_EXPORT w_cass_time_stamp_gen*
+            w_cassandra_timestamp_gen_monotonic_new_with_settings(_In_ int64_t pWarningThresholdUs,
+                _In_ int64_t pWarningIntervalMs);
 
         /**
          * Frees a timestamp generator instance.
@@ -10838,7 +10813,7 @@ extern "C" {
          * @param[in] timestamp_gen
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_timestamp_gen_free(w_Cass_Time_stamp_Gen* timestamp_gen);
+            w_cassandra_timestamp_gen_free(_In_ w_cass_time_stamp_gen* pTimestampGen);
 
 
         /***********************************************************************************
@@ -10865,9 +10840,9 @@ extern "C" {
           *
           * @return Returns a retry policy that must be freed.
           *
-          * @see cass_retry_policy_free()
+          * @see w_cassandra_retry_policy_free()
           */
-        W_SYSTEM_EXPORT w_Cass_Retry_Policy*
+        W_SYSTEM_EXPORT w_cass_retry_policy* 
             w_cassandra_retry_policy_default_new();
 
         /**
@@ -10904,9 +10879,9 @@ extern "C" {
          *
          * @return Returns a retry policy that must be freed.
          *
-         * @see cass_retry_policy_free()
+         * @see w_cassandra_retry_policy_free()
          */
-        W_SYSTEM_EXPORT w_Cass_Retry_Policy*
+        W_SYSTEM_EXPORT w_cass_retry_policy*
             w_cassandra_retry_policy_downgrading_consistency_new();
 
         /**
@@ -10919,9 +10894,9 @@ extern "C" {
          *
          * @return Returns a retry policy that must be freed.
          *
-         * @see cass_retry_policy_free()
+         * @see w_cassandra_retry_policy_free()
          */
-        W_SYSTEM_EXPORT w_Cass_Retry_Policy*
+        W_SYSTEM_EXPORT w_cass_retry_policy* 
             w_cassandra_retry_policy_fallthrough_new();
 
         /**
@@ -10936,10 +10911,10 @@ extern "C" {
          * @return Returns a retry policy that must be freed. NULL is returned if
          * the child_policy is a logging retry policy.
          *
-         * @see cass_retry_policy_free()
+         * @see w_cassandra_retry_policy_free()
          */
-        W_SYSTEM_EXPORT w_Cass_Retry_Policy*
-            w_cassandra_retry_policy_logging_new(w_Cass_Retry_Policy* child_retry_policy);
+        W_SYSTEM_EXPORT  w_cass_retry_policy* 
+            w_cassandra_retry_policy_logging_new(_In_ w_cass_retry_policy* pChildRetryPolicy);
 
         /**
          * Frees a retry policy instance.
@@ -10949,7 +10924,7 @@ extern "C" {
          * @param[in] policy
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_retry_policy_free(w_Cass_Retry_Policy* policy);
+            w_cassandra_retry_policy_free(_In_ w_cass_retry_policy* pPolicy);
 
         /***********************************************************************************
          *
@@ -10966,9 +10941,9 @@ extern "C" {
           *
           * @return Returns a custom payload that must be freed.
           *
-          * @see cass_custom_payload_free()
+          * @see w_cassandra_custom_payload_free()
           */
-        W_SYSTEM_EXPORT w_Cass_Custom_Payload*
+        W_SYSTEM_EXPORT w_cass_custom_payload* 
             w_cassandra_custom_payload_new();
 
         /**
@@ -10981,7 +10956,7 @@ extern "C" {
          * @param[in] payload
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_custom_payload_free(w_Cass_Custom_Payload* payload);
+            w_cassandra_custom_payload_free(_In_ w_cass_custom_payload* pPayload);
 
         /**
          * Sets an item to the custom payload.
@@ -10996,13 +10971,13 @@ extern "C" {
          * @param[in] value_size
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_custom_payload_set(w_Cass_Custom_Payload* payload,
-                const char* name,
-                const w_byte_t* value,
-                size_t value_size);
+            w_cassandra_custom_payload_set(_In_ w_cass_custom_payload* pPayload,
+                _In_  const char* pName,
+                _In_ const w_byte_t* pValue,
+                _In_ size_t pValueSize);
 
         /**
-         * Same as cass_custom_payload_set(), but with lengths for string
+         * Same as w_cassandra_custom_payload_set(), but with lengths for string
          * parameters.
          *
          * @cassandra{2.2+}
@@ -11016,11 +10991,11 @@ extern "C" {
          * @param[in] value_size
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_custom_payload_set_n(w_Cass_Custom_Payload* payload,
-                const char* name,
-                size_t name_length,
-                const w_byte_t* value,
-                size_t value_size);
+            w_cassandra_custom_payload_set_n(_In_ w_cass_custom_payload* pPayload,
+                _In_ const char* pName, 
+                _In_  size_t pNameLength, 
+                _In_ const w_byte_t* pValue,
+                _In_ size_t pValueSize);
 
         /**
          * Removes an item from the custom payload.
@@ -11033,11 +11008,11 @@ extern "C" {
          * @param[in] name
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_custom_payload_remove(w_Cass_Custom_Payload* payload,
-                const char* name);
+            w_cassandra_custom_payload_remove(_In_ w_cass_custom_payload* pPayload, 
+                _In_ const char* pName);
 
         /**
-         * Same as cass_custom_payload_set(), but with lengths for string
+         * Same as w_cassandra_custom_payload_set(), but with lengths for string
          * parameters.
          *
          * @cassandra{2.2+}
@@ -11049,9 +11024,9 @@ extern "C" {
          * @param[in] name_length
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_custom_payload_remove_n(w_Cass_Custom_Payload* payload,
-                const char* name,
-                size_t name_length);
+            w_cassandra_custom_payload_remove_n(_In_ w_cass_custom_payload* pPayload, 
+                _In_ const char* pName,
+                _In_ size_t pNameLength);
 
 
         /***********************************************************************************
@@ -11068,7 +11043,7 @@ extern "C" {
           * Example: "ALL", "ONE", "QUORUM", etc.
           */
         W_SYSTEM_EXPORT const char*
-            w_cassandra_consistency_string(W_Cass_Consistency consistency);
+            w_cassandra_consistency_string(_In_ w_cass_consistency pConsistency);
 
         /***********************************************************************************
          *
@@ -11083,7 +11058,7 @@ extern "C" {
           * Example: "BATCH", "SIMPLE", "COUNTER", etc.
           */
         W_SYSTEM_EXPORT const char*
-            w_cassandra_write_type_string(w_Cass_WriteType write_type);
+            w_cassandra_write_type_string(_In_ w_cass_writetype pWriteType);
 
         /***********************************************************************************
          *
@@ -11098,7 +11073,7 @@ extern "C" {
           * @return A null-terminated string describing the error.
           */
         W_SYSTEM_EXPORT const char*
-            w_cassandra_error_desc(w_Cass_Error error);
+            w_cassandra_error_desc(_In_ w_Cass_Error error);
 
         /***********************************************************************************
          *
@@ -11109,7 +11084,7 @@ extern "C" {
          /**
           * Explicitly wait for the log to flush and deallocate resources.
           * This *MUST* be the last call using the library. It is an error
-          * to call any cass_*() functions after this call.
+          * to call any w_cassandra_*() functions after this call.
           *
           * @deprecated This is no longer useful and does nothing. Expect this to be
           * removed in a future release.
@@ -11121,20 +11096,20 @@ extern "C" {
          * Sets the log level.
          *
          * <b>Note:</b> This needs to be done before any call that might log, such as
-         * any of the cass_cluster_*() or cass_ssl_*() functions.
+         * any of the w_cassandra_cluster_*() or w_cassandra_ssl_*() functions.
          *
          * <b>Default:</b> CASS_LOG_WARN
          *
          * @param[in] log_level
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_log_set_level(w_Cass_Log_Level log_level);
+            w_cassandra_log_set_level(_In_ w_cass_log_level pLogLevel);
 
         /**
          * Sets a callback for handling logging events.
          *
          * <b>Note:</b> This needs to be done before any call that might log, such as
-         * any of the cass_cluster_*() or cass_ssl_*() functions.
+         * any of the w_cassandra_cluster_*() or w_cassandra_ssl_*() functions.
          *
          * <b>Default:</b> An internal callback that prints to stderr
          *
@@ -11143,14 +11118,14 @@ extern "C" {
          * called in a separate thread so access to shared data must be synchronized.
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_log_set_callback(w_Cass_Log_Message callback,
-                void* data);
+            w_cassandra_log_set_callback(_In_ w_cass_log_callback callback,
+                _In_  void* data);
 
         /**
          * Sets the log queue size.
          *
          * <b>Note:</b> This needs to be done before any call that might log, such as
-         * any of the cass_cluster_*() or cass_ssl_*() functions.
+         * any of the w_cassandra_cluster_*() or w_cassandra_ssl_*() functions.
          *
          * <b>Default:</b> 2048
          *
@@ -11170,7 +11145,7 @@ extern "C" {
          * Example: "ERROR", "WARN", "INFO", etc.
          */
         W_SYSTEM_EXPORT const char*
-            w_cassandra_log_level_string(w_Cass_Log_Level log_level);
+            w_cassandra_log_level_string(_In_ w_cass_log_level pLogLevel);
 
         /***********************************************************************************
          *
@@ -11181,69 +11156,69 @@ extern "C" {
          /**
           * Constructs an inet v4 object.
           *
-          * @public @memberof w_CassInet
+          * @public @memberof w_cass_inet
           *
           * @param[in] address An address of size CASS_INET_V4_LENGTH
           * @return An inet object.
           */
-       /* W_SYSTEM_EXPORT w_CassInet
-            w_cassandra_inet_init_v4(const uint8_t* address);*/
+        W_SYSTEM_EXPORT w_cass_inet  
+            w_cassandra_inet_init_v4(_In_ const uint8_t* pAddress);
 
         /**
          * Constructs an inet v6 object.
          *
-         * @public @memberof w_CassInet
+         * @public @memberof w_cass_inet
          *
          * @param[in] address An address of size CASS_INET_V6_LENGTH
          * @return An inet object.
          */
-        /*W_SYSTEM_EXPORT w_CassInet
-            w_cassandra_inet_init_v6(const uint8_t* address);*/
+        W_SYSTEM_EXPORT w_cass_inet 
+            w_cassandra_inet_init_v6(_In_ const uint8_t* pAddress);
 
         /**
          * Returns a null-terminated string for the specified inet.
          *
-         * @public @memberof w_CassInet
+         * @public @memberof w_cass_inet
          *
          * @param[in] inet
          * @param[out] output A null-terminated string of length CASS_INET_STRING_LENGTH.
          */
         W_SYSTEM_EXPORT void
-            w_cassandra_inet_string(w_CassInet inet,
-                char* output);
+            w_cassandra_inet_string(_In_ w_cass_inet pInet, 
+                _Inout_ char* pOutput);
 
         /**
          * Returns an inet for the specified string.
          *
          * Examples: "127.0.0.1" or "::1"
          *
-         * @public @memberof w_CassInet
+         * @public @memberof w_cass_inet
          *
          * @param[in] str
          * @param[out] output
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_inet_from_string(const char* str,
-                w_CassInet* output);
+            w_cassandra_inet_from_string(_In_ const char* pStr,
+                _Inout_ w_cass_inet* pOutput);
 
         /**
-         * Same as cass_inet_from_string(), but with lengths for string
+         * Same as w_cassandra_inet_from_string(), but with lengths for string
          * parameters.
          *
-         * @public @memberof w_CassInet
+         * @public @memberof w_cass_inet
          *
          * @param[in] str
          * @param[in] str_length
          * @param[out] output
-         * @return same as cass_inet_from_string()
+         * @return same as w_cassandra_inet_from_string()
          *
-         * @see cass_inet_from_string()
+         * @see w_cassandra_inet_from_string()
          */
         W_SYSTEM_EXPORT w_Cass_Error
-            w_cassandra_inet_from_string_n(const char* str,
-                size_t str_length,
-                w_CassInet* output);
-
+            w_cassandra_inet_from_string_n(_In_ const char* pStr,
+                _In_  size_t pStrLength,
+                _Inout_  w_cass_inet* pOutput);
+     
         /***********************************************************************************
          *
          * Date/Time
@@ -11261,7 +11236,7 @@ extern "C" {
           * @return the number of days since the date -5877641-06-23
           */
         W_SYSTEM_EXPORT uint32_t
-            w_cassandra_date_from_epoch(int64_t epoch_secs);
+            w_cassandra_date_from_epoch(_In_ int64_t pEpochSecs);
 
         /**
          * Converts a unix timestamp (in seconds) to the Cassandra "time" type. The "time" type
@@ -11273,7 +11248,7 @@ extern "C" {
          * @return nanoseconds since midnight
          */
         W_SYSTEM_EXPORT int64_t
-            w_cassandra_time_from_epoch(int64_t epoch_secs);
+            w_cassandra_time_from_epoch(_In_ int64_t pEpochSecs);
 
         /**
          * Combines the Cassandra "date" and "time" types to Epoch time in seconds.
@@ -11286,8 +11261,8 @@ extern "C" {
          * occurs before the Epoch (1970-1-1).
          */
         W_SYSTEM_EXPORT int64_t
-            w_cassandra_date_time_to_epoch(uint32_t date,
-                int64_t time);
+            w_cassandra_date_time_to_epoch(_In_ uint32_t pDate,
+                _In_ int64_t pTime);
 
         /***********************************************************************************
          *
@@ -11311,9 +11286,9 @@ extern "C" {
           * @param[in] free_func
           */
         W_SYSTEM_EXPORT void
-            w_cassandra_alloc_set_functions(CassMallocFunction malloc_func,
-                CassReallocFunction realloc_func,
-                CassFreeFunction free_func);
+            w_cassandra_alloc_set_functions(_In_ w_cass_malloc_function pMallocFunc,
+                _In_  w_cass_realloc_function RpeallocFunc,
+                _In_ w_cass_free_function pFreeFunc);
 
 #ifdef __cplusplus
     } /* extern "C" */

@@ -1,6 +1,6 @@
 
-#include"db/w_cassandra.h"
-#include"cassandra.h"
+#include"w_cassandra.h"
+#include<cassandra.h>
 #include <log/w_log.h>
 
 
@@ -11,6673 +11,7379 @@
      * @struct CassVersion
      */
 
-    w_CassExecProfile* w_cassandra_execution_profile_new() 
+w_cass_exec_profile* w_cassandra_execution_profile_new()
     {
     return cass_execution_profile_new();
     }
 
-   void w_cassandra_execution_profile_free(w_CassExecProfile* profile)
+   void w_cassandra_execution_profile_free(_In_ w_cass_exec_profile* pProfile)
    {
-       if (!profile )
+       const char* _trace_info = "w_cassandra_execution_profile_free";
+       if (!pProfile)
        {
-           W_ASSERT(false, "missing parameters!. trace info: w_cassandra_execution_profile_free");
+           W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
            
        }
     
-    cass_execution_profile_free(profile);
+    cass_execution_profile_free(pProfile);
 
 
    }
 
-   w_Cass_Error w_cassandra_execution_profile_set_request_timeout(w_CassExecProfile* profile, uint64_t timeout_ms)
+   w_Cass_Error w_cassandra_execution_profile_set_request_timeout(_In_ w_cass_exec_profile* pProfile, _In_  uint64_t pTimeoutMs)
    {
-    if (!profile || !timeout_ms )
+       const char* _trace_info = "w_cassandra_execution_profile_set_request_timeout";
+    if (!pProfile || !pTimeoutMs)
     {
-        W_ASSERT(false, "missing parameters!. trace info: w_cassandra_execution_profile_set_request_timeout");
+        W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
         return -1;
     }
-   return cass_execution_profile_set_request_timeout(profile, timeout_ms);
+   return cass_execution_profile_set_request_timeout(pProfile, pTimeoutMs);
 
    }
 
-   w_Cass_Error w_cassandra_execution_profile_set_consistency(w_CassExecProfile* profile,  W_Cass_Consistency consistency) 
+   w_Cass_Error w_cassandra_execution_profile_set_consistency(w_cass_exec_profile* pProfile, w_cass_consistency pConsistency)
    {
-    if (!profile || !consistency)
+       const char* _trace_info = "w_cassandra_execution_profile_set_consistency";
+
+    if (!pProfile || !pConsistency)
     {
-        W_ASSERT(false, "missing parameters!. trace info: w_cassandra_execution_profile_set_consistency");
+        W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
         return -1;
     }
     
-       return cass_execution_profile_set_consistency( profile,consistency);
+       return cass_execution_profile_set_consistency(pProfile, pConsistency);
    }
 
-   w_Cass_Error w_cassandra_execution_profile_set_serial_consistency(w_CassExecProfile* profile, W_Cass_Consistency serial_consistency)
+   w_Cass_Error w_cassandra_execution_profile_set_serial_consistency(w_cass_exec_profile* pProfile, w_cass_consistency pPserialConsistency)
    {
-    if (!profile || !serial_consistency)
+       const char* _trace_info = "w_cassandra_execution_profile_set_serial_consistency";
+
+    if (!pProfile || !pPserialConsistency)
     {
-        W_ASSERT(false, "missing parameters!. trace info: w_cassandra_execution_profile_set_serial_consistency");
+        W_ASSERT_P(false, "bad args! trace info:%s",);
         return -1;
     }
-   return cass_execution_profile_set_serial_consistency(profile,serial_consistency);
+   return cass_execution_profile_set_serial_consistency(pProfile, pPserialConsistency);
    }
 
-   w_Cass_Error  w_cassandra_execution_profile_set_load_balance_round_robin(w_CassExecProfile* profile)
+   w_Cass_Error  w_cassandra_execution_profile_set_load_balance_round_robin(_In_ w_cass_exec_profile* pProfile)
    {
-    if (!profile )
+       const char* _trace_info = "w_cassandra_execution_profile_set_load_balance_round_robin";
+
+    if (!pProfile)
     {
-        W_ASSERT(false, "missing parameters!. trace info: w_cassandra_execution_profile_set_load_balance_round_robin");
+        W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
         return -1;
     }
-   return cass_execution_profile_set_load_balance_round_robin(profile);
+   return cass_execution_profile_set_load_balance_round_robin(pProfile);
    }
 
-   w_Cass_Error w_cassandra_execution_profile_set_load_balance_dc_aware(w_CassExecProfile* profile, const char* local_dc, unsigned used_hosts_per_remote_dc, w_bool_t allow_remote_dcs_for_local_cl) 
+   w_Cass_Error w_cassandra_execution_profile_set_load_balance_dc_aware(_In_ w_cass_exec_profile* pProfile, _In_ const char* pLocalDc, _In_ unsigned pUsedHostsPerRemoteDc, _In_ w_bool_t pAllowRemoteCsForLocalCl)
    {
-    if (!profile)
+       const char* _trace_info = "w_cassandra_execution_profile_set_load_balance_dc_aware";
+
+    if (!pProfile || !pLocalDc || !pUsedHostsPerRemoteDc)
     {
-        W_ASSERT(false, "missing parameters!. trace info: w_cassandra_execution_profile_set_load_balance_dc_aware");
+        W_ASSERT_P(false, "bad args! trace info: %s", _trace_info);
+
         return -1;
     }
 
-     return cass_execution_profile_set_load_balance_dc_aware(profile, local_dc, used_hosts_per_remote_dc,     allow_remote_dcs_for_local_cl);
+     return cass_execution_profile_set_load_balance_dc_aware(pProfile, pLocalDc, pUsedHostsPerRemoteDc, pAllowRemoteCsForLocalCl);
    }
 
-   w_Cass_Error w_cassandra_execution_profile_set_load_balance_dc_aware_n(w_CassExecProfile* profile, const char* local_dc, size_t local_dc_length, unsigned used_hosts_per_remote_dc,  w_bool_t allow_remote_dcs_for_local_cl)
+   w_Cass_Error w_cassandra_execution_profile_set_load_balance_dc_aware_n(_In_ w_cass_exec_profile* pProfile, const char* pLocalDc, _In_ size_t pLocalDcLength, _In_ unsigned pUsedHostsPerRemoteDc, _In_ w_bool_t pAllowRemoteDcsForLocalCl)
    {
+       const char* _trace_info = "w_cassandra_execution_profile_set_load_balance_dc_aware_n";
 
-    if (!profile || !local_dc_length || !used_hosts_per_remote_dc)
+    if (!pProfile || !pLocalDc || !pUsedHostsPerRemoteDc)
     {
-        W_ASSERT(false, "missing parameters!. trace info: w_cassandra_execution_profile_set_load_balance_dc_aware_n");
+        W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
         return -1;
     }
-    return cass_execution_profile_set_load_balance_dc_aware_n(profile,  local_dc,   local_dc_length,   used_hosts_per_remote_dc,  allow_remote_dcs_for_local_cl);
+    return cass_execution_profile_set_load_balance_dc_aware_n(pProfile, pLocalDc, pLocalDcLength, pUsedHostsPerRemoteDc, pAllowRemoteDcsForLocalCl);
    }
 
-   w_Cass_Error w_cassandra_execution_profile_set_token_aware_routing(w_CassExecProfile* profile,w_bool_t enabled)
+   w_Cass_Error w_cassandra_execution_profile_set_token_aware_routing(_In_ w_cass_exec_profile* pProfile, _In_ w_bool_t pEnabled)
    {
-    if (!profile )
+       const char* _trace_info = "w_cassandra_execution_profile_set_token_aware_routing";
+
+    if (!pProfile)
     {
-        W_ASSERT(false, "missing parameters!. trace info: w_cassandra_execution_profile_set_token_aware_routing");
+        W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
         return -1;
     }
    
-       return cass_execution_profile_set_token_aware_routing( profile, enabled);
+       return cass_execution_profile_set_token_aware_routing(pProfile, pEnabled);
    }
 
-   w_Cass_Error w_cassandra_execution_profile_set_token_aware_routing_shuffle_replicas(w_CassExecProfile* profile, w_bool_t enabled) 
+   w_Cass_Error w_cassandra_execution_profile_set_token_aware_routing_shuffle_replicas(_In_ w_cass_exec_profile* pProfile, _In_ w_bool_t pEnabled)
 
    {
-    if (!profile)
+       const char* _trace_info = "w_cassandra_execution_profile_set_token_aware_routing_shuffle_replicas";
+
+    if (!pProfile)
     {
-        W_ASSERT(false, "missing parameters!. trace info: w_cassandra_execution_profile_set_token_aware_routing_shuffle_replicas");
+        W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
         return -1;
     }
     
-    return cass_execution_profile_set_token_aware_routing_shuffle_replicas(profile, enabled);
+    return cass_execution_profile_set_token_aware_routing_shuffle_replicas(pProfile, pEnabled);
    }
 
-   w_Cass_Error w_cassandra_execution_profile_set_latency_aware_routing(w_CassExecProfile* profile, w_bool_t enabled)
+   w_Cass_Error w_cassandra_execution_profile_set_latency_aware_routing(_In_ w_cass_exec_profile* pProfile, _In_ w_bool_t pEnabled)
    {
-    if (!profile)
+       const char* _trace_info = "w_cassandra_execution_profile_set_latency_aware_routing";
+
+    if (!pProfile)
     {
-        W_ASSERT(false, "missing parameters!. trace info: w_cassandra_execution_profile_set_latency_aware_routing");
+        W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
         return -1;
     }
-      return   cass_execution_profile_set_latency_aware_routing( profile,
-             enabled);
+      return   cass_execution_profile_set_latency_aware_routing(pProfile, pEnabled);
     }
 
-    w_Cass_Error w_cassandra_execution_profile_set_latency_aware_routing_settings(w_CassExecProfile* profile, double exclusion_threshold, uint64_t scale_ms, uint64_t retry_period_ms,uint64_t update_rate_ms, uint64_t min_measured)
+    w_Cass_Error w_cassandra_execution_profile_set_latency_aware_routing_settings(_In_ w_cass_exec_profile* pProfile, double pExclusionThreshold, _In_ uint64_t pScaleMs, _In_ uint64_t pRetryPeriodMs, _In_ uint64_t pUpdateRateMs, _In_ uint64_t pMinMeasured)
     {
-     if (!profile )
+        const char* _trace_info = "w_cassandra_execution_profile_set_latency_aware_routing_settings";
+
+     if (!pProfile || !pExclusionThreshold || !pScaleMs || !pRetryPeriodMs || !pUpdateRateMs || !pMinMeasured)
      {
-        W_ASSERT(false, "missing parameters!. trace info: w_cassandra_execution_profile_set_latency_aware_routing_settings");
-        return -1;
+         W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+         return -1;
       }
-      return    cass_execution_profile_set_latency_aware_routing_settings(  profile,   exclusion_threshold,    scale_ms,  retry_period_ms,update_rate_ms, min_measured);
+      return    cass_execution_profile_set_latency_aware_routing_settings(pProfile, pExclusionThreshold, pScaleMs, pRetryPeriodMs, pUpdateRateMs, pMinMeasured);
     }
 
-   w_Cass_Error w_cassandra_execution_profile_set_whitelist_filtering(w_CassExecProfile* profile, const char* hosts)
+   w_Cass_Error w_cassandra_execution_profile_set_whitelist_filtering(_In_ w_cass_exec_profile* pProfile, _In_ const char* pHosts)
    {
-    if (!profile || !hosts)
+       const char* _trace_info = "w_cassandra_execution_profile_set_whitelist_filtering";
+
+    if (!pProfile || !pHosts)
     {
-        W_ASSERT(false, "missing parameters!. trace info: w_cassandra_execution_profile_set_whitelist_filtering");
+        W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
         return -1;
     }
     
-      return  cass_execution_profile_set_whitelist_filtering( profile, hosts);
+      return  cass_execution_profile_set_whitelist_filtering(pProfile, pHosts);
     }
 
-    w_Cass_Error w_cassandra_execution_profile_set_whitelist_filtering_n(w_CassExecProfile* profile, const char* hosts, size_t hosts_length)
+    w_Cass_Error w_cassandra_execution_profile_set_whitelist_filtering_n(_In_ w_cass_exec_profile* pProfile, _In_ const char* pHosts, _In_ size_t pHostsLength)
     {
-      if (!profile || !hosts )
+        const char* _trace_info = "w_cassandra_execution_profile_set_whitelist_filtering_n";
+      if (!pProfile || !pHosts || !pHostsLength)
       {
-        W_ASSERT(false, "missing parameters!. trace info: w_cassandra_execution_profile_set_whitelist_filtering_n");
-        return -1;
+          W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+          return -1;
       }
-    return cass_execution_profile_set_whitelist_filtering_n(profile, hosts, hosts_length);
+    return cass_execution_profile_set_whitelist_filtering_n(pProfile, pHosts, pHostsLength);
     }
 
-    w_Cass_Error w_cassandra_execution_profile_set_blacklist_filtering(w_CassExecProfile* profile,
-    const char* hosts)
+    w_Cass_Error w_cassandra_execution_profile_set_blacklist_filtering(_In_ w_cass_exec_profile* pProfile,
+        _In_ const char* pHosts)
     {
+        const char* _trace_info = "w_cassandra_execution_profile_set_blacklist_filtering";
 
-     if (!profile || !hosts)
+     if (!pProfile || !pHosts)
      {
-        W_ASSERT(false, "missing parameters!. trace info: w_cassandra_execution_profile_set_blacklist_filtering");
-        return -1;
+         W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+         return -1;
      }
     
-     return   cass_execution_profile_set_blacklist_filtering(profile, hosts);
+     return   cass_execution_profile_set_blacklist_filtering(pProfile, pHosts);
 
     }
 
-    w_Cass_Error w_cassandra_execution_profile_set_blacklist_filtering_n(w_CassExecProfile* profile, const char* hosts,size_t hosts_length)
+    w_Cass_Error w_cassandra_execution_profile_set_blacklist_filtering_n(_In_ w_cass_exec_profile* pProfile, _In_ const char* pHosts, _In_ size_t pHostsLength)
     {
-      if (!profile || !hosts)
+        const char* _trace_info = "w_cassandra_execution_profile_set_blacklist_filtering_n";
+      if (!pProfile || !pHosts || !pHostsLength)
       {
-        W_ASSERT(false, "missing parameters!. trace info: w_cassandra_execution_profile_set_blacklist_filtering_n");
-        return -1;
+          W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+          return -1;
       }
-     return   cass_execution_profile_set_blacklist_filtering_n(profile, hosts,
-        hosts_length);
+     return   cass_execution_profile_set_blacklist_filtering_n(pProfile, pHosts,
+         pHostsLength);
     }
 
-    w_Cass_Error w_cassandra_execution_profile_set_whitelist_dc_filtering(w_CassExecProfile* profile,  const char* dcs)
+    w_Cass_Error w_cassandra_execution_profile_set_whitelist_dc_filtering(_In_ w_cass_exec_profile* pProfile, _In_  const char* pDcs)
     {
-      if (!profile )
+        const char* _trace_info = "w_cassandra_execution_profile_set_whitelist_dc_filtering";
+      if (!pProfile || !pDcs)
       {
-        W_ASSERT(false, "missing parameters!. trace info: w_cassandra_execution_profile_set_whitelist_dc_filtering");
-        return -1;
+          W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+          return -1;
       }
     
-      return  cass_execution_profile_set_whitelist_dc_filtering( profile, dcs);
+      return  cass_execution_profile_set_whitelist_dc_filtering(pProfile, pDcs);
     }
 
-    w_Cass_Error w_cassandra_execution_profile_set_whitelist_dc_filtering_n(w_CassExecProfile* profile, const char* dcs, size_t dcs_length)
+    w_Cass_Error w_cassandra_execution_profile_set_whitelist_dc_filtering_n(_In_ w_cass_exec_profile* pProfile, _In_ const char* pDcs, _In_ size_t pDcsLength)
     {
-     if (!profile)
+        const char* _trace_info = "w_cassandra_execution_profile_set_whitelist_dc_filtering_n";
+     if (!pProfile || !pDcs || !pDcsLength)
      {
-        W_ASSERT(false, "missing parameters!. trace info: w_cassandra_execution_profile_set_whitelist_dc_filtering_n");
-        return -1;
+         W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+         return -1;
      }
    
-     return   cass_execution_profile_set_whitelist_dc_filtering_n( profile,
-         dcs, dcs_length);
+     return   cass_execution_profile_set_whitelist_dc_filtering_n(pProfile,
+         pDcs, pDcsLength);
     }
 
-    w_Cass_Error w_cassandra_execution_profile_set_blacklist_dc_filtering(w_CassExecProfile* profile, const char* dcs)
+    w_Cass_Error w_cassandra_execution_profile_set_blacklist_dc_filtering(_In_ w_cass_exec_profile* pProfile, _In_ const char* pDcs)
     {
-       if (!profile)
+        const char* _trace_info = "w_cassandra_execution_profile_set_blacklist_dc_filtering";
+       if (!pProfile || !pDcs)
        {
-        W_ASSERT(false, "missing parameters!. trace info: w_cassandra_execution_profile_set_blacklist_dc_filtering");
-        return -1;
+           W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+           return -1;
        }
-        return cass_execution_profile_set_blacklist_dc_filtering( profile, dcs);
+        return cass_execution_profile_set_blacklist_dc_filtering(pProfile, pDcs);
     }
 
-    w_Cass_Error  w_cassandra_execution_profile_set_blacklist_dc_filtering_n(w_CassExecProfile* profile,   const char* dcs,   size_t dcs_length)
+    w_Cass_Error  w_cassandra_execution_profile_set_blacklist_dc_filtering_n(_In_ w_cass_exec_profile* pProfile, _In_  const char* pDcs, _In_   size_t pDcsLength)
     {
-     if (!profile)
+        const char* _trace_info = "w_cassandra_execution_profile_set_blacklist_dc_filtering_n";
+     if (!pProfile || !pDcs || !pDcsLength)
      {
-         W_ASSERT(false, "missing parameters!. trace info: w_cassandra_execution_profile_set_blacklist_dc_filtering_n");
+         W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
          return -1;
      }
      
-        return cass_execution_profile_set_blacklist_dc_filtering_n(profile,dcs,dcs_length);
+        return cass_execution_profile_set_blacklist_dc_filtering_n(pProfile, pDcs, pDcsLength);
     }
 
-    w_Cass_Error w_cassandra_execution_profile_set_retry_policy(w_CassExecProfile* profile,  w_Cass_Retry_Policy* retry_policy) 
+    w_Cass_Error w_cassandra_execution_profile_set_retry_policy(_In_ w_cass_exec_profile* pProfile, _In_  w_cass_retry_policy * pRetryPolicy)
     {
-     if (!profile)
+        const char* _trace_info = "w_cassandra_execution_profile_set_retry_policy";
+     if (!pProfile || !pRetryPolicy)
      {
-         W_ASSERT(false, "missing parameters!. trace info: w_cassandra_execution_profile_set_blacklist_dc_filtering_n");
+         W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
          return -1;
      }
-        return cass_execution_profile_set_retry_policy( profile, retry_policy);
+        return cass_execution_profile_set_retry_policy(pProfile, pRetryPolicy);
 
     }
 
-    w_Cass_Error w_cassandra_execution_profile_set_constant_speculative_execution_policy(w_CassExecProfile* profile,  int64_t constant_delay_ms,   int max_speculative_executions)
+    w_Cass_Error w_cassandra_execution_profile_set_constant_speculative_execution_policy(_In_ w_cass_exec_profile* pProfile, _In_  int64_t pConstantDelayMs, _In_  int pMaxSpeculativeExecutions)
     {
-      if (!profile)
+        const char* _trace_info = "w_cassandra_execution_profile_set_constant_speculative_execution_policy";
+      if (!pProfile || !pConstantDelayMs || !pMaxSpeculativeExecutions)
       {
-         W_ASSERT(false, "missing parameters!. trace info: w_cassandra_execution_profile_set_constant_speculative_execution_policy");
-         return -1;
+          W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+          return -1;
       }
      
-        return cass_execution_profile_set_constant_speculative_execution_policy( profile,
-              constant_delay_ms,
-              max_speculative_executions);
+        return cass_execution_profile_set_constant_speculative_execution_policy(pProfile,
+            pConstantDelayMs,
+            pMaxSpeculativeExecutions);
     }
 
-    w_Cass_Error w_cassandra_execution_profile_set_no_speculative_execution_policy(w_CassExecProfile* profile)
+    w_Cass_Error w_cassandra_execution_profile_set_no_speculative_execution_policy(_In_ w_cass_exec_profile* pProfile)
     {
-     if (!profile)
+        const char* _trace_info = "w_cassandra_execution_profile_set_no_speculative_execution_policy";
+
+     if (!pProfile)
      {
-         W_ASSERT(false, "missing parameters!. trace info: w_cassandra_execution_profile_set_no_speculative_execution_policy");
+         W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
          return -1;
      }
      
-         return cass_execution_profile_set_no_speculative_execution_policy(profile);
+         return cass_execution_profile_set_no_speculative_execution_policy(pProfile);
     }
 
-   w_Cass_Cluster*w_cassandra_cluster_new()
+   w_cass_cluster*w_cassandra_cluster_new()
    {
+
     return  cass_cluster_new();
 
    }
 
-   void w_cassandra_cluster_free(w_Cass_Cluster* cluster)
+   void w_cassandra_cluster_free(_In_  w_cass_cluster* pCluster)
    {
-     if (!cluster)
+       const char* _trace_info = "w_cassandra_cluster_free";
+     if (!pCluster)
      {
-         W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_free");
-         
+         W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+
      }
-    cass_cluster_free(cluster);
+    cass_cluster_free(pCluster);
 
    }
 
-   w_Cass_Error  w_cassandra_cluster_set_contact_points(w_Cass_Cluster* cluster,  const char* contact_points)
+   w_Cass_Error  w_cassandra_cluster_set_contact_points(_In_ w_cass_cluster* pCluster, _In_ const char* pContactPoints)
    {
-     if (!cluster)
+       const char* _trace_info = "w_cassandra_cluster_set_contact_points";
+     if (!pCluster || !pContactPoints)
      {
-         W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_contact_points");
+         W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
          return -1;
      }
-     return cass_cluster_set_contact_points( cluster, contact_points);
+     return cass_cluster_set_contact_points( pCluster, pContactPoints);
    }
 
-   w_Cass_Error  w_cassandra_cluster_set_contact_points_n(w_Cass_Cluster* cluster,  const char* contact_points,    size_t contact_points_length) 
+   w_Cass_Error  w_cassandra_cluster_set_contact_points_n(_In_ w_cass_cluster* pCluster, _In_  const char* pContactPoints, _In_  size_t pContactPointsLength)
    {
-     if (!cluster || !contact_points)
+       const char* _trace_info = "w_cassandra_cluster_set_contact_points_n";
+     if (!pCluster || !pContactPoints || !pContactPointsLength)
      {
-         W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_contact_points_n");
+         W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
          return -1;
      }
      
-     return cass_cluster_set_contact_points_n(cluster, contact_points, contact_points_length);
+     return cass_cluster_set_contact_points_n(pCluster, pContactPoints, pContactPointsLength);
      
    }
 
-   w_Cass_Error w_cassandra_cluster_set_port(w_Cass_Cluster* cluster, int port) 
+   w_Cass_Error w_cassandra_cluster_set_port(_In_ w_cass_cluster* pCluster, _In_  int pPort)
    {
+       const char* _trace_info = "w_cassandra_cluster_set_port";
 
-     if (!cluster || !port)
+     if (!pCluster || !pPort)
      {
-         W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_port");
+         W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
          return -1;
      }
 
      return 
-         cass_cluster_set_port(cluster, port);
+         cass_cluster_set_port(pCluster, pPort);
    }
 
-   w_Cass_Error  w_cassandra_cluster_set_local_address(w_Cass_Cluster* cluster,  const char* name)
+   w_Cass_Error  w_cassandra_cluster_set_local_address(_In_ w_cass_cluster* pCluster, _In_ const char* pName)
    {
-      if (!cluster || !name)
+       const char* _trace_info = "w_cassandra_cluster_set_local_address";
+      if (!pCluster || !pName)
       {
-          W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_local_address");
+          W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
           return -1;
       }
        
-         return cass_cluster_set_local_address( cluster, name);
+         return cass_cluster_set_local_address( pCluster, pName);
    }
 
-   w_Cass_Error w_cassandra_cluster_set_local_address_n(w_Cass_Cluster* cluster,const char* name, size_t name_length) 
+   w_Cass_Error w_cassandra_cluster_set_local_address_n(_In_ w_cass_cluster* pCluster, _In_ const char* pName, _In_ size_t pNameLength)
    {
-      if (!cluster || !name)
+       const char* _trace_info = "w_cassandra_cluster_set_local_address_n";
+      if (!pCluster || !pNameLength || !pName)
       {
-          W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_local_address_n");
+          W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
           return -1;
       }
       
-        return  cass_cluster_set_local_address_n( cluster,name,name_length);
+        return  cass_cluster_set_local_address_n( pCluster, pName, pNameLength);
    }
 
 
-   void w_cassandra_cluster_set_ssl(w_Cass_Cluster* cluster, w_Cass_Ssl* ssl)
+   void w_cassandra_cluster_set_ssl(_In_ w_cass_cluster* pCluster, _In_ w_cass_ssl * pSsl)
    {
-      if (!cluster || !ssl)
+       const char* _trace_info = "w_cassandra_cluster_set_ssl";
+      if (!pCluster || !pSsl)
       {
-          W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_ssl");
+          W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
       }
-       cass_cluster_set_ssl( cluster,ssl);
+       cass_cluster_set_ssl( pCluster, pSsl);
    }
 
-   w_Cass_Error w_cassandra_cluster_set_authenticator_callbacks(w_Cass_Cluster* cluster,const w_Cass_Authenticator_Callbacks exchange_callbacks,CassAuthenticatorDataCleanupCallback cleanup_callback,  void* data)
+   w_Cass_Error w_cassandra_cluster_set_authenticator_callbacks(_In_ w_cass_cluster* pCluster, _In_ const w_cass_authenticator_callbacks pExchangeCallbacks, _In_ w_cass_authenticator_data_cleanup_callback pCleanupCallback, _In_  void* pData)
    {
-      if (!cluster )
+       const char* _trace_info = "w_cassandra_cluster_set_authenticator_callbacks";
+      if (!pCluster )
       {
-          W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_authenticator_callbacks");
+          W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
           return -1;
 
       }
-      return  cass_cluster_set_authenticator_callbacks(cluster,exchange_callbacks, cleanup_callback,data);
+      return  cass_cluster_set_authenticator_callbacks(pCluster, pExchangeCallbacks, pCleanupCallback, pData);
    }
 
-   w_Cass_Error w_cassandra_cluster_set_protocol_version(w_Cass_Cluster* cluster, int protocol_version)
+   w_Cass_Error w_cassandra_cluster_set_protocol_version(_In_ w_cass_cluster* pCluster, _In_ int pProtocolVersion)
    {
-
-      if (!cluster ||  !protocol_version)
+       const char* _trace_info = "w_cassandra_cluster_set_protocol_version";
+      if (!pCluster ||  !pProtocolVersion)
       {
-          W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_protocol_version");
+          W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+
           return -1;
 
       }
-      return cass_cluster_set_protocol_version( cluster, protocol_version);
+      return cass_cluster_set_protocol_version( pCluster, pProtocolVersion);
    }
 
 
-   w_Cass_Error  w_cassandra_cluster_set_use_beta_protocol_version(w_Cass_Cluster* cluster,  w_bool_t enable)
+   w_Cass_Error  w_cassandra_cluster_set_use_beta_protocol_version(_In_ w_cass_cluster* pCluster, _In_  w_bool_t pEnable)
    {
-
-      if (!cluster || !enable)
+       const char* _trace_info = "w_cassandra_cluster_set_use_beta_protocol_version";
+      if (!pCluster )
       {
-          W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_use_beta_protocol_version");
+          W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
           return -1;
 
       }
-      return     cass_cluster_set_use_beta_protocol_version( cluster,enable);
+      return     cass_cluster_set_use_beta_protocol_version( pCluster, pEnable);
 
    }
 
 
-   w_Cass_Error  w_cassandra_cluster_set_consistency(w_Cass_Cluster* cluster,  W_Cass_Consistency consistency)
+   w_Cass_Error  w_cassandra_cluster_set_consistency(_In_ w_cass_cluster* pCluster, _In_  w_cass_consistency pConsistency)
    {
-      if (!cluster || !consistency)
+       const char* _trace_info = "w_cassandra_cluster_set_consistency";
+      if (!pCluster || !pConsistency)
       {
-          W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_consistency");
+          W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
           return -1;
 
       }
       
-         return  cass_cluster_set_consistency(cluster, consistency);
+         return  cass_cluster_set_consistency(pCluster, pConsistency);
    }
 
-   w_Cass_Error w_cassandra_cluster_set_serial_consistency(w_Cass_Cluster* cluster, W_Cass_Consistency consistency)
+   w_Cass_Error w_cassandra_cluster_set_serial_consistency(_In_ w_cass_cluster* pCluster, _In_ w_cass_consistency pConsistency)
    {
-
-      if (!cluster || !consistency)
+       const char* _trace_info = "w_cassandra_cluster_set_serial_consistency";
+      if (!pCluster || !pConsistency)
       {
-          W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_serial_consistency");
+          W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
           return -1;
 
       }
 
-       return cass_cluster_set_serial_consistency(cluster, consistency);
+       return cass_cluster_set_serial_consistency(pCluster, pConsistency);
 
    }
 
-   w_Cass_Error w_cassandra_cluster_set_num_threads_io(w_Cass_Cluster* cluster, unsigned num_threads)
+   w_Cass_Error w_cassandra_cluster_set_num_threads_io(_In_ w_cass_cluster* pCluster, _In_ unsigned pNumThreads)
    {
+       const char* _trace_info = "w_cassandra_cluster_set_num_threads_io";
 
-       if (!cluster || !num_threads)
+       if (!pCluster || !pNumThreads)
        {
-           W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_num_threads_io");
+           W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
            return -1;
 
        }
-       return cass_cluster_set_num_threads_io(cluster, num_threads);
+       return cass_cluster_set_num_threads_io(pCluster, pNumThreads);
    }
 
 
-   w_Cass_Error w_cassandra_cluster_set_queue_size_io(w_Cass_Cluster* cluster, unsigned queue_size) 
+   w_Cass_Error w_cassandra_cluster_set_queue_size_io(_In_ w_cass_cluster* pCluster, _In_ unsigned pQueueSize)
    {
-
-       if (!cluster || !queue_size)
+       const char* _trace_info = "w_cassandra_cluster_set_queue_size_io";
+       if (!pCluster || !pQueueSize)
        {
-           W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_queue_size_io");
-           return 0;
+           W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+           return -1;
 
        }
 
-     return  cass_cluster_set_queue_size_io(cluster, queue_size);
+     return  cass_cluster_set_queue_size_io(pCluster, pQueueSize);
    }
 
-   w_Cass_Error w_cassandra_cluster_set_queue_size_event(w_Cass_Cluster* cluster, unsigned queue_size)
+   /*deprecated*/
+   w_Cass_Error w_cassandra_cluster_set_queue_size_event(_In_ w_cass_cluster* pCluster, _In_ unsigned pQueueSize)
    {
-       if (!cluster)
+       const char* _trace_info = "w_cassandra_cluster_set_queue_size_event";
+       if (!pCluster || !pQueueSize)
        {
-           W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_queue_size_event");
-           return 0;
+           W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+           return -1;
 
        }
-       return cass_cluster_set_queue_size_event(cluster, queue_size);
-
+       return cass_cluster_set_queue_size_event(pCluster, pQueueSize);
    }
-   w_Cass_Error w_cassandra_cluster_set_core_connections_per_host(w_Cass_Cluster* cluster,unsigned num_connections)
-   {
 
-       if (!cluster )
+   w_Cass_Error w_cassandra_cluster_set_core_connections_per_host(_In_ w_cass_cluster* pCluster, _In_  unsigned pNumConnections)
+   {
+       const char* _trace_info = "w_cassandra_cluster_set_core_connections_per_host";
+       if (!pCluster || !pNumConnections)
        {
-           W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_core_connections_per_host");
-           return 0;
+           W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+           return -1;
 
        }
-           return cass_cluster_set_core_connections_per_host( cluster, num_connections);
+           return cass_cluster_set_core_connections_per_host( pCluster, pNumConnections);
    }
 
-   w_Cass_Error w_cassandra_cluster_set_max_connections_per_host(w_Cass_Cluster* cluster, unsigned num_connections)
+   /*deprecated*/
+   w_Cass_Error w_cassandra_cluster_set_max_connections_per_host(_In_ w_cass_cluster* pCluster, _In_ unsigned pNumConnections)
    {
-       if (!cluster)
+       const char* _trace_info = "w_cassandra_cluster_set_max_connections_per_host";
+       if (!pCluster || !pNumConnections)
        {
-           W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_max_connections_per_host");
+           W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+           return -1;
 
        }
-       return cass_cluster_set_max_connections_per_host(cluster, num_connections);
-
+       return cass_cluster_set_max_connections_per_host(pCluster, pNumConnections);
    }
-
-   void w_cassandra_cluster_set_constant_reconnect(w_Cass_Cluster* cluster, uint64_t delay_ms)
+   
+   /*deprecated*/
+   void w_cassandra_cluster_set_reconnect_wait_time(_In_ w_cass_cluster* pCluster, _In_ unsigned pWaitTime)
    {
-       if (!cluster )
+       const char* _trace_info = "w_cassandra_cluster_set_max_connections_per_host";
+       if (!pCluster || !pWaitTime)
        {
-           W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_constant_reconnect");
+           W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
            
+
+       }
+       cass_cluster_set_reconnect_wait_time(pCluster, pWaitTime);
+   }
+
+   void w_cassandra_cluster_set_constant_reconnect(_In_  w_cass_cluster* pCluster, _In_  uint64_t pDelayMs)
+   {
+       const char* _trace_info = "w_cassandra_cluster_set_constant_reconnect";
+       if (!pCluster || !pDelayMs)
+       {
+           W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+
        }
 
        
-           cass_cluster_set_constant_reconnect( cluster,delay_ms);
+           cass_cluster_set_constant_reconnect( pCluster, pDelayMs);
    }
 
-   void  w_cassandra_cluster_set_reconnect_wait_time(w_Cass_Cluster* cluster, unsigned wait_time)
+   w_Cass_Error  w_cassandra_cluster_set_exponential_reconnect(_In_ w_cass_cluster* pCluster, _In_ uint64_t pBaseDelayMs, _In_ uint64_t pMaxDelayMs)
    {
-       if (!cluster)
+       const char* _trace_info = "w_cassandra_cluster_set_exponential_reconnect";
+       if (!pCluster || !pBaseDelayMs || !pMaxDelayMs)
        {
-           W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_reconnect_wait_time");
-
-       }
-       cass_cluster_set_reconnect_wait_time(cluster, wait_time);
-   }
-   w_Cass_Error  w_cassandra_cluster_set_exponential_reconnect(w_Cass_Cluster* cluster,uint64_t base_delay_ms, uint64_t max_delay_ms)
-   {
-
-       if (!cluster)
-       {
-           W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_exponential_reconnect");
+           W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
            return -1;
        }
-      return  cass_cluster_set_exponential_reconnect(cluster, base_delay_ms, max_delay_ms);
+      return  cass_cluster_set_exponential_reconnect(pCluster, pBaseDelayMs, pMaxDelayMs);
    }
 
 
-   w_Cass_Error  w_cassandra_cluster_set_coalesce_delay(w_Cass_Cluster* cluster, int64_t delay_us)
+   w_Cass_Error  w_cassandra_cluster_set_coalesce_delay(_In_ w_cass_cluster* pCluster, _In_ int64_t pDelayUs)
    {
-       if (!cluster)
+       const char* _trace_info = "w_cassandra_cluster_set_coalesce_delay";
+       if (!pCluster || !pDelayUs)
        {
-           W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_coalesce_delay");
+           W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
            return -1;
        }
-         return   cass_cluster_set_coalesce_delay( cluster, delay_us);
+         return   cass_cluster_set_coalesce_delay( pCluster, pDelayUs);
    }
 
-   w_Cass_Error w_cassandra_cluster_set_new_request_ratio(w_Cass_Cluster* cluster, int32_t ratio)
+   w_Cass_Error w_cassandra_cluster_set_new_request_ratio(_In_ w_cass_cluster* pCluster, _In_ int32_t pRatio)
    {
-       if (!cluster)
+       const char* _trace_info = "w_cassandra_cluster_set_new_request_ratio";
+       if (!pCluster || !pRatio)
        {
-           W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_new_request_ratio");
+           W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
            return -1;
        }
-       return cass_cluster_set_new_request_ratio( cluster, ratio);
+       return cass_cluster_set_new_request_ratio( pCluster, pRatio);
 
    }
-
-   w_Cass_Error  w_cassandra_cluster_set_max_concurrent_creation(w_Cass_Cluster* cluster, unsigned num_connections)
+ 
+   /*deprecated*/
+   w_Cass_Error  w_cassandra_cluster_set_max_concurrent_creation(_In_ w_cass_cluster* pCluster, _In_ unsigned pNumConnections)
    {
-       if (!cluster)
+       const char* _trace_info = "w_cassandra_cluster_set_max_concurrent_creation";
+       if (!pCluster)
        {
-           W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_max_concurrent_creation");
+           W_ASSERT_P(false, "bad args! trace info:%s", _trace_info); 
            return -1;
        }
-       return cass_cluster_set_max_concurrent_creation(cluster, num_connections);
+       return cass_cluster_set_max_concurrent_creation(pCluster, pNumConnections);
 
    }
 
-   w_Cass_Error  w_cassandra_cluster_set_max_concurrent_requests_threshold(w_Cass_Cluster* cluster, unsigned num_requests)
+   /*deprecated*/
+   w_Cass_Error  w_cassandra_cluster_set_max_concurrent_requests_threshold(_In_ w_cass_cluster* pCluster,  _In_  unsigned pNumConnections)
    {
-       if (!cluster)
+       const char* _trace_info = "w_cassandra_cluster_set_max_concurrent_requests_threshold";
+       if (!pCluster)
        {
-           W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_max_concurrent_requests_threshold");
+           W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
            return -1;
        }
-       return cass_cluster_set_max_concurrent_requests_threshold(cluster, num_requests);
+       return cass_cluster_set_max_concurrent_requests_threshold(pCluster, pNumConnections);
    }
 
-   w_Cass_Error  w_cassandra_cluster_set_max_requests_per_flush(w_Cass_Cluster* cluster,  unsigned num_requests)
+   /*deprecated*/
+   w_Cass_Error  w_cassandra_cluster_set_max_requests_per_flush(_In_ w_cass_cluster* pCluster,_In_ unsigned pNumRequests)
    {
-       if (!cluster)
+       const char* _trace_info = "w_cassandra_cluster_set_max_requests_per_flush";
+       if (!pCluster)
        {
-           W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_max_requests_per_flush");
+           W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
            return -1;
        }
-       return cass_cluster_set_max_requests_per_flush(cluster, num_requests);
+       return cass_cluster_set_max_requests_per_flush(pCluster, pNumRequests);
    }
 
-   w_Cass_Error  w_cassandra_cluster_set_write_bytes_high_water_mark(w_Cass_Cluster* cluster, unsigned num_bytes)
+   /*deprecated*/
+   w_Cass_Error  w_cassandra_cluster_set_write_bytes_high_water_mark(_In_ w_cass_cluster* pCluster,  _In_  unsigned pNumBytes)
    {
-       if (!cluster)
+       const char* _trace_info = "w_cassandra_cluster_set_write_bytes_high_water_mark";
+
+       if (!pCluster)
        {
-           W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_write_bytes_high_water_mark");
+           W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
            return -1;
        }
-       return cass_cluster_set_write_bytes_high_water_mark(cluster, num_bytes);
+       return cass_cluster_set_write_bytes_high_water_mark(pCluster, pNumBytes);
    }
 
-   w_Cass_Error w_cassandra_cluster_set_write_bytes_low_water_mark(w_Cass_Cluster* cluster, unsigned num_bytes)
+   /*deprecated*/
+   w_Cass_Error w_cassandra_cluster_set_write_bytes_low_water_mark(_In_ w_cass_cluster* pCluster ,_In_ unsigned pNumBytes)
    {
-       if (!cluster)
+       const char* _trace_info = "w_cassandra_cluster_set_write_bytes_low_water_mark";
+       if (!pCluster)
        {
-           W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_write_bytes_low_water_mark");
+           W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
            return -1;
        }
-       return cass_cluster_set_write_bytes_low_water_mark(cluster, num_bytes);
+       return cass_cluster_set_write_bytes_low_water_mark(pCluster, pNumBytes);
 
    }
-   w_Cass_Error   w_cassandra_cluster_set_pending_requests_high_water_mark(w_Cass_Cluster* cluster, unsigned num_requests)
+
+   /*deprecated*/
+   w_Cass_Error   w_cassandra_cluster_set_pending_requests_high_water_mark(_In_ w_cass_cluster* pCluster,  _In_   unsigned pNumRequests)
    {
-       if (!cluster)
+       const char* _trace_info = "w_cassandra_cluster_set_pending_requests_high_water_mark";
+       if (!pCluster)
        {
-           W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_pending_requests_high_water_mark");
+           W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
            return -1;
        }
-       return cass_cluster_set_pending_requests_high_water_mark(cluster, num_requests);
+       return cass_cluster_set_pending_requests_high_water_mark(pCluster, pNumRequests);
 
    }
-   w_Cass_Error  w_cassandra_cluster_set_pending_requests_low_water_mark(w_Cass_Cluster* cluster, unsigned num_requests)
+
+   /*deprecated*/
+   w_Cass_Error  w_cassandra_cluster_set_pending_requests_low_water_mark(_In_ w_cass_cluster* pCluster,  _In_  unsigned pNumRequests)
    {
-       if (!cluster)
+       const char* _trace_info = "w_cassandra_cluster_set_pending_requests_low_water_mark";
+       if (!pCluster)
        {
-           W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_pending_requests_low_water_mark");
+           W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
            return -1;
        }
-       return cass_cluster_set_pending_requests_low_water_mark(cluster, num_requests);
+       return cass_cluster_set_pending_requests_low_water_mark(pCluster, pNumRequests);
 
    }
-   w_Cass_Retry_Policy*  w_cassandra_retry_policy_downgrading_consistency_new()
+   void w_cassandra_cluster_set_connect_timeout(_In_ w_cass_cluster* pCluster, _In_  unsigned pTimeoutMs)
    {
-       return cass_retry_policy_downgrading_consistency_new();
-   }
-
-   void w_cassandra_log_cleanup()
-   {
-       cass_log_cleanup();
-   }
-
-   void w_cassandra_cluster_set_connect_timeout(w_Cass_Cluster* cluster,  unsigned timeout_ms)
-   {
-
-       if (!cluster)
+       const char* _trace_info = "w_cassandra_cluster_set_connect_timeout";
+       if (!pCluster )
        {
-           W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_connect_timeout");
+           W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+
        }
-      cass_cluster_set_connect_timeout(cluster, timeout_ms);
+      cass_cluster_set_connect_timeout(pCluster, pTimeoutMs);
    }
 
-   const char* w_cassandra_consistency_string(W_Cass_Consistency consistency)
+
+   void w_cassandra_cluster_set_request_timeout(_In_ w_cass_cluster* pCluster, _In_ unsigned pTimeoutMs)
    {
-       if (!consistency)
+       const char* _trace_info = "w_cassandra_cluster_set_request_timeout";
+       if (!pCluster )
        {
-           W_ASSERT(false, "missing parameters!. trace info: w_cassandra_consistency_string");
-           return NULL;
+           W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
        }
-       cass_consistency_string(consistency);
+           cass_cluster_set_request_timeout(pCluster, pTimeoutMs);
    }
 
-
-   void  w_cassandra_log_set_queue_size(size_t queue_size)
+   void w_cassandra_cluster_set_resolve_timeout(_In_ w_cass_cluster* pCluster, _In_ unsigned pTimeoutMs)
    {
-       cass_log_set_queue_size(queue_size);
-   }
-   void w_cassandra_cluster_set_request_timeout(w_Cass_Cluster* cluster, unsigned timeout_ms)
-   {
-       if (!cluster)
+       const char* _trace_info = "w_cassandra_cluster_set_resolve_timeout";
+       if (!pCluster )
        {
-           W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_request_timeout");
+           W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
        }
-           cass_cluster_set_request_timeout(cluster, timeout_ms);
-   }
-
-   void w_cassandra_cluster_set_resolve_timeout(w_Cass_Cluster* cluster, unsigned timeout_ms)
-   {
-       if (!cluster)
-       {
-           W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_resolve_timeout");
-       }
-       cass_cluster_set_resolve_timeout( cluster, timeout_ms);
+       cass_cluster_set_resolve_timeout( pCluster, pTimeoutMs);
 
    }
 
 
-   void  w_cassandra_cluster_set_max_schema_wait_time(w_Cass_Cluster* cluster, unsigned wait_time_ms)
+   void  w_cassandra_cluster_set_max_schema_wait_time(_In_ w_cass_cluster* pCluster, _In_ unsigned pWaitTimeMs)
    {
-
-       if (!cluster)
+       const char* _trace_info = "w_cassandra_cluster_set_max_schema_wait_time";
+       if (!pCluster )
        {
-           W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_max_schema_wait_time");
+           W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
        }
 
-      cass_cluster_set_max_schema_wait_time(cluster, wait_time_ms);
+      cass_cluster_set_max_schema_wait_time(pCluster, pWaitTimeMs);
    }
 
-   void w_cassandra_cluster_set_tracing_max_wait_time(w_Cass_Cluster* cluster, unsigned max_wait_time_ms)
+   void w_cassandra_cluster_set_tracing_max_wait_time(_In_ w_cass_cluster* pCluster, _In_ unsigned pMaxWaitTimeMs)
    {
-       if (!cluster)
+       const char* _trace_info = "w_cassandra_cluster_set_tracing_max_wait_time";
+       if (!pCluster )
        {
-           W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_tracing_max_wait_time");
+           W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
        }
 
-     cass_cluster_set_tracing_max_wait_time( cluster, max_wait_time_ms);
+     cass_cluster_set_tracing_max_wait_time( pCluster, pMaxWaitTimeMs);
    }
 
-   void w_cassandra_cluster_set_tracing_retry_wait_time(w_Cass_Cluster* cluster,unsigned retry_wait_time_ms)
+   void w_cassandra_cluster_set_tracing_retry_wait_time(_In_ w_cass_cluster* pCluster, _In_ unsigned pRetryWaitTimeMs)
    {
-       if (!cluster)
+       const char* _trace_info = "w_cassandra_cluster_set_tracing_retry_wait_time";
+       if (!pCluster )
        {
-           W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_tracing_retry_wait_time");
+           W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
        }
-       cass_cluster_set_tracing_retry_wait_time( cluster, retry_wait_time_ms);
+       cass_cluster_set_tracing_retry_wait_time( pCluster, pRetryWaitTimeMs);
    }
 
-   void w_cassandra_cluster_set_tracing_consistency(w_Cass_Cluster* cluster, W_Cass_Consistency consistency)
+   void w_cassandra_cluster_set_tracing_consistency(_In_ w_cass_cluster* pCluster, _In_  w_cass_consistency pConsistency)
    {
-
-       if (!cluster)
+       const char* _trace_info = "w_cassandra_cluster_set_tracing_consistency";
+       if (!pCluster)
        {
-           W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_tracing_consistency");
+           W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
        }
-       cass_cluster_set_tracing_consistency( cluster, consistency);
+       cass_cluster_set_tracing_consistency( pCluster, pConsistency);
 
    }
 
 
 
-   void w_cassandra_cluster_set_credentials(w_Cass_Cluster* cluster, const char* username,const char* password)
+   void w_cassandra_cluster_set_credentials(_In_ w_cass_cluster* pCluster, _In_ const char* pUsername, _In_ const char* pPassword)
    {
-       if (!cluster)
+       const char* _trace_info = "w_cassandra_cluster_set_credentials";
+       if (!pCluster || !pUsername  || !pPassword)
        {
-           W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_credentials");
+           W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
        }
 
-      cass_cluster_set_credentials( cluster, username, password);
+      cass_cluster_set_credentials( pCluster, pUsername, pPassword);
    }
 
-   void w_cassandra_cluster_set_credentials_n(w_Cass_Cluster* cluster, const char* username,size_t username_length, const char* password, size_t password_length)
+   void w_cassandra_cluster_set_credentials_n(_In_ w_cass_cluster* pCluster, _In_ const char* pUsername, _In_ size_t pUsernameLength, _In_ const char* pPassword, _In_  size_t pPasswordLength)
    {
-       if (!cluster)
+       const char* _trace_info = "w_cassandra_cluster_set_credentials_n";
+       if (!pCluster || !pUsername ||  !pUsernameLength || !pPassword|| !pPasswordLength)
        {
-           W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_credentials_n");
+           W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
        }
-     cass_cluster_set_credentials_n( cluster, username,  username_length,password, password_length);
+     cass_cluster_set_credentials_n( pCluster, pUsername, pUsernameLength, pPassword, pPasswordLength);
 
    }
-   void w_cassandra_cluster_set_load_balance_round_robin(w_Cass_Cluster* cluster)
+
+   void w_cassandra_cluster_set_load_balance_round_robin(_In_ w_cass_cluster* pCluster)
    {
-       if (!cluster)
+       const char* _trace_info = "w_cassandra_cluster_set_load_balance_round_robin";
+       if (!pCluster)
        {
-           W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_load_balance_round_robin");
+           W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
        }
-       cass_cluster_set_load_balance_round_robin( cluster);
+       cass_cluster_set_load_balance_round_robin( pCluster);
    }
 
-   w_Cass_Error w_cassandra_cluster_set_load_balance_dc_aware(w_Cass_Cluster* cluster, const char* local_dc, unsigned used_hosts_per_remote_dc, w_bool_t allow_remote_dcs_for_local_cl)
+   w_Cass_Error w_cassandra_cluster_set_load_balance_dc_aware(_In_ w_cass_cluster* pCluster, _In_ const char* pLocalDc, _In_  unsigned pUsedHostsPerRemoteDc, _In_ w_bool_t pAllowRemoteDcsForLocalCl)
    {
-       if (!cluster)
+       const char* _trace_info = "w_cassandra_cluster_set_load_balance_dc_aware";
+       if (!pCluster || !pLocalDc || !pUsedHostsPerRemoteDc)
        {
-           W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_load_balance_dc_aware");
+           W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
            return -1;
        }
        
-         return cass_cluster_set_load_balance_dc_aware(cluster, local_dc,  used_hosts_per_remote_dc,  allow_remote_dcs_for_local_cl);
+         return cass_cluster_set_load_balance_dc_aware(pCluster, pLocalDc, pUsedHostsPerRemoteDc, pAllowRemoteDcsForLocalCl);
    }
 
   
-   w_Cass_Error   w_cassandra_cluster_set_load_balance_dc_aware_n(w_Cass_Cluster* cluster, const char* local_dc, size_t local_dc_length,  unsigned used_hosts_per_remote_dc,  w_bool_t allow_remote_dcs_for_local_cl)
+   w_Cass_Error   w_cassandra_cluster_set_load_balance_dc_aware_n(_In_ w_cass_cluster* pCluster, _In_ const char* pLocalDc, _In_ size_t pLocalDcLength, _In_  unsigned pUsedHostsPerRemoteDc, _In_  w_bool_t pAllowRemoteDcsForLocalCl)
    {
-       if (!cluster)
+       const char* _trace_info = "w_cassandra_cluster_set_load_balance_dc_aware_n";
+       if (!pCluster || !pLocalDc || !pLocalDcLength || !pUsedHostsPerRemoteDc)
        {
-           W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_load_balance_dc_aware_n");
+           W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
            return -1;
 
        }
 
-           
-            return   cass_cluster_set_load_balance_dc_aware_n( cluster, local_dc,  local_dc_length, used_hosts_per_remote_dc, allow_remote_dcs_for_local_cl);
+            return   cass_cluster_set_load_balance_dc_aware_n( pCluster, pLocalDc, pLocalDcLength, pUsedHostsPerRemoteDc, pAllowRemoteDcsForLocalCl);
    }
 
-   void w_cassandra_cluster_set_token_aware_routing(w_Cass_Cluster* cluster, w_bool_t enabled)
+   void w_cassandra_cluster_set_token_aware_routing(_In_ w_cass_cluster* pCluster, _In_ w_bool_t pEnabled)
    {
-       if (!cluster)
+       const char* _trace_info = "w_cassandra_cluster_set_token_aware_routing";
+       if (!pCluster)
        {
-           W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_token_aware_routing");
+           W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+
        }
-           cass_cluster_set_token_aware_routing(cluster, enabled);
+           cass_cluster_set_token_aware_routing(pCluster, pEnabled);
 
    }
 
-   void w_cassandra_cluster_set_token_aware_routing_shuffle_replicas(w_Cass_Cluster* cluster,  w_bool_t enabled)
+   void w_cassandra_cluster_set_token_aware_routing_shuffle_replicas(_In_ w_cass_cluster* pCluster, _In_  w_bool_t pEnabled)
    {
-       if (!cluster)
+       const char* _trace_info = "w_cassandra_cluster_set_token_aware_routing_shuffle_replicas";
+       if (!pCluster)
        {
-           W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_token_aware_routing_shuffle_replicas");
+           W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
        }
 
            
-       cass_cluster_set_token_aware_routing_shuffle_replicas( cluster, enabled);
+       cass_cluster_set_token_aware_routing_shuffle_replicas( pCluster, pEnabled);
 
    }
-   void  w_cassandra_cluster_set_latency_aware_routing(w_Cass_Cluster* cluster,   w_bool_t enabled)
+   void  w_cassandra_cluster_set_latency_aware_routing(_In_ w_cass_cluster* pCluster, _In_  w_bool_t pEnabled)
    {
-     if (!cluster)
+       const char* _trace_info = "w_cassandra_cluster_set_latency_aware_routing";
+     if (!pCluster)
      {
-         W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_latency_aware_routing");
+         W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+
      }
-       cass_cluster_set_latency_aware_routing( cluster, enabled);
+       cass_cluster_set_latency_aware_routing( pCluster, pEnabled);
    }
 
-    void  w_cassandra_cluster_set_latency_aware_routing_settings(w_Cass_Cluster* cluster,  double exclusion_threshold,  uint64_t scale_ms, uint64_t retry_period_ms, uint64_t update_rate_ms, uint64_t min_measured) 
+    void  w_cassandra_cluster_set_latency_aware_routing_settings(_In_ w_cass_cluster* pCluster, _In_  double pExclusionThreshold, _In_  uint64_t pScaleMs, _In_ uint64_t pRetryPeriodMs, _In_ uint64_t pUpdateRateMs, _In_ uint64_t pMinMeasured)
     {
-        if (!cluster)
+        const char* _trace_info = "w_cassandra_cluster_set_latency_aware_routing_settings";
+
+        if (!pCluster || !pExclusionThreshold || !pScaleMs || !pRetryPeriodMs|| !pUpdateRateMs || !pMinMeasured)
         {
-            W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_latency_aware_routing_settings");
+            W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
         }
 
-          cass_cluster_set_latency_aware_routing_settings( cluster,  exclusion_threshold, scale_ms, retry_period_ms, update_rate_ms, min_measured);
+          cass_cluster_set_latency_aware_routing_settings( pCluster, pExclusionThreshold, pScaleMs, pRetryPeriodMs, pUpdateRateMs, pMinMeasured);
     }
 
-    void w_cassandra_cluster_set_whitelist_filtering(w_Cass_Cluster* cluster, const char* hosts)
+    void w_cassandra_cluster_set_whitelist_filtering(_In_ w_cass_cluster* pCluster, _In_ const char* pHosts)
     {
-        if (!cluster)
+        const char* _trace_info = "w_cassandra_cluster_set_whitelist_filtering";
+        if (!pCluster || !pHosts)
         {
-            W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_whitelist_filtering");
+            W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+
         }
            
-         cass_cluster_set_whitelist_filtering( cluster, hosts);
+         cass_cluster_set_whitelist_filtering( pCluster, pHosts);
     }
 
-   void w_cassandra_cluster_set_whitelist_filtering_n(w_Cass_Cluster* cluster, const char* hosts, size_t hosts_length)
+   void w_cassandra_cluster_set_whitelist_filtering_n(_In_ w_cass_cluster* pCluster, _In_ const char* pHosts, size_t pHostsLength)
    {
-       if (!cluster)
+       const char* _trace_info = "w_cassandra_cluster_set_whitelist_filtering_n";
+       if (!pCluster || !pHosts || !pHostsLength)
        {
-           W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_whitelist_filtering_n");
+           W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
        }
-          cass_cluster_set_whitelist_filtering_n( cluster, hosts, hosts_length);
+          cass_cluster_set_whitelist_filtering_n( pCluster, pHosts, pHostsLength);
    }
 
-   void w_cassandra_cluster_set_blacklist_filtering(w_Cass_Cluster* cluster,  const char* hosts)
+   void w_cassandra_cluster_set_blacklist_filtering(_In_ w_cass_cluster* pCluster, _In_  const char* pHosts)
    {
-       if (!cluster)
+       const char* _trace_info = "w_cassandra_cluster_set_blacklist_filtering";
+       if (!pCluster || !pHosts)
        {
-           W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_blacklist_filtering");
-       }
-           
-       cass_cluster_set_blacklist_filtering(cluster, hosts);
-   }
-
-   void w_cassandra_cluster_set_blacklist_filtering_n(w_Cass_Cluster* cluster,  const char* hosts, size_t hosts_length)
-   {
-       if (!cluster)
-       {
-           W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_blacklist_filtering_n");
+           W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
        }
            
-     cass_cluster_set_blacklist_filtering_n( cluster, hosts,hosts_length);
-
+       cass_cluster_set_blacklist_filtering(pCluster, pHosts);
    }
 
-   void w_cassandra_cluster_set_whitelist_dc_filtering(w_Cass_Cluster* cluster, const char* dcs)
+   void w_cassandra_cluster_set_blacklist_filtering_n(_In_ w_cass_cluster* pCluster, _In_  const char* pHosts, _In_ size_t pHostsLength)
    {
-       if (!cluster)
+       const char* _trace_info = "w_cassandra_cluster_set_blacklist_filtering_n";
+       if (!pCluster || !pHosts || !pHostsLength)
        {
-           W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_whitelist_dc_filtering");
+           W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
        }
            
-       cass_cluster_set_whitelist_dc_filtering( cluster, dcs);
+     cass_cluster_set_blacklist_filtering_n( pCluster, pHosts, pHostsLength);
+
    }
 
-   void w_cassandra_cluster_set_whitelist_dc_filtering_n(w_Cass_Cluster* cluster, const char* dcs, size_t dcs_length)
+   void w_cassandra_cluster_set_whitelist_dc_filtering(_In_ w_cass_cluster* pCluster, _In_ const char* pDcs)
    {
-       if (!cluster)
+       const char* _trace_info = "w_cassandra_cluster_set_whitelist_dc_filtering";
+       if (!pCluster || !pDcs)
        {
-           W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_whitelist_dc_filtering_n");
+           W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
        }
            
-    cass_cluster_set_whitelist_dc_filtering_n( cluster, dcs,dcs_length);
-
+       cass_cluster_set_whitelist_dc_filtering( pCluster, pDcs);
    }
 
-   void w_cassandra_cluster_set_blacklist_dc_filtering(w_Cass_Cluster* cluster, const char* dcs)
+   void w_cassandra_cluster_set_whitelist_dc_filtering_n(_In_ w_cass_cluster* pCluster, _In_ const char* pDcs, _In_ size_t pDcsLength)
    {
-       if (!cluster)
+       const char* _trace_info = "w_cassandra_cluster_set_whitelist_dc_filtering_n";
+       if (!pCluster || !pDcs || !pDcsLength)
        {
-           W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_blacklist_dc_filtering");
+           W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
        }
-          cass_cluster_set_blacklist_dc_filtering( cluster, dcs);
+           
+    cass_cluster_set_whitelist_dc_filtering_n( pCluster, pDcs, pDcsLength);
+
    }
 
-   void w_cassandra_cluster_set_blacklist_dc_filtering_n(w_Cass_Cluster* cluster,  const char* dcs,size_t dcs_length)
+   void w_cassandra_cluster_set_blacklist_dc_filtering(_In_ w_cass_cluster* pCluster, _In_ const char* pDcs)
    {
-       if (!cluster)
+       const char* _trace_info = "w_cassandra_cluster_set_blacklist_dc_filtering";
+       if (!pCluster || !pDcs)
        {
-           W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_blacklist_dc_filtering_n");
+           W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
        }
-           cass_cluster_set_blacklist_dc_filtering_n( cluster, dcs, dcs_length);
+          cass_cluster_set_blacklist_dc_filtering( pCluster, pDcs);
    }
 
-   void w_cassandra_cluster_set_tcp_nodelay(w_Cass_Cluster* cluster,  w_bool_t enabled) 
+   void w_cassandra_cluster_set_blacklist_dc_filtering_n(_In_ w_cass_cluster* pCluster, _In_  const char* pDcs, _In_ size_t pDcsLength)
    {
-       if (!cluster)
+       const char* _trace_info = "w_cassandra_cluster_set_blacklist_dc_filtering_n";
+       if (!pCluster || !pDcs || !pDcsLength)
        {
-           W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_tcp_nodelay");
+           W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
        }
-
-     cass_cluster_set_tcp_nodelay( cluster, enabled);
+           cass_cluster_set_blacklist_dc_filtering_n( pCluster, pDcs, pDcsLength);
    }
 
-   void w_cassandra_cluster_set_tcp_keepalive(w_Cass_Cluster* cluster, w_bool_t enabled, unsigned delay_secs)
+   void w_cassandra_cluster_set_tcp_nodelay(_In_ w_cass_cluster* pCluster, _In_  w_bool_t pEnabled)
    {
+       const char* _trace_info = "w_cassandra_cluster_set_tcp_nodelay";
 
-       if (!cluster)
+       if (!pCluster)
        {
-           W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_tcp_keepalive");
+           W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
        }
-       cass_cluster_set_tcp_keepalive( cluster,  enabled,  delay_secs);
+
+     cass_cluster_set_tcp_nodelay( pCluster, pEnabled);
    }
 
-   void w_cassandra_cluster_set_timestamp_gen(w_Cass_Cluster* cluster,  w_Cass_Time_stamp_Gen* timestamp_gen)
+   void w_cassandra_cluster_set_tcp_keepalive(_In_ w_cass_cluster* pCluster, _In_ w_bool_t pEnabled, _In_ unsigned pDelaySecs)
    {
-       if (!cluster)
+       const char* _trace_info = "w_cassandra_cluster_set_tcp_keepalive";
+
+       if (!pCluster || !pDelaySecs)
        {
-           W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_timestamp_gen");
+           W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+
        }
-      cass_cluster_set_timestamp_gen( cluster, timestamp_gen);
+       cass_cluster_set_tcp_keepalive( pCluster, pEnabled, pDelaySecs);
    }
 
-    void w_cassandra_cluster_set_connection_heartbeat_interval(w_Cass_Cluster* cluster, unsigned interval_secs)
+   void w_cassandra_cluster_set_timestamp_gen(_In_ w_cass_cluster* pCluster, _In_ w_cass_time_stamp_gen* pTimestampGen)
+   {
+       const char* _trace_info = "w_cassandra_cluster_set_timestamp_gen";
+       if (!pCluster || !pTimestampGen)
+       {
+           W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+       }
+      cass_cluster_set_timestamp_gen( pCluster, pTimestampGen);
+   }
+
+    void w_cassandra_cluster_set_connection_heartbeat_interval(_In_ w_cass_cluster* pCluster, _In_ unsigned pIntervalSecs)
     {
-        if (!cluster)
+        const char* _trace_info = "w_cassandra_cluster_set_connection_heartbeat_interval";
+        if (!pCluster  || !pIntervalSecs)
         {
-            W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_connection_heartbeat_interval");
+            W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
         }
 
-        cass_cluster_set_connection_heartbeat_interval( cluster,interval_secs);
+        cass_cluster_set_connection_heartbeat_interval( pCluster, pIntervalSecs);
     }
 
-   void w_cassandra_cluster_set_connection_idle_timeout(w_Cass_Cluster* cluster,  unsigned timeout_secs)
+   void w_cassandra_cluster_set_connection_idle_timeout(_In_ w_cass_cluster* pCluster, _In_  unsigned pTimeoutSecs)
    {
-       if (!cluster)
+       const char* _trace_info = "w_cassandra_cluster_set_connection_idle_timeout";
+       if (!pCluster || !pTimeoutSecs)
        {
-           W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_connection_idle_timeout");
+           W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+
        }
-           cass_cluster_set_connection_idle_timeout( cluster,timeout_secs);
+           cass_cluster_set_connection_idle_timeout( pCluster, pTimeoutSecs);
    }
 
-   void w_cassandra_cluster_set_retry_policy(w_Cass_Cluster* cluster, w_Cass_Retry_Policy* retry_policy)
+   void w_cassandra_cluster_set_retry_policy(_In_ w_cass_cluster* pCluster, _In_ w_cass_retry_policy* pRetryPolicy)
    {
-       if (!cluster)
+       const char* _trace_info = "w_cassandra_cluster_set_retry_policy";
+       if (!pCluster || !pRetryPolicy)
        {
-           W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_retry_policy");
+           W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
        }
-          cass_cluster_set_retry_policy( cluster,  retry_policy);
+          cass_cluster_set_retry_policy( pCluster, pRetryPolicy);
    }
 
-   void w_cassandra_cluster_set_use_schema(w_Cass_Cluster* cluster, w_bool_t enabled)
+   void w_cassandra_cluster_set_use_schema(_In_ w_cass_cluster* pCluster, _In_ w_bool_t pEnabled)
    {
-       if (!cluster)
+       const char* _trace_info = "w_cassandra_cluster_set_use_schema";
+       if (!pCluster)
        {
-           W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_use_schema");
+           W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
        }
 
-     cass_cluster_set_use_schema(cluster, enabled);
+     cass_cluster_set_use_schema(pCluster, pEnabled);
 
    }
-   w_Cass_Error w_cassandra_cluster_set_use_hostname_resolution(w_Cass_Cluster* cluster,  w_bool_t enabled)
+   w_Cass_Error w_cassandra_cluster_set_use_hostname_resolution(_In_ w_cass_cluster* pCluster, _In_  w_bool_t pEnabled)
    {
-       if (!cluster)
+       const char* _trace_info = "w_cassandra_cluster_set_use_hostname_resolution";
+       if (!pCluster)
        {
-           W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_use_hostname_resolution");
+           W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+
            return -1 ;
        }
            
-   return   cass_cluster_set_use_hostname_resolution( cluster,  enabled);
+   return   cass_cluster_set_use_hostname_resolution( pCluster, pEnabled);
    }
 
-   w_Cass_Error w_cassandra_cluster_set_use_randomized_contact_points(w_Cass_Cluster* cluster,  w_bool_t enabled)
+   w_Cass_Error w_cassandra_cluster_set_use_randomized_contact_points(_In_ w_cass_cluster* pCluster, _In_  w_bool_t pEnabled)
    {
+       const char* _trace_info = "w_cassandra_cluster_set_use_randomized_contact_points";
            
-       if (!cluster)
+       if (!pCluster)
        {
-           W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_use_randomized_contact_points");
+           W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
            return -1;
        }
 
-       return cass_cluster_set_use_randomized_contact_points( cluster, enabled);
+       return cass_cluster_set_use_randomized_contact_points( pCluster, pEnabled);
        
    
    }
 
 
-   w_Cass_Error w_cassandra_cluster_set_constant_speculative_execution_policy(w_Cass_Cluster* cluster, int64_t constant_delay_ms, int max_speculative_executions)
+   w_Cass_Error w_cassandra_cluster_set_constant_speculative_execution_policy(_In_ w_cass_cluster* pCluster, _In_ int64_t pConstantDelayMs, _In_ int pMaxSpeculativeExecutions)
    {
-       if (!cluster)
+       const char* _trace_info = "w_cassandra_cluster_set_constant_speculative_execution_policy";
+       if (!pCluster || !pConstantDelayMs || !pMaxSpeculativeExecutions)
        {
-           W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_constant_speculative_execution_policy");
+           W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+
            return -1;
        }
-     return cass_cluster_set_constant_speculative_execution_policy(  cluster,  constant_delay_ms, max_speculative_executions);
+     return cass_cluster_set_constant_speculative_execution_policy(pCluster, pConstantDelayMs, pMaxSpeculativeExecutions);
    }
 
 
-   w_Cass_Error  w_cassandra_cluster_set_no_speculative_execution_policy(w_Cass_Cluster* cluster)
+   w_Cass_Error  w_cassandra_cluster_set_no_speculative_execution_policy(_In_ w_cass_cluster* pCluster)
    {
-       if (!cluster)
+       const char* _trace_info = "w_cassandra_cluster_set_no_speculative_execution_policy";
+       if (!pCluster)
        {
-           W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_no_speculative_execution_policy");
+           W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+
            return -1;
        }
-           return  cass_cluster_set_no_speculative_execution_policy( cluster);
+           return  cass_cluster_set_no_speculative_execution_policy(pCluster);
    }
 
 
-   w_Cass_Error w_cassandra_cluster_set_max_reusable_write_objects(w_Cass_Cluster* cluster,  unsigned num_objects)
+   w_Cass_Error w_cassandra_cluster_set_max_reusable_write_objects(_In_ w_cass_cluster* pCluster, _In_  unsigned pNumObjects)
    {
-       if (!cluster)
+       const char* _trace_info = "w_cassandra_cluster_set_max_reusable_write_objects";
+       if (!pCluster || !pNumObjects)
        {
-           W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_max_reusable_write_objects");
+           W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
            return -1;
        }
 
 
-        return   cass_cluster_set_max_reusable_write_objects( cluster, num_objects);
+        return   cass_cluster_set_max_reusable_write_objects(pCluster, pNumObjects);
    }
 
-   w_Cass_Error  w_cassandra_cluster_set_execution_profile(w_Cass_Cluster* cluster,  const char* name,  w_CassExecProfile* profile) 
+   w_Cass_Error  w_cassandra_cluster_set_execution_profile(_In_ w_cass_cluster* pCluster, _In_ const char* pName, _In_  w_cass_exec_profile* pProfile)
    {
-       if (!cluster)
+
+       const char* _trace_info = "w_cassandra_cluster_set_execution_profile";
+       if (!pCluster || !pName || !pProfile)
        {
-           W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_execution_profile");
+           W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
            return -1;
        }
 
            
-           return  cass_cluster_set_execution_profile( cluster,name, profile);
+           return  cass_cluster_set_execution_profile(pCluster, pName, pProfile);
    }
 
-   w_Cass_Error w_cassandra_cluster_set_execution_profile_n(w_Cass_Cluster* cluster, const char* name, size_t name_length, w_CassExecProfile* profile)
+   w_Cass_Error w_cassandra_cluster_set_execution_profile_n(_In_ w_cass_cluster* pCluster, _In_ const char* pName, _In_ size_t pNameLength, _In_ w_cass_exec_profile* pProfile)
    {
-       if (!cluster)
+       const char* _trace_info = "w_cassandra_cluster_set_execution_profile_n";
+       if (!pCluster || !pName || !pNameLength || !pProfile)
        {
-           W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_execution_profile_n");
+           W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+
            return -1;
        }
            
-      return cass_cluster_set_execution_profile_n( cluster, name, name_length, profile);
+      return cass_cluster_set_execution_profile_n(pCluster, pName, pNameLength, pProfile);
    }
 
-   w_Cass_Error w_cassandra_cluster_set_prepare_on_all_hosts(w_Cass_Cluster* cluster, w_bool_t enabled)
+   w_Cass_Error w_cassandra_cluster_set_prepare_on_all_hosts(_In_ w_cass_cluster* pCluster, _In_ w_bool_t pEnabled)
    {
-       if (!cluster)
+       const char* _trace_info = "w_cassandra_cluster_set_prepare_on_all_hosts";
+       if (!pCluster)
        {
-           W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_prepare_on_all_hosts");
+           W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
            return -1;
        }
            
-    return cass_cluster_set_prepare_on_all_hosts( cluster,enabled);
+    return cass_cluster_set_prepare_on_all_hosts(pCluster, pEnabled);
    }
 
-   w_Cass_Error  w_cassandra_cluster_set_prepare_on_up_or_add_host(w_Cass_Cluster* cluster, w_bool_t enabled)
+   w_Cass_Error  w_cassandra_cluster_set_prepare_on_up_or_add_host(_In_ w_cass_cluster* pCluster, _In_ w_bool_t pEnabled)
    {
-       if (!cluster)
+       const char* _trace_info = "w_cassandra_cluster_set_prepare_on_up_or_add_host";
+       if (!pCluster)
        {
-           W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_prepare_on_up_or_add_host");
+           W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+
            return -1;
        }
-      return  cass_cluster_set_prepare_on_up_or_add_host(cluster, enabled);
+      return  cass_cluster_set_prepare_on_up_or_add_host(pCluster, pEnabled);
    }
 
-
-   w_Cass_Error w_cassandra_cluster_set_no_compact(w_Cass_Cluster* cluster,w_bool_t enabled)
+   w_Cass_Error w_cass_cluster_set_host_listener_callback(_In_ w_cass_cluster* pCluster, _In_ w_cass_host_listener_callback pCallback,  _In_  void* pData)
    {
-       if (!cluster)
+       const char* _trace_info = "w_cass_cluster_set_host_listener_callback";
+       if (!pCluster || !pData)
        {
-           W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_no_compact");
+           W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
            return -1;
        }
 
-       return cass_cluster_set_no_compact(cluster, enabled);
+       return   cass_cluster_set_host_listener_callback(pCluster, pCallback, pData);
+   }
+   w_Cass_Error w_cassandra_cluster_set_no_compact(_In_ w_cass_cluster* pCluster, _In_ w_bool_t pEnabled)
+   {
+       const char* _trace_info = "w_cassandra_cluster_set_no_compact";
+       if (!pCluster)
+       {
+           W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+           return -1;
+       }
+
+       return cass_cluster_set_no_compact(pCluster, pEnabled);
    }
 
 
-   w_Cass_Error w_cass_cluster_set_host_listener_callback(w_Cass_Cluster* cluster, CassHostListenerCallback callback,  void* data)
+   w_Cass_Error w_cassandra_cluster_set_host_listener_callback(_In_ w_cass_cluster* pCluster, _In_ CassHostListenerCallback pCallback, _In_  void* pData)
    {
-       if (!cluster)
+       const char* _trace_info = "w_cass_cluster_set_host_listener_callback";
+       if (!pCluster || !pData)
        {
-           W_ASSERT(false, "missing parameters!. trace info: w_cass_cluster_set_host_listener_callback");
+           W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
            return -1;
        }
 
 
            
-    return   cass_cluster_set_host_listener_callback( cluster,callback,data);
+    return   cass_cluster_set_host_listener_callback(pCluster, pCallback, pData);
    }
 
 
-   w_Cass_Error w_cassandra_cluster_set_cloud_secure_connection_bundle(w_Cass_Cluster* cluster, const char* path)
+   w_Cass_Error w_cassandra_cluster_set_cloud_secure_connection_bundle(_In_ w_cass_cluster* pCluster, _In_ const char* pPath)
    {
-       if (!cluster)
+       const char* _trace_info = "w_cassandra_cluster_set_cloud_secure_connection_bundle";
+       if (!pCluster || !pPath)
        {
-           W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_cloud_secure_connection_bundle");
+           W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
            return -1;
        }
                
-       return cass_cluster_set_cloud_secure_connection_bundle( cluster, path);
+       return cass_cluster_set_cloud_secure_connection_bundle(pCluster, pPath);
 
    }
 
-   w_Cass_Error w_cassandra_cluster_set_cloud_secure_connection_bundle_n(w_Cass_Cluster* cluster, const char* path, size_t path_length)
+   w_Cass_Error w_cassandra_cluster_set_cloud_secure_connection_bundle_n(_In_ w_cass_cluster* pCluster, _In_ const char* pPath, _In_ size_t pPathLength)
    {
-       if (!cluster)
+       const char* _trace_info = "w_cassandra_cluster_set_cloud_secure_connection_bundle_n";
+       if (!pCluster || !pPath || !pPathLength)
        {
-           W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_cloud_secure_connection_bundle");
+           W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
            return -1;
        }
 
-     return  cass_cluster_set_cloud_secure_connection_bundle_n( cluster, path, path_length);
+     return  cass_cluster_set_cloud_secure_connection_bundle_n(pCluster, pPath, pPathLength);
    }
 
-   w_Cass_Error w_cassandra_cluster_set_cloud_secure_connection_bundle_no_ssl_lib_init(w_Cass_Cluster* cluster,  const char* path)
+   w_Cass_Error w_cassandra_cluster_set_cloud_secure_connection_bundle_no_ssl_lib_init(_In_ w_cass_cluster* pCluster, _In_ const char* pPath)
    {
-       if (!cluster)
+       const char* _trace_info = "w_cassandra_cluster_set_cloud_secure_connection_bundle_no_ssl_lib_init";
+       if (!pCluster || !pPath)
        {
-           W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_cloud_secure_connection_bundle_no_ssl_lib_init");
+           W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+
            return -1;
        }
            
-      return cass_cluster_set_cloud_secure_connection_bundle_no_ssl_lib_init( cluster, path);
+      return cass_cluster_set_cloud_secure_connection_bundle_no_ssl_lib_init(pCluster, pPath);
    }
 
-   w_Cass_Error w_cassandra_cluster_set_cloud_secure_connection_bundle_no_ssl_lib_init_n(w_Cass_Cluster* cluster,  const char* path, size_t path_length)
+   w_Cass_Error w_cassandra_cluster_set_cloud_secure_connection_bundle_no_ssl_lib_init_n(_In_ w_cass_cluster* pCluster, _In_  const char* pPath, _In_ size_t pPathLength)
    {
-
-       if (!cluster)
+       const char* _trace_info = "w_cassandra_cluster_set_cloud_secure_connection_bundle_no_ssl_lib_init_n";
+       if (!pCluster || !pPath || !pPathLength)
        {
-           W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_cloud_secure_connection_bundle_no_ssl_lib_init_n");
+           W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+
            return -1;
        }
 
-     return   cass_cluster_set_cloud_secure_connection_bundle_no_ssl_lib_init_n( cluster,path,path_length);
+     return   cass_cluster_set_cloud_secure_connection_bundle_no_ssl_lib_init_n(pCluster, pPath, pPathLength);
    }
 
-   void  w_cassandra_cluster_set_application_name(w_Cass_Cluster* cluster, const char* application_name)
+   void  w_cassandra_cluster_set_application_name(_In_ w_cass_cluster* pCluster, _In_ const char* pApplicationName)
    {
-       if (!cluster)
+       const char* _trace_info = "w_cassandra_cluster_set_application_name";
+       if (!pCluster || !pApplicationName)
        {
-           W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_application_name");
+           W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
        }
-      cass_cluster_set_application_name( cluster,application_name);
+      cass_cluster_set_application_name(pCluster, pApplicationName);
    }
 
 
-   void w_cassandra_cluster_set_application_name_n(w_Cass_Cluster* cluster, const char* application_name,  size_t application_name_length)
+   void w_cassandra_cluster_set_application_name_n(_In_ w_cass_cluster* pCluster, _In_ const char* pAplicationName, _In_  size_t pApplicationNameLength)
    {
-       if (!cluster)
+       const char* _trace_info = "w_cassandra_cluster_set_application_name_n";
+       if (!pCluster || !pAplicationName || !pApplicationNameLength)
        {
-           W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_application_name_n");
+           W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
        }
 
-    cass_cluster_set_application_name_n( cluster,application_name,application_name_length);
+    cass_cluster_set_application_name_n(pCluster, pAplicationName, pApplicationNameLength);
    }
 
-    void  w_cassandra_cluster_set_application_version(w_Cass_Cluster* cluster, const char* application_version)
+    void  w_cassandra_cluster_set_application_version(_In_ w_cass_cluster* pCluster, _In_ const char* pApplicationVersion)
     {
-
-        if (!cluster)
+        const char* _trace_info = "w_cassandra_cluster_set_application_version";
+        if (!pCluster || !pApplicationVersion)
         {
-            W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_application_version");
+            W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
         }
 
-           cass_cluster_set_application_version(cluster,application_version);
+           cass_cluster_set_application_version(pCluster, pApplicationVersion);
     }
 
-    void w_cassandra_cluster_set_application_version_n(w_Cass_Cluster* cluster, const char* application_version,size_t application_version_length)
+    void w_cassandra_cluster_set_application_version_n(_In_ w_cass_cluster* pCluster, _In_ const char* pApplicationVersion, _In_ size_t pApplicationVersionLength)
     {
-         
-        if (!cluster)
+        const char* _trace_info = "w_cassandra_cluster_set_application_version_n";
+        if (!pCluster || !pApplicationVersion || !pApplicationVersionLength)
         {
-            W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_application_version_n");
+            W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
         }
         
-        cass_cluster_set_application_version_n( cluster, application_version, application_version_length);
+        cass_cluster_set_application_version_n(pCluster, pApplicationVersion, pApplicationVersionLength);
     }
 
 
-    void w_cassandra_cluster_set_client_id(w_Cass_Cluster* cluster, w_CassUuid client_id)
+    void w_cassandra_cluster_set_client_id(_In_ w_cass_cluster* pCluster, _In_ w_cass_uuid pClientId)
     {
-        if (!cluster)
+        const char* _trace_info = "w_cassandra_cluster_set_client_id";
+
+        if (!pCluster )
         {
-            W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_client_id");
+            W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
         }
 
-          cass_cluster_set_client_id( cluster,  client_id);
+          cass_cluster_set_client_id(pCluster, pClientId);
     }
 
-    void w_cassandra_cluster_set_monitor_reporting_interval(w_Cass_Cluster* cluster,   unsigned interval_secs)
+    void w_cassandra_cluster_set_monitor_reporting_interval(_In_ w_cass_cluster* pCluster, _In_   unsigned pIntervalSecs)
     {
-        if (!cluster)
+        const char* _trace_info = "w_cassandra_cluster_set_monitor_reporting_interval";
+        if (!pCluster || !pIntervalSecs)
         {
-            W_ASSERT(false, "missing parameters!. trace info: w_cassandra_cluster_set_monitor_reporting_interval");
+            W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
         }
 
-       cass_cluster_set_monitor_reporting_interval(cluster,interval_secs);
+       cass_cluster_set_monitor_reporting_interval(pCluster, pIntervalSecs);
     }
 
-    w_Cass_Session* w_cassandra_session_new()
+    w_cass_session* w_cassandra_session_new()
     { 
         return   cass_session_new();
     }
 
-    void w_cassandra_session_free(w_Cass_Session* session)
+    void w_cassandra_session_free(_In_ w_cass_session* pSession)
     {
-        if (!session)
+        const char* _trace_info = "w_cassandra_session_free";
+        if (!pSession)
         {
-            W_ASSERT(false, "missing parameters!. trace info: w_cassandra_session_free");
+            W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
         }
            
-        cass_session_free( session);
+        cass_session_free(pSession);
     }
 
 
-    w_Cass_Future* w_cassandra_session_connect(w_Cass_Session* session, const w_Cass_Cluster* cluster)
+    w_cass_future* w_cassandra_session_connect(_In_ w_cass_session* pSession, _In_ const w_cass_cluster* pCluster)
     {
-        if (!session || !cluster)
+        const char* _trace_info = "w_cassandra_session_connect";
+        if (!pSession || !pCluster)
         {
-            W_ASSERT(false, "missing parameters!. trace info: w_cassandra_session_connect");
+            W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
             return NULL;
         }
 
 
-      return  cass_session_connect( session, cluster);
+      return  cass_session_connect(pSession, pCluster);
     }
 
-    w_Cass_Future* w_cassandra_session_connect_keyspace(w_Cass_Session* session, const w_Cass_Cluster* cluster, const char* keyspace)
+    w_cass_future* w_cassandra_session_connect_keyspace(_In_ w_cass_session* pSession, _In_ const w_cass_cluster* pCluster, _In_ const char* pKeyspace)
     {
-        if (!session || !cluster)
+        const char* _trace_info = "w_cassandra_session_connect_keyspace";
+        if (!pSession || !pCluster || !pKeyspace)
         {
-            W_ASSERT(false, "missing parameters!. trace info: w_cassandra_session_connect_keyspace");
+            W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
             return NULL;
         }
            
-       return cass_session_connect_keyspace( session, cluster, keyspace);
+       return cass_session_connect_keyspace(pSession, pCluster, pKeyspace);
     }
 
-    w_Cass_Future*  w_cassandra_session_connect_keyspace_n(w_Cass_Session* session,const w_Cass_Cluster* cluster,  const char* keyspace, size_t keyspace_length)
+    w_cass_future*  w_cassandra_session_connect_keyspace_n(_In_ w_cass_session* pSession, _In_ const w_cass_cluster* pCluster, _In_  const char* pKeyspace, _In_ size_t pKeyspaceLength)
     {
-        if (!session || !cluster)
+        const char* _trace_info = "w_cassandra_session_connect_keyspace_n";
+        if (!pSession || !pCluster || !pKeyspace  || pKeyspaceLength)
         {
-            W_ASSERT(false, "missing parameters!. trace info: w_cassandra_session_connect_keyspace_n");
+            W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
             return NULL;
         }
 
 
-           return cass_session_connect_keyspace_n(session, cluster,keyspace, keyspace_length);
+           return cass_session_connect_keyspace_n(pSession, pCluster, pKeyspace, pKeyspaceLength);
     }
 
-    w_Cass_Future*  w_cassandra_session_close(w_Cass_Session* session)
+    w_cass_future*  w_cassandra_session_close(_In_ w_cass_session* pSession)
     {
-        if (!session )
+        const char* _trace_info = "w_cassandra_session_close";
+        if (!pSession)
         {
-            W_ASSERT(false, "missing parameters!. trace info: w_cassandra_session_close");
+            W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
             return NULL;
         }
-           return cass_session_close(session);
+           return cass_session_close(pSession);
     }
        
-    w_Cass_Future* w_cassandra_session_prepare(w_Cass_Session* session, const char* query)
+    w_cass_future* w_cassandra_session_prepare(_In_ w_cass_session* pSession, _In_ const char* pQuery)
     {
-        if (!session)
+        const char* _trace_info = "w_cassandra_session_prepare";
+        if (!pSession || !pQuery)
         {
-            W_ASSERT(false, "missing parameters!. trace info: w_cassandra_session_prepare");
+            W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
             return NULL;
         }
         
-        return cass_session_prepare( session, query);
+        return cass_session_prepare(pSession, pQuery);
     }
 
-     w_Cass_Future*  w_cassandra_session_prepare_n(w_Cass_Session* session,  const char* query,  size_t query_length)
+    w_cass_future*  w_cassandra_session_prepare_n(_In_ w_cass_session* pSession, _In_  const char* pQuery, _In_  size_t pQueryLength)
      {
-         if (!session)
+         const char* _trace_info = "w_cassandra_session_prepare_n";
+         if (!pSession || !pQuery || !pQueryLength)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_session_prepare_n");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
 
-        return  cass_session_prepare_n(session, query,query_length);
+        return  cass_session_prepare_n(pSession, pQuery, pQueryLength);
      }
 
-     w_Cass_Future* w_cassandra_session_prepare_from_existing(w_Cass_Session* session,  w_Cass_Statement* statement)
+    w_cass_future* w_cassandra_session_prepare_from_existing(_In_ w_cass_session* pSession, _In_ w_cass_statement* pStatement)
      {
-         if (!session || !statement)
+         const char* _trace_info = "w_cassandra_session_prepare_from_existing";
+         if (!pSession || !pStatement)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_session_prepare_from_existing");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
-           return cass_session_prepare_from_existing( session, statement);
+           return cass_session_prepare_from_existing(pSession, pStatement);
      }
 
 
-     w_Cass_Future*  w_cassandra_session_execute(w_Cass_Session* session,  const w_Cass_Statement* statement)
+    w_cass_future*  w_cassandra_session_execute(_In_ w_cass_session* pSession, _In_  const w_cass_statement* pStatement)
      {
-         if (!session || !statement)
+         const char* _trace_info = "w_cassandra_session_execute";
+         if (!pSession || !pStatement)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_session_execute");
-             return NULL;
-         }
-
-
-           return cass_session_execute( session, statement);
-     }
-
-     w_Cass_Future* w_cassandra_session_execute_batch(w_Cass_Session* session,const w_Cass_Batch* batch)
-     {
-         if (!session || !batch)
-         {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_session_execute_batch");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
 
 
-        return cass_session_execute_batch( session,batch);
+           return cass_session_execute(pSession, pStatement);
      }
 
-     const w_Cass_Schema_Meta* w_cassandra_session_get_schema_meta(const w_Cass_Session* session)
+    w_cass_future* w_cassandra_session_execute_batch(_In_ w_cass_session* pSession, _In_ const w_cass_batch* pBatch)
      {
-         if (!session )
+         const char* _trace_info = "w_cassandra_session_execute_batch";
+         if (!pSession || !pBatch)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_session_get_schema_meta");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
-           return cass_session_get_schema_meta( session);
+
+
+        return cass_session_execute_batch(pSession, pBatch);
+     }
+
+     const w_cass_schema_meta* w_cassandra_session_get_schema_meta(_In_ const w_cass_session* pSession)
+     {
+         const char* _trace_info = "w_cassandra_session_get_schema_meta";
+         if (!pSession)
+         {
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+
+             return NULL;
+         }
+           return cass_session_get_schema_meta(pSession);
 
      }
 
 
-     void w_cassandra_session_get_metrics(const w_Cass_Session* session, w_CassMetrics* output)
+     void w_cassandra_session_get_metrics(_In_ const  w_cass_session* pSession, _Inout_ w_cass_metrics* pOutput)
      {
-         if (!session || !output)
+         const char* _trace_info = "w_cassandra_session_get_metrics";
+         if (!pSession || !pOutput)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_session_get_metrics");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
          }
 
 
-        cass_session_get_metrics(session, output);
+        cass_session_get_metrics(pSession, pOutput);
      }
 
-     void  w_cassandra_session_get_speculative_execution_metrics(const w_Cass_Session* session,  w_Cass_Speculative_Execution_Metrics* output)
+     void  w_cassandra_session_get_speculative_execution_metrics(_In_ const w_cass_session* pSession, _Inout_ w_cass_speculative_execution_metrics* pOutput)
      {
-         if (!session || !output)
+         const char* _trace_info = "w_cassandra_session_get_speculative_execution_metrics";
+         if (!pSession || !pOutput)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_session_get_speculative_execution_metrics");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+
          }
-            cass_session_get_speculative_execution_metrics( session, output);
+            cass_session_get_speculative_execution_metrics(pSession, pOutput);
 
      }
 
-   /*  w_CassUuid w_cassandra_session_get_client_id(w_Cass_Session* session)
+     w_cass_uuid w_cassandra_session_get_client_id(_In_ w_cass_session* pSession)
      {
-         if (!session )
+         const char* _trace_info = "w_cassandra_session_get_client_id";
+         if (!pSession)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_session_get_client_id");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+
             return ;
          }
 
-           return cass_session_get_client_id( session);
-     }*/
+           return cass_session_get_client_id(pSession);
+     }
 
-     void   w_cassandra_schema_meta_free(const w_Cass_Schema_Meta* schema_meta)
+     void   w_cassandra_schema_meta_free(_In_ const w_cass_schema_meta* pSchemaMeta)
      {
-         if (!schema_meta)
+         const char* _trace_info = "w_cassandra_schema_meta_free";
+         if (!pSchemaMeta)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_schema_meta_free");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
          }
 
-           cass_schema_meta_free(schema_meta);
+           cass_schema_meta_free(pSchemaMeta);
 
      }
 
-     uint32_t w_cassandra_schema_meta_snapshot_version(const w_Cass_Schema_Meta* schema_meta)
+     uint32_t w_cassandra_schema_meta_snapshot_version(_In_ const w_cass_schema_meta* pSchemaMeta)
      {
-         if (!schema_meta)
+         const char* _trace_info = "w_cassandra_schema_meta_snapshot_version";
+         if (!pSchemaMeta)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_schema_meta_snapshot_version");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return 0;
          }
 
-           return cass_schema_meta_snapshot_version( schema_meta);
+           return cass_schema_meta_snapshot_version(pSchemaMeta);
      }
 
-   /*  w_CassVersion w_cassandra_schema_meta_version(const w_Cass_Schema_Meta* schema_meta)
+     w_cass_version w_cassandra_schema_meta_version(_In_ const w_cass_schema_meta* pSchemaMeta)
      {
-         if (!schema_meta)
+         const char* _trace_info = "w_cassandra_schema_meta_version";
+         if (!pSchemaMeta)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_schema_meta_version");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+
              return ;
          }
-           return cass_schema_meta_version(schema_meta);
-     }*/
+           return cass_schema_meta_version(pSchemaMeta);
+     }
 
 
-     const w_Cass_Key_space_Meta* w_cassandra_schema_meta_keyspace_by_name(const w_Cass_Schema_Meta* schema_meta,  const char* keyspace)
+     const w_cass_key_space_meta* w_cassandra_schema_meta_keyspace_by_name(_In_ const w_cass_schema_meta* pSchemaMeta, _In_ const char* pKeyspace)
      {
-         if (!schema_meta || !keyspace)
+         const char* _trace_info = "w_cassandra_schema_meta_keyspace_by_name";
+         if (!pSchemaMeta || !pKeyspace)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_schema_meta_keyspace_by_name");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
 
-          return    cass_schema_meta_keyspace_by_name( schema_meta, keyspace);
+          return    cass_schema_meta_keyspace_by_name(pSchemaMeta, pKeyspace);
      }
 
-     const w_Cass_Key_space_Meta* w_cassandra_schema_meta_keyspace_by_name_n(const w_Cass_Schema_Meta* schema_meta,const char* keyspace, size_t keyspace_length)
+     const w_cass_key_space_meta* w_cassandra_schema_meta_keyspace_by_name_n(_In_ const w_cass_schema_meta* pSchemaMeta, _In_ const char* pKeyspace, _In_ size_t pKeyspaceLength)
      {
-         if (!schema_meta || !keyspace)
+         const char* _trace_info = "w_cassandra_schema_meta_keyspace_by_name_n";
+         if (!pSchemaMeta || !pKeyspace || !pKeyspaceLength)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_schema_meta_keyspace_by_name_n");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
-          return cass_schema_meta_keyspace_by_name_n( schema_meta, keyspace, keyspace_length);
+          return cass_schema_meta_keyspace_by_name_n(pSchemaMeta, pKeyspace, pKeyspaceLength);
      }
 
 
-     void w_cassandra_keyspace_meta_name(const w_Cass_Key_space_Meta* keyspace_meta, const char** name, size_t* name_length)
+     void w_cassandra_keyspace_meta_name(_In_ const w_cass_key_space_meta* pSchemaMeta, _In_ const char** pName, _In_ size_t* pNameLength)
      {
-         if (!keyspace_meta || !name)
+         const char* _trace_info = "w_cassandra_keyspace_meta_name";
+         if (!pSchemaMeta || !pName || !pNameLength)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_keyspace_meta_name");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+
          }
 
-          cass_keyspace_meta_name( keyspace_meta, name, name_length);
+          cass_keyspace_meta_name(pSchemaMeta, pName, pNameLength);
      }
 
-     w_bool_t w_cassandra_keyspace_meta_is_virtual(const w_Cass_Key_space_Meta* keyspace_meta)
+     w_bool_t w_cassandra_keyspace_meta_is_virtual(_In_ const w_cass_key_space_meta* pKeyspaceMeta)
      {
-         if (!keyspace_meta )
+         const char* _trace_info = "w_cassandra_keyspace_meta_is_virtual";
+         if (!pKeyspaceMeta)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_keyspace_meta_is_virtual");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+
              return false ;
          }
-          return cass_keyspace_meta_is_virtual( keyspace_meta);
+          return cass_keyspace_meta_is_virtual(pKeyspaceMeta);
      }
 
-     const w_Cass_Table_Meta*  w_cassandra_keyspace_meta_table_by_name(const w_Cass_Key_space_Meta* keyspace_meta, const char* table)
+     const w_cass_table_meta*  w_cassandra_keyspace_meta_table_by_name(_In_ const w_cass_key_space_meta* pKeyspaceMeta, _In_ const char* pTable)
      {
-
-         if (!keyspace_meta || !table)
+         const char* _trace_info = "w_cassandra_keyspace_meta_table_by_name";
+         if (!pKeyspaceMeta || !pTable)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_keyspace_meta_table_by_name");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
 
-        return cass_keyspace_meta_table_by_name( keyspace_meta,table);
+        return cass_keyspace_meta_table_by_name(pKeyspaceMeta, pTable);
      }
 
-     const w_Cass_Table_Meta*  w_cassandra_keyspace_meta_table_by_name_n(const w_Cass_Key_space_Meta* keyspace_meta, const char* table, size_t table_length)
+     const w_cass_table_meta*  w_cassandra_keyspace_meta_table_by_name_n(_In_ const w_cass_key_space_meta* pKeyspaceMeta, _In_ const char* pTable, _In_ size_t pTableLength)
      {
-         if (!keyspace_meta || !table)
+         const char* _trace_info = "w_cassandra_keyspace_meta_table_by_name_n";
+
+         if (!pKeyspaceMeta || !pTable || !pTableLength)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_keyspace_meta_table_by_name_n");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+
              return NULL;
          }
-               return cass_keyspace_meta_table_by_name_n( keyspace_meta, table, table_length);
+               return cass_keyspace_meta_table_by_name_n(pKeyspaceMeta, pTable, pTableLength);
      }
 
-     const w_Cass_Materialized_View_Meta* w_cassandra_keyspace_meta_materialized_view_by_name(const w_Cass_Key_space_Meta* keyspace_meta,const char* view)
+     const w_cass_materialized_view_meta* w_cassandra_keyspace_meta_materialized_view_by_name(_In_ const w_cass_key_space_meta* pKeyspaceMeta, _In_ const char* pView)
      {
-         if (!keyspace_meta || !view)
+         const char* _trace_info = "w_cassandra_keyspace_meta_materialized_view_by_name";
+         if (!pKeyspaceMeta || !pView)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_keyspace_meta_materialized_view_by_name");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
 
 
-           return cass_keyspace_meta_materialized_view_by_name( keyspace_meta,view);
+           return cass_keyspace_meta_materialized_view_by_name(pKeyspaceMeta, pView);
      }
 
-     const w_Cass_Materialized_View_Meta*  w_cassandra_keyspace_meta_materialized_view_by_name_n(const w_Cass_Key_space_Meta* keyspace_meta,const char* view,  size_t view_length)
+     const w_cass_materialized_view_meta*  w_cassandra_keyspace_meta_materialized_view_by_name_n(_In_ const w_cass_key_space_meta* pKeyspaceMeta, _In_ const char* pView, _In_  size_t pViewLength)
      {
-         if (!keyspace_meta || !view)
+         const char* _trace_info = "w_cassandra_keyspace_meta_materialized_view_by_name_n";
+         if (!pKeyspaceMeta || !pView || !pViewLength)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_keyspace_meta_materialized_view_by_name_n");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
            
-             return   cass_keyspace_meta_materialized_view_by_name_n( keyspace_meta, view, view_length);
+             return   cass_keyspace_meta_materialized_view_by_name_n(pKeyspaceMeta, pView, pViewLength);
      }
 
-     const w_Cass_Data_Type*  w_cassandra_keyspace_meta_user_type_by_name(const w_Cass_Key_space_Meta* keyspace_meta,   const char* type)
+     const w_cass_data_type*  w_cassandra_keyspace_meta_user_type_by_name(_In_ const w_cass_key_space_meta* pKeyspaceMeta, _In_  const char* pType)
      {
-         if (!keyspace_meta )
+         const char* _trace_info = "w_cassandra_keyspace_meta_user_type_by_name";
+         if (!pKeyspaceMeta || !pType)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_keyspace_meta_user_type_by_name");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
 
-           return cass_keyspace_meta_user_type_by_name(keyspace_meta, type);
+           return cass_keyspace_meta_user_type_by_name(pKeyspaceMeta, pType);
      }
 
-     const w_Cass_Data_Type* w_cassandra_keyspace_meta_user_type_by_name_n(const w_Cass_Key_space_Meta* keyspace_meta,const char* type,size_t type_length)
+     const w_cass_data_type* w_cassandra_keyspace_meta_user_type_by_name_n(_In_ const w_cass_key_space_meta* pKeyspaceMeta, _In_ const char* pType, _In_ size_t pTypelength)
      {
-         if (!keyspace_meta || !type)
+         const char* _trace_info = "w_cassandra_keyspace_meta_user_type_by_name_n";
+         if (!pKeyspaceMeta || !pType || !pTypelength)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_keyspace_meta_user_type_by_name_n");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
 
 
-         return cass_keyspace_meta_user_type_by_name_n( keyspace_meta, type, type_length);
+         return cass_keyspace_meta_user_type_by_name_n(pKeyspaceMeta, pType, pTypelength);
      }
 
-     const w_Cass_Function_Meta*  w_cassandra_keyspace_meta_function_by_name(const w_Cass_Key_space_Meta* keyspace_meta, const char* name, const char* arguments)
+     const w_cass_function_meta*  w_cassandra_keyspace_meta_function_by_name(_In_ const  w_cass_key_space_meta* pKeyspaceMeta, _In_ const char* pName, _In_ const char* pArguments)
      {
-         if (!keyspace_meta || !name)
+         const char* _trace_info = "w_cassandra_keyspace_meta_function_by_name";
+         if (!pKeyspaceMeta || !pName || !pArguments)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_keyspace_meta_function_by_name");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
-             return   cass_keyspace_meta_function_by_name( keyspace_meta, name, arguments);
+             return   cass_keyspace_meta_function_by_name(pKeyspaceMeta, pName, pArguments);
      }
 
-     const w_Cass_Function_Meta*  w_cassandra_keyspace_meta_function_by_name_n(const w_Cass_Key_space_Meta* keyspace_meta, const char* name, size_t name_length, const char* arguments, size_t arguments_length)
+     const w_cass_function_meta*  w_cassandra_keyspace_meta_function_by_name_n(_In_ const  w_cass_key_space_meta* pKeyspaceMeta, _In_ const char* pName, _In_ size_t pNameLength, _In_ const char* pArguments, _In_ size_t pArgumentsLength)
      {
-         if (!keyspace_meta || !name)
+         const char* _trace_info = "w_cassandra_keyspace_meta_function_by_name_n";
+         if (!pKeyspaceMeta || !pName || !pNameLength || !pArguments || !pArgumentsLength)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_keyspace_meta_function_by_name_n");
-             return NULL;
-         }
-
-          return    cass_keyspace_meta_function_by_name_n( keyspace_meta, name, name_length,arguments,arguments_length);
-     }
-
-     const w_Cass_Aggregate_Meta*  w_cassandra_keyspace_meta_aggregate_by_name(const w_Cass_Key_space_Meta* keyspace_meta,const char* name,const char* arguments)
-     {
-         if (!keyspace_meta || !name)
-         {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_keyspace_meta_aggregate_by_name");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
 
-           return   cass_keyspace_meta_aggregate_by_name(keyspace_meta, name, arguments);
-
+          return    cass_keyspace_meta_function_by_name_n(pKeyspaceMeta, pName, pNameLength, pArguments, pArgumentsLength);
      }
 
-     const w_Cass_Aggregate_Meta* w_cassandra_keyspace_meta_aggregate_by_name_n(const w_Cass_Key_space_Meta* keyspace_meta,const char* name, size_t name_length, const char* arguments,size_t arguments_length)
+     const w_cass_aggregate_meta*  w_cassandra_keyspace_meta_aggregate_by_name(_In_ const w_cass_key_space_meta* pKeyspaceMeta, _In_ const char* pName, _In_ const char* pArguments)
      {
-
-         if (!keyspace_meta || !name)
+         const char* _trace_info = "w_cassandra_keyspace_meta_aggregate_by_name";
+         if (!pKeyspaceMeta || !pName || !pArguments)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_keyspace_meta_aggregate_by_name_n");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
 
-           return cass_keyspace_meta_aggregate_by_name_n(keyspace_meta, name, name_length, arguments, arguments_length);
+           return   cass_keyspace_meta_aggregate_by_name(pKeyspaceMeta, pName, pArguments);
 
      }
 
-     const w_Cass_Value* w_cassandra_keyspace_meta_field_by_name(const w_Cass_Key_space_Meta* keyspace_meta,  const char* name)
+     const w_cass_aggregate_meta* w_cassandra_keyspace_meta_aggregate_by_name_n(_In_ const w_cass_key_space_meta* pKeyspaceMeta, _In_ const char* pName, _In_ size_t pNameLength, _In_  const char* pArguments, _In_ size_t pArgumentsLength)
      {
-
-         if (!keyspace_meta || !name)
+         const char* _trace_info = "w_cassandra_keyspace_meta_aggregate_by_name_n";
+         if (!pKeyspaceMeta || !pName || !pNameLength || !pArguments || !pArgumentsLength)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_keyspace_meta_field_by_name");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
-           return  cass_keyspace_meta_field_by_name(keyspace_meta, name);
+
+           return cass_keyspace_meta_aggregate_by_name_n(pKeyspaceMeta, pName, pNameLength, pArguments, pArgumentsLength);
 
      }
 
-     const w_Cass_Value*  w_cassandra_keyspace_meta_field_by_name_n(const w_Cass_Key_space_Meta* keyspace_meta, const char* name, size_t name_length)
+     const w_cass_value* w_cassandra_keyspace_meta_field_by_name(_In_ const w_cass_key_space_meta* pKeyspaceMeta, _In_  const char* pName)
      {
-
-         if (!keyspace_meta || !name)
+         const char* _trace_info = "w_cassandra_keyspace_meta_field_by_name";
+         if (!pKeyspaceMeta || !pName)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_keyspace_meta_field_by_name_n");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
-      return cass_keyspace_meta_field_by_name_n( keyspace_meta, name,name_length);
+           return  cass_keyspace_meta_field_by_name(pKeyspaceMeta, pName);
+
      }
 
-     void  w_cassandra_table_meta_name(const w_Cass_Table_Meta* table_meta, const char** name, size_t* name_length)
+     const w_cass_value*  w_cassandra_keyspace_meta_field_by_name_n(_In_ const w_cass_key_space_meta* pKeyspaceMeta, _In_ const char* pName, _In_ size_t pNameLength)
      {
-         if (!table_meta || !name)
+         const char* _trace_info = "w_cassandra_keyspace_meta_field_by_name_n";
+         if (!pKeyspaceMeta || !pName || !pNameLength)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_table_meta_name");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+             return NULL;
          }
-           cass_table_meta_name(table_meta, name, name_length);
+      return cass_keyspace_meta_field_by_name_n(pKeyspaceMeta, pName, pNameLength);
+     }
+
+     void  w_cassandra_table_meta_name(_In_ const w_cass_table_meta* pTableMeta, _Inout_ const char** pName, _Inout_ size_t* pNameLength)
+     {
+         const char* _trace_info = "w_cassandra_table_meta_name";
+         if (!pTableMeta || !pName || !pNameLength)
+         {
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+         }
+           cass_table_meta_name(pTableMeta, pName, pNameLength);
 
      }
 
-     w_bool_t w_cassandra_table_meta_is_virtual(const w_Cass_Table_Meta* table_meta)
+     w_bool_t w_cassandra_table_meta_is_virtual(_In_ const w_cass_table_meta* pTableMeta)
      {
-         if (!table_meta )
+         const char* _trace_info = "w_cassandra_table_meta_is_virtual";
+         if (!pTableMeta)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_table_meta_is_virtual");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return false;
          }
 
-           return cass_table_meta_is_virtual(table_meta);
+           return cass_table_meta_is_virtual(pTableMeta);
 
      }
 
-     const w_Cass_Column_Meta* w_cassandra_table_meta_column_by_name(const w_Cass_Table_Meta* table_meta, const char* column)
+     const w_cass_column_meta* w_cassandra_table_meta_column_by_name(_In_ const w_cass_table_meta* pTableMeta, _In_ const char* pColumn)
      {
-         if (!table_meta)
+         const char* _trace_info = "w_cassandra_table_meta_column_by_name";
+         if (!pTableMeta || !pColumn)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_table_meta_column_by_name");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
-           return cass_table_meta_column_by_name(table_meta, column);
+           return cass_table_meta_column_by_name(pTableMeta, pColumn);
 
      }
 
-     const w_Cass_Column_Meta* w_cassandra_table_meta_column_by_name_n(const w_Cass_Table_Meta* table_meta,const char* column,size_t column_length)
+     const w_cass_column_meta* w_cassandra_table_meta_column_by_name_n(_In_ const  w_cass_table_meta* pTableMeta, _In_ const char* pColumn, _In_ size_t pColumnLength)
      {
-         if (!table_meta)
+         const char* _trace_info = "w_cassandra_table_meta_column_by_name_n";
+         if (!pTableMeta || !pColumn || !pColumnLength)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_table_meta_column_by_name_n");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
-           return  cass_table_meta_column_by_name_n(table_meta, column, column_length);
+           return  cass_table_meta_column_by_name_n(pTableMeta, pColumn, pColumnLength);
 
      }
 
 
-     size_t   w_cassandra_table_meta_column_count(const w_Cass_Table_Meta* table_meta)
+     size_t   w_cassandra_table_meta_column_count(_In_ const w_cass_table_meta* pTableMeta)
      {
-         if (!table_meta)
+         const char* _trace_info = "w_cassandra_table_meta_column_count";
+         if (!pTableMeta)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_table_meta_column_count");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return 0;
          }
 
-           return   cass_table_meta_column_count(table_meta);
+           return   cass_table_meta_column_count(pTableMeta);
 
      }
 
-     const w_Cass_Column_Meta* w_cassandra_table_meta_column(const w_Cass_Table_Meta* table_meta, size_t index)
+     const w_cass_column_meta* w_cassandra_table_meta_column(_In_ const w_cass_table_meta* pTableMeta, _In_  size_t pIndex)
      {
-
-         if (!table_meta)
+         const char* _trace_info = "w_cassandra_table_meta_column";
+         if (!pTableMeta || !pIndex)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_table_meta_column");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
-           return cass_table_meta_column( table_meta, index);
+           return cass_table_meta_column(pTableMeta, pIndex);
 
      }
 
-     const w_Cass_Index_Meta* w_cassandra_table_meta_index_by_name(const w_Cass_Table_Meta* table_meta, const char* index)
+     const w_cass_index_meta* w_cassandra_table_meta_index_by_name(_In_ const w_cass_table_meta* pTableMeta, _In_ const char* pIndex)
      {
-         if (!table_meta)
+         const char* _trace_info = "w_cassandra_table_meta_index_by_name";
+         if (!pTableMeta || !pIndex)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_table_meta_index_by_name");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
-           return cass_table_meta_index_by_name(table_meta,index);
+           return cass_table_meta_index_by_name(pTableMeta, pIndex);
      }
 
-     const w_Cass_Index_Meta* w_cassandra_table_meta_index_by_name_n(const w_Cass_Table_Meta* table_meta,const char* index, size_t index_length)
+     const w_cass_index_meta* w_cassandra_table_meta_index_by_name_n(_In_ const w_cass_table_meta* pTableMeta, _In_ const char* pIndex, _In_  size_t pIndexLength)
      {
-         if (!table_meta)
+         const char* _trace_info = "w_cassandra_table_meta_index_by_name_n";
+         if (!pTableMeta || !pIndex || !pIndexLength)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_table_meta_index_by_name_n");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
 
-           return  cass_table_meta_index_by_name_n(table_meta, index, index_length);
+           return  cass_table_meta_index_by_name_n(pTableMeta, pIndex, pIndexLength);
 
      }
 
-     size_t w_cassandra_table_meta_index_count(const w_Cass_Table_Meta* table_meta)
+     size_t w_cassandra_table_meta_index_count(_In_ const w_cass_table_meta* pTableMeta)
      {
-         if (!table_meta)
+         const char* _trace_info = "w_cassandra_table_meta_index_count";
+         if (!pTableMeta)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_table_meta_index_count");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return 0;
          }
 
-           return  cass_table_meta_index_count(table_meta);
+           return  cass_table_meta_index_count(pTableMeta);
      }
 
-     const w_Cass_Index_Meta*  w_cassandra_table_meta_index(const w_Cass_Table_Meta* table_meta, size_t index)
+     const w_cass_index_meta*  w_cassandra_table_meta_index(_In_ const w_cass_table_meta* pTableMeta, _In_ size_t pIndex)
      {
-         if (!table_meta)
+         const char* _trace_info = "w_cassandra_table_meta_index";
+         if (!pTableMeta || !pIndex)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_table_meta_index");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
 
-           return cass_table_meta_index(table_meta, index);
+           return cass_table_meta_index(pTableMeta, pIndex);
 
      }
 
-     const w_Cass_Materialized_View_Meta* w_cassandra_table_meta_materialized_view_by_name(const w_Cass_Table_Meta* table_meta,const char* view)
+     const w_cass_materialized_view_meta* w_cassandra_table_meta_materialized_view_by_name(_In_ const w_cass_table_meta* pTableMeta, _In_ const char* pView)
      {
-         if (!table_meta)
+         const char* _trace_info = "w_cassandra_table_meta_materialized_view_by_name";
+         if (!pTableMeta || !pView)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_table_meta_materialized_view_by_name");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
 
-           return cass_table_meta_materialized_view_by_name(table_meta, view);
+           return cass_table_meta_materialized_view_by_name(pTableMeta, pView);
 
      }
 
-     const w_Cass_Materialized_View_Meta* w_cassandra_table_meta_materialized_view_by_name_n(const w_Cass_Table_Meta* table_meta, const char* view,size_t view_length)
+     const w_cass_materialized_view_meta* w_cassandra_table_meta_materialized_view_by_name_n(_In_ const w_cass_table_meta* pTableMeta, _In_ const char* pView, _In_ size_t pViewLength)
      {
-         if (!table_meta)
+         const char* _trace_info = "w_cassandra_table_meta_materialized_view_by_name_n";
+         if (!pTableMeta || !pView || !pViewLength)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_table_meta_materialized_view_by_name_n");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
 
-           return  cass_table_meta_materialized_view_by_name_n(table_meta, view, view_length);
+           return  cass_table_meta_materialized_view_by_name_n(pTableMeta, pView, pViewLength);
 
      }
 
-      size_t w_cassandra_table_meta_materialized_view_count(const w_Cass_Table_Meta* table_meta)
+      size_t w_cassandra_table_meta_materialized_view_count(_In_ const w_cass_table_meta* pTableMeta)
       {
-
-           if (!table_meta)
+          const char* _trace_info = "w_cassandra_table_meta_materialized_view_count";
+           if (!pTableMeta)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_table_meta_materialized_view_count");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return 0;
            }
-          return cass_table_meta_materialized_view_count(table_meta);
+          return cass_table_meta_materialized_view_count(pTableMeta);
 
       }
 
-      const w_Cass_Materialized_View_Meta* w_cassandra_table_meta_materialized_view(const w_Cass_Table_Meta* table_meta, size_t index)
+      const w_cass_materialized_view_meta* w_cassandra_table_meta_materialized_view(_In_ const w_cass_table_meta* pTableMeta, _In_ size_t pIndex)
       {
-          if (!table_meta)
+          const char* _trace_info = "w_cassandra_table_meta_materialized_view";
+          if (!pTableMeta)
           {
-              W_ASSERT(false, "missing parameters!. trace info: w_cassandra_table_meta_materialized_view");
-              return 0;
-          }
-           return cass_table_meta_materialized_view(table_meta, index);
-
-      }
-
-      size_t  w_cassandra_table_meta_partition_key_count(const w_Cass_Table_Meta* table_meta)
-      {
-          if (!table_meta)
-          {
-              W_ASSERT(false, "missing parameters!. trace info: w_cassandra_table_meta_partition_key_count");
-              return 0;
-          }
-           return cass_table_meta_partition_key_count(table_meta);
-      }
-
-      const w_Cass_Column_Meta* w_cassandra_table_meta_partition_key(const w_Cass_Table_Meta* table_meta, size_t index)
-      {
-          if (!table_meta)
-          {
-              W_ASSERT(false, "missing parameters!. trace info: w_cassandra_table_meta_partition_key");
+              W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
               return NULL;
           }
-           return cass_table_meta_partition_key(table_meta, index);
+           return cass_table_meta_materialized_view(pTableMeta, pIndex);
 
       }
 
-      size_t w_cassandra_table_meta_clustering_key_count(const w_Cass_Table_Meta* table_meta)
+      size_t  w_cassandra_table_meta_partition_key_count(_In_ const  w_cass_table_meta* pTableMeta)
       {
-          if (!table_meta)
+          const char* _trace_info = "w_cassandra_table_meta_partition_key_count";
+          if (!pTableMeta)
           {
-              W_ASSERT(false, "missing parameters!. trace info: w_cassandra_table_meta_clustering_key_count");
+              W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
               return 0;
           }
-           return cass_table_meta_clustering_key_count(table_meta);
+           return cass_table_meta_partition_key_count(pTableMeta);
       }
 
-      const w_Cass_Column_Meta*  w_cassandra_table_meta_clustering_key(const w_Cass_Table_Meta* table_meta, size_t index)
+      const w_cass_column_meta* w_cassandra_table_meta_partition_key(_In_ const w_cass_table_meta* pTableMeta, _In_ size_t pIndex)
       {
-          if (!table_meta)
+          const char* _trace_info = "w_cassandra_table_meta_partition_key";
+          if (!pTableMeta || !pIndex)
           {
-              W_ASSERT(false, "missing parameters!. trace info: w_cassandra_table_meta_clustering_key");
+              W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+
+
               return NULL;
           }
-           return  cass_table_meta_clustering_key(table_meta, index);
+           return cass_table_meta_partition_key(pTableMeta, pIndex);
 
       }
 
-       w_Cass_Clustering_Order w_cassandra_table_meta_clustering_key_order(const w_Cass_Table_Meta* table_meta, size_t index)
+      size_t w_cassandra_table_meta_clustering_key_count(_In_ const w_cass_table_meta* pTableMeta)
+      {
+          const char* _trace_info = "w_cassandra_table_meta_clustering_key_count";
+          if (!pTableMeta)
+          {
+              W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+              return 0;
+          }
+           return cass_table_meta_clustering_key_count(pTableMeta);
+      }
+
+      const w_cass_column_meta*  w_cassandra_table_meta_clustering_key(_In_ const w_cass_table_meta* pTableMeta, _In_ size_t pIndex)
+      {
+          const char* _trace_info = "w_cassandra_table_meta_clustering_key";
+          if (!pTableMeta || !pIndex)
+          {
+              W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+              return NULL;
+          }
+           return  cass_table_meta_clustering_key(pTableMeta, pIndex);
+
+      }
+
+
+
+       w_cass_clustering_order w_cassandra_table_meta_clustering_key_order(_In_ const w_cass_table_meta* pTableMeta, _In_ size_t pIndex)
        {
-           if (!table_meta)
+           const char* _trace_info = "w_cassandra_table_meta_clustering_key_order";
+           if (!pTableMeta || !pIndex)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_table_meta_clustering_key_order");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return    cass_table_meta_clustering_key_order(table_meta, index);
+           return    cass_table_meta_clustering_key_order(pTableMeta, pIndex);
 
        }
 
-       const w_Cass_Value* w_cassandra_table_meta_field_by_name(const w_Cass_Table_Meta* table_meta, const char* name)
+       const w_cass_value* w_cassandra_table_meta_field_by_name(_In_ const w_cass_table_meta* pTableMeta, _In_ const char* pName)
        {
-           if (!table_meta)
+           const char* _trace_info = "w_cassandra_table_meta_field_by_name";
+           if (!pTableMeta || !pName)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_table_meta_field_by_name");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return NULL;
            }
-          return  cass_table_meta_field_by_name( table_meta,name);
+          return  cass_table_meta_field_by_name(pTableMeta, pName);
        }
 
-       const w_Cass_Value* w_cassandra_table_meta_field_by_name_n(const w_Cass_Table_Meta* table_meta,const char* name, size_t name_length)
+       const w_cass_value* w_cassandra_table_meta_field_by_name_n(_In_ const w_cass_table_meta* pTableMeta, _In_ const char* pName, _In_ size_t pNameLength)
        {
-           if (!table_meta)
+           const char* _trace_info = "w_cassandra_table_meta_field_by_name_n";
+           if (!pTableMeta || !pName || !pNameLength)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_table_meta_field_by_name_n");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return NULL;
            }
-           return   cass_table_meta_field_by_name_n(table_meta, name, name_length);
+           return   cass_table_meta_field_by_name_n(pTableMeta, pName, pNameLength);
 
        }
 
-       const w_Cass_Column_Meta* w_cassandra_materialized_view_meta_column_by_name(const w_Cass_Materialized_View_Meta* view_meta, const char* column)
+       const w_cass_column_meta* w_cassandra_materialized_view_meta_column_by_name(_In_ const w_cass_materialized_view_meta* pViewMeta, _In_ const char* pColumn)
        {
-
-           if (!view_meta)
+           const char* _trace_info = "w_cassandra_materialized_view_meta_column_by_name";
+           if (!pViewMeta || !pColumn)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_materialized_view_meta_column_by_name");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+
                return NULL;
            }
-           return    cass_materialized_view_meta_column_by_name(view_meta, column);
+           return    cass_materialized_view_meta_column_by_name(pViewMeta, pColumn);
 
        }
 
-       const w_Cass_Column_Meta*  w_cassandra_materialized_view_meta_column_by_name_n(const w_Cass_Materialized_View_Meta* view_meta,const char* column,size_t column_length)
+       const w_cass_column_meta*  w_cassandra_materialized_view_meta_column_by_name_n(_In_ const w_cass_materialized_view_meta* pViewMeta, _In_ const char* pColumn, _In_ size_t pColumnLength)
        {
+           const char* _trace_info = "w_cassandra_materialized_view_meta_column_by_name_n";
 
-           if (!view_meta)
+           if (!pViewMeta || !pColumn || !pColumnLength)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_materialized_view_meta_column_by_name_n");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return NULL;
            }
-           return       cass_materialized_view_meta_column_by_name_n(view_meta, column, column_length);
+           return       cass_materialized_view_meta_column_by_name_n(pViewMeta, pColumn, pColumnLength);
 
        }
 
-       void w_cassandra_materialized_view_meta_name(const w_Cass_Materialized_View_Meta* view_meta,const char** name,size_t* name_length)
+       void w_cassandra_materialized_view_meta_name(_In_ const w_cass_materialized_view_meta* pViewMeta, _Inout_ const char** pName, _Inout_ size_t* pNameLength)
        {
-
-           if (!view_meta)
+           const char* _trace_info = "w_cassandra_materialized_view_meta_name";
+           if (!pViewMeta || !pName || !pNameLength)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_materialized_view_meta_name");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
            }
-           cass_materialized_view_meta_name(view_meta, name, name_length);
+           cass_materialized_view_meta_name(pViewMeta, pName, pNameLength);
 
        }
 
-       const w_Cass_Table_Meta* w_cassandra_materialized_view_meta_base_table(const w_Cass_Materialized_View_Meta* view_meta)
+       const w_cass_table_meta* w_cassandra_materialized_view_meta_base_table(_In_ const w_cass_materialized_view_meta* pViewMeta)
        {
-
-           if (!view_meta)
+           const char* _trace_info = "w_cassandra_materialized_view_meta_base_table";
+           if (!pViewMeta)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_materialized_view_meta_base_table");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return NULL;
            }
-           return cass_materialized_view_meta_base_table(view_meta);
+           return cass_materialized_view_meta_base_table(pViewMeta);
 
        }
 
-       size_t  w_cassandra_materialized_view_meta_column_count(const w_Cass_Materialized_View_Meta* view_meta)
+       size_t  w_cassandra_materialized_view_meta_column_count(_In_ const w_cass_materialized_view_meta* pViewMeta)
        {
-           if (!view_meta)
+           const char* _trace_info = "w_cassandra_materialized_view_meta_column_count";
+           if (!pViewMeta)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_materialized_view_meta_column_count");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return 0;
            }
-           return   cass_materialized_view_meta_column_count(view_meta);
+           return   cass_materialized_view_meta_column_count(pViewMeta);
 
        }
 
-       const w_Cass_Column_Meta*  w_cassandra_materialized_view_meta_column(const w_Cass_Materialized_View_Meta* view_meta,size_t index)
+       const w_cass_column_meta*  w_cassandra_materialized_view_meta_column(_In_ const w_cass_materialized_view_meta* pViewMeta, _In_ size_t pIndex)
        {
-           if (!view_meta)
+           const char* _trace_info = "w_cassandra_materialized_view_meta_column";
+           if (!pViewMeta || !pIndex)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_materialized_view_meta_column");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return NULL;
            }
-           return  cass_materialized_view_meta_column(view_meta, index);
+           return  cass_materialized_view_meta_column(pViewMeta, pIndex);
 
        }
 
-       size_t  w_cassandra_materialized_view_meta_partition_key_count(const w_Cass_Materialized_View_Meta*  view_meta)
+       size_t  w_cassandra_materialized_view_meta_partition_key_count(_In_ const w_cass_materialized_view_meta* pViewMeta)
        {
-           if (!view_meta)
+           const char* _trace_info = "w_cassandra_materialized_view_meta_partition_key_count";
+           if (!pViewMeta)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_materialized_view_meta_partition_key_count");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return 0;
            }
 
-           return  cass_materialized_view_meta_partition_key_count(view_meta);
+           return  cass_materialized_view_meta_partition_key_count(pViewMeta);
 
        }
 
-       const w_Cass_Column_Meta* w_cassandra_materialized_view_meta_partition_key(const w_Cass_Materialized_View_Meta* view_meta, size_t index)
+       const w_cass_column_meta* w_cassandra_materialized_view_meta_partition_key(_In_ const w_cass_materialized_view_meta* pViewMeta, _In_ size_t pIndex)
        {
-           if (!view_meta)
+           const char* _trace_info = "w_cassandra_materialized_view_meta_partition_key";
+           if (!pViewMeta || !pIndex)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_materialized_view_meta_partition_key");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return NULL;
            }
-           return   cass_materialized_view_meta_partition_key(view_meta, index);
+           return   cass_materialized_view_meta_partition_key(pViewMeta, pIndex);
 
        }
 
-       size_t  w_cassandra_materialized_view_meta_clustering_key_count(const w_Cass_Materialized_View_Meta* view_meta)
+       size_t  w_cassandra_materialized_view_meta_clustering_key_count(_In_ const w_cass_materialized_view_meta* pViewMeta)
        {
-           if (!view_meta)
+           const char* _trace_info = "w_cassandra_materialized_view_meta_clustering_key_count";
+           if (!pViewMeta)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_materialized_view_meta_clustering_key_count");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return 0;
            }
-           return  cass_materialized_view_meta_clustering_key_count(view_meta);
+           return  cass_materialized_view_meta_clustering_key_count(pViewMeta);
 
        }
 
-       const w_Cass_Column_Meta*  w_cassandra_materialized_view_meta_clustering_key(const w_Cass_Materialized_View_Meta* view_meta,size_t index)
+       const w_cass_column_meta*  w_cassandra_materialized_view_meta_clustering_key(_In_ const w_cass_materialized_view_meta* pViewMeta, _In_ size_t pIndex)
        {
-           if (!view_meta)
+           const char* _trace_info = "w_cassandra_materialized_view_meta_clustering_key";
+           if (!pViewMeta || !pIndex)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_materialized_view_meta_clustering_key");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return NULL;
            }
-          return  cass_materialized_view_meta_clustering_key(view_meta, index);
+          return  cass_materialized_view_meta_clustering_key(pViewMeta, pIndex);
 
        }
 
-       w_Cass_Clustering_Order w_cassandra_materialized_view_meta_clustering_key_order(const w_Cass_Materialized_View_Meta* view_meta, size_t index)
+       w_cass_clustering_order w_cassandra_materialized_view_meta_clustering_key_order(_In_ const w_cass_materialized_view_meta* pViewMeta, _In_ size_t pIndex)
        {
-
-           if (!view_meta)
+           const char* _trace_info = "w_cassandra_materialized_view_meta_clustering_key_order";
+           if (!pViewMeta)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_materialized_view_meta_clustering_key_order");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return  cass_materialized_view_meta_clustering_key_order(view_meta, index);
+           return  cass_materialized_view_meta_clustering_key_order(pViewMeta, pIndex);
 
        }
 
-       const w_Cass_Value* w_cassandra_materialized_view_meta_field_by_name(const w_Cass_Materialized_View_Meta* view_meta, const char* name)
+       const w_cass_value* w_cassandra_materialized_view_meta_field_by_name(_In_ const w_cass_materialized_view_meta* pViewMeta, _In_ const char* pName)
        {
-           if (!view_meta || !name )
+           const char* _trace_info = "w_cassandra_materialized_view_meta_field_by_name";
+           if (!pViewMeta || !pName)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_materialized_view_meta_field_by_name");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return NULL;
            }
 
            
-           return  cass_materialized_view_meta_field_by_name (view_meta, name);
+           return  cass_materialized_view_meta_field_by_name (pViewMeta, pName);
 
        }
 
-       const w_Cass_Value*  w_cassandra_materialized_view_meta_field_by_name_n(const w_Cass_Materialized_View_Meta* view_meta,const char* name,size_t name_length)
+       const w_cass_value*  w_cassandra_materialized_view_meta_field_by_name_n(_In_ const w_cass_materialized_view_meta* pViewMeta, _In_ const char* pName, _In_ size_t pNameLength)
        {
-           if (!view_meta || !name )
+           const char* _trace_info = "w_cassandra_materialized_view_meta_field_by_name_n";
+           if (!pViewMeta || !pName || !pNameLength)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_materialized_view_meta_field_by_name_n");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return NULL;
            }
-           return    cass_materialized_view_meta_field_by_name_n(view_meta, name, name_length);
+           return    cass_materialized_view_meta_field_by_name_n(pViewMeta, pName, pNameLength);
 
        }
 
-       void w_cassandra_column_meta_name(const w_Cass_Column_Meta* column_meta, const char** name, size_t* name_length)
+       void w_cassandra_column_meta_name(_In_ const w_cass_column_meta* pColumnMeta, _Inout_ const char** pName, _Inout_ size_t* pNameLength)
        {
-           if (!column_meta)
+           const char* _trace_info = "w_cassandra_column_meta_name";
+           if (!pColumnMeta || !pName || !pNameLength)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_column_meta_name");
-               
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+
            }
-           cass_column_meta_name(column_meta, name, name_length);
+           cass_column_meta_name(pColumnMeta, pName, pNameLength);
 
        }
 
-       w_Cass_Column_Type  w_cassandra_column_meta_type(const w_Cass_Column_Meta* column_meta)
+       w_cass_column_type  w_cassandra_column_meta_type(_In_ const w_cass_column_meta* pColumnMeta)
        {
-           if (!column_meta)
+           const char* _trace_info = "w_cassandra_column_meta_type";
+           if (!pColumnMeta)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_column_meta_type");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
 
            }
-           return  cass_column_meta_type(column_meta);
+           return  cass_column_meta_type(pColumnMeta);
 
        }
 
-       const w_Cass_Data_Type* w_cassandra_column_meta_data_type(const w_Cass_Column_Meta* column_meta)
+       const w_cass_data_type* w_cassandra_column_meta_data_type(_In_ const w_cass_column_meta* pColumnMeta)
        {
-           if (!column_meta)
+           const char* _trace_info = "w_cassandra_column_meta_data_type";
+           if (!pColumnMeta)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_column_meta_data_type");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return NULL;
 
            }
-           return   cass_column_meta_data_type(column_meta);
+           return   cass_column_meta_data_type(pColumnMeta);
 
        }
 
-       const w_Cass_Value* w_cassandra_column_meta_field_by_name(const w_Cass_Column_Meta* column_meta, const char* name)
+       const w_cass_value* w_cassandra_column_meta_field_by_name(_In_ const w_cass_column_meta* pColumnMeta, _In_ const char* pName)
        {
-           if (!column_meta)
+           const char* _trace_info = "w_cassandra_column_meta_field_by_name";
+           if (!pColumnMeta || !pName)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_column_meta_field_by_name");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return NULL;
 
            }
-           return   cass_column_meta_field_by_name(column_meta, name);
+           return   cass_column_meta_field_by_name(pColumnMeta, pName);
 
        }
 
-       const w_Cass_Value* w_cassandra_column_meta_field_by_name_n(const w_Cass_Column_Meta* column_meta, const char* name, size_t name_length)
+       const w_cass_value* w_cassandra_column_meta_field_by_name_n(_In_ const w_cass_column_meta* pColumnMeta, _In_  const char* pName, _In_ size_t pNameLength)
        {
-           if (!column_meta)
+           const char* _trace_info = "w_cassandra_column_meta_field_by_name_n";
+           if (!pColumnMeta || !pName || !pNameLength)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_column_meta_field_by_name_n");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return NULL;
 
            }
-           return     cass_column_meta_field_by_name_n(column_meta, name, name_length);
+           return     cass_column_meta_field_by_name_n(pColumnMeta, pName, pNameLength);
 
        }
 
-       void w_cassandra_index_meta_name(const w_Cass_Index_Meta* index_meta, const char** name, size_t* name_length)
+       void w_cassandra_index_meta_name(_In_ const w_cass_index_meta* pIndexMeta, _Inout_ const char** pName, _Inout_ size_t* pNameLength)
        {
-           if (!index_meta)
+           const char* _trace_info = "w_cassandra_index_meta_name";
+           if (!pIndexMeta || !pName || !pNameLength)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_index_meta_name");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
 
            }
-           cass_index_meta_name(index_meta, name, name_length);
+           cass_index_meta_name(pIndexMeta, pName, pNameLength);
 
        }
 
-       w_Cass_Index_Type w_cassandra_index_meta_type(const w_Cass_Index_Meta* index_meta)
+       w_cass_index_type w_cassandra_index_meta_type(_In_ const w_cass_index_meta* pIndexMeta)
        {
-           if (!index_meta)
+           const char* _trace_info = "w_cassandra_index_meta_type";
+           if (!pIndexMeta)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_index_meta_type");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
 
            }
-           return   cass_index_meta_type(index_meta);
+           return   cass_index_meta_type(pIndexMeta);
 
        }
 
-       void  w_cassandra_index_meta_target(const w_Cass_Index_Meta* index_meta,const char** target, size_t* target_length)
+       void  w_cassandra_index_meta_target(_In_ const w_cass_index_meta* pIndexMeta, _Inout_ const char** pTarget, _Inout_ size_t* pTargetLength)
        {
-           if (!index_meta)
+           const char* _trace_info = "w_cassandra_index_meta_target";
+           if (!pIndexMeta || !pTarget || !pTargetLength) 
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_index_meta_target");
-              
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+
 
            }
-           cass_index_meta_target(index_meta, target, target_length);
+           cass_index_meta_target(pIndexMeta, pTarget, pTargetLength);
 
        }
 
-       const w_Cass_Value* w_cassandra_index_meta_options(const w_Cass_Index_Meta* index_meta)
+       const w_cass_value* w_cassandra_index_meta_options(_In_ const w_cass_index_meta* pIndexMeta)
        {
-           if (!index_meta)
+           const char* _trace_info = "w_cassandra_index_meta_options";
+           if (!pIndexMeta)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_index_meta_options");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return NULL;
 
            }
-           return cass_index_meta_options(index_meta);
+           return cass_index_meta_options(pIndexMeta);
 
        }
 
-       const w_Cass_Value* w_cassandra_index_meta_field_by_name(const w_Cass_Index_Meta* index_meta,const char* name)
+       const w_cass_value* w_cassandra_index_meta_field_by_name(_In_ const w_cass_index_meta* pIndexMeta, _In_ const char* pName)
        {
-
-           if (!index_meta)
+           const char* _trace_info = "w_cassandra_index_meta_field_by_name";
+           if (!pIndexMeta || !pName)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_index_meta_field_by_name");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+
                return NULL;
 
            }
-           return  cass_index_meta_field_by_name(index_meta, name);
+           return  cass_index_meta_field_by_name(pIndexMeta, pName);
 
        }
 
-       const w_Cass_Value* w_cassandra_index_meta_field_by_name_n(const w_Cass_Index_Meta* index_meta, const char* name, size_t name_length)
+       const w_cass_value* w_cassandra_index_meta_field_by_name_n(_In_ const  w_cass_index_meta* pIndexMeta, _In_ const char* pName, _In_ size_t pNameLength)
        {
-
-           if (!index_meta)
+           const char* _trace_info = "w_cassandra_index_meta_field_by_name_n";
+           if (!pIndexMeta || !pName || !pNameLength)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_index_meta_field_by_name_n");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return NULL;
 
            }
-           return   cass_index_meta_field_by_name_n(index_meta, name, name_length);
+           return   cass_index_meta_field_by_name_n(pIndexMeta, pName, pNameLength);
 
        }
 
-       void w_cassandra_function_meta_name(const w_Cass_Function_Meta* function_meta,const char** name, size_t* name_length)
+       void w_cassandra_function_meta_name(_In_ const w_cass_function_meta* pFunctionMeta, _Inout_ const char** pName, _Inout_  size_t* pNameLength)
        {
 
-
-           if (!function_meta)
+           const char* _trace_info = "w_cassandra_function_meta_name";
+           if (!pFunctionMeta || !pName || !pNameLength)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_function_meta_name");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
 
            }
-           cass_function_meta_name(function_meta, name, name_length);
+           cass_function_meta_name(pFunctionMeta, pName, pNameLength);
 
        }
 
-       void w_cassandra_function_meta_full_name(const w_Cass_Function_Meta* function_meta, const char** full_name,size_t* full_name_length)
+       void w_cassandra_function_meta_full_name(_In_ const w_cass_function_meta* pFunctionMeta, _Inout_ const char** pFullName, _Inout_ size_t* pFullNameLength)
        {
-           if (!function_meta)
+           const char* _trace_info = "w_cassandra_function_meta_full_name";
+           if (!pFunctionMeta || !pFullName || !pFullNameLength)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_function_meta_full_name");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
 
            }
-           cass_function_meta_full_name(function_meta, full_name, full_name_length);
+           cass_function_meta_full_name(pFunctionMeta, pFullName, pFullNameLength);
 
        }
 
-       void  w_cassandra_function_meta_body(const w_Cass_Function_Meta* function_meta,const char** body,size_t* body_length)
+       void  w_cassandra_function_meta_body(_In_ const w_cass_function_meta* pFunctionMeta, _Inout_ const char** pBody, _Inout_ size_t* pBodyLength)
        {
-           if (!function_meta)
+           const char* _trace_info = "w_cassandra_function_meta_body";
+           if (!pFunctionMeta || !pBody || !pBodyLength)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_function_meta_body");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
 
            }
-           cass_function_meta_body(function_meta, body, body_length);
+           cass_function_meta_body(pFunctionMeta, pBody, pBodyLength);
 
        }
 
-       void w_cassandra_function_meta_language(const w_Cass_Function_Meta* function_meta, const char** language,  size_t* language_length)
+       void w_cassandra_function_meta_language(_In_ const w_cass_function_meta* pFunctionMeta, _Inout_ const char** pLanguage, _Inout_  size_t* pLanguageLength)
        {
-           if (!function_meta)
+           const char* _trace_info = "w_cassandra_function_meta_language";
+           if (!pFunctionMeta || !pLanguage || !pLanguageLength)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_function_meta_language");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
 
            }
-           cass_function_meta_language(function_meta, language, language_length);
+           cass_function_meta_language(pFunctionMeta, pLanguage, pLanguageLength);
 
        }
 
-       w_bool_t  w_cassandra_function_meta_called_on_null_input(const w_Cass_Function_Meta* function_meta)
+       w_bool_t  w_cassandra_function_meta_called_on_null_input(_In_ const w_cass_function_meta* pFunctionMeta)
        {
-
-           if (!function_meta)
+           const char* _trace_info = "w_cassandra_function_meta_called_on_null_input";
+           if (!pFunctionMeta)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_function_meta_called_on_null_input");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return false;
            }
-           return cass_function_meta_called_on_null_input(function_meta);
+           return cass_function_meta_called_on_null_input(pFunctionMeta);
 
        }
 
-       size_t w_cassandra_function_meta_argument_count(const w_Cass_Function_Meta* function_meta)
+       size_t w_cassandra_function_meta_argument_count(_In_ const w_cass_function_meta* pFunctionMeta)
        {
-           if (!function_meta)
+           const char* _trace_info = "w_cassandra_function_meta_argument_count";
+           if (!pFunctionMeta)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_function_meta_argument_count");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return 0;
            }
-           return   cass_function_meta_argument_count(function_meta);
+           return   cass_function_meta_argument_count(pFunctionMeta);
 
        }
 
-       w_Cass_Error  w_cassandra_function_meta_argument(const w_Cass_Function_Meta* function_meta, size_t index,const char** name, size_t* name_length, const w_Cass_Data_Type** type)
+       w_Cass_Error  w_cassandra_function_meta_argument(_In_ const w_cass_function_meta* pFunctionMeta, _In_ size_t pIndex, _Inout_ const char** pName, _Inout_ size_t* pNameLength, _Inout_ const w_cass_data_type** pType)
        {
-           if (!function_meta)
+           const char* _trace_info = "w_cassandra_function_meta_argument";
+           if (!pFunctionMeta || !pIndex || !pName || !pNameLength || !pType)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_function_meta_argument");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_function_meta_argument(function_meta, index, name, name_length, type);
+           return cass_function_meta_argument(pFunctionMeta, pIndex, pName, pNameLength, pType);
 
        }
 
-       const w_Cass_Data_Type*  w_cassandra_function_meta_argument_type_by_name(const w_Cass_Function_Meta* function_meta, const char* name)
+       const w_cass_data_type*  w_cassandra_function_meta_argument_type_by_name(_In_ const w_cass_function_meta* pFunctionMeta, _In_ const char* pName)
        {
-           if (!function_meta || !name)
+           const char* _trace_info = "w_cassandra_function_meta_argument_type_by_name";
+           if (!pFunctionMeta || !pName)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_function_meta_argument_type_by_name");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return NULL;
            }
-           return   cass_function_meta_argument_type_by_name(function_meta, name);
+           return   cass_function_meta_argument_type_by_name(pFunctionMeta, pName);
 
        }
 
-       const w_Cass_Data_Type*   w_cassandra_function_meta_argument_type_by_name_n(const w_Cass_Function_Meta* function_meta, const char* name, size_t name_length)
+       const w_cass_data_type*   w_cassandra_function_meta_argument_type_by_name_n(_In_ const w_cass_function_meta* pFunctionMeta, _In_ const char* pName, _In_ size_t pNameLength)
        {
-           if (!function_meta || !name)
+           const char* _trace_info = "w_cassandra_function_meta_argument_type_by_name_n";
+           if (!pFunctionMeta || !pName || !pNameLength)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_function_meta_argument_type_by_name_n");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return NULL;
            }
-           return   cass_function_meta_argument_type_by_name_n(function_meta, name, name_length);
+           return   cass_function_meta_argument_type_by_name_n(pFunctionMeta, pName, pNameLength);
 
        }
 
-       const w_Cass_Data_Type*  w_cassandra_function_meta_return_type(const w_Cass_Function_Meta* function_meta)
+       const w_cass_data_type*  w_cassandra_function_meta_return_type(_In_ const w_cass_function_meta* pFunctionMeta)
        {
-           if (!function_meta )
+           const char* _trace_info = "w_cassandra_function_meta_return_type";
+           if (!pFunctionMeta)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_function_meta_return_type");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return NULL;
            }
-           return cass_function_meta_return_type( function_meta);
+           return cass_function_meta_return_type(pFunctionMeta);
 
        }
 
-       const w_Cass_Value* w_cassandra_function_meta_field_by_name(const w_Cass_Function_Meta* function_meta, const char* name) 
+       const w_cass_value* w_cassandra_function_meta_field_by_name(_In_ const w_cass_function_meta* pFunctionMeta, _In_ const char* pName)
        {
-           if (!function_meta || !name)
+           const char* _trace_info = "w_cassandra_function_meta_field_by_name";
+           if (!pFunctionMeta || !pName)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_function_meta_field_by_name");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return NULL;
            }
-           return cass_function_meta_field_by_name(function_meta, name);
+           return cass_function_meta_field_by_name(pFunctionMeta, pName);
 
        }
 
-       const w_Cass_Value*  w_cassandra_function_meta_field_by_name_n(const w_Cass_Function_Meta* function_meta, const char* name, size_t name_length)
+       const w_cass_value*  w_cassandra_function_meta_field_by_name_n(_In_ const w_cass_function_meta* pFunctionMeta, _In_ const char* pName, _In_ size_t pNameLength)
        {
-           if (!function_meta || !name)
+           const char* _trace_info = "w_cassandra_function_meta_field_by_name_n";
+           if (!pFunctionMeta || !pName || !pNameLength)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_function_meta_field_by_name_n");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return NULL;
            }
-           return cass_function_meta_field_by_name_n(function_meta, name, name_length);
+           return cass_function_meta_field_by_name_n(pFunctionMeta, pName, pNameLength);
 
        }
 
-       void w_cassandra_aggregate_meta_name(const w_Cass_Aggregate_Meta* aggregate_meta,const char** name,size_t* name_length)
+       void w_cassandra_aggregate_meta_name(_In_ const w_cass_aggregate_meta* pAggregateMeta, _Inout_ const char** pName, _Inout_ size_t* pNameLength)
        {
-           if (!aggregate_meta || !name)
+           const char* _trace_info = "w_cassandra_aggregate_meta_name";
+           if (!pAggregateMeta || !pName || !pNameLength)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_aggregate_meta_name");
-              
-           }
-           cass_aggregate_meta_name(aggregate_meta, name, name_length);
-
-       }
-
-       void w_cassandra_aggregate_meta_full_name(const w_Cass_Aggregate_Meta* aggregate_meta, const char** full_name, size_t* full_name_length)
-       {
-
-           if (!aggregate_meta )
-           {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_aggregate_meta_full_name");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
 
            }
-           cass_aggregate_meta_full_name(aggregate_meta, full_name, full_name_length);
+           cass_aggregate_meta_name(pAggregateMeta, pName, pNameLength);
 
        }
 
-       size_t w_cassandra_aggregate_meta_argument_count(const w_Cass_Aggregate_Meta* aggregate_meta)
+       void w_cassandra_aggregate_meta_full_name(_In_ const w_cass_aggregate_meta* pAggregateMeta, _Inout_ const char** pFullName, _Inout_ size_t* pFullNameLength)
        {
-           if (!aggregate_meta)
+           const char* _trace_info = "w_cassandra_aggregate_meta_full_name";
+
+           if (!pAggregateMeta || !pFullName || !pFullNameLength)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_aggregate_meta_argument_count");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+
+           }
+           cass_aggregate_meta_full_name(pAggregateMeta, pFullName, pFullNameLength);
+
+       }
+
+       size_t w_cassandra_aggregate_meta_argument_count(_In_ const w_cass_aggregate_meta* pAggregateMeta)
+       {
+           const char* _trace_info = "w_cassandra_aggregate_meta_argument_count";
+           if (!pAggregateMeta)
+           {
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return 0;
            }
-           return cass_aggregate_meta_argument_count(aggregate_meta);
+           return cass_aggregate_meta_argument_count(pAggregateMeta);
 
        }
 
-       const w_Cass_Data_Type* w_cassandra_aggregate_meta_argument_type(const w_Cass_Aggregate_Meta* aggregate_meta, size_t index)
+       const w_cass_data_type* w_cassandra_aggregate_meta_argument_type(_In_ const w_cass_aggregate_meta* pAggregateMeta, _In_ size_t pIndex)
        {
-           if (!aggregate_meta)
+           const char* _trace_info = "w_cassandra_aggregate_meta_argument_type";
+           if (!pAggregateMeta || !pIndex)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_aggregate_meta_argument_type");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+
                return NULL;
            }
-           return cass_aggregate_meta_argument_type(aggregate_meta, index);
+           return cass_aggregate_meta_argument_type(pAggregateMeta, pIndex);
 
        }
-       const w_Cass_Data_Type* w_cassandra_aggregate_meta_return_type(const w_Cass_Aggregate_Meta* aggregate_meta)
+       const w_cass_data_type* w_cassandra_aggregate_meta_return_type(_In_ const w_cass_aggregate_meta* pAggregateMeta)
        {
-           if (!aggregate_meta)
+           const char* _trace_info = "w_cassandra_aggregate_meta_return_type";
+           if (!pAggregateMeta)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_aggregate_meta_return_type");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return NULL;
            }
-           return  cass_aggregate_meta_return_type(aggregate_meta);
+           return  cass_aggregate_meta_return_type(pAggregateMeta);
 
        }
 
-       const w_Cass_Data_Type* w_cassandra_aggregate_meta_state_type(const w_Cass_Aggregate_Meta* aggregate_meta)
+       const w_cass_data_type* w_cassandra_aggregate_meta_state_type(_In_ const w_cass_aggregate_meta* pAggregateMeta)
        {
-           if (!aggregate_meta)
+           const char* _trace_info = "w_cassandra_aggregate_meta_state_type";
+           if (!pAggregateMeta)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_aggregate_meta_state_type");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return NULL;
            }
-         return   cass_aggregate_meta_state_type(aggregate_meta);
+         return   cass_aggregate_meta_state_type(pAggregateMeta);
 
        }
 
-       const w_Cass_Function_Meta* w_cassandra_aggregate_meta_state_func(const w_Cass_Aggregate_Meta* aggregate_meta)
+       const w_cass_function_meta* w_cassandra_aggregate_meta_state_func(_In_ const w_cass_aggregate_meta* pAggregateMeta)
        {
-
-           if (!aggregate_meta)
+           const char* _trace_info = "w_cassandra_aggregate_meta_state_func";
+           if (!pAggregateMeta)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_aggregate_meta_state_func");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return NULL;
            }
-           return cass_aggregate_meta_state_func(aggregate_meta);
+           return cass_aggregate_meta_state_func(pAggregateMeta);
 
        }
 
-       const w_Cass_Function_Meta* w_cassandra_aggregate_meta_final_func(const w_Cass_Aggregate_Meta* aggregate_meta)
+       const w_cass_function_meta* w_cassandra_aggregate_meta_final_func(_In_ const w_cass_aggregate_meta* pAggregateMeta)
        {
-           if (!aggregate_meta)
+           const char* _trace_info = "w_cassandra_aggregate_meta_final_func";
+           if (!pAggregateMeta)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_aggregate_meta_final_func");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return NULL;
            }
-           return cass_aggregate_meta_final_func(aggregate_meta);
+           return cass_aggregate_meta_final_func(pAggregateMeta);
 
        }
 
-       const w_Cass_Value* w_cassandra_aggregate_meta_init_cond(const w_Cass_Aggregate_Meta* aggregate_meta)
+       const w_cass_value* w_cassandra_aggregate_meta_init_cond(_In_ const w_cass_aggregate_meta* pAggregateMeta)
        {
-           if (!aggregate_meta)
+           const char* _trace_info = "w_cassandra_aggregate_meta_init_cond";
+           if (!pAggregateMeta)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_aggregate_meta_init_cond");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return NULL;
            }
-           return  cass_aggregate_meta_init_cond(aggregate_meta);
+           return  cass_aggregate_meta_init_cond(pAggregateMeta);
 
        }
 
 
-       const w_Cass_Value* w_cassandra_aggregate_meta_field_by_name(const w_Cass_Aggregate_Meta* aggregate_meta,const char* name)
+       const w_cass_value* w_cassandra_aggregate_meta_field_by_name(_In_ const w_cass_aggregate_meta* pAggregateMeta, _In_ const char* pName)
        {
-           if (!aggregate_meta || !name)
+           const char* _trace_info = "w_cassandra_aggregate_meta_field_by_name";
+           if (!pAggregateMeta || !pName)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_aggregate_meta_field_by_name");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return NULL;
            }
-           return  cass_aggregate_meta_field_by_name(aggregate_meta, name);
+           return  cass_aggregate_meta_field_by_name(pAggregateMeta, pName);
 
        }
 
-       const w_Cass_Value*  w_cassandra_aggregate_meta_field_by_name_n(const w_Cass_Aggregate_Meta* aggregate_meta,const char* name,size_t name_length)
+       const w_cass_value*  w_cassandra_aggregate_meta_field_by_name_n(_In_ const w_cass_aggregate_meta* pAggregateMeta, _In_ const char* pName, _In_ size_t pNameLength)
        {
-           if (!aggregate_meta || !name)
+           const char* _trace_info = "w_cassandra_aggregate_meta_field_by_name_n";
+           if (!pAggregateMeta || !pName || !pNameLength)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_aggregate_meta_field_by_name_n");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return NULL;
            }
-           return   cass_aggregate_meta_field_by_name_n(aggregate_meta, name, name_length);
+           return   cass_aggregate_meta_field_by_name_n(pAggregateMeta, pName, pNameLength);
 
        }
 
-       w_Cass_Ssl* w_cassandra_ssl_new()
+       w_cass_ssl* w_cassandra_ssl_new()
        {
           return  cass_ssl_new();
        }
 
-       w_Cass_Ssl* w_cassandra_ssl_new_no_lib_init()
+       w_cass_ssl* w_cassandra_ssl_new_no_lib_init()
        {
            return cass_ssl_new_no_lib_init();
        }
 
-       void w_cassandra_ssl_free(w_Cass_Ssl* ssl)
+       void w_cassandra_ssl_free(_In_ w_cass_ssl* pSsl)
        {
-           if (!ssl)
+           const char* _trace_info = "w_cassandra_ssl_free";
+           if (!pSsl)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_ssl_free");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
            }
-           cass_ssl_free(ssl);
+           cass_ssl_free(pSsl);
 
        }
 
-       w_Cass_Error w_cassandra_ssl_add_trusted_cert(w_Cass_Ssl* ssl,const char* cert)
+       w_Cass_Error w_cassandra_ssl_add_trusted_cert(_In_ w_cass_ssl* pSsl, _In_ const char* pCert)
        {
-           if (!ssl || !cert)
+           const char* _trace_info = "w_cassandra_ssl_add_trusted_cert";
+           if (!pSsl || !pCert)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_ssl_add_trusted_cert");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+
                return -1;
            }
-           return  cass_ssl_add_trusted_cert(ssl, cert);
+           return  cass_ssl_add_trusted_cert(pSsl, pCert);
 
        }
 
-       w_Cass_Error  w_cassandra_ssl_add_trusted_cert_n(w_Cass_Ssl* ssl, const char* cert, size_t cert_length)
+       w_Cass_Error  w_cassandra_ssl_add_trusted_cert_n(_In_ w_cass_ssl* pSsl, _In_  const char* pCert, _In_ size_t pCertLength)
        {
-           if (!ssl || !cert)
+           const char* _trace_info = "w_cassandra_ssl_add_trusted_cert_n";
+           if (!pSsl || !pCert || !pCertLength)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_ssl_add_trusted_cert_n");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_ssl_add_trusted_cert_n(ssl, cert, cert_length);
+           return cass_ssl_add_trusted_cert_n(pSsl, pCert, pCertLength);
 
        }
 
-       void  w_cassandra_ssl_set_verify_flags(w_Cass_Ssl* ssl,int flags)
+       void  w_cassandra_ssl_set_verify_flags(_In_ w_cass_ssl* pSsl, _In_ int pFlags)
        {
-           if (!ssl )
+           const char* _trace_info = "w_cassandra_ssl_set_verify_flags";
+           if (!pSsl)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_ssl_set_verify_flags");
-               
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+
            }
-           cass_ssl_set_verify_flags(ssl, flags);
+           cass_ssl_set_verify_flags(pSsl, pFlags);
 
        }
 
-       w_Cass_Error  w_cassandra_ssl_set_cert(w_Cass_Ssl* ssl, const char* cert)
+       w_Cass_Error  w_cassandra_ssl_set_cert(_In_ w_cass_ssl* pSsl, _In_ const char* pCert)
        {
-           if (!ssl || !cert)
+           const char* _trace_info = "w_cassandra_ssl_set_cert";
+           if (!pSsl || !pCert)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_ssl_set_cert");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_ssl_set_cert(ssl, cert);
+           return cass_ssl_set_cert(pSsl, pCert);
 
        }
 
-       w_Cass_Error w_cassandra_ssl_set_cert_n(w_Cass_Ssl* ssl, const char* cert, size_t cert_length)
+       w_Cass_Error w_cassandra_ssl_set_cert_n(_In_ w_cass_ssl* pSsl, _In_  const char* pCert, _In_ size_t pCertLength)
        {
-           if (!ssl || !cert)
+           const char* _trace_info = "w_cassandra_ssl_set_cert_n";
+           if (!pSsl || !pCert || !pCertLength)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_ssl_set_cert_n");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_ssl_set_cert_n(ssl, cert, cert_length);
+           return cass_ssl_set_cert_n(pSsl, pCert, pCertLength);
 
        }
 
-       w_Cass_Error w_cassandra_ssl_set_private_key(w_Cass_Ssl* ssl, const char* key, const char* password)
+       w_Cass_Error w_cassandra_ssl_set_private_key(_In_ w_cass_ssl* pSsl, _In_ const char* pKey, _In_ const char* pPassword)
        {
-
-           if (!ssl || !key)
+           const char* _trace_info = "w_cassandra_ssl_set_private_key";
+           if (!pSsl || !pKey || !pPassword)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_ssl_set_private_key");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return  cass_ssl_set_private_key(ssl, key, password);
+           return  cass_ssl_set_private_key(pSsl, pKey, pPassword);
 
        }
 
-       w_Cass_Error w_cassandra_ssl_set_private_key_n(w_Cass_Ssl* ssl, const char* key, size_t key_length,  const char* password, size_t password_length)
+       w_Cass_Error w_cassandra_ssl_set_private_key_n(_In_ w_cass_ssl* pSsl, _In_ const char* pKey, _In_ size_t pKeyLength, _In_  const char* pPassword, _In_ size_t pPasswordLength)
        {
-           if (!ssl || !key)
+           const char* _trace_info = "w_cassandra_ssl_set_private_key_n";
+           if (!pSsl || !pKey || !pKeyLength || !pPassword || !pPasswordLength)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_ssl_set_private_key_n");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
            
-           return cass_ssl_set_private_key_n(ssl, key, key_length, password, password_length);
+           return cass_ssl_set_private_key_n(pSsl, pKey, pKeyLength, pPassword, pPasswordLength);
        }
 
-       void w_cassandra_authenticator_address(const W_Cass_Authenticator* auth, w_CassInet* address)
+       void w_cassandra_authenticator_address(_In_ const w_cass_authenticator* pAuth, _Inout_ w_cass_inet* pAddress)
        {
-           if (!auth)
+           const char* _trace_info = "w_cassandra_authenticator_address";
+           if (!pAuth || !pAddress)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_authenticator_address");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
            }
-           cass_authenticator_address(auth, address);
+           cass_authenticator_address(pAuth, pAddress);
 
        }
 
 
-       const char*  w_cassandra_authenticator_hostname(const W_Cass_Authenticator* auth,size_t* length)
+       const char*  w_cassandra_authenticator_hostname(_In_ const w_cass_authenticator* pAuth, _Inout_ size_t* pLength)
        {
-
-           if (!auth)
+           const char* _trace_info = "w_cassandra_authenticator_hostname";
+           if (!pAuth || !pLength)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_authenticator_hostname");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return NULL;
            }
-           return  cass_authenticator_hostname(auth, length);
+           return  cass_authenticator_hostname(pAuth, pLength);
 
        }
 
 
-       const char* w_cassandra_authenticator_class_name(const W_Cass_Authenticator* auth, size_t* length)
+       const char* w_cassandra_authenticator_class_name(_In_ const w_cass_authenticator* pAuth, _Inout_ size_t* pLength)
        {
-
-           if (!auth)
+           const char* _trace_info = "w_cassandra_authenticator_class_name";
+           if (!pAuth || !pLength)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_authenticator_class_name");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return NULL;
            }
-           return cass_authenticator_class_name(auth, length);
+           return cass_authenticator_class_name(pAuth, pLength);
 
        }
 
 
-       void* w_cassandra_authenticator_exchange_data(W_Cass_Authenticator* auth)
+       void* w_cassandra_authenticator_exchange_data(_In_ w_cass_authenticator* pAuth)
        {
-           if (!auth)
+           const char* _trace_info = "w_cassandra_authenticator_exchange_data";
+           if (!pAuth)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_authenticator_exchange_data");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return NULL;
            }
-           return cass_authenticator_exchange_data(auth);
+           return cass_authenticator_exchange_data(pAuth);
 
        }
 
-       void w_cassandra_authenticator_set_exchange_data(W_Cass_Authenticator* auth, void* exchange_data)
+       void w_cassandra_authenticator_set_exchange_data(_In_ w_cass_authenticator* pAuth, _In_ void* pExchangeData)
        {
-           if (!auth)
+           const char* _trace_info = "w_cassandra_authenticator_set_exchange_data";
+           if (!pAuth || !pExchangeData)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_authenticator_set_exchange_data");
-               
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+
            }
-           cass_authenticator_set_exchange_data(auth, exchange_data);
+           cass_authenticator_set_exchange_data(pAuth, pExchangeData);
 
        }
 
-       char* w_cassandra_authenticator_response(W_Cass_Authenticator* auth, size_t size)
+       char* w_cassandra_authenticator_response(_In_ w_cass_authenticator* pAuth, _In_ size_t pSize)
        {
-           if (!auth)
+           const char* _trace_info = "w_cassandra_authenticator_response";
+           if (!pAuth || !pSize)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_authenticator_response");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return NULL;
            }
-           return  cass_authenticator_response(auth, size);
+           return  cass_authenticator_response(pAuth, pSize);
 
        }
 
-       void  w_cassandra_authenticator_set_response(W_Cass_Authenticator* auth, const char* response, size_t response_size)
+       void  w_cassandra_authenticator_set_response(_In_ w_cass_authenticator* pAuth, _In_ const char* pResponse, _In_ size_t pResponseSize)
        {
-           if (!auth)
+           const char* _trace_info = "w_cassandra_authenticator_set_response";
+           if (!pAuth || !pResponse || !pResponseSize)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_authenticator_set_response");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
 
            }
-           cass_authenticator_set_response(auth, response, response_size);
+           cass_authenticator_set_response(pAuth, pResponse, pResponseSize);
 
        }
 
 
-       void w_cassandra_authenticator_set_error(W_Cass_Authenticator* auth, const char* message)
+       void w_cassandra_authenticator_set_error(_In_ w_cass_authenticator* pAuth, _In_ const char* pMessage)
        {
-
-           if (!auth)
+           const char* _trace_info  ="w_cassandra_authenticator_set_error";
+           if (!pAuth || !pMessage)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_authenticator_set_error");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
 
            }
-           cass_authenticator_set_error(auth, message);
+           cass_authenticator_set_error(pAuth, pMessage);
 
        }
 
-       void w_cassandra_authenticator_set_error_n(W_Cass_Authenticator* auth,const char* message, size_t message_length)
+       void w_cassandra_authenticator_set_error_n(_In_ w_cass_authenticator* pAuth, _In_ const char* pMessage, _In_ size_t pMessageLength)
        {
-           if (!auth)
+           const char* _trace_info = "w_cassandra_authenticator_set_error_n";
+           if (!pAuth || !pMessage || !pMessageLength)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_authenticator_set_error_n");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
 
            }
-           cass_authenticator_set_error_n(auth, message, message_length);
+           cass_authenticator_set_error_n(pAuth, pMessage, pMessageLength);
 
        }
 
-       void  w_cassandra_future_free(w_Cass_Future* future)
+       void  w_cassandra_future_free(_In_ w_cass_future* pFuture)
        {
-           if (!future)
+           const char* _trace_info = "w_cassandra_future_free";
+           if (!pFuture)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_future_free");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
 
            }
-           cass_future_free(future);
+           cass_future_free(pFuture);
 
        }
 
-       w_Cass_Error  w_cassandra_future_set_callback(w_Cass_Future* future, CassFutureCallback callback,void* data)
+       w_Cass_Error  w_cassandra_future_set_callback(_In_ w_cass_future* pFuture, _In_ w_cass_future_callback pCallback, _In_ void* pData)
        {
-           if (!future)
+           const char* _trace_info = "w_cassandra_future_set_callback";
+           if (!pFuture || !pData)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_future_set_callback");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+
                return -1;
            }
-           return cass_future_set_callback(future, callback, data);
+           return cass_future_set_callback(pFuture, pCallback, pData);
 
        }
 
-       w_bool_t  w_cassandra_future_ready(w_Cass_Future* future)
+       w_bool_t  w_cassandra_future_ready(_In_ w_cass_future* pFuture)
        {
-           if (!future)
+           const char* _trace_info = "w_cassandra_future_ready";
+           if (!pFuture)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_future_ready");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return false;
            }
-           return cass_future_ready(future);
+           return cass_future_ready(pFuture);
 
        }
 
-       void  w_cassandra_future_wait(w_Cass_Future* future)
+       void  w_cassandra_future_wait(_In_ w_cass_future* pFuture)
        {
-           if (!future)
+           const char* _trace_info = "w_cassandra_future_wait";
+           if (!pFuture)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_future_wait");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
            }
-           cass_future_wait(future);
+           cass_future_wait(pFuture);
 
        }
 
-       w_bool_t w_cassandra_future_wait_timed(w_Cass_Future* future, w_duration_t timeout_us)
+       w_bool_t w_cassandra_future_wait_timed(_In_ w_cass_future* pFuture, _In_ w_duration_t pTimeoutUs)
        {
-           if (!future)
+           const char* _trace_info = "w_cassandra_future_wait_timed";
+           if (!pFuture || !pTimeoutUs)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_future_wait_timed");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return false;
            }
-           return cass_future_wait_timed(future, timeout_us);
+           return cass_future_wait_timed(pFuture, pTimeoutUs);
 
        }
 
-       const w_Cass_Result* w_cassandra_future_get_result(w_Cass_Future* future)
+       const w_cass_result* w_cassandra_future_get_result(_In_ w_cass_future* pFuture)
        {
-           if (!future)
+           const char* _trace_info = "w_cassandra_future_get_result";
+           if (!pFuture)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_future_get_result");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return NULL;
            }
-           return     cass_future_get_result(future);
+           return     cass_future_get_result(pFuture);
 
        }
 
-       const w_Cass_Error_Result* w_cassandra_future_get_error_result(w_Cass_Future* future)
+       const w_cass_error_result* w_cassandra_future_get_error_result(_In_ w_cass_future* pFuture)
        {
-           if (!future)
+           const char* _trace_info = "w_cassandra_future_get_error_result";
+           if (!pFuture)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_future_get_error_result");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return NULL;
            }
-           return cass_future_get_error_result(future);
+           return cass_future_get_error_result(pFuture);
 
        }
 
-       const w_Cass_Prepared*  w_cassandra_future_get_prepared(w_Cass_Future* future)
+       const w_cass_prepared*  w_cassandra_future_get_prepared(_In_ w_cass_future* pFuture)
        {
-           if (!future)
+           const char* _trace_info = "w_cassandra_future_get_prepared";
+           if (!pFuture)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_future_get_prepared");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return NULL;
            }
-           return  cass_future_get_prepared(future);
+           return  cass_future_get_prepared(pFuture);
 
        }
 
-       w_Cass_Error w_cassandra_future_error_code(w_Cass_Future* future)
+       w_Cass_Error w_cassandra_future_error_code(_In_ w_cass_future* pFuture)
        {
-           if (!future)
+           const char* _trace_info = "w_cassandra_future_error_code";
+           if (!pFuture)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_future_error_code");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_future_error_code(future);
+           return cass_future_error_code(pFuture);
 
        }
 
-       void w_cassandra_future_error_message(w_Cass_Future* future,const char** message, size_t* message_length)
+       void w_cassandra_future_error_message(_In_ w_cass_future* pFuture, _Inout_ const char** pMessage, _Inout_ size_t* pMessageLength)
        {
-           if (!future)
+           const char* _trace_info = "w_cassandra_future_error_message";
+           if (!pFuture || !pMessage || !pMessageLength)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_future_error_message");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
            }
-           cass_future_error_message(future, message, message_length);
+           cass_future_error_message(pFuture, pMessage, pMessageLength);
 
        }
 
-       w_Cass_Error w_cassandra_future_tracing_id(w_Cass_Future* future, w_CassUuid* tracing_id)
+       w_Cass_Error w_cassandra_future_tracing_id(_In_ w_cass_future* pFuture, _Inout_ w_cass_uuid* pTracingId)
        {
-           if (!future)
+           const char* _trace_info = "w_cassandra_future_tracing_id";
+           if (!pFuture)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_future_tracing_id");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-          return cass_future_tracing_id(future, tracing_id);
+          return cass_future_tracing_id(pFuture, pTracingId);
 
        }
 
-       size_t  w_cassandra_future_custom_payload_item_count(w_Cass_Future* future)
+       size_t  w_cassandra_future_custom_payload_item_count(_In_ w_cass_future* pFuture)
        {
-           if (!future)
+           const char* _trace_info = "w_cassandra_future_custom_payload_item_count";
+           if (!pFuture)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_future_custom_payload_item_count");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return  cass_future_custom_payload_item_count(future);
+           return  cass_future_custom_payload_item_count(pFuture);
 
        }
 
-       w_Cass_Error  w_cassandra_future_custom_payload_item(w_Cass_Future* future,size_t index, const char** name, size_t* name_length, const w_byte_t** value, size_t* value_size)
+       w_Cass_Error  w_cassandra_future_custom_payload_item(_In_ w_cass_future* pFuture, _In_ size_t pIndex, _Inout_ const char** pName, _Inout_ size_t* pNameLength, _Inout_ const w_byte_t** pValue, _Inout_ size_t* pValueSize)
        {
-
-           if (!future)
+           const char* _trace_info = "w_cassandra_future_custom_payload_item";
+           if (!pFuture || !pIndex || !pName || !pNameLength || !pValue || !pValueSize)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_future_custom_payload_item");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return    cass_future_custom_payload_item(future, index, name, name_length, value, value_size);
+           return    cass_future_custom_payload_item(pFuture, pIndex, pName, pNameLength, pValue, pValueSize);
        }
 
-       w_Cass_Statement*  w_cassandra_statement_new(const char* query, size_t parameter_count)
+       w_cass_statement*  w_cassandra_statement_new(_In_ const char* pQuery, _In_ size_t pParameterCount)
        {
-           if (!query)
+           const char* _trace_info = "w_cassandra_statement_new";
+           if (!pQuery )
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_new");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return NULL;
            }
-           return   cass_statement_new(query, parameter_count);
+           return   cass_statement_new(pQuery, pParameterCount);
 
        }
 
-       w_Cass_Statement* w_cassandra_statement_new_n(const char* query, size_t query_length, size_t parameter_count)
+       w_cass_statement* w_cassandra_statement_new_n(_In_ const char* pQuery, _In_ size_t pQueryLength, _In_ size_t pParameterCount)
        {
-           if (!query)
+           const char* _trace_info = "w_cassandra_statement_new_n";
+           if (!pQuery || !pParameterCount || !pQueryLength)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_new_n");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return NULL;
            }
-           return  cass_statement_new_n(query, query_length, parameter_count);
+           return  cass_statement_new_n(pQuery, pQueryLength, pParameterCount);
 
        }
 
-       w_Cass_Error w_cassandra_statement_reset_parameters(w_Cass_Statement* statement, size_t count)
+       w_Cass_Error w_cassandra_statement_reset_parameters(_In_ w_cass_statement* pStatement, _In_ size_t pCount)
        {
-           if (!statement)
+           const char* _trace_info = "w_cassandra_statement_reset_parameters";
+           if (!pStatement || !pCount)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_reset_parameters");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return  cass_statement_reset_parameters(statement, count);
+           return  cass_statement_reset_parameters(pStatement, pCount);
 
        }
 
 
-       void w_cassandra_statement_free(w_Cass_Statement* statement)
+       void w_cassandra_statement_free(_In_ w_cass_statement* pStatement)
        {
-           if (!statement)
+           const char* _trace_info = "w_cassandra_statement_free";
+           if (!pStatement)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_free");
-              
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+
            }
-           cass_statement_free(statement);
+           cass_statement_free(pStatement);
 
        }
 
-       w_Cass_Error  w_cassandra_statement_add_key_index(w_Cass_Statement* statement,  size_t index)
+       w_Cass_Error  w_cassandra_statement_add_key_index(_In_ w_cass_statement* pStatement, _In_ size_t pIndex)
 
        {
-           if (!statement)
+           const char* _trace_info = "w_cassandra_statement_add_key_index";
+           if (!pStatement || !pIndex)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_add_key_index");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
 
 
            }
-           return cass_statement_add_key_index(statement, index);
+           return cass_statement_add_key_index(pStatement, pIndex);
 
        }
 
-       w_Cass_Error w_cassandra_statement_set_keyspace(w_Cass_Statement* statement,const char* keyspace)
+       w_Cass_Error w_cassandra_statement_set_keyspace(_In_ w_cass_statement* pStatement, _In_ const char* pKeyspace)
        {
-           if (!statement || !keyspace)
+           const char* _trace_info = "w_cassandra_statement_set_keyspace";
+           if (!pStatement || !pKeyspace)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_set_keyspace");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return 0;
            }
-           return cass_statement_set_keyspace(statement, keyspace);
+           return cass_statement_set_keyspace(pStatement, pKeyspace);
 
        }
 
-       w_Cass_Error   w_cassandra_statement_set_keyspace_n(w_Cass_Statement* statement, const char* keyspace,size_t keyspace_length)
+       w_Cass_Error   w_cassandra_statement_set_keyspace_n(_In_ w_cass_statement* pStatement, _In_ const char* pKeyspace, _In_ size_t pKeyspaceLength)
        {
-           if (!statement || !keyspace)
+           const char* _trace_info = "w_cassandra_statement_set_keyspace_n";
+           if (!pStatement || !pKeyspace || !pKeyspaceLength)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_set_keyspace_n");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+
                return -1;
            }
 
-           return cass_statement_set_keyspace_n(statement, keyspace, keyspace_length);
+           return cass_statement_set_keyspace_n(pStatement, pKeyspace, pKeyspaceLength);
 
 
        }
 
-       w_Cass_Error  w_cassandra_statement_set_consistency(w_Cass_Statement* statement, W_Cass_Consistency consistency)
+       w_Cass_Error  w_cassandra_statement_set_consistency(_In_ w_cass_statement* pStatement, _In_ w_cass_consistency pConsistency)
        {
-           if (!statement || !consistency)
+           const char* _trace_info = "w_cassandra_statement_set_consistency";
+           if (!pStatement || !pConsistency)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_set_consistency");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_statement_set_consistency(statement, consistency);
+           return cass_statement_set_consistency(pStatement, pConsistency);
 
        }
 
-       w_Cass_Error w_cassandra_statement_set_serial_consistency(w_Cass_Statement* statement, W_Cass_Consistency serial_consistency)
+       w_Cass_Error w_cassandra_statement_set_serial_consistency(_In_ w_cass_statement* pStatement, _In_ w_cass_consistency pSerialConsistency)
        {
-           if (!statement || !serial_consistency)
+           const char* _trace_info = "w_cassandra_statement_set_serial_consistency";
+           if (!pStatement || !pSerialConsistency)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_set_serial_consistency");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+
                return -1;
            }
-           return cass_statement_set_serial_consistency(statement, serial_consistency);
+           return cass_statement_set_serial_consistency(pStatement, pSerialConsistency);
 
        }
 
-       w_Cass_Error w_cassandra_statement_set_paging_size(w_Cass_Statement* statement, int page_size)
+       w_Cass_Error w_cassandra_statement_set_paging_size(_In_ w_cass_statement* pStatement, _In_ int pPageSize)
        {
-           if (!statement )
+           const char* _trace_info = "w_cassandra_statement_set_paging_size";
+           if (!pStatement || !pPageSize)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_set_paging_size");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-          return  cass_statement_set_paging_size(statement, page_size);
+          return  cass_statement_set_paging_size(pStatement, pPageSize);
 
        }
 
-       w_Cass_Error  w_cassandra_statement_set_paging_state(w_Cass_Statement* statement, const w_Cass_Result* result)
+       w_Cass_Error  w_cassandra_statement_set_paging_state(_In_ w_cass_statement* pStatement, _In_  const w_cass_result* pResult)
        {
-           if (!statement || !result)
+           const char* _trace_info = "w_cassandra_statement_set_paging_state";
+           if (!pStatement || !pResult)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_set_paging_state");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+
                return -1;
            }
-           return cass_statement_set_paging_state(statement, result);
+           return cass_statement_set_paging_state(pStatement, pResult);
 
        }
 
-       w_Cass_Error  w_cassandra_statement_set_paging_state_token(w_Cass_Statement* statement, const char* paging_state, size_t paging_state_size)
+       w_Cass_Error  w_cassandra_statement_set_paging_state_token(_In_ w_cass_statement* pStatement, _In_ const char* pPagingState, _In_ size_t pPagingStateSize)
        {
+           const char* _trace_info = "w_cassandra_statement_set_paging_state_token";
 
-           if (!statement )
+           if (!pStatement || !pPagingState || !pPagingStateSize)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_set_paging_state_token");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return   cass_statement_set_paging_state_token(statement, paging_state, paging_state_size);
+           return   cass_statement_set_paging_state_token(pStatement, pPagingState, pPagingStateSize);
 
        }
 
-       w_Cass_Error  w_cassandra_statement_set_timestamp(w_Cass_Statement* statement, int64_t timestamp)
+       w_Cass_Error  w_cassandra_statement_set_timestamp(_In_ w_cass_statement* pStatement, _In_ int64_t pTimestamp)
        {
-           if (!statement)
+           const char* _trace_info = "w_cassandra_statement_set_timestamp";
+           if (!pStatement || !pTimestamp)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_set_timestamp");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return  cass_statement_set_timestamp(statement, timestamp);
+           return  cass_statement_set_timestamp(pStatement, pTimestamp);
 
        }
-       w_Cass_Error w_cassandra_statement_set_request_timeout(w_Cass_Statement* statement, uint64_t timeout_ms)
+       w_Cass_Error w_cassandra_statement_set_request_timeout(_In_ w_cass_statement* pStatement, _In_ uint64_t pTimeoutMs)
        {
-           if (!statement)
+           const char* _trace_info = "w_cassandra_statement_set_request_timeout";
+           if (!pStatement || !pTimeoutMs)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_set_request_timeout");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return   -1;
            }
-           return  cass_statement_set_request_timeout(statement, timeout_ms);
+           return  cass_statement_set_request_timeout(pStatement, pTimeoutMs);
 
        }
 
-       w_Cass_Error  w_cassandra_statement_set_is_idempotent(w_Cass_Statement* statement, w_bool_t is_idempotent)
+       w_Cass_Error  w_cassandra_statement_set_is_idempotent(_In_ w_cass_statement* pStatement, _In_ w_bool_t pIsIdempotent)
        {
-           if (!statement)
+           const char* _trace_info = "w_cassandra_statement_set_is_idempotent";
+           if (!pStatement )
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_set_is_idempotent");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return  cass_statement_set_is_idempotent(statement, is_idempotent);
+           return  cass_statement_set_is_idempotent(pStatement, pIsIdempotent);
 
        }
 
-       w_Cass_Error w_cassandra_statement_set_retry_policy(w_Cass_Statement* statement,w_Cass_Retry_Policy* retry_policy)
+       w_Cass_Error w_cassandra_statement_set_retry_policy(_In_ w_cass_statement* pStatement, _In_ w_cass_retry_policy* pRetryPolicy)
        {
-           if (!statement || !retry_policy)
+           const char* _trace_info = "w_cassandra_statement_set_retry_policy";
+           if (!pStatement || !pRetryPolicy)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_set_retry_policy");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return   cass_statement_set_retry_policy(statement, retry_policy);
+           return   cass_statement_set_retry_policy(pStatement, pRetryPolicy);
 
        }
 
-       w_Cass_Error w_cassandra_statement_set_custom_payload(w_Cass_Statement* statement, const w_Cass_Custom_Payload* payload)
+       w_Cass_Error w_cassandra_statement_set_custom_payload(_In_ w_cass_statement* pStatement, _In_ const w_cass_custom_payload* pPayload)
        {
-           if (!statement || !payload)
+           const char* _trace_info = "w_cassandra_statement_set_custom_payload";
+           if (!pStatement || !pPayload)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_set_custom_payload");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_statement_set_custom_payload(statement, payload);
+           return cass_statement_set_custom_payload(pStatement, pPayload);
 
        }
 
-       w_Cass_Error  w_cassandra_statement_set_execution_profile(w_Cass_Statement* statement, const char* name)
+       w_Cass_Error  w_cassandra_statement_set_execution_profile(_In_ w_cass_statement* pStatement, _In_ const char* pName)
        {
-           if (!statement )
+           const char* _trace_info = "w_cassandra_statement_set_execution_profile";
+           if (!pStatement || !pName)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_set_execution_profile");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return  cass_statement_set_execution_profile(statement, name);
+           return  cass_statement_set_execution_profile(pStatement, pName);
 
        }
 
-       w_Cass_Error  w_cassandra_statement_set_execution_profile_n(w_Cass_Statement* statement, const char* name, size_t name_length)
+       w_Cass_Error  w_cassandra_statement_set_execution_profile_n(_In_ w_cass_statement* pStatement,_In_ const char* pName, _In_ size_t pNameLength)
        {
-           if (!statement)
+           const char* _trace_info = "w_cassandra_statement_set_execution_profile_n";
+           if (!pStatement || !pName || !pNameLength)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_set_execution_profile_n");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return   cass_statement_set_execution_profile_n(statement, name, name_length);
+           return   cass_statement_set_execution_profile_n(pStatement, pName, pNameLength);
 
        }
 
-       w_Cass_Error  w_cassandra_statement_set_tracing(w_Cass_Statement* statement, w_bool_t enabled)
+       w_Cass_Error  w_cassandra_statement_set_tracing(_In_ w_cass_statement* pStatement, _In_ w_bool_t pEnabled)
        {
-           if (!statement)
+           const char* _trace_info = "w_cassandra_statement_set_tracing";
+           if (!pStatement)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_set_tracing");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return  cass_statement_set_tracing(statement, enabled);
+           return  cass_statement_set_tracing(pStatement, pEnabled);
 
        }
 
-       w_Cass_Error w_cassandra_statement_set_host(w_Cass_Statement* statement,  const char* host, int port)
+       w_Cass_Error w_cassandra_statement_set_host(_In_ w_cass_statement* pStatement, _In_  const char* pHost, _In_ int pPort)
        {
-           if (!statement ||!host)
+           const char* _trace_info = "w_cassandra_statement_set_host";
+
+           if (!pStatement ||!pHost || !pPort)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_set_host");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+
                return -1;
            }
 
-           return  cass_statement_set_host(statement, host, port);
+           return  cass_statement_set_host(pStatement, pHost, pPort);
 
        }
 
-       w_Cass_Error  w_cassandra_statement_set_host_n(w_Cass_Statement* statement, const char* host, size_t host_length, int port)
+       w_Cass_Error  w_cassandra_statement_set_host_n(_In_ w_cass_statement* pStatement, _In_ const char* pHost, _In_ size_t pHostLength, _In_ int pPort)
        {
-           if (!statement || !host)
+           const char* _trace_info = "w_cassandra_statement_set_host_n";
+           if (!pStatement || !pHost || !pHostLength || !pPort)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_set_host_n");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
 
-           return   cass_statement_set_host_n(statement, host, host_length, port);
+           return   cass_statement_set_host_n(pStatement, pHost, pHostLength, pPort);
 
        }
 
-       w_Cass_Error  w_cassandra_statement_set_host_inet(w_Cass_Statement* statement, const w_CassInet* host,  int port)
+       w_Cass_Error  w_cassandra_statement_set_host_inet(_In_ w_cass_statement* pStatement, _In_ const w_cass_inet* pHost, _In_ int pPort)
        {
-           if (!statement || !host)
+           const char* _trace_info = "w_cassandra_statement_set_host_inet";
+           if (!pStatement || !pHost || !pPort)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_set_host_inet");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_statement_set_host_inet( statement, host,  port);
+           return cass_statement_set_host_inet(pStatement, pHost, pPort);
 
        }
 
-       w_Cass_Error  w_cassandra_statement_bind_null(w_Cass_Statement* statement, size_t index)
+       w_Cass_Error  w_cassandra_statement_bind_null(_In_ w_cass_statement* pStatement, _In_ size_t pIndex)
        {
-           if (!statement )
+           const char* _trace_info = "w_cassandra_statement_bind_null";
+           if (!pStatement || !pIndex)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_bind_null");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+
                return -1;
            }
-           return   cass_statement_bind_null(statement, index);
+           return   cass_statement_bind_null(pStatement, pIndex);
 
        }
 
-       w_Cass_Error  w_cassandra_statement_bind_null_by_name(w_Cass_Statement* statement,const char* name)
+       w_Cass_Error  w_cassandra_statement_bind_null_by_name(_In_ w_cass_statement* pStatement, _In_ const char* pName)
        {
-           if (!statement || !name )
+           const char* _trace_info = "w_cassandra_statement_bind_null_by_name";
+           if (!pStatement || !pName)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_bind_null_by_name");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+
                return -1;
            }
-           return cass_statement_bind_null_by_name(statement, name);
+           return cass_statement_bind_null_by_name(pStatement, pName);
 
        }
-       w_Cass_Error w_cassandra_statement_bind_null_by_name_n(w_Cass_Statement* statement, const char* name, size_t name_length)
+       w_Cass_Error w_cassandra_statement_bind_null_by_name_n(_In_ w_cass_statement* pStatement, _In_ const char* pName, _In_ size_t pNameLength)
        {
-           if (!statement || !name)
+           const char* _trace_info = "w_cassandra_statement_bind_null_by_name_n";
+           if (!pStatement || !pName || !pNameLength)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_bind_null_by_name_n");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return  cass_statement_bind_null_by_name_n(statement, name, name_length);
+           return  cass_statement_bind_null_by_name_n(pStatement, pName, pNameLength);
 
        }
 
-       w_Cass_Error  w_cassandra_statement_bind_int8(w_Cass_Statement* statement, size_t index, int8_t value)
+       w_Cass_Error  w_cassandra_statement_bind_int8(_In_ w_cass_statement* pStatement, _In_  size_t pIndex, _In_ int8_t pValue)
        {
-           if (!statement )
+           const char* _trace_info = "w_cassandra_statement_bind_int8";
+           if (!pStatement || !pIndex || !pValue)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_bind_int8");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return  cass_statement_bind_int8(statement, index, value);
+           return  cass_statement_bind_int8(pStatement, pIndex, pValue);
 
        }
 
-       w_Cass_Error  w_cassandra_statement_bind_int8_by_name(w_Cass_Statement* statement, const char* name, int8_t value)
+       w_Cass_Error  w_cassandra_statement_bind_int8_by_name(_In_ w_cass_statement* pStatement, _In_ const char* pName, _In_ int8_t pValue)
        {
-           if (!statement ||!name )
+           const char* _trace_info = "w_cassandra_statement_bind_int8_by_name";
+           if (!pStatement ||!pName || !pValue)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_bind_int8_by_name");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return    cass_statement_bind_int8_by_name(statement, name, value);
+           return    cass_statement_bind_int8_by_name(pStatement, pName, pValue);
 
        }
 
-       w_Cass_Error w_cassandra_statement_bind_int8_by_name_n(w_Cass_Statement* statement, const char* name, size_t name_length, int8_t value)
+       w_Cass_Error w_cassandra_statement_bind_int8_by_name_n(_In_ w_cass_statement* pStatement, _In_ const char* pName, _In_ size_t pNameLength, _In_ int8_t pValue)
        {
-
-           if (!statement || !name)
+           const char* _trace_info = "w_cassandra_statement_bind_int8_by_name_n";
+           if (!pStatement || !pName || !pNameLength || !pValue)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_bind_int8_by_name_n");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return    cass_statement_bind_int8_by_name_n(statement, name, name_length, value);
+           return    cass_statement_bind_int8_by_name_n(pStatement, pName, pNameLength, pValue);
 
        }
 
-       w_Cass_Error  w_cassandra_statement_bind_int16(w_Cass_Statement* statement, size_t index, int16_t value)
+       w_Cass_Error  w_cassandra_statement_bind_int16(_In_ w_cass_statement* pStatement, _In_ size_t pIndex, _In_ int16_t pValue)
        {
-           if (!statement )
+           const char* _trace_info = "w_cassandra_statement_bind_int16";
+           if (!pStatement  || !pIndex || !pValue)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_bind_int16");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return    cass_statement_bind_int16(statement, index, value);
+           return    cass_statement_bind_int16(pStatement, pIndex, pValue);
 
        }
 
 
-       w_Cass_Error  w_cassandra_statement_bind_int16_by_name(w_Cass_Statement* statement, const char* name, int16_t value)
+       w_Cass_Error  w_cassandra_statement_bind_int16_by_name(_In_ w_cass_statement* pStatement, _In_ const char* pName, _In_ int16_t pValue)
        {
-           if (!statement)
+           const char* _trace_info = "w_cassandra_statement_bind_int16_by_name";
+           if (!pStatement || !pName || !pValue)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_bind_int16_by_name");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
 
-           return  cass_statement_bind_int16_by_name(statement, name, value);
+           return  cass_statement_bind_int16_by_name(pStatement, pName, pValue);
 
        }
 
-       w_Cass_Error  w_cassandra_statement_bind_int16_by_name_n(w_Cass_Statement* statement, const char* name,  size_t name_length, int16_t value)
+       w_Cass_Error  w_cassandra_statement_bind_int16_by_name_n(_In_ w_cass_statement* pStatement, _In_ const char* pName, _In_  size_t pNameLength, _In_ int16_t pValue)
        {
-           if (!statement)
+           const char* _trace_info = "w_cassandra_statement_bind_int16_by_name_n";
+           if (!pStatement || !pName || !pNameLength || !pValue)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_bind_int16_by_name_n");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return   cass_statement_bind_int16_by_name_n(statement, name, name_length, value);
+           return   cass_statement_bind_int16_by_name_n(pStatement, pName, pNameLength, pValue);
 
        }
 
-       w_Cass_Error  w_cassandra_statement_bind_int32(w_Cass_Statement* statement, size_t index, int32_t value)
+       w_Cass_Error  w_cassandra_statement_bind_int32(_In_ w_cass_statement* pStatement, _In_  size_t pIndex, _In_ int32_t pValue)
        {
-           if (!statement)
+           const char* _trace_info = "w_cassandra_statement_bind_int32";
+
+           if (!pStatement || !pIndex || !pValue)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_bind_int32");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return  cass_statement_bind_int32(statement, index, value);
+           return  cass_statement_bind_int32(pStatement, pIndex, pValue);
 
        }
 
-       w_Cass_Error  w_cassandra_statement_bind_int32_by_name(w_Cass_Statement* statement, const char* name,  int32_t value)
+       w_Cass_Error  w_cassandra_statement_bind_int32_by_name(_In_ w_cass_statement* pStatement, _In_ const char* pName, _In_  int32_t pValue)
        {
-           if (!statement || !name )
+           const char* _trace_info = "w_cassandra_statement_bind_int32_by_name";
+           if (!pStatement || !pValue || !pName)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_bind_int32_by_name");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_statement_bind_int32_by_name( statement, name, value);
+           return cass_statement_bind_int32_by_name(pStatement, pName, pValue);
        }
 
 
-       w_Cass_Error  w_cassandra_statement_bind_int32_by_name_n(w_Cass_Statement* statement, const char* name, size_t name_length, int32_t value)
+       w_Cass_Error  w_cassandra_statement_bind_int32_by_name_n(_In_ w_cass_statement* pStatement, _In_ const char* pName, _In_ size_t pNameLength, _In_ int32_t pValue)
        {
-           if (!statement || !name)
+           const char* _trace_info = "w_cassandra_statement_bind_int32_by_name_n";
+           if (!pStatement || !pName || !pNameLength || !pValue)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_bind_int32_by_name_n");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+
                return -1;
            }
 
-           return cass_statement_bind_int32_by_name_n(statement, name, name_length, value);
+           return cass_statement_bind_int32_by_name_n(pStatement, pName, pNameLength, pValue);
 
        }
 
-       w_Cass_Error w_cassandra_statement_bind_uint32(w_Cass_Statement* statement, size_t index, uint32_t value)
+       w_Cass_Error  w_cassandra_statement_bind_uint32_by_name(_In_ w_cass_statement* pStatement, _In_ const char* pName, _In_ uint32_t pValue)
        {
-           if (!statement )
+           const char* _trace_info = "w_cassandra_statement_bind_uint32_by_name";
+           if (!pStatement || !pName || !pValue)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_bind_uint32");
-               return -1;
-           }
-           return   cass_statement_bind_uint32(statement, index,  value);
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
 
-       }
-
-       w_Cass_Error w_cassandra_statement_bind_uint32_by_name(w_Cass_Statement* statement, const char* name, uint32_t value)
-       {
-           if (!statement || !name )
-           {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_bind_uint32_by_name");
                return -1;
            }
-           return  cass_statement_bind_uint32_by_name(statement, name, value);
 
+           return cass_statement_bind_uint32_by_name(pStatement, pName, pValue);
        }
 
-       w_Cass_Error  w_cassandra_statement_bind_uint32_by_name_n(w_Cass_Statement* statement,  const char* name, size_t name_length,  uint32_t value)
+       w_Cass_Error w_cassandra_statement_bind_uint32_by_name_n(_In_ w_cass_statement* pStatement, _In_ const char* pName, _In_ size_t pNameLength, _In_ uint32_t pValue)
        {
-           if (!statement || !name)
+           const char* _trace_info = "w_cassandra_statement_bind_uint32_by_name_n";
+           if (!pStatement || !pName || !pNameLength ||!pValue)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_bind_uint32_by_name_n");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+
                return -1;
            }
-          return  cass_statement_bind_uint32_by_name_n( statement, name, name_length, value);
+           return cass_statement_bind_uint32_by_name_n(pStatement, pName, pNameLength, pValue);
        }
 
-       w_Cass_Error  w_cassandra_statement_bind_int64(w_Cass_Statement* statement,size_t index,int64_t value)
-       {
+
+       w_Cass_Error  w_cassandra_statement_bind_int64(_In_ w_cass_statement* pStatement, _In_ size_t pIndex, _In_ int64_t pValue)
 
-           if (!statement )
+       {
+           const char* _trace_info = "w_cassandra_statement_bind_int64";
+           if (!pStatement || !pIndex || !pValue)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_bind_int64");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_statement_bind_int64(statement, index, value);
+           return cass_statement_bind_int64(pStatement, pIndex, pValue);
 
 
        }
 
-       w_Cass_Error   w_cassandra_statement_bind_int64_by_name(w_Cass_Statement* statement,const char* name,uint64_t value)
+       w_Cass_Error   w_cassandra_statement_bind_int64_by_name(_In_ w_cass_statement* pStatement, _In_ const char* pName, _In_ uint64_t pValue)
        {
-           if (!statement || !name )
+           const char* _trace_info = "w_cassandra_statement_bind_int64_by_name";
+           if (!pStatement || !pName || !pValue)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_bind_int64_by_name");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return  cass_statement_bind_int64_by_name(statement, name, value);
+           return  cass_statement_bind_int64_by_name(pStatement, pName, pValue);
 
        }
 
-       w_Cass_Error w_cassandra_statement_bind_int64_by_name_n(w_Cass_Statement* statement, const char* name,size_t name_length, int64_t value)
+       w_Cass_Error w_cassandra_statement_bind_int64_by_name_n(_In_ w_cass_statement* pStatement, _In_ const char* pName, _In_ size_t pNameLength, _In_  int64_t pValue)
        {
-           if (!statement || !name)
+           const char* _trace_info = "w_cassandra_statement_bind_int64_by_name_n";
+           if (!pStatement || !pName || !pNameLength || !pValue)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_bind_int64_by_name_n");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return  cass_statement_bind_int64_by_name_n(statement, name, name_length, value);
+           return  cass_statement_bind_int64_by_name_n(pStatement, pName, pNameLength, pValue);
 
        }
 
-       w_Cass_Error w_cassandra_statement_bind_float(w_Cass_Statement* statement, size_t index, float value)
+       w_Cass_Error w_cassandra_statement_bind_float(_In_ w_cass_statement* pStatement, _In_  size_t pIndex, _In_  float pValue)
        {
-           if (!statement )
+           const char* _trace_info = "w_cassandra_statement_bind_float";
+           if (!pStatement || !pIndex || !pValue)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_bind_float");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_statement_bind_float(statement, index, value);
+           return cass_statement_bind_float(pStatement, pIndex, pValue);
 
        }
 
-       w_Cass_Error  w_cassandra_statement_bind_float_by_name(w_Cass_Statement* statement, const char* name, float value)
+       w_Cass_Error  w_cassandra_statement_bind_float_by_name(_In_ w_cass_statement* pStatement, _In_  const char* pName, _In_  float pValue)
        {
-           if (!statement || !name)
+           const char* _trace_info = "w_cassandra_statement_bind_float_by_name";
+           if (!pStatement || !pName || !pValue)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_bind_float_by_name");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_statement_bind_float_by_name(statement, name, value);
+           return cass_statement_bind_float_by_name(pStatement, pName, pValue);
 
        }
 
-       w_Cass_Error w_cassandra_statement_bind_float_by_name_n(w_Cass_Statement* statement,const char* name,size_t name_length, float value)
+       w_Cass_Error w_cassandra_statement_bind_float_by_name_n(_In_ w_cass_statement* pStatement, _In_ const char* pName, _In_ size_t pNameLength, _In_ float pValue)
        {
-           if (!statement || !name)
+           const char* _trace_info = "w_cassandra_statement_bind_float_by_name_n";
+           if (!pStatement || !pName || !pNameLength || !pValue)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_bind_float_by_name_n");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_statement_bind_float_by_name_n(statement, name, name_length, value);
+           return cass_statement_bind_float_by_name_n(pStatement, pName, pNameLength, pValue);
 
 
        }
 
-       w_Cass_Error  w_cassandra_statement_bind_double(w_Cass_Statement* statement, size_t index, double value)
+       w_Cass_Error  w_cassandra_statement_bind_double(_In_ w_cass_statement* pStatement, _In_ size_t pIndex, _In_ double pValue)
        {
-           if (!statement )
+           const char* _trace_info = "w_cassandra_statement_bind_double";
+           if (!pStatement || !pIndex || !pValue)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_bind_double");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return    cass_statement_bind_double(statement, index, value);
+           return    cass_statement_bind_double(pStatement, pIndex, pValue);
 
        }
 
-       w_Cass_Error  w_cassandra_statement_bind_double_by_name(w_Cass_Statement* statement,const char* name, double value)
+       w_Cass_Error  w_cassandra_statement_bind_double_by_name(_In_ w_cass_statement* pStatement, _In_ const char* pName, _In_  double pValue)
        {
-           if (!statement || !name)
+           const char* _trace_info = "w_cassandra_statement_bind_double_by_name";
+           if (!pStatement || !pName || !pValue)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_bind_double_by_name");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return    cass_statement_bind_double_by_name(statement, name, value);
+           return    cass_statement_bind_double_by_name(pStatement, pName, pValue);
 
        }
 
-       w_Cass_Error  w_cassandra_statement_bind_double_by_name_n(w_Cass_Statement* statement,const char* name,size_t name_length,double value)
+       w_Cass_Error  w_cassandra_statement_bind_double_by_name_n(_In_ w_cass_statement* pStatement, _In_ const char* pName, _In_ size_t pNameLength, _In_ double pValue)
        {
-           if (!statement || !name)
+           const char* _trace_info = "w_cassandra_statement_bind_double_by_name_n";
+           if (!pStatement || !pName || !pNameLength || !pValue)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_bind_double_by_name_n");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return  cass_statement_bind_double_by_name_n(statement, name, name_length, value);
+           return  cass_statement_bind_double_by_name_n(pStatement, pName, pNameLength, pValue);
 
        }
 
-       w_Cass_Error w_cassandra_statement_bind_bool(w_Cass_Statement* statement, size_t index, w_bool_t value)
+       w_Cass_Error w_cassandra_statement_bind_bool(_In_ w_cass_statement* pStatement, _In_  size_t pIndex, _In_  w_bool_t pValue)
        {
-           if (!statement )
+           const char* _trace_info = "w_cassandra_statement_bind_bool";
+           if (!pStatement || !pIndex )
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_bind_bool");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
 
-           return  cass_statement_bind_bool(statement, index, value);
+           return  cass_statement_bind_bool(pStatement, pIndex, pValue);
 
        }
 
-       w_Cass_Error w_cassandra_statement_bind_bool_by_name(w_Cass_Statement* statement, const char* name,w_bool_t value)
+       w_Cass_Error w_cassandra_statement_bind_bool_by_name(_In_ w_cass_statement* pStatement, _In_ const char* pName, _In_ w_bool_t pValue)
        {
-           if (!statement || !name)
+           const char* _trace_info = "w_cassandra_statement_bind_bool_by_name";
+           if (!pStatement || !pName)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_bind_bool_by_name");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-         return cass_statement_bind_bool_by_name( statement,  name,  value);
+         return cass_statement_bind_bool_by_name(pStatement, pName, pValue);
 
        }
 
-       w_Cass_Error  w_cassandra_statement_bind_bool_by_name_n(w_Cass_Statement* statement,const char* name,size_t name_length, w_bool_t value)
+       w_Cass_Error  w_cassandra_statement_bind_bool_by_name_n(_In_ w_cass_statement* pStatement, _In_ const char* pName, _In_ size_t pNameLength, _In_  w_bool_t pValue)
        {
-           if (!statement || !name)
+           const char* _trace_info = "w_cassandra_statement_bind_bool_by_name_n";
+           if (!pStatement || !pName)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_bind_bool_by_name_n");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_statement_bind_bool_by_name_n( statement,  name,  name_length,  value);
+           return cass_statement_bind_bool_by_name_n(pStatement, pName, pNameLength, pValue);
 
        }
 
-       w_Cass_Error w_cassandra_statement_bind_string(w_Cass_Statement* statement, size_t index,  const char* value)
+       w_Cass_Error w_cassandra_statement_bind_string(_In_ w_cass_statement* pStatement, _In_ size_t pIndex, _In_  const char* pValue)
        {
-           if (!statement )
+           const char* _trace_info = "w_cassandra_statement_bind_string";
+           if (!pStatement || !pIndex || !pValue)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_bind_string");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_statement_bind_string(statement, index, value);
+           return cass_statement_bind_string(pStatement, pIndex, pValue);
        }
 
-       w_Cass_Error  w_cassandra_statement_bind_string_n(w_Cass_Statement* statement,size_t index,  const char* value, size_t value_length)
+       w_Cass_Error  w_cassandra_statement_bind_string_n(_In_ w_cass_statement* pStatement, _In_ size_t pIndex, _In_  const char* pValue, _In_ size_t pValueLength)
        {
-           if (!statement)
+           const char* _trace_info = "w_cassandra_statement_bind_string_n";
+           if (!pStatement || !pIndex || !pValue || !pValueLength)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_bind_string_n");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_statement_bind_string_n(statement, index, value, value_length);
+           return cass_statement_bind_string_n(pStatement, pIndex, pValue, pValueLength);
 
        }
 
-       w_Cass_Error  w_cassandra_statement_bind_string_by_name(w_Cass_Statement* statement,const char* name, const char* value)
+       w_Cass_Error  w_cassandra_statement_bind_string_by_name(_In_ w_cass_statement* pStatement, _In_ const char* pName, _In_ const char* pValue)
        {
-           if (!statement || !name)
+           const char* _trace_info = "w_cassandra_statement_bind_string_by_name";
+           if (!pStatement || !pName || !pValue)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_bind_string_by_name");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_statement_bind_string_by_name(statement, name, value);
+           return cass_statement_bind_string_by_name(pStatement, pName, pValue);
 
        }
 
-       w_Cass_Error w_cassandra_statement_bind_string_by_name_n(w_Cass_Statement* statement,const char* name, size_t name_length,const char* value, size_t value_length)
+       w_Cass_Error w_cassandra_statement_bind_string_by_name_n(_In_ w_cass_statement* pStatement, _In_ const char* pName, _In_  size_t pNameLength, _In_ const char* pValue, _In_  size_t pValueLength)
        {
-           if (!statement || !name)
+           const char* _trace_info = "w_cassandra_statement_bind_string_by_name_n";
+           if (!pStatement || !pName || !pNameLength || !pValue || !pValueLength)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_bind_string_by_name_n");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-          return  cass_statement_bind_string_by_name_n(statement, name, name_length, value, value_length);
+          return  cass_statement_bind_string_by_name_n(pStatement, pName, pNameLength, pValue, pValueLength);
 
        }
 
-       w_Cass_Error  w_cassandra_statement_bind_bytes(w_Cass_Statement* statement,size_t index, const w_byte_t* value,size_t value_size)
+       w_Cass_Error  w_cassandra_statement_bind_bytes(_In_ w_cass_statement* pStatement, _In_ size_t pIndex, _In_  const w_byte_t* pValue, _In_ size_t pValueSize)
        {
-           if (!statement)
+           const char* _trace_info = "w_cassandra_statement_bind_bytes";
+           if (!pStatement || !pIndex || !pValue || !pValueSize)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_bind_bytes");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
 
-           return   cass_statement_bind_bytes(statement, index, value, value_size);
+           return   cass_statement_bind_bytes(pStatement, pIndex, pValue, pValueSize);
 
        }
 
-       w_Cass_Error  w_cassandra_statement_bind_bytes_by_name(w_Cass_Statement* statement,const char* name,const w_byte_t* value, size_t value_size)
+       w_Cass_Error  w_cassandra_statement_bind_bytes_by_name(_In_ w_cass_statement* pStatement, _In_ const char* pName, _In_ const w_byte_t* pValue, _In_  size_t pValueSize)
        {
-           if (!statement || !name )
+           const char* _trace_info = "w_cassandra_statement_bind_bytes_by_name";
+           if (!pStatement || !pName || !pValue || !pValueSize)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_bind_bytes_by_name");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return  cass_statement_bind_bytes_by_name(statement, name, value, value_size);
+           return  cass_statement_bind_bytes_by_name(pStatement, pName, pValue, pValueSize);
 
        }
 
-       w_Cass_Error w_cassandra_statement_bind_bytes_by_name_n(w_Cass_Statement* statement, const char* name,size_t name_length, const w_byte_t* value, size_t value_size)
+       w_Cass_Error w_cassandra_statement_bind_bytes_by_name_n(_In_ w_cass_statement* pStatement, _In_  const char* pName, _In_ size_t pNameLength, _In_ const w_byte_t* pValue, _In_ size_t pValueSize)
        {
-           if (!statement || !name)
+           const char* _trace_info = "w_cassandra_statement_bind_bytes_by_name_n";
+           if (!pStatement || !pName || !pNameLength || !pValue || !pValueSize)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_bind_bytes_by_name_n");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_statement_bind_bytes_by_name_n(statement, name, name_length, value, value_size);
+           return cass_statement_bind_bytes_by_name_n(pStatement, pName, pNameLength, pValue, pValueSize);
 
        }
 
-       w_Cass_Error w_cassandra_statement_bind_custom(w_Cass_Statement* statement,size_t index,const char* class_name, const w_byte_t* value,size_t value_size)
+       w_Cass_Error w_cassandra_statement_bind_custom(_In_ w_cass_statement* pStatement, _In_ size_t pIndex, _In_ const char* pClassName, _In_ const w_byte_t* pValue, _In_ size_t pValueSize)
        {
-           if (!statement )
+           const char* _trace_info = "w_cassandra_statement_bind_custom";
+           if (!pStatement || !pIndex || !pClassName || !pValue || !pValueSize)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_bind_custom");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return   cass_statement_bind_custom(statement, index, class_name, value, value_size);
+           return   cass_statement_bind_custom(pStatement, pIndex, pClassName, pValue, pValueSize);
 
        }
 
-       w_Cass_Error  w_cassandra_statement_bind_custom_n(w_Cass_Statement* statement, size_t index, const char* class_name, size_t class_name_length,const w_byte_t* value,size_t value_size)
+       w_Cass_Error  w_cassandra_statement_bind_custom_n(_In_ w_cass_statement* pStatement, _In_  size_t pIndex, _In_ const char* pClassName, _In_ size_t pClassNameLength, _In_ const w_byte_t* pValue, _In_ size_t pValueSize)
        {
-           if (!statement)
+           const char* _trace_info = "w_cassandra_statement_bind_custom_n";
+           if (!pStatement || !pIndex || !pClassName || !pClassNameLength || !pValue || !pValueSize)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_bind_custom_n");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return   cass_statement_bind_custom_n( statement,  index,  class_name,  class_name_length,  value,  value_size);
+           return   cass_statement_bind_custom_n(pStatement, pIndex, pClassName, pClassNameLength, pValue, pValueSize);
 
        }
 
 
-       w_Cass_Error w_cassandra_statement_bind_custom_by_name(w_Cass_Statement* statement, const char* name, const char* class_name, const w_byte_t* value,size_t value_size)
+       w_Cass_Error w_cassandra_statement_bind_custom_by_name(_In_ w_cass_statement* pStatement, _In_ const char* pName, _In_ const char* pClassName, _In_ const w_byte_t* pValue, _In_ size_t pValueSize)
        {
-           if (!statement || !name)
+           const char* _trace_info = "w_cassandra_statement_bind_custom_by_name";
+           if (!pStatement || !pName || !pClassName || !pValue || !pValueSize)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_bind_custom_by_name");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+
                return -1;
            }
-           return   cass_statement_bind_custom_by_name(statement, name, class_name, value, value_size);
+           return   cass_statement_bind_custom_by_name(pStatement, pName, pClassName, pValue, pValueSize);
 
        }
 
-       w_Cass_Error  w_cassandra_statement_bind_custom_by_name_n(w_Cass_Statement* statement, const char* name,size_t name_length, const char* class_name,size_t class_name_length, const w_byte_t* value, size_t value_size)
+       w_Cass_Error  w_cassandra_statement_bind_custom_by_name_n(_In_ w_cass_statement* pStatement, _In_ const char* pName, _In_ size_t pNameLength, _In_ const char* pClassName, _In_ size_t pClassNameLength, _In_ const w_byte_t* pValue, _In_ size_t pValueSize)
        {
-           if (!statement || !name)
+           const char* _trace_info = "w_cassandra_statement_bind_custom_by_name_n";
+           if (!pStatement || !pName || !pNameLength || !pClassName || !pClassNameLength || !pValue || !pValueSize)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_bind_custom_by_name_n");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_statement_bind_custom_by_name_n(statement, name, name_length, class_name, class_name_length, value, value_size);
+           return cass_statement_bind_custom_by_name_n(pStatement, pName, pNameLength, pClassName, pClassNameLength, pValue, pValueSize);
 
        }
 
-       w_Cass_Error  w_cassandra_statement_bind_uuid(w_Cass_Statement* statement, size_t index, w_CassUuid value)
+       w_Cass_Error  w_cassandra_statement_bind_uuid(_In_ w_cass_statement* pStatement, _In_ size_t pIndex, _In_ w_cass_uuid pValue)
        {
-           if (!statement )
+           const char* _trace_info = "w_cassandra_statement_bind_uuid";
+           if (!pStatement || !pIndex )
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_bind_uuid");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_statement_bind_uuid(statement, index, value);
+           return cass_statement_bind_uuid(pStatement, pIndex, pValue);
 
        }
 
-       w_Cass_Error w_cassandra_statement_bind_uuid_by_name(w_Cass_Statement* statement,const char* name,w_CassUuid value)
+       w_Cass_Error w_cassandra_statement_bind_uuid_by_name(_In_ w_cass_statement* pStatement, _In_ const char* pName, _In_ w_cass_uuid pValue)
        {
-           if (!statement || !name)
+           const char* _trace_info = "w_cassandra_statement_bind_uuid_by_name";
+           if (!pStatement || !pName)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_bind_uuid_by_name");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return  cass_statement_bind_uuid_by_name(statement, name, value);
+           return  cass_statement_bind_uuid_by_name(pStatement, pName, pValue);
 
        }
 
-       w_Cass_Error w_cassandra_statement_bind_uuid_by_name_n(w_Cass_Statement* statement, const char* name,size_t name_length, w_CassUuid value)
+       w_Cass_Error w_cassandra_statement_bind_uuid_by_name_n(_In_ w_cass_statement* pStatement, _In_  const char* pName, _In_ size_t pNameLength, _In_  w_cass_uuid pValue)
        {
-           if (!statement || !name)
+           const char* _trace_info = "w_cassandra_statement_bind_uuid_by_name_n";
+           if (!pStatement || !pName || !pNameLength)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_bind_uuid_by_name_n");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return   cass_statement_bind_uuid_by_name_n(statement, name, name_length, value);
+           return   cass_statement_bind_uuid_by_name_n(pStatement, pName, pNameLength, pValue);
 
        }
 
-       w_Cass_Error  w_cassandra_statement_bind_inet(w_Cass_Statement* statement, size_t index, w_CassInet value)
+       w_Cass_Error  w_cassandra_statement_bind_inet(_In_ w_cass_statement* pStatement, _In_ size_t pIndex, _In_ w_cass_inet pValue)
        {
-
-           if (!statement )
+           const char* _trace_info = "w_cassandra_statement_bind_inet";
+           if (!pStatement)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_bind_inet");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_statement_bind_inet( statement,  index,  value);
+           return cass_statement_bind_inet(pStatement, pIndex, pValue);
 
        }
 
-       w_Cass_Error w_cassandra_statement_bind_inet_by_name(w_Cass_Statement* statement, const char* name, w_CassInet value)
+       w_Cass_Error w_cassandra_statement_bind_inet_by_name(_In_ w_cass_statement* pStatement, _In_ const char* pName, _In_ w_cass_inet pValue)
        {
-           if (!statement || !name)
+           const char* _trace_info = "w_cassandra_statement_bind_inet_by_name";
+           if (!pStatement || !pName)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_bind_inet_by_name");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_statement_bind_inet_by_name(statement, name, value);
+           return cass_statement_bind_inet_by_name(pStatement, pName, pValue);
 
        }
 
-       w_Cass_Error w_cassandra_statement_bind_inet_by_name_n(w_Cass_Statement* statement,const char* name,size_t name_length, w_CassInet value)
+       w_Cass_Error w_cassandra_statement_bind_inet_by_name_n(_In_ w_cass_statement* pStatement, _In_ const char* pName, _In_ size_t pNameLength, _In_ w_cass_inet pValue)
        {
-           if (!statement || !name)
+           const char* _trace_info = "w_cassandra_statement_bind_inet_by_name_n";
+           if (!pStatement || !pName || !pNameLength)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_bind_inet_by_name_n");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_statement_bind_inet_by_name_n(statement, name, name_length, value);
+           return cass_statement_bind_inet_by_name_n(pStatement, pName, pNameLength, pValue);
 
        }
 
-       w_Cass_Error w_cassandra_statement_bind_decimal(w_Cass_Statement* statement, size_t index, const w_byte_t* varint, size_t varint_size, int32_t scale)
+       w_Cass_Error w_cassandra_statement_bind_decimal(_In_ w_cass_statement* pStatement, _In_ size_t pIndex, _In_ const w_byte_t* pVarint, _In_ size_t pVarintSize, _In_ int32_t pScale)
        {
-           if (!statement )
+           const char* _trace_info = "w_cassandra_statement_bind_decimal";
+           if (!pStatement || !pIndex || !pScale)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_bind_decimal");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
 
-           return cass_statement_bind_decimal(statement, index, varint, varint_size, scale);
+           return cass_statement_bind_decimal(pStatement, pIndex, pVarint, pVarintSize, pScale);
 
        }
 
-       w_Cass_Error  w_cassandra_statement_bind_decimal_by_name(w_Cass_Statement* statement, const char* name, const w_byte_t* varint, size_t varint_size, int32_t scale)
+       w_Cass_Error  w_cassandra_statement_bind_decimal_by_name(_In_ w_cass_statement* pStatement, _In_ const char* pName, _In_ const w_byte_t* pVarint, _In_ size_t pVarintSize, _In_ int32_t pScale)
        {
-           if (!statement || !name )
+           const char* _trace_info = "w_cassandra_statement_bind_decimal_by_name";
+           if (!pStatement || !pName || !pVarintSize || !pScale)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_bind_decimal_by_name");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_statement_bind_decimal_by_name(statement, name, varint, varint_size, scale);
+           return cass_statement_bind_decimal_by_name(pStatement, pName, pVarint, pVarintSize, pScale);
 
        }
 
-       w_Cass_Error  w_cassandra_statement_bind_decimal_by_name_n(w_Cass_Statement* statement, const char* name, size_t name_length,  const w_byte_t* varint, size_t varint_size,  int32_t scale)
+       w_Cass_Error  w_cassandra_statement_bind_decimal_by_name_n(_In_ w_cass_statement* pStatement, _In_ const char* pName, _In_ size_t pNameLength, _In_  const w_byte_t* pVarint, _In_ size_t pVarintSize, _In_  int32_t pScale)
        {
-           if (!statement || !name)
+           const char* _trace_info = "w_cassandra_statement_bind_decimal_by_name_n";
+           if (!pStatement || !pName || !pNameLength ||!pVarintSize || !pScale)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_bind_decimal_by_name_n");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+
                return -1;
            }
-           return  cass_statement_bind_decimal_by_name_n(statement, name, name_length, varint, varint_size, scale);
+           return  cass_statement_bind_decimal_by_name_n(pStatement, pName, pNameLength, pVarint, pVarintSize, pScale);
 
        }
 
-       w_Cass_Error w_cassandra_statement_bind_duration(w_Cass_Statement* statement,size_t index,int32_t months,int32_t days,int64_t nanos)
+       w_Cass_Error w_cassandra_statement_bind_duration(_In_ w_cass_statement* pStatement, _In_ size_t pIndex, _In_ int32_t pMonths, _In_ int32_t pDays, _In_ int64_t pNanos)
        {
-           if (!statement )
+           const char* _trace_info = "w_cassandra_statement_bind_duration";
+           if (!pStatement || !pIndex || !pMonths || !pDays || !pNanos)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_bind_duration");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
 
-           return   cass_statement_bind_duration(statement, index, months, days, nanos);
+           return   cass_statement_bind_duration(pStatement, pIndex, pMonths, pDays, pNanos);
 
        }
 
-       w_Cass_Error  w_cassandra_statement_bind_duration_by_name(w_Cass_Statement* statement, const char* name,int32_t months, int32_t days,int64_t nanos)
+       w_Cass_Error  w_cassandra_statement_bind_duration_by_name(_In_ w_cass_statement* pStatement, _In_  const char* pName, _In_ int32_t pMonths, _In_  int32_t pDays, _In_ int64_t pNanos)
        {
-           if (!statement || !name )
+           const char* _trace_info = "w_cassandra_statement_bind_duration_by_name";
+           if (!pStatement || !pName || !pMonths ||!pDays || !pNanos)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_bind_duration_by_name");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_statement_bind_duration_by_name(statement, name, months, days, nanos);
+           return cass_statement_bind_duration_by_name(pStatement, pName, pMonths, pDays, pNanos);
 
        }
 
-       w_Cass_Error  w_cassandra_statement_bind_duration_by_name_n(w_Cass_Statement* statement, const char* name,size_t name_length,int32_t months,int32_t days,int64_t nanos)
+       w_Cass_Error  w_cassandra_statement_bind_duration_by_name_n(_In_ w_cass_statement* pStatement, _In_ const char* pName, _In_ size_t pNameLength, _In_ int32_t pMonths, _In_ int32_t pDays, _In_ int64_t pNanos)
        {
-           if (!statement || !name)
+           const char* _trace_info = "w_cassandra_statement_bind_duration_by_name_n";
+           if (!pStatement || !pName || !pNameLength || !pMonths || !pDays || !pNanos)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_bind_duration_by_name_n");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_statement_bind_duration_by_name_n(  statement,  name,  name_length,  months,  days,  nanos);
+           return cass_statement_bind_duration_by_name_n(pStatement, pName, pNameLength, pMonths, pDays, pNanos);
 
        }
 
-       w_Cass_Error  w_cassandra_statement_bind_collection(w_Cass_Statement* statement,size_t index, const w_Cass_Collection* collection)
+       w_Cass_Error  w_cassandra_statement_bind_collection(_In_ w_cass_statement* pStatement, _In_ size_t pIndex, _In_ const w_cass_collection* pCollection)
        {
-           if (!statement )
+           const char* _trace_info = "w_cassandra_statement_bind_collection";
+           if (!pStatement || !pCollection || !pIndex)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_bind_collection");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return  cass_statement_bind_collection(statement, index, collection);
+           return  cass_statement_bind_collection(pStatement, pIndex, pCollection);
 
        }
 
-       w_Cass_Error  w_cassandra_statement_bind_collection_by_name(w_Cass_Statement* statement,const char* name, const w_Cass_Collection* collection)
+       w_Cass_Error  w_cassandra_statement_bind_collection_by_name(_In_ w_cass_statement* pStatement, _In_ const char* pName, _In_ const w_cass_collection* pCollection)
        {
-           if (!statement || !name )
+           const char* _trace_info = "w_cassandra_statement_bind_collection_by_name";
+           if (!pStatement || !pName || !pCollection)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_bind_collection_by_name");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
 
-           return cass_statement_bind_collection_by_name(statement, name, collection);
+           return cass_statement_bind_collection_by_name(pStatement, pName, pCollection);
 
        }
-       w_Cass_Error w_cassandra_statement_bind_collection_by_name_n(w_Cass_Statement* statement,const char* name, size_t name_length, const w_Cass_Collection* collection)
+       w_Cass_Error w_cassandra_statement_bind_collection_by_name_n(_In_ w_cass_statement* pStatement, _In_ const char* pName, _In_ size_t pNameLength, _In_ const w_cass_collection* pCollection)
        {
-           if (!statement || !name)
+           const char* _trace_info = "w_cassandra_statement_bind_collection_by_name_n";
+           if (!pStatement || !pName || !pNameLength || !pCollection)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_bind_collection_by_name_n");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return  cass_statement_bind_collection_by_name_n(statement, name, name_length, collection);
+           return  cass_statement_bind_collection_by_name_n(pStatement, pName, pNameLength, pCollection);
 
        }
 
-       w_Cass_Error  w_cassandra_statement_bind_tuple(w_Cass_Statement* statement,size_t index, const w_Cass_Tuple* tuple)
+       w_Cass_Error  w_cassandra_statement_bind_tuple(_In_ w_cass_statement* pStatement, _In_ size_t pIndex, _In_ const w_cass_tuple* pTuple)
        {
-           if (!statement )
+           const char* _trace_info = "w_cassandra_statement_bind_tuple";
+           if (!pStatement || !pIndex || !pTuple)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_bind_tuple");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_statement_bind_tuple(statement, index, tuple);
+           return cass_statement_bind_tuple(pStatement, pIndex, pTuple);
 
        }
 
-       w_Cass_Error  w_cassandra_statement_bind_tuple_by_name(w_Cass_Statement* statement,const char* name,const w_Cass_Tuple* tuple)
+       w_Cass_Error  w_cassandra_statement_bind_tuple_by_name(_In_ w_cass_statement* pStatement, _In_ const char* pName, _In_ const w_cass_tuple* pTuple)
        {
-           if (!statement || !name)
+           const char* _trace_info = "w_cassandra_statement_bind_tuple_by_name";
+           if (!pStatement || !pName || !pTuple )
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_bind_tuple_by_name");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return  cass_statement_bind_tuple_by_name(statement, name, tuple);
+           return  cass_statement_bind_tuple_by_name(pStatement, pName, pTuple);
+
+       }
 
+       w_Cass_Error w_cassandra_statement_bind_tuple_by_name_n(_In_ w_cass_statement* pStatement, _In_  const char* pName, _In_ size_t pNameLength, _In_ const w_cass_tuple* pTuple)
+       {
+           const char* _trace_info = "w_cassandra_statement_bind_tuple_by_name_n";
+           if (!pStatement || !pName || !pNameLength || !pTuple)
+           {
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+               return -1;
+           }
+           return cass_statement_bind_tuple_by_name_n(pStatement, pName, pNameLength, pTuple);
        }
 
-       w_Cass_Error w_cassandra_statement_bind_tuple_by_name_n(w_Cass_Statement* statement,  const char* name,size_t name_length, const w_Cass_Tuple* tuple)
+       w_Cass_Error w_cassandra_statement_bind_user_type(_In_ w_cass_statement* pStatement, _In_ size_t pIndex, _In_ const w_cass_user_type* pUserType)
        {
-           if (!statement || !name)
+           const char* _trace_info = "w_cassandra_statement_bind_user_type";
+           if (!pStatement || !pIndex || !pUserType)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_bind_tuple_by_name_n");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_statement_bind_tuple_by_name_n(  statement, name,  name_length,  tuple);
+           return cass_statement_bind_user_type(pStatement, pIndex, pUserType);
        }
 
-       w_Cass_Error w_cassandra_statement_bind_user_type(w_Cass_Statement* statement,size_t index, const w_Cass_User_Type* user_type)
+       w_Cass_Error w_cassandra_statement_bind_user_type_by_name(_In_ w_cass_statement* pStatement, _In_  const char* pName, _In_ const w_cass_user_type* pUserType)
        {
-           if (!statement )
+           const char* _trace_info = "w_cassandra_statement_bind_user_type_by_name";
+           if (!pStatement || !pName || !pUserType)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_bind_user_type");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_statement_bind_user_type(statement, index, user_type);
+           return cass_statement_bind_user_type_by_name(pStatement, pName, pUserType);
        }
 
-       w_Cass_Error w_cassandra_statement_bind_user_type_by_name(w_Cass_Statement* statement,  const char* name,const w_Cass_User_Type* user_type)
+       w_Cass_Error  w_cassandra_statement_bind_user_type_by_name_n(_In_ w_cass_statement* pStatement, _In_ const char* pName, _In_ size_t pNameLength, _In_ const w_cass_user_type* pUserType)
        {
-           if (!statement || !name)
+           const char* _trace_info = "w_cassandra_statement_bind_user_type_by_name_n";
+           if (!pStatement || !pName || !pUserType  || !pUserType)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_statement_bind_user_type_by_name");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_statement_bind_user_type_by_name(statement, name, user_type);
+           return  cass_statement_bind_user_type_by_name_n(pStatement, pName, pNameLength, pUserType);
        }
 
-       void w_cassandra_prepared_free(const w_Cass_Prepared* prepared)
+       void w_cassandra_prepared_free(_In_ const w_cass_prepared* pPrepared)
        {
-           if (!prepared)
+           const char* _trace_info = "w_cassandra_prepared_free";
+           if (!pPrepared)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_prepared_free");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
            }
-           cass_prepared_free(prepared);
+           cass_prepared_free(pPrepared);
 
        }
 
-       w_Cass_Statement* w_cassandra_prepared_bind(const w_Cass_Prepared* prepared)
+       w_cass_statement* w_cassandra_prepared_bind(_In_ const w_cass_prepared* pPrepared)
        {
-           if (!prepared)
+           const char* _trace_info = "w_cassandra_prepared_bind";
+           if (!pPrepared)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandraandra_prepared_bind");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return NULL;
            }
-           return   cass_prepared_bind(prepared);
+           return   cass_prepared_bind(pPrepared);
 
        }
 
-       w_Cass_Error w_cassandra_prepared_parameter_name(const w_Cass_Prepared* prepared, size_t index,const char** name,size_t* name_length)
+       w_Cass_Error w_cassandra_prepared_parameter_name(_In_ const w_cass_prepared* pPrepared, _In_  size_t pIndex, _Inout_ const char** pName, _Inout_ size_t* pNameLength)
        {
-           if (!prepared || !name )
+           const char* _trace_info = "w_cassandra_prepared_parameter_name";
+           if (!pPrepared || !pNameLength || !pIndex || !pName)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandraandra_prepared_parameter_name");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_prepared_parameter_name(prepared, index, name, name_length);
+           return cass_prepared_parameter_name(pPrepared, pIndex, pName, pNameLength);
        }
 
-       const w_Cass_Data_Type* w_cassandra_prepared_parameter_data_type(const w_Cass_Prepared* prepared, size_t index)
+       const w_cass_data_type* w_cassandra_prepared_parameter_data_type(_In_ const  w_cass_prepared* pPrepared, _In_  size_t pIndex)
        {
-           if (!prepared )
+           const char* _trace_info = "w_cassandra_prepared_parameter_data_type";
+           if (!pPrepared || !pIndex)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_prepared_parameter_data_type");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return NULL;
            }
-           return cass_prepared_parameter_data_type(   prepared, index);
+           return cass_prepared_parameter_data_type(pPrepared, pIndex);
        }
 
-       const w_Cass_Data_Type* w_cassandra_prepared_parameter_data_type_by_name(const w_Cass_Prepared* prepared, const char* name)
+       const w_cass_data_type* w_cassandra_prepared_parameter_data_type_by_name(_In_ const w_cass_prepared* pPrepared, _In_ const char* pName)
        {
-           if (!prepared || !name )
+           const char* _trace_info = "w_cassandra_prepared_parameter_data_type_by_name";
+           if (!pPrepared || !pName)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_prepared_parameter_data_type_by_name");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return NULL;
            }
-               return cass_prepared_parameter_data_type_by_name( prepared, name);
+               return cass_prepared_parameter_data_type_by_name(pPrepared, pName);
        }
 
-       const w_Cass_Data_Type* w_cassandra_prepared_parameter_data_type_by_name_n(const w_Cass_Prepared* prepared, const char* name,size_t name_length)
+       const w_cass_data_type* w_cassandra_prepared_parameter_data_type_by_name_n(_In_ const w_cass_prepared* pPrepared, _In_  const char* pName, _In_ size_t pNameLength)
        {
-           if (!prepared || !name)
+           const char* _trace_info = "w_cassandra_prepared_parameter_data_type_by_name_n";
+           if (!pPrepared || !pName || !pNameLength)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_prepared_parameter_data_type_by_name_n");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return NULL;
            }
-               return cass_prepared_parameter_data_type_by_name_n( prepared, name, name_length);
+               return cass_prepared_parameter_data_type_by_name_n(pPrepared, pName, pNameLength);
 
        }
 
-       w_Cass_Batch* w_cassandra_batch_new(w_Cass_Batch_Type type)
+       w_cass_batch* w_cassandra_batch_new(_In_ w_cass_batch_type pType)
        {
            
-               return cass_batch_new( type);
+               return cass_batch_new(pType);
        }
 
-       void w_cassandra_batch_free(w_Cass_Batch* batch)
+       void w_cassandra_batch_free(_In_ w_cass_batch* pBatch)
        {
-           if (!batch)
+           const char* _trace_info = "w_cassandra_batch_free";
+           if (!pBatch)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_batch_free");
-               
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+
            }
-           cass_batch_free(  batch);
+           cass_batch_free(pBatch);
 
        }
 
-       w_Cass_Error  w_cassandra_batch_set_keyspace(w_Cass_Batch* batch, const char* keyspace)
+       w_Cass_Error  w_cass_batch_set_keyspace(_In_ w_cass_batch* pBatch, _In_ const char* pKeyspace)
        {
-           if (!batch || !keyspace)
+           const char* _trace_info = "w_cass_batch_set_keyspace";
+           if (!pBatch || !pKeyspace)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_batch_set_keyspace");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return  cass_batch_set_keyspace( batch, keyspace);
+           return  cass_batch_set_keyspace(pBatch, pKeyspace);
        }
 
-       w_Cass_Error w_cassandra_batch_set_keyspace_n(w_Cass_Batch* batch,const char* keyspace,size_t keyspace_length)
+       w_Cass_Error w_cassandra_batch_set_keyspace_n(_In_ w_cass_batch* pBatch, _In_  const char* pKeyspace, _In_ size_t pKeyspaceLength)
        {
-           if (!batch || !keyspace)
+           const char* _trace_info = "w_cassandra_batch_set_keyspace_n";
+           if (!pBatch || !pKeyspace || !pKeyspaceLength)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_batch_set_keyspace_n");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return  cass_batch_set_keyspace_n(batch, keyspace, keyspace_length);
+           return  cass_batch_set_keyspace_n(pBatch, pKeyspace, pKeyspaceLength);
 
        }
 
-       w_Cass_Error w_cassandra_batch_set_consistency(w_Cass_Batch* batch, W_Cass_Consistency consistency)
+       w_Cass_Error w_cassandra_batch_set_consistency(_In_ w_cass_batch* pBatch, _In_ w_cass_consistency pConsistency)
        {
-           if (!batch )
+           const char* _trace_info = "w_cassandra_batch_set_consistency";
+           if (!pBatch || !pConsistency)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_batch_set_consistency");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
 
-           return cass_batch_set_consistency(batch, consistency);
+           return cass_batch_set_consistency(pBatch, pConsistency);
 
        }
 
-       w_Cass_Error w_cassandra_batch_set_serial_consistency(w_Cass_Batch* batch, W_Cass_Consistency serial_consistency)
+       w_Cass_Error w_cassandra_batch_set_serial_consistency(_In_ w_cass_batch* pBatch, _In_  w_cass_consistency pSerialConsistency)
        {
-           if (!batch)
-           {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_batch_set_serial_consistency");
+           const char* _trace_info = "w_cassandra_batch_set_serial_consistency";
+           if (!pBatch || pSerialConsistency)
+           {        
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+
                return -1;
            }
 
            return 
-               cass_batch_set_serial_consistency(  batch,serial_consistency);
+               cass_batch_set_serial_consistency(pBatch, pSerialConsistency);
        }
 
-       w_Cass_Error w_cassandra_batch_set_timestamp(w_Cass_Batch* batch,int64_t timestamp)
+       w_Cass_Error w_cassandra_batch_set_timestamp(_In_ w_cass_batch* pBatch, _In_ int64_t pTimeStamp)
        {
-           if (!batch)
+           const char* _trace_info = "w_cassandra_batch_set_timestamp";
+           if (!pBatch || !pTimeStamp)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_batch_set_timestamp");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return  cass_batch_set_timestamp(  batch,  timestamp);
+           return  cass_batch_set_timestamp(pBatch, pTimeStamp);
 
        }
 
-       w_Cass_Error w_cassandra_batch_set_request_timeout(w_Cass_Batch* batch,uint64_t timeout_ms)
+       w_Cass_Error w_cassandra_batch_set_request_timeout(_In_ w_cass_batch* pBatch, _In_ uint64_t pTimeOutms)
        {
-           if (!batch)
+           const char* _trace_info = "w_cassandra_batch_set_request_timeout";
+           if (!pBatch)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_batch_set_request_timeout");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return  cass_batch_set_request_timeout(batch, timeout_ms);
+           return  cass_batch_set_request_timeout(pBatch, pTimeOutms);
 
 
        }
 
-       w_Cass_Error  w_cassandra_batch_set_is_idempotent(w_Cass_Batch* batch, w_bool_t is_idempotent)
+       w_Cass_Error  w_cassandra_batch_set_is_idempotent(_In_ w_cass_batch* pBatch, _In_  w_bool_t pIsIdempotent)
        {
-           if (!batch)
+           const char* _trace_info = "w_cassandra_batch_set_is_idempotent";
+           if (!pBatch)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_batch_set_is_idempotent");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return   cass_batch_set_is_idempotent(batch, is_idempotent);
+           return   cass_batch_set_is_idempotent(pBatch, pIsIdempotent);
 
        }
 
-       w_Cass_Error w_cassandra_batch_set_retry_policy(w_Cass_Batch* batch,w_Cass_Retry_Policy* retry_policy)
+       w_Cass_Error w_cassandra_batch_set_retry_policy(_In_ w_cass_batch* pBatch, _In_ w_cass_retry_policy* pRetryPolicy)
        {
-           if (!batch || !retry_policy)
+           const char* _trace_info = "w_cassandra_batch_set_retry_policy";
+           if (!pBatch || !pRetryPolicy)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_batch_set_retry_policy");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_batch_set_retry_policy(batch, retry_policy);
+           return cass_batch_set_retry_policy(pBatch, pRetryPolicy);
 
        }
 
-       w_Cass_Error  w_cassandra_batch_set_custom_payload(w_Cass_Batch* batch,const w_Cass_Custom_Payload* payload)
+       w_Cass_Error  w_cassandra_batch_set_custom_payload(_In_ w_cass_batch* pBatch, _In_ const w_cass_custom_payload* pPayload)
        {
-           if (!batch || !payload)
+           const char* _trace_info = "w_cassandra_batch_set_custom_payload";
+           if (!pBatch || !pPayload)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_batch_set_custom_payload");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return  cass_batch_set_custom_payload(batch, payload);
+           return  cass_batch_set_custom_payload(pBatch, pPayload);
 
        }
 
-       w_Cass_Error w_cassandra_batch_set_tracing(w_Cass_Batch* batch, w_bool_t enabled)
+       w_Cass_Error w_cassandra_batch_set_tracing(_In_ w_cass_batch* pBatch, _In_ w_bool_t pEnabled)
        {
-           if (!batch )
+           const char* _trace_info = "w_cassandra_batch_set_tracing";
+           if (!pBatch)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_batch_set_tracing");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_batch_set_tracing(batch, enabled);
+           return cass_batch_set_tracing(pBatch, pEnabled);
 
        }
 
-       w_Cass_Error  w_cassandra_batch_add_statement(w_Cass_Batch* batch,w_Cass_Statement* statement)
+       w_Cass_Error  w_cassandra_batch_add_statement(_In_ w_cass_batch* pBatch, _In_ w_cass_statement* pStatement)
        {
-           if (!batch || !statement)
+           const char* _trace_info = "w_cassandra_batch_add_statement";
+           if (!pBatch || !pStatement)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_batch_add_statement");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            } 
-           return cass_batch_add_statement(batch, statement);
+           return cass_batch_add_statement(pBatch, pStatement);
 
        }
 
-       w_Cass_Error  w_cassandra_batch_set_execution_profile(w_Cass_Batch* batch,const char* name)
+       w_Cass_Error  w_cassandra_batch_set_execution_profile(_In_ w_cass_batch* pBatch, _In_ const char* pName)
        {
-           if (!batch || !name)
+           const char* _trace_info = "w_cassandra_batch_set_execution_profile";
+           if (!pBatch || !pName)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_batch_set_execution_profile");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return  cass_batch_set_execution_profile(batch, name);
+           return  cass_batch_set_execution_profile(pBatch, pName);
 
        }
 
-       w_Cass_Error w_cassandra_batch_set_execution_profile_n(w_Cass_Batch* batch, const char* name,size_t name_length)
+       w_Cass_Error w_cassandra_batch_set_execution_profile_n(_In_ w_cass_batch* pBatch, _In_ const char* pName, _In_ size_t pNameLength)
        {
-           if (!batch || !name)
+           const char* _trace_info = "w_cassandra_batch_set_execution_profile_n";
+           if (!pBatch || !pName || !pNameLength)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_batch_set_execution_profile_n");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_batch_set_execution_profile_n(batch, name, name_length);
+           return cass_batch_set_execution_profile_n(pBatch, pName, pNameLength);
 
        }
 
-       w_Cass_Data_Type * w_cassandra_data_type_new(w_Cass_Value_Type type)
+       w_cass_data_type * w_cassandra_data_type_new(_In_ w_cass_value_type pType)
 
        {
-           return cass_data_type_new( type);
+           return cass_data_type_new(pType);
 
        }
 
-       w_Cass_Data_Type* w_cassandra_data_type_new_from_existing(const w_Cass_Data_Type* data_type)
+       w_cass_data_type* w_cassandra_data_type_new_from_existing(_In_ const w_cass_data_type* pDataType)
        {
-           if (!data_type)
+           const char* _trace_info = "w_cassandra_data_type_new_from_existing";
+           if (!pDataType)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_data_type_new_from_existing");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return NULL;
            }
-           return cass_data_type_new_from_existing(data_type);
+           return cass_data_type_new_from_existing(pDataType);
 
        }
 
-       w_Cass_Data_Type* w_cassandra_data_type_new_tuple(size_t item_count)
+       w_cass_data_type* w_cassandra_data_type_new_tuple(_In_ size_t ptemCount)
        {
-           return cass_data_type_new_tuple(item_count);
-
-       }
-
-       w_Cass_Data_Type* w_cassandra_data_type_new_udt(size_t field_count)
-       {
-           return cass_data_type_new_udt(field_count);
-
-       }
-
-       void w_cassandra_data_type_free(w_Cass_Data_Type* data_type)
-       {
-           if (!data_type)
+           const char* _trace_info = "w_cassandra_data_type_new_tuple";
+           if (!ptemCount)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_data_type_free");
-               
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+               return NULL;
            }
-            cass_data_type_free(  data_type);
+           return cass_data_type_new_tuple(ptemCount);
+
        }
 
-       w_Cass_Value_Type w_cassandra_data_type_type(const w_Cass_Data_Type* data_type)
+       w_cass_data_type* w_cassandra_data_type_new_udt(_In_ size_t pFieldCount)
        {
-           if (!data_type)
+           const char* _trace_info = "w_cassandra_data_type_new_udt";
+           if (!pFieldCount)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_data_type_type");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+               return NULL;
+           }
+           return cass_data_type_new_udt(pFieldCount);
+
+       }
+
+       void w_cassandra_data_type_free(_In_ w_cass_data_type* pDataType)
+       {
+           const char* _trace_info = "w_cassandra_data_type_free";
+           if (!pDataType)
+           {
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+
+           }
+            cass_data_type_free(pDataType);
+       }
+
+       w_cass_value_type w_cassandra_data_type_type(_In_ const w_cass_data_type* pDataType)
+       {
+           const char* _trace_info = "w_cassandra_data_type_type";
+           if (!pDataType)
+           {
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return  cass_data_type_type( data_type);
+           return  cass_data_type_type(pDataType);
 
        }
 
-       w_bool_t w_cassandra_data_type_is_frozen(const w_Cass_Data_Type* data_type)
+       w_bool_t w_cassandra_data_type_is_frozen(_In_ const w_cass_data_type* pDataType)
        {
-           if (!data_type)
+           const char* _trace_info = "w_cassandra_data_type_is_frozen";
+           if (!pDataType)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_data_type_is_frozen");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return false;
            }
-           return cass_data_type_is_frozen(data_type);
+           return cass_data_type_is_frozen(pDataType);
 
        }
-       w_Cass_Error w_cassandra_data_type_type_name(const w_Cass_Data_Type* data_type,  const char** type_name, size_t* type_name_length)
+       w_Cass_Error w_cassandra_data_type_type_name(_In_ const w_cass_data_type* pDataType, _Inout_  const char** pTypeName, _Inout_ size_t* pTypeNameLength)
        {
-
-           if (!data_type || !type_name)
+           const char* _trace_info = "w_cassandra_data_type_type_name";
+           if (!pDataType || !pTypeName || !pTypeNameLength)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_data_type_type_name");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_data_type_type_name( data_type, type_name, type_name_length);
+           return cass_data_type_type_name(pDataType, pTypeName, pTypeNameLength);
        }
       
-       w_Cass_Error w_cassandra_data_type_set_type_name(w_Cass_Data_Type* data_type,const char* type_name)
+       w_Cass_Error w_cassandra_data_type_set_type_name(_In_ w_cass_data_type* pDataType, _In_ const char* pTypeName)
        {
-           if (!data_type || !type_name)
+           const char* _trace_info = "w_cassandra_data_type_set_type_name";
+           if (!pDataType || !pTypeName)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_data_type_set_type_name");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_data_type_set_type_name(data_type, type_name);
+           return cass_data_type_set_type_name(pDataType, pTypeName);
 
        }
 
-       w_Cass_Error w_cassandra_data_type_set_type_name_n(w_Cass_Data_Type* data_type,const char* type_name,size_t type_name_length)
+       w_Cass_Error w_cassandra_data_type_set_type_name_n(_In_ w_cass_data_type* pDataType, _In_ const char* pTypeName, _In_ size_t pTypeNameLength)
        {
-           if (!data_type || !type_name)
+           const char* _trace_info = "w_cassandra_data_type_set_type_name_n";
+           if (!pDataType || !pTypeName || !pTypeNameLength)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_data_type_set_type_name_n");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return  cass_data_type_set_type_name_n(data_type, type_name, type_name_length);
+           return  cass_data_type_set_type_name_n(pDataType, pTypeName, pTypeNameLength);
 
        }
 
-       w_Cass_Error w_cassandra_data_type_keyspace(const w_Cass_Data_Type* data_type,const char** keyspace,size_t* keyspace_length)
+       w_Cass_Error w_cassandra_data_type_keyspace(_In_ const w_cass_data_type* pDataType, _Inout_ const char** pKeyspace, _Inout_ size_t* pKeypaceLength)
        {
-           if (!data_type || !keyspace)
+           const char* _trace_info = "w_cassandra_data_type_keyspace";
+           if (!pDataType || !pKeyspace || !pKeypaceLength)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_data_type_keyspace");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_data_type_keyspace(data_type, keyspace, keyspace_length);
+           return cass_data_type_keyspace(pDataType, pKeyspace, pKeypaceLength);
 
        }
 
-       w_Cass_Error w_cassandra_data_type_set_keyspace(w_Cass_Data_Type* data_type,const char* keyspace)
+       w_Cass_Error w_cassandra_data_type_set_keyspace(_In_ w_cass_data_type* pDataType, _In_ const char* pKeyspace)
        {
-           if (!data_type || !keyspace)
+           const char* _trace_info = "w_cassandra_data_type_set_keyspace";
+           if (!pDataType || !pKeyspace)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_data_type_set_keyspace");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return  cass_data_type_set_keyspace(data_type, keyspace);
+           return  cass_data_type_set_keyspace(pDataType, pKeyspace);
 
        }
 
-       w_Cass_Error  w_cassandra_data_type_set_keyspace_n(w_Cass_Data_Type* data_type,const char* keyspace, size_t keyspace_length)
+       w_Cass_Error  w_cassandra_data_type_set_keyspace_n(_In_ w_cass_data_type* pDataType, _In_ const char* pKeypace, _In_ size_t pKeypaceLength)
        {
-           if (!data_type || !keyspace)
+           const char* _trace_info = "w_cassandra_data_type_set_keyspace_n";
+           if (!pDataType || !pKeypace || !pKeypaceLength)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_data_type_set_keyspace_n");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_data_type_set_keyspace_n(data_type, keyspace, keyspace_length);
+           return cass_data_type_set_keyspace_n(pDataType, pKeypace, pKeypaceLength);
 
        }
 
-       w_Cass_Error w_cassandra_data_type_class_name(const w_Cass_Data_Type* data_type, const char** class_name,size_t* class_name_length)
+       w_Cass_Error w_cassandra_data_type_class_name(_In_ const w_cass_data_type* pDataType, _Inout_ const char** pClassName, _Inout_ size_t* pClassNameLength)
        {
-           if (!data_type || !class_name)
+           const char* _trace_info = "w_cassandra_data_type_class_name";
+           if (!pDataType || !pClassName || !pClassNameLength)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_data_type_class_name");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return  cass_data_type_class_name(data_type, class_name, class_name_length);
+           return  cass_data_type_class_name(pDataType, pClassName, pClassNameLength);
 
        }
 
-       w_Cass_Error w_cassandra_data_type_set_class_name(w_Cass_Data_Type* data_type,const char* class_name)
+       w_Cass_Error w_cassandra_data_type_set_class_name(_In_ w_cass_data_type* pDataType, _In_ const char* pClassName)
        {
-           if (!data_type || !class_name)
+           const char* _trace_info = "w_cassandra_data_type_set_class_name";
+           if (!pDataType || !pClassName)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_data_type_set_class_name");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_data_type_set_class_name(data_type, class_name);
+           return cass_data_type_set_class_name(pDataType, pClassName);
 
        }
 
-       w_Cass_Error  w_cassandra_data_type_set_class_name_n(w_Cass_Data_Type* data_type, const char* class_name,size_t class_name_length)
+       w_Cass_Error  w_cassandra_data_type_set_class_name_n(_In_ w_cass_data_type* pDataType, _In_ const char* pClassName, _In_ size_t pClassNameLength)
        {
-           if (!data_type || !class_name)
+           const char* _trace_info = "w_cassandra_data_type_set_class_name_n";
+           if (!pDataType || !pClassName)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_data_type_set_class_name_n");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return  cass_data_type_set_class_name_n(data_type, class_name, class_name_length);
+           return  cass_data_type_set_class_name_n(pDataType, pClassName, pClassNameLength);
 
        }
 
-       size_t w_cassandra_data_type_sub_type_count(const w_Cass_Data_Type* data_type)
+       size_t w_cassandra_data_type_sub_type_count(_In_ const w_cass_data_type* pDataType)
        {
-           if (!data_type )
+           const char* _trace_info = "w_cassandra_data_type_sub_type_count";
+           if (!pDataType)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_data_type_sub_type_count");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return 0;
            }
-           return  cass_data_type_sub_type_count(data_type);
+           return  cass_data_type_sub_type_count(pDataType);
+
+       }
+       /*deprecated*/
+       size_t  w_cassandra_data_sub_type_count(const w_cass_data_type* pDataType)
+       {
+           const char* _trace_info = "w_cassandra_data_sub_type_count";
+           if (!pDataType)
+           {
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+               return 0;
+           }
+           return  cass_data_sub_type_count(pDataType);
 
        }
 
-      /* size_t
-           w_cassandra_data_sub_type_count(const w_Cass_Data_Type* data_type)
+       const w_cass_data_type*  w_cassandra_data_type_sub_data_type(_In_ const w_cass_data_type* pDataType, _In_ size_t pIndex)
        {
-           return  cass_data_sub_type_count( data_type);
-
-       }*/
-
-       const w_Cass_Data_Type*  w_cassandra_data_type_sub_data_type(const w_Cass_Data_Type* data_type,size_t index)
-       {
-           if (!data_type)
+           const char* _trace_info = "w_cassandra_data_type_sub_data_type";
+           if (!pDataType || !pIndex)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_data_type_sub_data_type");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return NULL;
            }
-           return  cass_data_type_sub_data_type(data_type, index);
+           return  cass_data_type_sub_data_type(pDataType, pIndex);
 
        }
 
-       const w_Cass_Data_Type* w_cassandra_data_type_sub_data_type_by_name(const w_Cass_Data_Type* data_type,const char* name)
+       const w_cass_data_type* w_cassandra_data_type_sub_data_type_by_name(_In_ const w_cass_data_type* pDataType, _In_ const char* pName)
        {
-           if (!data_type || !name)
+           const char* _trace_info = "w_cassandra_data_type_sub_data_type_by_name";
+           if (!pDataType || !pName)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_data_type_sub_data_type_by_name");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return NULL;
            }
-           return  cass_data_type_sub_data_type_by_name(data_type, name);
+           return  cass_data_type_sub_data_type_by_name(pDataType, pName);
 
        }
 
-       const w_Cass_Data_Type* w_cassandra_data_type_sub_data_type_by_name_n(const w_Cass_Data_Type* data_type,const char* name,size_t name_length)
+       const w_cass_data_type* w_cassandra_data_type_sub_data_type_by_name_n(_In_ const w_cass_data_type* pDataType, _In_ const char* pName, _In_ size_t pNameLength)
        {
-           if (!data_type || !name)
+           const char* _trace_info = "w_cassandra_data_type_sub_data_type_by_name_n";
+           if (!pDataType || !pName || !pNameLength)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_data_type_sub_data_type_by_name_n");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return NULL;
            }
-           return cass_data_type_sub_data_type_by_name_n(data_type, name, name_length);
+           return cass_data_type_sub_data_type_by_name_n(pDataType, pName, pNameLength);
 
        }
 
-       w_Cass_Error w_cassandra_data_type_sub_type_name(const w_Cass_Data_Type* data_type,size_t index, const char** name, size_t* name_length)
+       w_Cass_Error w_cassandra_data_type_sub_type_name(_In_ const w_cass_data_type* pDataType, _In_ size_t pIndex, _In_  const char** pName, _In_  size_t* pNameLength)
        {
-           if (!data_type || !name)
+           const char* _trace_info = "w_cassandra_data_type_sub_type_name";
+           if (!pDataType || !pName || !pIndex || !pNameLength)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_data_type_sub_type_name");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_data_type_sub_type_name(data_type, index, name, name_length);
+           return cass_data_type_sub_type_name(pDataType, pIndex, pName, pNameLength);
 
        }
 
-       w_Cass_Error  w_cassandra_data_type_add_sub_type(w_Cass_Data_Type* data_type,const w_Cass_Data_Type* sub_data_type)
+       w_Cass_Error  w_cassandra_data_type_add_sub_type(_In_ w_cass_data_type* pDataType, _In_ const w_cass_data_type* pSubDataType)
        {
-           if (!data_type || !sub_data_type)
+           const char* _trace_info = "w_cassandra_data_type_add_sub_type";
+
+           if (!pDataType || !pSubDataType)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_data_type_add_sub_type");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_data_type_add_sub_type(data_type, sub_data_type);
+           return cass_data_type_add_sub_type(pDataType, pSubDataType);
 
        }
 
-       w_Cass_Error w_cassandra_data_type_add_sub_type_by_name(w_Cass_Data_Type* data_type,const char* name,const w_Cass_Data_Type* sub_data_type)
+       w_Cass_Error w_cassandra_data_type_add_sub_type_by_name(_In_ w_cass_data_type* pDataType, _In_ const char* pName, _In_ const w_cass_data_type* pSubDataType)
        {
-           if (!data_type || !name)
+           const char* _trace_info = "w_cassandra_data_type_add_sub_type_by_name";
+           if (!pDataType || !pName || !pSubDataType)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_data_type_add_sub_type_by_name");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
 
-           return cass_data_type_add_sub_type_by_name(data_type, name, sub_data_type);
+           return cass_data_type_add_sub_type_by_name(pDataType, pName, pSubDataType);
 
        }
 
-       w_Cass_Error  w_cassandra_data_type_add_sub_type_by_name_n(w_Cass_Data_Type* data_type, const char* name, size_t name_length, const w_Cass_Data_Type* sub_data_type)
+       w_Cass_Error  w_cassandra_data_type_add_sub_type_by_name_n(_In_ w_cass_data_type* pDataType, _In_  const char* pName, _In_  size_t pNameLength, _In_  const w_cass_data_type* pSubDataType)
        {
-           if (!data_type || !name)
+           const char* _trace_info = "w_cassandra_data_type_add_sub_type_by_name_n";
+           if (!pDataType || !pName)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_data_type_add_sub_type_by_name_n");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return  cass_data_type_add_sub_type_by_name_n( data_type, name,  name_length, sub_data_type);
+           return  cass_data_type_add_sub_type_by_name_n(pDataType, pName, pNameLength, pSubDataType);
        }
 
-       w_Cass_Error w_cassandra_data_type_add_sub_value_type(w_Cass_Data_Type* data_type,w_Cass_Value_Type sub_value_type)
+       w_Cass_Error w_cassandra_data_type_add_sub_value_type(_In_ w_cass_data_type* pDataType, _In_ w_cass_value_type pSubValueType)
        {
-           if (!data_type )
+           const char* _trace_info = "w_cassandra_data_type_add_sub_value_type";
+           if (!pDataType)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_data_type_add_sub_value_type");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_data_type_add_sub_value_type(data_type, sub_value_type);
+           return cass_data_type_add_sub_value_type(pDataType, pSubValueType);
 
        }
 
-       w_Cass_Error   w_cassandra_data_type_add_sub_value_type_by_name(w_Cass_Data_Type* data_type, const char* name, w_Cass_Value_Type sub_value_type)
+       w_Cass_Error   w_cassandra_data_type_add_sub_value_type_by_name(_In_ w_cass_data_type* pDataType, _In_  const char* pName, _In_  w_cass_value_type pSubValueType)
        {
-           if (!data_type || !name)
+           const char* _trace_info = "w_cassandra_data_type_add_sub_value_type_by_name";
+           if (!pDataType || !pName )
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_data_type_add_sub_value_type_by_name");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return  cass_data_type_add_sub_value_type_by_name(data_type, name, sub_value_type);
+           return  cass_data_type_add_sub_value_type_by_name(pDataType, pName, pSubValueType);
 
        }
        
-       w_Cass_Error  w_cassandra_data_type_add_sub_value_type_by_name_n(w_Cass_Data_Type* data_type, const char* name, size_t name_length, w_Cass_Value_Type sub_value_type)
+       w_Cass_Error  w_cassandra_data_type_add_sub_value_type_by_name_n(_In_ w_cass_data_type* pDataType, _In_  const char* pName, _In_  size_t pNameLength, _In_  w_cass_value_type sub_value_type)
        {
-           if (!data_type || !name)
+           const char* _trace_info = "w_cassandra_data_type_add_sub_value_type_by_name_n";
+           if (!pDataType || !pName || !pNameLength)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_data_type_add_sub_value_type_by_name_n");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return  cass_data_type_add_sub_value_type_by_name_n(data_type, name, name_length, sub_value_type);
+           return  cass_data_type_add_sub_value_type_by_name_n(pDataType, pName, pNameLength, sub_value_type);
 
        }
 
-       w_Cass_Collection*  w_cassandra_collection_new(w_Cass_Collection_Type type,size_t item_count)
+       w_cass_collection*  w_cassandra_collection_new(_In_ w_cass_collection_type pType, _In_ size_t pItemCount)
        {
-           
-           return   cass_collection_new(type, item_count);
-
-       }
-
-       w_Cass_Collection*   w_cassandra_collection_new_from_data_type(const w_Cass_Data_Type* data_type, size_t item_count)
-       {
-           if (!data_type )
+           const char* _trace_info = "w_cassandra_collection_new";
+           if (!pItemCount)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_collection_new_from_data_type");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+               return NULL;
+           }
+           return   cass_collection_new(pType, pItemCount);
+
+       }
+
+       w_cass_collection*   w_cassandra_collection_new_from_data_type(_In_ const w_cass_data_type* pDataType, _In_ size_t pItemCount)
+       {
+           const char* _trace_info = "w_cassandra_collection_new_from_data_type";
+           if (!pDataType || !pItemCount)
+           {
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return NULL;
                
            }
            
-           return  cass_collection_new_from_data_type(data_type, item_count);
+           return  cass_collection_new_from_data_type(pDataType, pItemCount);
 
        }
 
-       void  w_cassandra_collection_free(w_Cass_Collection* collection)
+       void  w_cassandra_collection_free(_In_ w_cass_collection* pCollection)
        {
-           if (!collection)
+           const char* _trace_info = "w_cassandra_collection_free";
+           if (!pCollection)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_collection_free");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
            }
-           cass_collection_free(collection);
+           cass_collection_free(pCollection);
 
        }
 
-       const w_Cass_Data_Type* w_cassandra_collection_data_type(const w_Cass_Collection* collection)
+       const w_cass_data_type* w_cassandra_collection_data_type(_In_ const w_cass_collection* pCollection)
        {
-           if (!collection)
+           const char* _trace_info = "w_cassandra_collection_data_type";
+           if (!pCollection)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_collection_data_type");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return NULL;
            }
-           return cass_collection_data_type(collection);
+           return cass_collection_data_type(pCollection);
 
        }
 
-       w_Cass_Error w_cassandra_collection_append_int8(w_Cass_Collection* collection,int8_t value)
+       w_Cass_Error w_cassandra_collection_append_int8(_In_ w_cass_collection* pCollection, _In_ int8_t pValue)
        {
-           if (!collection)
+           const char* _trace_info = "w_cassandra_collection_append_int8";
+           if (!pCollection || !pValue)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_collection_append_int8");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return  cass_collection_append_int8(collection, value);
+           return  cass_collection_append_int8(pCollection, pValue);
 
        }
 
-       w_Cass_Error  w_cassandra_collection_append_int16(w_Cass_Collection* collection, int16_t value)
+       w_Cass_Error  w_cassandra_collection_append_int16(_In_ w_cass_collection* pCollection, _In_ int16_t pValue)
        {
-           if (!collection)
+           const char* _trace_info = "w_cassandra_collection_append_int16";
+           if (!pCollection || !pValue)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_collection_append_int16");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return  cass_collection_append_int16(collection, value);
+           return  cass_collection_append_int16(pCollection, pValue);
 
        }
 
-       w_Cass_Error  w_cassandra_collection_append_int32(w_Cass_Collection* collection,int32_t value)
+       w_Cass_Error  w_cassandra_collection_append_int32(_In_ w_cass_collection* pCollection, _In_ int32_t pValue)
        {
-           if (!collection)
+           const char* _trace_info = "w_cassandra_collection_append_int32";
+           if (!pCollection || !pValue)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_collection_append_int32");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_collection_append_int32(collection, value);
+           return cass_collection_append_int32(pCollection, pValue);
 
        }
 
-       w_Cass_Error w_cassandra_collection_append_uint32(w_Cass_Collection* collection,uint32_t value)
+       w_Cass_Error w_cassandra_collection_append_uint32(_In_ w_cass_collection* pCollection, _In_ uint32_t pValue)
        {
-           if (!collection)
+           const char* _trace_info = "w_cassandra_collection_append_uint32";
+           if (!pCollection || !pValue)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_collection_append_uint32");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_collection_append_uint32(collection, value);
+           return cass_collection_append_uint32(pCollection, pValue);
 
        }
 
-       w_Cass_Error  w_cassandra_collection_append_int64(w_Cass_Collection* collection,int64_t value)
+       w_Cass_Error  w_cassandra_collection_append_int64(_In_ w_cass_collection* pCollection, _In_ int64_t pValue)
        {
-           if (!collection)
+           const char* _trace_info = "w_cassandra_collection_append_int64";
+           if (!pCollection || !pValue)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_collection_append_int64");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return  cass_collection_append_int64(collection, value);
+           return  cass_collection_append_int64(pCollection, pValue);
 
        }
 
-       w_Cass_Error  w_cassandra_collection_append_float(w_Cass_Collection* collection,float value)
+       w_Cass_Error  w_cassandra_collection_append_float(_In_ w_cass_collection* pCollection, _In_ float pValue)
        {
-           if (!collection)
+           const char* _trace_info = "w_cassandra_collection_append_float";
+           if (!pCollection || !pValue)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_collection_append_float");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return  cass_collection_append_float(collection, value);
+           return  cass_collection_append_float(pCollection, pValue);
 
        }
 
-       w_Cass_Error   w_cassandra_collection_append_double(w_Cass_Collection* collection, double value)
+       w_Cass_Error   w_cassandra_collection_append_double(_In_ w_cass_collection* pCollection, _In_ double pValue)
        {
-           if (!collection)
+           const char* _trace_info = "w_cassandra_collection_append_double";
+           if (!pCollection || !pValue)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_collection_append_double");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_collection_append_double(collection, value);
+           return cass_collection_append_double(pCollection, pValue);
 
        }
 
-       w_Cass_Error  w_cassandra_collection_append_bool(w_Cass_Collection* collection,w_bool_t value)
+       w_Cass_Error  w_cassandra_collection_append_bool(_In_ w_cass_collection* pCollection, _In_ w_bool_t pValue)
        {
-           if (!collection)
+           const char* _trace_info = "w_cassandra_collection_append_bool";
+           if (!pCollection )
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_collection_append_bool");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_collection_append_bool(collection, value);
+           return cass_collection_append_bool(pCollection, pValue);
 
        }
 
-       w_Cass_Error  w_cassandra_collection_append_string(w_Cass_Collection* collection, const char* value)
+       w_Cass_Error  w_cassandra_collection_append_string(_In_ w_cass_collection* pCollection, _In_  const char* pValue)
        {
-           if (!collection || !value)
+           const char* _trace_info = "w_cassandra_collection_append_string";
+           if (!pCollection || !pValue)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_collection_append_string");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_collection_append_string(collection, value);
+           return cass_collection_append_string(pCollection, pValue);
 
        }
 
-       w_Cass_Error w_cassandra_collection_append_string_n(w_Cass_Collection* collection, const char* value, size_t value_length)
+       w_Cass_Error w_cassandra_collection_append_string_n(_In_ w_cass_collection* pCollection, _In_  const char* pValue, _In_ size_t pValueLength)
        {
-           if (!collection || !value)
+           const char* _trace_info = "w_cassandra_collection_append_string_n";
+           if (!pCollection || !pValue || !pValueLength)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_collection_append_string_n");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return  cass_collection_append_string_n(collection, value, value_length);
+           return  cass_collection_append_string_n(pCollection, pValue, pValueLength);
 
        }
 
-       w_Cass_Error w_cassandra_collection_append_bytes(w_Cass_Collection* collection, const w_byte_t* value,size_t value_size)
+       w_Cass_Error w_cassandra_collection_append_bytes(_In_ w_cass_collection* pCollection, _In_  const w_byte_t* pValue, _In_ size_t pValueSize)
        {
-           if (!collection )
+           const char* _trace_info = "w_cassandra_collection_append_bytes";
+           if (!pCollection || !pValue || !pValueSize)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_collection_append_bytes");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_collection_append_bytes(collection, value, value_size);
+           return cass_collection_append_bytes(pCollection, pValue, pValueSize);
 
        }
 
-       w_Cass_Error  w_cassandra_collection_append_custom(w_Cass_Collection* collection, const char* class_name, const w_byte_t* value, size_t value_size)
+       w_Cass_Error  w_cassandra_collection_append_custom(_In_ w_cass_collection* pCollection, _In_ const char* pClassName, _In_  const w_byte_t* pValue, _In_ size_t pValueSize)
        {
-           if (!collection || !class_name)
+           const char* _trace_info = "w_cassandra_collection_append_custom";
+           if (!pCollection || !pClassName || !pValue || !pValueSize)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_collection_append_custom");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_collection_append_custom(collection, class_name, value, value_size);
+           return cass_collection_append_custom(pCollection, pClassName, pValue, pValueSize);
 
        }
 
-       w_Cass_Error  w_cassandra_collection_append_custom_n(w_Cass_Collection* collection,  const char* class_name, size_t class_name_length, const w_byte_t* value, size_t value_size)
+       w_Cass_Error  w_cassandra_collection_append_custom_n(_In_ w_cass_collection* pCollection, _In_  const char* pClassName, _In_ size_t pClassNameLength, _In_ const w_byte_t* pValue, _In_ size_t pValueSize)
        {
-           if (!collection || !class_name)
+           const char* _trace_info = "w_cassandra_collection_append_custom_n";
+           if (!pCollection || !pClassName || !pClassNameLength || !pValue || !pValueSize)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_collection_append_custom_n");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_collection_append_custom_n(collection, class_name,  class_name_length,  value,  value_size);
+           return cass_collection_append_custom_n(pCollection, pClassName, pClassNameLength, pValue, pValueSize);
        }
 
-       w_Cass_Error w_cassandra_collection_append_uuid(w_Cass_Collection* collection, w_CassUuid value)
+       w_Cass_Error w_cassandra_collection_append_uuid(_In_ w_cass_collection* pCollection, _In_ w_cass_uuid pValue)
        {
-           if (!collection )
+           const char* _trace_info = "w_cassandra_collection_append_uuid";
+           if (!pCollection )
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_collection_append_uuid");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return  cass_collection_append_uuid(collection, value);
+           return  cass_collection_append_uuid(pCollection, pValue);
 
        }
 
-       w_Cass_Error  w_cassandra_collection_append_inet(w_Cass_Collection* collection, w_CassInet value)
+       w_Cass_Error  w_cassandra_collection_append_inet(_In_ w_cass_collection* pCollection, _In_ w_cass_inet pValue)
        {
-           if (!collection)
+           const char* _trace_info = "w_cassandra_collection_append_inet";
+           if (!pCollection)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_collection_append_inet");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return  cass_collection_append_inet(collection, value);
+           return  cass_collection_append_inet(pCollection, pValue);
 
        }
 
-       w_Cass_Error  w_cassandra_collection_append_decimal(w_Cass_Collection* collection,const w_byte_t* varint, size_t varint_size,int32_t scale)
+       w_Cass_Error  w_cassandra_collection_append_decimal(_In_ w_cass_collection* pCollection, _In_ const w_byte_t* pVarint, _In_ size_t pVarintSize, _In_ int32_t pScale)
        {
-           if (!collection)
+           const char* _trace_info = "w_cassandra_collection_append_decimal";
+           if (!pCollection || !pVarint || !pVarintSize || !pScale)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_collection_append_decimal");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return  cass_collection_append_decimal(collection, varint, varint_size, scale);
+           return  cass_collection_append_decimal(pCollection, pVarint, pVarintSize, pScale);
 
        }
 
-       w_Cass_Error  w_cassandra_collection_append_duration(w_Cass_Collection* collection,int32_t months, int32_t days,int64_t nanos)
+       w_Cass_Error  w_cassandra_collection_append_duration(_In_ w_cass_collection* pCollection, _In_ int32_t pMonths, _In_ int32_t pDays, _In_ int64_t pNanos)
        {
-           if (!collection)
+           const char* _trace_info = "w_cassandra_collection_append_duration";
+           if (!pCollection || !pMonths || !pDays || !pNanos)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_collection_append_duration");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return  cass_collection_append_duration(collection, months, days, nanos);
+           return  cass_collection_append_duration(pCollection, pMonths, pDays, pNanos);
 
        }
 
-       w_Cass_Error  w_cassandra_collection_append_collection(w_Cass_Collection* collection,const w_Cass_Collection* value)
+       w_Cass_Error  w_cassandra_collection_append_collection(_In_ w_cass_collection* pCollection, _In_ const w_cass_collection* pValue)
        {
-           if (!collection || !value)
+           const char* _trace_info = "w_cassandra_collection_append_collection";
+           if (!pCollection || !pValue)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_collection_append_collection");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_collection_append_collection(collection, value);
+           return cass_collection_append_collection(pCollection, pValue);
 
        }
 
-       w_Cass_Error  w_cassandra_collection_append_tuple(w_Cass_Collection* collection, const w_Cass_Tuple* value)
+       w_Cass_Error  w_cassandra_collection_append_tuple(_In_ w_cass_collection* pCollection, _In_ const w_cass_tuple* pValue)
        {
-           if (!collection || !value)
+           const char* _trace_info = "w_cassandra_collection_append_tuple";
+           if (!pCollection || !pValue)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_collection_append_tuple");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return   cass_collection_append_tuple(collection, value);
+           return   cass_collection_append_tuple(pCollection, pValue);
 
        }
 
-       w_Cass_Error  w_cassandra_collection_append_user_type(w_Cass_Collection* collection, const w_Cass_User_Type* value)
+       w_Cass_Error  w_cassandra_collection_append_user_type(_In_ w_cass_collection* pCollection, _In_ const w_cass_user_type* pValue)
        {
-           if (!collection || !value)
+           const char* _trace_info = "w_cassandra_collection_append_user_type";
+           if (!pCollection || !pValue)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_collection_append_user_type");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return   cass_collection_append_user_type(collection, value);
+           return   cass_collection_append_user_type(pCollection, pValue);
 
        }
 
-       w_Cass_Tuple* w_cassandra_tuple_new(size_t item_count)
+       w_cass_tuple* w_cassandra_tuple_new(_In_ size_t pItemCount)
        {
+           const char* _trace_info = "w_cassandra_tuple_new";
+           if (!pItemCount)
+           {
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+               return NULL;
+           }
           
-           return   cass_tuple_new( item_count);
+           return   cass_tuple_new(pItemCount);
 
        }
 
-       w_Cass_Tuple* w_cassandra_tuple_new_from_data_type(const w_Cass_Data_Type* data_type)
+       w_cass_tuple* w_cassandra_tuple_new_from_data_type(_In_ const w_cass_data_type* pDataType)
        {
-           if (!data_type)
+           const char* _trace_info = "w_cassandra_tuple_new_from_data_type";
+           if (!pDataType)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_tuple_new_from_data_type");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return NULL;
            }
-           return  cass_tuple_new_from_data_type(data_type);
+           return  cass_tuple_new_from_data_type(pDataType);
 
        }
 
-       void  w_cassandra_tuple_free(w_Cass_Tuple* tuple)
+       void  w_cassandra_tuple_free(_In_ w_cass_tuple* pTuple)
        {
-           if (!tuple)
+           const char* _trace_info = "w_cassandra_tuple_free";
+           if (!pTuple)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_tuple_free");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
            }
        
-           cass_tuple_free(tuple);
+           cass_tuple_free(pTuple);
 
        }
 
-       const w_Cass_Data_Type* w_cassandra_tuple_data_type(const w_Cass_Tuple* tuple)
+       const w_cass_data_type* w_cassandra_tuple_data_type(_In_ const w_cass_tuple* pTuple)
        {
-           if (!tuple)
+           const char* _trace_info = "w_cassandra_tuple_data_type";
+           if (!pTuple)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_tuple_data_type");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return NULL;
            }
-           return  cass_tuple_data_type(tuple);
+           return  cass_tuple_data_type(pTuple);
 
        }
 
-       w_Cass_Error w_cassandra_tuple_set_null(w_Cass_Tuple* tuple, size_t index)
+       w_Cass_Error w_cassandra_tuple_set_null(_In_ w_cass_tuple* pTuple, _In_  size_t pIndex)
        {
-           if (!tuple)
+           const char* _trace_info = "w_cassandra_tuple_set_null";
+           if (!pTuple || !pIndex)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_tuple_set_null");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_tuple_set_null(tuple, index);
+           return cass_tuple_set_null(pTuple, pIndex);
 
        }
 
-       w_Cass_Error w_cassandra_tuple_set_int8(w_Cass_Tuple* tuple,size_t index,int8_t value)
+       w_Cass_Error w_cassandra_tuple_set_int8(_In_ w_cass_tuple* pTuple, _In_ size_t pIndex,int8_t pValue)
        {
-           if (!tuple)
+           const char* _trace_info = "w_cassandra_tuple_set_int8";
+           if (!pTuple || !pIndex || !pValue)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_tuple_set_int8");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return  cass_tuple_set_int8(tuple, index, value);
+           return  cass_tuple_set_int8(pTuple, pIndex, pValue);
 
        }
 
-       w_Cass_Error w_cassandra_tuple_set_int16(w_Cass_Tuple* tuple, size_t index, int16_t value)
+       w_Cass_Error w_cassandra_tuple_set_int16(_In_ w_cass_tuple* pTuple, _In_ size_t pIndex, _In_ int16_t pValue)
        {
-           if(!tuple)
+           const char* _trace_info = "w_cassandra_tuple_set_int16";
+           if(!pTuple || !pValue || !pIndex)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_tuple_set_int16");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_tuple_set_int16(tuple, index, value);
+           return cass_tuple_set_int16(pTuple, pIndex, pValue);
 
        }
 
-       w_Cass_Error w_cassandra_tuple_set_int32(w_Cass_Tuple* tuple,size_t index,int32_t value)
+       w_Cass_Error w_cassandra_tuple_set_int32(_In_ w_cass_tuple* pTuple, _In_ size_t pIndex, _In_ int32_t pValue)
        {
-           if (!tuple)
+           const char* _trace_info = "w_cassandra_tuple_set_int32";
+           if (!pTuple || !pIndex || !pValue)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_tuple_set_int32");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return  cass_tuple_set_int32(tuple, index, value);
+           return  cass_tuple_set_int32(pTuple, pIndex, pValue);
 
        }
 
-       w_Cass_Error   w_cassandra_tuple_set_uint32(w_Cass_Tuple* tuple,size_t index, uint32_t value)
+       w_Cass_Error   w_cassandra_tuple_set_uint32(_In_ w_cass_tuple* pTuple, _In_ size_t pIndex, _In_  uint32_t pValue)
        {
-           if (!tuple)
+           const char* _trace_info = "w_cassandra_tuple_set_uint32";
+           if (!pTuple || !pIndex || !pValue)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_tuple_set_uint32");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_tuple_set_uint32(tuple, index, value);
+           return cass_tuple_set_uint32(pTuple, pIndex, pValue);
 
        }
 
-       w_Cass_Error w_cassandra_tuple_set_int64(w_Cass_Tuple* tuple,size_t index,int64_t value)
+       w_Cass_Error w_cassandra_tuple_set_int64(_In_ w_cass_tuple* pTuple, _In_ size_t pIndex, _In_ int64_t pValue)
        {
-           if (!tuple)
+           const char* _trace_info = "w_cassandra_tuple_set_int64";
+           if (!pTuple || !pIndex || !pValue)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_tuple_set_int64");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_tuple_set_int64(tuple, index, value);
+           return cass_tuple_set_int64(pTuple, pIndex, pValue);
 
        }
 
-       w_Cass_Error  w_cassandra_tuple_set_float(w_Cass_Tuple* tuple,size_t index, float value)
+       w_Cass_Error  w_cassandra_tuple_set_float(_In_ w_cass_tuple* pTuple, _In_ size_t pIndex, _In_ float pValue)
        {
-           if (!tuple)
+           const char* _trace_info = "w_cassandra_tuple_set_float";
+           if (!pTuple || !pIndex || !pValue)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_tuple_set_float");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_tuple_set_float(tuple, index, value);
+           return cass_tuple_set_float(pTuple, pIndex, pValue);
 
        }
 
-       w_Cass_Error w_cassandra_tuple_set_double(w_Cass_Tuple* tuple, size_t index,double value)
+       w_Cass_Error w_cassandra_tuple_set_double(_In_ w_cass_tuple* pTuple, _In_ size_t pIndex, _In_ double pValue)
        {
-           if (!tuple)
+           const char* _trace_info = "w_cassandra_tuple_set_double";
+           if (!pTuple || !pIndex || !pValue)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_tuple_set_double");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_tuple_set_double(tuple, index, value);
+           return cass_tuple_set_double(pTuple, pIndex, pValue);
 
        }
 
-       w_Cass_Error  w_cassandra_tuple_set_bool(w_Cass_Tuple* tuple, size_t index, w_bool_t value)
+       w_Cass_Error  w_cassandra_tuple_set_bool(_In_ w_cass_tuple* pTuple, _In_ size_t pIndex, _In_ w_bool_t pValue)
        {
-           if (!tuple)
+           const char* _trace_info = "w_cassandra_tuple_set_bool";
+           if (!pTuple || !pIndex )
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_tuple_set_bool");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return   cass_tuple_set_bool(tuple, index, value);
+           return   cass_tuple_set_bool(pTuple, pIndex, pValue);
 
        }
 
-       w_Cass_Error  w_cassandra_tuple_set_string(w_Cass_Tuple* tuple, size_t index, const char* value)
+       w_Cass_Error  w_cassandra_tuple_set_string(_In_ w_cass_tuple* pTuple, _In_ size_t pIndex, _In_ const char* pValue)
        {
-           if (!tuple)
+           const char* _trace_info = "w_cassandra_tuple_set_string";
+           if (!pTuple || !pIndex || !pValue)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_tuple_set_string");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return   cass_tuple_set_string(tuple,  index,  value);
+           return   cass_tuple_set_string(pTuple, pIndex, pValue);
 
        }
 
-       w_Cass_Error  w_cassandra_tuple_set_string_n(w_Cass_Tuple* tuple,  size_t index, const char* value, size_t value_length)
+       w_Cass_Error  w_cassandra_tuple_set_string_n(_In_ w_cass_tuple* pTuple, _In_  size_t pIndex, _In_ const char* pValue, _In_ size_t pValueLength)
        {
-           if (!tuple)
+           const char* _trace_info = "w_cassandra_tuple_set_string_n";
+           if (!pTuple || !pIndex || !pValue || !pValueLength)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_tuple_set_string_n");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return  cass_tuple_set_string_n(tuple, index, value, value_length);
+           return  cass_tuple_set_string_n(pTuple, pIndex, pValue, pValueLength);
 
        }
 
-       w_Cass_Error  w_cassandra_tuple_set_bytes(w_Cass_Tuple* tuple,size_t index, const w_byte_t* value,size_t value_size)
+       w_Cass_Error  w_cassandra_tuple_set_bytes(_In_ w_cass_tuple* pTuple, _In_ size_t pIndex, _In_ const w_byte_t* pValue, _In_ size_t pValueSize)
        {
-           if (!tuple)
+           const char* _trace_info = "w_cassandra_tuple_set_bytes";
+           if (!pTuple || !pValue || !pIndex || !pValueSize)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_tuple_set_bytes");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return  cass_tuple_set_bytes(tuple, index, value, value_size);
+           return  cass_tuple_set_bytes(pTuple, pIndex, pValue, pValueSize);
 
        }
 
-       w_Cass_Error  w_cassandra_tuple_set_custom(w_Cass_Tuple* tuple, size_t index, const char* class_name, const w_byte_t* value, size_t value_size)
+       w_Cass_Error  w_cassandra_tuple_set_custom(_In_ w_cass_tuple* pTuple, _In_ size_t pIndex, _In_ const char* pClassName, _In_ const w_byte_t* pValue, _In_ size_t pValueSize)
        {
-           if (!tuple)
+           const char* _trace_info = "w_cassandra_tuple_set_custom";
+           if (!pTuple || !pIndex || !pClassName|| !pValue || !pValueSize)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_tuple_set_custom");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_tuple_set_custom(tuple, index, class_name, value, value_size);
+           return cass_tuple_set_custom(pTuple, pIndex, pClassName, pValue, pValueSize);
 
        }
 
-       w_Cass_Error   w_cassandra_tuple_set_custom_n(w_Cass_Tuple* tuple, size_t index, const char* class_name,  size_t class_name_length, const w_byte_t* value,size_t value_size)
+       w_Cass_Error   w_cassandra_tuple_set_custom_n(_In_ w_cass_tuple* pTuple, _In_ size_t pIndex, _In_ const char* pClassName, _In_  size_t pClassNameLength, _In_ const w_byte_t* pValue, _In_ size_t pValueSize)
        {
-           if (!tuple)
+           const char* _trace_info = "w_cassandra_tuple_set_custom_n";
+           if (!pTuple || !pIndex || !pClassName || !pClassNameLength || !pValue || !pValueSize)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_tuple_set_custom_n");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_tuple_set_custom_n(tuple, index, class_name,class_name_length, value, value_size);
+           return cass_tuple_set_custom_n(pTuple, pIndex, pClassName,pClassNameLength, pValue, pValueSize);
 
        }
 
-       w_Cass_Error w_cassandra_tuple_set_uuid(w_Cass_Tuple* tuple,size_t index, w_CassUuid value)
+       w_Cass_Error w_cassandra_tuple_set_uuid(_In_ w_cass_tuple* pTuple, _In_ size_t pIndex, _In_ w_cass_uuid pValue)
        {
-           if (!tuple)
+           const char* _trace_info = "w_cassandra_tuple_set_uuid";
+           if (!pTuple || !pIndex )
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_tuple_set_uuid");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return   cass_tuple_set_uuid(tuple, index, value);
+           return   cass_tuple_set_uuid(pTuple, pIndex, pValue);
 
        }
 
-       w_Cass_Error  w_cassandra_tuple_set_inet(w_Cass_Tuple* tuple,size_t index, w_CassInet value)
+       w_Cass_Error  w_cassandra_tuple_set_inet(_In_ w_cass_tuple* pTuple, _In_ size_t pIndex, _In_ w_cass_inet pValue)
        {
-           if (!tuple)
+           const char* _trace_info = "w_cassandra_tuple_set_inet";
+           if (!pTuple || !pIndex)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_tuple_set_inet");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
 
-           return  cass_tuple_set_inet(tuple, index, value);
+           return  cass_tuple_set_inet(pTuple, pIndex, pValue);
 
        }
 
-       w_Cass_Error w_cassandra_tuple_set_decimal(w_Cass_Tuple* tuple, size_t index, const w_byte_t* varint, size_t varint_size, int32_t scale)
+       w_Cass_Error w_cassandra_tuple_set_decimal(_In_ w_cass_tuple* pTuple, _In_ size_t pIndex, _In_ const w_byte_t* pVarint, _In_ size_t pVarintSize, _In_ int32_t pScale)
        {
-           if (!tuple)
+           const char* _trace_info = "w_cassandra_tuple_set_decimal";
+           if (!pTuple || !pIndex || !pVarint || !pVarintSize || !pScale)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_tuple_set_decimal");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return    cass_tuple_set_decimal(tuple, index, varint, varint_size, scale);
+           return    cass_tuple_set_decimal(pTuple, pIndex, pVarint, pVarintSize, pScale);
 
        }
 
-       w_Cass_Error   w_cassandra_tuple_set_duration(w_Cass_Tuple* tuple, size_t index, int32_t months, int32_t days, int64_t nanos)
+       w_Cass_Error   w_cassandra_tuple_set_duration(_In_ w_cass_tuple* pTuple, _In_  size_t pIndex, _In_ int32_t pMonths, _In_ int32_t pDays, _In_ int64_t pNanos)
        {
-           if (!tuple)
+           const char* _trace_info = "w_cassandra_tuple_set_duration";
+           if (!pTuple || !pIndex || !pMonths || !pDays || !pNanos)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_tuple_set_duration");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_tuple_set_duration(tuple, index, months, days, nanos);
+           return cass_tuple_set_duration(pTuple, pIndex, pMonths, pDays, pNanos);
 
        }
 
-       w_Cass_Error  w_cassandra_tuple_set_collection(w_Cass_Tuple* tuple, size_t index, const w_Cass_Collection* value)
+       w_Cass_Error  w_cassandra_tuple_set_collection(_In_ w_cass_tuple* pTuple, _In_ size_t pIndex, _In_ const w_cass_collection* pValue)
        {
-           if (!tuple)
+           const char* _trace_info = "w_cassandra_tuple_set_collection";
+           if (!pTuple || !pIndex || !pValue)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_tuple_set_collection");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return  cass_tuple_set_collection(tuple, index, value);
+           return  cass_tuple_set_collection(pTuple, pIndex, pValue);
 
        }
 
-       w_Cass_Error w_cassandra_tuple_set_tuple(w_Cass_Tuple* tuple,size_t index, const w_Cass_Tuple* value)
+       w_Cass_Error w_cassandra_tuple_set_tuple(_In_ w_cass_tuple* pTuple, _In_ size_t pIndex, _In_ const w_cass_tuple* pValue)
        {
-           if (!tuple)
+           const char* _trace_info = "w_cassandra_tuple_set_tuple";
+           if (!pTuple || !pIndex  || !pValue)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_tuple_set_tuple");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return  cass_tuple_set_tuple(tuple, index, value);
+           return  cass_tuple_set_tuple(pTuple, pIndex, pValue);
 
        }
 
-       w_Cass_Error  w_cassandra_tuple_set_user_type(w_Cass_Tuple* tuple, size_t index, const w_Cass_User_Type* value)
+       w_Cass_Error  w_cassandra_tuple_set_user_type(_In_ w_cass_tuple* pTuple, _In_ size_t pIndex, _In_ const w_cass_user_type* pValue)
        {
-           if (!tuple)
+           const char* _trace_info = "w_cassandra_tuple_set_user_type";
+           if (!pTuple || !pIndex || !pValue)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_tuple_set_user_type");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return  cass_tuple_set_user_type(tuple, index, value);
+           return  cass_tuple_set_user_type(pTuple, pIndex, pValue);
 
        }
 
-       w_Cass_User_Type*  w_cassandra_user_type_new_from_data_type(const w_Cass_Data_Type* data_type)
+       w_cass_user_type*  w_cassandra_user_type_new_from_data_type(_In_ const w_cass_data_type* pDataType)
        {
-           if (!data_type)
+           const char* _trace_info = "w_cassandra_user_type_new_from_data_type";
+           if (!pDataType)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_user_type_new_from_data_type");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return NULL;
            }
-           return cass_user_type_new_from_data_type(data_type);
+           return cass_user_type_new_from_data_type(pDataType);
 
        }
 
-       void  w_cassandra_user_type_free(w_Cass_User_Type* user_type)
+       void  w_cassandra_user_type_free(_In_ w_cass_user_type* pUserType)
        {
-           if (!user_type)
+           const char* _trace_info = "w_cassandra_user_type_free";
+           if (!pUserType)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_user_type_free");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
            }
-             cass_user_type_free(user_type);
+             cass_user_type_free(pUserType);
 
        }
 
-       const w_Cass_Data_Type* w_cassandra_user_type_data_type(const w_Cass_User_Type* user_type)
+       const w_cass_data_type* w_cassandra_user_type_data_type(_In_ const w_cass_user_type* pUserType)
        {
-           if (!user_type)
+           const char* _trace_info = "w_cassandra_user_type_data_type";
+           if (!pUserType)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_user_type_data_type");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return NULL;
            }
 
-           return cass_user_type_data_type( user_type);
+           return cass_user_type_data_type(pUserType);
 
        }
 
-       w_Cass_Error  w_cassandra_user_type_set_null(w_Cass_User_Type* user_type,size_t index)
+       w_Cass_Error  w_cassandra_user_type_set_null(_In_ w_cass_user_type* pUserType, _In_ size_t pIndex)
        {
-           if (!user_type)
+           const char* _trace_info = "w_cassandra_user_type_set_null";
+           if (!pUserType || !pIndex)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_user_type_set_null");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_user_type_set_null(user_type, index);
+           return cass_user_type_set_null(pUserType, pIndex);
 
        }
 
-       w_Cass_Error  w_cassandra_user_type_set_null_by_name(w_Cass_User_Type* user_type,const char* name)
+       w_Cass_Error  w_cassandra_user_type_set_null_by_name(_In_ w_cass_user_type* pUserType, _In_ const char* pName)
        {
-           if (!user_type || !name)
+           const char* _trace_info = "w_cassandra_user_type_set_null_by_name";
+           if (!pUserType || !pName)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_user_type_set_null_by_name");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return  cass_user_type_set_null_by_name(user_type, name);
+           return  cass_user_type_set_null_by_name(pUserType, pName);
 
        }
 
-       w_Cass_Error  w_cassandra_user_type_set_null_by_name_n(w_Cass_User_Type* user_type,const char* name, size_t name_length)
+       w_Cass_Error  w_cassandra_user_type_set_null_by_name_n(_In_ w_cass_user_type* pUserType, _In_ const char* pName, _In_ size_t pNameLength)
        {
-           if (!user_type || !name)
+           const char* _trace_info = "w_cassandra_user_type_set_null_by_name_n";
+           if (!pUserType || !pName || !pNameLength)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_user_type_set_null_by_name_n");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return   cass_user_type_set_null_by_name_n(user_type, name, name_length);
+           return   cass_user_type_set_null_by_name_n(pUserType, pName, pNameLength);
 
        }
 
-       w_Cass_Error  w_cassandra_user_type_set_int8(w_Cass_User_Type* user_type, size_t index, int8_t value)
+       w_Cass_Error  w_cassandra_user_type_set_int8(_In_ w_cass_user_type* pUserType, _In_ size_t pIndex, _In_ int8_t pValue)
        {
-           if (!user_type )
+           const char* _trace_info = "w_cassandra_user_type_set_int8";
+           if (!pUserType || !pIndex || !pValue)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_user_type_set_int8");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return   cass_user_type_set_int8(user_type, index, value);
+           return   cass_user_type_set_int8(pUserType, pIndex, pValue);
 
        }
 
-       w_Cass_Error  w_cassandra_user_type_set_int8_by_name(w_Cass_User_Type* user_type, const char* name, int8_t value)
+       w_Cass_Error  w_cassandra_user_type_set_int8_by_name(_In_ w_cass_user_type* pUserType, _In_ const char* pName, _In_ int8_t pValue)
        {
-           if (!user_type || !name)
+           const char* _trace_info = "w_cassandra_user_type_set_int8_by_name";
+           if (!pUserType || !pName || !pValue)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_user_type_set_int8_by_name");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_user_type_set_int8_by_name(user_type, name, value);
+           return cass_user_type_set_int8_by_name(pUserType, pName, pValue);
 
        }
 
-       w_Cass_Error w_cassandra_user_type_set_int8_by_name_n(w_Cass_User_Type* user_type, const char* name, size_t name_length, int8_t value)
+       w_Cass_Error w_cassandra_user_type_set_int8_by_name_n(_In_ w_cass_user_type* pUserType, _In_  const char* pName, _In_  size_t pNameLength, _In_ int8_t pValue)
        {
-           if (!user_type || !name)
+           const char* _trace_info = "w_cassandra_user_type_set_int8_by_name_n";
+           if (!pUserType || !pName || !pNameLength || !pValue)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_user_type_set_int8_by_name_n");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+
                return -1;
            }
-           return   cass_user_type_set_int8_by_name_n(user_type, name, name_length, value);
+           return   cass_user_type_set_int8_by_name_n(pUserType, pName, pNameLength, pValue);
 
        }
 
-       w_Cass_Error  w_cassandra_user_type_set_int16(w_Cass_User_Type* user_type, size_t index, int16_t value)
+       w_Cass_Error  w_cassandra_user_type_set_int16(_In_ w_cass_user_type* pUserType, _In_ size_t pIndex, _In_ int16_t pValue)
        {
-           if (!user_type )
+           const char* _trace_info = "w_cassandra_user_type_set_int16";
+           if (!pUserType ||  !pIndex  ||!pValue)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_user_type_set_int16");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_user_type_set_int16(user_type, index, value);
+           return cass_user_type_set_int16(pUserType, pIndex, pValue);
 
        }
 
-       w_Cass_Error  w_cassandra_user_type_set_int16_by_name(w_Cass_User_Type* user_type, const char* name,int16_t value)
+       w_Cass_Error  w_cassandra_user_type_set_int16_by_name(_In_ w_cass_user_type* pUserType, _In_ const char* pName, _In_ int16_t pValue)
        {
-           if (!user_type || !name )
+           const char* _trace_info = "w_cassandra_user_type_set_int16_by_name";
+           if (!pUserType || !pName || !pValue)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_user_type_set_int16_by_name");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return   cass_user_type_set_int16_by_name(user_type, name, value);
+           return   cass_user_type_set_int16_by_name(pUserType, pName, pValue);
 
        }
-       w_Cass_Error w_cassandra_user_type_set_int16_by_name_n(w_Cass_User_Type* user_type,const char* name,size_t name_length,int16_t value)
+       w_Cass_Error w_cassandra_user_type_set_int16_by_name_n(_In_ w_cass_user_type* pUserType, _In_ const char* pName, _In_ size_t pNameLength, _In_ int16_t pValue)
        {
-           if (!user_type || !name)
+           const char* _trace_info = "w_cassandra_user_type_set_int16_by_name_n";
+           if (!pUserType || !pName || !pNameLength || !pValue)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_user_type_set_int16_by_name_n");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_user_type_set_int16_by_name_n(user_type, name, name_length, value);
+           return cass_user_type_set_int16_by_name_n(pUserType, pName, pNameLength, pValue);
 
        }
 
-       w_Cass_Error  w_cassandra_user_type_set_int32(w_Cass_User_Type* user_type, size_t index, int32_t value)
+       w_Cass_Error  w_cassandra_user_type_set_int32(_In_ w_cass_user_type* pUserType, _In_ size_t pIndex, _In_ int32_t pValue)
        {
-           if (!user_type )
+           const char* _trace_info = "w_cassandra_user_type_set_int32";
+           if (!pUserType || !pIndex || !pValue)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_user_type_set_int32");
-               return -1;
-           }
-
-           return  cass_user_type_set_int32(user_type, index, value);
-
-       }
-
-       w_Cass_Error  w_cassandra_user_type_set_int32_by_name(w_Cass_User_Type* user_type,const char* name,int32_t value)
-       {
-           if (!user_type || !name)
-           {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_user_type_set_int32_by_name");
-               return -1;
-           }
-           return cass_user_type_set_int32_by_name(user_type, name, value);
-
-       }
-
-       w_Cass_Error   w_cassandra_user_type_set_int32_by_name_n(w_Cass_User_Type* user_type, const char* name,size_t name_length,int32_t value)
-       {
-           if (!user_type || !name)
-           {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_user_type_set_int32_by_name_n");
-               return -1;
-           }
-           return  cass_user_type_set_int32_by_name_n(  user_type,  name,  name_length,  value);
-
-       }
-
-       w_Cass_Error  w_cassandra_user_type_set_uint32(w_Cass_User_Type* user_type,size_t index, uint32_t value)
-       {
-           if (!user_type )
-           {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_user_type_set_uint32");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
 
-           return cass_user_type_set_uint32(user_type, index, value);
+           return  cass_user_type_set_int32(pUserType, pIndex, pValue);
 
        }
 
-       w_Cass_Error  w_cassandra_user_type_set_uint32_by_name(w_Cass_User_Type* user_type, const char* name, uint32_t value)
+       w_Cass_Error  w_cassandra_user_type_set_int32_by_name(_In_ w_cass_user_type* pUserType, _In_ const char* pName, _In_ int32_t pValue)
        {
-           if (!user_type || !name )
+           const char* _trace_info = "w_cassandra_user_type_set_int32_by_name";
+           if (!pUserType || !pName || !pValue)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_user_type_set_uint32_by_name");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return   cass_user_type_set_uint32_by_name(user_type, name, value);
+           return cass_user_type_set_int32_by_name(pUserType, pName, pValue);
 
        }
 
-       w_Cass_Error w_cassandra_user_type_set_uint32_by_name_n(w_Cass_User_Type* user_type, const char* name,size_t name_length,uint32_t value)
+       w_Cass_Error   w_cassandra_user_type_set_int32_by_name_n(_In_ w_cass_user_type* pUserType, _In_ const char* pName, _In_ size_t pNameLength,int32_t pValue)
        {
-           if (!user_type || !name)
+           const char* _trace_info = "w_cassandra_user_type_set_int32_by_name_n";
+           if (!pUserType || !pName|| !pNameLength|| !pValue)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_user_type_set_uint32_by_name_n");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-
-           return   cass_user_type_set_uint32_by_name_n(user_type, name, name_length, value);
-
-       }
-
-       w_Cass_Error w_cassandra_user_type_set_int64(w_Cass_User_Type* user_type, size_t index, int64_t value)
-       {
-           if(!user_type )
-           {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_user_type_set_int64");
-               return -1;
-           }
-
-           return   cass_user_type_set_int64(user_type, index, value);
+           return  cass_user_type_set_int32_by_name_n(pUserType,  pName,  pNameLength,  pValue);
 
        }
 
-       w_Cass_Error w_cassandra_user_type_set_int64_by_name(w_Cass_User_Type* user_type,const char* name, int64_t value)
+       w_Cass_Error  w_cassandra_user_type_set_uint32(_In_ w_cass_user_type* pUserType, _In_ size_t pIndex, _In_ uint32_t pValue)
        {
-           if(!user_type || !name)
+           const char* _trace_info = "w_cassandra_user_type_set_uint32";
+           if (!pUserType || !pIndex|| !pValue)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_user_type_set_int64_by_name");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
 
-           return    cass_user_type_set_int64_by_name(user_type, name, value);
+           return cass_user_type_set_uint32(pUserType, pIndex, pValue);
 
        }
 
-       w_Cass_Error  w_cassandra_user_type_set_int64_by_name_n(w_Cass_User_Type* user_type, const char* name, size_t name_length, int64_t value)
+       w_Cass_Error  w_cassandra_user_type_set_uint32_by_name(_In_ w_cass_user_type* pUserType, _In_ const char* pName, _In_ uint32_t pValue)
        {
-           if(!user_type || !name)
+           const char* _trace_info = "w_cassandra_user_type_set_uint32_by_name";
+           if (!pUserType || !pName || !pValue)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_user_type_set_int64_by_name_n");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+               return -1;
+           }
+           return   cass_user_type_set_uint32_by_name(pUserType, pName, pValue);
+
+       }
+
+       w_Cass_Error w_cassandra_user_type_set_uint32_by_name_n(_In_ w_cass_user_type* pUserType, _In_ const char* pName, _In_ size_t pNameLength, _In_ uint32_t pValue)
+       {
+           const char* _trace_info = "w_cassandra_user_type_set_uint32_by_name_n";
+           if (!pUserType || !pName || !pNameLength || !pValue)
+           {
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
 
-           return    cass_user_type_set_int64_by_name_n(user_type, name, name_length, value);
+           return   cass_user_type_set_uint32_by_name_n(pUserType, pName, pNameLength, pValue);
 
        }
 
-       w_Cass_Error w_cassandra_user_type_set_float(w_Cass_User_Type* user_type,size_t index,float value)
+       w_Cass_Error w_cassandra_user_type_set_int64(_In_ w_cass_user_type* pUserType, _In_ size_t pIndex, _In_ int64_t pValue)
        {
-           if (!user_type )
+           const char* _trace_info = "w_cassandra_user_type_set_int64";
+           if(!pUserType || !pIndex || !pValue)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_user_type_set_float");
-               return -1;
-           }
-           return    cass_user_type_set_float(user_type, index, value);
-
-       }
-       w_Cass_Error  w_cassandra_user_type_set_float_by_name(w_Cass_User_Type* user_type, const char* name, float value)
-       {
-           if (!user_type || !name )
-           {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_user_type_set_float_by_name");
-               return -1;
-           }
-           return cass_user_type_set_float_by_name(user_type, name, value);
-
-       }
-
-       w_Cass_Error w_cassandra_user_type_set_float_by_name_n(w_Cass_User_Type* user_type, const char* name, size_t name_length, float value)
-       {
-           if (!user_type || !name)
-           {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_user_type_set_float_by_name_n");
-               return -1;
-           }
-           return    cass_user_type_set_float_by_name_n(user_type, name, name_length, value);
-
-       }
-
-       w_Cass_Error  w_cassandra_user_type_set_double(w_Cass_User_Type* user_type, size_t index,double value)
-       {
-           if (!user_type )
-           {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_user_type_set_double");
-               return -1;
-           }
-           return  cass_user_type_set_double(user_type, index, value);
-
-       }
-
-       w_Cass_Error  w_cassandra_user_type_set_double_by_name(w_Cass_User_Type* user_type,const char* name, double value)
-       {
-           if (!user_type || !name)
-           {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_user_type_set_double_by_name");
-               return -1;
-           }
-           return   cass_user_type_set_double_by_name(user_type, name, value);
-
-       }
-
-       w_Cass_Error w_cass_user_type_set_double_by_name_n(w_Cass_User_Type* user_type, const char* name,size_t name_length, double value)
-       {
-           if (!user_type || !name)
-           {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_user_type_set_double_by_name_n");
-               return -1;
-           }
-           return cass_user_type_set_double_by_name_n(user_type, name, name_length, value);
-
-       }
-       w_Cass_Error  w_cassandra_user_type_set_bool(w_Cass_User_Type* user_type, size_t index, w_bool_t value)
-       {
-           if (!user_type )
-           {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_user_type_set_bool");
-               return -1;
-           }
-           return  cass_user_type_set_bool(user_type, index, value);
-
-       }
-
-       w_Cass_Error   w_cassandra_user_type_set_bool_by_name(w_Cass_User_Type* user_type, const char* name, w_bool_t value)
-       {
-           if (!user_type || !name)
-           {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_user_type_set_bool_by_name");
-               return -1;
-           }
-           return    cass_user_type_set_bool_by_name(user_type, name, value);
-
-       }
-
-       w_Cass_Error  w_cassandra_user_type_set_bool_by_name_n(w_Cass_User_Type* user_type, const char* name, size_t name_length, w_bool_t value)
-       {
-           if (!user_type || !name)
-           {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_user_type_set_bool_by_name_n");
-               return -1;
-           }
-           return    cass_user_type_set_bool_by_name_n(user_type, name, name_length, value);
-
-       }
-
-       w_Cass_Error  w_cassandra_user_type_set_string(w_Cass_User_Type* user_type,size_t index,const char* value)
-       {
-           if (!user_type )
-           {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_user_type_set_string");
-               return -1;
-           }
-           return   cass_user_type_set_string(user_type, index, value);
-
-       }
-
-       w_Cass_Error  w_cassandra_user_type_set_string_n(w_Cass_User_Type* user_type,size_t index,const char* value, size_t value_length)
-       {
-           if (!user_type)
-           {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_user_type_set_string_n");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
 
-           return    cass_user_type_set_string_n(user_type, index, value, value_length);
+           return   cass_user_type_set_int64(pUserType, pIndex, pValue);
 
        }
 
-       w_Cass_Error  w_cassandra_user_type_set_string_by_name(w_Cass_User_Type* user_type, const char* name,const char* value)
+       w_Cass_Error w_cassandra_user_type_set_int64_by_name(_In_ w_cass_user_type* pUserType, _In_ const char* pName, _In_ int64_t pValue)
        {
-           if (!user_type || !name)
+           const char* _trace_info = "w_cassandra_user_type_set_int64_by_name";
+           if(!pUserType || !pName ||  !pValue)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_user_type_set_string_by_name");
-               return -1;
-           }
-           return cass_user_type_set_string_by_name(user_type, name, value);
-
-       }
-
-       w_Cass_Error w_cassandra_user_type_set_string_by_name_n(w_Cass_User_Type* user_type, const char* name, size_t name_length,const char* value,  size_t value_length)
-       {
-           if (!user_type || !name)
-           {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_user_type_set_string_by_name_n");
-               return -1;
-           }
-           return   cass_user_type_set_string_by_name_n(user_type, name, name_length, value, value_length);
-
-       }
-
-       w_Cass_Error  w_cassandra_user_type_set_bytes(w_Cass_User_Type* user_type, size_t index, const w_byte_t* value,size_t value_size)
-       {
-           if (!user_type)
-           {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_user_type_set_bytes");
-               return -1;
-           }
-           return   cass_user_type_set_bytes(user_type, index, value, value_size);
-
-       }
-
-       w_Cass_Error  w_cassandra_user_type_set_bytes_by_name(w_Cass_User_Type* user_type,const char* name,const w_byte_t* value, size_t value_size)
-       {
-           if (!user_type || !name)
-           {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_user_type_set_bytes_by_name");
-               return -1;
-           }
-           return    cass_user_type_set_bytes_by_name(user_type, name, value, value_size);
-
-       }
-
-       w_Cass_Error   w_cassandra_user_type_set_bytes_by_name_n(w_Cass_User_Type* user_type, const char* name, size_t name_length,const w_byte_t* value, size_t value_size) 
-       {
-           if (!user_type || !name)
-           {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_user_type_set_bytes_by_name_n");
-               return -1;
-           }
-           return    cass_user_type_set_bytes_by_name_n(user_type, name, name_length, value, value_size);
-
-       }
-
-       w_Cass_Error  w_cassandra_user_type_set_custom(w_Cass_User_Type* user_type, size_t index, const char* class_name, const w_byte_t* value, size_t value_size)
-       {
-           if (!user_type )
-           {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_user_type_set_custom");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
 
-           return  cass_user_type_set_custom(user_type, index, class_name, value, value_size);
+           return    cass_user_type_set_int64_by_name(pUserType, pName, pValue);
 
        }
 
-       w_Cass_Error   w_cassandra_user_type_set_custom_n(w_Cass_User_Type* user_type,size_t index, const char* class_name, size_t class_name_length,  const w_byte_t* value, size_t value_size)
+       w_Cass_Error  w_cassandra_user_type_set_int64_by_name_n(_In_ w_cass_user_type* pUserType, _In_ const char* pName, _In_ size_t pNameLength, _In_ int64_t pValue)
        {
-           if (!user_type)
+           const char* _trace_info = "w_cassandra_user_type_set_int64_by_name_n";
+           if(!pUserType || !pName || !pNameLength || !pValue)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_user_type_set_custom_n");
-               return -1;
-           }
-           return    cass_user_type_set_custom_n(user_type, index, class_name, class_name_length, value, value_size);
-
-       }
-
-       w_Cass_Error   w_cassandra_user_type_set_custom_by_name(w_Cass_User_Type* user_type, const char* name, const char* class_name, const w_byte_t* value, size_t value_size)
-       {
-           if (!user_type || !name)
-           {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_user_type_set_custom_by_name");
-               return -1;
-           }
-           return  cass_user_type_set_custom_by_name(user_type, name, class_name, value, value_size);
-
-       }
-
-       w_Cass_Error  w_cassandra_user_type_set_custom_by_name_n(w_Cass_User_Type* user_type, const char* name,size_t name_length, const char* class_name,size_t class_name_length, const w_byte_t* value, size_t value_size)
-       {
-           if (!user_type || !name)
-           {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_user_type_set_custom_by_name_n");
-               return -1;
-           }
-           return   cass_user_type_set_custom_by_name_n(user_type, name, name_length, class_name, class_name_length, value, value_size);
-
-       }
-
-       w_Cass_Error  w_cassandra_user_type_set_uuid(w_Cass_User_Type* user_type, size_t index, w_CassUuid value)
-       {
-           if (!user_type )
-           {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_user_type_set_uuid");
-               return -1;
-           }
-           return    cass_user_type_set_uuid(user_type, index, value);
-
-       }
-
-       w_Cass_Error w_cassandra_user_type_set_uuid_by_name(w_Cass_User_Type* user_type,const char* name, w_CassUuid value)
-       {
-           if (!user_type || !name)
-           {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_user_type_set_uuid_by_name");
-               return -1;
-           }
-           return   cass_user_type_set_uuid_by_name(user_type, name, value);
-
-       }
-
-       w_Cass_Error  w_cassandra_user_type_set_uuid_by_name_n(w_Cass_User_Type* user_type, const char* name, size_t name_length,w_CassUuid value)
-       {
-           if (!user_type || !name)
-           {
-               W_ASSERT(false, "missing parameters!. trace info: w_cass_user_type_set_uuid_by_name_n");
-               return -1;
-           }
-           return    cass_user_type_set_uuid_by_name_n(user_type, name, name_length, value);
-
-       }
-
-       w_Cass_Error  w_cass_user_type_set_inet(w_Cass_User_Type* user_type,  size_t index, w_CassInet value)
-       {
-           if (!user_type )
-           {
-               W_ASSERT(false, "missing parameters!. trace info: w_cass_user_type_set_inet");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
 
-           return    cass_user_type_set_inet(user_type, index, value);
+           return    cass_user_type_set_int64_by_name_n(pUserType, pName, pNameLength, pValue);
 
        }
 
-       w_Cass_Error w_cass_user_type_set_inet_by_name(w_Cass_User_Type* user_type, const char* name, w_CassInet value)
+       w_Cass_Error w_cassandra_user_type_set_float(_In_ w_cass_user_type* pUserType, _In_ size_t pIndex, _In_ float pValue)
        {
-           if (!user_type || !name)
+           const char* _trace_info = "w_cassandra_user_type_set_float";
+           if (!pUserType || !pIndex|| !pValue)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cass_user_type_set_inet_by_name");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+
                return -1;
            }
-           return   cass_user_type_set_inet_by_name(user_type, name, value);
+           return    cass_user_type_set_float(pUserType, pIndex, pValue);
 
        }
-
-       w_Cass_Error  w_cassandra_user_type_set_inet_by_name_n(w_Cass_User_Type* user_type, const char* name,size_t name_length,w_CassInet value)
+       w_Cass_Error  w_cassandra_user_type_set_float_by_name(_In_ w_cass_user_type* pUserType, _In_ const char* pName, _In_ float pValue)
        {
-           if (!user_type || !name)
+           const char* _trace_info = "w_cassandra_user_type_set_float_by_name";
+           if (!pUserType || !pName || !pValue)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_user_type_set_inet_by_name_n");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return   cass_user_type_set_inet_by_name_n(user_type, name, name_length, value);
+           return cass_user_type_set_float_by_name(pUserType, pName, pValue);
 
        }
 
-       w_Cass_Error   w_cassandra_user_type_set_decimal(w_Cass_User_Type* user_type,size_t index, const w_byte_t* varint, size_t varint_size,  int scale)
+       w_Cass_Error w_cassandra_user_type_set_float_by_name_n(_In_ w_cass_user_type* pUserType, _In_ const char* pName, _In_ size_t pNameLength, _In_ float pValue)
        {
-           if (!user_type )
+           const char* _trace_info = "w_cassandra_user_type_set_float_by_name_n";
+           if (!pUserType || !pName || !pNameLength || !pValue)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_user_type_set_decimal");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+               return -1;
+           }
+           return    cass_user_type_set_float_by_name_n(pUserType, pName, pNameLength, pValue);
+
+       }
+
+       w_Cass_Error  w_cassandra_user_type_set_double(_In_ w_cass_user_type* pUserType, _In_ size_t pIndex, _In_ double pValue)
+       {
+           const char* _trace_info = "w_cassandra_user_type_set_double";
+           if (!pUserType || !pIndex || !pValue)
+           {
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+               return -1;
+           }
+           return  cass_user_type_set_double(pUserType, pIndex, pValue);
+
+       }
+
+       w_Cass_Error  w_cassandra_user_type_set_double_by_name(_In_ w_cass_user_type* pUserType, _In_ const char* pName, _In_ double pValue)
+       {
+           const char* _trace_info = "w_cassandra_user_type_set_double_by_name";
+           if (!pUserType || !pName || !pValue)
+           {
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+               return -1;
+           }
+           return   cass_user_type_set_double_by_name(pUserType, pName, pValue);
+
+       }
+
+       w_Cass_Error w_cass_user_type_set_double_by_name_n(_In_ w_cass_user_type* pUserType, _In_ const char* pName, _In_ size_t pNameLength, _In_ double pValue)
+       {
+           const char* _trace_info = "w_cass_user_type_set_double_by_name_n";
+           if (!pUserType || !pName || !pNameLength ||  !pValue)
+           {
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+               return -1;
+           }
+           return cass_user_type_set_double_by_name_n(pUserType, pName, pNameLength, pValue);
+
+       }
+       w_Cass_Error  w_cassandra_user_type_set_bool(_In_ w_cass_user_type* pUserType, _In_ size_t pIndex, _In_ w_bool_t pValue)
+       {
+           const char* _trace_info = "w_cassandra_user_type_set_bool";
+           if (!pUserType || !pIndex)
+           {
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+               return -1;
+           }
+           return  cass_user_type_set_bool(pUserType, pIndex, pValue);
+
+       }
+
+       w_Cass_Error   w_cassandra_user_type_set_bool_by_name(_In_ w_cass_user_type* pUserType, _In_  const char* pName, _In_ w_bool_t pValue)
+       {
+           const char* _trace_info = "w_cassandra_user_type_set_bool_by_name";
+           if (!pUserType || !pName)
+           {
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+               return -1;
+           }
+           return    cass_user_type_set_bool_by_name(pUserType, pName, pValue);
+
+       }
+
+       w_Cass_Error  w_cassandra_user_type_set_bool_by_name_n(_In_ w_cass_user_type* pUserType, _In_ const char* pName, _In_ size_t pNameLength, _In_ w_bool_t pValue)
+       {
+           const char* _trace_info = "w_cassandra_user_type_set_bool_by_name_n";
+           if (!pUserType || !pName ||  !pNameLength)
+           {
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+               return -1;
+           }
+           return    cass_user_type_set_bool_by_name_n(pUserType, pName, pNameLength, pValue);
+
+       }
+
+       w_Cass_Error  w_cassandra_user_type_set_string(_In_ w_cass_user_type* pUserType, _In_ size_t pIndex, _In_ const char* pValue)
+       {
+           const char* _trace_info = "w_cassandra_user_type_set_string";
+           if (!pUserType || !pIndex || !pValue)
+           {
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+               return -1;
+           }
+           return   cass_user_type_set_string(pUserType, pIndex, pValue);
+
+       }
+
+       w_Cass_Error  w_cassandra_user_type_set_string_n(_In_ w_cass_user_type* pUserType, _In_ size_t pIndex, _In_ const char* pValue, _In_ size_t pValueLength)
+       {
+
+           const char* _trace_info = "w_cassandra_user_type_set_string_n";
+           if (!pUserType || !pIndex|| !pValue|| !pValueLength)
+           {
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
 
-           return   cass_user_type_set_decimal(user_type, index, varint, varint_size, scale);
+           return    cass_user_type_set_string_n(pUserType, pIndex, pValue, pValueLength);
 
        }
 
-       w_Cass_Error  w_cassandra_user_type_set_decimal_by_name(w_Cass_User_Type* user_type, const char* name, const w_byte_t* varint, size_t varint_size, int scale)
+       w_Cass_Error  w_cassandra_user_type_set_string_by_name(_In_ w_cass_user_type* pUserType, _In_  const char* pName, _In_ const char* pValue)
        {
-           if (!user_type || !name )
+           const char* _trace_info = "w_cassandra_user_type_set_string_by_name";
+           if (!pUserType || !pName || !pValue)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_user_type_set_decimal_by_name");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_user_type_set_decimal_by_name(user_type, name, varint, varint_size, scale);
+           return cass_user_type_set_string_by_name(pUserType, pName, pValue);
 
        }
 
-       w_Cass_Error  w_cassandra_user_type_set_decimal_by_name_n(w_Cass_User_Type* user_type, const char* name, size_t name_length, const w_byte_t* varint, size_t varint_size, int scale)
+       w_Cass_Error w_cassandra_user_type_set_string_by_name_n(_In_ w_cass_user_type* pUserType, _In_ const char* pName, _In_ size_t pNameLength, _In_ const char* pValue, _In_  size_t pValueLength)
        {
-           if (!user_type || !name)
+           const char* _trace_info = "w_cassandra_user_type_set_string_by_name_n";
+           if (!pUserType || !pName || !pNameLength || !pValue || !pValueLength)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_user_type_set_decimal_by_name_n");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return    cass_user_type_set_decimal_by_name_n(user_type, name, name_length, varint, varint_size, scale);
+           return   cass_user_type_set_string_by_name_n(pUserType, pName, pNameLength, pValue, pValueLength);
 
        }
 
-       w_Cass_Error  w_cassandra_user_type_set_duration(w_Cass_User_Type* user_type,size_t index, int32_t months, int32_t days, int64_t nanos)
+       w_Cass_Error  w_cassandra_user_type_set_bytes(_In_ w_cass_user_type* pUserType, _In_ size_t pIndex, _In_ const w_byte_t* pValue, _In_ size_t pValueSize)
        {
-           if (!user_type )
+           const char* _trace_info = "w_cassandra_user_type_set_bytes";
+           if (!pUserType ||  !pIndex || !pValue || !pValueSize)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_user_type_set_duration");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return   cass_user_type_set_duration(user_type, index, months, days, nanos);
+           return   cass_user_type_set_bytes(pUserType, pIndex, pValue, pValueSize);
 
        }
 
-       w_Cass_Error  w_cassandra_user_type_set_duration_by_name(w_Cass_User_Type* user_type,  const char* name, int32_t months,  int32_t days,  int64_t nanos)
+       w_Cass_Error  w_cassandra_user_type_set_bytes_by_name(_In_ w_cass_user_type* pUserType, _In_ const char* pName, _In_ const w_byte_t* pValue, _In_ size_t pValueSize)
        {
-           if (!user_type || !name )
+           const char* _trace_info = "w_cassandra_user_type_set_bytes_by_name";
+           if (!pUserType || !pName || !pValue || !pValueSize)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_user_type_set_duration_by_name");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return    cass_user_type_set_duration_by_name(user_type, name, months, days, nanos);
+           return    cass_user_type_set_bytes_by_name(pUserType, pName, pValue, pValueSize);
 
        }
 
-       w_Cass_Error  w_cassandra_user_type_set_duration_by_name_n(w_Cass_User_Type* user_type, const char* name,   size_t name_length,int32_t months,int32_t days, int64_t nanos)
+       w_Cass_Error   w_cassandra_user_type_set_bytes_by_name_n(_In_ w_cass_user_type* pUserType, _In_ const char* pName, _In_ size_t pNameLength, _In_ const w_byte_t* pValue, _In_ size_t pValueSize)
        {
-           if (!user_type || !name)
+           const char* _trace_info = "w_cassandra_user_type_set_bytes_by_name_n";
+           if (!pUserType || !pName || !pNameLength || !pValue || !pValueSize)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_user_type_set_duration_by_name_n");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-          return     cass_user_type_set_duration_by_name_n(user_type, name, name_length, months, days, nanos);
+           return    cass_user_type_set_bytes_by_name_n(pUserType, pName, pNameLength, pValue, pValueSize);
 
        }
 
-       w_Cass_Error  w_cassandra_user_type_set_collection(w_Cass_User_Type* user_type, size_t index,const w_Cass_Collection* value)
+       w_Cass_Error  w_cassandra_user_type_set_custom(_In_ w_cass_user_type* pUserType, _In_ size_t pIndex, _In_  const char* pClassName, _In_ const w_byte_t* pValue, _In_ size_t pValueSize)
        {
-           if (!user_type )
+           const char* _trace_info = "w_cassandra_user_type_set_custom";
+           if (!pUserType || !pIndex|| !pClassName || !pValue|| !pValueSize)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_user_type_set_collection");
-               return -1;
-           }
-           return    cass_user_type_set_collection(user_type, index, value);
-
-       }
-
-       w_Cass_Error w_cassandra_user_type_set_collection_by_name(w_Cass_User_Type* user_type, const char* name, const w_Cass_Collection* value)
-       {
-           if (!user_type || !name)
-           {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_user_type_set_collection_by_name");
-               return -1;
-           }
-               return  cass_user_type_set_collection_by_name(user_type, name,   value);
-
-       }
-       w_Cass_Error w_cassandra_user_type_set_collection_by_name_n(w_Cass_User_Type* user_type, const char* name, size_t name_length, const w_Cass_Collection* value)
-       {
-           if (!user_type || !name)
-           {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_user_type_set_collection_by_name_n");
-               return -1;
-           }
-           return  cass_user_type_set_collection_by_name_n(user_type, name, name_length, value);
-
-       }
-
-       w_Cass_Error w_cassandra_user_type_set_tuple(w_Cass_User_Type* user_type,size_t index, const w_Cass_Tuple* value)
-       {
-           if (!user_type )
-           {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_user_type_set_tuple");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
 
-           return     cass_user_type_set_tuple(user_type, index, value);
+           return  cass_user_type_set_custom(pUserType, pIndex, pClassName, pValue, pValueSize);
 
        }
 
-       w_Cass_Error  w_cassandra_user_type_set_tuple_by_name(w_Cass_User_Type* user_type, const char* name, const w_Cass_Tuple* value)
+       w_Cass_Error   w_cassandra_user_type_set_custom_n(_In_ w_cass_user_type* pUserType, _In_ size_t pIndex, _In_ const char* pClassName, _In_ size_t pClassNameLength, _In_  const w_byte_t* pValue, _In_ size_t pValueSize)
        {
-           if (!user_type || !name)
+           const char* _trace_info = "w_cassandra_user_type_set_custom_n";
+
+           if (!pUserType || !pIndex || !pClassName || !pClassNameLength || !pValue || !pValueSize)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_user_type_set_tuple_by_name");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return    cass_user_type_set_tuple_by_name(user_type, name, value);
+           return    cass_user_type_set_custom_n(pUserType, pIndex, pClassName, pClassNameLength, pValue, pValueSize);
 
        }
 
-       w_Cass_Error   w_cassandra_user_type_set_tuple_by_name_n(w_Cass_User_Type* user_type,const char* name, size_t name_length, const w_Cass_Tuple* value)
+       w_Cass_Error   w_cassandra_user_type_set_custom_by_name(_In_ w_cass_user_type* pUserType, _In_ const char* pName, _In_ const char* pClassName, _In_ const w_byte_t* pValue, _In_ size_t pValueSize)
        {
-           if (!user_type || !name)
+           const char* _trace_info = "w_cassandra_user_type_set_custom_by_name";
+           if (!pUserType || !pName || !pClassName || !pValue ||!pValueSize)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_user_type_set_tuple_by_name_n");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return   cass_user_type_set_tuple_by_name_n(user_type, name, name_length, value);
+           return  cass_user_type_set_custom_by_name(pUserType, pName, pClassName, pValue, pValueSize);
 
        }
 
-       w_Cass_Error  w_cassandra_user_type_set_user_type(w_Cass_User_Type* user_type,  size_t index,const w_Cass_User_Type* value)
+       w_Cass_Error  w_cassandra_user_type_set_custom_by_name_n(_In_ w_cass_user_type* pUserType, _In_ const char* pName, _In_ size_t pNameLength, _In_ const char* pClassName, _In_ size_t pClassNameLength, _In_ const w_byte_t* pValue, _In_ size_t pValueSize)
        {
-           if (!user_type )
+           const char* _trace_info = "w_cassandra_user_type_set_custom_by_name_n";
+           if (!pUserType || !pName || !pNameLength || !pClassName || !pClassNameLength || !pValue || !pValueSize)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cass_user_type_set_user_type");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return   cass_user_type_set_user_type(user_type, index, value);
+           return   cass_user_type_set_custom_by_name_n(pUserType, pName, pNameLength, pClassName, pClassNameLength, pValue, pValueSize);
 
        }
 
-       w_Cass_Error w_cass_user_type_set_user_type_by_name(w_Cass_User_Type* user_type, const char* name, const w_Cass_User_Type* value)
+       w_Cass_Error  w_cassandra_user_type_set_uuid(_In_ w_cass_user_type* pUserType, _In_ size_t pIndex, _In_ w_cass_uuid pValue)
        {
-           if (!user_type || !name)
+           const char* _trace_info = "w_cassandra_user_type_set_uuid";
+           if (!pUserType ||  !pIndex )
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_user_type_set_user_type_by_name");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return    cass_user_type_set_user_type_by_name(user_type, name, value);
+           return    cass_user_type_set_uuid(pUserType, pIndex, pValue);
 
        }
 
-       w_Cass_Error w_cassandra_user_type_set_user_type_by_name_n(w_Cass_User_Type* user_type,const char* name, size_t name_length,const w_Cass_User_Type* value)
+       w_Cass_Error w_cassandra_user_type_set_uuid_by_name(_In_ w_cass_user_type* pUserType, _In_ const char* pName, _In_ w_cass_uuid pValue)
        {
-           if (!user_type || !name)
+           const char* _trace_info = "w_cassandra_user_type_set_uuid_by_name";
+           if (!pUserType || !pName )
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_user_type_set_user_type_by_name_n");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return cass_user_type_set_user_type_by_name_n(user_type, name, name_length, value);
+           return   cass_user_type_set_uuid_by_name(pUserType, pName, pValue);
 
        }
 
-       void w_cassandra_result_free(const w_Cass_Result* result)
+       w_Cass_Error  w_cassandra_user_type_set_uuid_by_name_n(_In_ w_cass_user_type* pUserType, _In_ const char* pName, _In_ size_t pNameLength, _In_ w_cass_uuid pValue)
        {
-           if (!result)
+           const char* _trace_info = "w_cassandra_user_type_set_uuid_by_name_n";
+           if (!pUserType || !pName || !pNameLength)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_result_free");
-              
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+
+               return -1;
            }
-           cass_result_free(result);
+           return    cass_user_type_set_uuid_by_name_n(pUserType, pName, pNameLength, pValue);
 
        }
 
-       size_t  w_cassandra_result_row_count(const w_Cass_Result* result)
+       w_Cass_Error  w_cass_user_type_set_inet(_In_ w_cass_user_type* pUserType, _In_  size_t pIndex, _In_ w_cass_inet pValue)
        {
-           if (!result)
+           const char* _trace_info = "w_cass_user_type_set_inet";
+           if (!pUserType || !pIndex)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_result_row_count");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+               return -1;
+           }
+
+           return    cass_user_type_set_inet(pUserType, pIndex, pValue);
+
+       }
+
+       w_Cass_Error w_cass_user_type_set_inet_by_name(_In_ w_cass_user_type* pUserType, _In_ const char* pName, _In_ w_cass_inet pValue)
+       {
+           const char* _trace_info = "w_cass_user_type_set_inet_by_name";
+           if (!pUserType || !pName)
+           {
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+               return -1;
+           }
+           return   cass_user_type_set_inet_by_name(pUserType, pName, pValue);
+
+       }
+
+       w_Cass_Error  w_cassandra_user_type_set_inet_by_name_n(_In_ w_cass_user_type* pUserType, _In_ const char* pName, _In_ size_t pNameLength, _In_ w_cass_inet pValue)
+       {
+           const char* _trace_info = "w_cassandra_user_type_set_inet_by_name_n";
+           if (!pUserType || !pName || !pNameLength)
+           {
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+               return -1;
+           }
+           return   cass_user_type_set_inet_by_name_n(pUserType, pName, pNameLength, pValue);
+
+       }
+
+       w_Cass_Error   w_cassandra_user_type_set_decimal(_In_ w_cass_user_type* pUserType, _In_ size_t pIndex, _In_ const w_byte_t* pVarint, _In_ size_t pVarintSize, _In_  int pScale)
+       {
+           const char* _trace_info = "w_cassandra_user_type_set_decimal";
+
+           if (!pUserType  || !pIndex ||  !pVarint || !pVarintSize || !pScale)
+           {
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+               return -1;
+           }
+
+           return   cass_user_type_set_decimal(pUserType, pIndex, pVarint, pVarintSize, pScale);
+
+       }
+
+       w_Cass_Error  w_cassandra_user_type_set_decimal_by_name(_In_ w_cass_user_type* pUserType, _In_ const char* pName, _In_ const w_byte_t* pVarint, _In_ size_t pVarintSize, _In_ int pScale)
+       {
+           const char* _trace_info = "w_cassandra_user_type_set_decimal_by_name";
+           if (!pUserType || !pName || !pVarint || !pVarintSize || !pScale)
+           {
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+               return -1;
+           }
+           return cass_user_type_set_decimal_by_name(pUserType, pName, pVarint, pVarintSize, pScale);
+
+       }
+
+       w_Cass_Error  w_cassandra_user_type_set_decimal_by_name_n(_In_ w_cass_user_type* pUserType, _In_ const char* pName, _In_ size_t pNameLength, _In_ const w_byte_t* pVarint, _In_ size_t pVarintSize, _In_ int pScale)
+       {
+           const char* _trace_info = "w_cassandra_user_type_set_decimal_by_name_n";
+           if (!pUserType || !pName || !pNameLength ||! pVarint || !pVarintSize || !pScale)
+           {
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+               return -1;
+           }
+           return    cass_user_type_set_decimal_by_name_n(pUserType, pName, pNameLength, pVarint, pVarintSize, pScale);
+
+       }
+
+       w_Cass_Error  w_cassandra_user_type_set_duration(_In_ w_cass_user_type* pUserType, _In_ size_t pIndex, _In_  int32_t pMonths, _In_ int32_t pDays, _In_ int64_t pNanos)
+       {
+           const char* _trace_info = "w_cassandra_user_type_set_duration";
+           if (!pUserType || !pIndex || !pMonths || !pDays || !pNanos)
+           {
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+               return -1;
+           }
+           return   cass_user_type_set_duration(pUserType, pIndex, pMonths, pDays, pNanos);
+
+       }
+
+       w_Cass_Error  w_cassandra_user_type_set_duration_by_name(_In_ w_cass_user_type* pUserType, _In_  const char* pName, _In_ int32_t pMonths, _In_  int32_t pDays, _In_  int64_t pNanos)
+       {
+           const char* _trace_info = "w_cassandra_user_type_set_duration_by_name";
+           if (!pUserType || !pName || !pMonths || !pDays || !pNanos)
+           {
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+               return -1;
+           }
+           return    cass_user_type_set_duration_by_name(pUserType, pName, pMonths, pDays, pNanos);
+
+       }
+
+       w_Cass_Error  w_cassandra_user_type_set_duration_by_name_n(_In_ w_cass_user_type* pUserType, _In_  const char* pName, _In_   size_t pNameLength, _In_ int32_t pMonths, _In_ int32_t pDays, _In_ int64_t pNanos)
+       {
+           const char* _trace_info = "w_cassandra_user_type_set_duration_by_name_n";
+           if (!pUserType || !pName || !pNameLength || !pMonths || !pDays || !pNanos)
+           {
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+               return -1;
+           }
+          return     cass_user_type_set_duration_by_name_n(pUserType, pName, pNameLength, pMonths, pDays, pNanos);
+
+       }
+
+       w_Cass_Error  w_cassandra_user_type_set_collection(_In_ w_cass_user_type* pUserType, _In_ size_t pIndex, _In_ const w_cass_collection* pValue)
+       {
+           const char* _trace_info = "w_cassandra_user_type_set_collection";
+           if (!pUserType  || !pIndex || !pValue)
+           {
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+               return -1;
+           }
+           return    cass_user_type_set_collection(pUserType, pIndex, pValue);
+
+       }
+
+       w_Cass_Error w_cassandra_user_type_set_collection_by_name(_In_ w_cass_user_type* pUserType, _In_ const char* pName, _In_ const w_cass_collection* pValue)
+       {
+           const char* _trace_info = "w_cassandra_user_type_set_collection_by_name";
+           if (!pUserType || !pName || !pValue)
+           {
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+               return -1;
+           }
+               return  cass_user_type_set_collection_by_name(pUserType, pName,   pValue);
+
+       }
+       w_Cass_Error w_cassandra_user_type_set_collection_by_name_n(_In_ w_cass_user_type* pUserType, _In_ const char* pName, _In_ size_t pNameLength, _In_ const w_cass_collection* pValue)
+       {
+           const char* _trace_info = "w_cassandra_user_type_set_collection_by_name_n";
+           if (!pUserType || !pName || !pNameLength || !pValue)
+           {
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+               return -1;
+           }
+           return  cass_user_type_set_collection_by_name_n(pUserType, pName, pNameLength, pValue);
+
+       }
+
+       w_Cass_Error w_cassandra_user_type_set_tuple(_In_ w_cass_user_type* pUserType, _In_ size_t pIndex, _In_ const w_cass_tuple* pValue)
+       {
+           const char* _trace_info = "w_cassandra_user_type_set_tuple";
+
+           if (!pUserType || !pIndex || !pValue)
+           {
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+               return -1;
+           }
+
+           return     cass_user_type_set_tuple(pUserType, pIndex, pValue);
+
+       }
+
+       w_Cass_Error  w_cassandra_user_type_set_tuple_by_name(_In_ w_cass_user_type* pUserType, _In_ const char* pName, _In_ const w_cass_tuple* pValue)
+       {
+           const char* _trace_info = "w_cassandra_user_type_set_tuple_by_name";
+
+           if (!pUserType || !pName || !pValue)
+           {
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+               return -1;
+           }
+           return    cass_user_type_set_tuple_by_name(pUserType, pName, pValue);
+
+       }
+
+       w_Cass_Error   w_cassandra_user_type_set_tuple_by_name_n(_In_ w_cass_user_type* pUserType, _In_ const char* pName, _In_ size_t pNameLength, _In_ const w_cass_tuple* pValue)
+       {
+           const char* _trace_info = "w_cassandra_user_type_set_tuple_by_name_n";
+
+           if (!pUserType || !pName || !pNameLength || !pValue)
+           {
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+               return -1;
+           }
+           return   cass_user_type_set_tuple_by_name_n(pUserType, pName, pNameLength, pValue);
+
+       }
+
+       w_Cass_Error  w_cassandra_user_type_set_user_type(_In_ w_cass_user_type* pUserType, _In_ size_t pIndex, _In_ const w_cass_user_type* pValue)
+       {
+           const char* _trace_info = "w_cassandra_user_type_set_user_type";
+
+           if (!pUserType || !pIndex || !pValue)
+           {
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+               return -1;
+           }
+           return   cass_user_type_set_user_type(pUserType, pIndex, pValue);
+
+       }
+
+       w_Cass_Error w_cass_user_type_set_user_type_by_name(_In_ w_cass_user_type* pUserType, _In_ const char* pName, _In_ const w_cass_user_type* pValue)
+       {
+           const char* _trace_info = "w_cass_user_type_set_user_type_by_name";
+
+           if (!pUserType || !pName || !pValue)
+           {
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+               return -1;
+           }
+           return    cass_user_type_set_user_type_by_name(pUserType, pName, pValue);
+
+       }
+
+       w_Cass_Error w_cassandra_user_type_set_user_type_by_name_n(_In_ w_cass_user_type* pUserType, _In_ const char* pName, _In_ size_t pNameLength, _In_ const w_cass_user_type* pValue)
+       {
+           const char* _trace_info = "w_cassandra_user_type_set_user_type_by_name_n";
+
+           if (!pUserType || !pName || !pNameLength || !pValue)
+           {
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+               return -1;
+           }
+           return cass_user_type_set_user_type_by_name_n(pUserType, pName, pNameLength, pValue);
+
+       }
+
+       void w_cassandra_result_free(_In_ const w_cass_result* pResult)
+       {
+           const char* _trace_info = "w_cassandra_result_free";
+           if (!pResult)
+           {
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+
+           }
+           cass_result_free(pResult);
+
+       }
+
+       size_t  w_cassandra_result_row_count(_In_ const w_cass_result* pResult)
+       {
+           const char* _trace_info = "w_cassandra_result_row_count";
+
+           if (!pResult)
+           {
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return 0;
            }
-           return   cass_result_row_count(result);
+           return   cass_result_row_count(pResult);
 
        }
 
-       size_t w_cassandra_result_column_count(const w_Cass_Result* result)
+       size_t w_cassandra_result_column_count(_In_ const w_cass_result* pResult)
        {
-           if (!result)
+           const char* _trace_info = "w_cassandra_result_column_count";
+
+           if (!pResult)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_result_column_count");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return 0;
            }
-           return  cass_result_column_count(result);
+           return  cass_result_column_count(pResult);
 
        }
 
-       w_Cass_Error w_cassandra_result_column_name(const w_Cass_Result* result, size_t index,const char** name, size_t* name_length)
+       w_Cass_Error w_cassandra_result_column_name(_In_ const w_cass_result* pResult, _In_  size_t pIndex, _Inout_ const char** pName, _Inout_  size_t* pNameLength)
        {
-           if (!result)
+           const char* _trace_info = "w_cassandra_result_column_name";
+           if (!pResult || !pIndex || !pName || !pNameLength)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_result_column_name");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return   cass_result_column_name(result, index, name, name_length);
+           return   cass_result_column_name(pResult, pIndex, pName, pNameLength);
 
        }
-       w_Cass_Value_Type  w_cassandra_result_column_type(const w_Cass_Result* result, size_t index)
+       w_cass_value_type  w_cassandra_result_column_type(_In_ const w_cass_result* pResult, _In_ size_t pIndex)
        {
-           if (!result)
+           const char* _trace_info = "w_cassandra_result_column_type";
+
+           if (!pResult || !pIndex)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_result_column_type");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return   cass_result_column_type(result, index);
+           return   cass_result_column_type(pResult, pIndex);
 
        }
 
-       const w_Cass_Data_Type* w_cassandra_result_column_data_type(const w_Cass_Result* result, size_t index)
+       const w_cass_data_type* w_cassandra_result_column_data_type(_In_ const w_cass_result* pResult, _In_ size_t pIndex)
        {
-           if (!result)
+           const char* _trace_info = "w_cassandra_result_column_data_type";
+
+           if (!pResult || !pIndex)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_result_column_data_type");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return NULL;
            }
-           return  cass_result_column_data_type(result, index);
+           return  cass_result_column_data_type(pResult, pIndex);
 
        }
-       const w_Cass_Row* w_cassandra_result_first_row(const w_Cass_Result* result)
+       const w_cass_row* w_cassandra_result_first_row(_In_ const w_cass_result* pResult)
        {
-           if (!result)
+           const char* _trace_info = "w_cassandra_result_first_row";
+
+           if (!pResult)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_result_first_row");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return NULL;
            }
-           return   cass_result_first_row(result);
+           return   cass_result_first_row(pResult);
 
        }
 
-       w_bool_t w_cassandra_result_has_more_pages(const w_Cass_Result* result)
+       w_bool_t w_cassandra_result_has_more_pages(_In_ const w_cass_result* pResult)
        {
-           if (!result)
+           const char* _trace_info = "w_cassandra_result_has_more_pages";
+
+           if (!pResult)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_result_has_more_pages");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return false;
            }
-           return  cass_result_has_more_pages(result);
+           return  cass_result_has_more_pages(pResult);
 
        }
 
-       w_Cass_Error   w_cassandra_result_paging_state_token(const w_Cass_Result* result,const char** paging_state, size_t* paging_state_size)
+       w_Cass_Error   w_cassandra_result_paging_state_token(_In_ const w_cass_result* pResult, _Inout_ const char** pPagingState, _Inout_ size_t* pPagingStateSize)
        {
-           if (!result)
+           const char* _trace_info = "w_cassandra_result_paging_state_token";
+
+           if (!pResult || !pPagingState || !pPagingStateSize)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_result_paging_state_token");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
            }
-           return   cass_result_paging_state_token(result, paging_state, paging_state_size);
+           return   cass_result_paging_state_token(pResult, pPagingState, pPagingStateSize);
 
        }
 
-       void w_cassandra_error_result_free(const w_Cass_Error_Result* error_result)
+       void w_cassandra_error_result_free(_In_ const w_cass_error_result* pErrorResult)
        {
-           if (!error_result)
+           const char* _trace_info = "w_cassandra_error_result_free";
+
+           if (!pErrorResult)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_error_result_free");
-              
-           }
-           cass_error_result_free(error_result);
-
-       }
-
-
-       w_Cass_Error w_cassandra_error_result_code(const w_Cass_Error_Result* error_result)
-       {
-
-           if (!error_result)
-           {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_error_result_code");
-               return -1;
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
 
            }
-           return  cass_error_result_code(error_result);
+           cass_error_result_free(pErrorResult);
 
        }
 
-       W_Cass_Consistency w_cassandra_error_result_consistency(const w_Cass_Error_Result* error_result)
+
+       w_Cass_Error w_cassandra_error_result_code(_In_ const w_cass_error_result* pErrorResult)
        {
-           if (!error_result)
+           const char* _trace_info = "w_cassandra_error_result_code";
+
+           if (!pErrorResult)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cass_error_result_consistency");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
 
            }
-        return cass_error_result_consistency(error_result);
+           return  cass_error_result_code(pErrorResult);
 
        }
 
-       int32_t  w_cass_error_result_responses_received(const w_Cass_Error_Result* error_result)
+       w_cass_consistency w_cassandra_error_result_consistency(_In_ const w_cass_error_result* pErrorResult)
        {
-           if (!error_result)
+           const char* _trace_info = "w_cassandra_error_result_consistency";
+
+           if (!pErrorResult)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_error_result_responses_received");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
 
            }
-           return  cass_error_result_responses_received(error_result);
+        return cass_error_result_consistency(pErrorResult);
 
        }
 
-
-       int32_t w_cassandra_error_result_responses_required(const w_Cass_Error_Result* error_result)
+       int32_t  w_cass_error_result_responses_received(_In_ const w_cass_error_result* pErrorResult)
        {
-           if (!error_result)
+           const char* _trace_info = "w_cass_error_result_responses_received";
+
+           if (!pErrorResult)
            {
-               W_ASSERT(false, "missing parameters!. trace info: w_cassandra_error_result_responses_required");
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
                return -1;
 
            }
-           return  cass_error_result_responses_required(error_result);
+           return  cass_error_result_responses_received(pErrorResult);
 
        }
 
-      int32_t  w_cassandra_error_result_num_failures(const w_Cass_Error_Result* error_result)
+
+       int32_t w_cassandra_error_result_responses_required(_In_ const w_cass_error_result* pErrorResult)
+       {
+           const char* _trace_info = "w_cassandra_error_result_responses_required";
+
+           if (!pErrorResult)
+           {
+               W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+               return -1;
+
+           }
+           return  cass_error_result_responses_required(pErrorResult);
+
+       }
+
+      int32_t  w_cassandra_error_result_num_failures(_In_ const w_cass_error_result* pErrorResult)
       {
-          if (!error_result)
+          const char* _trace_info = "w_cassandra_error_result_num_failures";
+
+          if (!pErrorResult)
           {
-              W_ASSERT(false, "missing parameters!. trace info: w_cassandra_error_result_num_failures");
+              W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
               return -1;
 
           }
-         return  cass_error_result_num_failures( error_result);
+         return  cass_error_result_num_failures(pErrorResult);
 
       }
 
-      w_bool_t  w_cassandra_error_result_data_present(const w_Cass_Error_Result* error_result)
+      w_bool_t  w_cassandra_error_result_data_present(_In_ const w_cass_error_result* pErrorResult)
       {
-          if (!error_result)
+          const char* _trace_info = "w_cassandra_error_result_data_present";
+
+          if (!pErrorResult)
           {
-              W_ASSERT(false, "missing parameters!. trace info: w_cassandra_error_result_data_present");
+              W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
               return false;
 
           }
-         return  cass_error_result_data_present(error_result);
+         return  cass_error_result_data_present(pErrorResult);
 
       }
 
-      w_Cass_WriteType w_cassandra_error_result_write_type(const w_Cass_Error_Result* error_result)
+      w_cass_writetype w_cassandra_error_result_write_type(_In_ const w_cass_error_result* pErrorResult)
       {
-          if (!error_result)
+          const char* _trace_info = "w_cassandra_error_result_write_type";
+
+          if (!pErrorResult)
           {
-              W_ASSERT(false, "missing parameters!. trace info: w_cassandra_error_result_write_type");
+              W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
               return -1;
 
           }
 
-         return cass_error_result_write_type(error_result);
+         return cass_error_result_write_type(pErrorResult);
 
       }
 
-      w_Cass_Error w_cassandra_error_result_keyspace(const w_Cass_Error_Result* error_result, const char** keyspace, size_t* keyspace_length)
+      w_Cass_Error w_cassandra_error_result_keyspace(_In_ const w_cass_error_result* pErrorResult, _Inout_ const char** pKeyspace, _Inout_ size_t* pKeyspaceLength)
       {
-          if (!error_result || !keyspace)
+          const char* _trace_info = "w_cassandra_error_result_keyspace";
+
+          if (!pErrorResult || !pKeyspace || !pKeyspaceLength)
           {
-              W_ASSERT(false, "missing parameters!. trace info: w_cassandra_error_result_keyspace");
+              W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
               return -1;
 
           }
-           return cass_error_result_keyspace(error_result,  keyspace, keyspace_length);
+           return cass_error_result_keyspace(pErrorResult, pKeyspace, pKeyspaceLength);
 
       }
 
-      w_Cass_Error  w_cassandra_error_result_table(const w_Cass_Error_Result* error_result, const char** table, size_t* table_length)
+      w_Cass_Error  w_cassandra_error_result_table(_In_ const w_cass_error_result* pErrorResult, _Inout_ const char** pTable, _Inout_ size_t* pTableLength)
       {
-          if (!error_result || !table)
+          const char* _trace_info = "w_cassandra_error_result_table";
+
+          if (!pErrorResult || !pTable || !pTableLength)
           {
-              W_ASSERT(false, "missing parameters!. trace info: w_cassandra_error_result_table");
+              W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
               return -1;
 
           }
-         return  cass_error_result_table(error_result, table, table_length);
+         return  cass_error_result_table(pErrorResult, pTable, pTableLength);
 
       }
 
-     w_Cass_Error w_cassandra_error_result_function(const w_Cass_Error_Result* error_result, const char** function,size_t* function_length)
+     w_Cass_Error w_cassandra_error_result_function(_In_ const w_cass_error_result* pErrorResult, _Inout_  const char** pFunction, _Inout_ size_t* pFunctionLength)
      {
-         if (!error_result || !function)
+         const char* _trace_info = "w_cassandra_error_result_function";
+
+         if (!pErrorResult || !pFunction || !pFunctionLength)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_error_result_function");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return -1;
 
          }
-         return cass_error_result_function(error_result, function, function_length);
+         return cass_error_result_function(pErrorResult, pFunction, pFunctionLength);
 
      }
 
-     size_t w_cassandra_error_num_arg_types(const w_Cass_Error_Result* error_result)
+     size_t w_cassandra_error_num_arg_types(_In_ const w_cass_error_result* pErrorResult)
      {
-         if (!error_result )
+         const char* _trace_info = "w_cassandra_error_num_arg_types";
+
+         if (!pErrorResult)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_error_num_arg_types");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return 0;
 
          }
 
-         return   cass_error_num_arg_types(error_result);
+         return   cass_error_num_arg_types(pErrorResult);
 
      }
 
-     w_Cass_Error  w_cassandra_error_result_arg_type(const w_Cass_Error_Result* error_result, size_t index, const char** arg_type, size_t* arg_type_length)
+     w_Cass_Error  w_cassandra_error_result_arg_type(_In_ const w_cass_error_result* pErrorResult, _In_  size_t pIndex, _Inout_ const char** pArgType, _Inout_ size_t* pArgTypeLength)
      {
-         if (!error_result)
+         const char* _trace_info = "w_cassandra_error_result_arg_type";
+
+         if (!pErrorResult || !pIndex || !pArgType || !pArgTypeLength)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_error_result_arg_type");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return -1;
 
          }
-         return  cass_error_result_arg_type(error_result, index, arg_type, arg_type_length);
+         return  cass_error_result_arg_type(pErrorResult, pIndex, pArgType, pArgTypeLength);
 
      }
 
-     void w_cassandra_iterator_free(w_Cass_Iterator* iterator)
+     void w_cassandra_iterator_free(_In_ w_cass_iterator* pIterator)
      {
-         if (!iterator)
+         const char* _trace_info = "w_cassandra_iterator_free";
+
+         if (!pIterator)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_iterator_free");
-           
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+
          }
-         cass_iterator_free(iterator);
+         cass_iterator_free(pIterator);
      }
 
-     w_Cass_Iterator_Type  w_cassandra_iterator_type(w_Cass_Iterator* iterator)
+     w_cass_iterator_type  w_cassandra_iterator_type(_In_ w_cass_iterator* pIterator)
      {
-         if (!iterator)
+         const char* _trace_info = "w_cassandra_iterator_type";
+
+         if (!pIterator)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_iterator_type");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return -1;
          }
-       return cass_iterator_type(iterator);
+       return cass_iterator_type(pIterator);
 
      }
 
-     w_Cass_Iterator* w_cassandra_iterator_from_result(const w_Cass_Result* result)
+     w_cass_iterator* w_cassandra_iterator_from_result(_In_ const w_cass_result* pResult)
      {
-         if (!result)
+         const char* _trace_info = "w_cassandra_iterator_from_result";
+
+         if (!pResult)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_iterator_from_result");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
-         return  cass_iterator_from_result(result);
+         return  cass_iterator_from_result(pResult);
 
      }
 
-     w_Cass_Iterator* w_cassandra_iterator_from_row(const w_Cass_Row* row)
+     w_cass_iterator* w_cassandra_iterator_from_row(_In_ const w_cass_row* pRow)
      {
-         if (!row)
+         const char* _trace_info = "w_cassandra_iterator_from_row";
+
+         if (!pRow)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_iterator_from_row");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
-         return   cass_iterator_from_row(row);
+         return   cass_iterator_from_row(pRow);
 
      }
 
-     w_Cass_Iterator*   w_cassandra_iterator_from_collection(const w_Cass_Value* value)
+     w_cass_iterator*   w_cassandra_iterator_from_collection(_In_ const w_cass_value* pValue)
      {
-         if (!value)
+         const char* _trace_info = "w_cassandra_iterator_from_collection";
+
+         if (!pValue)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_iterator_from_collection");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
-         return cass_iterator_from_collection(value);
+         return cass_iterator_from_collection(pValue);
 
      }
 
-     w_Cass_Iterator* w_cassandra_iterator_from_map(const w_Cass_Value* value)
+     w_cass_iterator* w_cassandra_iterator_from_map(_In_ const w_cass_value* pValue)
      {
-         if (!value)
+         const char* _trace_info = "w_cassandra_iterator_from_map";
+
+         if (!pValue)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_iterator_from_map");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
-         return cass_iterator_from_map( value);
+         return cass_iterator_from_map(pValue);
      }
 
-     w_Cass_Iterator* w_cassandra_iterator_from_tuple(const w_Cass_Value* value)
+     w_cass_iterator* w_cassandra_iterator_from_tuple(_In_ const w_cass_value* pValue)
      {
-         if (!value)
+         const char* _trace_info = "w_cassandra_iterator_from_tuple";
+
+         if (!pValue)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_iterator_from_tuple");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
 
-         return  cass_iterator_from_tuple(value);
+         return  cass_iterator_from_tuple(pValue);
      }
 
-     w_Cass_Iterator* w_cassandra_iterator_fields_from_user_type(const w_Cass_Value* value)
+     w_cass_iterator* w_cassandra_iterator_fields_from_user_type(_In_ const w_cass_value* pValue)
      {
-         if (!value)
+         const char* _trace_info = "w_cassandra_iterator_fields_from_user_type";
+
+         if (!pValue)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_iterator_fields_from_user_type");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
-         return  cass_iterator_fields_from_user_type(value);
+         return  cass_iterator_fields_from_user_type(pValue);
      }
 
-     w_Cass_Iterator* w_cassandra_iterator_keyspaces_from_schema_meta(const w_Cass_Schema_Meta* schema_meta)
+     w_cass_iterator* w_cassandra_iterator_keyspaces_from_schema_meta(_In_ const w_cass_schema_meta* pSchemaMeta)
      {
-         if (!schema_meta)
+         const char* _trace_info = "w_cassandra_iterator_keyspaces_from_schema_meta";
+
+         if (!pSchemaMeta)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_iterator_keyspaces_from_schema_meta");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
-         return    cass_iterator_keyspaces_from_schema_meta(schema_meta);
+         return    cass_iterator_keyspaces_from_schema_meta(pSchemaMeta);
 
 
      }
 
-     w_Cass_Iterator* w_cassandra_iterator_tables_from_keyspace_meta(const w_Cass_Key_space_Meta* keyspace_meta)
+     w_cass_iterator* w_cassandra_iterator_tables_from_keyspace_meta(_In_ const w_cass_key_space_meta* pKeyspaceMeta)
      {
-         if (!keyspace_meta)
+         const char* _trace_info = "w_cassandra_iterator_tables_from_keyspace_meta";
+
+         if (!pKeyspaceMeta)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_iterator_tables_from_keyspace_meta");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
-         return  cass_iterator_tables_from_keyspace_meta(keyspace_meta);
+         return  cass_iterator_tables_from_keyspace_meta(pKeyspaceMeta);
 
      }
 
 
-     w_Cass_Iterator* w_cassandra_iterator_materialized_views_from_keyspace_meta(const w_Cass_Key_space_Meta* keyspace_meta) 
+     w_cass_iterator* w_cassandra_iterator_materialized_views_from_keyspace_meta(_In_ const w_cass_key_space_meta* pKeyspaceMeta)
      {
-         if (!keyspace_meta)
+         const char* _trace_info = "w_cassandra_iterator_materialized_views_from_keyspace_meta";
+
+         if (!pKeyspaceMeta)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_iterator_materialized_views_from_keyspace_meta");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
-         return cass_iterator_materialized_views_from_keyspace_meta( keyspace_meta);
+         return cass_iterator_materialized_views_from_keyspace_meta(pKeyspaceMeta);
 
      }
 
-     w_Cass_Iterator*  w_cassandra_iterator_user_types_from_keyspace_meta(const w_Cass_Key_space_Meta* keyspace_meta)
+     w_cass_iterator*  w_cassandra_iterator_user_types_from_keyspace_meta(_In_ const w_cass_key_space_meta* pKeyspaceMeta)
      {
-         if (!keyspace_meta)
+         const char* _trace_info = "w_cassandra_iterator_user_types_from_keyspace_meta";
+         if (!pKeyspaceMeta)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_iterator_user_types_from_keyspace_meta");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
-         return  cass_iterator_user_types_from_keyspace_meta(keyspace_meta);
+         return  cass_iterator_user_types_from_keyspace_meta(pKeyspaceMeta);
 
      }
 
-     w_Cass_Iterator* w_cassandra_iterator_functions_from_keyspace_meta(const w_Cass_Key_space_Meta* keyspace_meta)
+     w_cass_iterator* w_cassandra_iterator_functions_from_keyspace_meta(_In_ const w_cass_key_space_meta* pKeyspaceMeta)
      {
-         if (!keyspace_meta)
+         const char* _trace_info = "w_cassandra_iterator_functions_from_keyspace_meta";
+         if (!pKeyspaceMeta)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_iterator_functions_from_keyspace_meta");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
-         return   cass_iterator_functions_from_keyspace_meta(keyspace_meta);
+         return   cass_iterator_functions_from_keyspace_meta(pKeyspaceMeta);
 
 
      }
-     w_Cass_Iterator*  w_cassandra_iterator_aggregates_from_keyspace_meta(const w_Cass_Key_space_Meta* keyspace_meta)
+     w_cass_iterator*  w_cassandra_iterator_aggregates_from_keyspace_meta(_In_ const w_cass_key_space_meta* pKeyspaceMeta)
      {
-         if (!keyspace_meta)
+         const char* _trace_info = "w_cassandra_iterator_aggregates_from_keyspace_meta";
+
+         if (!pKeyspaceMeta)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_iterator_aggregates_from_keyspace_meta");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
-         return  cass_iterator_aggregates_from_keyspace_meta(keyspace_meta);
+         return  cass_iterator_aggregates_from_keyspace_meta(pKeyspaceMeta);
 
      }
-     w_Cass_Iterator*  w_cassandra_iterator_fields_from_keyspace_meta(const w_Cass_Key_space_Meta* keyspace_meta)
+     w_cass_iterator*  w_cassandra_iterator_fields_from_keyspace_meta(_In_ const w_cass_key_space_meta* pKeyspaceMeta)
      {
-         if (!keyspace_meta)
+         const char* _trace_info = "w_cassandra_iterator_fields_from_keyspace_meta";
+
+         if (!pKeyspaceMeta)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_iterator_fields_from_keyspace_meta");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
-         return  cass_iterator_fields_from_keyspace_meta(keyspace_meta);
+         return  cass_iterator_fields_from_keyspace_meta(pKeyspaceMeta);
 
      }
 
-     w_Cass_Iterator*  w_cassandra_iterator_columns_from_table_meta(const w_Cass_Table_Meta* table_meta)
+     w_cass_iterator*  w_cassandra_iterator_columns_from_table_meta(_In_ const w_cass_table_meta* pTableMeta)
      {
-         if (!table_meta)
+         const char* _trace_info = "w_cassandra_iterator_columns_from_table_meta";
+
+         if (!pTableMeta)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_iterator_columns_from_table_meta");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
-        return cass_iterator_columns_from_table_meta( table_meta);
+        return cass_iterator_columns_from_table_meta(pTableMeta);
      }
 
-     w_Cass_Iterator*  w_cassandra_iterator_indexes_from_table_meta(const w_Cass_Table_Meta* table_meta)
+     w_cass_iterator*  w_cassandra_iterator_indexes_from_table_meta(_In_ const w_cass_table_meta* pTableMeta)
      {
-         if (!table_meta)
+         const char* _trace_info = "w_cassandra_iterator_indexes_from_table_meta";
+
+         if (!pTableMeta)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_iterator_indexes_from_table_meta");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
-         return   cass_iterator_indexes_from_table_meta(table_meta);
+         return   cass_iterator_indexes_from_table_meta(pTableMeta);
 
      }
 
-     w_Cass_Iterator*  w_cassandra_iterator_materialized_views_from_table_meta(const w_Cass_Table_Meta* table_meta)
+     w_cass_iterator*  w_cassandra_iterator_materialized_views_from_table_meta(_In_ const w_cass_table_meta* pTableMeta)
      {
-         if (!table_meta)
+         const char* _trace_info = "w_cassandra_iterator_materialized_views_from_table_meta";
+
+         if (!pTableMeta)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_iterator_materialized_views_from_table_meta");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
-         return cass_iterator_materialized_views_from_table_meta( table_meta);
+         return cass_iterator_materialized_views_from_table_meta(pTableMeta);
 
 
      }
 
-     w_Cass_Iterator*  w_cassandra_iterator_fields_from_table_meta(const w_Cass_Table_Meta* table_meta)
+     w_cass_iterator*  w_cassandra_iterator_fields_from_table_meta(_In_ const w_cass_table_meta* pTableMeta)
      {
-         if (!table_meta)
+         const char* _trace_info = "w_cassandra_iterator_fields_from_table_meta";
+
+         if (!pTableMeta)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_iterator_fields_from_table_meta");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
-         return cass_iterator_fields_from_table_meta(table_meta);
+         return cass_iterator_fields_from_table_meta(pTableMeta);
      }
 
-     w_Cass_Iterator*  w_cassandra_iterator_columns_from_materialized_view_meta(const w_Cass_Materialized_View_Meta* view_me)
+     w_cass_iterator*  w_cassandra_iterator_columns_from_materialized_view_meta(_In_ const w_cass_materialized_view_meta* pViewMe)
      {
-         if (!view_me)
+         const char* _trace_info = "w_cassandra_iterator_columns_from_materialized_view_meta";
+
+         if (!pViewMe)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_iterator_columns_from_materialized_view_meta");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
-         return  cass_iterator_columns_from_materialized_view_meta(view_me);
+         return  cass_iterator_columns_from_materialized_view_meta(pViewMe);
 
      }
 
-     w_Cass_Iterator*  w_cassandra_iterator_fields_from_materialized_view_meta(const w_Cass_Materialized_View_Meta* view_meta)
+     w_cass_iterator*  w_cassandra_iterator_fields_from_materialized_view_meta(_In_ const w_cass_materialized_view_meta* pViewMe)
      {
-         if (!view_meta)
+         const char* _trace_info = "w_cassandra_iterator_fields_from_materialized_view_meta";
+
+         if (!pViewMe)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_iterator_fields_from_materialized_view_meta");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
-         return cass_iterator_fields_from_materialized_view_meta( view_meta);
+         return cass_iterator_fields_from_materialized_view_meta(pViewMe);
      }
 
-     w_Cass_Iterator*  w_cassandra_iterator_fields_from_column_meta(const w_Cass_Column_Meta* column_meta)
+     w_cass_iterator*  w_cassandra_iterator_fields_from_column_meta(_In_ const w_cass_column_meta* pColumnMeta)
      {
-         if (!column_meta)
+         const char* _trace_info = "w_cassandra_iterator_fields_from_column_meta";
+
+         if (!pColumnMeta)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_iterator_fields_from_column_meta");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
-         return    cass_iterator_fields_from_column_meta(column_meta);
+         return    cass_iterator_fields_from_column_meta(pColumnMeta);
 
      }
 
-     w_Cass_Iterator*  w_cassandra_iterator_fields_from_index_meta(const w_Cass_Index_Meta* index_meta)
+     w_cass_iterator*  w_cassandra_iterator_fields_from_index_meta(_In_ const w_cass_index_meta* pIndexMeta)
      {
-         if (!index_meta)
+         const char* _trace_info = "w_cassandra_iterator_fields_from_index_meta";
+
+         if (!pIndexMeta)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_iterator_fields_from_index_meta");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
-         return  cass_iterator_fields_from_index_meta(index_meta);
+         return  cass_iterator_fields_from_index_meta(pIndexMeta);
 
      }
 
-     w_Cass_Iterator*  w_cassandra_iterator_fields_from_function_meta(const w_Cass_Function_Meta* function_meta)
+     w_cass_iterator*  w_cassandra_iterator_fields_from_function_meta(_In_ const w_cass_function_meta* pFunctionMeta)
      {
-         if (!function_meta)
+         const char* _trace_info = "w_cassandra_iterator_fields_from_function_meta";
+
+         if (!pFunctionMeta)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_iterator_fields_from_function_meta");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
-         return      cass_iterator_fields_from_function_meta(function_meta);
+         return      cass_iterator_fields_from_function_meta(pFunctionMeta);
 
      }
-     w_Cass_Iterator*  w_cassandra_iterator_fields_from_aggregate_meta(const w_Cass_Aggregate_Meta* aggregate_meta)
+
+     w_cass_iterator*  w_cassandra_iterator_fields_from_aggregate_meta(_In_ const w_cass_aggregate_meta* pAggregateMeta)
      {
-         if (!aggregate_meta)
+         const char* _trace_info = "w_cassandra_iterator_fields_from_aggregate_meta";
+
+         if (!pAggregateMeta)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_iterator_fields_from_aggregate_meta");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
-         return   cass_iterator_fields_from_aggregate_meta(aggregate_meta);
+         return   cass_iterator_fields_from_aggregate_meta(pAggregateMeta);
 
      }
 
-     w_bool_t w_cassandra_iterator_next(w_Cass_Iterator* iterator)
+     w_bool_t w_cassandra_iterator_next(_In_ w_cass_iterator* pIterator)
      {
-         if (!iterator)
+         const char* _trace_info = "w_cassandra_iterator_next";
+
+         if (!pIterator)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_iterator_next");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return false;
          }
-         return  cass_iterator_next(iterator);
+         return  cass_iterator_next(pIterator);
 
      }
 
-     const w_Cass_Row*  w_cassandra_iterator_get_row(const w_Cass_Iterator* iterator)
+     const w_cass_row*  w_cassandra_iterator_get_row(_In_ const w_cass_iterator* pIterator)
      {
-         if (!iterator)
+         const char* _trace_info = "w_cassandra_iterator_get_row";
+         if (!pIterator)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_iterator_get_row");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
-         return   cass_iterator_get_row(iterator);
+         return   cass_iterator_get_row(pIterator);
 
      }
 
-     const w_Cass_Value*  w_cassandra_iterator_get_column(const w_Cass_Iterator* iterator)
+     const w_cass_value*  w_cassandra_iterator_get_column(_In_ const w_cass_iterator* pIterator)
      {
-         if (!iterator)
+         const char* _trace_info = "w_cassandra_iterator_get_column";
+         if (!pIterator)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_iterator_get_column");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
-         return  cass_iterator_get_column(iterator);
+         return  cass_iterator_get_column(pIterator);
 
      }
 
-     const w_Cass_Value*  w_cassandra_iterator_get_value(const w_Cass_Iterator* iterator)
+     const w_cass_value*  w_cassandra_iterator_get_value(_In_ const w_cass_iterator* pIterator)
      {
-         if (!iterator)
+         const char* _trace_info = "w_cassandra_iterator_get_value";
+         if (!pIterator)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_iterator_get_value");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
-         return cass_iterator_get_value(iterator);
+         return cass_iterator_get_value(pIterator);
      }
 
-     const w_Cass_Value*  w_cassandra_iterator_get_map_key(const w_Cass_Iterator* iterator)
+     const w_cass_value*  w_cassandra_iterator_get_map_key(_In_ const w_cass_iterator* pIterator)
      {
-         if (!iterator)
+         const char* _trace_info = "w_cassandra_iterator_get_map_key";
+         if (!pIterator)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_iterator_get_map_key");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
-         return cass_iterator_get_map_key(iterator);
+         return cass_iterator_get_map_key(pIterator);
 
      }
 
-     const w_Cass_Value* w_cassandra_iterator_get_map_value(const w_Cass_Iterator* iterator) 
+     const w_cass_value* w_cassandra_iterator_get_map_value(_In_ const w_cass_iterator* pIterator)
      {
-         if (!iterator)
+         const char* _trace_info = "w_cassandra_iterator_get_map_value";
+         if (!pIterator)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_iterator_get_map_value");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
-         return   cass_iterator_get_map_value(iterator);
+         return   cass_iterator_get_map_value(pIterator);
 
      }
 
-     w_Cass_Error w_cassandra_iterator_get_user_type_field_name(const w_Cass_Iterator* iterator, const char** name, size_t* name_length)
+     w_Cass_Error w_cassandra_iterator_get_user_type_field_name(_In_ const w_cass_iterator* pIterator, _Inout_ const char** pName, _Inout_ size_t* pNameLength)
      {
-         if (!iterator || !name)
+         const char* _trace_info = "w_cassandra_iterator_get_user_type_field_name";
+         if (!pIterator || !pName || !pNameLength)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_iterator_get_user_type_field_name");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return -1;
          }
-         return  cass_iterator_get_user_type_field_name(iterator, name, name_length);
+         return  cass_iterator_get_user_type_field_name(pIterator, pName, pNameLength);
 
      }
 
-     const w_Cass_Value* w_cassandra_iterator_get_user_type_field_value(const w_Cass_Iterator* iterator)
+     const w_cass_value* w_cassandra_iterator_get_user_type_field_value(_In_ const w_cass_iterator* pIterator)
      {
-         if (!iterator )
+         const char* _trace_info = "w_cassandra_iterator_get_user_type_field_value";
+         if (!pIterator)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_iterator_get_user_type_field_value");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
-         return  cass_iterator_get_user_type_field_value(iterator);
+         return  cass_iterator_get_user_type_field_value(pIterator);
 
      }
 
-     const w_Cass_Key_space_Meta* w_cassandra_iterator_get_keyspace_meta(const w_Cass_Iterator* iterator)
+     const w_cass_key_space_meta* w_cassandra_iterator_get_keyspace_meta(_In_ const w_cass_iterator* pIterator)
      {
-         if (!iterator)
+         const char* _trace_info = "w_cassandra_iterator_get_keyspace_meta";
+         if (!pIterator)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_iterator_get_keyspace_meta");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
 
-         return     cass_iterator_get_keyspace_meta(iterator);
+         return     cass_iterator_get_keyspace_meta(pIterator);
 
      }
 
-     const w_Cass_Table_Meta* w_cassandra_iterator_get_table_meta(const w_Cass_Iterator* iterator)
+     const w_cass_table_meta* w_cassandra_iterator_get_table_meta(_In_ const w_cass_iterator* pIterator)
      {
-         if (!iterator)
+         const char* _trace_info = "w_cassandra_iterator_get_table_meta";
+         if (!pIterator)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_iterator_get_table_meta");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
-         return    cass_iterator_get_table_meta(iterator);
+         return    cass_iterator_get_table_meta(pIterator);
 
      }
 
-     const w_Cass_Materialized_View_Meta*  w_cassandra_iterator_get_materialized_view_meta(const w_Cass_Iterator* iterator)
+     const w_cass_materialized_view_meta*  w_cassandra_iterator_get_materialized_view_meta(_In_ const w_cass_iterator* pIterator)
      {
-         if (!iterator)
+         const char* _trace_info = "w_cassandra_iterator_get_materialized_view_meta";
+         if (!pIterator)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_iterator_get_materialized_view_meta");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
-         return cass_iterator_get_materialized_view_meta(iterator);
+         return cass_iterator_get_materialized_view_meta(pIterator);
 
      }
 
 
-     const w_Cass_Data_Type* w_cassandra_iterator_get_user_type(const w_Cass_Iterator* iterator)
+     const w_cass_data_type* w_cassandra_iterator_get_user_type(_In_ const w_cass_iterator* pIterator)
      {
-         if (!iterator)
+         const char* _trace_info = "w_cassandra_iterator_get_user_type";
+         if (!pIterator)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_iterator_get_user_type");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
-         return cass_iterator_get_user_type(iterator);
+         return cass_iterator_get_user_type(pIterator);
      }
 
-     const w_Cass_Function_Meta* w_cassandra_iterator_get_function_meta(const w_Cass_Iterator* iterator)
+     const w_cass_function_meta* w_cassandra_iterator_get_function_meta(_In_ const w_cass_iterator* pIterator)
      {
-         if (!iterator)
+         const char* _trace_info = "w_cassandra_iterator_get_function_meta";
+         if (!pIterator)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_iterator_get_function_meta");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
-         return   cass_iterator_get_function_meta(iterator);
+         return   cass_iterator_get_function_meta(pIterator);
 
      }
 
-     const w_Cass_Aggregate_Meta* w_cassandra_iterator_get_aggregate_meta(const w_Cass_Iterator* iterator)
+     const w_cass_aggregate_meta* w_cassandra_iterator_get_aggregate_meta(_In_ const w_cass_iterator* pIterator)
      {
-         if (!iterator)
+         const char* _trace_info = "w_cassandra_iterator_get_aggregate_meta";
+         if (!pIterator)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_iterator_get_aggregate_meta");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
-         return   cass_iterator_get_aggregate_meta(iterator);
+         return   cass_iterator_get_aggregate_meta(pIterator);
 
      }
 
-     const w_Cass_Column_Meta* w_cassandra_iterator_get_column_meta(const w_Cass_Iterator* iterator)
+     const w_cass_column_meta* w_cassandra_iterator_get_column_meta(_In_ const w_cass_iterator* pIterator)
      {
-         if (!iterator)
+         const char* _trace_info = "w_cassandra_iterator_get_column_meta";
+         if (!pIterator)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_iterator_get_column_meta");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
-         return   cass_iterator_get_column_meta(iterator);
+         return   cass_iterator_get_column_meta(pIterator);
 
      }
 
-     const w_Cass_Index_Meta* w_cassandra_iterator_get_index_meta(const w_Cass_Iterator* iterator)
+     const w_cass_index_meta* w_cassandra_iterator_get_index_meta(_In_ const w_cass_iterator* pIterator)
      {
-         if (!iterator)
+         const char* _trace_info = "w_cassandra_iterator_get_index_meta";
+         if (!pIterator)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_iterator_get_index_meta");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
-         return  cass_iterator_get_index_meta(iterator);
+         return  cass_iterator_get_index_meta(pIterator);
 
      }
 
-     w_Cass_Error w_cassandra_iterator_get_meta_field_name(const w_Cass_Iterator* iterator,const char** name, size_t* name_length)
+     w_Cass_Error w_cassandra_iterator_get_meta_field_name(_In_ const w_cass_iterator* pIterator, _Inout_ const char** pName, _Inout_ size_t* pNameLength)
      {
-         if (!iterator)
+         const char* _trace_info = "w_cassandra_iterator_get_meta_field_name";
+         if (!pIterator || !pName || !pNameLength)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_iterator_get_meta_field_name");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return -1;
          }
 
-         return  cass_iterator_get_meta_field_name(iterator, name, name_length);
+         return  cass_iterator_get_meta_field_name(pIterator, pName, pNameLength);
 
      }
 
-     const w_Cass_Value*   w_cassandra_iterator_get_meta_field_value(const w_Cass_Iterator* iterator)
+     const w_cass_value*   w_cassandra_iterator_get_meta_field_value(_In_ const w_cass_iterator* pIterator)
      {
-         if (!iterator)
+         const char* _trace_info = "w_cassandra_iterator_get_meta_field_value";
+         if (!pIterator)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_iterator_get_meta_field_value");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
-         return  cass_iterator_get_meta_field_value(iterator);
+         return  cass_iterator_get_meta_field_value(pIterator);
 
      }
 
-     const w_Cass_Value*  w_cassandra_row_get_column(const w_Cass_Row* row,size_t index)
+     const w_cass_value*  w_cassandra_row_get_column(_In_ const w_cass_row* pRow, _In_ size_t pIndex)
      {
-         if (!row)
+         const char* _trace_info = "w_cassandra_row_get_column";
+         if (!pRow || !pIndex)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_row_get_column");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
-         return  cass_row_get_column(row, index);
+         return  cass_row_get_column(pRow, pIndex);
 
      }
 
-     const w_Cass_Value* w_cassandra_row_get_column_by_name(const w_Cass_Row* row, const char* name)
+     const w_cass_value* w_cassandra_row_get_column_by_name(_In_ const w_cass_row* pRow, _In_ const char* pName)
      {
-         if (!row || !name )
+         const char* _trace_info = "w_cassandra_row_get_column_by_name";
+         if (!pRow || !pName)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandraandra_row_get_column_by_name");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
-         return   cass_row_get_column_by_name(row, name);
+         return   cass_row_get_column_by_name(pRow, pName);
 
      }
 
-     const w_Cass_Value* w_cassandra_row_get_column_by_name_n(const w_Cass_Row* row, const char* name, size_t name_length)
+     const w_cass_value* w_cassandra_row_get_column_by_name_n(_In_ const w_cass_row* pRow, _In_  const char* pName, _In_ size_t pNameLength)
      {
-         if (!row || !name)
+         const char* _trace_info = "w_cassandra_row_get_column_by_name_n";
+         if (!pRow || !pName || !pNameLength)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_row_get_column_by_name_n");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
-         return  cass_row_get_column_by_name_n(row, name, name_length);
+         return  cass_row_get_column_by_name_n(pRow, pName, pNameLength);
 
      }
 
-     const w_Cass_Data_Type* w_cassandra_value_data_type(const w_Cass_Value* value)
+     const w_cass_data_type* w_cassandra_value_data_type(_In_ const w_cass_value* pValue)
      {
-         if (!value)
+         const char* _trace_info = "w_cassandra_value_data_type";
+         if (!pValue)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_value_data_type");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
-         return   cass_value_data_type(value);
+         return   cass_value_data_type(pValue);
 
      }
 
-     w_Cass_Error  w_cassandra_value_get_int8(const w_Cass_Value* value, int8_t* output)
+     w_Cass_Error  w_cassandra_value_get_int8(_In_ const w_cass_value* pValue, _Inout_ int8_t* pOutput)
      {
-         if (!value)
+         const char* _trace_info = "w_cassandra_value_get_int8";
+         if (!pValue || !pOutput)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_value_get_int8");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return -1;
          }
-         return  cass_value_get_int8(value, output);
+         return  cass_value_get_int8(pValue, pOutput);
 
      }
 
-     w_Cass_Error  w_cassandra_value_get_int16(const w_Cass_Value* value, int16_t* output)
+     w_Cass_Error  w_cassandra_value_get_int16(_In_ const w_cass_value* pValue, _Inout_ int16_t* pOutput)
      {
-         if (!value)
+         const char* _trace_info = "w_cassandra_value_get_int16";
+         if (!pValue || !pOutput)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_value_get_int16");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return -1;
          }
-         return  cass_value_get_int16(value, output);
+         return  cass_value_get_int16(pValue, pOutput);
 
      }
 
-     w_Cass_Error  w_cassandra_value_get_int32(const w_Cass_Value* value, int32_t* output)
+     w_Cass_Error  w_cassandra_value_get_int32(_In_ const w_cass_value* pValue, _Inout_ int32_t* pOutput)
      {
-         if (!value)
+         const char* _trace_info = "w_cassandra_value_get_int32";
+         if (!pValue || !pOutput)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_value_get_int32");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return -1;
          }
-         return  cass_value_get_int32(value, output);
+         return  cass_value_get_int32(pValue, pOutput);
 
      }
 
-     w_Cass_Error w_cassandra_value_get_uint32(const w_Cass_Value* value,  uint32_t* output)
+     w_Cass_Error w_cassandra_value_get_uint32(_In_ const w_cass_value* pValue, _Inout_  uint32_t* pOutput)
      {
-         if (!value)
+         const char* _trace_info = "w_cassandra_value_get_uint32";
+         if (!pValue || !pOutput)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_value_get_uint32");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return -1;
          }
-         return  cass_value_get_uint32(value, output);
+         return  cass_value_get_uint32(pValue, pOutput);
 
      }
 
 
-     w_Cass_Error  w_cassandra_value_get_int64(const w_Cass_Value* value, int64_t* output)
+     w_Cass_Error  w_cassandra_value_get_int64(_In_ const w_cass_value* pValue, _Inout_ int64_t* pOutput)
      {
-         if (!value)
+         const char* _trace_info = "w_cassandra_value_get_int64";
+         if (!pValue || !pOutput)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_value_get_int64");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return -1;
          }
-         return   cass_value_get_int64(value, output);
+         return   cass_value_get_int64(pValue, pOutput);
 
      }
 
 
-     w_Cass_Error w_cassandra_value_get_float(const w_Cass_Value* value,  float* output)
+     w_Cass_Error w_cassandra_value_get_float(_In_ const w_cass_value* pValue, _Inout_  float* pOutput)
      {
-         if (!value)
+         const char* _trace_info = "w_cassandra_value_get_float";
+         if (!pValue || !pOutput)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_value_get_float");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return -1;
          }
-         return   cass_value_get_float(value, output);
+         return   cass_value_get_float(pValue, pOutput);
 
      }
 
-     w_Cass_Error w_cassandra_value_get_double(const w_Cass_Value* value,double* output)
+     w_Cass_Error w_cassandra_value_get_double(_In_ const w_cass_value* pValue, _Inout_ double* pOutput)
      {
-         if (!value)
+         const char* _trace_info = "w_cassandra_value_get_double";
+         if (!pValue || !pOutput)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_value_get_double");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return -1;
          }
-         return  cass_value_get_double(value, output);
+         return  cass_value_get_double(pValue, pOutput);
 
      }
 
-     w_Cass_Error  w_cassandra_value_get_bool(const w_Cass_Value* value, w_bool_t* output)
+     w_Cass_Error  w_cassandra_value_get_bool(_In_ const w_cass_value* pValue, _Inout_ w_bool_t* pOutput)
      {
-         if (!value)
+         const char* _trace_info = "w_cassandra_value_get_bool";
+         if (!pValue )
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_value_get_bool");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return -1;
          }
-         return  cass_value_get_bool(value, output);
+         return  cass_value_get_bool(pValue, pOutput);
 
      }
 
-     w_Cass_Error   w_cassandra_value_get_uuid(const w_Cass_Value* value,  w_CassUuid* output)
+     w_Cass_Error   w_cassandra_value_get_uuid(_In_ const w_cass_value* pValue, _Inout_  w_cass_uuid* pOutput)
      {
-         if (!value || !output)
+         const char* _trace_info = "w_cassandra_value_get_uuid";
+         if (!pValue || !pOutput)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_value_get_uuid");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return -1;
          }
-         return cass_value_get_uuid(value, output);
+         return cass_value_get_uuid(pValue, pOutput);
 
      }
 
-     w_Cass_Error w_cassandra_value_get_inet(const w_Cass_Value* value, w_CassInet* output)
+     w_Cass_Error w_cassandra_value_get_inet(_In_ const w_cass_value* pValue, _Inout_ w_cass_inet* pOutput)
      {
-         if (!value || !output)
+         const char* _trace_info = "w_cassandra_value_get_inet";
+         if (!pValue || !pOutput)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_value_get_inet");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return -1;
          }
-         return  cass_value_get_inet(value, output);
+         return  cass_value_get_inet(pValue, pOutput);
 
      }
 
-     w_Cass_Error  w_cassandra_value_get_string(const w_Cass_Value* value, const char** output, size_t* output_size)
+     w_Cass_Error  w_cassandra_value_get_string(_In_ const w_cass_value* pValue, _Inout_ const char** pOutput, _Inout_ size_t* pOutputSize)
      {
-         if (!value || !output)
+         const char* _trace_info = "w_cassandra_value_get_string";
+         if (!pValue || !pOutput || !pOutputSize)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_value_get_string");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return -1;
          }
-         return   cass_value_get_string(value, output, output_size);
+         return   cass_value_get_string(pValue, pOutput, pOutputSize);
 
      }
 
-     w_Cass_Error w_cassandra_value_get_bytes(const w_Cass_Value* value,const w_byte_t** output, size_t* output_size)
+     w_Cass_Error w_cassandra_value_get_bytes(_In_ const w_cass_value* pValue, _Inout_ const w_byte_t** pOutput, _Inout_ size_t* pOutputSize)
      {
-         if (!value )
+         const char* _trace_info = "w_cassandra_value_get_bytes";
+         if (!pValue || !pOutput || !pOutputSize)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_value_get_bytes");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return -1;
          }
-         return   cass_value_get_bytes(value, output, output_size);
+         return   cass_value_get_bytes(pValue, pOutput, pOutputSize);
 
      }
 
-     w_Cass_Error  w_cassandra_value_get_decimal(const w_Cass_Value* value, const w_byte_t** varint,size_t* varint_size,int32_t* scale)
+     w_Cass_Error  w_cassandra_value_get_decimal(_In_ const w_cass_value* pValue, _Inout_ const w_byte_t** pVarint, _Inout_ size_t* pVarintSize, _Inout_ int32_t* pScale)
      {
-         if (!value)
+         const char* _trace_info = "w_cassandra_value_get_decimal";
+         if (!pValue || !pVarint || !pVarintSize || !pScale)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_value_get_decimal");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return -1;
          }
-         return  cass_value_get_decimal(value, varint, varint_size, scale);
+         return  cass_value_get_decimal(pValue, pVarint, pVarintSize, pScale);
 
      }
 
-     w_Cass_Error  w_cassandra_value_get_duration(const w_Cass_Value* value, int32_t* months, int32_t* days, int64_t* nanos)
+     w_Cass_Error  w_cassandra_value_get_duration(_In_ const w_cass_value* pValue, _Inout_ int32_t* pMonths, _Inout_ int32_t* pDays, _Inout_ int64_t* pNanos)
      {
-         if (!value)
+         const char* _trace_info = "w_cassandra_value_get_duration";
+         if (!pValue || !pMonths || !pDays || !pNanos)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_value_get_duration");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return -1;
          }
-         return  cass_value_get_duration(value, months, days, nanos);
+         return  cass_value_get_duration(pValue, pMonths, pDays, pNanos);
 
      }
 
-     w_Cass_Value_Type w_cassandra_value_type(const w_Cass_Value* value)
+     w_cass_value_type w_cassandra_value_type(_In_ const w_cass_value* pValue)
      {
-         if (!value)
+         const char* _trace_info = "w_cassandra_value_type";
+         if (!pValue)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_value_type");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return -1;
          }
-         return     cass_value_type(value);
+         return     cass_value_type(pValue);
 
      }
 
-     w_bool_t w_cassandra_value_is_null(const w_Cass_Value* value)
+     w_bool_t w_cassandra_value_is_null(_In_ const w_cass_value* pValue)
      {
-         if (!value)
+         const char* _trace_info = "w_cassandra_value_is_null";
+         if (!pValue)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_value_is_null");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return false;
          }
-         return  cass_value_is_null(value);
+         return  cass_value_is_null(pValue);
 
      }
-     w_bool_t w_cassandra_value_is_collection(const w_Cass_Value* value)
+     w_bool_t w_cassandra_value_is_collection(_In_ const w_cass_value* pValue)
      {
-         if (!value)
+         const char* _trace_info = "w_cassandra_value_is_collection";
+         if (!pValue)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_value_is_collection");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return false;
          }
-         return    cass_value_is_collection(value);
+         return    cass_value_is_collection(pValue);
 
      }
-     w_bool_t w_cassandra_value_is_duration(const w_Cass_Value* value)
+     w_bool_t w_cassandra_value_is_duration(_In_ const w_cass_value* pValue)
      {
-         if (!value)
+         const char* _trace_info = "w_cassandra_value_is_duration";
+         if (!pValue)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_value_is_duration");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return false;
          }
-         return  cass_value_is_duration(value);
+         return  cass_value_is_duration(pValue);
 
      }
 
-     size_t  w_cassandra_value_item_count(const w_Cass_Value* collection)
+     size_t  w_cassandra_value_item_count(_In_ const w_cass_value* pCollection)
      {
-         if (!collection)
+         const char* _trace_info = "w_cassandra_value_item_count";
+         if (!pCollection)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_value_item_count");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return -1;
          }
-         return   cass_value_item_count(collection);
+         return   cass_value_item_count(pCollection);
 
      }
 
-     w_Cass_Value_Type  w_cassandra_value_primary_sub_type(const w_Cass_Value* collection)
+     w_cass_value_type  w_cassandra_value_primary_sub_type(_In_ const w_cass_value* pCollection)
      {
-         if (!collection)
+         const char* _trace_info = "w_cassandra_value_primary_sub_type";
+         if (!pCollection)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_value_primary_sub_type");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return -1;
          }
-         return   cass_value_primary_sub_type(collection);
+         return   cass_value_primary_sub_type(pCollection);
 
      }
 
-     w_Cass_Value_Type w_cassandra_value_secondary_sub_type(const w_Cass_Value* collection)
+     w_cass_value_type w_cassandra_value_secondary_sub_type(_In_ const  w_cass_value* pCollection)
      {
-         if (!collection)
+
+         const char* _trace_info = "w_cassandra_value_secondary_sub_type";
+         if (!pCollection)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_value_secondary_sub_type");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return -1;
          }
-            return  cass_value_secondary_sub_type( collection);
+            return  cass_value_secondary_sub_type(pCollection);
      }
 
-     w_Cass_Uuid_Gen*  w_cassandra_uuid_gen_new()
+     w_cass_uuid_gen*  w_cassandra_uuid_gen_new()
      {
          return   cass_uuid_gen_new();
 
      }
 
-     w_Cass_Uuid_Gen* w_cassandra_uuid_gen_new_with_node(uint64_t node)
+     w_cass_uuid_gen* w_cassandra_uuid_gen_new_with_node(_In_ uint64_t pNode)
      {
+         const char* _trace_info = "w_cassandra_uuid_gen_new_with_node";
+         if (!pNode)
+         {
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+             return NULL;
+         }
         
-         return  cass_uuid_gen_new_with_node(node);
+         return  cass_uuid_gen_new_with_node(pNode);
 
      }
 
-     void  w_cassandra_uuid_gen_free(w_Cass_Uuid_Gen* uuid_gen)
+     void  w_cassandra_uuid_gen_free(_In_ w_cass_uuid_gen* pUuiGen)
       {
-         if (!uuid_gen)
+         const char* _trace_info = "w_cassandra_uuid_gen_free";
+         if (!pUuiGen)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_uuid_gen_free");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
          }
-         cass_uuid_gen_free(uuid_gen);
+         cass_uuid_gen_free(pUuiGen);
 
       }
 
-     void w_cassandra_uuid_gen_time(w_Cass_Uuid_Gen* uuid_gen, w_CassUuid* output)
+     void w_cassandra_uuid_gen_time(_In_ w_cass_uuid_gen* pUuiGen, _Inout_ w_cass_uuid * pOutput)
      {
-         if (!uuid_gen || !output)
+         const char* _trace_info = "w_cassandra_uuid_gen_time";
+         if (!pUuiGen || !pOutput)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_uuid_gen_time");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
          }
-           cass_uuid_gen_time(uuid_gen, output);
+           cass_uuid_gen_time(pUuiGen, pOutput);
 
      }
 
-     void  w_cassandra_uuid_gen_random(w_Cass_Uuid_Gen* uuid_gen,  w_CassUuid* output)
+     void  w_cassandra_uuid_gen_random(_In_ w_cass_uuid_gen* pUuiGen, _Inout_  w_cass_uuid* pOutput)
      {
-         if (!uuid_gen || !output)
+         const char* _trace_info = "w_cassandra_uuid_gen_random";
+         if (!pUuiGen || !pOutput)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_uuid_gen_random");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
          }
-         cass_uuid_gen_random(uuid_gen, output);
+         cass_uuid_gen_random(pUuiGen, pOutput);
 
      }
 
-     void  w_cassandra_uuid_min_from_time(uint64_t time, w_CassUuid* output)
+     void  w_cassandra_uuid_gen_from_time(_In_ w_cass_uuid_gen* pUuidGen, _In_ uint64_t pTimeStamp, _Inout_ w_cass_uuid* pOutput)
      {
-         if (!time || !output)
+         const char* _trace_info = "w_cassandra_uuid_gen_from_time";
+         if (!pUuidGen || !pTimeStamp || !pOutput)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_uuid_min_from_time");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
          }
-         cass_uuid_min_from_time(time, output);
+         cass_uuid_gen_from_time(pUuidGen, pTimeStamp, pOutput);
+     }
+
+     void  w_cassandra_uuid_min_from_time(_In_ uint64_t pTime, _Inout_ w_cass_uuid* pOutput)
+     {
+         const char* _trace_info = "w_cassandra_uuid_min_from_time";
+         if (!pTime || !pOutput)
+         {
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+         }
+         cass_uuid_min_from_time(pTime, pOutput);
 
      }
 
-     void w_cassandra_uuid_max_from_time(uint64_t time, w_CassUuid* output)
+     void w_cassandra_uuid_max_from_time(_In_ uint64_t pTime, _Inout_ w_cass_uuid* pOutput)
      {
-         if (!time || !output)
+         const char* _trace_info = "w_cassandra_uuid_max_from_time";
+         if (!pTime || !pOutput)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_uuid_max_from_time");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
          }
-         cass_uuid_max_from_time(time, output);
+         cass_uuid_max_from_time(pTime, pOutput);
 
      }
 
 
-     uint64_t  w_cassandra_uuid_timestamp(w_CassUuid uuid)
+     uint64_t  w_cassandra_uuid_timestamp(_In_ w_cass_uuid pUuid)
      {
          
-         return   cass_uuid_timestamp(uuid);
+         return   cass_uuid_timestamp(pUuid);
 
      }
 
-     uint8_t w_cassandra_uuid_version(w_CassUuid uuid)
+     uint8_t w_cassandra_uuid_version(_In_ w_cass_uuid pUuid)
      {
-       return  cass_uuid_version( uuid);
-     }
 
-     void w_cassandra_uuid_string(w_CassUuid uuid,char* output)
-     {
-         
-
-         cass_uuid_string(uuid, output);
+       return  cass_uuid_version(pUuid);
 
      }
 
-     w_Cass_Error w_cassandra_uuid_from_string(const char* str, w_CassUuid* output)
+     void w_cassandra_uuid_string(_In_ w_cass_uuid pUuid, _Inout_ char* pOutput)
      {
-         if (!str || !output)
+         const char* _trace_info = "w_cassandra_uuid_string";
+         if (!pOutput)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_uuid_from_string");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+            
+         }
+         
+         cass_uuid_string(pUuid, pOutput);
+
+     }
+
+     w_Cass_Error w_cassandra_uuid_from_string(_In_ const char* pStr, _Inout_ w_cass_uuid* pOutput)
+     {
+         const char* _trace_info = "w_cassandra_uuid_from_string";
+         if (!pStr || !pOutput)
+         {
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return -1;
          }
          
-         return cass_uuid_from_string(str, output);
+         return cass_uuid_from_string(pStr, pOutput);
 
      }
 
-     w_Cass_Error w_cassandra_uuid_from_string_n(const char* str, size_t str_length, w_CassUuid* output)
+     w_Cass_Error w_cassandra_uuid_from_string_n(_In_ const char* pStr, _In_ size_t pStrLength, _Inout_ w_cass_uuid* pOutput)
      {
-         if (!str || !output)
+         const char* _trace_info = "w_cassandra_uuid_from_string_n";
+         if (!pStr || !pOutput)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_uuid_from_string_n");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return -1;
          }
-         return   cass_uuid_from_string_n(str, str_length, output);
+         return   cass_uuid_from_string_n(pStr, pStrLength, pOutput);
 
      }
 
-     w_Cass_Time_stamp_Gen*  w_cassandra_timestamp_gen_server_side_new()
+     w_cass_time_stamp_gen*  w_cassandra_timestamp_gen_server_side_new()
      {
          
          return cass_timestamp_gen_server_side_new  ();
      }
 
-     w_Cass_Time_stamp_Gen* w_cassandra_timestamp_gen_monotonic_new()
+     w_cass_time_stamp_gen* w_cassandra_timestamp_gen_monotonic_new()
      {
          return cass_timestamp_gen_monotonic_new();
      }
 
-     w_Cass_Time_stamp_Gen* w_cassandra_timestamp_gen_monotonic_new_with_settings(int64_t warning_threshold_us, int64_t warning_interval_ms)
+     w_cass_time_stamp_gen* w_cassandra_timestamp_gen_monotonic_new_with_settings(_In_ int64_t pWarningThresholdUs, _In_ int64_t pWarningIntervalMs)
      {
-        
-
-         return   cass_timestamp_gen_monotonic_new_with_settings( warning_threshold_us, warning_interval_ms);
-     }
-
-     void w_cassandra_timestamp_gen_free(w_Cass_Time_stamp_Gen* timestamp_gen)
-     {
-         if (!timestamp_gen)
+         const char* _trace_info = "w_cassandra_timestamp_gen_monotonic_new_with_settings";
+         if (!pWarningThresholdUs || !pWarningIntervalMs)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_timestamp_gen_free");
-             
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+             return NULL;
          }
-         cass_timestamp_gen_free(timestamp_gen);
+         return   cass_timestamp_gen_monotonic_new_with_settings(pWarningThresholdUs, pWarningIntervalMs);
+     }
+
+     void w_cassandra_timestamp_gen_free(_In_ w_cass_time_stamp_gen* pTimestampGen)
+     {
+         const char* _trace_info = "w_cassandra_timestamp_gen_free";
+         if (!pTimestampGen)
+         {
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+
+         }
+         cass_timestamp_gen_free(pTimestampGen);
 
      }
 
-     w_Cass_Retry_Policy* w_cassandra_retry_policy_default_new()
+     w_cass_retry_policy * w_cassandra_retry_policy_default_new()
      {
 
        return   cass_retry_policy_default_new();
      }
 
-   /* w_Cass_Retry_Policy*
-         w_cassandra_retry_policy_downgrading_consistency_new()
+    /*deprecated*/
+    w_cass_retry_policy*  w_cassandra_retry_policy_downgrading_consistency_new()
      {
          return cass_retry_policy_downgrading_consistency_new();
          
-     }*/
+     }
 
-     w_Cass_Retry_Policy*  w_cassandra_retry_policy_fallthrough_new()
+     w_cass_retry_policy *  w_cassandra_retry_policy_fallthrough_new()
      {
          return  cass_retry_policy_fallthrough_new();
 
      }
 
-     w_Cass_Retry_Policy* w_cassandra_retry_policy_logging_new(w_Cass_Retry_Policy* child_retry_policy)
+     w_cass_retry_policy * w_cassandra_retry_policy_logging_new(_In_ w_cass_retry_policy* pChildRetryPolicy)
      {
-         if (!child_retry_policy)
+         const char* _trace_info = "w_cassandra_retry_policy_logging_new";
+         if (!pChildRetryPolicy)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_retry_policy_logging_new");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return NULL;
          }
-         return    cass_retry_policy_logging_new( child_retry_policy);
+         return    cass_retry_policy_logging_new(pChildRetryPolicy);
      }
 
-     void  w_cassandra_retry_policy_free(w_Cass_Retry_Policy* policy)
+     void  w_cassandra_retry_policy_free(_In_ w_cass_retry_policy* pPolicy)
      {
-         if (!policy)
+         const char* _trace_info = "w_cassandra_retry_policy_free";
+         if (!pPolicy)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_retry_policy_free");
-           
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
+
          }
-        cass_retry_policy_free(  policy);
+        cass_retry_policy_free(pPolicy);
      }
 
-     w_Cass_Custom_Payload*  w_cassandra_custom_payload_new()
+     w_cass_custom_payload*  w_cassandra_custom_payload_new()
      {
 
          return  cass_custom_payload_new();
 
      }
 
-     void w_cassandra_custom_payload_free(w_Cass_Custom_Payload* payload)
+     void w_cassandra_custom_payload_free(_In_ w_cass_custom_payload* pPayload)
      {
-         if (!payload)
+         const char* _trace_info = "w_cassandra_custom_payload_free";
+         if (!pPayload)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_custom_payload_free");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
 
          }
-         cass_custom_payload_free(payload);
+         cass_custom_payload_free(pPayload);
 
      }
 
-     void  w_cassandra_custom_payload_set(w_Cass_Custom_Payload* payload,  const char* name, const w_byte_t* value, size_t value_size)
+     void  w_cassandra_custom_payload_set(_In_ w_cass_custom_payload* pPayload, _In_  const char* pName, _In_ const w_byte_t* pValue, _In_ size_t pValueSize)
      {
-         if (!payload || !name)
+         const char* _trace_info = "w_cassandra_custom_payload_set";
+         if (!pPayload || !pName || !pValue || !pValueSize)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_custom_payload_set");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
 
          }
-         cass_custom_payload_set(payload, name, value, value_size);
+         cass_custom_payload_set(pPayload, pName, pValue, pValueSize);
 
      }
 
-     void  w_cassandra_custom_payload_set_n(w_Cass_Custom_Payload* payload, const char* name,  size_t name_length, const w_byte_t* value, size_t value_size)
+     void  w_cassandra_custom_payload_set_n(_In_ w_cass_custom_payload* pPayload, _In_ const char* pName, _In_  size_t pNameLength, _In_ const w_byte_t* pValue, _In_ size_t pValueSize)
      {
-         if (!payload || !name)
+         const char* _trace_info = "w_cassandra_custom_payload_set_n";
+         if (!pPayload || !pName ||  !pNameLength || !pValue || !pValueSize)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_custom_payload_set_n");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
 
          }
-         cass_custom_payload_set_n(payload, name, name_length, value, value_size);
+         cass_custom_payload_set_n(pPayload, pName, pNameLength, pValue, pValueSize);
 
      }
 
-     void w_cassandra_custom_payload_remove(w_Cass_Custom_Payload* payload,const char* name)
+     void w_cassandra_custom_payload_remove(_In_ w_cass_custom_payload* pPayload, _In_ const char* pName)
      {
-         if (!payload || !name)
+         const char* _trace_info = "w_cassandra_custom_payload_remove";
+         if (!pPayload || !pName)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_custom_payload_remove");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
 
          }
-             cass_custom_payload_remove( payload,  name);
+             cass_custom_payload_remove(pPayload, pName);
 
      }
 
-     void  w_cassandra_custom_payload_remove_n(w_Cass_Custom_Payload* payload, const char* name,size_t name_length)
+     void  w_cassandra_custom_payload_remove_n(_In_ w_cass_custom_payload* pPayload, _In_ const char* pName, _In_ size_t pNameLength)
      {
-         if (!payload || !name)
+         const char* _trace_info = "w_cassandra_custom_payload_remove_n";
+         if (!pPayload || !pName || !pNameLength)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_custom_payload_remove_n");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
 
          }
-         cass_custom_payload_remove_n(payload, name, name_length);
+         cass_custom_payload_remove_n(pPayload, pName, pNameLength);
 
      }
 
-     const char*  w_cassandraandra_consistency_string(W_Cass_Consistency consistency)
+     const char*  w_cassandra_consistency_string(_In_ w_cass_consistency pConsistency)
      {
          
-         return cass_consistency_string(consistency);
+         return cass_consistency_string(pConsistency);
 
      }
 
-     const char*  w_cassandra_write_type_string(w_Cass_WriteType write_type)
+     const char*  w_cassandra_write_type_string(_In_ w_cass_writetype pWriteType)
      {
-         return  cass_write_type_string(write_type);
+         return  cass_write_type_string(pWriteType);
 
      }
 
-     const char* w_cassandra_error_desc(w_Cass_Error error)
+     const char* w_cassandra_error_desc(_In_ w_Cass_Error error)
      {
          
              return cass_error_desc( error);
      }
-     /*void
-         w_cassandra_log_cleanup()
+
+     /*deprecated*/
+     void  w_cassandra_log_cleanup()
      {
          cass_log_cleanup();
-     }*/
+     }
 
-     void w_cassandra_log_set_level(w_Cass_Log_Level log_level)
+     void w_cassandra_log_set_level(_In_ w_cass_log_level pLogLevel)
      {
-         cass_log_set_level( log_level);
+         cass_log_set_level(pLogLevel);
      }
 
 
-     void w_cassandra_log_set_callback(w_Cass_Log_Callback callback, void* data)
+     void w_cassandra_log_set_callback(_In_ w_cass_log_callback callback, _In_  void* data)
      {
             cass_log_set_callback((CassLogCallback)callback, data);
      }
 
-    /* void
-         w_cassandra_log_set_queue_size(size_t queue_size)
+     /*deprecated*/
+     void   w_cassandra_log_set_queue_size(size_t queue_size)
      {
          cass_log_set_queue_size( queue_size);
-     }*/
+     }
 
-     const char* w_cassandra_log_level_string(w_Cass_Log_Level log_level)
+     const char* w_cassandra_log_level_string(_In_ w_cass_log_level pLogLevel)
      {
 
-      return cass_log_level_string( log_level);
+      return cass_log_level_string(pLogLevel);
 
      }
 
-     w_CassInet  w_cassandra_inet_init_v4(const uint8_t* address)
+     w_cass_inet  w_cassandra_inet_init_v4(_In_ const uint8_t* pAddress)
      {
-         if (!address)
+         const char* _trace_info = "w_cassandra_inet_init_v4";
+         if (!pAddress)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_inet_init_v4");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return;
          }
-         return  cass_inet_init_v4(  address);
+         return  cass_inet_init_v4(pAddress);
      }
-    
-     w_CassInet  w_cassandra_inet_init_v6(const uint8_t* address)
+
+     w_cass_inet  w_cassandra_inet_init_v6(_In_ const uint8_t* pAddress)
      {
-         if (!address)
+         const char* _trace_info = "w_cassandra_inet_init_v6";
+         if (!pAddress)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_inet_init_v6");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return;
          }
-         return    cass_inet_init_v6(address);
+         return    cass_inet_init_v6(pAddress);
 
      }
 
-     void w_cassandra_inet_string(w_CassInet inet, char* output)
+     void w_cassandra_inet_string(_In_ w_cass_inet pInet, _Inout_ char* pOutput)
      {
-         if (!output)
+         const char* _trace_info = "w_cassandra_inet_string";
+         if (!pOutput )
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_inet_string");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
          }
-             cass_inet_string( inet,output);
+             cass_inet_string(pInet, pOutput);
      }
 
 
-     w_Cass_Error  w_cassandra_inet_from_string(const char* str,w_CassInet* output)
+     w_Cass_Error  w_cassandra_inet_from_string(_In_ const char* pStr, _Inout_ w_cass_inet* pOutput)
      {
-         if (!str || !output)
+         const char* _trace_info = "w_cassandra_inet_from_string";
+         if (!pStr || !pOutput)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_inet_from_string");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return  -1;
          }
-         return  cass_inet_from_string (str, output);
+         return  cass_inet_from_string (pStr, pOutput);
 
      }
 
-     w_Cass_Error  w_cassandra_inet_from_string_n(const char* str, size_t str_length, w_CassInet* output)
+     w_Cass_Error  w_cassandra_inet_from_string_n(_In_ const char* pStr, _In_  size_t pStrLength, _Inout_  w_cass_inet* pOutput)
      {
-         if (!str || !output)
+         const char* _trace_info = "w_cassandra_inet_from_string_n";
+         if (!pStr || !pStrLength || !pOutput)
          {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_inet_from_string_n");
+             W_ASSERT_P(false, "bad args! trace info:%s", _trace_info);
              return  -1;
          }
-         return   cass_inet_from_string_n(str, str_length, output);
+         return   cass_inet_from_string_n(pStr, pStrLength, pOutput);
 
      }
 
-     uint32_t  w_cassandra_date_from_epoch(int64_t epoch_secs)
+     uint32_t  w_cassandra_date_from_epoch(_In_ int64_t pEpochSecs)
      {
-         if (!epoch_secs)
-         {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_date_from_epoch");
-             return  0;
-         }
-         return    cass_date_from_epoch(epoch_secs);
+         
+         return    cass_date_from_epoch(pEpochSecs);
 
      }
 
-     int64_t  w_cassandra_time_from_epoch(int64_t epoch_secs)
+     int64_t  w_cassandra_time_from_epoch(_In_ int64_t pEpochSecs)
      {
-         if (!epoch_secs)
-         {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_time_from_epoch");
-             return  -1;
-         }
-         return    cass_time_from_epoch(epoch_secs);
+         
+         return    cass_time_from_epoch(pEpochSecs);
 
      }
 
 
-     int64_t  w_cassandra_date_time_to_epoch(uint32_t date, int64_t time)
+     int64_t  w_cassandra_date_time_to_epoch(_In_ uint32_t pDate, _In_ int64_t pTime)
      {
-         if (!date || !time)
-         {
-             W_ASSERT(false, "missing parameters!. trace info: w_cassandra_date_time_to_epoch");
-             return  -1;
-         }
-         return cass_date_time_to_epoch( date, time);
+         
+         return cass_date_time_to_epoch(pDate, pTime);
      }
 
-     void  w_cassandra_alloc_set_functions(CassMallocFunction malloc_func, CassReallocFunction realloc_func,CassFreeFunction free_func)
+     void  w_cassandra_alloc_set_functions(_In_ w_cass_malloc_function pMallocFunc, _In_  w_cass_realloc_function RpeallocFunc, _In_ w_cass_free_function pFreeFunc)
      {
-         cass_alloc_set_functions(malloc_func, realloc_func, free_func);
+         cass_alloc_set_functions(pMallocFunc, RpeallocFunc, pFreeFunc);
 
      }
 
