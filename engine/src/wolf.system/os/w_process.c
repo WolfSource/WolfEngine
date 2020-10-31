@@ -8,12 +8,16 @@
 #include <psapi.h>//list all processes
 #endif
 
-#if defined (W_PLATFORM_OSX) || defined (W_PLATFORM_IOS)
+#if defined (W_PLATFORM_OSX) || defined (W_PLATFORM_IOS) || defined(W_PLATFORM_LINUX)
 #define MAX_PATH        206
 #endif
 #if defined (W_PLATFORM_OSX) && !defined (W_PLATFORM_IOS)
 #include <sys/proc_info.h>
 #include <libproc.h>
+#endif
+
+#ifdef W_PLATFORM_LINUX
+#include <sys/dir.h>
 #endif
 
 size_t w_process_get_count_of_instances(_In_z_ const wchar_t* pProcessName)
@@ -43,7 +47,8 @@ size_t w_process_get_count_of_instances(_In_z_ const wchar_t* pProcessName)
 
 #elif defined W_PLATFORM_OSX && !defined (W_PLATFORM_IOS)
 	pid_t pids[2048];
-	wchar_t* _input_name, _compare_name[256];
+	wchar_t* _input_name;
+	wchar_t _compare_name[256];
     _input_name = (wchar_t*)pProcessName;
 	size_t size = 0;
 
@@ -59,7 +64,7 @@ size_t w_process_get_count_of_instances(_In_z_ const wchar_t* pProcessName)
 			size = strlen(proc.pbi_name);
 			if (size > 0)
 			{
-				mbstowcs(&_compare_name[0], proc.pbi_name, size);
+				mbstowcs(_compare_name[0], proc.pbi_name, size);
 			}
 
 			if (!wcscmp(_input_name, _compare_name))
@@ -75,13 +80,14 @@ size_t w_process_get_count_of_instances(_In_z_ const wchar_t* pProcessName)
 	struct dirent* ent;
 	char* endptr;
 	char buf[512];
-	std::wstring _input_name, _compare_name;
-	_input_name = std::wstring(name);
+	wchar_t* _input_name;
+	wchar_t _compare_name[256];
+    _input_name = (wchar_t*)pProcessName;
 	size_t size = 0;
 
 	if (!(dir = opendir("/proc"))) {
 		perror("can't open /proc");
-		return num;
+		return -1;
 	}
 
 	while ((ent = readdir(dir)) != NULL)
@@ -105,20 +111,26 @@ size_t w_process_get_count_of_instances(_In_z_ const wchar_t* pProcessName)
 				/* check the first token in the file, the program name */
 				char* first = strtok(buf, " ");
 
-				size = std::strlen(buf);
+				size = strlen(buf);
 				if (size > 0)
 				{
-					_compare_name.resize(size);
-					std::mbstowcs(&_compare_name[0], buf, size);
+					mbstowcs(_compare_name[0], buf, size);
 				}
 
-
-				auto _tmp = std::string(buf);
-				auto pos = _compare_name.find_last_of('/');
-				std::wstring _file = _compare_name;
-				if (pos != std::wstring::npos)
-					_file = _compare_name.substr(pos + 1);
-				if (!wcscmp((const wchar_t*)_file.data(), (const wchar_t*)_input_name.data()))
+				size_t pos = -1;
+				// Search for last of '/'
+                for (int i = size - 1; i >= 0 ; i--)
+                {
+                    if(_compare_name[i] == '/')
+                    {
+                        pos = i;
+                        break;
+                    }
+                }
+				wchar_t * _file = _compare_name;
+				if (pos != -1)
+					_file = _compare_name[pos + 1];
+				if (!wcscmp(_file, _input_name))
 				{
 					_instances++;
 				}

@@ -1083,7 +1083,7 @@
 					"$(SRCROOT)/../../../deps/tls/lib/osx/debug",
 					"$(SRCROOT)/../../../deps/openSSL/lib/osx/",
 					"$(SRCROOT)/../../../deps/curl/lib/osx",
-					"$(SRCROOT)/../../../deps/ssh/lib/osx/debug",
+					"$(SRCROOT)/../../../deps/ssh2/lib/osx/debug",
 					"$(SRCROOT)/../../../deps/libjpeg-turbo/lib/osx/debug",
 					"$(SRCROOT)/../../../deps/libpng/lib/osx",
 					"$(SRCROOT)/../../../deps/quiche/lib/osx",

@@ -31,7 +31,7 @@
 #include <curl/curl.h>
 #endif
 
-#if defined (W_PLATFORM_OSX) || defined (W_PLATFORM_IOS)
+#if defined (W_PLATFORM_OSX) || defined (W_PLATFORM_IOS) || defined(W_PLATFORM_LINUX)
 #define SOCKET_ERROR    (-1)
 #include <netdb.h>
 #include <sys/fcntl.h>
