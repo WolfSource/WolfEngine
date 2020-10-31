@@ -52,6 +52,10 @@ extern "C" {
 #define W_BAD_ARG 70013//Same as APR_BADARG
 #endif
 
+#ifdef W_PLATFORM_LINUX
+#include <linux/types.h>
+#endif
+
     typedef
 #ifdef W_PLATFORM_WIN
         __int64
@@ -59,7 +63,8 @@ extern "C" {
         __darwin_off_t
 #elif defined W_PLATFORM_ANDROID
         __kernel_off_t
-#else
+#elif defined W_PLATFORM_LINUX
+        __kernel_off_t
 #endif
         w_offset;
 
