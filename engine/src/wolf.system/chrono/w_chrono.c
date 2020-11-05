@@ -75,32 +75,41 @@ int clock_gettime(int pX, struct timespec* pTV)
 	return 0;
 }
 
-
 #endif
 
-w_timespec w_chrono_now(void)
+w_timespec_t w_chrono_now(void)
 {
-	w_timespec _time;
-	clock_gettime(CLOCK_MONOTONIC, &_time);
+	struct timespec _t;
+	clock_gettime(CLOCK_MONOTONIC, &_t);
+
+	w_timespec_t _time;
+	_time.tv_sec = _t.tv_sec;
+	_time.tv_nsec = _t.tv_nsec;
+
 	return _time;
 }
 
-w_timespec w_chrono_clock_now(_In_ int pClockType)
+w_timespec_t w_chrono_clock_now(_In_ int pClockType)
 {
-	w_timespec _time;
-	clock_gettime(pClockType, &_time);
+	struct timespec _t;
+	clock_gettime(pClockType, &_t);
+
+	w_timespec_t _time;
+	_time.tv_sec = _t.tv_sec;
+	_time.tv_nsec = _t.tv_nsec;
+
 	return _time;
 }
 
-w_timespec w_chrono_duration(
-	_In_ const w_timespec* pT1,
-	_In_ const w_timespec* pT2)
+w_timespec_t w_chrono_duration(
+	_In_ const w_timespec pT1,
+	_In_ const w_timespec pT2)
 {
-	w_timespec _diff;
+	w_timespec_t _diff;
 	if (!pT1 || !pT2)
 	{
-		_diff.tv_sec = -1;
-		_diff.tv_nsec = -1;
+		_diff.tv_sec = 0;
+		_diff.tv_nsec = 0;
 	}
 	else
 	{
@@ -139,58 +148,58 @@ w_timespec w_chrono_duration(
 
 double w_chrono_now_in_sec(void)
 {
-	struct timespec _now = w_chrono_now();
+	w_timespec_t _now = w_chrono_now();
 	return (double)_now.tv_sec + (double)_now.tv_nsec / 1000000000.0;
 }
 
-double w_chrono_timespec_to_sec(_In_ const w_timespec* pT)
+double w_chrono_timespec_to_sec(_In_ const w_timespec pT)
 {
 	return (double)pT->tv_sec + (double)pT->tv_nsec / 1000000000.0;
 }
 
-double w_chrono_timespec_to_milisec(_In_ const w_timespec* pT)
+double w_chrono_timespec_to_milisec(_In_ const w_timespec pT)
 {
 	return (double)pT->tv_sec * 1000.0 + (double)pT->tv_nsec / 1000000.0;
 }
 
-double w_chrono_timespec_to_microsec(_In_ const w_timespec* pT)
+double w_chrono_timespec_to_microsec(_In_ const w_timespec pT)
 {
 	return (double)pT->tv_sec * 1000000.0 + (double)pT->tv_nsec / 1000.0;
 }
 
-double w_chrono_timespec_to_nanosec(_In_ const w_timespec* pT)
+double w_chrono_timespec_to_nanosec(_In_ const w_timespec pT)
 {
 	return (double)pT->tv_sec * 1000000000.0 + (double)pT->tv_nsec;
 }
 
 double w_chrono_duration_nanoseconds(
-	_In_ const w_timespec* pT1,
-	_In_ const w_timespec* pT2)
+	_In_ const w_timespec pT1,
+	_In_ const w_timespec pT2)
 {
-	w_timespec _diff = w_chrono_duration(pT1, pT2);
+	w_timespec_t _diff = w_chrono_duration(pT1, pT2);
 	return (double)(_diff.tv_sec * 1e+9 + _diff.tv_nsec);
 }
 
 double w_chrono_duration_microseconds(
-	_In_ const w_timespec* pT1,
-	_In_ const w_timespec* pT2)
+	_In_ const w_timespec pT1,
+	_In_ const w_timespec pT2)
 {
-	w_timespec _diff = w_chrono_duration(pT1, pT2);
+	w_timespec_t _diff = w_chrono_duration(pT1, pT2);
 	return (double)_diff.tv_sec * 1e+6 + (double)(_diff.tv_nsec * 1e-3);
 }
 
 double w_chrono_duration_milliseconds(
-	_In_ const w_timespec* pT1,
-	_In_ const w_timespec* pT2)
+	_In_ const w_timespec pT1,
+	_In_ const w_timespec pT2)
 {
-	w_timespec _diff = w_chrono_duration(pT1, pT2);
+	w_timespec_t _diff = w_chrono_duration(pT1, pT2);
 	return (double)_diff.tv_sec * 1e+3 + (double)(_diff.tv_nsec * 1e-6);
 }
 
 double w_chrono_duration_seconds(
-	_In_ const w_timespec* pT1,
-	_In_ const w_timespec* pT2)
+	_In_ const w_timespec pT1,
+	_In_ const w_timespec pT2)
 {
-	w_timespec _diff = w_chrono_duration(pT1, pT2);
+	w_timespec_t _diff = w_chrono_duration(pT1, pT2);
 	return (double)_diff.tv_sec + (double)(_diff.tv_nsec * 1e-9);
 }
