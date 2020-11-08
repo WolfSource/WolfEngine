@@ -25,9 +25,6 @@
     <Filter Include="concurrency">
       <UniqueIdentifier>{17266b99-b132-42dd-a3c1-e5cbab67f8c8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="concurrency\libev">
-      <UniqueIdentifier>{46522bbe-48fc-4069-b7fb-180c3ba1d354}</UniqueIdentifier>
-    </Filter>
     <Filter Include="fiber">
       <UniqueIdentifier>{c78a0e20-3790-4ae7-8796-14d7bdc86863}</UniqueIdentifier>
     </Filter>
@@ -82,21 +79,6 @@
     <Filter Include="net">
       <UniqueIdentifier>{a20f5909-cfb2-4b6b-b880-e4afe65198ef}</UniqueIdentifier>
     </Filter>
-    <Filter Include="memory">
-      <UniqueIdentifier>{32d0e330-0fb9-4df2-a4c6-01de252119f2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="memory\hash">
-      <UniqueIdentifier>{e288fa0c-cad1-4a9e-bacb-1afb1bc356f1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="db">
-      <UniqueIdentifier>{1fe3bea0-4249-41ab-a778-47be753d4990}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="memory\buckets">
-      <UniqueIdentifier>{009e75f3-76f0-4c3b-89fe-75803839ea0a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="net\amq">
-      <UniqueIdentifier>{19fa1bed-1b08-4a15-aa4f-26c5ac0e951d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="net\ws">
       <UniqueIdentifier>{ac25c196-ab9a-4719-bdee-4d915f789171}</UniqueIdentifier>
     </Filter>
@@ -123,6 +105,21 @@
     </Filter>
     <Filter Include="net\ws\uWebSockets\f2">
       <UniqueIdentifier>{54612a69-6dda-4333-ac28-f41ee00ad79c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="memory">
+      <UniqueIdentifier>{32d0e330-0fb9-4df2-a4c6-01de252119f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="memory\hash">
+      <UniqueIdentifier>{e288fa0c-cad1-4a9e-bacb-1afb1bc356f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="db">
+      <UniqueIdentifier>{1fe3bea0-4249-41ab-a778-47be753d4990}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="memory\buckets">
+      <UniqueIdentifier>{009e75f3-76f0-4c3b-89fe-75803839ea0a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="concurrency\libev">
+      <UniqueIdentifier>{35120c0f-e239-4455-ade4-37c4a3258858}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -304,12 +301,6 @@
     <ClCompile Include="..\..\..\src\wolf.system\compression\lzma\XzIn.c">
       <Filter>compression\lzma</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\concurrency\libev\ev.c">
-      <Filter>concurrency\libev</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\concurrency\libev\event.c">
-      <Filter>concurrency\libev</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\wolf.system\xml\expat\xmlparse.c">
       <Filter>xml\expat</Filter>
     </ClCompile>
@@ -364,9 +355,6 @@
     <ClCompile Include="..\..\..\src\wolf.system\compression\w_compress.c">
       <Filter>compression</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\concurrency\w_async.c">
-      <Filter>concurrency</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\wolf.system\concurrency\w_condition_variable.c">
       <Filter>concurrency</Filter>
     </ClCompile>
@@ -374,9 +362,6 @@
       <Filter>concurrency</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\wolf.system\concurrency\w_thread.c">
-      <Filter>concurrency</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\concurrency\w_timer.c">
       <Filter>concurrency</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\wolf.system\io\w_io.c">
@@ -505,14 +490,20 @@
     <ClCompile Include="..\..\..\src\wolf.system\memory\buckets\apr_reslist.c">
       <Filter>memory\buckets</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\net\amq\amq_consumer.cpp">
-      <Filter>net\amq</Filter>
+    <ClCompile Include="..\..\..\src\wolf.system\concurrency\w_sigslot.c">
+      <Filter>concurrency</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\net\amq\amq_producer.cpp">
-      <Filter>net\amq</Filter>
+    <ClCompile Include="..\..\..\src\wolf.system\concurrency\libev\ev.c">
+      <Filter>concurrency\libev</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\net\w_amq.cpp">
-      <Filter>net</Filter>
+    <ClCompile Include="..\..\..\src\wolf.system\concurrency\libev\event.c">
+      <Filter>concurrency\libev</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\concurrency\w_async.c">
+      <Filter>concurrency</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\concurrency\w_timer.c">
+      <Filter>concurrency</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -666,15 +657,6 @@
     </ClInclude>
     <ClInclude Include="..\..\..\src\wolf.system\compression\lzma\XzEnc.h">
       <Filter>compression\lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\concurrency\libev\ev.h">
-      <Filter>concurrency\libev</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\concurrency\libev\ev_vars.h">
-      <Filter>concurrency\libev</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\concurrency\libev\event.h">
-      <Filter>concurrency\libev</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\wolf.system\os\cr.h">
       <Filter>os</Filter>
@@ -976,9 +958,6 @@
     <ClInclude Include="..\..\..\src\wolf.system\compression\w_compress.h">
       <Filter>compression</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\concurrency\w_async.h">
-      <Filter>concurrency</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\wolf.system\concurrency\w_condition_variable.h">
       <Filter>concurrency</Filter>
     </ClInclude>
@@ -986,9 +965,6 @@
       <Filter>concurrency</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\wolf.system\concurrency\w_thread.h">
-      <Filter>concurrency</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\concurrency\w_timer.h">
       <Filter>concurrency</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\wolf.system\io\w_io.h">
@@ -1063,7 +1039,6 @@
     <ClInclude Include="..\..\..\src\wolf.system\concurrency\w_atomic.h">
       <Filter>concurrency</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\memory\buckets\apu.h" />
     <ClInclude Include="..\..\..\src\wolf.system\memory\w_string.h">
       <Filter>memory</Filter>
     </ClInclude>
@@ -1073,17 +1048,29 @@
     <ClInclude Include="..\..\..\src\wolf.system\memory\buckets\apr_reslist.h">
       <Filter>memory\buckets</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\net\amq\amq_config.h">
-      <Filter>net\amq</Filter>
+    <ClInclude Include="..\..\..\src\wolf.system\concurrency\w_sigslot.h">
+      <Filter>concurrency</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\net\amq\amq_consumer.h">
-      <Filter>net\amq</Filter>
+    <ClInclude Include="..\..\..\src\wolf.system\concurrency\libev\ev.h">
+      <Filter>concurrency\libev</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\net\amq\amq_producer.h">
-      <Filter>net\amq</Filter>
+    <ClInclude Include="..\..\..\src\wolf.system\concurrency\libev\ev_vars.h">
+      <Filter>concurrency\libev</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\net\w_amq.h">
-      <Filter>net</Filter>
+    <ClInclude Include="..\..\..\src\wolf.system\concurrency\libev\ev_wrap.h">
+      <Filter>concurrency\libev</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\concurrency\libev\ev++.h">
+      <Filter>concurrency\libev</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\concurrency\libev\event.h">
+      <Filter>concurrency\libev</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\concurrency\w_async.h">
+      <Filter>concurrency</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\concurrency\w_timer.h">
+      <Filter>concurrency</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1104,9 +1091,6 @@
     <Text Include="..\..\..\src\wolf.system\base64\version.txt">
       <Filter>base64</Filter>
     </Text>
-    <Text Include="..\..\..\src\wolf.system\concurrency\libev\version.txt">
-      <Filter>concurrency\libev</Filter>
-    </Text>
     <Text Include="..\..\..\src\wolf.system\xml\expat\version.txt">
       <Filter>xml\expat</Filter>
     </Text>
@@ -1121,6 +1105,9 @@
     </Text>
     <Text Include="..\..\..\src\wolf.system\json\rapidjson\version.txt">
       <Filter>json\rapidjson</Filter>
+    </Text>
+    <Text Include="..\..\..\src\wolf.system\concurrency\libev\version.txt">
+      <Filter>concurrency\libev</Filter>
     </Text>
   </ItemGroup>
   <ItemGroup>

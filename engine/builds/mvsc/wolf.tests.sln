@@ -21,10 +21,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test.tcp-udp.server.win", "
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test.tcp-udp.client.win", "tests\w_net\tcp-udp\test.tcp-udp.client.win.vcxproj", "{F76F798F-390E-4259-8FDD-6A76B496D643}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_activemq_producer", "test_activemq_producer\test_activemq_producer.vcxproj", "{0A02D742-272A-4963-B3D3-D6D9E2AC9122}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_activemq_consumer", "test_activemq_consumer\test_activemq_consumer.vcxproj", "{BD5A0151-65AE-4E97-A043-1C7EDC4F74A7}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM = Debug|ARM
@@ -97,30 +93,6 @@ Global
 		{F76F798F-390E-4259-8FDD-6A76B496D643}.Release|x64.Build.0 = Release|x64
 		{F76F798F-390E-4259-8FDD-6A76B496D643}.Release|x86.ActiveCfg = Release|Win32
 		{F76F798F-390E-4259-8FDD-6A76B496D643}.Release|x86.Build.0 = Release|Win32
-		{0A02D742-272A-4963-B3D3-D6D9E2AC9122}.Debug|ARM.ActiveCfg = Debug|Win32
-		{0A02D742-272A-4963-B3D3-D6D9E2AC9122}.Debug|ARM64.ActiveCfg = Debug|Win32
-		{0A02D742-272A-4963-B3D3-D6D9E2AC9122}.Debug|x64.ActiveCfg = Debug|x64
-		{0A02D742-272A-4963-B3D3-D6D9E2AC9122}.Debug|x64.Build.0 = Debug|x64
-		{0A02D742-272A-4963-B3D3-D6D9E2AC9122}.Debug|x86.ActiveCfg = Debug|Win32
-		{0A02D742-272A-4963-B3D3-D6D9E2AC9122}.Debug|x86.Build.0 = Debug|Win32
-		{0A02D742-272A-4963-B3D3-D6D9E2AC9122}.Release|ARM.ActiveCfg = Release|Win32
-		{0A02D742-272A-4963-B3D3-D6D9E2AC9122}.Release|ARM64.ActiveCfg = Release|Win32
-		{0A02D742-272A-4963-B3D3-D6D9E2AC9122}.Release|x64.ActiveCfg = Release|x64
-		{0A02D742-272A-4963-B3D3-D6D9E2AC9122}.Release|x64.Build.0 = Release|x64
-		{0A02D742-272A-4963-B3D3-D6D9E2AC9122}.Release|x86.ActiveCfg = Release|Win32
-		{0A02D742-272A-4963-B3D3-D6D9E2AC9122}.Release|x86.Build.0 = Release|Win32
-		{BD5A0151-65AE-4E97-A043-1C7EDC4F74A7}.Debug|ARM.ActiveCfg = Debug|Win32
-		{BD5A0151-65AE-4E97-A043-1C7EDC4F74A7}.Debug|ARM64.ActiveCfg = Debug|Win32
-		{BD5A0151-65AE-4E97-A043-1C7EDC4F74A7}.Debug|x64.ActiveCfg = Debug|x64
-		{BD5A0151-65AE-4E97-A043-1C7EDC4F74A7}.Debug|x64.Build.0 = Debug|x64
-		{BD5A0151-65AE-4E97-A043-1C7EDC4F74A7}.Debug|x86.ActiveCfg = Debug|Win32
-		{BD5A0151-65AE-4E97-A043-1C7EDC4F74A7}.Debug|x86.Build.0 = Debug|Win32
-		{BD5A0151-65AE-4E97-A043-1C7EDC4F74A7}.Release|ARM.ActiveCfg = Release|Win32
-		{BD5A0151-65AE-4E97-A043-1C7EDC4F74A7}.Release|ARM64.ActiveCfg = Release|Win32
-		{BD5A0151-65AE-4E97-A043-1C7EDC4F74A7}.Release|x64.ActiveCfg = Release|x64
-		{BD5A0151-65AE-4E97-A043-1C7EDC4F74A7}.Release|x64.Build.0 = Release|x64
-		{BD5A0151-65AE-4E97-A043-1C7EDC4F74A7}.Release|x86.ActiveCfg = Release|Win32
-		{BD5A0151-65AE-4E97-A043-1C7EDC4F74A7}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -134,8 +106,6 @@ Global
 		{BFE6DF2F-4A64-49EB-B34A-A8EFAB9CBB4A} = {4092C134-C22A-4916-86C3-2FF315902485}
 		{CD7A05DA-4262-4ED8-9A9D-F7DC085162C3} = {BFE6DF2F-4A64-49EB-B34A-A8EFAB9CBB4A}
 		{F76F798F-390E-4259-8FDD-6A76B496D643} = {BFE6DF2F-4A64-49EB-B34A-A8EFAB9CBB4A}
-		{0A02D742-272A-4963-B3D3-D6D9E2AC9122} = {E578A05D-8BC9-4F04-A626-078C76310464}
-		{BD5A0151-65AE-4E97-A043-1C7EDC4F74A7} = {E578A05D-8BC9-4F04-A626-078C76310464}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D2D663FD-0C14-45E3-AD03-AD80210A9B26}
