@@ -7,6 +7,12 @@
 
 # 2.0.0.0
 A major release, rewrite most of wolf.system with pure C
+ - Build for Win64
+ - Build for OSX
+ - Build for iOS
+ - Build for Android-armv7
+ - Build for Linux64
+
 
 # 1.68.0.9 (2018-10-03)
 A minor release with many compatibility-breaking changes.
