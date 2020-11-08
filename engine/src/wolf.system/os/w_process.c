@@ -335,6 +335,8 @@ W_RESULT w_process_create(
 	_In_ DWORD pCreationFlags,
 	_Inout_opt_ w_process_info* pProcessInfo)
 {
+	*pProcessInfo = NULL;
+
 	W_RESULT _ret = W_FAILURE;
 	if (!pPathToProcess)
 	{
@@ -401,17 +403,13 @@ W_RESULT w_process_create(
 	{
 		WaitForSingleObject(_process_info->hProcess, pWaitAfterRunningProcess);
 
-		*pProcessInfo = (w_process_info)w_malloc(pMemPool, sizeof(w_process_info_t));
-		if (*pProcessInfo)
+		if (!*pProcessInfo)
 		{
-			(*pProcessInfo)->info = _process_info;
-			(*pProcessInfo)->error_code = GetLastError();
-			_ret = W_SUCCESS;
+			*pProcessInfo = (w_process_info)w_malloc(pMemPool, sizeof(w_process_info_t));
 		}
-	}
-	else
-	{
-		pProcessInfo = NULL;
+		(*pProcessInfo)->info = _process_info;
+		(*pProcessInfo)->error_code = GetLastError();
+		_ret = W_SUCCESS;
 	}
 
 	if (_arg_pool)
