@@ -36,6 +36,8 @@
 !/engine/deps/ffmpeg.zip.003
 !/engine/deps/ffmpeg.zip.004
 !/engine/deps/ffmpeg.zip.005
+!/engine/deps/quiche.zip.001
+!/engine/deps/quiche.zip.002
 
 # Compiled Object files
 *.slo

@@ -28,8 +28,27 @@
 #include <malloc.h>
 
 //wolf
+#include <SDL.h>
+
+#if defined (W_PLATFORM_ANDROID)
+#undef SDL_VIDEO_DRIVER_WINDOWS
+#undef SDL_VIDEO_DRIVER_WINRT
+#undef SDL_VIDEO_DRIVER_X11
+#undef SDL_VIDEO_DRIVER_DIRECTFB
+#undef SDL_VIDEO_DRIVER_UIKIT
+#undef SDL_VIDEO_DRIVER_COCOA
+#define SDL_VIDEO_DRIVER_ANDROID
+#endif
+
 #include <wolf.h>
 #include <concurrency/w_thread.h>
+#include <SDL_syswm.h>
+#include <w_stream.h>
+#include <log/w_log.h>
+#include <io/w_io.h>
+#include <chrono>
+#include <string>
+#include <thread>
 
 #define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "WOLF", __VA_ARGS__))
 #define LOGW(...) ((void)__android_log_print(ANDROID_LOG_WARN, "WOLF", __VA_ARGS__))
@@ -280,6 +299,128 @@ void android_main(struct android_app* state)
 
 	engine.animating = 1;
 
+	w_config_t _config;
+	std::thread _thread;
+
+	const char* _endpoint = "stream.playpod.ir";
+	const char* _token = "16ad0690d5dd40dd9fe12aa0f8b4926c";
+	const char* _rtsp_protocol = "tcp";
+
+	size_t _size = strlen(_endpoint);
+	memcpy(_config.endpoint, _endpoint, _size);
+	_config.endpoint[_size] = '\0';
+
+	_size = strlen(_token);
+	memcpy(_config.token, _token, _size);
+	_config.token[_size] = '\0';
+
+	_size = strlen(_rtsp_protocol);
+	memcpy(_config.rtsp_protocol, _rtsp_protocol, _size);
+	_config.rtsp_protocol[_size] = '\0';
+
+	_config.rtsp_port = 1001;
+	_config.tcp_port = 1002;
+	_config.quic_port = -1;
+	_config.width = 1280;
+	_config.height = 720;
+	_config.fps = 60;
+	_config.gpu_vsync = 1;
+	_config.stream_resolution = 1;
+	_config.mouse = 0;
+
+	SDL_Window* _window = NULL;
+	char* _app_name = NULL;
+	char buffer[4096];
+
+	_app_name = w_strcat(
+		_mem_pool,
+		"wolf.streamer.client.test v.",
+		WOLF_STREAMER_MAJOR_VERSION,
+		".",
+		WOLF_STREAMER_MINOR_VERSION,
+		".",
+		WOLF_STREAMER_PATCH_VERSION,
+		".",
+		WOLF_STREAMER_DEBUG_VERSION,
+		NULL);
+
+	//create a wolf logger
+	w_log_config _log_config;
+	_log_config.app_name = _app_name;
+	_log_config.log_to_std_out = false;
+	_log_config.flush_level = w_log_type::W_LOG_INFO;
+	w_io_dir_get_current(_mem_pool, &_log_config.log_dir_path);
+	if (w_log_init(_mem_pool, &_log_config) == -1)
+	{
+		goto exit;
+	}
+
+	// Initialize SDL2
+	_ret = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER | SDL_INIT_AUDIO);
+	if (_ret != W_SUCCESS)
+	{
+		LOG_P(W_LOG_ERROR, "could not initialize SDL: %s", SDL_GetError());
+		goto exit;
+	}
+
+	// Create an application window with the following settings
+	_window = SDL_CreateWindow(
+		"wolf streamer",                   // window title
+		SDL_WINDOWPOS_UNDEFINED,           // initial x position
+		SDL_WINDOWPOS_UNDEFINED,           // initial y position
+		_config.width,                    // width, in pixels
+		_config.height,                   // height, in pixels
+		SDL_WINDOW_ALLOW_HIGHDPI           // flags - see below
+	);
+	if (_window == NULL)
+	{
+		// In the case that the window could not be made...
+		LOG_P(W_LOG_ERROR, "could not create window: %s", SDL_GetError());
+		goto exit;
+	}
+
+	SDL_SysWMinfo _window_info;
+	SDL_version _sdl_ver;
+	SDL_VERSION(&_sdl_ver);
+	_window_info.version = _sdl_ver;
+	SDL_GetWindowWMInfo(_window, &_window_info);
+
+	if (w_stream_init(
+#ifdef W_PLATFORM_WIN
+	(void*)_window_info.info.win.window,
+#elif defined W_PLATFORM_ANDROID
+	(void*)_window_info.info.android.window,
+#endif
+		& _config) == W_SUCCESS)
+	{
+		_ret = w_stream_get_log(buffer);
+		w_stream_on_event_callback* _callback = NULL;
+		w_stream_start(&_config, _callback);
+
+		//_thread = std::thread([&]()
+		//    {
+		//        //start stream after two seconds
+		//        std::this_thread::sleep_for(std::chrono::seconds(2));
+		//        w_stream_start(&_config, _callback);
+		//        _ret = w_stream_get_log(buffer);
+		//        std::this_thread::sleep_for(std::chrono::seconds(40));
+		//        w_stream_stop();
+		//        std::this_thread::sleep_for(std::chrono::seconds(2));
+		//        if (w_stream_fini() != W_SUCCESS)
+		//        {
+		//            LOG(W_LOG_ERROR, "request for releasing stream failed");
+		//        }
+		//    });
+		if (w_stream_run(_callback) != W_SUCCESS)
+		{
+			LOG(W_LOG_ERROR, "could not run stream successfully");
+		}
+	}
+	else
+	{
+		LOG(W_LOG_ERROR, "could not initialize stream");
+	}
+
 	// loop waiting for stuff to do.
 
 	while (1) 
@@ -336,5 +477,16 @@ void android_main(struct android_app* state)
 			engine_draw_frame(&engine);
 		}
 	}
+	
+exit:
+	_thread.join();
+
+	//clear up
+	if (_window)
+	{
+		SDL_DestroyWindow(_window);
+	}
 	wolf_fini();
+
+	return;
 }
