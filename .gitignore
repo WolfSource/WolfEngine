@@ -24,8 +24,6 @@
 !/engine/deps/*.zip
 !/engine/deps/vulkan.zip.001
 !/engine/deps/vulkan.zip.002
-!/engine/deps/ffmpeg.zip.001
-!/engine/deps/ffmpeg.zip.002
 
 # Compiled Object files
 *.slo
