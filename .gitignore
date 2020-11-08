@@ -19,11 +19,23 @@
 /bin/linux/
 /docs/extra/
 /samples/.vs/*
+/engine/src/wolf.system/*idea/*
+/engine/src/wolf.system/*vscode/*
 /engine/builds/mvsc/.vs/*
+/engine/builds/mvsc/wolf.system/x64/*
+/engine/builds/mvsc/wolf.android/wolf.android.NativeActivity/ARM/*
+/engine/builds/mvsc/wolf.android/wolf.android.NativeActivity/ARM64/*
+/engine/builds/mvsc/wolf.android/wolf.android.Packaging/ARM/*
+/engine/builds/mvsc/wolf.android/wolf.android.Packaging/ARM64/*
 /engine/deps/*
 !/engine/deps/*.zip
 !/engine/deps/vulkan.zip.001
 !/engine/deps/vulkan.zip.002
+!/engine/deps/ffmpeg.zip.001
+!/engine/deps/ffmpeg.zip.002
+!/engine/deps/ffmpeg.zip.003
+!/engine/deps/ffmpeg.zip.004
+!/engine/deps/ffmpeg.zip.005
 
 # Compiled Object files
 *.slo
