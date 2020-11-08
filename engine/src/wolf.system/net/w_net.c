@@ -7,7 +7,10 @@
 #include <apr-1/apr_general.h>
 #include <apr-1/apr_network_io.h>
 
+#ifndef  W_PLATFORM_ANDROID
 #include <quiche.h>
+#endif // ! W_PLATFORM_ANDROID
+
 #include <io/w_io.h>
 #include <log/w_log.h>
 #include <memory/hash/uthash.h>
@@ -22,19 +25,17 @@
 #include <inttypes.h>
 
 #else
-
 #include <arpa/inet.h>
-
 #endif
 
-#ifndef W_PLATFORM_IOS
+#if !defined(W_PLATFORM_IOS) && !defined(W_PLATFORM_ANDROID)
 #include <curl/curl.h>
 #endif
 
-#if defined (W_PLATFORM_OSX) || defined (W_PLATFORM_IOS) || defined(W_PLATFORM_LINUX)
-#define SOCKET_ERROR    (-1)
-#include <netdb.h>
-#include <sys/fcntl.h>
+#if defined(W_PLATFORM_OSX) || defined(W_PLATFORM_IOS) || defined(W_PLATFORM_LINUX) || defined(W_PLATFORM_ANDROID)
+    #define SOCKET_ERROR    (-1)
+    #include <netdb.h>
+    #include <sys/fcntl.h>
 #endif
 
 #pragma endregion
@@ -65,7 +66,9 @@ struct quic_connection
 #endif
         socket;//socket
     struct conn_io* connection_io;//connection io
+#ifndef  W_PLATFORM_ANDROID
     quiche_config* config;//config
+#endif
 };
 
 struct conn_io
@@ -78,7 +81,9 @@ struct conn_io
 #endif
         socket;//socket
     uint8_t                         connection_id[QUICHE_LOCAL_CONN_ID_LEN];//connection id
+#ifndef  W_PLATFORM_ANDROID
     quiche_conn* connection;//quiche connection
+#endif
     quic_stream_callback_fn         on_sending_stream_callback_fn;
     quic_stream_callback_fn         on_receiving_stream_callback_fn;
     struct sockaddr_storage         peer_addr;//peer address
@@ -148,10 +153,11 @@ W_RESULT w_net_socket_open(
     int _family;
     apr_socket_t* _s = NULL;
     apr_sockaddr_t* _sa;
+    apr_status_t _ret = W_FAILURE;
     apr_pool_t* _mem_pool = (apr_pool_t*)w_mem_pool_get_apr_pool(pMemPool);
     if (!_mem_pool)
     {
-        return W_FAILURE;
+        return _ret;
     }
 
     bool _is_listener = (
@@ -178,7 +184,7 @@ W_RESULT w_net_socket_open(
     {
         _family = APR_INET6;
     }
-    apr_status_t _ret = apr_sockaddr_info_get(
+    _ret = apr_sockaddr_info_get(
         &_sa, 
         pHostName,
         _family,
@@ -384,7 +390,7 @@ W_RESULT w_net_socket_receive(
     }
 
     apr_size_t _len = _l;
-    apr_status_t _ret = apr_socket_recv(pSocket, pBuffer->data, &_len);
+    apr_status_t _ret = apr_socket_recv(pSocket, (char*)pBuffer->data, &_len);
     pBuffer->len = _len;
     if (_ret == APR_EOF || _len == 0) 
     {
@@ -457,6 +463,7 @@ static void s_quiche_flush(
     const char* _trace_info = "w_net::s_quiche_flush";
 
     static uint8_t _out[QUICHE_MAX_DATAGRAM_SIZE];
+#ifndef  W_PLATFORM_ANDROID
     while (1)
     {
         ssize_t _written = quiche_conn_send(
@@ -514,6 +521,7 @@ static void s_quiche_flush(
     double t = quiche_conn_timeout_as_nanos(conn_io->connection) / 1e9f;
     conn_io->timer.repeat = t;
     ev_timer_again(loop, &conn_io->timer);
+#endif
 }
 
 static void s_quiche_create_conn_timeout_callback(EV_P_ ev_timer* w, int pRevents)
@@ -523,7 +531,7 @@ static void s_quiche_create_conn_timeout_callback(EV_P_ ev_timer* w, int pRevent
     {
         return;
     }
-
+#ifndef  W_PLATFORM_ANDROID
     quiche_conn_on_timeout(_conn_io->connection);
     //fprintf(stderr, "timeout\n");
     s_quiche_flush(loop, _conn_io, W_SOCKET_PROTOCOL_QUIC_LISTENER);
@@ -544,10 +552,12 @@ static void s_quiche_create_conn_timeout_callback(EV_P_ ev_timer* w, int pRevent
 
         return;
     }
+#endif
 }
 
 static void s_quiche_dialler_timeout_callback(EV_P_ ev_timer* w, int revents)
 {
+#ifndef  W_PLATFORM_ANDROID
     struct conn_io* tmp = (struct conn_io*)w->data;
     quiche_conn_on_timeout(tmp->connection);
 
@@ -567,6 +577,7 @@ static void s_quiche_dialler_timeout_callback(EV_P_ ev_timer* w, int revents)
         ev_break(EV_A_ EVBREAK_ONE);
         return;
     }
+#endif
 }
 
 static void s_quiche_mint_token(
@@ -624,7 +635,7 @@ static struct conn_io* s_quiche_create_connection(
     }
 
     memcpy(conn_io->connection_id, dcid, QUICHE_LOCAL_CONN_ID_LEN);
-
+#ifndef  W_PLATFORM_ANDROID
     quiche_conn* conn = quiche_accept(
         conn_io->connection_id,
         QUICHE_LOCAL_CONN_ID_LEN,
@@ -646,7 +657,7 @@ static struct conn_io* s_quiche_create_connection(
         QUICHE_LOCAL_CONN_ID_LEN, conn_io);
 
     fprintf(stderr, "new connection\n");
-
+#endif
     return conn_io;
 }
 
@@ -659,7 +670,7 @@ static void s_quiche_listener_callback(EV_P_ ev_io* pIO, int pRevents)
     struct conn_io* _tmp, * _conn_io = NULL;
     static uint8_t buf[QUICHE_MAX_BUFFER_SIZE];
     static uint8_t out[QUICHE_MAX_DATAGRAM_SIZE];
-
+#ifndef  W_PLATFORM_ANDROID
     while (1)
     {
         struct sockaddr_storage peer_addr;
@@ -912,18 +923,19 @@ static void s_quiche_listener_callback(EV_P_ ev_io* pIO, int pRevents)
             free(_conn_io);
         }
     }
+#endif // ! W_PLATFORM_ANDROID
 }
 
 static void s_quiche_dialer_callback(EV_P_ ev_io* pIO, int pRevents)
 {
     const char* _trace_info = "s_quiche_dialer_callback";
-
+#ifndef  W_PLATFORM_ANDROID
     if (!pIO)
     {
         W_ASSERT_P(false, "pIO in NULL. trace info: %s", _trace_info);
         return;
     }
-    struct conn_io* _conn_io = pIO->data;
+    struct conn_io* _conn_io = (struct conn_io*)pIO->data;
     if (!_conn_io)
     {
         W_ASSERT_P(false, "missing conn_io. trace info: %s", _trace_info);
@@ -1016,10 +1028,12 @@ static void s_quiche_dialer_callback(EV_P_ ev_io* pIO, int pRevents)
         quiche_stream_iter_free(_readable);
     }
     s_quiche_flush(loop, _conn_io, W_SOCKET_PROTOCOL_QUIC_DIALER);
+#endif
 }
 
 void w_free_s_quic_conns()
 {
+#ifndef  W_PLATFORM_ANDROID
     if (s_quic_conns)
     {
         s_quic_conns->config = NULL;
@@ -1030,6 +1044,7 @@ void w_free_s_quic_conns()
         }
         //free(s_quic_conns);
     }
+#endif
 }
 
 W_RESULT w_net_quic_open(
@@ -1043,7 +1058,10 @@ W_RESULT w_net_quic_open(
     _In_opt_    quic_stream_callback_fn pQuicSendingStreamCallback)
 {
     const char* _trace_info = "w_net_open_quic_socket";
-    if (pProtocol != W_SOCKET_PROTOCOL_QUIC_DIALER && pProtocol != W_SOCKET_PROTOCOL_QUIC_LISTENER)
+
+#ifndef W_PLATFORM_ANDROID
+    if (pProtocol != W_SOCKET_PROTOCOL_QUIC_DIALER && 
+        pProtocol != W_SOCKET_PROTOCOL_QUIC_LISTENER)
     {
         W_ASSERT_P(false,
             "pSocketMode must be one of the following enums: quic_dialer or quic_listener. trace info: %s",
@@ -1072,7 +1090,7 @@ W_RESULT w_net_quic_open(
     };
 
     //convert integer port to string
-    char* _port = malloc(6);//max port number is 65329
+    char* _port = (char*)malloc(6);//max port number is 65329
     if (!_port)
     {
         return W_FAILURE;
@@ -1439,6 +1457,7 @@ W_RESULT w_net_quic_close()
         0);
 
     return _ret < 0 ? W_FAILURE : W_SUCCESS;
+#endif
 }
 
 size_t w_net_quic_send(_In_ uint8_t* pConnectionID,
@@ -1446,6 +1465,7 @@ size_t w_net_quic_send(_In_ uint8_t* pConnectionID,
     _In_ w_buffer pBuffer,
     _In_ bool pFinish)
 {
+#ifndef  W_PLATFORM_ANDROID
     //get quich connection based on pConnectionID
     if (!s_quic_conns || !s_quic_conns->connection_io)
     {
@@ -1462,6 +1482,7 @@ size_t w_net_quic_send(_In_ uint8_t* pConnectionID,
         pBuffer->data,
         pBuffer->len,
         pFinish);
+#endif
 }
 
 size_t w_net_quic_receive(
@@ -1470,6 +1491,7 @@ size_t w_net_quic_receive(
     _Inout_ w_buffer pReceiveBuffer,
     _Inout_ bool* pIsStreamFinished)
 {
+#ifndef  W_PLATFORM_ANDROID
     //get quich connection based on pConnectionID
     if (!s_quic_conns || !s_quic_conns->connection_io || !pReceiveBuffer)
     {
@@ -1487,6 +1509,7 @@ size_t w_net_quic_receive(
         pReceiveBuffer->data,
         pReceiveBuffer->len,
         pIsStreamFinished);
+#endif
 }
 
 #pragma endregion
@@ -1505,7 +1528,8 @@ const char* w_net_url_encoded(
     }
     char* _encoded = NULL;
 
-#ifndef W_PLATFORM_IOS
+#if !defined(W_PLATFORM_IOS) && !defined(W_PLATFORM_ANDROID)
+
     CURL* _curl = curl_easy_init();
     if (!_curl)
     {
@@ -1591,7 +1615,7 @@ W_RESULT w_net_http_send(
         W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
         return APR_BADARG;
     }
-#ifndef W_PLATFORM_IOS
+#if !defined(W_PLATFORM_IOS) && !defined(W_PLATFORM_ANDROID)
     CURLcode _rt;
     curl_memory* _curl_mem = NULL;
     //create handle
@@ -1692,7 +1716,7 @@ _out:
 
 const char* w_net_curl_get_last_error(_In_ W_RESULT pErrorCode)
 {
-#ifndef W_PLATFORM_IOS
+#if !defined(W_PLATFORM_IOS) && !defined(W_PLATFORM_ANDROID)
     return curl_easy_strerror(pErrorCode);
 #else
     return NULL;
