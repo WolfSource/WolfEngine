@@ -21,9 +21,9 @@ extern "C" {
     typedef struct cws* ws;
 
     typedef void(*ws_on_listened_fn)(int /*pPort*/);
-    typedef void(*ws_on_opened_fn)(void);
-    typedef const char* (*ws_on_message_fn)(const char* /*pMessage*/, int* /*pOpCode*/);
-    typedef void(*ws_on_closed_fn)(const char* /*pMessage*/, int /*pCloseCode*/);
+    typedef bool(*ws_on_opened_fn)(void** /*pUserData*/);
+    typedef const char* (*ws_on_message_fn)(const char* /*pMessage*/, int* /*pOpCode*/, void** /*pUserData*/);
+    typedef void(*ws_on_closed_fn)(const char* /*pMessage*/, int /*pCloseCode*/, void** /*pUserData*/);
 
     /**
      * create a websocket object

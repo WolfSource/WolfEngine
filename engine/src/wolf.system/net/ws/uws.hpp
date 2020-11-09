@@ -34,8 +34,8 @@ class uws
              const int pIdleTimeout,
              const int pMaxBackPressure,
              std::function<void(int)> pOnListened,
-             std::function<void(void)> pOnOpened,
-             std::function<const char*(const char*, int*)> pOnMessage,
-             std::function<void(const char*, int)> pOnClosed);
+             std::function<bool(void**)> pOnOpened,
+             std::function<const char*(const char*, int*, void**)> pOnMessage,
+             std::function<void(const char*, int, void**)> pOnClosed);
 };
 

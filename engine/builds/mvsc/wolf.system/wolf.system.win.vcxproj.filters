@@ -121,6 +121,9 @@
     <Filter Include="concurrency\libev">
       <UniqueIdentifier>{35120c0f-e239-4455-ade4-37c4a3258858}</UniqueIdentifier>
     </Filter>
+    <Filter Include="net\amq">
+      <UniqueIdentifier>{9d59c485-6e8e-4083-8ced-523a4ec28a5d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\src\wolf.system\base64\chromiumbase64.c">

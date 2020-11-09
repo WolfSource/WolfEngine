@@ -43,8 +43,8 @@ void w_net_send_producer( char * pMessage, int _priority)
 
 void* w_thread_job_my_2(w_thread arg1, void* pargs)
 {
-   
-    
+
+
     w_call_amq _usercallback = (w_call_amq)pargs;
     _consumer.on_message_received = [_usercallback](const std::string pMessage) -> void
     {
@@ -52,13 +52,9 @@ void* w_thread_job_my_2(w_thread arg1, void* pargs)
     };
     _consumer.run();
 
-   while(w_net_consumer_fini)
-   {
-        w_thread_current_sleep_for_milliseconds(50);
+    w_thread_current_sleep_for_milliseconds(50);
 
-   }
     return NULL;
-
 }
 
 
@@ -147,7 +143,7 @@ int w_amq_fini(_Inout_ w_mem_pool pMemPool)
     return W_SUCCESS;
 }
 
- void w_net_consumer_fini()
+void w_net_consumer_fini()
 {
      _consumer.close();
 }

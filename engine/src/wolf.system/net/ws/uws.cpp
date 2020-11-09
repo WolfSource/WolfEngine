@@ -20,9 +20,9 @@ int uws::run(const bool pSSL,
               const int pIdleTimeout,
               const int pMaxBackPressure,
               std::function<void(int)> pOnListened,
-              std::function<void(void)> pOnOpened,
-              std::function<const char*(const char*, int*)> pOnMessage,
-              std::function<void(const char*, int)> pOnClosed)
+              std::function<bool(void**)> pOnOpened,
+              std::function<const char*(const char*, int*, void**)> pOnMessage,
+              std::function<void(const char*, int, void**)> pOnClosed)
 {
     if(pSSL)
     {
@@ -51,11 +51,25 @@ int uws::run(const bool pSSL,
             /* Handlers */
             .open = [&](auto* pWS)
             {
-                pOnOpened();
+                //get per socket data
+                void* _ptr = NULL;
+                auto _ret = pOnOpened(&_ptr);
+                if (_ret)
+                {
+                    //ok
+                    auto _per_socket_data = (per_ws_data*)pWS->getUserData();
+                    _per_socket_data->d = _ptr;
+                }
+                else
+                {
+                    //close websocket
+                    pWS->close();
+                }
             },
             .message = [&](auto* pWS, std::string_view pMessage, uWS::OpCode pOpCode)
             {
-                auto _res = pOnMessage(pMessage.data(), (int*)&pOpCode);
+                auto _per_socket_data = (per_ws_data*)pWS->getUserData();
+                auto _res = pOnMessage(pMessage.data(), (int*)&pOpCode, &_per_socket_data->d);
                 if (_res == NULL)
                 {
                     //close websocket
@@ -80,8 +94,8 @@ int uws::run(const bool pSSL,
             },
             .close = [&](auto* pWS, int pExitCode, std::string_view pMessage)
             {
-                pOnClosed(pMessage.data(), pExitCode);
-                /* You may access ws->getUserData() here */
+                auto _per_socket_data = (per_ws_data*)pWS->getUserData();
+                pOnClosed(pMessage.data(), pExitCode, &_per_socket_data->d);
             }
         }).listen(pPort, [&](auto* pToken)
         {
@@ -106,11 +120,17 @@ int uws::run(const bool pSSL,
             /* Handlers */
             .open = [&](auto* pWS)
             {
-                pOnOpened();
+                //get per socket data
+                void* _ptr = NULL;
+                pOnOpened(&_ptr);
+
+                auto _per_socket_data = (per_ws_data*)pWS->getUserData();
+                _per_socket_data->d = _ptr;
             },
             .message = [&](auto* pWS, std::string_view pMessage, uWS::OpCode pOpCode)
             {
-                auto _res = pOnMessage(pMessage.data(), (int*)&pOpCode);
+                auto _per_socket_data = (per_ws_data*)pWS->getUserData();
+                auto _res = pOnMessage(pMessage.data(), (int*)&pOpCode, &_per_socket_data->d);
                 if (_res == NULL)
                 {
                     //close websocket
@@ -135,7 +155,8 @@ int uws::run(const bool pSSL,
             },
             .close = [&](auto* pWS, int pExitCode, std::string_view pMessage)
             {
-                pOnClosed(pMessage.data(), pExitCode);
+                auto _per_socket_data = (per_ws_data*)pWS->getUserData();
+                pOnClosed(pMessage.data(), pExitCode, &_per_socket_data->d);
             }
         }).listen(pPort, [&](auto* pToken)
         {
