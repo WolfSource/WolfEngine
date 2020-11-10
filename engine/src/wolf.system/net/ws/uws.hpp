@@ -11,31 +11,27 @@
 
 #include <functional>
 #include "uWebSockets/App.h"
-
-struct per_ws_data
-{
-    void* d;
-};
+#include <wolf.h>
 
 class uws
 {
-  public:
+public:
     explicit uws(void);
     ~uws(void);
-    
+
     int run(const bool pSSL,
-             const char* pCertFilePath,
-             const char* pPrivateKeyFilePath,
-             const char* pPassPhrase,
-             const char* pRoot,
-             const int pPort,
-             uWS::CompressOptions pCompression,
-             const int pMaxPayloadLength,
-             const int pIdleTimeout,
-             const int pMaxBackPressure,
-             std::function<void(int)> pOnListened,
-             std::function<bool(void**)> pOnOpened,
-             std::function<const char*(const char*, int*, void**)> pOnMessage,
-             std::function<void(const char*, int, void**)> pOnClosed);
+        const char* pCertFilePath,
+        const char* pPrivateKeyFilePath,
+        const char* pPassPhrase,
+        const char* pRoot,
+        const int pPort,
+        uWS::CompressOptions pCompression,
+        const int pMaxPayloadLength,
+        const int pIdleTimeout,
+        const int pMaxBackPressure,
+        std::function<void(int)> pOnListened,
+        std::function<bool(w_arg*)> pOnOpened,
+        std::function<const char* (const char*, size_t, int*, w_arg*)> pOnMessage,
+        std::function<void(const char*, size_t, int, w_arg*)> pOnClosed);
 };
 

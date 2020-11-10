@@ -543,10 +543,6 @@ w_file_istream w_io_file_read_nbytes_from_path(
                 _pool);
             if (_ret != APR_SUCCESS)
             {
-                W_ASSERT_P(false,
-                    "could not open file: %s. trace info: %s",
-                    pPath,
-                    _trace_info);
                 return NULL;
             }
 

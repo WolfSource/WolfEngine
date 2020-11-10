@@ -20,9 +20,9 @@ int uws::run(const bool pSSL,
               const int pIdleTimeout,
               const int pMaxBackPressure,
               std::function<void(int)> pOnListened,
-              std::function<bool(void**)> pOnOpened,
-              std::function<const char*(const char*, int*, void**)> pOnMessage,
-              std::function<void(const char*, int, void**)> pOnClosed)
+              std::function<bool(w_arg*)> pOnOpened,
+              std::function<const char*(const char*, size_t, int*, w_arg*)> pOnMessage,
+              std::function<void(const char*, size_t, int, w_arg*)> pOnClosed)
 {
     if(pSSL)
     {
@@ -41,7 +41,7 @@ int uws::run(const bool pSSL,
             .cert_file_name = pCertFilePath,
             .passphrase = pPassPhrase,
             .ssl_prefer_low_memory_usage = 1
-        }).ws<per_ws_data>(pRoot,
+        }).ws<w_arg*>(pRoot,
         {
             /* Settings */
             .compression = pCompression,
@@ -52,13 +52,13 @@ int uws::run(const bool pSSL,
             .open = [&](auto* pWS)
             {
                 //get per socket data
-                void* _ptr = NULL;
+                w_arg _ptr = NULL;
                 auto _ret = pOnOpened(&_ptr);
                 if (_ret)
                 {
                     //ok
-                    auto _per_socket_data = (per_ws_data*)pWS->getUserData();
-                    _per_socket_data->d = _ptr;
+                    auto _per_socket_data = (w_arg*)pWS->getUserData();
+                    *_per_socket_data = _ptr;
                 }
                 else
                 {
@@ -68,8 +68,8 @@ int uws::run(const bool pSSL,
             },
             .message = [&](auto* pWS, std::string_view pMessage, uWS::OpCode pOpCode)
             {
-                auto _per_socket_data = (per_ws_data*)pWS->getUserData();
-                auto _res = pOnMessage(pMessage.data(), (int*)&pOpCode, &_per_socket_data->d);
+                auto _per_socket_data = (w_arg*)pWS->getUserData();
+                auto _res = pOnMessage(pMessage.data(), pMessage.size(), (int*)&pOpCode, _per_socket_data);
                 if (_res == NULL)
                 {
                     //close websocket
@@ -94,8 +94,8 @@ int uws::run(const bool pSSL,
             },
             .close = [&](auto* pWS, int pExitCode, std::string_view pMessage)
             {
-                auto _per_socket_data = (per_ws_data*)pWS->getUserData();
-                pOnClosed(pMessage.data(), pExitCode, &_per_socket_data->d);
+                auto _per_socket_data = (w_arg*)pWS->getUserData();
+                pOnClosed(pMessage.data(), pMessage.size(), pExitCode, _per_socket_data);
             }
         }).listen(pPort, [&](auto* pToken)
         {
@@ -110,7 +110,7 @@ int uws::run(const bool pSSL,
         uWS::App(
         {
             .passphrase = pPassPhrase
-        }).ws<per_ws_data>(pRoot,
+        }).ws<w_arg*>(pRoot,
         {
             /* Settings */
             .compression = pCompression,
@@ -121,16 +121,15 @@ int uws::run(const bool pSSL,
             .open = [&](auto* pWS)
             {
                 //get per socket data
-                void* _ptr = NULL;
+                w_arg _ptr = NULL;
                 pOnOpened(&_ptr);
-
-                auto _per_socket_data = (per_ws_data*)pWS->getUserData();
-                _per_socket_data->d = _ptr;
+                auto _per_socket_data = (w_arg*)pWS->getUserData();
+                *_per_socket_data = _ptr;
             },
             .message = [&](auto* pWS, std::string_view pMessage, uWS::OpCode pOpCode)
             {
-                auto _per_socket_data = (per_ws_data*)pWS->getUserData();
-                auto _res = pOnMessage(pMessage.data(), (int*)&pOpCode, &_per_socket_data->d);
+                auto _per_socket_data = (w_arg*)pWS->getUserData();
+                auto _res = pOnMessage(pMessage.data(), pMessage.size(), (int*)&pOpCode, _per_socket_data);
                 if (_res == NULL)
                 {
                     //close websocket
@@ -155,8 +154,8 @@ int uws::run(const bool pSSL,
             },
             .close = [&](auto* pWS, int pExitCode, std::string_view pMessage)
             {
-                auto _per_socket_data = (per_ws_data*)pWS->getUserData();
-                pOnClosed(pMessage.data(), pExitCode, &_per_socket_data->d);
+                auto _per_socket_data = (w_arg*)pWS->getUserData();
+                pOnClosed(pMessage.data(), pMessage.size(), pExitCode, _per_socket_data);
             }
         }).listen(pPort, [&](auto* pToken)
         {
