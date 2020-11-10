@@ -11,29 +11,41 @@
 
 #if defined(_WIN32) || defined(_WIN64)
 
+#ifndef W_PLATFORM_WIN
     #define W_PLATFORM_WIN
+#endif
 
 #elif defined(__APPLE__)
 
+#ifndef W_PLATFORM_OSX
     #define W_PLATFORM_OSX
+#endif
 
 #elif defined(__IOS__)
 
+#ifndef W_PLATFORM_IOS
     #define W_PLATFORM_IOS
+#endif
 
 #elif defined(__ANDROID_API__)
 
+#ifndef W_PLATFORM_ANDROID
     #define W_PLATFORM_ANDROID
+#endif
 
 #elif defined(__linux) || defined(__linux__)
 
+#ifndef W_PLATFORM_LINUX
     #define W_PLATFORM_LINUX
+#endif
 
 #endif
 
 #if defined(W_PLATFORM_OSX) || defined(W_PLATFORM_IOS) || defined(W_PLATFORM_LINUX) || defined(W_PLATFORM_ANDROID)
 
+#ifndef W_PLATFORM_UNIX
     #define W_PLATFORM_UNIX
+#endif
 
 #endif
 

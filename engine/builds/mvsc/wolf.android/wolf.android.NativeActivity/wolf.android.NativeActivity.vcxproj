@@ -48,39 +48,31 @@
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>Clang_5_0</PlatformToolset>
-    <ThumbMode>Thumb</ThumbMode>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>Clang_5_0</PlatformToolset>
-    <ThumbMode>Thumb</ThumbMode>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>Clang_5_0</PlatformToolset>
-    <AndroidAPILevel>android-21</AndroidAPILevel>
-    <ThumbMode>Thumb</ThumbMode>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>Clang_5_0</PlatformToolset>
-    <AndroidAPILevel>android-21</AndroidAPILevel>
-    <ThumbMode>Thumb</ThumbMode>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>Clang_5_0</PlatformToolset>
-    <ThumbMode>Thumb</ThumbMode>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>Clang_5_0</PlatformToolset>
-    <ThumbMode>Thumb</ThumbMode>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -124,58 +116,32 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
-    <OutDir>$(SolutionDir)/../../../bin/android/$(Platform)/$(Configuration)/</OutDir>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
-    <OutDir>$(SolutionDir)/../../../bin/android/$(Platform)/$(Configuration)/</OutDir>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
-    <OutDir>$(SolutionDir)/../../../bin/android/$(Platform)/$(Configuration)/</OutDir>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
-    <OutDir>$(SolutionDir)/../../../bin/android/$(Platform)/$(Configuration)/</OutDir>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>$(SolutionDir)/../../../bin/android/$(Platform)/$(Configuration)/</OutDir>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>$(SolutionDir)/../../../bin/android/$(Platform)/$(Configuration)/</OutDir>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
-    <OutDir>$(SolutionDir)/../../../bin/android/$(Platform)/$(Configuration)/</OutDir>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
-    <OutDir>$(SolutionDir)/../../../bin/android/$(Platform)/$(Configuration)/</OutDir>
-  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'" />
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <ClCompile>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <CompileAs>CompileAsCpp</CompileAs>
-      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../deps/expat/include;$(SolutionDir)/../../deps/expat/include/config/android;$(SolutionDir)/../../deps/apr/include;$(SolutionDir)/../../deps/apr/include/apr-1/apr/android;$(SolutionDir)/../../src/wolf.system/compression/msgpack;$(SolutionDir)/../../src/wolf.system/log;$(SolutionDir)/../../src/wolf.system/net;E:\github\PooyaEimandar\stream\deps\SDL\include;E:\github\PooyaEimandar\stream\src\client;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>EV_STANDALONE;SPDLOG_COMPILED_LIB;W_PLATFORM_ANDROID;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ExceptionHandling>Enabled</ExceptionHandling>
     </ClCompile>
     <Link>
       <LibraryDependencies>%(LibraryDependencies);GLESv1_CM;EGL;</LibraryDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)/../../deps/expat/lib/android/armeabi-v7a/debug;$(SolutionDir)/../../deps/apr/lib/android/armeabi-v7a/debug/lib;$(SolutionDir)/../../deps/ffmpeg/lib/android/ARM/debug;E:\github\PooyaEimandar\stream\deps\SDL\lib\android\ARM\Debug;E:\github\WolfEngine\Wolf.Engine2\bin\android\ARM\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>-lm;-lexpat;-lapr-1;-lSDL2;-lstream.client_android;-lavcodec;-lavdevice;-lavfilter;-lavformat;-lavutil;-lswresample;-lswscale</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
     <ClCompile>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <CompileAs>CompileAsCpp</CompileAs>
-      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../deps/expat/include;$(SolutionDir)/../../deps/expat/include/config/android;$(SolutionDir)/../../deps/apr/include;$(SolutionDir)/../../deps/apr/include/apr-1/apr/android;$(SolutionDir)/../../src/wolf.system/compression/msgpack;$(SolutionDir)/../../src/wolf.system/log;$(SolutionDir)/../../src/wolf.system/net;E:\github\PooyaEimandar\stream\deps\SDL\include;E:\github\PooyaEimandar\stream\src\client;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>EV_STANDALONE;SPDLOG_COMPILED_LIB;W_PLATFORM_ANDROID;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ExceptionHandling>Enabled</ExceptionHandling>
     </ClCompile>
     <Link>
       <LibraryDependencies>%(LibraryDependencies);GLESv1_CM;EGL;</LibraryDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)/../../deps/expat/lib/android/armeabi-v7a/debug;$(SolutionDir)/../../deps/apr/lib/android/armeabi-v7a/debug/lib;$(SolutionDir)/../../deps/ffmpeg/lib/android/ARM/debug;E:\github\PooyaEimandar\stream\deps\SDL\lib\android\ARM\Debug;E:\github\WolfEngine\Wolf.Engine2\bin\android\ARM\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>-lm;-lexpat;-lapr-1;-lSDL2;-lstream.client_android;-lavcodec;-lavdevice;-lavfilter;-lavformat;-lavutil;-lswresample;-lswscale</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
@@ -183,16 +149,16 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <CompileAs>CompileAsCpp</CompileAs>
-      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../deps/expat/include;$(SolutionDir)/../../deps/expat/include/config/android;$(SolutionDir)/../../deps/apr/include;$(SolutionDir)/../../deps/apr/include/apr-1/apr/android;$(SolutionDir)/../../src/wolf.system/compression/msgpack;$(SolutionDir)/../../src/wolf.system/log;$(SolutionDir)/../../src/wolf.system/net;E:\github\PooyaEimandar\stream\deps\SDL\include;E:\github\PooyaEimandar\stream\src\client;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../deps/expat/include;$(SolutionDir)/../../deps/expat/include/config/android;$(SolutionDir)/../../deps/apr/include;$(SolutionDir)/../../deps/apr/include/apr-1/apr/android;$(SolutionDir)/../../src/wolf.system/compression/msgpack;$(SolutionDir)/../../src/wolf.system/log;$(SolutionDir)/../../src/wolf.system/net;$(SolutionDir)/../../deps/quiche/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <CLanguageStandard>c11</CLanguageStandard>
       <CppLanguageStandard>c++1z</CppLanguageStandard>
-      <PreprocessorDefinitions>EV_STANDALONE;SPDLOG_COMPILED_LIB;W_PLATFORM_ANDROID;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>EV_STANDALONE;W_PLATFORM_ANDROID;SPDLOG_COMPILED_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Enabled</ExceptionHandling>
     </ClCompile>
     <Link>
       <LibraryDependencies>%(LibraryDependencies);GLESv1_CM;EGL</LibraryDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)/../../deps/expat/lib/android/armeabi-v7a/debug;$(SolutionDir)/../../deps/apr/lib/android/armeabi-v7a/debug/lib;$(SolutionDir)/../../deps/ffmpeg/lib/android/ARM/debug;E:\github\PooyaEimandar\stream\deps\SDL\lib\android\ARM\Debug;E:\github\WolfEngine\Wolf.Engine2\bin\android\ARM\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>-lm;-lexpat;-lapr-1;-lSDL2;-lstream.client_android;-lavcodec;-lavdevice;-lavfilter;-lavformat;-lavutil;-lswresample;-lswscale</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)/../../deps/expat/lib/android/armeabi-v7a/debug;$(SolutionDir)/../../deps/apr/lib/android/armeabi-v7a/debug/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>-lm;-lexpat;-lapr-1</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
@@ -200,74 +166,54 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <CompileAs>CompileAsCpp</CompileAs>
-      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../deps/expat/include;$(SolutionDir)/../../deps/expat/include/config/android;$(SolutionDir)/../../deps/apr/include;$(SolutionDir)/../../deps/apr/include/apr-1/apr/android;$(SolutionDir)/../../src/wolf.system/compression/msgpack;$(SolutionDir)/../../src/wolf.system/log;$(SolutionDir)/../../src/wolf.system/net;E:\github\PooyaEimandar\stream\deps\SDL\include;E:\github\PooyaEimandar\stream\src\client;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>EV_STANDALONE;SPDLOG_COMPILED_LIB;W_PLATFORM_ANDROID;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../deps/expat/include;$(SolutionDir)/../../deps/expat/include/config/android;$(SolutionDir)/../../deps/apr/include;$(SolutionDir)/../../deps/apr/include/apr-1/apr/android;$(SolutionDir)/../../src/wolf.system/compression/msgpack;$(SolutionDir)/../../src/wolf.system/log;$(SolutionDir)/../../src/wolf.system/net;$(SolutionDir)/../../deps/quiche/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>EV_STANDALONE;W_PLATFORM_ANDROID;SPDLOG_COMPILED_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Enabled</ExceptionHandling>
     </ClCompile>
     <Link>
       <LibraryDependencies>%(LibraryDependencies);GLESv1_CM;EGL;</LibraryDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)/../../deps/expat/lib/android/armeabi-v7a/debug;$(SolutionDir)/../../deps/apr/lib/android/armeabi-v7a/debug/lib;$(SolutionDir)/../../deps/ffmpeg/lib/android/ARM/debug;E:\github\PooyaEimandar\stream\deps\SDL\lib\android\ARM\Debug;E:\github\WolfEngine\Wolf.Engine2\bin\android\ARM\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>-lm;-lexpat;-lapr-1;-lSDL2;-lstream.client_android;-lavcodec;-lavdevice;-lavfilter;-lavformat;-lavutil;-lswresample;-lswscale</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)/../../deps/expat/lib/android/armeabi-v7a/release;$(SolutionDir)/../../deps/apr/lib/android/armeabi-v7a/release/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>-lm;-lexpat;-lapr-1</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <CompileAs>CompileAsCpp</CompileAs>
-      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../deps/expat/include;$(SolutionDir)/../../deps/expat/include/config/android;$(SolutionDir)/../../deps/apr/include;$(SolutionDir)/../../deps/apr/include/apr-1/apr/android;$(SolutionDir)/../../src/wolf.system/compression/msgpack;$(SolutionDir)/../../src/wolf.system/log;$(SolutionDir)/../../src/wolf.system/net;E:\github\PooyaEimandar\stream\deps\SDL\include;E:\github\PooyaEimandar\stream\src\client;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>EV_STANDALONE;SPDLOG_COMPILED_LIB;W_PLATFORM_ANDROID;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ExceptionHandling>Enabled</ExceptionHandling>
     </ClCompile>
     <Link>
       <LibraryDependencies>%(LibraryDependencies);GLESv1_CM;EGL;</LibraryDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)/../../deps/expat/lib/android/armeabi-v7a/debug;$(SolutionDir)/../../deps/apr/lib/android/armeabi-v7a/debug/lib;$(SolutionDir)/../../deps/ffmpeg/lib/android/ARM/debug;E:\github\PooyaEimandar\stream\deps\SDL\lib\android\ARM\Debug;E:\github\WolfEngine\Wolf.Engine2\bin\android\ARM\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>-lm;-lexpat;-lapr-1;-lSDL2;-lstream.client_android;-lavcodec;-lavdevice;-lavfilter;-lavformat;-lavutil;-lswresample;-lswscale</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <CompileAs>CompileAsCpp</CompileAs>
-      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../deps/expat/include;$(SolutionDir)/../../deps/expat/include/config/android;$(SolutionDir)/../../deps/apr/include;$(SolutionDir)/../../deps/apr/include/apr-1/apr/android;$(SolutionDir)/../../src/wolf.system/compression/msgpack;$(SolutionDir)/../../src/wolf.system/log;$(SolutionDir)/../../src/wolf.system/net;E:\github\PooyaEimandar\stream\deps\SDL\include;E:\github\PooyaEimandar\stream\src\client;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>EV_STANDALONE;SPDLOG_COMPILED_LIB;W_PLATFORM_ANDROID;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ExceptionHandling>Enabled</ExceptionHandling>
     </ClCompile>
     <Link>
       <LibraryDependencies>%(LibraryDependencies);GLESv1_CM;EGL;</LibraryDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)/../../deps/expat/lib/android/armeabi-v7a/debug;$(SolutionDir)/../../deps/apr/lib/android/armeabi-v7a/debug/lib;$(SolutionDir)/../../deps/ffmpeg/lib/android/ARM/debug;E:\github\PooyaEimandar\stream\deps\SDL\lib\android\ARM\Debug;E:\github\WolfEngine\Wolf.Engine2\bin\android\ARM\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>-lm;-lexpat;-lapr-1;-lSDL2;-lstream.client_android;-lavcodec;-lavdevice;-lavfilter;-lavformat;-lavutil;-lswresample;-lswscale</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
     <ClCompile>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <CompileAs>CompileAsCpp</CompileAs>
-      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../deps/expat/include;$(SolutionDir)/../../deps/expat/include/config/android;$(SolutionDir)/../../deps/apr/include;$(SolutionDir)/../../deps/apr/include/apr-1/apr/android;$(SolutionDir)/../../src/wolf.system/compression/msgpack;$(SolutionDir)/../../src/wolf.system/log;$(SolutionDir)/../../src/wolf.system/net;E:\github\PooyaEimandar\stream\deps\SDL\include;E:\github\PooyaEimandar\stream\src\client;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>EV_STANDALONE;SPDLOG_COMPILED_LIB;W_PLATFORM_ANDROID;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ExceptionHandling>Enabled</ExceptionHandling>
     </ClCompile>
     <Link>
       <LibraryDependencies>%(LibraryDependencies);GLESv1_CM;EGL;</LibraryDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)/../../deps/expat/lib/android/armeabi-v7a/debug;$(SolutionDir)/../../deps/apr/lib/android/armeabi-v7a/debug/lib;$(SolutionDir)/../../deps/ffmpeg/lib/android/ARM/debug;E:\github\PooyaEimandar\stream\deps\SDL\lib\android\ARM\Debug;E:\github\WolfEngine\Wolf.Engine2\bin\android\ARM\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>-lm;-lexpat;-lapr-1;-lSDL2;-lstream.client_android;-lavcodec;-lavdevice;-lavfilter;-lavformat;-lavutil;-lswresample;-lswscale</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
     <ClCompile>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <CompileAs>CompileAsCpp</CompileAs>
-      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../deps/expat/include;$(SolutionDir)/../../deps/expat/include/config/android;$(SolutionDir)/../../deps/apr/include;$(SolutionDir)/../../deps/apr/include/apr-1/apr/android;$(SolutionDir)/../../src/wolf.system/compression/msgpack;$(SolutionDir)/../../src/wolf.system/log;$(SolutionDir)/../../src/wolf.system/net;E:\github\PooyaEimandar\stream\deps\SDL\include;E:\github\PooyaEimandar\stream\src\client;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>EV_STANDALONE;SPDLOG_COMPILED_LIB;W_PLATFORM_ANDROID;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ExceptionHandling>Enabled</ExceptionHandling>
     </ClCompile>
     <Link>
       <LibraryDependencies>%(LibraryDependencies);GLESv1_CM;EGL;</LibraryDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)/../../deps/expat/lib/android/armeabi-v7a/debug;$(SolutionDir)/../../deps/apr/lib/android/armeabi-v7a/debug/lib;$(SolutionDir)/../../deps/ffmpeg/lib/android/ARM/debug;E:\github\PooyaEimandar\stream\deps\SDL\lib\android\ARM\Debug;E:\github\WolfEngine\Wolf.Engine2\bin\android\ARM\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>-lm;-lexpat;-lapr-1;-lSDL2;-lstream.client_android;-lavcodec;-lavdevice;-lavfilter;-lavformat;-lavutil;-lswresample;-lswscale</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -335,6 +281,7 @@
     <ClInclude Include="..\..\..\..\src\wolf.system\memory\w_mem_map.h" />
     <ClInclude Include="..\..\..\..\src\wolf.system\memory\w_mem_pool.h" />
     <ClInclude Include="..\..\..\..\src\wolf.system\memory\w_shared_mem.h" />
+    <ClInclude Include="..\..\..\..\src\wolf.system\memory\w_string.h" />
     <ClInclude Include="..\..\..\..\src\wolf.system\memory\w_table.h" />
     <ClInclude Include="..\..\..\..\src\wolf.system\net\w_net.h" />
     <ClInclude Include="..\..\..\..\src\wolf.system\wolf.h" />
@@ -377,6 +324,7 @@
     <ClCompile Include="..\..\..\..\src\wolf.system\memory\w_mem_map.c" />
     <ClCompile Include="..\..\..\..\src\wolf.system\memory\w_mem_pool.c" />
     <ClCompile Include="..\..\..\..\src\wolf.system\memory\w_shared_mem.c" />
+    <ClCompile Include="..\..\..\..\src\wolf.system\memory\w_string.c" />
     <ClCompile Include="..\..\..\..\src\wolf.system\memory\w_table.c" />
     <ClCompile Include="..\..\..\..\src\wolf.system\net\w_net.c" />
     <ClCompile Include="..\..\..\..\src\wolf.system\wolf.c" />

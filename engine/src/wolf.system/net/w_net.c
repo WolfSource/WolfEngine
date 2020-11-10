@@ -461,9 +461,11 @@ static void s_quiche_flush(
     w_socket_protocol pProtocol)
 {
     const char* _trace_info = "w_net::s_quiche_flush";
+	
+#ifndef  W_PLATFORM_ANDROID
 
     static uint8_t _out[QUICHE_MAX_DATAGRAM_SIZE];
-#ifndef  W_PLATFORM_ANDROID
+
     while (1)
     {
         ssize_t _written = quiche_conn_send(
@@ -633,9 +635,10 @@ static struct conn_io* s_quiche_create_connection(
         fprintf(stderr, "failed to allocate connection IO\n");
         return NULL;
     }
-
-    memcpy(conn_io->connection_id, dcid, QUICHE_LOCAL_CONN_ID_LEN);
+	
 #ifndef  W_PLATFORM_ANDROID
+    
+	memcpy(conn_io->connection_id, dcid, QUICHE_LOCAL_CONN_ID_LEN);
     quiche_conn* conn = quiche_accept(
         conn_io->connection_id,
         QUICHE_LOCAL_CONN_ID_LEN,
@@ -929,13 +932,16 @@ static void s_quiche_listener_callback(EV_P_ ev_io* pIO, int pRevents)
 static void s_quiche_dialer_callback(EV_P_ ev_io* pIO, int pRevents)
 {
     const char* _trace_info = "s_quiche_dialer_callback";
-#ifndef  W_PLATFORM_ANDROID
+
     if (!pIO)
     {
         W_ASSERT_P(false, "pIO in NULL. trace info: %s", _trace_info);
         return;
     }
-    struct conn_io* _conn_io = (struct conn_io*)pIO->data;
+	
+#ifndef  W_PLATFORM_ANDROID	 
+    
+	struct conn_io* _conn_io = (struct conn_io*)pIO->data;
     if (!_conn_io)
     {
         W_ASSERT_P(false, "missing conn_io. trace info: %s", _trace_info);
@@ -1059,7 +1065,6 @@ W_RESULT w_net_quic_open(
 {
     const char* _trace_info = "w_net_open_quic_socket";
 
-#ifndef W_PLATFORM_ANDROID
     if (pProtocol != W_SOCKET_PROTOCOL_QUIC_DIALER && 
         pProtocol != W_SOCKET_PROTOCOL_QUIC_LISTENER)
     {
@@ -1070,6 +1075,9 @@ W_RESULT w_net_quic_open(
     }
 
     W_RESULT _ret = W_SUCCESS;
+
+#if !defined (W_PLATFORM_ANDROID)
+
     quiche_config* _quiche_config = NULL;
     struct addrinfo* _address_info = NULL;
 
@@ -1081,6 +1089,7 @@ W_RESULT w_net_quic_open(
         _socket = 0;
 
     struct conn_io* _quiche_connection_io = NULL;
+    struct ev_loop* _ev_loop = EV_DEFAULT;
 
     const struct addrinfo _hints =
     {
@@ -1348,7 +1357,6 @@ W_RESULT w_net_quic_open(
         _quiche_connection_io->on_receiving_stream_callback_fn = pQuicReceivingStreamCallback;
     }
 
-    struct ev_loop* _ev_loop = EV_DEFAULT;
     if (_ev_loop)
     {
         ev_io _ev_watcher;
@@ -1373,7 +1381,7 @@ W_RESULT w_net_quic_open(
             ev_io_start(_ev_loop, &_ev_watcher);
 
             //set private data of ev watcher
-            _ev_watcher.data = pQuicReceivingStreamCallback;
+            _ev_watcher.data = (void*)pQuicReceivingStreamCallback;
         }
         else
         {
@@ -1434,6 +1442,12 @@ out:
         quiche_config_free(_quiche_config);
     }
     w_free_s_quic_conns();
+
+#endif
+
+#ifdef W_PLATFORM_ANDROID
+    return W_FAILURE;
+#endif
     return _ret;
 }
 
@@ -1443,6 +1457,11 @@ W_RESULT w_net_quic_close()
     {
         return W_FAILURE;
     }
+#ifdef W_PLATFORM_ANDROID
+    int _ret = -1;
+#endif
+
+#if !defined (W_PLATFORM_ANDROID)	
     quiche_conn* _qc = s_quic_conns->connection_io->connection;
     if (!_qc)
     {
@@ -1455,9 +1474,8 @@ W_RESULT w_net_quic_close()
         0,
         NULL,
         0);
-
-    return _ret < 0 ? W_FAILURE : W_SUCCESS;
 #endif
+    return _ret < 0 ? W_FAILURE : W_SUCCESS;
 }
 
 size_t w_net_quic_send(_In_ uint8_t* pConnectionID,

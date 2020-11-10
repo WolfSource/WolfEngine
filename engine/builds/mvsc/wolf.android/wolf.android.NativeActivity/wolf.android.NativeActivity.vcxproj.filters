@@ -227,6 +227,9 @@
     <ClInclude Include="..\..\..\..\src\wolf.system\memory\w_shared_mem.h">
       <Filter>system\memory</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\src\wolf.system\memory\w_string.h">
+      <Filter>system\memory</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\src\wolf.system\log\logger.hpp">
       <Filter>system\log</Filter>
     </ClInclude>
@@ -236,11 +239,11 @@
     <ClInclude Include="..\..\..\..\src\wolf.system\log\w_log_config.h">
       <Filter>system\log</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\wolf.system\concurrency\w_mutex.h">
-      <Filter>system\concurrency</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\src\wolf.system\net\w_net.h">
       <Filter>system\net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\wolf.system\concurrency\w_mutex.h">
+      <Filter>system\concurrency</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -336,6 +339,15 @@
     <ClCompile Include="..\..\..\..\src\wolf.system\compression\w_compress.c">
       <Filter>system\compression</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\wolf.system\memory\w_string.c">
+      <Filter>system\memory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\wolf.system\log\logger.cpp">
+      <Filter>system\log</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\wolf.system\log\w_log.cpp">
+      <Filter>system\log</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\wolf.system\log\spdlog\src\async.cpp">
       <Filter>system\log\spdlog\src</Filter>
     </ClCompile>
@@ -357,17 +369,11 @@
     <ClCompile Include="..\..\..\..\src\wolf.system\log\spdlog\src\stdout_sinks.cpp">
       <Filter>system\log\spdlog\src</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\wolf.system\log\logger.cpp">
-      <Filter>system\log</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\wolf.system\log\w_log.cpp">
-      <Filter>system\log</Filter>
+    <ClCompile Include="..\..\..\..\src\wolf.system\net\w_net.c">
+      <Filter>system\net</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\wolf.system\concurrency\w_mutex.c">
       <Filter>system\concurrency</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\wolf.system\net\w_net.c">
-      <Filter>system\net</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -420,16 +426,16 @@
       <UniqueIdentifier>{74ea1878-ca0d-4293-aab7-476dc82894e4}</UniqueIdentifier>
     </Filter>
     <Filter Include="system\log">
-      <UniqueIdentifier>{2c341f38-0a9b-4b85-89ea-b4f6526306de}</UniqueIdentifier>
+      <UniqueIdentifier>{efbd998f-0757-40b0-ad27-d6c918b1b802}</UniqueIdentifier>
     </Filter>
     <Filter Include="system\log\spdlog">
-      <UniqueIdentifier>{cc1102ef-115e-4ec3-be35-20d3954a38dc}</UniqueIdentifier>
+      <UniqueIdentifier>{29b84b4d-8379-4947-8f56-f5e882196070}</UniqueIdentifier>
     </Filter>
     <Filter Include="system\log\spdlog\src">
-      <UniqueIdentifier>{65a69d89-433b-4d2f-8abf-e26348716a48}</UniqueIdentifier>
+      <UniqueIdentifier>{dc3e99fb-6752-495d-ab78-76bdc9213011}</UniqueIdentifier>
     </Filter>
     <Filter Include="system\net">
-      <UniqueIdentifier>{8f0afca7-cba7-4d63-ad7f-a9c9251cd9c4}</UniqueIdentifier>
+      <UniqueIdentifier>{74ec77d2-cd96-4f1d-a891-2002b9189e83}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
