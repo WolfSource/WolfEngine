@@ -1,11 +1,7 @@
 #include "w_string.h"
-#include <string>
 #include <log/w_log.h>
 #include <ctype.h>
-
-#if defined (W_PLATFORM_OSX) || defined (W_PLATFORM_IOS)
 #include <string.h>
-#endif
 
 W_RESULT w_string_init(
     _Inout_ w_mem_pool pMemPool,
