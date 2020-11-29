@@ -401,7 +401,7 @@ W_RESULT w_net_socket_receive(
     return _ret;
 }
 
-W_RESULT w_net_run_websocket_server(_In_ bool pSSL,
+W_RESULT w_net_run_ws_server(_In_ bool pSSL,
     _In_z_ const char* pCertFilePath,
     _In_z_ const char* pPrivateKeyFilePath,
     _In_z_ const char* pPassPhrase,
@@ -449,6 +449,11 @@ W_RESULT w_net_run_websocket_server(_In_ bool pSSL,
 #endif
     
     return _rt;
+}
+
+void w_net_ws_close(_Inout_ void* pSocket, _In_ const bool pSSL)
+{
+    ws_stop(pSocket, pSSL);
 }
 
 #pragma endregion

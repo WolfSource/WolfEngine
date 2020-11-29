@@ -20,7 +20,7 @@ extern "C" {
     struct cws;
     typedef struct cws* ws;
 
-    typedef void(*ws_on_listened_fn)(int /*pPort*/);
+    typedef void(*ws_on_listened_fn)(void*/*pSocket*/, int /*pPort*/);
     typedef bool(*ws_on_opened_fn)(w_arg* /*pUserData*/);
     typedef const char* (*ws_on_message_fn)(const char* /*pMessage*/, size_t /*pMessageLenght*/, int* /*pOpCode*/, w_arg* /*pUserData*/);
     typedef void(*ws_on_closed_fn)(const char* /*pMessage*/, size_t /*pMessageLenght*/, int /*pCloseCode*/, w_arg* /*pUserData*/);
@@ -82,6 +82,11 @@ extern "C" {
         _In_ ws_on_opened_fn pOnOpened,
         _In_ ws_on_message_fn pOnMessage,
         _In_ ws_on_closed_fn pOnClosed);
+
+    /**
+     * stop websocket object
+     */
+    void ws_stop(_Inout_ void* pSocket, _In_ const bool pSSL);
 
     /**
      * free websocket object

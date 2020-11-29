@@ -29,7 +29,7 @@ public:
         const int pMaxPayloadLength,
         const int pIdleTimeout,
         const int pMaxBackPressure,
-        std::function<void(int)> pOnListened,
+        std::function<void(void*, int)> pOnListened,
         std::function<bool(w_arg*)> pOnOpened,
         std::function<const char* (const char*, size_t, int*, w_arg*)> pOnMessage,
         std::function<void(const char*, size_t, int, w_arg*)> pOnClosed);

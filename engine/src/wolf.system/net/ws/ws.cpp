@@ -61,6 +61,14 @@ W_RESULT ws_run(_In_ ws pWS,
     return _rt;
 }
 
+void ws_stop(_Inout_ void* pSocket, _In_ const bool pSSL)
+{
+    if (pSocket)
+    {
+        us_listen_socket_close(pSSL, (struct us_listen_socket_t*)pSocket);
+    }
+}
+
 void ws_free(_Inout_ ws pWS)
 {
     if (pWS)

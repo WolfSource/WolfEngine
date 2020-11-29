@@ -67,7 +67,7 @@ static inline LIBUS_SOCKET_DESCRIPTOR bsd_set_nonblocking(LIBUS_SOCKET_DESCRIPTO
 }
 
 static inline void bsd_socket_nodelay(LIBUS_SOCKET_DESCRIPTOR fd, int enabled) {
-    setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, (void *) &enabled, sizeof(enabled));
+    setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, (const char*) &enabled, sizeof(enabled));
 }
 
 static inline void bsd_socket_flush(LIBUS_SOCKET_DESCRIPTOR fd) {
@@ -162,7 +162,7 @@ static inline LIBUS_SOCKET_DESCRIPTOR bsd_accept_socket(LIBUS_SOCKET_DESCRIPTOR 
     return bsd_set_nonblocking(apple_no_sigpipe(accepted_fd));
 }
 
-static inline int bsd_recv(LIBUS_SOCKET_DESCRIPTOR fd, void *buf, int length, int flags) {
+static inline int bsd_recv(LIBUS_SOCKET_DESCRIPTOR fd, char *buf, int length, int flags) {
     return recv(fd, buf, length, flags);
 }
 

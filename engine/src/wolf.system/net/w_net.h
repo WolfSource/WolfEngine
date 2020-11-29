@@ -225,7 +225,7 @@ extern "C" {
      * @return result code
     */
     W_SYSTEM_EXPORT
-        W_RESULT w_net_run_websocket_server(_In_ bool pSSL,
+        W_RESULT w_net_run_ws_server(_In_ bool pSSL,
             _In_z_ const char* pCertFilePath,
             _In_z_ const char* pPrivateKeyFilePath,
             _In_z_ const char* pPassPhrase,
@@ -239,6 +239,14 @@ extern "C" {
             _In_ ws_on_opened_fn pOnOpened,
             _In_ ws_on_message_fn pOnMessage,
             _In_ ws_on_closed_fn pOnClosed);
+
+    /**
+    * run a websocket server and block the current thread
+    * @param pSocket pointer to socket object
+    * @param pSSL is SSL socket
+   */
+    W_SYSTEM_EXPORT
+        void w_net_ws_close(_Inout_ void* pSocket, _In_ const bool pSSL);
 
     /**
      * create a server based on QUIC protocol
