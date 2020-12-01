@@ -20,7 +20,7 @@ extern "C" {
     struct cws;
     typedef struct cws* ws;
 
-    typedef void(*ws_on_listened_fn)(void*/*pSocket*/, int /*pPort*/);
+    typedef void(*ws_on_listened_fn)(void* /*pSocket*/, int /*pPort*/);
     typedef bool(*ws_on_opened_fn)(w_arg* /*pUserData*/);
     typedef const char* (*ws_on_message_fn)(const char* /*pMessage*/, size_t /*pMessageLenght*/, int* /*pOpCode*/, w_arg* /*pUserData*/);
     typedef void(*ws_on_closed_fn)(const char* /*pMessage*/, size_t /*pMessageLenght*/, int /*pCloseCode*/, w_arg* /*pUserData*/);
