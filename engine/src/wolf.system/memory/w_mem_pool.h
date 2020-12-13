@@ -80,11 +80,13 @@ extern "C" {
         void w_mem_pool_fini(_Inout_ w_mem_pool* pMemPool);
 
     /**
-    * clear a apr memory pool for reusing again
-    * @param pMemPool The pool which is going to destroy.
+    * clear all memory in the pool and run all the cleanups. This also destroys all subpools.
+    * @param p The pool to clear
+    * @note This does not actually free the memory, it just allows the pool to re-use this memory for the next allocation.
+    * @param pMemPool The pool which is going to clear.
     */
     W_SYSTEM_EXPORT
-        void w_mem_pool_apr_clear(_Inout_ w_mem_pool pMemPool);
+        void w_mem_pool_clear(_Inout_ w_mem_pool pMemPool);
 
     /**
      * get apr memory pool (fast extend one)

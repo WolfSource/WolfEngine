@@ -7,8 +7,8 @@
 
 #if !defined(W_PLATFORM_ANDROID) && !defined(W_PLATFORM_IOS)
 
-#include <turbojpeg.h>
-#include <png.h>
+//#include <turbojpeg.h>
+//#include <png.h>
 
 #include "base64/fastavx512bwbase64.h"
 #include "base64/fastavxbase64.h"
@@ -37,14 +37,14 @@
 #include <Foundation/NSBundle.h>
 #endif
 
-#define PNG_BYTES_TO_CHECK  4
-#define PNG_PAGING_SIZE     8
-
-struct png_context {
-    void* data;
-    int len;
-    int pos;
-};
+//#define PNG_BYTES_TO_CHECK  4
+//#define PNG_PAGING_SIZE     8
+//
+//struct png_context {
+//    void* data;
+//    int len;
+//    int pos;
+//};
 
 w_file w_io_file_create(
     _Inout_ w_mem_pool pMemPool,
@@ -1234,7 +1234,7 @@ size_t w_io_to_base_64(_Inout_z_ char** pDestinationBuffer,
     }
     return _encoded_size;
 }
-
+/*
 #if !defined(W_PLATFORM_ANDROID) && !defined(W_PLATFORM_IOS)
 
 W_RESULT w_io_file_is_jpeg(_In_ const char* pFilePath)
@@ -1250,6 +1250,7 @@ W_RESULT w_io_file_is_jpeg(_In_ const char* pFilePath)
     }
     return _ret;
 }
+
 
 W_RESULT w_io_stream_is_jpeg(_In_ w_file_istream pFileStream)
 {
@@ -1750,7 +1751,7 @@ W_RESULT w_io_pixels_from_png_file(
 
 #endif
 
-
+*/
 
 //apr_dir_read(<#apr_finfo_t *finfo#>, <#apr_int32_t wanted#>, <#apr_dir_t *thedir#>)
 //#if defined(__cpp_lib_filesystem) || defined(__cpp_lib_experimental_filesystem)

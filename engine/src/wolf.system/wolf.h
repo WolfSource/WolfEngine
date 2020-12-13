@@ -13,44 +13,27 @@
 extern "C" {
 #endif
 
+#include "memory/w_mem_pool.h"
 #include <stdbool.h>
-#include <stdio.h>
-#include <wchar.h>
-#include <stdlib.h>
 #include <stdint.h>
 #include <assert.h>
-#include <limits.h>
-#include "memory/w_mem_pool.h"
 
 #define W_SAFE_DELETE(x)            { if (x)  { delete x; x = NULL;                  } }
 #define W_SAFE_DELETE_ARRAY(ar)     { if (ar) { delete[] ar; ar = NULL;              } }
 #define W_SAFE_RELEASE(x)           { if (x)  { x->release(); delete x; x = NULL;    } }
-#define W_ARRAY_SIZE(ar)	        (size_t)((sizeof(ar) / sizeof(ar[0])))
-
-#ifndef W_MAX_BUFFER_SIZE
-#define W_MAX_BUFFER_SIZE 4096
-#endif
+#define W_ARRAY_SIZE(ar)	        { return  (sizeof(ar) / sizeof(ar[0]); }
 
 #define WOLF_MAJOR_VERSION 2    // Making incompatible API changes
 #define WOLF_MINOR_VERSION 0    // Adding functionality in a backwards - compatible manner
 #define WOLF_PATCH_VERSION 27   // bug fixes
 #define WOLF_DEBUG_VERSION 58   // for debugging
 
-#ifndef W_SUCCESS
+#define W_MAX_BUFFER_SIZE 4096
+
 #define W_SUCCESS 0
-#endif
-
-#ifndef W_FAILURE
 #define W_FAILURE 1
-#endif
-
-#ifndef W_TIMEOUT
-#define W_TIMEOUT 5//Same as NNG_ETIMEDOUT
-#endif
-
-#ifndef W_BAD_ARG
+#define W_TIMEOUT 2
 #define W_BAD_ARG 70013//Same as APR_BADARG
-#endif
 
 #ifdef W_PLATFORM_LINUX
 #include <linux/types.h>

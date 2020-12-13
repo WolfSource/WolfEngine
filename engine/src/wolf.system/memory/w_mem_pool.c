@@ -11,17 +11,13 @@ typedef struct w_mem_pool_t
 } w_mem_pool_t;
 
 W_RESULT w_mem_pool_init_from_parent(
-	_Inout_ w_mem_pool* pMemPool, 
+	_Inout_ w_mem_pool* pMemPool,
 	_Inout_opt_ w_mem_pool* pParentMemPool)
 {
+
 	if (pMemPool && *pMemPool)
 	{
-		w_mem_pool _ptr = *pMemPool;
-		if (_ptr->apr)
-		{
-			apr_pool_destroy(_ptr->apr);
-			_ptr->apr = NULL;
-		}
+		w_mem_pool_fini(pMemPool);
 	}
 
 	W_RESULT _ret = 1;
@@ -93,7 +89,7 @@ void w_mem_pool_fini(_Inout_ w_mem_pool* pMemPool)
 	*pMemPool = NULL;
 }
 
-void w_mem_pool_apr_clear(_Inout_ w_mem_pool pMemPool)
+void w_mem_pool_clear(_Inout_ w_mem_pool pMemPool)
 {
 	if (pMemPool && pMemPool->apr)
 	{
@@ -116,7 +112,7 @@ size_t w_mem_pool_get_ref_counts()
 	return (size_t)s_number_apr_pool_ref_counts;
 }
 
-#pragma region my old mem pool
+#pragma region old mem pool
 
 ////Minimum size of memory pool
 //#define MIN_MEMORY_POOL_CHUNKS_SIZE			64Ui64//64 Bytes

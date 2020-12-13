@@ -444,8 +444,8 @@ struct us_internal_ssl_socket_context_t *us_internal_create_ssl_socket_context(s
     if (options.dh_params_file_name) {
         /* Set up ephemeral DH parameters. */
         DH *dh_2048 = NULL;
-        FILE *paramfile;
-        paramfile = fopen(options.dh_params_file_name, "r");
+        FILE *paramfile = NULL;
+        fopen_s(&paramfile, options.dh_params_file_name, "r");
 
         if (paramfile) {
             dh_2048 = PEM_read_DHparams(paramfile, NULL, NULL, NULL);

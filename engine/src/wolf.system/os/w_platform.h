@@ -52,15 +52,10 @@
 #ifdef W_PLATFORM_WIN
 
     #include <SDKDDKVer.h>
-
-    #ifndef WIN32_LEAN_AND_MEAN
-        #define WIN32_LEAN_AND_MEAN
-    #endif
-
-    #ifndef NOMINMAX 
-        #define NOMINMAX 
-    #endif
-
+    
+    #define WIN32_LEAN_AND_MEAN
+    #define NOMINMAX 
+    
     #include <Windows.h>
     #include <WinSock2.h>
     #include <ws2ipdef.h>

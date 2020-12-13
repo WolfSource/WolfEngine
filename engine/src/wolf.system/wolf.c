@@ -1,5 +1,9 @@
 #include "wolf.h"
 #include "log/w_log.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <wchar.h>
+#include <limits.h>
 //#include <concurrency/libev/ev.h>
 
 //http://dev.ariel-networks.com/apr/apr-tutorial/html/apr-tutorial.html#toc1
@@ -34,6 +38,7 @@ BOOL APIENTRY DllMain(_In_ HMODULE phModule, _In_ DWORD phl_reason_for_call, _In
 
 W_RESULT wolf_init()
 {
+    int a = 0;
     if (apr_initialize()
         // initialize curl
 #ifndef W_PLATFORM_IOS

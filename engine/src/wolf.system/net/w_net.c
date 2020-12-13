@@ -1264,7 +1264,7 @@ W_RESULT w_net_quic_open(
             quiche_config_log_keys(_quiche_config);
         }
 
-        uint8_t _scid[QUICHE_LOCAL_CONN_ID_LEN];
+        uint8_t _scid[QUICHE_LOCAL_CONN_ID_LEN] = { 0 };
 
 #ifdef W_PLATFORM_WIN
 

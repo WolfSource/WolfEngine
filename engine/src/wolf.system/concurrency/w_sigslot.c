@@ -1,5 +1,6 @@
 #include "w_sigslot.h"
 #include <log/w_log.h>
+#include <stdio.h>
 #include <memory/w_array.h>
 #include <memory/w_hash.h>
 #include <stdarg.h>

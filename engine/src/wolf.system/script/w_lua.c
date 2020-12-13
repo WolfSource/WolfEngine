@@ -26,7 +26,7 @@ W_RESULT _lua_get_value(
     _Inout_ w_mem_pool pMemPool,
     _In_    int pIndex,
     _Inout_ void** pValue,
-    _Inout_ char* pExpectedType)
+    _Inout_z_ char* pExpectedType)
 {
     const char* _trace_info = "_lua_get_value";
     if (!pMemPool)

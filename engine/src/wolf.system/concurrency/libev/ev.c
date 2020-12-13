@@ -1196,7 +1196,7 @@ ecb_function_ ecb_const int ecb_popcount64 (uint64_t x);
 ecb_function_ ecb_const int
 ecb_popcount64 (uint64_t x)
 {
-  return ecb_popcount32 (x) + ecb_popcount32 (x >> 32);
+  return ecb_popcount32 ((uint32_t)x) + ecb_popcount32 (x >> 32);
 }
 
 ecb_inline ecb_const uint8_t  ecb_rotl8  (uint8_t  x, unsigned int count);
@@ -1875,7 +1875,7 @@ static EV_ATOMIC_T have_monotonic; /* did clock_gettime (CLOCK_MONOTONIC) work? 
 # define EV_WIN32_HANDLE_TO_FD(handle) _open_osfhandle (handle, 0)
 #endif
 #ifndef EV_WIN32_CLOSE_FD
-# define EV_WIN32_CLOSE_FD(fd) close (fd)
+# define EV_WIN32_CLOSE_FD(fd) _close (fd)
 #endif
 
 #ifdef _WIN32
@@ -2623,7 +2623,7 @@ downheap (ANHE *heap, int N, int k)
       heap [k] = *minpos;
       ev_active (ANHE_w (*minpos)) = k;
 
-      k = minpos - heap;
+      k = (int)(minpos - heap);
     }
 
   heap [k] = he;
@@ -2762,8 +2762,8 @@ evpipe_init (EV_P)
           /* this branch does not do anything sensible on windows, */
           /* so must not be executed on windows */
 
-          dup2 (fds [1], evpipe [1]);
-          close (fds [1]);
+          _dup2 (fds [1], evpipe [1]);
+          _close (fds [1]);
         }
 
       fd_intern (evpipe [1]);
@@ -3409,7 +3409,7 @@ ev_loop_destroy (EV_P)
 #endif
 
   if (backend_fd >= 0)
-    close (backend_fd);
+    _close (backend_fd);
 
 #if EV_USE_IOCP
   if (backend == EVBACKEND_IOCP    ) iocp_destroy     (EV_A);
