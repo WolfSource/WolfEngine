@@ -23,15 +23,6 @@
     <ClInclude Include="..\..\..\..\src\wolf.system\memory\hash\utstring.h">
       <Filter>system\memory\hash</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\wolf.system\concurrency\libev\ev.h">
-      <Filter>system\concurrency\libev</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\wolf.system\concurrency\libev\ev_vars.h">
-      <Filter>system\concurrency\libev</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\wolf.system\concurrency\libev\event.h">
-      <Filter>system\concurrency\libev</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\src\wolf.system\concurrency\w_async.h">
       <Filter>system\concurrency</Filter>
     </ClInclude>
@@ -245,6 +236,9 @@
     <ClInclude Include="..\..\..\..\src\wolf.system\concurrency\w_mutex.h">
       <Filter>system\concurrency</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\src\wolf.system\concurrency\w_atomic.h">
+      <Filter>system\concurrency</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="android_native_app_glue.c" />
@@ -266,12 +260,6 @@
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\wolf.system\memory\w_table.c">
       <Filter>system\memory</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\wolf.system\concurrency\libev\ev.c">
-      <Filter>system\concurrency\libev</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\wolf.system\concurrency\libev\event.c">
-      <Filter>system\concurrency\libev</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\wolf.system\concurrency\w_async.c">
       <Filter>system\concurrency</Filter>
@@ -375,6 +363,9 @@
     <ClCompile Include="..\..\..\..\src\wolf.system\concurrency\w_mutex.c">
       <Filter>system\concurrency</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\wolf.system\concurrency\w_atomic.c">
+      <Filter>system\concurrency</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="system">
@@ -403,9 +394,6 @@
     </Filter>
     <Filter Include="system\concurrency">
       <UniqueIdentifier>{6b8dc3d7-a755-4693-9feb-3432b3e24fba}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="system\concurrency\libev">
-      <UniqueIdentifier>{6f94b8be-2cbd-490a-9eaa-0d4f4ea81f31}</UniqueIdentifier>
     </Filter>
     <Filter Include="system\io">
       <UniqueIdentifier>{dddc201f-725d-4a27-b343-b41761d48d0c}</UniqueIdentifier>
@@ -439,9 +427,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\..\src\wolf.system\concurrency\libev\README">
-      <Filter>system\concurrency\libev</Filter>
-    </None>
     <None Include="..\..\..\..\src\wolf.system\base64\LICENSE">
       <Filter>system\base64</Filter>
     </None>
@@ -453,9 +438,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="..\..\..\..\src\wolf.system\concurrency\libev\version.txt">
-      <Filter>system\concurrency\libev</Filter>
-    </Text>
     <Text Include="..\..\..\..\src\wolf.system\json\rapidjson\version.txt">
       <Filter>system\json</Filter>
     </Text>

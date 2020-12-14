@@ -41,8 +41,13 @@ W_RESULT w_mem_pool_init_from_parent(
 	{
 		apr_allocator_max_free_set(_allocator, 32);
 	}
+
 	//increase number of ref counts of apr pools
+#if defined (_WIN64) || defined (W_PLATFORM_ANDROID) || defined (W_PLATFORM_OSX) || defined (W_PLATFORM_IOS) || defined (W_PLATFORM_LINUX)
 	apr_atomic_inc64(&s_number_apr_pool_ref_counts);
+#else
+	apr_atomic_inc32(&s_number_apr_pool_ref_counts);
+#endif
 
 	return _ret;
 }
@@ -83,7 +88,12 @@ void w_mem_pool_fini(_Inout_ w_mem_pool* pMemPool)
 
 	apr_pool_destroy((*pMemPool)->apr);
 	//decrease number of ref counts of apr pools
+
+#if defined (_WIN64) || defined (W_PLATFORM_ANDROID) || defined (W_PLATFORM_OSX) || defined (W_PLATFORM_IOS) || defined (W_PLATFORM_LINUX)
 	apr_atomic_dec64(&s_number_apr_pool_ref_counts);
+#else
+	apr_atomic_dec32(&s_number_apr_pool_ref_counts);
+#endif
 
 	free((*pMemPool));
 	*pMemPool = NULL;
@@ -108,7 +118,12 @@ w_apr_pool w_mem_pool_get_apr_pool(_Inout_ w_mem_pool pMemPool)
 
 size_t w_mem_pool_get_ref_counts()
 {
+#if defined (_WIN64) || defined (W_PLATFORM_ANDROID) || defined (W_PLATFORM_OSX) || defined (W_PLATFORM_IOS) || defined (W_PLATFORM_LINUX)
 	apr_atomic_read64(&s_number_apr_pool_ref_counts);
+#else
+	apr_atomic_read32(&s_number_apr_pool_ref_counts);
+#endif
+
 	return (size_t)s_number_apr_pool_ref_counts;
 }
 

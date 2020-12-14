@@ -1,10 +1,20 @@
 #include "w_timespan.h"
 #include <time.h>
+#include <stdio.h>
+#include <wchar.h>
 #include <apr-1/apr_general.h>
 #include "log/w_log.h"
 
 #ifdef W_PLATFORM_WIN
 #include <windows.h>
+#endif
+
+#ifdef W_PLATFORM_ANDROID
+#include <cstdlib>
+#endif
+
+#if defined(W_PLATFORM_IOS) || defined(W_PLATFORM_OSX)
+#include <stdlib.h>
 #endif
 
 #define TICKS_PER_NANOSECOND	1

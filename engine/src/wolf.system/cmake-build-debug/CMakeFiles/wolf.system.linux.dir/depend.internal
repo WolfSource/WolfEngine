@@ -603,23 +603,7 @@ CMakeFiles/wolf.system.linux.dir/concurrency/libev/event.c.o
  /home/siminbadri/Documents/github/WolfEngine/Wolf.Engine2/engine/src/wolf.system/concurrency/libev/event.c
  /home/siminbadri/Documents/github/WolfEngine/Wolf.Engine2/engine/src/wolf.system/concurrency/libev/event.h
 CMakeFiles/wolf.system.linux.dir/concurrency/w_async.c.o
- ../../../deps/apr/include/apr-1/apr/linux/apr.h
- ../../../deps/apr/include/apr-1/apr_allocator.h
- ../../../deps/apr/include/apr-1/apr_errno.h
- ../../../deps/apr/include/apr-1/apr_general.h
- ../../../deps/apr/include/apr-1/apr_pools.h
- ../../../deps/apr/include/apr-1/apr_thread_mutex.h
- ../../../deps/apr/include/apr-1/apr_time.h
- ../../../deps/apr/include/apr-1/apr_want.h
- ..//log/w_log.h
- ..//os/w_platform.h
- ..//wolf.h
- ../log/w_log_config.h
- ../memory/w_mem_pool.h
- /home/siminbadri/Documents/github/WolfEngine/Wolf.Engine2/engine/src/wolf.system/concurrency/libev/ev.h
  /home/siminbadri/Documents/github/WolfEngine/Wolf.Engine2/engine/src/wolf.system/concurrency/w_async.c
- /home/siminbadri/Documents/github/WolfEngine/Wolf.Engine2/engine/src/wolf.system/concurrency/w_async.h
- /home/siminbadri/Documents/github/WolfEngine/Wolf.Engine2/engine/src/wolf.system/concurrency/w_thread.h
 CMakeFiles/wolf.system.linux.dir/concurrency/w_atomic.c.o
  ../../../deps/apr/include/apr-1/apr/linux/apr.h
  ../../../deps/apr/include/apr-1/apr_allocator.h
@@ -784,15 +768,7 @@ CMakeFiles/wolf.system.linux.dir/concurrency/w_thread_pool.c.o
  /home/siminbadri/Documents/github/WolfEngine/Wolf.Engine2/engine/src/wolf.system/concurrency/w_thread_pool.c
  /home/siminbadri/Documents/github/WolfEngine/Wolf.Engine2/engine/src/wolf.system/concurrency/w_thread_pool.h
 CMakeFiles/wolf.system.linux.dir/concurrency/w_timer.c.o
- ..//concurrency/w_thread.h
- ..//log/w_log.h
- ..//os/w_platform.h
- ..//wolf.h
- ../log/w_log_config.h
- ../memory/w_mem_pool.h
- /home/siminbadri/Documents/github/WolfEngine/Wolf.Engine2/engine/src/wolf.system/concurrency/libev/ev.h
  /home/siminbadri/Documents/github/WolfEngine/Wolf.Engine2/engine/src/wolf.system/concurrency/w_timer.c
- /home/siminbadri/Documents/github/WolfEngine/Wolf.Engine2/engine/src/wolf.system/concurrency/w_timer.h
 CMakeFiles/wolf.system.linux.dir/io/w_io.c.o
  ../../../deps/apr/include/apr-1/apr/linux/apr.h
  ../../../deps/apr/include/apr-1/apr_allocator.h
@@ -808,10 +784,6 @@ CMakeFiles/wolf.system.linux.dir/io/w_io.c.o
  ../../../deps/apr/include/apr-1/apr_time.h
  ../../../deps/apr/include/apr-1/apr_user.h
  ../../../deps/apr/include/apr-1/apr_want.h
- ../../../deps/libjpeg-turbo/include/turbojpeg.h
- ../../../deps/libpng/include/png.h
- ../../../deps/libpng/include/pngconf.h
- ../../../deps/libpng/include/pnglibconf.h
  ..//base64/chromiumbase64.h
  ..//base64/fastavx512bwbase64.h
  ..//base64/fastavxbase64.h
@@ -890,6 +862,15 @@ CMakeFiles/wolf.system.linux.dir/memory/w_mem_map.c.o
  /home/siminbadri/Documents/github/WolfEngine/Wolf.Engine2/engine/src/wolf.system/memory/w_mem_map.c
  /home/siminbadri/Documents/github/WolfEngine/Wolf.Engine2/engine/src/wolf.system/memory/w_mem_map.h
 CMakeFiles/wolf.system.linux.dir/memory/w_mem_pool.c.o
+ ../../../deps/apr/include/apr-1/apr/linux/apr.h
+ ../../../deps/apr/include/apr-1/apr_allocator.h
+ ../../../deps/apr/include/apr-1/apr_atomic.h
+ ../../../deps/apr/include/apr-1/apr_errno.h
+ ../../../deps/apr/include/apr-1/apr_general.h
+ ../../../deps/apr/include/apr-1/apr_pools.h
+ ../../../deps/apr/include/apr-1/apr_thread_mutex.h
+ ../../../deps/apr/include/apr-1/apr_time.h
+ ../../../deps/apr/include/apr-1/apr_want.h
  ..//os/w_platform.h
  /home/siminbadri/Documents/github/WolfEngine/Wolf.Engine2/engine/src/wolf.system/memory/w_mem_pool.c
  /home/siminbadri/Documents/github/WolfEngine/Wolf.Engine2/engine/src/wolf.system/memory/w_mem_pool.h

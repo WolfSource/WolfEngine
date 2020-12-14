@@ -602,23 +602,7 @@ CMakeFiles/wolf.system.linux.dir/concurrency/libev/event.c.o: ../concurrency/lib
 CMakeFiles/wolf.system.linux.dir/concurrency/libev/event.c.o: ../concurrency/libev/event.c
 CMakeFiles/wolf.system.linux.dir/concurrency/libev/event.c.o: ../concurrency/libev/event.h
 
-CMakeFiles/wolf.system.linux.dir/concurrency/w_async.c.o: ../../../deps/apr/include/apr-1/apr/linux/apr.h
-CMakeFiles/wolf.system.linux.dir/concurrency/w_async.c.o: ../../../deps/apr/include/apr-1/apr_allocator.h
-CMakeFiles/wolf.system.linux.dir/concurrency/w_async.c.o: ../../../deps/apr/include/apr-1/apr_errno.h
-CMakeFiles/wolf.system.linux.dir/concurrency/w_async.c.o: ../../../deps/apr/include/apr-1/apr_general.h
-CMakeFiles/wolf.system.linux.dir/concurrency/w_async.c.o: ../../../deps/apr/include/apr-1/apr_pools.h
-CMakeFiles/wolf.system.linux.dir/concurrency/w_async.c.o: ../../../deps/apr/include/apr-1/apr_thread_mutex.h
-CMakeFiles/wolf.system.linux.dir/concurrency/w_async.c.o: ../../../deps/apr/include/apr-1/apr_time.h
-CMakeFiles/wolf.system.linux.dir/concurrency/w_async.c.o: ../../../deps/apr/include/apr-1/apr_want.h
-CMakeFiles/wolf.system.linux.dir/concurrency/w_async.c.o: ../log/w_log.h
-CMakeFiles/wolf.system.linux.dir/concurrency/w_async.c.o: ../os/w_platform.h
-CMakeFiles/wolf.system.linux.dir/concurrency/w_async.c.o: ../wolf.h
-CMakeFiles/wolf.system.linux.dir/concurrency/w_async.c.o: ../log/w_log_config.h
-CMakeFiles/wolf.system.linux.dir/concurrency/w_async.c.o: ../memory/w_mem_pool.h
-CMakeFiles/wolf.system.linux.dir/concurrency/w_async.c.o: ../concurrency/libev/ev.h
 CMakeFiles/wolf.system.linux.dir/concurrency/w_async.c.o: ../concurrency/w_async.c
-CMakeFiles/wolf.system.linux.dir/concurrency/w_async.c.o: ../concurrency/w_async.h
-CMakeFiles/wolf.system.linux.dir/concurrency/w_async.c.o: ../concurrency/w_thread.h
 
 CMakeFiles/wolf.system.linux.dir/concurrency/w_atomic.c.o: ../../../deps/apr/include/apr-1/apr/linux/apr.h
 CMakeFiles/wolf.system.linux.dir/concurrency/w_atomic.c.o: ../../../deps/apr/include/apr-1/apr_allocator.h
@@ -783,15 +767,7 @@ CMakeFiles/wolf.system.linux.dir/concurrency/w_thread_pool.c.o: ../concurrency/w
 CMakeFiles/wolf.system.linux.dir/concurrency/w_thread_pool.c.o: ../concurrency/w_thread_pool.c
 CMakeFiles/wolf.system.linux.dir/concurrency/w_thread_pool.c.o: ../concurrency/w_thread_pool.h
 
-CMakeFiles/wolf.system.linux.dir/concurrency/w_timer.c.o: ../concurrency/w_thread.h
-CMakeFiles/wolf.system.linux.dir/concurrency/w_timer.c.o: ../log/w_log.h
-CMakeFiles/wolf.system.linux.dir/concurrency/w_timer.c.o: ../os/w_platform.h
-CMakeFiles/wolf.system.linux.dir/concurrency/w_timer.c.o: ../wolf.h
-CMakeFiles/wolf.system.linux.dir/concurrency/w_timer.c.o: ../log/w_log_config.h
-CMakeFiles/wolf.system.linux.dir/concurrency/w_timer.c.o: ../memory/w_mem_pool.h
-CMakeFiles/wolf.system.linux.dir/concurrency/w_timer.c.o: ../concurrency/libev/ev.h
 CMakeFiles/wolf.system.linux.dir/concurrency/w_timer.c.o: ../concurrency/w_timer.c
-CMakeFiles/wolf.system.linux.dir/concurrency/w_timer.c.o: ../concurrency/w_timer.h
 
 CMakeFiles/wolf.system.linux.dir/io/w_io.c.o: ../../../deps/apr/include/apr-1/apr/linux/apr.h
 CMakeFiles/wolf.system.linux.dir/io/w_io.c.o: ../../../deps/apr/include/apr-1/apr_allocator.h
@@ -807,10 +783,6 @@ CMakeFiles/wolf.system.linux.dir/io/w_io.c.o: ../../../deps/apr/include/apr-1/ap
 CMakeFiles/wolf.system.linux.dir/io/w_io.c.o: ../../../deps/apr/include/apr-1/apr_time.h
 CMakeFiles/wolf.system.linux.dir/io/w_io.c.o: ../../../deps/apr/include/apr-1/apr_user.h
 CMakeFiles/wolf.system.linux.dir/io/w_io.c.o: ../../../deps/apr/include/apr-1/apr_want.h
-CMakeFiles/wolf.system.linux.dir/io/w_io.c.o: ../../../deps/libjpeg-turbo/include/turbojpeg.h
-CMakeFiles/wolf.system.linux.dir/io/w_io.c.o: ../../../deps/libpng/include/png.h
-CMakeFiles/wolf.system.linux.dir/io/w_io.c.o: ../../../deps/libpng/include/pngconf.h
-CMakeFiles/wolf.system.linux.dir/io/w_io.c.o: ../../../deps/libpng/include/pnglibconf.h
 CMakeFiles/wolf.system.linux.dir/io/w_io.c.o: ../base64/chromiumbase64.h
 CMakeFiles/wolf.system.linux.dir/io/w_io.c.o: ../base64/fastavx512bwbase64.h
 CMakeFiles/wolf.system.linux.dir/io/w_io.c.o: ../base64/fastavxbase64.h
@@ -889,6 +861,15 @@ CMakeFiles/wolf.system.linux.dir/memory/w_mem_map.c.o: ../memory/w_mem_pool.h
 CMakeFiles/wolf.system.linux.dir/memory/w_mem_map.c.o: ../memory/w_mem_map.c
 CMakeFiles/wolf.system.linux.dir/memory/w_mem_map.c.o: ../memory/w_mem_map.h
 
+CMakeFiles/wolf.system.linux.dir/memory/w_mem_pool.c.o: ../../../deps/apr/include/apr-1/apr/linux/apr.h
+CMakeFiles/wolf.system.linux.dir/memory/w_mem_pool.c.o: ../../../deps/apr/include/apr-1/apr_allocator.h
+CMakeFiles/wolf.system.linux.dir/memory/w_mem_pool.c.o: ../../../deps/apr/include/apr-1/apr_atomic.h
+CMakeFiles/wolf.system.linux.dir/memory/w_mem_pool.c.o: ../../../deps/apr/include/apr-1/apr_errno.h
+CMakeFiles/wolf.system.linux.dir/memory/w_mem_pool.c.o: ../../../deps/apr/include/apr-1/apr_general.h
+CMakeFiles/wolf.system.linux.dir/memory/w_mem_pool.c.o: ../../../deps/apr/include/apr-1/apr_pools.h
+CMakeFiles/wolf.system.linux.dir/memory/w_mem_pool.c.o: ../../../deps/apr/include/apr-1/apr_thread_mutex.h
+CMakeFiles/wolf.system.linux.dir/memory/w_mem_pool.c.o: ../../../deps/apr/include/apr-1/apr_time.h
+CMakeFiles/wolf.system.linux.dir/memory/w_mem_pool.c.o: ../../../deps/apr/include/apr-1/apr_want.h
 CMakeFiles/wolf.system.linux.dir/memory/w_mem_pool.c.o: ../os/w_platform.h
 CMakeFiles/wolf.system.linux.dir/memory/w_mem_pool.c.o: ../memory/w_mem_pool.c
 CMakeFiles/wolf.system.linux.dir/memory/w_mem_pool.c.o: ../memory/w_mem_pool.h

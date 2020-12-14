@@ -28,7 +28,7 @@
 #include <arpa/inet.h>
 #endif
 
-#if !defined(W_PLATFORM_IOS) && !defined(W_PLATFORM_ANDROID)
+#if defined (W_PLATFORM_WIN) || defined (W_PLATFORM_OSX) || defined (W_PLATFORM_LINUX)
 #include <curl/curl.h>
 #endif
 
@@ -453,7 +453,9 @@ W_RESULT w_net_run_ws_server(_In_ bool pSSL,
 
 void w_net_ws_close(_Inout_ void* pSocket, _In_ const bool pSSL)
 {
+#if !defined(W_PLATFORM_ANDROID) && !defined(W_PLATFORM_IOS) && !defined(W_PLATFORM_OSX)
     ws_stop(pSocket, pSSL);
+#endif
 }
 
 #pragma endregion
@@ -1044,7 +1046,7 @@ static void s_quiche_dialer_callback(EV_P_ ev_io* pIO, int pRevents)
 
 void w_free_s_quic_conns()
 {
-#ifndef  W_PLATFORM_ANDROID
+#if defined (_WIN64) || defined (W_PLATFORM_OSX) || defined (W_PLATFORM_IOS) || defined (W_PLATFORM_LINUX)
     if (s_quic_conns)
     {
         s_quic_conns->config = NULL;
@@ -1081,7 +1083,7 @@ W_RESULT w_net_quic_open(
 
     W_RESULT _ret = W_SUCCESS;
 
-#if !defined (W_PLATFORM_ANDROID)
+#if defined (_WIN64) || defined (W_PLATFORM_OSX) || defined (W_PLATFORM_IOS) || defined (W_PLATFORM_LINUX)
 
     quiche_config* _quiche_config = NULL;
     struct addrinfo* _address_info = NULL;
@@ -1462,18 +1464,18 @@ W_RESULT w_net_quic_close()
     {
         return W_FAILURE;
     }
-#ifdef W_PLATFORM_ANDROID
-    int _ret = -1;
-#endif
 
-#if !defined (W_PLATFORM_ANDROID)	
+    int _ret = -1;
+
+#if defined (_WIN64) || defined (W_PLATFORM_OSX) || defined (W_PLATFORM_IOS) || defined (W_PLATFORM_LINUX)
+    
     quiche_conn* _qc = s_quic_conns->connection_io->connection;
     if (!_qc)
     {
         return W_FAILURE;
     }
 
-    int _ret = quiche_conn_close(
+    _ret = quiche_conn_close(
         _qc,
         true,
         0,
@@ -1488,7 +1490,8 @@ size_t w_net_quic_send(_In_ uint8_t* pConnectionID,
     _In_ w_buffer pBuffer,
     _In_ bool pFinish)
 {
-#ifndef  W_PLATFORM_ANDROID
+
+#if defined (_WIN64) || defined (W_PLATFORM_OSX) || defined (W_PLATFORM_IOS) || defined (W_PLATFORM_LINUX)
     //get quich connection based on pConnectionID
     if (!s_quic_conns || !s_quic_conns->connection_io)
     {
@@ -1514,7 +1517,9 @@ size_t w_net_quic_receive(
     _Inout_ w_buffer pReceiveBuffer,
     _Inout_ bool* pIsStreamFinished)
 {
-#ifndef  W_PLATFORM_ANDROID
+
+#if defined (_WIN64) || defined (W_PLATFORM_OSX) || defined (W_PLATFORM_IOS) || defined (W_PLATFORM_LINUX)
+ 
     //get quich connection based on pConnectionID
     if (!s_quic_conns || !s_quic_conns->connection_io || !pReceiveBuffer)
     {

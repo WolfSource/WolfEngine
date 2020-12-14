@@ -1,5 +1,6 @@
 #include "w_compress.h"
 
+#include <stdlib.h>
 #include <apr.h>
 #include <apr-1/apr_general.h>
 #include <apr-1/apr_strings.h>

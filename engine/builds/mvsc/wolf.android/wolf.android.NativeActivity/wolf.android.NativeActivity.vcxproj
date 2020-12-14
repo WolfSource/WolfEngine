@@ -217,10 +217,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\src\wolf.system\concurrency\libev\ev.h" />
-    <ClInclude Include="..\..\..\..\src\wolf.system\concurrency\libev\event.h" />
-    <ClInclude Include="..\..\..\..\src\wolf.system\concurrency\libev\ev_vars.h" />
     <ClInclude Include="..\..\..\..\src\wolf.system\concurrency\w_async.h" />
+    <ClInclude Include="..\..\..\..\src\wolf.system\concurrency\w_atomic.h" />
     <ClInclude Include="..\..\..\..\src\wolf.system\concurrency\w_concurrent_queue.h" />
     <ClInclude Include="..\..\..\..\src\wolf.system\concurrency\w_condition_variable.h" />
     <ClInclude Include="..\..\..\..\src\wolf.system\concurrency\w_mutex.h" />
@@ -301,9 +299,8 @@
     <ClInclude Include="android_native_app_glue.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\wolf.system\concurrency\libev\ev.c" />
-    <ClCompile Include="..\..\..\..\src\wolf.system\concurrency\libev\event.c" />
     <ClCompile Include="..\..\..\..\src\wolf.system\concurrency\w_async.c" />
+    <ClCompile Include="..\..\..\..\src\wolf.system\concurrency\w_atomic.c" />
     <ClCompile Include="..\..\..\..\src\wolf.system\concurrency\w_concurrent_queue.c" />
     <ClCompile Include="..\..\..\..\src\wolf.system\concurrency\w_condition_variable.c" />
     <ClCompile Include="..\..\..\..\src\wolf.system\concurrency\w_mutex.c" />
@@ -347,13 +344,11 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\..\src\wolf.system\concurrency\libev\README" />
     <None Include="..\..\..\..\src\wolf.system\base64\LICENSE" />
     <None Include="..\..\..\..\src\wolf.system\compression\lz4\LICENSE" />
     <None Include="..\..\..\..\src\wolf.system\compression\lz4\README.md" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="..\..\..\..\src\wolf.system\concurrency\libev\version.txt" />
     <Text Include="..\..\..\..\src\wolf.system\json\rapidjson\version.txt" />
     <Text Include="..\..\..\..\src\wolf.system\base64\version.txt" />
   </ItemGroup>

@@ -694,7 +694,7 @@ static apr_size_t trim_busy_threads(apr_thread_pool_t *me, apr_size_t cnt)
 static apr_size_t trim_idle_threads(apr_thread_pool_t* me, apr_size_t cnt)
 {
     apr_size_t n_dbg;
-    struct apr_thread_list_elt* elt, * head, * tail;
+    struct apr_thread_list_elt* elt, * head, * tail = NULL;
     apr_status_t rv;
 
     elt = trim_threads(me, &cnt, 1);

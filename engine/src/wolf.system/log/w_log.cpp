@@ -4,6 +4,7 @@
 #include "logger.hpp"
 #include <unordered_map>
 #include <cstdarg>
+#include <limits.h>
 
 typedef struct
 {

@@ -50,6 +50,13 @@
 		05BC21FA251296DA007D6218 /* w_mem_pool.c in Sources */ = {isa = PBXBuildFile; fileRef = 05BC21E0251296DA007D6218 /* w_mem_pool.c */; };
 		05BC21FB251296DA007D6218 /* w_table.h in Headers */ = {isa = PBXBuildFile; fileRef = 05BC21E1251296DA007D6218 /* w_table.h */; };
 		05BC21FC251296DA007D6218 /* w_mem_map.c in Sources */ = {isa = PBXBuildFile; fileRef = 05BC21E2251296DA007D6218 /* w_mem_map.c */; };
+		05DF50882586A3120062B7B2 /* ev++.h in Headers */ = {isa = PBXBuildFile; fileRef = 05DF50772586A3100062B7B2 /* ev++.h */; };
+		05DF50922586A3120062B7B2 /* ev_vars.h in Headers */ = {isa = PBXBuildFile; fileRef = 05DF50812586A3100062B7B2 /* ev_vars.h */; };
+		05DF50942586A3120062B7B2 /* ev_wrap.h in Headers */ = {isa = PBXBuildFile; fileRef = 05DF50832586A3100062B7B2 /* ev_wrap.h */; };
+		05DF50952586A3120062B7B2 /* event.c in Sources */ = {isa = PBXBuildFile; fileRef = 05DF50842586A3100062B7B2 /* event.c */; };
+		05DF50962586A3120062B7B2 /* event.h in Headers */ = {isa = PBXBuildFile; fileRef = 05DF50852586A3100062B7B2 /* event.h */; };
+		05DF509E2586A4DF0062B7B2 /* ev.h in Headers */ = {isa = PBXBuildFile; fileRef = 05DF509C2586A4DF0062B7B2 /* ev.h */; };
+		05DF50A92586B5670062B7B2 /* libev.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 05DF50A82586B5670062B7B2 /* libev.a */; };
 		2C0354F024AEAAD3005E1479 /* libssh2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C0354EF24AEAABF005E1479 /* libssh2.a */; };
 		2C0354F124AEAAE8005E1479 /* libz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C3756AD23B797DC003A6B0A /* libz.a */; };
 		2C069B8A23E21EB8004EB56F /* w_fiber.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C069B8823E21EB8004EB56F /* w_fiber.cpp */; };
@@ -114,13 +121,6 @@
 		2C89893723A1790F0062D70A /* wolf.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C89893623A1790F0062D70A /* wolf.h */; };
 		2C89898E23A193A40062D70A /* wolf.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C89898D23A193A40062D70A /* wolf.c */; };
 		2C99E78823C2016A00A9720B /* rapidjson.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 2C99E78723C2016A00A9720B /* rapidjson.hpp */; };
-		2C99E79E23C33A3900A9720B /* ev.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C99E79C23C33A3900A9720B /* ev.h */; };
-		2C99E79F23C33A3900A9720B /* ev.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C99E79D23C33A3900A9720B /* ev.c */; };
-		2C99E7A223C33A9F00A9720B /* event.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C99E7A023C33A9E00A9720B /* event.c */; };
-		2C99E7A323C33A9F00A9720B /* event.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C99E7A123C33A9F00A9720B /* event.h */; };
-		2C99E7B123C33AD400A9720B /* ev_vars.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C99E7A723C33AD400A9720B /* ev_vars.h */; };
-		2C99E7B523C33AD400A9720B /* config.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C99E7AB23C33AD400A9720B /* config.h */; };
-		2C99E7B623C33AD400A9720B /* ev_wrap.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C99E7AC23C33AD400A9720B /* ev_wrap.h */; };
 		2C99E7BF23CBA1F700A9720B /* libboost_context.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C99E7BD23CBA1E100A9720B /* libboost_context.a */; };
 		2C99E7C023CBA1F700A9720B /* libboost_fiber.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C99E7BE23CBA1E100A9720B /* libboost_fiber.a */; };
 		2CABF8112485A26B00E5E4D9 /* w_net.c in Sources */ = {isa = PBXBuildFile; fileRef = 2CABF80F2485A26A00E5E4D9 /* w_net.c */; };
@@ -189,6 +189,13 @@
 		05BC21E0251296DA007D6218 /* w_mem_pool.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = w_mem_pool.c; path = ../../../src/wolf.system/memory/w_mem_pool.c; sourceTree = "<group>"; };
 		05BC21E1251296DA007D6218 /* w_table.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_table.h; path = ../../../src/wolf.system/memory/w_table.h; sourceTree = "<group>"; };
 		05BC21E2251296DA007D6218 /* w_mem_map.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = w_mem_map.c; path = ../../../src/wolf.system/memory/w_mem_map.c; sourceTree = "<group>"; };
+		05DF50772586A3100062B7B2 /* ev++.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ev++.h"; sourceTree = "<group>"; };
+		05DF50812586A3100062B7B2 /* ev_vars.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ev_vars.h; sourceTree = "<group>"; };
+		05DF50832586A3100062B7B2 /* ev_wrap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ev_wrap.h; sourceTree = "<group>"; };
+		05DF50842586A3100062B7B2 /* event.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = event.c; sourceTree = "<group>"; };
+		05DF50852586A3100062B7B2 /* event.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = event.h; sourceTree = "<group>"; };
+		05DF509C2586A4DF0062B7B2 /* ev.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ev.h; sourceTree = "<group>"; };
+		05DF50A82586B5670062B7B2 /* libev.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libev.a; path = ../../../deps/libev/lib/osx/libev.a; sourceTree = "<group>"; };
 		2C0354EF24AEAABF005E1479 /* libssh2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libssh2.a; path = ../../../deps/ssh/lib/osx/debug/libssh2.a; sourceTree = "<group>"; };
 		2C0354F224B11E05005E1479 /* version.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = version.txt; path = ../../../src/wolf.system/fiber/version.txt; sourceTree = "<group>"; };
 		2C069B8823E21EB8004EB56F /* w_fiber.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_fiber.cpp; path = ../../../src/wolf.system/fiber/w_fiber.cpp; sourceTree = "<group>"; };
@@ -259,13 +266,6 @@
 		2C89893623A1790F0062D70A /* wolf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = wolf.h; path = ../../../src/wolf.system/wolf.h; sourceTree = "<group>"; };
 		2C89898D23A193A40062D70A /* wolf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = wolf.c; path = ../../../src/wolf.system/wolf.c; sourceTree = "<group>"; };
 		2C99E78723C2016A00A9720B /* rapidjson.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = rapidjson.hpp; path = ../../../src/wolf.system/json/rapidjson/rapidjson.hpp; sourceTree = "<group>"; };
-		2C99E79C23C33A3900A9720B /* ev.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ev.h; path = ../../../src/wolf.system/concurrency/libev/ev.h; sourceTree = "<group>"; };
-		2C99E79D23C33A3900A9720B /* ev.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ev.c; path = ../../../src/wolf.system/concurrency/libev/ev.c; sourceTree = "<group>"; };
-		2C99E7A023C33A9E00A9720B /* event.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = event.c; path = ../../../src/wolf.system/concurrency/libev/event.c; sourceTree = "<group>"; };
-		2C99E7A123C33A9F00A9720B /* event.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = event.h; path = ../../../src/wolf.system/concurrency/libev/event.h; sourceTree = "<group>"; };
-		2C99E7A723C33AD400A9720B /* ev_vars.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ev_vars.h; path = ../../../src/wolf.system/concurrency/libev/ev_vars.h; sourceTree = "<group>"; };
-		2C99E7AB23C33AD400A9720B /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = config.h; path = ../../../src/wolf.system/concurrency/libev/config.h; sourceTree = "<group>"; };
-		2C99E7AC23C33AD400A9720B /* ev_wrap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ev_wrap.h; path = ../../../src/wolf.system/concurrency/libev/ev_wrap.h; sourceTree = "<group>"; };
 		2C99E7BC23CBA1BA00A9720B /* debug */ = {isa = PBXFileReference; lastKnownFileType = folder; name = debug; path = ../../../deps/boost/lib/osx/debug; sourceTree = "<group>"; };
 		2C99E7BD23CBA1E100A9720B /* libboost_context.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libboost_context.a; path = ../../../deps/boost/lib/osx/debug/libboost_context.a; sourceTree = "<group>"; };
 		2C99E7BE23CBA1E100A9720B /* libboost_fiber.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libboost_fiber.a; path = ../../../deps/boost/lib/osx/debug/libboost_fiber.a; sourceTree = "<group>"; };
@@ -299,6 +299,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				05DF50A92586B5670062B7B2 /* libev.a in Frameworks */,
 				051CCCF525318546002E059C /* libquiche.a in Frameworks */,
 				05B4A6D9251A681100FBA684 /* Foundation.framework in Frameworks */,
 				05BC21C525129351007D6218 /* libcurl.a in Frameworks */,
@@ -372,6 +373,20 @@
 			);
 			name = hash;
 			path = ../../../src/wolf.system/memory/hash;
+			sourceTree = "<group>";
+		};
+		05DF50762586A3100062B7B2 /* libev */ = {
+			isa = PBXGroup;
+			children = (
+				05DF509C2586A4DF0062B7B2 /* ev.h */,
+				05DF50772586A3100062B7B2 /* ev++.h */,
+				05DF50812586A3100062B7B2 /* ev_vars.h */,
+				05DF50832586A3100062B7B2 /* ev_wrap.h */,
+				05DF50842586A3100062B7B2 /* event.c */,
+				05DF50852586A3100062B7B2 /* event.h */,
+			);
+			name = libev;
+			path = ../../../src/wolf.system/concurrency/libev;
 			sourceTree = "<group>";
 		};
 		2C1CD488239AD69A0010A12C /* chrono */ = {
@@ -463,11 +478,11 @@
 		2C898550239F65C70062D70A /* concurrency */ = {
 			isa = PBXGroup;
 			children = (
+				05DF50762586A3100062B7B2 /* libev */,
 				051CCCEE25318452002E059C /* w_atomic.c */,
 				051CCCEF25318452002E059C /* w_atomic.h */,
 				05B4A6D2251A45B600FBA684 /* w_mutex.c */,
 				05B4A6D3251A45B600FBA684 /* w_mutex.h */,
-				2C99E79B23C33A1D00A9720B /* libev */,
 				2CCFD5842471E8550030D3AC /* w_async.c */,
 				2CCFD5832471E8550030D3AC /* w_async.h */,
 				2CCFD57B246DF3F30030D3AC /* w_concurrent_queue.c */,
@@ -546,20 +561,6 @@
 			name = rapidjson;
 			sourceTree = "<group>";
 		};
-		2C99E79B23C33A1D00A9720B /* libev */ = {
-			isa = PBXGroup;
-			children = (
-				2C99E7AB23C33AD400A9720B /* config.h */,
-				2C99E7A723C33AD400A9720B /* ev_vars.h */,
-				2C99E7AC23C33AD400A9720B /* ev_wrap.h */,
-				2C99E7A023C33A9E00A9720B /* event.c */,
-				2C99E7A123C33A9F00A9720B /* event.h */,
-				2C99E79D23C33A3900A9720B /* ev.c */,
-				2C99E79C23C33A3900A9720B /* ev.h */,
-			);
-			name = libev;
-			sourceTree = "<group>";
-		};
 		2CABF80E24840FD200E5E4D9 /* net */ = {
 			isa = PBXGroup;
 			children = (
@@ -625,6 +626,7 @@
 		2CFA170D1E674C850041A83F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				05DF50A82586B5670062B7B2 /* libev.a */,
 				051CCCF425318529002E059C /* libquiche.a */,
 				05B4A6D8251A681000FBA684 /* Foundation.framework */,
 				05BC21C625129626007D6218 /* libquiche.a */,
@@ -671,16 +673,18 @@
 			buildActionMask = 2147483647;
 			files = (
 				05122B322531E31C009C2A56 /* w_process.h in Headers */,
+				05DF50922586A3120062B7B2 /* ev_vars.h in Headers */,
+				05DF50882586A3120062B7B2 /* ev++.h in Headers */,
 				05BC21ED251296DA007D6218 /* w_array.h in Headers */,
 				2C069B8B23E21EB8004EB56F /* w_fiber.hpp in Headers */,
 				2C17289C246C168E009C03B3 /* w_gametime.h in Headers */,
 				2C37522123AFD0EF003A6B0A /* quicktimebase64.h in Headers */,
 				05B4A66D251A44C700FBA684 /* logger.hpp in Headers */,
 				05BC21EB251296DA007D6218 /* w_hash.h in Headers */,
+				05DF50942586A3120062B7B2 /* ev_wrap.h in Headers */,
 				2C37522723AFD0EF003A6B0A /* scalarbase64.h in Headers */,
 				2C89848F239E735F0062D70A /* lz4frame.h in Headers */,
 				2C3756BA23B7C1D7003A6B0A /* w_condition_variable.h in Headers */,
-				2C99E7B623C33AD400A9720B /* ev_wrap.h in Headers */,
 				05B4A6D0251A44C700FBA684 /* w_log.h in Headers */,
 				2C3756D923B7D35C003A6B0A /* lua.h in Headers */,
 				05BC21E5251296DA007D6218 /* w_mem_map.h in Headers */,
@@ -688,7 +692,6 @@
 				2C898474239D2FA40062D70A /* w_timespan.h in Headers */,
 				2CCFD5822471E56A0030D3AC /* w_timer.h in Headers */,
 				2C99E78823C2016A00A9720B /* rapidjson.hpp in Headers */,
-				2C99E7B523C33AD400A9720B /* config.h in Headers */,
 				05BC21E8251296DA007D6218 /* w_mem_pool.h in Headers */,
 				2C3756D823B7D35C003A6B0A /* lualib.h in Headers */,
 				05B4A6D5251A45B600FBA684 /* w_mutex.h in Headers */,
@@ -696,9 +699,9 @@
 				2C3756E323B7F302003A6B0A /* w_lua.h in Headers */,
 				2C37522323AFD0EF003A6B0A /* fastavx512bwbase64.h in Headers */,
 				05BC21F6251296DA007D6218 /* utringbuffer.h in Headers */,
+				05DF50962586A3120062B7B2 /* event.h in Headers */,
 				05BC21F3251296DA007D6218 /* utarray.h in Headers */,
 				05BC21E7251296DA007D6218 /* w_mem_cache.h in Headers */,
-				2C99E7B123C33AD400A9720B /* ev_vars.h in Headers */,
 				2CABF8122485A26B00E5E4D9 /* w_net.h in Headers */,
 				2C30BAE423A42CFD009FC330 /* w_io.h in Headers */,
 				2CCFD5852471E8550030D3AC /* w_async.h in Headers */,
@@ -713,7 +716,6 @@
 				2C898496239E735F0062D70A /* xxhash.h in Headers */,
 				051CCCF125318452002E059C /* w_atomic.h in Headers */,
 				2CCFD57E246DF3F30030D3AC /* w_concurrent_queue.h in Headers */,
-				2C99E79E23C33A3900A9720B /* ev.h in Headers */,
 				2C37522923AFD0EF003A6B0A /* klompavxbase64.h in Headers */,
 				05122B302531E31C009C2A56 /* w_window.h in Headers */,
 				2CFADC1D248B6F3400409581 /* cr.h in Headers */,
@@ -726,8 +728,8 @@
 				2C89848E239E735F0062D70A /* lz4hc.h in Headers */,
 				05BC21F5251296DA007D6218 /* utlist.h in Headers */,
 				05BC21F8251296DA007D6218 /* utstring.h in Headers */,
-				2C99E7A323C33A9F00A9720B /* event.h in Headers */,
 				2C30BAE723A4D599009FC330 /* w_platform.h in Headers */,
+				05DF509E2586A4DF0062B7B2 /* ev.h in Headers */,
 				2C898479239D344C0062D70A /* w_chrono.h in Headers */,
 				2CFADC21248FB32E00409581 /* w_cpu.h in Headers */,
 				2C37522023AFD0EF003A6B0A /* fastavxbase64.h in Headers */,
@@ -796,6 +798,7 @@
 			files = (
 				05B4A6C7251A44C700FBA684 /* color_sinks.cpp in Sources */,
 				05B4A6C5251A44C700FBA684 /* async.cpp in Sources */,
+				05DF50952586A3120062B7B2 /* event.c in Sources */,
 				05BC21F1251296DA007D6218 /* w_hash.c in Sources */,
 				2C3756B523B79EF1003A6B0A /* w_signal.c in Sources */,
 				2C37522423AFD0EF003A6B0A /* fastavx512bwbase64.c in Sources */,
@@ -803,7 +806,6 @@
 				2C89847A239D344C0062D70A /* w_chrono.c in Sources */,
 				2C1728A5246C8935009C03B3 /* w_thread_pool.c in Sources */,
 				2C898490239E735F0062D70A /* xxhash.c in Sources */,
-				2C99E7A223C33A9F00A9720B /* event.c in Sources */,
 				2C898540239E763C0062D70A /* unpack.c in Sources */,
 				2C30BAE523A42CFD009FC330 /* w_io.c in Sources */,
 				2CCFD5812471E56A0030D3AC /* w_timer.c in Sources */,
@@ -837,7 +839,6 @@
 				2C898542239E763C0062D70A /* vrefbuffer.c in Sources */,
 				2C898473239D2FA40062D70A /* w_timespan.c in Sources */,
 				2C37522C23AFD0EF003A6B0A /* scalarbase64.c in Sources */,
-				2C99E79F23C33A3900A9720B /* ev.c in Sources */,
 				2C37522623AFD0EF003A6B0A /* fastavxbase64.c in Sources */,
 				2CABF8112485A26B00E5E4D9 /* w_net.c in Sources */,
 				2C898541239E763C0062D70A /* zone.c in Sources */,
@@ -1087,6 +1088,7 @@
 					"$(SRCROOT)/../../../deps/libjpeg-turbo/lib/osx/debug",
 					"$(SRCROOT)/../../../deps/libpng/lib/osx",
 					"$(SRCROOT)/../../../deps/quiche/lib/osx",
+					"$(SRCROOT)/../../../deps/libev/lib/osx",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				ONLY_ACTIVE_ARCH = YES;
@@ -1138,25 +1140,96 @@
 					NDEBUG,
 					HAVE_CONFIG_H,
 					BUILDING_LIBCURL,
-					__OSX__,
 					USE_JMP,
+					"XML_ENABLE_VISIBILITY=1",
+					HAVE_EXPAT_CONFIG_H,
+					expat_EXPORTS,
+					SPDLOG_COMPILED_LIB,
+					APU_DECLARE_STATIC,
+					SPDLOG_WCHAR_FILENAMES,
+					NNG_PLATFORM_POSIX,
+					APR_DECLARE_EXPORT,
+					APU_DSO_MODULE_BUILD,
+					LIBUS_USE_KQUEUE,
+					CURL_STATICLIB,
+					LIBUS_USE_OPENSSL,
+					_CRT_RAND_S,
+					XML_STATIC,
+					ASMINF,
+					EV_STANDALONE,
+					_CRT_SECURE_NO_DEPRECATE,
+					ASMV,
+					NO_FSEEKO,
+					NNG_LITTLE_ENDIAN,
+					LIBUS_USE_LIBUV,
+					_CRT_SECURE_NO_WARNINGS,
+					NNG_PRIVATE,
+					"NNG_MAX_TASKQ_THREADS=16",
+					"NNG_HAVE_SNPRINTF=1",
+					"NNG_HAVE_CONDVAR=1",
+					"NNG_HAVE_STRNLEN=1",
+					NNG_TRANSPORT_WS,
+					NNG_TRANSPORT_WSS,
+					NNG_SUPP_HTTP,
+					NNG_STATIC_LIB,
+					_CRT_NONSTDC_NO_DEPRECATE,
+					W_PLATFORM_OSX,
+					libapr_1_EXPORTS,
+					LIBUS_USE_LIBUV,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				HEADER_SEARCH_PATHS = "";
 				"HEADER_SEARCH_PATHS[arch=*]" = (
 					"$(SRCROOT)/../../../src/wolf.system",
-					"$(SRCROOT)/../../../src/wolf.system/apr-1/",
-					"$(SRCROOT)/../../../src/wolf.system/apr-1/src/",
-					"$(SRCROOT)/../../../src/wolf.system/apr-1/arch/",
-					"$(SRCROOT)/../../../src/wolf.system/apr-1/arch/unix",
-					"$(SRCROOT)/../../../src/wolf.system/apr-1/private",
-					"$(SRCROOT)/../../../src/wolf.system/curl/src",
 					"$(SRCROOT)/../../../src/wolf.system/compression/msgpack",
+					"$(SRCROOT)/../../../src/wolf.system/net/ws/uSockets",
+					"$(SRCROOT)/../../../src/wolf.system/xml/expat",
+					"$(SRCROOT)/../../../src/wolf.system/xml/expat/config/osx/",
+					"$(SRCROOT)/../../../src/wolf.system/log/",
+					"$(SRCROOT)/../../../deps/apr/include",
+					"$(SRCROOT)/../../../deps/apr/include/apr-1",
+					"$(SRCROOT)/../../../deps/apr/include/apr-1/apr/osx/",
+					"$(SRCROOT)/../../../deps/luaJIT/include",
+					"$(SRCROOT)/../../../deps/libpng/include",
+					"$(SRCROOT)/../../../deps/libjpeg-turbo/include",
+					"$(SRCROOT)/../../../deps/boost/include",
 					"$(SRCROOT)/../../../deps/nng/include",
+					"$(SRCROOT)/../../../deps/nng/src",
+					"$(SRCROOT)/../../../deps/tls/include",
+					"$(SRCROOT)/../../../deps/openSSL/include",
+					"$(SRCROOT)/../../../deps/curl/include",
+					"$(SRCROOT)/../../../deps/ssh/include",
+					"$(SRCROOT)/../../../deps/ssh/include/config/osx",
+					"$(SRCROOT)/../../../deps/libjpeg-turbo/include",
+					"$(SRCROOT)/../../../deps/libpng/include",
+					"$(SRCROOT)/../../../deps/zlib/include",
+					"$(SRCROOT)/../../../deps/zlib/include/zconf/osx",
+					"$(SRCROOT)/../../../deps/quiche/include",
+					"$(SRCROOT)/../../../deps/quiche/boringssl",
+					"$(SRCROOT)/../../../src/wolf.system/net/ws/uSockets",
+					"$(SRCROOT)/../../../deps/libuv/include",
+					"$(SRCROOT)/../../../src/wolf.system/log",
 				);
 				INSTALL_PATH = /usr/local/lib;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
 				LIBRARY_SEARCH_PATHS = "";
+				"LIBRARY_SEARCH_PATHS[arch=*]" = (
+					"$(SRCROOT)/../../../deps/apr/lib/osx/release",
+					"$(SRCROOT)/../../../deps/luaJIT/lib/osx/release",
+					"$(SRCROOT)/../../../deps/libpng/lib/osx",
+					"$(SRCROOT)/../../../deps/libjpeg-turbo/lib/osx/release",
+					"$(SRCROOT)/../../../deps/zlib/lib/osx/release",
+					"$(SRCROOT)/../../../deps/boost/lib/osx/release",
+					"$(SRCROOT)/../../../deps/nng/lib/osx/release",
+					"$(SRCROOT)/../../../deps/tls/lib/osx/release",
+					"$(SRCROOT)/../../../deps/openSSL/lib/osx/",
+					"$(SRCROOT)/../../../deps/curl/lib/osx",
+					"$(SRCROOT)/../../../deps/ssh2/lib/osx/release",
+					"$(SRCROOT)/../../../deps/libjpeg-turbo/lib/osx/release",
+					"$(SRCROOT)/../../../deps/libpng/lib/osx",
+					"$(SRCROOT)/../../../deps/quiche/lib/osx",
+					"$(SRCROOT)/../../../deps/libev/lib/osx",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = "";

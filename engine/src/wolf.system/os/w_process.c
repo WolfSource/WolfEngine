@@ -2,6 +2,8 @@
 #include <apr-1/apr_general.h>
 #include "log/w_log.h"
 #include <io/w_io.h>
+#include <wchar.h>
+#include <stdlib.h>
 
 #ifdef W_PLATFORM_WIN
 #include <tlhelp32.h>//for checking process

@@ -14,6 +14,7 @@ extern "C" {
 #endif
 
 #include "wolf.h"
+#include <stdarg.h>
 
     //forward declaration
     typedef struct apr_table_t* w_table;
