@@ -3,6 +3,8 @@
 #include <apr-1/apr_strings.h>
 #include <apr-1/apr_file_info.h>
 #include <apr-1/apr_file_io.h>
+#include <wchar.h>
+#include <stdlib.h>
 #include "log/w_log.h"
 
 #if !defined(W_PLATFORM_ANDROID) && !defined(W_PLATFORM_IOS)

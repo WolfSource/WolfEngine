@@ -17,6 +17,7 @@ extern "C" {
 #include <stdbool.h>
 #include <stdint.h>
 #include <assert.h>
+#include <stddef.h>
 
 #define W_SAFE_DELETE(x)            { if (x)  { delete x; x = NULL;                  } }
 #define W_SAFE_DELETE_ARRAY(ar)     { if (ar) { delete[] ar; ar = NULL;              } }
@@ -40,8 +41,10 @@ extern "C" {
 #endif
 
     typedef
-#ifdef W_PLATFORM_WIN
+#ifdef _WIN64
         __int64
+#elif defined _WIN32
+        __int32
 #elif defined(W_PLATFORM_OSX) || defined(W_PLATFORM_IOS)
         __darwin_off_t
 #elif defined W_PLATFORM_ANDROID

@@ -213,11 +213,6 @@
 		05BC204C25128203007D6218 /* zone.c in Sources */ = {isa = PBXBuildFile; fileRef = 05BC1F4D25128202007D6218 /* zone.c */; };
 		05BC204D25128203007D6218 /* w_compress.c in Sources */ = {isa = PBXBuildFile; fileRef = 05BC1F4E25128202007D6218 /* w_compress.c */; };
 		05BC204E25128203007D6218 /* w_compress.h in Headers */ = {isa = PBXBuildFile; fileRef = 05BC1F4F25128202007D6218 /* w_compress.h */; };
-		05BC207325128237007D6218 /* ev.c in Sources */ = {isa = PBXBuildFile; fileRef = 05BC205225128237007D6218 /* ev.c */; };
-		05BC207425128237007D6218 /* ev.h in Headers */ = {isa = PBXBuildFile; fileRef = 05BC205325128237007D6218 /* ev.h */; };
-		05BC207C25128237007D6218 /* ev_vars.h in Headers */ = {isa = PBXBuildFile; fileRef = 05BC205B25128237007D6218 /* ev_vars.h */; };
-		05BC207F25128237007D6218 /* event.c in Sources */ = {isa = PBXBuildFile; fileRef = 05BC205E25128237007D6218 /* event.c */; };
-		05BC208025128237007D6218 /* event.h in Headers */ = {isa = PBXBuildFile; fileRef = 05BC205F25128237007D6218 /* event.h */; };
 		05BC208125128237007D6218 /* w_async.c in Sources */ = {isa = PBXBuildFile; fileRef = 05BC206225128237007D6218 /* w_async.c */; };
 		05BC208225128237007D6218 /* w_async.h in Headers */ = {isa = PBXBuildFile; fileRef = 05BC206325128237007D6218 /* w_async.h */; };
 		05BC208325128237007D6218 /* w_concurrent_queue.c in Sources */ = {isa = PBXBuildFile; fileRef = 05BC206425128237007D6218 /* w_concurrent_queue.c */; };
@@ -530,11 +525,6 @@
 		05BC1F4D25128202007D6218 /* zone.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = zone.c; sourceTree = "<group>"; };
 		05BC1F4E25128202007D6218 /* w_compress.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = w_compress.c; sourceTree = "<group>"; };
 		05BC1F4F25128202007D6218 /* w_compress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = w_compress.h; sourceTree = "<group>"; };
-		05BC205225128237007D6218 /* ev.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ev.c; sourceTree = "<group>"; };
-		05BC205325128237007D6218 /* ev.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ev.h; sourceTree = "<group>"; };
-		05BC205B25128237007D6218 /* ev_vars.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ev_vars.h; sourceTree = "<group>"; };
-		05BC205E25128237007D6218 /* event.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = event.c; sourceTree = "<group>"; };
-		05BC205F25128237007D6218 /* event.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = event.h; sourceTree = "<group>"; };
 		05BC206225128237007D6218 /* w_async.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = w_async.c; sourceTree = "<group>"; };
 		05BC206325128237007D6218 /* w_async.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = w_async.h; sourceTree = "<group>"; };
 		05BC206425128237007D6218 /* w_concurrent_queue.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = w_concurrent_queue.c; sourceTree = "<group>"; };
@@ -1104,7 +1094,6 @@
 			children = (
 				055EEEED252E32B000091AC4 /* w_atomic.c */,
 				055EEEEE252E32B100091AC4 /* w_atomic.h */,
-				05BC205025128237007D6218 /* libev */,
 				05BC206225128237007D6218 /* w_async.c */,
 				05BC206325128237007D6218 /* w_async.h */,
 				05BC206425128237007D6218 /* w_concurrent_queue.c */,
@@ -1124,18 +1113,6 @@
 			);
 			name = concurrency;
 			path = ../../../src/wolf.system/concurrency;
-			sourceTree = "<group>";
-		};
-		05BC205025128237007D6218 /* libev */ = {
-			isa = PBXGroup;
-			children = (
-				05BC205225128237007D6218 /* ev.c */,
-				05BC205325128237007D6218 /* ev.h */,
-				05BC205B25128237007D6218 /* ev_vars.h */,
-				05BC205E25128237007D6218 /* event.c */,
-				05BC205F25128237007D6218 /* event.h */,
-			);
-			path = libev;
 			sourceTree = "<group>";
 		};
 		05BC2091251285AD007D6218 /* io */ = {
@@ -1391,7 +1368,6 @@
 				05BC21A125128B04007D6218 /* lualib.h in Headers */,
 				05BC203425128203007D6218 /* windows_store.h in Headers */,
 				05BC1FB925128202007D6218 /* ptx.h in Headers */,
-				05BC207C25128237007D6218 /* ev_vars.h in Headers */,
 				05BC1FEA25128202007D6218 /* test.h in Headers */,
 				05BC203F25128203007D6218 /* unpack_define.h in Headers */,
 				05BC1FC225128202007D6218 /* x86.h in Headers */,
@@ -1471,7 +1447,6 @@
 				05BC1FCA25128202007D6218 /* digitalmars.h in Headers */,
 				05BC200725128203007D6218 /* msl.h in Headers */,
 				05BC20CC251285C8007D6218 /* encodings.h in Headers */,
-				05BC208025128237007D6218 /* event.h in Headers */,
 				05BC1E33251280DC007D6218 /* w_process.h in Headers */,
 				05BC1FD525128202007D6218 /* kai.h in Headers */,
 				05BC1FCF25128202007D6218 /* gcc_xml.h in Headers */,
@@ -1573,7 +1548,6 @@
 				05B4A5F6251A41B800FBA684 /* w_log_config.h in Headers */,
 				05BC210A251285E5007D6218 /* uthash.h in Headers */,
 				05BC208A25128237007D6218 /* w_signal.h in Headers */,
-				05BC207425128237007D6218 /* ev.h in Headers */,
 				05BC20DF251285C8007D6218 /* istreamwrapper.h in Headers */,
 				05BC203A25128203007D6218 /* predef.h in Headers */,
 				05BC204625128203007D6218 /* zone.h in Headers */,
@@ -1690,7 +1664,6 @@
 				05BC2163251286F2007D6218 /* w_net.c in Sources */,
 				05BC204B25128203007D6218 /* vrefbuffer.c in Sources */,
 				05BC2115251285E5007D6218 /* w_mem_cache.c in Sources */,
-				05BC207F25128237007D6218 /* event.c in Sources */,
 				05BC21A725128BFB007D6218 /* w_fiber.cpp in Sources */,
 				05BC1E34251280DC007D6218 /* w_window.c in Sources */,
 				05BC1F5525128202007D6218 /* lz4hc.c in Sources */,
@@ -1704,7 +1677,6 @@
 				05B4A5EA251A41B800FBA684 /* async.cpp in Sources */,
 				05BC208F25128237007D6218 /* w_timer.c in Sources */,
 				05BC208325128237007D6218 /* w_concurrent_queue.c in Sources */,
-				05BC207325128237007D6218 /* ev.c in Sources */,
 				05BC2117251285E5007D6218 /* w_mem_map.c in Sources */,
 				05B4A5F0251A41B800FBA684 /* stdout_sinks.cpp in Sources */,
 				05BC1E1825127F48007D6218 /* w_timespan.c in Sources */,
