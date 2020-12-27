@@ -508,6 +508,12 @@
     <ClCompile Include="..\..\..\src\wolf.system\concurrency\w_timer.c">
       <Filter>concurrency</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\net\ws\uSockets\crypto\sni_tree.cpp">
+      <Filter>net\ws\uSockets\crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\net\ws\uSockets\bsd.c">
+      <Filter>net\ws\uSockets</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\wolf.system\base64\chromiumbase64.h">
@@ -1075,6 +1081,15 @@
     <ClInclude Include="..\..\..\src\wolf.system\concurrency\w_timer.h">
       <Filter>concurrency</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\net\ws\uWebSockets\MessageParser.h">
+      <Filter>net\ws\uWebSockets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\net\ws\uWebSockets\Multipart.h">
+      <Filter>net\ws\uWebSockets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\net\ws\uWebSockets\QueryParser.h">
+      <Filter>net\ws\uWebSockets</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\src\wolf.system\base64\LICENSE">
@@ -1100,9 +1115,6 @@
     <Text Include="..\..\..\src\wolf.system\net\ws\uSockets\version.txt">
       <Filter>net\ws\uSockets</Filter>
     </Text>
-    <Text Include="..\..\..\src\wolf.system\net\ws\uWebSockets\version.txt">
-      <Filter>net\ws\uWebSockets</Filter>
-    </Text>
     <Text Include="..\..\..\src\wolf.system\net\ws\uWebSockets\f2\LICENSE.txt">
       <Filter>net\ws\uWebSockets\f2</Filter>
     </Text>
@@ -1111,6 +1123,9 @@
     </Text>
     <Text Include="..\..\..\src\wolf.system\concurrency\libev\version.txt">
       <Filter>concurrency\libev</Filter>
+    </Text>
+    <Text Include="..\..\..\src\wolf.system\net\ws\uWebSockets\version.txt">
+      <Filter>net\ws\uWebSockets</Filter>
     </Text>
   </ItemGroup>
   <ItemGroup>

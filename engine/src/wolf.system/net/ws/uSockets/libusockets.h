@@ -29,13 +29,13 @@
 
 /* Define what a socket descriptor is based on platform */
 #ifdef _WIN32
+#ifndef NOMINMAX
 #define NOMINMAX
-#include <WinSock2.h>
+#endif
+#include <winsock2.h>
 #define LIBUS_SOCKET_DESCRIPTOR SOCKET
 #define WIN32_EXPORT __declspec(dllexport)
-#define alignas(x) __declspec(align(x))
 #else
-#include <stdalign.h>
 #define LIBUS_SOCKET_DESCRIPTOR int
 #define WIN32_EXPORT
 #endif
@@ -84,8 +84,16 @@ struct us_socket_context_options_t {
     const char *passphrase;
     const char *dh_params_file_name;
     const char *ca_file_name;
-    int ssl_prefer_low_memory_usage;
+    int ssl_prefer_low_memory_usage; /* Todo: rename to prefer_low_memory_usage and apply for TCP as well */
 };
+
+/* Adds SNI domain and cert in asn1 format */
+WIN32_EXPORT void us_socket_context_add_server_name(int ssl, struct us_socket_context_t *context, const char *hostname_pattern, struct us_socket_context_options_t options);
+WIN32_EXPORT void us_socket_context_remove_server_name(int ssl, struct us_socket_context_t *context, const char *hostname_pattern);
+WIN32_EXPORT void us_socket_context_on_server_name(int ssl, struct us_socket_context_t *context, void (*cb)(struct us_socket_context_t *, const char *hostname));
+
+/* Returns the underlying SSL native handle, such as SSL_CTX or nullptr */
+WIN32_EXPORT void *us_socket_context_get_native_handle(int ssl, struct us_socket_context_t *context);
 
 /* A socket context holds shared callbacks and user data extension for associated sockets */
 WIN32_EXPORT struct us_socket_context_t *us_create_socket_context(int ssl, struct us_loop_t *loop,
@@ -98,7 +106,7 @@ WIN32_EXPORT void us_socket_context_free(int ssl, struct us_socket_context_t *co
 WIN32_EXPORT void us_socket_context_on_open(int ssl, struct us_socket_context_t *context,
     struct us_socket_t *(*on_open)(struct us_socket_t *s, int is_client, char *ip, int ip_length));
 WIN32_EXPORT void us_socket_context_on_close(int ssl, struct us_socket_context_t *context,
-    struct us_socket_t *(*on_close)(struct us_socket_t *s));
+    struct us_socket_t *(*on_close)(struct us_socket_t *s, int code, void *reason));
 WIN32_EXPORT void us_socket_context_on_data(int ssl, struct us_socket_context_t *context,
     struct us_socket_t *(*on_data)(struct us_socket_t *s, char *data, int length));
 WIN32_EXPORT void us_socket_context_on_writable(int ssl, struct us_socket_context_t *context,
@@ -189,6 +197,10 @@ WIN32_EXPORT struct us_poll_t *us_poll_resize(struct us_poll_t *p, struct us_loo
 
 /* Public interfaces for sockets */
 
+/* Returns the underlying native handle for a socket, such as SSL or file descriptor.
+ * In the case of file descriptor, the value of pointer is fd. */
+WIN32_EXPORT void *us_socket_get_native_handle(int ssl, struct us_socket_t *s);
+
 /* Write up to length bytes of data. Returns actual bytes written.
  * Will call the on_writable callback of active socket context on failure to write everything off in one go.
  * Set hint msg_more if you have more immediate data to write. */
@@ -217,7 +229,7 @@ WIN32_EXPORT int us_socket_is_shut_down(int ssl, struct us_socket_t *s);
 WIN32_EXPORT int us_socket_is_closed(int ssl, struct us_socket_t *s);
 
 /* Immediately closes the socket */
-WIN32_EXPORT struct us_socket_t *us_socket_close(int ssl, struct us_socket_t *s);
+WIN32_EXPORT struct us_socket_t *us_socket_close(int ssl, struct us_socket_t *s, int code, void *reason);
 
 /* Copy remote (IP) address of socket, or fail with zero length. */
 WIN32_EXPORT void us_socket_remote_address(int ssl, struct us_socket_t *s, char *buf, int *length);
@@ -230,7 +242,7 @@ WIN32_EXPORT void us_socket_remote_address(int ssl, struct us_socket_t *s, char 
 #if !defined(LIBUS_USE_EPOLL) && !defined(LIBUS_USE_LIBUV) && !defined(LIBUS_USE_GCD) && !defined(LIBUS_USE_KQUEUE)
 #if defined(_WIN32)
 #define LIBUS_USE_LIBUV
-#elif defined(__APPLE__)
+#elif defined(__APPLE__) || defined(__FreeBSD__)
 #define LIBUS_USE_KQUEUE
 #else
 #define LIBUS_USE_EPOLL

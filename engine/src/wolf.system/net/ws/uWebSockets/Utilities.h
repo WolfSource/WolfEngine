@@ -43,8 +43,8 @@ inline int u32toaHex(uint32_t value, char *dst) {
     return ret;
 }
 
-inline int u32toa(uint32_t value, char *dst) {
-    char temp[10];
+inline int u64toa(uint64_t value, char *dst) {
+    char temp[20];
     char *p = temp;
     do {
         *p++ = (char) ((value % 10) + '0');

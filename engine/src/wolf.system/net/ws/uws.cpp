@@ -16,9 +16,9 @@ int uws::run(const bool pSSL,
     const char* pRoot,
     const int pPort,
     uWS::CompressOptions pCompression,
-    const int pMaxPayloadLength,
-    const int pIdleTimeout,
-    const int pMaxBackPressure,
+    unsigned int pMaxPayloadLength,
+    unsigned int pIdleTimeout,
+    unsigned int pMaxBackPressure,
     std::function<void(void*, int)> pOnListened,
     std::function<bool(w_arg*)> pOnOpened,
     std::function<const char* (const char*, size_t, int*, w_arg*)> pOnMessage,
@@ -66,37 +66,37 @@ int uws::run(const bool pSSL,
                         pWS->close();
                     }
                 },
-                .message = [&](auto* pWS, std::string_view pMessage, uWS::OpCode pOpCode)
+            .message = [&](auto* pWS, std::string_view pMessage, uWS::OpCode pOpCode)
+            {
+                auto _per_socket_data = (w_arg*)pWS->getUserData();
+                auto _res = pOnMessage(pMessage.data(), pMessage.size(), (int*)&pOpCode, _per_socket_data);
+                if (_res == NULL)
                 {
-                    auto _per_socket_data = (w_arg*)pWS->getUserData();
-                    auto _res = pOnMessage(pMessage.data(), pMessage.size(), (int*)&pOpCode, _per_socket_data);
-                    if (_res == NULL)
-                    {
-                        //close websocket
-                        pWS->close();
-                    }
-                    else
-                    {
-                        pWS->send(_res, pOpCode, /*compress*/true);
-                    }
-                },
-                .drain = [](auto* pWS)
-                {
-                    /* Check ws->getBufferedAmount() here */
-                },
-                .ping = [](auto* pWS)
-                {
-                    /* Not implemented yet */
-                },
-                .pong = [](auto* pWS)
-                {
-                    /* Not implemented yet */
-                },
-                .close = [&](auto* pWS, int pExitCode, std::string_view pMessage)
-                {
-                    auto _per_socket_data = (w_arg*)pWS->getUserData();
-                    pOnClosed(pMessage.data(), pMessage.size(), pExitCode, _per_socket_data);
+                    //close websocket
+                    pWS->close();
                 }
+                else
+                {
+                    pWS->send(_res, pOpCode, /*compress*/true);
+                }
+            },
+            .drain = [](auto* pWS)
+            {
+                /* Check ws->getBufferedAmount() here */
+            },
+            .ping = [](auto* pWS)
+            {
+                /* Not implemented yet */
+            },
+            .pong = [](auto* pWS)
+            {
+                /* Not implemented yet */
+            },
+            .close = [&](auto* pWS, int pExitCode, std::string_view pMessage)
+            {
+                auto _per_socket_data = (w_arg*)pWS->getUserData();
+                pOnClosed(pMessage.data(), pMessage.size(), pExitCode, _per_socket_data);
+            }
                 }).listen(pPort, [&](auto* pToken)
                     {
                         if (pToken)

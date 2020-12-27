@@ -29,6 +29,25 @@
 
 namespace uWS {
 
+    /* This one matches us_socket_context_options_t but has default values */
+    struct SocketContextOptions {
+        const char *key_file_name = nullptr;
+        const char *cert_file_name = nullptr;
+        const char *passphrase = nullptr;
+        const char *dh_params_file_name = nullptr;
+        const char *ca_file_name = nullptr;
+        int ssl_prefer_low_memory_usage = 0;
+
+        /* Conversion operator used internally */
+        operator struct us_socket_context_options_t() const {
+            struct us_socket_context_options_t socket_context_options;
+            memcpy(&socket_context_options, this, sizeof(SocketContextOptions));
+            return socket_context_options;
+        }
+    };
+
+    static_assert(sizeof(struct us_socket_context_options_t) == sizeof(SocketContextOptions), "Mismatching uSockets/uWebSockets ABI");
+
 template <bool SSL>
 struct TemplatedApp {
 private:
@@ -37,6 +56,40 @@ private:
     std::vector<WebSocketContext<SSL, true> *> webSocketContexts;
 
 public:
+
+    /* Server name */
+    TemplatedApp &&addServerName(std::string hostname_pattern, SocketContextOptions options = {}) {
+
+        us_socket_context_add_server_name(SSL, (struct us_socket_context_t *) httpContext, hostname_pattern.c_str(), options);
+        return std::move(*this);
+    }
+
+    TemplatedApp &&removeServerName(std::string hostname_pattern) {
+
+        us_socket_context_remove_server_name(SSL, (struct us_socket_context_t *) httpContext, hostname_pattern.c_str());
+        return std::move(*this);
+    }
+
+    TemplatedApp &&missingServerName(fu2::unique_function<void(const char *hostname)> handler) {
+
+        if (!constructorFailed()) {
+            httpContext->getSocketContextData()->missingServerNameHandler = std::move(handler);
+
+            us_socket_context_on_server_name(SSL, (struct us_socket_context_t *) httpContext, [](struct us_socket_context_t *context, const char *hostname) {
+
+                /* This is the only requirements of being friends with HttpContextData */
+                HttpContext<SSL> *httpContext = (HttpContext<SSL> *) context;
+                httpContext->getSocketContextData()->missingServerNameHandler(hostname);
+            });
+        }
+
+        return std::move(*this);
+    }
+
+    /* Returns the SSL_CTX of this app, or nullptr. */
+    void *getNativeHandle() {
+        return us_socket_context_get_native_handle(SSL, (struct us_socket_context_t *) httpContext);
+    }
 
     /* Attaches a "filter" function to track socket connections/disconnections */
     void filter(fu2::unique_function<void(HttpResponse<SSL> *, int)> &&filterHandler) {
@@ -73,7 +126,7 @@ public:
         webSocketContexts = std::move(other.webSocketContexts);
     }
 
-    TemplatedApp(us_socket_context_options_t options = {}) {
+    TemplatedApp(SocketContextOptions options = {}) {
         httpContext = uWS::HttpContext<SSL>::create(uWS::Loop::get(), options);
     }
 
@@ -83,9 +136,9 @@ public:
 
     struct WebSocketBehavior {
         CompressOptions compression = DISABLED;
-        int maxPayloadLength = 16 * 1024;
-        int idleTimeout = 120;
-        int maxBackpressure = 1 * 1024 * 1024;
+        unsigned int maxPayloadLength = 16 * 1024;
+        unsigned int idleTimeout = 120;
+        unsigned int maxBackpressure = 1 * 1024 * 1024;
         fu2::unique_function<void(HttpResponse<SSL> *, HttpRequest *, struct us_socket_context_t *)> upgrade = nullptr;
         fu2::unique_function<void(uWS::WebSocket<SSL, true> *)> open = nullptr;
         fu2::unique_function<void(uWS::WebSocket<SSL, true> *, std::string_view, uWS::OpCode)> message = nullptr;
@@ -149,7 +202,7 @@ public:
         webSocketContext->getExt()->maxBackpressure = behavior.maxBackpressure;
         webSocketContext->getExt()->compression = behavior.compression;
 
-        httpContext->onHttp("get", pattern, [webSocketContext, httpContext = this->httpContext, behavior = std::move(behavior)](auto *res, auto *req) mutable {
+        httpContext->onHttp("get", pattern, [webSocketContext, behavior = std::move(behavior)](auto *res, auto *req) mutable {
 
             /* If we have this header set, it's a websocket */
             std::string_view secWebSocketKey = req->getHeader("sec-websocket-key");

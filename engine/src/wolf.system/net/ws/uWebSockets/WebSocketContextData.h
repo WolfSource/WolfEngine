@@ -33,6 +33,19 @@ template <bool, bool> struct WebSocket;
 
 template <bool SSL>
 struct WebSocketContextData {
+private:
+    /* Used for prepending unframed messages when using dedicated compressors */
+    struct MessageMetadata {
+        unsigned int length;
+        OpCode opCode;
+        bool compress;
+        /* Undefined init of all members */
+        MessageMetadata() {}
+        MessageMetadata(unsigned int length, OpCode opCode, bool compress)
+        : length(length), opCode(opCode), compress(compress) {}
+    };
+
+public:
     /* The callbacks for this context */
     fu2::unique_function<void(uWS::WebSocket<SSL, true> *)> openHandler = nullptr;
     fu2::unique_function<void(WebSocket<SSL, true> *, std::string_view, uWS::OpCode)> messageHandler = nullptr;
@@ -44,7 +57,7 @@ struct WebSocketContextData {
 
     /* Settings for this context */
     size_t maxPayloadLength = 0;
-    int idleTimeout = 0;
+    unsigned int idleTimeout = 0;
 
     /* We do need these for async upgrade */
     int compression;
@@ -65,13 +78,6 @@ struct WebSocketContextData {
         /* We rely on writing to regular asyncSockets */
         auto *asyncSocket = (AsyncSocket<SSL> *) s->user;
 
-        /* We might be called from unsubscribeAll from close handler of a socket,
-         * so make sure to check if we are a closed socket before trying to send */
-        if (us_socket_is_closed(SSL, (struct us_socket_t *) s->user) || us_socket_is_shut_down(SSL, (struct us_socket_t *) s->user)) {
-            /* Return code means nothing, todo: remove it */
-            return 0;
-        }
-
         /* Check if we now have too much backpressure (todo: don't buffer up before check) */
         if (!maxBackpressure || (unsigned int) asyncSocket->getBufferedAmount() < maxBackpressure) {
             /* Pick uncompressed data track */
@@ -80,7 +86,48 @@ struct WebSocketContextData {
             /* Are we using compression? Fine, pick the compressed data track */
             WebSocketData *webSocketData = (WebSocketData *) asyncSocket->getAsyncSocketData();
             if (webSocketData->compressionStatus != WebSocketData::CompressionStatus::DISABLED) {
+
+                /* This is used for both shared and dedicated paths */
                 selectedData = data.second;
+
+                /* However, dedicated compression has its own path */
+                if (compression != SHARED_COMPRESSOR) {
+
+                    WebSocket<SSL, true> *ws = (WebSocket<SSL, true> *) asyncSocket;
+
+                    /* We need to handle being corked, and corking here */
+                    bool needsUncorking = false;
+                    if (!ws->isCorked() && ws->canCork()) {
+                        asyncSocket->cork();
+                        needsUncorking = true;
+                    }
+
+                    while (selectedData.length()) {
+                        /* Interpret the data like so, because this is how we shoved it in */
+                        MessageMetadata mm;
+                        memcpy((char *) &mm, selectedData.data(), sizeof(MessageMetadata));
+                        std::string_view unframedMessage(selectedData.data() + sizeof(MessageMetadata), mm.length);
+
+                        /* Skip this message if our backpressure is too high */
+                        if (maxBackpressure && ws->getBufferedAmount() > maxBackpressure) {
+                            break;
+                        }
+
+                        /* Here we perform the actual compression and framing */
+                        ws->send(unframedMessage, mm.opCode, mm.compress);
+
+                        /* Advance until empty */
+                        selectedData.remove_prefix(sizeof(MessageMetadata) + mm.length);
+                    }
+
+                    /* Here we need to uncork or keep it as was */
+                    if (needsUncorking) {
+                        asyncSocket->uncork();
+                    }
+
+                    /* See below */
+                    return 0;
+                }
             }
 
             /* Note: this assumes we are not corked, as corking will swallow things and fail later on */
@@ -100,12 +147,12 @@ struct WebSocketContextData {
         return 0;
     }) {
         /* We empty for both pre and post just to make sure */
-        Loop::get()->addPostHandler(this, [this](Loop *loop) {
+        Loop::get()->addPostHandler(this, [this](Loop */*loop*/) {
             /* Commit pub/sub batches every loop iteration */
             topicTree.drain();
         });
 
-        Loop::get()->addPreHandler(this, [this](Loop *loop) {
+        Loop::get()->addPreHandler(this, [this](Loop */*loop*/) {
             /* Commit pub/sub batches every loop iteration */
             topicTree.drain();
         });
@@ -117,25 +164,54 @@ struct WebSocketContextData {
         char *dst = (char *) malloc(protocol::messageFrameSize(message.size()));
         size_t dst_length = protocol::formatMessage<true>(dst, message.data(), message.length(), opCode, message.length(), false);
 
-        if (compress) {
-            /* Loop data holds shared compressor */
-            LoopData *loopData = (LoopData *) us_loop_ext((us_loop_t *) Loop::get());
-
-            /* Compress it */
-            std::string_view compressedMessage = loopData->deflationStream->deflate(loopData->zlibContext, message, true);
-
-            /* Frame it */
-            char *dst_compressed = (char *) malloc(protocol::messageFrameSize(compressedMessage.size()));
-            size_t dst_compressed_length = protocol::formatMessage<true>(dst_compressed, compressedMessage.data(), compressedMessage.length(), opCode, compressedMessage.length(), true);
-
-            /* Always publish the shortest one in any case */
-            topicTree.publish(topic, {std::string_view(dst, dst_length), dst_compressed_length >= dst_length ? std::string_view(dst, dst_length) : std::string_view(dst_compressed, dst_compressed_length)});
-
-            /* We don't care for allocation here */
-            ::free(dst_compressed);
+        /* If compression is disabled */
+        if (compression == DISABLED) {
+            /* Leave second field empty as nobody will ever read it */
+            topicTree.publish(topic, {std::string_view(dst, dst_length), {}});
         } else {
-            /* If not compressing, put same message on both tracks */
-            topicTree.publish(topic, {std::string_view(dst, dst_length), std::string_view(dst, dst_length)});
+            if (compress) {
+                /* Shared compression mode publishes compressed, framed data */
+                if (compression == SHARED_COMPRESSOR) {
+                    /* Loop data holds shared compressor */
+                    LoopData *loopData = (LoopData *) us_loop_ext((us_loop_t *) Loop::get());
+
+                    /* Compress it */
+                    std::string_view compressedMessage = loopData->deflationStream->deflate(loopData->zlibContext, message, true);
+
+                    /* Frame it */
+                    char *dst_compressed = (char *) malloc(protocol::messageFrameSize(compressedMessage.size()));
+                    size_t dst_compressed_length = protocol::formatMessage<true>(dst_compressed, compressedMessage.data(), compressedMessage.length(), opCode, compressedMessage.length(), true);
+
+                    /* Always publish the shortest one in any case */
+                    topicTree.publish(topic, {std::string_view(dst, dst_length), dst_compressed_length >= dst_length ? std::string_view(dst, dst_length) : std::string_view(dst_compressed, dst_compressed_length)});
+
+                    /* We don't care for allocation here */
+                    ::free(dst_compressed);
+                } else {
+                    /* Dedicated compression mode publishes metadata + unframed uncompressed data */
+                    char *dst_compressed = (char *) malloc(message.length() + sizeof(MessageMetadata));
+
+                    MessageMetadata mm(
+                        (unsigned int) message.length(),
+                        opCode,
+                        compress
+                    );
+
+                    memcpy(dst_compressed, (char *) &mm, sizeof(MessageMetadata));
+                    memcpy(dst_compressed + sizeof(MessageMetadata), message.data(), message.length());
+
+                    /* Interpretation of compressed data depends on what compressor we use */
+                    topicTree.publish(topic, {
+                        std::string_view(dst, dst_length),
+                        std::string_view(dst_compressed, message.length() + sizeof(MessageMetadata))
+                    });
+
+                    ::free(dst_compressed);
+                }
+            } else {
+                /* If not compressing, put same message on both tracks */
+                topicTree.publish(topic, {std::string_view(dst, dst_length), std::string_view(dst, dst_length)});
+            }
         }
 
         ::free(dst);

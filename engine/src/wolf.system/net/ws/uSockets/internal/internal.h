@@ -18,6 +18,12 @@
 #ifndef INTERNAL_H
 #define INTERNAL_H
 
+#if defined(_MSC_VER)
+#define alignas(x) __declspec(align(x))
+#else
+#include <stdalign.h>
+#endif
+
 /* We only have one networking implementation so far */
 #include "internal/networking/bsd.h"
 
@@ -108,14 +114,11 @@ struct us_socket_context_t {
     struct us_socket_t *(*on_open)(struct us_socket_t *, int is_client, char *ip, int ip_length);
     struct us_socket_t *(*on_data)(struct us_socket_t *, char *data, int length);
     struct us_socket_t *(*on_writable)(struct us_socket_t *);
-    struct us_socket_t *(*on_close)(struct us_socket_t *);
+    struct us_socket_t *(*on_close)(struct us_socket_t *, int code, void *reason);
     //void (*on_timeout)(struct us_socket_context *);
     struct us_socket_t *(*on_socket_timeout)(struct us_socket_t *);
     struct us_socket_t *(*on_end)(struct us_socket_t *);
     int (*ignore_data)(struct us_socket_t *);
-
-    /* All contexts hold references to their own copied options */
-    struct us_socket_context_options_t options;
 };
 
 /* Internal SSL interface */
@@ -123,6 +126,14 @@ struct us_socket_context_t {
 
 struct us_internal_ssl_socket_context_t;
 struct us_internal_ssl_socket_t;
+
+/* SNI functions */
+void us_internal_ssl_socket_context_add_server_name(struct us_internal_ssl_socket_context_t *context, const char *hostname_pattern, struct us_socket_context_options_t options);
+void us_internal_ssl_socket_context_remove_server_name(struct us_internal_ssl_socket_context_t *context, const char *hostname_pattern);
+void us_internal_ssl_socket_context_on_server_name(struct us_internal_ssl_socket_context_t *context, void (*cb)(struct us_internal_ssl_socket_context_t *, const char *));
+
+void *us_internal_ssl_socket_get_native_handle(struct us_internal_ssl_socket_t *s);
+void *us_internal_ssl_socket_context_get_native_handle(struct us_internal_ssl_socket_context_t *context);
 
 struct us_internal_ssl_socket_context_t *us_internal_create_ssl_socket_context(struct us_loop_t *loop,
     int context_ext_size, struct us_socket_context_options_t options);
@@ -132,7 +143,7 @@ void us_internal_ssl_socket_context_on_open(struct us_internal_ssl_socket_contex
     struct us_internal_ssl_socket_t *(*on_open)(struct us_internal_ssl_socket_t *s, int is_client, char *ip, int ip_length));
 
 void us_internal_ssl_socket_context_on_close(struct us_internal_ssl_socket_context_t *context,
-    struct us_internal_ssl_socket_t *(*on_close)(struct us_internal_ssl_socket_t *s));
+    struct us_internal_ssl_socket_t *(*on_close)(struct us_internal_ssl_socket_t *s, int code, void *reason));
 
 void us_internal_ssl_socket_context_on_data(struct us_internal_ssl_socket_context_t *context,
     struct us_internal_ssl_socket_t *(*on_data)(struct us_internal_ssl_socket_t *s, char *data, int length));
@@ -159,7 +170,7 @@ struct us_internal_ssl_socket_context_t *us_internal_ssl_socket_get_context(stru
 void *us_internal_ssl_socket_ext(struct us_internal_ssl_socket_t *s);
 int us_internal_ssl_socket_is_shut_down(struct us_internal_ssl_socket_t *s);
 void us_internal_ssl_socket_shutdown(struct us_internal_ssl_socket_t *s);
-struct us_internal_ssl_socket_t *us_internal_ssl_socket_close(struct us_internal_ssl_socket_t *s);
+
 struct us_internal_ssl_socket_t *us_internal_ssl_socket_context_adopt_socket(struct us_internal_ssl_socket_context_t *context,
     struct us_internal_ssl_socket_t *s, int ext_size);
 

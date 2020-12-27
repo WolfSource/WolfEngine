@@ -61,10 +61,10 @@ private:
         Super::write(buf, length);
     }
 
-    /* Write an unsigned 32-bit integer */
-    void writeUnsigned(unsigned int value) {
-        char buf[10];
-        int length = utils::u32toa(value, buf);
+    /* Write an unsigned 64-bit integer */
+    void writeUnsigned64(uint64_t value) {
+        char buf[20];
+        int length = utils::u64toa(value, buf);
 
         /* For now we do this copy */
         Super::write(buf, length);
@@ -82,21 +82,24 @@ private:
 
     /* Called only once per request */
     void writeMark() {
+        /* You can disable this altogether */
 #ifndef UWS_HTTPRESPONSE_NO_WRITEMARK
-        /* We only expose major version */
-        writeHeader("uWebSockets", "18");
+        if (!Super::getLoopData()->noMark) {
+            /* We only expose major version */
+            writeHeader("uWebSockets", "18");
+        }
 #endif
     }
 
     /* Returns true on success, indicating that it might be feasible to write more data.
      * Will start timeout if stream reaches totalSize or write failure. */
-    bool internalEnd(std::string_view data, int totalSize, bool optional, bool allowContentLength = true) {
+    bool internalEnd(std::string_view data, size_t totalSize, bool optional, bool allowContentLength = true) {
         /* Write status if not already done */
         writeStatus(HTTP_200_OK);
 
         /* If no total size given then assume this chunk is everything */
         if (!totalSize) {
-            totalSize = (int) data.length();
+            totalSize = data.length();
         }
 
         HttpResponseData<SSL> *httpResponseData = getHttpResponseData();
@@ -132,7 +135,7 @@ private:
                 if (allowContentLength) {
                     /* Even zero is a valid content-length */
                     Super::write("Content-Length: ", 16);
-                    writeUnsigned(totalSize);
+                    writeUnsigned64(totalSize);
                     Super::write("\r\n\r\n", 4);
                 } else {
                     Super::write("\r\n", 2);
@@ -146,11 +149,20 @@ private:
              * if it failed to drain any prior failed header writes */
 
             /* Write as much as possible without causing backpressure */
-            auto [written, failed] = Super::write(data.data(), (int) data.length(), optional);
+            size_t written = 0;
+            bool failed = false;
+            while (written < data.length() && !failed) {
+                /* uSockets only deals with int sizes, so pass chunks of max signed int size */
+                auto writtenFailed = Super::write(data.data() + written, (int) std::min<size_t>(data.length() - written, INT_MAX), optional);
+
+                written += (size_t) writtenFailed.first;
+                failed = writtenFailed.second;
+            }
+
             httpResponseData->offset += written;
 
             /* Success is when we wrote the entire thing without any failures */
-            bool success = (unsigned int) written == data.length() && !failed;
+            bool success = written == data.length() && !failed;
 
             /* If we are now at the end, start a timeout. Also start a timeout if we failed. */
             if (!success || httpResponseData->offset == totalSize) {
@@ -209,7 +221,7 @@ public:
         if (webSocketContextData->compression != DISABLED) {
             if (secWebSocketExtensions.length()) {
                 /* We never support client context takeover (the client cannot compress with a sliding window). */
-                int wantedOptions = PERMESSAGE_DEFLATE | CLIENT_NO_CONTEXT_TAKEOVER;
+                unsigned int wantedOptions = PERMESSAGE_DEFLATE | CLIENT_NO_CONTEXT_TAKEOVER;
 
                 /* Shared compressor is the default */
                 if (webSocketContextData->compression == SHARED_COMPRESSOR) {
@@ -224,6 +236,33 @@ public:
                 /* Todo: remove these mid string copies */
                 std::string offer = extensionsNegotiator.generateOffer();
                 if (offer.length()) {
+
+                    /* Todo: this is a quick fix that should be properly moved to ExtensionsNegotiator */
+                    if (webSocketContextData->compression & DEDICATED_COMPRESSOR &&
+                        webSocketContextData->compression != DEDICATED_COMPRESSOR_256KB) {
+                            /* 3kb, 4kb is 9, 256 is 15 (default) */
+                            int maxServerWindowBits = 9;
+                            switch (webSocketContextData->compression) {
+                                case DEDICATED_COMPRESSOR_8KB:
+                                maxServerWindowBits = 10;
+                                break;
+                                case DEDICATED_COMPRESSOR_16KB:
+                                maxServerWindowBits = 11;
+                                break;
+                                case DEDICATED_COMPRESSOR_32KB:
+                                maxServerWindowBits = 12;
+                                break;
+                                case DEDICATED_COMPRESSOR_64KB:
+                                maxServerWindowBits = 13;
+                                break;
+                                case DEDICATED_COMPRESSOR_128KB:
+                                maxServerWindowBits = 14;
+                                break;
+                            }
+                            offer += "; server_max_window_bits=";
+                            offer += std::to_string(maxServerWindowBits);
+                    }
+
                     writeHeader("Sec-WebSocket-Extensions", offer);
                 }
 
@@ -287,8 +326,10 @@ public:
     /* Immediately terminate this Http response */
     using Super::close;
 
+    /* See AsyncSocket */
     using Super::getRemoteAddress;
     using Super::getRemoteAddressAsText;
+    using Super::getNativeHandle;
 
     /* Note: Headers are not checked in regards to timeout.
      * We only check when you actively push data or end the request */
@@ -329,22 +370,22 @@ public:
     }
 
     /* Write an HTTP header with unsigned int value */
-    HttpResponse *writeHeader(std::string_view key, unsigned int value) {
+    HttpResponse *writeHeader(std::string_view key, uint64_t value) {
         Super::write(key.data(), (int) key.length());
         Super::write(": ", 2);
-        writeUnsigned(value);
+        writeUnsigned64(value);
         Super::write("\r\n", 2);
         return this;
     }
 
     /* End the response with an optional data chunk. Always starts a timeout. */
     void end(std::string_view data = {}) {
-        internalEnd(data, (int) data.length(), false);
+        internalEnd(data, data.length(), false);
     }
 
     /* Try and end the response. Returns [true, true] on success.
      * Starts a timeout in some cases. Returns [ok, hasResponded] */
-    std::pair<bool, bool> tryEnd(std::string_view data, int totalSize = 0) {
+    std::pair<bool, bool> tryEnd(std::string_view data, size_t totalSize = 0) {
         return {internalEnd(data, totalSize, true), hasResponded()};
     }
 
@@ -382,7 +423,7 @@ public:
     }
 
     /* Get the current byte write offset for this Http response */
-    int getWriteOffset() {
+    size_t getWriteOffset() {
         HttpResponseData<SSL> *httpResponseData = getHttpResponseData();
 
         return httpResponseData->offset;
@@ -417,7 +458,7 @@ public:
     }
 
     /* Attach handler for writable HTTP response */
-    HttpResponse *onWritable(fu2::unique_function<bool(int)> &&handler) {
+    HttpResponse *onWritable(fu2::unique_function<bool(size_t)> &&handler) {
         HttpResponseData<SSL> *httpResponseData = getHttpResponseData();
 
         httpResponseData->onWritable = std::move(handler);

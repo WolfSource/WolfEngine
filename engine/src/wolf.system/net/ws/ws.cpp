@@ -65,7 +65,8 @@ void ws_stop(_Inout_ void* pSocket, _In_ const bool pSSL)
 {
     if (pSocket)
     {
-        us_listen_socket_close(pSSL, (struct us_listen_socket_t*)pSocket);
+        auto _s = (struct us_listen_socket_t*)pSocket;
+        us_listen_socket_close(pSSL, _s);
     }
 }
 

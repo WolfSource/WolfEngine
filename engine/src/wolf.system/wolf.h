@@ -24,10 +24,10 @@ extern "C" {
 #define W_SAFE_RELEASE(x)           { if (x)  { x->release(); delete x; x = NULL;    } }
 #define W_ARRAY_SIZE(ar)	        { return  (sizeof(ar) / sizeof(ar[0]); }
 
-#define WOLF_MAJOR_VERSION 2    // Making incompatible API changes
-#define WOLF_MINOR_VERSION 0    // Adding functionality in a backwards - compatible manner
-#define WOLF_PATCH_VERSION 27   // bug fixes
-#define WOLF_DEBUG_VERSION 58   // for debugging
+#define WOLF_MAJOR_VERSION 2   // Making incompatible API changes
+#define WOLF_MINOR_VERSION 1   // Adding functionality in a backwards - compatible manner
+#define WOLF_PATCH_VERSION 1   // bug fixes
+#define WOLF_DEBUG_VERSION 0   // for debugging
 
 #define W_MAX_BUFFER_SIZE 4096
 

@@ -80,6 +80,7 @@ private:
 
     /* Cull or trim unused Topic nodes from leaf to root */
     void trimTree(Topic *topic) {
+        repeat:
         if (!topic->subs.size() && !topic->children.size() && !topic->terminatingWildcardChild && !topic->wildcardChild) {
             Topic *parent = topic->parent;
 
@@ -114,21 +115,31 @@ private:
             delete topic;
 
             if (parent != root) {
-                trimTree(parent);
+                topic = parent;
+                goto repeat;
+                //trimTree(parent);
             }
         }
     }
 
     /* Should be getData and commit? */
     void publish(Topic *iterator, size_t start, size_t stop, std::string_view topic, std::pair<std::string_view, std::string_view> message) {
-        /* If we already have 64 triggered topics make sure to drain it here */
-        if (numTriggeredTopics == 64) {
-            drain();
-        }
 
+        /* Iterate over all segments in given topic */
         for (; stop != std::string::npos; start = stop + 1) {
             stop = topic.find('/', start);
             std::string_view segment = topic.substr(start, stop - start);
+
+            /* It is very important to disallow wildcards when publishing.
+             * We will not catch EVERY misuse this lazy way, but enough to hinder
+             * explosive recursion.
+             * Terminating wildcards MAY still get triggered along the way, if for
+             * instace the error is found late while iterating the topic segments. */
+            if (segment.length() == 1) {
+                if (segment[0] == '+' || segment[0] == '#') {
+                    return;
+                }
+            }
 
             /* Do we have a terminating wildcard child? */
             if (iterator->terminatingWildcardChild) {
@@ -136,6 +147,11 @@ private:
 
                 /* Add this topic to triggered */
                 if (!iterator->terminatingWildcardChild->triggered) {
+                    /* If we already have 64 triggered topics make sure to drain it here */
+                    if (numTriggeredTopics == 64) {
+                        drain();
+                    }
+
                     triggeredTopics[numTriggeredTopics++] = iterator->terminatingWildcardChild;
                     iterator->terminatingWildcardChild->triggered = true;
                 }
@@ -160,6 +176,11 @@ private:
 
         /* Add this topic to triggered */
         if (!iterator->triggered) {
+            /* If we already have 64 triggered topics make sure to drain it here */
+            if (numTriggeredTopics == 64) {
+                drain();
+            }
+
             triggeredTopics[numTriggeredTopics++] = iterator;
             iterator->triggered = true;
         }
@@ -277,16 +298,14 @@ public:
     }
 
     /* Can be called with nullptr, ignore it then */
-    void unsubscribeAll(Subscriber *subscriber) {
+    void unsubscribeAll(Subscriber *subscriber, bool mayFlush = true) {
         if (subscriber) {
             for (Topic *topic : subscriber->subscriptions) {
 
-                /* This is questionable; we are called mostly from socket close, so we will
-                 * potentially call drain callback with a closed socket, make sure to check there!
-                 * Well it doesn't really matter since there are checks in uSockets but still! */
+                /* We do not want to flush when closing a socket, it makes no sense to do so */
 
                 /* If this topic is triggered, drain the tree before we leave */
-                if (topic->triggered) {
+                if (mayFlush && topic->triggered) {
                     drain();
                 }
 
@@ -416,27 +435,6 @@ public:
             triggeredTopics[i]->triggered = false;
         }
         numTriggeredTopics = 0;
-    }
-
-    void print(Topic *root = nullptr, int indentation = 1) {
-        if (root == nullptr) {
-            std::cout << "Print of tree:" << std::endl;
-            root = this->root;
-        }
-
-        for (auto p : root->children) {
-            for (int i = 0; i < indentation; i++) {
-                std::cout << "  ";
-            }
-            std::cout << std::string_view(p.second->name, p.second->length) << " = " << p.second->messages.size() << " publishes, " << p.second->subs.size() << " subscribers {";
-
-            for (auto &p : p.second->subs) {
-                std::cout << p << " referring to socket: " << p->user << ", ";
-            }
-            std::cout << "}" << std::endl;
-
-            print(p.second, indentation + 1);
-        }
     }
 };
 
