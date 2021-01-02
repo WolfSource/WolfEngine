@@ -18,7 +18,7 @@ extern "C" {
 
     typedef struct
     {
-        void* buffer;
+        char* buffer;
         size_t  size;
         size_t  bytes_read;
     } w_file_istream_t;

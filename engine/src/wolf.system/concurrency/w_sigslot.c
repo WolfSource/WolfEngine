@@ -26,34 +26,41 @@ W_RESULT w_sigslot_init(_Inout_ w_mem_pool pMemPool, _Inout_ w_sigslot* pSignal)
 {
 	const char* _trace_info = "w_sigslot_init";
 
-    *pSignal = NULL;
+	*pSignal = NULL;
 	if (!pMemPool)
 	{
-        W_ASSERT_P(false,
-            "bad args. trace info: %s",
-            _trace_info);
+		W_ASSERT_P(false,
+			"bad args. trace info: %s",
+			_trace_info);
 
-        return W_BAD_ARG;
+		return W_BAD_ARG;
 	}
 
 	w_sigslot _signal = (w_sigslot)w_malloc(pMemPool, sizeof(struct w_sigslot_t));
-    
-    if(!_signal)
-    {
-        W_ASSERT_P(false,
-            "could not allocate memory for signal. trace info: %s",
-            _trace_info);
 
-        return W_FAILURE;
-    }
-    
-	_signal->hash_table = (w_hash_init(pMemPool));
-	_signal->key = w_array_init(pMemPool, INITIAL_MAX, sizeof(const char*));
-    _signal->pool = pMemPool;
-    
-    *pSignal = _signal;
+	if (!_signal)
+	{
+		W_ASSERT_P(false,
+			"could not allocate memory for signal. trace info: %s",
+			_trace_info);
 
-	return W_SUCCESS;
+		return W_FAILURE;
+	}
+
+	if (w_hash_init(pMemPool, &_signal->hash_table) == W_SUCCESS)
+	{
+		_signal->key = w_array_init(pMemPool, INITIAL_MAX, sizeof(const char*));
+		_signal->pool = pMemPool;
+
+		*pSignal = _signal;
+
+		return W_SUCCESS;
+	}
+	else
+	{
+		*pSignal = NULL;
+		return W_FAILURE;
+	}
 }
 
 W_RESULT w_sigslot_raise(_In_ w_sigslot pSignal, _In_ void* pArgs)

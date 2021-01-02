@@ -2,20 +2,24 @@
 #include <apr-1/apr_hash.h>
 #include "log/w_log.h"
 
-w_hash w_hash_init(_Inout_ w_mem_pool pMemPool)
+W_RESULT w_hash_init(_Inout_ w_mem_pool pMemPool, _Inout_ w_hash* pHash)
 {
     const char* _trace_info = "w_hash_init";
     if (!pMemPool)
     {
         W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
-        return NULL;
+        return W_BAD_ARG;
     }
     apr_pool_t* _pool = w_mem_pool_get_apr_pool(pMemPool);
     if (_pool)
     {
-        return apr_hash_make(_pool);
+        *pHash = apr_hash_make(_pool);
+        if (*pHash)
+        {
+            return W_SUCCESS;
+        }
     }
-    return NULL;
+    return W_FAILURE;
 }
 
 w_hash w_hash_make_custom(

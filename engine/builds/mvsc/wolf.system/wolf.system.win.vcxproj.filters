@@ -514,6 +514,9 @@
     <ClCompile Include="..\..\..\src\wolf.system\net\ws\uSockets\bsd.c">
       <Filter>net\ws\uSockets</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\script\w_python.cpp">
+      <Filter>script</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\wolf.system\base64\chromiumbase64.h">
@@ -1089,6 +1092,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\src\wolf.system\net\ws\uWebSockets\QueryParser.h">
       <Filter>net\ws\uWebSockets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\script\w_python.h">
+      <Filter>script</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

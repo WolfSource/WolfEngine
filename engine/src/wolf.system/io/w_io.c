@@ -568,9 +568,20 @@ w_file_istream w_io_file_read_nbytes_from_path(
                 }
                 _istream->size = _finfo.size;
             }
-            _istream->buffer = w_malloc(pMemPool, _istream->size);
-            _istream->bytes_read = _istream->size;
-            apr_file_read(_file, _istream->buffer, &_istream->bytes_read);
+            _istream->buffer = (char*)w_malloc(pMemPool, _istream->size);
+            if (_istream->buffer)
+            {
+                _istream->bytes_read = _istream->size;
+                _istream->buffer[_istream->size] = '\0';
+                apr_file_read(_file, _istream->buffer, &_istream->bytes_read);
+            }
+            else
+            {
+                W_ASSERT_P(false,
+                    "could not allocate memory istream buffer for file %s. trace info: %s",
+                    pPath,
+                    _trace_info);
+            }
             apr_file_close(_file);
         }
     }
@@ -625,7 +636,7 @@ w_file_istream	w_io_file_read_nbytes(
     //    }
     //    _istream->size = _finfo.size;
     //}
-    _istream->buffer = w_malloc(pMemPool, _istream->size);
+    _istream->buffer = (char*)w_malloc(pMemPool, _istream->size);
     _istream->bytes_read = _istream->size;
     apr_file_read(pFile, _istream->buffer, &_istream->bytes_read);
     apr_file_close(pFile);

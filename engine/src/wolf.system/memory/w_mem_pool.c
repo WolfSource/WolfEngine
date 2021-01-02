@@ -14,7 +14,6 @@ W_RESULT w_mem_pool_init_from_parent(
 	_Inout_ w_mem_pool* pMemPool,
 	_Inout_opt_ w_mem_pool* pParentMemPool)
 {
-
 	if (pMemPool && *pMemPool)
 	{
 		w_mem_pool_fini(pMemPool);
@@ -77,6 +76,24 @@ void* w_calloc(
 		return apr_pcalloc(pMemPool->apr, pMemSize);
 	}
 	return NULL;
+}
+
+W_RESULT w_mem_pool_cleanup_register(
+	w_mem_pool pMemPool,
+	const void* pData,
+	w_cleanup_fn pCleanUpFunction,
+	w_cleanup_fn pChildCleanUpFunction)
+{
+	if (!pMemPool || !pMemPool->apr)
+	{
+		return APR_BADARG;
+	}
+
+	apr_pool_cleanup_register(
+		pMemPool->apr,
+		pData,
+		pCleanUpFunction,
+		pChildCleanUpFunction ? pChildCleanUpFunction : apr_pool_cleanup_null);
 }
 
 void w_mem_pool_fini(_Inout_ w_mem_pool* pMemPool)

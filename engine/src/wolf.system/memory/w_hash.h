@@ -54,11 +54,12 @@ extern "C" {
     
     /**
      * Create a hash table.
-     * @param pool The pool to allocate the hash table out of. Set NULL to use default memory pool.
+     * @param pMemPool The pool to allocate the hash table out of. Set NULL to use default memory pool.
+     * @param pHash The hash table out of.
      * @return The hash table just created
      */
     W_SYSTEM_EXPORT
-        w_hash w_hash_init(_Inout_ w_mem_pool pMemPool);
+        W_RESULT w_hash_init(_Inout_ w_mem_pool pMemPool, _Inout_ w_hash* pHash);
 
     /**
      * Create a hash table with a custom hash function

@@ -18,6 +18,7 @@ extern "C" {
     struct w_mem_pool_t;
     typedef struct w_mem_pool_t* w_mem_pool;
     typedef struct apr_pool_t* w_apr_pool;
+    typedef int (*w_cleanup_fn)(void*);
 
     /**
      * create and initialize a memory pool
@@ -71,6 +72,22 @@ extern "C" {
         void* w_calloc(
             _Inout_ w_mem_pool pMemPool,
             _In_ size_t pMemSize);
+
+    /**
+     * Register a function to be called when a memory pool is cleared or destroyed
+     * @param pMemPool The pool to register the cleanup with
+     * @param pData The data to pass to the cleanup function.
+     * @param pCleanUpFunction The function to call when the pool is cleared or destroyed
+     * @param pChildCleanUpFunction The function to call when a child process is about to exec - 
+            this function is called in the child, obviously!
+       @return result
+     */
+    W_SYSTEM_EXPORT
+        W_RESULT w_mem_pool_cleanup_register(
+            _Inout_ w_mem_pool pMemPool,
+            _In_ const void* pData,
+            _In_ w_cleanup_fn pCleanUpFunction,
+            _In_ w_cleanup_fn pChildCleanUpFunction);
 
     /**
      * terminate a memory pool

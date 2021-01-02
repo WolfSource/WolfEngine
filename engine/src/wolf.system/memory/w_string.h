@@ -33,7 +33,7 @@ extern "C" {
     W_SYSTEM_EXPORT
         W_RESULT w_string_init(
             _Inout_ w_mem_pool pMemPool,
-            _Inout_ w_string* pStringView,
+            _Inout_opt_ w_string* pStringView,
             _In_ const char* pData);
 
     /**

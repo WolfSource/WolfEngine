@@ -202,7 +202,7 @@ out:
 //    ev_run(EV_DEFAULT, pFlags);
 //}
 
-char* w_strerror(W_RESULT pErrorCode, char* pBuffer, size_t pBufferSize)
+char* w_strerror(_In_ W_RESULT pErrorCode, _Inout_z_  char* pBuffer, _In_ size_t pBufferSize)
 {
     return apr_strerror((apr_status_t)pErrorCode, pBuffer, pBufferSize);
 }

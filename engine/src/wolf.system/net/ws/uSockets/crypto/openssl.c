@@ -482,16 +482,18 @@ SSL_CTX *create_ssl_context_from_options(struct us_socket_context_options_t opti
         SSL_CTX_set_verify(ssl_context, SSL_VERIFY_PEER, NULL);
     }
 
-    if (options.dh_params_file_name) {
+    if (options.dh_params_file_name)
+    {
         /* Set up ephemeral DH parameters. */
-        DH *dh_2048 = NULL;
-        FILE *paramfile;
+        DH* dh_2048 = NULL;
+        FILE* paramfile;
         paramfile = fopen(options.dh_params_file_name, "r");
 
         if (paramfile) {
             dh_2048 = PEM_read_DHparams(paramfile, NULL, NULL, NULL);
             fclose(paramfile);
-        } else {
+        }
+        else {
             free_ssl_context(ssl_context);
             return NULL;
         }
