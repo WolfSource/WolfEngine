@@ -5,6 +5,12 @@
 - Realtime Raytracing
 - DEBUG, RELEASE, MinSizeRelease(does not have assimp and just use wscene files)
 
+# 2.1
+A major release, rewrite most of wolf.system with pure C
+ - fixed some bugs
+ - improved memory pool
+ - executing python from c has been added
+
 # 2.0.0.0
 A major release, rewrite most of wolf.system with pure C
  - Build for Win64

@@ -26,7 +26,7 @@ extern "C" {
 
 #define WOLF_MAJOR_VERSION 2   // Making incompatible API changes
 #define WOLF_MINOR_VERSION 1   // Adding functionality in a backwards - compatible manner
-#define WOLF_PATCH_VERSION 1   // bug fixes
+#define WOLF_PATCH_VERSION 2   // bug fixes
 #define WOLF_DEBUG_VERSION 0   // for debugging
 
 #define W_MAX_BUFFER_SIZE 4096
