@@ -50,6 +50,11 @@
 		05BC21FA251296DA007D6218 /* w_mem_pool.c in Sources */ = {isa = PBXBuildFile; fileRef = 05BC21E0251296DA007D6218 /* w_mem_pool.c */; };
 		05BC21FB251296DA007D6218 /* w_table.h in Headers */ = {isa = PBXBuildFile; fileRef = 05BC21E1251296DA007D6218 /* w_table.h */; };
 		05BC21FC251296DA007D6218 /* w_mem_map.c in Sources */ = {isa = PBXBuildFile; fileRef = 05BC21E2251296DA007D6218 /* w_mem_map.c */; };
+		05D6E2F825A3165C009E1C13 /* w_string.h in Headers */ = {isa = PBXBuildFile; fileRef = 05D6E2F625A3165C009E1C13 /* w_string.h */; };
+		05D6E2F925A3165C009E1C13 /* w_string.c in Sources */ = {isa = PBXBuildFile; fileRef = 05D6E2F725A3165C009E1C13 /* w_string.c */; };
+		05D6E2FD25A31673009E1C13 /* w_python.h in Headers */ = {isa = PBXBuildFile; fileRef = 05D6E2FB25A31673009E1C13 /* w_python.h */; };
+		05D6E2FE25A31673009E1C13 /* w_python.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 05D6E2FC25A31673009E1C13 /* w_python.cpp */; };
+		05D6E30125A317BC009E1C13 /* libssh2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 05D6E30025A317BB009E1C13 /* libssh2.a */; };
 		05DF50882586A3120062B7B2 /* ev++.h in Headers */ = {isa = PBXBuildFile; fileRef = 05DF50772586A3100062B7B2 /* ev++.h */; };
 		05DF50922586A3120062B7B2 /* ev_vars.h in Headers */ = {isa = PBXBuildFile; fileRef = 05DF50812586A3100062B7B2 /* ev_vars.h */; };
 		05DF50942586A3120062B7B2 /* ev_wrap.h in Headers */ = {isa = PBXBuildFile; fileRef = 05DF50832586A3100062B7B2 /* ev_wrap.h */; };
@@ -57,7 +62,6 @@
 		05DF50962586A3120062B7B2 /* event.h in Headers */ = {isa = PBXBuildFile; fileRef = 05DF50852586A3100062B7B2 /* event.h */; };
 		05DF509E2586A4DF0062B7B2 /* ev.h in Headers */ = {isa = PBXBuildFile; fileRef = 05DF509C2586A4DF0062B7B2 /* ev.h */; };
 		05DF50A92586B5670062B7B2 /* libev.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 05DF50A82586B5670062B7B2 /* libev.a */; };
-		2C0354F024AEAAD3005E1479 /* libssh2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C0354EF24AEAABF005E1479 /* libssh2.a */; };
 		2C0354F124AEAAE8005E1479 /* libz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C3756AD23B797DC003A6B0A /* libz.a */; };
 		2C069B8A23E21EB8004EB56F /* w_fiber.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C069B8823E21EB8004EB56F /* w_fiber.cpp */; };
 		2C069B8B23E21EB8004EB56F /* w_fiber.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 2C069B8923E21EB8004EB56F /* w_fiber.hpp */; };
@@ -67,7 +71,6 @@
 		2C1728A6246C8935009C03B3 /* w_thread_pool.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C1728A4246C8935009C03B3 /* w_thread_pool.h */; };
 		2C1D5A6C24AE7A0200AD7F35 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C1D5A6A24AE79EE00AD7F35 /* libcrypto.a */; };
 		2C1D5A6D24AE7A0200AD7F35 /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C1D5A6B24AE79EE00AD7F35 /* libssl.a */; };
-		2C27063924ADD8A800A1BA75 /* libaprutil-1.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CCFD578246D4AD00030D3AC /* libaprutil-1.a */; };
 		2C30BAE023A42B2E009FC330 /* w_compress.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C30BADE23A42B2D009FC330 /* w_compress.h */; };
 		2C30BAE123A42B2E009FC330 /* w_compress.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C30BADF23A42B2D009FC330 /* w_compress.c */; };
 		2C30BAE423A42CFD009FC330 /* w_io.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C30BAE223A42CFD009FC330 /* w_io.h */; };
@@ -189,6 +192,11 @@
 		05BC21E0251296DA007D6218 /* w_mem_pool.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = w_mem_pool.c; path = ../../../src/wolf.system/memory/w_mem_pool.c; sourceTree = "<group>"; };
 		05BC21E1251296DA007D6218 /* w_table.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_table.h; path = ../../../src/wolf.system/memory/w_table.h; sourceTree = "<group>"; };
 		05BC21E2251296DA007D6218 /* w_mem_map.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = w_mem_map.c; path = ../../../src/wolf.system/memory/w_mem_map.c; sourceTree = "<group>"; };
+		05D6E2F625A3165C009E1C13 /* w_string.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_string.h; path = ../../../src/wolf.system/memory/w_string.h; sourceTree = "<group>"; };
+		05D6E2F725A3165C009E1C13 /* w_string.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = w_string.c; path = ../../../src/wolf.system/memory/w_string.c; sourceTree = "<group>"; };
+		05D6E2FB25A31673009E1C13 /* w_python.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_python.h; path = ../../../src/wolf.system/script/w_python.h; sourceTree = "<group>"; };
+		05D6E2FC25A31673009E1C13 /* w_python.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_python.cpp; path = ../../../src/wolf.system/script/w_python.cpp; sourceTree = "<group>"; };
+		05D6E30025A317BB009E1C13 /* libssh2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libssh2.a; path = ../../../deps/ssh2/lib/osx/debug/libssh2.a; sourceTree = "<group>"; };
 		05DF50772586A3100062B7B2 /* ev++.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ev++.h"; sourceTree = "<group>"; };
 		05DF50812586A3100062B7B2 /* ev_vars.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ev_vars.h; sourceTree = "<group>"; };
 		05DF50832586A3100062B7B2 /* ev_wrap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ev_wrap.h; sourceTree = "<group>"; };
@@ -299,6 +307,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				05D6E30125A317BC009E1C13 /* libssh2.a in Frameworks */,
 				05DF50A92586B5670062B7B2 /* libev.a in Frameworks */,
 				051CCCF525318546002E059C /* libquiche.a in Frameworks */,
 				05B4A6D9251A681100FBA684 /* Foundation.framework in Frameworks */,
@@ -313,12 +322,10 @@
 				2C99E7BF23CBA1F700A9720B /* libboost_context.a in Frameworks */,
 				2CABF8142485A32200E5E4D9 /* libnng.a in Frameworks */,
 				2CB15358249D291C005A358E /* libpng16d.a in Frameworks */,
-				2C27063924ADD8A800A1BA75 /* libaprutil-1.a in Frameworks */,
 				2C1D5A6C24AE7A0200AD7F35 /* libcrypto.a in Frameworks */,
 				2CABF82424861E6E00E5E4D9 /* libmbedcrypto.a in Frameworks */,
 				2CABF82524861E6E00E5E4D9 /* libmbedtls.a in Frameworks */,
 				2CB15356249BC5BA005A358E /* libturbojpeg.a in Frameworks */,
-				2C0354F024AEAAD3005E1479 /* libssh2.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -531,6 +538,8 @@
 		2C89855D23A15BED0062D70A /* script */ = {
 			isa = PBXGroup;
 			children = (
+				05D6E2FC25A31673009E1C13 /* w_python.cpp */,
+				05D6E2FB25A31673009E1C13 /* w_python.h */,
 				2C3756C523B7D2B1003A6B0A /* lua */,
 				2C3756E023B7F302003A6B0A /* w_lua.c */,
 				2C3756E123B7F302003A6B0A /* w_lua.h */,
@@ -573,6 +582,8 @@
 		2CB213FE247C2D620022DA86 /* memory */ = {
 			isa = PBXGroup;
 			children = (
+				05D6E2F725A3165C009E1C13 /* w_string.c */,
+				05D6E2F625A3165C009E1C13 /* w_string.h */,
 				05BC21D8251296DA007D6218 /* hash */,
 				05BC21D4251296D9007D6218 /* w_array.c */,
 				05BC21D2251296D9007D6218 /* w_array.h */,
@@ -626,6 +637,7 @@
 		2CFA170D1E674C850041A83F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				05D6E30025A317BB009E1C13 /* libssh2.a */,
 				05DF50A82586B5670062B7B2 /* libev.a */,
 				051CCCF425318529002E059C /* libquiche.a */,
 				05B4A6D8251A681000FBA684 /* Foundation.framework */,
@@ -696,12 +708,14 @@
 				2C3756D823B7D35C003A6B0A /* lualib.h in Headers */,
 				05B4A6D5251A45B600FBA684 /* w_mutex.h in Headers */,
 				2C898492239E735F0062D70A /* lz4frame_static.h in Headers */,
+				05D6E2FD25A31673009E1C13 /* w_python.h in Headers */,
 				2C3756E323B7F302003A6B0A /* w_lua.h in Headers */,
 				2C37522323AFD0EF003A6B0A /* fastavx512bwbase64.h in Headers */,
 				05BC21F6251296DA007D6218 /* utringbuffer.h in Headers */,
 				05DF50962586A3120062B7B2 /* event.h in Headers */,
 				05BC21F3251296DA007D6218 /* utarray.h in Headers */,
 				05BC21E7251296DA007D6218 /* w_mem_cache.h in Headers */,
+				05D6E2F825A3165C009E1C13 /* w_string.h in Headers */,
 				2CABF8122485A26B00E5E4D9 /* w_net.h in Headers */,
 				2C30BAE423A42CFD009FC330 /* w_io.h in Headers */,
 				2CCFD5852471E8550030D3AC /* w_async.h in Headers */,
@@ -804,6 +818,7 @@
 				2C37522423AFD0EF003A6B0A /* fastavx512bwbase64.c in Sources */,
 				2C898494239E735F0062D70A /* lz4frame.c in Sources */,
 				2C89847A239D344C0062D70A /* w_chrono.c in Sources */,
+				05D6E2F925A3165C009E1C13 /* w_string.c in Sources */,
 				2C1728A5246C8935009C03B3 /* w_thread_pool.c in Sources */,
 				2C898490239E735F0062D70A /* xxhash.c in Sources */,
 				2C898540239E763C0062D70A /* unpack.c in Sources */,
@@ -842,6 +857,7 @@
 				2C37522623AFD0EF003A6B0A /* fastavxbase64.c in Sources */,
 				2CABF8112485A26B00E5E4D9 /* w_net.c in Sources */,
 				2C898541239E763C0062D70A /* zone.c in Sources */,
+				05D6E2FE25A31673009E1C13 /* w_python.cpp in Sources */,
 				2C898491239E735F0062D70A /* lz4.c in Sources */,
 				05B4A6CB251A44C700FBA684 /* stdout_sinks.cpp in Sources */,
 				05B4A6D4251A45B600FBA684 /* w_mutex.c in Sources */,

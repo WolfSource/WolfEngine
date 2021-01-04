@@ -94,6 +94,8 @@ W_RESULT w_mem_pool_cleanup_register(
 		pData,
 		pCleanUpFunction,
 		pChildCleanUpFunction ? pChildCleanUpFunction : apr_pool_cleanup_null);
+    
+    return APR_SUCCESS;
 }
 
 void w_mem_pool_fini(_Inout_ w_mem_pool* pMemPool)

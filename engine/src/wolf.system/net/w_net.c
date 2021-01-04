@@ -1072,6 +1072,10 @@ W_RESULT w_net_quic_open(
 {
     const char* _trace_info = "w_net_open_quic_socket";
 
+    W_RESULT _ret = W_SUCCESS;
+
+#if !defined(W_PLATFORM_IOS)
+    
     if (pProtocol != W_SOCKET_PROTOCOL_QUIC_DIALER && 
         pProtocol != W_SOCKET_PROTOCOL_QUIC_LISTENER)
     {
@@ -1080,8 +1084,6 @@ W_RESULT w_net_quic_open(
             _trace_info);
         return W_BAD_ARG;
     }
-
-    W_RESULT _ret = W_SUCCESS;
 
 #if defined (_WIN64) || defined (W_PLATFORM_OSX) || defined (W_PLATFORM_IOS) || defined (W_PLATFORM_LINUX)
 
@@ -1451,8 +1453,9 @@ out:
     w_free_s_quic_conns();
 
 #endif
+#endif
 
-#ifdef W_PLATFORM_ANDROID
+#if defined (W_PLATFORM_ANDROID) || defined(W_PLATFORM_IOS)
     return W_FAILURE;
 #endif
     return _ret;
