@@ -312,6 +312,8 @@
 		05BC21C125128DF8007D6218 /* libturbojpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 05BC21BF25128DF8007D6218 /* libturbojpeg.a */; };
 		05BC21C325128E11007D6218 /* libapr-1.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 05BC21C225128E10007D6218 /* libapr-1.a */; };
 		05BC21FD251297B7007D6218 /* libnng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 05BC21AA25128D1E007D6218 /* libnng.a */; };
+		05D6E30625A3187A009E1C13 /* w_python.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 05D6E30425A3187A009E1C13 /* w_python.cpp */; };
+		05D6E30725A3187A009E1C13 /* w_python.h in Headers */ = {isa = PBXBuildFile; fileRef = 05D6E30525A3187A009E1C13 /* w_python.h */; };
 		05E349E42522159B00822309 /* w_string.c in Sources */ = {isa = PBXBuildFile; fileRef = 05E349E22522159B00822309 /* w_string.c */; };
 		05E349E52522159B00822309 /* w_string.h in Headers */ = {isa = PBXBuildFile; fileRef = 05E349E32522159B00822309 /* w_string.h */; };
 /* End PBXBuildFile section */
@@ -625,6 +627,8 @@
 		05BC21BE25128DF8007D6218 /* libjpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libjpeg.a; path = "../../../deps/libjpeg-turbo/lib/iOS/libjpeg.a"; sourceTree = "<group>"; };
 		05BC21BF25128DF8007D6218 /* libturbojpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libturbojpeg.a; path = "../../../deps/libjpeg-turbo/lib/iOS/libturbojpeg.a"; sourceTree = "<group>"; };
 		05BC21C225128E10007D6218 /* libapr-1.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libapr-1.a"; path = "../../../deps/apr/lib/iOS/libapr-1.a"; sourceTree = "<group>"; };
+		05D6E30425A3187A009E1C13 /* w_python.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = w_python.cpp; sourceTree = "<group>"; };
+		05D6E30525A3187A009E1C13 /* w_python.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = w_python.h; sourceTree = "<group>"; };
 		05E349E22522159B00822309 /* w_string.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = w_string.c; sourceTree = "<group>"; };
 		05E349E32522159B00822309 /* w_string.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = w_string.h; sourceTree = "<group>"; };
 		2C4CD2941E8A71450090EE0A /* libwolf.system.iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libwolf.system.iOS.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1254,6 +1258,8 @@
 		05BC219425128B04007D6218 /* script */ = {
 			isa = PBXGroup;
 			children = (
+				05D6E30425A3187A009E1C13 /* w_python.cpp */,
+				05D6E30525A3187A009E1C13 /* w_python.h */,
 				05BC219525128B04007D6218 /* lua */,
 				05BC219B25128B04007D6218 /* w_lua.c */,
 				05BC219C25128B04007D6218 /* w_lua.h */,
@@ -1405,6 +1411,7 @@
 				05BC204125128203007D6218 /* util.h in Headers */,
 				05BC1FC125128202007D6218 /* 64.h in Headers */,
 				05BC1F5825128202007D6218 /* xxhash.h in Headers */,
+				05D6E30725A3187A009E1C13 /* w_python.h in Headers */,
 				05BC1FFA25128203007D6218 /* language.h in Headers */,
 				05BC1FE325128202007D6218 /* compiler.h in Headers */,
 				05BC2110251285E5007D6218 /* w_array.h in Headers */,
@@ -1655,6 +1662,7 @@
 				05B4A5F4251A41B800FBA684 /* w_log.cpp in Sources */,
 				05BC211D251285E5007D6218 /* w_shared_mem.c in Sources */,
 				05BC1E2D251280DC007D6218 /* w_cpu.c in Sources */,
+				05D6E30625A3187A009E1C13 /* w_python.cpp in Sources */,
 				05BC208D25128237007D6218 /* w_thread_pool.c in Sources */,
 				055EEEEF252E32B100091AC4 /* w_atomic.c in Sources */,
 				05BC204C25128203007D6218 /* zone.c in Sources */,
