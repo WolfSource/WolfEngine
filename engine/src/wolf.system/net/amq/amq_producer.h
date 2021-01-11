@@ -7,79 +7,60 @@
     Comment          :
 */
 
-#if _MSC_VER > 1000
 #pragma once
-#endif
 
-#ifndef __W_AMQ_PRODUCER_H__
-#define __W_AMQ_PRODUCER_H__
-
-#include <activemq/library/ActiveMQCPP.h>
-#include <decaf/lang/Thread.h>
-#include <decaf/lang/Runnable.h>
-#include <decaf/util/concurrent/CountDownLatch.h>
-#include <decaf/lang/Integer.h>
-#include <decaf/lang/Long.h>
-#include <decaf/lang/System.h>
+#include <wolf.h>
+#include "amq_connection_type.h"
 #include <activemq/core/ActiveMQConnectionFactory.h>
-#include <activemq/util/Config.h>
-#include <cms/Connection.h>
-#include <cms/Session.h>
-#include <cms/TextMessage.h>
-#include <cms/BytesMessage.h>
-#include <cms/MapMessage.h>
-#include <cms/ExceptionListener.h>
-#include <cms/MessageListener.h>
+#include <decaf/lang/Runnable.h>
 #include <string>
-#include "concurrency/w_concurrent_queue.h"
-#include "concurrency/w_thread.h"
-#include"memory/w_mem_pool.h"
-struct Message_ac
-{
-    int             priority = 0;
-    std::string     msg;
-};
+
 class amq_producer : public decaf::lang::Runnable
 {
-    friend void* w_thread_job_my(w_thread arg1, void* arg2);
 public:
     //consturctor
     amq_producer(
-        bool pUseQueue = true,
+        std::string_view pBrokerURI,
+        std::string_view pUsername,
+        std::string_view pPassword,
+        std::string_view pQueueOrTopicName,
+        amq_connection_type pConnectionType = amq_connection_type::AMQ_QUEUE,
+        amq_delivery_mode pDeliveryMode = amq_delivery_mode::AMQ_NON_PERSISTENT,
         bool pSessionTransacted = false);
-    //desturctor
+
+    //destructor
     virtual ~amq_producer();
-    //run producer in async mode 
+
+    //run the producer
     virtual void run();
-    //send message
-    int send_message( const std::string& pMessage, const int& pPriority);
-    //close and release connection and all resources 
+
+    void send_message(_In_z_ const char* pMessage, _In_ int pPriority);
+
+    //close all
     void close();
-    int init_producer(w_mem_pool _mem_pool);
-    //get last error 
-    const std::string get_last_error() const;
+
+    const char* get_last_error() const { return this->_last_error.c_str(); }
 
 private:
-    //prevent private copy constructor
+    //private constructors for avoid copy constructor
     amq_producer(const amq_producer&);
     amq_producer& operator=(const amq_producer&);
 
-    std::string                                         _last_error;
+    //registered as an ExceptionListener with the connection.
+    virtual void onException(const cms::CMSException& e);
+
+    std::string                 _last_error;
     cms::Connection* _connection;
     cms::Session* _session;
     cms::Destination* _destination;
     cms::MessageProducer* _producer;
-    bool                                                _use_quque;
-    bool                                                _session_transacted;
-    w_thread                              _thread_handle;
-
-    w_mem_pool                    _mem_producer = NULL;
-    w_concurrent_queue           _messages = NULL;
-    int Pflag = 0;
+    std::string                 _broker_uri;
+    std::string                 _queue_or_topic_name;
+    amq_connection_type         _use_queue_or_topic;
+    amq_delivery_mode           _delivery_mode;
+    bool                        _session_transacted;
 };
 
-
-#endif //__W_AMQ_PRODUCER_H__/*
 
 
 

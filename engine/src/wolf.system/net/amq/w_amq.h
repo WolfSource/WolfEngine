@@ -1,39 +1,70 @@
+/*
+	Project			 : ActiveMQ-APIs
+	Source			 : Please direct any bug to https://github.com/FanapSoft/ActiveMQ-APIs/issues
+	Website			 : http://FanapSoft.github.io
+	Name			 : w_amq.h
+	Description		 : activemq manager
+	Comment          :
+*/
+
 #pragma once
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include "wolf.h"
+#include <wolf.h>
+#include "amq_connection_type.h"
 
-	typedef void (*w_call_amq)(
-		const char *pMessage);
+	//forward declaration
+	typedef struct w_amq_object_t
+	{
+		void* object;
+	} w_amq_object_t;
+	typedef w_amq_object_t* w_amq_object;
 
-	W_SYSTEM_EXPORT
-	int  w_net_init_producer(_Inout_ w_mem_pool pMemPool);
+	void	w_amq_init();
 
-	W_SYSTEM_EXPORT
-		int w_amq_init(_Inout_ w_mem_pool pMemPool);
+	W_RESULT	w_amq_producer_open(
+		_Inout_ w_mem_pool pMemPool,
+		_Inout_ w_amq_object* pAMQObject,
+		_In_z_ const char* pBrokerURI,
+		_In_z_ const char* pUsername,
+		_In_z_ const char* pPassword,
+		_In_z_ const char* pQueueOrTopicName,
+		_In_ amq_connection_type pConnectionType,
+		_In_ amq_delivery_mode pDeliveryMode,
+		_In_ bool pSessionTransacted);
 
-	W_SYSTEM_EXPORT
-		int w_amq_fini(_Inout_ w_mem_pool pMemPool);
+	W_RESULT	w_amq_consumer_open(
+		_Inout_ w_mem_pool pMemPool,
+		_Inout_ w_amq_object* pAMQObject,
+		_In_z_  const char* pBrokerURI,
+		_In_z_  const char* pUsername,
+		_In_z_  const char* pPassword,
+		_In_z_  const char* pQueueOrTopicName,
+		_In_ w_amq_consumer_callback_fn pOnMessageCallBack,
+		_In_ amq_connection_type pConnectionType,
+		_In_ bool pSessionTransacted);
 
+	W_RESULT	w_amq_producer_run(
+		_In_ w_amq_object pAMQObject);
 
-	W_SYSTEM_EXPORT
-		int  w_net_receive_consumer(_Inout_ w_mem_pool pMemPool, w_call_amq pCallback_tmp);
+	W_RESULT	w_amq_consumer_run(
+		_In_ w_amq_object pAMQObject);
 
-	W_SYSTEM_EXPORT
-		void w_net_send_producer(char * pMessage, int _priority);
+	W_RESULT	w_amq_producer_send_message(
+		_In_ w_amq_object pAMQObject,
+		_In_z_  const char* pMessage,
+		_In_  int pPriority);
 
-	W_SYSTEM_EXPORT
-		void w_net_open_producer();
+	W_RESULT	w_amq_producer_close(
+		_Inout_ w_amq_object pAMQObject);
+		
+	W_RESULT	w_amq_consumer_close(
+		_Inout_ w_amq_object pAMQObject);
 
-	W_SYSTEM_EXPORT
-		void w_net_consumer_fini();
-
-	W_SYSTEM_EXPORT
-		void w_net_producer_fini();
-
-
+	void	w_amq_fini();
 
 #ifdef __cplusplus
 }

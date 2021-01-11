@@ -7,10 +7,6 @@
 #include <apr-1/apr_general.h>
 #include <apr-1/apr_network_io.h>
 
-#ifndef  W_PLATFORM_ANDROID
-#include <quiche.h>
-#endif // ! W_PLATFORM_ANDROID
-
 #include <io/w_io.h>
 #include <log/w_log.h>
 #include <memory/hash/uthash.h>
@@ -29,6 +25,7 @@
 #endif
 
 #if defined (W_PLATFORM_WIN) || defined (W_PLATFORM_OSX) || defined (W_PLATFORM_LINUX)
+#include <quiche.h>
 #include <curl/curl.h>
 #endif
 
@@ -1752,6 +1749,97 @@ const char* w_net_curl_get_last_error(_In_ W_RESULT pErrorCode)
 #else
     return NULL;
 #endif
+}
+
+#pragma endregion
+
+#pragma region AMQ
+
+void	w_net_amq_init()
+{
+    w_amq_init();
+}
+
+W_RESULT	w_net_amq_producer_open(
+    _Inout_ w_mem_pool pMemPool,
+    _Inout_ w_amq_object* pAMQObject,
+    _In_z_ const char* pBrokerURI,
+    _In_z_ const char* pUsername,
+    _In_z_ const char* pPassword,
+    _In_z_ const char* pQueueOrTopicName,
+    _In_ amq_connection_type pConnectionType,
+    _In_ amq_delivery_mode pDeliveryMode,
+    _In_ bool pSessionTransacted)
+{
+    return w_amq_producer_open(
+        pMemPool,
+        pAMQObject,
+        pBrokerURI,
+        pUsername,
+        pPassword,
+        pQueueOrTopicName,
+        pConnectionType,
+        pDeliveryMode,
+        pSessionTransacted);
+}
+
+W_RESULT	w_net_amq_consumer_open(
+    _Inout_ w_mem_pool pMemPool,
+    _Inout_ w_amq_object* pAMQObject,
+    _In_z_  const char* pBrokerURI,
+    _In_z_  const char* pUsername,
+    _In_z_  const char* pPassword,
+    _In_z_  const char* pQueueOrTopicName,
+    _In_ w_amq_consumer_callback_fn pOnMessageCallBack,
+    _In_ amq_connection_type pConnectionType,
+    _In_ bool pSessionTransacted)
+{
+    return 	w_amq_consumer_open(
+        pMemPool,
+        pAMQObject,
+        pBrokerURI,
+        pUsername,
+        pPassword,
+        pQueueOrTopicName,
+        pOnMessageCallBack,
+        pConnectionType,
+        pSessionTransacted);
+}
+
+W_RESULT	w_net_amq_producer_run(_In_ w_amq_object pAMQObject)
+{
+    return 	w_amq_producer_run(pAMQObject);
+}
+
+W_RESULT	w_net_amq_consumer_run(_In_ w_amq_object pAMQObject)
+{
+    return 	w_amq_consumer_run(pAMQObject);
+}
+
+W_RESULT	w_net_amq_producer_send_message(
+    _In_ w_amq_object pAMQObject,
+    _In_z_  const char* pMessage,
+    _In_  int pPriority)
+{
+    return	w_amq_producer_send_message(
+        pAMQObject,
+        pMessage,
+        pPriority);
+}
+
+W_RESULT	w_net_amq_producer_close(_Inout_ w_amq_object pAMQObject)
+{
+    return	w_amq_producer_close(pAMQObject);
+}
+
+W_RESULT	w_net_amq_consumer_close(_Inout_ w_amq_object pAMQObject)
+{
+    return	w_amq_consumer_close(pAMQObject);
+}
+
+void	w_net_amq_fini()
+{
+    w_amq_fini();
 }
 
 #pragma endregion

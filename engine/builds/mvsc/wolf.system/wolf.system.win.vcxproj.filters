@@ -517,6 +517,15 @@
     <ClCompile Include="..\..\..\src\wolf.system\script\w_python.cpp">
       <Filter>script</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\net\amq\amq_consumer.cpp">
+      <Filter>net\amq</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\net\amq\amq_producer.cpp">
+      <Filter>net\amq</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\net\amq\w_amq.cpp">
+      <Filter>net\amq</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\wolf.system\base64\chromiumbase64.h">
@@ -1095,6 +1104,18 @@
     </ClInclude>
     <ClInclude Include="..\..\..\src\wolf.system\script\w_python.h">
       <Filter>script</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\net\amq\amq_consumer.h">
+      <Filter>net\amq</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\net\amq\amq_producer.h">
+      <Filter>net\amq</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\net\amq\amq_connection_type.h">
+      <Filter>net\amq</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\net\amq\w_amq.h">
+      <Filter>net\amq</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

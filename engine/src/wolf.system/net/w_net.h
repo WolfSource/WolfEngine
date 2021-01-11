@@ -18,7 +18,10 @@ extern "C" {
 #include <memory/w_array.h>
 #include <concurrency/w_thread.h>
 
-    //forward declaration
+#if defined (W_PLATFORM_WIN) || defined (W_PLATFORM_OSX) || defined (W_PLATFORM_LINUX)
+#include "amq/w_amq.h"
+#endif
+
     typedef struct w_buffer_t
     {
         uint8_t* data;
@@ -360,6 +363,121 @@ extern "C" {
     */
     W_SYSTEM_EXPORT
         const char* w_net_curl_get_last_error(_In_ W_RESULT pErrorCode);
+
+    /**
+     * initialize activeMQ library. Call it only once before using other activeMQ functions.
+     * @param pAMQObject The activeMQ object
+     * @return result
+    */
+    W_SYSTEM_EXPORT
+        void	w_net_amq_init();
+
+    /**
+     * open activemq producer
+     * @param pMemPool The pool to allocate out of
+     * @param pAMQObject The activeMQ object
+     * @param pBrokerURI The broker uri
+     * @param pUsername The username 
+     * @param pPassword The password 
+     * @param pQueueOrTopicName The name of Queue or Topic
+     * @param pConnectionType open QUEUE or TOPIC
+     * @param pDeliveryMode enable PERSISTENT or NON_PERSISTENT message mode
+     * @param pSessionTransacted enable session transacted
+     * @return result
+    */
+    W_SYSTEM_EXPORT
+    W_RESULT	w_net_amq_producer_open(
+        _Inout_ w_mem_pool pMemPool,
+        _Inout_ w_amq_object* pAMQObject,
+        _In_z_ const char* pBrokerURI,
+        _In_z_ const char* pUsername,
+        _In_z_ const char* pPassword,
+        _In_z_ const char* pQueueOrTopicName,
+        _In_ amq_connection_type pConnectionType,
+        _In_ amq_delivery_mode pDeliveryMode,
+        _In_ bool pSessionTransacted);
+
+    /**
+     * open activemq consumer
+     * @param pMemPool The pool to allocate out of
+     * @param pAMQObject The activeMQ object
+     * @param pBrokerURI The broker uri
+     * @param pUsername The username
+     * @param pUsername The password
+     * @param pQueueOrTopicName The name of Queue or Topic
+     * @param pOnMessageCallBack the onMessage callback
+     * @param pConnectionType the connection type which is QUEUE or TOPIC
+     * @param pSessionTransacted enable session transacted
+     * @return result
+    */
+    W_SYSTEM_EXPORT
+    W_RESULT	w_net_amq_consumer_open(
+        _Inout_ w_mem_pool pMemPool,
+        _Inout_ w_amq_object* pAMQObject,
+        _In_z_  const char* pBrokerURI,
+        _In_z_  const char* pUsername,
+        _In_z_  const char* pPassword,
+        _In_z_  const char* pQueueOrTopicName,
+        _In_ w_amq_consumer_callback_fn pOnMessageCallBack,
+        _In_ amq_connection_type pConnectionType,
+        _In_ bool pSessionTransacted);
+
+    /**
+     * run activemq producer
+     * @param pAMQObject The activeMQ object
+     * @return result
+    */
+    W_SYSTEM_EXPORT
+    W_RESULT	w_net_amq_producer_run(
+        _In_ w_amq_object pAMQObject);
+
+    /**
+     * run activemq consumer
+     * @param pAMQObject The activeMQ object
+     * @return result
+    */
+    W_SYSTEM_EXPORT
+    W_RESULT	w_net_amq_consumer_run(
+        _In_ w_amq_object pAMQObject);
+
+    /**
+     * send message to via activeMQ producer
+     * @param pAMQObject The activeMQ object
+     * @param pMessage The message
+     * @param pPriority The priority of message
+     * @return result
+    */
+    W_SYSTEM_EXPORT
+    W_RESULT	w_net_amq_producer_send_message(
+        _In_ w_amq_object pAMQObject,
+        _In_z_  const char* pMessage,
+        _In_  int pPriority);
+
+    /**
+     * close activemq producer
+     * @param pAMQObject The activeMQ object
+     * @return result
+    */
+    W_SYSTEM_EXPORT
+    W_RESULT	w_net_amq_producer_close(
+        _Inout_ w_amq_object pAMQObject);
+
+    /**
+     * close activemq consumer
+     * @param pAMQObject The activeMQ object
+     * @return result
+    */
+    W_SYSTEM_EXPORT
+    W_RESULT	w_net_amq_consumer_close(
+        _Inout_ w_amq_object pAMQObject);
+
+    /**
+     * finitialize activemq
+     * @param pAMQObject The activeMQ object
+     * @return result
+    */
+    W_SYSTEM_EXPORT
+    void	w_net_amq_fini();
 
 #ifdef __cplusplus
 }
