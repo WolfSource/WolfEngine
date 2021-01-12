@@ -1,0 +1,2 @@
+https://github.com/Tencent/rapidjson/
+master 585042c 6th JAN, 2021
