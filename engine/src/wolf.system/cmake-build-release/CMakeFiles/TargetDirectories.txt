@@ -1,5 +1,0 @@
-/home/siminbadri/Documents/github/WolfEngine/Wolf.Engine2/engine/src/wolf.system/cmake-build-release/CMakeFiles/rebuild_cache.dir
-/home/siminbadri/Documents/github/WolfEngine/Wolf.Engine2/engine/src/wolf.system/cmake-build-release/CMakeFiles/edit_cache.dir
-/home/siminbadri/Documents/github/WolfEngine/Wolf.Engine2/engine/src/wolf.system/cmake-build-release/CMakeFiles/wolf.system.linux.dir
-/home/siminbadri/Documents/github/WolfEngine/Wolf.Engine2/engine/src/wolf.system/cmake-build-release/CMakeFiles/package_source.dir
-/home/siminbadri/Documents/github/WolfEngine/Wolf.Engine2/engine/src/wolf.system/cmake-build-release/CMakeFiles/package.dir

@@ -1,4 +1,0 @@
-/home/siminbadri/Downloads/clion-2019.2/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Release -G "CodeBlocks - Unix Makefiles" /home/siminbadri/Documents/github/WolfEngine/Wolf.Engine2/engine/src/wolf.system
--- Configuring done
--- Generating done
--- Build files have been written to: /home/siminbadri/Documents/github/WolfEngine/Wolf.Engine2/engine/src/wolf.system/cmake-build-release
