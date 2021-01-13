@@ -54,6 +54,15 @@ set(CMAKE_RELWITHDEBINFO_POSTFIX "" CACHE STRING "" FORCE)
 # After the following call, the CMake targets will be defined and available to the rest of the build
 FetchContent_MakeAvailable(libexpat	apr)
 
+
+if (UNIX)
+# Building APR on UNIX
+
+
+
+
+endif()
+
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "" FORCE)
 else()
