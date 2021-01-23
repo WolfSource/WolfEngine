@@ -10,6 +10,7 @@ endif()
 
 # required packages
 find_package(Git REQUIRED)
+find_package(Wget REQUIRED)
 # FetchContent for cloning repositories, avaiable since CMAKE 3.11
 include(FetchContent)
 
@@ -54,6 +55,8 @@ endif()
 
 # change some options of CMAKE dependencies
 set(EXPAT_SHARED_LIBS OFF CACHE BOOL "EXPAT_SHARED_LIBS")
+set(EXPAT_BUILD_TESTS OFF CACHE BOOL "EXPAT_BUILD_TESTS")
+set(EXPAT_BUILD_TOOLS OFF CACHE BOOL "EXPAT_BUILD_TOOLS")
 set(CMAKE_DEBUG_POSTFIX "" CACHE STRING "" FORCE)
 set(CMAKE_RELEASE_POSTFIX "" CACHE STRING "" FORCE)
 set(CMAKE_MINSIZEREL_POSTFIX "" CACHE STRING "" FORCE)
@@ -70,6 +73,7 @@ if (APPLE)
 	# for apple we will build apr via shell script
     FetchContent_MakeAvailable(libexpat)
 	
+	execute_process(COMMAND chmod +x ${CMAKE_CURRENT_SOURCE_DIR}/shell/apr.sh)
 	add_custom_target(libapr_target COMMAND /bin/sh -c
     "${CMAKE_CURRENT_SOURCE_DIR}/shell/apr.sh --bypass_ios=1 --bypass_ios_simulator=1 --build_dir=${CMAKE_CURRENT_BINARY_DIR} --${CMAKE_BUILD_TYPE}")
 else()

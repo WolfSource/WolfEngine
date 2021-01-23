@@ -88,7 +88,7 @@ then
 fi
 
 ################################
-# Check if libxml is available #
+# Check if expat is available  #
 # on building system           #
 ################################
 check_libexpat() {
