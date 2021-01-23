@@ -1,5 +1,6 @@
 # CMAKE required version
 cmake_minimum_required (VERSION 3.11)
+
 # set the project name
 if (APPLE)
 project (wolf_system_osx)
@@ -40,6 +41,8 @@ FetchContent_Declare(
   GIT_TAG        R_2_2_10
   SOURCE_SUBDIR  expat 
 )
+
+if(WIN32)
 # fetch apr
 message("fetching https://github.com/apache/apr.git")
 FetchContent_Declare(
@@ -47,6 +50,7 @@ FetchContent_Declare(
   GIT_REPOSITORY https://github.com/apache/apr.git
   GIT_TAG        1.7.0
 )
+endif()
 
 # change some options of CMAKE dependencies
 set(EXPAT_SHARED_LIBS OFF CACHE BOOL "EXPAT_SHARED_LIBS")
@@ -63,14 +67,13 @@ endif()
 
 # After the following call, the CMake targets will be defined and available to the rest of the build
 if (APPLE)
+	# for apple we will build apr via shell script
     FetchContent_MakeAvailable(libexpat)
+	
+	add_custom_target(libapr_target COMMAND /bin/sh -c
+    "${CMAKE_CURRENT_SOURCE_DIR}/shell/apr.sh --bypass_ios=1 --bypass_ios_simulator=1 --build_dir=${CMAKE_CURRENT_BINARY_DIR} --${CMAKE_BUILD_TYPE}")
 else()
     FetchContent_MakeAvailable(libexpat	apr)
-endif()
-
-if (APPLE)
-    add_custom_target(libapr_target COMMAND /bin/sh -c
-    "${CMAKE_CURRENT_SOURCE_DIR}/apr.sh --bypass_ios=1 --bypass_ios_simulator=1 --${CMAKE_BUILD_TYPE}")
 endif()
  
 # create filter for each folder
@@ -84,7 +87,7 @@ file(GLOB_RECURSE COMPRESSION_LZ4_SRC_DIR
 	"${CMAKE_CURRENT_SOURCE_DIR}/compression/lz4/*"
 )
 
-if (NOT APPLE)
+if (MSVC)
 file(GLOB_RECURSE COMPRESSION_LZMA_SRC_DIR
 	"${CMAKE_CURRENT_SOURCE_DIR}/compression/lzma/*"
 )
@@ -273,11 +276,9 @@ add_library(${PROJECT_NAME} SHARED
  source_group("base64" FILES ${BASE64_SRC_DIR}) 
  source_group("chrono" FILES ${CHRONO_SRC_DIR}) 
  source_group("compression/lz4" FILES ${COMPRESSION_LZ4_SRC_DIR})
- 
- if (NOT APPLE)
-    source_group("compression/lzma" FILES ${COMPRESSION_LZMA_SRC_DIR})
+ if (MSVC)
+ source_group("compression/lzma" FILES ${COMPRESSION_LZMA_SRC_DIR})
  endif()
- 
  source_group("compression/msgpack" FILES ${COMPRESSION_MSGPACK_SRC_DIR}) 
  source_group("compression" FILES ${COMPRESSION_SRC_DIR}) 
  source_group("concurrency" FILES ${CONCURRENCY_SRC_DIR}) 
@@ -333,19 +334,25 @@ else()
 	)
 endif()
 
- # set AVX512 compile definition
+# set AVX512 compile definition
 if (ENABLE_AVX512)
-	target_compile_definitions(${PROJECT_NAME} PUBLIC
-		USE_AVX512=1
-	)
+	set (AVX512_FLAGS "-D__AVX -DUSE_AVX512")
+	if (MSVC)
+		set (AVX512_FLAGS "${AVX512_FLAGS} /arch:AVX512")
+	else()
+		set (AVX512_FLAGS "${AVX512_FLAGS} -mavx512f -mfma")
+	endif()
+
+	target_compile_definitions(${PROJECT_NAME} PUBLIC 
+		${AVX512_FLAGS})
 endif()
 
  if (APPLE)
- macro (set_xcode_property TARGET XCODE_PROPERTY XCODE_VALUE)
-    set_property (TARGET ${TARGET} PROPERTY
-        XCODE_ATTRIBUTE_${XCODE_PROPERTY} ${XCODE_VALUE})
-endmacro (set_xcode_property)
-    set_xcode_property(${PROJECT_NAME} CLANG_X86_VECTOR_INSTRUCTIONS "avx2")
+ 	macro (set_xcode_property TARGET XCODE_PROPERTY XCODE_VALUE)
+    	set_property (TARGET ${TARGET} PROPERTY
+        	XCODE_ATTRIBUTE_${XCODE_PROPERTY} ${XCODE_VALUE})
+ 	endmacro (set_xcode_property)
+    	set_xcode_property(${PROJECT_NAME} CLANG_X86_VECTOR_INSTRUCTIONS "avx2")
 endif()
 
  # set activeMQ compile definitions
@@ -395,6 +402,7 @@ endif()
 if (APPLE)
     set_source_files_properties("${CMAKE_CURRENT_SOURCE_DIR}/io/w_io.c" PROPERTIES COMPILE_FLAGS "-x objective-c" )
 endif()
+
 
 if (WIN32)
 	target_link_libraries(${PROJECT_NAME} PRIVATE  expat apr-1 Shlwapi)

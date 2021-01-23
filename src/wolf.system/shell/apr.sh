@@ -51,22 +51,25 @@ IS_EXPAT_INCLUDE=1
 while [ "$1" != "" ]; do
     case $1 in
         --bypass_macos=* )          BYPASS_MACOS="${1#*=}"
-                                    shift 4
+                                    shift 5
                                     ;;
         --bypass_ios=* )            BYPASS_IOS="${1#*=}"
-                                    shift 4
+                                    shift 5
                                     ;;
         --bypass_ios_simulator=* )  BYPASS_IOS_SIMULATOR="${1#*=}"
-                                    shift 4
+                                    shift 5
                                     ;;
         --without-test=* )          BYPASS_TESTS="${1#*=}"
-                                    shift 4
+                                    shift 5
                                     ;;
         --Debug )                   BUILD_MODES="Debug"
-                                    shift 4
+                                    shift 5
                                     ;;
         --Release )                 BUILD_MODES="Release"
-                                    shift 4
+                                    shift 5
+                                    ;;
+        --build_dir=* )             DIR="${1#*=}"
+                                    shift 5
                                     ;;
         -h | --help )               display_help
                                     exit 0
