@@ -10,7 +10,9 @@ endif()
 
 # required packages
 find_package(Git REQUIRED)
-find_package(Wget REQUIRED)
+if (UNIX)
+	find_package(Wget REQUIRED)
+endif()
 # FetchContent for cloning repositories, avaiable since CMAKE 3.11
 include(FetchContent)
 
@@ -63,12 +65,6 @@ set(CMAKE_DEBUG_POSTFIX "" CACHE STRING "" FORCE)
 set(CMAKE_RELEASE_POSTFIX "" CACHE STRING "" FORCE)
 set(CMAKE_MINSIZEREL_POSTFIX "" CACHE STRING "" FORCE)
 set(CMAKE_RELWITHDEBINFO_POSTFIX "" CACHE STRING "" FORCE)
-
-if(NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "" FORCE)
-else()
-    set(CMAKE_BUILD_TYPE "Release" CACHE STRING "" FORCE)
-endif()
 
 # After the following call, the CMake targets will be defined and available to the rest of the build
 if (APPLE)
@@ -333,10 +329,6 @@ target_compile_definitions(${PROJECT_NAME} PUBLIC
 if (CMAKE_BUILD_TYPE MATCHES Debug)	
 	target_compile_definitions(${PROJECT_NAME} PUBLIC
 		DEBUG
-	)
-else() 
-	target_compile_definitions(${PROJECT_NAME} PUBLIC
-		NDEBUG
 	)
 endif()
 
