@@ -32,6 +32,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS ENABLE_CXX_EXTENSIONS)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -mavx -march=native")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mavx -march=native")
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 # fetch libexpat
@@ -351,7 +353,7 @@ if (ENABLE_AVX512)
 		${AVX512_FLAGS})
 endif()
 
- if (APPLE)
+if (APPLE)
  	macro (set_xcode_property TARGET XCODE_PROPERTY XCODE_VALUE)
     	set_property (TARGET ${TARGET} PROPERTY
         	XCODE_ATTRIBUTE_${XCODE_PROPERTY} ${XCODE_VALUE})
