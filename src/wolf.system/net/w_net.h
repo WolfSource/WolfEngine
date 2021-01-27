@@ -22,13 +22,6 @@ extern "C" {
 #include "amq/w_amq.h"
 #endif
 
-    typedef struct w_buffer_t
-    {
-        uint8_t* data;
-        size_t      len;
-    } w_buffer_t;
-    typedef w_buffer_t* w_buffer;
-
     typedef struct apr_socket_t* w_socket;
     typedef struct apr_sockaddr_t* w_socket_address;
 

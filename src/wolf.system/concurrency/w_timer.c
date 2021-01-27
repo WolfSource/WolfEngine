@@ -73,7 +73,7 @@
 //    const char* _trace_info = "w_timer_init";
 //    if (!pMemPool || !pTimer)
 //    {
-//        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+//        W_ASSERT_P(false, "invalid parameters! trace info: %s", _trace_info);
 //        return W_BAD_ARG;
 //    }
 //

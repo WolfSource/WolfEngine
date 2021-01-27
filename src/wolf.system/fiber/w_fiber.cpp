@@ -27,7 +27,7 @@ W_RESULT w_fiber_scheduler_init(
     const char* _trace_info = "w_fiber_scheduler_init";
     if (!pMemPool)
     {
-        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "memory pool is invalid! trace info: %s", _trace_info);
         return _ret;
     }
 

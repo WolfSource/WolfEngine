@@ -25,9 +25,7 @@ extern "C" {
 #else
 
 #endif
-        W_ATOMIC_INT64;
-
-#if defined (_WIN64) || defined (W_PLATFORM_ANDROID) || defined (W_PLATFORM_OSX) || defined (W_PLATFORM_IOS) || defined (W_PLATFORM_LINUX)
+        W_ATOMIC_INT;
 
    /**
     * atomically increment an unsigned int64 by 1
@@ -35,7 +33,7 @@ extern "C" {
     * @return old value pointed to by mem
     */
     W_SYSTEM_EXPORT
-        W_ATOMIC_INT64 w_atomic_inc64(_Inout_ volatile W_ATOMIC_INT64* pMem);
+        W_ATOMIC_INT w_atomic_inc(_Inout_ volatile W_ATOMIC_INT* pMem);
 
    /**
     * atomically decrement an unsigned int64 by 1
@@ -43,7 +41,7 @@ extern "C" {
     * @return zero if the value becomes zero on decrement, otherwise non-zero
     */
     W_SYSTEM_EXPORT
-        int w_atomic_dec64(_Inout_ volatile W_ATOMIC_INT64* pMem);
+        int w_atomic_dec(_Inout_ volatile W_ATOMIC_INT* pMem);
 
    /**
     * atomically set an unsigned int64 in memory
@@ -51,32 +49,15 @@ extern "C" {
     * @param pVal value that the object will assume
     */
     W_SYSTEM_EXPORT
-        void w_atomic_set64(_Inout_ volatile W_ATOMIC_INT64* pMem, W_ATOMIC_INT64 pVal);
+        void w_atomic_set(_Inout_ volatile W_ATOMIC_INT* pMem, W_ATOMIC_INT pVal);
 
    /**
     * atomically read an unsigned int64 from memory
     * @param pMem the pointer
     */
     W_SYSTEM_EXPORT
-        W_ATOMIC_INT64 w_atomic_read64(_Inout_ volatile W_ATOMIC_INT64* pMem);
+        W_ATOMIC_INT w_atomic_read(_Inout_ volatile W_ATOMIC_INT* pMem);
 
-#else
-
-    W_SYSTEM_EXPORT
-        W_ATOMIC_INT64  w_atomic_read32(_Inout_ volatile W_ATOMIC_INT64* pMem);
-
-    W_SYSTEM_EXPORT
-        W_ATOMIC_INT64 w_atomic_inc32(_Inout_ volatile W_ATOMIC_INT64* pVal);
-
-
-    W_SYSTEM_EXPORT
-        void w_atomic_set32(_Inout_ volatile W_ATOMIC_INT64* pMem, W_ATOMIC_INT64 pVal);
-
-    W_SYSTEM_EXPORT
-        int w_atomic_dec32(_Inout_ volatile W_ATOMIC_INT64* pVal);
-
-
-#endif
    
 #ifdef __cplusplus
 }

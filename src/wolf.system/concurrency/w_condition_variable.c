@@ -15,7 +15,7 @@ W_RESULT w_condition_variable_init(
             return apr_thread_cond_create(pCond, _pool);
         }
     }
-    W_ASSERT_P(false, "bad args. trace info %s", _trace_info);
+    W_ASSERT_P(false, "memory pool is invalid! trace info %s", _trace_info);
     return APR_BADARG;
 }
 
@@ -24,7 +24,7 @@ W_RESULT w_condition_variable_wait(_In_ w_condition_variable pCond, _In_ w_mutex
     const char* _trace_info = "w_condition_variable_wait";
     if (!pCond || !pMutex)
     {
-        W_ASSERT_P(false, "bad args. trace info %s", _trace_info);
+        W_ASSERT_P(false, "invalid parameters. trace info %s", _trace_info);
         return W_BAD_ARG;
     }
     apr_status_t _ret = apr_thread_cond_wait(pCond, pMutex);

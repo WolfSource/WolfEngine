@@ -11,14 +11,14 @@ w_array w_array_init(
     const char* _trace_info = "w_array_init";
     if (!pMemPool)
     {
-        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "memory pool is invalid! trace info: %s", _trace_info);
         return NULL;
     }
 
     if (pInitSize < 0 || pSizeOfEachElement < 0)
     {
         W_ASSERT_P(false,
-            "bad arguments. trace info: %s",
+            "invalid parameters! trace info: %s",
             _trace_info);
         return NULL;
     }

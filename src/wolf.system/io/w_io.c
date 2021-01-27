@@ -228,7 +228,7 @@ w_file_info w_io_file_get_info_from_path(
     const char* _trace_info = "w_io_file_get_info_from_path";
     if (!pMemPool || !pPath || pPath[0] == '\0')
     {
-        W_ASSERT_P(false, "bad args! trace info: %s", _trace_info);
+        W_ASSERT_P(false, "invalid parameters! trace info: %s", _trace_info);
         return NULL;
     }
 
@@ -260,7 +260,7 @@ w_file_info w_io_file_get_info(
     const char* _trace_info = "w_io_file_get_info";
     if (!pMemPool || !pFile)
     {
-        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "invalid parameters! trace info: %s", _trace_info);
         return NULL;
     }
 
@@ -283,7 +283,7 @@ const char* w_io_file_get_extension_from_path(
     const char* _trace_info = "w_io_file_get_extension_from_path";
     if (!pMemPool || !pFilePath)
     {
-        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "invalid parameters! trace info: %s", _trace_info);
         return NULL;
     }
     const char* _dot = strrchr(pFilePath, '.');
@@ -298,7 +298,7 @@ const char* w_io_file_get_extension(
     const char* _trace_info = "w_io_file_get_extension";
     if (!pMemPool || !pFile)
     {
-        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "invalid parameters! trace info: %s", _trace_info);
         return NULL;
     }
 
@@ -318,7 +318,7 @@ const char* w_io_file_get_name_from_path(
     const char* _trace_info = "w_io_file_get_name_from_path";
     if (!pMemPool || !pPath)
     {
-        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "invalid parameters! trace info: %s", _trace_info);
         return NULL;
     }
 
@@ -356,7 +356,7 @@ const char* w_io_file_get_name(
     const char* _trace_info = "w_io_file_get_name";
     if (!pMemPool || !pFile)
     {
-        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "invalid parameters! trace info: %s", _trace_info);
         return NULL;
     }
 
@@ -376,7 +376,7 @@ const char* w_io_file_get_basename_from_path(
     const char* _trace_info = "w_io_file_get_basename_from_path";
     if (!pMemPool || !pFilePath)
     {
-        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "invalid parameters! trace info: %s", _trace_info);
         return NULL;
     }
 
@@ -405,7 +405,7 @@ const char* w_io_file_get_basename(
     const char* _trace_info = "w_io_file_get_basename";
     if (!pMemPool || !pFile)
     {
-        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "invalid parameters! trace info: %s", _trace_info);
         return NULL;
     }
 
@@ -430,7 +430,7 @@ const char* w_io_file_get_basename_without_extension_from_path(
 
     if (!pPath || !pMemPool)
     {
-        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "invalid parameters! trace info: %s", _trace_info);
         return NULL;
     }
 
@@ -453,7 +453,7 @@ const char* w_io_file_get_basename_without_extension(
     const char* _trace_info = "w_io_file_get_basename_without_extension";
     if (!pMemPool || !pFile)
     {
-        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "invalid parameters! trace info: %s", _trace_info);
         return NULL;
     }
 
@@ -485,14 +485,9 @@ w_file_istream w_io_file_read_nbytes_from_path(
     _In_ size_t pNBytes)
 {
     const char* _trace_info = "w_io_file_read_nbytes_from_path";
-    if (!pMemPool)
+    if (!pMemPool || !pPath)
     {
-        W_ASSERT_P(false, "missing fast extend memory pool. trace info: %s", _trace_info);
-        return NULL;
-    }
-    if (!pPath)
-    {
-        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "invalid parameters! trace info: %s", _trace_info);
         return NULL;
     }
 
@@ -570,14 +565,9 @@ w_file_istream	w_io_file_read_nbytes(
     _In_ size_t pNBytes)
 {
     const char* _trace_info = "w_io_file_read_nbytes";
-    if (!pMemPool)
+    if (!pMemPool || !pFile)
     {
-        W_ASSERT_P(false, "missing fast extend memory pool. trace info: %s", _trace_info);
-        return NULL;
-    }
-    if (!pFile)
-    {
-        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "invalid parameters! trace info: %s", _trace_info);
         return NULL;
     }
 
@@ -619,7 +609,7 @@ W_RESULT w_io_file_delete_from_path(
     const char* _trace_info = "w_io_file_delete_from_path";
     if (!pPath || !pMemPool)
     {
-        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "invalid parameters! trace info: %s", _trace_info);
         return APR_BADARG;
     }
     apr_pool_t* _pool = w_mem_pool_get_apr_pool(pMemPool);
@@ -637,7 +627,7 @@ W_RESULT	w_io_file_delete(
     const char* _trace_info = "w_io_file_delete";
     if (!pFile || !pMemPool)
     {
-        W_ASSERT_P(false, "bad args! trace info: %s", _trace_info);
+        W_ASSERT_P(false, "invalid parameters! trace info: %s", _trace_info);
         return APR_BADARG;
     }
 
@@ -664,7 +654,7 @@ W_RESULT w_io_dir_get_current(_Inout_ w_mem_pool pMemPool, _Inout_ char** pDir)
 
     if (!pMemPool || !pDir)
     {
-        W_ASSERT_P(false, "bad args! trace info: %s", _trace_info);
+        W_ASSERT_P(false, "invalid parameters! trace info: %s", _trace_info);
         return APR_BADARG;
     }
 
@@ -715,7 +705,7 @@ W_RESULT w_io_dir_get_current_exe(_Inout_ w_mem_pool pMemPool, _Inout_ char** pD
 
     if (!pMemPool || !pDir)
     {
-        W_ASSERT_P(false, "bad args! trace info: %s", _trace_info);
+        W_ASSERT_P(false, "invalid parameters! trace info: %s", _trace_info);
         return APR_BADARG;
     }
 
@@ -801,7 +791,7 @@ W_RESULT	w_io_dir_check_is_dir(
     const char* _trace_info = "w_io_dir_check_is_dir";
     if (!pPath || !pMemPool)
     {
-        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "invalid parameters! trace info: %s", _trace_info);
         return W_FAILURE;
     }
 
@@ -829,7 +819,7 @@ const char* w_io_dir_get_parent(
     const char* _trace_info = "w_io_dir_check_is_dir";
     if (!pPath || !pMemPool)
     {
-        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "invalid parameters! trace info: %s", _trace_info);
         return NULL;
     }
 
@@ -869,7 +859,7 @@ W_RESULT	w_io_dir_create(
     const char* _trace_info = "w_io_dir_create";
     if (!pPath || !pMemPool)
     {
-        W_ASSERT_P(false, "bad args! trace info: %s", _trace_info);
+        W_ASSERT_P(false, "invalid parameters! trace info: %s", _trace_info);
         return APR_BADARG;
     }
 
@@ -1304,7 +1294,7 @@ W_RESULT w_io_pixels_from_jpeg_stream(
     const char* _trace_info = "w_io_pixels_from_jpeg_stream";
     if (!pMemPool || !pJpegStream || !pJpegStreamLen)
     {
-        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "invalid parameters! trace info: %s", _trace_info);
         return W_FAILURE;
     }
     W_RESULT _rt;
@@ -1728,7 +1718,7 @@ W_RESULT w_io_pixels_from_png_file(
     if (!pMemPool || !pFilePath)
     {
         W_ASSERT_P(false,
-            "bad args. trace info: %s::png_sig_cmp",
+            "invalid parameters! trace info: %s::png_sig_cmp",
             _trace_info);
         return APR_BADARG;
     }

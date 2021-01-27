@@ -13,7 +13,7 @@ W_RESULT    w_mem_map_create(
     const char* _trace_info = "w_mem_map_create";
     if (!pMemPool || !pNewMemMap || !*pNewMemMap)
     {
-        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "invalid parameters! trace info: %s", _trace_info);
         return APR_BADARG;
     }
 
@@ -39,7 +39,7 @@ W_RESULT    w_mem_map_dup(
     const char* _trace_info = "w_mem_map_dup";
     if (!pMemPool || !pNewMemMap || !*pNewMemMap || !pOldMemMap)
     {
-        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "invalid parameters! trace info: %s", _trace_info);
         return APR_BADARG;
     }
 
@@ -59,7 +59,7 @@ W_RESULT     w_mem_map_delete(_In_ w_mem_map pMemoryMap)
     const char* _trace_info = "w_mem_map_delete";
     if (!pMemoryMap)
     {
-        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "memory pool is invalid! trace info: %s", _trace_info);
         return W_FAILURE;
     }
     return apr_mmap_delete(pMemoryMap);
@@ -73,7 +73,7 @@ W_RESULT     w_mem_map_offset(
     const char* _trace_info = "w_mem_map_delete";
     if (!pAddress || !*pAddress || pMemoryMap)
     {
-        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "memory pool is invalid! trace info: %s", _trace_info);
         return W_FAILURE;
     }
     return apr_mmap_offset(pAddress, pMemoryMap, pOffset);

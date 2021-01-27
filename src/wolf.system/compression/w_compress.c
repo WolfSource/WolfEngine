@@ -1,5 +1,4 @@
 #include "w_compress.h"
-
 #include <stdlib.h>
 #include <apr.h>
 #include <apr_general.h>
@@ -8,13 +7,32 @@
 #include <apr_file_io.h>
 #include <apr_hash.h>
 #include "log/w_log.h"
-
 #include "lz4/lz4.h"
+#include "memory/w_string.h"
+
+/*
+	NOTE:
+	make sure add following define in vrefbuffer.h of msgpack
+	iovec is already defined
+#ifndef APR_IOVEC_DEFINED
+	struct iovec {
+		void  *iov_base;
+		size_t iov_len;
+	};
+#endif
+*/
+#include "compression/msgpack/msgpack.h"
 
 #ifdef W_PLATFORM_WIN
 #include "lzma/LzmaEnc.h"
 #include "lzma/LzmaDec.h"
 #endif
+
+typedef struct msgpack
+{
+	msgpack_sbuffer buf;
+	msgpack_packer	pack;
+} msgpack;
 
 W_RESULT w_compress_lz4(_In_       const char* pSrcBuffer,
                         _In_       w_compress_mode pMode,
@@ -80,7 +98,7 @@ W_RESULT w_compress_lz4(_In_       const char* pSrcBuffer,
     return W_SUCCESS;
 }
 
-W_RESULT w_decompress_lz4(_In_      const char* pCompressedBuffer,
+W_RESULT w_decompress_lz4(_In_z_    const char* pCompressedBuffer,
                           _Inout_   w_compress_result* pDecompressResult)
 {
   if (!pCompressedBuffer || pDecompressResult->size_in == 0) return APR_BADARG;
@@ -207,15 +225,18 @@ int w_compress_lzma(_In_ const uint8_t* pSourceBuffer, _Inout_ w_compress_result
 	{
 		// tricky: we have to generate the LZMA header
 		// 5 bytes properties + 8 byte uncompressed size
-		pCompressInfo->data = (char*)malloc((_output_size_64 + 13) * sizeof(char));
-		if (pCompressInfo->data)
+		pCompressInfo->data = (char*)malloc(pCompressInfo->size_out);
+		if (pCompressInfo->data && pCompressInfo->size_out >= 5)
 		{
-			memcpy(pCompressInfo->data, _props_encoded, 5);
+			memcpy((unsigned char*)pCompressInfo->data, _props_encoded, 5);
 			for (int i = 0; i < 8; i++)
 			{
 				pCompressInfo->data[5 + i] = (pCompressInfo->size_in >> (i * 8)) & 0xFF;
 			}
-			memcpy(pCompressInfo->data + 13, _compress_mem, _output_size_64);
+			if (_compress_mem)
+			{
+				memcpy((unsigned char*)(pCompressInfo->data + 13), _compress_mem, _output_size_64);
+			}
 		}
 		return 0;
 	}
@@ -234,7 +255,7 @@ int w_decompress_lzma(_In_ const uint8_t* pCompressedBuffer, _Inout_ w_compress_
 	UInt64 _size_from_header = 0;
 	for (int i = 0; i < 8; i++)
 	{
-		_size_from_header |= (pCompressedBuffer[5 + i] << (i * 8));
+		_size_from_header |= (UInt64)(pCompressedBuffer[5 + i]) << ((UInt64)i * 8);
 	}
 
 	if (_size_from_header <= (256 * 1024 * 1024))
@@ -265,6 +286,432 @@ int w_decompress_lzma(_In_ const uint8_t* pCompressedBuffer, _Inout_ w_compress_
 }
 
 #endif
+
+W_RESULT w_compress_msgpack_init(
+	_Inout_ w_mem_pool pMemPool,
+	_Inout_ w_msgpack* pMsgPack)
+{
+	const char* _trace_info = "w_compress_msgpack_init";
+	W_RESULT _ret = W_SUCCESS;
+	w_msgpack _out_msgpack = NULL;
+	msgpack* _private_msgpack = NULL;
+
+	if (!pMemPool)
+	{
+		W_ASSERT_P(false, "memory pool is invalid. trace info: %s", _trace_info);
+		_ret = W_BAD_ARG;
+		goto exit;
+	}
+
+	_out_msgpack = (w_msgpack)w_malloc(pMemPool, sizeof(w_msgpack_t));
+	if (!_out_msgpack)
+	{
+		W_ASSERT_P(false, "could not allocate memory for w_msgpack_t. trace info: %s", _trace_info);
+		_ret = W_FAILURE;
+		goto exit;
+	}
+
+	_private_msgpack = (msgpack*)w_malloc(pMemPool, sizeof(msgpack));
+	if (!_private_msgpack)
+	{
+		W_ASSERT_P(false, "could not allocate memory for w_msgpack_t. trace info: %s", _trace_info);
+		_ret = W_FAILURE;
+		goto exit;
+	}
+
+	//msgpack::sbuffer is a simple buffer implementation.
+	msgpack_sbuffer_init(&_private_msgpack->buf);
+
+	// serialize values into the buffer using msgpack_sbuffer_write callback function.
+	msgpack_packer_init(&_private_msgpack->pack, &_private_msgpack->buf, msgpack_sbuffer_write);
+
+	_out_msgpack->msgpack_obj = (void*)_private_msgpack;
+	*pMsgPack = _out_msgpack;
+exit:
+	return _ret;
+}
+
+W_RESULT w_compress_msgpack_append_boolean(_Inout_ w_msgpack pMsgPack, _In_ bool pValue)
+{
+	const char* _trace_info = "w_compress_msgpack_append_boolean";
+	W_RESULT _ret = W_SUCCESS;
+
+	if (!pMsgPack || !pMsgPack->msgpack_obj)
+	{
+		W_ASSERT_P(false, "memory pool is invalid. trace info: %s", _trace_info);
+		return (_ret = W_BAD_ARG);
+	}
+
+	msgpack* _msgpack = (msgpack*)pMsgPack->msgpack_obj;
+	if (_msgpack)
+	{
+		pValue ?
+			msgpack_pack_true(&_msgpack->pack) :
+			msgpack_pack_false(&_msgpack->pack);
+	}
+	else
+	{
+		_ret = W_FAILURE;
+	}
+
+	return _ret;
+}
+
+W_RESULT w_compress_msgpack_append_int(_Inout_ w_msgpack pMsgPack, _In_ int pValue)
+{
+	const char* _trace_info = "w_compress_msgpack_append_int";
+	W_RESULT _ret = W_SUCCESS;
+
+	if (!pMsgPack || !pMsgPack->msgpack_obj)
+	{
+		W_ASSERT_P(false, "memory pool is invalid. trace info: %s", _trace_info);
+		return (_ret = W_BAD_ARG);
+	}
+
+	msgpack* _msgpack = (msgpack*)pMsgPack->msgpack_obj;
+	if (_msgpack)
+	{
+		msgpack_pack_int(&_msgpack->pack, pValue);
+	}
+	else
+	{
+		_ret = W_FAILURE;
+	}
+
+	return _ret;
+}
+
+W_RESULT w_compress_msgpack_append_float(_Inout_ w_msgpack pMsgPack, _In_ float pValue)
+{
+	const char* _trace_info = "w_compress_msgpack_append_float";
+	W_RESULT _ret = W_SUCCESS;
+
+	if (!pMsgPack || !pMsgPack->msgpack_obj)
+	{
+		W_ASSERT_P(false, "memory pool is invalid. trace info: %s", _trace_info);
+		return (_ret = W_BAD_ARG);
+	}
+
+	msgpack* _msgpack = (msgpack*)pMsgPack->msgpack_obj;
+	if (_msgpack)
+	{
+		msgpack_pack_float(&_msgpack->pack, pValue);
+	}
+	else
+	{
+		_ret = W_FAILURE;
+	}
+
+	return _ret;
+}
+
+W_RESULT w_compress_msgpack_append_double(_Inout_ w_msgpack pMsgPack, _In_ double pValue)
+{
+	const char* _trace_info = "w_compress_msgpack_append_double";
+
+	W_RESULT _ret = W_SUCCESS;
+
+	if (!pMsgPack || !pMsgPack->msgpack_obj)
+	{
+		W_ASSERT_P(false, "memory pool is invalid. trace info: %s", _trace_info);
+		return (_ret = W_BAD_ARG);
+	}
+
+	msgpack* _msgpack = (msgpack*)pMsgPack->msgpack_obj;
+	if (_msgpack)
+	{
+		msgpack_pack_double(&_msgpack->pack, pValue);
+	}
+	else
+	{
+		_ret = W_FAILURE;
+	}
+
+	return _ret;
+}
+
+W_RESULT w_compress_msgpack_append_string(_Inout_ w_msgpack pMsgPack, _In_ const char* pString, _In_ size_t pStringLen)
+{
+	const char* _trace_info = "w_compress_msgpack_append_string";
+
+	W_RESULT _ret = W_SUCCESS;
+
+	if (!pMsgPack || !pMsgPack->msgpack_obj)
+	{
+		W_ASSERT_P(false, "memory pool is invalid. trace info: %s", _trace_info);
+		return (_ret = W_BAD_ARG);
+	}
+
+	msgpack* _msgpack = (msgpack*)pMsgPack->msgpack_obj;
+	if (_msgpack)
+	{
+		msgpack_pack_str(&_msgpack->pack, pStringLen);
+		msgpack_pack_str_body(&_msgpack->pack, pString, pStringLen);
+	}
+	else
+	{
+		_ret = W_FAILURE;
+	}
+
+	return _ret;
+}
+
+W_RESULT w_compress_msgpack_append_array(
+	_Inout_ w_msgpack pMsgPack, 
+	_In_ w_array pArray, 
+	_In_ w_std_types pArrayElementType)
+{
+	const char* _trace_info = "w_compress_msgpack_append_array";
+
+	W_RESULT _ret = W_SUCCESS;
+
+	if (!pMsgPack || !pMsgPack->msgpack_obj || !pArray)
+	{
+		W_ASSERT_P(false, "invalid parameters! trace info: %s", _trace_info);
+		return (_ret = W_BAD_ARG);
+	}
+	
+	msgpack* _msgpack = (msgpack*)pMsgPack->msgpack_obj;
+	if (!_msgpack)
+	{
+		W_ASSERT_P(false, "missing msgpack_obj! trace info: %s", _trace_info);
+		return (_ret = W_BAD_ARG);
+	}
+
+	size_t _size = w_array_get_size(pArray);
+	if (!_size)
+	{
+		W_ASSERT_P(false, "array is empty! trace info: %s", _trace_info);
+		return (_ret = W_BAD_ARG);
+	}
+
+	msgpack_pack_array(&_msgpack->pack, _size);
+	switch (pArrayElementType)
+	{
+	default:
+	{
+		_ret = W_FAILURE;
+		break;
+	}
+	case W_TYPE_BOOLEAN:
+	{
+		for (size_t i = 0; i < _size; ++i)
+		{
+			bool* _ptr = (bool*)w_array_get_element(pArray, (int)i);
+			if (_ptr)
+			{
+				(*_ptr) ?
+					msgpack_pack_true(&_msgpack->pack) :
+					msgpack_pack_false(&_msgpack->pack);
+			}
+		}
+		break;
+	}
+	case W_TYPE_POSITIVE_INT:
+	case W_TYPE_NEGATIVE_INT:
+	{
+		for (size_t i = 0; i < _size; ++i)
+		{
+			int* _ptr = (int*)w_array_get_element(pArray, (int)i);
+			if (_ptr)
+			{
+				msgpack_pack_int(&_msgpack->pack, *_ptr);
+			}
+		}
+		break;
+	}
+	case W_TYPE_FLOAT:
+	{
+		for (size_t i = 0; i < _size; ++i)
+		{
+			float* _ptr = (float*)w_array_get_element(pArray, (int)i);
+			if (_ptr)
+			{
+				msgpack_pack_float(&_msgpack->pack, *_ptr);
+			}
+		}
+		break;
+	}
+	case W_TYPE_DOUBLE:
+	{
+		for (size_t i = 0; i < _size; ++i)
+		{
+			double* _ptr = (double*)w_array_get_element(pArray, (int)i);
+			if (_ptr)
+			{
+				msgpack_pack_double(&_msgpack->pack, *_ptr);
+			}
+		}
+		break;
+	}
+	case W_TYPE_STRING:
+	{
+		for (size_t i = 0; i < _size; ++i)
+		{
+			const char* _ptr = (const char*)w_array_get_element(pArray, (int)i);
+			if (_ptr)
+			{
+				size_t _size = strlen(_ptr);
+				msgpack_pack_str(&_msgpack->pack, _size);
+				msgpack_pack_str_body(&_msgpack->pack, _ptr, _size);
+			}
+		}
+		break;
+	}
+	}
+
+	return _ret;
+}
+
+W_RESULT w_compress_msgpack_fini(
+	_Inout_ w_mem_pool pMemPool,
+	_Inout_ w_msgpack pMsgPack,
+	_Inout_ w_buffer* pBuffer)
+{
+	const char* _trace_info = "w_compress_msgpack_fini";
+
+	W_RESULT _ret = W_SUCCESS;
+	*pBuffer = NULL;
+
+	if (!pMemPool || !pMsgPack || !pMsgPack->msgpack_obj)
+	{
+		W_ASSERT_P(false, "invalid parameters! trace info: %s", _trace_info);
+		return (_ret = W_BAD_ARG);
+	}
+
+	msgpack* _msgpack = (msgpack*)pMsgPack->msgpack_obj;
+	if (!_msgpack)
+	{
+		W_ASSERT_P(false, "missing msgpack_obj! trace info: %s", _trace_info);
+		return (_ret = W_BAD_ARG);
+	}
+	
+	w_buffer _buffer = (w_buffer)w_malloc(pMemPool, sizeof(w_buffer_t));
+	if (_buffer)
+	{
+		_buffer->data = w_malloc(pMemPool, _msgpack->buf.size);
+		if (_buffer->data)
+		{
+			memcpy_s(_buffer->data, _buffer->len, _msgpack->buf.data, _msgpack->buf.size);
+			*pBuffer = _buffer;
+		}
+		else
+		{
+			_ret = W_FAILURE;
+		}
+	}
+	else
+	{
+		_ret = W_FAILURE;
+	}
+
+	msgpack_sbuffer_destroy(&_msgpack->buf);
+
+	return _ret;
+}
+
+static void s_send_msgpack_object(
+	_Inout_ w_mem_pool pMemPool,
+	_In_ msgpack_object* pObj,
+	_In_ w_unpack_msg_fn pMsgUnPackFunction)
+{
+	switch (pObj->type)
+	{
+	case MSGPACK_OBJECT_NIL:
+	{
+		pMsgUnPackFunction(W_TYPE_NULL, NULL);
+		break;
+	}
+	case MSGPACK_OBJECT_BOOLEAN:
+	{
+		pMsgUnPackFunction(W_TYPE_BOOLEAN, (const void*)(&pObj->via.boolean));
+		break;
+	}
+	case MSGPACK_OBJECT_POSITIVE_INTEGER:
+	case MSGPACK_OBJECT_NEGATIVE_INTEGER:
+	{
+		pMsgUnPackFunction((w_std_types)pObj->type, (const void*)(&pObj->via.i64));
+		break;
+	}
+	case MSGPACK_OBJECT_FLOAT32:
+	case MSGPACK_OBJECT_FLOAT64:
+	{
+		pMsgUnPackFunction(W_TYPE_FLOAT, (const void*)(&pObj->via.f64));
+		break;
+	}
+	case MSGPACK_OBJECT_STR:
+	{
+		w_string _str = (w_string)w_malloc(pMemPool, sizeof(w_string_t));
+		if (_str)
+		{
+			_str->data = (char*)w_malloc(pMemPool, pObj->via.str.size);
+			if (_str->data)
+			{
+				_str->reserved_size = pObj->via.str.size;
+				memcpy_s(
+					_str->data,
+					_str->reserved_size,
+					pObj->via.str.ptr,
+					pObj->via.str.size);
+				pMsgUnPackFunction(W_TYPE_STRING, _str);
+				break;
+			}
+		}
+		pMsgUnPackFunction(W_TYPE_STRING, NULL);
+		break;
+	}
+	case MSGPACK_OBJECT_ARRAY:
+	{
+		pMsgUnPackFunction(W_TYPE_ARRAY, NULL);
+		for (size_t i = 0; i < pObj->via.array.size; ++i)
+		{
+			s_send_msgpack_object(
+				pMemPool,
+				&(pObj->via.array.ptr[i]),
+				pMsgUnPackFunction);
+		}
+		break;
+	}
+	case MSGPACK_OBJECT_MAP:
+	{
+		//NOT IMPLEMENTED YET
+		break;
+	}
+	}
+}
+
+W_RESULT w_decompress_msgpack(
+	_Inout_ w_mem_pool pMemPool,
+	_Inout_ w_buffer pBuffer,
+	_In_ w_unpack_msg_fn pMsgUnPackFunction)
+{
+	msgpack_unpack_return _ret;
+	size_t _unpack_pos = 0;
+
+	msgpack_unpacked _unpack;
+	msgpack_unpacked_init(&_unpack);
+
+	for (;;)
+	{
+		_ret = msgpack_unpack_next(
+			&_unpack,
+			pBuffer->data,
+			pBuffer->len,
+			&_unpack_pos);
+		if (_ret != MSGPACK_UNPACK_SUCCESS) break;
+
+		s_send_msgpack_object(pMemPool, &_unpack.data, pMsgUnPackFunction);
+	}
+
+	msgpack_unpacked_destroy(&_unpack);
+
+	return W_SUCCESS;
+}
+
+//W_RESULT w_msgunpack()
+//{
+//
+//}
 
 /*
 

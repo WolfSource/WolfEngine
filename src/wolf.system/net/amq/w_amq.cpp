@@ -27,7 +27,7 @@ W_RESULT	w_amq_producer_open(
 
 	if (!pMemPool)
 	{
-		W_ASSERT_P(false, "bad args! trace info: %s",
+		W_ASSERT_P(false, "memory pool is invalid! trace info: %s",
 			_trace_info);
 		return W_BAD_ARG;
 	}
@@ -76,7 +76,7 @@ W_RESULT	w_amq_consumer_open(
 
 	if (!pMemPool)
 	{
-		W_ASSERT_P(false, "bad args! trace info: %s",
+		W_ASSERT_P(false, "memory pool is invalid! trace info: %s",
 			_trace_info);
 		return W_BAD_ARG;
 	}
@@ -117,7 +117,7 @@ W_RESULT	w_amq_producer_run(
 
 	if (!pAMQObject)
 	{
-		W_ASSERT_P(false, "bad args! trace info: %s",
+		W_ASSERT_P(false, "invalid parameter! trace info: %s",
 			_trace_info);
 		return W_BAD_ARG;
 	}
@@ -149,7 +149,7 @@ W_RESULT	w_amq_consumer_run(
 
 	if (!pAMQObject)
 	{
-		W_ASSERT_P(false, "bad args! trace info: %s",
+		W_ASSERT_P(false, "invalid parameter! trace info: %s",
 			_trace_info);
 		return W_BAD_ARG;
 	}
@@ -183,7 +183,7 @@ W_RESULT	w_amq_producer_send_message(
 
 	if (!pAMQObject)
 	{
-		W_ASSERT_P(false, "bad args! trace info: %s",
+		W_ASSERT_P(false, "invalid parameter! trace info: %s",
 			_trace_info);
 		return W_BAD_ARG;
 	}
@@ -215,7 +215,7 @@ W_RESULT	w_amq_producer_close(
 	
 	if (!pAMQObject)
 	{
-		W_ASSERT_P(false, "bad args! trace info: %s",
+		W_ASSERT_P(false, "invalid parameter! trace info: %s",
 			_trace_info);
 		return W_BAD_ARG;
 	}
@@ -247,7 +247,7 @@ W_RESULT	w_amq_consumer_close(
 
 	if (!pAMQObject)
 	{
-		W_ASSERT_P(false, "bad args! trace info: %s",
+		W_ASSERT_P(false, "invalid parameter! trace info: %s",
 			_trace_info);
 		return W_BAD_ARG;
 	}

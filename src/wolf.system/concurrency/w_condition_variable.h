@@ -22,6 +22,7 @@ extern "C" {
 
     /**
      * create a signal
+     * @param pMemPool the pool from which to allocate the condition variable
      * @param pCond condition variable
      * @return result
     */

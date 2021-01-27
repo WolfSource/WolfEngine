@@ -105,7 +105,7 @@ w_timespan w_timespan_init_from_zero(_Inout_ w_mem_pool pMemPool)
     const char* _trace_info = "w_timespan_init_from_zero";
     if (!pMemPool)
     {
-        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "memory pool is invalid! trace info: %s", _trace_info);
         return NULL;
     }
     w_timespan _timespan = (w_timespan_t*)w_malloc(pMemPool, sizeof(w_timespan_t));
@@ -187,7 +187,7 @@ w_timespan w_timespan_init_from_days(
     const char* _trace_info = "w_timespan_init_from_days";
     if (!pMemPool)
     {
-        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "memory pool in invalid! trace info: %s", _trace_info);
         return NULL;
     }
     w_timespan _timespan = (w_timespan)w_malloc(pMemPool, sizeof(w_timespan_t));
@@ -205,7 +205,7 @@ w_timespan w_timespan_init_from_hours(
     const char* _trace_info = "w_timespan_init_from_hours";
     if (!pMemPool)
     {
-        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "memory pool in invalid! trace info: %s", _trace_info);
         return NULL;
     }
     w_timespan _timespan = (w_timespan)w_malloc(pMemPool, sizeof(w_timespan_t));
@@ -223,7 +223,7 @@ w_timespan w_timespan_init_from_minutes(
     const char* _trace_info = "w_timespan_init_from_minutes";
     if (!pMemPool)
     {
-        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "memory pool in invalid! trace info: %s", _trace_info);
         return NULL;
     }
     w_timespan _timespan = (w_timespan)w_malloc(pMemPool, sizeof(w_timespan_t));
@@ -259,7 +259,7 @@ w_timespan w_timespan_init_from_milliseconds(
     const char* _trace_info = "w_timespan_init_from_milliseconds";
     if (!pMemPool)
     {
-        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "memory pool in invalid! trace info: %s", _trace_info);
         return NULL;
     }
     w_timespan _timespan = (w_timespan)w_malloc(pMemPool, sizeof(w_timespan_t));
@@ -277,7 +277,7 @@ w_timespan w_timespan_init_from_ticks(
     const char* _trace_info = "w_timespan_init_from_ticks";
     if (!pMemPool)
     {
-        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "memory pool in invalid! trace info: %s", _trace_info);
         return NULL;
     }
     w_timespan _timespan = (w_timespan)w_malloc(pMemPool, sizeof(w_timespan_t));
@@ -306,7 +306,7 @@ w_timespan w_timespan_init_from_shorttime(
     const char* _trace_info = "w_timespan_init_from_shorttime";
     if (!pMemPool)
     {
-        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "memory pool in invalid! trace info: %s", _trace_info);
         return NULL;
     }
     w_timespan _timespan = (w_timespan)w_malloc(pMemPool, sizeof(w_timespan_t));
@@ -334,7 +334,7 @@ w_timespan w_timespan_init_from_longtime(
     const char* _trace_info = "w_timespan_init_from_longtime";
     if (!pMemPool)
     {
-        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "memory pool in invalid! trace info: %s", _trace_info);
         return NULL;
     }
     w_timespan _timespan = (w_timespan)w_malloc(pMemPool, sizeof(w_timespan_t));
@@ -358,7 +358,7 @@ w_timespan w_timespan_init_from_string(
     const char* _trace_info = "w_timespan_init_from_string";
     if (!pMemPool)
     {
-        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "memory pool in invalid! trace info: %s", _trace_info);
         return NULL;
     }
 
@@ -410,7 +410,7 @@ w_timespan w_timespan_init_from_wstring(
     const char* _trace_info = "w_timespan_init_from_wstring";
     if (!pMemPool)
     {
-        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "memory pool in invalid! trace info: %s", _trace_info);
         return NULL;
     }
 
@@ -544,7 +544,7 @@ const char* w_timespan_to_string(
     const char* _trace_info = "w_timespan_to_string";
     if (!pMemPool)
     {
-        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "memory pool in invalid! trace info: %s", _trace_info);
         return NULL;
     }
     char* _str = (char*)w_malloc(pMemPool, W_MAX_BUFFER_SIZE);
@@ -575,7 +575,7 @@ const wchar_t* w_timespan_to_wstring(
     const char* _trace_info = "w_timespan_to_wstring";
     if (!pMemPool)
     {
-        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "memory pool in invalid! trace info: %s", _trace_info);
         return NULL;
     }
     wchar_t* _str = (wchar_t*)w_malloc(pMemPool, W_MAX_BUFFER_SIZE);
@@ -685,7 +685,7 @@ const char* w_timespan_get_current_date_time_string(_Inout_ w_mem_pool pMemPool)
     const char* _trace_info = "w_timespan_get_current_date_time_string";
     if (!pMemPool)
     {
-        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "memory pool in invalid! trace info: %s", _trace_info);
         return NULL;
     }
     //get current time
@@ -727,7 +727,7 @@ const wchar_t* w_timespan_get_current_date_time_wstring(_Inout_ w_mem_pool pMemP
     const char* _trace_info = "w_timespan_get_current_date_time_wstring";
     if (!pMemPool)
     {
-        W_ASSERT_P(false, "missing memory pool. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "memory pool in invalid! trace info: %s", _trace_info);
         return NULL;
     }
     //get current time

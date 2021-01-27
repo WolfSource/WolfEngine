@@ -104,7 +104,7 @@ W_RESULT w_lua_init(_Inout_ w_mem_pool pMemPool)
     const char* _trace_info = "w_lua_init";
     if (!pMemPool)
     {
-        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "memory pool is invalid! trace info: %s", _trace_info);
         return APR_BADARG;
     }
 
@@ -123,7 +123,7 @@ W_RESULT w_lua_load_file(_In_z_ const char* pPath)
 {
     if (!pPath)
     {
-        W_ASSERT(false, "bad args! trace info: w_lua_load_file");
+        W_ASSERT(false, "invalid parameter! trace info: w_lua_load_file");
         return W_FAILURE;
     }
     
@@ -161,7 +161,7 @@ W_RESULT w_lua_load_from_stream(_In_z_ const char* pBufferStream)
 {
 	if (!pBufferStream)
     {
-        W_ASSERT(false, "bad args! trace info: w_lua_load_file");
+        W_ASSERT(false, "invalid parameters! trace info: w_lua_load_file");
         return W_FAILURE;
     }
 

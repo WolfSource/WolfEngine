@@ -86,6 +86,18 @@
 #endif
 
 typedef int W_RESULT;
+typedef enum
+{
+    W_TYPE_NULL = 0x00,
+    W_TYPE_BOOLEAN = 0x01,
+    W_TYPE_POSITIVE_INT = 0x02,
+    W_TYPE_NEGATIVE_INT = 0x03,
+    W_TYPE_FLOAT = 0x0a,
+    W_TYPE_DOUBLE = 0x04,
+    W_TYPE_STRING = 0x05,
+    W_TYPE_ARRAY = 0x06,
+    W_TYPE_MAP = 0x07,
+} w_std_types;
 
 #ifdef _MSC_VER
 #define ASM __asm

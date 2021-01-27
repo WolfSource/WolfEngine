@@ -30,7 +30,7 @@ W_RESULT w_sigslot_init(_Inout_ w_mem_pool pMemPool, _Inout_ w_sigslot* pSignal)
 	if (!pMemPool)
 	{
 		W_ASSERT_P(false,
-			"bad args. trace info: %s",
+			"memory pool is invalid! trace info: %s",
 			_trace_info);
 
 		return W_BAD_ARG;
@@ -70,7 +70,7 @@ W_RESULT w_sigslot_raise(_In_ w_sigslot pSignal, _In_ void* pArgs)
 	if (!pSignal)
 	{
 		W_ASSERT_P(false,
-			"bad args. trace info: %s",
+			"invalid parameter! trace info: %s",
 			_trace_info);
 
 		return W_BAD_ARG;
@@ -102,7 +102,7 @@ W_RESULT w_sigslot_remove_all(_Inout_ w_sigslot pSignal)
 	if (!pSignal)
 	{
 		W_ASSERT_P(false,
-			"bad args. trace info: %s",
+			"invalid parameter! trace info: %s",
 			_trace_info);
 
 		return W_BAD_ARG;
@@ -120,7 +120,7 @@ W_RESULT w_sigslot_set_slot(_Inout_ w_sigslot pSignal, _In_ w_slot pSlot, void* 
 	if (!pSlot || !pSignal)
 	{
 		W_ASSERT_P(false,
-			"bad args. trace info: %s",
+			"invalid parameters. trace info: %s",
 			_trace_info);
 
 		return W_BAD_ARG;
@@ -177,7 +177,7 @@ W_RESULT w_sigslot_add_slot(_Inout_ w_sigslot pSignal, _In_ w_slot pSlot, void* 
 	if (!pSlot || !pSignal)
 	{
 		W_ASSERT_P(false,
-			"bad args. trace info: %s",
+			"invalid parameters. trace info: %s",
 			_trace_info);
 
 		return W_BAD_ARG;
@@ -243,7 +243,7 @@ W_RESULT w_sigslot_remove_slot(_Inout_ w_sigslot pSignal, _In_ w_slot pSlot)
 	if (!pSlot || !pSignal)
 	{
 		W_ASSERT_P(false,
-			"bad args. trace info: %s",
+			"invalid parameters. trace info: %s",
 			_trace_info);
 
 		return W_BAD_ARG;
@@ -270,7 +270,7 @@ W_RESULT w_sigslot_fini(_Inout_ w_sigslot* pSignal)
     if (!pSignal || !(*pSignal))
     {
         W_ASSERT_P(false,
-            "bad args. trace info: %s",
+            "invalid parameter! trace info: %s",
             _trace_info);
 
         return W_BAD_ARG;

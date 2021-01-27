@@ -10,7 +10,7 @@ W_RESULT w_table_init(
     const char* _trace_info = "w_table_init";
     if (!pMemPool)
     {
-        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "invalid parameter! trace info: %s", _trace_info);
         return APR_BADARG;
     }
 
@@ -32,7 +32,7 @@ W_RESULT w_table_set(_In_ w_table pTable, char* pKey, char* pValue, bool pMakeAC
 
     if (!pTable || !pKey)
     {
-        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "invalid parameters! trace info: %s", _trace_info);
         return APR_BADARG;
     }
 
@@ -55,7 +55,7 @@ W_RESULT w_table_unset(_In_ w_table pTable, char* pKey)
     const char* _trace_info = "w_table_unset";
     if (!pTable || !pKey)
     {
-        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "invalid parameters! trace info: %s", _trace_info);
         return APR_BADARG;
     }
     apr_table_unset(pTable, pKey);
@@ -67,7 +67,7 @@ W_RESULT w_table_add(_In_ w_table pTable, char* pKey, char* pValue)
     const char* _trace_info = "w_table_add";
     if (!pTable)
     {
-        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "invalid parameter! trace info: %s", _trace_info);
         return APR_BADARG;
     }
     apr_table_add(pTable, pKey, pValue);
@@ -79,7 +79,7 @@ int w_table_get_size(_In_ w_table pTable)
     const char* _trace_info = "w_table_get_size";
     if (!pTable)
     {
-        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "invalid parameter! trace info: %s", _trace_info);
         return -1;
     }
     const apr_array_header_t* _header = apr_table_elts(pTable);
@@ -91,7 +91,7 @@ int w_table_is_empty(_In_ w_table pTable)
     const char* _trace_info = "w_table_is_empty";
     if (!pTable)
     {
-        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "invalid parameter! trace info: %s", _trace_info);
         return -1;
     }
     return apr_is_empty_table(pTable);
@@ -102,7 +102,7 @@ void w_table_clear(_In_ w_table pTable)
     const char* _trace_info = "w_table_clear";
     if (!pTable)
     {
-        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "invalid parameter! trace info: %s", _trace_info);
         return;
     }
     apr_table_clear(pTable);
@@ -115,7 +115,7 @@ int w_table_do(_In_ w_table pTable,
     const char* _trace_info = "w_table_do";
     if (!pTable)
     {
-        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "invalid parameter! trace info: %s", _trace_info);
         return FALSE;
     }
     return apr_table_do(pCallBack, pArg, pTable, NULL);
@@ -130,7 +130,7 @@ int w_table_do_with_filter(
     const char* _trace_info = "w_table_do_with_filter";
     if (!pTable)
     {
-        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "invalid parameter! trace info: %s", _trace_info);
         return FALSE;
     }
     return apr_table_do(pCallBack, pArg, pTable, pKeys, NULL);
@@ -141,7 +141,7 @@ const w_table_entry_iterator w_table_get_entry(_In_ w_table pTable)
     const char* _trace_info = "w_table_get_entry";
     if (!pTable)
     {
-        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "invalid parameter! trace info: %s", _trace_info);
         return FALSE;
     }
     const apr_array_header_t* _header = apr_table_elts(pTable);

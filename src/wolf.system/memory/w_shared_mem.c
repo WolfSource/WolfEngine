@@ -11,7 +11,7 @@ W_RESULT    w_shared_mem_create(
     const char* _trace_info = "w_shared_mem_create";
     if (!pMemPool || !pReqSize)
     {
-        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "invalid parameters! trace info: %s", _trace_info);
         return APR_BADARG;
     }
 
@@ -34,7 +34,7 @@ W_RESULT    w_shared_mem_create_ex(
 
     if (!pMemPool || !pReqSize)
     {
-        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "invalid parameters! trace info: %s", _trace_info);
         return APR_BADARG;
     }
 
@@ -59,7 +59,7 @@ W_RESULT    w_shared_mem_remove(
 
     if (!pMemPool || !pFileName)
     {
-        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "invalid parameters! trace info: %s", _trace_info);
         return APR_BADARG;
     }
 
@@ -76,7 +76,7 @@ W_RESULT    w_shared_mem_delete(_In_ w_shared_mem pSharedMem)
     const char* _trace_info = "w_shared_mem_delete";
     if (!pSharedMem)
     {
-        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "invalid parameter! trace info: %s", _trace_info);
         return APR_BADARG;
     }
     return apr_shm_delete(pSharedMem);
@@ -87,7 +87,7 @@ W_RESULT    w_shared_mem_destroy(_In_ w_shared_mem pSharedMem)
     const char* _trace_info = "w_shared_mem_destroy";
     if (!pSharedMem)
     {
-        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "invalid parameter! trace info: %s", _trace_info);
         return APR_BADARG;
     }
     return apr_shm_destroy(pSharedMem);
@@ -101,7 +101,7 @@ W_RESULT    w_shared_mem_attach(
     const char* _trace_info = "w_shared_mem_attach";
     if (!pMemPool || !pSharedMem || !*pSharedMem)
     {
-        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "invalid parameters! trace info: %s", _trace_info);
         return APR_BADARG;
     }
 
@@ -125,7 +125,7 @@ W_RESULT    w_shared_mem_attach_ex(
     const char* _trace_info = "w_shared_mem_attach_ex";
     if (!pMemPool || !pSharedMem || !*pSharedMem || !pFileName)
     {
-        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "invalid parameters! trace info: %s", _trace_info);
         return APR_BADARG;
     }
 
@@ -157,7 +157,7 @@ void* w_shared_mem_get_base_addr(_In_ const w_shared_mem pSharedMem)
     const char* _trace_info = "w_shared_mem_get_base_addr";
     if (!pSharedMem)
     {
-        W_ASSERT_P(false, "shared memory is NULL! trace info: %s", _trace_info);
+        W_ASSERT_P(false, "invalid parameter! trace info: %s", _trace_info);
         return NULL;
     }
     return apr_shm_baseaddr_get(pSharedMem);
@@ -168,7 +168,7 @@ size_t  w_shared_mem_get_size(_In_ const w_shared_mem pSharedMem)
     const char* _trace_info = "w_shared_mem_get_size";
     if (!pSharedMem)
     {
-        W_ASSERT_P(false, "bad args! trace info: %s", _trace_info);
+        W_ASSERT_P(false, "invalid parameter! trace info: %s", _trace_info);
         return 0;
     }
     return apr_shm_size_get(pSharedMem);
@@ -179,7 +179,7 @@ w_apr_pool  w_shared_mem_get_mem_pool(_In_ const w_shared_mem pSharedMem)
     const char* _trace_info = "w_shared_mem_get_mem_pool";
     if (!pSharedMem)
     {
-        W_ASSERT_P(false, "bad args! trace info: %s", _trace_info);
+        W_ASSERT_P(false, "invalid parameter! trace info: %s", _trace_info);
         return NULL;
     }
     return apr_shm_pool_get(pSharedMem);

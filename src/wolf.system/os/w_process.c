@@ -183,7 +183,7 @@ W_RESULT w_process_get_name_by_id(
 	const char* _trace_info = "w_process_get_process_name_by_id";
 	if (!pMemPool)
 	{
-		W_ASSERT_P(false, "bad args! trace info: %s", _trace_info);
+		W_ASSERT_P(false, "memory pool is invalid! trace info: %s", _trace_info);
 		return W_BAD_ARG;
 	}
 
@@ -237,7 +237,7 @@ W_RESULT w_process_print_allW(
 	const char* _trace_info = "w_process_print_allW";
 	if (!pMemPool)
 	{
-		W_ASSERT_P(false, "bad args! trace info: %s", _trace_info);
+		W_ASSERT_P(false, "memory pool is invalid! trace info: %s", _trace_info);
 		return APR_BADARG;
 	}
 	char* _process_names = w_malloc(pMemPool, sizeof(char));
@@ -307,7 +307,7 @@ W_RESULT w_process_print_all(
 	const char* _trace_info = "w_process_print_all";
 	if (!pMemPool)
 	{
-		W_ASSERT_P(false, "bad args! trace info: %s", _trace_info);
+		W_ASSERT_P(false, "memory pool is invalid! trace info: %s", _trace_info);
 		return W_FAILURE;
 	}
 

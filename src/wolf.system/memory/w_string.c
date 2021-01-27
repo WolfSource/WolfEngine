@@ -11,7 +11,7 @@ W_RESULT w_string_init(
     const char* _trace_info = "w_string_init";
     if (!pMemPool)
     {
-        W_ASSERT_P(false, "bad args! trace info: %s", _trace_info);
+        W_ASSERT_P(false, "invalid parameters! trace info: %s", _trace_info);
         return W_BAD_ARG;
     }
 
@@ -42,7 +42,7 @@ W_RESULT w_string_dup(
     const char* _trace_info = "w_string_dup";
     if (!pMemPool || !pSrc)
     {
-        W_ASSERT_P(false, "bad args! trace info: %s", _trace_info);
+        W_ASSERT_P(false, "invalid parameters! trace info: %s", _trace_info);
         return W_BAD_ARG;
     }
 

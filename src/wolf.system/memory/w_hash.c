@@ -7,7 +7,7 @@ W_RESULT w_hash_init(_Inout_ w_mem_pool pMemPool, _Inout_ w_hash* pHash)
     const char* _trace_info = "w_hash_init";
     if (!pMemPool)
     {
-        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "memory pool is invalid! trace info: %s", _trace_info);
         return W_BAD_ARG;
     }
     apr_pool_t* _pool = w_mem_pool_get_apr_pool(pMemPool);
@@ -29,7 +29,7 @@ w_hash w_hash_make_custom(
     const char* _trace_info = "w_hash_make_custom";
     if (!pMemPool)
     {
-        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "memory pool is invalid! trace info: %s", _trace_info);
         return NULL;
     }
     apr_pool_t* _pool = w_mem_pool_get_apr_pool(pMemPool);
@@ -49,7 +49,7 @@ void w_hash_set(
     const char* _trace_info = "w_hash_set";
     if (!pHash || !pKey || pKeyLen == 0)
     {
-        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "invalid parameters! trace info: %s", _trace_info);
         return;
     }
 
@@ -65,7 +65,7 @@ uint32_t w_hash_size(_In_ w_hash pHash)
     const char* _trace_info = "w_hash_size";
     if (!pHash)
     {
-        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "invalid parameter! trace info: %s", _trace_info);
         return 0;
     }
     return apr_hash_count(pHash);
@@ -76,7 +76,7 @@ void w_hash_clear(_In_ w_hash pHash)
     const char* _trace_info = "w_hash_clear";
     if (!pHash)
     {
-        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "invalid parameter! trace info: %s", _trace_info);
         return;
     }
     apr_hash_clear(pHash);
@@ -90,7 +90,7 @@ void* w_hash_get(
     const char* _trace_info = "w_hash_get";
     if (!pHash || !pKey || pKeyLen == 0)
     {
-        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "invalid parameters! trace info: %s", _trace_info);
         return NULL;
     }
     return apr_hash_get(pHash, pKey, pKeyLen);
@@ -103,7 +103,7 @@ w_hash w_hash_clone(
     const char* _trace_info = "w_hash_clone";
     if (!pMemPool)
     {
-        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "memory pool is invalid! trace info: %s", _trace_info);
         return NULL;
     }
 
@@ -126,7 +126,7 @@ w_hash w_hash_merge(
     const char* _trace_info = "w_hash_merge";
     if (!pMemPool)
     {
-        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "memory pool is invalid! trace info: %s", _trace_info);
         return NULL;
     }
 
@@ -151,7 +151,7 @@ w_hash w_hash_overlay(
     const char* _trace_info = "w_hash_overlay";
     if (!pMemPool)
     {
-        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "memory pool is invalid! trace info: %s", _trace_info);
         return NULL;
     }
     apr_pool_t* _pool = w_mem_pool_get_apr_pool(pMemPool);
@@ -169,7 +169,7 @@ w_hash_index w_hash_first(
     const char* _trace_info = "w_hash_first";
     if (!pMemPool)
     {
-        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "memory pool is invalid! trace info: %s", _trace_info);
         return NULL;
     }
     apr_pool_t* _pool = w_mem_pool_get_apr_pool(pMemPool);

@@ -114,7 +114,7 @@ W_RESULT w_net_get_ip_from_hostname(
 
     //if (!pHostName || !pSocketAddress)
     //{
-    //    W_ASSERT_P(false, "bad args! trace info: %s", _trace_info);
+    //    W_ASSERT_P(false, "invalid parameters! trace info: %s", _trace_info);
     //    return W_BAD_ARG;
     //}
 
@@ -154,7 +154,7 @@ W_RESULT w_net_socket_open(
         pProtocol == W_SOCKET_PROTOCOL_QUIC_DIALER ||
         pProtocol == W_SOCKET_PROTOCOL_QUIC_LISTENER)
     {
-        W_ASSERT_P(false, "bad args! trace info: %s", _trace_info);
+        W_ASSERT_P(false, "invalid parameters! trace info: %s", _trace_info);
         return W_BAD_ARG;
     }
 
@@ -279,7 +279,7 @@ W_RESULT w_net_socket_close(_Inout_ w_socket* pSocket)
     const char* _trace_info = "w_net_close_tcp_socket";
     if (!pSocket || !*pSocket)
     {
-        W_ASSERT_P(false, "bad args! trace info: %s", _trace_info);
+        W_ASSERT_P(false, "invalid parameters! trace info: %s", _trace_info);
         return W_BAD_ARG;
     }
 
@@ -300,7 +300,7 @@ W_RESULT w_net_socket_accept(
     const char* _trace_info = "w_net_socket_accept";
     if (!pMemPool || !pSocket || !pOnAcceptCallback)
     {
-        W_ASSERT_P(false, "bad args! trace info: %s", _trace_info);
+        W_ASSERT_P(false, "invalid parameters! trace info: %s", _trace_info);
         return W_BAD_ARG;
     }
 
@@ -365,7 +365,7 @@ W_RESULT w_net_socket_send(
     const char* _trace_info = "w_net_send";
     if (!pSocket || !pBuffer)
     {
-        W_ASSERT_P(false, "bad args! trace info: %s", _trace_info);
+        W_ASSERT_P(false, "invalid parameters! trace info: %s", _trace_info);
         return W_BAD_ARG;
     }
 
@@ -387,7 +387,7 @@ W_RESULT w_net_socket_receive(
 
     if (!pSocket || !pBuffer)
     {
-        W_ASSERT_P(false, "bad args! trace info: %s", _trace_info);
+        W_ASSERT_P(false, "invalid parameters! trace info: %s", _trace_info);
         return W_BAD_ARG;
     }
 
@@ -1572,7 +1572,7 @@ const char* w_net_url_encoded(
     const char* _trace_info = "w_net_url_encoded";
     if (!pMemPool)
     {
-        W_ASSERT_P(false, "bad args! trace info: %s", _trace_info);
+        W_ASSERT_P(false, "memory pool is invalid! trace info: %s", _trace_info);
         return NULL;
     }
     char* _encoded = NULL;
@@ -1661,7 +1661,7 @@ W_RESULT w_net_http_send(
     const char* _trace_info = "w_net_send_http_request";
     if (!pMemPool || !pURL)
     {
-        W_ASSERT_P(false, "bad args. trace info: %s", _trace_info);
+        W_ASSERT_P(false, "invalid parameters. trace info: %s", _trace_info);
         return APR_BADARG;
     }
 #if !defined(W_PLATFORM_IOS) && !defined(W_PLATFORM_ANDROID)

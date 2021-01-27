@@ -16,10 +16,12 @@
 #if defined(unix) || defined(__unix) || defined(__linux__) || defined(__APPLE__) || defined(__OpenBSD__) || defined(__NetBSD__) || defined(__QNX__) || defined(__QNXTO__) || defined(__HAIKU__)
 #include <sys/uio.h>
 #else
+#ifndef APR_IOVEC_DEFINED
 struct iovec {
     void  *iov_base;
     size_t iov_len;
 };
+#endif
 #endif
 
 #ifdef __cplusplus

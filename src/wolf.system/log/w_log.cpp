@@ -122,7 +122,6 @@ void LOG(
 {
     if (!s_loggers.size())
     {
-        W_ASSERT(false, "default logger could not find. trace info: w_log::LOG");
         return;
     }
     if (s_loggers[0] && s_loggers[0]->log)
@@ -138,7 +137,6 @@ void LOG_EX(
 {
     if (s_loggers.find(pLogID) == s_loggers.end())
     {
-        W_ASSERT(false, "logger could not find. trace info: w_log::LOG_EX");
         return;
     }
 
@@ -155,7 +153,6 @@ void LOG_P(
 {
     if (!s_loggers.size())
     {
-        W_ASSERT(false, "default logger could not find. trace info: w_log::LOG_P");
         return;
     }
 
@@ -180,7 +177,6 @@ void LOG_P_EX(
 {
     if (s_loggers.find(pLogID) == s_loggers.end())
     {
-        W_ASSERT(false, "logger could not find. trace info: w_log::LOG_P_EX");
         return;
     }
 
@@ -205,7 +201,6 @@ void V(
     if (pResult == W_SUCCESS) return;
     if (!s_loggers.size())
     {
-        W_ASSERT(false, "default logger could not find. trace info: w_log::V");
         return;
     }
 
@@ -224,7 +219,6 @@ void VA(
     if (pResult == W_SUCCESS) return;
     if (!s_loggers.size())
     {
-        W_ASSERT(false, "default logger could not find. trace info: w_log::VA");
         return;
     }
 
@@ -251,7 +245,6 @@ void VALIDATE(
     if (pResult == W_SUCCESS) return;
     if (!s_loggers.size())
     {
-        W_ASSERT(false, "default logger could not find. trace info: w_log::VALIDATE");
         return;
     }
     
@@ -286,7 +279,6 @@ void VALIDATE_EX(
     
     if (s_loggers.find(pLogID) == s_loggers.end())
     {
-        W_ASSERT(false, "logger could not find. trace info: w_log::VALIDATE_EX");
         return;
     }
     

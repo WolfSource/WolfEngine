@@ -63,6 +63,13 @@ extern "C" {
     } w_arg_t;
     typedef struct w_arg_t* w_arg;
 
+    typedef struct w_buffer_t
+    {
+        uint8_t*    data;
+        size_t      len;
+    } w_buffer_t;
+    typedef w_buffer_t* w_buffer;
+
     /**
      * initialize wolf
      * @return W_RESULT as a result

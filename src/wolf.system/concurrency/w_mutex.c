@@ -16,7 +16,7 @@ W_RESULT    w_mutex_init(
             return apr_thread_mutex_create(pMutex, pFlags, _pool);
         }
     }
-    W_ASSERT_P(false, "bad args. trace info %s", _trace_info);
+    W_ASSERT_P(false, "memory pool is invalid! trace info %s", _trace_info);
     return APR_BADARG;
 }
  

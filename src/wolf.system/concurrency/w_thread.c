@@ -10,7 +10,7 @@ W_RESULT w_thread_init_once_flag(
     const char* _trace_info = "w_thread_init_once_flag";
     if (!pMemPool)
     {
-        W_ASSERT_P(false, "bad args. trace info %s", _trace_info);
+        W_ASSERT_P(false, "memory pool is invalid! trace info %s", _trace_info);
         return APR_BADARG;
     }
 
@@ -27,7 +27,7 @@ W_RESULT w_thread_once_call(_Inout_ w_thread_once_flag pOnceFlag, _In_ w_thread_
     const char* _trace_info = "w_thread_once_call";
     if (!pOnceFlag || !pOnceJob)
     {
-        W_ASSERT_P(false, "bad args. trace info %s", _trace_info);
+        W_ASSERT_P(false, "invalid parameter! trace info %s", _trace_info);
         return APR_BADARG;
     }
     //create once flag
@@ -54,7 +54,7 @@ W_RESULT w_thread_init(
             return apr_thread_create(pThread, _attr, pJob, pJobArgs, _pool);
         }
     }
-    W_ASSERT_P(false, "bad args. trace info %s", _trace_info);
+    W_ASSERT_P(false, "memory pool is invalid! trace info %s", _trace_info);
     return APR_BADARG;
 }
 

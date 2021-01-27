@@ -1,132 +1,445 @@
-//catch2 for test
+//catch2 https://github.com/catchorg/Catch2/releases/download/v2.13.4/catch.hpp
 #define CATCH_CONFIG_MAIN
-#include "catch.hpp"
+#include "../catch.hpp"
 
 #include <wolf.h>
 #include <chrono/w_chrono.h>
 #include <chrono/w_gametime.h>
+#include <concurrency/w_thread.h>
 #include <compression/w_compress.h>
-#include <concurrency/w_atomic.h>
-#include <concurrency/w_mutex.h>
-#include "concurrency/w_thread.h"
-#include <concurrency/w_async.h>
-#include <concurrency/w_concurrent_queue.h>
-#include <concurrency/w_condition_variable.h>
-#include <concurrency/w_thread_pool.h>
-#include <memory/w_array.h>
-#include <memory/w_hash.h>
-#include <memory/w_table.h>
-#include <memory/w_mem_pool.h>
-#include <memory/w_mem_map.h>
-#include <memory/w_string.h>
-#include <memory/w_shared_mem.h>
-#include <os/w_process.h>
-#include <script/w_lua.h>
-#include <log/w_log.h>
-#include <io/w_io.h>
 
-#include <script/w_python.h>
+#pragma region callbacks
 
+static void s_gametime_tick_callback(w_gametime w_game)
+{
+	printf("gametime ticked");
+}
+
+#pragma endregion
+
+#pragma region chrono
+
+TEST_CASE("w_chrono")
+{
+	w_timespec_t _c1_now = w_chrono_now();
+
+	//sleep for 3 seconds
+	w_thread_current_sleep_for_seconds(3);
+
+	w_timespec_t _c2_now = w_chrono_now();
+
+	//check the duration
+	w_timespec_t _duration = w_chrono_duration(&_c1_now, &_c2_now);
+	REQUIRE(_duration.tv_sec == 3);
+
+	double _chrono_timespec_to_sec = w_chrono_timespec_to_sec(&_c2_now);
+	REQUIRE(_chrono_timespec_to_sec >= 3.);
+
+	double _chrono_timespec_to_milisec = w_chrono_timespec_to_milisec(&_c2_now);
+	REQUIRE(_chrono_timespec_to_milisec >= 3000.);
+
+	double chrono_timespec_to_microsec = w_chrono_timespec_to_microsec(&_c2_now);
+	REQUIRE(chrono_timespec_to_microsec >= 3000000.);
+
+	double _chrono_timespec_to_nanosec = w_chrono_timespec_to_nanosec(&_c2_now);
+	REQUIRE(_chrono_timespec_to_nanosec >= 3000000.);
+
+	double _nano_duration = w_chrono_duration_nanoseconds(&_c1_now, &_c2_now);
+	REQUIRE(_nano_duration >= 3000000000.);
+
+	double _micro_duration = w_chrono_duration_microseconds(&_c1_now, &_c2_now);
+	REQUIRE(_micro_duration >= 3000000.);
+
+	double _milli_duration = w_chrono_duration_milliseconds(&_c1_now, &_c2_now);
+	REQUIRE(_milli_duration >= 3000.);
+
+	double _sec_duration = w_chrono_duration_seconds(&_c1_now, &_c2_now);
+	REQUIRE(_sec_duration >= 3);
+}
+
+TEST_CASE("w_gametime")
+{
+	W_RESULT _ret = W_FAILURE;
+	w_mem_pool _mem_pool = nullptr;
+
+	_ret = wolf_init();
+	REQUIRE(_ret == W_SUCCESS);
+
+	_ret = w_mem_pool_init(&_mem_pool);
+	REQUIRE(_ret == W_SUCCESS);
+
+	if (!_mem_pool)
+	{
+		return;
+	}
+
+	w_gametime _gametime = nullptr;
+	_ret = w_gametime_init(_mem_pool, &_gametime);
+	REQUIRE(_ret == W_SUCCESS);
+	REQUIRE(_gametime != nullptr);
+
+	uint64_t _ticks = 100;
+	w_gametime_set_target_elapsed_ticks(_gametime, _ticks);
+
+	double _secs = 11.5;
+	w_gametime_set_target_elapsed_seconds(_gametime, _secs);
+
+	w_gametime_enable_fixed_time_step(_gametime);
+	w_gametime_disable_fixed_time_step(_gametime);
+	w_gametime_tick(_gametime, s_gametime_tick_callback);
+
+	uint64_t _elapsed_ticks = w_gametime_get_elapsed_ticks(_gametime);
+	REQUIRE(_elapsed_ticks == 0);
+
+	double _elapsed_secs = w_gametime_get_elapsed_seconds(_gametime);
+	REQUIRE(_elapsed_secs == 0);
+
+	uint64_t _total_ticks = w_gametime_get_total_ticks(_gametime);
+	REQUIRE(_total_ticks == 0);
+
+	double _total_seconds = w_gametime_get_total_seconds(_gametime);
+	REQUIRE(_total_seconds == 0);
+
+	uint32_t _t_g__get_frame_count = w_gametime_get_frame_count(_gametime);
+	REQUIRE(_t_g__get_frame_count == 1);
+
+	uint32_t _fps = w_gametime_get_frames_per_second(_gametime);
+	REQUIRE(_fps == 0);
+
+	bool _fixed_time_step = w_gametime_get_fixed_time_step(_gametime);
+	REQUIRE(_fixed_time_step == false);
+
+	w_mem_pool_fini(&_mem_pool);
+	REQUIRE(_mem_pool == nullptr);
+}
+
+TEST_CASE("w_timespan")
+{
+	W_RESULT _ret = W_FAILURE;
+	w_mem_pool _mem_pool = nullptr;
+
+	_ret = wolf_init();
+	REQUIRE(_ret == W_SUCCESS);
+
+	_ret = w_mem_pool_init(&_mem_pool);
+	REQUIRE(_ret == W_SUCCESS);
+
+	if (!_mem_pool)
+	{
+		return;
+	}
+
+	w_timespan _t_0 = w_timespan_init_from_zero(_mem_pool);
+	REQUIRE(_t_0->ticks == 0);
+
+	w_timespan _t_min = w_timespan_init_from_min_value(_mem_pool);
+	REQUIRE(_t_min->overflowed == false);
+
+	w_timespan _t_max = w_timespan_init_from_max_value(_mem_pool);
+	REQUIRE(_t_max->ticks == 9223372036854775807);
+
+	w_timespan _t_now = w_timespan_init_from_now(_mem_pool);
+	REQUIRE(_t_now->ticks != 0);
+
+	w_timespan _t_days = w_timespan_init_from_days(_mem_pool, 31);
+	REQUIRE(_t_days->ticks == 2678400000000000);
+
+	w_timespan _t_hours = w_timespan_init_from_hours(_mem_pool, 1);
+	REQUIRE(_t_hours->ticks == 3600000000000);
+
+	w_timespan _t_minu = w_timespan_init_from_minutes(_mem_pool, 2);
+	REQUIRE(_t_minu->ticks == 120000000000);
+
+	w_timespan _t_sec = w_timespan_init_from_seconds(_mem_pool, 3);
+	REQUIRE(_t_sec->ticks == 3000000000);
+
+	w_timespan _t_millisec = w_timespan_init_from_milliseconds(_mem_pool, 50);
+	REQUIRE(_t_millisec->ticks == 50000000);
+
+	w_timespan _t_tick = w_timespan_init_from_ticks(_mem_pool, 5);
+	REQUIRE(_t_tick->ticks == 5);
+
+	w_timespan _t_string = w_timespan_init_from_string(_mem_pool, "01:02:03:04:000");
+	REQUIRE(_t_string->ticks == 93784000000000);
+
+	w_timespan _t_wstring = w_timespan_init_from_wstring(_mem_pool, L"00:02:03:04:000");
+	REQUIRE(_t_string->ticks != 7384000000000);
+
+	w_timespan _t_short = w_timespan_init_from_shorttime(_mem_pool, 2, 3, 4);
+	REQUIRE(_t_short->ticks == 7384000000000);
+
+	w_timespan _t_long = w_timespan_init_from_longtime(_mem_pool, 3, 4, 5, 8, 10);
+	REQUIRE(_t_long->ticks == 273908010000000);
+
+	w_timespan _t_add = w_timespan_add(_mem_pool, _t_long, _t_short);
+	REQUIRE(_t_add->ticks == 281292010000000);
+
+	w_timespan_add_by_ref(_t_long, _t_short);
+
+	const char* _time_to_string = w_timespan_to_string(_mem_pool, _t_short, ":");
+	const char* _time_origin = "0:2:3:4:000";
+	int result = strcmp(_time_to_string, _time_origin);
+	REQUIRE(result == 0);
+
+	const wchar_t* s = L":";
+	const wchar_t* _time_to_wstring = w_timespan_to_wstring(_mem_pool, _t_short, s);
+	const wchar_t* _time_originW = L"0:2:3:4:000";
+	int w_result = wcscmp(_time_to_wstring, _time_originW);
+	REQUIRE(w_result == 0);
+
+	int _get_days = w_timespan_get_days(_t_long);
+	REQUIRE(_get_days == 3);
+
+	double _get_total_days = w_timespan_get_total_days(_t_tick);
+	REQUIRE(_get_total_days == 5.7870370370370365e-14);
+
+	int _get_hours = w_timespan_get_hours(_t_short);
+	REQUIRE(_get_hours == 2);
+
+	double _get_total_hours = w_timespan_get_total_hours(_t_short);
+	REQUIRE(_get_total_hours == 2.0511111111111111);
+
+	int _get_minutes = w_timespan_get_minutes(_t_short);
+	REQUIRE(_get_minutes != 2);
+
+	double get_total_minutes = w_timespan_get_total_minutes(_t_short);
+	REQUIRE(get_total_minutes == 123.06666666666668);
+
+	int _get_seconds = w_timespan_get_seconds(_t_short);
+	REQUIRE(_get_seconds == 4);
+
+	double _get_total_seconds = w_timespan_get_total_seconds(_t_short);
+	REQUIRE(_get_total_seconds == 7384.0000000000009);
+
+	int _get_milliseconds = w_timespan_get_milliseconds(_t_short);
+	REQUIRE(_get_milliseconds == 0);
+
+	double _get_total_milliseconds = w_timespan_get_total_milliseconds(_t_short);
+	REQUIRE(_get_total_milliseconds == 7384000.0000000000);
+
+	int _timespan_get_microseconds = w_timespan_get_microseconds(_t_short);
+	REQUIRE(_timespan_get_microseconds == -592);
+
+	double _timespan_get_total_microseconds = w_timespan_get_total_microseconds(_t_short);
+	REQUIRE(_timespan_get_total_microseconds == 7384000000.0000000);
+
+	const char* _timespan_get_current_date_time_string = w_timespan_get_current_date_time_string(_mem_pool);
+	REQUIRE(_timespan_get_current_date_time_string != nullptr);
+
+	const wchar_t* _timespan_get_current_date_time_wstring = w_timespan_get_current_date_time_wstring(_mem_pool);
+	REQUIRE(_timespan_get_current_date_time_wstring != nullptr);
+
+	w_mem_pool_fini(&_mem_pool);
+	REQUIRE(_mem_pool == nullptr);
+}
+
+#pragma endregion
+
+#pragma region compression
+
+TEST_CASE("w_compress")
+{
+	W_RESULT _ret = W_FAILURE;
+	w_mem_pool _mem_pool = nullptr;
+
+	_ret = wolf_init();
+	REQUIRE(_ret == W_SUCCESS);
+
+	_ret = w_mem_pool_init(&_mem_pool);
+	REQUIRE(_ret == W_SUCCESS);
+
+	if (!_mem_pool)
+	{
+		return;
+	}
+
+	const char* _buffer = "xxxxxxxxxxxxxxxxxxxxthis_is_playpod_xyz_123_789_XXXYZxxxxxxxxxxxxxxxxxxxx";
+	size_t _buffer_size = strlen(_buffer);
+
+	w_compress_result _compress_lz4 = { 0 };
+	_compress_lz4.size_in = _buffer_size;
+	_ret = w_compress_lz4(_buffer, W_FAST, 1, &_compress_lz4);
+	REQUIRE(_ret == W_SUCCESS);
+
+	w_compress_result _decompress_lz4 = { 0 };
+	_decompress_lz4.size_in = _compress_lz4.size_out;
+	_ret = w_decompress_lz4(_compress_lz4.data, &_decompress_lz4);
+	REQUIRE(_ret == W_SUCCESS);
+
+	REQUIRE(_compress_lz4.size_in == _decompress_lz4.size_out);
+
+#ifdef W_PLATFORM_WIN
+
+	w_compress_result _compress_lzma = { 0 };
+	_compress_lzma.size_in = _buffer_size;
+	_ret = w_compress_lzma((const uint8_t*)_buffer, &_compress_lzma);
+	REQUIRE(_ret == W_SUCCESS);
+
+	w_compress_result _decompress_lzma = { 0 };
+	_decompress_lzma.size_in = _compress_lzma.size_out;
+	_ret = w_decompress_lzma((const uint8_t*)_compress_lzma.data, &_decompress_lzma);
+	REQUIRE(_ret == W_SUCCESS);
+
+#endif
+
+	//command
+	//msgpack_pack_int(&_packer, (-(int)pCommand));//store command as a negative number
+	////pack array
+	//msgpack_pack_array(&_packer, 2 + pNumberOfKeys); //2 for mouseX and mouseY
+	//{
+	//	//mouse positions
+	//	msgpack_pack_int(&_packer, (int)pMousePosX);
+	//	msgpack_pack_int(&_packer, (int)pMousePosY);
+	//	//keys
+	//	for (size_t i = 0; i < pNumberOfKeys; ++i)//store keys as an array
+	//	{
+	//		msgpack_pack_int(&_packer, pKeys[i]);
+	//	}
+	//}
+	
+
+	w_mem_pool_fini(&_mem_pool);
+	REQUIRE(_mem_pool == nullptr);
+}
+
+#pragma endregion
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//#include <concurrency/w_atomic.h>
+//#include <concurrency/w_mutex.h>
+//#include "concurrency/w_thread.h"
+//#include <concurrency/w_async.h>
+//#include <concurrency/w_concurrent_queue.h>
+//#include <concurrency/w_condition_variable.h>
+//#include <concurrency/w_thread_pool.h>
+//#include <memory/w_array.h>
+//#include <memory/w_hash.h>
+//#include <memory/w_table.h>
+//#include <memory/w_mem_pool.h>
+//#include <memory/w_mem_map.h>
+//#include <memory/w_string.h>
+//#include <memory/w_shared_mem.h>
+//#include <os/w_process.h>
+//#include <script/w_lua.h>
+//#include <log/w_log.h>
+//#include <io/w_io.h>
+//#include <script/w_python.h>
 //#include <db/w_redis.h>
 
-//void mycallback(EV_P_ w_async_base* arg1, int arg2) { printf("%s", "ok"); }
-void* _hash_func(w_apr_pool pMemPool, const void* pKey, long long pLen, const void* pHash1Value, const void* pHash2Value, const void* pData)
-{
-    printf("%s\r\n", "ok");
-    return NULL;
+////void mycallback(EV_P_ w_async_base* arg1, int arg2) { printf("%s", "ok"); }
+//void* _hash_func(w_apr_pool pMemPool, const void* pKey, long long pLen, const void* pHash1Value, const void* pHash2Value, const void* pData)
+//{
+//    printf("%s\r\n", "ok");
+//    return NULL;
+//
+//}
+//
+//int hash_do_callback_fn(void* pRec, const void* pKey, long long pLen, const void* pValue)
+//{
+//    printf("%s", "ok2");
+//    return 1;
+//}
+//
+//void* w_thread_job_my(w_thread arg1, void* arg2) {
+//    printf("%s", "okthresd");
+//    return NULL;
+//}
+//void mycallback_thread() { printf("%s", "okthresd"); }
 
-}
 
-int hash_do_callback_fn(void* pRec, const void* pKey, long long pLen, const void* pValue)
-{
-    printf("%s", "ok2");
-    return 1;
-}
-
-void* w_thread_job_my(w_thread arg1, void* arg2) {
-    printf("%s", "okthresd");
-    return NULL;
-}
-void mycallback_thread() { printf("%s", "okthresd"); }
-
-void g_tick_callback(w_gametime w_game) {
-    printf("%s", "ok");
-}
-
-int pHashCustomFunc_tmp(const char*, long long*)
-{
-    printf("%s", "ok_hash_func");
-    return 0;
-}
-
-int pCallBack(void* rec, const char* pKey, const char* pValue) {
-    const char* label = (const char*)rec;
-    printf("callback[%s]: %s %s\n", label, pKey, pValue);
-    return TRUE;
-}
-int displayLuaFunction(lua_State* l)
-{
-    // number of input arguments
-    int argc = lua_gettop(l);
-
-    // print input arguments
-    std::cout << "[C++] Function called from Lua with " << argc
-        << " input arguments" << std::endl;
-    for (int i = 0; i < argc; i++)
-    {
-        std::cout << " input argument #" << argc - i << ": "
-            << lua_tostring(l, lua_gettop(l)) << std::endl;
-        lua_pop(l, 1);
-    }
-
-    // push to the stack the multiple return values
-    std::cout << "[C++] Returning some values" << std::endl;
-    double value_1 = 3.141592;
-    int pValueType = 3;
-    W_RESULT _lua_set_parameter_function = w_lua_set_parameter_function((void*)&value_1, pValueType);
-
-    const char* value_2 = "See you space cowboy";
-    int pValueType_2 = 4;
-    W_RESULT _lua_set_parameter_function2 = w_lua_set_parameter_function((void*)value_2, pValueType_2);
-
-    // number of return values
-    return 2;
-}
-
-#define W_STATUS_IS_NOTFOUND 70015
-using namespace std;
-W_RESULT init = wolf_init();
-
-w_mem_pool _mem_pool = NULL;
-int x = w_mem_pool_init(&_mem_pool);
-w_mem_pool _mem_pool_1 = NULL;
-int u = w_mem_pool_init(&_mem_pool_1);
-const char* pHost = "localhost";
-uint16_t pPort = 6379;
-uint32_t pMin = 0;
-uint32_t pMax = 1;
-uint32_t pTTL = 60;
-uint32_t pReadWriteTimeOut = 60;
-//w_redis_server  pNewServerLocation;
-uint16_t pMaxServers = 10;
-uint32_t pFlags = 0;
-char* result;
-size_t pLen = NULL;
-char* result_2;
-size_t pLen_2 = NULL;
-//w_redis_stats stats;
-int32_t pIncrementNumber = 1;
-uint32_t pNewValue = NULL;
-void* v = NULL;
-const char* key = NULL;
-//w_redis pRedisClient;
-const char* prefix = "testredis";
-const char* prefix2 = "testredis2";
-char p[] = "21";
-char pp[] = "271";
-size_t len_p = strlen("21");
-size_t len_pp = strlen("271");
-
+//int pHashCustomFunc_tmp(const char*, long long*)
+//{
+//    printf("%s", "ok_hash_func");
+//    return 0;
+//}
+//
+//int pCallBack(void* rec, const char* pKey, const char* pValue) {
+//    const char* label = (const char*)rec;
+//    printf("callback[%s]: %s %s\n", label, pKey, pValue);
+//    return TRUE;
+//}
+//int displayLuaFunction(lua_State* l)
+//{
+//    // number of input arguments
+//    int argc = lua_gettop(l);
+//
+//    // print input arguments
+//    std::cout << "[C++] Function called from Lua with " << argc
+//        << " input arguments" << std::endl;
+//    for (int i = 0; i < argc; i++)
+//    {
+//        std::cout << " input argument #" << argc - i << ": "
+//            << lua_tostring(l, lua_gettop(l)) << std::endl;
+//        lua_pop(l, 1);
+//    }
+//
+//    // push to the stack the multiple return values
+//    std::cout << "[C++] Returning some values" << std::endl;
+//    double value_1 = 3.141592;
+//    int pValueType = 3;
+//    W_RESULT _lua_set_parameter_function = w_lua_set_parameter_function((void*)&value_1, pValueType);
+//
+//    const char* value_2 = "See you space cowboy";
+//    int pValueType_2 = 4;
+//    W_RESULT _lua_set_parameter_function2 = w_lua_set_parameter_function((void*)value_2, pValueType_2);
+//
+//    // number of return values
+//    return 2;
+//}
+//
+//#define W_STATUS_IS_NOTFOUND 70015
+//using namespace std;
+//W_RESULT init = wolf_init();
+//
+//w_mem_pool _mem_pool = NULL;
+//int x = w_mem_pool_init(&_mem_pool);
+//w_mem_pool _mem_pool_1 = NULL;
+//int u = w_mem_pool_init(&_mem_pool_1);
+//const char* pHost = "localhost";
+//uint16_t pPort = 6379;
+//uint32_t pMin = 0;
+//uint32_t pMax = 1;
+//uint32_t pTTL = 60;
+//uint32_t pReadWriteTimeOut = 60;
+////w_redis_server  pNewServerLocation;
+//uint16_t pMaxServers = 10;
+//uint32_t pFlags = 0;
+//char* result;
+//size_t pLen = NULL;
+//char* result_2;
+//size_t pLen_2 = NULL;
+////w_redis_stats stats;
+//int32_t pIncrementNumber = 1;
+//uint32_t pNewValue = NULL;
+//void* v = NULL;
+//const char* key = NULL;
+////w_redis pRedisClient;
+//const char* prefix = "testredis";
+//const char* prefix2 = "testredis2";
+//char p[] = "21";
+//char pp[] = "271";
+//size_t len_p = strlen("21");
+//size_t len_pp = strlen("271");
 
 //TEST_CASE("w_redis")
 //{
@@ -173,217 +486,6 @@ size_t len_pp = strlen("271");
 //
 //    W_RESULT _redis_enable_server = w_redis_enable_server(pRedisClient, _redis_find_server);
 //    REQUIRE(_redis_enable_server == 0);
-//}
-
-#pragma region chrono
-
-TEST_CASE("w_chrono")
-{
-    w_timespec_t _c1_now = w_chrono_now();
-
-    //sleep for 3 seconds
-    w_thread_current_sleep_for_seconds(3);
-
-    w_timespec_t _c2_now = w_chrono_now();
-
-    //check the duration
-    w_timespec_t _duration = w_chrono_duration(&_c1_now, &_c2_now);
-    REQUIRE(_duration.tv_sec == 3);
-
-    double _chrono_timespec_to_sec = w_chrono_timespec_to_sec(&_c2_now);
-    REQUIRE(_chrono_timespec_to_sec >= 3.);
-
-    double _chrono_timespec_to_milisec = w_chrono_timespec_to_milisec(&_c2_now);
-    REQUIRE(_chrono_timespec_to_milisec >= 3000.);
-
-    double chrono_timespec_to_microsec = w_chrono_timespec_to_microsec(&_c2_now);
-    REQUIRE(chrono_timespec_to_microsec >= 3000000.);
-
-    double _chrono_timespec_to_nanosec = w_chrono_timespec_to_nanosec(&_c2_now);
-    REQUIRE(_chrono_timespec_to_nanosec >= 3000000.);
-
-    double _nano_duration = w_chrono_duration_nanoseconds(&_c1_now, &_c2_now);
-    REQUIRE(_nano_duration >= 3000000000.);
-
-    double _micro_duration = w_chrono_duration_microseconds(&_c1_now, &_c2_now);
-    REQUIRE(_micro_duration >= 3000000.);
-
-    double _milli_duration = w_chrono_duration_milliseconds(&_c1_now, &_c2_now);
-    REQUIRE(_milli_duration >= 3000.);
-
-    double _sec_duration = w_chrono_duration_seconds(&_c1_now, &_c2_now);
-    REQUIRE(_sec_duration >= 3);
-}
-
-TEST_CASE("w_timespan")
-{
-    w_timespan _t_0 = w_timespan_init_from_zero(_mem_pool);
-    REQUIRE(_t_0->ticks == 0);
-
-    w_timespan _t_min = w_timespan_init_from_min_value(_mem_pool);
-    REQUIRE(_t_min->overflowed == false);
-
-    w_timespan _t_max = w_timespan_init_from_max_value(_mem_pool);
-    REQUIRE(_t_max->ticks == 9223372036854775807);
-
-    w_timespan _t_now = w_timespan_init_from_now(_mem_pool);
-    REQUIRE(_t_now->ticks != 0);
-
-    w_timespan _t_days = w_timespan_init_from_days(_mem_pool, 31);
-    REQUIRE(_t_days->ticks == 2678400000000000);
-
-    w_timespan _t_hours = w_timespan_init_from_hours(_mem_pool, 1);
-    REQUIRE(_t_hours->ticks == 3600000000000);
-
-    w_timespan _t_minu = w_timespan_init_from_minutes(_mem_pool, 2);
-    REQUIRE(_t_minu->ticks == 120000000000);
-
-    w_timespan _t_sec = w_timespan_init_from_seconds(_mem_pool, 3);
-    REQUIRE(_t_sec->ticks == 3000000000);
-
-    w_timespan _t_millisec = w_timespan_init_from_milliseconds(_mem_pool, 50);
-    REQUIRE(_t_millisec->ticks == 50000000);
-
-    w_timespan _t_tick = w_timespan_init_from_ticks(_mem_pool, 5);
-    REQUIRE(_t_tick->ticks == 5);
-
-    w_timespan _t_string = w_timespan_init_from_string(_mem_pool, "01:02:03:04:000");
-    REQUIRE(_t_string->ticks == 93784000000000);
-
-    w_timespan _t_wstring = w_timespan_init_from_wstring(_mem_pool, L"00:02:03:04:000");
-    REQUIRE(_t_string->ticks != 7384000000000);
-
-    w_timespan _t_short = w_timespan_init_from_shorttime(_mem_pool, 2, 3, 4);
-    REQUIRE(_t_short->ticks == 7384000000000);
-
-    w_timespan _t_long = w_timespan_init_from_longtime(_mem_pool, 3, 4, 5, 8, 10);
-    REQUIRE(_t_long->ticks == 273908010000000);
-
-    w_timespan _t_add = w_timespan_add(_mem_pool, _t_long, _t_short);
-    REQUIRE(_t_add->ticks == 281292010000000);
-
-    w_timespan_add_by_ref(_t_long, _t_short);
-
-    const char* _time_to_string = w_timespan_to_string(_mem_pool, _t_short, ":");
-    const char* _time_origin = "0:2:3:4:000";
-    int result = strcmp(_time_to_string, _time_origin);
-    REQUIRE(result == 0);
-
-    const wchar_t* s = L":";
-    const wchar_t* _time_to_wstring = w_timespan_to_wstring(_mem_pool, _t_short, s);
-    const wchar_t* _time_originW = L"0:2:3:4:000";
-    int w_result = wcscmp(_time_to_wstring, _time_originW);
-    REQUIRE(w_result == 0);
-
-    int _get_days = w_timespan_get_days(_t_long);
-    REQUIRE(_get_days == 3);
-
-    double _get_total_days = w_timespan_get_total_days(_t_tick);
-    REQUIRE(_get_total_days == 5.7870370370370365e-14);
-
-    int _get_hours = w_timespan_get_hours(_t_short);
-    REQUIRE(_get_hours == 2);
-
-    double _get_total_hours = w_timespan_get_total_hours(_t_short);
-    REQUIRE(_get_total_hours == 2.0511111111111111);
-
-    int _get_minutes = w_timespan_get_minutes(_t_short);
-    REQUIRE(_get_minutes != 2);
-
-    double get_total_minutes = w_timespan_get_total_minutes(_t_short);
-    REQUIRE(get_total_minutes == 123.06666666666668);
-
-    int _get_seconds = w_timespan_get_seconds(_t_short);
-    REQUIRE(_get_seconds == 4);
-
-    double _get_total_seconds = w_timespan_get_total_seconds(_t_short);
-    REQUIRE(_get_total_seconds == 7384.0000000000009);
-
-    int _get_milliseconds = w_timespan_get_milliseconds(_t_short);
-    REQUIRE(_get_milliseconds == 0);
-
-    double _get_total_milliseconds = w_timespan_get_total_milliseconds(_t_short);
-    REQUIRE(_get_total_milliseconds == 7384000.0000000000);
-
-    int _timespan_get_microseconds = w_timespan_get_microseconds(_t_short);
-    REQUIRE(_timespan_get_microseconds == -592);
-
-    double _timespan_get_total_microseconds = w_timespan_get_total_microseconds(_t_short);
-    REQUIRE(_timespan_get_total_microseconds == 7384000000.0000000);
-
-    const char* _timespan_get_current_date_time_string = w_timespan_get_current_date_time_string(_mem_pool);
-
-    const wchar_t* _timespan_get_current_date_time_wstring = w_timespan_get_current_date_time_wstring(_mem_pool);
-
-}
-
-TEST_CASE("w_gametime")
-{
-    w_gametime w_game = (w_gametime)w_malloc(_mem_pool, sizeof(w_gametime));
-
-    W_RESULT _g_t_init = w_gametime_init(_mem_pool, &w_game);
-
-    uint64_t pvalue = 100;
-    w_gametime_set_target_elapsed_ticks(w_game, pvalue);
-
-    double pValue2 = 11.5;
-    w_gametime_set_target_elapsed_seconds(w_game, pValue2);
-
-    w_gametime_enable_fixed_time_step(w_game);
-
-    w_gametime_disable_fixed_time_step(w_game);
-
-    w_gametime_tick(w_game, g_tick_callback);
-
-    uint64_t _g_t__get_elapsed_ticks = w_gametime_get_elapsed_ticks(w_game);
-    REQUIRE(_g_t__get_elapsed_ticks == 0);
-
-    double _t_g__get_elapsvoided_seconds = w_gametime_get_elapsed_seconds(w_game);
-    REQUIRE(_t_g__get_elapsvoided_seconds == 0);
-
-    uint64_t _t_g__get_total_ticks = w_gametime_get_total_ticks(w_game);
-    REQUIRE(_t_g__get_total_ticks == 0);
-
-    double _T_g__get_total_seconds = w_gametime_get_total_seconds(w_game);
-    REQUIRE(_T_g__get_total_seconds == 0);
-
-    uint32_t _t_g__get_frame_count = w_gametime_get_frame_count(w_game);
-    REQUIRE(_t_g__get_frame_count == 1);
-
-    uint32_t _t_g__get_frames_per_second = w_gametime_get_frames_per_second(w_game);
-    REQUIRE(_t_g__get_frames_per_second == 0);
-
-    bool _t_g__get_fixed_time_step = w_gametime_get_fixed_time_step(w_game);
-    REQUIRE(_t_g__get_fixed_time_step == false);
-}
-
-#pragma endregion
-
-//TEST_CASE("w_compress")
-//{
-//    char pSrcBuffer[8] = "playpod";
-//    w_compress_result* pCompressResult = (w_compress_result*)w_malloc(_mem_pool, sizeof(w_compress_result));
-//    pCompressResult->size_in = sizeof(pSrcBuffer);
-//    W_RESULT _c_lz4 = w_compress_lz4(pSrcBuffer, W_FAST, 1, pCompressResult);
-//    REQUIRE(_c_lz4 == W_SUCCESS);
-//
-//    w_compress_result* pDecompressInfo = (w_compress_result*)w_malloc(_mem_pool, sizeof(w_compress_result));
-//    const char* pcom = pCompressResult->data;
-//    pDecompressInfo->size_in = pCompressResult->size_out;
-//    W_RESULT _d_lz4 = w_decompress_lz4(pcom, pDecompressInfo);
-//    REQUIRE(_d_lz4 == W_SUCCESS);
-//
-//    w_compress_result* pCompressResult2 = (w_compress_result*)w_malloc(_mem_pool, sizeof(w_compress_result));
-//    const uint8_t pSrcBuffer1[11] = "playpooood";
-//    pCompressResult2->size_in = 11;
-//    W_RESULT _c_lz = w_compress_lzma(pSrcBuffer1, pCompressResult2);
-//    REQUIRE(_c_lz == W_SUCCESS);
-//
-//    w_compress_result* pDecompressInfo2 = (w_compress_result*)w_malloc(_mem_pool, sizeof(w_compress_result));
-//    const char* pcom2 = pCompressResult2->data;
-//    pDecompressInfo2->size_in = pCompressResult2->size_out;
-//    W_RESULT _d_lz = w_decompress_lzma((uint8_t*)pcom2, pDecompressInfo2);
-//    REQUIRE(_d_lz == W_SUCCESS);
 //}
 
 //TEST_CASE("concurrency/w_atomic")
@@ -1225,124 +1327,124 @@ TEST_CASE("w_gametime")
 
 #pragma region script
 
-TEST_CASE("w_python")
-{
-    w_mem_pool _pool = nullptr;
-    if (w_mem_pool_init(&_pool) == W_SUCCESS)
-    {
-        char* _current_exe_path = nullptr;
-        if (w_io_dir_get_current_exe(_pool, &_current_exe_path) == W_SUCCESS)
-        {
-            _current_exe_path = w_strcat(_pool, _current_exe_path, "/script.py", NULL);
-
-            auto _script = w_io_file_read_full_from_path(_pool, _current_exe_path);
-            if (_script)
-            {
-                w_string _errors = nullptr;
-                w_hash _hash = nullptr;
-                w_hash_init(_pool, &_hash);
-
-                constexpr auto _keys_size = 4;
-                const char* _keys[_keys_size] = { "VAR_BOOL", "VAR_INT", "VAR_DOUBLE", "VAR_STRING" };
-
-                auto _python_obj = (w_python_object)w_malloc(_pool, sizeof(w_python_object_t));
-                if (_python_obj)
-                {
-                    //VAR_BOOL is the name of python object
-                    _python_obj->type = w_python_object_type::W_PYTHON_BOOLEAN;
-                    _python_obj->data = nullptr;
-                    w_hash_set(_hash, _keys[0], strlen(_keys[3]), (const void*)_python_obj);
-                }
-
-                _python_obj = (w_python_object)w_malloc(_pool, sizeof(w_python_object_t));
-                if (_python_obj)
-                {
-                    //RESULT is the name of python object
-                    _python_obj->type = w_python_object_type::W_PYTHON_NUMBER_INT;
-                    _python_obj->data = nullptr;
-                    w_hash_set(_hash, _keys[1], strlen(_keys[1]), (const void*)_python_obj);
-                }
-
-                _python_obj = (w_python_object)w_malloc(_pool, sizeof(w_python_object_t));
-                if (_python_obj)
-                {
-                    //RESULT is the name of python object
-                    _python_obj->type = w_python_object_type::W_PYTHON_NUMBER_DOUBLE;
-                    _python_obj->data = nullptr;
-                    w_hash_set(_hash, _keys[2], strlen(_keys[2]), (const void*)_python_obj);
-                }
-
-                _python_obj = (w_python_object)w_malloc(_pool, sizeof(w_python_object_t));
-                if (_python_obj)
-                {
-                    //RESULT is the name of python object
-                    _python_obj->type = w_python_object_type::W_PYTHON_STRING;
-                    _python_obj->data = nullptr;
-                    w_hash_set(_hash, _keys[3], strlen(_keys[3]), (const void*)_python_obj);
-                }
-
-                //init python
-                w_python::init();
-                //execute python
-                auto _hr = w_python::execute(_pool, (char*)_script->buffer, _hash, &_errors);
-                REQUIRE(_hr == W_SUCCESS);
-
-                if (w_hash_size(_hash))
-                {
-                    for (auto i = 0; i < _keys_size; i++)
-                    {
-                        auto _python_obj = (w_python_object)w_hash_get(_hash, _keys[i], strlen(_keys[i]));
-                        if (_python_obj)
-                        {
-                            switch (_python_obj->type)
-                            {
-                            case w_python_object_type::W_PYTHON_BOOLEAN:
-                            {
-                                auto _bool = (const bool*)_python_obj->data;
-                                if (_bool)
-                                {
-                                    printf("the type of python object is int and the value is %s \r\n", *_bool ? "true" : "false");
-                                }
-                                break;
-                            }
-                            case w_python_object_type::W_PYTHON_NUMBER_INT:
-                            {
-                                auto _int = (const int*)_python_obj->data;
-                                if (_int)
-                                {
-                                    printf("the type of python object is int and the value is %d \r\n", *_int);
-                                }
-                                break;
-                            }
-                            case w_python_object_type::W_PYTHON_NUMBER_DOUBLE:
-                            {
-                                auto _double = (const double*)_python_obj->data;
-                                if (_double)
-                                {
-                                    printf("the type of python object is double and the value is %lf \r\n", *_double);
-                                }
-                                break;
-                            }
-                            case w_python_object_type::W_PYTHON_STRING:
-                            {
-                                auto _str = (const char*)_python_obj->data;
-                                if (_str)
-                                {
-                                    printf("the type of python object is string and the value is %s \r\n", _str);
-                                }
-                                break;
-                            }
-                            }
-                        }
-                    }
-                }
-                //finish
-                w_python::fini();
-            }
-            w_mem_pool_fini(&_pool);
-        }
-    }
-}
+//TEST_CASE("w_python")
+//{
+//    w_mem_pool _pool = nullptr;
+//    if (w_mem_pool_init(&_pool) == W_SUCCESS)
+//    {
+//        char* _current_exe_path = nullptr;
+//        if (w_io_dir_get_current_exe(_pool, &_current_exe_path) == W_SUCCESS)
+//        {
+//            _current_exe_path = w_strcat(_pool, _current_exe_path, "/script.py", NULL);
+//
+//            auto _script = w_io_file_read_full_from_path(_pool, _current_exe_path);
+//            if (_script)
+//            {
+//                w_string _errors = nullptr;
+//                w_hash _hash = nullptr;
+//                w_hash_init(_pool, &_hash);
+//
+//                constexpr auto _keys_size = 4;
+//                const char* _keys[_keys_size] = { "VAR_BOOL", "VAR_INT", "VAR_DOUBLE", "VAR_STRING" };
+//
+//                auto _python_obj = (w_python_object)w_malloc(_pool, sizeof(w_python_object_t));
+//                if (_python_obj)
+//                {
+//                    //VAR_BOOL is the name of python object
+//                    _python_obj->type = w_python_object_type::W_PYTHON_BOOLEAN;
+//                    _python_obj->data = nullptr;
+//                    w_hash_set(_hash, _keys[0], strlen(_keys[3]), (const void*)_python_obj);
+//                }
+//
+//                _python_obj = (w_python_object)w_malloc(_pool, sizeof(w_python_object_t));
+//                if (_python_obj)
+//                {
+//                    //RESULT is the name of python object
+//                    _python_obj->type = w_python_object_type::W_PYTHON_NUMBER_INT;
+//                    _python_obj->data = nullptr;
+//                    w_hash_set(_hash, _keys[1], strlen(_keys[1]), (const void*)_python_obj);
+//                }
+//
+//                _python_obj = (w_python_object)w_malloc(_pool, sizeof(w_python_object_t));
+//                if (_python_obj)
+//                {
+//                    //RESULT is the name of python object
+//                    _python_obj->type = w_python_object_type::W_PYTHON_NUMBER_DOUBLE;
+//                    _python_obj->data = nullptr;
+//                    w_hash_set(_hash, _keys[2], strlen(_keys[2]), (const void*)_python_obj);
+//                }
+//
+//                _python_obj = (w_python_object)w_malloc(_pool, sizeof(w_python_object_t));
+//                if (_python_obj)
+//                {
+//                    //RESULT is the name of python object
+//                    _python_obj->type = w_python_object_type::W_PYTHON_STRING;
+//                    _python_obj->data = nullptr;
+//                    w_hash_set(_hash, _keys[3], strlen(_keys[3]), (const void*)_python_obj);
+//                }
+//
+//                //init python
+//                w_python::init();
+//                //execute python
+//                auto _hr = w_python::execute(_pool, (char*)_script->buffer, _hash, &_errors);
+//                REQUIRE(_hr == W_SUCCESS);
+//
+//                if (w_hash_size(_hash))
+//                {
+//                    for (auto i = 0; i < _keys_size; i++)
+//                    {
+//                        auto _python_obj = (w_python_object)w_hash_get(_hash, _keys[i], strlen(_keys[i]));
+//                        if (_python_obj)
+//                        {
+//                            switch (_python_obj->type)
+//                            {
+//                            case w_python_object_type::W_PYTHON_BOOLEAN:
+//                            {
+//                                auto _bool = (const bool*)_python_obj->data;
+//                                if (_bool)
+//                                {
+//                                    printf("the type of python object is int and the value is %s \r\n", *_bool ? "true" : "false");
+//                                }
+//                                break;
+//                            }
+//                            case w_python_object_type::W_PYTHON_NUMBER_INT:
+//                            {
+//                                auto _int = (const int*)_python_obj->data;
+//                                if (_int)
+//                                {
+//                                    printf("the type of python object is int and the value is %d \r\n", *_int);
+//                                }
+//                                break;
+//                            }
+//                            case w_python_object_type::W_PYTHON_NUMBER_DOUBLE:
+//                            {
+//                                auto _double = (const double*)_python_obj->data;
+//                                if (_double)
+//                                {
+//                                    printf("the type of python object is double and the value is %lf \r\n", *_double);
+//                                }
+//                                break;
+//                            }
+//                            case w_python_object_type::W_PYTHON_STRING:
+//                            {
+//                                auto _str = (const char*)_python_obj->data;
+//                                if (_str)
+//                                {
+//                                    printf("the type of python object is string and the value is %s \r\n", _str);
+//                                }
+//                                break;
+//                            }
+//                            }
+//                        }
+//                    }
+//                }
+//                //finish
+//                w_python::fini();
+//            }
+//            w_mem_pool_fini(&_pool);
+//        }
+//    }
+//}
 
 #pragma endregion
 
