@@ -6,12 +6,14 @@ if (APPLE)
 project (wolf_system_osx)
 elseif (WIN32)
 project (wolf_system_win)
+elseif (UNIX)
+project (wolf_system_linux)
 endif()
 
 # required packages
 find_package(Git REQUIRED)
-if (UNIX)
-	find_package(Wget REQUIRED)
+if(LINUX)
+find_package(Wget REQUIRED)
 endif()
 # FetchContent for cloning repositories, avaiable since CMAKE 3.11
 include(FetchContent)
@@ -33,10 +35,14 @@ option(WOLF_ENABLE_WEBSOCKET "Enable Websocket" OFF)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS ENABLE_CXX_EXTENSIONS)
 set(CMAKE_C_STANDARD 11)
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -mavx -march=native")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mavx -march=native")
+if(NOT UNIX)
+	set(CMAKE_CXX_STANDARD 17)
+endif()
+set(CMAKE_CXX17_STANDARD_COMPILE_OPTION "-std=c++17")
+set(CMAKE_CXX17_EXTENSION_COMPILE_OPTION "std=gnu++17")
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
+set (LIBRARY_TYPE "SHARED")
 
 # fetch libexpat
 message("fetching https://github.com/libexpat/libexpat.git")
@@ -66,6 +72,12 @@ set(CMAKE_RELEASE_POSTFIX "" CACHE STRING "" FORCE)
 set(CMAKE_MINSIZEREL_POSTFIX "" CACHE STRING "" FORCE)
 set(CMAKE_RELWITHDEBINFO_POSTFIX "" CACHE STRING "" FORCE)
 
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "" FORCE)
+else()
+    set(CMAKE_BUILD_TYPE "Release" CACHE STRING "" FORCE)
+endif()
+
 # After the following call, the CMake targets will be defined and available to the rest of the build
 if (APPLE)
 	# for apple we will build apr via shell script
@@ -73,9 +85,15 @@ if (APPLE)
 	
 	execute_process(COMMAND chmod +x ${CMAKE_CURRENT_SOURCE_DIR}/shell/apr.sh)
 	add_custom_target(libapr_target COMMAND /bin/sh -c
-    "${CMAKE_CURRENT_SOURCE_DIR}/shell/apr.sh --bypass_ios=1 --bypass_ios_simulator=1 --build_dir=${CMAKE_CURRENT_BINARY_DIR} --${CMAKE_BUILD_TYPE}")
+    "${CMAKE_CURRENT_SOURCE_DIR}/shell/apr.sh --bypass_Linux=1 --bypass_ios=1 --bypass_ios_simulator=1 --build_dir=${CMAKE_CURRENT_BINARY_DIR} --${CMAKE_BUILD_TYPE}")
+elseif(UNIX)
+	FetchContent_MakeAvailable(libexpat)
+
+	execute_process(COMMAND chmod +x ${CMAKE_CURRENT_SOURCE_DIR}/shell/apr.sh)
+	add_custom_target(libapr_target COMMAND /bin/sh -c
+    "${CMAKE_CURRENT_SOURCE_DIR}/shell/apr.sh --bypass_ios=1 --bypass_ios_simulator=1 --bypass_macos=1 --build_dir=${CMAKE_CURRENT_BINARY_DIR} --${CMAKE_BUILD_TYPE}")
 else()
-    FetchContent_MakeAvailable(libexpat	apr)
+    FetchContent_MakeAvailable(libexpat apr)
 endif()
  
 # create filter for each folder
@@ -230,6 +248,14 @@ file(GLOB_RECURSE WOLF_SRC_DIR
 	"${CMAKE_CURRENT_SOURCE_DIR}/wolf.h"
 )
 
+if(UNIX)
+	include_directories(${CMAKE_CURRENT_SOURCE_DIR}
+			${CMAKE_CURRENT_BINARY_DIR}/_deps/libexpat-src/expat/lib
+			${CMAKE_CURRENT_BINARY_DIR}/_deps/apr-build
+			${CMAKE_CURRENT_BINARY_DIR}/_deps/apr-src/include
+			${CMAKE_CURRENT_SOURCE_DIR}/log
+			${CMAKE_CURRENT_SOURCE_DIR}/compression/msgpack)
+else()
 # add includes
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}/_deps/libexpat-src/expat/lib
@@ -238,9 +264,10 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}/log
 	${CMAKE_CURRENT_SOURCE_DIR}/compression/msgpack	
 )
+endif()
 		
 # add sources
-add_library(${PROJECT_NAME} SHARED
+add_library(${PROJECT_NAME} ${LIBRARY_TYPE}
 	${BASE64_SRC_DIR}
 	${CHRONO_SRC_DIR}
 	${COMPRESSION_LZ4_SRC_DIR}
@@ -272,6 +299,9 @@ add_library(${PROJECT_NAME} SHARED
  )
  
  if (APPLE)
+    add_dependencies(${PROJECT_NAME} libapr_target)
+ endif()
+ if (UNIX)
     add_dependencies(${PROJECT_NAME} libapr_target)
  endif()
 
@@ -330,6 +360,10 @@ if (CMAKE_BUILD_TYPE MATCHES Debug)
 	target_compile_definitions(${PROJECT_NAME} PUBLIC
 		DEBUG
 	)
+else() 
+	target_compile_definitions(${PROJECT_NAME} PUBLIC
+		NDEBUG
+	)
 endif()
 
 # set AVX512 compile definition
@@ -345,12 +379,19 @@ if (ENABLE_AVX512)
 		${AVX512_FLAGS})
 endif()
 
-if (APPLE)
+ if (APPLE)
  	macro (set_xcode_property TARGET XCODE_PROPERTY XCODE_VALUE)
     	set_property (TARGET ${TARGET} PROPERTY
         	XCODE_ATTRIBUTE_${XCODE_PROPERTY} ${XCODE_VALUE})
  	endmacro (set_xcode_property)
     	set_xcode_property(${PROJECT_NAME} CLANG_X86_VECTOR_INSTRUCTIONS "avx2")
+endif()
+
+if (UNIX)
+	set (AVX2_FLAGS "-D__AVX -DUSE_AVX2")
+	set (AVX2_FLAGS "${AVX2_FLAGS} -mavx2 -mfma")
+	target_compile_definitions(${PROJECT_NAME} PUBLIC
+			${AVX2_FLAGS})
 endif()
 
  # set activeMQ compile definitions
@@ -407,6 +448,15 @@ if (WIN32)
 elseif(APPLE)
     target_link_libraries(${PROJECT_NAME} PRIVATE  "-framework Foundation" expat)
     target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_BINARY_DIR}/_deps/apr-build/${CMAKE_BUILD_TYPE}/lib/libapr-1.a)
+elseif(UNIX)
+	target_link_libraries(${PROJECT_NAME} PRIVATE  expat)
+
+	if(${LIBRARY_TYPE} STREQUAL "SHARED")
+        target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_BINARY_DIR}/_deps/apr-build/${CMAKE_BUILD_TYPE}/lib/libapr-1.so)
+	else()
+		target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_BINARY_DIR}/_deps/apr-build/${CMAKE_BUILD_TYPE}/lib/libapr-1.a)
+	endif()
 else()
 	target_link_libraries(${PROJECT_NAME} PRIVATE  expat apr-1)
 endif()
+

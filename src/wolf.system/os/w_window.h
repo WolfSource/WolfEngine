@@ -21,8 +21,8 @@ extern "C" {
 #ifdef W_PLATFORM_ANDROID
 #include <android/native_window.h>
 #elif defined(W_PLATFORM_LINUX)
-#include <xcb/xcb.h>
-#include <xcb/xproto.h>
+//#include <xcb/xcb.h>
+//#include <xcb/xproto.h>
 #endif
 
     //#include "python_exporter/w_boost_python_helper.h"

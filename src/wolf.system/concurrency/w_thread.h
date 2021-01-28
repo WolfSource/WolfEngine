@@ -23,7 +23,7 @@ extern "C" {
     typedef void* w_thread_id;
 
     typedef void* (
-#if defined(W_PLATFORM_ANDROID) 
+#if defined(W_PLATFORM_ANDROID) || defined(W_PLATFORM_LINUX)
 #else
     __stdcall 
 #endif
