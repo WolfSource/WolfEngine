@@ -27,15 +27,15 @@ extract_apr_trunk()
     ################################
     cd "$DIR/_deps"
 
-	if [ $BYPASS_LINUX == 0 ]
-	then
-	    wget apache.mirror.amaze.com.au/apr/apr-1.7.0.tar.gz
-	    tar -zxvf apr-1.7.0.tar.gz
-	    mv "$DIR/_deps/apr-1.7.0" "$DIR/_deps/apr-src"
-	else
-	    git clone https://github.com/apache/apr.git -b 1.7.x
-	    mv "$DIR/_deps/apr" "$DIR/_deps/apr-src"
-	fi
+    if [ $BYPASS_LINUX == 0 ]
+    then
+        wget apache.mirror.amaze.com.au/apr/apr-1.7.0.tar.gz
+        tar -zxvf apr-1.7.0.tar.gz
+        mv "$DIR/_deps/apr-1.7.0" "$DIR/_deps/apr-src"
+    else
+        git clone https://github.com/apache/apr.git -b 1.7.x
+        mv "$DIR/_deps/apr" "$DIR/_deps/apr-src"
+    fi
 }
 
 #################################### INIT ####################################################
@@ -63,7 +63,7 @@ while [ "$1" != "" ]; do
         --bypass_ios_simulator=* )  BYPASS_IOS_SIMULATOR="${1#*=}"
                                     shift 6
                                     ;;
-        --bypass_linux=* )  	    BYPASS_LINUX="${1#*=}"
+        --bypass_linux=* )          BYPASS_LINUX="${1#*=}"
                                     shift 6
                                     ;;
         --without-test=* )          BYPASS_TESTS="${1#*=}"
@@ -88,18 +88,15 @@ while [ "$1" != "" ]; do
         shift
 done
 
-if [ $BYPASS_MACOS == 1 ] && [ $BYPASS_IOS == 1 ] && [ $BYPASS_IOS_SIMULATOR == 1 ]
+if [ $BYPASS_MACOS == 1 ] && [ $BYPASS_IOS == 1 ] && [ $BYPASS_IOS_SIMULATOR == 1 ] && [ $BYPASS_LINUX == 1 ]
 then
-    if [ $BYPASS_LINUX == 1 ] 
-    then
-         echo "No platform remained for building. Returning..."
-         exit
-    fi
+    echo "No platform remained for building. Returning..."
+    exit
 fi
 
 if [ $BYPASS_MACOS == 0 ] || [ $BYPASS_IOS == 0 ] || [ $BYPASS_IOS_SIMULATOR == 0 ]
 then
-	XCODE_ROOT=`xcode-select -print-path`
+    XCODE_ROOT=`xcode-select -print-path`
 fi
 
 ################################
@@ -112,7 +109,6 @@ check_libexpat() {
             then
                 echo "Missing a file! Build libexpat and then try again."
                 echo "Building APR failed. Returning..."
-                exit
             fi
 }
 
@@ -128,7 +124,17 @@ check_libexpat() {
 # files are needed during      #
 # building                     #
 ################################
-
+if [ $BYPASS_MACOS == 1 && $BYPASS_LINUX == 1 ]
+then
+    if [[ ! -f "$DIR/tools/gen_test_char" ]] || [[ ! -f "$DIR/tools/gen_test_char.c" ]]
+    then
+        echo "Missing a file! Extract the apr.zip and run the script again."
+        echo "Building APR failed. Returning..."
+        exit
+    fi
+    cp "$DIR/tools/gen_test_char" "$DIR"
+    cp "$DIR/tools/gen_test_char.c" "$DIR"
+fi
 
 mkdir -p "$DIR/_deps/"
 extract_apr_trunk
@@ -183,7 +189,7 @@ then
                 ./configure \
                     --prefix=$PREFIX \
                     --host=$TARGET \
-		    --with-expat=$DIR/_deps/libexpat-build/$1/ \
+                    --with-expat=$DIR/_deps/libexpat-build/$1/ \
                     $CONFIGURE_FLAGS \
                     ac_cv_file__dev_zero="yes" \
                     ac_cv_func_setpgrp_void="yes" \
@@ -282,7 +288,7 @@ then
                 ./configure \
                     --prefix="$PREFIX" \
                     --host=$TARGET \
-		    --with-expat=$DIR/_deps/libexpat-build/$1/ \
+                    --with-expat=$DIR/_deps/libexpat-build/$1/ \
                     $CONFIGURE_FLAGS \
                     ac_cv_file__dev_zero="yes" \
                     ac_cv_func_setpgrp_void="yes" \
@@ -390,7 +396,7 @@ then
                 ./configure \
                     --prefix="$PREFIX" \
                     --host=$TARGET \
-		    --with-expat=$DIR/_deps/libexpat-build/$1/ \
+                    --with-expat=$DIR/_deps/libexpat-build/$1/ \
                     $CONFIGURE_FLAGS \
                     ac_cv_file__dev_zero="yes" \
                     ac_cv_func_setpgrp_void="yes" \
@@ -424,7 +430,6 @@ then
             done
     done
 fi
-
 #################################### Building for Linux ########################################
 if [ $BYPASS_LINUX == 0 ]
 then

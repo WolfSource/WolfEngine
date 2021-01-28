@@ -592,7 +592,11 @@ W_RESULT w_compress_msgpack_fini(
 		_buffer->data = w_malloc(pMemPool, _msgpack->buf.size);
 		if (_buffer->data)
 		{
-			memcpy_s(_buffer->data, _buffer->len, _msgpack->buf.data, _msgpack->buf.size);
+#if defined(W_PLATFORM_OSX)
+            memcpy(_buffer->data, _msgpack->buf.data, _msgpack->buf.size);
+#else
+            memcpy_s(_buffer->data, _buffer->len, _msgpack->buf.data, _msgpack->buf.size);
+#endif
 			*pBuffer = _buffer;
 		}
 		else
@@ -648,11 +652,18 @@ static void s_send_msgpack_object(
 			if (_str->data)
 			{
 				_str->reserved_size = pObj->via.str.size;
+#if defined (W_PLATFORM_OSX)
+                memcpy(
+                    _str->data,
+                    pObj->via.str.ptr,
+                    pObj->via.str.size);
+#else
 				memcpy_s(
 					_str->data,
 					_str->reserved_size,
 					pObj->via.str.ptr,
 					pObj->via.str.size);
+#endif
 				pMsgUnPackFunction(W_TYPE_STRING, _str);
 				break;
 			}
