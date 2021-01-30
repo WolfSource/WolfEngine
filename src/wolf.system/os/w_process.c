@@ -20,6 +20,9 @@
 
 #ifdef W_PLATFORM_LINUX
 #include <sys/dir.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdarg.h>
 #endif
 
 size_t w_process_get_count_of_instances(_In_z_ const wchar_t* pProcessName)
