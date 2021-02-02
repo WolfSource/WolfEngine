@@ -17,7 +17,8 @@
 /bin/win/
 /bin/osx/
 /bin/linux/
-/docs/extra/
+/deps/*
+!/deps/*.zip
 /samples/.vs/*
 /src/wolf.system/build/*
 
