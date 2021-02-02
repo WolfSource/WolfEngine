@@ -76,7 +76,6 @@ W_RESULT w_fiber_detach(
     _In_z_ const char* pSchedulerName,
     _In_ const size_t pFiberIndex);
 
-
 /**
  * swap two fibers from same scheduler
  * @param pSchedulerName name of the scheduler
