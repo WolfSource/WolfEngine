@@ -55,11 +55,11 @@ FetchContent_Declare(
 
 if(WIN32)
 # fetch apr
-message("fetching https://github.com/apache/apr.git")
+message("fetching https://svn.apache.org/repos/asf/apr/apr/trunk/")
 FetchContent_Declare(
   apr
   GIT_REPOSITORY https://github.com/apache/apr.git
-  GIT_TAG        1.7.0
+  GIT_TAG        trunk
 )
 endif()
 
@@ -433,7 +433,7 @@ endif()
 
 
 if (WIN32)
-    target_link_libraries(${PROJECT_NAME} PRIVATE  expat apr-1 Shlwapi)
+    target_link_libraries(${PROJECT_NAME} PRIVATE  expat apr-2 Shlwapi)
 elseif(APPLE)
     target_link_libraries(${PROJECT_NAME} PRIVATE  "-framework Foundation" expat)
     target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_BINARY_DIR}/_deps/apr-build/${CMAKE_BUILD_TYPE}/lib/libapr-1.a)

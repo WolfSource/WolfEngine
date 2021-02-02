@@ -95,9 +95,10 @@ extern "C" {
 	 * @param pMsgPack a pointer to msgpack object
 	 * @return result
 	*/
-	W_RESULT w_compress_msgpack_init(
-		_Inout_ w_mem_pool pMemPool,
-		_Inout_ w_msgpack* pMsgPack);
+	W_SYSTEM_EXPORT
+		W_RESULT w_compress_msgpack_init(
+			_Inout_ w_mem_pool pMemPool,
+			_Inout_ w_msgpack* pMsgPack);
 
 	/**
 	 * append a boolean to msgpack
@@ -105,9 +106,10 @@ extern "C" {
 	 * @param pValue the boolean value
 	 * @return result
 	*/
-	W_RESULT w_compress_msgpack_append_boolean(
-		_Inout_ w_msgpack pMsgPack, 
-		_In_ bool pValue);
+	W_SYSTEM_EXPORT
+		W_RESULT w_compress_msgpack_append_boolean(
+			_Inout_ w_msgpack pMsgPack,
+			_In_ bool pValue);
 
 	/**
 	 * append an integer to msgpack
@@ -115,9 +117,10 @@ extern "C" {
 	 * @param pValue the integer value
 	 * @return result
 	*/
-	W_RESULT w_compress_msgpack_append_int(
-		_Inout_ w_msgpack pMsgPack, 
-		_In_ int pValue);
+	W_SYSTEM_EXPORT
+		W_RESULT w_compress_msgpack_append_int(
+			_Inout_ w_msgpack pMsgPack,
+			_In_ int pValue);
 
 	/**
 	 * append a float to msgpack
@@ -125,9 +128,10 @@ extern "C" {
 	 * @param pValue the float value
 	 * @return result
 	*/
-	W_RESULT w_compress_msgpack_append_float(
-		_Inout_ w_msgpack pMsgPack, 
-		_In_ float pValue);
+	W_SYSTEM_EXPORT
+		W_RESULT w_compress_msgpack_append_float(
+			_Inout_ w_msgpack pMsgPack,
+			_In_ float pValue);
 
 	/**
 	 * append a double to msgpack
@@ -135,9 +139,10 @@ extern "C" {
 	 * @param pValue the double value
 	 * @return result
 	*/
-	W_RESULT w_compress_msgpack_append_double(
-		_Inout_ w_msgpack pMsgPack, 
-		_In_ double pValue);
+	W_SYSTEM_EXPORT
+		W_RESULT w_compress_msgpack_append_double(
+			_Inout_ w_msgpack pMsgPack,
+			_In_ double pValue);
 
 	/**
 	 * append a string to msgpack
@@ -146,11 +151,11 @@ extern "C" {
 	 * @param pStringLen the length of string
 	 * @return result
 	*/
-	W_RESULT w_compress_msgpack_append_string(
-		_Inout_ w_msgpack pMsgPack, 
-		_In_ const char* pString, 
-		_In_ size_t pStringLen);
-	
+	W_SYSTEM_EXPORT
+		W_RESULT w_compress_msgpack_append_string(
+			_Inout_ w_msgpack pMsgPack,
+			_In_ const char* pString,
+			_In_ size_t pStringLen);	
 
 	/**
 	 *  append an array to msgpack
@@ -159,10 +164,11 @@ extern "C" {
 	 * @param pArrayElementType the element's type of array
 	 * @return result
 	*/
-	W_RESULT w_compress_msgpack_append_array(
-		_Inout_ w_msgpack pMsgPack, 
-		_In_ w_array pArray, 
-		_In_ w_std_types pArrayElementType);
+	W_SYSTEM_EXPORT
+		W_RESULT w_compress_msgpack_append_array(
+			_Inout_ w_msgpack pMsgPack,
+			_In_ w_array pArray,
+			_In_ w_std_types pArrayElementType);
 
 	/**
 	 * finitialize the msgpack. release all resources of msgpack and 
@@ -172,21 +178,23 @@ extern "C" {
 	 * @param pBuffer the output buffer
 	 * @return result
 	*/
-	W_RESULT w_compress_msgpack_fini(
-		_Inout_ w_mem_pool pMemPool,
-		_Inout_ w_msgpack pMsgPack,
-		_Inout_ w_buffer* pBuffer);
+	W_SYSTEM_EXPORT
+		W_RESULT w_compress_msgpack_fini(
+			_Inout_ w_mem_pool pMemPool,
+			_Inout_ w_msgpack pMsgPack,
+			_Inout_ w_buffer* pBuffer);
 
 	/**
-	 * unpack the msgpacked data.
+	 * unpack the msgpacked data. the last object is W_TYPE_NULL
 	 * @param pMemPool the pool which will be used for allocating data
 	 * @param pBuffer the buffer that contains msgpack data
 	 * @return result
 	*/
-	W_RESULT w_decompress_msgpack(
-		_Inout_ w_mem_pool pMemPool,
-		_Inout_ w_buffer pBuffer,
-		_In_ w_unpack_msg_fn pMsgUnPackFunction);
+	W_SYSTEM_EXPORT
+		W_RESULT w_decompress_msgpack(
+			_Inout_ w_mem_pool pMemPool,
+			_Inout_ w_buffer pBuffer,
+			_In_ w_unpack_msg_fn pMsgUnPackFunction);
 
 	///**
 	//* unpack string message using msgpack

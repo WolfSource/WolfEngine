@@ -61,7 +61,7 @@ W_RESULT w_thread_init(
 W_RESULT w_thread_join(_Inout_ w_thread pThread)
 {
     //join thread
-    apr_status_t _status;
+    apr_status_t _status = APR_SUCCESS;
     apr_thread_join(&_status, pThread);
     return _status == APR_SUCCESS ? W_SUCCESS : W_FAILURE;
 }

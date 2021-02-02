@@ -56,7 +56,7 @@ extern "C" {
         W_RESULT w_thread_pool_push(
             _In_ w_thread_pool pThreadPool,
             _In_ w_thread_job pThreadJob,
-            _In_ void* pParam,
+            _In_opt_ void* pParam,
             _In_ uint8_t pPriority,
             _In_opt_ void* pOwner);
 
@@ -74,7 +74,7 @@ extern "C" {
         W_RESULT w_thread_pool_schedule(
             _In_ w_thread_pool pThreadPool,
             _In_ w_thread_job pThreadJob,
-            _In_ void* pParam,
+            _In_opt_ void* pParam,
             _In_ int64_t pTime,
             _In_opt_ void* pOwner);
 
@@ -92,7 +92,7 @@ extern "C" {
         W_RESULT w_thread_pool_top(
             _In_ w_thread_pool pThreadPool,
             _In_ w_thread_job pThreadJob,
-            _In_ void* pParam,
+            _In_opt_ void* pParam,
             _In_ uint8_t pPriority,
             _In_ void* pOwner);
 
@@ -231,8 +231,8 @@ extern "C" {
             _In_ size_t pCount);
 
     /**
-     * Access function for the maximum wait time (in microseconds) of an
-     * idling thread that exceeds the maximum number of idling threads.
+     * Access function for the maximum wait time (in microseconds) of an idling 
+     * thread that exceeds the maximum number of idling threads.
      * A non-zero value allows for the reaping of idling threads to shrink
      * over time.  Which helps reduce thrashing.
      * @param pThreadPool The thread pool
@@ -282,7 +282,7 @@ extern "C" {
     * @return APR_SUCCESS if all threads are stopped
     */
     W_SYSTEM_EXPORT
-        W_RESULT w_thread_pool_fini(_Inout_ w_thread_pool pThreadPool);
+        W_RESULT w_thread_pool_fini(_Inout_ w_thread_pool* pThreadPool);
 
 #ifdef __cplusplus
 }

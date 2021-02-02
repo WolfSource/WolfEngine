@@ -589,10 +589,11 @@ W_RESULT w_compress_msgpack_fini(
 	w_buffer _buffer = (w_buffer)w_malloc(pMemPool, sizeof(w_buffer_t));
 	if (_buffer)
 	{
-		_buffer->data = w_malloc(pMemPool, _msgpack->buf.size);
+		_buffer->len = _msgpack->buf.size;
+		_buffer->data = w_malloc(pMemPool, _buffer->len);
 		if (_buffer->data)
 		{
-#if defined(W_PLATFORM_OSX)
+#if defined(W_PLATFORM_UNIX)
             memcpy(_buffer->data, _msgpack->buf.data, _msgpack->buf.size);
 #else
             memcpy_s(_buffer->data, _buffer->len, _msgpack->buf.data, _msgpack->buf.size);
@@ -628,19 +629,27 @@ static void s_send_msgpack_object(
 	}
 	case MSGPACK_OBJECT_BOOLEAN:
 	{
-		pMsgUnPackFunction(W_TYPE_BOOLEAN, (const void*)(&pObj->via.boolean));
+		bool _v = pObj->via.boolean;
+		pMsgUnPackFunction(W_TYPE_BOOLEAN, (const void*)(&_v));
 		break;
 	}
 	case MSGPACK_OBJECT_POSITIVE_INTEGER:
 	case MSGPACK_OBJECT_NEGATIVE_INTEGER:
 	{
-		pMsgUnPackFunction((w_std_types)pObj->type, (const void*)(&pObj->via.i64));
+		int _v = pObj->via.i64;
+		pMsgUnPackFunction((w_std_types)pObj->type, (const void*)(&_v));
 		break;
 	}
 	case MSGPACK_OBJECT_FLOAT32:
+	{
+		float _v = (float)pObj->via.f64;
+		pMsgUnPackFunction(W_TYPE_FLOAT, (const void*)(&_v));
+		break;
+	}
 	case MSGPACK_OBJECT_FLOAT64:
 	{
-		pMsgUnPackFunction(W_TYPE_FLOAT, (const void*)(&pObj->via.f64));
+		double _v = (double)pObj->via.f64;
+		pMsgUnPackFunction(W_TYPE_DOUBLE, (const void*)(&_v));
 		break;
 	}
 	case MSGPACK_OBJECT_STR:
@@ -648,11 +657,12 @@ static void s_send_msgpack_object(
 		w_string _str = (w_string)w_malloc(pMemPool, sizeof(w_string_t));
 		if (_str)
 		{
-			_str->data = (char*)w_malloc(pMemPool, pObj->via.str.size);
+			_str->str_len = pObj->via.str.size;
+			_str->reserved_size = _str->str_len + 1; //plus '\0'
+			_str->data = (char*)w_malloc(pMemPool, _str->reserved_size);
 			if (_str->data)
 			{
-				_str->reserved_size = pObj->via.str.size;
-#if defined (W_PLATFORM_OSX)
+#if defined(W_PLATFORM_UNIX)
                 memcpy(
                     _str->data,
                     pObj->via.str.ptr,
@@ -660,10 +670,11 @@ static void s_send_msgpack_object(
 #else
 				memcpy_s(
 					_str->data,
-					_str->reserved_size,
+					_str->str_len,
 					pObj->via.str.ptr,
 					pObj->via.str.size);
 #endif
+				_str->data[_str->str_len] = '\0';
 				pMsgUnPackFunction(W_TYPE_STRING, _str);
 				break;
 			}
@@ -673,7 +684,7 @@ static void s_send_msgpack_object(
 	}
 	case MSGPACK_OBJECT_ARRAY:
 	{
-		pMsgUnPackFunction(W_TYPE_ARRAY, NULL);
+		pMsgUnPackFunction(W_TYPE_ARRAY_BEGIN, NULL);
 		for (size_t i = 0; i < pObj->via.array.size; ++i)
 		{
 			s_send_msgpack_object(
@@ -681,6 +692,7 @@ static void s_send_msgpack_object(
 				&(pObj->via.array.ptr[i]),
 				pMsgUnPackFunction);
 		}
+		pMsgUnPackFunction(W_TYPE_ARRAY_END, NULL);
 		break;
 	}
 	case MSGPACK_OBJECT_MAP:
@@ -709,8 +721,12 @@ W_RESULT w_decompress_msgpack(
 			pBuffer->data,
 			pBuffer->len,
 			&_unpack_pos);
-		if (_ret != MSGPACK_UNPACK_SUCCESS) break;
-
+		if (_ret != MSGPACK_UNPACK_SUCCESS)
+		{
+			//send NULL for the last object
+			pMsgUnPackFunction(W_TYPE_NULL, NULL);
+			break;
+		}
 		s_send_msgpack_object(pMemPool, &_unpack.data, pMsgUnPackFunction);
 	}
 

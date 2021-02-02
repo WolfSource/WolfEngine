@@ -30,18 +30,16 @@ extern "C" {
    /**
     * atomically increment an unsigned int64 by 1
     * @param pMem pointer to the mem object
-    * @return old value pointed to by mem
     */
     W_SYSTEM_EXPORT
-        W_ATOMIC_INT w_atomic_inc(_Inout_ volatile W_ATOMIC_INT* pMem);
+        void w_atomic_inc(_Inout_ volatile W_ATOMIC_INT* pMem);
 
    /**
     * atomically decrement an unsigned int64 by 1
     * @param pMem pointer to the mem object
-    * @return zero if the value becomes zero on decrement, otherwise non-zero
     */
     W_SYSTEM_EXPORT
-        int w_atomic_dec(_Inout_ volatile W_ATOMIC_INT* pMem);
+        void w_atomic_dec(_Inout_ volatile W_ATOMIC_INT* pMem);
 
    /**
     * atomically set an unsigned int64 in memory

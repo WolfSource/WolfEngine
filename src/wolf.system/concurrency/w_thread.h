@@ -31,8 +31,6 @@ extern "C" {
 
     typedef void (*w_thread_once_job)(void);
 
-    
-
     /**
      * create once flag
      * @param pMemPool the pool from which to allocate the once flag

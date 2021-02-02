@@ -26,6 +26,7 @@ extern "C" {
 	 */
 	W_SYSTEM_EXPORT
         W_RESULT w_sigslot_init(_Inout_ w_mem_pool pMemPool, _Inout_ w_sigslot* pSignal);
+
 	/**
 	 * Raise the signal.
 	 * @param pSignal The signal to be raised.

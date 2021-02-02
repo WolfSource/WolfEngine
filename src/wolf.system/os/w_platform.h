@@ -86,8 +86,14 @@
 #endif
 
 typedef int W_RESULT;
+
+#ifdef __cplusplus
+enum class w_std_types
+{
+#else
 typedef enum
 {
+#endif
     W_TYPE_NULL = 0x00,
     W_TYPE_BOOLEAN = 0x01,
     W_TYPE_POSITIVE_INT = 0x02,
@@ -96,8 +102,15 @@ typedef enum
     W_TYPE_DOUBLE = 0x04,
     W_TYPE_STRING = 0x05,
     W_TYPE_ARRAY = 0x06,
+    W_TYPE_ARRAY_BEGIN = 0x0b,
+    W_TYPE_ARRAY_END = 0x0c,
     W_TYPE_MAP = 0x07,
-} w_std_types;
+} 
+#ifdef __cplusplus
+;
+#else
+w_std_types;
+#endif
 
 #ifdef _MSC_VER
 #define ASM __asm

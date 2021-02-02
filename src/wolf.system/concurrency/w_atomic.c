@@ -1,10 +1,8 @@
 #include "w_atomic.h"
 #include <apr_atomic.h>
 
-W_ATOMIC_INT w_atomic_inc(_Inout_ volatile W_ATOMIC_INT* pVal)
+void w_atomic_inc(_Inout_ volatile W_ATOMIC_INT* pVal)
 {
-    return (W_ATOMIC_INT)
-
 #ifdef _WIN64
         apr_atomic_inc64((volatile apr_uint64_t*)pVal);
 #else
@@ -12,9 +10,8 @@ W_ATOMIC_INT w_atomic_inc(_Inout_ volatile W_ATOMIC_INT* pVal)
 #endif
 }
 
-int w_atomic_dec(_Inout_ volatile W_ATOMIC_INT* pVal)
+void w_atomic_dec(_Inout_ volatile W_ATOMIC_INT* pVal)
 {
-    return
 #ifdef _WIN64
         apr_atomic_dec64((volatile apr_uint64_t*)pVal);
 #else
