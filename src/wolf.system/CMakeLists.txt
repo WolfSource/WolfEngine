@@ -1,14 +1,32 @@
 # CMAKE required version
 cmake_minimum_required (VERSION 3.11)
 
+if(UNIX AND NOT APPLE)
+   set(LINUX TRUE)
+endif()
+
 # set the project name
 if (APPLE)
 project (wolf_system_osx)
 elseif (WIN32)
 project (wolf_system_win)
-elseif (UNIX)
+elseif (LINUX)
 project (wolf_system_linux)
 endif()
+
+if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+    set(WIN64 TRUE)
+endif()
+
+if(APPLE)
+	SET(PREFIX_LIB_PATH "osx")
+elseif(WIN32 OR WIN64)
+	SET(PREFIX_LIB_PATH "win")
+elseif(LINUX)
+	SET(PREFIX_LIB_PATH "linux")
+endif()
+
+message("d: " + ${PREFIX_LIB_PATH})
 
 # required packages
 find_package(Git REQUIRED)
@@ -53,9 +71,9 @@ FetchContent_Declare(
   SOURCE_SUBDIR  expat
 )
 
-if(WIN32)
+if(WIN32 OR WIN64)
 # fetch apr
-message("fetching https://svn.apache.org/repos/asf/apr/apr/trunk/")
+message("fetching https://github.com/apache/apr.git")
 FetchContent_Declare(
   apr
   GIT_REPOSITORY https://github.com/apache/apr.git
@@ -74,8 +92,6 @@ set(CMAKE_RELWITHDEBINFO_POSTFIX "" CACHE STRING "" FORCE)
 
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "" FORCE)
-else()
-    set(CMAKE_BUILD_TYPE "Release" CACHE STRING "" FORCE)
 endif()
 
 # After the following call, the CMake targets will be defined and available to the rest of the build
@@ -86,7 +102,7 @@ if (APPLE)
     execute_process(COMMAND chmod +x ${CMAKE_CURRENT_SOURCE_DIR}/shell/apr.sh)
     add_custom_target(libapr_target COMMAND /bin/sh -c
     "${CMAKE_CURRENT_SOURCE_DIR}/shell/apr.sh --bypass_linux=1 --bypass_ios=1 --bypass_ios_simulator=1 --build_dir=${CMAKE_CURRENT_BINARY_DIR} --${CMAKE_BUILD_TYPE}")
-elseif(UNIX)
+elseif(LINUX)
     FetchContent_MakeAvailable(libexpat)
 
     execute_process(COMMAND chmod +x ${CMAKE_CURRENT_SOURCE_DIR}/shell/apr.sh)
@@ -256,7 +272,14 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/log
     ${CMAKE_CURRENT_SOURCE_DIR}/compression/msgpack
 )
-        
+
+if (WOLF_ENABLE_FIBER)
+    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../deps/boost/include)
+endif()
+
+#additional library search path
+link_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../deps/)
+
 # add sources
 add_library(${PROJECT_NAME} ${LIBRARY_TYPE}
     ${BASE64_SRC_DIR}
@@ -289,10 +312,7 @@ add_library(${PROJECT_NAME} ${LIBRARY_TYPE}
     ${WOLF_SRC_DIR}
  )
  
- if (APPLE)
-    add_dependencies(${PROJECT_NAME} libapr_target)
- endif()
-if (UNIX)
+ if (UNIX)
     add_dependencies(${PROJECT_NAME} libapr_target)
  endif()
 
@@ -376,7 +396,7 @@ if (APPLE)
             XCODE_ATTRIBUTE_${XCODE_PROPERTY} ${XCODE_VALUE})
      endmacro (set_xcode_property)
         set_xcode_property(${PROJECT_NAME} CLANG_X86_VECTOR_INSTRUCTIONS "avx2")
-elseif (UNIX)
+elseif (LINUX)
     set (AVX2_FLAGS "-D__AVX -DUSE_AVX2")
     set (AVX2_FLAGS "${AVX2_FLAGS} -mavx2 -mfma")
     target_compile_definitions(${PROJECT_NAME} PUBLIC
@@ -384,55 +404,61 @@ elseif (UNIX)
 endif()
 
  # set activeMQ compile definitions
-if (W_ENABLE_ACTIVEMQ)
+if (WOLF_ENABLE_ACTIVEMQ)
     target_compile_definitions(${PROJECT_NAME} PUBLIC
-        W_ENABLE_ACTIVEMQ
+        WOLF_ENABLE_ACTIVEMQ
         _HAS_AUTO_PTR_ETC=1
     )
 endif()
 
  # set LUA compile definitions
-if (W_ENABLE_LUA)
+if (WOLF_ENABLE_LUA)
     target_compile_definitions(${PROJECT_NAME} PUBLIC
-        W_ENABLE_LUA=1
+        WOLF_ENABLE_LUA
     )
 endif()
         
 # set Python3 compile definitions
-if (W_ENABLE_PYTHON3)
+if (WOLF_ENABLE_PYTHON3)
     target_compile_definitions(${PROJECT_NAME} PUBLIC
-        W_ENABLE_PYTHON3=1
+        WOLF_ENABLE_PYTHON3
     )
 endif()
 
 # set QUIC compile definitions
-if (W_ENABLE_QUIC)
+if (WOLF_ENABLE_QUIC)
     target_compile_definitions(${PROJECT_NAME} PUBLIC
-        W_ENABLE_QUIC=1
+        WOLF_ENABLE_QUIC
     )
 endif()
 
 #set CURL compile definitions
-if (W_ENABLE_CURL)
+if (WOLF_ENABLE_CURL)
     target_compile_definitions(${PROJECT_NAME} PUBLIC
-        W_ENABLE_CURL=1
+        WOLF_ENABLE_CURL
         CURL_STATICLIB
     )
 endif()
 
 #set cassandra compile definitions
-if (W_ENABLE_DB_CASSANDRA)
+if (WOLF_ENABLE_DB_CASSANDRA)
     target_compile_definitions(${PROJECT_NAME} PUBLIC
-        W_ENABLE_DB_CASSANDRA=1
+        WOLF_ENABLE_DB_CASSANDRA
     )
 endif()
 
+#set FIBER compile definitions
+if (WOLF_ENABLE_FIBER)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC
+        WOLF_ENABLE_FIBER
+    )
+endif()
+	
 if (APPLE)
     set_source_files_properties("${CMAKE_CURRENT_SOURCE_DIR}/io/w_io.c" PROPERTIES COMPILE_FLAGS "-x objective-c" )
 endif()
-
-
-if (WIN32)
+				
+if (WIN32 OR WIN64)
     target_link_libraries(${PROJECT_NAME} PRIVATE  expat apr-2 Shlwapi)
 elseif(APPLE)
     target_link_libraries(${PROJECT_NAME} PRIVATE  "-framework Foundation" expat)
@@ -447,4 +473,24 @@ elseif(UNIX)
     endif()
 else()
     target_link_libraries(${PROJECT_NAME} PRIVATE  expat apr-1)
+endif()
+
+if (WOLF_ENABLE_FIBER)
+    if(WIN64)
+		if (CMAKE_BUILD_TYPE MATCHES Debug)
+			target_link_libraries(${PROJECT_NAME} PRIVATE  boost/lib/${PREFIX_LIB_PATH}/x64/debug/libboost_context-vc142-mt-gd-x64-1_75)		
+			target_link_libraries(${PROJECT_NAME} PRIVATE  boost/lib/${PREFIX_LIB_PATH}/x64/debug/libboost_fiber-vc142-mt-gd-x64-1_75)		
+		else()
+			target_link_libraries(${PROJECT_NAME} PRIVATE  boost/lib/${PREFIX_LIB_PATH}/x64/release/libboost_context-vc142-mt-x64-1_75)		
+			target_link_libraries(${PROJECT_NAME} PRIVATE  boost/lib/${PREFIX_LIB_PATH}/x64/release/libboost_fiber-vc142-mt-s-x64-1_75)	    
+		endif()
+    else()
+		if (CMAKE_BUILD_TYPE MATCHES Debug)
+			target_link_libraries(${PROJECT_NAME} PRIVATE  boost/lib/${PREFIX_LIB_PATH}/x86/debug/libboost_context-vc142-mt-gd-x32-1_75)		
+			target_link_libraries(${PROJECT_NAME} PRIVATE  boost/lib/${PREFIX_LIB_PATH}/x86/debug/libboost_fiber-vc142-mt-gd-x32-1_75)		
+		else()
+			target_link_libraries(${PROJECT_NAME} PRIVATE  boost/lib/${PREFIX_LIB_PATH}/x86/release/libboost_context-vc142-mt-x32-1_75)		
+			target_link_libraries(${PROJECT_NAME} PRIVATE  boost/lib/${PREFIX_LIB_PATH}/x86/release/libboost_fiber-vc142-mt-s-x32-1_75)	    
+		endif()
+    endif()
 endif()
