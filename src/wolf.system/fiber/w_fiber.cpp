@@ -9,7 +9,7 @@
 #include <string>
 #include "w_log.h"
 
-typedef struct
+typedef struct fibers_info
 {
     boost::fibers::fiber*    fibers;
     size_t                   number_of_fibers;
@@ -17,11 +17,11 @@ typedef struct
 
 std::unordered_map<const char*, fibers_info*> s_schedulers;
 
-template<typename w_arg>
+template<typename T>
 W_RESULT w_fiber_scheduler_init(
     _Inout_ w_mem_pool pMemPool,
     _In_z_ const char* pSchedulerName,
-    _In_ std::initializer_list<const w_arg&> pFiberTasks)
+    _In_ std::initializer_list<const T&> pFiberTasks)
 {
     W_RESULT _ret = W_FAILURE;
     const char* _trace_info = "w_fiber_scheduler_init";
