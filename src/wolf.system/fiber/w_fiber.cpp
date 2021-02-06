@@ -1,219 +1,158 @@
-#include "w_fiber.hpp"
+#include "w_fiber.h"
 
 #ifdef WOLF_ENABLE_FIBER
 
 #include <apr_general.h>
+#include <string>
+#include <vector>
 #include <unordered_map>
 #include <boost/fiber/all.hpp>
 #include <boost/lexical_cast.hpp>
-#include <string>
 #include "w_log.h"
 
-typedef struct fibers_info
-{
-    boost::fibers::fiber*    fibers;
-    size_t                   number_of_fibers;
-} fibers_info;
+using namespace boost::fibers;
 
-std::unordered_map<const char*, fibers_info*> s_schedulers;
-
-template<typename T>
-W_RESULT w_fiber_scheduler_init(
-    _Inout_ w_mem_pool pMemPool,
-    _In_z_ const char* pSchedulerName,
-    _In_ std::initializer_list<const T&> pFiberTasks)
+typedef struct w_fiber_t
 {
-    W_RESULT _ret = W_FAILURE;
-    const char* _trace_info = "w_fiber_scheduler_init";
+    long long   id = 0;
+    fiber*      fiber = nullptr;
+} w_fiber_t;
+
+W_RESULT w_fiber_init(
+    _In_        w_mem_pool pMemPool,
+    _Inout_     w_fiber* pFiber,
+    _In_        w_fiber_job pJob,
+    _In_opt_    void* pArg)
+{
+    const char* _trace_info = "w_fiber_init";
+    
+    *pFiber = NULL;
+
     if (!pMemPool)
     {
-        W_ASSERT_P(false, "memory pool is invalid! trace info: %s", _trace_info);
-        return _ret;
+        W_ASSERT_P(false, "memory pool is invalid! trace info %s", _trace_info);
+        return APR_BADARG;
     }
 
-    fibers_info* _fibers_info = nullptr;
-    size_t _i = 0;
-
-    auto _size_of_tasks = pFiberTasks.size();
-    if (!_size_of_tasks)
+    auto _f = (w_fiber)w_malloc(pMemPool, sizeof(w_fiber_t));
+    if (!_f)
     {
-        goto out;
+        W_ASSERT_P(false, "could not allocate memory for w_fiber! trace info %s", _trace_info);
+        return W_FAILURE;
     }
 
-    _fibers_info = (fibers_info*)w_malloc(pMemPool, sizeof(fibers_info));
-    if (!_fibers_info)
+    _f->fiber = new (std::nothrow) fiber(pJob, pArg);
+    if (!_f->fiber)
     {
-        goto out;
+        W_ASSERT_P(false, "could not allocate memory for fiber object! trace info %s", _trace_info);
+        return W_FAILURE;
     }
 
-    _fibers_info->fibers = (boost::fibers::fiber*)w_malloc(
-        pMemPool,
-        _size_of_tasks * sizeof(boost::fibers::fiber));
-    if (!_fibers_info->fibers)
+    _f->id = -1;
+    auto _id_str = boost::lexical_cast<std::string>(_f->fiber->get_id());
+    int _ret = sscanf(_id_str.c_str(), "%llu", &_f->id);
+    if (_ret == EOF)
     {
-        goto out;
+        W_ASSERT_P(false, "could not get fiber id! trace info %s", _trace_info);
     }
+   
+    *pFiber = _f;
 
-    _fibers_info->number_of_fibers = _size_of_tasks;
-
-    for (auto& _task : pFiberTasks)
-    {
-        _fibers_info->fibers[_i++](_task);
-        _fibers_info->fibers[_i++].join();
-    }
-
-    s_schedulers[pSchedulerName] = _fibers_info;
-
-    _ret = W_SUCCESS;
-out:
-    return _ret;
+    return W_SUCCESS;
 }
 
-scheduler_info*  w_fiber_get_scheduler_info(
-    _Inout_ w_mem_pool pMemPool,
-    _In_z_ const char* pSchedulerName)
+W_RESULT w_fiber_is_joinable(_In_ w_fiber pFiber)
 {
-    auto _find = s_schedulers.find(pSchedulerName);
-    if (_find == s_schedulers.end())
+    const char* _trace_info = "w_fiber_is_joinable";
+
+    if (!pFiber || !pFiber->fiber)
     {
-        return nullptr;
+        W_ASSERT_P(false, 
+            "invalid parameters! trace info %s",
+            _trace_info);
+        return APR_BADARG;
     }
     
-    auto _name_len = strlen(pSchedulerName);
-    auto _number_of_fibers = _find->second->number_of_fibers;
-    
-    auto _scheduler_info =  (scheduler_info*)w_malloc(pMemPool, sizeof(scheduler_info));
-    if (!_scheduler_info)
+    return pFiber->fiber->joinable() ? W_SUCCESS : W_FAILURE;
+}
+
+W_RESULT w_fiber_join(_In_ w_fiber pFiber)
+{
+    const char* _trace_info = "w_fiber_join";
+
+    if (!pFiber || !pFiber->fiber)
     {
-        return nullptr;
+        W_ASSERT_P(false,
+            "invalid parameters! trace info %s",
+            _trace_info);
+        return APR_BADARG;
     }
-    
-    _scheduler_info->name = (char*)w_malloc(pMemPool, _name_len + 1);
-    if (!_scheduler_info->name)
+
+    pFiber->fiber->join();
+
+    return W_SUCCESS;
+}
+
+W_RESULT w_fiber_detach(_In_ w_fiber pFiber)
+{
+    const char* _trace_info = "w_fiber_detach";
+
+    if (!pFiber || !pFiber->fiber)
     {
-        goto _failed;
+        W_ASSERT_P(false,
+            "invalid parameters! trace info %s",
+            _trace_info);
+        return APR_BADARG;
     }
-    
-    _scheduler_info->number_of_fibers = _number_of_fibers;
-    if (_number_of_fibers)
+
+    pFiber->fiber->detach();
+
+    return W_SUCCESS;
+}
+
+W_RESULT w_fiber_swap(_Inout_ w_fiber pFiber1, _Inout_ w_fiber pFiber2)
+{
+    const char* _trace_info = "w_fiber_detach";
+
+    if (!pFiber1 || !pFiber1->fiber ||
+        !pFiber2 || !pFiber2->fiber)
     {
-        _scheduler_info->fiber_ids = (size_t*)w_malloc(pMemPool, _number_of_fibers * sizeof(size_t));
-        if (!_scheduler_info->fiber_ids)
+        W_ASSERT_P(false,
+            "invalid parameters! trace info %s",
+            _trace_info);
+        return APR_BADARG;
+    }
+
+    pFiber1->fiber->swap(*pFiber2->fiber);
+
+    return W_SUCCESS;
+}
+
+W_RESULT w_fiber_fini(_Inout_ w_fiber* pFiber)
+{
+    const char* _trace_info = "w_fiber_detach";
+
+    if (!pFiber || !*pFiber)
+    {
+        W_ASSERT_P(false,
+            "invalid parameters! trace info %s",
+            _trace_info);
+        return APR_BADARG;
+    }
+
+    if ((*pFiber)->fiber)
+    {
+        if ((*pFiber)->fiber->joinable())
         {
-            goto _failed;
+            (*pFiber)->fiber->join();
         }
-        
-        size_t _id = 0;
-        std::string _id_str;
-        for (size_t i = 0; i < _number_of_fibers; ++i)
-        {
-            _id_str = boost::lexical_cast<std::string>(_find->second->fibers[i].get_id());
-            int _ret = sscanf(_id_str.c_str(), "%llu", &_id);
-            _scheduler_info->fiber_ids[i] = _id;
-        }
+        W_SAFE_DELETE((*pFiber)->fiber);
     }
-    else
-    {
-        _scheduler_info->fiber_ids = nullptr;
-    }
-    //copy name of this scheduler
-    strcpy(_scheduler_info->name, pSchedulerName);
-    
-    return _scheduler_info;
-    
-_failed:
-    return nullptr;
-}
 
-W_RESULT w_fiber_is_joinable(_In_z_ const char* pSchedulerName,
-                             _In_ const size_t pFiberIndex)
-{
-    auto _find = s_schedulers.find(pSchedulerName);
-    if (_find == s_schedulers.end()) return APR_BADARG;
-    
-    auto _number_of_fibers = _find->second->number_of_fibers;
-    if (pFiberIndex >= _number_of_fibers)
-    {
-        return APR_BADARG;
-    }
-    
-    return _find->second->fibers[pFiberIndex].joinable() ? W_SUCCESS : W_FAILURE;
-}
+    *pFiber = NULL;
 
-W_RESULT w_fiber_join(_In_z_ const char* pSchedulerName,
-                      _In_ const size_t pFiberIndex)
-{
-    auto _find = s_schedulers.find(pSchedulerName);
-    if (_find == s_schedulers.end()) return APR_BADARG;
-    
-    auto _number_of_fibers = _find->second->number_of_fibers;
-    if (pFiberIndex >= _number_of_fibers)
-    {
-        return APR_BADARG;
-    }
-    
-    _find->second->fibers[pFiberIndex].join();
-    
     return W_SUCCESS;
 }
 
-
-W_RESULT w_fiber_detach(_In_z_ const char* pSchedulerName,
-                      _In_ const size_t pFiberIndex)
-{
-    auto _find = s_schedulers.find(pSchedulerName);
-    if (_find == s_schedulers.end()) return APR_BADARG;
-    
-    auto _number_of_fibers = _find->second->number_of_fibers;
-    if (pFiberIndex >= _number_of_fibers)
-    {
-        return APR_BADARG;
-    }
-    
-    _find->second->fibers[pFiberIndex].detach();
-    
-    return W_SUCCESS;
-}
-
-W_RESULT w_fiber_swap(_In_z_ const char* pSchedulerName,
-                      _In_ const size_t pFiberIndex,
-                      _In_ const size_t pAnotherFiberIndex)
-{
-    auto _find = s_schedulers.find(pSchedulerName);
-    if (_find == s_schedulers.end()) return APR_BADARG;
-    
-    auto _number_of_fibers = _find->second->number_of_fibers;
-    if (pFiberIndex >= _number_of_fibers || pAnotherFiberIndex >= _number_of_fibers)
-    {
-        return APR_BADARG;
-    }
-    
-    _find->second->fibers[pFiberIndex].swap(_find->second->fibers[pAnotherFiberIndex]);
-    
-    return W_SUCCESS;
-}
-
-W_RESULT w_fiber_swap(_In_z_ const char* pSchedulerName,
-                      _In_   const size_t pFiberIndex,
-                      _In_z_ const char* pAnotherSchedulerName,
-                      _In_   const size_t pAnotherFiberIndex)
-{
-    auto _find_src = s_schedulers.find(pSchedulerName);
-    if (_find_src == s_schedulers.end()) return APR_BADARG;
-    
-    auto _find_dst = s_schedulers.find(pAnotherSchedulerName);
-    if (_find_dst == s_schedulers.end()) return APR_BADARG;
-    
-    auto _number_of_src_fibers = _find_src->second->number_of_fibers;
-    auto _number_of_dst_fibers = _find_dst->second->number_of_fibers;
-    if (pFiberIndex >= _number_of_src_fibers || pAnotherFiberIndex >= _number_of_dst_fibers)
-    {
-        return APR_BADARG;
-    }
-    
-    _find_src->second->fibers[pFiberIndex].swap(_find_dst->second->fibers[pAnotherFiberIndex]);
-    
-    return W_SUCCESS;
-}
 
 #endif

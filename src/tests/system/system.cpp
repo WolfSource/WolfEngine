@@ -12,6 +12,7 @@
 #include <concurrency/w_mutex.h>
 #include <concurrency/w_thread.h>
 #include <concurrency/w_thread_pool.h>
+#include <fiber/w_fiber.h>
 #include <io/w_io.h>
 
 #include <memory/w_string.h>
@@ -1058,6 +1059,32 @@ TEST_CASE("concurrency/w_thread_pool")
 //
 //
 //}
+
+#pragma endregion
+
+#pragma region fiber
+
+TEST_CASE("fiber/w_fiber")
+{
+	w_mem_pool _mem_pool = w_init();
+
+	w_fiber _fiber = nullptr;
+	auto _ret = w_fiber_init(
+		_mem_pool,
+		&_fiber,
+		[](void* pArgs)
+		{
+			std::cout << "fiber id: just started" << std::endl;
+		}, nullptr);
+	REQUIRE(_ret == W_SUCCESS);
+	REQUIRE(_fiber);
+
+	REQUIRE(w_fiber_is_joinable(_fiber) == W_SUCCESS);
+	REQUIRE(w_fiber_join(_fiber) == W_SUCCESS);
+	REQUIRE(w_fiber_fini(&_fiber) == W_SUCCESS);
+
+	w_fini(&_mem_pool);
+}
 
 #pragma endregion
 

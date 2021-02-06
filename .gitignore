@@ -14,6 +14,11 @@
 *.dflgadvixe
 *.infoadvixe
 *.DS_Store
+*.db
+*.db-shm
+*.db-wal
+*.opendb
+
 /bin/win/
 /bin/osx/
 /bin/linux/
