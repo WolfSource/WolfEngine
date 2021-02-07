@@ -66,6 +66,12 @@ extern "C" {
         W_RESULT w_fiber_swap(_Inout_ w_fiber pFiber1, _Inout_ w_fiber pFiber2);
 
     /**
+     * yield current fiber
+    */
+    W_SYSTEM_EXPORT
+        void w_fiber_current_yield();
+
+    /**
      * finitialize fiber
      * @param pFiber handler of fiber
      * @return result

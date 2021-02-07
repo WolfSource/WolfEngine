@@ -128,6 +128,11 @@ W_RESULT w_fiber_swap(_Inout_ w_fiber pFiber1, _Inout_ w_fiber pFiber2)
     return W_SUCCESS;
 }
 
+void w_fiber_current_yield()
+{
+    boost::this_fiber::yield();
+}
+
 W_RESULT w_fiber_fini(_Inout_ w_fiber* pFiber)
 {
     const char* _trace_info = "w_fiber_detach";
