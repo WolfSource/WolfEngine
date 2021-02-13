@@ -29,11 +29,7 @@ extract_apr_trunk()
 
     if [ $BYPASS_LINUX == 0 ]
     then
-        wget apache.mirror.amaze.com.au/apr/apr-1.7.0.tar.gz
-        tar -zxvf apr-1.7.0.tar.gz
-        mv "$DIR/_deps/apr-1.7.0" "$DIR/_deps/apr-src"
-    else
-        git clone https://github.com/apache/apr.git -b 1.7.x
+        git clone https://github.com/apache/apr.git -b master
         mv "$DIR/_deps/apr" "$DIR/_deps/apr-src"
     fi
 }

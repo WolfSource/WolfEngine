@@ -15,7 +15,9 @@ project (wolf_system_linux)
 endif()
 
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
-    set(WIN64 TRUE)
+    if (WIN32)
+        set(WIN64 TRUE)
+    endif()
 endif()
 
 if(APPLE)
