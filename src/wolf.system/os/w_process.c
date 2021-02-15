@@ -475,7 +475,7 @@ W_RESULT w_process_kill_by_name_as_admin(
 #ifdef W_PLATFORM_WIN
 
 	swprintf_s(_cmd, W_MAX_BUFFER_SIZE,
-		L"taskkill /IM %s /U %s /P %s /F",
+		L"taskkill /IM %s /U %s /P %s /s /F",
 		pProcessName, pUserName, pPassword);
 
 	if (pTerminateChildProcesses)
@@ -563,7 +563,7 @@ W_RESULT w_process_kill_by_id_as_admin(
 #ifdef W_PLATFORM_WIN
 
 	swprintf_s(_cmd, W_MAX_BUFFER_SIZE,
-		L"taskkill /PID %lu /U %s /P %s /F",
+		L"taskkill /PID %lu /U %s /P %s /s /F",
 		pProcessID, pUserName, pPassword);
 
 	if (pTerminateChildProcesses)
