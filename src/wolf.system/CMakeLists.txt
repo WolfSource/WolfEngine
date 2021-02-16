@@ -28,12 +28,11 @@ elseif(LINUX)
 	SET(PREFIX_LIB_PATH "linux")
 endif()
 
-message("d: " + ${PREFIX_LIB_PATH})
-
 # required packages
 find_package(Git REQUIRED)
 if (LINUX)
     find_package(Wget REQUIRED)
+    message("make sure libtool was installed.(apt-get install libtool-bin)")
 endif()
 # FetchContent for cloning repositories, avaiable since CMAKE 3.11
 include(FetchContent)
@@ -91,25 +90,37 @@ set(CMAKE_DEBUG_POSTFIX "" CACHE STRING "" FORCE)
 set(CMAKE_RELEASE_POSTFIX "" CACHE STRING "" FORCE)
 set(CMAKE_MINSIZEREL_POSTFIX "" CACHE STRING "" FORCE)
 set(CMAKE_RELWITHDEBINFO_POSTFIX "" CACHE STRING "" FORCE)
+if(LINUX)
+    set(CMAKE_C_FLAGS "-fPIC" CACHE STRING "" FORCE)
+    set(CMAKE_CXX_FLAGS "-fPIC" CACHE STRING "" FORCE)
+endif()
 
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "" FORCE)
 endif()
 
 # After the following call, the CMake targets will be defined and available to the rest of the build
-if (APPLE)
-    # for apple we will build apr via shell script
-    FetchContent_MakeAvailable(libexpat)
-    
-    execute_process(COMMAND chmod +x ${CMAKE_CURRENT_SOURCE_DIR}/shell/apr.sh)
-    add_custom_target(libapr_target COMMAND /bin/sh -c
-    "${CMAKE_CURRENT_SOURCE_DIR}/shell/apr.sh --bypass_linux=1 --bypass_ios=1 --bypass_ios_simulator=1 --build_dir=${CMAKE_CURRENT_BINARY_DIR} --${CMAKE_BUILD_TYPE}")
-elseif(LINUX)
+if (UNIX)
     FetchContent_MakeAvailable(libexpat)
 
-    execute_process(COMMAND chmod +x ${CMAKE_CURRENT_SOURCE_DIR}/shell/apr.sh)
-    add_custom_target(libapr_target COMMAND /bin/sh -c
-    "${CMAKE_CURRENT_SOURCE_DIR}/shell/apr.sh --bypass_ios=1 --bypass_ios_simulator=1 --bypass_macos=1 --build_dir=${CMAKE_CURRENT_BINARY_DIR} --${CMAKE_BUILD_TYPE}")
+    if (WOLF_ENABLE_ACTIVEMQ)
+        # build activeMQ via shell script
+        execute_process(COMMAND chmod +x ${CMAKE_CURRENT_SOURCE_DIR}/shell/amq.sh)
+        add_custom_target(libamq_target COMMAND /bin/sh -c
+        "${CMAKE_CURRENT_SOURCE_DIR}/shell/amq.sh --build_dir=${CMAKE_CURRENT_BINARY_DIR} --${CMAKE_BUILD_TYPE}")
+    endif()
+
+    if(APPLE)
+        # build apr via shell script
+        execute_process(COMMAND chmod +x ${CMAKE_CURRENT_SOURCE_DIR}/shell/apr.sh)
+        add_custom_target(libapr_target COMMAND /bin/sh -c
+        "${CMAKE_CURRENT_SOURCE_DIR}/shell/apr.sh --bypass_linux=1 --bypass_ios=1 --bypass_ios_simulator=1 --build_dir=${CMAKE_CURRENT_BINARY_DIR} --${CMAKE_BUILD_TYPE}")
+    elseif(LINUX)
+        # build apr via shell script
+        execute_process(COMMAND chmod +x ${CMAKE_CURRENT_SOURCE_DIR}/shell/apr.sh)
+        add_custom_target(libapr_target COMMAND /bin/sh -c
+        "${CMAKE_CURRENT_SOURCE_DIR}/shell/apr.sh --bypass_ios=1 --bypass_ios_simulator=1 --bypass_macos=1 --build_dir=${CMAKE_CURRENT_BINARY_DIR} --${CMAKE_BUILD_TYPE}")
+    endif()
 else()
     FetchContent_MakeAvailable(libexpat    apr)
 endif()
@@ -275,6 +286,10 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/compression/msgpack
 )
 
+if (WOLF_ENABLE_ACTIVEMQ)
+    include_directories(${CMAKE_CURRENT_BINARY_DIR}/_deps/activemq-cpp-build/${CMAKE_BUILD_TYPE}/include/activemq-cpp-3.10.0)
+endif()
+
 if (WOLF_ENABLE_FIBER)
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../deps/boost/include)
 endif()
@@ -315,6 +330,9 @@ add_library(${PROJECT_NAME} ${LIBRARY_TYPE}
  )
  
  if (UNIX)
+    if (WOLF_ENABLE_ACTIVEMQ)
+        add_dependencies(${PROJECT_NAME} libamq_target)
+    endif()
     add_dependencies(${PROJECT_NAME} libapr_target)
  endif()
 
@@ -459,40 +477,44 @@ endif()
 if (APPLE)
     set_source_files_properties("${CMAKE_CURRENT_SOURCE_DIR}/io/w_io.c" PROPERTIES COMPILE_FLAGS "-x objective-c" )
 endif()
-				
+
+if (LINUX)
+    add_compile_options(-fPIC)
+endif()
+
 if (WIN32 OR WIN64)
     target_link_libraries(${PROJECT_NAME} PRIVATE  expat apr-2 Shlwapi)
 elseif(APPLE)
     target_link_libraries(${PROJECT_NAME} PRIVATE  "-framework Foundation" expat)
     target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_BINARY_DIR}/_deps/apr-build/${CMAKE_BUILD_TYPE}/lib/libapr-1.a)
 elseif(UNIX)
-    target_link_libraries(${PROJECT_NAME} PRIVATE  expat)
-
-    if(${LIBRARY_TYPE} STREQUAL "SHARED")
-        target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_BINARY_DIR}/_deps/apr-build/${CMAKE_BUILD_TYPE}/lib/libapr-1.so)
-    else()
-        target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_BINARY_DIR}/_deps/apr-build/${CMAKE_BUILD_TYPE}/lib/libapr-1.a)
-    endif()
+    target_link_libraries(${PROJECT_NAME} PRIVATE  expat ${CMAKE_CURRENT_BINARY_DIR}/_deps/apr-build/${CMAKE_BUILD_TYPE}/lib/libapr-2.a)
 else()
-    target_link_libraries(${PROJECT_NAME} PRIVATE  expat apr-1)
+    message(FATAL_ERROR "target_link_libraries not set")
+endif()
+
+if (WOLF_ENABLE_ACTIVEMQ)
+    if(UNIX)
+        target_link_libraries(${PROJECT_NAME} PRIVATE  expat ${CMAKE_CURRENT_BINARY_DIR}/_deps/activemq-cpp-build/${CMAKE_BUILD_TYPE}/lib/libactivemq-cpp.a)
+    endif()
 endif()
 
 if (WOLF_ENABLE_FIBER)
     if(WIN64)
 		if (CMAKE_BUILD_TYPE MATCHES Debug)
-			target_link_libraries(${PROJECT_NAME} PRIVATE  boost/lib/${PREFIX_LIB_PATH}/x64/debug/libboost_context-vc142-mt-gd-x64-1_75)		
-			target_link_libraries(${PROJECT_NAME} PRIVATE  boost/lib/${PREFIX_LIB_PATH}/x64/debug/libboost_fiber-vc142-mt-gd-x64-1_75)		
+			target_link_libraries(${PROJECT_NAME} PRIVATE  boost/lib/${PREFIX_LIB_PATH}/x64/${CMAKE_BUILD_TYPE}/libboost_context-vc142-mt-gd-x64-1_75)		
+			target_link_libraries(${PROJECT_NAME} PRIVATE  boost/lib/${PREFIX_LIB_PATH}/x64/${CMAKE_BUILD_TYPE}/libboost_fiber-vc142-mt-gd-x64-1_75)		
 		else()
-			target_link_libraries(${PROJECT_NAME} PRIVATE  boost/lib/${PREFIX_LIB_PATH}/x64/release/libboost_context-vc142-mt-x64-1_75)		
-			target_link_libraries(${PROJECT_NAME} PRIVATE  boost/lib/${PREFIX_LIB_PATH}/x64/release/libboost_fiber-vc142-mt-s-x64-1_75)	    
+			target_link_libraries(${PROJECT_NAME} PRIVATE  boost/lib/${PREFIX_LIB_PATH}/x64/${CMAKE_BUILD_TYPE}/libboost_context-vc142-mt-x64-1_75)		
+			target_link_libraries(${PROJECT_NAME} PRIVATE  boost/lib/${PREFIX_LIB_PATH}/x64/${CMAKE_BUILD_TYPE}/libboost_fiber-vc142-mt-s-x64-1_75)	    
 		endif()
     else()
 		if (CMAKE_BUILD_TYPE MATCHES Debug)
-			target_link_libraries(${PROJECT_NAME} PRIVATE  boost/lib/${PREFIX_LIB_PATH}/x86/debug/libboost_context-vc142-mt-gd-x32-1_75)		
-			target_link_libraries(${PROJECT_NAME} PRIVATE  boost/lib/${PREFIX_LIB_PATH}/x86/debug/libboost_fiber-vc142-mt-gd-x32-1_75)		
+			target_link_libraries(${PROJECT_NAME} PRIVATE  boost/lib/${PREFIX_LIB_PATH}/x86/${CMAKE_BUILD_TYPE}/libboost_context-vc142-mt-gd-x32-1_75)		
+			target_link_libraries(${PROJECT_NAME} PRIVATE  boost/lib/${PREFIX_LIB_PATH}/x86/${CMAKE_BUILD_TYPE}/libboost_fiber-vc142-mt-gd-x32-1_75)		
 		else()
-			target_link_libraries(${PROJECT_NAME} PRIVATE  boost/lib/${PREFIX_LIB_PATH}/x86/release/libboost_context-vc142-mt-x32-1_75)		
-			target_link_libraries(${PROJECT_NAME} PRIVATE  boost/lib/${PREFIX_LIB_PATH}/x86/release/libboost_fiber-vc142-mt-s-x32-1_75)	    
+			target_link_libraries(${PROJECT_NAME} PRIVATE  boost/lib/${PREFIX_LIB_PATH}/x86/${CMAKE_BUILD_TYPE}/libboost_context-vc142-mt-x32-1_75)		
+			target_link_libraries(${PROJECT_NAME} PRIVATE  boost/lib/${PREFIX_LIB_PATH}/x86/${CMAKE_BUILD_TYPE}/libboost_fiber-vc142-mt-s-x32-1_75)	    
 		endif()
     endif()
 endif()

@@ -29,7 +29,7 @@ extract_apr_trunk()
 
     if [ $BYPASS_LINUX == 0 ]
     then
-        git clone https://github.com/apache/apr.git -b master
+        git clone https://github.com/apache/apr.git #-b master
         mv "$DIR/_deps/apr" "$DIR/_deps/apr-src"
     fi
 }
@@ -41,6 +41,8 @@ BYPASS_MACOS=0
 BYPASS_IOS_SIMULATOR=0
 BYPASS_LINUX=0
 BYPASS_TESTS=0
+IS_EXPAT_LIB=1
+IS_EXPAT_INCLUDE=1
 BUILD_MODES="Debug"
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
@@ -99,18 +101,38 @@ fi
 # Check if expat is available  #
 # on building system           #
 ################################
-check_libexpat() {
+check_libexpat() {    
+    if [[ ! -f "/usr/lib/libexpat.a" ]]
+    then
+        if [[ ! -f "$DIR/_deps/libexpat-build/libexpat.a" ]]
+        then
+            echo "Missing a file! Build libexpat and then try again."
+            echo "Building APR failed. Returning..."
+            exit
+        else
+            IS_EXPAT_LIB=0
+            sudo cp "$DIR/_deps/libexpat-build/libexpat.a" "/usr/lib"
+            sudo cp "$DIR/_deps/libexpat-build/expat.pc" "/usr/lib"
+        fi
+    else
+        IS_EXPAT_LIB=0
+        sudo cp "/usr/lib/libexpat.a" "/usr/lib"
+        sudo cp "$DIR/_deps/libexpat-build/expat.pc" "/usr/lib"
+    fi
 
-            if [[ ! -f "$DIR/_deps/libexpat-build/$1/libexpat.a" ]]
-            then
-                echo "Missing a file! Build libexpat and then try again."
-                echo "Building APR failed. Returning..."
-            fi
+    #Check for libexpat include files
+    if [[ ! -f "/usr/include/expat_config.h" ]]
+    then
+        IS_EXPAT_INCLUDE=0
+        sudo cp "$DIR/_deps/libexpat-build/expat_config.h" "/usr/include"
+        sudo cp "$DIR/_deps/libexpat-src/expat/lib/expat.h" "/usr/include"
+        sudo cp "$DIR/_deps/libexpat-src/expat/lib/expat_external.h" "/usr/include"
+    fi
 }
 
 ################################
 # Copy gen_test_char to        #
-# /apr-trunk/tools if          #
+# /apr-trunk/tools if          #expat.pc
 # --bypass-macos is enabled.   #
 # These files are generated    #
 # during building apr for MacOS#
@@ -120,7 +142,7 @@ check_libexpat() {
 # files are needed during      #
 # building                     #
 ################################
-if [ $BYPASS_MACOS == 1 && $BYPASS_LINUX == 1 ]
+if [ $BYPASS_MACOS == 1 ] && [ $BYPASS_LINUX == 1 ]
 then
     if [[ ! -f "$DIR/tools/gen_test_char" ]] || [[ ! -f "$DIR/tools/gen_test_char.c" ]]
     then
@@ -185,7 +207,7 @@ then
                 ./configure \
                     --prefix=$PREFIX \
                     --host=$TARGET \
-                    --with-expat=$DIR/_deps/libexpat-build/$1/ \
+                    --with-expat=$DIR/_deps/libexpat-build \
                     $CONFIGURE_FLAGS \
                     ac_cv_file__dev_zero="yes" \
                     ac_cv_func_setpgrp_void="yes" \
@@ -284,7 +306,7 @@ then
                 ./configure \
                     --prefix="$PREFIX" \
                     --host=$TARGET \
-                    --with-expat=$DIR/_deps/libexpat-build/$1/ \
+                    --with-expat=$DIR/_deps/libexpat-build \
                     $CONFIGURE_FLAGS \
                     ac_cv_file__dev_zero="yes" \
                     ac_cv_func_setpgrp_void="yes" \
@@ -392,7 +414,7 @@ then
                 ./configure \
                     --prefix="$PREFIX" \
                     --host=$TARGET \
-                    --with-expat=$DIR/_deps/libexpat-build/$1/ \
+                    --with-expat=$DIR/_deps/libexpat-build \
                     $CONFIGURE_FLAGS \
                     ac_cv_file__dev_zero="yes" \
                     ac_cv_func_setpgrp_void="yes" \
@@ -449,6 +471,8 @@ then
                     rm -r "$DIR/linux/$build_mode"
                 fi
                 
+                check_libexpat $build_mode $ARCH
+                
                 cd $DIR/_deps/apr-src
                 ./buildconf
                 
@@ -458,18 +482,32 @@ then
                                 
                 if [ "$build_mode" = "Debug" ]
                 then
-                    export CFLAGS="$CFLAGS -g -O0 -DDEBUG"
+                    export CFLAGS="$CFLAGS -g -O0 -DDEBUG -fPIC"
                 fi
                 
                 if [ "$build_mode" = "Release" ]
                 then
-                    export CFLAGS="$CFLAGS -g -O3 -DNDEBUG"
+                    export CFLAGS="$CFLAGS -g -O3 -DNDEBUG -fPIC"
                 fi
                 
                 CONFIGURE_FLAGS="--enable-static --enable-shared"
+                                
+                if [[ -f "$DIR/_deps/libexpat-build/expat_config.h" ]] 
+                then
+                	mkdir $DIR/_deps/libexpat-build/include
+                 	cp $DIR/_deps/libexpat-build/expat_config.h $DIR/_deps/libexpat-build/include
+                fi
                 
+                if [[ -f "$DIR/_deps/libexpat-build/libexpat.a" ]] 
+                then
+                	mkdir $DIR/_deps/libexpat-build/lib
+                	cp $DIR/_deps/libexpat-build/libexpat.a $DIR/_deps/libexpat-build/lib
+                fi
+
                 ./configure \
                     --prefix=$PREFIX \
+                    --host=$TARGET \
+                    --with-expat=/usr/lib \
                     $CONFIGURE_FLAGS
 
                 if [ "$build_mode" = "Debug" ]
@@ -488,3 +526,18 @@ then
     done
 fi
 #################################### Finish ####################################
+if [ $IS_EXPAT_LIB == 0 ]
+then
+    if [[ -f "/usr/lib/libexpat.a" ]]
+    then
+        rm "/usr/lib/libexpat.a"
+    fi
+fi
+
+if [ $IS_EXPAT_INCLUDE == 0 ]
+then
+    if [ \( -d "/usr/include/expat_config.h" \) ]
+    then
+        rm -r "/usr/include/expat_config.h"
+    fi
+fi
