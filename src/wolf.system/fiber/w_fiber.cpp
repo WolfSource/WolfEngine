@@ -15,7 +15,7 @@ using namespace boost::fibers;
 typedef struct w_fiber_t
 {
     long long   id = 0;
-    fiber*      fiber = nullptr;
+    fiber*      fi = nullptr;
 } w_fiber_t;
 
 W_RESULT w_fiber_init(
@@ -41,15 +41,15 @@ W_RESULT w_fiber_init(
         return W_FAILURE;
     }
 
-    _f->fiber = new (std::nothrow) fiber(pJob, pArg);
-    if (!_f->fiber)
+    _f->fi = new (std::nothrow) fiber(pJob, pArg);
+    if (!_f->fi)
     {
         W_ASSERT_P(false, "could not allocate memory for fiber object! trace info %s", _trace_info);
         return W_FAILURE;
     }
 
     _f->id = -1;
-    auto _id_str = boost::lexical_cast<std::string>(_f->fiber->get_id());
+    auto _id_str = boost::lexical_cast<std::string>(_f->fi->get_id());
     int _ret = sscanf(_id_str.c_str(), "%llu", &_f->id);
     if (_ret == EOF)
     {
@@ -65,7 +65,7 @@ W_RESULT w_fiber_is_joinable(_In_ w_fiber pFiber)
 {
     const char* _trace_info = "w_fiber_is_joinable";
 
-    if (!pFiber || !pFiber->fiber)
+    if (!pFiber || !pFiber->fi)
     {
         W_ASSERT_P(false, 
             "invalid parameters! trace info %s",
@@ -73,14 +73,14 @@ W_RESULT w_fiber_is_joinable(_In_ w_fiber pFiber)
         return APR_BADARG;
     }
     
-    return pFiber->fiber->joinable() ? W_SUCCESS : W_FAILURE;
+    return pFiber->fi->joinable() ? W_SUCCESS : W_FAILURE;
 }
 
 W_RESULT w_fiber_join(_In_ w_fiber pFiber)
 {
     const char* _trace_info = "w_fiber_join";
 
-    if (!pFiber || !pFiber->fiber)
+    if (!pFiber || !pFiber->fi)
     {
         W_ASSERT_P(false,
             "invalid parameters! trace info %s",
@@ -88,7 +88,7 @@ W_RESULT w_fiber_join(_In_ w_fiber pFiber)
         return APR_BADARG;
     }
 
-    pFiber->fiber->join();
+    pFiber->fi->join();
 
     return W_SUCCESS;
 }
@@ -97,7 +97,7 @@ W_RESULT w_fiber_detach(_In_ w_fiber pFiber)
 {
     const char* _trace_info = "w_fiber_detach";
 
-    if (!pFiber || !pFiber->fiber)
+    if (!pFiber || !pFiber->fi)
     {
         W_ASSERT_P(false,
             "invalid parameters! trace info %s",
@@ -105,7 +105,7 @@ W_RESULT w_fiber_detach(_In_ w_fiber pFiber)
         return APR_BADARG;
     }
 
-    pFiber->fiber->detach();
+    pFiber->fi->detach();
 
     return W_SUCCESS;
 }
@@ -114,8 +114,8 @@ W_RESULT w_fiber_swap(_Inout_ w_fiber pFiber1, _Inout_ w_fiber pFiber2)
 {
     const char* _trace_info = "w_fiber_detach";
 
-    if (!pFiber1 || !pFiber1->fiber ||
-        !pFiber2 || !pFiber2->fiber)
+    if (!pFiber1 || !pFiber1->fi ||
+        !pFiber2 || !pFiber2->fi)
     {
         W_ASSERT_P(false,
             "invalid parameters! trace info %s",
@@ -123,7 +123,7 @@ W_RESULT w_fiber_swap(_Inout_ w_fiber pFiber1, _Inout_ w_fiber pFiber2)
         return APR_BADARG;
     }
 
-    pFiber1->fiber->swap(*pFiber2->fiber);
+    pFiber1->fi->swap(*pFiber2->fi);
 
     return W_SUCCESS;
 }
@@ -145,13 +145,13 @@ W_RESULT w_fiber_fini(_Inout_ w_fiber* pFiber)
         return APR_BADARG;
     }
 
-    if ((*pFiber)->fiber)
+    if ((*pFiber)->fi)
     {
-        if ((*pFiber)->fiber->joinable())
+        if ((*pFiber)->fi->joinable())
         {
-            (*pFiber)->fiber->join();
+            (*pFiber)->fi->join();
         }
-        W_SAFE_DELETE((*pFiber)->fiber);
+        W_SAFE_DELETE((*pFiber)->fi);
     }
 
     *pFiber = NULL;
