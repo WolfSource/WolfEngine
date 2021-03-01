@@ -31,6 +31,7 @@ extern "C" {
 
 #define W_MAX_BUFFER_SIZE 4096
 
+#define W_EOF    -1
 #define W_SUCCESS 0
 #define W_FAILURE 1
 #define W_TIMEOUT 2

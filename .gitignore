@@ -22,8 +22,8 @@
 /bin/win/
 /bin/osx/
 /bin/linux/
-/src/wolf.system/deps/*
-!/src/wolf.system/deps/*.zip
+/src/wolf.system/_deps/*
+!/src/wolf.system/_deps/*.zip
 /samples/.vs/*
 /src/wolf.system/build/*
 

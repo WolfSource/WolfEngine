@@ -22,6 +22,11 @@ extern "C" {
 #include "amq/w_amq.h"
 #endif
 
+#ifdef WOLF_ENABLE_FIBER
+#include "asio/fiber_client_server.h"
+#endif
+
+
     typedef struct apr_socket_t* w_socket;
     typedef struct apr_sockaddr_t* w_socket_address;
 
@@ -384,8 +389,8 @@ extern "C" {
      * @param pMemPool The pool to allocate out of
      * @param pAMQObject The activeMQ object
      * @param pBrokerURI The broker uri
-     * @param pUsername The username 
-     * @param pPassword The password 
+     * @param pUsername The username
+     * @param pPassword The password
      * @param pQueueOrTopicName The name of Queue or Topic
      * @param pConnectionType open QUEUE or TOPIC
      * @param pDeliveryMode enable PERSISTENT or NON_PERSISTENT message mode
@@ -393,16 +398,16 @@ extern "C" {
      * @return result
     */
     W_SYSTEM_EXPORT
-    W_RESULT	w_net_amq_producer_open(
-        _Inout_ w_mem_pool pMemPool,
-        _Inout_ w_amq_object* pAMQObject,
-        _In_z_ const char* pBrokerURI,
-        _In_z_ const char* pUsername,
-        _In_z_ const char* pPassword,
-        _In_z_ const char* pQueueOrTopicName,
-        _In_ amq_connection_type pConnectionType,
-        _In_ amq_delivery_mode pDeliveryMode,
-        _In_ bool pSessionTransacted);
+        W_RESULT	w_net_amq_producer_open(
+            _Inout_ w_mem_pool pMemPool,
+            _Inout_ w_amq_object* pAMQObject,
+            _In_z_ const char* pBrokerURI,
+            _In_z_ const char* pUsername,
+            _In_z_ const char* pPassword,
+            _In_z_ const char* pQueueOrTopicName,
+            _In_ amq_connection_type pConnectionType,
+            _In_ amq_delivery_mode pDeliveryMode,
+            _In_ bool pSessionTransacted);
 
     /**
      * open activemq consumer
@@ -418,16 +423,16 @@ extern "C" {
      * @return result
     */
     W_SYSTEM_EXPORT
-    W_RESULT	w_net_amq_consumer_open(
-        _Inout_ w_mem_pool pMemPool,
-        _Inout_ w_amq_object* pAMQObject,
-        _In_z_  const char* pBrokerURI,
-        _In_z_  const char* pUsername,
-        _In_z_  const char* pPassword,
-        _In_z_  const char* pQueueOrTopicName,
-        _In_ w_amq_consumer_callback_fn pOnMessageCallBack,
-        _In_ amq_connection_type pConnectionType,
-        _In_ bool pSessionTransacted);
+        W_RESULT	w_net_amq_consumer_open(
+            _Inout_ w_mem_pool pMemPool,
+            _Inout_ w_amq_object* pAMQObject,
+            _In_z_  const char* pBrokerURI,
+            _In_z_  const char* pUsername,
+            _In_z_  const char* pPassword,
+            _In_z_  const char* pQueueOrTopicName,
+            _In_ w_amq_consumer_callback_fn pOnMessageCallBack,
+            _In_ amq_connection_type pConnectionType,
+            _In_ bool pSessionTransacted);
 
     /**
      * run activemq producer
@@ -435,8 +440,8 @@ extern "C" {
      * @return result
     */
     W_SYSTEM_EXPORT
-    W_RESULT	w_net_amq_producer_run(
-        _In_ w_amq_object pAMQObject);
+        W_RESULT	w_net_amq_producer_run(
+            _In_ w_amq_object pAMQObject);
 
     /**
      * run activemq consumer
@@ -444,8 +449,8 @@ extern "C" {
      * @return result
     */
     W_SYSTEM_EXPORT
-    W_RESULT	w_net_amq_consumer_run(
-        _In_ w_amq_object pAMQObject);
+        W_RESULT	w_net_amq_consumer_run(
+            _In_ w_amq_object pAMQObject);
 
     /**
      * send message to via activeMQ producer
@@ -455,10 +460,10 @@ extern "C" {
      * @return result
     */
     W_SYSTEM_EXPORT
-    W_RESULT	w_net_amq_producer_send_message(
-        _In_ w_amq_object pAMQObject,
-        _In_z_  const char* pMessage,
-        _In_  int pPriority);
+        W_RESULT	w_net_amq_producer_send_message(
+            _In_ w_amq_object pAMQObject,
+            _In_z_  const char* pMessage,
+            _In_  int pPriority);
 
     /**
      * close activemq producer
@@ -466,8 +471,8 @@ extern "C" {
      * @return result
     */
     W_SYSTEM_EXPORT
-    W_RESULT	w_net_amq_producer_close(
-        _Inout_ w_amq_object pAMQObject);
+        W_RESULT	w_net_amq_producer_close(
+            _Inout_ w_amq_object pAMQObject);
 
     /**
      * close activemq consumer
@@ -475,8 +480,8 @@ extern "C" {
      * @return result
     */
     W_SYSTEM_EXPORT
-    W_RESULT	w_net_amq_consumer_close(
-        _Inout_ w_amq_object pAMQObject);
+        W_RESULT	w_net_amq_consumer_close(
+            _Inout_ w_amq_object pAMQObject);
 
     /**
      * finitialize activemq
@@ -484,9 +489,63 @@ extern "C" {
      * @return result
     */
     W_SYSTEM_EXPORT
-    void	w_net_amq_fini();
+        void	w_net_amq_fini();
 
 #endif
+
+#ifdef WOLF_ENABLE_FIBER
+
+    /**
+     * async write with fibers
+     * @param pSocket pointer to socket
+     * @param pBuffer the send buffer
+     * @return result code
+    */
+    W_SYSTEM_EXPORT
+        W_RESULT w_net_fiber_async_write(_In_ void* pSocket, _In_ w_buffer pBuffer);
+
+    /**
+     * async read with fibers
+     * @param pSocket pointer to socket
+     * @param pBuffer the received buffer
+     * @param pReplyLength the length of reply
+     * @return result code
+    */
+    W_SYSTEM_EXPORT
+        W_RESULT w_net_fiber_async_read(
+            _In_ void* pSocket,
+            _Inout_ w_buffer* pBuffer,
+            _Inout_ size_t* pReplyLength);
+
+    /**
+     * run a server base on fiber threads
+     * @param pIPV4_OR_IPV6 set IPV4 or IPV6 protocols
+     *  <PRE>
+     *      3 = IPV4
+     *      4 = IPV6
+     *  </PRE>
+     * @param pPort the port number
+     * @param pID the id of fiber server, use this id for stop server via fiber_server_stop
+     * @param pOnReceivedCallback fiber callback function
+     * @return result code
+    */
+    W_SYSTEM_EXPORT
+        W_RESULT w_net_fiber_server_run(
+            _In_ const int pIPV4_OR_IPV6,
+            _In_ const uint8_t pPort,
+            _In_ int** pID,
+            _In_ w_fiber_server_receive_callback_fn pOnReceivedCallback);
+
+    /**
+     * stop the fiber server
+     * @param pID the id of fiber server
+     * @return result code
+    */
+    W_SYSTEM_EXPORT
+        W_RESULT w_net_fiber_server_stop(_In_ const int pID);
+
+#endif
+
 
 #ifdef __cplusplus
 }

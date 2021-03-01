@@ -230,6 +230,15 @@ file(GLOB_RECURSE MEMORY_SRC_DIR
 file(GLOB_RECURSE NET_AMQ_SRC_DIR
     "${CMAKE_CURRENT_SOURCE_DIR}/net/amq/*"
 )
+file(GLOB_RECURSE NET_ASIO_IMP_SRC_DIR
+    "${CMAKE_CURRENT_SOURCE_DIR}/net/asio/imp/round_robin.hpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/net/asio/imp/yield.hpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/net/asio/imp/yield_imp.hpp"
+)
+file(GLOB_RECURSE NET_ASIO_SRC_DIR
+	"${CMAKE_CURRENT_SOURCE_DIR}/net/asio/fiber_client_server.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/net/asio/fiber_client_server.h"
+)
 file(GLOB_RECURSE NET_WS_USOCKETS_CRYPTO_SRC_DIR
     "${CMAKE_CURRENT_SOURCE_DIR}/net/ws/uSockets/crypto/*"
 )
@@ -291,7 +300,7 @@ if (WOLF_ENABLE_ACTIVEMQ)
 endif()
 
 if (WOLF_ENABLE_FIBER)
-    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/deps/boost/include/)
+    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/include/)
 endif()
 
 #additional library search path
@@ -316,6 +325,8 @@ add_library(${PROJECT_NAME} ${LIBRARY_TYPE}
     ${MEMORY_HASH_SRC_DIR}
     ${MEMORY_SRC_DIR}
     ${NET_AMQ_SRC_DIR}
+    ${NET_ASIO_IMP_SRC_DIR}
+    ${NET_ASIO_SRC_DIR}
     ${NET_WS_USOCKETS_CRYPTO_SRC_DIR}
     ${NET_WS_USOCKETS_EVENTING_SRC_DIR}
     ${NET_WS_USOCKETS_INTERNAL_SRC_DIR}
@@ -355,6 +366,8 @@ add_library(${PROJECT_NAME} ${LIBRARY_TYPE}
  source_group("memory/hash" FILES ${MEMORY_HASH_SRC_DIR})
  source_group("memory" FILES ${MEMORY_SRC_DIR})
  source_group("net/amq" FILES ${NET_AMQ_SRC_DIR})
+ source_group("net/asio/imp" FILES ${NET_ASIO_IMP_SRC_DIR})
+ source_group("net/asio" FILES ${NET_ASIO_SRC_DIR})
  source_group("net/ws/uSockets/crypto" FILES ${NET_WS_USOCKETS_CRYPTO_SRC_DIR})
  source_group("net/ws/uSockets/eventing" FILES ${NET_WS_USOCKETS_EVENTING_SRC_DIR})
  source_group("net/ws/uSockets/internal" FILES ${NET_WS_USOCKETS_INTERNAL_SRC_DIR})
@@ -471,6 +484,7 @@ endif()
 if (WOLF_ENABLE_FIBER)
     target_compile_definitions(${PROJECT_NAME} PUBLIC
         WOLF_ENABLE_FIBER
+        BOOST_BIND_GLOBAL_PLACEHOLDERS
     )
 endif()
 	
@@ -502,27 +516,45 @@ endif()
 if (WOLF_ENABLE_FIBER)
     if(WIN64)
 		if (CMAKE_BUILD_TYPE MATCHES Debug)
-			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/deps/boost/lib/win/x64/${CMAKE_BUILD_TYPE}/libboost_context-vc142-mt-gd-x64-1_75)		
-			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/deps/boost/lib/win/x64/${CMAKE_BUILD_TYPE}/libboost_fiber-vc142-mt-gd-x64-1_75)		
+			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/win/x64/${CMAKE_BUILD_TYPE}/libboost_atomic-vc142-mt-gd-x64-1_75.lib)	
+			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/win/x64/${CMAKE_BUILD_TYPE}/libboost_context-vc142-mt-gd-x64-1_75.lib)		
+			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/win/x64/${CMAKE_BUILD_TYPE}/libboost_fiber-vc142-mt-gd-x64-1_75.lib)	
+			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/win/x64/${CMAKE_BUILD_TYPE}/libboost_date_time-vc142-mt-gd-x64-1_75.lib)	
+			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/win/x64/${CMAKE_BUILD_TYPE}/libboost_regex-vc142-mt-gd-x64-1_75.lib)		
 		else()
-			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/deps/boost/lib/win/x64/${CMAKE_BUILD_TYPE}/libboost_context-vc142-mt-x64-1_75)		
-			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/deps/boost/lib/win/x64/${CMAKE_BUILD_TYPE}/libboost_fiber-vc142-mt-s-x64-1_75)	    
+			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/win/x64/${CMAKE_BUILD_TYPE}/libboost_atomic-vc142-mt-x64-1_75.lib)
+			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/win/x64/${CMAKE_BUILD_TYPE}/libboost_context-vc142-mt-x64-1_75.lib)		
+			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/win/x64/${CMAKE_BUILD_TYPE}/libboost_fiber-vc142-mt-s-x64-1_75.lib)	   
+			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/win/x64/${CMAKE_BUILD_TYPE}/libboost_date_time-vc142-mt-s-x64-1_75.lib)	
+			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/win/x64/${CMAKE_BUILD_TYPE}/libboost_regex-vc142-mt-s-x64-1_75.lib)	   			
 		endif()
     elseif(WIN32)
 		if (CMAKE_BUILD_TYPE MATCHES Debug)
-			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/deps/boost/lib/win/x86/${CMAKE_BUILD_TYPE}/libboost_context-vc142-mt-gd-x32-1_75)		
-			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/deps/boost/lib/win/x86/${CMAKE_BUILD_TYPE}/libboost_fiber-vc142-mt-gd-x32-1_75)		
+			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/win/x86/${CMAKE_BUILD_TYPE}/libboost_atomic-vc142-mt-gd-x32-1_75.lib)
+			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/win/x86/${CMAKE_BUILD_TYPE}/libboost_context-vc142-mt-gd-x32-1_75.lib)		
+			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/win/x86/${CMAKE_BUILD_TYPE}/libboost_fiber-vc142-mt-gd-x32-1_75.lib)	
+			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/win/x64/${CMAKE_BUILD_TYPE}/libboost_date_time-vc142-mt-gd-x32-1_75.lib)	
+			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/win/x64/${CMAKE_BUILD_TYPE}/libboost_regex-vc142-mt-gd-x32-1_75.lib)				
 		else()
-			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/deps/boost/lib/win/x86/${CMAKE_BUILD_TYPE}/libboost_context-vc142-mt-x32-1_75)		
-			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/deps/boost/lib/win/x86/${CMAKE_BUILD_TYPE}/libboost_fiber-vc142-mt-s-x32-1_75)	    
+			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/win/x86/${CMAKE_BUILD_TYPE}/libboost_atomic-vc142-mt-x32-1_75.lib)
+			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/win/x86/${CMAKE_BUILD_TYPE}/libboost_context-vc142-mt-x32-1_75.lib)		
+			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/win/x86/${CMAKE_BUILD_TYPE}/libboost_fiber-vc142-mt-s-x32-1_75.lib)	
+			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/win/x86/${CMAKE_BUILD_TYPE}/libboost_date_time-vc142-mt-s-x32-1_75.lib)		
+			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/win/x86/${CMAKE_BUILD_TYPE}/libboost_regex-vc142-mt-s-x32-1_75.lib)					
 		endif()
     elseif(LINUX)
         if (CMAKE_BUILD_TYPE MATCHES Debug)
-            target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/deps/boost/lib/linux/x64/debug/libboost_context.a)		
-            target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/deps/boost/lib/linux/x64/debug/libboost_fiber.a)		
+			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/linux/x64/debug/libboost_atomic.a)
+            target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/linux/x64/debug/libboost_context.a)		
+            target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/linux/x64/debug/libboost_fiber.a)	
+            target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/linux/x64/debug/libboost_date_time.a)	
+            target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/linux/x64/debug/libboost_regex.a)				
         else()
-            target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/deps/boost/lib/linux/x64/release/libboost_context.a)		
-            target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/deps/boost/lib/linux/x64/release/libboost_fiber.a)		
+			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/linux/x64/release/libboost_atomic.a)
+            target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/linux/x64/release/libboost_context.a)		
+            target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/linux/x64/release/libboost_fiber.a)		
+			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/linux/x64/release/libboost_date_time.a)
+			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/linux/x64/release/libboost_regex.a)
         endif()
     endif()
 endif()

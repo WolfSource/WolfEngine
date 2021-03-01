@@ -1870,3 +1870,38 @@ void	w_net_amq_fini()
 #endif
 
 #pragma endregion
+
+#pragma region FIBER
+
+#ifdef WOLF_ENABLE_FIBER
+
+W_RESULT w_net_fiber_async_write(_In_ void* pSocket, _In_ w_buffer pBuffer)
+{
+    return fiber_async_write(pSocket, pBuffer);
+}
+
+W_RESULT w_net_fiber_async_read(
+    _In_ void* pSocket,
+    _Inout_ w_buffer* pBuffer,
+    _Inout_ size_t* pReplyLength)
+{
+    return fiber_async_read(pSocket, pBuffer, pReplyLength);
+}
+
+W_RESULT w_net_fiber_server_run(
+    _In_ const int pIPV4_OR_IPV6,
+    _In_ const uint8_t pPort,
+    _In_ int** pID,
+    _In_ w_fiber_server_receive_callback_fn pOnReceivedCallback)
+{
+    return fiber_server_run(pIPV4_OR_IPV6, pPort, pID, pOnReceivedCallback);
+}
+
+W_RESULT w_net_fiber_server_stop(_In_ const int pID)
+{
+    return fiber_server_stop(pID);
+}
+
+#endif
+
+#pragma endregion
