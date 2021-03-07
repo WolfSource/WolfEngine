@@ -157,25 +157,27 @@ W_RESULT fiber_async_write(
     _In_ void* pSocket,
     _In_ w_buffer pBuffer)
 {
+    W_RESULT _ret = W_SUCCESS;
     const char* _trace_info = "fiber_async_write";
 
     if (!pSocket || !pBuffer)
     {
-        return W_BAD_ARG;
+        return (_ret = W_BAD_ARG);
     }
 
-    socket_ptr _socket = *reinterpret_cast<socket_ptr*>(pSocket);
+    auto _socket = *reinterpret_cast<socket_ptr*>(pSocket);
     if (!_socket)
     {
-        return W_BAD_ARG;
+        return (_ret = W_BAD_ARG);
     }
+
     auto _ec = s_asio_write_async(_socket, pBuffer);
     if (_ec)
     {
         auto _info = s_thread_fiber_info();
         if (_ec == boost::asio::error::eof)
         {
-            return W_EOF;
+            _ret = W_EOF;
         }
         else
         {
@@ -183,10 +185,13 @@ W_RESULT fiber_async_write(
                 _info.c_str(),
                 _ec.message().c_str(),
                 _trace_info);
-            return _ec.value();
+            _ret = _ec.value();
         }
     }
-    return W_SUCCESS;
+    _socket.reset();
+
+exit:
+    return _ret;
 }
 
 W_RESULT fiber_async_read(
@@ -201,11 +206,18 @@ W_RESULT fiber_async_read(
         return W_BAD_ARG;
     }
 
-    socket_ptr _socket = *reinterpret_cast<socket_ptr*>(pSocket);
+    auto _socket_raw = reinterpret_cast<tcp::socket*>(pSocket);
+    if (!_socket_raw)
+    {
+        return W_BAD_ARG;
+    }
+
+    auto _socket = socket_ptr(_socket_raw);
     if (!_socket)
     {
         return W_BAD_ARG;
     }
+
     auto _ec = s_asio_read_async(_socket, pBuffer, pReplyLength);
     if (_ec)
     {
@@ -259,14 +271,14 @@ static void s_session(socket_ptr pSocket, w_fiber_server_receive_callback_fn pOn
                 _info.c_str(),
                 _str.c_str());
 
-            if (pOnReceivedCallback)
+            if (pOnReceivedCallback && _length)
             {
                 w_buffer_t _b;
                 _b.data = (uint8_t*)&_data[0];
-                _b.len = _max_length;
+                _b.len = _length;
 
-                auto _void_ptr_to_socket = reinterpret_cast<void*>(&pSocket);
-                auto _ret = pOnReceivedCallback(_void_ptr_to_socket, &_b);
+                auto _void_ptr = reinterpret_cast<void*>(&pSocket);
+                auto _ret = pOnReceivedCallback(_void_ptr, &_b);
                 if (_ret != W_SUCCESS)
                 {
                     if (_ret == W_EOF)
@@ -342,20 +354,20 @@ static W_RESULT s_client(
     boost::fibers::barrier& pBarrier,
     _In_ const int pIPV4_OR_IPV6,
     _In_ const char* pEndPoint,
-    _In_ const uint8_t pPort,
+    _In_ const uint16_t pPort,
     _In_ w_fiber_on_send_receive_callback_fn pOnSendReceiveCallback)
 {
     tcp::resolver _resolver(*pIOContext);
     tcp::resolver::query _query(pIPV4_OR_IPV6 == 4 ? tcp::v6() : tcp::v4(), pEndPoint, std::to_string(pPort));
     tcp::resolver::iterator _iterator = _resolver.resolve(_query);
-    tcp::socket _socket(*pIOContext);
+    socket_ptr _socket(new tcp::socket(*pIOContext));
 
-    boost::asio::connect(_socket, _iterator);
+    boost::asio::connect(*_socket, _iterator);
 
     if (pOnSendReceiveCallback)
     {
-        auto _void_ptr_to_socket = reinterpret_cast<void*>(&_socket);
-        if (pOnSendReceiveCallback(_void_ptr_to_socket) != W_SUCCESS)
+        auto _void_ptr = reinterpret_cast<void*>(&_socket);
+        if (pOnSendReceiveCallback(_void_ptr) != W_SUCCESS)
         {
             using namespace boost::system::errc;
             throw make_error_code(connection_aborted);//close the connection
@@ -366,7 +378,7 @@ static W_RESULT s_client(
 
 W_RESULT fiber_server_run(
     _In_ const int pIPV4_OR_IPV6, 
-    _In_ const uint8_t pPort, 
+    _In_ const uint16_t pPort,
     _In_ int** pID,
     _In_ w_fiber_server_receive_callback_fn pOnReceivedCallback)
 {
@@ -392,7 +404,10 @@ W_RESULT fiber_server_run(
             W_SOCKET_FAMILY_IPV4 = 3,
             W_SOCKET_FAMILY_IPV6 = 4,
         */
-        tcp::acceptor _acceptor(*_io_ctx, tcp::endpoint(pIPV4_OR_IPV6 == 4 ? tcp::v6() : tcp::v4(), pPort));
+        tcp::acceptor _acceptor(
+            *_io_ctx,
+            tcp::endpoint(pIPV4_OR_IPV6 == 4 ? tcp::v6() : tcp::v4(),
+                pPort));
 
         //launch server based on fibers
         boost::fibers::fiber(s_server, _io_ctx, std::ref(_acceptor), pOnReceivedCallback).detach();
@@ -439,6 +454,7 @@ W_RESULT fiber_server_run(
         _ret = W_FAILURE;
         LOG_P(W_LOG_ERROR, "exception: %s . trace info: %s", e.what(), _trace_info);
     }
+
     return _ret;
 }
 
@@ -474,7 +490,7 @@ W_RESULT fiber_server_stop(_In_ const int pID)
 W_RESULT fiber_clients_connect(
     _In_ const int pIPV4_OR_IPV6,
     _In_ const char* pEndPoint,
-    _In_ const uint8_t pPort,
+    _In_ const uint16_t pPort,
     _In_ const int pNumberOfClients,
     _In_ w_fiber_on_send_receive_callback_fn pOnSendReceiveCallback)
 {

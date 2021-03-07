@@ -531,8 +531,8 @@ extern "C" {
     */
     W_SYSTEM_EXPORT
         W_RESULT w_net_fiber_server_run(
-            _In_ const int pIPV4_OR_IPV6,
-            _In_ const uint8_t pPort,
+            _In_ const w_socket_family pSocketFamily,
+            _In_ const uint16_t pPort,
             _In_ int** pID,
             _In_ w_fiber_server_receive_callback_fn pOnReceivedCallback);
 
@@ -543,6 +543,27 @@ extern "C" {
     */
     W_SYSTEM_EXPORT
         W_RESULT w_net_fiber_server_stop(_In_ const int pID);
+
+    /**
+     * connect to server with fibers based connection
+     * @param pIPV4_OR_IPV6 set IPV4 or IPV6 protocols
+     *  <PRE>
+     *      3 = IPV4
+     *      4 = IPV6
+     *  </PRE>
+     * @param pEndPoint, the endpoint connection
+     * @param pPort, the endpoint port
+     * @param pNumberOfClients, the number of concurrent clients
+     * @param pOnSendReceiveCallback, fiber callback function
+     * @return result code
+    */
+    W_SYSTEM_EXPORT
+        W_RESULT w_net_fiber_clients_connect(
+            _In_ const int pIPV4_OR_IPV6,
+            _In_ const char* pEndPoint,
+            _In_ const uint16_t pPort,
+            _In_ const int pNumberOfClients,
+            _In_ w_fiber_on_send_receive_callback_fn pOnSendReceiveCallback);
 
 #endif
 

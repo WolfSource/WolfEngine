@@ -22,6 +22,19 @@ open_or_create_dir()
   fi
 }
 
+check_for_package()
+{
+    REQUIRED_PKG="$1"
+    PKG_OK=$(dpkg-query -W --showformat='${Status}\n' $REQUIRED_PKG|grep "install ok installed")
+    
+	if rpm -q $REQUIRED_PKG
+	then
+	    PKG_OK="$REQUIRED_PKG"
+	else
+	    PKG_OK=""
+	fi
+}
+
 BUILD_MODES="Debug"
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
@@ -31,14 +44,14 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 ################################
 while [ "$1" != "" ]; do
     case $1 in
-        --debug )                   BUILD_MODES="Debug"
-                                    shift 1
+   	--build_dir=* )             DIR="${1#*=}"
+                                    shift 0
                                     ;;
-        --release )                 BUILD_MODES="Release"
-                                    shift 1
+        --Debug )                   BUILD_MODES="Debug"
+                                    shift 0
                                     ;;
-        --build_dir=* )             DIR="${1#*=}"
-                                    shift 1
+        --Release )                 BUILD_MODES="Release"
+                                    shift 0
                                     ;;
         -h | --help )               display_help
                                     exit 0
@@ -50,7 +63,35 @@ while [ "$1" != "" ]; do
         shift
 done
 
-sudo apt-get install -y git autoconf libtool libapr1 libapr1-dev libssl-dev
+REQUIRED_PKG="apt-get yum"
+package=""
+
+for package_type in $REQUIRED_PKG
+do
+   echo "Checking for $package_type"
+   check_for_package $package_type
+   if [ "$PKG_OK" != "" ]; 
+   then
+      package=$package_type
+      break
+   fi 
+done
+
+if [ "$package" = "" ]; 
+then
+  echo "No package found for getting required Unix packages"
+  exit
+fi
+
+case $package in
+     "apt-get" )                 sudo $package install -y git autoconf libtool libapr1 libapr1-dev libssl-dev
+                                 ;;
+     "yum" )                     sudo $package install -y git autoconf libtool apr1 apr-devel openssl-devel
+                                 ;;
+     * )                         echo "Package not found."
+                                 exit
+                                 ;;
+esac
 
 cd $DIR
 DEPS="$DIR/_deps/"

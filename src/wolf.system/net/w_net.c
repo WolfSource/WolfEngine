@@ -1889,17 +1889,32 @@ W_RESULT w_net_fiber_async_read(
 }
 
 W_RESULT w_net_fiber_server_run(
-    _In_ const int pIPV4_OR_IPV6,
-    _In_ const uint8_t pPort,
+    _In_ const w_socket_family pSocketFamily,
+    _In_ const uint16_t pPort,
     _In_ int** pID,
     _In_ w_fiber_server_receive_callback_fn pOnReceivedCallback)
 {
-    return fiber_server_run(pIPV4_OR_IPV6, pPort, pID, pOnReceivedCallback);
+    return fiber_server_run((int)pSocketFamily, pPort, pID, pOnReceivedCallback);
 }
 
 W_RESULT w_net_fiber_server_stop(_In_ const int pID)
 {
     return fiber_server_stop(pID);
+}
+
+W_RESULT w_net_fiber_clients_connect(
+    _In_ const int pIPV4_OR_IPV6,
+    _In_ const char* pEndPoint,
+    _In_ const uint16_t pPort,
+    _In_ const int pNumberOfClients,
+    _In_ w_fiber_on_send_receive_callback_fn pOnSendReceiveCallback)
+{
+    return fiber_clients_connect(
+        pIPV4_OR_IPV6,
+        pEndPoint,
+        pPort,
+        pNumberOfClients,
+        pOnSendReceiveCallback);
 }
 
 #endif
