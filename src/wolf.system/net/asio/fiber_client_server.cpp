@@ -273,16 +273,19 @@ static void s_session(socket_ptr pSocket, w_fiber_server_callback_fn pOnReceived
                 {
                     if (_ret == W_EOF)
                     {
-                        LOG_P(W_LOG_DEBUG, "%s : connection closed cleanly by peer. trace info: %s",
+                        LOG_P(W_LOG_DEBUG,
+                            "%s : connection closed cleanly by peer. trace info: %s",
                             _info.c_str(),
                             _trace_info);
-                        break;
                     }
                     else
                     {
-                        using namespace boost::system::errc;
-                        throw make_error_code(connection_aborted);//close the connection
+                        LOG_P(W_LOG_DEBUG,
+                            "%s : connection closed unexpectedly. trace info: %s",
+                            _info.c_str(),
+                            _trace_info);
                     }
+                    break;
                 }
             }
         }
@@ -314,11 +317,6 @@ static W_RESULT s_server(
     {
         for (;;)
         {
-            if (pIOContext->stopped())
-            {
-                break;
-            }
-
             socket_ptr _socket(new tcp::socket(*pIOContext));
             boost::system::error_code _ec;
             pAcceptor.async_accept(
@@ -371,12 +369,11 @@ static W_RESULT s_client(
             auto _void_ptr = reinterpret_cast<void*>(&_socket);
             if (pOnSendReceiveCallback(_void_ptr, _info.c_str()) != W_SUCCESS)
             {
-                using namespace boost::system::errc;
-                throw make_error_code(connection_aborted);//close the connection
+                //close the connection
             }
         }
     }
-    catch (std::exception const& ex)
+    catch (const std::exception const& ex)
     {
         _ret = W_FAILURE;
         LOG_P(W_LOG_ERROR, "%s: caught exception : %s", _info.c_str(), ex.what());

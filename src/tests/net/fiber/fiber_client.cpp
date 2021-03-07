@@ -42,7 +42,7 @@ int main()
 	if (w_net_fiber_clients_connect(
 		w_socket_family::W_SOCKET_FAMILY_IPV4,
 		"127.0.0.1",
-		(uint16_t)8888,
+		(uint16_t)7777,
 		100,
 		s_fiber_server_receive_callback_fn) != W_SUCCESS)
 	{

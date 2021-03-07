@@ -7,8 +7,8 @@
 #include <thread>
 
 W_RESULT s_fiber_server_receive_callback_fn(
-	_In_ void* pSocket, 
-	_In_ w_buffer pReceivedBuffer, 
+	_In_ void* pSocket,
+	_In_ w_buffer pReceivedBuffer,
 	_In_z_ const char* pThreadFiberInfo)
 {
 	if (pReceivedBuffer)
@@ -16,7 +16,8 @@ W_RESULT s_fiber_server_receive_callback_fn(
 		std::string _str((char*)pReceivedBuffer->data, pReceivedBuffer->len);
 		LOG_P(W_LOG_INFO, "data recieved: %s with thread fiber info: %s", _str.c_str(), pThreadFiberInfo);
 	}
-	return W_SUCCESS;
+
+	return w_net_fiber_async_write(pSocket, pReceivedBuffer);
 }
 
 int main()
@@ -55,7 +56,7 @@ int main()
 		return W_FAILURE;
 	}
 
-	constexpr auto _port = 8888;
+	constexpr auto _port = 7777;
 	LOG_P(W_LOG_DEBUG, "starting fiber server on port: %d", _port);
 
 	std::thread _t([&]
@@ -76,8 +77,11 @@ int main()
 				"thread exiting");
 		});
 
-	std::this_thread::sleep_for(std::chrono::seconds(5));
+	std::this_thread::sleep_for(std::chrono::seconds(10));
 	w_net_fiber_server_stop(*_server_id);
+	LOG_P(
+		w_log_type::W_LOG_DEBUG,
+		"fiber server stopped successfully");
 	std::this_thread::sleep_for(std::chrono::seconds(5));
 
 	w_log_fini();
