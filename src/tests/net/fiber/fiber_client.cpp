@@ -3,7 +3,9 @@
 #include <net/w_net.h>
 #include <log/w_log.h>
 
-W_RESULT s_fiber_server_receive_callback_fn(_In_ void* pSocket)
+W_RESULT s_fiber_server_receive_callback_fn(
+	_In_ void* pSocket,
+	_In_z_ const char* pThreadFiberInfo)
 {
 	const char* _msg = "hello";
 	const auto _msg_size = strlen(_msg);
@@ -17,7 +19,7 @@ W_RESULT s_fiber_server_receive_callback_fn(_In_ void* pSocket)
 	{
 		//copy message
 		memcpy(_b.data, _msg, _msg_size);
-		for (size_t i = 0; i < 10; i++)
+		for (size_t i = 0; i < 100; i++)
 		{
 			w_net_fiber_async_write(pSocket, &_b);
 		}
@@ -41,7 +43,7 @@ int main()
 		w_socket_family::W_SOCKET_FAMILY_IPV4,
 		"127.0.0.1",
 		(uint16_t)8888,
-		1,
+		100,
 		s_fiber_server_receive_callback_fn) != W_SUCCESS)
 	{
 		LOG_P(

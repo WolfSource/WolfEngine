@@ -2,40 +2,86 @@
 #include <wolf.h>
 #include <net/w_net.h>
 #include <log/w_log.h>
+#include <io/w_io.h>
+#include <chrono>
+#include <thread>
 
-W_RESULT s_fiber_server_receive_callback_fn(_In_ void* pSocket, _In_ w_buffer pReceivedBuffer)
+W_RESULT s_fiber_server_receive_callback_fn(
+	_In_ void* pSocket, 
+	_In_ w_buffer pReceivedBuffer, 
+	_In_z_ const char* pThreadFiberInfo)
 {
 	if (pReceivedBuffer)
 	{
 		std::string _str((char*)pReceivedBuffer->data, pReceivedBuffer->len);
-		std::cout << "data recieved" << _str << std::endl;
+		LOG_P(W_LOG_INFO, "data recieved: %s with thread fiber info: %s", _str.c_str(), pThreadFiberInfo);
 	}
 	return W_SUCCESS;
 }
 
 int main()
 {
-	W_RESULT _ret = W_SUCCESS;
 	auto _server_id = new int();
 
 	if (wolf_init() != W_SUCCESS)
 	{
-		_ret = W_FAILURE;
-		goto exit;
+		wolf_fini();
+		return W_FAILURE;
 	}
 
-	if (w_net_fiber_server_run(
-		w_socket_family::W_SOCKET_FAMILY_IPV4,
-		8888,
-		&_server_id,
-		s_fiber_server_receive_callback_fn) != W_SUCCESS)
+	w_mem_pool _mem_pool = nullptr;
+	w_mem_pool_init(&_mem_pool);
+	if (!_mem_pool)
 	{
-		LOG_P(
-			w_log_type::W_LOG_DEBUG,
-			"could not start fiber server");
+		wolf_fini();
+		return W_FAILURE;
 	}
 
-exit:
+	char* _path = nullptr;
+	w_io_dir_get_current_exe(_mem_pool, &_path);
+	if (!_path)
+	{
+		wolf_fini();
+		return W_FAILURE;
+	}
+	w_log_config _c = {};
+	_c.app_name = "fiber_server";
+	_c.log_to_std_out = true;
+	_c.log_dir_path = _path;
+
+	if (w_log_init(_mem_pool, &_c) != W_SUCCESS)
+	{
+		wolf_fini();
+		return W_FAILURE;
+	}
+
+	constexpr auto _port = 8888;
+	LOG_P(W_LOG_DEBUG, "starting fiber server on port: %d", _port);
+
+	std::thread _t([&]
+		{
+			if (w_net_fiber_server_run(
+				w_socket_family::W_SOCKET_FAMILY_IPV4,
+				_port,
+				&_server_id,
+				s_fiber_server_receive_callback_fn) != W_SUCCESS)
+			{
+				LOG_P(
+					w_log_type::W_LOG_DEBUG,
+					"could not start fiber server");
+			}
+
+			LOG_P(
+				w_log_type::W_LOG_DEBUG,
+				"thread exiting");
+		});
+
+	std::this_thread::sleep_for(std::chrono::seconds(5));
+	w_net_fiber_server_stop(*_server_id);
+	std::this_thread::sleep_for(std::chrono::seconds(5));
+
+	w_log_fini();
 	wolf_fini();
-	return _ret;
+	_t.join();
+	return W_SUCCESS;
 }

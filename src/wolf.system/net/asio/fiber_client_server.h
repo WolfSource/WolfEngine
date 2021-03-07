@@ -17,8 +17,8 @@ extern "C" {
 
 #include <wolf.h>
 
-    typedef W_RESULT(*w_fiber_server_receive_callback_fn)(_In_ void* /*pSocket*/, _In_ w_buffer /*pReceivedBuffer*/);
-    typedef W_RESULT(*w_fiber_on_send_receive_callback_fn)(_In_ void* /*pSocket*/);
+    typedef W_RESULT(*w_fiber_server_callback_fn)(_In_ void* /*pSocket*/, _In_ w_buffer /*pReceivedBuffer*/, _In_z_ const char* /*pThreadFiberInfo*/);
+    typedef W_RESULT(*w_fiber_client_callback_fn)(_In_ void* /*pSocket*/, _In_z_ const char* /*pThreadFiberInfo*/);
 
     /**
      * async write with fibers
@@ -56,7 +56,7 @@ extern "C" {
         _In_ const int pIPV4_OR_IPV6, 
         _In_ const uint16_t pPort,
         _In_ int** pID,
-        _In_ w_fiber_server_receive_callback_fn pOnReceivedCallback);
+        _In_ w_fiber_server_callback_fn pOnReceivedCallback);
 
     /**
      * stop the fiber server
@@ -83,7 +83,7 @@ extern "C" {
         _In_ const char* pEndPoint,
         _In_ const uint16_t pPort,
         _In_ const int pNumberOfClients,
-        _In_ w_fiber_on_send_receive_callback_fn pOnSendReceiveCallback);
+        _In_ w_fiber_client_callback_fn pOnSendReceiveCallback);
 
 #ifdef __cplusplus
 }
