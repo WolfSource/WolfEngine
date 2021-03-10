@@ -77,6 +77,7 @@ int main()
 				"thread exiting");
 		});
 
+	//wait for 10 seconds then stop the fiber server
 	std::this_thread::sleep_for(std::chrono::seconds(10));
 	w_net_fiber_server_stop(*_server_id);
 	LOG_P(
@@ -84,6 +85,7 @@ int main()
 		"fiber server stopped successfully");
 	std::this_thread::sleep_for(std::chrono::seconds(5));
 
+	//release all resources
 	w_log_fini();
 	wolf_fini();
 	_t.join();
