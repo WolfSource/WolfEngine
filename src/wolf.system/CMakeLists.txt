@@ -38,6 +38,7 @@ endif()
 include(FetchContent)
 
 # CMAKE GUI Options
+option(WOLF_ENABLE_AVX2 "Enable AVX2" OFF)
 option(WOLF_ENABLE_AVX512 "Enable AVX512" OFF)
 option(WOLF_ENABLE_CXX_EXTENSIONS "Enable CXX Extensions" OFF)
 option(WOLF_ENABLE_ACTIVEMQ "Enable ActiveMQ" OFF)
@@ -55,10 +56,14 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS ENABLE_CXX_EXTENSIONS)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -mavx -march=native")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mavx -march=native")
 set(CMAKE_CXX17_STANDARD_COMPILE_OPTION "-std=c++17")
 set(CMAKE_CXX17_EXTENSION_COMPILE_OPTION "-std=gnu++17")
+
+if (WOLF_ENABLE_AVX2)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -mavx -march=native")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mavx -march=native")
+endif()
+
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 set (LIBRARY_TYPE "SHARED")
@@ -411,7 +416,7 @@ else()
 endif()
 
 # set AVX512 compile definition
-if (ENABLE_AVX512)
+if (WOLF_ENABLE_AVX512)
     set (AVX512_FLAGS "-D__AVX -DUSE_AVX512")
     if (MSVC)
         set (AVX512_FLAGS "${AVX512_FLAGS} /arch:AVX512")
@@ -423,17 +428,19 @@ if (ENABLE_AVX512)
         ${AVX512_FLAGS})
 endif()
 
-if (APPLE)
-     macro (set_xcode_property TARGET XCODE_PROPERTY XCODE_VALUE)
-        set_property (TARGET ${TARGET} PROPERTY
-            XCODE_ATTRIBUTE_${XCODE_PROPERTY} ${XCODE_VALUE})
-     endmacro (set_xcode_property)
-        set_xcode_property(${PROJECT_NAME} CLANG_X86_VECTOR_INSTRUCTIONS "avx2")
-elseif (LINUX)
-    set (AVX2_FLAGS "-D__AVX -DUSE_AVX2")
-    set (AVX2_FLAGS "${AVX2_FLAGS} -mavx2 -mfma")
-    target_compile_definitions(${PROJECT_NAME} PUBLIC
-            ${AVX2_FLAGS})
+if (WOLF_ENABLE_AVX2)
+    if (APPLE)
+         macro (set_xcode_property TARGET XCODE_PROPERTY XCODE_VALUE)
+            set_property (TARGET ${TARGET} PROPERTY
+                XCODE_ATTRIBUTE_${XCODE_PROPERTY} ${XCODE_VALUE})
+         endmacro (set_xcode_property)
+            set_xcode_property(${PROJECT_NAME} CLANG_X86_VECTOR_INSTRUCTIONS "avx2")
+    elseif (LINUX)
+        set (AVX2_FLAGS "-D__AVX -DUSE_AVX2")
+        set (AVX2_FLAGS "${AVX2_FLAGS} -mavx2 -mfma")
+        target_compile_definitions(${PROJECT_NAME} PUBLIC
+                ${AVX2_FLAGS})
+    endif()
 endif()
 
  # set activeMQ compile definitions
