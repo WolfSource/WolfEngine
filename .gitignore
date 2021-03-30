@@ -26,6 +26,12 @@
 !/src/wolf.system/_deps/*.zip
 /samples/.vs/*
 /src/wolf.system/build/*
+!/src/wolf.system/_deps/activemq.zip.001
+!/src/wolf.system/_deps/activemq.zip.002
+!/src/wolf.system/_deps/activemq.zip.003
+!/src/wolf.system/_deps/activemq.zip.004
+!/src/wolf.system/_deps/activemq.zip.005
+!/src/wolf.system/_deps/activemq.zip.006
 
 # Compiled Object files
 *.slo
