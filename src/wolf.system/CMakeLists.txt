@@ -22,8 +22,10 @@ endif()
 
 if(APPLE)
 	SET(PREFIX_LIB_PATH "osx")
-elseif(WIN32 OR WIN64)
-	SET(PREFIX_LIB_PATH "win")
+elseif(WIN64)
+	SET(PREFIX_LIB_PATH "win/x64")
+elseif(WIN32)
+	SET(PREFIX_LIB_PATH "win/x86")
 elseif(LINUX)
 	SET(PREFIX_LIB_PATH "linux")
 endif()
@@ -43,7 +45,7 @@ option(WOLF_ENABLE_AVX512 "Enable AVX512" OFF)
 option(WOLF_ENABLE_CXX_EXTENSIONS "Enable CXX Extensions" OFF)
 option(WOLF_ENABLE_ACTIVEMQ "Enable ActiveMQ" OFF)
 option(WOLF_ENABLE_CURL "Enable CURL" OFF)
-option(WOLF_ENABLE_DB_CASSANDRA "Enable Cassandra DB" OFF)
+#option(WOLF_ENABLE_DB_CASSANDRA "Enable Cassandra DB" OFF)
 option(WOLF_ENABLE_FIBER "Enable Fiber" OFF)
 option(WOLF_ENABLE_LUA "Enable Lua Scripting" OFF)
 option(WOLF_ENABLE_LZ4 "Enable LZ4 Compression" OFF)
@@ -52,12 +54,13 @@ option(WOLF_ENABLE_PYTHON3 "Enable Python3 Scripting" OFF)
 option(WOLF_ENABLE_QUIC "Enable QUIC protocol" OFF)
 option(WOLF_ENABLE_WEBSOCKET "Enable Websocket" OFF)
 
+set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS ENABLE_CXX_EXTENSIONS)
-set(CMAKE_C_STANDARD 11)
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX17_STANDARD_COMPILE_OPTION "-std=c++17")
-set(CMAKE_CXX17_EXTENSION_COMPILE_OPTION "-std=gnu++17")
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED YES)
+#set(CMAKE_CXX17_STANDARD_COMPILE_OPTION "-std=c++17")
+#set(CMAKE_CXX17_EXTENSION_COMPILE_OPTION "-std=gnu++17")
 
 if (WOLF_ENABLE_AVX2)
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -mavx -march=native")
@@ -73,7 +76,7 @@ message("fetching https://github.com/libexpat/libexpat.git")
 FetchContent_Declare(
   libexpat
   GIT_REPOSITORY https://github.com/libexpat/libexpat.git
-  GIT_TAG        R_2_2_10
+  GIT_TAG        master
   SOURCE_SUBDIR  expat
 )
 
@@ -87,6 +90,24 @@ FetchContent_Declare(
 )
 endif()
 
+if(WOLF_ENABLE_CURL)
+    message("fetching https://github.com/curl/curl.git")
+    FetchContent_Declare(
+        libcurl
+        GIT_REPOSITORY https://github.com/curl/curl.git
+        GIT_TAG        master
+    )
+endif()
+
+if(WOLF_ENABLE_LUA)
+    message("fetching https://github.com/torch/luajit-rocks")
+    FetchContent_Declare(
+        libluajit
+        GIT_REPOSITORY https://github.com/torch/luajit-rocks.git
+        GIT_TAG        master
+    )
+endif()
+
 # change some options of CMAKE dependencies
 set(EXPAT_SHARED_LIBS OFF CACHE BOOL "EXPAT_SHARED_LIBS")
 set(EXPAT_BUILD_TESTS OFF CACHE BOOL "EXPAT_BUILD_TESTS")
@@ -95,6 +116,19 @@ set(CMAKE_DEBUG_POSTFIX "" CACHE STRING "" FORCE)
 set(CMAKE_RELEASE_POSTFIX "" CACHE STRING "" FORCE)
 set(CMAKE_MINSIZEREL_POSTFIX "" CACHE STRING "" FORCE)
 set(CMAKE_RELWITHDEBINFO_POSTFIX "" CACHE STRING "" FORCE)
+
+# change some options of CURL
+if(WOLF_ENABLE_CURL)
+    set(BUILD_CURL_EXE OFF CACHE BOOL "BUILD_CURL_EXE")
+    set(BUILD_SHARED_LIBS OFF CACHE BOOL "BUILD_SHARED_LIBS")
+    set(BUILD_TESTING  OFF CACHE BOOL "BUILD_TESTING")
+endif()
+
+# change some options of LUAJIT
+if(WOLF_ENABLE_LUA)
+    set(WITH_LUAJIT21 ON CACHE BOOL "WITH_LUAJIT21")
+endif()
+
 if(LINUX)
     set(CMAKE_C_FLAGS "-fPIC" CACHE STRING "" FORCE)
     set(CMAKE_CXX_FLAGS "-fPIC" CACHE STRING "" FORCE)
@@ -129,162 +163,176 @@ if (UNIX)
 else()
     FetchContent_MakeAvailable(libexpat    apr)
 endif()
+
+# fetch curl
+if(WOLF_ENABLE_CURL)
+    FetchContent_MakeAvailable(libcurl)
+endif()
+
+#fetch lua
+if(WOLF_ENABLE_LUA)
+    FetchContent_MakeAvailable(libluajit)
+endif()
  
 # create filter for each folder
 file(GLOB_RECURSE BASE64_SRC_DIR
-    "${CMAKE_CURRENT_SOURCE_DIR}/base64/*"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_base64/*"
 )
 file(GLOB_RECURSE CHRONO_SRC_DIR
-    "${CMAKE_CURRENT_SOURCE_DIR}/chrono/*"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_chrono/*"
 )
 file(GLOB_RECURSE COMPRESSION_LZ4_SRC_DIR
-    "${CMAKE_CURRENT_SOURCE_DIR}/compression/lz4/*"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_compression/lz4/*"
 )
 
 if (MSVC)
 file(GLOB_RECURSE COMPRESSION_LZMA_SRC_DIR
-    "${CMAKE_CURRENT_SOURCE_DIR}/compression/lzma/*"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_compression/lzma/*"
 )
 endif()
 
 file(GLOB_RECURSE COMPRESSION_MSGPACK_SRC_DIR
-    "${CMAKE_CURRENT_SOURCE_DIR}/compression/msgpack/msgpack.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/compression/msgpack/objectc.c"
-    "${CMAKE_CURRENT_SOURCE_DIR}/compression/msgpack/unpack.c"
-    "${CMAKE_CURRENT_SOURCE_DIR}/compression/msgpack/version.c"
-    "${CMAKE_CURRENT_SOURCE_DIR}/compression/msgpack/vrefbuffer.c"
-    "${CMAKE_CURRENT_SOURCE_DIR}/compression/msgpack/zone.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_compression/msgpack/msgpack.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_compression/msgpack/objectc.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_compression/msgpack/unpack.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_compression/msgpack/version.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_compression/msgpack/vrefbuffer.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_compression/msgpack/zone.c"
 )
 file(GLOB_RECURSE COMPRESSION_SRC_DIR
-    "${CMAKE_CURRENT_SOURCE_DIR}/compression/w_compress.c"
-    "${CMAKE_CURRENT_SOURCE_DIR}/compression/w_compress.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_compression/w_compress.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_compression/w_compress.h"
 )
 file(GLOB_RECURSE CONCURRENCY_SRC_DIR
-    "${CMAKE_CURRENT_SOURCE_DIR}/concurrency/w_atomic.c"
-    "${CMAKE_CURRENT_SOURCE_DIR}/concurrency/w_atomic.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/concurrency/w_concurrent_queue.c"
-    "${CMAKE_CURRENT_SOURCE_DIR}/concurrency/w_concurrent_queue.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/concurrency/w_condition_variable.c"
-    "${CMAKE_CURRENT_SOURCE_DIR}/concurrency/w_condition_variable.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/concurrency/w_mutex.c"
-    "${CMAKE_CURRENT_SOURCE_DIR}/concurrency/w_mutex.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/concurrency/w_signal.c"
-    "${CMAKE_CURRENT_SOURCE_DIR}/concurrency/w_signal.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/concurrency/w_sigslot.c"
-    "${CMAKE_CURRENT_SOURCE_DIR}/concurrency/w_sigslot.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/concurrency/w_thread.c"
-    "${CMAKE_CURRENT_SOURCE_DIR}/concurrency/w_thread.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/concurrency/w_thread_pool.c"
-    "${CMAKE_CURRENT_SOURCE_DIR}/concurrency/w_thread_pool.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/concurrency/w_timer.c"
-    "${CMAKE_CURRENT_SOURCE_DIR}/concurrency/w_timer.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_concurrency/w_atomic.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_concurrency/w_atomic.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_concurrency/w_concurrent_queue.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_concurrency/w_concurrent_queue.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_concurrency/w_condition_variable.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_concurrency/w_condition_variable.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_concurrency/w_mutex.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_concurrency/w_mutex.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_concurrency/w_signal.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_concurrency/w_signal.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_concurrency/w_sigslot.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_concurrency/w_sigslot.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_concurrency/w_thread.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_concurrency/w_thread.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_concurrency/w_thread_pool.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_concurrency/w_thread_pool.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_concurrency/w_timer.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_concurrency/w_timer.h"
 )
 file(GLOB_RECURSE FIBER_SRC_DIR
-    "${CMAKE_CURRENT_SOURCE_DIR}/fiber/*"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_fiber/*"
 )
 file(GLOB_RECURSE IO_STB_SRC_DIR
-    "${CMAKE_CURRENT_SOURCE_DIR}/io/stb/*"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_io/stb/*"
 )
 file(GLOB_RECURSE IO_SRC_DIR
-    "${CMAKE_CURRENT_SOURCE_DIR}/io/w_io.c"
-    "${CMAKE_CURRENT_SOURCE_DIR}/io/w_io.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_io/w_io.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_io/w_io.h"
 )
 file(GLOB_RECURSE JSON_RAPIDJSON_SRC_DIR
-    "${CMAKE_CURRENT_SOURCE_DIR}/json/rapidjson/*"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_json/rapidjson/*"
 )
 file(GLOB_RECURSE LOG_SPDLOG_SRC_DIR
-    "${CMAKE_CURRENT_SOURCE_DIR}/log/spdlog/src/async.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/log/spdlog/src/cfg.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/log/spdlog/src/color_sinks.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/log/spdlog/src/file_sinks.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/log/spdlog/src/fmt.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/log/spdlog/src/spdlog.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/log/spdlog/src/stdout_sinks.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_log/spdlog/src/async.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_log/spdlog/src/cfg.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_log/spdlog/src/color_sinks.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_log/spdlog/src/file_sinks.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_log/spdlog/src/fmt.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_log/spdlog/src/spdlog.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_log/spdlog/src/stdout_sinks.cpp"
 )
 file(GLOB_RECURSE LOG_SRC_DIR
-    "${CMAKE_CURRENT_SOURCE_DIR}/log/logger.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/log/logger.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/log/w_log.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/log/w_log.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/log/w_log_config.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_log/logger.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_log/logger.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_log/w_log.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_log/w_log.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_log/w_log_config.h"
 )
 file(GLOB_RECURSE MEMORY_BUCKETS_SRC_DIR
-    "${CMAKE_CURRENT_SOURCE_DIR}/memory/buckets/*"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_memory/buckets/*"
 )
 file(GLOB_RECURSE MEMORY_HASH_SRC_DIR
-    "${CMAKE_CURRENT_SOURCE_DIR}/memory/hash/*"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_memory/hash/*"
 )
 file(GLOB_RECURSE MEMORY_SRC_DIR
-    "${CMAKE_CURRENT_SOURCE_DIR}/memory/w_array.c"
-    "${CMAKE_CURRENT_SOURCE_DIR}/memory/w_array.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/memory/w_hash.c"
-    "${CMAKE_CURRENT_SOURCE_DIR}/memory/w_hash.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/memory/w_mem_cache.c"
-    "${CMAKE_CURRENT_SOURCE_DIR}/memory/w_mem_cache.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/memory/w_mem_map.c"
-    "${CMAKE_CURRENT_SOURCE_DIR}/memory/w_mem_map.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/memory/w_mem_pool.c"
-    "${CMAKE_CURRENT_SOURCE_DIR}/memory/w_mem_pool.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/memory/w_shared_mem.c"
-    "${CMAKE_CURRENT_SOURCE_DIR}/memory/w_shared_mem.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/memory/w_string.c"
-    "${CMAKE_CURRENT_SOURCE_DIR}/memory/w_string.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/memory/w_table.c"
-    "${CMAKE_CURRENT_SOURCE_DIR}/memory/w_table.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_memory/w_array.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_memory/w_array.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_memory/w_hash.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_memory/w_hash.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_memory/w_mem_cache.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_memory/w_mem_cache.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_memory/w_mem_map.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_memory/w_mem_map.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_memory/w_mem_pool.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_memory/w_mem_pool.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_memory/w_shared_mem.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_memory/w_shared_mem.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_memory/w_string.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_memory/w_string.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_memory/w_table.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_memory/w_table.h"
 )
 file(GLOB_RECURSE NET_AMQ_SRC_DIR
-    "${CMAKE_CURRENT_SOURCE_DIR}/net/amq/*"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_net/amq/*"
 )
 file(GLOB_RECURSE NET_ASIO_IMP_SRC_DIR
-    "${CMAKE_CURRENT_SOURCE_DIR}/net/asio/imp/round_robin.hpp"
-	"${CMAKE_CURRENT_SOURCE_DIR}/net/asio/imp/yield.hpp"
-	"${CMAKE_CURRENT_SOURCE_DIR}/net/asio/imp/yield_imp.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_net/asio/imp/round_robin.hpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/w_net/asio/imp/yield.hpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/w_net/asio/imp/yield_imp.hpp"
 )
 file(GLOB_RECURSE NET_ASIO_SRC_DIR
-	"${CMAKE_CURRENT_SOURCE_DIR}/net/asio/fiber_client_server.cpp"
-	"${CMAKE_CURRENT_SOURCE_DIR}/net/asio/fiber_client_server.h"
+	"${CMAKE_CURRENT_SOURCE_DIR}/w_net/asio/fiber_client_server.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/w_net/asio/fiber_client_server.h"
 )
 file(GLOB_RECURSE NET_WS_USOCKETS_CRYPTO_SRC_DIR
-    "${CMAKE_CURRENT_SOURCE_DIR}/net/ws/uSockets/crypto/*"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_net/ws/uSockets/crypto/*"
 )
 file(GLOB_RECURSE NET_WS_USOCKETS_EVENTING_SRC_DIR
-    "${CMAKE_CURRENT_SOURCE_DIR}/net/ws/uSockets/eventing/*"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_net/ws/uSockets/eventing/*"
 )
 file(GLOB_RECURSE NET_WS_USOCKETS_INTERNAL_SRC_DIR
-    "${CMAKE_CURRENT_SOURCE_DIR}/net/ws/uSockets/internal/*"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_net/ws/uSockets/internal/*"
 )
 file(GLOB_RECURSE NET_WS_USOCKETS_SRC_DIR
-    "${CMAKE_CURRENT_SOURCE_DIR}/net/ws/uSockets/bsd.c"
-    "${CMAKE_CURRENT_SOURCE_DIR}/net/ws/uSockets/context.c"
-    "${CMAKE_CURRENT_SOURCE_DIR}/net/ws/uSockets/libusockets.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/net/ws/uSockets/loop.c"
-    "${CMAKE_CURRENT_SOURCE_DIR}/net/ws/uSockets/socket.c"
-    "${CMAKE_CURRENT_SOURCE_DIR}/net/ws/uSockets/verson.txt"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_net/ws/uSockets/bsd.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_net/ws/uSockets/context.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_net/ws/uSockets/libusockets.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_net/ws/uSockets/loop.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_net/ws/uSockets/socket.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_net/ws/uSockets/verson.txt"
 )
 file(GLOB_RECURSE NET_WS_UWEBSOCKETS_SRC_DIR
-    "${CMAKE_CURRENT_SOURCE_DIR}/net/ws/uWebSockets/*"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_net/ws/uWebSockets/*"
 )
 file(GLOB_RECURSE NET_WS_SRC_DIR
-    "${CMAKE_CURRENT_SOURCE_DIR}/net/ws/uws.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/net/ws/uws.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/net/ws/ws.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/net/ws/ws.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_net/ws/uws.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_net/ws/uws.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_net/ws/ws.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_net/ws/ws.h"
 )
 file(GLOB_RECURSE NET_SRC_DIR
-    "${CMAKE_CURRENT_SOURCE_DIR}/net/w_net.c"
-    "${CMAKE_CURRENT_SOURCE_DIR}/net/w_net.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_net/w_net.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_net/w_net.h"
 )
 file(GLOB_RECURSE OS_SRC_DIR
-    "${CMAKE_CURRENT_SOURCE_DIR}/os/*"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_os/*"
 )
 file(GLOB_RECURSE SCRIPT_LUA_SRC_DIR
-    "${CMAKE_CURRENT_SOURCE_DIR}/script/lua/*"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_script/lua/*"
 )
 file(GLOB_RECURSE SCRIPT_SRC_DIR
-    "${CMAKE_CURRENT_SOURCE_DIR}/script/w_lua.c"
-    "${CMAKE_CURRENT_SOURCE_DIR}/script/w_lua.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/script/w_python.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/script/w_python.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_script/w_lua.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_script/w_lua.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_script/w_python.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_script/w_python.h"
+)
+file(GLOB_RECURSE TEST_SRC_DIR
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_test/base.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_test/catch.hpp"
 )
 file(GLOB_RECURSE WOLF_SRC_DIR
     "${CMAKE_CURRENT_SOURCE_DIR}/wolf.c"
@@ -296,16 +344,29 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_BINARY_DIR}/_deps/libexpat-src/expat/lib
     ${CMAKE_CURRENT_BINARY_DIR}/_deps/apr-build
     ${CMAKE_CURRENT_BINARY_DIR}/_deps/apr-src/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/log
-    ${CMAKE_CURRENT_SOURCE_DIR}/compression/msgpack
+    ${CMAKE_CURRENT_SOURCE_DIR}/w_log
+    ${CMAKE_CURRENT_SOURCE_DIR}/w_compression/msgpack
 )
 
 if (WOLF_ENABLE_ACTIVEMQ)
-    include_directories(${CMAKE_CURRENT_BINARY_DIR}/_deps/activemq-cpp-build/${CMAKE_BUILD_TYPE}/include/activemq-cpp-3.10.0)
+    if (MSVC)
+        include_directories(${CMAKE_CURRENT_SOURCE_DIR}/_deps/activemq-cpp/include)
+    else()
+        include_directories(${CMAKE_CURRENT_BINARY_DIR}/_deps/activemq-cpp-build/${CMAKE_BUILD_TYPE}/include/activemq-cpp-3.10.0)
+    endif()
+endif()
+
+if (WOLF_ENABLE_CURL)
+    include_directories(${CMAKE_CURRENT_BINARY_DIR}/_deps/curl-build)
+    include_directories(${CMAKE_CURRENT_BINARY_DIR}/_deps/curl-src/include)
 endif()
 
 if (WOLF_ENABLE_FIBER)
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/include/)
+endif()
+
+if (WOLF_ENABLE_QUIC)
+    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/_deps/quiche/include/)
 endif()
 
 #additional library search path
@@ -342,49 +403,59 @@ add_library(${PROJECT_NAME} ${LIBRARY_TYPE}
     ${OS_SRC_DIR}
     ${SCRIPT_LUA_SRC_DIR}
     ${SCRIPT_SRC_DIR}
+    ${TEST_SRC_DIR}
     ${WOLF_SRC_DIR}
  )
- 
- if (UNIX)
+#target_compile_features(${PROJECT_NAME} PUBLIC cxx_alias_templates)
+if(UNIX)
+    target_compile_options(${PROJECT_NAME} PUBLIC -std=c++20)
+endif()
+#target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_20)
+
+if (UNIX)
     if (WOLF_ENABLE_ACTIVEMQ)
         add_dependencies(${PROJECT_NAME} libamq_target)
     endif()
     add_dependencies(${PROJECT_NAME} libapr_target)
- endif()
+endif()
 
- source_group("base64" FILES ${BASE64_SRC_DIR})
- source_group("chrono" FILES ${CHRONO_SRC_DIR})
- source_group("compression/lz4" FILES ${COMPRESSION_LZ4_SRC_DIR})
+ source_group("w_base64" FILES ${BASE64_SRC_DIR})
+ source_group("w_chrono" FILES ${CHRONO_SRC_DIR})
+ source_group("w_compression/lz4" FILES ${COMPRESSION_LZ4_SRC_DIR})
  if (MSVC)
- source_group("compression/lzma" FILES ${COMPRESSION_LZMA_SRC_DIR})
+ source_group("w_compression/lzma" FILES ${COMPRESSION_LZMA_SRC_DIR})
  endif()
- source_group("compression/msgpack" FILES ${COMPRESSION_MSGPACK_SRC_DIR})
- source_group("compression" FILES ${COMPRESSION_SRC_DIR})
- source_group("concurrency" FILES ${CONCURRENCY_SRC_DIR})
- source_group("fiber" FILES ${FIBER_SRC_DIR})
- source_group("io/stb" FILES ${IO_STB_SRC_DIR})
- source_group("io" FILES ${IO_SRC_DIR})
- source_group("json/rapidjson" FILES ${JSON_RAPIDJSON_SRC_DIR})
- source_group("log/spdlog/src" FILES ${LOG_SPDLOG_SRC_DIR})
- source_group("log" FILES ${LOG_SRC_DIR})
- source_group("memory/buckets" FILES ${MEMORY_BUCKETS_SRC_DIR})
- source_group("memory/hash" FILES ${MEMORY_HASH_SRC_DIR})
- source_group("memory" FILES ${MEMORY_SRC_DIR})
- source_group("net/amq" FILES ${NET_AMQ_SRC_DIR})
- source_group("net/asio/imp" FILES ${NET_ASIO_IMP_SRC_DIR})
- source_group("net/asio" FILES ${NET_ASIO_SRC_DIR})
- source_group("net/ws/uSockets/crypto" FILES ${NET_WS_USOCKETS_CRYPTO_SRC_DIR})
- source_group("net/ws/uSockets/eventing" FILES ${NET_WS_USOCKETS_EVENTING_SRC_DIR})
- source_group("net/ws/uSockets/internal" FILES ${NET_WS_USOCKETS_INTERNAL_SRC_DIR})
- source_group("net/ws/uSockets" FILES ${NET_WS_USOCKETS_SRC_DIR})
- source_group("net/ws/uWebSockets" FILES ${NET_WS_UWEBSOCKETS_SRC_DIR})
- source_group("net/ws" FILES ${NET_WS_SRC_DIR})
- source_group("net" FILES ${NET_SRC_DIR})
- source_group("os" FILES ${OS_SRC_DIR})
- source_group("script/lua" FILES ${SCRIPT_LUA_SRC_DIR})
- source_group("script" FILES ${SCRIPT_SRC_DIR})
+ source_group("w_compression/msgpack" FILES ${COMPRESSION_MSGPACK_SRC_DIR})
+ source_group("w_compression" FILES ${COMPRESSION_SRC_DIR})
+ source_group("w_concurrency" FILES ${CONCURRENCY_SRC_DIR})
+ source_group("w_fiber" FILES ${FIBER_SRC_DIR})
+ source_group("w_io/stb" FILES ${IO_STB_SRC_DIR})
+ source_group("w_io" FILES ${IO_SRC_DIR})
+ source_group("w_json/rapidjson" FILES ${JSON_RAPIDJSON_SRC_DIR})
+ source_group("w_log/spdlog/src" FILES ${LOG_SPDLOG_SRC_DIR})
+ source_group("w_log" FILES ${LOG_SRC_DIR})
+ source_group("w_memory/buckets" FILES ${MEMORY_BUCKETS_SRC_DIR})
+ source_group("w_memory/hash" FILES ${MEMORY_HASH_SRC_DIR})
+ source_group("w_memory" FILES ${MEMORY_SRC_DIR})
+ source_group("w_net/amq" FILES ${NET_AMQ_SRC_DIR})
+ source_group("w_net/asio/imp" FILES ${NET_ASIO_IMP_SRC_DIR})
+ source_group("w_net/asio" FILES ${NET_ASIO_SRC_DIR})
+ source_group("w_net/ws/uSockets/crypto" FILES ${NET_WS_USOCKETS_CRYPTO_SRC_DIR})
+ source_group("w_net/ws/uSockets/eventing" FILES ${NET_WS_USOCKETS_EVENTING_SRC_DIR})
+ source_group("w_net/ws/uSockets/internal" FILES ${NET_WS_USOCKETS_INTERNAL_SRC_DIR})
+ source_group("w_net/ws/uSockets" FILES ${NET_WS_USOCKETS_SRC_DIR})
+ source_group("w_net/ws/uWebSockets" FILES ${NET_WS_UWEBSOCKETS_SRC_DIR})
+ source_group("w_net/ws" FILES ${NET_WS_SRC_DIR})
+ source_group("w_net" FILES ${NET_SRC_DIR})
+ source_group("w_os" FILES ${OS_SRC_DIR})
+ source_group("w_script/lua" FILES ${SCRIPT_LUA_SRC_DIR})
+ source_group("w_script" FILES ${SCRIPT_SRC_DIR})
+ source_group("w_test" FILES ${TEST_SRC_DIR})
  source_group("wolf" FILES ${WOLF_SRC_DIR})
-  
+ 
+ #set c++17 
+ target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
+
  # set global compiler options
 target_compile_definitions(${PROJECT_NAME} PUBLIC
         APR_DECLARE_EXPORT
@@ -417,15 +488,14 @@ endif()
 
 # set AVX512 compile definition
 if (WOLF_ENABLE_AVX512)
-    set (AVX512_FLAGS "-D__AVX -DUSE_AVX512")
     if (MSVC)
-        set (AVX512_FLAGS "${AVX512_FLAGS} /arch:AVX512")
+        target_compile_definitions(${PROJECT_NAME} PUBLIC
+        WOLF_ENABLE_AVX512
+        )
     else()
-        set (AVX512_FLAGS "${AVX512_FLAGS} -mavx512f -mfma")
+        set (AVX512_FLAGS "-D__AVX -DWOLF_ENABLE_AVX512 -mavx512f -mfma")
+        target_compile_definitions(${PROJECT_NAME} PUBLIC ${AVX512_FLAGS})
     endif()
-
-    target_compile_definitions(${PROJECT_NAME} PUBLIC
-        ${AVX512_FLAGS})
 endif()
 
 if (WOLF_ENABLE_AVX2)
@@ -481,11 +551,11 @@ if (WOLF_ENABLE_CURL)
 endif()
 
 #set cassandra compile definitions
-if (WOLF_ENABLE_DB_CASSANDRA)
-    target_compile_definitions(${PROJECT_NAME} PUBLIC
-        WOLF_ENABLE_DB_CASSANDRA
-    )
-endif()
+#if (WOLF_ENABLE_DB_CASSANDRA)
+#    target_compile_definitions(${PROJECT_NAME} PUBLIC
+#        WOLF_ENABLE_DB_CASSANDRA
+#    )
+#endif()
 
 #set FIBER compile definitions
 if (WOLF_ENABLE_FIBER)
@@ -495,10 +565,21 @@ if (WOLF_ENABLE_FIBER)
     )
 endif()
 	
+if (WOLF_ENABLE_QUIC)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC
+        WOLF_ENABLE_QUIC
+    )
+endif()
+
 if (APPLE)
     set_source_files_properties("${CMAKE_CURRENT_SOURCE_DIR}/io/w_io.c" PROPERTIES COMPILE_FLAGS "-x objective-c" )
 endif()
 
+if(MSVC)
+    add_compile_options("/std:c++2a")
+else()
+    add_compile_options("-std=c++2a")
+endif()
 if (LINUX)
     add_compile_options(-fPIC)
 endif()
@@ -516,38 +597,45 @@ endif()
 
 if (WOLF_ENABLE_ACTIVEMQ)
     if(UNIX)
-        target_link_libraries(${PROJECT_NAME} PRIVATE  expat ${CMAKE_CURRENT_BINARY_DIR}/_deps/activemq-cpp-build/${CMAKE_BUILD_TYPE}/lib/libactivemq-cpp.a)
+        target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_BINARY_DIR}/_deps/activemq-cpp-build/${CMAKE_BUILD_TYPE}/lib/libactivemq-cpp.a)
+    else(MSVC)
+        target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/activemq-cpp/lib/${PREFIX_LIB_PATH}/${CMAKE_BUILD_TYPE}/libactivemq-cpp.lib)	
     endif()
 endif()
 
+if (WOLF_ENABLE_CURL)
+    target_link_libraries(${PROJECT_NAME} PRIVATE libcurl)
+endif()
+
+#link fiber library
 if (WOLF_ENABLE_FIBER)
     if(WIN64)
 		if (CMAKE_BUILD_TYPE MATCHES Debug)
-			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/win/x64/${CMAKE_BUILD_TYPE}/libboost_atomic-vc142-mt-gd-x64-1_75.lib)	
-			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/win/x64/${CMAKE_BUILD_TYPE}/libboost_context-vc142-mt-gd-x64-1_75.lib)		
-			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/win/x64/${CMAKE_BUILD_TYPE}/libboost_fiber-vc142-mt-gd-x64-1_75.lib)	
-			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/win/x64/${CMAKE_BUILD_TYPE}/libboost_date_time-vc142-mt-gd-x64-1_75.lib)	
-			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/win/x64/${CMAKE_BUILD_TYPE}/libboost_regex-vc142-mt-gd-x64-1_75.lib)		
+			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/${PREFIX_LIB_PATH}/${CMAKE_BUILD_TYPE}/libboost_atomic-vc142-mt-gd-x64-1_75.lib)	
+			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/${PREFIX_LIB_PATH}/${CMAKE_BUILD_TYPE}/libboost_context-vc142-mt-gd-x64-1_75.lib)		
+			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/${PREFIX_LIB_PATH}/${CMAKE_BUILD_TYPE}/libboost_fiber-vc142-mt-gd-x64-1_75.lib)	
+			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/${PREFIX_LIB_PATH}/${CMAKE_BUILD_TYPE}/libboost_date_time-vc142-mt-gd-x64-1_75.lib)	
+			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/${PREFIX_LIB_PATH}/${CMAKE_BUILD_TYPE}/libboost_regex-vc142-mt-gd-x64-1_75.lib)		
 		else()
-			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/win/x64/${CMAKE_BUILD_TYPE}/libboost_atomic-vc142-mt-x64-1_75.lib)
-			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/win/x64/${CMAKE_BUILD_TYPE}/libboost_context-vc142-mt-x64-1_75.lib)		
-			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/win/x64/${CMAKE_BUILD_TYPE}/libboost_fiber-vc142-mt-s-x64-1_75.lib)	   
-			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/win/x64/${CMAKE_BUILD_TYPE}/libboost_date_time-vc142-mt-s-x64-1_75.lib)	
-			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/win/x64/${CMAKE_BUILD_TYPE}/libboost_regex-vc142-mt-s-x64-1_75.lib)	   			
+			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/${PREFIX_LIB_PATH}/${CMAKE_BUILD_TYPE}/libboost_atomic-vc142-mt-x64-1_75.lib)
+			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/${PREFIX_LIB_PATH}/${CMAKE_BUILD_TYPE}/libboost_context-vc142-mt-x64-1_75.lib)		
+			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/${PREFIX_LIB_PATH}/${CMAKE_BUILD_TYPE}/libboost_fiber-vc142-mt-s-x64-1_75.lib)	   
+			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/${PREFIX_LIB_PATH}/${CMAKE_BUILD_TYPE}/libboost_date_time-vc142-mt-s-x64-1_75.lib)	
+			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/${PREFIX_LIB_PATH}/${CMAKE_BUILD_TYPE}/libboost_regex-vc142-mt-s-x64-1_75.lib)	   			
 		endif()
     elseif(WIN32)
 		if (CMAKE_BUILD_TYPE MATCHES Debug)
-			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/win/x86/${CMAKE_BUILD_TYPE}/libboost_atomic-vc142-mt-gd-x32-1_75.lib)
-			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/win/x86/${CMAKE_BUILD_TYPE}/libboost_context-vc142-mt-gd-x32-1_75.lib)		
-			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/win/x86/${CMAKE_BUILD_TYPE}/libboost_fiber-vc142-mt-gd-x32-1_75.lib)	
-			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/win/x64/${CMAKE_BUILD_TYPE}/libboost_date_time-vc142-mt-gd-x32-1_75.lib)	
-			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/win/x64/${CMAKE_BUILD_TYPE}/libboost_regex-vc142-mt-gd-x32-1_75.lib)				
+			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/${PREFIX_LIB_PATH}/${CMAKE_BUILD_TYPE}/libboost_atomic-vc142-mt-gd-x32-1_75.lib)
+			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/${PREFIX_LIB_PATH}/${CMAKE_BUILD_TYPE}/libboost_context-vc142-mt-gd-x32-1_75.lib)		
+			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/${PREFIX_LIB_PATH}/${CMAKE_BUILD_TYPE}/libboost_fiber-vc142-mt-gd-x32-1_75.lib)	
+			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/${PREFIX_LIB_PATH}/${CMAKE_BUILD_TYPE}/libboost_date_time-vc142-mt-gd-x32-1_75.lib)	
+			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/${PREFIX_LIB_PATH}/${CMAKE_BUILD_TYPE}/libboost_regex-vc142-mt-gd-x32-1_75.lib)				
 		else()
-			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/win/x86/${CMAKE_BUILD_TYPE}/libboost_atomic-vc142-mt-x32-1_75.lib)
-			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/win/x86/${CMAKE_BUILD_TYPE}/libboost_context-vc142-mt-x32-1_75.lib)		
-			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/win/x86/${CMAKE_BUILD_TYPE}/libboost_fiber-vc142-mt-s-x32-1_75.lib)	
-			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/win/x86/${CMAKE_BUILD_TYPE}/libboost_date_time-vc142-mt-s-x32-1_75.lib)		
-			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/win/x86/${CMAKE_BUILD_TYPE}/libboost_regex-vc142-mt-s-x32-1_75.lib)					
+			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/${PREFIX_LIB_PATH}/${CMAKE_BUILD_TYPE}/libboost_atomic-vc142-mt-x32-1_75.lib)
+			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/${PREFIX_LIB_PATH}/${CMAKE_BUILD_TYPE}/libboost_context-vc142-mt-x32-1_75.lib)		
+			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/${PREFIX_LIB_PATH}/${CMAKE_BUILD_TYPE}/libboost_fiber-vc142-mt-s-x32-1_75.lib)	
+			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/${PREFIX_LIB_PATH}/${CMAKE_BUILD_TYPE}/libboost_date_time-vc142-mt-s-x32-1_75.lib)		
+			target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/boost/lib/${PREFIX_LIB_PATH}/${CMAKE_BUILD_TYPE}/libboost_regex-vc142-mt-s-x32-1_75.lib)					
 		endif()
     elseif(LINUX)
         if (CMAKE_BUILD_TYPE MATCHES Debug)
@@ -565,3 +653,16 @@ if (WOLF_ENABLE_FIBER)
         endif()
     endif()
 endif()
+
+#link lua dynamic library
+if(WOLF_ENABLE_LUA)
+    target_link_libraries(${PROJECT_NAME} PRIVATE  libluajit)
+endif()
+
+if (WOLF_ENABLE_QUIC)
+    target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/quiche/lib/${PREFIX_LIB_PATH}/${CMAKE_BUILD_TYPE}/quiche.lib)	
+endif()
+
+SET(TEST_PROJECT_NAME "${PROJECT_NAME}_test")
+add_executable (${TEST_PROJECT_NAME} test.cpp)
+target_link_libraries(${TEST_PROJECT_NAME} PRIVATE ${PROJECT_NAME})

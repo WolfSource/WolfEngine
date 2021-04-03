@@ -13,7 +13,8 @@
 extern "C" {
 #endif
 
-#include "memory/w_mem_pool.h"
+#include <w_memory/w_mem_pool.h>
+#include <stdlib.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <assert.h>

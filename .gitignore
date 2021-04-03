@@ -32,6 +32,8 @@
 !/src/wolf.system/_deps/activemq.zip.004
 !/src/wolf.system/_deps/activemq.zip.005
 !/src/wolf.system/_deps/activemq.zip.006
+!/src/wolf.system/_deps/quiche.zip.001
+!/src/wolf.system/_deps/quiche.zip.002
 
 # Compiled Object files
 *.slo

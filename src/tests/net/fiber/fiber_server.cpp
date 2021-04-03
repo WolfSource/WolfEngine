@@ -1,4 +1,3 @@
-#include <iostream>
 #include <wolf.h>
 #include <net/w_net.h>
 #include <log/w_log.h>

@@ -1,5 +1,5 @@
 #include "wolf.h"
-#include <log/w_log.h>
+#include <w_log/w_log.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <wchar.h>
