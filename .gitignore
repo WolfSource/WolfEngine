@@ -22,9 +22,9 @@
 /bin/win/
 /bin/osx/
 /bin/linux/
+/samples/.vs/*
 /src/wolf.system/_deps/*
 !/src/wolf.system/_deps/*.zip
-/samples/.vs/*
 /src/wolf.system/build/*
 !/src/wolf.system/_deps/activemq.zip.001
 !/src/wolf.system/_deps/activemq.zip.002
@@ -34,6 +34,13 @@
 !/src/wolf.system/_deps/activemq.zip.006
 !/src/wolf.system/_deps/quiche.zip.001
 !/src/wolf.system/_deps/quiche.zip.002
+/src/wolf.media/_deps/*
+!/src/wolf.media/_deps/*.zip
+!/src/wolf.media/_deps/ffmpeg.zip.001
+!/src/wolf.media/_deps/ffmpeg.zip.002
+!/src/wolf.media/_deps/ffmpeg.zip.003
+!/src/wolf.media/_deps/ffmpeg.zip.004
+!/src/wolf.media/_deps/ffmpeg.zip.005
 
 # Compiled Object files
 *.slo
