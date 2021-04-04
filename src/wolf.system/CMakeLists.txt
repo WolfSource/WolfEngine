@@ -102,8 +102,23 @@ endif()
 if(WOLF_ENABLE_LUA)
     message("fetching https://github.com/torch/luajit-rocks")
     FetchContent_Declare(
-        libluajit
+        luajit
         GIT_REPOSITORY https://github.com/torch/luajit-rocks.git
+        GIT_TAG        master
+    )
+endif()
+
+if(WOLF_ENABLE_WEBSOCKET)
+    message("fetching https://github.com/madler/zlib")
+    FetchContent_Declare(
+        zlib
+        GIT_REPOSITORY https://github.com/madler/zlib.git
+        GIT_TAG        master
+    )
+    message("fetching https://github.com/libuv/libuv")
+    FetchContent_Declare(
+        libuv
+        GIT_REPOSITORY https://github.com/libuv/libuv.git
         GIT_TAG        master
     )
 endif()
@@ -127,6 +142,11 @@ endif()
 # change some options of LUAJIT
 if(WOLF_ENABLE_LUA)
     set(WITH_LUAJIT21 ON CACHE BOOL "WITH_LUAJIT21")
+endif()
+
+# change some options of LIBUV
+if(WOLF_ENABLE_WEBSOCKET)
+    set(BUILD_TESTING OFF CACHE BOOL "BUILD_TESTING")
 endif()
 
 if(LINUX)
@@ -171,27 +191,32 @@ endif()
 
 #fetch lua
 if(WOLF_ENABLE_LUA)
-    FetchContent_MakeAvailable(libluajit)
+    FetchContent_MakeAvailable(luajit)
 endif()
  
+#fetch websocket
+if(WOLF_ENABLE_WEBSOCKET)
+    FetchContent_MakeAvailable(zlib libuv)
+endif()
+
 # create filter for each folder
-file(GLOB_RECURSE BASE64_SRC_DIR
+file(GLOB_RECURSE W_BASE64_SRC_DIR
     "${CMAKE_CURRENT_SOURCE_DIR}/w_base64/*"
 )
-file(GLOB_RECURSE CHRONO_SRC_DIR
+file(GLOB_RECURSE W_CHRONO_SRC_DIR
     "${CMAKE_CURRENT_SOURCE_DIR}/w_chrono/*"
 )
-file(GLOB_RECURSE COMPRESSION_LZ4_SRC_DIR
+file(GLOB_RECURSE W_COMPRESSION_LZ4_SRC_DIR
     "${CMAKE_CURRENT_SOURCE_DIR}/w_compression/lz4/*"
 )
 
 if (MSVC)
-file(GLOB_RECURSE COMPRESSION_LZMA_SRC_DIR
+file(GLOB_RECURSE W_COMPRESSION_LZMA_SRC_DIR
     "${CMAKE_CURRENT_SOURCE_DIR}/w_compression/lzma/*"
 )
 endif()
 
-file(GLOB_RECURSE COMPRESSION_MSGPACK_SRC_DIR
+file(GLOB_RECURSE W_COMPRESSION_MSGPACK_SRC_DIR
     "${CMAKE_CURRENT_SOURCE_DIR}/w_compression/msgpack/msgpack.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/w_compression/msgpack/objectc.c"
     "${CMAKE_CURRENT_SOURCE_DIR}/w_compression/msgpack/unpack.c"
@@ -199,11 +224,17 @@ file(GLOB_RECURSE COMPRESSION_MSGPACK_SRC_DIR
     "${CMAKE_CURRENT_SOURCE_DIR}/w_compression/msgpack/vrefbuffer.c"
     "${CMAKE_CURRENT_SOURCE_DIR}/w_compression/msgpack/zone.c"
 )
-file(GLOB_RECURSE COMPRESSION_SRC_DIR
+file(GLOB_RECURSE W_COMPRESSION_SRC_DIR
     "${CMAKE_CURRENT_SOURCE_DIR}/w_compression/w_compress.c"
     "${CMAKE_CURRENT_SOURCE_DIR}/w_compression/w_compress.h"
 )
-file(GLOB_RECURSE CONCURRENCY_SRC_DIR
+file(GLOB_RECURSE W_LIBEV_SRC_DIR
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_concurrency/libev/ev.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_concurrency/libev/ev.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_concurrency/libev/event.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_concurrency/libev/event.h"
+)
+file(GLOB_RECURSE W_CONCURRENCY_SRC_DIR
     "${CMAKE_CURRENT_SOURCE_DIR}/w_concurrency/w_atomic.c"
     "${CMAKE_CURRENT_SOURCE_DIR}/w_concurrency/w_atomic.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/w_concurrency/w_concurrent_queue.c"
@@ -223,20 +254,20 @@ file(GLOB_RECURSE CONCURRENCY_SRC_DIR
     "${CMAKE_CURRENT_SOURCE_DIR}/w_concurrency/w_timer.c"
     "${CMAKE_CURRENT_SOURCE_DIR}/w_concurrency/w_timer.h"
 )
-file(GLOB_RECURSE FIBER_SRC_DIR
+file(GLOB_RECURSE W_FIBER_SRC_DIR
     "${CMAKE_CURRENT_SOURCE_DIR}/w_fiber/*"
 )
-file(GLOB_RECURSE IO_STB_SRC_DIR
+file(GLOB_RECURSE W_IO_STB_SRC_DIR
     "${CMAKE_CURRENT_SOURCE_DIR}/w_io/stb/*"
 )
-file(GLOB_RECURSE IO_SRC_DIR
+file(GLOB_RECURSE W_IO_SRC_DIR
     "${CMAKE_CURRENT_SOURCE_DIR}/w_io/w_io.c"
     "${CMAKE_CURRENT_SOURCE_DIR}/w_io/w_io.h"
 )
-file(GLOB_RECURSE JSON_RAPIDJSON_SRC_DIR
+file(GLOB_RECURSE W_JSON_RAPIDJSON_SRC_DIR
     "${CMAKE_CURRENT_SOURCE_DIR}/w_json/rapidjson/*"
 )
-file(GLOB_RECURSE LOG_SPDLOG_SRC_DIR
+file(GLOB_RECURSE W_LOG_SPDLOG_SRC_DIR
     "${CMAKE_CURRENT_SOURCE_DIR}/w_log/spdlog/src/async.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/w_log/spdlog/src/cfg.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/w_log/spdlog/src/color_sinks.cpp"
@@ -245,20 +276,20 @@ file(GLOB_RECURSE LOG_SPDLOG_SRC_DIR
     "${CMAKE_CURRENT_SOURCE_DIR}/w_log/spdlog/src/spdlog.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/w_log/spdlog/src/stdout_sinks.cpp"
 )
-file(GLOB_RECURSE LOG_SRC_DIR
+file(GLOB_RECURSE W_LOG_SRC_DIR
     "${CMAKE_CURRENT_SOURCE_DIR}/w_log/logger.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/w_log/logger.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/w_log/w_log.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/w_log/w_log.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/w_log/w_log_config.h"
 )
-file(GLOB_RECURSE MEMORY_BUCKETS_SRC_DIR
+file(GLOB_RECURSE W_MEMORY_BUCKETS_SRC_DIR
     "${CMAKE_CURRENT_SOURCE_DIR}/w_memory/buckets/*"
 )
-file(GLOB_RECURSE MEMORY_HASH_SRC_DIR
+file(GLOB_RECURSE W_MEMORY_HASH_SRC_DIR
     "${CMAKE_CURRENT_SOURCE_DIR}/w_memory/hash/*"
 )
-file(GLOB_RECURSE MEMORY_SRC_DIR
+file(GLOB_RECURSE W_MEMORY_SRC_DIR
     "${CMAKE_CURRENT_SOURCE_DIR}/w_memory/w_array.c"
     "${CMAKE_CURRENT_SOURCE_DIR}/w_memory/w_array.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/w_memory/w_hash.c"
@@ -276,28 +307,28 @@ file(GLOB_RECURSE MEMORY_SRC_DIR
     "${CMAKE_CURRENT_SOURCE_DIR}/w_memory/w_table.c"
     "${CMAKE_CURRENT_SOURCE_DIR}/w_memory/w_table.h"
 )
-file(GLOB_RECURSE NET_AMQ_SRC_DIR
+file(GLOB_RECURSE W_NET_AMQ_SRC_DIR
     "${CMAKE_CURRENT_SOURCE_DIR}/w_net/amq/*"
 )
-file(GLOB_RECURSE NET_ASIO_IMP_SRC_DIR
+file(GLOB_RECURSE W_NET_ASIO_IMP_SRC_DIR
     "${CMAKE_CURRENT_SOURCE_DIR}/w_net/asio/imp/round_robin.hpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/w_net/asio/imp/yield.hpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/w_net/asio/imp/yield_imp.hpp"
 )
-file(GLOB_RECURSE NET_ASIO_SRC_DIR
+file(GLOB_RECURSE W_NET_ASIO_SRC_DIR
 	"${CMAKE_CURRENT_SOURCE_DIR}/w_net/asio/fiber_client_server.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/w_net/asio/fiber_client_server.h"
 )
-file(GLOB_RECURSE NET_WS_USOCKETS_CRYPTO_SRC_DIR
+file(GLOB_RECURSE W_NET_WS_USOCKETS_CRYPTO_SRC_DIR
     "${CMAKE_CURRENT_SOURCE_DIR}/w_net/ws/uSockets/crypto/*"
 )
-file(GLOB_RECURSE NET_WS_USOCKETS_EVENTING_SRC_DIR
+file(GLOB_RECURSE W_NET_WS_USOCKETS_EVENTING_SRC_DIR
     "${CMAKE_CURRENT_SOURCE_DIR}/w_net/ws/uSockets/eventing/*"
 )
-file(GLOB_RECURSE NET_WS_USOCKETS_INTERNAL_SRC_DIR
+file(GLOB_RECURSE W_NET_WS_USOCKETS_INTERNAL_SRC_DIR
     "${CMAKE_CURRENT_SOURCE_DIR}/w_net/ws/uSockets/internal/*"
 )
-file(GLOB_RECURSE NET_WS_USOCKETS_SRC_DIR
+file(GLOB_RECURSE W_NET_WS_USOCKETS_SRC_DIR
     "${CMAKE_CURRENT_SOURCE_DIR}/w_net/ws/uSockets/bsd.c"
     "${CMAKE_CURRENT_SOURCE_DIR}/w_net/ws/uSockets/context.c"
     "${CMAKE_CURRENT_SOURCE_DIR}/w_net/ws/uSockets/libusockets.h"
@@ -305,32 +336,32 @@ file(GLOB_RECURSE NET_WS_USOCKETS_SRC_DIR
     "${CMAKE_CURRENT_SOURCE_DIR}/w_net/ws/uSockets/socket.c"
     "${CMAKE_CURRENT_SOURCE_DIR}/w_net/ws/uSockets/verson.txt"
 )
-file(GLOB_RECURSE NET_WS_UWEBSOCKETS_SRC_DIR
+file(GLOB_RECURSE W_NET_WS_UWEBSOCKETS_SRC_DIR
     "${CMAKE_CURRENT_SOURCE_DIR}/w_net/ws/uWebSockets/*"
 )
-file(GLOB_RECURSE NET_WS_SRC_DIR
+file(GLOB_RECURSE W_NET_WS_SRC_DIR
     "${CMAKE_CURRENT_SOURCE_DIR}/w_net/ws/uws.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/w_net/ws/uws.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/w_net/ws/ws.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/w_net/ws/ws.h"
 )
-file(GLOB_RECURSE NET_SRC_DIR
+file(GLOB_RECURSE W_NET_SRC_DIR
     "${CMAKE_CURRENT_SOURCE_DIR}/w_net/w_net.c"
     "${CMAKE_CURRENT_SOURCE_DIR}/w_net/w_net.h"
 )
-file(GLOB_RECURSE OS_SRC_DIR
+file(GLOB_RECURSE W_OS_SRC_DIR
     "${CMAKE_CURRENT_SOURCE_DIR}/w_os/*"
 )
-file(GLOB_RECURSE SCRIPT_LUA_SRC_DIR
+file(GLOB_RECURSE W_SCRIPT_LUA_SRC_DIR
     "${CMAKE_CURRENT_SOURCE_DIR}/w_script/lua/*"
 )
-file(GLOB_RECURSE SCRIPT_SRC_DIR
+file(GLOB_RECURSE W_SCRIPT_SRC_DIR
     "${CMAKE_CURRENT_SOURCE_DIR}/w_script/w_lua.c"
     "${CMAKE_CURRENT_SOURCE_DIR}/w_script/w_lua.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/w_script/w_python.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/w_script/w_python.h"
 )
-file(GLOB_RECURSE TEST_SRC_DIR
+file(GLOB_RECURSE W_TEST_SRC_DIR
     "${CMAKE_CURRENT_SOURCE_DIR}/w_test/base.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/w_test/catch.hpp"
 )
@@ -369,41 +400,50 @@ if (WOLF_ENABLE_QUIC)
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}/_deps/quiche/include/)
 endif()
 
+if(WOLF_ENABLE_WEBSOCKET)
+    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/w_net/ws/uSockets)
+    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/_deps/openSSL/include)
+    include_directories(${CMAKE_CURRENT_BINARY_DIR}/_deps/zlib-src)
+    include_directories(${CMAKE_CURRENT_BINARY_DIR}/_deps/zlib-build)
+    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/_deps/libuv-src/include)
+endif()
+
 #additional library search path
 #link_directories(${CMAKE_CURRENT_SOURCE_DIR}/deps/)
 
 # add sources
 add_library(${PROJECT_NAME} ${LIBRARY_TYPE}
-    ${BASE64_SRC_DIR}
-    ${CHRONO_SRC_DIR}
-    ${COMPRESSION_LZ4_SRC_DIR}
-    ${COMPRESSION_LZMA_SRC_DIR}
-    ${COMPRESSION_MSGPACK_SRC_DIR}
-    ${COMPRESSION_SRC_DIR}
-    ${CONCURRENCY_SRC_DIR}
-    ${FIBER_SRC_DIR}
-    ${IO_STB_SRC_DIR}
-    ${IO_SRC_DIR}
-    ${JSON_RAPIDJSON_SRC_DIR}
-    ${LOG_SPDLOG_SRC_DIR}
-    ${LOG_SRC_DIR}
-    ${MEMORY_BUCKETS_SRC_DIR}
-    ${MEMORY_HASH_SRC_DIR}
-    ${MEMORY_SRC_DIR}
-    ${NET_AMQ_SRC_DIR}
-    ${NET_ASIO_IMP_SRC_DIR}
-    ${NET_ASIO_SRC_DIR}
-    ${NET_WS_USOCKETS_CRYPTO_SRC_DIR}
-    ${NET_WS_USOCKETS_EVENTING_SRC_DIR}
-    ${NET_WS_USOCKETS_INTERNAL_SRC_DIR}
-    ${NET_WS_USOCKETS_SRC_DIR}
-    ${NET_WS_UWEBSOCKETS_SRC_DIR}
-    ${NET_WS_SRC_DIR}
-    ${NET_SRC_DIR}
-    ${OS_SRC_DIR}
-    ${SCRIPT_LUA_SRC_DIR}
-    ${SCRIPT_SRC_DIR}
-    ${TEST_SRC_DIR}
+    ${W_BASE64_SRC_DIR}
+    ${W_CHRONO_SRC_DIR}
+    ${W_COMPRESSION_LZ4_SRC_DIR}
+    ${W_COMPRESSION_LZMA_SRC_DIR}
+    ${W_COMPRESSION_MSGPACK_SRC_DIR}
+    ${W_COMPRESSION_SRC_DIR}
+    ${W_LIBEV_SRC_DIR}
+    ${W_CONCURRENCY_SRC_DIR}
+    ${W_FIBER_SRC_DIR}
+    ${W_IO_STB_SRC_DIR}
+    ${W_IO_SRC_DIR}
+    ${W_JSON_RAPIDJSON_SRC_DIR}
+    ${W_LOG_SPDLOG_SRC_DIR}
+    ${W_LOG_SRC_DIR}
+    ${W_MEMORY_BUCKETS_SRC_DIR}
+    ${W_MEMORY_HASH_SRC_DIR}
+    ${W_MEMORY_SRC_DIR}
+    ${W_NET_AMQ_SRC_DIR}
+    ${W_NET_ASIO_IMP_SRC_DIR}
+    ${W_NET_ASIO_SRC_DIR}
+    ${W_NET_WS_USOCKETS_CRYPTO_SRC_DIR}
+    ${W_NET_WS_USOCKETS_EVENTING_SRC_DIR}
+    ${W_NET_WS_USOCKETS_INTERNAL_SRC_DIR}
+    ${W_NET_WS_USOCKETS_SRC_DIR}
+    ${W_NET_WS_UWEBSOCKETS_SRC_DIR}
+    ${W_NET_WS_SRC_DIR}
+    ${W_NET_SRC_DIR}
+    ${W_OS_SRC_DIR}
+    ${W_SCRIPT_LUA_SRC_DIR}
+    ${W_SCRIPT_SRC_DIR}
+    ${W_TEST_SRC_DIR}
     ${WOLF_SRC_DIR}
  )
 #target_compile_features(${PROJECT_NAME} PUBLIC cxx_alias_templates)
@@ -419,38 +459,39 @@ if (UNIX)
     add_dependencies(${PROJECT_NAME} libapr_target)
 endif()
 
- source_group("w_base64" FILES ${BASE64_SRC_DIR})
- source_group("w_chrono" FILES ${CHRONO_SRC_DIR})
- source_group("w_compression/lz4" FILES ${COMPRESSION_LZ4_SRC_DIR})
+ source_group("w_base64" FILES ${W_BASE64_SRC_DIR})
+ source_group("w_chrono" FILES ${W_CHRONO_SRC_DIR})
+ source_group("w_compression/lz4" FILES ${W_COMPRESSION_LZ4_SRC_DIR})
  if (MSVC)
- source_group("w_compression/lzma" FILES ${COMPRESSION_LZMA_SRC_DIR})
+ source_group("w_compression/lzma" FILES ${W_COMPRESSION_LZMA_SRC_DIR})
  endif()
- source_group("w_compression/msgpack" FILES ${COMPRESSION_MSGPACK_SRC_DIR})
- source_group("w_compression" FILES ${COMPRESSION_SRC_DIR})
- source_group("w_concurrency" FILES ${CONCURRENCY_SRC_DIR})
- source_group("w_fiber" FILES ${FIBER_SRC_DIR})
- source_group("w_io/stb" FILES ${IO_STB_SRC_DIR})
- source_group("w_io" FILES ${IO_SRC_DIR})
- source_group("w_json/rapidjson" FILES ${JSON_RAPIDJSON_SRC_DIR})
- source_group("w_log/spdlog/src" FILES ${LOG_SPDLOG_SRC_DIR})
- source_group("w_log" FILES ${LOG_SRC_DIR})
- source_group("w_memory/buckets" FILES ${MEMORY_BUCKETS_SRC_DIR})
- source_group("w_memory/hash" FILES ${MEMORY_HASH_SRC_DIR})
- source_group("w_memory" FILES ${MEMORY_SRC_DIR})
- source_group("w_net/amq" FILES ${NET_AMQ_SRC_DIR})
- source_group("w_net/asio/imp" FILES ${NET_ASIO_IMP_SRC_DIR})
- source_group("w_net/asio" FILES ${NET_ASIO_SRC_DIR})
- source_group("w_net/ws/uSockets/crypto" FILES ${NET_WS_USOCKETS_CRYPTO_SRC_DIR})
- source_group("w_net/ws/uSockets/eventing" FILES ${NET_WS_USOCKETS_EVENTING_SRC_DIR})
- source_group("w_net/ws/uSockets/internal" FILES ${NET_WS_USOCKETS_INTERNAL_SRC_DIR})
- source_group("w_net/ws/uSockets" FILES ${NET_WS_USOCKETS_SRC_DIR})
- source_group("w_net/ws/uWebSockets" FILES ${NET_WS_UWEBSOCKETS_SRC_DIR})
- source_group("w_net/ws" FILES ${NET_WS_SRC_DIR})
- source_group("w_net" FILES ${NET_SRC_DIR})
- source_group("w_os" FILES ${OS_SRC_DIR})
- source_group("w_script/lua" FILES ${SCRIPT_LUA_SRC_DIR})
- source_group("w_script" FILES ${SCRIPT_SRC_DIR})
- source_group("w_test" FILES ${TEST_SRC_DIR})
+ source_group("w_compression/msgpack" FILES ${W_COMPRESSION_MSGPACK_SRC_DIR})
+ source_group("w_compression" FILES ${W_COMPRESSION_SRC_DIR})
+ source_group("w_concurrency/libev" FILES ${W_LIBEV_SRC_DIR})
+ source_group("w_concurrency" FILES ${W_CONCURRENCY_SRC_DIR})
+ source_group("w_fiber" FILES ${W_FIBER_SRC_DIR})
+ source_group("w_io/stb" FILES ${W_IO_STB_SRC_DIR})
+ source_group("w_io" FILES ${W_IO_SRC_DIR})
+ source_group("w_json/rapidjson" FILES ${W_JSON_RAPIDJSON_SRC_DIR})
+ source_group("w_log/spdlog/src" FILES ${W_LOG_SPDLOG_SRC_DIR})
+ source_group("w_log" FILES ${W_LOG_SRC_DIR})
+ source_group("w_memory/buckets" FILES ${W_MEMORY_BUCKETS_SRC_DIR})
+ source_group("w_memory/hash" FILES ${W_MEMORY_HASH_SRC_DIR})
+ source_group("w_memory" FILES ${W_MEMORY_SRC_DIR})
+ source_group("w_net/amq" FILES ${W_NET_AMQ_SRC_DIR})
+ source_group("w_net/asio/imp" FILES ${W_NET_ASIO_IMP_SRC_DIR})
+ source_group("w_net/asio" FILES ${W_NET_ASIO_SRC_DIR})
+ source_group("w_net/ws/uSockets/crypto" FILES ${W_NET_WS_USOCKETS_CRYPTO_SRC_DIR})
+ source_group("w_net/ws/uSockets/eventing" FILES ${W_NET_WS_USOCKETS_EVENTING_SRC_DIR})
+ source_group("w_net/ws/uSockets/internal" FILES ${W_NET_WS_USOCKETS_INTERNAL_SRC_DIR})
+ source_group("w_net/ws/uSockets" FILES ${W_NET_WS_USOCKETS_SRC_DIR})
+ source_group("w_net/ws/uWebSockets" FILES ${W_NET_WS_UWEBSOCKETS_SRC_DIR})
+ source_group("w_net/ws" FILES ${W_NET_WS_SRC_DIR})
+ source_group("w_net" FILES ${W_NET_SRC_DIR})
+ source_group("w_os" FILES ${W_OS_SRC_DIR})
+ source_group("w_script/lua" FILES ${W_SCRIPT_LUA_SRC_DIR})
+ source_group("w_script" FILES ${W_SCRIPT_SRC_DIR})
+ source_group("w_test" FILES ${W_TEST_SRC_DIR})
  source_group("wolf" FILES ${WOLF_SRC_DIR})
  
  #set c++17 
@@ -471,8 +512,6 @@ target_compile_definitions(${PROJECT_NAME} PUBLIC
         SPDLOG_COMPILED_LIB
         SPDLOG_WCHAR_FILENAMES
         SPDLOG_USE_WCHAR
-        LIBUS_USE_LIBUV
-        LIBUS_USE_OPENSSL
         EV_STANDALONE
         )
 
@@ -486,16 +525,12 @@ else()
     )
 endif()
 
-# set AVX512 compile definition
-if (WOLF_ENABLE_AVX512)
-    if (MSVC)
-        target_compile_definitions(${PROJECT_NAME} PUBLIC
-        WOLF_ENABLE_AVX512
-        )
-    else()
-        set (AVX512_FLAGS "-D__AVX -DWOLF_ENABLE_AVX512 -mavx512f -mfma")
-        target_compile_definitions(${PROJECT_NAME} PUBLIC ${AVX512_FLAGS})
-    endif()
+ # set activeMQ compile definitions
+if (WOLF_ENABLE_ACTIVEMQ)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC
+        WOLF_ENABLE_ACTIVEMQ
+        _HAS_AUTO_PTR_ETC=1
+    )
 endif()
 
 if (WOLF_ENABLE_AVX2)
@@ -511,35 +546,20 @@ if (WOLF_ENABLE_AVX2)
         target_compile_definitions(${PROJECT_NAME} PUBLIC
                 ${AVX2_FLAGS})
     endif()
-endif()
-
- # set activeMQ compile definitions
-if (WOLF_ENABLE_ACTIVEMQ)
     target_compile_definitions(${PROJECT_NAME} PUBLIC
-        WOLF_ENABLE_ACTIVEMQ
-        _HAS_AUTO_PTR_ETC=1
+        WOLF_ENABLE_AVX2
     )
 endif()
 
- # set LUA compile definitions
-if (WOLF_ENABLE_LUA)
+# set AVX512 compile definition
+if (WOLF_ENABLE_AVX512)
     target_compile_definitions(${PROJECT_NAME} PUBLIC
-        WOLF_ENABLE_LUA
+        WOLF_ENABLE_AVX512
     )
-endif()
-        
-# set Python3 compile definitions
-if (WOLF_ENABLE_PYTHON3)
-    target_compile_definitions(${PROJECT_NAME} PUBLIC
-        WOLF_ENABLE_PYTHON3
-    )
-endif()
-
-# set QUIC compile definitions
-if (WOLF_ENABLE_QUIC)
-    target_compile_definitions(${PROJECT_NAME} PUBLIC
-        WOLF_ENABLE_QUIC
-    )
+    if (UNIX)
+        set (AVX512_FLAGS "-D__AVX -DWOLF_ENABLE_AVX512 -mavx512f -mfma")
+        target_compile_definitions(${PROJECT_NAME} PUBLIC ${AVX512_FLAGS})
+    endif()
 endif()
 
 #set CURL compile definitions
@@ -550,12 +570,12 @@ if (WOLF_ENABLE_CURL)
     )
 endif()
 
-#set cassandra compile definitions
-#if (WOLF_ENABLE_DB_CASSANDRA)
-#    target_compile_definitions(${PROJECT_NAME} PUBLIC
-#        WOLF_ENABLE_DB_CASSANDRA
-#    )
-#endif()
+#set CXX extensions definition
+if (WOLF_ENABLE_CXX_EXTENSIONS)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC
+        WOLF_ENABLE_CXX_EXTENSIONS
+    )
+endif()
 
 #set FIBER compile definitions
 if (WOLF_ENABLE_FIBER)
@@ -564,10 +584,46 @@ if (WOLF_ENABLE_FIBER)
         BOOST_BIND_GLOBAL_PLACEHOLDERS
     )
 endif()
+
+ # set LUA compile definitions
+if (WOLF_ENABLE_LUA)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC
+        WOLF_ENABLE_LUA
+    )
+endif()
+        
+ # set LZ4 compile definitions
+if (WOLF_ENABLE_LZ4)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC
+        WOLF_ENABLE_LZ4
+    )
+endif()
+
+ # set LZMA compile definitions
+if (WOLF_ENABLE_LZMA)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC
+        WOLF_ENABLE_LZMA
+    )
+endif()
+       
+# set Python3 compile definitions
+if (WOLF_ENABLE_PYTHON3)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC
+        WOLF_ENABLE_PYTHON3
+    )
+endif()
 	
 if (WOLF_ENABLE_QUIC)
     target_compile_definitions(${PROJECT_NAME} PUBLIC
         WOLF_ENABLE_QUIC
+    )
+endif()
+
+if (WOLF_ENABLE_WEBSOCKET)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC
+        WOLF_ENABLE_WEBSOCKET
+        LIBUS_USE_LIBUV
+        LIBUS_USE_OPENSSL
     )
 endif()
 
@@ -656,11 +712,23 @@ endif()
 
 #link lua dynamic library
 if(WOLF_ENABLE_LUA)
-    target_link_libraries(${PROJECT_NAME} PRIVATE  libluajit)
+    target_link_libraries(${PROJECT_NAME} PRIVATE  luajit-static)
 endif()
 
 if (WOLF_ENABLE_QUIC)
     target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/quiche/lib/${PREFIX_LIB_PATH}/${CMAKE_BUILD_TYPE}/quiche.lib)	
+endif()
+
+if (WOLF_ENABLE_WEBSOCKET)
+    target_link_libraries(${PROJECT_NAME} PRIVATE  uv_a)
+    target_link_libraries(${PROJECT_NAME} PRIVATE  zlibstatic)
+    if(MSVC)
+	    target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/openSSL/lib/${PREFIX_LIB_PATH}/libcrypto.lib)
+        target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/openSSL/lib/${PREFIX_LIB_PATH}/libssl.lib)
+    else()
+        target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/openSSL/lib/${PREFIX_LIB_PATH}/libcrypto.a)
+        target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/openSSL/lib/${PREFIX_LIB_PATH}/libssl.a)
+    endif()
 endif()
 
 SET(TEST_PROJECT_NAME "${PROJECT_NAME}_test")

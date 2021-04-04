@@ -3,11 +3,11 @@
 #ifdef WOLF_ENABLE_WEBSOCKET
 
 #include <apr.h>
-#include <apr-1/apr_general.h>
-#include <apr-1/apr_strings.h>
-#include <apr-1/apr_tables.h>
-#include <apr-1/apr_file_io.h>
-#include <apr-1/apr_hash.h>
+#include <apr_general.h>
+#include <apr_strings.h>
+#include <apr_tables.h>
+#include <apr_file_io.h>
+#include <apr_hash.h>
 #include "uws.hpp"
 
 ws ws_init()

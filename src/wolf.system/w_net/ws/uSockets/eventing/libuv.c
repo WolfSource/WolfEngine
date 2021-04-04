@@ -71,7 +71,7 @@ void us_poll_free(struct us_poll_t *p, struct us_loop_t *loop) {
 void us_poll_start(struct us_poll_t *p, struct us_loop_t *loop, int events) {
     p->poll_type = us_internal_poll_type(p) | ((events & LIBUS_SOCKET_READABLE) ? POLL_TYPE_POLLING_IN : 0) | ((events & LIBUS_SOCKET_WRITABLE) ? POLL_TYPE_POLLING_OUT : 0);
 
-    uv_poll_init_socket(loop->uv_loop, &p->uv_p, p->fd);
+    uv_poll_init(loop->uv_loop, &p->uv_p, p->fd);
     uv_poll_start(&p->uv_p, events, poll_cb);
 }
 
