@@ -10,7 +10,7 @@
 
 #pragma once
 
-#ifdef WOLF_ENABLE_WEBSOCKET
+#ifdef WOLF_ENABLE_HTTP1_1_WS
 
 #ifdef __cplusplus
 extern "C" {
@@ -22,7 +22,7 @@ extern "C" {
     struct cws;
     typedef struct cws* ws;
 
-    typedef void(*ws_on_listened_fn)(void* /*pSocket*/, int /*pPort*/);
+    typedef void(*ws_on_listened_fn)(void* /*pSocket*/, const int /*pPort*/);
     typedef bool(*ws_on_opened_fn)(w_arg* /*pUserData*/);
     typedef const char* (*ws_on_message_fn)(const char* /*pMessage*/, size_t /*pMessageLenght*/, int* /*pOpCode*/, w_arg* /*pUserData*/);
     typedef void(*ws_on_closed_fn)(const char* /*pMessage*/, size_t /*pMessageLenght*/, int /*pCloseCode*/, w_arg* /*pUserData*/);
@@ -87,11 +87,14 @@ extern "C" {
 
     /**
      * stop websocket object
+     * @param pUSocket a pointer to uSocket object
+     * @param pSSL the SSL state
      */
-    void ws_stop(_Inout_ void* pSocket, _In_ const bool pSSL);
+    void ws_stop(_Inout_ void* pUSocket, _In_ const bool pSSL);
 
     /**
      * free websocket object
+     * @param pWS a pointer to websocket object
     */
     void ws_free(_Inout_ ws pWS);
 

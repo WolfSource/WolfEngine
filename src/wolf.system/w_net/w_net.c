@@ -409,7 +409,7 @@ W_RESULT w_net_socket_receive(
     return _ret;
 }
 
-#ifdef WOLF_ENABLE_WEBSOCKET
+#ifdef WOLF_ENABLE_HTTP1_1_WS
 
 W_RESULT w_net_run_ws_server(_In_ bool pSSL,
     _In_z_ const char* pCertFilePath,
@@ -430,7 +430,6 @@ W_RESULT w_net_run_ws_server(_In_ bool pSSL,
 
     W_RESULT _rt;
     
-#ifdef W_PLATFORM_WIN
     ws _ws = ws_init();
     if (_ws)
     {
@@ -455,17 +454,13 @@ W_RESULT w_net_run_ws_server(_In_ bool pSSL,
     {
         W_ASSERT_P(false, "could not run websocket. trace info: %s", _trace_info);
         _rt = W_FAILURE;
-    }
-#endif
-    
+    }    
     return _rt;
 }
 
-void w_net_ws_close(_Inout_ void* pSocket, _In_ const bool pSSL)
+void w_net_ws_close(_Inout_ void* pUSocket, _In_ const bool pSSL)
 {
-#if !defined(W_PLATFORM_ANDROID) && !defined(W_PLATFORM_IOS) && !defined(W_PLATFORM_OSX)
-    ws_stop(pSocket, pSSL);
-#endif
+    ws_stop(pUSocket, pSSL);
 }
 
 #endif
@@ -1915,6 +1910,40 @@ W_RESULT w_net_fiber_clients_connect(
         pPort,
         pNumberOfClients,
         pOnSendReceiveCallback);
+}
+
+#endif
+
+#pragma endregion
+
+#pragma region HTTP
+
+#ifdef WOLF_ENABLE_HTTP1_1_WS
+
+void w_net_run_http1_1_server(
+    _In_ const bool pSSL,
+    _In_opt_z_ const char* pCertFilePath,
+    _In_opt_z_ const char* pPrivateKeyFilePath,
+    _In_opt_z_ const char* pPassPhrase,
+    _In_opt_z_ const char* pRoot,
+    _In_opt_z_ const char* pURLPath,
+    _In_ const int pPort,
+    _In_ http_on_listened_fn pOnListened)
+{
+    run_http1_1_server(
+        pSSL,
+        pCertFilePath,
+        pPrivateKeyFilePath,
+        pPassPhrase,
+        pRoot,
+        pURLPath,
+        pPort,
+        pOnListened);
+}
+
+void w_net_stop_http1_1_server(_Inout_ void* pUSocket, _In_ const bool pSSL)
+{
+    stop_http1_1_server(pUSocket, pSSL);
 }
 
 #endif

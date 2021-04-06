@@ -1,17 +1,29 @@
 # CMAKE required version
 cmake_minimum_required (VERSION 3.11)
 
-if(UNIX AND NOT APPLE)
+if(APPLE)
+    set(TARGET "OSX" CACHE STRING "target platform")
+    set(ARCH "x86_64" CACHE STRING "target architecture")
+endif()
+
+set(LIBRARY_TYPE "SHARED" CACHE STRING "Library type")
+
+if("${TARGET}" STREQUAL "IOS")
+    set(IOS TRUE)
+endif()													
+if(UNIX AND NOT APPLE AND NOT IOS)
    set(LINUX TRUE)
 endif()
 
 # set the project name
-if (APPLE)
-project (wolf_system_osx)
+if (IOS)
+    project (wolf_system_ios)						 
+elseif (APPLE)
+	project (wolf_system_osx)
 elseif (WIN32)
-project (wolf_system_win)
+	project (wolf_system_win)
 elseif (LINUX)
-project (wolf_system_linux)
+	project (wolf_system_linux)
 endif()
 
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
@@ -20,7 +32,9 @@ if(CMAKE_SIZEOF_VOID_P EQUAL 8)
     endif()
 endif()
 
-if(APPLE)
+if (IOS)
+    SET(PREFIX_LIB_PATH "ios")
+elseif(APPLE)
 	SET(PREFIX_LIB_PATH "osx")
 elseif(WIN64)
 	SET(PREFIX_LIB_PATH "win/x64")
@@ -40,19 +54,19 @@ endif()
 include(FetchContent)
 
 # CMAKE GUI Options
+option(WOLF_ENABLE_ACTIVEMQ "Enable ActiveMQ" OFF)
 option(WOLF_ENABLE_AVX2 "Enable AVX2" OFF)
 option(WOLF_ENABLE_AVX512 "Enable AVX512" OFF)
 option(WOLF_ENABLE_CXX_EXTENSIONS "Enable CXX Extensions" OFF)
-option(WOLF_ENABLE_ACTIVEMQ "Enable ActiveMQ" OFF)
 option(WOLF_ENABLE_CURL "Enable CURL" OFF)
-#option(WOLF_ENABLE_DB_CASSANDRA "Enable Cassandra DB" OFF)
 option(WOLF_ENABLE_FIBER "Enable Fiber" OFF)
-option(WOLF_ENABLE_LUA "Enable Lua Scripting" OFF)
+option(WOLF_ENABLE_HTTP1_1_WS "Enable HTTP 1.1 and WebSocket" OFF)
 option(WOLF_ENABLE_LZ4 "Enable LZ4 Compression" OFF)
 option(WOLF_ENABLE_LZMA "Enable LZMA Compression" OFF)
+option(WOLF_ENABLE_LUA "Enable Lua Scripting" OFF)
 option(WOLF_ENABLE_PYTHON3 "Enable Python3 Scripting" OFF)
 option(WOLF_ENABLE_QUIC "Enable QUIC protocol" OFF)
-option(WOLF_ENABLE_WEBSOCKET "Enable Websocket" OFF)
+option(WOLF_ENABLE_SSL "Enable WOLF SSL" OFF)
 
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -81,13 +95,13 @@ FetchContent_Declare(
 )
 
 if(WIN32 OR WIN64)
-# fetch apr
-message("fetching https://github.com/apache/apr.git")
-FetchContent_Declare(
-  apr
-  GIT_REPOSITORY https://github.com/apache/apr.git
-  GIT_TAG        trunk
-)
+    # fetch apr
+    message("fetching https://github.com/apache/apr.git")
+    FetchContent_Declare(
+      apr
+      GIT_REPOSITORY https://github.com/apache/apr.git
+      GIT_TAG        trunk
+    )
 endif()
 
 if(WOLF_ENABLE_CURL)
@@ -100,7 +114,7 @@ if(WOLF_ENABLE_CURL)
 endif()
 
 if(WOLF_ENABLE_LUA)
-    message("fetching https://github.com/torch/luajit-rocks")
+    message("fetching https://github.com/torch/luajit-rocks.git")
     FetchContent_Declare(
         luajit
         GIT_REPOSITORY https://github.com/torch/luajit-rocks.git
@@ -108,17 +122,27 @@ if(WOLF_ENABLE_LUA)
     )
 endif()
 
-if(WOLF_ENABLE_WEBSOCKET)
-    message("fetching https://github.com/madler/zlib")
+if(WOLF_ENABLE_HTTP1_1_WS)
+    message("fetching https://github.com/madler/zlib.git")
     FetchContent_Declare(
         zlib
         GIT_REPOSITORY https://github.com/madler/zlib.git
         GIT_TAG        master
     )
-    message("fetching https://github.com/libuv/libuv")
+    message("fetching https://github.com/libuv/libuv.git")
     FetchContent_Declare(
         libuv
         GIT_REPOSITORY https://github.com/libuv/libuv.git
+        GIT_TAG        master
+    )
+endif()
+
+# we need wolf ssl for uSocket and apr socket
+if(WOLF_ENABLE_SSL OR WOLF_ENABLE_HTTP1_1_WS)
+    message("fetching https://github.com/wolfSSL/wolfssl.git")
+    FetchContent_Declare(
+        wolfssl
+        GIT_REPOSITORY https://github.com/wolfSSL/wolfssl.git
         GIT_TAG        master
     )
 endif()
@@ -131,12 +155,12 @@ set(CMAKE_DEBUG_POSTFIX "" CACHE STRING "" FORCE)
 set(CMAKE_RELEASE_POSTFIX "" CACHE STRING "" FORCE)
 set(CMAKE_MINSIZEREL_POSTFIX "" CACHE STRING "" FORCE)
 set(CMAKE_RELWITHDEBINFO_POSTFIX "" CACHE STRING "" FORCE)
+set(BUILD_TESTING  OFF CACHE BOOL "BUILD_TESTING")
 
 # change some options of CURL
 if(WOLF_ENABLE_CURL)
     set(BUILD_CURL_EXE OFF CACHE BOOL "BUILD_CURL_EXE")
     set(BUILD_SHARED_LIBS OFF CACHE BOOL "BUILD_SHARED_LIBS")
-    set(BUILD_TESTING  OFF CACHE BOOL "BUILD_TESTING")
 endif()
 
 # change some options of LUAJIT
@@ -144,9 +168,10 @@ if(WOLF_ENABLE_LUA)
     set(WITH_LUAJIT21 ON CACHE BOOL "WITH_LUAJIT21")
 endif()
 
-# change some options of LIBUV
-if(WOLF_ENABLE_WEBSOCKET)
-    set(BUILD_TESTING OFF CACHE BOOL "BUILD_TESTING")
+# change some options of WOLFSSL
+if(WOLF_ENABLE_LUA)
+    set(WOLFSSL_EXAMPLES OFF CACHE BOOL "WOLFSSL_EXAMPLES")
+    set(WOLFSSL_CRYPT_TESTS OFF CACHE BOOL "WOLFSSL_CRYPT_TESTS")
 endif()
 
 if(LINUX)
@@ -159,6 +184,10 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 # After the following call, the CMake targets will be defined and available to the rest of the build
+if(WOLF_ENABLE_SSL)
+    FetchContent_MakeAvailable(wolfssl)
+endif()
+
 if (UNIX)
     FetchContent_MakeAvailable(libexpat)
 
@@ -168,17 +197,24 @@ if (UNIX)
         add_custom_target(libamq_target COMMAND /bin/sh -c
         "${CMAKE_CURRENT_SOURCE_DIR}/shell/amq.sh --build_dir=${CMAKE_CURRENT_BINARY_DIR} --${CMAKE_BUILD_TYPE}")
     endif()
-
-    if(APPLE)
+	
+    if(IOS)
         # build apr via shell script
         execute_process(COMMAND chmod +x ${CMAKE_CURRENT_SOURCE_DIR}/shell/apr.sh)
         add_custom_target(libapr_target COMMAND /bin/sh -c
-        "${CMAKE_CURRENT_SOURCE_DIR}/shell/apr.sh --bypass_linux=1 --bypass_ios=1 --bypass_ios_simulator=1 --build_dir=${CMAKE_CURRENT_BINARY_DIR} --${CMAKE_BUILD_TYPE}")
+        "${CMAKE_CURRENT_SOURCE_DIR}/shell/apr.sh --bypass_linux=1 --bypass_macos=1 --bypass_ios_simulator=1 --build_dir=${CMAKE_CURRENT_BINARY_DIR} --arch=${ARCH}  --${CMAKE_BUILD_TYPE}")
+        
+        add_custom_command(TARGET libapr_target PRE_BUILD COMMAND mv ${CMAKE_CURRENT_BINARY_DIR}/_deps/libexpat-build/Debug-iphoneos ${CMAKE_CURRENT_BINARY_DIR}/_deps/libexpat-build/Debug)
+    elseif(APPLE)
+        # build apr via shell script
+        execute_process(COMMAND chmod +x ${CMAKE_CURRENT_SOURCE_DIR}/shell/apr.sh)
+        add_custom_target(libapr_target COMMAND /bin/sh -c
+        "${CMAKE_CURRENT_SOURCE_DIR}/shell/apr.sh --bypass_linux=1 --bypass_ios=1 --bypass_ios_simulator=1 --arch=${CMAKE_SYSTEM_PROCESSOR} --build_dir=${CMAKE_CURRENT_BINARY_DIR} --${CMAKE_BUILD_TYPE}")
     elseif(LINUX)
         # build apr via shell script
         execute_process(COMMAND chmod +x ${CMAKE_CURRENT_SOURCE_DIR}/shell/apr.sh)
         add_custom_target(libapr_target COMMAND /bin/sh -c
-        "${CMAKE_CURRENT_SOURCE_DIR}/shell/apr.sh --bypass_ios=1 --bypass_ios_simulator=1 --bypass_macos=1 --build_dir=${CMAKE_CURRENT_BINARY_DIR} --${CMAKE_BUILD_TYPE}")
+        "${CMAKE_CURRENT_SOURCE_DIR}/shell/apr.sh --bypass_ios=1 --bypass_ios_simulator=1 --bypass_macos=1  --arch=${CMAKE_SYSTEM_PROCESSOR} --build_dir=${CMAKE_CURRENT_BINARY_DIR} --${CMAKE_BUILD_TYPE}")
     endif()
 else()
     FetchContent_MakeAvailable(libexpat    apr)
@@ -195,14 +231,23 @@ if(WOLF_ENABLE_LUA)
 endif()
  
 #fetch websocket
-if(WOLF_ENABLE_WEBSOCKET)
+if(WOLF_ENABLE_HTTP1_1_WS)
     FetchContent_MakeAvailable(zlib libuv)
 endif()
 
+if(IOS)
+    set(CMAKE_OSX_SYSROOT iphoneos)
+    set(CMAKE_SYSTEM_NAME iOS)
+    set(CMAKE_OSX_ARCHITECTURES ${ARCH})
+endif()
+
 # create filter for each folder
+if(NOT IOS)
 file(GLOB_RECURSE W_BASE64_SRC_DIR
     "${CMAKE_CURRENT_SOURCE_DIR}/w_base64/*"
 )
+endif()
+
 file(GLOB_RECURSE W_CHRONO_SRC_DIR
     "${CMAKE_CURRENT_SOURCE_DIR}/w_chrono/*"
 )
@@ -210,7 +255,7 @@ file(GLOB_RECURSE W_COMPRESSION_LZ4_SRC_DIR
     "${CMAKE_CURRENT_SOURCE_DIR}/w_compression/lz4/*"
 )
 
-if (MSVC)
+if(MSVC)
 file(GLOB_RECURSE W_COMPRESSION_LZMA_SRC_DIR
     "${CMAKE_CURRENT_SOURCE_DIR}/w_compression/lzma/*"
 )
@@ -319,22 +364,31 @@ file(GLOB_RECURSE W_NET_ASIO_SRC_DIR
 	"${CMAKE_CURRENT_SOURCE_DIR}/w_net/asio/fiber_client_server.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/w_net/asio/fiber_client_server.h"
 )
+file(GLOB_RECURSE W_NET_HTTP1_1_HELPERS_SRC_DIR
+	"${CMAKE_CURRENT_SOURCE_DIR}/w_net/http/helpers/AsyncFileReader.hpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/w_net/http/helpers/AsyncFileStreamer.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_net/http/helpers/Middleware.hpp"
+)
+file(GLOB_RECURSE W_NET_HTTP1_1_SRC_DIR
+	"${CMAKE_CURRENT_SOURCE_DIR}/w_net/http/http.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_net/http/http.h"
+)
 file(GLOB_RECURSE W_NET_WS_USOCKETS_CRYPTO_SRC_DIR
-    "${CMAKE_CURRENT_SOURCE_DIR}/w_net/ws/uSockets/crypto/*"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_net/uSockets/crypto/*"
 )
 file(GLOB_RECURSE W_NET_WS_USOCKETS_EVENTING_SRC_DIR
-    "${CMAKE_CURRENT_SOURCE_DIR}/w_net/ws/uSockets/eventing/*"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_net/uSockets/eventing/*"
 )
 file(GLOB_RECURSE W_NET_WS_USOCKETS_INTERNAL_SRC_DIR
-    "${CMAKE_CURRENT_SOURCE_DIR}/w_net/ws/uSockets/internal/*"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_net/uSockets/internal/*"
 )
 file(GLOB_RECURSE W_NET_WS_USOCKETS_SRC_DIR
-    "${CMAKE_CURRENT_SOURCE_DIR}/w_net/ws/uSockets/bsd.c"
-    "${CMAKE_CURRENT_SOURCE_DIR}/w_net/ws/uSockets/context.c"
-    "${CMAKE_CURRENT_SOURCE_DIR}/w_net/ws/uSockets/libusockets.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/w_net/ws/uSockets/loop.c"
-    "${CMAKE_CURRENT_SOURCE_DIR}/w_net/ws/uSockets/socket.c"
-    "${CMAKE_CURRENT_SOURCE_DIR}/w_net/ws/uSockets/verson.txt"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_net/uSockets/bsd.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_net/uSockets/context.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_net/uSockets/libusockets.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_net/uSockets/loop.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_net/uSockets/socket.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_net/uSockets/verson.txt"
 )
 file(GLOB_RECURSE W_NET_WS_UWEBSOCKETS_SRC_DIR
     "${CMAKE_CURRENT_SOURCE_DIR}/w_net/ws/uWebSockets/*"
@@ -346,6 +400,7 @@ file(GLOB_RECURSE W_NET_WS_SRC_DIR
     "${CMAKE_CURRENT_SOURCE_DIR}/w_net/ws/ws.h"
 )
 file(GLOB_RECURSE W_NET_SRC_DIR
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_net/test.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/w_net/w_net.c"
     "${CMAKE_CURRENT_SOURCE_DIR}/w_net/w_net.h"
 )
@@ -400,8 +455,8 @@ if (WOLF_ENABLE_QUIC)
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}/_deps/quiche/include/)
 endif()
 
-if(WOLF_ENABLE_WEBSOCKET)
-    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/w_net/ws/uSockets)
+if(WOLF_ENABLE_HTTP1_1_WS)
+    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/w_net/uSockets)
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}/_deps/openSSL/include)
     include_directories(${CMAKE_CURRENT_BINARY_DIR}/_deps/zlib-src)
     include_directories(${CMAKE_CURRENT_BINARY_DIR}/_deps/zlib-build)
@@ -433,6 +488,8 @@ add_library(${PROJECT_NAME} ${LIBRARY_TYPE}
     ${W_NET_AMQ_SRC_DIR}
     ${W_NET_ASIO_IMP_SRC_DIR}
     ${W_NET_ASIO_SRC_DIR}
+    ${W_NET_HTTP1_1_HELPERS_SRC_DIR}
+    ${W_NET_HTTP1_1_SRC_DIR}
     ${W_NET_WS_USOCKETS_CRYPTO_SRC_DIR}
     ${W_NET_WS_USOCKETS_EVENTING_SRC_DIR}
     ${W_NET_WS_USOCKETS_INTERNAL_SRC_DIR}
@@ -481,10 +538,12 @@ endif()
  source_group("w_net/amq" FILES ${W_NET_AMQ_SRC_DIR})
  source_group("w_net/asio/imp" FILES ${W_NET_ASIO_IMP_SRC_DIR})
  source_group("w_net/asio" FILES ${W_NET_ASIO_SRC_DIR})
- source_group("w_net/ws/uSockets/crypto" FILES ${W_NET_WS_USOCKETS_CRYPTO_SRC_DIR})
- source_group("w_net/ws/uSockets/eventing" FILES ${W_NET_WS_USOCKETS_EVENTING_SRC_DIR})
- source_group("w_net/ws/uSockets/internal" FILES ${W_NET_WS_USOCKETS_INTERNAL_SRC_DIR})
- source_group("w_net/ws/uSockets" FILES ${W_NET_WS_USOCKETS_SRC_DIR})
+ source_group("w_net/http/helpers" FILES ${W_NET_HTTP1_1_HELPERS_SRC_DIR})
+ source_group("w_net/http" FILES ${W_NET_HTTP1_1_SRC_DIR})
+ source_group("w_net/uSockets/crypto" FILES ${W_NET_WS_USOCKETS_CRYPTO_SRC_DIR})
+ source_group("w_net/uSockets/eventing" FILES ${W_NET_WS_USOCKETS_EVENTING_SRC_DIR})
+ source_group("w_net/uSockets/internal" FILES ${W_NET_WS_USOCKETS_INTERNAL_SRC_DIR})
+ source_group("w_net/uSockets" FILES ${W_NET_WS_USOCKETS_SRC_DIR})
  source_group("w_net/ws/uWebSockets" FILES ${W_NET_WS_UWEBSOCKETS_SRC_DIR})
  source_group("w_net/ws" FILES ${W_NET_WS_SRC_DIR})
  source_group("w_net" FILES ${W_NET_SRC_DIR})
@@ -495,7 +554,7 @@ endif()
  source_group("wolf" FILES ${WOLF_SRC_DIR})
  
  #set c++17 
- target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
+ #target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
 
  # set global compiler options
 target_compile_definitions(${PROJECT_NAME} PUBLIC
@@ -534,12 +593,13 @@ if (WOLF_ENABLE_ACTIVEMQ)
 endif()
 
 if (WOLF_ENABLE_AVX2)
-    if (APPLE)
+    if (APPLE OR IOS)
          macro (set_xcode_property TARGET XCODE_PROPERTY XCODE_VALUE)
             set_property (TARGET ${TARGET} PROPERTY
                 XCODE_ATTRIBUTE_${XCODE_PROPERTY} ${XCODE_VALUE})
          endmacro (set_xcode_property)
             set_xcode_property(${PROJECT_NAME} CLANG_X86_VECTOR_INSTRUCTIONS "avx2")
+			set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS -liconv)
     elseif (LINUX)
         set (AVX2_FLAGS "-D__AVX -DUSE_AVX2")
         set (AVX2_FLAGS "${AVX2_FLAGS} -mavx2 -mfma")
@@ -585,6 +645,13 @@ if (WOLF_ENABLE_FIBER)
     )
 endif()
 
+#set HTTP1.1 compile definitions
+if (WOLF_ENABLE_HTTP1_1_SERVER)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC
+        WOLF_ENABLE_HTTP1_1_SERVER
+    )
+endif()
+
  # set LUA compile definitions
 if (WOLF_ENABLE_LUA)
     target_compile_definitions(${PROJECT_NAME} PUBLIC
@@ -619,15 +686,29 @@ if (WOLF_ENABLE_QUIC)
     )
 endif()
 
-if (WOLF_ENABLE_WEBSOCKET)
+if (WOLF_ENABLE_HTTP1_1_WS)
+
     target_compile_definitions(${PROJECT_NAME} PUBLIC
-        WOLF_ENABLE_WEBSOCKET
         LIBUS_USE_LIBUV
-        LIBUS_USE_OPENSSL
+        #LIBUS_USE_OPENSSL
+        LIBUS_USE_WOLFSSL
+        WOLF_ENABLE_HTTP1_1_WS
     )
 endif()
 
-if (APPLE)
+
+# signing project
+if(IOS)
+    set_xcode_property(${PROJECT_NAME} CODE_SIGN_IDENTITY "Apple Development")
+    
+    if(NOT ${DEVELOPMENT_TEAM_ID})
+        set (DEVELOPMENT_TEAM_ID "2UKL252SVF")
+    endif()
+    
+    set_xcode_property(${PROJECT_NAME} DEVELOPMENT_TEAM "2UKL252SVF")
+endif()
+
+if (APPLE OR IOS)
     set_source_files_properties("${CMAKE_CURRENT_SOURCE_DIR}/io/w_io.c" PROPERTIES COMPILE_FLAGS "-x objective-c" )
 endif()
 
@@ -642,7 +723,7 @@ endif()
 
 if (WIN32 OR WIN64)
     target_link_libraries(${PROJECT_NAME} PRIVATE  expat apr-2 Shlwapi)
-elseif(APPLE)
+elseif(APPLE OR IOS)
     target_link_libraries(${PROJECT_NAME} PRIVATE  "-framework Foundation" expat)
     target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_BINARY_DIR}/_deps/apr-build/${CMAKE_BUILD_TYPE}/lib/libapr-1.a)
 elseif(UNIX)
@@ -710,16 +791,8 @@ if (WOLF_ENABLE_FIBER)
     endif()
 endif()
 
-#link lua dynamic library
-if(WOLF_ENABLE_LUA)
-    target_link_libraries(${PROJECT_NAME} PRIVATE  luajit-static)
-endif()
-
-if (WOLF_ENABLE_QUIC)
-    target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/quiche/lib/${PREFIX_LIB_PATH}/${CMAKE_BUILD_TYPE}/quiche.lib)	
-endif()
-
-if (WOLF_ENABLE_WEBSOCKET)
+#link uSockets
+if (WOLF_ENABLE_HTTP1_1_WS)
     target_link_libraries(${PROJECT_NAME} PRIVATE  uv_a)
     target_link_libraries(${PROJECT_NAME} PRIVATE  zlibstatic)
     if(MSVC)
@@ -729,6 +802,21 @@ if (WOLF_ENABLE_WEBSOCKET)
         target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/openSSL/lib/${PREFIX_LIB_PATH}/libcrypto.a)
         target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/openSSL/lib/${PREFIX_LIB_PATH}/libssl.a)
     endif()
+endif()
+
+#link lua library
+if(WOLF_ENABLE_LUA)
+    target_link_libraries(${PROJECT_NAME} PRIVATE  luajit-static)
+endif()
+
+#link quiche library
+if (WOLF_ENABLE_QUIC)
+    target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/quiche/lib/${PREFIX_LIB_PATH}/${CMAKE_BUILD_TYPE}/quiche.lib)	
+endif()
+
+#link wolfssl library
+if (WOLF_ENABLE_SSL)
+    target_link_libraries(${PROJECT_NAME} PRIVATE wolfssl)	
 endif()
 
 SET(TEST_PROJECT_NAME "${PROJECT_NAME}_test")

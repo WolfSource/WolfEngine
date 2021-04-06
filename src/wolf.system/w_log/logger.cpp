@@ -33,6 +33,7 @@ logger::logger(
         _log_path) != W_SUCCESS)
     {
         //create the directory of log inside the root directory
+        //TODO
         w_io_dir_create(pMemPool, _log_path);
     }
 

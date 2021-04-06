@@ -27,11 +27,8 @@ extract_apr_trunk()
     ################################
     cd "$DIR/_deps"
 
-    if [ $BYPASS_LINUX == 0 ]
-    then
-        git clone https://github.com/apache/apr.git #-b master
-        mv "$DIR/_deps/apr" "$DIR/_deps/apr-src"
-    fi
+    git clone https://github.com/apache/apr.git #-b master
+    mv "$DIR/_deps/apr" "$DIR/_deps/apr-src"
 }
 
 #################################### INIT ####################################################
@@ -44,7 +41,9 @@ BYPASS_TESTS=0
 IS_EXPAT_LIB=1
 IS_EXPAT_INCLUDE=1
 BUILD_MODES="Debug"
+TARGET=""
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+SHELL_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 ################################
 # Check if parameters options  #
@@ -53,28 +52,31 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 while [ "$1" != "" ]; do
     case $1 in
         --bypass_macos=* )          BYPASS_MACOS="${1#*=}"
-                                    shift 6
+                                    shift 7
                                     ;;
         --bypass_ios=* )            BYPASS_IOS="${1#*=}"
-                                    shift 6
+                                    shift 7
                                     ;;
         --bypass_ios_simulator=* )  BYPASS_IOS_SIMULATOR="${1#*=}"
-                                    shift 6
+                                    shift 7
                                     ;;
         --bypass_linux=* )          BYPASS_LINUX="${1#*=}"
-                                    shift 6
+                                    shift 7
                                     ;;
         --without-test=* )          BYPASS_TESTS="${1#*=}"
-                                    shift 6
+                                    shift 7
                                     ;;
         --Debug )                   BUILD_MODES="Debug"
-                                    shift 6
+                                    shift 7
                                     ;;
         --Release )                 BUILD_MODES="Release"
-                                    shift 6
+                                    shift 7
                                     ;;
         --build_dir=* )             DIR="${1#*=}"
-                                    shift 6
+                                    shift 7
+                                    ;;
+        --arch=* )                  TARGET="${1#*=}"
+                                    shift 7
                                     ;;
         -h | --help )               display_help
                                     exit 0
@@ -85,6 +87,8 @@ while [ "$1" != "" ]; do
         esac
         shift
 done
+
+echo $TARGET
 
 if [ $BYPASS_MACOS == 1 ] && [ $BYPASS_IOS == 1 ] && [ $BYPASS_IOS_SIMULATOR == 1 ] && [ $BYPASS_LINUX == 1 ]
 then
@@ -101,17 +105,25 @@ fi
 # Check if expat is available  #
 # on building system           #
 ################################
-check_libexpat() {    
+check_libexpat() {
+
+    if [[ -f "/usr/lib/libxml2.a" ]] || [[ -f "/usr/lib/libxml2.dylib" ]]
+    then
+        return
+    fi
+
     if [[ ! -f "/usr/lib/libexpat.a" ]]
     then
-        if [[ ! -f "$DIR/_deps/libexpat-build/libexpat.a" ]]
+        if [[ ! -f "$DIR/_deps/libexpat-build/$1/libexpat.a" ]] && [[ ! -f "$DIR/_deps/libexpat-build/libexpat.a" ]] && [[ ! -f "$DIR/_deps/libexpat-build/lib/libexpat.a" ]]
         then
             echo "Missing a file! Build libexpat and then try again."
             echo "Building APR failed. Returning..."
             exit
         else
             IS_EXPAT_LIB=0
+            sudo cp "$DIR/_deps/libexpat-build/$1/libexpat.a" "/usr/lib"
             sudo cp "$DIR/_deps/libexpat-build/libexpat.a" "/usr/lib"
+            sudo cp "$DIR/_deps/libexpat-build/lib/libexpat.a" "/usr/lib"
             sudo cp "$DIR/_deps/libexpat-build/expat.pc" "/usr/lib"
         fi
     else
@@ -130,9 +142,12 @@ check_libexpat() {
     fi
 }
 
+mkdir -p "$DIR/_deps/"
+extract_apr_trunk
+
 ################################
 # Copy gen_test_char to        #
-# /apr-trunk/tools if          #expat.pc
+# /apr-trunk/tools if          #
 # --bypass-macos is enabled.   #
 # These files are generated    #
 # during building apr for MacOS#
@@ -144,20 +159,14 @@ check_libexpat() {
 ################################
 if [ $BYPASS_MACOS == 1 ] && [ $BYPASS_LINUX == 1 ]
 then
-    if [[ ! -f "$DIR/tools/gen_test_char" ]] || [[ ! -f "$DIR/tools/gen_test_char.c" ]]
+    if [[ ! -f "$SHELL_DIR/tools/gen_test_char" ]]
     then
-        echo "Missing a file! Extract the apr.zip and run the script again."
+        echo "Missing a file!"
         echo "Building APR failed. Returning..."
         exit
     fi
-    cp "$DIR/tools/gen_test_char" "$DIR"
-    cp "$DIR/tools/gen_test_char.c" "$DIR"
+    cp "$SHELL_DIR/tools/gen_test_char" "$DIR/_deps/apr-src/tools"
 fi
-
-mkdir -p "$DIR/_deps/"
-extract_apr_trunk
-
-#BUILD_MODES="Release Debug"
 
 #################################### Building for MacOS ########################################
 if [ $BYPASS_MACOS == 0 ]
@@ -168,8 +177,13 @@ then
     echo "Building APR for MacOS..."
     echo
     echo
-    
-    ARCHS="x86_64"
+        
+    if [ "$TARGET" = "" ]
+    then
+        ARCHS="x86_64"
+    else
+        ARCHS="$TARGET"
+    fi
     
     for build_mode in $BUILD_MODES
     do
@@ -204,10 +218,14 @@ then
                     TARGET="x86_64-apple-darwin"
                 fi
                 
+                if [ $IS_EXPAT_LIB == 0 ]
+                then
+                    CONFIGURE_FLAGS="$CONFIGURE_FLAGS --with-expat=$DIR/_deps/libexpat-build"
+                fi
+                
                 ./configure \
                     --prefix=$PREFIX \
                     --host=$TARGET \
-                    --with-expat=$DIR/_deps/libexpat-build \
                     $CONFIGURE_FLAGS \
                     ac_cv_file__dev_zero="yes" \
                     ac_cv_func_setpgrp_void="yes" \
@@ -245,8 +263,17 @@ then
     
     DEVROOT="$XCODE_ROOT/Platforms/iPhoneOS.platform/Developer"
     SDKROOT="$DEVROOT/SDKs/iPhoneOS.sdk"
-
-    ARCHS="arm64 armv7 armv7s"
+    
+    echo "TARGET   $TARGET"
+    
+    if [ "$TARGET" = "" ]
+    then
+        ARCHS="arm64 armv7 armv7s"
+    else
+        ARCHS="$TARGET"
+    fi
+    
+    echo "ARCHS   $ARCHS"
     
     for build_mode in $BUILD_MODES
     do
@@ -255,7 +282,7 @@ then
             
                 echo "building $ARCH..."
                                       
-                check_libexpat $build_mode $ARCH
+                check_libexpat "${build_mode}" $ARCH
 
                 cd $DIR/_deps/apr-src
                 ./buildconf
@@ -303,10 +330,14 @@ then
                    exit 1
                 fi
 
+                if [ $IS_EXPAT_LIB == 0 ]
+                then
+                    CONFIGURE_FLAGS="$CONFIGURE_FLAGS --with-expat=$DIR/_deps/libexpat-build"
+                fi
+                
                 ./configure \
                     --prefix="$PREFIX" \
                     --host=$TARGET \
-                    --with-expat=$DIR/_deps/libexpat-build \
                     $CONFIGURE_FLAGS \
                     ac_cv_file__dev_zero="yes" \
                     ac_cv_func_setpgrp_void="yes" \
@@ -337,6 +368,9 @@ then
                 fi
 
                 make install
+                
+                cp -R "$DIR/_deps/apr-build/Debug/$ARCH/lib" "$DIR/_deps/apr-build/Debug/"
+
             done
     done
 fi
@@ -353,8 +387,13 @@ then
      
      DEVROOT="$XCODE_ROOT/Platforms/iPhoneSimulator.platform/Developer"
      SDKROOT="$DEVROOT/SDKs/iPhoneSimulator.sdk"
-     
-     ARCHS="i386 x86_64"
+          
+    if [ "$TARGET" = "" ]
+    then
+        ARCHS="i386 x86_64"
+    else
+        ARCHS="$TARGET"
+    fi
 
      for build_mode in $BUILD_MODES
      do
@@ -410,11 +449,15 @@ then
                    echo "The iPhone-Simulator SDK could not be found. Folder \"$SDKROOT\" does not exist."
                    exit 1
                 fi
+                
+                if [ $IS_EXPAT_LIB == 0 ]
+                then
+                    CONFIGURE_FLAGS="$CONFIGURE_FLAGS --with-expat=$DIR/_deps/libexpat-build"
+                fi
 
                 ./configure \
                     --prefix="$PREFIX" \
                     --host=$TARGET \
-                    --with-expat=$DIR/_deps/libexpat-build \
                     $CONFIGURE_FLAGS \
                     ac_cv_file__dev_zero="yes" \
                     ac_cv_func_setpgrp_void="yes" \
@@ -456,8 +499,13 @@ then
     echo "Building APR for Linux..."
     echo
     echo
-    
-    ARCHS="x86_64"
+        
+    if [ "$TARGET" = "" ]
+    then
+        ARCHS="x86_64"
+    else
+        ARCHS="$TARGET"
+    fi
     
     for build_mode in $BUILD_MODES
     do
@@ -503,11 +551,15 @@ then
                 	mkdir $DIR/_deps/libexpat-build/lib
                 	cp $DIR/_deps/libexpat-build/libexpat.a $DIR/_deps/libexpat-build/lib
                 fi
+                
+                if [ $IS_EXPAT_LIB == 0 ]
+                then
+                    CONFIGURE_FLAGS="$CONFIGURE_FLAGS --with-expat=$DIR/_deps/libexpat-build"
+                fi
 
                 ./configure \
                     --prefix=$PREFIX \
                     --host=$TARGET \
-                    --with-expat=/usr/lib \
                     $CONFIGURE_FLAGS
 
                 if [ "$build_mode" = "Debug" ]

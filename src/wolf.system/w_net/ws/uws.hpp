@@ -9,7 +9,7 @@
 
 #pragma once
 
-#ifdef WOLF_ENABLE_WEBSOCKET
+#ifdef WOLF_ENABLE_HTTP1_1_WS
 
 #include <functional>
 #include "uWebSockets/App.h"
@@ -31,7 +31,7 @@ public:
         unsigned int pMaxPayloadLength,
         unsigned int pIdleTimeout,
         unsigned int pMaxBackPressure,
-        std::function<void(void*, int)> pOnListened,
+        std::function<void(void*, const int)> pOnListened,
         std::function<bool(w_arg*)> pOnOpened,
         std::function<const char* (const char*, size_t, int*, w_arg*)> pOnMessage,
         std::function<void(const char*, size_t, int, w_arg*)> pOnClosed);

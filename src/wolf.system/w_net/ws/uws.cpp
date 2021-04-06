@@ -1,6 +1,6 @@
 #include "uws.hpp"
 
-#ifdef WOLF_ENABLE_WEBSOCKET
+#ifdef WOLF_ENABLE_HTTP1_1_WS
 
 #include <w_io/w_io.h>
 

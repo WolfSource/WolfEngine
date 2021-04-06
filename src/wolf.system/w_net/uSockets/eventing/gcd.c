@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-#ifdef WOLF_ENABLE_WEBSOCKET
+#ifdef WOLF_ENABLE_HTTP1_1_WS
 
 #include "libusockets.h"
 #include "internal/internal.h"

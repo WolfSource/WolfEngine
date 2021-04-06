@@ -1,6 +1,6 @@
-#include "ws.h"
+#ifdef WOLF_ENABLE_HTTP1_1_WS
 
-#ifdef WOLF_ENABLE_WEBSOCKET
+#include "ws.h"
 
 #include <apr.h>
 #include <apr_general.h>
@@ -64,11 +64,11 @@ W_RESULT ws_run(_In_ ws pWS,
     return _rt;
 }
 
-void ws_stop(_Inout_ void* pSocket, _In_ const bool pSSL)
+void ws_stop(_Inout_ void* pUSocket, _In_ const bool pSSL)
 {
-    if (pSocket)
+    if (pUSocket)
     {
-        auto _s = (struct us_listen_socket_t*)pSocket;
+        auto _s = (struct us_listen_socket_t*)pUSocket;
         us_listen_socket_close(pSSL, _s);
     }
 }

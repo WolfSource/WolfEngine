@@ -14,7 +14,12 @@ extern "C" {
 #endif
 
 #include "wolf.h"
+
+#ifdef WOLF_ENABLE_HTTP1_1_WS
 #include "ws/ws.h"
+#include "http/http.h"
+#endif
+
 #include <w_memory/w_array.h>
 #include <w_concurrency/w_thread.h>
 
@@ -194,7 +199,7 @@ extern "C" {
             _Inout_ w_socket pSocket,
             _Inout_ w_buffer pBuffer);
 
-#ifdef WOLF_ENABLE_WEBSOCKET
+#ifdef WOLF_ENABLE_HTTP1_1_WS
 
     /**
      * run a websocket server and block the current thread
@@ -245,11 +250,11 @@ extern "C" {
 
     /**
     * run a websocket server and block the current thread
-    * @param pSocket pointer to socket object
+    * @param pSocket pointer to uSocket object
     * @param pSSL is SSL socket
    */
     W_SYSTEM_EXPORT
-        void w_net_ws_close(_Inout_ void* pSocket, _In_ const bool pSSL);
+        void w_net_ws_close(_Inout_ void* pUSocket, _In_ const bool pSSL);
 
 #endif
 
@@ -567,6 +572,40 @@ extern "C" {
 
 #endif
 
+#ifdef WOLF_ENABLE_HTTP1_1_WS
+
+    /**
+     * run a http server and block the current thread
+     * @param pSSL enable SSL
+     * @param pCertFilePath the certificate path for SSL. use nullptr if pSSL is false
+     * @param pPrivateKeyFilePath the private key file for SSL. use nullptr if pSSL is false
+     * @param pPassPhrase set Pass Pharse
+     * @param pRoot the root of serving.
+     * @param pURLPath the url path of serving, default is /*
+     * @param pPort the websocket port
+     * @param pOnListened on listened callback
+     * @return result code
+     */
+    W_SYSTEM_EXPORT
+        void w_net_run_http1_1_server(
+            _In_ const bool pSSL,
+            _In_opt_z_ const char* pCertFilePath,
+            _In_opt_z_ const char* pPrivateKeyFilePath,
+            _In_opt_z_ const char* pPassPhrase,
+            _In_opt_z_ const char* pRoot,
+            _In_opt_z_ const char* pURLPath,
+            _In_ const int pPort,
+            _In_ http_on_listened_fn pOnListened);
+
+    /**
+     * stop http1.1 server
+     * @param pUSocket pointer to uSocket object
+     * @param pSSL is SSL socket
+     */
+    W_SYSTEM_EXPORT
+        void w_net_stop_http1_1_server(_Inout_ void* pUSocket, _In_ const bool pSSL);
+
+#endif
 
 #ifdef __cplusplus
 }

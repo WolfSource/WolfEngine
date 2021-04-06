@@ -18,7 +18,7 @@
 /* This Server Name Indication hostname tree is written in C++ but could be ported to C.
  * Overall it looks like crap, but has no memory allocations in fast path and is O(log n). */
 
-#ifdef WOLF_ENABLE_WEBSOCKET
+#ifdef WOLF_ENABLE_HTTP1_1_WS
 
 #ifndef SNI_TREE_H
 #define SNI_TREE_H
