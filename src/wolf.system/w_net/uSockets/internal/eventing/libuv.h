@@ -15,8 +15,9 @@
  * limitations under the License.
  */
 
-#ifndef LIBUV_H
-#define LIBUV_H
+#ifdef WOLF_ENABLE_HTTP1_1_WS
+
+#pragma once
 
 #include "internal/loop_data.h"
 
@@ -27,11 +28,11 @@
 struct us_loop_t {
     alignas(LIBUS_EXT_ALIGNMENT) struct us_internal_loop_data_t data;
 
-    uv_loop_t *uv_loop;
+    uv_loop_t* uv_loop;
     int is_default;
 
-    uv_prepare_t *uv_pre;
-    uv_check_t *uv_check;
+    uv_prepare_t* uv_pre;
+    uv_check_t* uv_check;
 };
 
 struct us_poll_t {
@@ -40,4 +41,4 @@ struct us_poll_t {
     unsigned char poll_type;
 };
 
-#endif // LIBUV_H
+#endif // WOLF_ENABLE_HTTP1_1_WS

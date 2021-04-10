@@ -15,13 +15,14 @@
  * limitations under the License.
  */
 
-#ifndef BSD_H
-#define BSD_H
+#ifdef WOLF_ENABLE_HTTP1_1_WS
 
-// top-most wrapper of bsd-like syscalls
+#pragma once
 
-// holds everything you need from the bsd/winsock interfaces, only included by internal libusockets.h
-// here everything about the syscalls are inline-wrapped and included
+ // top-most wrapper of bsd-like syscalls
+
+ // holds everything you need from the bsd/winsock interfaces, only included by internal libusockets.h
+ // here everything about the syscalls are inline-wrapped and included
 
 #ifdef _WIN32
 #ifndef NOMINMAX
@@ -43,7 +44,7 @@
 struct bsd_addr_t {
     struct sockaddr_storage mem;
     socklen_t len;
-    char *ip;
+    char* ip;
     int ip_length;
 };
 
@@ -56,25 +57,25 @@ LIBUS_SOCKET_DESCRIPTOR bsd_create_socket(int domain, int type, int protocol);
 void bsd_close_socket(LIBUS_SOCKET_DESCRIPTOR fd);
 void bsd_shutdown_socket(LIBUS_SOCKET_DESCRIPTOR fd);
 
-void internal_finalize_bsd_addr(struct bsd_addr_t *addr);
+void internal_finalize_bsd_addr(struct bsd_addr_t* addr);
 
-int bsd_socket_addr(LIBUS_SOCKET_DESCRIPTOR fd, struct bsd_addr_t *addr);
+int bsd_socket_addr(LIBUS_SOCKET_DESCRIPTOR fd, struct bsd_addr_t* addr);
 
-char *bsd_addr_get_ip(struct bsd_addr_t *addr);
+char* bsd_addr_get_ip(struct bsd_addr_t* addr);
 
-int bsd_addr_get_ip_length(struct bsd_addr_t *addr);
+int bsd_addr_get_ip_length(struct bsd_addr_t* addr);
 
 // called by dispatch_ready_poll
-LIBUS_SOCKET_DESCRIPTOR bsd_accept_socket(LIBUS_SOCKET_DESCRIPTOR fd, struct bsd_addr_t *addr);
+LIBUS_SOCKET_DESCRIPTOR bsd_accept_socket(LIBUS_SOCKET_DESCRIPTOR fd, struct bsd_addr_t* addr);
 
-int bsd_recv(LIBUS_SOCKET_DESCRIPTOR fd, void *buf, int length, int flags);
-int bsd_send(LIBUS_SOCKET_DESCRIPTOR fd, const char *buf, int length, int msg_more);
+int bsd_recv(LIBUS_SOCKET_DESCRIPTOR fd, void* buf, int length, int flags);
+int bsd_send(LIBUS_SOCKET_DESCRIPTOR fd, const char* buf, int length, int msg_more);
 int bsd_would_block();
 
 // return LIBUS_SOCKET_ERROR or the fd that represents listen socket
 // listen both on ipv6 and ipv4
-LIBUS_SOCKET_DESCRIPTOR bsd_create_listen_socket(const char *host, int port, int options);
+LIBUS_SOCKET_DESCRIPTOR bsd_create_listen_socket(const char* host, int port, int options);
 
-LIBUS_SOCKET_DESCRIPTOR bsd_create_connect_socket(const char *host, int port, const char *source_host, int options);
+LIBUS_SOCKET_DESCRIPTOR bsd_create_connect_socket(const char* host, int port, const char* source_host, int options);
 
-#endif // BSD_H
+#endif // WOLF_ENABLE_HTTP1_1_WS

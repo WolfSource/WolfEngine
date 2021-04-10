@@ -15,8 +15,9 @@
  * limitations under the License.
  */
 
-#ifndef GCD_H
-#define GCD_H
+#ifdef WOLF_ENABLE_HTTP1_1_WS
+
+#pragma once
 
 #include "internal/loop_data.h"
 
@@ -37,4 +38,4 @@ struct us_poll_t {
     unsigned char poll_type;
 };
 
-#endif // GCD_H
+#endif // WOLF_ENABLE_HTTP1_1_WS

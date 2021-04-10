@@ -15,8 +15,9 @@
  * limitations under the License.
  */
 
-#ifndef EPOLL_KQUEUE_H
-#define EPOLL_KQUEUE_H
+#ifdef WOLF_ENABLE_HTTP1_1_WS
+
+#pragma once
 
 #include "internal/loop_data.h"
 
@@ -28,8 +29,8 @@
 #define LIBUS_SOCKET_WRITABLE EPOLLOUT
 #else
 #include <sys/event.h>
-/* Kqueue's EVFILT_ is NOT a bitfield, you cannot OR together them.
- * We therefore have our own bitfield we then translate in every call */
+ /* Kqueue's EVFILT_ is NOT a bitfield, you cannot OR together them.
+  * We therefore have our own bitfield we then translate in every call */
 #define LIBUS_SOCKET_READABLE 1
 #define LIBUS_SOCKET_WRITABLE 2
 #endif
@@ -64,4 +65,4 @@ struct us_poll_t {
     } state;
 };
 
-#endif // EPOLL_KQUEUE_H
+#endif // WOLF_ENABLE_HTTP1_1_WS

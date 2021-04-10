@@ -34,6 +34,9 @@ endif()
 
 if (IOS)
     SET(PREFIX_LIB_PATH "ios")
+    if(NOT ${DEVELOPMENT_TEAM_ID})
+        set (DEVELOPMENT_TEAM_ID "")# set your dev id for signing package
+    endif()  
 elseif(APPLE)
 	SET(PREFIX_LIB_PATH "osx")
 elseif(WIN64)
@@ -66,7 +69,7 @@ option(WOLF_ENABLE_LZMA "Enable LZMA Compression" OFF)
 option(WOLF_ENABLE_LUA "Enable Lua Scripting" OFF)
 option(WOLF_ENABLE_PYTHON3 "Enable Python3 Scripting" OFF)
 option(WOLF_ENABLE_QUIC "Enable QUIC protocol" OFF)
-option(WOLF_ENABLE_SSL "Enable WOLF SSL" OFF)
+#option(WOLF_ENABLE_SSL "Enable WOLF SSL" OFF)
 
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -138,14 +141,14 @@ if(WOLF_ENABLE_HTTP1_1_WS)
 endif()
 
 # we need wolf ssl for uSocket and apr socket
-if(WOLF_ENABLE_SSL OR WOLF_ENABLE_HTTP1_1_WS)
-    message("fetching https://github.com/wolfSSL/wolfssl.git")
-    FetchContent_Declare(
-        wolfssl
-        GIT_REPOSITORY https://github.com/wolfSSL/wolfssl.git
-        GIT_TAG        master
-    )
-endif()
+#if(WOLF_ENABLE_SSL)
+#    message("fetching https://github.com/wolfSSL/wolfssl.git")
+#    FetchContent_Declare(
+#        wolfssl
+#        GIT_REPOSITORY https://github.com/wolfSSL/wolfssl.git
+#        GIT_TAG        master
+#    )
+#endif()
 
 # change some options of CMAKE dependencies
 set(EXPAT_SHARED_LIBS OFF CACHE BOOL "EXPAT_SHARED_LIBS")
@@ -184,9 +187,9 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 # After the following call, the CMake targets will be defined and available to the rest of the build
-if(WOLF_ENABLE_SSL)
-    FetchContent_MakeAvailable(wolfssl)
-endif()
+#if(WOLF_ENABLE_SSL)
+#    FetchContent_MakeAvailable(wolfssl)
+#endif()
 
 if (UNIX)
     FetchContent_MakeAvailable(libexpat)
@@ -379,8 +382,17 @@ file(GLOB_RECURSE W_NET_WS_USOCKETS_CRYPTO_SRC_DIR
 file(GLOB_RECURSE W_NET_WS_USOCKETS_EVENTING_SRC_DIR
     "${CMAKE_CURRENT_SOURCE_DIR}/w_net/uSockets/eventing/*"
 )
+file(GLOB_RECURSE W_NET_WS_USOCKETS_INTERNAL_EVENTING_SRC_DIR
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_net/uSockets/internal/eventing/epoll_kqueue.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_net/uSockets/internal/eventing/gcd.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_net/uSockets/internal/eventing/libuv.h"
+)
+file(GLOB_RECURSE W_NET_WS_USOCKETS_INTERNAL_NETWORKING_SRC_DIR
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_net/uSockets/internal/networking/bsd.h"
+)
 file(GLOB_RECURSE W_NET_WS_USOCKETS_INTERNAL_SRC_DIR
-    "${CMAKE_CURRENT_SOURCE_DIR}/w_net/uSockets/internal/*"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_net/uSockets/internal/internal.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/w_net/uSockets/internal/loop_data.h"
 )
 file(GLOB_RECURSE W_NET_WS_USOCKETS_SRC_DIR
     "${CMAKE_CURRENT_SOURCE_DIR}/w_net/uSockets/bsd.c"
@@ -492,6 +504,8 @@ add_library(${PROJECT_NAME} ${LIBRARY_TYPE}
     ${W_NET_HTTP1_1_SRC_DIR}
     ${W_NET_WS_USOCKETS_CRYPTO_SRC_DIR}
     ${W_NET_WS_USOCKETS_EVENTING_SRC_DIR}
+    ${W_NET_WS_USOCKETS_INTERNAL_EVENTING_SRC_DIR}
+    ${W_NET_WS_USOCKETS_INTERNAL_NETWORKING_SRC_DIR}
     ${W_NET_WS_USOCKETS_INTERNAL_SRC_DIR}
     ${W_NET_WS_USOCKETS_SRC_DIR}
     ${W_NET_WS_UWEBSOCKETS_SRC_DIR}
@@ -542,6 +556,8 @@ endif()
  source_group("w_net/http" FILES ${W_NET_HTTP1_1_SRC_DIR})
  source_group("w_net/uSockets/crypto" FILES ${W_NET_WS_USOCKETS_CRYPTO_SRC_DIR})
  source_group("w_net/uSockets/eventing" FILES ${W_NET_WS_USOCKETS_EVENTING_SRC_DIR})
+ source_group("w_net/uSockets/internal/eventing" FILES ${W_NET_WS_USOCKETS_INTERNAL_EVENTING_SRC_DIR})
+ source_group("w_net/uSockets/internal/networking" FILES ${W_NET_WS_USOCKETS_INTERNAL_NETWORKING_SRC_DIR})
  source_group("w_net/uSockets/internal" FILES ${W_NET_WS_USOCKETS_INTERNAL_SRC_DIR})
  source_group("w_net/uSockets" FILES ${W_NET_WS_USOCKETS_SRC_DIR})
  source_group("w_net/ws/uWebSockets" FILES ${W_NET_WS_UWEBSOCKETS_SRC_DIR})
@@ -690,23 +706,17 @@ if (WOLF_ENABLE_HTTP1_1_WS)
 
     target_compile_definitions(${PROJECT_NAME} PUBLIC
         LIBUS_USE_LIBUV
-        #LIBUS_USE_OPENSSL
-        LIBUS_USE_WOLFSSL
+        LIBUS_USE_OPENSSL
+        #LIBUS_USE_WOLFSSL
         WOLF_ENABLE_HTTP1_1_WS
     )
 endif()
 
-
 # signing project
-if(IOS)
-    set_xcode_property(${PROJECT_NAME} CODE_SIGN_IDENTITY "Apple Development")
-    
-    if(NOT ${DEVELOPMENT_TEAM_ID})
-        set (DEVELOPMENT_TEAM_ID "2UKL252SVF")
-    endif()
-    
-    set_xcode_property(${PROJECT_NAME} DEVELOPMENT_TEAM "2UKL252SVF")
-endif()
+#if(IOS)
+#    set_xcode_property(${PROJECT_NAME} CODE_SIGN_IDENTITY "Apple Development")  
+#    set_xcode_property(${PROJECT_NAME} DEVELOPMENT_TEAM ${DEVELOPMENT_TEAM_ID})
+#endif()
 
 if (APPLE OR IOS)
     set_source_files_properties("${CMAKE_CURRENT_SOURCE_DIR}/io/w_io.c" PROPERTIES COMPILE_FLAGS "-x objective-c" )
@@ -795,13 +805,13 @@ endif()
 if (WOLF_ENABLE_HTTP1_1_WS)
     target_link_libraries(${PROJECT_NAME} PRIVATE  uv_a)
     target_link_libraries(${PROJECT_NAME} PRIVATE  zlibstatic)
-    #if(MSVC)
-	#    target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/openSSL/lib/${PREFIX_LIB_PATH}/libcrypto.lib)
-    #    target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/openSSL/lib/${PREFIX_LIB_PATH}/libssl.lib)
-    #else()
-    #    target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/openSSL/lib/${PREFIX_LIB_PATH}/libcrypto.a)
-    #    target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/openSSL/lib/${PREFIX_LIB_PATH}/libssl.a)
-    #endif()
+    if(MSVC)
+	    target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/openSSL/lib/${PREFIX_LIB_PATH}/libcrypto.lib)
+        target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/openSSL/lib/${PREFIX_LIB_PATH}/libssl.lib)
+    else()
+        target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/openSSL/lib/${PREFIX_LIB_PATH}/libcrypto.a)
+        target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/openSSL/lib/${PREFIX_LIB_PATH}/libssl.a)
+    endif()
 endif()
 
 #link lua library
@@ -815,9 +825,9 @@ if (WOLF_ENABLE_QUIC)
 endif()
 
 #link wolfssl library
-if (WOLF_ENABLE_SSL)
-    target_link_libraries(${PROJECT_NAME} PRIVATE wolfssl)	
-endif()
+#if (WOLF_ENABLE_SSL)
+#    target_link_libraries(${PROJECT_NAME} PRIVATE wolfssl)	
+#endif()
 
 SET(TEST_PROJECT_NAME "${PROJECT_NAME}_test")
 add_executable (${TEST_PROJECT_NAME} test.cpp)
