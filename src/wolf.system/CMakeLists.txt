@@ -245,10 +245,12 @@ if(IOS)
 endif()
 
 # create filter for each folder
-if(NOT IOS)
-file(GLOB_RECURSE W_BASE64_SRC_DIR
-    "${CMAKE_CURRENT_SOURCE_DIR}/w_base64/*"
-)
+if (WOLF_ENABLE_AVX2)
+    if(NOT IOS AND NOT LINUX)
+        file(GLOB_RECURSE W_BASE64_SRC_DIR
+            "${CMAKE_CURRENT_SOURCE_DIR}/w_base64/*"
+        )
+    endif()
 endif()
 
 file(GLOB_RECURSE W_CHRONO_SRC_DIR
@@ -276,12 +278,14 @@ file(GLOB_RECURSE W_COMPRESSION_SRC_DIR
     "${CMAKE_CURRENT_SOURCE_DIR}/w_compression/w_compress.c"
     "${CMAKE_CURRENT_SOURCE_DIR}/w_compression/w_compress.h"
 )
+if (MSVC)
 file(GLOB_RECURSE W_LIBEV_SRC_DIR
     "${CMAKE_CURRENT_SOURCE_DIR}/w_concurrency/libev/ev.c"
     "${CMAKE_CURRENT_SOURCE_DIR}/w_concurrency/libev/ev.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/w_concurrency/libev/event.c"
     "${CMAKE_CURRENT_SOURCE_DIR}/w_concurrency/libev/event.h"
 )
+ endif()
 file(GLOB_RECURSE W_CONCURRENCY_SRC_DIR
     "${CMAKE_CURRENT_SOURCE_DIR}/w_concurrency/w_atomic.c"
     "${CMAKE_CURRENT_SOURCE_DIR}/w_concurrency/w_atomic.h"
@@ -519,7 +523,7 @@ add_library(${PROJECT_NAME} ${LIBRARY_TYPE}
  )
 #target_compile_features(${PROJECT_NAME} PUBLIC cxx_alias_templates)
 if(UNIX)
-    target_compile_options(${PROJECT_NAME} PUBLIC -std=c++20)
+    target_compile_options(${PROJECT_NAME} PUBLIC -std=c++2a)
 endif()
 #target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_20)
 
@@ -538,7 +542,9 @@ endif()
  endif()
  source_group("w_compression/msgpack" FILES ${W_COMPRESSION_MSGPACK_SRC_DIR})
  source_group("w_compression" FILES ${W_COMPRESSION_SRC_DIR})
+  if (MSVC)
  source_group("w_concurrency/libev" FILES ${W_LIBEV_SRC_DIR})
+  endif()
  source_group("w_concurrency" FILES ${W_CONCURRENCY_SRC_DIR})
  source_group("w_fiber" FILES ${W_FIBER_SRC_DIR})
  source_group("w_io/stb" FILES ${W_IO_STB_SRC_DIR})
@@ -608,14 +614,17 @@ if (WOLF_ENABLE_ACTIVEMQ)
     )
 endif()
 
+if (APPLE OR IOS)
+    macro (set_xcode_property TARGET XCODE_PROPERTY XCODE_VALUE)
+        set_property (TARGET ${TARGET} PROPERTY
+            XCODE_ATTRIBUTE_${XCODE_PROPERTY} ${XCODE_VALUE})
+    endmacro (set_xcode_property)
+    set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS -liconv)
+endif()
+
 if (WOLF_ENABLE_AVX2)
     if (APPLE OR IOS)
-         macro (set_xcode_property TARGET XCODE_PROPERTY XCODE_VALUE)
-            set_property (TARGET ${TARGET} PROPERTY
-                XCODE_ATTRIBUTE_${XCODE_PROPERTY} ${XCODE_VALUE})
-         endmacro (set_xcode_property)
-            set_xcode_property(${PROJECT_NAME} CLANG_X86_VECTOR_INSTRUCTIONS "avx2")
-			set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS -liconv)
+        set_xcode_property(${PROJECT_NAME} CLANG_X86_VECTOR_INSTRUCTIONS "avx2")
     elseif (LINUX)
         set (AVX2_FLAGS "-D__AVX -DUSE_AVX2")
         set (AVX2_FLAGS "${AVX2_FLAGS} -mavx2 -mfma")
@@ -719,7 +728,7 @@ endif()
 #endif()
 
 if (APPLE OR IOS)
-    set_source_files_properties("${CMAKE_CURRENT_SOURCE_DIR}/io/w_io.c" PROPERTIES COMPILE_FLAGS "-x objective-c" )
+    set_source_files_properties("${CMAKE_CURRENT_SOURCE_DIR}/w_io/w_io.c" PROPERTIES COMPILE_FLAGS "-x objective-c" )
 endif()
 
 if(MSVC)
@@ -735,7 +744,7 @@ if (WIN32 OR WIN64)
     target_link_libraries(${PROJECT_NAME} PRIVATE  expat apr-2 Shlwapi)
 elseif(APPLE OR IOS)
     target_link_libraries(${PROJECT_NAME} PRIVATE  "-framework Foundation" expat)
-    target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_BINARY_DIR}/_deps/apr-build/${CMAKE_BUILD_TYPE}/lib/libapr-1.a)
+    target_link_libraries(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_BINARY_DIR}/_deps/apr-build/${CMAKE_BUILD_TYPE}/lib/libapr-2.a)
 elseif(UNIX)
     target_link_libraries(${PROJECT_NAME} PRIVATE  expat ${CMAKE_CURRENT_BINARY_DIR}/_deps/apr-build/${CMAKE_BUILD_TYPE}/lib/libapr-2.a)
 else()

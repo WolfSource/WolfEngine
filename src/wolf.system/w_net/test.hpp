@@ -5,6 +5,8 @@
 #include "w_net.h"
 #include "../w_concurrency/w_thread.h"
 
+#ifdef WOLF_ENABLE_HTTP1_1_WS
+
 TEST_CASE("w_net/http")
 {
 	//TODO: TEST it again
@@ -26,3 +28,5 @@ TEST_CASE("w_net/http")
 
 	w_fini(&_mem_pool);
 }
+
+#endif

@@ -2,7 +2,7 @@
 
 #include "w_signal.h"
 #include <apr_signal.h>
-#include <log/w_log.h>
+#include <w_log/w_log.h>
 
 int w_signal_init()
 {

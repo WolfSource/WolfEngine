@@ -22,7 +22,7 @@
 #endif
 
 #ifdef W_PLATFORM_UNIX
-#include "base64/linuxbase64.h"
+#include "w_base64/linuxbase64.h"
 #include <sys/stat.h>
 #include <libgen.h>
 #include <unistd.h>
@@ -1176,6 +1176,7 @@ W_RESULT w_io_string_split(
     return W_SUCCESS;
 }
 
+#if defined (WOLF_ENABLE_AVX2) || defined (WOLF_ENABLE_AVX512)
 size_t w_io_to_base_64(_Inout_z_ char** pDestinationBuffer,
     _In_z_ char* pSourceBuffer,
     _In_z_ size_t pSourceBufferLenght,
@@ -1199,7 +1200,7 @@ size_t w_io_to_base_64(_Inout_z_ char** pDestinationBuffer,
             &_encoded_size);
         break;
 #endif
-#if !defined(W_PLATFORM_ANDROID) && !defined(W_PLATFORM_IOS)
+#if !defined(W_PLATFORM_ANDROID) && !defined(W_PLATFORM_IOS) && defined(WOLF_ENABLE_AVX2)
     case klomp_avx:
         klomp_avx2_base64_encode(
             pSourceBuffer,
@@ -1232,6 +1233,7 @@ size_t w_io_to_base_64(_Inout_z_ char** pDestinationBuffer,
     }
     return _encoded_size;
 }
+#endif
 /*
 #if !defined(W_PLATFORM_ANDROID) && !defined(W_PLATFORM_IOS)
 

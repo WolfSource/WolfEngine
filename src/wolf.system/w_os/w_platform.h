@@ -9,22 +9,26 @@
 
 #pragma once
 
+#if(__APPLE__)
+#include <TargetConditionals.h>
+#endif
+
 #if defined(_WIN32) || defined(_WIN64)
 
 #ifndef W_PLATFORM_WIN
     #define W_PLATFORM_WIN
 #endif
 
-#elif defined(__APPLE__)
-
-#ifndef W_PLATFORM_OSX
-    #define W_PLATFORM_OSX
-#endif
-
-#elif defined(__IOS__)
+#elif defined(TARGET_OS_IOS)
 
 #ifndef W_PLATFORM_IOS
     #define W_PLATFORM_IOS
+#endif
+
+#elif defined(TARGET_OS_OSX)
+
+#ifndef W_PLATFORM_OSX
+    #define W_PLATFORM_OSX
 #endif
 
 #elif defined(__ANDROID_API__)

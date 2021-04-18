@@ -1,4 +1,4 @@
-#include <os/w_platform.h>
+#include <w_os/w_platform.h>
 
 #ifdef W_PLATFORM_LINUX
 
