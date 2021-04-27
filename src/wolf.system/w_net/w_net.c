@@ -431,6 +431,7 @@ W_RESULT w_net_ssl_socket_open(
             goto exit;
         }
 
+        //attach wolfSSL to socket
         if (wolfSSL_set_fd(
             _ssl_socket->ssl,
             (int)(_ssl_socket->socket->socketdes)) != SSL_SUCCESS)

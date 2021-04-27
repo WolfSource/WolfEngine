@@ -7,6 +7,8 @@
 #include "../w_concurrency/w_thread_pool.h"
 #include "../w_concurrency/w_condition_variable.h"
 
+#ifdef WOLF_ENABLE_SSL
+
 static w_condition_variable s_cv = nullptr;
 
 static void s_create_tls_1_3_client(w_mem_pool pMemPool)
@@ -14,7 +16,7 @@ static void s_create_tls_1_3_client(w_mem_pool pMemPool)
 	std::cout << "s_create_tls_1_3_client is going to start" << std::endl;
 
 	const char* _crt_path = "D:\\SourceCodes\\PooyaEimandar\\wolf.streamer.deps\\playpod_certificate\\playpod.crt";
-	
+
 	W_RESULT _hr = W_SUCCESS;
 
 	w_socket_options _socekt_option =
@@ -100,16 +102,16 @@ static void s_create_tls_1_3_server(w_mem_pool pMemPool)
 
 		auto _ssl_socket = (w_ssl_socket)pArg;
 		if (!_ssl_socket) return nullptr;
-	
+
 		w_mem_pool _mem_pool = nullptr;
 		if (w_mem_pool_init(&_mem_pool) != W_SUCCESS)
 		{
 			return nullptr;
 		}
-		
+
 		//write
 		const char* _hello_msg = "hello";
-		
+
 		w_buffer_t _buffer = { 0 };
 		_buffer.len = strlen(_hello_msg); //plus NULL
 		_buffer.data = (uint8_t*)w_malloc(_mem_pool, _buffer.len);
@@ -124,7 +126,7 @@ static void s_create_tls_1_3_server(w_mem_pool pMemPool)
 
 		REQUIRE(_read_bytes == _sent_bytes);
 
-		w_mem_pool_fini(&_mem_pool);		
+		w_mem_pool_fini(&_mem_pool);
 		w_condition_variable_signal(s_cv);
 
 		return nullptr;
@@ -150,18 +152,16 @@ static void s_create_tls_1_3_server(w_mem_pool pMemPool)
 	REQUIRE(_hr == W_SUCCESS);
 }
 
-TEST_CASE("w_net/http")
+TEST_CASE("w_net/ssl_socket")
 {
 	w_mem_pool _mem_pool = w_init();
-	
-#ifdef WOLF_ENABLE_SSL
 
 	constexpr int _number_of_max_threads = 2;
 	w_thread_pool _tp = nullptr;
 	REQUIRE(
 		w_thread_pool_init(
-			_mem_pool, 
-			&_tp, 
+			_mem_pool,
+			&_tp,
 			_number_of_max_threads, _number_of_max_threads) == W_SUCCESS);
 
 
@@ -200,10 +200,17 @@ TEST_CASE("w_net/http")
 	//wait for all threads
 	REQUIRE(w_thread_pool_fini(&_tp) == W_SUCCESS);
 
+	w_fini(&_mem_pool);
+}
+
 #endif
 
 #ifdef WOLF_ENABLE_HTTP1_1_WS
 
+TEST_CASE("w_net/http")
+{
+	w_mem_pool _mem_pool = w_init();
+	
 	w_net_run_http1_1_server(
 		false,
 		nullptr,
@@ -216,7 +223,8 @@ TEST_CASE("w_net/http")
 		{
 			std::cout << "listening on port " << pPort << std::endl;
 		});
-#endif
 
 	w_fini(&_mem_pool);
 }
+
+#endif
