@@ -636,7 +636,7 @@ static void s_send_msgpack_object(
 	case MSGPACK_OBJECT_POSITIVE_INTEGER:
 	case MSGPACK_OBJECT_NEGATIVE_INTEGER:
 	{
-		int _v = pObj->via.i64;
+		int64_t _v = pObj->via.i64;
 		pMsgUnPackFunction((w_std_types)pObj->type, (const void*)(&_v));
 		break;
 	}

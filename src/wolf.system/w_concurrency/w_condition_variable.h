@@ -94,7 +94,7 @@ extern "C" {
      * @return result
     */
     W_SYSTEM_EXPORT
-        W_RESULT w_condition_variable_fini(_In_ w_condition_variable pConditionVariable);
+        W_RESULT w_condition_variable_fini(_In_ w_condition_variable* pConditionVariable);
 
 #ifdef __cplusplus
 }

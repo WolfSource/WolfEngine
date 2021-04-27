@@ -19,9 +19,10 @@
 #include <io.h>//_open_osfhandle
 #include <wincrypt.h>
 #include <inttypes.h>
-
+#include <arch/win32/apr_arch_networkio.h>
 #else
 #include <arpa/inet.h>
+#include <arch/unix/apr_arch_networkio.h>
 #endif
 
 #ifdef WOLF_ENABLE_QUIC
@@ -30,6 +31,11 @@
 
 #ifdef WOLF_ENABLE_CURL
 #include <curl/curl.h>
+#endif
+
+#ifdef WOLF_ENABLE_SSL
+#include <wolfssl/options.h>
+#include <wolfssl/ssl.h>
 #endif
 
 #ifdef W_PLATFORM_UNIX
@@ -101,6 +107,18 @@ static struct quic_connection* s_quic_conns = NULL;
 
 #endif
 
+#ifdef WOLF_ENABLE_SSL
+
+typedef struct w_ssl_socket_t
+{
+    apr_socket_t*   socket;
+    WOLFSSL*        ssl;
+    WOLFSSL_CTX*    ssl_ctx;
+} w_ssl_socket_t;
+typedef w_ssl_socket_t* w_ssl_socket;
+
+#endif
+
 #pragma endregion
 
 #pragma region Socket
@@ -139,7 +157,7 @@ W_RESULT w_net_get_hostname_from_ip(
 
 W_RESULT w_net_socket_open(
     _In_ w_mem_pool pMemPool,
-    _In_opt_z_ const char* pHostName,
+    _In_opt_z_ const char* pEndPoint,
     _In_ int pPort,
     _In_ w_socket_protocol pProtocol,
     _In_ w_socket_type pType,
@@ -194,7 +212,7 @@ W_RESULT w_net_socket_open(
     }
     _ret = apr_sockaddr_info_get(
         &_sa, 
-        pHostName,
+        pEndPoint,
         _family,
         pPort, 
         0, 
@@ -274,6 +292,175 @@ exit:
     return (W_RESULT)_ret;
 }
 
+W_RESULT w_net_ssl_socket_open(
+    _In_ w_mem_pool pMemPool,
+    _In_opt_z_ const char* pEndPoint,
+    _In_ int pPort,
+    _In_z_ const char* pCertFilePath,
+    _In_opt_z_ const char* pPrivateKeyFilePath,
+    _In_ w_socket_protocol pProtocol,
+    _In_ w_socket_type pType,
+    _In_ w_socket_family pFamily,
+    _In_opt_ w_socket_options* pOptions,
+    _Inout_ w_ssl_socket* pSSLSocket)
+{
+    const char* _trace_info = "w_net_ssl_socket_open";
+
+    W_RESULT _hr = W_SUCCESS;
+    WOLFSSL_METHOD* _method = NULL;
+    bool _serving = false;
+
+    if (!pMemPool || 
+        pProtocol == W_SOCKET_PROTOCOL_QUIC_DIALER ||
+        pProtocol == W_SOCKET_PROTOCOL_QUIC_LISTENER)
+    {
+        W_ASSERT_P(false, "invalid parameters! trace info: %s", _trace_info);
+        return W_BAD_ARG;
+    }
+    
+    if (pSSLSocket && *pSSLSocket)
+    {
+        w_net_ssl_socket_close(pSSLSocket);
+    }
+
+    // we are going to use TLS v1.3
+    if (pProtocol == W_SOCKET_PROTOCOL_TCP_LISTENER ||
+        pProtocol == W_SOCKET_PROTOCOL_UDP_LISTENER ||
+        pProtocol == W_SOCKET_PROTOCOL_SCTP_DIALER)
+    {
+        _serving = true;
+        _method = wolfTLSv1_3_server_method();
+    }
+    else
+    {
+        _method = wolfTLSv1_3_client_method();
+    }
+    
+    //first create w_ssl_socket    
+    w_ssl_socket _ssl_socket = (w_ssl_socket_t*)w_calloc(pMemPool, sizeof(w_ssl_socket_t));
+    if (!_ssl_socket)
+    {
+        W_ASSERT_P(false,
+            "could not allocate memory for w_ssl_socket_t! trace info: %s",
+            _trace_info);
+        _hr = W_FAILURE;
+        goto exit;
+    }
+
+    // create wolfSSL_CTX 
+    if ((_ssl_socket->ssl_ctx = wolfSSL_CTX_new(_method)) == NULL)
+    {
+        W_ASSERT_P(false,
+            "could not create wolfSSL tls 1.3 context! trace info: %s",
+            _trace_info);
+        return W_FAILURE;
+    }
+
+    if (_serving)
+    {
+        if (wolfSSL_CTX_use_certificate_file(
+            _ssl_socket->ssl_ctx,
+            pCertFilePath,
+            SSL_FILETYPE_PEM) != SSL_SUCCESS)
+        {
+            W_ASSERT_P(false,
+                "wolfSSL could not use %s for certificate file! trace info: %s",
+                pCertFilePath,
+                _trace_info);
+            _hr = W_FAILURE;
+            goto exit;
+        }
+
+        // Load server private key into ctx
+        if (wolfSSL_CTX_use_PrivateKey_file(
+            _ssl_socket->ssl_ctx,
+            pPrivateKeyFilePath,
+            SSL_FILETYPE_PEM) != SSL_SUCCESS)
+        {
+            W_ASSERT_P(false,
+                "wolfSSL could not use %s for private key file! trace info: %s",
+                pPrivateKeyFilePath,
+                _trace_info);
+            _hr = W_FAILURE;
+            goto exit;
+        }
+    }
+    else
+    {
+        // Add cert to ctx
+        if (wolfSSL_CTX_load_verify_locations(
+            _ssl_socket->ssl_ctx,
+            pCertFilePath, 0) != SSL_SUCCESS)
+        {
+            W_ASSERT_P(false,
+                "wolfSSL could not use %s for certificate file! trace info: %s",
+                pCertFilePath,
+                _trace_info);
+            _hr = W_FAILURE;
+            goto exit;
+        }
+    }
+        
+    //create socket
+    if (w_net_socket_open(
+        pMemPool,
+        pEndPoint,
+        pPort,
+        pProtocol,
+        pType,
+        pFamily,
+        pOptions,
+        (w_socket*)(&_ssl_socket->socket)))
+    {
+        W_ASSERT_P(false,
+            "could not open socket! trace info: %s",
+            _trace_info);
+        _hr = W_FAILURE;
+        goto exit;
+    }
+
+    if (!_serving)
+    {
+        // create wolfSSL object 
+        if ((_ssl_socket->ssl = wolfSSL_new(_ssl_socket->ssl_ctx)) == NULL)
+        {
+            W_ASSERT_P(false,
+                "could not create wolfSSL object from wolfSSL context! trace info: %s",
+                _trace_info);
+            _hr = W_FAILURE;
+            goto exit;
+        }
+
+        if (wolfSSL_set_fd(
+            _ssl_socket->ssl,
+            (int)(_ssl_socket->socket->socketdes)) != SSL_SUCCESS)
+        {
+            W_ASSERT_P(false,
+                "could not set wolfSSL to the socket! trace info: %s",
+                _trace_info);
+            _hr = W_FAILURE;
+            goto exit;
+        }
+
+        if (wolfSSL_connect(_ssl_socket->ssl) != SSL_SUCCESS)
+        {
+            W_ASSERT_P(false,
+                "could not connect wolfSSL socket! trace info: %s",
+                _trace_info);
+            _hr = W_FAILURE;
+            goto exit;
+        }
+    }
+
+    *pSSLSocket = _ssl_socket;
+
+    return W_SUCCESS;
+
+exit:
+    w_net_ssl_socket_close(&_ssl_socket);
+    return _hr;
+}
+
 W_RESULT w_net_socket_close(_Inout_ w_socket* pSocket)
 {
     const char* _trace_info = "w_net_close_tcp_socket";
@@ -290,14 +477,131 @@ W_RESULT w_net_socket_close(_Inout_ w_socket* pSocket)
     return (W_RESULT)_ret;
 }
 
-W_RESULT w_net_socket_accept(
+W_RESULT w_net_ssl_socket_close(_Inout_ w_ssl_socket* pSSLSocket)
+{
+    const char* _trace_info = "w_net_ssl_socket_close";
+    if (!pSSLSocket || !*pSSLSocket)
+    {
+        W_ASSERT_P(false, "invalid parameters! trace info: %s", _trace_info);
+        return W_BAD_ARG;
+    }
+
+    W_RESULT _ret = W_SUCCESS;
+
+    if ((*pSSLSocket)->socket)
+    {
+        _ret = apr_socket_close((*pSSLSocket)->socket);
+        (*pSSLSocket)->socket = NULL;
+    }
+    if ((*pSSLSocket)->ssl)
+    {
+        wolfSSL_free((*pSSLSocket)->ssl);
+        (*pSSLSocket)->ssl = NULL;
+    }
+
+    if ((*pSSLSocket)->ssl_ctx)
+    {
+        wolfSSL_CTX_free((*pSSLSocket)->ssl_ctx);
+        (*pSSLSocket)->ssl_ctx = NULL;
+    }
+    *pSSLSocket = NULL;
+
+    return (W_RESULT)_ret;
+}
+
+void* s_ssl_socket_accept_callback(w_thread pThread, void* pArg)
+{
+    const char* _trace_info = "s_ssl_socket_accept_callback";
+
+    W_RESULT _hr = W_SUCCESS;
+    w_ssl_socket _ssl_socket = NULL;
+    w_thread_job _ssl_callback_thread_job = NULL;
+
+    apr_socket_t* _s = (apr_socket_t*)pArg;//accepted socket
+    if (!_s)
+    {
+        W_ASSERT_P(false, "could not cast socket! trace info: %s", _trace_info);
+        return NULL;
+    }
+
+    sock_userdata_t* _user_data_1 = _s->userdata;
+    if (_user_data_1)
+    {
+        _ssl_socket = _s->userdata->data;
+        sock_userdata_t* _user_data_2 = _user_data_1->next;
+        if (_user_data_2)
+        {
+            _ssl_callback_thread_job = _user_data_2->data;
+        }
+    }
+
+    //if ssl socket is not avaiable, just return
+    if (!_ssl_socket) return NULL;
+    
+    // create wolfSSL object 
+    if ((_ssl_socket->ssl = wolfSSL_new(_ssl_socket->ssl_ctx)) == NULL)
+    {
+        W_ASSERT_P(false,
+            "could not create wolfSSL object from wolfSSL context! trace info: %s",
+            _trace_info);
+        _hr = W_FAILURE;
+        goto exit;
+    }
+
+    //set wolfSSL fd
+    if (wolfSSL_set_fd(
+        _ssl_socket->ssl,
+        (int)(_ssl_socket->socket->socketdes)) != SSL_SUCCESS)
+    {
+        W_ASSERT_P(false,
+            "could not set wolfSSL to the socket! trace info: %s",
+            _trace_info);
+        _hr = W_FAILURE;
+        goto exit;
+    }
+
+    // establish TLS connection
+    if (wolfSSL_accept(_ssl_socket->ssl) != SSL_SUCCESS)
+    {
+        W_ASSERT_P(false,
+            "wolfSSL could not accept! trace info: %s",
+            _trace_info);
+        _hr = W_FAILURE;
+        goto exit;
+    }
+
+    if (_ssl_callback_thread_job)
+    {
+        w_thread _t = w_thread_get_current();
+        _ssl_callback_thread_job(_t, (void*)_ssl_socket);
+    }
+
+    if (_ssl_socket->ssl) 
+    {
+        // free the wolfSSL object
+        wolfSSL_free(_ssl_socket->ssl);
+        _ssl_socket->ssl = NULL;
+    }
+
+    return NULL;
+
+exit:
+
+    w_net_ssl_socket_close(&_ssl_socket);
+
+    return NULL;
+}
+
+W_RESULT s_socket_accept(
     _Inout_ w_mem_pool pMemPool,
     _In_ w_socket pSocket,
     _In_ w_socket_options* pOptions,
     _In_ bool pAsync,
-    _In_ w_thread_job pOnAcceptCallback)
+    _In_ w_thread_job pOnAcceptCallback,
+    _In_opt_ void* pUserData1,
+    _In_opt_ void* pUserData2)
 {
-    const char* _trace_info = "w_net_socket_accept";
+    const char* _trace_info = "s_socket_accept";
     if (!pMemPool || !pSocket || !pOnAcceptCallback)
     {
         W_ASSERT_P(false, "invalid parameters! trace info: %s", _trace_info);
@@ -332,6 +636,31 @@ W_RESULT w_net_socket_accept(
         if (_ret) goto exit;
     }
 
+    //store user data
+    sock_userdata_t* _userdata_1 = NULL;
+    sock_userdata_t* _userdata_2 = NULL;
+
+    if (pUserData1)
+    {
+        _userdata_1 = w_malloc(
+            pMemPool,
+            sizeof(sock_userdata_t));
+        _userdata_1->data = pUserData1;
+        _userdata_1->key = "pSSLSocket";
+
+        if (pUserData2)
+        {
+            _userdata_2 = w_malloc(
+                pMemPool,
+                sizeof(sock_userdata_t));
+            _userdata_2->data = pUserData2;
+            _userdata_2->key = "pOnAcceptCallback";
+            _userdata_1->next = _userdata_2;
+        }
+
+        _ns->userdata = _userdata_1;
+    }
+
     if (pAsync)
     {
         //Create the new thread
@@ -358,15 +687,57 @@ exit:
     return _ret;
 }
 
-W_RESULT w_net_socket_send(
-    _Inout_ w_socket pSocket,
-    _In_ w_buffer pBuffer)
+W_RESULT w_net_socket_accept(
+    _Inout_ w_mem_pool pMemPool,
+    _In_ w_socket pSocket,
+    _In_ w_socket_options* pOptions,
+    _In_ bool pAsync,
+    _In_ w_thread_job pOnAcceptCallback)
 {
-    const char* _trace_info = "w_net_send";
-    if (!pSocket || !pBuffer)
+    return s_socket_accept(
+        pMemPool,
+        pSocket,
+        pOptions,
+        pAsync,
+        pOnAcceptCallback,
+        NULL,
+        NULL);
+}
+
+W_RESULT w_net_ssl_socket_accept(
+    _Inout_ w_mem_pool pMemPool,
+    _In_ w_ssl_socket pSSLSocket,
+    _In_ w_socket_options* pOptions,
+    _In_ bool pAsync,
+    _In_ w_thread_job pOnSSLAcceptCallback)
+{
+    const char* _trace_info = "w_net_ssl_socket_accept";
+    if (!pMemPool || !pSSLSocket || !pSSLSocket->socket || !pOnSSLAcceptCallback)
     {
         W_ASSERT_P(false, "invalid parameters! trace info: %s", _trace_info);
         return W_BAD_ARG;
+    }
+
+    return s_socket_accept(
+        pMemPool,
+        pSSLSocket->socket,
+        pOptions,
+        pAsync,
+        s_ssl_socket_accept_callback,
+        pSSLSocket,//send ssl accept callback
+        pOnSSLAcceptCallback//send SLLSocekt
+    );
+}
+
+int w_net_socket_send(
+    _Inout_ w_socket pSocket,
+    _In_ w_buffer pBuffer)
+{
+    const char* _trace_info = "w_net_socket_send";
+    if (!pSocket || !pBuffer)
+    {
+        W_ASSERT_P(false, "invalid parameters! trace info: %s", _trace_info);
+        return -1;
     }
 
     if (pBuffer->data && pBuffer->len)
@@ -374,39 +745,89 @@ W_RESULT w_net_socket_send(
         return apr_socket_send(
             pSocket,
             (const char*)pBuffer->data,
-            &pBuffer->len);
+            (apr_size_t*)(&pBuffer->len));
     }
-    return W_FAILURE;
+    return -1;
 }
 
-W_RESULT w_net_socket_receive(
+int w_net_ssl_socket_send(
+    _Inout_ w_ssl_socket pSSLSocket,
+    _In_ w_buffer pBuffer)
+{
+    const char* _trace_info = "w_net_ssl_socket_send";
+    if (!pSSLSocket || !pBuffer)
+    {
+        W_ASSERT_P(false, "invalid parameters! trace info: %s", _trace_info);
+        return -1;
+    }
+
+    if (pBuffer->data && pBuffer->len)
+    {
+        return wolfSSL_write(
+            pSSLSocket->ssl,
+            (const void*)pBuffer->data,
+            (int)pBuffer->len);
+    }
+    return -1;
+}
+
+int w_net_socket_read(
     _Inout_ w_socket pSocket,
     _Inout_ w_buffer pBuffer)
 {
-    const char* _trace_info = "w_net_receive_msg";
+    const char* _trace_info = "w_net_socket_read";
 
     if (!pSocket || !pBuffer)
     {
         W_ASSERT_P(false, "invalid parameters! trace info: %s", _trace_info);
-        return W_BAD_ARG;
+        return -1;
     }
 
     long long _l = (long long)pBuffer->len - 1;// -1 for a '\0'
     if (_l <= 0)
     {
-        return W_BAD_ARG;
+        return -1;
     }
 
     apr_size_t _len = (apr_size_t)_l;
     apr_status_t _ret = apr_socket_recv(pSocket, (char*)pBuffer->data, &_len);
     pBuffer->len = _len;
-    if (_ret == APR_EOF || _len == 0) 
+    if (_ret == APR_EOF || _len < 0) 
     {
-        return _ret;
+        return -1;
     }
     pBuffer->data[_len] = '\0';
     
-    return _ret;
+    return (int)_len;
+}
+
+int w_net_ssl_socket_read(
+    _Inout_ w_ssl_socket pSSLSocket,
+    _Inout_ w_buffer pBuffer)
+{
+    const char* _trace_info = "w_net_ssl_socket_read";
+
+    if (!pSSLSocket || !pBuffer)
+    {
+        W_ASSERT_P(false, "invalid parameters! trace info: %s", _trace_info);
+        return -1;
+    }
+
+    int _buffer_len = (int)pBuffer->len - 1;// -1 for a '\0'
+    if (_buffer_len <= 0)
+    {
+        return -1;
+    }
+
+    int _len = wolfSSL_read(pSSLSocket->ssl, (void*)pBuffer->data, _buffer_len);
+    pBuffer->len = _len;
+    if (_len < 0)
+    {
+        return -1;
+    }
+    pBuffer->data[_len] = '\0';
+
+    return _len;
 }
 
 #ifdef WOLF_ENABLE_HTTP1_1_WS

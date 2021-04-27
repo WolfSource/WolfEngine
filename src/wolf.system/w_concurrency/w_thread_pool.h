@@ -276,6 +276,23 @@ extern "C" {
             _In_ void** pOwner);
 
     /**
+     * Wait for specific threads to execute their jobs.
+     * @param pThreadPool The thread pools
+     * @param pNumberOfTasks The number of tasks
+     */
+    W_SYSTEM_EXPORT
+        void w_thread_pool_wait_for(
+            _Inout_ w_thread_pool pThreadPool,
+            _In_ size_t pNumberOfTasks);
+
+    /**
+     * Wait for all threads to execute their jobs.
+     * @param pThreadPool The thread pools
+     */
+    W_SYSTEM_EXPORT
+        void w_thread_pool_wait_all(_Inout_ w_thread_pool pThreadPool);
+
+    /**
     * Destroy the thread pool and stop all the threads
     * @param pThreadPool the thread pool
     * @returns APR_BADARG on bad functions arguments

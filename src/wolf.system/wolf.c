@@ -14,6 +14,10 @@
 #include <curl/curl.h>
 #endif
 
+#ifdef WOLF_ENABLE_SSL
+#include <wolfssl/ssl.h>
+#endif
+
 // this is used to cache lengths in apr_pwstrcat
 #define MAX_SAVED_LENGTHS  6
 
@@ -42,11 +46,15 @@ W_RESULT wolf_init()
 #ifdef WOLF_ENABLE_CURL
         || curl_global_init(CURL_GLOBAL_ALL)
 #endif
+
+#ifdef WOLF_ENABLE_SSL
+        // Initialize wolfSSL library
+        || (wolfSSL_Init() != SSL_SUCCESS)
+#endif
         )
     {
         return W_FAILURE;
     }
-
     return W_SUCCESS;
 }
 
@@ -205,5 +213,10 @@ void wolf_fini()
 #ifdef WOLF_ENABLE_CURL
     curl_global_cleanup();
 #endif
+
+#ifdef WOLF_ENABLE_SSL
+    wolfSSL_Cleanup();
+#endif
+
     apr_terminate();
 }

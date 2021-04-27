@@ -69,7 +69,7 @@ option(WOLF_ENABLE_LZMA "Enable LZMA Compression" OFF)
 option(WOLF_ENABLE_LUA "Enable Lua Scripting" OFF)
 option(WOLF_ENABLE_PYTHON3 "Enable Python3 Scripting" OFF)
 option(WOLF_ENABLE_QUIC "Enable QUIC protocol" OFF)
-#option(WOLF_ENABLE_SSL "Enable WOLF SSL" OFF)
+option(WOLF_ENABLE_SSL "Enable WOLF SSL" OFF)
 
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -141,14 +141,14 @@ if(WOLF_ENABLE_HTTP1_1_WS)
 endif()
 
 # we need wolf ssl for uSocket and apr socket
-#if(WOLF_ENABLE_SSL)
-#    message("fetching https://github.com/wolfSSL/wolfssl.git")
-#    FetchContent_Declare(
-#        wolfssl
-#        GIT_REPOSITORY https://github.com/wolfSSL/wolfssl.git
-#        GIT_TAG        master
-#    )
-#endif()
+if(WOLF_ENABLE_SSL)
+    message("fetching https://github.com/wolfSSL/wolfssl.git")
+    FetchContent_Declare(
+        wolfssl
+        GIT_REPOSITORY https://github.com/wolfSSL/wolfssl.git
+        GIT_TAG        master
+    )
+endif()
 
 # change some options of CMAKE dependencies
 set(EXPAT_SHARED_LIBS OFF CACHE BOOL "EXPAT_SHARED_LIBS")
@@ -187,9 +187,9 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 # After the following call, the CMake targets will be defined and available to the rest of the build
-#if(WOLF_ENABLE_SSL)
-#    FetchContent_MakeAvailable(wolfssl)
-#endif()
+if(WOLF_ENABLE_SSL)
+    FetchContent_MakeAvailable(wolfssl)
+endif()
 
 if (UNIX)
     FetchContent_MakeAvailable(libexpat)
@@ -661,10 +661,13 @@ if (WOLF_ENABLE_FIBER)
     )
 endif()
 
-#set HTTP1.1 compile definitions
-if (WOLF_ENABLE_HTTP1_1_SERVER)
+if (WOLF_ENABLE_HTTP1_1_WS)
+
     target_compile_definitions(${PROJECT_NAME} PUBLIC
-        WOLF_ENABLE_HTTP1_1_SERVER
+        LIBUS_USE_LIBUV
+        LIBUS_USE_OPENSSL
+        #LIBUS_USE_WOLFSSL
+        WOLF_ENABLE_HTTP1_1_WS
     )
 endif()
 
@@ -702,13 +705,9 @@ if (WOLF_ENABLE_QUIC)
     )
 endif()
 
-if (WOLF_ENABLE_HTTP1_1_WS)
-
+if (WOLF_ENABLE_SSL)
     target_compile_definitions(${PROJECT_NAME} PUBLIC
-        LIBUS_USE_LIBUV
-        LIBUS_USE_OPENSSL
-        #LIBUS_USE_WOLFSSL
-        WOLF_ENABLE_HTTP1_1_WS
+        WOLF_ENABLE_SSL
     )
 endif()
 
@@ -825,9 +824,9 @@ if (WOLF_ENABLE_QUIC)
 endif()
 
 #link wolfssl library
-#if (WOLF_ENABLE_SSL)
-#    target_link_libraries(${PROJECT_NAME} PRIVATE wolfssl)	
-#endif()
+if (WOLF_ENABLE_SSL)
+    target_link_libraries(${PROJECT_NAME} PRIVATE wolfssl)	
+endif()
 
 SET(TEST_PROJECT_NAME "${PROJECT_NAME}_test")
 add_executable (${TEST_PROJECT_NAME} test.cpp)

@@ -132,18 +132,22 @@ W_RESULT w_condition_variable_broadcast(_In_ w_condition_variable pConditionVari
     return apr_thread_cond_broadcast(pConditionVariable->condition_variable);
 }
  
-W_RESULT w_condition_variable_fini(_In_ w_condition_variable pConditionVariable)
+W_RESULT w_condition_variable_fini(_In_ w_condition_variable* pConditionVariable)
 {
     const char* _trace_info = "w_condition_variable_fini";
-    if (!pConditionVariable || !pConditionVariable->condition_variable || !pConditionVariable->mutex)
+    if (!pConditionVariable || !*pConditionVariable ||
+        !(*pConditionVariable)->condition_variable ||
+        !(*pConditionVariable)->mutex)
     {
         W_ASSERT_P(false, "invalid parameters. trace info %s", _trace_info);
         return W_BAD_ARG;
     }
 
-    return (
-        apr_thread_mutex_destroy(pConditionVariable->mutex) ||
-        apr_thread_cond_destroy(pConditionVariable->condition_variable)
+    W_RESULT _hr = (
+        apr_thread_mutex_destroy((*pConditionVariable)->mutex) ||
+        apr_thread_cond_destroy((*pConditionVariable)->condition_variable)
         );
+
+    return _hr;
 }
  

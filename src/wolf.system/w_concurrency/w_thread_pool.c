@@ -31,7 +31,7 @@ W_RESULT w_thread_pool_init(
         (apr_size_t)pMaxThreads,
         _pool);
     *pThreadPool = _tp;
-
+    
     return _ret;
 }
 
@@ -317,6 +317,23 @@ W_RESULT w_thread_pool_task_owner_get(
         return APR_BADARG;
     }
     return (W_RESULT)apr_thread_pool_task_owner_get((apr_thread_t*)pThread, pOwner);
+}
+
+void w_thread_pool_wait_for(
+    _Inout_ w_thread_pool pThreadPool,
+    _In_ size_t pNumberOfThreads)
+{
+    size_t _running_tasks = 0;
+    do
+    {
+        _running_tasks = w_thread_pool_tasks_run_count(pThreadPool);
+    } while (_running_tasks != pNumberOfThreads);
+}
+
+void w_thread_pool_wait_all(_Inout_ w_thread_pool pThreadPool)
+{
+    size_t _tasks = w_thread_pool_threads_count(pThreadPool);
+    w_thread_pool_wait_for(pThreadPool, _tasks);
 }
 
 W_RESULT w_thread_pool_fini(_Inout_ w_thread_pool* pThreadPool)

@@ -237,12 +237,8 @@ TEST_CASE("w_concurrency/w_thread_pool")
 		w_thread_pool_tasks_count(_thread_pool) <<
 		std::endl;
 
-	size_t _running_tasks = 0;
-	do
-	{
-		w_thread_current_sleep_for_milliseconds(16);
-		_running_tasks = w_thread_pool_tasks_run_count(_thread_pool);
-	} while (_running_tasks != 2);
+	//wait for two tasks to be done
+	w_thread_pool_wait_for(_thread_pool, 2);
 
 	//wait for all threads
 	REQUIRE(w_thread_pool_fini(&_thread_pool) == W_SUCCESS);

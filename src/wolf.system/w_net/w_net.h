@@ -31,7 +31,8 @@ extern "C" {
 #include "asio/fiber_client_server.h"
 #endif
 
-
+    struct w_ssl_socket_t;
+    typedef struct w_ssl_socket_t* w_ssl_socket;
     typedef struct apr_socket_t* w_socket;
     typedef struct apr_sockaddr_t* w_socket_address;
 
@@ -138,19 +139,46 @@ extern "C" {
      * @param pType the type pf the socket (e.g., W_SOCKET_TYPE_STREAM)
      * @param pFamily family The address family of the socket (e.g., W_SOCKET_FAMILY_INET)
      * @param pOptions socket options
-     * @param pSocket The new socket that has been set up.
+     * @param pSocket The new socket
      * @return result code
     */
     W_SYSTEM_EXPORT
         W_RESULT w_net_socket_open(
             _In_ w_mem_pool pMemPool,
-            _In_opt_z_ const char* pHostName,
+            _In_opt_z_ const char* pEndPoint,
             _In_ int pPort,
             _In_ w_socket_protocol pProtocol,
             _In_ w_socket_type pType,
             _In_ w_socket_family pFamily,
             _In_opt_ w_socket_options* pOptions,
             _Inout_ w_socket* pSocket);
+
+    /**
+     * create and open a socket
+     * @param pMemPool The pool for the socket associated storage
+     * @param pEndPoint endpoint address like tcp://0.0.0.0 or tcp://192.168.17.17
+     * @param pPort the porn number
+     * @param pCertFilePath the certificate file path
+     * @param pPrivateKeyFilePath the private key file path
+     * @param pProtocol protocol The protocol of the socket(e.g., W_SOCKET_PROTOCOL_TCP)
+     * @param pType the type pf the socket (e.g., W_SOCKET_TYPE_STREAM)
+     * @param pFamily family The address family of the socket (e.g., W_SOCKET_FAMILY_INET)
+     * @param pOptions socket options
+     * @param pSSLSocket The new ssl socket
+     * @return result code
+    */
+    W_SYSTEM_EXPORT
+        W_RESULT w_net_ssl_socket_open(
+            _In_ w_mem_pool pMemPool,
+            _In_opt_z_ const char* pEndPoint,
+            _In_ int pPort,
+            _In_z_ const char* pCertFilePath,
+            _In_opt_z_ const char* pPrivateKeyFilePath,
+            _In_ w_socket_protocol pProtocol,
+            _In_ w_socket_type pType,
+            _In_ w_socket_family pFamily,
+            _In_opt_ w_socket_options* pOptions,
+            _Inout_ w_ssl_socket* pSSLSocket);
 
     /**
      * close a socket
@@ -161,14 +189,22 @@ extern "C" {
         W_RESULT w_net_socket_close(_Inout_ w_socket* pSocket);
 
     /**
-    * accept an incoming new connection
-    * @param pMemPool The pool for the socket associated storage
-    * @param pSocket the pointer to source socket
-    * @param pOptions the socket options
-    * @param pAsync create thread for each new accepted connection
-    * @param pOnAcceptCallback accepted socket callback, get the new socket from arg
-    * @return result code
+     * close a ssl socket
+     * @param pSSLSocket the ssl socket object
+     * @return result code
     */
+    W_SYSTEM_EXPORT
+        W_RESULT w_net_ssl_socket_close(_Inout_ w_ssl_socket* pSSLSocket);
+    
+    /**
+     * accept an incoming new connection
+     * @param pMemPool The pool for the socket associated storage
+     * @param pSocket the pointer to source socket
+     * @param pOptions the socket options
+     * @param pAsync create thread for each new accepted connection
+     * @param pOnAcceptCallback accepted socket callback, get the w_socket from arg
+     * @return result code
+     */
     W_SYSTEM_EXPORT
         W_RESULT w_net_socket_accept(
             _Inout_ w_mem_pool pMemPool,
@@ -178,25 +214,64 @@ extern "C" {
             _In_ w_thread_job pOnAcceptCallback);
 
     /**
-    * send a message via socket
-    * @param pSocket the pointer to w_socket_t object
-    * @param pBuffer buffer
-    * @return result code
-    */
+     * accept an incoming ssl connection
+     * @param pMemPool The pool for the socket associated storage
+     * @param pSSLSocket the pointer to the ssl socket
+     * @param pOptions the socket options
+     * @param pAsync create thread for each new accepted connection
+     * @param pOnSSLAcceptCallback accepted ssl socket callback, you can get the w_ssl_socket from arg
+     * @return result code
+     */
     W_SYSTEM_EXPORT
-        W_RESULT w_net_socket_send(
+        W_RESULT w_net_ssl_socket_accept(
+            _Inout_ w_mem_pool pMemPool,
+            _In_ w_ssl_socket pSSLSocket,
+            _In_ w_socket_options* pOptions,
+            _In_ bool pAsync,
+            _In_ w_thread_job pOnSSLAcceptCallback);
+
+    /**
+     * send a message via socket
+     * @param pSocket the pointer to w_socket_t object
+     * @param pBuffer buffer
+     * @return number of sent bytes
+     */
+    W_SYSTEM_EXPORT
+        int w_net_socket_send(
             _Inout_ w_socket pSocket,
             _In_ w_buffer pBuffer);
 
     /**
-     * receive a message via socket
+     * send a message via ssl socket
+     * @param pSocket the pointer to w_socket_t object
+     * @param pBuffer buffer
+     * @return the number of sent bytes
+     */
+    W_SYSTEM_EXPORT
+        int w_net_ssl_socket_send(
+            _Inout_ w_ssl_socket pSSLSocket,
+            _In_ w_buffer pBuffer);
+
+    /**
+     * read a message from socket
      * @param pSocket the pointer to w_socket_t object
      * @param pBuffer message buffer
-     * @return result code
-    */
+     * @return the number of read bytes
+     */
     W_SYSTEM_EXPORT
-        W_RESULT w_net_socket_receive(
+        int w_net_socket_read(
             _Inout_ w_socket pSocket,
+            _Inout_ w_buffer pBuffer);
+
+    /**
+     * read a message from ssl socket
+     * @param pSSLSocket the pointer to w_socket_t object
+     * @param pBuffer message buffer
+     * @return the number of read bytes
+     */
+    W_SYSTEM_EXPORT
+        int w_net_ssl_socket_read(
+            _Inout_ w_ssl_socket pSSLSocket,
             _Inout_ w_buffer pBuffer);
 
 #ifdef WOLF_ENABLE_HTTP1_1_WS

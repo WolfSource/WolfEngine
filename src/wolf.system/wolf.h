@@ -13,6 +13,10 @@
 extern "C" {
 #endif
 
+#if (_MSC_VER > 1900) //VS 2017 and the laters versions
+#pragma warning(disable : 5105)
+#endif
+
 #include <w_memory/w_mem_pool.h>
 #include <stdlib.h>
 #include <stdbool.h>
