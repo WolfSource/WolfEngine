@@ -492,6 +492,7 @@ extern "C" {
             _In_z_ const char* pSplit,
             _Out_ w_array* pResults);
 
+#if defined (WOLF_ENABLE_AVX2) || defined (WOLF_ENABLE_AVX512)												  
     /**
      * convert to base64
      * @param pDestinationBuffer destination buffer
@@ -506,6 +507,7 @@ extern "C" {
             _In_z_ char* pSourceBuffer,
             _In_z_ size_t pSourceBufferLenght,
             _In_ base_64_mode pEncodeMode);
+#endif
 
 
     //TODO: Move these to wolf_media

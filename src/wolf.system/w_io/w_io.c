@@ -12,12 +12,17 @@
 //#include <turbojpeg.h>
 //#include <png.h>
 
+#ifdef WOLF_ENABLE_AVX512
 #include <w_base64/fastavx512bwbase64.h>
+#endif
+
+#ifdef WOLF_ENABLE_AVX2
 #include <w_base64/fastavxbase64.h>
 #include <w_base64/klompavxbase64.h>
 #include <w_base64/quicktimebase64.h>
 #include <w_base64/chromiumbase64.h>
 #include <w_base64/scalarbase64.h>
+#endif
 
 #endif
 
@@ -1176,6 +1181,8 @@ W_RESULT w_io_string_split(
     return W_SUCCESS;
 }
 
+#ifdef defined(WOLF_ENABLE_AVX2) || defined(WOLF_ENABLE_AVX512)
+
 size_t w_io_to_base_64(_Inout_z_ char** pDestinationBuffer,
     _In_z_ char* pSourceBuffer,
     _In_z_ size_t pSourceBufferLenght,
@@ -1232,6 +1239,8 @@ size_t w_io_to_base_64(_Inout_z_ char** pDestinationBuffer,
     }
     return _encoded_size;
 }
+
+#endif
 /*
 #if !defined(W_PLATFORM_ANDROID) && !defined(W_PLATFORM_IOS)
 

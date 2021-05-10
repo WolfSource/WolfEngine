@@ -369,7 +369,7 @@ then
 
                 make install
                 
-                cp -R "$DIR/_deps/apr-build/Debug/$ARCH/lib" "$DIR/_deps/apr-build/Debug/"
+                cp -R "$DIR/_deps/apr-build/$build_mode/$ARCH/lib" "$DIR/_deps/apr-build/$build_mode/"
 
             done
     done

@@ -292,6 +292,8 @@ exit:
     return (W_RESULT)_ret;
 }
 
+#ifdef WOLF_ENABLE_SSL
+
 W_RESULT w_net_ssl_socket_open(
     _In_ w_mem_pool pMemPool,
     _In_opt_z_ const char* pEndPoint,
@@ -462,6 +464,8 @@ exit:
     return _hr;
 }
 
+#endif
+
 W_RESULT w_net_socket_close(_Inout_ w_socket* pSocket)
 {
     const char* _trace_info = "w_net_close_tcp_socket";
@@ -477,6 +481,8 @@ W_RESULT w_net_socket_close(_Inout_ w_socket* pSocket)
 
     return (W_RESULT)_ret;
 }
+
+#ifdef WOLF_ENABLE_SSL
 
 W_RESULT w_net_ssl_socket_close(_Inout_ w_ssl_socket* pSSLSocket)
 {
@@ -593,6 +599,8 @@ exit:
     return NULL;
 }
 
+#endif
+
 W_RESULT s_socket_accept(
     _Inout_ w_mem_pool pMemPool,
     _In_ w_socket pSocket,
@@ -705,6 +713,8 @@ W_RESULT w_net_socket_accept(
         NULL);
 }
 
+#ifdef WOLF_ENABLE_SSL
+
 W_RESULT w_net_ssl_socket_accept(
     _Inout_ w_mem_pool pMemPool,
     _In_ w_ssl_socket pSSLSocket,
@@ -730,6 +740,8 @@ W_RESULT w_net_ssl_socket_accept(
     );
 }
 
+#endif
+
 int w_net_socket_send(
     _Inout_ w_socket pSocket,
     _In_ w_buffer pBuffer)
@@ -751,6 +763,8 @@ int w_net_socket_send(
     return -1;
 }
 
+#ifdef WOLF_ENABLE_SSL
+
 int w_net_ssl_socket_send(
     _Inout_ w_ssl_socket pSSLSocket,
     _In_ w_buffer pBuffer)
@@ -771,6 +785,8 @@ int w_net_ssl_socket_send(
     }
     return -1;
 }
+
+#endif
 
 int w_net_socket_read(
     _Inout_ w_socket pSocket,
@@ -802,6 +818,8 @@ int w_net_socket_read(
     return (int)_len;
 }
 
+#ifdef WOLF_ENABLE_SSL
+
 int w_net_ssl_socket_read(
     _Inout_ w_ssl_socket pSSLSocket,
     _Inout_ w_buffer pBuffer)
@@ -830,6 +848,7 @@ int w_net_ssl_socket_read(
 
     return _len;
 }
+#endif
 
 #ifdef WOLF_ENABLE_HTTP1_1_WS
 

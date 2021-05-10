@@ -34,6 +34,8 @@ size_t w_process_get_count_of_instances(_In_z_ const wchar_t* pProcessName)
 	PROCESSENTRY32 _entry;
 	_entry.dwSize = sizeof(PROCESSENTRY32);
 
+	size_t cSize = 0;
+	wchar_t wc[_MAX_PATH];			  
 	HANDLE _snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
 	if (_snapshot)
 	{
@@ -41,7 +43,10 @@ size_t w_process_get_count_of_instances(_In_z_ const wchar_t* pProcessName)
 		{
 			while (Process32Next(_snapshot, &_entry))
 			{
-				if (!_wcsicmp(&_entry.szExeFile[0], pProcessName))
+				size_t cSize = strlen(_entry.szExeFile) + 1;
+				mbstowcs(wc, _entry.szExeFile, cSize);
+
+				if (!_wcsicmp(wc, pProcessName))				
 				{
 					_instances++;
 				}
@@ -69,8 +74,9 @@ size_t w_process_get_count_of_instances(_In_z_ const wchar_t* pProcessName)
 			size = strlen(proc.pbi_name);
 			if (size > 0)
 			{
-				mbstowcs(_compare_name[0], proc.pbi_name, size);
+				mbstowcs(_compare_name, proc.pbi_name, size);
 			}
+			_compare_name[size] = L'\0';						
 
 			if (!wcscmp(_input_name, _compare_name))
 			{
@@ -119,7 +125,7 @@ size_t w_process_get_count_of_instances(_In_z_ const wchar_t* pProcessName)
 				size = strlen(buf);
 				if (size > 0)
 				{
-					mbstowcs(_compare_name[0], buf, size);
+					mbstowcs(_compare_name, buf, size);
 				}
 
 				size_t pos = -1;
@@ -132,9 +138,10 @@ size_t w_process_get_count_of_instances(_In_z_ const wchar_t* pProcessName)
                         break;
                     }
                 }
+				_compare_name[size] = L'\0';
 				wchar_t * _file = _compare_name;
 				if (pos != -1)
-					_file = _compare_name[pos + 1];
+					   _file = _compare_name + pos + 1;
 				if (!wcscmp(_file, _input_name))
 				{
 					_instances++;
