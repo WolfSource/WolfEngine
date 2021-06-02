@@ -3,6 +3,7 @@
 #ifdef WOLF_ENABLE_FIBER
 
 #include "../w_test/base.hpp"
+#include "w_fiber.h"
 
 TEST_CASE("w_fiber/w_fiber")
 {

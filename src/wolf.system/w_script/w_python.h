@@ -12,8 +12,8 @@
 #ifdef WOLF_ENABLE_PYTHON3
 
 #include <wolf.h>
-#include "memory/w_hash.h"
-#include "memory/w_string.h"
+#include "w_memory/w_hash.h"
+#include "w_memory/w_string.h"
 
 typedef enum w_python_object_type
 {
