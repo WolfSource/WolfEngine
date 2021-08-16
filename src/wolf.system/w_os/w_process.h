@@ -95,11 +95,32 @@ typedef unsigned long   DWORD;
 	 * @return result
 	*/
 	W_SYSTEM_EXPORT
-		W_RESULT w_process_create(
+		W_RESULT w_process_createW(
 			_Inout_ w_mem_pool pMemPool,
 			_In_z_ const wchar_t* pPathToProcess,
 			_In_z_ const wchar_t* pCmdsArg,
 			_In_z_ const wchar_t* pCurrentDirectoryPath,
+			_In_  DWORD pWaitAfterRunningProcess,
+			_In_ DWORD pCreationFlags,
+			_Inout_opt_ w_process_info* pProcessInfo);
+
+	/**
+	 * create a process
+	 * @param pMemPool The pool to allocate out of
+	 * @param pPathToProcess , the path to the process
+	 * @param pCmdsArg , command args
+	 * @param pCurrentDirectoryPath , the current directory path of process
+	 * @param pWaitAfterRunningProcess , wait in seconds after running the process
+	 * @param pCreationFlags , the creation flags
+	 * @param pProcessInfo , the output process info
+	 * @return result
+	*/
+	W_SYSTEM_EXPORT
+		W_RESULT w_process_create(
+			_Inout_ w_mem_pool pMemPool,
+			_In_z_ const char* pPathToProcess,
+			_In_z_ const char* pCmdsArg,
+			_In_z_ const char* pCurrentDirectoryPath,
 			_In_  DWORD pWaitAfterRunningProcess,
 			_In_ DWORD pCreationFlags,
 			_Inout_opt_ w_process_info* pProcessInfo);

@@ -4,6 +4,7 @@
 #include <w_io/w_io.h>
 #include <wchar.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 #ifdef W_PLATFORM_WIN
 #include <tlhelp32.h>//for checking process
@@ -338,7 +339,7 @@ W_RESULT w_process_print_all(
 
 #ifdef W_PLATFORM_WIN
 
-W_RESULT w_process_create(
+W_RESULT w_process_createW(
 	_Inout_ w_mem_pool pMemPool,
 	_In_z_ const wchar_t* pPathToProcess,
 	_In_z_ const wchar_t* pCmdsArg,
@@ -401,6 +402,99 @@ W_RESULT w_process_create(
 
 	if (CreateProcessW(
 		(LPCWSTR)pPathToProcess,
+		_arg,
+		NULL,
+		NULL,
+		FALSE,
+		pCreationFlags,
+		NULL,
+		pCurrentDirectoryPath,
+		_startup_info,
+		_process_info))
+	{
+		WaitForSingleObject(_process_info->hProcess, pWaitAfterRunningProcess);
+
+		*pProcessInfo = (w_process_info)w_malloc(pMemPool, sizeof(w_process_info_t));
+		if (*pProcessInfo)
+		{
+			(*pProcessInfo)->info = _process_info;
+			(*pProcessInfo)->error_code = GetLastError();
+			_ret = W_SUCCESS;
+		}
+	}
+
+	if (_arg_pool)
+	{
+		w_mem_pool_fini(&_arg_pool);
+	}
+
+	//logger.error(L"Process ID: \"{}\" could not run with arg \"{}\" . Error code : \"{}\"", pPathtoProcess, pCmdsArg, GetLastError());
+	return _ret;
+}
+
+W_RESULT w_process_create(
+	_Inout_ w_mem_pool pMemPool,
+	_In_z_ const char* pPathToProcess,
+	_In_z_ const char* pCmdsArg,
+	_In_z_ const char* pCurrentDirectoryPath,
+	_In_  DWORD pWaitAfterRunningProcess,
+	_In_ DWORD pCreationFlags,
+	_Inout_opt_ w_process_info* pProcessInfo)
+{
+	W_RESULT _ret = W_FAILURE;
+	if (!pPathToProcess)
+	{
+		return _ret;
+	}
+
+	size_t _len_path = strlen(pPathToProcess);
+	if (!_len_path)
+	{
+		return _ret;
+	}
+
+	size_t _size = sizeof(STARTUPINFO);
+	STARTUPINFO* _startup_info = w_malloc(pMemPool, _size);
+	if (!_startup_info)
+	{
+		return _ret;
+	}
+	memset(_startup_info, 0, _size);
+
+	_size = sizeof(PROCESS_INFORMATION);
+	PROCESS_INFORMATION* _process_info = w_malloc(pMemPool, _size);
+	if (!_process_info)
+	{
+		return _ret;
+	}
+	memset(_process_info, 0, _size);
+
+	w_mem_pool _arg_pool = NULL;
+	char* _arg = NULL;
+	if (pCmdsArg)
+	{
+		size_t _len_arg = strlen(pCmdsArg);
+		if (_len_arg)
+		{
+			w_mem_pool_init(&_arg_pool);
+			if (!_arg_pool)
+			{
+				return _ret;
+			}
+			_size = _len_path + _len_arg + 2;//2 for space and '\0'
+			_arg = w_malloc(_arg_pool, _size);
+			if (!_arg)
+			{
+				w_mem_pool_fini(&_arg_pool);
+				return _ret;
+			}
+			sprintf_s(_arg, _size, "%s %s", pPathToProcess, pCmdsArg);
+			_arg[_size] = '\0';
+		}
+	}
+
+	if (CreateProcessA(
+		(LPCSTR)pPathToProcess,
 		_arg,
 		NULL,
 		NULL,
