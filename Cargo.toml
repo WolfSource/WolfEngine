@@ -1,0 +1,33 @@
+[package]
+author = "Pooya Eimandar"
+edition = "2021"
+name = "wolf"
+version = "3.0.0"
+
+[lib]
+crate-type = ["rlib"]
+name = "wolf"
+path = "src/lib.rs"
+
+[dependencies]
+anyhow = {version = "1.0"}
+chrono = {version = "0.4"}
+fs_extra = {version = "1.2"}
+futures = {version = "0.3"}
+heapless = {version = "0.7"}
+libc = {version = "0.2"}
+mimalloc = {version = "0.1"}
+tokio = {version = "1", features = ["full"]}
+tracing = {version = "0.1"}
+
+[build-dependencies]
+bindgen = {version = "0.59"}
+cmake = {version = "0.1"}
+fs_extra = {version = "1.2"}
+git2 = {version = "0.13"}
+
+[features]
+default = ["system"]
+media = []
+render = []
+system = []

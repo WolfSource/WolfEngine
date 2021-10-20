@@ -1,9 +1,6 @@
-# ToDos
-- Dynamic lod creator for lod sample
-- Forward+
-- DirectX 12
-- Realtime Raytracing
-- DEBUG, RELEASE, MinSizeRelease(does not have assimp and just use wscene files)
+# 3.0
+A major release, rewrite wolf with Rust
+- 
 
 # 2.1
 A major release, rewrite most of wolf.system with pure C
