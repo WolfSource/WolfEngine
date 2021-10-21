@@ -1,23 +1,27 @@
 use cmake;
 use core::panic;
 use git2::Repository;
-use std::{collections::HashMap, path::Path};
+use std::{
+    collections::HashMap,
+    path::{Path, PathBuf},
+};
+
+//c/c++ build types
+#[derive(Clone)]
+enum CBuildType {
+    CMAKE,
+    //CXX,
+}
+type BuildConfig = (
+    CBuildType,        /* the specific c library build type */
+    &'static str,      /* relative path to the cmake file */
+    Vec<&'static str>, /* cmake configures */
+    bool,              /* true means linking static false means linking dynamic */
+    &'static str,      /* lib path */
+    &'static str,      /* bindgen dst path */
+);
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    //c/c++ dependencies repos
-    enum CBuildType {
-        CMAKE,
-        //CXX,
-    }
-    type BuildConfig = (
-        CBuildType,        /* the specific c library build type */
-        &'static str,      /* relative path to the cmake file */
-        Vec<&'static str>, /* cmake configures */
-        bool,              /* true means linking static false means linking dynamic */
-        &'static str,      /* lib path */
-        &'static str,      /* bindgen dst path */
-    );
-
     let mut git_sources: HashMap<&str, (&str, BuildConfig)> = HashMap::new();
     // git_sources.insert(
     //     "base64",
@@ -50,113 +54,21 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // iterate over git repositories
     for (k, v) in git_sources.into_iter() {
         //check git project already exists
-        let path = format!("{}/deps/{}", current_dir, k);
-        let ret = Repository::open(path.clone())
+        let git_repo_path = format!("{}/deps/{}", current_dir, k);
+        let ret = Repository::open(git_repo_path.clone())
             .and_then(|_r| {
                 //git project just opened
                 Ok(())
             })
             .or_else(|_e| {
                 // try clone it again
-                let ret = Repository::clone(v.0, path.clone())
+                let ret = Repository::clone(v.0, git_repo_path.clone())
                     .and_then(|_repo| {
-                        //Ok, now try build it
-                        let build_type = v.1 .0;
+                        //Time to build it
+                        let build_type = v.1 .0.clone();
                         match build_type {
-                            //CBuildType::CXX => {}
                             CBuildType::CMAKE => {
-                                let cmake_path = v.1 .1;
-                                let flags = &v.1 .2;
-
-                                //build cmake
-                                let mut build = cmake::Config::new(cmake_path);
-                                for &flag in flags {
-                                    build.configure_arg(flag);
-                                }
-                                let build_dir = build.build();
-                                let build_dir_str = build_dir.as_path().to_str().expect(
-                                    format!(
-                                        "Build failed: could not get build directory of {:?}",
-                                        build_dir
-                                    )
-                                    .as_ref()
-                                );
-
-                                //closure for using header to bindgen
-                                let binding_closure = |p_header_name: &str, p_dst_path: &Path| -> () {
-                                    let b = bindgen::Builder::default()
-                                        // The input header we would like to generate
-                                        // bindings for.
-                                        .header(p_header_name)
-                                        // Tell cargo to invalidate the built crate whenever any of the
-                                        // included header files changed.
-                                        .parse_callbacks(Box::new(bindgen::CargoCallbacks))
-                                        // Finish the builder and generate the bindings.
-                                        .generate()
-                                        // Unwrap the Result and panic on failure.
-                                        .expect(
-                                            format!(
-                                            "Build failed: unable to generate bindings for {:?}",
-                                            p_header_name
-                                        )
-                                            .as_ref()
-                                        );
-
-                                    if std::fs::metadata(p_dst_path).is_err()
-                                    {
-                                        //create dir
-                                        std::fs::create_dir_all(p_dst_path).expect(
-                                            format!(
-                                            "Build failed: could not create directory for {:?} in order to copy generated rust file {}",
-                                            p_dst_path,
-                                            p_header_name
-                                        )
-                                            .as_ref());
-                                    }
-
-                                    let name = Path::new(&p_header_name).file_stem().expect( format!(
-                                        "Build failed: could not get name from header {}",
-                                        p_header_name
-                                    )
-                                    .as_ref()).to_str().unwrap();
-
-                                    let dst_path = p_dst_path.join(format!("{}.rs", name));
-                                    b.write_to_file(dst_path).expect(
-                                        format!(
-                                            "Build failed: could not write generated rust file of {} to {:?}",
-                                            p_header_name, p_dst_path
-                                        )
-                                        .as_ref()
-                                    );
-                                };
-
-                                //convert headers to rust codes
-                                let include = format!("{}/include", build_dir_str);
-                                for content in fs_extra::dir::get_dir_content(include.clone()) {
-                                    for header in content.files {
-                                        let to_str = format!("{}/{}/c_{}/", current_dir, v.1 .5, k);
-                                        let to = Path::new(&to_str);
-                                        binding_closure(&header, to);
-                                    }
-                                }
-
-                                //get build dir and copy it to the root of repo
-
-                                let mut from_paths = Vec::new();
-                                from_paths.push(build_dir_str);
-
-                                let dst = format!("{}", path);
-                                let options = fs_extra::dir::CopyOptions::new();
-
-                                fs_extra::copy_items(&from_paths, dst, &options).expect(
-                                    format!(
-                                        "Build failed: could not copy build directory {:?}",
-                                        build_dir
-                                    )
-                                    .as_ref()
-                                );
-                                //remove source files
-                                let _ = fs_extra::remove_items(&from_paths);
+                                build_cmake(current_dir, &git_repo_path, &k, &v);
                             }
                         }
                         Ok(())
@@ -166,13 +78,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             });
 
         if ret.is_ok() {
-            // git project exists, so tell Cargo that rerun this build script when the given folder changes.
-            println!("cargo:rerun-if-changed={}", path);
+            // Tell Cargo that rerun this build script when the given folder changes.
+            //println!("cargo:rerun-if-changed={}", path);
 
             //link lib
             let link_static = v.1 .3;
             let lib = v.1 .4;
-            println!("cargo:rustc-link-search=native={}/out/lib/", path);
+            println!("cargo:rustc-link-search=native={}/out/lib/", git_repo_path);
             if link_static {
                 println!("cargo:rustc-link-lib=static={}", lib);
             } else {
@@ -184,4 +96,152 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
 
     Ok(())
+}
+
+fn build_cmake(
+    p_current_path: &str,
+    p_git_repo_path: &str,
+    p_key: &str,
+    p_value: &(&str, BuildConfig),
+) {
+    //get path to CMakeLists file
+    let cmake_path = p_value.1 .1;
+    //get cmake configs
+    let cmake_config_args = &p_value.1 .2;
+
+    //build cmake
+    let mut build = cmake::Config::new(cmake_path);
+    for &c_arg in cmake_config_args {
+        build.configure_arg(c_arg);
+    }
+
+    //get the out folder which contains bin/lib/include
+    let build_dir = build.build();
+    let build_dir_str = build_dir.as_path().to_str().expect(
+        format!(
+            "Build failed: could not get output build directory of {:?}",
+            build_dir
+        )
+        .as_ref(),
+    );
+
+    //closure for generating rust file from c headers via bindgen
+    let binding_closure = |p_header_path: &PathBuf, p_dst_path: &Path| -> () {
+        let err_msg = format!(
+            "Build failed: could not convert header path to &str {:?}",
+            p_header_path
+        );
+
+        let header_path = p_header_path.to_str().expect(&err_msg);
+        let header_name_os_str = p_header_path.file_stem().expect(&err_msg);
+        let header_name = header_name_os_str.to_str().expect(&err_msg);
+
+        let b = bindgen::Builder::default()
+            // The input header we would like to generate
+            .header(header_path)
+            // Tell cargo to invalidate the built crate whenever any of the included header files changed.
+            .parse_callbacks(Box::new(bindgen::CargoCallbacks))
+            // Finish the builder and generate the bindings.
+            .generate()
+            // Unwrap the Result and panic on failure.
+            .expect(
+                format!(
+                    "Build failed: unable to generate rust bindings from {:?}",
+                    header_path
+                )
+                .as_ref(),
+            );
+
+        // check destination directories are exist, if not then create them
+        if std::fs::metadata(p_dst_path).is_err() {
+            //create output directories for rust files generated by bindgen
+            std::fs::create_dir_all(p_dst_path).expect(
+                format!(
+                "Build failed: could not create directory for {:?} in order to copy generated rust file {}",
+                p_dst_path,
+                header_path
+            )
+                .as_ref());
+        }
+
+        //use same header name for rust file and save rust file in our project
+        let dst_path = p_dst_path.join(format!("{}.rs", header_name));
+        b.write_to_file(dst_path).expect(
+            format!(
+                "Build failed: could not write generated rust file of {} to {:?}",
+                header_path, p_dst_path
+            )
+            .as_ref(),
+        );
+    };
+
+    //recursive closure for generating rust file from c headers via bindgen
+    struct WalkDir<'a> {
+        pub f: &'a dyn Fn(&WalkDir, &Path, &str) -> (),
+    }
+    let walk_dir = WalkDir {
+        f: &|p_walk_dir, p_path, p_parent_name| -> () {
+            let mut mod_content = String::new();
+            let dst_folder = format!("{}/{}/c_{}/", p_current_path, p_value.1 .5, p_parent_name);
+            let dst_folder_path = Path::new(&dst_folder);
+
+            //read all files which are located inside this folder
+            let ret = std::fs::read_dir(p_path)
+                .and_then(|paths| {
+                    for path in paths {
+                        if path.is_ok() {
+                            let p = path.unwrap().path();
+                            let p_name = p.file_stem().unwrap().to_str().unwrap();
+                            if p.is_file() {
+                                mod_content += &format!("pub mod {};\r\n", p_name);
+
+                                binding_closure(&p, dst_folder_path);
+                            } else if p.is_dir() {
+                                mod_content += &format!("pub mod {};\r\n", p_name);
+
+                                let err_msg = format!("could not get name of {:?}", p);
+                                let parent_dir_name_os_str = p.file_stem().expect(&err_msg);
+                                let parent_dir_name =
+                                    parent_dir_name_os_str.to_str().expect(&err_msg);
+                                //call walk directory recursively
+                                (p_walk_dir.f)(p_walk_dir, &p, parent_dir_name);
+                            }
+                        }
+                    }
+                    Ok(())
+                })
+                .or_else(|e| Err(e));
+
+            if ret.is_ok() && !mod_content.is_empty() {
+                //save pub mod
+                let mod_file_path = dst_folder_path.join("mod.rs");
+                let err_msg = format!(
+                    "could not save mod.rs {} for {:?}",
+                    mod_content, mod_file_path
+                );
+                std::fs::write(mod_file_path.as_path(), mod_content).expect(&err_msg);
+            }
+        },
+    };
+    //recursively convert headers to rust codes via bindgen
+    let include = format!("{}/include", build_dir_str);
+    let include_path = Path::new(&include);
+    (walk_dir.f)(&walk_dir, include_path, p_key);
+
+    //move output build directory (out) to the root of repo
+    let mut from_paths = Vec::new();
+    from_paths.push(build_dir_str);
+
+    let dst = format!("{}", p_git_repo_path);
+    let options = fs_extra::dir::CopyOptions::new();
+
+    fs_extra::copy_items(&from_paths, dst, &options).expect(
+        format!(
+            "Build failed: could not copy build directory {:?}",
+            build_dir
+        )
+        .as_ref(),
+    );
+    //remove source files & directory from cache
+    let _ = fs_extra::remove_items(&from_paths);
 }
