@@ -51,6 +51,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .to_str()
         .expect("could not get a &str from current directory");
 
+    //get current build profile
+    let profile = std::env::var("PROFILE").expect("could not get build profile");
+
     // iterate over git repositories
     for (k, v) in git_sources.into_iter() {
         //check git project already exists
@@ -58,40 +61,53 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         let ret = Repository::open(git_repo_path.clone())
             .and_then(|_r| {
                 //git project just opened
-                Ok(())
+                let build_dir = format!("{}/deps/{}/build/{}", current_dir, k, profile);
+                if !Path::new(&build_dir).exists() {
+                    //rebuild it again
+                    Ok(true)
+                } else {
+                    //no need to build it again
+                    Ok(false)
+                }
             })
             .or_else(|_e| {
                 // try clone it again
                 let ret = Repository::clone(v.0, git_repo_path.clone())
                     .and_then(|_repo| {
                         //Time to build it
-                        let build_type = v.1 .0.clone();
-                        match build_type {
-                            CBuildType::CMAKE => {
-                                build_cmake(current_dir, &git_repo_path, &k, &v);
-                            }
-                        }
-                        Ok(())
+                        Ok(true)
                     })
                     .or_else(|e| Err(e));
                 ret
             });
 
-        if ret.is_ok() {
-            // Tell Cargo that rerun this build script when the given folder changes.
-            //println!("cargo:rerun-if-changed={}", path);
+        match ret {
+            Ok(build) => {
+                if build {
+                    let build_type = v.1 .0.clone();
+                    match build_type {
+                        CBuildType::CMAKE => {
+                            build_cmake(&profile, current_dir, &git_repo_path, &k, &v);
+                        }
+                    }
+                }
 
-            //link lib
-            let link_static = v.1 .3;
-            let lib = v.1 .4;
-            println!("cargo:rustc-link-search=native={}/out/lib/", git_repo_path);
-            if link_static {
-                println!("cargo:rustc-link-lib=static={}", lib);
-            } else {
-                println!("cargo:rustc-link-lib=dylib={}", lib);
+                //link lib
+                let link_static = v.1 .3;
+                let lib = v.1 .4;
+                println!(
+                    "cargo:rustc-link-search=native={}/build/{}/out/lib/",
+                    git_repo_path, profile
+                );
+                if link_static {
+                    println!("cargo:rustc-link-lib=static={}", lib);
+                } else {
+                    println!("cargo:rustc-link-lib=dylib={}", lib);
+                }
             }
-        } else {
-            panic!("Build failed: error {:?}", ret);
+            Err(e) => {
+                panic!("Build failed: error {:?}", e);
+            }
         }
     }
 
@@ -99,6 +115,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 fn build_cmake(
+    p_build_profile: &str,
     p_current_path: &str,
     p_git_repo_path: &str,
     p_key: &str,
@@ -232,16 +249,31 @@ fn build_cmake(
     let mut from_paths = Vec::new();
     from_paths.push(build_dir_str);
 
-    let dst = format!("{}", p_git_repo_path);
+    let dst = format!("{}/build/{}/", p_git_repo_path, p_build_profile);
     let options = fs_extra::dir::CopyOptions::new();
 
-    fs_extra::copy_items(&from_paths, dst, &options).expect(
+    if !Path::new(&dst).exists() {
+        std::fs::create_dir_all(dst.clone()).expect(
+            format!(
+                "Build failed: could not create destination build directory {:?}",
+                dst
+            )
+            .as_ref(),
+        );
+    }
+
+    fs_extra::copy_items(&from_paths, dst.clone(), &options).expect(
         format!(
-            "Build failed: could not copy build directory {:?}",
-            build_dir
+            "Build failed: could not copy from {:?} to {}",
+            build_dir, dst
         )
         .as_ref(),
     );
+
+    //re run build if the following folders changed
+    println!("cargo:rerun-if-changed={}/build/", p_git_repo_path);
+    println!("cargo:rerun-if-changed={}", dst);
+
     //remove source files & directory from cache
     let _ = fs_extra::remove_items(&from_paths);
 }
