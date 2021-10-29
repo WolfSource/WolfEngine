@@ -1,44 +1,20 @@
-[package]
-author = "Pooya Eimandar"
-edition = "2021"
-name = "wolf"
-version = "3.0.0"
-
-[lib]
-crate-type = ["rlib"]
-name = "wolf"
-path = "src/lib.rs"
-
-[dependencies]
-anyhow = {version = "1.0.44"}
-chrono = {version = "0.4.19"}
-fs_extra = {version = "1.2.0"}
-futures = {version = "0.3.17"}
-heapless = {version = "0.7.7"}
-libc = {version = "0.2.104"}
-mimalloc = {version = "0.1.26"}
-tokio = {version = "1.12.0", features = ["full"]}
-tracing = {version = "0.1.29"}
-
-[build-dependencies]
-bindgen = {version = "0.59.1"}
-cc = {version = "1.0.71"}
-cmake = {version = "0.1.46"}
-fs_extra = {version = "1.2.0"}
-git2 = {version = "0.13.23"}
+[workspace]
+members = [
+  "wolf",
+]
 
 # for more optimization https://doc.rust-lang.org/cargo/reference/profiles.html
 [profile.dev]
-codegen-units = 256 
-debug = true 
-debug-assertions = true 
-incremental = true 
-lto = false 
-opt-level = 0 
-overflow-checks = true 
-panic = "unwind" 
-rpath = false 
-split-debuginfo = '...' # Platform-specific.
+codegen-units = 256
+debug = true
+debug-assertions = true
+incremental = true
+lto = false
+opt-level = 0
+overflow-checks = true
+panic = "unwind"
+rpath = false
+split-debuginfo = "unpacked"
 
 [profile.test]
 codegen-units = 256
@@ -49,8 +25,8 @@ lto = false
 opt-level = 0
 overflow-checks = true
 # panic = "unwind" # This setting is always ignored.
-rpath = false 
-split-debuginfo = '...' # Platform-specific.
+rpath = false
+split-debuginfo = "unpacked"
 
 [profile.release]
 codegen-units = 16
@@ -75,9 +51,3 @@ overflow-checks = false
 #panic = "abort" # This setting is always ignored.
 rpath = false
 split-debuginfo = 'off'
-
-[features]
-default = ["system"]
-media = []
-render = []
-system = []

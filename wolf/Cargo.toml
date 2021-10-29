@@ -1,0 +1,24 @@
+[package]
+author = "Pooya Eimandar"
+edition = "2021"
+name = "wolf"
+version = "3.0.0"
+
+[lib]
+crate-type = ["rlib"]
+name = "wolf"
+path = "src/lib.rs"
+
+[dependencies]
+cxx = {version = "1.0.56"}
+mimalloc = {version = "0.1.26"}
+
+[build-dependencies]
+cxx-build = {version = "1.0.56"}
+git2 = {version = "0.13.23"}
+
+[features]
+default = ["system"]
+media = []
+render = []
+system = []

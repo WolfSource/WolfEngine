@@ -1,0 +1,12 @@
+use mimalloc::MiMalloc;
+
+#[global_allocator]
+static GLOBAL: MiMalloc = MiMalloc;
+
+pub mod compression;
+
+#[test]
+fn test() {
+    // let lz4 = compression::lz4::lz4::new_lz4();
+    println!("p");
+}
