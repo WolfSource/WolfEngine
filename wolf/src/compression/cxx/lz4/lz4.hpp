@@ -5,8 +5,6 @@
 
 namespace lz4_cxx
 {
-    struct LZ4Result;
-
     /**
 	 * compress stream using lz4 algorithm
 	 * @param pSrcBuffer is the source buffer

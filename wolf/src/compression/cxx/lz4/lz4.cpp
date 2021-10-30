@@ -1,5 +1,6 @@
 #include "lz4.hpp"
 #include "wolf/src/compression/lz4.rs.h"
+
 #include <lz4.h>
 
 namespace lz4_cxx
@@ -134,7 +135,7 @@ namespace lz4_cxx
 
         if (_decompressed_size <= 0)
         {
-            pTrace = "decompress size must be greater than zero. trace info: lz4_cxx::decompress";
+            pTrace = "size of decompress buffer must be greater than zero. trace info: lz4_cxx::decompress";
             free(data);
             return rust::Vec<uint8_t>();
         }
@@ -143,7 +144,7 @@ namespace lz4_cxx
             data = (char *)realloc(data, _decompressed_size);
             if (!data)
             {
-                pTrace = "could not fit memory for de-compressed buffer trace info: lz4_cxx::decompress";
+                pTrace = "could not realloc memory for de-compressed buffer trace info: lz4_cxx::decompress";
                 free(data);
                 return rust::Vec<uint8_t>();
             }

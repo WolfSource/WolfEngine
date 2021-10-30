@@ -1,30 +1,37 @@
 #[cxx::bridge(namespace = "lzma_cxx")]
 pub mod ffi {
-    #[derive(Debug)]
-    struct LZMAResult {
-        size_in: usize,
-        size_out: usize,
-        data: Vec<u8>,
-    }
     unsafe extern "C++" {
         include!("wolf/src/compression/cxx/lzma/lzma.hpp");
 
-        pub fn compress(pSourceBuffer: &[u8], pResult: &mut LZMAResult) -> bool;
-        pub fn decompress(pSourceBuffer: &[u8], pResult: &mut LZMAResult) -> bool;
+        pub fn compress_1(pSourceBuffer: &[u8], pLevel: u32, pTrace: &mut String) -> Vec<u8>;
+        pub fn decompress_1(pSourceBuffer: &[u8], pTrace: &mut String) -> Vec<u8>;
     }
 }
 
 #[test]
 fn test() {
     use crate::compression::lzma;
-    let mut result = lzma::ffi::LZMAResult {
-        size_in: 0,
-        size_out: 0,
-        data: Vec::new(),
-    };
-    //l.compress(&mut result);
 
-    println!("{:?}", result);
+    let content = "HELLO WOLF\r\nHELLO WOLF!*&%!HELLO WOLF!07*&%!".as_bytes();
+    println!(
+        "original memory is {:?} with size {}",
+        std::str::from_utf8(content),
+        content.len(),
+    );
 
-    println!("lzma version");
+    let mut trace = String::new();
+    let compressed = lzma::ffi::compress_1(content, 5, &mut trace);
+    println!(
+        "lzma compressed memory is {:?} with size {}. trace info: {:?}",
+        compressed,
+        compressed.len(),
+        trace
+    );
+
+    let decompressed = lzma::ffi::decompress_1(compressed.as_slice(), &mut trace);
+    println!(
+        "lzma de-compressed memory is {:?}. trace info: {:?}",
+        std::str::from_utf8(decompressed.as_slice()),
+        trace
+    );
 }
