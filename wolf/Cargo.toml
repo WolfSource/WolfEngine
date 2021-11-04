@@ -10,8 +10,18 @@ name = "wolf"
 path = "src/lib.rs"
 
 [dependencies]
+# before adding any dependency please check it out from  
+# https://android.googlesource.com/platform/external/rust/crates/
+anyhow = {version = "1.0.44"}
 cxx = {version = "1.0.56"}
+futures = {version = "0.3.17"}
 mimalloc = {version = "0.1.26"}
+rustls-pemfile = {version = "0.2.1"}
+tokio = {version = "1.13.0", features = ["full"]}
+tokio-rustls = {version = "0.23.1"}
+tokio-stream = {version = "0.1.8"}
+tokio-tungstenite = {version = "0.15.0", features = ["rustls"]}
+webpki-roots = {version = "0.22.1"}
 
 [build-dependencies]
 cxx-build = {version = "1.0.56"}

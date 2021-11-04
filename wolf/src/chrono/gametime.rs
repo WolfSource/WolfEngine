@@ -112,7 +112,7 @@ impl GameTime {
     /**
      * get total ticks since the start
      */
-    pub fn tick(&mut self, mut p_on_tick_call_back: impl FnMut() -> ()) -> () {
+    pub fn tick_fn(&mut self, mut p_on_tick_call_back: impl FnMut() -> ()) -> () {
         // Query the current time.
         let current_time = Instant::now();
         let mut time_delta = (current_time - self.last_time).as_secs_f64();
@@ -173,16 +173,74 @@ impl GameTime {
             self.seconds_counter %= 1.0;
         }
     }
+
+    pub fn tick(&mut self) -> () {
+        // Query the current time.
+        let current_time = Instant::now();
+        let mut time_delta = (current_time - self.last_time).as_secs_f64();
+
+        self.last_time = current_time;
+        self.seconds_counter += time_delta;
+
+        //clamp excessively large time deltas (e.g. after paused in the debugger).
+        if time_delta > self.max_delta {
+            time_delta = self.max_delta;
+        }
+
+        // Convert QPC units into a canonical tick format. This cannot overflow due to the previous clamp.
+        time_delta = time_delta * (TICKS_PER_SECOND as f64);
+
+        let _last_frame_count = self.frame_count;
+        if self.fixed_time_step {
+            /*
+                If the app is running very close to the target elapsed time (within 1/4 of a millisecond) just clamp
+                the clock to exactly match the target value. This prevents tiny and irrelevant errors
+                from accumulating over time. Without this clamping, a game that requested a 60 fps
+                fixed update, running with vsync enabled on a 59.94 NTSC display, would eventually
+                accumulate enough tiny errors that it would drop a frame. It is better to just round
+                small deviations down to zero to leave things running smoothly.
+            */
+            let abs_ticks = f64::abs(time_delta - self.target_elapsed_ticks);
+            let ticks_per_sec_4 = TICKS_PER_SECOND / 4000.0;
+
+            if abs_ticks < ticks_per_sec_4 {
+                time_delta = self.target_elapsed_ticks as f64;
+            }
+
+            self.left_over_ticks += time_delta;
+            while self.left_over_ticks >= self.target_elapsed_ticks {
+                self.elapsed_ticks = self.target_elapsed_ticks;
+                self.total_ticks += self.target_elapsed_ticks;
+                self.left_over_ticks -= self.target_elapsed_ticks;
+                self.frame_count += 1;
+            }
+        } else {
+            // Variable timestep update logic.
+            self.elapsed_ticks = time_delta;
+            self.total_ticks += time_delta;
+            self.left_over_ticks = 0.0;
+            self.frame_count += 1;
+        }
+
+        // Track the current framerate.
+        self.frames_this_second += self.frame_count - _last_frame_count;
+
+        if self.seconds_counter >= 1.0 {
+            self.fps = self.frames_this_second;
+            self.frames_this_second = 0;
+            self.seconds_counter %= 1.0;
+        }
+    }
 }
 
 #[test]
 fn test() {
     let mut g = GameTime::new();
     g.set_fixed_time_step(true);
-    g.set_target_elapsed_seconds(1.0 / 30.0); //ticks every 30 fps (0.016ms)
+    g.set_target_elapsed_seconds(1.0 / 60.0); //ticks every 0.016ms (60 fps)
 
     loop {
-        g.tick(move || -> () {
+        g.tick_fn(move || -> () {
             println!(
                 "elpased seconds from last tick {}. total elapsed seconds {}",
                 g.get_elapsed_seconds(),
