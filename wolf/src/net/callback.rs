@@ -1,10 +1,9 @@
+use crate::chrono::gametime::GameTime;
 use anyhow::Result;
 use std::{net::SocketAddr, sync::Arc};
 
-use crate::chrono::gametime::GameTime;
-
 // OnMessageCallback
-type Fp1 = Box<dyn Fn(&GameTime, &mut usize, &mut [u8]) -> Result<()> + Send + Sync>;
+type Fp1 = Box<dyn Fn(&GameTime, &SocketAddr, &mut usize, &mut [u8]) -> Result<()> + Send + Sync>;
 
 pub struct OnMessageCallback {
     f: Arc<Fp1>,
@@ -18,10 +17,11 @@ impl OnMessageCallback {
     pub fn run(
         &self,
         p_socket_live_time: &GameTime,
+        p_peer_address: &SocketAddr,
         p_size_of_msg: &mut usize,
         p_buf: &mut [u8],
     ) -> Result<()> {
-        (self.f)(p_socket_live_time, p_size_of_msg, p_buf)
+        (self.f)(p_socket_live_time, p_peer_address, p_size_of_msg, p_buf)
     }
 }
 

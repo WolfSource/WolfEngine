@@ -16,13 +16,13 @@ use tokio_rustls::{
 };
 
 const MAX_BUFFER_SIZE: usize = 1024; //1K
-const SEND_RECEIVE_TIMEOUT_SECONDS: u64 = 3;
 
 async fn accept_connection<T>(
     p_stream: T,
     p_peer_address: SocketAddr,
+    p_timeout_in_seconds: f64,
     p_on_accept_callback: OnSocketCallback,
-    p_on_message: OnMessageCallback,
+    p_on_msg_callback: OnMessageCallback,
     p_on_close_callback: OnSocketCallback,
 ) -> anyhow::Result<()>
 where
@@ -48,7 +48,7 @@ where
         size = reader.read(&mut buf).await?;
         if size > 0 {
             socket_io_timeout = Instant::now();
-            p_on_message.run(&socket_live_time, &mut size, &mut buf)?;
+            p_on_msg_callback.run(&socket_live_time, &p_peer_address, &mut size, &mut buf)?;
             if size > 0 {
                 let v = buf[0..size].to_vec();
                 writer.write(&v).await?;
@@ -56,7 +56,7 @@ where
             }
         } else {
             let dur = Instant::now() - socket_io_timeout;
-            if dur.as_secs() > SEND_RECEIVE_TIMEOUT_SECONDS {
+            if dur.as_secs_f64() > p_timeout_in_seconds {
                 break;
             }
         }
@@ -65,9 +65,45 @@ where
     ret
 }
 
+async fn tls_acceptor(
+    p_tls_certificate_path: Option<&Path>,
+    p_tls_private_key_path: Option<&Path>,
+    p_tls_private_type: Option<&TlsPrivateKeyType>,
+) -> anyhow::Result<TlsAcceptor> {
+    //tls-mode
+    let err_msg = "Invalid Parameters for tcp::run_server";
+
+    //load certificate
+    let crt = p_tls_certificate_path
+        .ok_or(anyhow!(err_msg).context("p_tls_certificate_path not provided for tcp server"))?;
+    let certs = tls::load_certs(crt).await?;
+    ensure!(certs.len() == 0, "missing certificate for TLS tcp server");
+
+    //load private key
+    let key = p_tls_private_key_path
+        .ok_or(anyhow!(err_msg).context("p_tls_private_key_path not provided for tcp server"))?;
+    //load private key type
+    let key_type = p_tls_private_type
+        .ok_or(anyhow!(err_msg).context("p_tls_private_type not provided for tcp server"))?;
+    let mut keys = tls::load_private_keys(key, key_type).await?;
+    ensure!(keys.len() == 0, "missing private key for TLS tcp server");
+
+    //create tls config
+    let tls_server_config = ServerConfig::builder()
+        .with_safe_defaults()
+        .with_no_client_auth()
+        .with_single_cert(certs, keys.remove(0))
+        .map_err(|err| std::io::Error::new(std::io::ErrorKind::InvalidInput, err))?;
+
+    // run acceptor & listener
+    let tls_acceptor = TlsAcceptor::from(Arc::new(tls_server_config));
+    Ok(tls_acceptor)
+}
+
 pub async fn server(
     p_address: &str,
     p_port: u16,
+    p_timeout_in_seconds: f64,
     p_tls: bool,
     p_tls_certificate_path: Option<&Path>,
     p_tls_private_key_path: Option<&Path>,
@@ -81,35 +117,14 @@ pub async fn server(
     let address = format!("{}:{}", p_address, p_port);
     let socket_addr = SocketAddr::from_str(&address)?;
     if p_tls {
-        //tls-mode
-        let err_msg = "Invalid Parameters for tcp::run_server";
+        //create tls acceptor
+        let tls_acc = tls_acceptor(
+            p_tls_certificate_path,
+            p_tls_private_key_path,
+            p_tls_private_type,
+        )
+        .await?;
 
-        //load certificate
-        let crt = p_tls_certificate_path.ok_or(
-            anyhow!(err_msg).context("p_tls_certificate_path not provided for tcp server"),
-        )?;
-        let certs = tls::load_certs(crt).await?;
-        ensure!(certs.len() == 0, "missing certificate for TLS tcp server");
-
-        //load private key
-        let key = p_tls_private_key_path.ok_or(
-            anyhow!(err_msg).context("p_tls_private_key_path not provided for tcp server"),
-        )?;
-        //load private key type
-        let key_type = p_tls_private_type
-            .ok_or(anyhow!(err_msg).context("p_tls_private_type not provided for tcp server"))?;
-        let mut keys = tls::load_private_keys(key, key_type).await?;
-        ensure!(keys.len() == 0, "missing private key for TLS tcp server");
-
-        //create tls config
-        let tls_server_config = ServerConfig::builder()
-            .with_safe_defaults()
-            .with_no_client_auth()
-            .with_single_cert(certs, keys.remove(0))
-            .map_err(|err| std::io::Error::new(std::io::ErrorKind::InvalidInput, err))?;
-
-        // run acceptor & listener
-        let tls_acceptor = TlsAcceptor::from(Arc::new(tls_server_config));
         // bind to the socket
         let tcp_listener = TcpListener::bind(socket_addr).await?;
         p_on_bind_socket.run(&socket_addr)?;
@@ -117,7 +132,7 @@ pub async fn server(
         // start main loop
         while let Ok((stream, peer_addr)) = tcp_listener.accept().await {
             //clone necessary objects
-            let tls = tls_acceptor.clone();
+            let tls = tls_acc.clone();
             let tls_on_message = p_on_message.clone();
             let tls_on_accept_con = p_on_accept_connection.clone();
             let tls_on_close_con = p_on_close_connection.clone();
@@ -130,6 +145,7 @@ pub async fn server(
                         accept_connection(
                             tls_stream,
                             peer_addr,
+                            p_timeout_in_seconds,
                             tls_on_accept_con,
                             tls_on_message,
                             tls_on_close_con,
@@ -155,6 +171,7 @@ pub async fn server(
             tokio::spawn(accept_connection(
                 stream,
                 peer_addr,
+                p_timeout_in_seconds,
                 p_on_accept_connection.clone(),
                 p_on_message.clone(),
                 p_on_close_connection.clone(),
@@ -167,7 +184,11 @@ pub async fn server(
     ret
 }
 
-async fn handle_client_stream<T>(p_stream: T, p_on_message: OnMessageCallback) -> anyhow::Result<()>
+async fn handle_client_stream<T>(
+    p_stream: T,
+    p_peer_address: &SocketAddr,
+    p_on_message: OnMessageCallback,
+) -> anyhow::Result<()>
 where
     T: tokio::io::AsyncRead + tokio::io::AsyncWrite,
 {
@@ -183,7 +204,7 @@ where
     loop {
         socket_live_time.tick();
         if p_on_message
-            .run(&socket_live_time, &mut size, &mut buf)
+            .run(&socket_live_time, &p_peer_address, &mut size, &mut buf)
             .is_err()
         {
             break;
@@ -227,18 +248,22 @@ pub async fn client(
         let connector = TlsConnector::from(Arc::new(config));
         // create tcp stream
         let stream = TcpStream::connect(&socket_addr).await?;
+
         // domain
         let domain = rustls::ServerName::try_from(p_domain_address).map_err(|e| {
             anyhow!("invalid dnsname {:?}", e).context("invalid dnsname tcp::client")
         })?;
+        let peer_address = stream.peer_addr()?;
 
         // create tls tcp stream
         let stream = connector.connect(domain, stream).await?;
-        handle_client_stream(stream, p_on_message).await?;
+        handle_client_stream(stream, &peer_address, p_on_message).await?;
     } else {
         // create tcp stream
         let stream = TcpStream::connect(&socket_addr).await?;
-        handle_client_stream(stream, p_on_message).await?;
+        let peer_address = stream.peer_addr()?;
+
+        handle_client_stream(stream, &peer_address, p_on_message).await?;
     }
     let ret = p_on_close_connection.run(&socket_addr);
     ret
@@ -265,11 +290,13 @@ async fn test() -> () {
 
         let on_msg_callback = OnMessageCallback::new(Box::new(
             |p_socket_live_time: &GameTime,
+             p_peer_address: &SocketAddr,
              p_size: &mut usize,
              p_buffer: &mut [u8]|
              -> anyhow::Result<()> {
                 println!(
-                    "client: number of received byte(s) is {} at socket live time {}",
+                    "client: number of received byte(s) from {:?} is {}. socket live time {}",
+                    p_peer_address,
                     *p_size,
                     p_socket_live_time.get_total_elapsed_seconds()
                 );
@@ -299,7 +326,7 @@ async fn test() -> () {
             on_close_connection,
         )
         .await;
-        assert!(ret.is_ok());
+        assert!(ret.is_ok(), "{:?}", ret);
     });
 
     // block main thread with tcp server
@@ -322,11 +349,13 @@ async fn test() -> () {
 
     let on_msg_callback = OnMessageCallback::new(Box::new(
         |p_socket_live_time: &GameTime,
+         p_peer_address: &SocketAddr,
          p_size: &mut usize,
          p_buffer: &mut [u8]|
          -> anyhow::Result<()> {
             println!(
-                "server: number of received byte(s) is {} at socket live time {}",
+                "server: number of received byte(s) from {:?} is {}. socket live time {}",
+                p_peer_address,
                 *p_size,
                 p_socket_live_time.get_total_elapsed_seconds()
             );
@@ -363,6 +392,7 @@ async fn test() -> () {
     let ret = server(
         "0.0.0.0",
         8000,
+        3.0,
         false,
         None,
         None,
