@@ -5,7 +5,7 @@ use tokio::{net::UdpSocket, time::Instant};
 
 const MAX_BUFFER_SIZE: usize = 1024; //1K
 
-pub enum ConnectionType {
+pub enum UdpConnectionType {
     UDPServer = 0, // read then write
     UDPClient,     // write then read
 }
@@ -13,7 +13,7 @@ pub enum ConnectionType {
 pub async fn connect(
     p_address: &str,
     p_port: u16,
-    p_connection_type: ConnectionType,
+    p_connection_type: UdpConnectionType,
     p_timeout_in_seconds: f64,
     p_on_bind_socket: OnSocketCallback,
     p_on_message: OnMessageCallback,
@@ -34,7 +34,7 @@ pub async fn connect(
     socket_live_time.set_fixed_time_step(false);
 
     match p_connection_type {
-        ConnectionType::UDPServer => {
+        UdpConnectionType::UDPServer => {
             // let's loop for read and writing to the socket
             loop {
                 socket_live_time.tick();
@@ -57,7 +57,7 @@ pub async fn connect(
                 }
             }
         }
-        ConnectionType::UDPClient => {
+        UdpConnectionType::UDPClient => {
             let mut size: usize = 0;
             let mut peer_addr = socket.local_addr()?;
             // let's loop for write and reading to the socket
@@ -93,6 +93,22 @@ pub async fn connect(
 
 #[tokio::test]
 async fn test() -> () {
+    /*
+            #test it with this python code
+    import socket
+
+    HOST = '127.0.0.1'  # The server's hostname or IP address
+    PORT = 8000        # The port used by the server
+
+    # Create a UDP socket at client side
+    udp = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
+    # Send to server using created UDP socket
+    udp.sendto(str.encode("Hello UDP Server"), (HOST, PORT))
+    msg = udp.recvfrom(1024)
+    print('Received', msg.decode("utf-8"))
+
+    */
+
     // block main thread with udp server
     let on_bind_socket = OnSocketCallback::new(Box::new(
         |p_socket_address: &SocketAddr| -> anyhow::Result<()> {
@@ -138,7 +154,7 @@ async fn test() -> () {
     let ret = connect(
         "0.0.0.0",
         8000,
-        ConnectionType::UDPServer,
+        UdpConnectionType::UDPServer,
         3.0,
         on_bind_socket,
         on_msg_callback,
