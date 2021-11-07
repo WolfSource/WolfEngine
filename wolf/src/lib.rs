@@ -6,6 +6,7 @@ static GLOBAL: MiMalloc = MiMalloc;
 pub mod chrono;
 pub mod compression;
 pub mod net;
+pub mod os;
 
 #[test]
 fn test() {
