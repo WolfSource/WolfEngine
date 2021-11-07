@@ -13,7 +13,7 @@ fn seconds_to_ticks(p_seconds: f64) -> f64 {
     p_seconds * TICKS_PER_SECOND
 }
 
-//the structure of gametime
+//the structure of GameTime
 #[derive(Debug, Clone, Copy)]
 pub struct GameTime {
     pub last_time: Instant,
@@ -31,7 +31,7 @@ pub struct GameTime {
 
 impl Default for GameTime {
     fn default() -> Self {
-        GameTime {
+        Self {
             last_time: Instant::now(),
             max_delta: 313918.0,
             elapsed_ticks: 0.0,
@@ -52,13 +52,13 @@ impl GameTime {
     /**
      * initialize GameTime object
      */
-    pub fn new() -> GameTime {
-        let gametime: GameTime = Default::default();
-        gametime
+    pub fn new() -> Self {
+        let gt: GameTime = Default::default();
+        gt
     }
 
     /**
-     * reset the gametime
+     * reset the GameTime
      */
     pub fn reset(&mut self) {
         //Get current time in seconds

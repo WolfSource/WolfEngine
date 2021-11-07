@@ -13,10 +13,12 @@ namespace lzma_cxx
 {
     static void *_lzma_alloc(ISzAllocPtr pPtr, size_t pSize)
     {
+        (void)pPtr;
         return malloc(pSize);
     }
     static void _lzma_free(ISzAllocPtr pPtr, void *pAddr)
     {
+        (void)pPtr;
         free(pAddr);
     }
 
