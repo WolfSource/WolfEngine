@@ -55,7 +55,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             [].to_vec(),
             true,
             "src/script/cxx/luaJIT/",
-            "src/script/lua_jit.rs",
+            "src/script/luajit.rs",
             "/usr/local/",
         ),
     );
