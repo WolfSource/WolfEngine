@@ -150,7 +150,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // build cxx lib
     let mut build_cxx = cxx_build::bridges(rust_srcs);
     build_cxx.flag_if_supported("/std:c++latest");
-    build_cxx.flag_if_supported("-std=c++20");
+    build_cxx.flag_if_supported("-std=c++17");
     build_cxx.flag_if_supported("-Wall");
     build_cxx.flag_if_supported("-fPIC");
 
