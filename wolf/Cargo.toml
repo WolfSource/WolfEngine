@@ -12,7 +12,7 @@ path = "src/lib.rs"
 [dependencies]
 # before adding any dependency please check it out from  
 # https://android.googlesource.com/platform/external/rust/crates/
-anyhow = {version = "1.0.44"}
+anyhow = {version = "1.0.45"}
 cxx = {version = "1.0.56"}
 futures = {version = "0.3.17"}
 mimalloc = {version = "0.1.26"}
@@ -27,9 +27,11 @@ webpki-roots = {version = "0.22.1"}
 [build-dependencies]
 cxx-build = {version = "1.0.56"}
 git2 = {version = "0.13.23"}
+plist = "1.2.1"
 
 [features]
-default = ["system"]
+default = ["system", "luaJIT"]
+luaJIT = []
 media = []
 render = []
 system = []

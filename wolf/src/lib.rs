@@ -7,6 +7,7 @@ pub mod chrono;
 pub mod compression;
 pub mod net;
 pub mod os;
+pub mod script;
 
 #[test]
 fn test() {
