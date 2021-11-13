@@ -1,2 +1,2 @@
-#[cfg(feature = "luaJIT")]
-pub mod luajit;
+#[cfg(feature = "lua")]
+pub mod lua;

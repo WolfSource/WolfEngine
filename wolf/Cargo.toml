@@ -21,7 +21,7 @@ sysinfo = {version = "0.20.5", default-features = false}
 tokio = {version = "1.13.0", features = ["full"]}
 tokio-rustls = {version = "0.23.1"}
 tokio-stream = {version = "0.1.8"}
-tokio-tungstenite = {version = "0.15.0", features = ["rustls"]}
+#tokio-tungstenite = {version = "0.15.0", features = ["rustls"]}
 webpki-roots = {version = "0.22.1"}
 
 [build-dependencies]
@@ -30,8 +30,8 @@ git2 = {version = "0.13.23"}
 plist = "1.2.1"
 
 [features]
-default = ["system", "luaJIT"]
-luaJIT = []
+default = ["system", "lua"]
+lua = []
 media = []
 render = []
 system = []

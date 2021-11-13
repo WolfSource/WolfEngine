@@ -2,6 +2,8 @@ use core::panic;
 use git2::{IntoCString, Repository};
 use std::{collections::HashMap, path::Path};
 
+const MACOSX_DEPLOYMENT_TARGET: &str = "12.0"; //empty string means get the latest version from system
+
 enum BuildType {
     CMAKE = 0,
     MAKE,
@@ -55,7 +57,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             [].to_vec(),
             true,
             "src/script/cxx/luaJIT/",
-            "src/script/luajit.rs",
+            "src/script/lua.rs",
             "/usr/local/",
         ),
     );
@@ -96,16 +98,19 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // make sure set the necessery enviroment variables for OSX
     if target_os == "macos" {
-        let file = std::fs::read_to_string("/System/Library/CoreServices/SystemVersion.plist")?;
-        let cur = std::io::Cursor::new(file.as_bytes());
-        let v = plist::Value::from_reader(cur)?;
+        if MACOSX_DEPLOYMENT_TARGET.is_empty() {
+            let file = std::fs::read_to_string("/System/Library/CoreServices/SystemVersion.plist")?;
+            let cur = std::io::Cursor::new(file.as_bytes());
+            let v = plist::Value::from_reader(cur)?;
 
-        let version = v
-            .as_dictionary()
-            .and_then(|d| d.get("ProductVersion")?.as_string())
-            .expect("SystemVersion.plist is not a dictionary");
-
-        std::env::set_var("MACOSX_DEPLOYMENT_TARGET", version);
+            let version = v
+                .as_dictionary()
+                .and_then(|d| d.get("ProductVersion")?.as_string())
+                .expect("SystemVersion.plist is not a dictionary");
+            std::env::set_var("MACOSX_DEPLOYMENT_TARGET", version);
+        } else {
+            std::env::set_var("MACOSX_DEPLOYMENT_TARGET", MACOSX_DEPLOYMENT_TARGET);
+        }
     }
 
     // tem vectors for storing rust & cxx sources
@@ -195,6 +200,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut build_cxx = cxx_build::bridges(rust_srcs);
     //build_cxx.flag_if_supported("/std:c++latest");
     build_cxx.flag_if_supported("-std=c++17");
+    build_cxx.flag_if_supported("-std=c17");
     build_cxx.flag_if_supported("-Wall");
     build_cxx.flag_if_supported("-fPIC");
 
