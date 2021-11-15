@@ -1,3 +1,5 @@
+use std::str::from_utf8;
+
 #[cxx::bridge]
 pub mod ffi {
 
@@ -7,25 +9,18 @@ pub mod ffi {
         L_NIL = 0,
         L_BOOLEAN,
         L_LIGHTUSERDATA, //Not implemented yet
-        L_DOUBLE,
+        L_NUMBER,
         L_STRING,
         L_TABLE,
         L_FUNCTION,
         L_USERDATA, //Not implemented yet
         L_THREAD,   //Not implemented yet
-        L_INTEGER,
     }
 
-    #[derive(Default, Debug)]
-    pub struct lua_in_value<'a> {
-        t: LuaType,  //type
-        v: &'a [u8], //value in bytes
-    }
-
-    #[derive(Default, Debug)]
-    pub struct lua_inout_value<'a> {
-        t: LuaType,      //type
-        v: &'a mut [u8], //value in native endians bytes
+    #[derive(Debug)]
+    pub struct LuaValue {
+        t: LuaType, //type
+        v: Vec<u8>, //value in bytes
     }
 
     unsafe extern "C++" {
@@ -41,29 +36,97 @@ pub mod ffi {
         pub fn bind(self: &luaJIT, p_lua_fn_name: &str, p_lua_c_fun: lua_CFunction) -> i32;
         pub fn call(
             self: &luaJIT,
-            p_lua_fn_name: &str,
-            p_params: &[lua_in_value],
-            p_results: &mut Vec<lua_in_value>,
+            p_name: &str,
+            p_params: &[LuaValue],
+            p_results: &mut Vec<LuaValue>,
         ) -> i32;
-        pub fn get_global_var(self: &luaJIT, p_name: &String, p_value: &mut lua_inout_value)
-            -> i32;
-        pub fn get_global_str(self: &luaJIT, p_name: &String, p_value: &mut String) -> i32;
-        pub fn set_global_var(self: &luaJIT, p_name: &str, p_value: &lua_in_value) -> i32;
+        pub fn get_global(self: &luaJIT, p_name: &str, p_value: &mut LuaValue) -> i32;
+        pub fn set_global(self: &luaJIT, p_name: &str, p_value: &LuaValue) -> i32;
         pub fn set_lua_path(self: &luaJIT, p_env_path: &str) -> i32;
 
         pub fn New() -> UniquePtr<luaJIT>;
     }
 }
 
-impl Default for ffi::LuaType {
-    fn default() -> Self {
-        ffi::LuaType::L_NIL
-    }
-}
-
-impl<'a> ffi::lua_in_value<'a> {
+impl ffi::LuaValue {
     pub fn new() -> Self {
-        ffi::lua_in_value::default()
+        Self {
+            t: ffi::LuaType::L_NIL,
+            v: Vec::<u8>::new(),
+        }
+    }
+
+    #[inline]
+    pub fn get_type(&self) -> ffi::LuaType {
+        self.t
+    }
+
+    #[inline]
+    pub fn from_bool(p: bool) -> Self {
+        let value = ffi::LuaValue {
+            t: ffi::LuaType::L_BOOLEAN,
+            v: vec![p as u8; 1],
+        };
+        value
+    }
+
+    #[inline]
+    pub fn as_bool(&self) -> anyhow::Result<bool> {
+        const SIZE: usize = std::mem::size_of::<bool>();
+        if self.t == ffi::LuaType::L_BOOLEAN && self.v.len() == SIZE {
+            Ok(self.v[0] != 0)
+        } else {
+            anyhow::bail!("could not cast lua::ffi::LuaValue to bool")
+        }
+    }
+
+    #[inline]
+    pub fn from_number(p: f64) -> Self {
+        const SIZE: usize = std::mem::size_of::<f64>();
+        let mut value = ffi::LuaValue {
+            t: ffi::LuaType::L_NUMBER,
+            v: vec![0u8; SIZE],
+        };
+        let bytes = p.to_ne_bytes();
+        value.v.copy_from_slice(&bytes);
+        value
+    }
+
+    #[inline]
+    pub fn as_number(&self) -> anyhow::Result<f64> {
+        const SIZE: usize = std::mem::size_of::<f64>();
+        if self.t == ffi::LuaType::L_NUMBER && self.v.len() == SIZE {
+            let v_res: anyhow::Result<&[u8; SIZE]> = self.v.as_slice().try_into().map_err(|e| {
+                anyhow::anyhow!("could not cast lua::ffi::LuaValue to f64. error: {}", e)
+            });
+            let v = v_res?;
+            let d = f64::from_ne_bytes(*v);
+            Ok(d)
+        } else {
+            anyhow::bail!("could not cast lua::ffi::LuaValue to f64")
+        }
+    }
+
+    #[inline]
+    pub fn from_string(p: &str) -> Self {
+        let size: usize = p.len();
+        let mut value = ffi::LuaValue {
+            t: ffi::LuaType::L_STRING,
+            v: vec![0u8; size],
+        };
+        let bytes = p.as_bytes();
+        value.v.copy_from_slice(&bytes);
+        value
+    }
+
+    #[inline]
+    pub fn as_string(&self) -> anyhow::Result<String> {
+        if self.t == ffi::LuaType::L_STRING {
+            let d = from_utf8(self.v.as_slice())?;
+            Ok(d.to_string())
+        } else {
+            anyhow::bail!("could not cast lua::ffi::LuaValue to String")
+        }
     }
 }
 
@@ -88,7 +151,11 @@ impl Lua {
         }
     }
 
-    pub fn load(&mut self, p_module_name: &String, p_source_code: &String) -> anyhow::Result<()> {
+    pub async fn load(
+        &mut self,
+        p_module_name: &String,
+        p_source_code: &String,
+    ) -> anyhow::Result<()> {
         let res = self.l.load(p_module_name, p_source_code);
         let ret = match res {
             0 => {
@@ -96,7 +163,7 @@ impl Lua {
                 Ok(())
             }
             _ => anyhow::bail!(
-                "Could not load lua module: {} with the following source code: {}",
+                "could not load lua module: {} with the following source code: {}",
                 p_module_name,
                 p_source_code
             ),
@@ -104,151 +171,178 @@ impl Lua {
         ret
     }
 
-    pub fn exec(&self) -> anyhow::Result<()> {
+    pub async fn exec(&self) -> anyhow::Result<()> {
         let res = self.l.exec();
         let ret = match res {
             0 => Ok(()),
-            _ => anyhow::bail!("Could not execute lua module: {}", self.module_name,),
+            _ => anyhow::bail!("could not execute lua module: {}", self.module_name,),
         };
         ret
     }
 
-    pub fn get_global_var_bool(&self, p_name: &String) -> anyhow::Result<bool> {
-        const TRACE: &str = "Lua::get_global_var_bool";
-        const SIZE: usize = std::mem::size_of::<bool>();
-        let mut b = [0u8; SIZE];
-        let mut value = ffi::lua_inout_value {
-            t: ffi::LuaType::L_BOOLEAN,
-            v: &mut b,
-        };
-        let res = self.l.get_global_var(&p_name, &mut value);
+    pub async fn bind(
+        &self,
+        p_lua_func_name: &str,
+        p_lua_callback_func: ffi::lua_CFunction,
+    ) -> anyhow::Result<()> {
+        let res = self.l.bind(p_lua_func_name, p_lua_callback_func);
         let ret = match res {
-            0 => {
-                let v_res: anyhow::Result<&mut [u8; SIZE]> = value.v.try_into().map_err(|e| {
-                    anyhow::anyhow!("could not cast value because of {}", e).context(TRACE)
-                });
-                let v = v_res?;
-                anyhow::Result::Ok(v[0] != 0)
-            }
-            _ => anyhow::Result::Err(
-                anyhow::anyhow!(
-                    "Could not get global variable {} from lua module {}",
-                    p_name,
-                    self.module_name
-                )
-                .context(TRACE),
+            0 => Ok(()),
+            _ => anyhow::bail!(
+                "could not bind lua function for lua module: {}",
+                self.module_name,
             ),
         };
         ret
     }
 
-    pub fn get_global_var_double(&self, p_name: &String) -> anyhow::Result<f64> {
-        const TRACE: &str = "Lua::get_global_var_double";
-        const SIZE: usize = std::mem::size_of::<f64>();
-        let mut b = [0u8; SIZE];
-        let mut value = ffi::lua_inout_value {
-            t: ffi::LuaType::L_DOUBLE,
-            v: &mut b,
-        };
-        let res = self.l.get_global_var(&p_name, &mut value);
+    pub async fn call<'a>(
+        &self,
+        p_name: &str,
+        p_params: Option<&'a [ffi::LuaValue]>,
+    ) -> anyhow::Result<Vec<ffi::LuaValue>> {
+        let params = p_params.unwrap_or(&[]);
+        let mut outs = Vec::new();
+
+        let res = self.l.call(p_name, params, &mut outs);
         let ret = match res {
-            0 => {
-                let v_res: anyhow::Result<&mut [u8; SIZE]> = value.v.try_into().map_err(|e| {
-                    anyhow::anyhow!("could not cast value because of {}", e).context(TRACE)
-                });
-                let v = v_res?;
-                let d = f64::from_ne_bytes(*v);
-                anyhow::Result::Ok(d)
-            }
-            _ => anyhow::Result::Err(
-                anyhow::anyhow!(
-                    "Could not get global variable {} from lua module {}",
-                    p_name,
-                    self.module_name
-                )
-                .context(TRACE),
+            0 => Ok(outs),
+            _ => anyhow::bail!(
+                "could not execute function {} from lua module: {}",
+                p_name,
+                self.module_name,
             ),
         };
         ret
     }
 
-    pub fn get_global_var_string(&self, p_name: &String) -> anyhow::Result<String> {
-        const TRACE: &str = "Lua::get_global_var_string";
-        let mut str = String::new();
-        let res = self.l.get_global_str(&p_name, &mut str);
+    pub async fn get_global(&self, p_name: &str) -> anyhow::Result<ffi::LuaValue> {
+        let mut value = ffi::LuaValue::new();
+        let res = self.l.get_global(&p_name, &mut value);
         let ret = match res {
-            0 => anyhow::Result::Ok(str),
-            _ => anyhow::Result::Err(
-                anyhow::anyhow!(
-                    "Could not get global string {} from lua module {}",
-                    p_name,
-                    self.module_name
-                )
-                .context(TRACE),
-            ),
+            0 => anyhow::Result::Ok(value),
+            _ => anyhow::Result::Err(anyhow::anyhow!(
+                "could not get global variable {} from lua module {}",
+                p_name,
+                self.module_name
+            )),
         };
         ret
     }
 
-    pub fn get_global_var_int(&self, p_name: &String) -> anyhow::Result<i32> {
-        let d = self.get_global_var_double(p_name)?;
-        anyhow::Result::Ok(d as i32)
+    pub async fn set_global(&self, p_name: &str, p_value: &ffi::LuaValue) -> anyhow::Result<()> {
+        let res = self.l.set_global(&p_name, &p_value);
+        let ret = match res {
+            0 => Ok(()),
+            _ => Err(anyhow::anyhow!(
+                "could not set global variable {} for lua module {}",
+                p_name,
+                self.module_name
+            )),
+        };
+        ret
     }
 
-    pub fn set_global_var_as_bool(&self, p_variable: &bool) -> anyhow::Result<()> {
-        Ok(())
-    }
-
-    pub fn set_global_var_as_int(&self, p_variable: &i32) -> anyhow::Result<()> {
-        Ok(())
-    }
-
-    pub fn set_global_var_as_double(&self, p_variable: &f64) -> anyhow::Result<()> {
-        Ok(())
-    }
-
-    pub fn set_global_var_as_string(&self, p_variable: &String) -> anyhow::Result<()> {
-        Ok(())
+    pub async fn set_local_path(&self, p_env_path: &str) -> anyhow::Result<()> {
+        let res = self.l.set_lua_path(&p_env_path);
+        let ret = match res {
+            0 => Ok(()),
+            _ => Err(anyhow::anyhow!(
+                "could not set local path {} for lua module {}",
+                p_env_path,
+                self.module_name
+            )),
+        };
+        ret
     }
 }
 
-#[test]
-fn test() {
+#[tokio::test]
+async fn test() -> core::result::Result<(), Box<dyn std::error::Error>> {
     let mut lua = Lua::new();
-    let ret = lua
-        .load(
-            &"wolf_lua".to_string(),
-            &r#"
-b0 = true
-b1 = true
-i = 7
-d = 17.0
-s = "hello wolf from lua"
+    lua.load(
+        &"wolf_lua".to_string(),
+        &r#"
+    b = true
+    i = 7
+    d = 17.7
+    s = "hello from lua"
 
-"#
-            .to_string(),
-        )
-        .and_then(|_| lua.exec())
-        .and_then(|_| {
-            let bool_var_name_0 = "b0".to_string();
-            let bool_var_name_1 = "b1".to_string();
-            let int_var_name = "i".to_string();
-            let double_var_name = "d".to_string();
-            let string_var_name = "s".to_string();
+    function f0 ()
+        print("hello from function f0")
+    end
 
-            let b0 = lua.get_global_var_bool(&bool_var_name_0)?;
-            let b1 = lua.get_global_var_bool(&bool_var_name_1)?;
-            let i = lua.get_global_var_int(&int_var_name)?;
-            let d = lua.get_global_var_double(&double_var_name)?;
-            let s = lua.get_global_var_string(&string_var_name)?;
+    function f1 ()
+        return 1.1
+    end
 
-            println!("lua {} variable has {} value", bool_var_name_0, b0);
-            println!("lua {} variable has {} value", bool_var_name_1, b1);
-            println!("lua {} variable has {} value", int_var_name, i);
-            println!("lua {} variable has {} value", double_var_name, d);
-            println!("lua {} variable has \"{}\" value", string_var_name, s);
+    function f2 (arg1, arg2)
+        if (arg1 > arg2) then
+            return arg1, "arg1 is greater"
+        else
+            return arg2, "arg2 is greater"
+        end
+    end
+    "#
+        .to_string(),
+    )
+    .await?;
 
-            Ok(())
-        });
-    println!("result of Lua is {:?}", ret);
+    lua.exec().await?;
+
+    let mut b = lua.get_global(&"b").await?;
+    let mut i = lua.get_global(&"i").await?;
+    let mut d = lua.get_global(&"d").await?;
+    let mut s = lua.get_global(&"s").await?;
+
+    println!("lua b has {:?} value", b.as_bool());
+    println!("lua i has {:?} value", i.as_number());
+    println!("lua d has {:?} value", d.as_number());
+    println!("lua s has {:?} value", s.as_string());
+
+    let b_new = ffi::LuaValue::from_bool(false);
+    let i_new = ffi::LuaValue::from_number(70.0);
+    let d_new = ffi::LuaValue::from_number(70.7);
+    let s_new = ffi::LuaValue::from_string("hello from rust");
+
+    lua.set_global(&"b", &b_new).await?;
+    lua.set_global(&"i", &i_new).await?;
+    lua.set_global(&"d", &d_new).await?;
+    lua.set_global(&"s", &s_new).await?;
+
+    b = lua.get_global(&"b").await?;
+    i = lua.get_global(&"i").await?;
+    d = lua.get_global(&"d").await?;
+    s = lua.get_global(&"s").await?;
+
+    println!("lua b has {:?} value", b.as_bool());
+    println!("lua i has {:?} value", i.as_number());
+    println!("lua d has {:?} value", d.as_number());
+    println!("lua s has {:?} value", s.as_string());
+
+    //call void function
+    let _f0_void = lua.call("f0", None).await?;
+
+    let _f1_ret = lua.call("f1", None).await?;
+    println!("lua function f1 returns:");
+    for iter in _f1_ret.iter() {
+        println!("{:?}", iter.as_number());
+    }
+
+    let _f2_ret = lua.call("f2", Some(&[d_new, i_new])).await?;
+    println!("lua function f2 returns:");
+    for iter in _f2_ret.iter() {
+        let t = iter.get_type();
+        match t {
+            ffi::LuaType::L_NUMBER => {
+                println!("{:?}", iter.as_number());
+            }
+            ffi::LuaType::L_STRING => {
+                println!("{:?}", iter.as_string());
+            }
+            _ => {}
+        }
+    }
+
+    Ok(())
 }
