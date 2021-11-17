@@ -1,6 +1,8 @@
 [workspace]
 members = [
-  "wolf",
+  "wolf-system",
+  "wolf-stream",
+  "wolf-render",
 ]
 
 # for more optimization https://doc.rust-lang.org/cargo/reference/profiles.html
