@@ -39,6 +39,18 @@ where
     }
 }
 
+pub async fn timer_oneshot<F>(
+    p_interval: Duration,
+    p_future: F,
+) -> <F as core::future::Future>::Output
+where
+    F: core::future::Future,
+{
+    let mut interval = tokio::time::interval(p_interval);
+    interval.tick().await;
+    p_future.await
+}
+
 pub async fn sleep(p_duration: Duration) -> () {
     tokio::time::sleep(p_duration).await
 }
@@ -46,12 +58,22 @@ pub async fn sleep(p_duration: Duration) -> () {
 #[tokio::main]
 #[test]
 async fn test() -> std::result::Result<(), Box<dyn std::error::Error>> {
+    //test timeout for future
     let f = async { tokio::time::sleep(Duration::from_secs(5)).await };
     let ret = timout(Duration::from_secs(2), f).await;
     assert!(ret.is_err());
 
-    sleep(Duration::from_secs(2)).await;
+    //launch a oneshot timer with 3 seconds
+    let _ = timer_oneshot(Duration::from_secs(3), async {
+        println!("oneshot timer ticked! and callback is going to sleep for 1 second");
+        sleep(Duration::from_secs(1)).await;
+        println!("oneshot timer done!");
 
+        Ok(()) as anyhow::Result<()>
+    })
+    .await?;
+
+    //launch a timer with 1 seconds interval
     let ret = timer(
         Duration::from_secs(1),
         move |p_delta_time_in_secs: &f64,
