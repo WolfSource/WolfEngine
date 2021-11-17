@@ -10,7 +10,7 @@ name = "wolf_render"
 path = "src/lib.rs"
 
 [dependencies]
-# before adding any dependency please check it out from  
+# before adding any dependency please check it out from 
 # https://android.googlesource.com/platform/external/rust/crates/
 mimalloc = {version = "0.1.26"}
 
