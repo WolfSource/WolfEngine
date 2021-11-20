@@ -1,9 +1,15 @@
-use crate::chrono::gametime::GameTime;
 use anyhow::Result;
 use std::{net::SocketAddr, sync::Arc};
 
+pub enum MessageType {
+    BINARY = 0,
+    TEXT,
+}
+
 // OnMessageCallback
-type Fp1 = Box<dyn Fn(&GameTime, &SocketAddr, &mut usize, &mut [u8]) -> Result<()> + Send + Sync>;
+type Fp1 = Box<
+    dyn Fn(&f64, &SocketAddr, &mut MessageType, &mut usize, &mut [u8]) -> Result<()> + Send + Sync,
+>;
 
 pub struct OnMessageCallback {
     f: Arc<Fp1>,
@@ -16,12 +22,19 @@ impl OnMessageCallback {
 
     pub fn run(
         &self,
-        p_socket_live_time: &GameTime,
+        p_socket_time_in_secs: &f64,
         p_peer_address: &SocketAddr,
+        p_type_of_msg: &mut MessageType,
         p_size_of_msg: &mut usize,
         p_buf: &mut [u8],
     ) -> Result<()> {
-        (self.f)(p_socket_live_time, p_peer_address, p_size_of_msg, p_buf)
+        (self.f)(
+            p_socket_time_in_secs,
+            p_peer_address,
+            p_type_of_msg,
+            p_size_of_msg,
+            p_buf,
+        )
     }
 }
 
@@ -53,6 +66,32 @@ impl OnSocketCallback {
 }
 
 impl Clone for OnSocketCallback {
+    fn clone(&self) -> Self {
+        Self { f: self.f.clone() }
+    }
+    fn clone_from(&mut self, p_source: &Self) {
+        self.f = p_source.f.clone();
+    }
+}
+
+// OnCloseSocketCallback
+type Fp3 = Box<dyn Fn(&SocketAddr, &str) -> Result<()> + Send + Sync>;
+
+pub struct OnCloseSocketCallback {
+    f: Arc<Fp3>,
+}
+
+impl OnCloseSocketCallback {
+    pub fn new(f: Fp3) -> Self {
+        Self { f: Arc::new(f) }
+    }
+
+    pub fn run(&self, p_arg1: &SocketAddr, p_arg2: &str) -> Result<()> {
+        (self.f)(p_arg1, p_arg2)
+    }
+}
+
+impl Clone for OnCloseSocketCallback {
     fn clone(&self) -> Self {
         Self { f: self.f.clone() }
     }
