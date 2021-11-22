@@ -6,13 +6,7 @@ use crate::net::tls;
 use anyhow::{anyhow, ensure};
 use futures::StreamExt;
 use std::{net::SocketAddr, path::Path, str::FromStr, sync::Arc};
-use std::{
-    sync::{
-        mpsc::{Receiver, Sender},
-        Mutex,
-    },
-    time::Duration,
-};
+use std::{sync::Mutex, time::Duration};
 use tokio::{
     io::{split, AsyncReadExt, AsyncWriteExt},
     net::{TcpListener, TcpStream},
@@ -360,12 +354,15 @@ pub async fn server(
     p_tls_certificate_path: Option<&Path>,
     p_tls_private_key_path: Option<&Path>,
     p_tls_private_type: Option<&TlsPrivateKeyType>,
-    p_close_sig_channel: &Mutex<(Sender<bool>, Receiver<bool>)>,
     p_on_bind_socket: OnSocketCallback,
     p_on_accept_connection: OnSocketCallback,
     p_on_message: OnMessageCallback,
     p_on_close_connection: OnCloseSocketCallback,
     p_on_close_socket: OnSocketCallback,
+    p_shutdown_signal: &Mutex<(
+        std::sync::mpsc::Sender<bool>,
+        std::sync::mpsc::Receiver<bool>,
+    )>,
 ) -> anyhow::Result<()> {
     let address = format!("{}:{}", p_address, p_port);
     let socket_addr = SocketAddr::from_str(&address)?;
@@ -390,8 +387,7 @@ pub async fn server(
     }
 
     loop {
-        //close current socket, if it was requested by close signal channel
-        let close_res = p_close_sig_channel.try_lock();
+        let close_res = p_shutdown_signal.try_lock();
         let close = match close_res {
             Ok(chan) => {
                 if let Ok(b) = chan.1.try_recv() {
@@ -608,9 +604,9 @@ pub async fn client(
 #[tokio::main]
 #[test]
 async fn test_native() -> () {
-    use std::sync::mpsc::channel;
     use std::time::Duration;
 
+    use std::sync::mpsc::{channel, Receiver, Sender};
     lazy_static::lazy_static! {
         static ref CHANNEL_MUTEX: Mutex<(Sender<bool>, Receiver<bool>)> = Mutex::new(channel::<bool>());
     }
@@ -628,6 +624,7 @@ async fn test_native() -> () {
         let on_close_connection = OnSocketCallback::new(Box::new(
             |p_socket_address: &SocketAddr| -> anyhow::Result<()> {
                 println!("client {:?} just closed", p_socket_address);
+
                 //send request to close the server socket
                 let _ = CHANNEL_MUTEX.lock().and_then(|channel| {
                     let _ = channel.0.send(true).and_then(|_| Ok(())).or_else(|e| {
@@ -751,12 +748,12 @@ async fn test_native() -> () {
         None,
         None,
         None,
-        &CHANNEL_MUTEX,
         on_bind_socket,
         on_accept_connection,
         on_msg_callback,
         on_close_connection,
         on_close_socket,
+        &CHANNEL_MUTEX,
     )
     .await;
     assert!(ret.is_ok(), "{:?}", ret);
@@ -800,8 +797,7 @@ async fn test_ws() -> () {
     </html>
         */
 
-    use std::sync::mpsc::channel;
-
+    use std::sync::mpsc::{channel, Receiver, Sender};
     lazy_static::lazy_static! {
         static ref CHANNEL_MUTEX: Mutex<(Sender<bool>, Receiver<bool>)> = Mutex::new(channel::<bool>());
     }
@@ -854,7 +850,6 @@ async fn test_ws() -> () {
                 "server: remote address with peer id {:?} just disconnected. close message is {}",
                 p_socket_address, p_close_msg
             );
-
             //send request to close the server socket
             let _ = CHANNEL_MUTEX.lock().and_then(|channel| {
                 let _ = channel.0.send(true).and_then(|_| Ok(())).or_else(|e| {
@@ -863,7 +858,6 @@ async fn test_ws() -> () {
                 });
                 Ok(())
             });
-
             Ok(())
         },
     ));
@@ -886,12 +880,12 @@ async fn test_ws() -> () {
         None,
         None,
         None,
-        &CHANNEL_MUTEX,
         on_bind_socket,
         on_accept_connection,
         on_msg_callback,
         on_close_connection,
         on_close_socket,
+        &CHANNEL_MUTEX,
     )
     .await;
     assert!(ret.is_ok(), "{:?}", ret);
