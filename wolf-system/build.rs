@@ -62,6 +62,17 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         ),
     );
 
+     //first build proto buffers
+     let paths = std::fs::read_dir("./proto")?;
+     for path in paths {
+         let p = path?.path();
+         if let Some(extension) = p.extension() {
+             if extension == "proto" {
+                 tonic_build::compile_protos(p)?;
+             }
+         }
+     }
+
     //get the current path
     let current_dir_path = std::env::current_dir().expect("could not get current directory");
     let current_dir = current_dir_path
