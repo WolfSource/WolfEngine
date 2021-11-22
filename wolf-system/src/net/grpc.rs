@@ -1,14 +1,20 @@
 use anyhow::{anyhow, bail, Result};
-use std::path::Path;
+use std::{path::Path, time::Duration};
 use tonic::transport::{Certificate, Channel, ClientTlsConfig, Endpoint};
 
-pub async fn run_server<S>(
+pub async fn run_server<S, F>(
     p_address: &str,
     p_port: u16,
     p_tls: bool,
     p_tls_certificate_path: Option<&Path>,
     p_tls_private_key_path: Option<&Path>,
+    p_tcp_no_delay: bool,
+    p_tcp_keep_alive: Option<Duration>,
+    p_http2_keepalive_interval: Option<Duration>,
+    p_http2_keepalive_timeout: Option<Duration>,
+    p_accept_http1: bool,
     p_service: S,
+    p_shutdown_signal: F,
 ) -> anyhow::Result<()>
 where
     S: tonic::codegen::Service<
@@ -20,6 +26,7 @@ where
         + 'static,
     S::Future: Send + 'static,
     S::Error: Into<Box<dyn std::error::Error + Send + Sync>> + Send,
+    F: core::future::Future<Output = ()>,
 {
     const TRACE: &str = "run_server";
     use tonic::transport::Identity;
@@ -52,9 +59,14 @@ where
 
         use tonic::transport::ServerTlsConfig;
         let ret = tonic::transport::Server::builder()
+            .tcp_nodelay(p_tcp_no_delay)
+            .tcp_keepalive(p_tcp_keep_alive)
+            .http2_keepalive_interval(p_http2_keepalive_interval)
+            .http2_keepalive_timeout(p_http2_keepalive_timeout)
+            .accept_http1(p_accept_http1)
             .tls_config(server_tls_config)?
             .add_service(p_service)
-            .serve(addr)
+            .serve_with_shutdown(addr, p_shutdown_signal)
             .await
             .map_err(|e| {
                 anyhow!("could not build grpc server because {:?}", e).context("grpc::run_server")
@@ -62,8 +74,13 @@ where
         ret
     } else {
         let ret = tonic::transport::Server::builder()
+            .tcp_nodelay(p_tcp_no_delay)
+            .tcp_keepalive(p_tcp_keep_alive)
+            .http2_keepalive_interval(p_http2_keepalive_interval)
+            .http2_keepalive_timeout(p_http2_keepalive_timeout)
+            .accept_http1(p_accept_http1)
             .add_service(p_service)
-            .serve(addr)
+            .serve_with_shutdown(addr, p_shutdown_signal)
             .await
             .map_err(|e| {
                 anyhow!("could not build grpc server because {:?}", e).context("grpc::run_server")
@@ -178,4 +195,38 @@ pub async fn create_channel(p_end_point: String) -> Result<Channel> {
         ),
     };
     res
+}
+
+#[tokio::main]
+#[test]
+async fn test() -> () {
+    use crate::algorithm::raft::raft_srv::get_service;
+
+    let (s, r) = tokio::sync::oneshot::channel();
+    let _ = tokio::spawn(async {
+        tokio::time::sleep(Duration::from_secs(3)).await;
+        println!("GRPC server is going to shutdown");
+        let _ = s.send(());
+    });
+
+    //finally run raft over grpc which block current thread
+    let ret = run_server(
+        "0.0.0.0",
+        7777,
+        false,
+        None,
+        None,
+        true,
+        None,
+        None,
+        None,
+        true,
+        get_service("wolf", 1),
+        async {
+            r.await.ok();
+            println!("GRPC server shutdown successfully");
+        },
+    )
+    .await;
+    assert!(ret.is_ok(), "{:?}", ret);
 }
