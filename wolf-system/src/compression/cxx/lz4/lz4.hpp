@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef _LZ4_H_
+#define _LZ4_H_
+
 #include "rust/cxx.h"
 #include <memory>
 
@@ -28,3 +31,5 @@ namespace lz4_cxx
                                   rust::String &pTrace);
 
 } // namespace lz4_cxx
+
+#endif

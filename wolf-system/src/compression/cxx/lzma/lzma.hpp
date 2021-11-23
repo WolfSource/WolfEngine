@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef _LZMA_H_
+#define _LZMA_H_
+
 #include "rust/cxx.h"
 #include <memory>
 
@@ -46,3 +49,5 @@ namespace lzma_cxx
 									rust::String &pTrace);
 
 } // namespace lzma_cxx
+
+#endif

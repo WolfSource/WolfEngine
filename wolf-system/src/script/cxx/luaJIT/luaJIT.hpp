@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef _LUAJIT_H_
+#define _LUAJIT_H_
+
 #include "rust/cxx.h"
 #include <memory>
 
@@ -16,24 +19,24 @@ class luaJIT
 public:
 	/**
 	 * constructor of luaJIT
-	*/
+	 */
 	luaJIT();
 
 	/**
 	 * destructor of luaJIT
-	*/
+	 */
 	~luaJIT();
 
 	/**
 	 * create a buffer from lua's source code
 	 * @param p_module_name the name of lua's module
-     * @param p_source_code the source code of lua
+	 * @param p_source_code the source code of lua
 	 * @return 0 means no error
 	*/
 	int load(rust::Str p_module_name, rust::Str p_source_code) const;
 
 	/**
-	 * exec lua buffer 
+	 * exec lua buffer
 	 * @return 0 means no error
 	*/
 	int exec() const;
@@ -41,15 +44,15 @@ public:
 	/**
 	 * create a lua function and bind it to C callback function
 	 * @param p_lua_fn_name the name of function which will be created
-     * @param p_lua_function_callback the callback
+	 * @param p_lua_function_callback the callback
 	 * @return void
 	*/
 	int bind(rust::Str p_lua_fn_name, lua_CFunction p_lua_function_callback) const;
 
 	/**
-	 * call a lua function 
+	 * call a lua function
 	 * @param p_name the name of function which will be called
-     * @param p_params parameters 
+	 * @param p_params parameters
 	 * @param p_results the return results
 	 * @return 0 means no error
 	*/
@@ -58,7 +61,7 @@ public:
 	/**
 	 * get data from a global variable
 	 * @param p_name the name of global variable
-     * @param p_value the value which will be filled by global variable
+	 * @param p_value the value which will be filled by global variable
 	 * @return 0 means no error
 	*/
 	int get_global(rust::Str p_name, LuaValue &p_value) const;
@@ -66,7 +69,7 @@ public:
 	/**
 	 * set data to a global variable
 	 * @param p_name the name of global variable
-     * @param p_value the value which will be assigned to global variable 
+	 * @param p_value the value which will be assigned to global variable
 	 * @return 0 means no error
 	*/
 	int set_global(rust::Str p_name, const LuaValue &p_value) const;
@@ -92,3 +95,5 @@ private:
 };
 
 std::unique_ptr<luaJIT> New();
+
+#endif

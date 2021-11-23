@@ -48,6 +48,16 @@ impl System {
         num
     }
 
+    #[cfg(target_os = "windows")]
+    pub fn is_process_running_by_pid(&self, p_process_id: &usize) -> bool {
+        for (pid, _proc) in self.sys.processes() {
+            if pid == p_process_id {
+                return true;
+            }
+        }
+        false
+    }
+    #[cfg(not(target_os = "windows"))]
     pub fn is_process_running_by_pid(&self, p_process_id: &i32) -> bool {
         for (pid, _proc) in self.sys.processes() {
             if pid == p_process_id {
