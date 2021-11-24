@@ -12,7 +12,11 @@ path = "src/lib.rs"
 [dependencies]
 # before adding any dependency please check it out from
 # https://android.googlesource.com/platform/external/rust/crates/
+anyhow = { version = "1.0.48" }
 mimalloc = {version = "0.1.26"}
+gstreamer-rtsp = { version = "0.17.0" }
+gstreamer-rtsp-server = { version = "0.17.2" }
+tokio = {version = "1.14.0", features=["rt-multi-thread", "macros"]}
 
 [build-dependencies]
 

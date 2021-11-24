@@ -12,11 +12,11 @@ path = "src/lib.rs"
 [dependencies]
 # before adding any dependency please check it out from  
 # https://android.googlesource.com/platform/external/rust/crates/
-anyhow = {version = "1.0.45"}
+anyhow = {version = "1.0.48"}
 async-raft = {version = "0.6.1"}
 async-trait = {version = "0.1.51"}
 cxx = {version = "1.0.56"}
-futures = {version = "0.3.17"}
+futures = {version = "0.3.18"}
 hyper = {version = "0.14.15"}
 lazy_static = {version = "1.4.0"}
 memstore = {version = "0.2.0"}
