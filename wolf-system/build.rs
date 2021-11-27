@@ -156,7 +156,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         let ret = Repository::open(git_repo_path.clone())
             .and_then(|_r| {
                 //git project just opened
-                let build_dir = format!("{}/deps/{}/build/{}", current_dir, k, cmake_build_profile);
+                let build_dir = format!("{}/deps/{}build/{}", current_dir, k, cmake_build_profile);
                 //if build folder is not exist, we should build it again
                 if !Path::new(&build_dir).exists() {
                     //rebuild it again
@@ -208,14 +208,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
                 //include library includes
                 let path_to_include = format!(
-                    "{}/{}/build/{}/{}/include/",
+                    "{}/{}build/{}/{}/include/",
                     git_repo_path, path_to_cmake_folder, cmake_build_profile, prefix_path
                 );
                 include_srcs.push(path_to_include.to_string());
 
                 //link to the libraries
                 let path_to_lib = format!(
-                    "{}/{}/build/{}/{}/lib/",
+                    "{}/{}build/{}/{}/lib/",
                     git_repo_path, path_to_cmake_folder, cmake_build_profile, prefix_path
                 );
                 lib_paths.insert(k.to_string(), (path_to_lib.to_string(), link_static));

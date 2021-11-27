@@ -1,27 +1,198 @@
-use anyhow::{bail, Result};
 use gstreamer_rtsp::*;
 use gstreamer_rtsp_server::{
     prelude::RTSPServerExtManual,
     traits::{RTSPMediaFactoryExt, RTSPMountPointsExt, RTSPServerExt},
     RTSPMediaFactory, RTSPServer, RTSPTransportMode,
 };
-use std::sync::Once;
+use std::sync::{Arc, Mutex, Once};
 
 static ONCE_INIT: Once = Once::new();
 static ONCE_FINI: Once = Once::new();
 
-struct rtsp_gst {}
+#[derive(Debug, Copy, Clone)]
+pub enum RtspTransportProtocol {
+    TCP = 0,
+    UDP,
+}
 
-impl rtsp_gst {
+#[derive(Debug)]
+pub struct RtspGst {
+    server: RTSPServer,
+    port: u16,
+    path: String,
+    gst_cmd: String,
+    transport_protocol: RtspTransportProtocol,
+    multicast: bool,
+    main_loop: Option<Arc<Mutex<glib::MainLoop>>>,
+}
+
+impl RtspGst {
     pub fn init() -> () {
         ONCE_INIT.call_once(|| {
-            let _ = gst::init().and_then(|_| Ok(())).or_else(|e| {
-                bail!(
+            let _ = gst::init().map_err(|e| {
+                anyhow::anyhow!(
                     "could not initialize gstreamer because {:?}. Trace: rtsp_gst::init",
                     e,
                 )
             });
         });
+    }
+
+    pub fn new() -> Self {
+        Self {
+            server: RTSPServer::new(),
+            port: 554,
+            path: String::new(),
+            gst_cmd: String::new(),
+            transport_protocol: RtspTransportProtocol::TCP,
+            multicast: true,
+            main_loop: None,
+        }
+    }
+
+    pub fn start(
+        &mut self,
+        p_port: u16,
+        p_path: &str,
+        p_transport_protocol: RtspTransportProtocol,
+        p_multicast: bool,
+        p_cmd: &str,
+    ) -> anyhow::Result<()> {
+        self.port = p_port;
+        self.path = p_path.to_string();
+        self.transport_protocol = p_transport_protocol;
+        self.multicast = p_multicast;
+        self.gst_cmd = p_cmd.to_string();
+
+        self.server.set_service(&self.port.to_string());
+
+        // Much like HTTP servers, RTSP servers have multiple endpoints that
+        // provide different streams. Here, we ask our server to give
+        // us a reference to his list of endpoints, so we can add our
+        // endpoint, providing the pipeline from the cli.
+        let mounts_res = RTSPServerExt::mount_points(&self.server);
+        let ret = match mounts_res {
+            Some(mp) => {
+                // Next, we create a factory for the endpoint we want to create.
+                // The job of the factory is to create a new pipeline for each client that
+                // connects, or (if configured to do so) to reuse an existing pipeline.
+                let factory = RTSPMediaFactory::new();
+
+                // Here we tell the media factory the media we want to serve.
+                // This is done in the launch syntax. When the first client connects,
+                // the factory will use this syntax to create a new pipeline instance.
+                factory.set_launch(&self.gst_cmd);
+
+                // This setting specifies whether each connecting client gets the output
+                // of a new instance of the pipeline, or whether all connected clients share
+                // the output of the same pipeline.
+                // If you want to stream a fixed video you have stored on the server to any
+                // client, you would not set this to shared here (since every client wants
+                // to start at the beginning of the video). But if you want to distribute
+                // a live source, you will probably want to set this to shared, to save
+                // computing and memory capacity on the server.
+                factory.set_shared(self.multicast);
+
+                // set transport mode
+                factory.set_transport_mode(RTSPTransportMode::PLAY);
+
+                // set protocol
+                match self.transport_protocol {
+                    RtspTransportProtocol::TCP => {
+                        factory.set_protocols(gstreamer_rtsp::RTSPLowerTrans::TCP);
+                    }
+                    RtspTransportProtocol::UDP => {
+                        factory.set_protocols(gstreamer_rtsp::RTSPLowerTrans::UDP);
+                    }
+                };
+
+                // Now we add a new mount-point and tell the RTSP server to serve the content
+                // provided by the factory we configured above, when a client connects to
+                // this specific path.
+                mp.add_factory(&self.path, &factory);
+
+                // Attach the server to our main context.
+                // A main context is the thing where other stuff is registering itself for its
+                // events (e.g. sockets, GStreamer bus, ...) and the main loop is something that
+                // polls the main context for its events and dispatches them to whoever is
+                // interested in them. In this example, we only do have one, so we can
+                // leave the context parameter empty, it will automatically select
+                // the default one.
+                let _ = self
+                    .server
+                    .attach(None)
+                    .and_then(|id| {
+                        //let port = self.server.bound_port();
+                        //let full_path = format!("{}{}", port, self.path);
+
+                        //create mainloop
+                        let main_loop = glib::MainLoop::new(None, false);
+                        let mutex_main_loop = Mutex::new(main_loop);
+                        self.main_loop = Some(Arc::from(mutex_main_loop));
+
+                        // Start the mainloop. From this point on, the server will start to serve
+                        // our quality content to connecting clients.
+                        glib::source_remove(id);
+
+                        Ok(())
+                    })
+                    .or_else(|_| {
+                        anyhow::bail!(
+                            "could not attach to our main context. trace: rtsp_gst::start"
+                        )
+                    });
+
+                Ok(())
+            }
+            None => {
+                anyhow::bail!("could not create RTSP mount points. trace: rtsp_gst::start")
+            }
+        };
+        ret
+    }
+
+    pub fn stop(&self) -> anyhow::Result<()> {
+        let ret = match &self.main_loop {
+            Some(am) => {
+                let r = am
+                    .try_lock()
+                    .and_then(|m| {
+                        m.quit();
+                        Ok(())
+                    })
+                    .or_else(|e| {
+                        anyhow::bail!(
+                            "could not lock on rtsp main loop because {:?}. trace: rtsp_gst::stop",
+                            e
+                        )
+                    });
+                r
+            }
+            None => {
+                anyhow::bail!("main loop is None. trace: rtsp_gst::stop")
+            }
+        };
+        ret
+    }
+
+    pub fn get_port(&self) -> u16 {
+        self.port
+    }
+
+    pub fn get_path(&self) -> String {
+        self.path.clone()
+    }
+
+    pub fn get_gst_cmd(&self) -> String {
+        self.gst_cmd.clone()
+    }
+
+    pub fn get_transport_protocol(&self) -> RtspTransportProtocol {
+        self.transport_protocol
+    }
+
+    pub fn get_multicast(&self) -> bool {
+        self.multicast
     }
 
     pub fn fini() {
@@ -34,5 +205,20 @@ impl rtsp_gst {
 #[tokio::main]
 #[test]
 async fn tests() -> () {
-    println!("hello");
+    RtspGst::init();
+
+    let mut rtsp = RtspGst::new();
+    let ret = rtsp.start(554, "play", RtspTransportProtocol::TCP , true, "videotestsrc ! videoconvert ! videoscale ! video/x-raw,width=640,height=360,framerate=60/1 ! x264enc ! video/x-h264,width=640,height=360,framerate=60/1,profile=(string)high ! rtph264pay name=pay0 pt=96").and_then(|_|
+    {
+        println!("stream is ready at rtsp://:{}/{}", rtsp.get_port(), rtsp.get_path());
+        std::thread::sleep(std::time::Duration::from_secs(120));
+        Ok(())
+    }).or_else(|e|
+    {
+        println!("rtsp could not start because {:?}", e);
+        Err(e)
+    });
+
+    RtspGst::fini();
+    assert!(ret.is_ok(), "{:?}", ret);
 }
