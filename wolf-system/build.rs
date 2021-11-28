@@ -7,6 +7,7 @@ const MACOSX_DEPLOYMENT_TARGET: &str = "12.0"; //empty string means get the late
 enum BuildType {
     CMAKE = 0,
     MAKE,
+    SHELL,
 }
 
 type BuildConfig = (
@@ -53,19 +54,22 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     );
 
     let lua_lib_name: &str;
+    let build_type: BuildType;
     let deps: Vec<(&'static str, bool)>;
     if cfg!(windows) {
         lua_lib_name = "luajit";
         deps = [("lua51", true)].to_vec(); //link lua51 as static
+        build_type = BuildType::SHELL;
     } else {
         lua_lib_name = "luajit-5.1";
         deps = [].to_vec();
+        build_type = BuildType::MAKE;
     };
 
     git_sources.insert(
         lua_lib_name,
         (
-            BuildType::MAKE,
+            build_type,
             "https://github.com/LuaJIT/LuaJIT.git",
             "",
             [].to_vec(),
@@ -186,6 +190,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         }
                         BuildType::MAKE => {
                             build_make(&cmake_build_profile, &opt_level_str, &git_repo_path, &v);
+                        }
+                        BuildType::SHELL => {
+                            //build with custom shell script should be implement
                         }
                     }
                 }

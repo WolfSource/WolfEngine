@@ -232,7 +232,7 @@ async fn tests() -> () {
     let mut cloned = rtsp.clone();
 
     std::thread::spawn(move || {
-        const SECS: u64 = 10;
+        const SECS: u64 = 20;
         println!("rtsp stream will be shutdown after {} seconds", SECS);
         std::thread::sleep(std::time::Duration::from_secs(SECS));
         cloned.stop();
@@ -242,7 +242,7 @@ async fn tests() -> () {
     .and_then(|_|
     {
         println!(
-            "stream is ready at rtsp://0.0.0.0:{}{}",
+            "stream is ready at rtsp://127.0.0.1:{}{}",
             rtsp.get_port(),
             rtsp.get_path()
         );

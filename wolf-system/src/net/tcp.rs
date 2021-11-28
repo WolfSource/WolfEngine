@@ -5,8 +5,8 @@ use super::{
 use crate::net::tls;
 use anyhow::{anyhow, ensure};
 use futures::StreamExt;
+use std::time::Duration;
 use std::{net::SocketAddr, path::Path, str::FromStr, sync::Arc};
-use std::{sync::Mutex, time::Duration};
 use tokio::{
     io::{split, AsyncReadExt, AsyncWriteExt},
     net::{TcpListener, TcpStream},
@@ -359,7 +359,7 @@ pub async fn server(
     p_on_message: OnMessageCallback,
     p_on_close_connection: OnCloseSocketCallback,
     p_on_close_socket: OnSocketCallback,
-    p_shutdown_signal: &Mutex<(
+    p_shutdown_signal: &parking_lot::Mutex<(
         std::sync::mpsc::Sender<bool>,
         std::sync::mpsc::Receiver<bool>,
     )>,
@@ -389,14 +389,14 @@ pub async fn server(
     loop {
         let close_res = p_shutdown_signal.try_lock();
         let close = match close_res {
-            Ok(chan) => {
+            Some(chan) => {
                 if let Ok(b) = chan.1.try_recv() {
                     b
                 } else {
                     false
                 }
             }
-            Err(_) => false,
+            None => false,
         };
         if close {
             break;
@@ -608,7 +608,7 @@ async fn test_native() -> () {
 
     use std::sync::mpsc::{channel, Receiver, Sender};
     lazy_static::lazy_static! {
-        static ref CHANNEL_MUTEX: Mutex<(Sender<bool>, Receiver<bool>)> = Mutex::new(channel::<bool>());
+        static ref CHANNEL_MUTEX: parking_lot::Mutex<(Sender<bool>, Receiver<bool>)> = parking_lot::Mutex::new(channel::<bool>());
     }
 
     tokio::spawn(async move {
@@ -626,13 +626,15 @@ async fn test_native() -> () {
                 println!("client {:?} just closed", p_socket_address);
 
                 //send request to close the server socket
-                let _ = CHANNEL_MUTEX.lock().and_then(|channel| {
-                    let _ = channel.0.send(true).and_then(|_| Ok(())).or_else(|e| {
+                let _ = CHANNEL_MUTEX
+                    .lock()
+                    .0
+                    .send(true)
+                    .and_then(|_| Ok(()))
+                    .or_else(|e| {
                         println!("could not send data to close_sig_channel. error: {:?}", e);
                         Err(e)
                     });
-                    Ok(())
-                });
                 Ok(())
             },
         ));
@@ -799,7 +801,7 @@ async fn test_ws() -> () {
 
     use std::sync::mpsc::{channel, Receiver, Sender};
     lazy_static::lazy_static! {
-        static ref CHANNEL_MUTEX: Mutex<(Sender<bool>, Receiver<bool>)> = Mutex::new(channel::<bool>());
+        static ref CHANNEL_MUTEX: parking_lot::Mutex<(Sender<bool>, Receiver<bool>)> = parking_lot::Mutex::new(channel::<bool>());
     }
 
     // block main thread with tcp server
@@ -851,13 +853,16 @@ async fn test_ws() -> () {
                 p_socket_address, p_close_msg
             );
             //send request to close the server socket
-            let _ = CHANNEL_MUTEX.lock().and_then(|channel| {
-                let _ = channel.0.send(true).and_then(|_| Ok(())).or_else(|e| {
+            //send request to close the server socket
+            let _ = CHANNEL_MUTEX
+                .lock()
+                .0
+                .send(true)
+                .and_then(|_| Ok(()))
+                .or_else(|e| {
                     println!("could not send data to close_sig_channel. error: {:?}", e);
                     Err(e)
                 });
-                Ok(())
-            });
             Ok(())
         },
     ));

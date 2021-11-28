@@ -36,6 +36,7 @@ tokio-tungstenite = {version = "0.16.0", features = ["rustls"]}
 tonic = {version = "0.6.1", features = ["tls", "compression"]}
 uuid = {version = "0.8.2", features = ["v5"]}
 webpki-roots = {version = "0.22.1"}
+parking_lot = {version = "0.11.2"}
 
 [build-dependencies]
 cxx-build = {version = "1.0.56"}
