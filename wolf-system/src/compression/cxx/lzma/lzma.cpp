@@ -178,7 +178,7 @@ namespace lzma_cxx
 
             if (status == SZ_OK && _proc_out_size == _size_from_header)
             {
-                data[_proc_out_size] = '\0';
+                // data[_proc_out_size] = '\0'; // Comment to prevent heap corruption in windows platform
 
                 v.reserve(_proc_out_size);
 
@@ -385,7 +385,7 @@ namespace lzma_cxx
 
             if (_out_pos == _size_from_header)
             {
-                _data[_out_pos] = '\0';
+                // _data[_out_pos] = '\0';  // Comment to prevent heap corruption in windows platform
                 _output_buffer.reserve(_out_pos);
 
                 //copy data
