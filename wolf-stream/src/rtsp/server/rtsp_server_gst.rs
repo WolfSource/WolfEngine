@@ -238,11 +238,11 @@ async fn tests() -> () {
         cloned.stop();
     });
 
-    let ret = rtsp.initialize(554, "play", RtspTransportProtocol::TCP , true, "videotestsrc ! videoconvert ! videoscale ! video/x-raw,width=640,height=360,framerate=60/1 ! x264enc ! video/x-h264,width=640,height=360,framerate=60/1,profile=(string)high ! rtph264pay name=pay0 pt=96")
+    let ret = rtsp.initialize(554, "/play", RtspTransportProtocol::TCP , true, "videotestsrc ! videoconvert ! videoscale ! video/x-raw,width=640,height=360,framerate=60/1 ! x264enc ! video/x-h264,width=640,height=360,framerate=60/1,profile=(string)high ! rtph264pay name=pay0 pt=96")
     .and_then(|_|
     {
         println!(
-            "stream is ready at rtsp://:{}/{}",
+            "stream is ready at rtsp://0.0.0.0:{}{}",
             rtsp.get_port(),
             rtsp.get_path()
         );
