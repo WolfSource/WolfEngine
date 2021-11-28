@@ -1,10 +1,13 @@
-use gstreamer_rtsp::*;
+use gstreamer_rtsp::{
+    glib::{self, SourceId},
+    gst,
+};
 use gstreamer_rtsp_server::{
     prelude::RTSPServerExtManual,
     traits::{RTSPMediaFactoryExt, RTSPMountPointsExt, RTSPServerExt},
     RTSPMediaFactory, RTSPServer, RTSPTransportMode,
 };
-use std::sync::{Arc, Mutex, Once};
+use std::sync::Once;
 
 static ONCE_INIT: Once = Once::new();
 static ONCE_FINI: Once = Once::new();
@@ -16,17 +19,44 @@ pub enum RtspTransportProtocol {
 }
 
 #[derive(Debug)]
-pub struct RtspGst {
+pub struct RtspServerGst {
     server: RTSPServer,
     port: u16,
     path: String,
     gst_cmd: String,
     transport_protocol: RtspTransportProtocol,
     multicast: bool,
-    main_loop: Option<Arc<Mutex<glib::MainLoop>>>,
+    main_loop: glib::MainLoop,
+    source_id: Option<SourceId>,
 }
 
-impl RtspGst {
+impl Clone for RtspServerGst {
+    fn clone(&self) -> Self {
+        Self {
+            server: self.server.clone(),
+            port: self.port.clone(),
+            path: self.path.clone(),
+            gst_cmd: self.gst_cmd.clone(),
+            transport_protocol: self.transport_protocol.clone(),
+            multicast: self.multicast.clone(),
+            main_loop: self.main_loop.clone(),
+            source_id: None,
+        }
+    }
+    fn clone_from(&mut self, source: &Self) {
+        self.server = source.server.clone();
+        self.port = source.port.clone();
+        self.path = source.path.clone();
+        self.gst_cmd = source.gst_cmd.clone();
+        self.transport_protocol = source.transport_protocol.clone();
+        self.multicast = source.multicast.clone();
+        self.main_loop = source.main_loop.clone();
+    }
+}
+
+impl RtspServerGst {
+    /// Initialize gstreamer rtsp server. This function should be called once for a time
+    /// before calling other functions
     pub fn init() -> () {
         ONCE_INIT.call_once(|| {
             let _ = gst::init().map_err(|e| {
@@ -38,6 +68,7 @@ impl RtspGst {
         });
     }
 
+    /// Create an instance from rtsp server.
     pub fn new() -> Self {
         Self {
             server: RTSPServer::new(),
@@ -46,11 +77,14 @@ impl RtspGst {
             gst_cmd: String::new(),
             transport_protocol: RtspTransportProtocol::TCP,
             multicast: true,
-            main_loop: None,
+            main_loop: glib::MainLoop::new(None, false),
+            source_id: None,
         }
     }
 
-    pub fn start(
+    /// Initialize rtsp server. This function won't run rtsp stream and
+    /// you need to call start function after this function
+    pub fn initialize(
         &mut self,
         p_port: u16,
         p_path: &str,
@@ -118,31 +152,19 @@ impl RtspGst {
                 // interested in them. In this example, we only do have one, so we can
                 // leave the context parameter empty, it will automatically select
                 // the default one.
-                let _ = self
-                    .server
-                    .attach(None)
-                    .and_then(|id| {
-                        //let port = self.server.bound_port();
-                        //let full_path = format!("{}{}", port, self.path);
-
-                        //create mainloop
-                        let main_loop = glib::MainLoop::new(None, false);
-                        let mutex_main_loop = Mutex::new(main_loop);
-                        self.main_loop = Some(Arc::from(mutex_main_loop));
-
-                        // Start the mainloop. From this point on, the server will start to serve
-                        // our quality content to connecting clients.
-                        glib::source_remove(id);
-
+                let res = self.server.attach(None);
+                let ret = match res {
+                    Ok(id) => {
+                        self.source_id = Some(id);
                         Ok(())
-                    })
-                    .or_else(|_| {
+                    }
+                    Err(e) => {
                         anyhow::bail!(
-                            "could not attach to our main context. trace: rtsp_gst::start"
+                            "could not attach to our main context because {:?}. trace: rtsp_gst::start", e
                         )
-                    });
-
-                Ok(())
+                    }
+                };
+                ret
             }
             None => {
                 anyhow::bail!("could not create RTSP mount points. trace: rtsp_gst::start")
@@ -151,28 +173,26 @@ impl RtspGst {
         ret
     }
 
-    pub fn stop(&self) -> anyhow::Result<()> {
-        let ret = match &self.main_loop {
-            Some(am) => {
-                let r = am
-                    .try_lock()
-                    .and_then(|m| {
-                        m.quit();
-                        Ok(())
-                    })
-                    .or_else(|e| {
-                        anyhow::bail!(
-                            "could not lock on rtsp main loop because {:?}. trace: rtsp_gst::stop",
-                            e
-                        )
-                    });
-                r
-            }
-            None => {
-                anyhow::bail!("main loop is None. trace: rtsp_gst::stop")
-            }
-        };
-        ret
+    /// Start the mainloop. From this point on, the server will start to serve
+    /// our quality content to connecting clients.
+    pub fn start(&self) -> () {
+        self.main_loop.run()
+    }
+
+    /// Stop the mainloop and remove the source id
+    pub fn stop(&mut self) -> () {
+        if self.main_loop.is_running() {
+            self.main_loop.quit()
+        }
+        if self.source_id.is_some() {
+            match self.source_id.take() {
+                Some(id) => {
+                    println!("Haaaaa");
+                    glib::source_remove(id)
+                }
+                None => {}
+            };
+        }
     }
 
     pub fn get_port(&self) -> u16 {
@@ -195,6 +215,7 @@ impl RtspGst {
         self.multicast
     }
 
+    /// Finitialize gstreamer rtsp server. This function should be called at the end of program
     pub fn fini() {
         ONCE_FINI.call_once(|| {
             unsafe { gst::deinit() };
@@ -205,20 +226,33 @@ impl RtspGst {
 #[tokio::main]
 #[test]
 async fn tests() -> () {
-    RtspGst::init();
+    RtspServerGst::init();
 
-    let mut rtsp = RtspGst::new();
-    let ret = rtsp.start(554, "play", RtspTransportProtocol::TCP , true, "videotestsrc ! videoconvert ! videoscale ! video/x-raw,width=640,height=360,framerate=60/1 ! x264enc ! video/x-h264,width=640,height=360,framerate=60/1,profile=(string)high ! rtph264pay name=pay0 pt=96").and_then(|_|
+    let mut rtsp = RtspServerGst::new();
+    let mut cloned = rtsp.clone();
+
+    std::thread::spawn(move || {
+        const SECS: u64 = 10;
+        println!("rtsp stream will be shutdown after {} seconds", SECS);
+        std::thread::sleep(std::time::Duration::from_secs(SECS));
+        cloned.stop();
+    });
+
+    let ret = rtsp.initialize(554, "play", RtspTransportProtocol::TCP , true, "videotestsrc ! videoconvert ! videoscale ! video/x-raw,width=640,height=360,framerate=60/1 ! x264enc ! video/x-h264,width=640,height=360,framerate=60/1,profile=(string)high ! rtph264pay name=pay0 pt=96")
+    .and_then(|_|
     {
-        println!("stream is ready at rtsp://:{}/{}", rtsp.get_port(), rtsp.get_path());
-        std::thread::sleep(std::time::Duration::from_secs(120));
+        println!(
+            "stream is ready at rtsp://:{}/{}",
+            rtsp.get_port(),
+            rtsp.get_path()
+        );
+        rtsp.start();
         Ok(())
     }).or_else(|e|
     {
-        println!("rtsp could not start because {:?}", e);
-        Err(e)
+        anyhow::bail!("{:?}", e)
     });
 
-    RtspGst::fini();
+    RtspServerGst::fini();
     assert!(ret.is_ok(), "{:?}", ret);
 }
