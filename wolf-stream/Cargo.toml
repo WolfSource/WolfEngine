@@ -15,7 +15,7 @@ path = "src/lib.rs"
 anyhow = {version = "1.0.48"}
 gstreamer-rtsp = {version = "0.17.0"}
 gstreamer-rtsp-server = {version = "0.17.2"}
-mimalloc = {version = "0.1.26"}
+mimalloc = {version = "0.1.27"}
 tokio = {version = "1.14.0", features = ["rt-multi-thread", "macros"]}
 
 [build-dependencies]
