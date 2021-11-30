@@ -1,11 +1,10 @@
 #[cxx::bridge(namespace = "rtsp_client_cxx")]
 pub mod ffi {
     unsafe extern "C++" {
+        include!("wolf-stream/src/rtsp/client/cxx/rtsp_client.hpp");
+
     }
 }
 
-#[tokio::main]
 #[test]
-async fn tests() -> () {
-    println!("test");
-}
+fn test() {}

@@ -186,10 +186,7 @@ impl RtspServerGst {
         }
         if self.source_id.is_some() {
             match self.source_id.take() {
-                Some(id) => {
-                    println!("Haaaaa");
-                    glib::source_remove(id)
-                }
+                Some(id) => glib::source_remove(id),
                 None => {}
             };
         }

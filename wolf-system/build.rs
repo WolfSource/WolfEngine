@@ -104,7 +104,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let opt_level_str =
         std::env::var("OPT_LEVEL").expect("Build failed: could not get OPT_LEVEL profile");
     //set cmake build config
-    let cmake_build_profile = match &opt_level_str[..] {
+    let build_profile = match &opt_level_str[..] {
         "0" => "Debug",
         "1" | "2" | "3" => {
             if profile_str == "debug" {
@@ -155,12 +155,19 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         //store deps libraries
         lib_deps.append(&mut v.8);
 
+        let prefix_path = v.7;
+
+        //git project just opened
+        let build_dir = format!("{}/deps/{}/build/{}", current_dir, k, build_profile);
+        println!(
+            "cargo:rustc-link-search=native={}{}/lib",
+            build_dir, prefix_path
+        );
+
         //check git project already exists
         let git_repo_path = format!("{}/deps/{}", current_dir, k);
         let ret = Repository::open(git_repo_path.clone())
             .and_then(|_r| {
-                //git project just opened
-                let build_dir = format!("{}/deps/{}build/{}", current_dir, k, cmake_build_profile);
                 //if build folder is not exist, we should build it again
                 if !Path::new(&build_dir).exists() {
                     //rebuild it again
@@ -186,10 +193,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 if build {
                     match v.0 {
                         BuildType::CMAKE => {
-                            build_cmake(&cmake_build_profile, &git_repo_path, &v);
+                            build_cmake(&build_profile, &git_repo_path, &v);
                         }
                         BuildType::MAKE => {
-                            build_make(&cmake_build_profile, &opt_level_str, &git_repo_path, &v);
+                            build_make(&build_profile, &opt_level_str, &git_repo_path, &v);
                         }
                         BuildType::SHELL => {
                             //build with custom shell script should be implement
@@ -216,14 +223,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 //include library includes
                 let path_to_include = format!(
                     "{}/{}build/{}/{}/include/",
-                    git_repo_path, path_to_cmake_folder, cmake_build_profile, prefix_path
+                    git_repo_path, path_to_cmake_folder, build_profile, prefix_path
                 );
                 include_srcs.push(path_to_include.to_string());
 
                 //link to the libraries
                 let path_to_lib = format!(
                     "{}/{}build/{}/{}/lib/",
-                    git_repo_path, path_to_cmake_folder, cmake_build_profile, prefix_path
+                    git_repo_path, path_to_cmake_folder, build_profile, prefix_path
                 );
                 lib_paths.insert(k.to_string(), (path_to_lib.to_string(), link_static));
             }
@@ -331,7 +338,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
 
     //rename cxx library to prevent con
-    build_cxx.compile("wolf_cxx");
+    build_cxx.compile("wolf_system_cxx");
 
     Ok(())
 }
@@ -420,31 +427,14 @@ fn build_make(
 ) {
     //get path to make file
     let make_parent_path = format!("{}/{}", p_git_repo_path, p_value.2);
-
     //check build folder
     let build_folder_str = format!("{}/build", make_parent_path);
-    let build_folder_path = Path::new(&build_folder_str);
-    if !build_folder_path.exists() {
-        std::fs::create_dir(build_folder_path).expect(
-            format!(
-                "could not create build folder for make file {}",
-                make_parent_path
-            )
-            .as_str(),
-        );
-    }
     //check install folder
     let install_folder_str = format!("{}/{}", build_folder_str, p_make_build_profile);
-    let install_folder_path = Path::new(&install_folder_str);
-    if !install_folder_path.exists() {
-        std::fs::create_dir(install_folder_path).expect(
-            format!(
-                "could not create install folder for make file {}",
-                install_folder_str
-            )
-            .as_str(),
-        );
-    }
+
+    make_folder(&make_parent_path);
+    make_folder(&build_folder_str);
+    make_folder(&install_folder_str);
 
     // let c_flag: String;
     // let cxx_flag: String;
@@ -476,5 +466,13 @@ fn build_make(
             "Build failed: Make project was not build because: {:?}",
             out.stderr.into_c_string()
         );
+    }
+}
+
+fn make_folder(path: &str) {
+    //check folder exists
+    let p = Path::new(&path);
+    if !p.exists() {
+        std::fs::create_dir(p).expect(format!("could not create folder {}", path).as_str());
     }
 }
