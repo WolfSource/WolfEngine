@@ -22,6 +22,11 @@ impl ScyllaDBConnector {
         p_password: &str,
     ) -> anyhow::Result<()> {
         self.uri_known_nodes = p_know_nodes;
+
+        if self.uri_known_nodes.is_empty() {
+            anyhow::bail!("missing uri_known_nodes")
+        }
+
         let mut session_builder = SessionBuilder::new();
         for uri in &self.uri_known_nodes {
             session_builder = session_builder.known_node(&uri);
@@ -58,4 +63,16 @@ impl ScyllaDBConnector {
 
 #[tokio::main]
 #[test]
-async fn test() -> () {}
+async fn test() -> () {
+    let mut scylla_db = ScyllaDBConnector::new();
+    let ret = scylla_db
+        .create_session(
+            ["127.0.0.1:9042".to_string()].to_vec(),
+            Duration::from_secs(3),
+            "",
+            "",
+        )
+        .await;
+
+    println!("{:?}", ret);
+}
