@@ -30,7 +30,7 @@
         "source=${env:HOME}${env:USERPROFILE}/.kube,target=/usr/local/share/kube-localhost,type=bind"
         // "source=${env:HOME}${env:USERPROFILE}/.minikube,target=/usr/local/share/minikube-localhost,type=bind"
     ],
-    "name": "fip",
+    "name": "sib",
     "postStartCommand": "make add-os-dependency fetch",
     "runArgs": [
         "--cap-add=SYS_PTRACE",
