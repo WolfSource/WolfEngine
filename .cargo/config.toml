@@ -1,0 +1,101 @@
+# [alias]
+
+[build]
+rustflags = [
+    "-Dabsolute_paths_not_starting_with_crate",
+    # "-Dbox_pointers",
+    "-Ddeprecated_in_future",
+    "-Delided_lifetimes_in_paths",
+    "-Dexplicit_outlives_requirements",
+    "-Dkeyword_idents",
+    "-Dmacro_use_extern_crate",
+    "-Dmeta_variable_misuse",
+    "-Dmissing_abi",
+    "-Dmissing_copy_implementations",
+    "-Dmissing_debug_implementations",
+    "-Dmissing_docs",
+    "-Dnon_ascii_idents",
+    "-Dnoop_method_call",
+    "-Dpointer_structural_match",
+    "-Drust_2021_incompatible_closure_captures",
+    "-Drust_2021_incompatible_or_patterns",
+    "-Drust_2021_prefixes_incompatible_syntax",
+    "-Drust_2021_prelude_collisions",
+    "-Dsemicolon_in_expressions_from_macros",
+    "-Dsingle_use_lifetimes",
+    "-Dtrivial_casts",
+    "-Dtrivial_numeric_casts",
+    "-Dunreachable_pub",
+    "-Dunsafe_code",
+    "-Dunsafe_op_in_unsafe_fn",
+    "-Dunstable_features",
+    "-Dunused_crate_dependencies",
+    "-Dunused_extern_crates",
+    "-Dunused_import_braces",
+    "-Dunused_lifetimes",
+    "-Dunused_qualifications",
+    "-Dunused_results",
+    "-Dvariant_size_differences",
+    "-Dwarnings"
+]
+rustdocflags = [
+    "-Dabsolute_paths_not_starting_with_crate",
+    # "-Dbox_pointers",
+    "-Ddeprecated_in_future",
+    "-Delided_lifetimes_in_paths",
+    "-Dexplicit_outlives_requirements",
+    "-Dkeyword_idents",
+    "-Dmacro_use_extern_crate",
+    "-Dmeta_variable_misuse",
+    "-Dmissing_abi",
+    "-Dmissing_copy_implementations",
+    "-Dmissing_debug_implementations",
+    "-Dmissing_docs",
+    "-Dnon_ascii_idents",
+    "-Dnoop_method_call",
+    "-Dpointer_structural_match",
+    "-Drust_2021_incompatible_closure_captures",
+    "-Drust_2021_incompatible_or_patterns",
+    "-Drust_2021_prefixes_incompatible_syntax",
+    "-Drust_2021_prelude_collisions",
+    "-Dsemicolon_in_expressions_from_macros",
+    "-Dsingle_use_lifetimes",
+    "-Dtrivial_casts",
+    "-Dtrivial_numeric_casts",
+    "-Dunreachable_pub",
+    "-Dunsafe_code",
+    "-Dunsafe_op_in_unsafe_fn",
+    "-Dunstable_features",
+    "-Dunused_crate_dependencies",
+    "-Dunused_extern_crates",
+    "-Dunused_import_braces",
+    "-Dunused_lifetimes",
+    "-Dunused_qualifications",
+    "-Dunused_results",
+    "-Dvariant_size_differences",
+    "-Dwarnings"
+]
+
+# [cargo-new]
+
+# [http]
+
+# [install]
+
+# [net]
+
+# [profile.<name>]
+
+# [registries.<name>]
+
+# [registry]
+
+# [source.<name>]
+
+# [target.<cfg>]
+
+# [target.<triple>]
+
+# [target.<triple>.<links>]
+
+# [term]
