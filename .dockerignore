@@ -1,0 +1,8 @@
+*.db-*
+*.prof*
+.git/
+coverage/
+documentation/
+release/
+target/
+test/
