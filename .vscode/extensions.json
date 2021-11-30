@@ -1,0 +1,23 @@
+{
+    "recommendations": [
+        "bungcip.better-toml",
+        "coenraads.bracket-pair-colorizer-2",
+        "eamodio.gitlens",
+        "github.copilot",
+        "github.vscode-pull-request-github",
+        "ibm.output-colorizer",
+        "matklad.rust-analyzer",
+        "mhutchie.git-graph",
+        "ms-azuretools.vscode-docker",
+        "ms-kubernetes-tools.vscode-kubernetes-tools",
+        "ms-vscode-remote.vscode-remote-extensionpack",
+        "ms-vscode.cmake-tools",
+        "pkief.material-icon-theme",
+        "redhat.vscode-yaml",
+        "ryanluker.vscode-coverage-gutters",
+        "serayuzgur.crates",
+        "streetsidesoftware.code-spell-checker",
+        "tyriar.sort-lines",
+        "vadimcn.vscode-lldb"
+    ]
+}
