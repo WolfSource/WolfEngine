@@ -1,5 +1,10 @@
 {
     "C_Cpp.default.configurationProvider": "vector-of-bool.cmake-tools",
+    "debug.allowBreakpointsEverywhere": true,
+    "editor.defaultFormatter": "matklad.rust-analyzer",
+    "editor.formatOnPaste": false,
+    "editor.formatOnSave": true,
+    "editor.inlineSuggest.enabled": true,
     "files.associations": {
         "array": "cpp",
         "string_view": "cpp",
@@ -59,5 +64,27 @@
         "xstring": "cpp",
         "xtr1common": "cpp",
         "xutility": "cpp"
-    }
+    },
+    "files.watcherExclude": {
+        "**/*.db-*": true,
+        "**/*.prof*": true,
+        "**/.git/**": true,
+        "**/coverage/**": true,
+        "**/documentation/**": true,
+        "**/release/**": true,
+        "**/target/**": true,
+        "**/test/**": true
+    },
+    "github.copilot.enable": {
+        "*": true,
+        "markdown": false,
+        "plaintext": true,
+        "yaml": true
+    },
+    "lldb.verboseLogging": true,
+    "redhat.telemetry.enabled": true,
+    "rust-analyzer.checkOnSave.command": "clippy",
+    "sqltools.useNodeRuntime": true,
+    "terminal.integrated.sendKeybindingsToShell": true,
+    "workbench.iconTheme": "material-icon-theme"
 }

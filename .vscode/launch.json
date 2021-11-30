@@ -1,0 +1,125 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "args": [],
+            "cargo": {
+                "args": [
+                    "build",
+                    "--lib",
+                    "--manifest-path=wolf-render/Cargo.toml",
+                    "--package=wolf-render"
+                ],
+                "filter": {
+                    "name": "wolf-render",
+                    "kind": "lib"
+                }
+            },
+            "cwd": "${workspaceFolder}",
+            "name": "Debug wolf-render",
+            "request": "launch",
+            "type": "lldb"
+        },
+        {
+            "args": [],
+            "cargo": {
+                "args": [
+                    "test",
+                    "--lib",
+                    "--manifest-path=wolf-render/Cargo.toml",
+                    "--no-run",
+                    "--package=wolf-render"
+                ],
+                "filter": {
+                    "name": "wolf-render",
+                    "kind": "lib"
+                }
+            },
+            "cwd": "${workspaceFolder}",
+            "name": "Test wolf-render",
+            "request": "launch",
+            "type": "lldb",
+        },
+        {
+            "args": [],
+            "cargo": {
+                "args": [
+                    "build",
+                    "--lib",
+                    "--manifest-path=wolf-stream/Cargo.toml",
+                    "--package=wolf-stream"
+                ],
+                "filter": {
+                    "name": "wolf-stream",
+                    "kind": "lib"
+                }
+            },
+            "cwd": "${workspaceFolder}",
+            "name": "Debug wolf-stream",
+            "request": "launch",
+            "type": "lldb"
+        },
+        {
+            "args": [],
+            "cargo": {
+                "args": [
+                    "test",
+                    "--lib",
+                    "--manifest-path=wolf-stream/Cargo.toml",
+                    "--no-run",
+                    "--package=wolf-stream"
+                ],
+                "filter": {
+                    "name": "wolf-stream",
+                    "kind": "lib"
+                }
+            },
+            "cwd": "${workspaceFolder}",
+            "name": "Test wolf-stream",
+            "request": "launch",
+            "type": "lldb",
+        },
+        {
+            "args": [],
+            "cargo": {
+                "args": [
+                    "build",
+                    "--lib",
+                    "--manifest-path=wolf-system/Cargo.toml",
+                    "--package=wolf-system"
+                ],
+                "filter": {
+                    "name": "wolf-system",
+                    "kind": "lib"
+                }
+            },
+            "cwd": "${workspaceFolder}",
+            "name": "Debug wolf-system",
+            "request": "launch",
+            "type": "lldb"
+        },
+        {
+            "args": [],
+            "cargo": {
+                "args": [
+                    "test",
+                    "--lib",
+                    "--manifest-path=wolf-system/Cargo.toml",
+                    "--no-run",
+                    "--package=wolf-system"
+                ],
+                "filter": {
+                    "name": "wolf-system",
+                    "kind": "lib"
+                }
+            },
+            "cwd": "${workspaceFolder}",
+            "name": "Test wolf-system",
+            "request": "launch",
+            "type": "lldb",
+        }        
+    ]
+}
