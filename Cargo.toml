@@ -1,11 +1,35 @@
-[workspace]
-members = [
-  "wolf-system",
-  "wolf-stream",
-  "wolf-render",
-]
+# [[bench]]
 
-# for more optimization https://doc.rust-lang.org/cargo/reference/profiles.html
+# [[bin]]
+
+# [[example]]
+
+# [[test]]
+
+# [badges]
+
+# [build-dependencies]
+
+# [dependencies]
+
+# [dev-dependencies]
+
+# [features]
+
+# [package]
+
+[profile.bench]
+codegen-units = 256
+debug = false
+debug-assertions = false
+incremental = false
+lto = false
+opt-level = 0
+overflow-checks = false
+panic = "unwind"
+rpath = false
+split-debuginfo = "off"
+
 [profile.dev]
 codegen-units = 256
 debug = true
@@ -16,7 +40,7 @@ opt-level = 0
 overflow-checks = true
 panic = "unwind"
 rpath = false
-split-debuginfo = "unpacked"
+split-debuginfo = "packed"
 
 [profile.test]
 codegen-units = 256
@@ -26,30 +50,29 @@ incremental = true
 lto = false
 opt-level = 0
 overflow-checks = true
-# panic = "unwind" # This setting is always ignored.
+panic = "unwind"
 rpath = false
-split-debuginfo = "unpacked"
+split-debuginfo = "packed"
 
 [profile.release]
-codegen-units = 16
+codegen-units = 1
 debug = false
 debug-assertions = false
 incremental = false
-lto = false
+lto = true
 opt-level = 3
 overflow-checks = false
 panic = "abort"
 rpath = false
-split-debuginfo = 'off'
+split-debuginfo = "off"
 
-[profile.bench]
-codegen-units = 16
-debug = false
-debug-assertions = false
-incremental = false
-lto = false
-opt-level = "z"
-overflow-checks = false
-#panic = "abort" # This setting is always ignored.
-rpath = false
-split-debuginfo = 'off'
+# [patch]
+
+# [replace]
+
+[workspace]
+members = [
+  "wolf-system",
+  "wolf-stream",
+  "wolf-render"
+]
