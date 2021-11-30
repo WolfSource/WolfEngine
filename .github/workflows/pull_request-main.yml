@@ -1,0 +1,215 @@
+env:
+  CARGO_TERM_COLOR: always
+jobs:
+  audit:
+    container:
+      image: docker://rust:1.56.1-bullseye
+    name: Cargo Audit
+    needs:
+      - clippy
+      - conventional-commits-linter
+      - fmt-check
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Check Out
+        uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579
+      -
+        name: Add OS Dependency
+        run: make add-os-dependency
+        shell: bash
+      -
+        # TODO: Remove this once the `audit` job is stable.
+        continue-on-error: true
+        id: audit
+        name: Audit
+        run: make audit
+        shell: bash
+    timeout-minutes: 10
+  check:
+    container:
+      image: docker://rust:1.56.1-bullseye
+    name: Cargo Check
+    needs:
+      - clippy
+      - conventional-commits-linter
+      - fmt-check
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Check Out
+        uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579
+      -
+        name: Add OS Dependency
+        run: make add-os-dependency
+        shell: bash
+      -
+        name: Check
+        run: make check
+        shell: bash
+    timeout-minutes: 10
+  conventional-commits-linter:
+    container:
+      image: docker://rust:1.56.1-bullseye
+    name: Conventional Commits Linter
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Check Out
+        uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579
+      -
+        name: Conventional Commits
+        run: ./script/conventional-commits-linter.sh ${{ github.event.pull_request.head.ref }}
+        shell: bash
+    timeout-minutes: 10
+  deny-check:
+    container:
+      image: docker://rust:1.56.1-bullseye
+    continue-on-error: ${{ matrix.checks == 'advisories' }}
+    name: Cargo Deny Check (${{ matrix.checks }})
+    needs:
+      - clippy
+      - conventional-commits-linter
+      - fmt-check
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Check Out
+        uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579
+      -
+        name: Add OS Dependency
+        run: make add-os-dependency
+        shell: bash
+      -
+        # TODO: Remove this once the `deny-check` job is stable.
+        continue-on-error: true
+        env:
+          DENY_CHECK_WHICH: ${{ matrix.checks }}
+        id: deny-check
+        name: Deny Check
+        run: make deny-check
+        shell: bash
+      # -
+      #   name: Deny Check
+      #   uses: EmbarkStudios/cargo-deny-action@0ca727bbae7b7b578b9a5f98186caac35aa2a00d
+      #   with:
+      #     arguments: >-
+      #       --all-features
+      #       --workspace
+      #     command: check ${{ matrix.checks }}
+    strategy:
+      matrix:
+        checks:
+          - advisories
+          - bans licenses sources
+    timeout-minutes: 10
+  clippy:
+    container:
+      image: docker://rust:1.56.1-bullseye
+    name: Cargo Clippy
+    needs:
+      - conventional-commits-linter
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Check Out
+        uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579
+      -
+        name: Add OS Dependency
+        run: make add-os-dependency
+        shell: bash
+      -
+        name: Clippy
+        run: make clippy
+        shell: bash
+    timeout-minutes: 10
+  coverage:
+    container:
+      image: docker://rust:1.56.1-bullseye
+    name: Coverage
+    needs:
+      - clippy
+      - conventional-commits-linter
+      - fmt-check
+      - test
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Check Out
+        uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579
+      -
+        name: Add OS Dependency
+        run: make add-os-dependency
+        shell: bash
+      -
+        name: Test
+        run: make coverage
+        shell: bash
+    timeout-minutes: 20
+  fmt-check:
+    container:
+      image: docker://rust:1.56.1-bullseye
+    name: Cargo Format Check
+    needs:
+      - conventional-commits-linter
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Check Out
+        uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579
+      -
+        name: Add OS Dependency
+        run: make add-os-dependency
+        shell: bash
+      -
+        name: Format Check
+        run: make fmt-check
+        shell: bash
+    timeout-minutes: 10
+  test:
+    container:
+      image: docker://rust:1.56.1-bullseye
+    name: Cargo Test
+    needs:
+      - clippy
+      - conventional-commits-linter
+      - fmt-check
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Check Out
+        uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579
+      -
+        name: Add OS Dependency
+        run: make add-os-dependency
+        shell: bash
+      -
+        name: Test
+        run: make test
+        shell: bash
+    timeout-minutes: 10
+name: Pull Request Main
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - reopened
+      - synchronize

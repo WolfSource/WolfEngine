@@ -1,0 +1,4 @@
+debug = true
+
+[worker.oci]
+max-parallelism = 3

@@ -1,0 +1,95 @@
+env:
+  BASE_DIGEST: sha256:bca3c203cdb36f5914ab8568e4c25165643ea9b711b41a8a58b42c80a51ed609
+  BASE_NAME: gcr.io/distroless/static-debian11
+  BASE_TAG: nonroot
+  CARGO_TERM_COLOR: always
+jobs:
+  build-and-push-docker-image:
+    name: Build and Publish Docker Image
+    permissions:
+      contents: read
+      packages: write
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Check Out
+        uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579
+      -
+        id: release-tag-meta
+        name: Release Tag Name Meta
+        uses: ./.github/actions/release-tag-meta
+        with:
+          git-ref: ${{ github.ref }}
+      -
+        name: Extract Metadata (Tags, Labels) for Docker
+        id: metadata
+        uses: docker/metadata-action@a2e02890a0d28163b34ac2e4b575b9264a5ee3e2
+        with:
+          labels: |
+            org.opencontainers.image.authors=${{ github.actor }}
+            org.opencontainers.image.base.digest=${{ env.BASE_DIGEST }}
+            org.opencontainers.image.base.name=${{ env.BASE_NAME }}:${{ env.BASE_TAG }}
+            org.opencontainers.image.description=${{ matrix.package }}
+            org.opencontainers.image.documentation=${{ github.server_url }}/${{ github.repository }}/tree/${{ steps.release-tag-meta.outputs.tag }}/${{ matrix.package }}
+            org.opencontainers.image.ref.name=${{ github.repository }}/${{ matrix.package }}/${{ steps.release-tag-meta.outputs.tag }}
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}/tree/${{ steps.release-tag-meta.outputs.tag }}/${{ matrix.package }}
+            org.opencontainers.image.title=${{ matrix.package }}
+            org.opencontainers.image.url=${{ github.server_url }}/${{ github.repository }}/main/${{ matrix.package }}
+            org.opencontainers.image.vendor=${{ github.actor }}
+            org.opencontainers.image.version=${{ steps.release-tag-meta.outputs.version }}
+          images: ghcr.io/${{ github.repository }}/${{ matrix.package }}
+          tags: type=semver,pattern={{version}}
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@27d0a4f181a40b142cce983c5393082c365d1480
+        with:
+          platforms: arm,arm64
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@94ab11c41e45d028884a99163086648e898eed25
+        with:
+          config: ./.github/buildkitd.toml
+      -
+        name: Log in to Docker Hub
+        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+        with:
+          password: ${{ secrets.PACKAGE_REGISTRY }}
+          registry: ghcr.io
+          username: ${{ github.actor }}
+      -
+        name: Build and Push Docker Image (${{ matrix.package }})
+        uses: docker/build-push-action@a66e35b9cbcf4ad0ea91ffcaf7bbad63ad9e0229
+        with:
+          build-args: |
+            PACKAGE=${{ matrix.package }}
+            REFERENCE=${{ env.BASE_NAME }}:${{ env.BASE_TAG }}@${{ env.BASE_DIGEST }}
+            VERSION=${{ steps.release-tag-meta.outputs.version }}
+          cache-from: |
+            type=registry,ref=ghcr.io/${{ github.repository }}/${{ matrix.package }}:latest
+          cache-to: |
+            type=inline
+          context: .
+          labels: |
+            ${{ steps.metadata.outputs.labels }}
+          platforms: |
+            linux/amd64
+            linux/arm/v7
+            linux/arm64
+          push: true
+          secrets: |
+            GIT_AUTH_TOKEN=${{ secrets.PACKAGE_REGISTRY }}
+          tags: |
+            ${{ steps.metadata.outputs.tags }}
+    strategy:
+      matrix:
+        package:
+          - wolf-render
+          - wolf-stream
+          - wolf-system
+    timeout-minutes: 10
+name: Release Published
+on:
+  release:
+    types:
+      - published
