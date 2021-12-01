@@ -16,7 +16,7 @@ anyhow = {version = "1.0.48"}
 async-raft = {version = "0.6.1"}
 async-trait = {version = "0.1.51"}
 bigdecimal = "0.3.0"
-cxx = {version = "1.0.56"}
+cxx = {version = "1.0.57"}
 futures = {version = "0.3.18"}
 hyper = {version = "0.14.15"}
 lazy_static = {version = "1.4.0"}
