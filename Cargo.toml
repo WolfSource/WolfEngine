@@ -72,7 +72,7 @@ split-debuginfo = "off"
 
 [workspace]
 members = [
-  "wolf-system",
-  "wolf-stream",
-  "wolf-render"
+  "wolf_system",
+  "wolf_stream",
+  "wolf_render"
 ]

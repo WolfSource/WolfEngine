@@ -1,6 +1,6 @@
 # syntax=docker.io/docker/dockerfile:1.3.1
 
-ARG PACKAGE=${PACKAGE:-"wolf-system"}
+ARG PACKAGE=${PACKAGE:-"wolf_system"}
 ARG REFERENCE=${REFERENCE:-"gcr.io/distroless/static-debian11:nonroot@sha256:bca3c203cdb36f5914ab8568e4c25165643ea9b711b41a8a58b42c80a51ed609"}
 ARG VERSION=${VERSION:-"0.1.0"}
 
@@ -32,9 +32,9 @@ COPY --chown=nonroot:nonroot --from=wolf /tmp/${PACKAGE} /${PACKAGE}
 
 FROM base AS wolf-render
 
-FROM base AS wolf-stream
+FROM base AS wolf_stream
 
-FROM base AS wolf-system
+FROM base AS wolf_system
 
 
 FROM ${PACKAGE} AS after-condition
