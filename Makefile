@@ -3,7 +3,7 @@
 # ARCHVARIANT: arm64, armv7, amd64
 # CARGO: cargo, cross
 # DENY_CHECK_WHICH: advisories, bans, licenses, sources
-# PACKAGE: wolf-system
+# PACKAGE: wolf_system
 # RELEASE: --release
 # STRIP: aarch64-linux-gnu-strip, arm-linux-gnueabihf-strip, strip
 # TARGET: aarch64-unknown-linux-musl, armv7-unknown-linux-musleabihf, x86_64-unknown-linux-musl
@@ -12,7 +12,7 @@
 ARCHVARIANT ?= $(shell rustup show | sed -n "s/^Default host: \(.*\)/\1/p" | awk 'BEGIN { FS = "-" }; { print $$1 }')
 CARGO ?= cargo
 DENY_CHECK_WHICH ?= advisories bans licenses sources
-PACKAGE ?= wolf-system
+PACKAGE ?= wolf_system
 # RELEASE ?= --release
 STRIP ?= strip
 TARGET ?= $(shell rustup show | sed -n "s/^Default host: \(.*\)/\1/p")
