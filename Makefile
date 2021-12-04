@@ -1,6 +1,7 @@
 .DEFAULT_GOAL := help
 
 # ARCHVARIANT: arm64, armv7, amd64
+# COVERAGE_TYPE: lcov, html
 # CARGO: cargo, cross
 # DENY_CHECK_WHICH: advisories, bans, licenses, sources
 # PACKAGE: wolf_system
@@ -10,6 +11,7 @@
 # VERSION: 0.1.0
 
 ARCHVARIANT ?= $(shell rustup show | sed -n "s/^Default host: \(.*\)/\1/p" | awk 'BEGIN { FS = "-" }; { print $$1 }')
+COVERAGE_TYPE ?= lcov
 CARGO ?= cargo
 DENY_CHECK_WHICH ?= advisories bans licenses sources
 PACKAGE ?= wolf_system
@@ -53,7 +55,7 @@ CARGO_CLIPPY = $(CARGO) clippy --all-features --all-targets --frozen --workspace
 CARGO_DENY = $(CARGO) deny --all-features --workspace
 CARGO_FMT = $(CARGO) fmt --all
 
-$(BIN): add-fmt add-target fetch
+$(BIN): add-fmt fetch
 	$(CARGO_BUILD)
 
 GIT_HOOKS_COMMIT_MSG = .git/hooks/commit-msg
@@ -107,18 +109,19 @@ add-os-dependency: ## Add the os dependency
 			sqlite3 \
 		&& apt-get autoremove --yes \
 		&& apt-get clean --yes \
-		&& rm -fr /tmp/* /var/lib/apt/lists/* /var/tmp/*\
+		&& rm -fr /tmp/* /var/lib/apt/lists/* /var/tmp/* \
 		; \
 	else \
-		echo "Please install cmake and sqlite3 on ${DETECTED_OS}"; \
+		echo "Please install cmake on ${DETECTED_OS}" \
+		; \
 	fi
 
 .PHONY: add-fmt
 add-fmt: ## Add the fmt
 	rustup component add rustfmt
 
-.PHONY: add-git-config
-add-git-config: ## Add the git configs
+.PHONY: add-git-configs
+add-git-configs: ## Add the git configs
 	git config --global branch.autosetuprebase always
 	git config --global color.branch true
 	git config --global color.diff true
@@ -163,14 +166,14 @@ audit: add-audit ## Audit
 	$(CARGO_AUDIT)
 
 .PHONY: bench
-bench: add-fmt add-target fetch ## Bench
+bench: add-fmt fetch ## Bench
 	$(CARGO_BENCH)
 
 .PHONY: build
 build: clean-build $(BIN) ## Build
 
 .PHONY: check
-check: add-fmt add-target fetch ## Check
+check: add-fmt fetch ## Check
 	$(CARGO_CHECK)
 
 .PHONY: clean
@@ -178,12 +181,11 @@ clean: clean-coverage clean-doc clean-release ## Clean
 	rm -fr target
 
 .PHONY: clean-build
-clean-build: add-target ## Clean build
+clean-build: fetch ## Clean build
 	$(CARGO_CLEAN)
-	rm -fr $(BIN_DIR)
 
 .PHONY: clean-coverage
-clean-coverage: ## Clean cov
+clean-coverage: ## Clean coverage
 	find . -type f -name *.prof* -exec rm -fr {} +
 	rm -fr $(COVERAGE_DIR)
 	rm -fr coverage
@@ -210,46 +212,63 @@ conventional-commits-linter: add-conventional-commits-linter ## Conventional com
 	conventional_commits_linter --allow-angular-type-only --from-stdin
 
 .PHONY: coverage
-coverage: add-fmt add-grcov add-llvm add-target clean-coverage fetch ## Test cov
+coverage: add-fmt add-grcov add-llvm clean-coverage fetch ## Coverage
+	mkdir -p $(COVERAGE_DIR)
+	mkdir -p coverage
 	RUSTC_BOOTSTRAP=1 RUSTFLAGS="-Zinstrument-coverage" $(CARGO_BUILD)
 	RUSTC_BOOTSTRAP=1 RUSTFLAGS="-Zinstrument-coverage" LLVM_PROFILE_FILE="$(PACKAGE)-%p-%m.profraw" $(CARGO_TEST)
-	grcov . \
-		--binary-path $(BIN_DIR) \
-		--branch \
-		--guess-directory-when-missing \
-		--ignore "/*" \
-		--ignore-not-existing \
-		--output-path $(COVERAGE_DIR) \
-		--output-type html \
-		--source-dir .
-	mkdir -p coverage
+	if [ "$(COVERAGE_TYPE)" = "lcov" ]; then \
+		grcov . \
+			--binary-path $(BIN_DIR) \
+			--branch \
+			--guess-directory-when-missing \
+			--ignore "/*" \
+			--ignore-not-existing \
+			--output-path $(COVERAGE_DIR)/lcov.info \
+			--output-type lcov \
+			--source-dir . \
+		;\
+	elif [ "$(COVERAGE_TYPE)" = "html" ]; then \
+		grcov . \
+			--binary-path $(BIN_DIR) \
+			--branch \
+			--guess-directory-when-missing \
+			--ignore "/*" \
+			--ignore-not-existing \
+			--output-path $(COVERAGE_DIR) \
+			--output-type html \
+			--source-dir . \
+		;\
+	else \
+		echo "Unknown coverage type: $(COVERAGE_TYPE)" \
+		;\
+	fi
 	cp -R $(COVERAGE_DIR)/* coverage
-	cat coverage/coverage.json
 
 .PHONY: deny-check
-deny-check: add-deny fetch ## Deny check
+deny-check: add-deny ## Deny check
 	$(CARGO_DENY) check $(DENY_CHECK_WHICH)
 
 .PHONY: deny-fetch
-deny-fetch: add-deny fetch ## Deny fetch
+deny-fetch: add-deny ## Deny fetch
 	$(CARGO_DENY) fetch
 
 .PHONY: deny-fix
-deny-fix: add-deny fetch ## Deny fix
+deny-fix: add-deny ## Deny fix
 	$(CARGO_DENY) fix
 
 .PHONY: doc
-doc: add-fmt add-target clean-doc fetch ## Doc
+doc: add-fmt clean-doc fetch ## Doc
 	$(CARGO_DOC)
 	mkdir -p documentation
 	cp -R $(DOCUMENTATION_DIR)/* documentation
 
 .PHONY: fetch
-fetch: Cargo.lock ## Fetch
+fetch: Cargo.lock add-target ## Fetch
 	$(CARGO_FETCH)
 
 .PHONY: fix
-fix: ## Fix
+fix: fetch ## Fix
 	$(CARGO_FIX)
 
 .PHONY: fmt
@@ -265,7 +284,7 @@ generate-lockfile: ## Generate lockfile
 	$(CARGO) generate-lockfile
 
 .PHONY: git
-git: add-git-config add-git-hooks ## Add git config & hooks
+git: add-git-configs add-git-hooks ## Add git configs & hooks
 
 .PHONY: help
 help: ## Help
@@ -282,11 +301,11 @@ release: $(BIN) clean-release ## Release
 		| awk 'BEGIN { FS = " " }; { print $$1 }' > release/$(BIN_NAME).sha256
 
 .PHONY: run
-run: ## Run
+run: fetch ## Run
 	$(CARGO_RUN)
 
 .PHONY: test
-test: add-fmt add-target fetch ## Test
+test: add-fmt fetch ## Test
 	$(CARGO_TEST)
 
 
