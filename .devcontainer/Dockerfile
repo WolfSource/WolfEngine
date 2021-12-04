@@ -1,6 +1,6 @@
 # syntax=docker.io/docker/dockerfile:1.3.1
 
-ARG VARIANT="1.56.1-bullseye"
+ARG VARIANT="1.57.0-bullseye"
 FROM rust:${VARIANT}
 
 ARG ADD_NON_FREE_PACKAGES="true"
@@ -47,7 +47,7 @@ RUN set -eux \
     && bash -c "$(curl --fail --location --show-error --silent https://raw.githubusercontent.com/microsoft/vscode-dev-containers/main/script-library/kubectl-helm-debian.sh)" -- "${KUBECTL_VERSION}" "${HELM_VERSION}" "${MINIKUBE_VERSION}" "${KUBECTL_SHA256}" "${HELM_SHA256}" "${MINIKUBE_SHA256}" \
     && bash -c "$(curl --fail --location --show-error --silent https://raw.githubusercontent.com/microsoft/vscode-dev-containers/main/script-library/rust-debian.sh)" -- "${CARGO_HOME}" "${RUSTUP_HOME}" "${USERNAME}" "${UPDATE_RC}" "${UPDATE_RUST}" "${RUST_VERSION}" "${RUSTUP_PROFILE}" \
     && bash -c "$(curl --fail --location --show-error --silent https://raw.githubusercontent.com/microsoft/vscode-dev-containers/main/script-library/sshd-debian.sh)" -- "${SSHD_PORT}" "${USERNAME}" "${START_SSHD}" "${NEW_PASSWORD}" "${FIX_ENVIRONMENT}" \
-    && bash -c "$(curl --fail --location --show-error --silent --output /usr/local/share/copy-kube-config.sh https://raw.githubusercontent.com/microsoft/vscode-dev-containers/main/containers/kubernetes-helm/.devcontainer/copy-kube-config.sh)" \
+    && bash -c "$(curl --fail --location --output /usr/local/share/copy-kube-config.sh --show-error --silent https://raw.githubusercontent.com/microsoft/vscode-dev-containers/main/containers/kubernetes-helm/.devcontainer/copy-kube-config.sh)" \
     && apt-get install --no-install-recommends --yes \
         binutils-aarch64-linux-gnu \
         binutils-arm-linux-gnueabihf \

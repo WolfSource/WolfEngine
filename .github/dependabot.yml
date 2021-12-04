@@ -6,6 +6,11 @@ updates:
       interval: daily
   -
     directory: /
+    package-ecosystem: docker
+    schedule:
+      interval: daily
+  -
+    directory: /
     package-ecosystem: github-actions
     schedule:
       interval: daily

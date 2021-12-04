@@ -1,4 +1,5 @@
 debug = true
 
 [worker.oci]
-max-parallelism = 3
+max-parallelism = 4
+# rootless = true
