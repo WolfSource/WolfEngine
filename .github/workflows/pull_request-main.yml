@@ -3,7 +3,7 @@ env:
 jobs:
   audit:
     container:
-      image: docker://rust:1.56.1-bullseye
+      image: docker://rust:1.57.0-bullseye
     name: Cargo Audit
     needs:
       - clippy
@@ -16,6 +16,19 @@ jobs:
       -
         name: Check Out
         uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579
+      -
+        name: Cache
+        uses: actions/cache@937d24475381cd9c75ae6db12cb4e79714b926ed
+        with:
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          restore-keys: |
+            ${{ runner.os }}-cargo-
       -
         name: Add OS Dependency
         run: make add-os-dependency
@@ -30,7 +43,7 @@ jobs:
     timeout-minutes: 10
   check:
     container:
-      image: docker://rust:1.56.1-bullseye
+      image: docker://rust:1.57.0-bullseye
     name: Cargo Check
     needs:
       - clippy
@@ -44,6 +57,19 @@ jobs:
         name: Check Out
         uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579
       -
+        name: Cache
+        uses: actions/cache@937d24475381cd9c75ae6db12cb4e79714b926ed
+        with:
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          restore-keys: |
+            ${{ runner.os }}-cargo-
+      -
         name: Add OS Dependency
         run: make add-os-dependency
         shell: bash
@@ -54,7 +80,7 @@ jobs:
     timeout-minutes: 10
   conventional-commits-linter:
     container:
-      image: docker://rust:1.56.1-bullseye
+      image: docker://rust:1.57.0-bullseye
     name: Conventional Commits Linter
     permissions:
       contents: read
@@ -64,15 +90,28 @@ jobs:
         name: Check Out
         uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579
       -
+        name: Cache
+        uses: actions/cache@937d24475381cd9c75ae6db12cb4e79714b926ed
+        with:
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          restore-keys: |
+            ${{ runner.os }}-cargo-
+      -
         name: Conventional Commits
         run: ./script/conventional-commits-linter.sh ${{ github.event.pull_request.head.ref }}
         shell: bash
     timeout-minutes: 10
   deny-check:
     container:
-      image: docker://rust:1.56.1-bullseye
+      image: docker://rust:1.57.0-bullseye
     continue-on-error: ${{ matrix.checks == 'advisories' }}
-    name: Cargo Deny Check (${{ matrix.checks }})
+    name: Cargo Deny Check
     needs:
       - clippy
       - conventional-commits-linter
@@ -84,6 +123,19 @@ jobs:
       -
         name: Check Out
         uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579
+      -
+        name: Cache
+        uses: actions/cache@937d24475381cd9c75ae6db12cb4e79714b926ed
+        with:
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          restore-keys: |
+            ${{ runner.os }}-cargo-
       -
         name: Add OS Dependency
         run: make add-os-dependency
@@ -101,7 +153,7 @@ jobs:
       #   name: Deny Check
       #   uses: EmbarkStudios/cargo-deny-action@0ca727bbae7b7b578b9a5f98186caac35aa2a00d
       #   with:
-      #     arguments: >-
+      #     arguments: |-
       #       --all-features
       #       --workspace
       #     command: check ${{ matrix.checks }}
@@ -113,7 +165,7 @@ jobs:
     timeout-minutes: 10
   clippy:
     container:
-      image: docker://rust:1.56.1-bullseye
+      image: docker://rust:1.57.0-bullseye
     name: Cargo Clippy
     needs:
       - conventional-commits-linter
@@ -125,6 +177,19 @@ jobs:
         name: Check Out
         uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579
       -
+        name: Cache
+        uses: actions/cache@937d24475381cd9c75ae6db12cb4e79714b926ed
+        with:
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          restore-keys: |
+            ${{ runner.os }}-cargo-
+      -
         name: Add OS Dependency
         run: make add-os-dependency
         shell: bash
@@ -135,7 +200,7 @@ jobs:
     timeout-minutes: 10
   coverage:
     container:
-      image: docker://rust:1.56.1-bullseye
+      image: docker://rust:1.57.0-bullseye
     name: Coverage
     needs:
       - clippy
@@ -150,17 +215,63 @@ jobs:
         name: Check Out
         uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579
       -
+        name: Cache
+        uses: actions/cache@937d24475381cd9c75ae6db12cb4e79714b926ed
+        with:
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          restore-keys: |
+            ${{ runner.os }}-cargo-
+      -
         name: Add OS Dependency
         run: make add-os-dependency
         shell: bash
       -
-        name: Test
+        env:
+          GRCOV_COVERAGE_TYPE: ${{ matrix.output_type }}
+        name: Coverage
         run: make coverage
         shell: bash
+      -
+        if: ${{ matrix.output_type == 'lcov' }}
+        name: Codecov
+        uses: codecov/codecov-action@f32b3a3741e1053eb607407145bc9619351dc93b
+        with:
+          fail_ci_if_error: true
+          files: ./coverage/lcov.info
+          flags: unittests
+          name: codecov-umbrella
+          verbose: true
+      -
+        if: ${{ matrix.output_type == 'lcov' }}
+        name: Coveralls
+        uses: coverallsapp/github-action@9ba913c152ae4be1327bfb9085dc806cedb44057
+        with:
+          flag-name: Unit
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      -
+        if: ${{ matrix.output_type == 'cobertura' }}
+        name: Deepsource
+        uses: deepsourcelabs/test-coverage-action@5dd75fd448df1d437bc9d658db0ee7d67a915c9f
+        with:
+          coverage-file: ./coverage/coverage.xml
+          dsn: ${{ secrets.DEEPSOURCE_DSN }}
+          fail-ci-on-error: true
+          key: python
+    strategy:
+      matrix:
+        output_type:
+          - cobertura
+          - lcov
     timeout-minutes: 20
   fmt-check:
     container:
-      image: docker://rust:1.56.1-bullseye
+      image: docker://rust:1.57.0-bullseye
     name: Cargo Format Check
     needs:
       - conventional-commits-linter
@@ -172,6 +283,19 @@ jobs:
         name: Check Out
         uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579
       -
+        name: Cache
+        uses: actions/cache@937d24475381cd9c75ae6db12cb4e79714b926ed
+        with:
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          restore-keys: |
+            ${{ runner.os }}-cargo-
+      -
         name: Add OS Dependency
         run: make add-os-dependency
         shell: bash
@@ -182,7 +306,7 @@ jobs:
     timeout-minutes: 10
   test:
     container:
-      image: docker://rust:1.56.1-bullseye
+      image: docker://rust:1.57.0-bullseye
     name: Cargo Test
     needs:
       - clippy
@@ -195,6 +319,19 @@ jobs:
       -
         name: Check Out
         uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579
+      -
+        name: Cache
+        uses: actions/cache@937d24475381cd9c75ae6db12cb4e79714b926ed
+        with:
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          restore-keys: |
+            ${{ runner.os }}-cargo-
       -
         name: Add OS Dependency
         run: make add-os-dependency

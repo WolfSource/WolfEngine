@@ -16,30 +16,40 @@ jobs:
         uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579
       -
         id: release-tag-meta
-        name: Release Tag Name Meta
+        name: Release Tag Meta
         uses: ./.github/actions/release-tag-meta
         with:
           git-ref: ${{ github.ref }}
       -
+        id: release-package-meta
+        name: Release Package Meta
+        uses: ./.github/actions/release-package-meta
+        with:
+          package: ${{ matrix.package }}
+      -
         name: Extract Metadata (Tags, Labels) for Docker
         id: metadata
-        uses: docker/metadata-action@a2e02890a0d28163b34ac2e4b575b9264a5ee3e2
+        uses: docker/metadata-action@e5622373a38e60fb6d795a4421e56882f2d7a681
         with:
           labels: |
             org.opencontainers.image.authors=${{ github.actor }}
             org.opencontainers.image.base.digest=${{ env.BASE_DIGEST }}
             org.opencontainers.image.base.name=${{ env.BASE_NAME }}:${{ env.BASE_TAG }}
-            org.opencontainers.image.description=${{ matrix.package }}
-            org.opencontainers.image.documentation=${{ github.server_url }}/${{ github.repository }}/tree/${{ steps.release-tag-meta.outputs.tag }}/${{ matrix.package }}
-            org.opencontainers.image.ref.name=${{ github.repository }}/${{ matrix.package }}/${{ steps.release-tag-meta.outputs.tag }}
+            org.opencontainers.image.created=1970-01-01T00:00:00Z
+            org.opencontainers.image.description=${{ steps.release-package-meta.outputs.package }}
+            org.opencontainers.image.documentation=${{ github.server_url }}/${{ github.repository }}/tree/${{ steps.release-tag-meta.outputs.tag }}
+            org.opencontainers.image.licenses=MIT
+            org.opencontainers.image.ref.name=${{ env.BASE_NAME }}:${{ env.BASE_TAG }}@${{ env.BASE_DIGEST }}
             org.opencontainers.image.revision=${{ github.sha }}
-            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}/tree/${{ steps.release-tag-meta.outputs.tag }}/${{ matrix.package }}
-            org.opencontainers.image.title=${{ matrix.package }}
-            org.opencontainers.image.url=${{ github.server_url }}/${{ github.repository }}/main/${{ matrix.package }}
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}/tree/${{ steps.release-tag-meta.outputs.tag }}
+            org.opencontainers.image.title=${{ steps.release-package-meta.outputs.package }}
+            org.opencontainers.image.url=${{ github.server_url }}/${{ github.repository }}/tree/${{ steps.release-tag-meta.outputs.tag }}
             org.opencontainers.image.vendor=${{ github.actor }}
             org.opencontainers.image.version=${{ steps.release-tag-meta.outputs.version }}
-          images: ghcr.io/${{ github.repository }}/${{ matrix.package }}
-          tags: type=semver,pattern={{version}}
+          images: |
+            ghcr.io/${{ github.repository }}/${{ steps.release-package-meta.outputs.package }}
+          tags: |
+            type=semver,pattern={{version}}
       -
         name: Set up QEMU
         uses: docker/setup-qemu-action@27d0a4f181a40b142cce983c5393082c365d1480
@@ -50,6 +60,16 @@ jobs:
         uses: docker/setup-buildx-action@94ab11c41e45d028884a99163086648e898eed25
         with:
           config: ./.github/buildkitd.toml
+          # driver-opts: |
+          #   image=moby/buildkit:rootless
+      -
+        name: Cache Docker Layers
+        uses: actions/cache@937d24475381cd9c75ae6db12cb4e79714b926ed
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
       -
         name: Log in to Docker Hub
         uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
@@ -58,17 +78,17 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
       -
-        name: Build and Push Docker Image (${{ matrix.package }})
+        name: Build and Push Docker Image
         uses: docker/build-push-action@a66e35b9cbcf4ad0ea91ffcaf7bbad63ad9e0229
         with:
           build-args: |
             PACKAGE=${{ matrix.package }}
-            REFERENCE=${{ env.BASE_NAME }}:${{ env.BASE_TAG }}@${{ env.BASE_DIGEST }}
-            VERSION=${{ steps.release-tag-meta.outputs.version }}
+            REF_NAME=${{ fromJSON(steps.metadata.outputs.json).labels['org.opencontainers.image.ref.name'] }}
+            VERSION=${{ fromJSON(steps.metadata.outputs.json).labels['org.opencontainers.image.version'] }}
           cache-from: |
-            type=registry,ref=ghcr.io/${{ github.repository }}/${{ matrix.package }}:latest
+            type=local,src=/tmp/.buildx-cache
           cache-to: |
-            type=inline
+            type=local,dest=/tmp/.buildx-cache-new,mode=max
           context: .
           labels: |
             ${{ steps.metadata.outputs.labels }}
@@ -81,6 +101,45 @@ jobs:
             GIT_AUTH_TOKEN=${{ secrets.PACKAGE_REGISTRY }}
           tags: |
             ${{ steps.metadata.outputs.tags }}
+      -
+        # Temp fix
+        # https://github.com/docker/build-push-action/issues/252
+        # https://github.com/moby/buildkit/issues/1896
+        name: Move Cache
+        run: |
+          rm -fr /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+      -
+        id: create-issue
+        if: failure()
+        name: Create GitHub Issue on Failure
+        uses: actions/github-script@f32b3a3741e1053eb607407145bc9619351dc93b
+        with:
+          # https://octokit.github.io/rest.js/v18#issues-create
+          script: |
+            const create = await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: "Failed to deploy to production",
+              body: "Automation has failed us!\nMore information can be found at:\n - ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            })
+            console.log("create", create)
+            return create.data.number
+      -
+        if: failure()
+        name: Assign Admins on Failure
+        uses: actions/github-script@f32b3a3741e1053eb607407145bc9619351dc93b
+        with:
+          # https://octokit.github.io/rest.js/v18#issues-create
+          script: |
+            github.rest.issues.addAssignees({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: "${{ steps.create-issue.outputs.result }}",
+              assignees: [
+                "smhmayboudi"
+              ]
+            })
     strategy:
       matrix:
         package:

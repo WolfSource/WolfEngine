@@ -63,14 +63,14 @@ $ linkerd check
 $ linkerd viz dashboard &
 $ linkerd --namespace linkerd-viz viz top deployment/web [ERROR]
 
-$ docker build . --file ./wolf_system/Dockerfile --tag wolf_system:0.1.0-nonroot
-$ docker tag wolf_system:0.1.0-nonroot 127.0.0.1:5000/wolf_system:0.1.0-nonroot
-$ docker push 127.0.0.1:5000/wolf_system:0.1.0-nonroot
+$ docker build . --file ./wolf_system/Dockerfile --tag wolf/system:0.1.0-nonroot
+$ docker tag wolf_system:0.1.0-nonroot 127.0.0.1:5000/wolf/system:0.1.0-nonroot
+$ docker push 127.0.0.1:5000/wolf/system:0.1.0-nonroot
 $ cat ./wolf_system/wolf_system.yml | kubectl apply --filename -
 
-$ kubectl --namespace wolf_system-namespace port-forward service/wolf_system 8080:8080
+$ kubectl --namespace wolf-system-namespace port-forward service/wolf-system 8080:8080
 
-$ kubectl get --namespace wolf_system-namespace deployment --output yaml | linkerd inject - | kubectl apply --filename -
-$ linkerd --namespace wolf_system-namespace check --proxy
-$ linkerd --namespace wolf_system-namespace viz stat deployment
+$ kubectl get --namespace wolf-system-namespace deployment --output yaml | linkerd inject - | kubectl apply --filename -
+$ linkerd --namespace wolf-system-namespace check --proxy
+$ linkerd --namespace wolf-system-namespace viz stat deployment
 ```

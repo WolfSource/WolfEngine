@@ -6,14 +6,14 @@ $ docker trust key generate {NAME}
 # LOAD
 $ docker trust key load {NAME}.pem --name {NAME}
 
-$ docker trust signer add --key {NAME}.pem {NAME} 127.0.0.1:5000/wolf_system
-$ docker trust sign 127.0.0.1:5000/wolf_system:0.1.0-nonroot
+$ docker trust signer add --key {NAME}.pem {NAME} 127.0.0.1:5000/wolf/system
+$ docker trust sign 127.0.0.1:5000/wolf/system:0.1.0-nonroot
 $ export DOCKER_CONTENT_TRUST=1
-$ docker push 127.0.0.1:5000/wolf_system:0.1.0-nonroot
+$ docker push 127.0.0.1:5000/wolf/system:0.1.0-nonroot
 
 # TEST
-$ docker trust inspect --pretty 127.0.0.1:5000/wolf_system:0.1.0-nonroot
+$ docker trust inspect --pretty 127.0.0.1:5000/wolf/system:0.1.0-nonroot
 
 # REMOVE
-$ docker trust revoke 127.0.0.1:5000/wolf_system:0.1.0-nonroot
+$ docker trust revoke 127.0.0.1:5000/wolf/system:0.1.0-nonroot
 ```

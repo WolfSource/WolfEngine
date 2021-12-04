@@ -3,7 +3,7 @@
 {
     "build": {
         "args": {
-            "VARIANT": "1.56.1-bullseye"
+            "VARIANT": "1.57.0-bullseye"
         },
         "dockerfile": "Dockerfile"
     },
@@ -20,7 +20,7 @@
         "serayuzgur.crates",
         "streetsidesoftware.code-spell-checker",
         "tyriar.sort-lines",
-        "vadimcn.vscode-lldb",
+        "vadimcn.vscode-lldb"
     ],
     "forwardPorts": [
         2222
@@ -30,7 +30,7 @@
         "source=${env:HOME}${env:USERPROFILE}/.kube,target=/usr/local/share/kube-localhost,type=bind"
         // "source=${env:HOME}${env:USERPROFILE}/.minikube,target=/usr/local/share/minikube-localhost,type=bind"
     ],
-    "name": "sib",
+    "name": "wolf",
     "postStartCommand": "make add-os-dependency fetch",
     "runArgs": [
         "--cap-add=SYS_PTRACE",

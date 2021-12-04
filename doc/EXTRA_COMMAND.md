@@ -15,8 +15,8 @@ $ rustc --print target-features --target ${TRIPLE}
 ```
 
 ```shell
-$ docker build . --file ./wolf_system/Dockerfile --tag wolf_system:0.1.0-nonroot
-$ docker run --env LINKERD_AWAIT_DISABLED=TRUE --interactive --publish 8080:8080 --rm wolf_system:0.1.0-nonroot
+$ docker build . --file ./wolf_system/Dockerfile --tag wolf/system:0.1.0-nonroot
+$ docker run --env LINKERD_AWAIT_DISABLED=TRUE --interactive --publish 8080:8080 --rm wolf/system:0.1.0-nonroot
 ```
 
 ```shell

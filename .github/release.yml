@@ -1,18 +1,34 @@
 changelog:
-  exclude:
-    labels:
-      - ignore-for-release
-    authors:
-      - smhmayboudi
   categories:
-    - title: Breaking Changes 🛠
+    -
       labels:
-        - Semver-Major
-        - breaking-change
-    - title: Exciting New Features 🎉
+        - dev::build
+      title: Build
+    -
       labels:
-        - Semver-Minor
-        - enhancement
-    - title: Other Changes
+        - dev::CI
+      title: Continuous Integration
+    -
       labels:
-        - "*"
+        - dev::docs
+      title: Docs
+    -
+      labels:
+        - dev::feat
+      title: Feat
+    -
+      labels:
+        - dev::fix
+      title: Fix
+    -
+      labels:
+        - dev::Perf
+      title: Perf
+    -
+      labels:
+        - dev::refactor
+      title: Refactor
+    -
+      labels:
+        - dev::test
+      title: Test
