@@ -84,9 +84,9 @@ jobs:
     strategy:
       matrix:
         package:
-          - wolf-render
-          - wolf-stream
-          - wolf-system
+          - wolf_render
+          - wolf_stream
+          - wolf_system
     timeout-minutes: 10
 name: Release Published
 on:

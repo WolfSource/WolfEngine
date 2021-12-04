@@ -10,16 +10,16 @@
                 "args": [
                     "build",
                     "--lib",
-                    "--manifest-path=wolf-render/Cargo.toml",
-                    "--package=wolf-render"
+                    "--manifest-path=wolf_render/Cargo.toml",
+                    "--package=wolf_render"
                 ],
                 "filter": {
-                    "name": "wolf-render",
+                    "name": "wolf_render",
                     "kind": "lib"
                 }
             },
             "cwd": "${workspaceFolder}",
-            "name": "Debug wolf-render",
+            "name": "Debug wolf_render",
             "request": "launch",
             "type": "lldb"
         },
@@ -29,17 +29,17 @@
                 "args": [
                     "test",
                     "--lib",
-                    "--manifest-path=wolf-render/Cargo.toml",
+                    "--manifest-path=wolf_render/Cargo.toml",
                     "--no-run",
-                    "--package=wolf-render"
+                    "--package=wolf_render"
                 ],
                 "filter": {
-                    "name": "wolf-render",
+                    "name": "wolf_render",
                     "kind": "lib"
                 }
             },
             "cwd": "${workspaceFolder}",
-            "name": "Test wolf-render",
+            "name": "Test wolf_render",
             "request": "launch",
             "type": "lldb",
         },
@@ -49,16 +49,16 @@
                 "args": [
                     "build",
                     "--lib",
-                    "--manifest-path=wolf-stream/Cargo.toml",
-                    "--package=wolf-stream"
+                    "--manifest-path=wolf_stream/Cargo.toml",
+                    "--package=wolf_stream"
                 ],
                 "filter": {
-                    "name": "wolf-stream",
+                    "name": "wolf_stream",
                     "kind": "lib"
                 }
             },
             "cwd": "${workspaceFolder}",
-            "name": "Debug wolf-stream",
+            "name": "Debug wolf_stream",
             "request": "launch",
             "type": "lldb"
         },
@@ -68,17 +68,17 @@
                 "args": [
                     "test",
                     "--lib",
-                    "--manifest-path=wolf-stream/Cargo.toml",
+                    "--manifest-path=wolf_stream/Cargo.toml",
                     "--no-run",
-                    "--package=wolf-stream"
+                    "--package=wolf_stream"
                 ],
                 "filter": {
-                    "name": "wolf-stream",
+                    "name": "wolf_stream",
                     "kind": "lib"
                 }
             },
             "cwd": "${workspaceFolder}",
-            "name": "Test wolf-stream",
+            "name": "Test wolf_stream",
             "request": "launch",
             "type": "lldb",
         },
@@ -88,16 +88,16 @@
                 "args": [
                     "build",
                     "--lib",
-                    "--manifest-path=wolf-system/Cargo.toml",
-                    "--package=wolf-system"
+                    "--manifest-path=wolf_system/Cargo.toml",
+                    "--package=wolf_system"
                 ],
                 "filter": {
-                    "name": "wolf-system",
+                    "name": "wolf_system",
                     "kind": "lib"
                 }
             },
             "cwd": "${workspaceFolder}",
-            "name": "Debug wolf-system",
+            "name": "Debug wolf_system",
             "request": "launch",
             "type": "lldb"
         },
@@ -107,17 +107,17 @@
                 "args": [
                     "test",
                     "--lib",
-                    "--manifest-path=wolf-system/Cargo.toml",
+                    "--manifest-path=wolf_system/Cargo.toml",
                     "--no-run",
-                    "--package=wolf-system"
+                    "--package=wolf_system"
                 ],
                 "filter": {
-                    "name": "wolf-system",
+                    "name": "wolf_system",
                     "kind": "lib"
                 }
             },
             "cwd": "${workspaceFolder}",
-            "name": "Test wolf-system",
+            "name": "Test wolf_system",
             "request": "launch",
             "type": "lldb",
         }        

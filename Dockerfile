@@ -30,7 +30,7 @@ ARG PACKAGE
 COPY --chown=nonroot:nonroot --from=wolf /tmp/${PACKAGE} /${PACKAGE}
 # COPY --chown=nonroot:nonroot --from=linkerd-await /tmp/linkerd-await /linkerd-await
 
-FROM base AS wolf-render
+FROM base AS wolf_render
 
 FROM base AS wolf_stream
 

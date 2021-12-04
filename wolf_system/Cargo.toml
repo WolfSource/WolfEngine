@@ -12,39 +12,39 @@ path = "src/lib.rs"
 [dependencies]
 # before adding any dependency please check it out from  
 # https://android.googlesource.com/platform/external/rust/crates/
-anyhow = {version = "1.0.48"}
-async-raft = {version = "0.6.1"}
-async-trait = {version = "0.1.51"}
+anyhow = "1.0.51"
+async-raft = "0.6.1"
+async-trait = "0.1.51"
 #bigdecimal = "0.3.0"
-cxx = {version = "1.0.56"}
-futures = {version = "0.3.18"}
-hyper = {version = "0.14.15"}
-memstore = {version = "0.2.0"}
-mimalloc = {version = "0.1.27"}
+cxx = "1.0.57"
+futures = "0.3.18"
+hyper = "0.14.15"
+memstore = "0.2.0"
+mimalloc = "0.1.27"
 #num-bigint = {version = "0.4.3"}
-parking_lot = {version = "0.11.2"}
-prost = {version = "0.9.0"}
-rustls-pemfile = {version = "0.2.1"}
-scylla = {version = "0.3.1"}
+parking_lot = "0.11.2"
+prost = "0.9.0"
+rustls-pemfile = "0.2.1"
+scylla = "0.3.1"
 #serde = {version = "1.0.130", features = ["derive"]}
-serde_json = {version = "1.0.71"}
-sysinfo = {version = "0.21.1", default-features = false}
-tokio = {version = "1.14.0", features = ["full"]}
-tokio-rustls = {version = "0.23.1"}
+serde_json = "1.0.72"
+sysinfo = { version = "0.21.1", default-features = false }
+tokio = { version = "1.14.0", features = ["full"] }
+tokio-rustls = "0.23.1"
 #tokio-stream = {version = "0.1.8"}
-tokio-tungstenite = {version = "0.16.0", features = ["rustls"]}
-tonic = {version = "0.6.1", features = ["tls", "compression"]}
-uuid = {version = "0.8.2", features = ["v5"]}
-webpki-roots = {version = "0.22.1"}
+tokio-tungstenite = { version = "0.16.0", features = ["rustls"] }
+tonic = { version = "0.6.1", features = ["tls", "compression"] }
+uuid = { version = "0.8.2", features = ["v5"] }
+webpki-roots = "0.22.1"
 
 [build-dependencies]
-cxx-build = {version = "1.0.56"}
-git2 = {version = "0.13.24"}
-plist = {version = "1.3.1"}
-tonic-build = {version = "0.6.0", features = ["prost", "compression"]}
+cxx-build = "1.0.57"
+git2 = "0.13.25"
+plist = "1.3.1"
+tonic-build = { version = "0.6.0", features = ["prost", "compression"] }
 
 [dev-dependencies]
-lazy_static = {version = "1.4.0"}
+lazy_static = "1.4.0"
 
 [features]
 default = ["lua"]
