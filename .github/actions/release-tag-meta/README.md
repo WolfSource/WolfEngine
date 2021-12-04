@@ -6,7 +6,7 @@ Extract release metadata from the tag.
 
 ## `git-ref`
 
-**Required** The git ref.
+**Required** The git ref (i.e. starting with refs/tags).
 
 ## Outputs
 

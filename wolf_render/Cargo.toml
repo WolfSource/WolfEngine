@@ -12,7 +12,7 @@ path = "src/lib.rs"
 [dependencies]
 # before adding any dependency please check it out from 
 # https://android.googlesource.com/platform/external/rust/crates/
-mimalloc = "0.1.27"
+mimalloc = { default-features = false, version = "0.1.27" }
 
 [build-dependencies]
 

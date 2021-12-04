@@ -3,7 +3,7 @@
 {
     "build": {
         "args": {
-            "VARIANT": "1.56.1-bullseye"
+            "VARIANT": "1.57.0-bullseye"
         },
         "dockerfile": "Dockerfile"
     },
@@ -20,7 +20,7 @@
         "serayuzgur.crates",
         "streetsidesoftware.code-spell-checker",
         "tyriar.sort-lines",
-        "vadimcn.vscode-lldb",
+        "vadimcn.vscode-lldb"
     ],
     "forwardPorts": [
         2222

@@ -2,7 +2,7 @@ env:
   CARGO_TERM_COLOR: always
 jobs:
   package:
-    name: Package (${{ matrix.archvariant }}-${{ matrix.package }})
+    name: Package
     permissions:
       contents: read
     runs-on: ubuntu-latest
@@ -12,7 +12,7 @@ jobs:
         uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579
       -
         id: release-tag-meta
-        name: Release Tag Name Meta
+        name: Release Tag Meta
         uses: ./.github/actions/release-tag-meta
         with:
           git-ref: ${{ github.ref }}
@@ -72,7 +72,7 @@ jobs:
         uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579
       -
         id: release-tag-meta
-        name: Release Tag Name Meta
+        name: Release Tag Meta
         uses: ./.github/actions/release-tag-meta
         with:
           git-ref: ${{ github.ref }}

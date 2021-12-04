@@ -5,7 +5,7 @@ rustflags = [
     "-Dabsolute_paths_not_starting_with_crate",
     # "-Dbox_pointers",
     "-Ddeprecated_in_future",
-    #"-Delided_lifetimes_in_paths", # can only be specified at the crate root, read more information at (https://github.com/rust-lang/rust/issues/71957)
+    "-Delided_lifetimes_in_paths",
     "-Dexplicit_outlives_requirements",
     "-Dkeyword_idents",
     "-Dmacro_use_extern_crate",
@@ -13,11 +13,11 @@ rustflags = [
     "-Dmissing_abi",
     "-Dmissing_copy_implementations",
     "-Dmissing_debug_implementations",
-    #"-Dmissing_docs", # We will consider it later
+    "-Dmissing_docs",
     "-Dnon_ascii_idents",
     "-Dnoop_method_call",
     "-Dpointer_structural_match",
-    #"-Drust_2021_incompatible_closure_captures", # Some deps did not compatible themslef with this feature yet. e.g Tonic
+    # "-Drust_2021_incompatible_closure_captures", # Some deps did not compatible themslef with this feature yet. e.g Tonic
     "-Drust_2021_incompatible_or_patterns",
     "-Drust_2021_prefixes_incompatible_syntax",
     "-Drust_2021_prelude_collisions",
@@ -26,8 +26,8 @@ rustflags = [
     "-Dtrivial_casts",
     "-Dtrivial_numeric_casts",
     "-Dunreachable_pub",
-    #"-Dunsafe_code", # We have to use unsafe codes (C/C++) 
-    #"-Dunsafe_op_in_unsafe_fn", # We have to use unsafe codes (C/C++) 
+    "-Dunsafe_code",
+    # "-Dunsafe_op_in_unsafe_fn",
     "-Dunstable_features",
     "-Dunused_crate_dependencies",
     "-Dunused_extern_crates",
@@ -50,7 +50,7 @@ rustdocflags = [
     "-Dmissing_abi",
     "-Dmissing_copy_implementations",
     "-Dmissing_debug_implementations",
-    "-Dmissing_docs",
+    # "-Dmissing_docs", # We will consider it later
     "-Dnon_ascii_idents",
     "-Dnoop_method_call",
     "-Dpointer_structural_match",
@@ -63,8 +63,8 @@ rustdocflags = [
     "-Dtrivial_casts",
     "-Dtrivial_numeric_casts",
     "-Dunreachable_pub",
-    "-Dunsafe_code",
-    "-Dunsafe_op_in_unsafe_fn",
+    # "-Dunsafe_code", # We have to use unsafe codes (C/C++) 
+    # "-Dunsafe_op_in_unsafe_fn", # We have to use unsafe codes (C/C++) 
     "-Dunstable_features",
     "-Dunused_crate_dependencies",
     "-Dunused_extern_crates",
