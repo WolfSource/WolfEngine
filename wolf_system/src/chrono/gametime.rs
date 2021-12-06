@@ -1,7 +1,7 @@
 use std::time::Instant;
 
 //integer format represents time using 10,000,000 ticks per second
-const TICKS_PER_SECOND: f64 = 10000000.0;
+const TICKS_PER_SECOND: f64 = 10_000_000.0;
 
 #[inline]
 fn ticks_to_seconds(p_ticks: f64) -> f64 {
@@ -33,7 +33,7 @@ impl Default for GameTime {
     fn default() -> Self {
         Self {
             last_time: Instant::now(),
-            max_delta: 313918.0,
+            max_delta: 313_918.0,
             elapsed_ticks: 0.0,
             total_ticks: 0.0,
             left_over_ticks: 0.0,
@@ -52,9 +52,9 @@ impl GameTime {
     /**
      * initialize GameTime object
      */
+    #[must_use]
     pub fn new() -> Self {
-        let gt: GameTime = Default::default();
-        gt
+        Self::default()
     }
 
     /**
@@ -81,7 +81,8 @@ impl GameTime {
      * set fixed time step mode
      * @return elapsed total ticks
      */
-    pub fn get_fixed_time_step(&self) -> bool {
+    #[must_use]
+    pub const fn get_fixed_time_step(&self) -> bool {
         self.fixed_time_step
     }
 
@@ -89,6 +90,7 @@ impl GameTime {
      * get elapsed seconds since the previous tick call.
      * @return elapsed time
      */
+    #[must_use]
     pub fn get_elapsed_seconds(&self) -> f64 {
         ticks_to_seconds(self.elapsed_ticks)
     }
@@ -97,6 +99,7 @@ impl GameTime {
      * get total ticks since the start.
      * @return elapsed total ticks
      */
+    #[must_use]
     pub fn get_total_elapsed_seconds(&self) -> f64 {
         ticks_to_seconds(self.total_ticks)
     }
@@ -128,7 +131,7 @@ impl GameTime {
         // Convert QPC units into a canonical tick format. This cannot overflow due to the previous clamp.
         time_delta *= TICKS_PER_SECOND;
 
-        let _last_frame_count = self.frame_count;
+        let last_frame_count = self.frame_count;
         if self.fixed_time_step {
             /*
                 If the app is running very close to the target elapsed time (within 1/4 of a millisecond) just clamp
@@ -165,7 +168,7 @@ impl GameTime {
         }
 
         // Track the current framerate.
-        self.frames_this_second += self.frame_count - _last_frame_count;
+        self.frames_this_second += self.frame_count - last_frame_count;
 
         if self.seconds_counter >= 1.0 {
             self.fps = self.frames_this_second;
@@ -190,7 +193,7 @@ impl GameTime {
         // Convert QPC units into a canonical tick format. This cannot overflow due to the previous clamp.
         time_delta *= TICKS_PER_SECOND;
 
-        let _last_frame_count = self.frame_count;
+        let last_frame_count = self.frame_count;
         if self.fixed_time_step {
             /*
                 If the app is running very close to the target elapsed time (within 1/4 of a millisecond) just clamp
@@ -223,7 +226,7 @@ impl GameTime {
         }
 
         // Track the current framerate.
-        self.frames_this_second += self.frame_count - _last_frame_count;
+        self.frames_this_second += self.frame_count - last_frame_count;
 
         if self.seconds_counter >= 1.0 {
             self.fps = self.frames_this_second;

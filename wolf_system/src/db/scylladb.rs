@@ -15,7 +15,8 @@ impl Default for ScyllaDBConnector {
 }
 
 impl ScyllaDBConnector {
-    pub fn new() -> Self {
+    #[must_use]
+    pub const fn new() -> Self {
         Self {
             uri_known_nodes: Vec::new(),
             session: None,
@@ -50,6 +51,7 @@ impl ScyllaDBConnector {
         Ok(())
     }
 
+    #[allow(clippy::future_not_send)]
     pub async fn query(
         &self,
         p_query: &str,

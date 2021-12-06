@@ -1,7 +1,7 @@
 [toolchain]
 channel = "stable"
 components = [
-    "clappy",
+    "clippy",
     # "miri",
     "rustfmt",
 ]

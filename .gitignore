@@ -1,6 +1,7 @@
 *.db-*
 *.prof*
 .git/
+!./cargo/*
 coverage/
 documentation/
 release/

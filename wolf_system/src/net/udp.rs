@@ -37,10 +37,9 @@ async fn read(
     p_buffer: &mut [u8; MAX_BUFFER_SIZE],
     p_read_write_timeout_in_secs: f64,
 ) -> std::io::Result<(usize, SocketAddr)> {
-    let res: std::io::Result<(usize, SocketAddr)>;
-    if p_read_write_timeout_in_secs > 0.0 {
+    let res = if p_read_write_timeout_in_secs > 0.0 {
         //try to read data from UDP socket
-        res = tokio::select! {
+        tokio::select! {
             res1 = timeout_for_read(p_read_write_timeout_in_secs) =>
             {
                 res1
@@ -49,10 +48,10 @@ async fn read(
             {
                 res2
             },
-        };
+        }
     } else {
-        res = p_socket.recv_from(p_buffer).await;
-    }
+        p_socket.recv_from(p_buffer).await
+    };
     res
 }
 
@@ -62,10 +61,9 @@ async fn send(
     p_buffer: &mut [u8; MAX_BUFFER_SIZE],
     p_read_write_timeout_in_secs: f64,
 ) -> std::io::Result<usize> {
-    let res: std::io::Result<usize>;
-    if p_read_write_timeout_in_secs > 0.0 {
+    let res = if p_read_write_timeout_in_secs > 0.0 {
         //try to send data via UDP
-        res = tokio::select! {
+        tokio::select! {
             res1 = timeout_for_send(p_read_write_timeout_in_secs) =>
             {
                 res1
@@ -74,10 +72,10 @@ async fn send(
             {
                 res2
             },
-        };
+        }
     } else {
-        res = p_socket.send_to(p_buffer, peer_addr).await;
-    }
+        p_socket.send_to(p_buffer, peer_addr).await
+    };
     res
 }
 
@@ -100,7 +98,7 @@ pub async fn connect(
 
     // don't read more than 1K
     let mut msg_type = MessageType::BINARY;
-    let mut msg_buf = [0u8; MAX_BUFFER_SIZE];
+    let mut msg_buf = [0_u8; MAX_BUFFER_SIZE];
     let mut r_res: std::io::Result<(usize, SocketAddr)>;
     let mut s_res: std::io::Result<usize>;
     let close_msg: String;

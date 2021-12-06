@@ -1,5 +1,12 @@
 #![allow(unused_qualifications)]
 #![allow(missing_debug_implementations)]
+#![allow(clippy::similar_names)] //because of tonic::include_proto!
+#![allow(clippy::must_use_candidate)] //because of tonic::include_proto!
+#![allow(clippy::default_trait_access)] //because of tonic::include_proto!
+#![allow(clippy::wildcard_imports)] //because of tonic::include_proto!
+#![allow(clippy::future_not_send)] //because of tonic::include_proto!
+#![allow(clippy::use_self)] //because of tonic::include_proto!
+#![allow(clippy::doc_markdown)] //because of tonic::include_proto!
 
 use super::raft_imp::{self, MemRaft};
 use std::collections::HashSet;
@@ -26,7 +33,7 @@ impl Default for Srv {
     fn default() -> Self {
         let cluster_name = "wolf";
         let node_id = 0;
-        Srv {
+        Self {
             raft_node: Arc::new(raft_imp::new(cluster_name, node_id)),
         }
     }
@@ -34,7 +41,7 @@ impl Default for Srv {
 
 impl Srv {
     fn new(p_cluster_name: &str, p_node_id: u64) -> Self {
-        Srv {
+        Self {
             raft_node: Arc::new(raft_imp::new(p_cluster_name, p_node_id)),
         }
     }
@@ -58,7 +65,7 @@ impl Raft for Srv {
         // initialize raft node with the following members
         let mut members = HashSet::new();
         for i in 0..inner.number_of_nodes {
-            let _ = members.insert(i);
+            let _r = members.insert(i);
         }
         self.raft_node
             .initialize(members)
@@ -280,6 +287,7 @@ impl Raft for Srv {
     }
 }
 
+#[must_use]
 pub fn get_service(p_cluster_name: &str, p_node_id: u64) -> RaftServer<Srv> {
     let srv = Srv::new(p_cluster_name, p_node_id);
     RaftServer::new(srv).send_gzip().accept_gzip()
