@@ -19,6 +19,7 @@ pub struct OnMessageCallback {
 }
 
 impl OnMessageCallback {
+    #[must_use]
     pub fn new(f: Fp1) -> Self {
         Self { f: Arc::new(f) }
     }
@@ -59,6 +60,7 @@ pub struct OnSocketCallback {
 }
 
 impl OnSocketCallback {
+    #[must_use]
     pub fn new(f: Fp2) -> Self {
         Self { f: Arc::new(f) }
     }
@@ -85,6 +87,7 @@ pub struct OnCloseSocketCallback {
 }
 
 impl OnCloseSocketCallback {
+    #[must_use]
     pub fn new(f: Fp3) -> Self {
         Self { f: Arc::new(f) }
     }

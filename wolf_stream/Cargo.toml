@@ -1,8 +1,13 @@
 [package]
-author = "Pooya Eimandar"
 edition = "2021"
 name = "wolf_stream"
 version = "3.0.0"
+description = "A library for real-time streaming"
+license = "private property © Pooya Eimandar"
+repository = "https://github.com/WolfEngine/wolf/"
+keywords = ["gamedev", "realtime", "stream"]
+categories = ["game-development", "game-engines", "games", "graphics", "multimedia"]
+readme = "https://github.com/WolfEngine/wolf/blob/main/README.md"
 
 [lib]
 crate-type = ["rlib"]
@@ -16,7 +21,7 @@ anyhow = { default-features = false, features = ["std"], version = "1.0.51" }
 cxx = { default-features = false, version = "1.0.57" }
 gstreamer-rtsp = { default-features = false, version = "0.17.0" }
 gstreamer-rtsp-server = { default-features = false, version = "0.17.2" }
-mimalloc = { default-features = false, version = "0.1.27" }
+mimalloc = { default-features = false, features = ["secure"], version = "0.1.27" }
 tokio = { default-features = false, features = ["rt-multi-thread", "macros"], version = "1.14.0" }
 
 [build-dependencies]

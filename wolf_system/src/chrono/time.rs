@@ -2,7 +2,7 @@ use std::time::Duration;
 
 pub async fn timout<T>(p_duration: Duration, p_future: T) -> anyhow::Result<()>
 where
-    T: core::future::Future,
+    T: core::future::Future + Send,
 {
     if let Err(e) = tokio::time::timeout(p_duration, p_future).await {
         anyhow::bail!("timout reached after {}", e)
@@ -13,10 +13,11 @@ where
 pub async fn timer<F, R>(p_interval: Duration, mut p_call_back: F) -> anyhow::Result<R>
 where
     F: FnMut(
-        &f64, /* delta time in seconds */
-        &f64, /* total time in seconds */
-        &mut bool,
-    ) -> anyhow::Result<R>,
+            f64, /* delta time in seconds */
+            f64, /* total time in seconds */
+            &mut bool,
+        ) -> anyhow::Result<R>
+        + Send,
 {
     let mut interval = tokio::time::interval(p_interval);
     let mut cancel = false;
@@ -29,8 +30,8 @@ where
         last_time = current_time;
 
         let ret = p_call_back(
-            &delta_time.as_secs_f64(),
-            &total_time.as_secs_f64(),
+            delta_time.as_secs_f64(),
+            total_time.as_secs_f64(),
             &mut cancel,
         );
         if cancel {
@@ -44,15 +45,15 @@ pub async fn timer_oneshot<F>(
     p_future: F,
 ) -> <F as core::future::Future>::Output
 where
-    F: core::future::Future,
+    F: core::future::Future + Send,
 {
     let mut interval = tokio::time::interval(p_interval);
-    let _ = interval.tick().await;
+    let _r = interval.tick().await;
     p_future.await
 }
 
 pub async fn sleep(p_duration: Duration) {
-    tokio::time::sleep(p_duration).await
+    tokio::time::sleep(p_duration).await;
 }
 
 #[tokio::main]
@@ -61,7 +62,7 @@ async fn test() {
     //test timeout for future
     let f = async { tokio::time::sleep(Duration::from_secs(5)).await };
     let mut ret = timout(Duration::from_secs(2), f).await;
-    assert!(ret.is_err());
+    assert!(ret.is_err()); //timout should return error
 
     //launch a oneshot timer with 3 seconds
     ret = timer_oneshot(Duration::from_secs(3), async {
@@ -71,13 +72,13 @@ async fn test() {
         Ok(())
     })
     .await;
-    assert!(ret.is_err());
+    assert!(ret.is_ok());
 
     //launch a timer with 1 seconds interval
-    let res = timer(
+    let res_timer = timer(
         Duration::from_secs(1),
-        move |p_delta_time_in_secs: &f64,
-              p_total_time_in_secs: &f64,
+        move |p_delta_time_in_secs: f64,
+              p_total_time_in_secs: f64,
               p_cancel: &mut bool|
               -> anyhow::Result<f64> {
             println!(
@@ -86,15 +87,15 @@ async fn test() {
             );
 
             // after 10 seconds, cancel timer
-            if p_total_time_in_secs > &4.0 {
+            if p_total_time_in_secs > 4.0 {
                 *p_cancel = true;
             }
 
-            Ok(*p_total_time_in_secs)
+            Ok(p_total_time_in_secs)
         },
     )
     .await;
-    assert!(res.is_err());
+    assert!(res_timer.is_ok());
 
-    println!("timer cancelled after {:?} seconds", res);
+    println!("timer cancelled after {:?} seconds", res_timer);
 }

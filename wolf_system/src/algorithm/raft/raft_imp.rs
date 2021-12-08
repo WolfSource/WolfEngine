@@ -25,15 +25,16 @@ impl Default for RaftRouter {
 }
 
 impl RaftRouter {
-    /// Create a new RaftRouter instance.
-    pub fn new() -> Self {
+    /// Create a new `RaftRouter` instance.
+    #[must_use]
+    pub const fn new() -> Self {
         Self {}
     }
 }
 
 #[async_trait]
 impl RaftNetwork<ClientRequest> for RaftRouter {
-    /// Send an AppendEntries RPC to the target Raft node
+    /// Send an `AppendEntries` RPC to the target Raft node
     async fn append_entries(
         &self,
         p_target_node: NodeId,
@@ -41,26 +42,24 @@ impl RaftNetwork<ClientRequest> for RaftRouter {
     ) -> Result<raft::AppendEntriesResponse> {
         const TRACE: &str = "raft_imp:append_entries";
 
-        let uuid = Uuid::new_v5(&Uuid::NAMESPACE_X500, "wolf_raft_append_entries".as_bytes());
-        let res = raft_converter::raft_append_entries_req_to_grpc_append_entries_req(
+        let uuid = Uuid::new_v5(&Uuid::NAMESPACE_X500, b"wolf_raft_append_entries");
+        let res_append = raft_converter::raft_append_entries_req_to_grpc_append_entries_req(
             uuid.to_string(),
             &p_rpc,
         );
-        let ret = match res {
-            Ok(req) => {
+        let ret = match res_append {
+            Ok(raft_req) => {
                 //create a channel for grpc
                 let uri = format!("http://localhost:{}", BASE_PORT + p_target_node);
-                let res_1 = grpc::create_channel(uri).await;
-                let ret_1 = match res_1 {
+                let ret_1 = match grpc::create_channel(uri).await {
                     Ok(c) => {
                         //call request with channel
                         let mut client = RaftClient::new(c).send_gzip().accept_gzip();
-                        let res_2 = client.append_entries(req).await;
-                        let ret_2 = match res_2 {
+                        let ret_2 = match client.append_entries(raft_req).await {
                             Ok(r) => {
                                 let ret_3 = match r.into_inner().response {
                                     Some(s) => {
-                                        use wolf_raft::raft_append_entries_res::*;
+                                        use wolf_raft::raft_append_entries_res::Response;
                                         if let Response::OkRes(ok) = s {
                                             //create AppendEntriesResponse from RaftAppendEntriesOkRes
                                             let ret = raft_converter::grpc_append_entries_ok_res_to_raft_append_entries_res(&ok);
@@ -119,7 +118,7 @@ impl RaftNetwork<ClientRequest> for RaftRouter {
         ret
     }
 
-    /// Send an InstallSnapshot RPC to the target Raft node
+    /// Send an `InstallSnapshot` RPC to the target Raft node
     async fn install_snapshot(
         &self,
         p_target_node: u64,
@@ -129,14 +128,10 @@ impl RaftNetwork<ClientRequest> for RaftRouter {
 
         //create a channel for grpc
         let uri = format!("http://localhost:{}", BASE_PORT + p_target_node);
-        let res = crate::net::grpc::create_channel(uri).await;
-        let ret = match res {
+        let ret = match crate::net::grpc::create_channel(uri).await {
             Ok(c) => {
                 //call request with channel
-                let uuid = Uuid::new_v5(
-                    &Uuid::NAMESPACE_X500,
-                    "wolf_raft_install_snapshot".as_bytes(),
-                );
+                let uuid = Uuid::new_v5(&Uuid::NAMESPACE_X500, b"wolf_raft_install_snapshot");
                 let msg_id = uuid.to_string();
                 let rpc_req =
                     raft_converter::raft_install_snapshot_req_to_grpc_install_snapshot_req(
@@ -144,12 +139,11 @@ impl RaftNetwork<ClientRequest> for RaftRouter {
                     );
 
                 let mut client = RaftClient::new(c).send_gzip().accept_gzip();
-                let res_1 = client.install_snapshot(rpc_req).await;
-                let ret_1 = match res_1 {
+                let ret_1 = match client.install_snapshot(rpc_req).await {
                     Ok(r) => {
                         let ret_2 = match r.into_inner().response {
                             Some(s) => {
-                                use wolf_raft::raft_install_snapshot_res::*;
+                                use wolf_raft::raft_install_snapshot_res::Response;
                                 if let Response::OkRes(ok) = s {
                                     let response = raft_converter::grpc_install_snapshot_ok_res_to_raft_install_snapshot_res(&ok);
                                     Ok(response)
@@ -201,30 +195,28 @@ impl RaftNetwork<ClientRequest> for RaftRouter {
         ret
     }
 
-    /// Send an Vote RPC to the target Raft node
+    /// Send an `Vote` RPC to the target Raft node
     async fn vote(&self, p_target_node: u64, p_rpc: VoteRequest) -> Result<VoteResponse> {
         const TRACE: &str = "raft_imp::vote";
 
         //create a channel for grpc
         let uri = format!("http://localhost:{}", BASE_PORT + p_target_node);
-        let res = crate::net::grpc::create_channel(uri).await;
-        let ret = match res {
+        let ret = match crate::net::grpc::create_channel(uri).await {
             Ok(c) => {
                 //call request with channel
-                let uuid = Uuid::new_v5(&Uuid::NAMESPACE_X500, "wolf_raft_vote".as_bytes());
+                let uuid = Uuid::new_v5(&Uuid::NAMESPACE_X500, b"wolf_raft_vote");
                 let msg_id = uuid.to_string();
                 let rpc_req = raft_converter::raft_vote_req_to_grpc_vote_req(msg_id, &p_rpc);
                 let mut client = RaftClient::new(c).send_gzip().accept_gzip();
-                let res_1 = client.vote(rpc_req).await;
-                let ret_1 = match res_1 {
+                let ret_1 = match client.vote(rpc_req).await {
                     Ok(r) => {
                         let ret_2 = match r.into_inner().response {
                             Some(s) => {
-                                use wolf_raft::raft_vote_res::*;
+                                use wolf_raft::raft_vote_res::Response;
                                 if let Response::OkRes(ok) = s {
-                                    let res =
+                                    let res_vote =
                                         raft_converter::grpc_vote_ok_res_to_raft_vote_res(&ok);
-                                    Ok(res)
+                                    Ok(res_vote)
                                 } else if let Response::ErrorRes(e) = s {
                                     bail!(
                                         "VoteResponse for node {} contains Error {:?}. Trace: {}",
@@ -273,7 +265,11 @@ impl RaftNetwork<ClientRequest> for RaftRouter {
     }
 }
 
-/// create a MemRaft node with specific node id and cluster information
+/// create a `MemRaft` node with specific node id and cluster information
+/// # Panics
+///
+/// Will panic if config is not valid
+#[must_use]
 pub fn new(p_cluster_name: &str, p_node_id: u64) -> MemRaft {
     let config = Config::build(p_cluster_name.into())
         .validate()
@@ -283,7 +279,7 @@ pub fn new(p_cluster_name: &str, p_node_id: u64) -> MemRaft {
                 p_cluster_name, p_node_id, e
             )
         });
-        
+
     //now create MemRaft node
     let arc_config = Arc::new(config);
     let network = Arc::new(RaftRouter::new());

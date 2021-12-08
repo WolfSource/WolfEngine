@@ -6,5 +6,5 @@ pub mod ffi {
     }
 }
 
-#[test]
-fn test() {}
+// #[test]
+// fn test() {}

@@ -17,6 +17,7 @@ impl Default for SigSlot {
 }
 
 impl SigSlot {
+    #[must_use]
     pub fn new() -> Self {
         Self { slots: Vec::new() }
     }
@@ -30,11 +31,12 @@ impl SigSlot {
 
     pub async fn emit(&mut self) {
         for s in &mut self.slots {
-            let _ = s.await;
+            s.await;
         }
     }
 }
 
+#[allow(clippy::semicolon_if_nothing_returned)]
 #[tokio::main]
 #[test]
 async fn tests() {
@@ -46,7 +48,7 @@ async fn tests() {
         println!("slot 2 just called from main thread");
     });
 
-    let _ = tokio::spawn(async move {
+    let _r = tokio::spawn(async move {
         s.connect(async {
             println!("slot 3 just called from tokio thread");
         });

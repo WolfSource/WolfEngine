@@ -13,6 +13,7 @@ impl Default for System {
 }
 
 impl System {
+    #[must_use]
     pub fn new() -> Self {
         // create sysinfo system object
         let mut sys = sysinfo::System::new_all();
@@ -45,6 +46,7 @@ impl System {
         self.sys.refresh_networks();
     }
 
+    #[must_use]
     pub fn number_of_process_instances(&self, p_process_name: &str) -> usize {
         let mut num: usize = 0;
         for proc in self.sys.processes().values() {
@@ -65,6 +67,7 @@ impl System {
         false
     }
     #[cfg(not(target_os = "windows"))]
+    #[must_use]
     pub fn is_process_running_by_pid(&self, p_process_id: &i32) -> bool {
         for pid in self.sys.processes().keys() {
             if pid == p_process_id {
@@ -74,6 +77,7 @@ impl System {
         false
     }
 
+    #[must_use]
     pub fn is_process_running_by_pname(&self, p_process_name: &str) -> bool {
         for proc in self.sys.processes().values() {
             if proc.name() == p_process_name {
@@ -83,18 +87,22 @@ impl System {
         false
     }
 
+    #[must_use]
     pub fn used_memory_in_kb(&self) -> u64 {
         self.sys.used_memory()
     }
 
+    #[must_use]
     pub fn total_memory_in_kb(&self) -> u64 {
         self.sys.total_memory()
     }
 
+    #[must_use]
     pub fn used_swap_in_kb(&self) -> u64 {
         self.sys.used_swap()
     }
 
+    #[must_use]
     pub fn total_swap_in_kb(&self) -> u64 {
         self.sys.total_swap()
     }

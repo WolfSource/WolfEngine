@@ -11,20 +11,17 @@ pub enum TlsPrivateKeyType {
     RSA,
 }
 
-pub async fn load_certs(p_path: &Path) -> Result<Vec<Certificate>> {
+pub fn load_certs(p_path: &Path) -> Result<Vec<Certificate>> {
     std::fs::File::open(p_path)
         .and_then(|f| {
             let mut buf = std::io::BufReader::new(f);
             rustls_pemfile::certs(&mut buf)
                 .map(|mut certs| certs.drain(..).map(Certificate).collect())
         })
-        .map_err(|e| e.into())
+        .map_err(std::convert::Into::into) //|e| e.into()
 }
 
-pub async fn load_private_keys(
-    p_path: &Path,
-    p_type: &TlsPrivateKeyType,
-) -> Result<Vec<PrivateKey>> {
+pub fn load_private_keys(p_path: &Path, p_type: &TlsPrivateKeyType) -> Result<Vec<PrivateKey>> {
     std::fs::File::open(p_path)
         .and_then(|f| {
             let mut buf = std::io::BufReader::new(f);
@@ -35,10 +32,14 @@ pub async fn load_private_keys(
                     .map(|mut keys| keys.drain(..).map(PrivateKey).collect()),
             }
         })
-        .map_err(|e| e.into())
+        .map_err(std::convert::Into::into) //e.into()
 }
 
-pub async fn load_root_ca(p_root_ca_path: Option<&Path>) -> Result<RootCertStore> {
+/// Load root certificate from specific path
+/// # Panics
+///
+/// Will panic if cert is not valid
+pub fn load_root_ca(p_root_ca_path: Option<&Path>) -> Result<RootCertStore> {
     let mut root_cert_store = rustls::RootCertStore::empty();
 
     if let Some(ca_path) = p_root_ca_path {
