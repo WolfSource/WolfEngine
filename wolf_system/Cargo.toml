@@ -31,7 +31,7 @@ rustls-pemfile = { default-features = false, version = "0.2.1" }
 scylla = { default-features = false, features=["ssl"], version = "0.3.1" }
 serde_json = { default-features = false, features = ["std"], version = "1.0.72" }
 sysinfo = {  default-features = false, features = ["multithread"], version = "0.21.1" }
-tokio = { default-features = false, features = ["full"], version = "1.14.0" }
+tokio = { default-features = false, features = ["full"], version = "1.14.0" } #remove features = ["full"]
 tokio-rustls = {  default-features = false, features = ["logging", "tls12"], version = "0.23.1" }
 tokio-tungstenite = { default-features = false, features = ["connect", "rustls"], version = "0.16.0" }
 tonic = { default-features = false, features = ["codegen", "prost", "tls", "compression"], version = "0.6.1" }
