@@ -1,3 +1,5 @@
+#![allow(clippy::too_many_lines)]
+
 use core::panic;
 use git2::{IntoCString, Repository};
 use std::{collections::HashMap, path::Path};
@@ -24,7 +26,7 @@ type BuildConfig = (
 
 fn main() {
     let mut git_sources: HashMap<&str, BuildConfig> = HashMap::new();
-    let _ = git_sources.insert(
+    let _r = git_sources.insert(
         "lz4",
         (
             BuildType::Cmake,
@@ -38,7 +40,7 @@ fn main() {
             [].to_vec(),
         ),
     );
-    let _ = git_sources.insert(
+    let _r = git_sources.insert(
         "lzma",
         (
             BuildType::Cmake,
@@ -66,7 +68,7 @@ fn main() {
         build_type = BuildType::Make;
     };
 
-    let _ = git_sources.insert(
+    let _r = git_sources.insert(
         lua_lib_name,
         (
             build_type,
@@ -144,7 +146,7 @@ fn main() {
         }
     }
 
-    // tem vectors for storing rust & cxx sources
+    // create vectors for storing rust & cxx sources
     let mut rust_srcs: Vec<String> = Vec::new();
     let mut cxx_srcs: Vec<String> = Vec::new();
     let mut include_srcs: Vec<String> = Vec::new();
@@ -226,7 +228,7 @@ fn main() {
                     "{}/{}build/{}/{}/lib/",
                     git_repo_path, path_to_cmake_folder, build_profile, prefix_path
                 );
-                let _ = lib_paths.insert(k.to_string(), (path_to_lib.to_string(), link_static));
+                let _r = lib_paths.insert(k.to_string(), (path_to_lib.to_string(), link_static));
             }
             Err(e) => {
                 panic!("Build failed: error {:?}", e);
@@ -237,29 +239,26 @@ fn main() {
     // build cxx lib
     let mut build_cxx = cxx_build::bridges(rust_srcs);
     //build_cxx.flag_if_supported("/std:c++latest");
-    let _ = build_cxx.flag_if_supported("-std=c++17");
-    let _ = build_cxx.flag_if_supported("-std=c17");
-    let _ = build_cxx.flag_if_supported("-Wall");
-    let _ = build_cxx.flag_if_supported("-fPIC");
+    let _r = build_cxx.flag_if_supported("-std=c++17");
+    let _r = build_cxx.flag_if_supported("-std=c17");
+    let _r = build_cxx.flag_if_supported("-Wall");
+    let _r = build_cxx.flag_if_supported("-fPIC");
 
     //add DEBUG or NDEBUG flags
     if profile_str == "debug" {
-        let _ = build_cxx.define("DEBUG", "DEBUG");
+        let _r = build_cxx.define("DEBUG", "DEBUG");
     } else {
-        let _ = build_cxx.define("NDEBUG", "NDEBUG");
+        let _r = build_cxx.define("NDEBUG", "NDEBUG");
     }
 
     //add necessery includes/libs or defines based on target OS
     match target_os.as_ref() {
-        "macos" => {
-            let _ = build_cxx.include("/usr/local/include/");
-        }
-        "linux" => {
-            let _ = build_cxx.include("/usr/local/include/");
+        "macos" | "linux" => {
+            let _r = build_cxx.include("/usr/local/include/");
         }
         "windows" => {
-            let _ = build_cxx.define("WIN32", "WIN32");
-            let _ = build_cxx.define("_WINDOWS", "_WINDOWS");
+            let _r = build_cxx.define("WIN32", "WIN32");
+            let _r = build_cxx.define("_WINDOWS", "_WINDOWS");
 
             if profile_str == "debug" {
                 println!("cargo:rustc-link-lib=msvcrtd");
@@ -273,41 +272,39 @@ fn main() {
     // include all cxx files
     for iter in cxx_srcs {
         //include all c/cpp files
-        let _ = std::fs::read_dir(&iter)
-            .map(|paths| {
-                for iter in paths {
-                    match iter {
-                        Ok(path) => {
-                            let p = path.path();
-                            let ext = p
-                                .extension()
-                                .unwrap_or_else(|| std::ffi::OsStr::new(""))
-                                .to_ascii_lowercase();
-                            if p.is_file() {
-                                let file_path_os_string = p.into_os_string();
-                                let file_path_str = file_path_os_string.to_str().unwrap();
-                                println!("cargo:rerun-if-changed={}", file_path_str);
-                                if ext == "c"
-                                    || ext == "cc"
-                                    || ext == "cpp"
-                                    || ext == "cxx"
-                                    || ext == "c++"
-                                {
-                                    let _ = build_cxx.file(Path::new(file_path_str));
-                                }
+        let _r = std::fs::read_dir(&iter).map(|paths| {
+            for iter in paths {
+                match iter {
+                    Ok(path) => {
+                        let p = path.path();
+                        let ext = p
+                            .extension()
+                            .unwrap_or_else(|| std::ffi::OsStr::new(""))
+                            .to_ascii_lowercase();
+                        if p.is_file() {
+                            let file_path_os_string = p.into_os_string();
+                            let file_path_str = file_path_os_string.to_str().unwrap();
+                            println!("cargo:rerun-if-changed={}", file_path_str);
+                            if ext == "c"
+                                || ext == "cc"
+                                || ext == "cpp"
+                                || ext == "cxx"
+                                || ext == "c++"
+                            {
+                                let _r = build_cxx.file(Path::new(file_path_str));
                             }
                         }
-                        Err(_e) => {}
                     }
+                    Err(_e) => {}
                 }
-            })
-            .map_err(|e| e);
+            }
+        });
     }
 
     //include all includes from CMAKEs
     for iter in include_srcs {
         println!("cargo:rerun-if-changed={}", iter);
-        let _ = build_cxx.include(Path::new(&iter));
+        let _r = build_cxx.include(Path::new(&iter));
     }
 
     //link dependencies

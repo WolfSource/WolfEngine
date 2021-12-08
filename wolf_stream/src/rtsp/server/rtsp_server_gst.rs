@@ -14,8 +14,8 @@ static ONCE_FINI: Once = Once::new();
 
 #[derive(Debug, Copy, Clone)]
 pub enum RtspTransportProtocol {
-    TCP = 0,
-    UDP,
+    Tcp = 0,
+    Udp,
 }
 
 #[derive(Debug)]
@@ -65,7 +65,7 @@ impl RtspServerGst {
     /// before calling other functions
     pub fn init() {
         ONCE_INIT.call_once(|| {
-            let _ = gst::init().map_err(|e| {
+            let _r = gst::init().map_err(|e| {
                 anyhow::anyhow!(
                     "could not initialize gstreamer because {:?}. Trace: rtsp_gst::init",
                     e,
@@ -75,13 +75,14 @@ impl RtspServerGst {
     }
 
     /// Create an instance from rtsp server.
+    #[must_use]
     pub fn new() -> Self {
         Self {
             server: RTSPServer::new(),
             port: 554,
             path: String::new(),
             gst_cmd: String::new(),
-            transport_protocol: RtspTransportProtocol::TCP,
+            transport_protocol: RtspTransportProtocol::Tcp,
             multicast: true,
             main_loop: glib::MainLoop::new(None, false),
             source_id: None,
@@ -90,6 +91,9 @@ impl RtspServerGst {
 
     /// Initialize rtsp server. This function won't run rtsp stream and
     /// you need to call start function after this function
+    /// # Errors
+    ///
+    /// Will return `Err` if `rtsp` could not mount or attach.
     pub fn initialize(
         &mut self,
         p_port: u16,
@@ -138,10 +142,10 @@ impl RtspServerGst {
 
                 // set protocol
                 match self.transport_protocol {
-                    RtspTransportProtocol::TCP => {
+                    RtspTransportProtocol::Tcp => {
                         factory.set_protocols(gstreamer_rtsp::RTSPLowerTrans::TCP);
                     }
-                    RtspTransportProtocol::UDP => {
+                    RtspTransportProtocol::Udp => {
                         factory.set_protocols(gstreamer_rtsp::RTSPLowerTrans::UDP);
                     }
                 };
@@ -158,8 +162,8 @@ impl RtspServerGst {
                 // interested in them. In this example, we only do have one, so we can
                 // leave the context parameter empty, it will automatically select
                 // the default one.
-                let res = self.server.attach(None);
-                let ret = match res {
+                let attach_res = self.server.attach(None);
+                let ret = match attach_res {
                     Ok(id) => {
                         self.source_id = Some(id);
                         Ok(())
@@ -182,38 +186,43 @@ impl RtspServerGst {
     /// Start the mainloop. From this point on, the server will start to serve
     /// our quality content to connecting clients.
     pub fn start(&self) {
-        self.main_loop.run()
+        self.main_loop.run();
     }
 
     /// Stop the mainloop and remove the source id
     pub fn stop(&mut self) {
         if self.main_loop.is_running() {
-            self.main_loop.quit()
+            self.main_loop.quit();
         }
         if self.source_id.is_some() {
             if let Some(id) = self.source_id.take() {
-                glib::source_remove(id)
+                glib::source_remove(id);
             };
         }
     }
 
-    pub fn get_port(&self) -> u16 {
+    #[must_use]
+    pub const fn get_port(&self) -> u16 {
         self.port
     }
 
+    #[must_use]
     pub fn get_path(&self) -> String {
         self.path.clone()
     }
 
+    #[must_use]
     pub fn get_gst_cmd(&self) -> String {
         self.gst_cmd.clone()
     }
 
-    pub fn get_transport_protocol(&self) -> RtspTransportProtocol {
+    #[must_use]
+    pub const fn get_transport_protocol(&self) -> RtspTransportProtocol {
         self.transport_protocol
     }
 
-    pub fn get_multicast(&self) -> bool {
+    #[must_use]
+    pub const fn get_multicast(&self) -> bool {
         self.multicast
     }
 
@@ -233,14 +242,14 @@ async fn tests() {
     let mut rtsp = RtspServerGst::new();
     let mut cloned = rtsp.clone();
 
-    let _ = std::thread::spawn(move || {
+    let _r = std::thread::spawn(move || {
         const SECS: u64 = 20;
         println!("rtsp stream will be shutdown after {} seconds", SECS);
         std::thread::sleep(std::time::Duration::from_secs(SECS));
         cloned.stop();
     });
 
-    let ret = rtsp.initialize(554, "/play", RtspTransportProtocol::TCP , true, "videotestsrc ! videoconvert ! videoscale ! video/x-raw,width=640,height=360,framerate=60/1 ! x264enc ! video/x-h264,width=640,height=360,framerate=60/1,profile=(string)high ! rtph264pay name=pay0 pt=96")
+    let ret = rtsp.initialize(554, "/play", RtspTransportProtocol::Tcp , true, "videotestsrc ! videoconvert ! videoscale ! video/x-raw,width=640,height=360,framerate=60/1 ! x264enc ! video/x-h264,width=640,height=360,framerate=60/1,profile=(string)high ! rtph264pay name=pay0 pt=96")
     .map(|_|
     {
         println!(

@@ -31,7 +31,7 @@ where
         + 'static,
     S::Future: Send + 'static,
     S::Error: Into<Box<dyn std::error::Error + Send + Sync>> + Send,
-    F: core::future::Future<Output = ()>,
+    F: core::future::Future<Output = ()> + Send,
 {
     const TRACE: &str = "run_server";
 
@@ -202,10 +202,10 @@ async fn test() {
     use crate::algorithm::raft::raft_srv::get_service;
 
     let (s, r) = tokio::sync::oneshot::channel();
-    let _ = tokio::spawn(async {
+    let _r = tokio::spawn(async {
         tokio::time::sleep(Duration::from_secs(3)).await;
         println!("GRPC server is going to shutdown");
-        let _ = s.send(());
+        let _r = s.send(());
     });
 
     //finally run raft over grpc which block current thread
@@ -221,8 +221,10 @@ async fn test() {
         http2_keepalive_timeout: None,
         accept_http1: true,
     };
-    let ret = run_server(&config, get_service("wolf", 1), async {
-        let _ = r.await.ok();
+
+    let srv = get_service("wolf", 1);
+    let ret = run_server(&config, srv, async {
+        let _r = r.await.ok();
         println!("GRPC server shutdown successfully");
     })
     .await;
