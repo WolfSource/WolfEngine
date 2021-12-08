@@ -233,42 +233,42 @@ jobs:
         shell: bash
       -
         env:
-          GRCOV_COVERAGE_TYPE: ${{ matrix.output_type }}
+          PACKAGE: ${{ matrix.package }}
+          # TARGET: ${{ matrix.target }}
         name: Coverage
         run: make coverage
         shell: bash
       -
-        if: ${{ matrix.output_type == 'lcov' }}
-        name: Codecov
-        uses: codecov/codecov-action@f32b3a3741e1053eb607407145bc9619351dc93b
-        with:
-          fail_ci_if_error: true
-          files: ./coverage/lcov.info
-          flags: unittests
-          name: codecov-umbrella
-          verbose: true
-      -
-        if: ${{ matrix.output_type == 'lcov' }}
         name: Coveralls
         uses: coverallsapp/github-action@9ba913c152ae4be1327bfb9085dc806cedb44057
         with:
-          flag-name: Unit
+          flag-name: ${{ matrix.package }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
-      -
-        if: ${{ matrix.output_type == 'cobertura' }}
-        name: Deepsource
-        uses: deepsourcelabs/test-coverage-action@5dd75fd448df1d437bc9d658db0ee7d67a915c9f
-        with:
-          coverage-file: ./coverage/coverage.xml
-          dsn: ${{ secrets.DEEPSOURCE_DSN }}
-          fail-ci-on-error: true
-          key: python
+          parallel: true
     strategy:
       matrix:
-        output_type:
-          - cobertura
-          - lcov
+        package:
+          - wolf_render
+          - wolf_stream
+          - wolf_system
     timeout-minutes: 20
+  coverage-finished:
+    needs:
+      - clippy
+      - coverage
+      - conventional-commits-linter
+      - fmt-check
+      - test
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+    - name: Coveralls Finished
+      uses: coverallsapp/github-action@9ba913c152ae4be1327bfb9085dc806cedb44057
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        parallel-finished: true
+    timeout-minutes: 10
   fmt-check:
     container:
       image: docker://rust:1.57.0-bullseye
@@ -337,9 +337,18 @@ jobs:
         run: make add-os-dependency
         shell: bash
       -
+        env:
+          PACKAGE: ${{ matrix.package }}
+          # TARGET: ${{ matrix.target }}
         name: Test
         run: make test
         shell: bash
+    strategy:
+      matrix:
+        package:
+          - wolf_render
+          - wolf_stream
+          - wolf_system
     timeout-minutes: 10
 name: Pull Request Main
 on:

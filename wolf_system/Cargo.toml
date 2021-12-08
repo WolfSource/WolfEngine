@@ -17,32 +17,32 @@ path = "src/lib.rs"
 [dependencies]
 # before adding any dependency please check it out from  
 # https://android.googlesource.com/platform/external/rust/crates/
-anyhow = {  default-features = false, features = ["std"], version = "1.0.51" }
-async-raft = {  default-features = false, version = "0.6.1" }
-async-trait = {  default-features = false, version = "0.1.51" }
+anyhow = { default-features = false, features = ["std"], version = "1.0.51" }
+async-raft = { default-features = false, version = "0.6.1" }
+async-trait = { default-features = false, version = "0.1.52" }
 cxx = { default-features = false, features = ["std"], version = "1.0.59" }
 futures = { default-features = false, version = "0.3.18" }
-hyper = { default-features = false, version = "0.14.15" }
+hyper = { default-features = false, version = "0.14.16" }
 memstore = { default-features = false, version = "0.2.0" }
 mimalloc = { default-features = false, features = ["secure"], version = "0.1.27" }
-parking_lot = { default-features = false, features= ["deadlock_detection"], version = "0.11.2" }
+parking_lot = { default-features = false, features = ["deadlock_detection"], version = "0.11.2" }
 prost = { default-features = false, version = "0.9.0" }
 rustls-pemfile = { default-features = false, version = "0.2.1" }
-scylla = { default-features = false, features=["ssl"], version = "0.3.1" }
+scylla = { default-features = false, features = ["ssl"], version = "0.3.1" }
 serde_json = { default-features = false, features = ["std"], version = "1.0.72" }
-sysinfo = {  default-features = false, features = ["multithread"], version = "0.21.1" }
+sysinfo = { default-features = false, features = ["multithread"], version = "0.21.2" }
 tokio = { default-features = false, features = ["full"], version = "1.14.0" }
-tokio-rustls = {  default-features = false, features = ["logging", "tls12"], version = "0.23.1" }
-tokio-tungstenite = { default-features = false, features = ["connect", "rustls"], version = "0.16.0" }
-tonic = { default-features = false, features = ["codegen", "prost", "tls", "compression"], version = "0.6.1" }
+tokio-rustls = { default-features = false, features = ["logging", "tls12"], version = "0.23.1" }
+tokio-tungstenite = { default-features = false, features = ["connect", "rustls"], version = "0.16.1" }
+tonic = { default-features = false, features = ["codegen", "prost", "tls", "compression"], version = "0.6.2" }
 uuid = { default-features = false, features = ["v5"], version = "0.8.2" }
 webpki-roots = { default-features = false, version = "0.22.1" }
 
 [build-dependencies]
-cxx-build = { version = "1.0.59" }
-git2 = { version = "0.13.25" }
-plist = { version = "1.3.1" }
-tonic-build = { default-features = false, features = ["transport", "prost", "compression"], version = "0.6.0" }
+cxx-build = { default-features = false, version = "1.0.59" }
+git2 = { default-features = false, version = "0.13.25" }
+plist = { default-features = false, version = "1.3.1" }
+tonic-build = { default-features = false, features = ["transport", "prost", "compression"], version = "0.6.2" }
 
 [dev-dependencies]
 lazy_static = { default-features = false, version = "1.4.0" }
