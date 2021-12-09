@@ -20,7 +20,7 @@ path = "src/lib.rs"
 anyhow = {  default-features = false, features = ["std"], version = "1.0.51" }
 async-raft = {  default-features = false, version = "0.6.1" }
 async-trait = {  default-features = false, version = "0.1.51" }
-cxx = { default-features = false, version = "1.0.57" }
+cxx = { default-features = false, version = "1.0.59" }
 futures = { default-features = false, version = "0.3.18" }
 hyper = { default-features = false, version = "0.14.15" }
 memstore = { default-features = false, version = "0.2.0" }
