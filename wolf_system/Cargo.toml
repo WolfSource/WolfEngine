@@ -34,7 +34,7 @@ sysinfo = {  default-features = false, features = ["multithread"], version = "0.
 tokio = { default-features = false, features = ["full"], version = "1.14.0" }
 tokio-rustls = {  default-features = false, features = ["logging", "tls12"], version = "0.23.1" }
 tokio-tungstenite = { default-features = false, features = ["connect", "rustls"], version = "0.16.0" }
-tonic = { default-features = false, features = ["codegen", "prost", "tls", "compression"], version = "0.6.1" }
+tonic = { default-features = false, features = ["codegen", "prost", "tls", "compression"], version = "0.6.2" }
 uuid = { default-features = false, features = ["v5"], version = "0.8.2" }
 webpki-roots = { default-features = false, version = "0.22.1" }
 
