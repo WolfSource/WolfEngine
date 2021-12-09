@@ -125,7 +125,7 @@ pub async fn create_process(
 #[tokio::main]
 #[test]
 async fn tests() {
-    let path_to_the_process;
+    let path_to_the_process: &str;
 
     #[cfg(target_os = "windows")]
     {
@@ -135,11 +135,10 @@ async fn tests() {
     {
         path_to_the_process = "/System/Applications/TextEdit.app/Contents/MacOS/TextEdit";
     }
-    // TODO
-    // #[cfg(target_os = "linux")]
-    // {
-    //     path_to_the_process = "";
-    // }
+    #[cfg(target_os = "linux")]
+    {
+        path_to_the_process = "TextEdit";
+    }
 
     let sys = System::new();
     println!(

@@ -25,21 +25,26 @@ type BuildConfig = (
     Vec<String>,         /* commands to run (will be used for shell) */
 );
 
+#[allow(clippy::cognitive_complexity)]
 fn main() {
-    env!(
-        "PKG_CONFIG_PATH",
-        "$PKG_CONFIG_PATH enviroment variable was not set"
-    );
     let mut configure_flags: String = " ".to_string();
     let target_os_ffmpeg: &str;
     let target_os_live555: &str;
     let target_os =
         std::env::var("CARGO_CFG_TARGET_OS").expect("Build failed: could not get target OS");
 
+    let ev_pkg_config_path = option_env!("PKG_CONFIG_PATH");
+
     if target_os == "windows" {
+        if ev_pkg_config_path.is_none() {
+            panic!("$PKG_CONFIG_PATH enviroment variable was not set.");
+        }
         target_os_ffmpeg = "win";
         target_os_live555 = "./genWindowsMakefiles";
     } else if target_os == "macos" {
+        if ev_pkg_config_path.is_none() {
+            panic!("$PKG_CONFIG_PATH enviroment variable was not set.");
+        }
         target_os_ffmpeg = "darwin";
         target_os_live555 = "./genMakefiles macosx-bigsur";
     } else if target_os == "linux" {
