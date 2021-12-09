@@ -153,6 +153,9 @@ fn main() {
     let mut lib_paths: HashMap<String, (String, bool)> = HashMap::new();
     let mut lib_deps = Vec::<(&'static str, bool)>::new();
 
+    // create deps folder
+    make_folder(&format!("{}/deps/", current_dir));
+    
     // iterate over git repositories
     for (k, mut v) in git_sources {
         //store deps libraries
@@ -169,70 +172,61 @@ fn main() {
 
         //check git project already exists
         let git_repo_path = format!("{}/deps/{}", current_dir, k);
-        let ret = Repository::open(git_repo_path.clone())
-            .map(|_r| {
-                //if build folder is not exist, we should build it again
-                !Path::new(&build_dir).exists()
-            })
-            .map_err(|_e| {
-                // try clone it again
-                Repository::clone_recurse(v.1, git_repo_path.clone())
-                    .map(|_repo| {
-                        //Time to build it
-                        true
-                    })
-                    .map_err(|e| e)
-            });
-
-        match ret {
-            Ok(build) => {
-                if build {
-                    match v.0 {
-                        BuildType::Cmake => {
-                            build_cmake(build_profile, &git_repo_path, &v);
-                        }
-                        BuildType::Make => {
-                            build_make(build_profile, &opt_level_str, &git_repo_path, &v);
-                        }
-                        BuildType::Shell => {
-                            //build with custom shell script should be implement
-                        }
-                    }
+        let build = match Repository::open(git_repo_path.clone()) {
+            Ok(_g) => !Path::new(&build_dir).exists(),
+            Err(_e) =>
+            // try clone it again
+            {
+                let cloned = Repository::clone_recurse(v.1, git_repo_path.clone());
+                if cloned.is_err() {
+                    panic!("could not clone '{}' because: {:?}", v.1, cloned.err());
                 }
-
-                //path to the cmake folder
-                let path_to_cmake_folder = v.2;
-                //link library static or dynamic
-                let link_static = v.4;
-                //cxx src path
-                let cxx_src_path = v.5;
-                //store it for later
-                cxx_srcs.push(cxx_src_path.to_string());
-
-                //rust src path
-                let rust_src_path = v.6;
-                //store it for later
-                rust_srcs.push(rust_src_path.to_string());
-
-                let prefix_path = v.7;
-
-                //include library includes
-                let path_to_include = format!(
-                    "{}/{}build/{}/{}/include/",
-                    git_repo_path, path_to_cmake_folder, build_profile, prefix_path
-                );
-                include_srcs.push(path_to_include.to_string());
-
-                //link to the libraries
-                let path_to_lib = format!(
-                    "{}/{}build/{}/{}/lib/",
-                    git_repo_path, path_to_cmake_folder, build_profile, prefix_path
-                );
-                let _r = lib_paths.insert(k.to_string(), (path_to_lib.to_string(), link_static));
+                true
             }
-            Err(e) => {
-                panic!("Build failed: error {:?}", e);
+        };
+
+        if build {
+            match v.0 {
+                BuildType::Cmake => {
+                    build_cmake(build_profile, &git_repo_path, &v);
+                }
+                BuildType::Make => {
+                    build_make(build_profile, &opt_level_str, &git_repo_path, &v);
+                }
+                BuildType::Shell => {
+                    //build with custom shell script should be implement
+                }
             }
+
+            //path to the cmake folder
+            let path_to_cmake_folder = v.2;
+            //link library static or dynamic
+            let link_static = v.4;
+            //cxx src path
+            let cxx_src_path = v.5;
+            //store it for later
+            cxx_srcs.push(cxx_src_path.to_string());
+
+            //rust src path
+            let rust_src_path = v.6;
+            //store it for later
+            rust_srcs.push(rust_src_path.to_string());
+
+            let prefix_path = v.7;
+
+            //include library includes
+            let path_to_include = format!(
+                "{}/{}build/{}/{}/include/",
+                git_repo_path, path_to_cmake_folder, build_profile, prefix_path
+            );
+            include_srcs.push(path_to_include.to_string());
+
+            //link to the libraries
+            let path_to_lib = format!(
+                "{}/{}build/{}/{}/lib/",
+                git_repo_path, path_to_cmake_folder, build_profile, prefix_path
+            );
+            let _r = lib_paths.insert(k.to_string(), (path_to_lib.to_string(), link_static));
         }
     }
 

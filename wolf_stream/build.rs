@@ -99,6 +99,39 @@ fn main() {
     };
 
     let mut git_sources: HashMap<&str, BuildConfig> = HashMap::new();
+    
+    let _r = git_sources.insert(
+        "live555",
+        (
+            BuildType::Shell,
+            "",
+            "",
+            [].to_vec(),
+            false,
+            "src/rtsp/server/cxx/",
+            "src/rtsp/server/rtsp_server_live555.rs",
+            "/usr/local/",
+            [
+                ("BasicUsageEnvironment".to_string(), true),
+                ("groupsock".to_string(), true),
+                ("liveMedia".to_string(), true),
+                ("UsageEnvironment".to_string(), true)
+            ].to_vec(),
+            [
+                "#!/bin/bash\r\n".to_string(),
+                "cd $1 && ".to_string(),
+                "curl http://www.live555.com/liveMedia/public/live555-latest.tar.gz > ./live555-latest.tar.gz && ".to_string(),
+                "tar -xzvf live555-latest.tar.gz --strip-components 1 && ".to_string(),
+                format!("{} && ", target_os_live555),
+                "make clean && ".to_string(),
+                "make && ".to_string(),
+                format!("make install DESTDIR={}/deps/{}/build/{}",  current_dir, "live555", build_profile),
+            ]
+            .to_vec(),
+        ),
+    );
+    
+    if target_os == "macos" {
     let _r = git_sources.insert(
         "ffmpeg",
         (
@@ -150,37 +183,7 @@ fn main() {
             .to_vec(),
         ),
     );
-
-    let _r = git_sources.insert(
-        "live555",
-        (
-            BuildType::Shell,
-            "",
-            "",
-            [].to_vec(),
-            false,
-            "src/rtsp/server/cxx/",
-            "src/rtsp/server/rtsp_server_live555.rs",
-            "/usr/local/",
-            [
-                ("BasicUsageEnvironment".to_string(), true),
-                ("groupsock".to_string(), true),
-                ("liveMedia".to_string(), true),
-                ("UsageEnvironment".to_string(), true)
-            ].to_vec(),
-            [
-                "#!/bin/bash\r\n".to_string(),
-                "cd $1 && ".to_string(),
-                "curl http://www.live555.com/liveMedia/public/live555-latest.tar.gz > ./live555-latest.tar.gz && ".to_string(),
-                "tar -xzvf live555-latest.tar.gz --strip-components 1 && ".to_string(),
-                format!("{} && ", target_os_live555),
-                "make clean && ".to_string(),
-                "make && ".to_string(),
-                format!("make install DESTDIR={}/deps/{}/build/{}",  current_dir, "live555", build_profile),
-            ]
-            .to_vec(),
-        ),
-    );
+    }
 
     // make sure set the necessery enviroment variables for OSX
     if target_os == "macos" {
@@ -208,6 +211,9 @@ fn main() {
     let mut lib_paths: HashMap<String, (String, bool)> = HashMap::new();
     let mut lib_deps = Vec::<(String, bool)>::new();
 
+    // create deps folder
+    make_folder(&format!("{}/deps/", current_dir));
+    
     // iterate over git repositories
     for (k, mut v) in git_sources {
         //store deps libraries
@@ -224,73 +230,56 @@ fn main() {
 
         //check git project already exists
         let git_repo_path = format!("{}/deps/{}", current_dir, k);
-        let mut ret = Repository::open(git_repo_path.clone()).map(|_r| {
-            //if build folder is not exist, we should build it again
-            !Path::new(&build_dir).exists()
-        });
-
-        if ret.is_err() {
-            //we should clone the repo again
-            let url = v.1;
-            ret = if url.is_empty() {
-                //those projects which do not have git repos
-                Ok(!Path::new(&build_dir).exists())
-            } else {
-                Repository::clone_recurse(url, git_repo_path.clone()).map(|_repo| {
-                    //Time to build it
-                    true
-                })
-            };
-        }
-
-        match ret {
-            Ok(build) => {
-                if build {
-                    match v.0 {
-                        BuildType::Shell => {
-                            let shell_cmd = &v.9.join(" ");
-                            build_shell(
-                                build_profile,
-                                &opt_level_str,
-                                &git_repo_path,
-                                &v,
-                                shell_cmd,
-                            );
-                        }
+        let build = match Repository::open(git_repo_path.clone()) {
+            Ok(_g) => !Path::new(&build_dir).exists(),
+            Err(_e) => {
+                // try clone it again
+                let url = v.1;
+                if !url.is_empty() {
+                    let cloned = Repository::clone_recurse(v.1, git_repo_path.clone());
+                    if cloned.is_err() {
+                        panic!("could not clone '{}' because: {:?}", v.1, cloned.err());
                     }
                 }
-
-                //path to the cmake folder
-                let path_to_cmake_folder = v.2;
-                //link library static or dynamic
-                let link_static = v.4;
-                //cxx src path
-                let cxx_src_path = v.5;
-                //store it for later
-                cxx_srcs.push(cxx_src_path.to_string());
-
-                //rust src path
-                let rust_src_path = v.6;
-                //store it for later
-                rust_srcs.push(rust_src_path.to_string());
-
-                //include library includes
-                let path_to_include = format!(
-                    "{}/{}build/{}{}/include/",
-                    git_repo_path, path_to_cmake_folder, build_profile, prefix_path
-                );
-                include_srcs.push(path_to_include.to_string());
-
-                //link to the libraries
-                let path_to_lib = format!(
-                    "{}/{}build/{}{}/lib/",
-                    git_repo_path, path_to_cmake_folder, build_profile, prefix_path
-                );
-                let _r = lib_paths.insert(k.to_string(), (path_to_lib.to_string(), link_static));
+                true
             }
-            Err(e) => {
-                panic!("Build failed: error {:?}", e);
+        };
+
+        if build {
+            match v.0 {
+                BuildType::Shell => {
+                    let shell_cmd = &v.9.join(" ");
+                    build_shell(build_profile, &opt_level_str, &git_repo_path, &v, shell_cmd);
+                }
             }
+
+            //path to the cmake folder
+            let path_to_cmake_folder = v.2;
+            //link library static or dynamic
+            let link_static = v.4;
+            //cxx src path
+            let cxx_src_path = v.5;
+            //store it for later
+            cxx_srcs.push(cxx_src_path.to_string());
+
+            //rust src path
+            let rust_src_path = v.6;
+            //store it for later
+            rust_srcs.push(rust_src_path.to_string());
+
+            //include library includes
+            let path_to_include = format!(
+                "{}/{}build/{}{}/include/",
+                git_repo_path, path_to_cmake_folder, build_profile, prefix_path
+            );
+            include_srcs.push(path_to_include.to_string());
+
+            //link to the libraries
+            let path_to_lib = format!(
+                "{}/{}build/{}{}/lib/",
+                git_repo_path, path_to_cmake_folder, build_profile, prefix_path
+            );
+            let _r = lib_paths.insert(k.to_string(), (path_to_lib.to_string(), link_static));
         }
     }
 
@@ -409,14 +398,14 @@ fn build_shell(
     make_folder(&install_folder_str);
 
     let options = run_script::types::ScriptOptions::new();
-    let (output, error) =
+    let (_output, _error) =
         run_script::run_script_or_exit!(p_shell_command, &vec![shell_script_parent_path], options);
-    if !error.is_empty() {
-        panic!(
-            "shell script returns with error. output:{} error:{}",
-            output, error
-        );
-    }
+    // if !error.is_empty() {
+    //     panic!(
+    //         "shell script returns with error. output:{} error:{}",
+    //         output, error
+    //     );
+    // }
 }
 
 fn make_folder(path: &str) {
