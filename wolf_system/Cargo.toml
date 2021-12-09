@@ -20,7 +20,7 @@ path = "src/lib.rs"
 anyhow = {  default-features = false, features = ["std"], version = "1.0.51" }
 async-raft = {  default-features = false, version = "0.6.1" }
 async-trait = {  default-features = false, version = "0.1.51" }
-cxx = { default-features = false, feature = ["std"], version = "1.0.57" }
+cxx = { default-features = false, feature = ["std"], version = "1.0.59" }
 futures = { default-features = false, version = "0.3.18" }
 hyper = { default-features = false, version = "0.14.15" }
 memstore = { default-features = false, version = "0.2.0" }
@@ -39,7 +39,7 @@ uuid = { default-features = false, features = ["v5"], version = "0.8.2" }
 webpki-roots = { default-features = false, version = "0.22.1" }
 
 [build-dependencies]
-cxx-build = { version = "1.0.57" }
+cxx-build = { version = "1.0.59" }
 git2 = { version = "0.13.25" }
 plist = { version = "1.3.1" }
 tonic-build = { default-features = false, features = ["transport", "prost", "compression"], version = "0.6.0" }
