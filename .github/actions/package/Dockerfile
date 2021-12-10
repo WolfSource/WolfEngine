@@ -15,4 +15,4 @@ RUN set -eux \
     && apt-get clean --yes \
     && rm -fr /tmp/* /var/lib/apt/lists/* /var/tmp/*
 ENV CROSS_DOCKER_IN_DOCKER=true
-RUN cargo install --locked cross
+RUN cargo install cross
