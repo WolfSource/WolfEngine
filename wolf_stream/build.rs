@@ -132,57 +132,57 @@ fn main() {
     );
     
     if target_os == "macos" {
-    let _r = git_sources.insert(
-        "ffmpeg",
-        (
-            BuildType::Shell,
-            "https://github.com/FFmpeg/FFmpeg.git",
-            "",
-            [].to_vec(),
-            false,
-            "src/rtsp/client/cxx/",
-            "src/rtsp/client/rtsp_client.rs",
-            "",
-            [
-                ("avcodec".to_string(), false),
-                ("avdevice".to_string(), false),
-                ("avfilter".to_string(), false),
-                ("avformat".to_string(), false),
-                ("avutil".to_string(), false),
-                ("swresample".to_string(), false),
-                ("swscale".to_string(), false),
-            ]
-            .to_vec(),
-            [
-                "#!/bin/bash\r\n".to_string(),
-                "cd $1 && ".to_string(),
-                "./configure".to_string(),
-                "--enable-asm".to_string(),
-                "--enable-yasm".to_string(),
-                "--disable-doc".to_string(),
-                "--disable-ffplay".to_string(),
-                "--disable-ffprobe".to_string(),
-                "--disable-ffmpeg".to_string(),
-                "--enable-shared".to_string(),
-                "--disable-static".to_string(),
-                "--disable-bzlib".to_string(),
-                "--disable-libopenjpeg".to_string(),
-                "--disable-iconv".to_string(),
-                "--disable-zlib".to_string(),
-                format!(
-                    "--prefix={}/deps/{}/build/{}",
-                    current_dir, "ffmpeg", build_profile
-                ),
-                format!("--target-os={} ", target_os_ffmpeg),
-                format!("--arch={} ", target_arch),
-                format!("{} ", configure_flags),
-                "&& make clean".to_string(),
-                "&& make".to_string(),
-                "&& make install ".to_string(),
-            ]
-            .to_vec(),
-        ),
-    );
+        let _r = git_sources.insert(
+            "ffmpeg",
+            (
+                BuildType::Shell,
+                "https://github.com/FFmpeg/FFmpeg.git",
+                "",
+                [].to_vec(),
+                false,
+                "src/rtsp/client/cxx/",
+                "src/rtsp/client/rtsp_client.rs",
+                "",
+                [
+                    ("avcodec".to_string(), false),
+                    ("avdevice".to_string(), false),
+                    ("avfilter".to_string(), false),
+                    ("avformat".to_string(), false),
+                    ("avutil".to_string(), false),
+                    ("swresample".to_string(), false),
+                    ("swscale".to_string(), false),
+                ]
+                .to_vec(),
+                [
+                    "#!/bin/bash\r\n".to_string(),
+                    "cd $1 && ".to_string(),
+                    "./configure".to_string(),
+                    "--enable-asm".to_string(),
+                    "--enable-yasm".to_string(),
+                    "--disable-doc".to_string(),
+                    "--disable-ffplay".to_string(),
+                    "--disable-ffprobe".to_string(),
+                    "--disable-ffmpeg".to_string(),
+                    "--enable-shared".to_string(),
+                    "--disable-static".to_string(),
+                    "--disable-bzlib".to_string(),
+                    "--disable-libopenjpeg".to_string(),
+                    "--disable-iconv".to_string(),
+                    "--disable-zlib".to_string(),
+                    format!(
+                        "--prefix={}/deps/{}/build/{}",
+                        current_dir, "ffmpeg", build_profile
+                    ),
+                    format!("--target-os={} ", target_os_ffmpeg),
+                    format!("--arch={} ", target_arch),
+                    format!("{} ", configure_flags),
+                    "&& make clean".to_string(),
+                    "&& make".to_string(),
+                    "&& make install ".to_string(),
+                ]
+                .to_vec(),
+            ),
+        );
     }
 
     // make sure set the necessery enviroment variables for OSX
