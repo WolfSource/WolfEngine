@@ -1,0 +1,51 @@
+jobs:
+  build:
+    name: Build
+    permissions:
+      contents: read
+      security-events: write
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Check Out
+        uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579
+      -
+        id: release-package-meta
+        name: Release Package Meta
+        uses: ./.github/actions/release-package-meta
+        with:
+          package: ${{ matrix.package }}
+      -
+        env:
+          TRIVY_PASSWORD: ${{ secrets.TRIVY_PASSWORD }}
+          TRIVY_USERNAME: ${{ inputs.TRIVY_USERNAME }}
+        name: Trivy
+        uses: aquasecurity/trivy-action@0769bbf0d2a77b3c15b3b57fbcdd2edd25a1c3f0
+        with:
+          format: template
+          image-ref: ghcr.io/${{ github.repository }}/${{ steps.release-package-meta.outputs.package }}:latest
+          output: trivy.sarif
+          template: "@/contrib/sarif.tpl"
+      -
+        name: Upload Sarif
+        uses: github/codeql-action/upload-sarif@546b30f35ae5a3db0e0be1843008c2224f71c3b0
+        with:
+          sarif_file: trivy.sarif
+    strategy:
+      matrix:
+        package:
+          - wolf_render
+          - wolf_stream
+          - wolf_system
+name: Registry Package Published
+on: 
+  workflow_call:
+    inputs:
+      TRIVY_USERNAME:
+        description: Trivy Username
+        required: true
+        type: string
+    secrets:
+      TRIVY_PASSWORD:
+        description: Trivy Password
+        required: true

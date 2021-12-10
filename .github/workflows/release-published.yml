@@ -113,7 +113,7 @@ jobs:
         id: create-issue
         if: failure()
         name: Create GitHub Issue on Failure
-        uses: actions/github-script@f32b3a3741e1053eb607407145bc9619351dc93b
+        uses: actions/github-script@441359b1a30438de65712c2fbca0abe4816fa667
         with:
           # https://octokit.github.io/rest.js/v18#issues-create
           script: |
@@ -128,7 +128,7 @@ jobs:
       -
         if: failure()
         name: Assign Admins on Failure
-        uses: actions/github-script@f32b3a3741e1053eb607407145bc9619351dc93b
+        uses: actions/github-script@441359b1a30438de65712c2fbca0abe4816fa667
         with:
           # https://octokit.github.io/rest.js/v18#issues-create
           script: |
@@ -147,6 +147,16 @@ jobs:
           - wolf_stream
           - wolf_system
     timeout-minutes: 10
+  registry_package-published:
+    name: Registry Package Published
+    permissions:
+      contents: read
+      security-events: write
+    uses: WolfEngine/wolf/.github/workflows/registry_package-published.yml@main
+    with:
+      TRIVY_USERNAME: ${{ github.actor}}
+    secrets:
+      TRIVY_PASSWORD: ${{ secrets.PACKAGE_REGISTRY }}
 name: Release Published
 on:
   release:

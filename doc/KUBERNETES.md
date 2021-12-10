@@ -64,7 +64,7 @@ $ linkerd viz dashboard &
 $ linkerd --namespace linkerd-viz viz top deployment/web [ERROR]
 
 $ docker build . --file ./wolf_system/Dockerfile --tag wolf/system:0.1.0-nonroot
-$ docker tag wolf_system:0.1.0-nonroot 127.0.0.1:5000/wolf/system:0.1.0-nonroot
+$ docker tag wolf/system:0.1.0-nonroot 127.0.0.1:5000/wolf/system:0.1.0-nonroot
 $ docker push 127.0.0.1:5000/wolf/system:0.1.0-nonroot
 $ cat ./wolf_system/wolf_system.yml | kubectl apply --filename -
 
