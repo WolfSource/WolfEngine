@@ -369,6 +369,7 @@ async fn test() {
         println!("{:?}", iter.as_number());
     }
 
+    //call f2 function
     let f2_ret = lua.call("f2", Some(&[d_new, i_new])).await.unwrap();
     println!("lua function f2 returns:");
     for iter in &f2_ret {
