@@ -567,3 +567,4 @@ test: add-fmt fetch ## Test
 #     @path               Read newline separated options from `path`
 #
 # More information available at https://doc.rust-lang.org/rustdoc/what-is-rustdoc.html
+
