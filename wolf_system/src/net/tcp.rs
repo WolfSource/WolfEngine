@@ -924,7 +924,7 @@ async fn test_ws() {
     let ws_server_config = TcpServerConfig {
         protocol: TcpProtocol::TcpWebsocket,
         address: "0.0.0.0",
-        port: 8000,
+        port: 8001,
         ttl: 100,
         accept_timeout_in_secs: 5.0, //5 seconds
         read_timeout_in_secs: 3.0,   // 3 seconds
