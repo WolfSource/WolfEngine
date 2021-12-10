@@ -315,7 +315,7 @@ fmt: add-fmt ## FMT
 
 .PHONY: fmt-check
 fmt-check: add-fmt ## FMT check
-	$(CARGO_FMT) -- --check
+	$(CARGO_FMT)
 
 .PHONY: generate-lockfile
 generate-lockfile: ## Generate lockfile
