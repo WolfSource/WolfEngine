@@ -815,6 +815,7 @@ async fn test_native() {
     println!("native tcp tests were done");
 }
 
+/*
 #[allow(clippy::too_many_lines)]
 #[tokio::main]
 #[test]
@@ -852,7 +853,7 @@ async fn test_ws() {
     </html>
         */
 
-    use std::sync::mpsc::{channel, Receiver, Sender};
+    /*use std::sync::mpsc::{channel, Receiver, Sender};
     lazy_static::lazy_static! {
         static ref CHANNEL_MUTEX: parking_lot::Mutex<(Sender<bool>, Receiver<bool>)> = parking_lot::Mutex::new(channel::<bool>());
     }
@@ -947,4 +948,4 @@ async fn test_ws() {
     assert!(ret.is_ok(), "{:?}", ret);
 
     println!("websocket tests done");
-}
+}*/
