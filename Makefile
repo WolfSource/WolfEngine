@@ -130,7 +130,6 @@ else ifeq ("$(DETECTED_OS)", "Linux")
 		\
 		libges-1.0-dev \
 		libgstrtspserver-1.0-dev \
-		\
 	&& apt-get autoremove --yes \
 	&& apt-get clean --yes \
 	&& rm -fr /tmp/* /var/lib/apt/lists/* /var/tmp/*
@@ -323,6 +322,12 @@ fmt: add-fmt ## FMT
 .PHONY: fmt-check
 fmt-check: add-fmt ## FMT check
 	$(CARGO_FMT) -- --check
+
+# .PHONY: fmt-check-nightly
+# fmt-check: add-fmt ## FMT check
+# 	rustup toolchain install nightly
+# 	rustup +nightly component add rustfmt
+# 	$(CARGO) +nightly fmt --all -- --check
 
 .PHONY: generate-lockfile
 generate-lockfile: ## Generate lockfile

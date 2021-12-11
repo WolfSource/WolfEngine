@@ -42,7 +42,7 @@ rustflags = [
   "-Dabsolute_paths_not_starting_with_crate",
   # "-Dbox_pointers", # TODO: We will consider it later
   "-Ddeprecated_in_future",
-  #"-Delided_lifetimes_in_paths", # TODO: We have problem with cxx objects
+  # "-Delided_lifetimes_in_paths", # TODO: We have problem with cxx objects
   "-Dexplicit_outlives_requirements",
   "-Dkeyword_idents",
   "-Dmacro_use_extern_crate",
