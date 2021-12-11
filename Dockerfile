@@ -16,7 +16,7 @@ ARG ARCHVARIANT=${TARGETARCH}${TARGETVARIANT}
 ARG PACKAGE
 ARG VERSION
 RUN set -eux \
-    && curl --location --output /tmp/${PACKAGE} --show-error --silent https://github.com/smhmayboudi/fip/releases/download/v${VERSION}/${PACKAGE}-v${VERSION}-${ARCHVARIANT} \
+    && curl --location --output /tmp/${PACKAGE} --show-error --silent https://github.com/WolfEngine/wolf/releases/download/v${VERSION}/${PACKAGE}-v${VERSION}-${ARCHVARIANT} \
     && chmod 755 /tmp/${PACKAGE}
 
 # FROM docker.io/curlimages/curl:7.80.0 as linkerd-await

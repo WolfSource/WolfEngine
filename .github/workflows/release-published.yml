@@ -8,7 +8,9 @@ jobs:
     name: Build and Publish Docker Image
     permissions:
       contents: read
+      issues: write
       packages: write
+      security-events: write
     runs-on: ubuntu-latest
     steps:
       -
@@ -78,6 +80,61 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
       -
+        name: Build and Load Docker Image
+        uses: docker/build-push-action@a66e35b9cbcf4ad0ea91ffcaf7bbad63ad9e0229
+        with:
+          build-args: |
+            PACKAGE=${{ matrix.package }}
+            REF_NAME=${{ fromJSON(steps.metadata.outputs.json).labels['org.opencontainers.image.ref.name'] }}
+            VERSION=${{ fromJSON(steps.metadata.outputs.json).labels['org.opencontainers.image.version'] }}
+          cache-from: |
+            type=local,src=/tmp/.buildx-cache
+          cache-to: |
+            type=local,dest=/tmp/.buildx-cache-new,mode=max
+          context: .
+          labels: |
+            ${{ steps.metadata.outputs.labels }}
+          load: true
+          secrets: |
+            GIT_AUTH_TOKEN=${{ secrets.PACKAGE_REGISTRY }}
+          tags: |
+            ${{ steps.metadata.outputs.tags }}
+      -
+        env:
+          TRIVY_PASSWORD: ${{ secrets.PACKAGE_REGISTRY }}
+          TRIVY_USERNAME: ${{ inputs.TRIVY_USERNAME }}
+        name: Trivy
+        uses: aquasecurity/trivy-action@0769bbf0d2a77b3c15b3b57fbcdd2edd25a1c3f0
+        with:
+          exit-code: 1
+          format: template
+          hide-progress: false
+          image-ref: ghcr.io/${{ github.repository }}/${{ steps.release-package-meta.outputs.package }}:latest
+          output: trivy.sarif
+          template: "@/contrib/sarif.tpl"
+      -
+        name: Upload Sarif
+        uses: github/codeql-action/upload-sarif@546b30f35ae5a3db0e0be1843008c2224f71c3b0
+        with:
+          category: trivy
+          sarif_file: trivy.sarif
+          wait-for-processing: true
+      -
+        id: anchore
+        name: Anchore
+        uses: anchore/scan-action@70af480f417f5ac0d4e31d38e5b44feb3f75d7ba
+        with:
+          debug: true
+          image: ghcr.io/${{ github.repository }}/${{ steps.release-package-meta.outputs.package }}:latest
+          severity-cutoff: negligible
+      -
+        name: Upload Sarif
+        uses: github/codeql-action/upload-sarif@546b30f35ae5a3db0e0be1843008c2224f71c3b0
+        with:
+          category: anchore
+          sarif_file: ${{ steps.anchore.outputs.sarif }}
+          wait-for-processing: true
+      -
         name: Build and Push Docker Image
         uses: docker/build-push-action@a66e35b9cbcf4ad0ea91ffcaf7bbad63ad9e0229
         with:
@@ -109,37 +166,6 @@ jobs:
         run: |
           rm -fr /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
-      -
-        id: create-issue
-        if: failure()
-        name: Create GitHub Issue on Failure
-        uses: actions/github-script@f32b3a3741e1053eb607407145bc9619351dc93b
-        with:
-          # https://octokit.github.io/rest.js/v18#issues-create
-          script: |
-            const create = await github.rest.issues.create({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              title: "Failed to deploy to production",
-              body: "Automation has failed us!\nMore information can be found at:\n - ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-            })
-            console.log("create", create)
-            return create.data.number
-      -
-        if: failure()
-        name: Assign Admins on Failure
-        uses: actions/github-script@f32b3a3741e1053eb607407145bc9619351dc93b
-        with:
-          # https://octokit.github.io/rest.js/v18#issues-create
-          script: |
-            github.rest.issues.addAssignees({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: "${{ steps.create-issue.outputs.result }}",
-              assignees: [
-                "smhmayboudi"
-              ]
-            })
     strategy:
       matrix:
         package:

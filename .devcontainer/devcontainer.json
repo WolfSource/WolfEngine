@@ -48,5 +48,5 @@
     "settings": {
         "lldb.executable": "/usr/bin/lldb"
     },
-    "shutdownAction": "stopContainer"
+    "shutdownAction": "none"
 }
