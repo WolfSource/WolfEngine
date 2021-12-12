@@ -346,8 +346,8 @@ jobs:
     strategy:
       matrix:
         package:
-          - wolf_render
-          - wolf_stream
+          # - wolf_render
+          # - wolf_stream
           - wolf_system
     timeout-minutes: 30
 name: Pull Request Main
