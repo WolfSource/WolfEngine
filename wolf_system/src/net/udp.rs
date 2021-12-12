@@ -198,7 +198,7 @@ pub async fn connect(
 #[test]
 async fn test() {
     /*
-            #test it with this python code
+    #test it with this python code
     import socket
 
     HOST = '127.0.0.1'  # The server's hostname or IP address
@@ -210,7 +210,6 @@ async fn test() {
     udp.sendto(str.encode("Hello UDP Server"), (HOST, PORT))
     msg = udp.recvfrom(1024)
     print('Received', msg.decode("utf-8"))
-
     */
 
     // block main thread with udp server

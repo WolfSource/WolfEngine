@@ -120,6 +120,6 @@
             "name": "Test wolf_system",
             "request": "launch",
             "type": "lldb",
-        }        
+        }
     ]
 }

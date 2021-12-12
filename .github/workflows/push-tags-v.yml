@@ -32,7 +32,7 @@ jobs:
           entrypoint: make
       -
         name: Upload Artifacts
-        uses: actions/upload-artifact@27121b0bdffd731efa15d66772be8dc71245d074
+        uses: actions/upload-artifact@da838ae9595ac94171fa2d4de5a2f117b3e7ac32
         with:
           path: release/*
     strategy:
@@ -55,8 +55,8 @@ jobs:
           - arm64
           - armv7
         package:
-          - wolf_render
-          - wolf_stream
+          # - wolf_render
+          # - wolf_stream
           - wolf_system
     timeout-minutes: 30
   release:
@@ -78,7 +78,7 @@ jobs:
           git-ref: ${{ github.ref }}
       -
         name: Download Artifacts
-        uses: actions/download-artifact@3be87be14a055c47b01d3bd88f8fe02320a9bb60
+        uses: actions/download-artifact@f023be2c48cc18debc3bacd34cb396e0295e2869
         with:
           path: artifact
       -
@@ -96,7 +96,7 @@ jobs:
           prerelease: ${{ steps.release-tag-meta.outputs.prerelease }}
           tag_name: ${{ steps.release-tag-meta.outputs.tag }}
           token: ${{ secrets.PACKAGE_REGISTRY }}
-    timeout-minutes: 10
+    timeout-minutes: 30
 name: Push Tags V
 on:
   push:

@@ -1,10 +1,10 @@
-# Wolf Stream 
+# Wolf Stream
 wolf_stream contains all streaming features of Wolf, this library is developed based on FFMPEG, GStreamer and LIVE555
 
 ## Installation
 
 To build this library, first you need to have at least GStreamer 1.8 and gst-plugins-base 1.8 installed. In addition, you might require various GStreamer plugins to be
-available, which can be found in gst-plugins-base, gst-plugins-good, 
+available, which can be found in gst-plugins-base, gst-plugins-good,
 gst-plugins-bad, gst-plugins-ugly and/or gst-libav.
 
 <a name="installation-windows"/>

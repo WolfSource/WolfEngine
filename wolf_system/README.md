@@ -1,4 +1,4 @@
-# Wolf System 
+# Wolf System
 wolf_system is the base library which contains all streaming features of Wolf Engine, this library is developed based on FFMPEG, GStreamer and LIVE555
 
 ## Installation
@@ -10,7 +10,7 @@ cargo build --release
 
 ### Windows
 
-You need to download and install latest Visual Studio with MSVC 
+You need to download and install latest Visual Studio with MSVC
 
 <a name="installation-linux"/>
 

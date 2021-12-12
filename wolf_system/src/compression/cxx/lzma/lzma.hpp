@@ -11,7 +11,7 @@ namespace lzma_cxx
 	/**
 	 * compress stream using lzma1 algorithm
 	 * @param pSrcBuffer is the source buffer
-	 * @param pLevel 0 <= level <= 9 
+	 * @param pLevel 0 <= level <= 9
 	 * @param pTrace is the trace information
 	 * @return compressed memory
 	*/

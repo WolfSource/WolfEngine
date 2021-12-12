@@ -72,6 +72,7 @@
         "**/.git/**": true,
         "**/coverage/**": true,
         "**/documentation/**": true,
+        "**/profile/**": true,
         "**/release/**": true,
         "**/target/**": true,
         "**/test/**": true
@@ -85,7 +86,7 @@
     "lldb.verboseLogging": true,
     "redhat.telemetry.enabled": true,
     "rust-analyzer.checkOnSave.command": "clippy",
-    "rust-analyzer.checkOnSave.overrideCommand": ["make", "clippy", "CLIPPY_MESSAGE_FORMAT=json"],
+    "rust-analyzer.checkOnSave.overrideCommand": ["make", "clippy", "MESSAGE_FORMAT=json"],
     "sqltools.useNodeRuntime": true,
     "terminal.integrated.sendKeybindingsToShell": true,
     "workbench.iconTheme": "material-icon-theme"

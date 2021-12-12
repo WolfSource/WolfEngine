@@ -11,7 +11,7 @@ namespace lz4_cxx
     /**
 	 * compress stream using lz4 algorithm
 	 * @param pSrcBuffer is the source buffer
-	 * @param pFastMode true means Fast mode and zero is Default mode 
+	 * @param pFastMode true means Fast mode and zero is Default mode
 	 * @param pAcceleration is the acceleration of process. the default value is 1
      * @param pTrace is the trace information
 	 * @return compressed memory

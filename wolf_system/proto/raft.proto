@@ -22,8 +22,8 @@ enum ErrorCode {
     RAFT_GET_METRICS_FAILED = 6;
 }
 
-/*  
-    The structure of the error response which is shared 
+/*
+    The structure of the error response which is shared
     between all rpc(s) of all services.
 */
 message RaftErrorRes {
@@ -43,7 +43,7 @@ message RaftBootstrapReq {
 message RaftBootstrapOkRes {
     string msg_id = 1;
 }
-  
+
 message RaftBootstrapRes {
     oneof response {
         RaftBootstrapOkRes ok_res = 1;
@@ -77,7 +77,7 @@ message RaftAppendEntriesOkRes {
     /// This value will only be present, and should only be considered, when `success` is `false`.
     optional ConflictOpt conflict_opt = 4;
 }
-  
+
 message RaftAppendEntriesRes {
     oneof response {
         RaftAppendEntriesOkRes ok_res = 1;
@@ -89,10 +89,10 @@ message RaftAppendEntriesRes {
     messages for InstallSnapshot
 */
 message RaftInstallSnapshotReq {
-    
+
     /// message ID
     string msg_id = 1;
-    
+
     /// The leader's current term.
     uint64 term = 2;
 
@@ -118,7 +118,7 @@ message RaftInstallSnapshotReq {
 message RaftInstallSnapshotOkRes {
     /// message ID
     string msg_id = 1;
-    
+
     /// The receiving node's current term, for leader to update itself.
     uint64 term = 2;
 }
@@ -134,10 +134,10 @@ message RaftInstallSnapshotRes {
     messages for Vote
 */
 message RaftVoteReq {
-    
+
     /// message ID
     string msg_id = 1;
-    
+
     /// The candidate's current term.
     uint64 term = 2;
 
@@ -149,16 +149,16 @@ message RaftVoteReq {
 
     /// The term of the candidate’s last log entry.
     uint64 last_log_term = 5;
-   
+
 }
 
 message RaftVoteOkRes {
     /// message ID
     string msg_id = 1;
-    
+
     /// The current term of the responding node, for the candidate to update itself.
     uint64 term = 2;
-    
+
     /// Will be true if the candidate received a vote from the responder.
     bool vote_granted = 3;
 }
@@ -181,7 +181,7 @@ message RaftGetMetricsOkRes {
     string msg_id = 1;
     string metrics = 2;
 }
-  
+
 message RaftGetMetricsRes {
     oneof response {
         RaftGetMetricsOkRes ok_res = 1;

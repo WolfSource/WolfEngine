@@ -3,7 +3,7 @@
 use core::panic;
 use git2::{IntoCString, Repository};
 use std::io::prelude::*;
-use std::io::{Error, ErrorKind};
+use std::io::{Error, ErrorKind, Result};
 use std::{collections::HashMap, fmt::format, path::Path};
 
 const MACOSX_DEPLOYMENT_TARGET: &str = "12.0"; //empty string means get the latest version from system
@@ -42,7 +42,7 @@ fn main() {
     let mut prefix_lib = "";
     let mut pre_command = "".to_string();
     let post_command: String;
-    let library_prefix_path: &str = "/usr/local/";
+    let library_prefix_path = "/usr/local/";
 
     let current_dir_path = std::env::current_dir().expect("could not get current directory");
 
@@ -396,7 +396,7 @@ fn main() {
                         v.10,
                     );
                     if build_ret.is_err() {
-                        panic!("{:?}", build_ret)
+                        panic!("{:?}", build_ret);
                     }
                 }
 
@@ -537,7 +537,7 @@ fn build_shell(
     p_value: &BuildConfig,
     p_shell_command: &str,
     p_need_unix_env: bool,
-) -> std::io::Result<()> {
+) -> Result<()> {
     //get path to make file
     let shell_script_parent_path = format!("{}/{}", p_git_repo_path, p_value.2);
     //check build folder
@@ -600,7 +600,7 @@ fn build_shell(
     Ok(())
 }
 
-fn write_to_file(p_file_path: &str, p_buffer: &str) -> std::io::Result<()> {
+fn write_to_file(p_file_path: &str, p_buffer: &str) -> Result<()> {
     let mut file = std::fs::File::create(p_file_path)?;
     file.write_all(p_buffer.as_bytes())?;
     Ok(())
@@ -643,7 +643,7 @@ fn find_unix_shell_path(
     shell_command
 }
 
-fn find_msvc_path(p_batch_path: &str, p_shell_type: &str) -> std::io::Result<String> {
+fn find_msvc_path(p_batch_path: &str, p_shell_type: &str) -> Result<String> {
     let shell_command: String; // default to shell script
 
     let mut batch_file = p_batch_path.to_string();
@@ -666,12 +666,12 @@ fn find_msvc_path(p_batch_path: &str, p_shell_type: &str) -> std::io::Result<Str
                         for /f \"tokens=1,2*\" %%a in ('reg query \"HKLM\\SOFTWARE\\Wow6432Node\\Microsoft\\VisualStudio\\SxS\\VS7\" /v \"%n%.0\" 2^>nul') do set \"localpath=%%c\"\n \
                         if \"%localpath%\" NEQ \"\" set %2=%localpath%\n \
                         goto :eof\n \
-                        endlocal         
+                        endlocal 
         ";
 
     write_to_file(&batch_file, buffer)?;
 
-    shell_command = format!("{} > {}/output", batch_file.as_str(), p_batch_path);
+    shell_command = format!("{} > {}/output", batch_file, p_batch_path);
     execute_command(p_shell_type, shell_command.as_str(), p_batch_path);
 
     let mut vs_path = std::fs::read_to_string(format!("{}/output", p_batch_path))
@@ -685,9 +685,9 @@ fn find_msvc_path(p_batch_path: &str, p_shell_type: &str) -> std::io::Result<Str
     }
 
     if vs_path.ends_with('\n') {
-        let mut _r_pop = vs_path.pop();
+        let mut _s_pop = vs_path.pop();
         if vs_path.ends_with('\r') {
-            _r_pop = vs_path.pop();
+            _s_pop = vs_path.pop();
         }
     }
 
