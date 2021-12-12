@@ -223,62 +223,64 @@ fn main() {
     }
 
     let mut git_sources: HashMap<&str, BuildConfig> = HashMap::new();
-    let _r = git_sources.insert(
-        "ffmpeg",
-        (
-            shell_type,
-            "https://github.com/FFmpeg/FFmpeg.git",
-            "",
-            [].to_vec(),
-            false,
-            "src/rtsp/client/cxx/",
-            "src/rtsp/client/rtsp_client.rs",
-            "",
-            [
-                ("avcodec".to_string(), false),
-                ("avdevice".to_string(), false),
-                ("avfilter".to_string(), false),
-                ("avformat".to_string(), false),
-                ("avutil".to_string(), false),
-                ("swresample".to_string(), false),
-                ("swscale".to_string(), false),
-            ]
-            .to_vec(),
-            [
-                format(format_args!(
-                    "cd {}/deps/{}/ && ",
-                    current_dir.replace("\\", "/"),
-                    "ffmpeg"
-                )),
-                "./configure".to_string(),
-                "--disable-x86asm".to_string(),
-                "--disable-doc".to_string(),
-                "--disable-ffplay".to_string(),
-                "--disable-ffprobe".to_string(),
-                "--disable-ffmpeg".to_string(),
-                "--enable-shared".to_string(),
-                "--disable-static".to_string(),
-                "--disable-bzlib".to_string(),
-                "--disable-libopenjpeg".to_string(),
-                "--disable-iconv".to_string(),
-                "--disable-zlib".to_string(),
-                format(format_args!(
-                    "--prefix={}/deps/{}/build/{}",
-                    current_dir.replace("\\", "/"),
-                    "ffmpeg",
-                    build_profile
-                )),
-                format!("--target-os={} ", target_os_ffmpeg),
-                format!("--arch={} ", target_arch),
-                format!("{} ", configure_flags),
-                "&& make clean".to_string(),
-                "&& make".to_string(),
-                "&& make install ".to_string(),
-            ]
-            .to_vec(),
-            true,
-        ),
-    );
+    if target_os == "macos" || target_os == "windows" {
+        let _r = git_sources.insert(
+            "ffmpeg",
+            (
+                shell_type,
+                "https://github.com/FFmpeg/FFmpeg.git",
+                "",
+                [].to_vec(),
+                false,
+                "src/rtsp/client/cxx/",
+                "src/rtsp/client/rtsp_client.rs",
+                "",
+                [
+                    ("avcodec".to_string(), false),
+                    ("avdevice".to_string(), false),
+                    ("avfilter".to_string(), false),
+                    ("avformat".to_string(), false),
+                    ("avutil".to_string(), false),
+                    ("swresample".to_string(), false),
+                    ("swscale".to_string(), false),
+                ]
+                .to_vec(),
+                [
+                    format(format_args!(
+                        "cd {}/deps/{}/ && ",
+                        current_dir.replace("\\", "/"),
+                        "ffmpeg"
+                    )),
+                    "./configure".to_string(),
+                    "--disable-x86asm".to_string(),
+                    "--disable-doc".to_string(),
+                    "--disable-ffplay".to_string(),
+                    "--disable-ffprobe".to_string(),
+                    "--disable-ffmpeg".to_string(),
+                    "--enable-shared".to_string(),
+                    "--disable-static".to_string(),
+                    "--disable-bzlib".to_string(),
+                    "--disable-libopenjpeg".to_string(),
+                    "--disable-iconv".to_string(),
+                    "--disable-zlib".to_string(),
+                    format(format_args!(
+                        "--prefix={}/deps/{}/build/{}",
+                        current_dir.replace("\\", "/"),
+                        "ffmpeg",
+                        build_profile
+                    )),
+                    format!("--target-os={} ", target_os_ffmpeg),
+                    format!("--arch={} ", target_arch),
+                    format!("{} ", configure_flags),
+                    "&& make clean".to_string(),
+                    "&& make".to_string(),
+                    "&& make install ".to_string(),
+                ]
+                .to_vec(),
+                true,
+            ),
+        );
+    }
 
     let _r = git_sources.insert(
         "live555",
