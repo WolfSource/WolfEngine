@@ -47,7 +47,7 @@ async fn tests() {
     s.connect(async {
         println!("slot 2 just called from main thread");
     });
-
+    //run thread
     let _r = tokio::spawn(async move {
         s.connect(async {
             println!("slot 3 just called from tokio thread");

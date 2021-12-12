@@ -152,10 +152,8 @@ fn main() {
     let mut include_srcs: Vec<String> = Vec::new();
     let mut lib_paths: HashMap<String, (String, bool)> = HashMap::new();
     let mut lib_deps = Vec::<(&'static str, bool)>::new();
-
     // create deps folder
     make_folder(&format!("{}/deps/", current_dir));
-
     // iterate over git repositories
     for (k, mut v) in git_sources {
         //store deps libraries

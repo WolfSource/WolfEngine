@@ -580,7 +580,7 @@ fn build_shell(
         write_to_file(&command_file, &shell_command)?;
 
         //write the path of command batch file to shell_command
-        shell_command = command_file.to_string();
+        shell_command = command_file;
     } else {
         shell_command = format!("cd {} && {}", &shell_script_parent_path, &p_shell_command);
     };
