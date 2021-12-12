@@ -248,8 +248,8 @@ jobs:
     strategy:
       matrix:
         package:
-          - wolf_render
-          - wolf_stream
+          #- wolf_render
+          #- wolf_stream
           - wolf_system
     timeout-minutes: 20
   coverage-finished:
