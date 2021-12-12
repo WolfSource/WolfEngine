@@ -151,7 +151,7 @@ async fn tests() {
         sys.used_swap_in_kb(),
         sys.total_swap_in_kb()
     );
-
+    // check path
     if path_to_the_process.is_empty() {
         println!("process name is empty");
     } else {

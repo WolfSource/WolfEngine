@@ -2,19 +2,16 @@
 
 use core::panic;
 use git2::{IntoCString, Repository};
-use std::fs::File;
 use std::io::prelude::*;
-use std::io::{Error, ErrorKind, Read, Result};
+use std::io::{Error, ErrorKind};
 use std::{collections::HashMap, fmt::format, path::Path};
 
 const MACOSX_DEPLOYMENT_TARGET: &str = "12.0"; //empty string means get the latest version from system
 
 #[derive(Copy, Clone)]
 enum BuildType {
-    // CMAKE = 0,
-    // MAKE,
     Shell,
-    CMD,
+    Cmd,
 }
 
 type BuildConfig = (
@@ -37,15 +34,15 @@ fn main() {
     let target_os_ffmpeg: &str;
     let target_os_live555: &str;
     let target_cpu_live555 = "amd64"; // TODO: change to sepecific CPU depending on current CPU
-    let mut changes_live555 = " ".to_string();
+    let changes_live555: String;
     let target_os =
         std::env::var("CARGO_CFG_TARGET_OS").expect("Build failed: could not get target OS");
     let target_arch = std::env::consts::ARCH;
-    let mut shell_type = BuildType::Shell; // default to shell script
+    let shell_type: BuildType; // default to shell script
     let mut prefix_lib = "";
     let mut pre_command = "".to_string();
-    let mut post_command = "".to_string();
-    let mut library_prefix_path = "/usr/local/";
+    let post_command: String;
+    let library_prefix_path: &str = "/usr/local/";
 
     let current_dir_path = std::env::current_dir().expect("could not get current directory");
 
@@ -56,7 +53,7 @@ fn main() {
             panic!("$PKG_CONFIG_PATH enviroment variable was not set.");
         }
 
-        shell_type = BuildType::CMD;
+        shell_type = BuildType::Cmd;
         prefix_lib = "lib";
         target_os_live555 = "genWindowsMakefiles.cmd";
         configure_flags = format!("{} --toolchain=msvc", configure_flags);
@@ -131,7 +128,7 @@ fn main() {
             .expect("could not get a &str from current directory");
 
         pre_command = [
-            format!("\"C:\\Program Files\\Git\\bin\\sh.exe\" -c "),
+            "\"C:\\Program Files\\Git\\bin\\sh.exe\" -c ".to_string(),
             "\"".to_string(),
             format!(
                 "cd {}/deps/{}/ && ",
@@ -175,7 +172,7 @@ fn main() {
             "{}/deps/{}/",
             current_dir.replace("\\", "/"),
             "live555"
-        )),target_cpu_live555, target_os_ffmpeg, "C:/Program Files/OpenSSL-Win64/include").to_string();
+        )),target_cpu_live555, target_os_ffmpeg, "C:/Program Files/OpenSSL-Win64/include");
 
         changes_live555 = [
             format(format_args!(
@@ -211,8 +208,7 @@ fn main() {
             )),
         ]
         .to_vec()
-        .join(" ")
-        .to_string();
+        .join(" ");
 
         post_command = format!("\" {} ", changes_live555);
     } else {
@@ -375,7 +371,7 @@ fn main() {
             };
         }
 
-        let mut shell_type = "sh";
+        let shell_type: &str;
 
         match ret {
             Ok(build) => {
@@ -384,13 +380,13 @@ fn main() {
                         BuildType::Shell => {
                             shell_type = "sh";
                         }
-                        BuildType::CMD => {
+                        BuildType::Cmd => {
                             shell_type = "cmd";
                         }
                     }
 
                     let shell_cmd = &v.9.join(" ");
-                    build_shell(
+                    let build_ret = build_shell(
                         shell_type,
                         build_profile,
                         &opt_level_str,
@@ -399,6 +395,9 @@ fn main() {
                         shell_cmd,
                         v.10,
                     );
+                    if build_ret.is_err() {
+                        panic!("{:?}", build_ret)
+                    }
                 }
 
                 //path to the cmake folder
@@ -533,7 +532,7 @@ fn main() {
 fn build_shell(
     p_shell_type: &str,
     p_make_build_profile: &str,
-    p_make_opt_level: &str,
+    _p_make_opt_level: &str,
     p_git_repo_path: &str,
     p_value: &BuildConfig,
     p_shell_command: &str,
@@ -550,7 +549,7 @@ fn build_shell(
     make_folder(&build_folder_str);
     make_folder(&install_folder_str);
 
-    let mut shell_command = " ".to_string();
+    let mut shell_command: String;
 
     //get the current path
     let current_dir_path = std::env::current_dir().expect("could not get current directory");
@@ -560,12 +559,12 @@ fn build_shell(
         .expect("could not get a &str from current directory");
 
     if cfg!(windows) {
-        let mut vs_path = find_msvc_path(&batch_path, p_shell_type)?;
+        let vs_path = find_msvc_path(&batch_path, p_shell_type)?;
 
         if p_need_unix_env {
             //run in Unix environment (i.e. mingw64, mingw32, msys2, ...)
             shell_command =
-                find_unix_shell_path(&shell_script_parent_path, vs_path, p_shell_command);
+                find_unix_shell_path(&shell_script_parent_path, &vs_path, p_shell_command);
         } else {
             shell_command = format!(
                 "call cd /D {}\n call {}\n call {} ",
@@ -581,7 +580,7 @@ fn build_shell(
         write_to_file(&command_file, &shell_command)?;
 
         //write the path of command batch file to shell_command
-        shell_command = format!("{}", command_file);
+        shell_command = command_file;
     } else {
         shell_command = format!("cd {} && {}", &shell_script_parent_path, &p_shell_command);
     };
@@ -601,15 +600,15 @@ fn build_shell(
     Ok(())
 }
 
-fn write_to_file(p_file_path: &String, p_buffer: &str) -> std::io::Result<()> {
-    let mut file = std::fs::File::create(p_file_path.as_str())?;
+fn write_to_file(p_file_path: &str, p_buffer: &str) -> std::io::Result<()> {
+    let mut file = std::fs::File::create(p_file_path)?;
     file.write_all(p_buffer.as_bytes())?;
     Ok(())
 }
 
 fn find_unix_shell_path(
-    p_shell_script_parent_path: &String,
-    p_vs_path: String,
+    p_shell_script_parent_path: &str,
+    p_vs_path: &str,
     p_shell_command: &str,
 ) -> String {
     // build for current arch
@@ -628,7 +627,7 @@ fn find_unix_shell_path(
         "-no-start".to_string(),
         "-here".to_string(),
         "-defterm".to_string(),
-        format!("-{}", arch).to_string(),
+        format!("-{}", arch),
         "-c ".to_string(),
     ]
     .to_vec();
@@ -639,19 +638,18 @@ fn find_unix_shell_path(
         p_vs_path,
         msys_shell.join(" "),
         p_shell_command
-    )
-    .to_string();
+    );
 
     shell_command
 }
 
-fn find_msvc_path(p_batch_path: &String, p_shell_type: &str) -> std::io::Result<String> {
-    let mut shell_command = " ".to_string(); // default to shell script
+fn find_msvc_path(p_batch_path: &str, p_shell_type: &str) -> std::io::Result<String> {
+    let shell_command: String; // default to shell script
 
-    let mut batch_file = p_batch_path.clone();
+    let mut batch_file = p_batch_path.to_string();
     batch_file.push_str("/vcvarsall_path.bat");
 
-    let mut buffer = "@echo off\n \
+    let buffer = "@echo off\n \
                         setlocal\n \
                         set vec[0]=10\n \
                         set vec[1]=11\n \
@@ -671,16 +669,15 @@ fn find_msvc_path(p_batch_path: &String, p_shell_type: &str) -> std::io::Result<
                         endlocal         
         ";
 
-    write_to_file(&batch_file, &buffer);
+    write_to_file(&batch_file, buffer)?;
 
-    shell_command =
-        format!("{} > {}/output", batch_file.as_str(), p_batch_path.as_str()).to_string();
-    execute_command(p_shell_type, shell_command.as_str(), p_batch_path.as_str());
+    shell_command = format!("{} > {}/output", batch_file.as_str(), p_batch_path);
+    execute_command(p_shell_type, shell_command.as_str(), p_batch_path);
 
-    let mut vs_path = std::fs::read_to_string(format!("{}/output", p_batch_path.as_str()))
+    let mut vs_path = std::fs::read_to_string(format!("{}/output", p_batch_path))
         .expect("Something went wrong reading the file");
 
-    if vs_path == "" {
+    if vs_path.is_empty() {
         return Err(Error::new(
             ErrorKind::Other,
             format!("Can not find {}", &shell_command),
@@ -688,9 +685,9 @@ fn find_msvc_path(p_batch_path: &String, p_shell_type: &str) -> std::io::Result<
     }
 
     if vs_path.ends_with('\n') {
-        vs_path.pop();
+        let mut _r_pop = vs_path.pop();
         if vs_path.ends_with('\r') {
-            vs_path.pop();
+            _r_pop = vs_path.pop();
         }
     }
 
@@ -702,29 +699,24 @@ fn find_msvc_path(p_batch_path: &String, p_shell_type: &str) -> std::io::Result<
         vs_path.push_str(r#" x86"#);
     }
 
-    std::fs::remove_file(format!("{}/output", p_batch_path.as_str()))?;
-    std::fs::remove_file(format!("{}/vcvarsall_path.bat", p_batch_path.as_str()))?;
+    std::fs::remove_file(format!("{}/output", p_batch_path))?;
+    std::fs::remove_file(format!("{}/vcvarsall_path.bat", p_batch_path))?;
     Ok(vs_path)
 }
 
 fn execute_command(p_shell: &str, p_shell_command: &str, p_make_parent_path: &str) {
-    let mut param = "-c";
-
-    if cfg!(windows) {
-        param = "/C";
-    }
+    let param = if cfg!(windows) { "/C" } else { "-c" };
 
     let out = std::process::Command::new(p_shell)
         .current_dir(p_make_parent_path)
         .args([param, p_shell_command])
         .output()
-        .expect(
-            format!(
+        .unwrap_or_else(|_| {
+            panic!(
                 "Build failed: could not build make for {}MakeFile",
                 p_make_parent_path
             )
-            .as_str(),
-        );
+        });
 
     if !out.status.success() {
         panic!(
