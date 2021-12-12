@@ -104,8 +104,9 @@ ifeq ("$(DETECTED_OS)", "Darwin")
 	&& brew install --quiet \
 		cmake \
 		glib \
-	&& export PKG_CONFIG_PATH=$(pkg-config --variable pc_path pkg-config) \
-	&& export PKG_CONFIG_PATH="/Library/Frameworks/GStreamer.framework/Versions/Current/lib/pkgconfig${PKG_CONFIG_PATH:+:}${PKG_CONFIG_PATH}"
+	&& PKG_CONFIG_PATH=$(pkg-config --variable pc_path pkg-config) \
+	&& PKG_CONFIG_PATH="/Library/Frameworks/GStreamer.framework/Versions/Current/lib/pkgconfig${PKG_CONFIG_PATH:+:}${PKG_CONFIG_PATH}" \
+	&& echo "export PKG_CONFIG_PATH=${PKG_CONFIG_PATH}" >> ~/.zshenv
 else ifeq ("$(DETECTED_OS)", "Linux")
 	export DEBIAN_FRONTEND="noninteractive" \
 	&& apt-get update \
@@ -322,12 +323,6 @@ fmt: add-fmt ## FMT
 .PHONY: fmt-check
 fmt-check: add-fmt ## FMT check
 	$(CARGO_FMT) -- --check
-
-# .PHONY: fmt-check-nightly
-# fmt-check: add-fmt ## FMT check
-# 	rustup toolchain install nightly
-# 	rustup +nightly component add rustfmt
-# 	$(CARGO) +nightly fmt --all -- --check
 
 .PHONY: generate-lockfile
 generate-lockfile: ## Generate lockfile

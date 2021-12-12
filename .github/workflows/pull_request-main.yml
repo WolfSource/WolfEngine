@@ -40,7 +40,7 @@ jobs:
         name: Audit
         run: make audit
         shell: bash
-    timeout-minutes: 10
+    timeout-minutes: 30
   check:
     container:
       image: docker://rust:1.57.0-bullseye
@@ -77,7 +77,7 @@ jobs:
         name: Check
         run: make check
         shell: bash
-    timeout-minutes: 10
+    timeout-minutes: 30
   conventional-commits-linter:
     container:
       image: docker://rust:1.57.0-bullseye
@@ -106,7 +106,7 @@ jobs:
         name: Conventional Commits
         run: ./script/conventional-commits-linter.sh ${{ github.event.pull_request.head.ref }}
         shell: bash
-    timeout-minutes: 10
+    timeout-minutes: 30
   deny-check:
     container:
       image: docker://rust:1.57.0-bullseye
@@ -162,7 +162,7 @@ jobs:
         checks:
           - advisories
           - bans licenses sources
-    timeout-minutes: 10
+    timeout-minutes: 30
   clippy:
     container:
       image: docker://rust:1.57.0-bullseye
@@ -197,7 +197,7 @@ jobs:
         name: Clippy
         run: make clippy
         shell: bash
-    timeout-minutes: 10
+    timeout-minutes: 30
   coverage:
     container:
       image: docker://rust:1.57.0-bullseye
@@ -268,7 +268,7 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         parallel-finished: true
-    timeout-minutes: 10
+    timeout-minutes: 30
   fmt-check:
     container:
       image: docker://rust:1.57.0-bullseye
@@ -303,7 +303,7 @@ jobs:
         name: Format Check
         run: make fmt-check
         shell: bash
-    timeout-minutes: 10
+    timeout-minutes: 30
   test:
     container:
       image: docker://rust:1.57.0-bullseye
@@ -349,7 +349,7 @@ jobs:
           - wolf_render
           - wolf_stream
           - wolf_system
-    timeout-minutes: 10
+    timeout-minutes: 30
 name: Pull Request Main
 on:
   pull_request:

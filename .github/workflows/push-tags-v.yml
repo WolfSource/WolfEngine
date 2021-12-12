@@ -96,7 +96,7 @@ jobs:
           prerelease: ${{ steps.release-tag-meta.outputs.prerelease }}
           tag_name: ${{ steps.release-tag-meta.outputs.tag }}
           token: ${{ secrets.PACKAGE_REGISTRY }}
-    timeout-minutes: 10
+    timeout-minutes: 30
 name: Push Tags V
 on:
   push:

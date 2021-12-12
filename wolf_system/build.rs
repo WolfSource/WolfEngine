@@ -155,7 +155,7 @@ fn main() {
 
     // create deps folder
     make_folder(&format!("{}/deps/", current_dir));
-    
+
     // iterate over git repositories
     for (k, mut v) in git_sources {
         //store deps libraries
