@@ -104,7 +104,7 @@ jobs:
           TRIVY_PASSWORD: ${{ secrets.PACKAGE_REGISTRY }}
           TRIVY_USERNAME: ${{ inputs.TRIVY_USERNAME }}
         name: Trivy
-        uses: aquasecurity/trivy-action@0769bbf0d2a77b3c15b3b57fbcdd2edd25a1c3f0
+        uses: aquasecurity/trivy-action@a7a829a4345428ddd92ca57b18257440f6a18c90
         with:
           exit-code: 1
           format: template
