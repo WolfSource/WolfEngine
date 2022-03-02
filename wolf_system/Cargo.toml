@@ -27,7 +27,7 @@ memstore = { default-features = false, version = "0.2.0" }
 mimalloc = { default-features = false, features = ["secure"], version = "0.1.27" }
 parking_lot = { default-features = false, features = ["deadlock_detection"], version = "0.11.2" }
 prost = { default-features = false, version = "0.9.0" }
-rustls-pemfile = { default-features = false, version = "0.2.1" }
+rustls-pemfile = { default-features = false, version = "0.3.0" }
 scylla = { default-features = false, version = "0.3.1" } # enable all features otherwise building fails on windows (openssl-sys error)
 serde_json = { default-features = false, features = ["std"], version = "1.0.72" }
 sysinfo = { default-features = false, features = ["multithread"], version = "0.21.2" }
