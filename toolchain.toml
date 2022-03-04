@@ -1,9 +1,0 @@
-[toolchain]
-channel = "stable"
-components = [
-    "clappy",
-    "miri",
-    "rustfmt"
-]
-profile = "default"
-targets = []

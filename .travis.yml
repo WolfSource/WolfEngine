@@ -1,0 +1,25 @@
+sudo: required
+
+python:
+  - "2.7"
+
+before_install:
+  - chmod +x install.sh
+  - python -V
+  - python -c "import sys; print(sys.path)"
+
+script: 
+      ./install.sh
+
+matrix:
+  include:
+    - os: osx
+      osx_image: xcode9.3beta
+      language: cpp
+      compiler: clang
+      xcode_workspace: ./engine/builds/xcode/wolf.engine.vulkan.metal.macOS.xworkspace
+      xcode_scheme: test_vulkan_macOS
+
+notifications:
+
+webhooks: https://outlook.office.com/webhook/ec839832-fce0-4fdd-aee1-337f058ce646@5e95f6cc-44e3-4dfa-973f-d29c034c6a26/TravisCI/c7b9e140660b45bf97eb045b9615da51/d98b6f7e-ac99-4d58-8e03-17efebb11ba6

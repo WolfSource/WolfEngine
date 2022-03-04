@@ -1,0 +1,19 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: ubuntu:bionic
+    steps:
+      - checkout
+      - run:
+          name: apt update
+          command: 'apt-get update'
+      - run:
+          name: setup clang
+          command: 'apt-get install -y clang cmake unzip libxcb1-dev ffmpeg libavcodec-dev libavformat-dev libswresample-dev libavutil-dev libswscale-dev'
+      - run:
+          name: clang version
+          command: clang --version
+      - run:
+          name: wolf.engine
+          command: ./install.sh
