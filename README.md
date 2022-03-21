@@ -1,4 +1,3 @@
-### Mirror: [BitBucket](https://bitbucket.org/_poei/wolf.engine)
 # Wolf Engine [![GPL v3 licensed](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://github.com/WolfEngine/Wolf.Engine/blob/master/LICENSE.md) 
 <p><b>Welcome to the Wolf Engine rust rewrite source code.</b></p> 
 <p>The&nbsp;<b>Wolf Engine</b>&nbsp;is the next
