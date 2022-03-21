@@ -1,6 +1,0 @@
-﻿<!-- Sample XML --><?xml version="1.0" encoding="utf-8"?>
-<peoples>
-	<people name="pooya" age="31"/>
-	<people name="rayan" age="0"/>
-</peoples>
-
