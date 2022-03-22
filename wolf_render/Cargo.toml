@@ -1,0 +1,32 @@
+[package]
+categories = ["game-development", "game-engines", "games", "graphics", "multimedia"]
+description = "A library for real-time rendering"
+edition = "2021"
+keywords = ["gamedev", "render"]
+license = "Private property © Pooya Eimandar"
+name = "wolf_render"
+readme = "https://github.com/WolfEngine/wolf/blob/main/README.md"
+repository = "https://github.com/WolfEngine/wolf/"
+version = "3.0.0"
+
+[lib]
+crate-type = ["rlib"]
+name = "wolf_render"
+path = "src/lib.rs"
+
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+pollster = {default-features = false, features = [], version = "0.2.5"}
+env_logger = {default-features = false, features = ["default"], version = "0.9.0"}
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+console_log = {default-features = false, features = ["default"], version = "0.2.0"}
+console_error_panic_hook = {default-features = false, features = [], version = "0.1.7"}
+wasm-bindgen-futures = {default-features = false, features = [], version = "0.4.29"}
+
+[dependencies]
+# before adding any dependency please check it out from
+# https://android.googlesource.com/platform/external/rust/crates/
+wgpu = {default-features = false, features = ["webgl"], version = "0.12.0"}
+
+[features]
+default = []

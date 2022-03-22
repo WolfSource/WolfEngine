@@ -1,0 +1,13 @@
+[package]
+categories = ["game-development", "game-engines", "games", "graphics", "multimedia"]
+description = "A library for real-time rendering"
+edition = "2021"
+keywords = ["wasm", "webassembly"]
+license = "Private property © Pooya Eimandar"
+name = "run-wasm"
+readme = "https://github.com/WolfEngine/wolf/blob/main/README.md"
+repository = "https://github.com/WolfEngine/wolf/"
+version = "0.1.1"
+
+[dependencies]
+cargo-run-wasm = "0.1.1"

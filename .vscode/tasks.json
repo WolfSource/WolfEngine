@@ -1,0 +1,95 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "tasks": [
+        {
+            "args": [
+                "build",
+                "PACKAGE=${input:member}"
+            ],
+            "command": "make",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "label": "Make: build",
+            "presentation":{
+                "clear": true
+            },
+            "problemMatcher": "$rustc",
+            "type": "shell"
+        },
+        {
+            "args": [
+                "check",
+                "PACKAGE=${input:member}"
+            ],
+            "command": "make",
+            "group": "none",
+            "label": "Make: check",
+            "presentation":{
+                "clear": true
+            },
+            "problemMatcher": "$rustc",
+            "type": "shell"
+        },
+        {
+            "args": [
+                "clean"
+            ],
+            "command": "make",
+            "group": "none",
+            "label": "Make: clean",
+            "presentation":{
+                "clear": true
+            },
+            "problemMatcher": "$rustc",
+            "type": "shell"
+        },
+        {
+            "args": [
+                "run",
+                "PACKAGE=${input:member}"
+            ],
+            "command": "make",
+            "group": "none",
+            "label": "Make: run",
+            "presentation":{
+                "clear": true
+            },
+            "problemMatcher": "$rustc",
+            "type": "shell"
+        },
+        {
+            "args": [
+                "test",
+                "PACKAGE=${input:member}"
+            ],
+            "command": "make",
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
+            "label": "Make: test",
+            "presentation":{
+                "clear": true
+            },
+            "problemMatcher": "$rustc",
+            "type": "shell"
+        }
+    ],
+    "inputs": [
+        {
+            "default": "api",
+            "description": "What member do you want to apply?",
+            "id": "member",
+            "options": [
+                "wolf_render",
+                "wolf_stream",
+                "wolf_system"
+            ],
+            "type": "pickString",
+        }
+    ],
+    "version": "2.0.0"
+}

@@ -1,4 +1,13 @@
+[attr]rust text eol=lf whitespace=tab-in-indent,trailing-space,tabwidth=4
+
 #sources
+* text=auto eol=lf
+*.fixed linguist-language=rust
+*.lock -diff -merge linguist-generated=false
+*.mir linguist-language=rust
+*.rs rust diff=rust
+*.sh rust diff=bash
+*.toml linguist-language=toml
 *.c text
 *.cc text
 *.cxx text
@@ -8,33 +17,4 @@
 *.h text
 *.h++ text
 *.hh text
-
-# Compiled Object files
-*.slo binary
-*.lo binary
-*.o binary
-*.obj binary
-
-
-# Precompiled Headers
-*.gch binary
-*.pch binary
-
-
-# Compiled Dynamic libraries
-*.so binary
-*.dylib binary
-*.dll binary
-
-
-# Compiled Static libraries
-*.lai binary
-*.la binary
-*.a binary
-*.lib binary
-
-
-# Executables
-*.exe binary
-*.out binary
-*.app binary
+*.rs rust
