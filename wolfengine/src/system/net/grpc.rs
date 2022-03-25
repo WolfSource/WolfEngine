@@ -16,6 +16,10 @@ pub struct GrpcServerConfig<'a> {
     accept_http1: bool,
 }
 
+/// # Errors
+///
+/// Will return `Err` if `p_config` does not provide TLS certificates or
+/// grpc server could not build.
 pub async fn run_server<S, F>(
     p_config: &GrpcServerConfig<'_>,
     p_service: S,
@@ -199,7 +203,7 @@ pub async fn create_channel(p_end_point: String) -> Result<Channel> {
 #[tokio::main]
 #[test]
 async fn test() {
-    use crate::algorithm::raft::raft_srv::get_service;
+    use crate::system::algorithm::raft::raft_srv::get_service;
 
     let (s, r) = tokio::sync::oneshot::channel();
     let _r = tokio::spawn(async {

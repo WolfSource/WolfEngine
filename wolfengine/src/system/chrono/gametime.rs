@@ -18,7 +18,7 @@ fn seconds_to_ticks(p_seconds: f64) -> f64 {
 /// Example:
 ///
 /// ```no_run
-/// use wolf_system::chrono::gametime::GameTime;
+/// use wolfengine::chrono::gametime::GameTime;
 /// let mut gtime = GameTime::new();
 /// gtime.set_fixed_time_step(true);
 /// gtime.set_target_elapsed_seconds(1.0 / 60.0); //ticks every 0.016 sec (60 fps)
@@ -83,7 +83,7 @@ impl GameTime {
     /// Example:
     ///
     /// ```
-    /// use wolf_system::chrono::gametime::GameTime;
+    /// use wolfengine::chrono::gametime::GameTime;
     ///
     /// let mut gtime = GameTime::new();
     /// gtime.reset();
@@ -331,7 +331,7 @@ impl GameTime {
 
 #[test]
 fn test() {
-    use crate::chrono::gametime::GameTime;
+    use super::gametime::GameTime;
     let mut gtime = GameTime::new();
     gtime.set_fixed_time_step(true);
     gtime.set_target_elapsed_seconds(1.0 / 60.0); //ticks every 16 ms (60 fps)

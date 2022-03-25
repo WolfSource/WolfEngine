@@ -55,9 +55,7 @@ jobs:
           - arm64
           - armv7
         package:
-           - wolf_render
-          #- wolf_stream
-          - wolf_system
+          - wolfengine
     timeout-minutes: 30
   release:
     name: GitHub Release

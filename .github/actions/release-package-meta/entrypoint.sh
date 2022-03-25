@@ -5,7 +5,7 @@ set -o errexit
 set -o pipefail
 set -o nounset
 
-ref=${1:-"wolf_system"}
+ref=${1:-"wolfengine"}
 package=${ref#"wolf_"}
 
 echo "::set-output name=package::${package}"

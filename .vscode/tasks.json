@@ -84,9 +84,7 @@
             "description": "What member do you want to apply?",
             "id": "member",
             "options": [
-                "wolf_render",
-                "wolf_stream",
-                "wolf_system"
+                "wolfengine"
             ],
             "type": "pickString",
         }

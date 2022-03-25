@@ -2,7 +2,6 @@ use super::{
     callback::{MessageType, OnCloseSocketCallback, OnMessageCallback, OnSocketCallback},
     tls::{load_root_ca, TlsPrivateKeyType},
 };
-use crate::net::tcp_protocol::TcpProtocol;
 use anyhow::anyhow;
 use futures::StreamExt;
 use std::time::Duration;
@@ -17,6 +16,12 @@ use tokio_rustls::{
 };
 
 const MAX_BUFFER_SIZE: usize = 1024; //1K
+
+#[derive(Debug, Copy, Clone)]
+pub enum TcpProtocol {
+    TcpNative = 0,
+    TcpWebsocket,
+}
 
 #[derive(Debug)]
 pub struct TcpServerConfig<'a> {

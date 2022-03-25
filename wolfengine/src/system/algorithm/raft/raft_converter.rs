@@ -5,6 +5,9 @@ use super::raft_srv::wolf_raft::{
 use anyhow::{anyhow, bail};
 
 /// Convert `async_raft`'s `AppendEntriesRequest` to grpc's `RaftAppendEntriesReq`
+/// # Errors
+///
+/// Will return `Err` if `p_req` could not serialize.
 pub fn raft_append_entries_req_to_grpc_append_entries_req(
     p_msg_id: String,
     p_req: &async_raft::raft::AppendEntriesRequest<memstore::ClientRequest>,
@@ -25,6 +28,9 @@ pub fn raft_append_entries_req_to_grpc_append_entries_req(
 }
 
 /// Convert grpc's `RaftAppendEntriesReq` to `async_raft`'s `AppendEntriesRequest`
+/// # Errors
+///
+/// if the function couldn't deserialize json message.
 pub fn grpc_append_entries_req_to_raft_append_entries_req(
     p_req: &RaftAppendEntriesReq,
 ) -> anyhow::Result<async_raft::raft::AppendEntriesRequest<memstore::ClientRequest>> {

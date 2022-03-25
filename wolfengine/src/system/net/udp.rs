@@ -1,5 +1,4 @@
-use crate::net::callback::MessageType;
-
+use super::callback::MessageType;
 use super::callback::{OnCloseSocketCallback, OnMessageCallback, OnSocketCallback};
 use std::{net::SocketAddr, str::FromStr};
 use tokio::{net::UdpSocket, time::Instant};

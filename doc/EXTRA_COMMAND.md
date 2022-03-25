@@ -5,7 +5,7 @@ $ rustup target add \
     aarch64-unknown-linux-musl \
     armv7-unknown-linux-musleabihf \
     x86_64-unknown-linux-musl
-$ cargo build --package wolf_system --release --target aarch64-unknown-linux-musl
+$ cargo build --package wolfengine --release --target aarch64-unknown-linux-musl
 ```
 
 ```shell
@@ -15,17 +15,17 @@ $ rustc --print target-features --target ${TRIPLE}
 ```
 
 ```shell
-$ docker build . --file ./wolf_system/Dockerfile --tag wolf/system:0.1.0-nonroot
+$ docker build . --file ./wolfengine/Dockerfile --tag wolf/system:0.1.0-nonroot
 $ docker run --env LINKERD_AWAIT_DISABLED=TRUE --interactive --publish 8080:8080 --rm wolf/system:0.1.0-nonroot
 ```
 
 ```shell
 $ brew install upx
-$ upx --ultra-brute ./target/aarch64-unknown-linux-musl/release/wolf_system
+$ upx --ultra-brute ./target/aarch64-unknown-linux-musl/release/wolfengine
 ```
 
 ```shell
-$ perf record --call-graph dwarf ./target/aarch64-unknown-linux-musl/release/wolf_system
+$ perf record --call-graph dwarf ./target/aarch64-unknown-linux-musl/release/wolfengine
 $ perf report --disassembler-style intel --hierarchy
 ```
 

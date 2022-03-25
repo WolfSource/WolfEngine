@@ -8,7 +8,7 @@ SHELL = /bin/bash
 # MESSAGE_FORMAT: human, json
 # MIRI_SUB_COMMAND: run, test
 # NIGHTLY: +nightly
-# PACKAGE: wolf_system
+# PACKAGE: wolfengine
 # RELEASE: --release
 # STRIP: aarch64-linux-gnu-strip, arm-linux-gnueabihf-strip, strip
 # TARGET: aarch64-unknown-linux-musl, armv7-unknown-linux-musleabihf, x86_64-unknown-linux-musl
@@ -19,7 +19,7 @@ CARGO ?= cargo
 DENY_CHECK_WHICH ?= advisories bans licenses sources
 GRCOV_COVERAGE_TYPE ?= lcov
 MESSAGE_FORMAT ?= human
-PACKAGE ?= wolf_system
+PACKAGE ?= wolfengine
 MIRI_SUB_COMMAND ?= run
 # RELEASE ?= --release
 STRIP ?= strip

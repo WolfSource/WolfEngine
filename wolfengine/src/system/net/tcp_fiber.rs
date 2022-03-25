@@ -1,6 +1,6 @@
 use super::{
     callback::{MessageType, OnCloseSocketCallback, OnMessageCallback, OnSocketCallback},
-    tcp_protocol::TcpProtocol,
+    tcp::TcpProtocol,
 };
 use std::{
     net::SocketAddr,
@@ -270,7 +270,7 @@ pub fn server(
 #[tokio::main]
 #[test]
 async fn test_native() {
-    use crate::net::callback::MessageType;
+    use super::callback::MessageType;
     use std::sync::mpsc::{channel, Receiver, Sender};
 
     static TCP_FIBER_SERVER_CONFIG: TcpFiberServerConfig = TcpFiberServerConfig {
@@ -343,7 +343,7 @@ async fn test_native() {
             },
         ));
 
-        let tcp_client_config = crate::net::tcp::TcpClientConfig {
+        let tcp_client_config = super::tcp::TcpClientConfig {
             //protocol: TcpProtocol::TcpNative, //we need to provide ws client code from rust
             endpoint_address: "0.0.0.0",
             port: 8000,
@@ -352,7 +352,7 @@ async fn test_native() {
             tls_ca_path: None,
         };
 
-        let ret = crate::net::tcp::client(
+        let ret = super::tcp::client(
             &tcp_client_config,
             on_accept_connection,
             on_msg_callback,

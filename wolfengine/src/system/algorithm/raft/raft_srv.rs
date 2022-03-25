@@ -1,12 +1,14 @@
-#![allow(unused_qualifications)]
+#![allow(clippy::default_trait_access)]
+#![allow(clippy::doc_markdown)]
+#![allow(clippy::future_not_send)]
+#![allow(clippy::missing_errors_doc)]
+#![allow(clippy::must_use_candidate)]
+#![allow(clippy::return_self_not_must_use)]
+#![allow(clippy::similar_names)]
+#![allow(clippy::use_self)]
+#![allow(clippy::wildcard_imports)]
 #![allow(missing_debug_implementations)]
-#![allow(clippy::similar_names)] //because of tonic::include_proto!
-#![allow(clippy::must_use_candidate)] //because of tonic::include_proto!
-#![allow(clippy::default_trait_access)] //because of tonic::include_proto!
-#![allow(clippy::wildcard_imports)] //because of tonic::include_proto!
-#![allow(clippy::future_not_send)] //because of tonic::include_proto!
-#![allow(clippy::use_self)] //because of tonic::include_proto!
-#![allow(clippy::doc_markdown)] //because of tonic::include_proto!
+#![allow(unused_qualifications)]
 
 use super::raft_imp::{self, MemRaft};
 use std::collections::HashSet;
