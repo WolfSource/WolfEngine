@@ -2132,7 +2132,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "504a2476202769977a040c6364301a3f65d0cc9e3fb08600b2bda150a0488316"
 
 [[package]]
-name = "wolf-engine"
+name = "wolfengine"
 version = "3.0.0"
 dependencies = [
  "anyhow",

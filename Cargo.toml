@@ -217,7 +217,7 @@ rpath = false
 [workspace]
 resolver = "2"
 members = [
-  "wolf-engine",
+  "wolfengine",
   #"wolf_deps/luajit",
   #"wolf_deps/lz4",
   #"wolf_macros",
