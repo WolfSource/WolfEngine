@@ -217,12 +217,12 @@ rpath = false
 [workspace]
 resolver = "2"
 members = [
-  "wolf_build",
-  "wolf_deps/luajit",
+  "wolf-engine",
+  #"wolf_deps/luajit",
   #"wolf_deps/lz4",
-  "wolf_macros",
+  #"wolf_macros",
   #"wolf_render",
   #"wolf_stream",
-  "wolf_system",
+  #"wolf_system",
   #"run-wasm",
 ]
