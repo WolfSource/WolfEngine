@@ -17,12 +17,15 @@ path = "src/lib.rs"
 [dependencies]
 # before adding any dependency please check it out from
 # https://android.googlesource.com/platform/external/rust/crates/
+
 anyhow = {default-features = false, features = ["std"], version = "1.0.56"}
 async-raft = {default-features = false, version = "0.6.1"}
 async-trait = {default-features = false, version = "0.1.52"}
 cxx = {default-features = false, features = ["std"], version = "1.0.66"}
 futures = {default-features = false, version = "0.3.21"}
 hyper = {default-features = false, version = "0.14.17"}
+lazy_static = {default-features = false, version = "1.4.0"}
+luajit = { path = "../wolf_deps/luajit" } 
 may = {default-features = false, version = "0.3.20"}
 memstore = {default-features = false, version = "0.2.0"}
 mimalloc = {default-features = false, features = ["secure"], version = "0.1.28"}
@@ -39,6 +42,7 @@ tonic = {default-features = false, features = ["codegen", "prost", "tls", "compr
 tracing = {default-features = false, features = ["std", "attributes"], version = "0.1.32"}
 uuid = {default-features = false, features = ["v5"], version = "0.8.2"}
 webpki-roots = {default-features = false, version = "0.22.2"}
+wolf_macros = { path = "../wolf_macros" }
 
 [build-dependencies]
 wolf_build = { path = "../wolf_build" }

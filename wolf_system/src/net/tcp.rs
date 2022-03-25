@@ -15,6 +15,7 @@ use tokio_rustls::{
     rustls::{self},
     TlsAcceptor, TlsConnector,
 };
+use wolf_macros::STR;
 
 const MAX_BUFFER_SIZE: usize = 1024; //1K
 
@@ -192,9 +193,8 @@ where
 
             let str_res = std::str::from_utf8(p_msg_buf);
             if str_res.is_ok() {
-                let r =
-                    futures::SinkExt::send(p_ws_stream, Message::Text(S!(str_res.unwrap())))
-                        .await;
+                let r = futures::SinkExt::send(p_ws_stream, Message::Text(STR!(str_res.unwrap())))
+                    .await;
                 if r.is_err() {
                     *p_close_msg =  format!("websocket connection is going to close, because the TEXT message could not send. Reason: {:?}", r);
                     *p_close_code = CloseCode::Abnormal;

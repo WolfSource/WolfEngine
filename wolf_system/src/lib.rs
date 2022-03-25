@@ -12,4 +12,4 @@ pub mod compression;
 pub mod db;
 pub mod net;
 pub mod os;
-//pub mod script;
+pub mod script;

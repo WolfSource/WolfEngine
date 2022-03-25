@@ -1,2 +1,2 @@
-#[cfg(all(feature = "lua", not(target_os = "windows")))]
+#[cfg(all(feature = "lua"))]
 pub mod lua;
