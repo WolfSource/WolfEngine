@@ -4,7 +4,7 @@
 
 ## GPL v3 (Open Source)
 <p>Free and Open Source Software (FOSS) is software that comes with a license that gives users certain rights. In particular the right to use the software, to modify it, to obtain its source, and to pass it on (under the same terms). Notice that the term "<b>free</b>" is about <b>rights</b>, <b>not money</b>. The Free Software Foundation, the creator of the GNU GPL, speaks of free in this context as in "<b>free speech</b>", not as in "<b>no cost</b>".</p>
-<p>The <a href="https://WolfEngine.github.io">WolfSource</a> supports the free software concept by providing the Wolf.Engine Open Source Edition, which is licensed under the GNU General Public License (GPL) version 3. You can use Wolf.Engine to create and distribute software with licenses that are compatible with this free software license.</p>
+<p>The <a href="https://WolfEngine.github.io">Wolf Engine</a> supports the free software concept by providing the Wolf.Engine Open Source Edition, which is licensed under the GNU General Public License (GPL) version 3. You can use Wolf.Engine to create and distribute software with licenses that are compatible with this free software license.</p>
 <p>More information on Free and Open Source software is available online.</p>
 <p>GNU GPL-3: <a href="http://www.gnu.org/">http://www.gnu.org/</a> and <a href="https://www.gnu.org/licenses/gpl-3.0">https://www.gnu.org/licenses/gpl-3.0</a></p>
 <p>Open Source licensing: <a href="http://www.opensource.org/">http://www.opensource.org/</a></p>
