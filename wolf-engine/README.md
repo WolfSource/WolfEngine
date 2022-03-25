@@ -1,67 +1,19 @@
-# Wolf System
-wolf_system is the base library which contains all streaming features of Wolf Engine, this library is developed based on FFMPEG, GStreamer and LIVE555
+# Wolf Engine [![LGPL v3 licensed](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](https://github.com/WolfEngine/Wolf.Engine/blob/main/LICENSE.md)
+<img src="https://raw.githubusercontent.com/WolfEngine/WolfEngine/main/Logo.png" width="256" height="256" alt="WolfEngine"/>
 
-## Installation
+**Wolf Engine** is the next generation of [Persian Game Engine](https://github.com/PooyaEimandar/PersianEngine) which is a
+cross-platform open source game engine created by [Pooya Eimandar](https://pooyaeimandar.github.io)
+This Wolf is a comprehensive set of Rust/C libraries for realtime rendering, realtime streaming and game developing, which is support **Lua** & **Python** as an embedded script and binding language.</p>
 
-cd ./path-to-the-root-wolf_system
-cargo build --release
+## Projects using Wolf
+- [Wolf.Playout](https://www.youtube.com/watch?v=EZSdEjBvuGY) is a playout automation software
+- [Falcon](https://youtu.be/ygpz35ddZ_4) is a real time 3D monitoring system, developed at [FANAP Co.](https://fanap.ir/)
+- Barf is a real time streaming core of [PlayPod](https://playpod.ir), the first cloud gaming platform in Middle East since 2017
 
-<a name="installation-windows"/>
+## Branches
+- [main](https://github.com/WolfEngine/WolfEngine/tree/main), Wolf3, is the latest version of Wolf which is written in **Rust and contains some unsafe codes** and is not ready for production
+- [Wolf2](https://github.com/WolfEngine/WolfEngine/tree/wolf-2) is written in **C/C++ and is in maintenance mode**
+- [releases](https://github.com/WolfEngine/WolfEngine/releases) contains old releases and source codes
 
-
-### Windows
-
-You need to download and install latest Visual Studio with MSVC
-If you want to use os/vigem_client you have to download and setup [ViGEmBus](https://github.com/ViGEm/ViGEmBus/releases)
-
-<a name="installation-linux"/>
-
-
-### Linux/BSDs
-
-You need to install the above mentioned packages with your distributions
-package manager, or build them from source.
-
-On Debian/Ubuntu they can be installed with
-
-```console
-$ apt-get install libssl-dev gcc g++ make cmake
-```
-
-The minimum required version of the above libraries is >= 1.8. If you
-build the gstreamer-player sub-crate, or any of the examples that
-depend on gstreamer-player, you must ensure that in addition to the
-above packages, `libgstreamer-plugins-bad1.0-dev` is installed and
-that the version is >= 1.12. See the `Cargo.toml` files for the full
-details,
-
-```console
-$ # Only if you wish to install gstreamer-player, make sure the version
-$ # of this package is >= 1.12.
-$ apt-get install libgstreamer-plugins-bad1.0-dev
-```
-
-Package names on other distributions should be similar.
-Please submit a pull request with instructions for yours.
-
-<a name="installation-macos"/>
-
-
-### macOS
-
-First install openssl via [Homebrew](https://brew.sh/)
-
-```console
-$ brew install openssl
-```
-
-You need to download the *two* `.pkg` files from the [GStreamer website](https://gstreamer.freedesktop.org/data/pkg/osx/) and install them, e.g. `gstreamer-1.0-x.y.z-x86_64.pkg` and
-`gstreamer-1.0-devel-x.y.z-x86_64.pkg`.
-
-After installation, you also need to install `pkg-config` and set the `PKG_CONFIG_PATH` environment variable
-
-```console
-$ open ~/.zprofile
-$ export PKG_CONFIG_PATH="/Library/Frameworks/GStreamer.framework/Versions/Current/lib/pkgconfig${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}"
-$ source .zprofile
-```
+## Copyright & License
+Wolf Engine © 2014-2022 [Pooya Eimandar](https://www.linkedin.com/in/pooyaeimandar)
