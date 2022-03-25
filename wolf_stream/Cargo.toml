@@ -1,13 +1,13 @@
 [package]
-edition = "2021"
-name = "wolf_stream"
-version = "3.0.0"
-description = "A library for real-time streaming"
-license = "private property © Pooya Eimandar"
-repository = "https://github.com/WolfEngine/wolf/"
-keywords = ["gamedev", "realtime", "stream"]
 categories = ["game-development", "game-engines", "games", "graphics", "multimedia"]
+description = "A library for real-time streaming"
+edition = "2021"
+keywords = ["gamedev", "realtime", "stream"]
+license = "private property © Pooya Eimandar"
+name = "wolf_stream"
 readme = "https://github.com/WolfEngine/wolf/blob/main/README.md"
+repository = "https://github.com/WolfEngine/wolf/"
+version = "3.0.0"
 
 [lib]
 crate-type = ["rlib"]

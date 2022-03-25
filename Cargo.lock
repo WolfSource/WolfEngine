@@ -901,17 +901,9 @@ dependencies = [
 
 [[package]]
 name = "luajit"
-version = "0.1.0"
+version = "3.0.0"
 dependencies = [
  "wolf_build",
-]
-
-[[package]]
-name = "lz4"
-version = "0.1.0"
-dependencies = [
- "wolf_build",
- "wolf_macros",
 ]
 
 [[package]]
@@ -2526,7 +2518,7 @@ checksum = "504a2476202769977a040c6364301a3f65d0cc9e3fb08600b2bda150a0488316"
 
 [[package]]
 name = "wolf_build"
-version = "0.1.0"
+version = "3.0.0"
 dependencies = [
  "bindgen",
  "tonic-build",
@@ -2535,7 +2527,7 @@ dependencies = [
 
 [[package]]
 name = "wolf_macros"
-version = "0.1.0"
+version = "3.0.0"
 
 [[package]]
 name = "wolf_system"
