@@ -901,7 +901,7 @@ dependencies = [
 
 [[package]]
 name = "luajit"
-version = "3.0.0"
+version = "0.1.0"
 dependencies = [
  "wolf_build",
 ]
