@@ -8,7 +8,7 @@ This Wolf is a comprehensive set of Rust/C libraries for realtime rendering, rea
 ## Projects using Wolf
 - [Wolf.Playout](https://www.youtube.com/watch?v=EZSdEjBvuGY) is a playout automation software
 - [Falcon](https://youtu.be/ygpz35ddZ_4) is a real time 3D monitoring system, developed at [FANAP Co.](https://fanap.ir/)
-- Barf is a real time streaming core of [PlayPod](https://playpod.ir), the first cloud gaming platform in Middle East since 2017
+- Barf is a real time streaming core for cloud gaming platform
 
 ## Branches
 - [main](https://github.com/WolfEngine/WolfEngine/tree/main), Wolf3, is the latest version of Wolf which is written in **Rust and contains some unsafe codes** and is not ready for production
