@@ -220,7 +220,7 @@ members = [
   "wolf_build",
   "wolf_deps/luajit",
   #"wolf_deps/lz4",
-  #"wolf_macros",
+  "wolf_macros",
   #"wolf_render",
   #"wolf_stream",
   "wolf_system",

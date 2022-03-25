@@ -5,8 +5,8 @@ edition = "2021"
 keywords = ["gamedev", "system"]
 license = "Copyright © Pooya Eimandar"
 name = "wolf_system"
-readme = "https://github.com/WolfEngine/wolf/blob/main/README.md"
-repository = "https://github.com/WolfEngine/wolf/"
+readme = "https://github.com/WolfEngine/WolfEngine/blob/main/README.md"
+repository = "https://github.com/WolfEngine/WolfEngine/"
 version = "3.0.0"
 
 [lib]

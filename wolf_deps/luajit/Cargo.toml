@@ -6,7 +6,7 @@ keywords = ["ffi", "api"]
 license = "https://github.com/LuaJIT/LuaJIT/blob/v2.1/COPYRIGHT"
 name = "luajit"
 readme = "https://github.com/LuaJIT/LuaJIT/blob/v2.1/README"
-repository = "https://github.com/LuaJIT/LuaJIT"
+repository = "https://github.com/WolfEngine/WolfEngine/"
 version = "3.0.0"
 
 [lib]
