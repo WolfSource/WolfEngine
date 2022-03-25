@@ -3,7 +3,7 @@ categories = ["game-development", "game-engines", "games", "graphics", "multimed
 description = "A library for general system programing"
 edition = "2021"
 keywords = ["gamedev", "system"]
-license = "Copyright © Pooya Eimandar"
+license = "https://github.com/WolfEngine/WolfEngine/blob/main/LICENSE.md"
 name = "wolf_system"
 readme = "https://github.com/WolfEngine/WolfEngine/blob/main/README.md"
 repository = "https://github.com/WolfEngine/WolfEngine/"
@@ -25,7 +25,7 @@ cxx = {default-features = false, features = ["std"], version = "1.0.66"}
 futures = {default-features = false, version = "0.3.21"}
 hyper = {default-features = false, version = "0.14.17"}
 lazy_static = {default-features = false, version = "1.4.0"}
-luajit = { path = "../wolf_deps/luajit" } 
+luajit = { version = "3.0.0", path = "../wolf_deps/luajit" } 
 may = {default-features = false, version = "0.3.20"}
 memstore = {default-features = false, version = "0.2.0"}
 mimalloc = {default-features = false, features = ["secure"], version = "0.1.28"}
@@ -42,10 +42,10 @@ tonic = {default-features = false, features = ["codegen", "prost", "tls", "compr
 tracing = {default-features = false, features = ["std", "attributes"], version = "0.1.32"}
 uuid = {default-features = false, features = ["v5"], version = "0.8.2"}
 webpki-roots = {default-features = false, version = "0.22.2"}
-wolf_macros = { path = "../wolf_macros" }
+wolf_macros = { version = "3.0.0", path = "../wolf_macros" }
 
 [build-dependencies]
-wolf_build = { path = "../wolf_build" }
+wolf_build = { version = "3.0.0", path = "../wolf_build" }
 
 [dev-dependencies]
 lazy_static = {default-features = false, version = "1.4.0"}

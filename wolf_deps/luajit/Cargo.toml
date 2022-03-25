@@ -1,6 +1,6 @@
 [package]
 categories = ["api-bindings"]
-description = "A rust wrapper over luaJIT"
+description = "A rust bindgens over luaJIT for WolfEngine"
 edition = "2021"
 keywords = ["ffi", "api"]
 license = "https://github.com/LuaJIT/LuaJIT/blob/v2.1/COPYRIGHT"
@@ -17,4 +17,4 @@ path = "src/lib.rs"
 default = []
 
 [build-dependencies]
-wolf_build = { path = "../../wolf_build" }
+wolf_build = { version = "3.0.0", path = "../../wolf_build" }
