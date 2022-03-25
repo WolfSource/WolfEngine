@@ -1,0 +1,21 @@
+[package]
+categories = ["api-bindings"]
+description = "A rust wrapper over lz4"
+edition = "2021"
+keywords = ["ffi", "api"]
+license = "https://github.com/lz4/lz4/blob/dev/LICENSE"
+name = "lz4"
+readme = "https://github.com/lz4/lz4/blob/dev/README.md"
+repository = "https://github.com/lz4/lz4"
+version = "0.1.0"
+
+[lib]
+name = "lz4"
+path = "src/lib.rs"
+
+[features]
+default = []
+
+[build-dependencies]
+wolf_build = { path = "../../wolf_build" }
+wolf_macros = { path = "../../wolf_macros"}

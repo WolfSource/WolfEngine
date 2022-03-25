@@ -1,0 +1,20 @@
+description: Extract release metadata from the tag
+inputs:
+  git-ref:
+    description: The git ref (i.e. starting with refs/tags)
+    required: true
+name: Release tag meta
+outputs:
+  name:
+    description: The prerelease/release name
+  prerelease:
+    description: Is it release candidate?
+  tag:
+    description: The tag version (without the refs/tags/ prefix)
+  version:
+    description: The prerelease/release version (without the refs/tags/v prefix)
+runs:
+  args:
+    - ${{ inputs.git-ref }}
+  image: Dockerfile
+  using: docker

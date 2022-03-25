@@ -1,0 +1,18 @@
+#!/bin/bash
+
+set -eux
+set -o errexit
+set -o pipefail
+set -o nounset
+
+make \
+	clippy \
+	fmt-check
+
+for FILE in $(git diff --name-status --staged \
+			| grep .rs \
+			| grep --invert-match "D" \
+			| grep --invert-match "R" \
+			| cut -d " " -f 2); do
+	git add ${FILE}
+done

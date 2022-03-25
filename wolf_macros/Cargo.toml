@@ -1,0 +1,19 @@
+[package]
+categories = ["builder"]
+description = "Common macros for Wolf Engine"
+edition = "2021"
+keywords = ["macro"]
+license = "Copyright © Pooya Eimandar"
+name = "wolf_macros"
+readme = "https://github.com/WolfEngine/wolf/blob/main/README.md"
+repository = "https://github.com/WolfEngine/wolf/"
+version = "0.1.0"
+
+[lib]
+name = "wolf_macros"
+path = "src/lib.rs"
+
+[features]
+default = []
+
+[dependencies]
