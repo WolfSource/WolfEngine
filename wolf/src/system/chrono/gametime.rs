@@ -1,3 +1,6 @@
+// Note that even if the wasm-bindgen feature is enabled,
+// this crate will continue to rely on std::time::Instant as long as you are not targeting wasm32.
+// This allows for portable code that will work on both native and WASM platforms.
 use instant::Instant;
 
 //integer format represents time using 10,000,000 ticks per second
