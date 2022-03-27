@@ -17,9 +17,8 @@ This Wolf is a comprehensive set of Rust/C libraries for realtime rendering, rea
 
 ## Build
 - **Wolf 2/1** via CMake
-- **Wolf 3**
-  For **Webassembly** :\
-  \
+- **Wolf 3**\
+  - For **Webassembly** :\
   First you need to setup wasm32
   ```bash
   rustup target add wasm32-unknown-unknown
@@ -29,7 +28,7 @@ This Wolf is a comprehensive set of Rust/C libraries for realtime rendering, rea
   cargo run-wasm --example hello
   ```
   Finally the example will be served at http://localhost:8000
-  For **Native** :
+  - For **Native** :
   ```bash
   cargo run --example hello
   ```
