@@ -169,7 +169,7 @@ jobs:
     strategy:
       matrix:
         package:
-          - wolfengine
+          - wolf
     timeout-minutes: 30
 name: Release Published
 on:

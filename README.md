@@ -15,5 +15,23 @@ This Wolf is a comprehensive set of Rust/C libraries for realtime rendering, rea
 - [Wolf2](https://github.com/WolfEngine/WolfEngine/tree/wolf-2) is written in **C/C++ and is in maintenance mode**
 - [releases](https://github.com/WolfEngine/WolfEngine/releases) contains old releases and source codes
 
+## Build
+- **Wolf 2/1** via CMake
+- **Wolf 3**
+  For **Webassembly** :\
+  \
+  First you need to setup wasm32
+  ```bash
+  rustup target add wasm32-unknown-unknown
+  ```
+  Now run hello example from root of workspace
+  ```bash
+  cargo run-wasm --example hello
+  ```
+  Finally the example will be served at http://localhost:8000
+  For **Native** :
+  ```bash
+  cargo run --example hello
+  ```
 ## Copyright & License
 Wolf Engine © 2014-2022 [Pooya Eimandar](https://www.linkedin.com/in/pooyaeimandar)

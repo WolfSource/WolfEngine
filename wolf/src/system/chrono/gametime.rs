@@ -1,4 +1,4 @@
-use std::time::Instant;
+use instant::Instant;
 
 //integer format represents time using 10,000,000 ticks per second
 const TICKS_PER_SECOND: f64 = 10_000_000.0;
@@ -18,7 +18,7 @@ fn seconds_to_ticks(p_seconds: f64) -> f64 {
 /// Example:
 ///
 /// ```no_run
-/// use wolfengine::chrono::gametime::GameTime;
+/// use wolf::chrono::gametime::GameTime;
 /// let mut gtime = GameTime::new();
 /// gtime.set_fixed_time_step(true);
 /// gtime.set_target_elapsed_seconds(1.0 / 60.0); //ticks every 0.016 sec (60 fps)
@@ -69,7 +69,7 @@ impl GameTime {
     /// Example:
     ///
     /// ```
-    /// use wolf_system::chrono::gametime::GameTime;
+    /// use wolf::chrono::gametime::GameTime;
     ///
     /// let gtime = GameTime::new();
     /// ```
@@ -83,7 +83,7 @@ impl GameTime {
     /// Example:
     ///
     /// ```
-    /// use wolfengine::chrono::gametime::GameTime;
+    /// use wolf::chrono::gametime::GameTime;
     ///
     /// let mut gtime = GameTime::new();
     /// gtime.reset();
@@ -106,7 +106,7 @@ impl GameTime {
     /// Example:
     ///
     /// ```
-    /// use wolf_system::chrono::gametime::GameTime;
+    /// use wolf::chrono::gametime::GameTime;
     ///
     /// let mut gtime = GameTime::new();
     /// gtime.set_fixed_time_step(true);//fixed time step is enable
@@ -121,7 +121,7 @@ impl GameTime {
     /// Example:
     ///
     /// ```
-    /// use wolf_system::chrono::gametime::GameTime;
+    /// use wolf::chrono::gametime::GameTime;
     ///
     /// let mut gtime = GameTime::new();
     /// let is_enable = gtime.get_fixed_time_step();
@@ -137,7 +137,7 @@ impl GameTime {
     /// Example:
     ///
     /// ```
-    /// use wolf_system::chrono::gametime::GameTime;
+    /// use wolf::chrono::gametime::GameTime;
     ///
     /// let mut gtime = GameTime::new();
     /// let elapsed_time = gtime.get_elapsed_seconds();
@@ -151,7 +151,7 @@ impl GameTime {
     /// Example:
     ///
     /// ```
-    /// use wolf_system::chrono::gametime::GameTime;
+    /// use wolf::chrono::gametime::GameTime;
     ///
     /// let gtime = GameTime::new();
     /// let total_time = gtime.get_total_elapsed_seconds();
@@ -170,7 +170,7 @@ impl GameTime {
     /// Example:
     ///
     /// ```
-    /// use wolf_system::chrono::gametime::GameTime;
+    /// use wolf::chrono::gametime::GameTime;
     ///
     /// let mut gtime = GameTime::new();
     /// gtime.set_target_elapsed_seconds(1.0 / 60.0); //ticks every 0.016 sec (60 fps)
@@ -188,7 +188,7 @@ impl GameTime {
     /// Example:
     ///
     /// ```
-    /// use wolf_system::chrono::gametime::GameTime;
+    /// use wolf::chrono::gametime::GameTime;
     ///
     /// let mut gtime = GameTime::new();
     ///
@@ -264,7 +264,7 @@ impl GameTime {
     /// Example:
     ///
     /// ```
-    /// use wolf_system::chrono::gametime::GameTime;
+    /// use wolf::chrono::gametime::GameTime;
     ///
     /// let mut gtime = GameTime::new();
     /// gtime.set_target_elapsed_seconds(1.0 / 60.0);

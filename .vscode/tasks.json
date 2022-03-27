@@ -84,7 +84,7 @@
             "description": "What member do you want to apply?",
             "id": "member",
             "options": [
-                "wolfengine"
+                "wolf"
             ],
             "type": "pickString",
         }

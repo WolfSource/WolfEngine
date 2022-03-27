@@ -63,10 +63,10 @@ $ linkerd check
 $ linkerd viz dashboard &
 $ linkerd --namespace linkerd-viz viz top deployment/web [ERROR]
 
-$ docker build . --file ./wolfengine/Dockerfile --tag wolf/system:0.1.0-nonroot
+$ docker build . --file ./wolf/Dockerfile --tag wolf/system:0.1.0-nonroot
 $ docker tag wolfengine:0.1.0-nonroot 127.0.0.1:5000/wolf/system:0.1.0-nonroot
 $ docker push 127.0.0.1:5000/wolf/system:0.1.0-nonroot
-$ cat ./wolfengine/wolfengine.yml | kubectl apply --filename -
+$ cat ./wolf/wolf.yml | kubectl apply --filename -
 
 $ kubectl --namespace wolf-system-namespace port-forward service/wolf-system 8080:8080
 

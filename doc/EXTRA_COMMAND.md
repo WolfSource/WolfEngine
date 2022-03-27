@@ -15,17 +15,17 @@ $ rustc --print target-features --target ${TRIPLE}
 ```
 
 ```shell
-$ docker build . --file ./wolfengine/Dockerfile --tag wolf/system:0.1.0-nonroot
+$ docker build . --file ./wolf/Dockerfile --tag wolf/system:0.1.0-nonroot
 $ docker run --env LINKERD_AWAIT_DISABLED=TRUE --interactive --publish 8080:8080 --rm wolf/system:0.1.0-nonroot
 ```
 
 ```shell
 $ brew install upx
-$ upx --ultra-brute ./target/aarch64-unknown-linux-musl/release/wolfengine
+$ upx --ultra-brute ./target/aarch64-unknown-linux-musl/release/wolf
 ```
 
 ```shell
-$ perf record --call-graph dwarf ./target/aarch64-unknown-linux-musl/release/wolfengine
+$ perf record --call-graph dwarf ./target/aarch64-unknown-linux-musl/release/wolf
 $ perf report --disassembler-style intel --hierarchy
 ```
 

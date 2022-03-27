@@ -189,7 +189,7 @@ lto = true
 # no-stack-check
 # no-vectorize-loops
 # no-vectorize-slp
-opt-level = 3
+opt-level = 's' # 3 for native 's' or 'z' for wasm32
 overflow-checks = false
 panic = "abort"
 # passes
@@ -217,11 +217,6 @@ rpath = false
 [workspace]
 resolver = "2"
 members = [
-  "wolfengine",
-  #"wolf_deps/luajit",
-  #"wolf_deps/lz4",
-  #"wolf_macros",
-  #"wolf_render",
-  #"wolf_stream",
-  #"run-wasm",
+  "run-wasm",
+  "wolf",
 ]
