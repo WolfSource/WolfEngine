@@ -17,7 +17,7 @@ This Wolf is a comprehensive set of Rust/C libraries for realtime rendering, rea
 
 ## Build
 - **Wolf 2/1** via CMake
-- **Wolf 3**\
+- **Wolf 3**
   - For **Webassembly** :\
   First you need to setup wasm32
   ```bash
