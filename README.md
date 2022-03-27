@@ -1,4 +1,4 @@
-# Wolf Engine [![LGPL v3 licensed](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](https://github.com/WolfEngine/Wolf.Engine/blob/main/LICENSE.md)
+# Wolf Engine [![LGPL v3 licensed](https://img.shields.io/badge/license-Apache-blue)](https://github.com/WolfEngine/Wolf.Engine/blob/main/LICENSE.md)
 <img src="https://raw.githubusercontent.com/WolfEngine/WolfEngine/main/Logo.png" width="256" height="256" alt="WolfEngine"/>
 
 **Wolf Engine** is the next generation of [Persian Game Engine](https://github.com/PooyaEimandar/PersianEngine) which is a
