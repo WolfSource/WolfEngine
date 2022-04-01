@@ -17,7 +17,7 @@ jobs:
         uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579
       -
         name: Cache
-        uses: actions/cache@937d24475381cd9c75ae6db12cb4e79714b926ed
+        uses: actions/cache@136d96b4aee02b1f0de3ba493b1d47135042d9c0
         with:
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
           path: |
@@ -54,7 +54,7 @@ jobs:
         uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579
       -
         name: Cache
-        uses: actions/cache@937d24475381cd9c75ae6db12cb4e79714b926ed
+        uses: actions/cache@136d96b4aee02b1f0de3ba493b1d47135042d9c0
         with:
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
           path: |
@@ -89,7 +89,7 @@ jobs:
         uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579
       -
         name: Cache
-        uses: actions/cache@937d24475381cd9c75ae6db12cb4e79714b926ed
+        uses: actions/cache@136d96b4aee02b1f0de3ba493b1d47135042d9c0
         with:
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
           path: |
@@ -138,7 +138,7 @@ jobs:
         uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579
       -
         name: Cache
-        uses: actions/cache@937d24475381cd9c75ae6db12cb4e79714b926ed
+        uses: actions/cache@136d96b4aee02b1f0de3ba493b1d47135042d9c0
         with:
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
           path: |
@@ -173,7 +173,7 @@ jobs:
         uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579
       -
         name: Cache
-        uses: actions/cache@937d24475381cd9c75ae6db12cb4e79714b926ed
+        uses: actions/cache@136d96b4aee02b1f0de3ba493b1d47135042d9c0
         with:
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
           path: |
@@ -234,7 +234,7 @@ jobs:
         uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579
       -
         name: Cache
-        uses: actions/cache@937d24475381cd9c75ae6db12cb4e79714b926ed
+        uses: actions/cache@136d96b4aee02b1f0de3ba493b1d47135042d9c0
         with:
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
           path: |
@@ -267,7 +267,7 @@ jobs:
   #       uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579
   #     -
   #       name: Cache
-  #       uses: actions/cache@937d24475381cd9c75ae6db12cb4e79714b926ed
+  #       uses: actions/cache@136d96b4aee02b1f0de3ba493b1d47135042d9c0
   #       with:
   #         key: ${{ runner.os }}-shiftleft-security-scan
   #         path: |
@@ -309,7 +309,7 @@ jobs:
         uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579
       -
         name: Cache
-        uses: actions/cache@937d24475381cd9c75ae6db12cb4e79714b926ed
+        uses: actions/cache@136d96b4aee02b1f0de3ba493b1d47135042d9c0
         with:
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
           path: |
