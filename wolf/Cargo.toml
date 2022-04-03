@@ -50,7 +50,7 @@ pollster = {default-features = false, features = [], version = "0.2.5"}
 prost = {default-features = false, version = "0.9.0"}
 rustls-pemfile = {default-features = false, version = "0.3.0"}
 serde_json = {default-features = false, features = ["std"], version = "1.0.79"}
-sysinfo = {default-features = false, features = ["multithread"], version = "0.23.5"}
+sysinfo = {default-features = false, features = ["multithread"], version = "0.23.6"}
 tokio = {default-features = false, features = ["full"], version = "1.17.0"}
 tokio-rustls = {default-features = false, features = ["logging", "tls12"], version = "0.23.3"}
 tokio-tungstenite = {default-features = false, features = ["connect", "rustls"], version = "0.17.1"}
