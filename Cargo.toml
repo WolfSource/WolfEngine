@@ -217,6 +217,6 @@ rpath = false
 [workspace]
 resolver = "2"
 members = [
-  "run-wasm",
   "wolf",
+  "wolf-demo",
 ]

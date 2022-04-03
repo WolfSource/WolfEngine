@@ -23,14 +23,16 @@ This Wolf is a comprehensive set of Rust/C libraries for realtime rendering, rea
   ```bash
   rustup target add wasm32-unknown-unknown
   ```
-  Now run hello example from root of workspace
+  Now run hello wolf demo
   ```bash
-  cargo run-wasm --example hello
+  ./build-wasm.sh
+  ./run-wasm.sh
   ```
-  Finally the example will be served at http://localhost:8000
+  Finally the demo will be served at http://localhost:8000
   - For **Native** :
   ```bash
-  cargo run --example hello
+  cd wolf-demo
+  cargo run
   ```
 ## Copyright & License
 Wolf Engine © 2014-2022 [Pooya Eimandar](https://www.linkedin.com/in/pooyaeimandar)

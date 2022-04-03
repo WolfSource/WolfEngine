@@ -10,27 +10,38 @@ repository = "https://github.com/WolfEngine/WolfEngine/"
 version = "3.0.2"
 
 [lib]
-crate-type = ["rlib"]
+crate-type = ["rlib", "cdylib"]
 name = "wolf"
 path = "src/lib.rs"
 
 # before adding any dependency please check it out from
 # https://android.googlesource.com/platform/external/rust/crates/
 
-# Wasm32 dependencies
-[target.'cfg(target_arch = "wasm32")'.dependencies]
-console_error_panic_hook = {default-features = false, features = [], version = "0.1.7"}
-wasm-bindgen-futures = {default-features = false, features = [], version = "0.4.29"}
-web-sys = { default-features = false, features = ["console"], version = "0.3.56" }
+# Shared dependencies between Wasm & native
+[dependencies]
+#brotli = { version = "3.3.3" }
+anyhow = {version = "1.0.56", default-features = false}
+instant = {version = "0.1.12", default-features = false, features = ["wasm-bindgen"]}
+wgpu = {version = "0.12.0", default-features = false, features = ["webgl"]}
+
+# Wasm dependencies
+#[target.'cfg(target_arch = "wasm32")'.dependencies]
+console_error_panic_hook = {version = "0.1.7", default-features = false}
+web-sys = {version = "0.3.56", default-features = false, features = ["console"]}
+wasm-mt = {version = "0.1.2" }
+serde = { version = "1.0.136", features = ["derive"] }
+serde_closure = { version = "0.3.2" }
+serde_traitobject = "0.2"
+wasm-bindgen = { version = "0.2.79" }
+wasm-bindgen-futures = { version = "0.4.29" }
 
 # Native dependencies
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
 #scylla = {default-features = false, features = ["ssl"], version = "0.4.3"}
-anyhow = {default-features = false, version = "1.0.56"}
-async-raft = {default-features = false, version = "0.6.1"}
-async-trait = {default-features = false, version = "0.1.52"}
-futures = {default-features = false, version = "0.3.21"}
-hyper = {default-features = false, version = "0.14.18"}
+async-raft = {version = "0.6.1", default-features = false}
+async-trait = {version = "0.1.52", default-features = false}
+hyper = {version = "0.14.18", default-features = false}
+futures = {version = "0.3.21", default-features = false}
 may = {default-features = false, version = "0.3.20"}
 memstore = {default-features = false, version = "0.2.0"}
 mimalloc = {default-features = false, features = ["secure"], version = "0.1.28"}
@@ -48,11 +59,6 @@ tracing = {default-features = false, features = ["std", "attributes"], version =
 uuid = {default-features = false, features = ["v5"], version = "0.8.2"}
 webpki-roots = {default-features = false, version = "0.22.2"}
 
-# Shared dependencies between wasm32 & native
-[dependencies]
-instant = {default-features = false, features = ["wasm-bindgen"], version = "0.1.12"}
-wgpu = {default-features = false, features = ["webgl"], version = "0.12.0"}
-
 [build-dependencies]
 #bindgen = { version = "0.59.2" }
 #vcpkg = {default-features = false, version = "0.2.15"}
@@ -60,7 +66,6 @@ tonic-build = {default-features = false, features = ["transport", "prost", "comp
 
 [dev-dependencies]
 lazy_static = {default-features = false, version = "1.4.0"}
-#serde = {default-features = false, version = "1.0.136"}
 
 [features]
 default = ["system"]

@@ -7,6 +7,6 @@ pub mod macros;
 // pub mod db;
 #[cfg(not(target_arch = "wasm32"))]
 pub mod net;
-#[cfg(not(target_arch = "wasm32"))]
+
 pub mod os;
 //pub mod script;

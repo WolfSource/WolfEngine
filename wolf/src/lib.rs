@@ -1,6 +1,6 @@
-//TODO: remove this on refactor
 #![allow(clippy::missing_errors_doc)]
-// #![allow(unused_crate_dependencies)]
+#![feature(async_closure)]
+#![feature(fn_traits)]
 
 #[cfg(not(target_arch = "wasm32"))]
 #[global_allocator]
