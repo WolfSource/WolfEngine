@@ -47,7 +47,7 @@ memstore = {default-features = false, version = "0.2.0"}
 mimalloc = {default-features = false, features = ["secure"], version = "0.1.28"}
 parking_lot = {default-features = false, features = ["deadlock_detection"], version = "0.12.0"}
 pollster = {default-features = false, features = [], version = "0.2.5"}
-prost = {default-features = false, version = "0.9.0"}
+prost = {default-features = false, version = "0.10.0"}
 rustls-pemfile = {default-features = false, version = "0.3.0"}
 serde_json = {default-features = false, features = ["std"], version = "1.0.79"}
 sysinfo = {default-features = false, features = ["multithread"], version = "0.23.5"}
