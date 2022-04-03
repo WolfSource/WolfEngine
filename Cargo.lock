@@ -1028,9 +1028,9 @@ checksum = "a3e378b66a060d48947b590737b30a1be76706c8dd7b8ba0f2fe3989c68a853f"
 
 [[package]]
 name = "may"
-version = "0.3.20"
+version = "0.3.21"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0e0086ab1598eb971c04dae217b6a4cc86d80931ffc214fcb7d083eca6ab005a"
+checksum = "8c559dcc74357db5bb866d10a0b5b46b54bc439c5ef35547fe0bad3987b53d23"
 dependencies = [
  "crossbeam",
  "generator",
