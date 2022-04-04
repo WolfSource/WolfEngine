@@ -1,61 +1,73 @@
-#[cfg(target_arch = "wasm32")]
+use std::future::Future;
+
+#[cfg(feature = "wasm")]
 use {
-    anyhow::{bail, Result},
+    crate::wlog,
+    serde::{de::DeserializeOwned, Serialize},
     wasm_bindgen::JsValue,
-    wasm_mt::{exec, prelude::*, MtAsyncClosure, WasmMt},
+    wasm_mt::{MtAsyncClosure, WasmMt},
 };
 
-#[cfg(not(target_arch = "wasm32"))]
+#[cfg(not(feature = "wasm"))]
 use tokio::task::JoinHandle;
 
 pub struct WThread {}
 
 impl WThread {
-    #[cfg(target_arch = "wasm32")]
-    pub async fn spawn<F, T>(p_func: F, p_path_to_pkg_js: Option<&str>) -> Result<JsValue>
+    #[cfg(feature = "wasm")]
+    pub fn spawn<F, T>(p_fn: F, p_path_to_pkg_js: Option<String>)
     where
-        F: MtAsyncClosure<T>,
+        F: FnOnce() -> T + Serialize + DeserializeOwned + 'static,
+        T: Future<Output = Result<JsValue, JsValue>> + 'static,
     {
         const TRACE: &str = "WThread::spawn";
 
         let path_to_pkg_js = if p_path_to_pkg_js.is_some() {
             p_path_to_pkg_js.unwrap_or_default()
         } else {
-            "./pkg/wolf_demo.js"
+            "./pkg/wolf_demo.js".to_owned()
         };
 
-        // init the wasm web worker
-        let wasm_mt_res = WasmMt::new(path_to_pkg_js).and_init().await;
-        let ret = match wasm_mt_res {
-            Ok(wasm_mt) => {
-                // init a thread from web worker
-                let thread_res = wasm_mt.thread().and_init().await;
-                let ret = match thread_res {
-                    Ok(t) => {
-                        // execute async closure with web worker
-                        let js_value_res = exec!(t, async move || p_func.call_once(()).await).await;
-                        match js_value_res {
-                            Ok(val) => Ok(val),
-                            Err(e) => bail!("{:?}. trace info: {}", e, TRACE),
+        let f = async move {
+            // init the wasm web worker
+            let wasm_mt_res = WasmMt::new(&path_to_pkg_js).and_init().await;
+            match wasm_mt_res {
+                Ok(wasm_mt) => {
+                    // init a thread from web worker
+                    let thread_res = wasm_mt.thread().and_init().await;
+                    match thread_res {
+                        Ok(t) => {
+                            // execute async closure with web worker
+                            let _ = t.exec_async(p_fn).await;
                         }
-                    }
-                    Err(e) => {
-                        bail!("{:?}. trace info: {}", e, TRACE)
-                    }
-                };
-                ret
-            }
-            Err(e) => bail!("{:?}. trace info: {}", e, TRACE),
+                        Err(e) => {
+                            wlog!("{:?}. trace info: {}", e, TRACE);
+                        }
+                    };
+                }
+                Err(e) => {
+                    wlog!("{:?}. trace info: {}", e, TRACE);
+                }
+            };
         };
-        ret
+        wasm_bindgen_futures::spawn_local(f);
+    }
+    #[cfg(feature = "wasm")]
+    pub async fn sleep(p_duration: std::time::Duration) {
+        wasm_mt::utils::sleep(p_duration.as_millis() as u32).await;
     }
 
-    #[cfg(not(target_arch = "wasm32"))]
+    #[cfg(not(feature = "wasm"))]
     pub async fn spawn<F, R>(p_func: F) -> JoinHandle<F::Output>
     where
-        F: std::future::Future + Send + 'static,
+        F: Future + Send + 'static,
         F::Output: Send + 'static,
     {
         tokio::spawn(p_func)
+    }
+
+    #[cfg(not(feature = "wasm"))]
+    pub async fn sleep(p_duration: std::time::Duration) {
+        tokio::time::sleep(p_duration).await;
     }
 }

@@ -1,5 +1,5 @@
 cd /home/build
-GCC_VERSION=10.2.0
+GCC_VERSION=11.2.0
 wget https://ftp.gnu.org/gnu/gcc/gcc-${GCC_VERSION}/gcc-${GCC_VERSION}.tar.gz
 tar xzvf gcc-${GCC_VERSION}.tar.gz
 mkdir obj.gcc-${GCC_VERSION}

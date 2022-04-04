@@ -7,7 +7,7 @@ license = "Apache-2.0"
 name = "wolf-demo"
 readme = "README.md"
 repository = "https://github.com/WolfEngine/WolfEngine/"
-version = "3.0.0"
+version = "3.0.2"
 
 [lib]
 crate-type = ["cdylib"]
@@ -15,12 +15,10 @@ name = "wolf_demo"
 path = "src/lib.rs"
 
 [dependencies]
-#anyhow = "*"
-#wolfengine = { path = "../wolf", version = "3.0.1" }
+wolfengine = { path = "../wolf",  version = "3.0.1", features= ["system", "wasm"] }
 wasm-mt = "0.1.2"
 serde = { version = "1.0.136", features = ["derive"] }
 serde_closure = "0.3.2"
-serde_traitobject = "0.2"
 wasm-bindgen = { version = "0.2.79" }
 wasm-bindgen-futures = "0.4.29"
 console_error_panic_hook = { version = "0.1.7", optional = true }

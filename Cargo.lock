@@ -2792,16 +2792,16 @@ checksum = "504a2476202769977a040c6364301a3f65d0cc9e3fb08600b2bda150a0488316"
 
 [[package]]
 name = "wolf-demo"
-version = "3.0.0"
+version = "3.0.2"
 dependencies = [
  "console_error_panic_hook",
  "serde",
  "serde_closure 0.3.2",
- "serde_traitobject",
  "wasm-bindgen",
  "wasm-bindgen-futures",
  "wasm-mt",
  "web-sys",
+ "wolfengine",
 ]
 
 [[package]]
@@ -2826,7 +2826,6 @@ dependencies = [
  "serde",
  "serde_closure 0.3.2",
  "serde_json",
- "serde_traitobject",
  "sysinfo",
  "tokio",
  "tokio-rustls 0.23.3",
