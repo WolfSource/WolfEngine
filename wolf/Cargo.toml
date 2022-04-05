@@ -26,7 +26,7 @@ serde = { version = "1.0.136", features = ["derive"] }
 wgpu = {version = "0.12.0", default-features = false, features = ["webgl"]}
 
 # Wasm dependencies
-[target.'cfg(target_arch = "wasm32")'.dependencies]
+#[target.'cfg(target_arch = "wasm32")'.dependencies]
 console_error_panic_hook = {version = "0.1.7", default-features = false}
 serde_closure = { version = "0.3.2", default-features = false}
 wasm-bindgen = { version = "0.2.79", default-features = false }
@@ -38,30 +38,30 @@ web-sys = {version = "0.3.56", default-features = false, features = ["console"]}
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
 #scylla = {default-features = false, features = ["ssl"], version = "0.4.3"}
 async-raft = {version = "0.6.1", default-features = false}
-async-trait = {version = "0.1.52", default-features = false}
+async-trait = {version = "0.1.53", default-features = false}
 futures = {version = "0.3.21", default-features = false}
 hyper = {version = "0.14.18", default-features = false}
-may = {default-features = false, version = "0.3.20"}
-memstore = {default-features = false, version = "0.2.0"}
-mimalloc = {default-features = false, features = ["secure"], version = "0.1.28"}
-parking_lot = {default-features = false, features = ["deadlock_detection"], version = "0.12.0"}
-pollster = {default-features = false, features = [], version = "0.2.5"}
-prost = {default-features = false, version = "0.9.0"}
-rustls-pemfile = {default-features = false, version = "0.3.0"}
-serde_json = {default-features = false, features = ["std"], version = "1.0.79"}
-sysinfo = {default-features = false, features = ["multithread"], version = "0.23.5"}
-tokio = {default-features = false, features = ["full"], version = "1.17.0"}
-tokio-rustls = {default-features = false, features = ["logging", "tls12"], version = "0.23.3"}
-tokio-tungstenite = {default-features = false, features = ["connect", "rustls"], version = "0.17.1"}
-tonic = {default-features = false, features = ["codegen", "prost", "tls", "compression"], version = "0.6.2"}
-tracing = {default-features = false, features = ["std", "attributes"], version = "0.1.32"}
-uuid = {default-features = false, features = ["v5"], version = "0.8.2"}
-webpki-roots = {default-features = false, version = "0.22.2"}
+may = {version = "0.3.21", default-features = false}
+memstore = {version = "0.2.0", default-features = false}
+mimalloc = {version = "0.1.28", default-features = false, features = ["secure"]}
+parking_lot = {version = "0.12.0",  default-features = false, features = ["deadlock_detection"]}
+pollster = {version = "0.2.5", default-features = false}
+prost = {version = "0.10.0", default-features = false}
+rustls-pemfile = {version = "0.3.0", default-features = false}
+serde_json = {version = "1.0.79", default-features = false, features = ["std"]}
+sysinfo = {version = "0.23.7", default-features = false, features = ["multithread"]}
+tokio = {version = "1.17.0", default-features = false, features = ["full"]}
+tokio-rustls = {version = "0.23.3", default-features = false, features = ["logging", "tls12"]}
+tokio-tungstenite = {version = "0.17.1", default-features = false, features = ["connect", "rustls"]}
+tonic = {version = "0.7.1", default-features = false, features = ["codegen", "prost", "tls", "compression"]}
+tracing = {version = "0.1.32", default-features = false, features = ["std", "attributes"]}
+uuid = {version = "0.8.2", default-features = false, features = ["v5"]}
+webpki-roots = {version = "0.22.2", default-features = false}
 
 [build-dependencies]
 #bindgen = { version = "0.59.2" }
 #vcpkg = {default-features = false, version = "0.2.15"}
-tonic-build = {default-features = false, features = ["transport", "prost", "compression"], version = "0.6.2"}
+tonic-build = {version = "0.7.0", default-features = false, features = ["transport", "prost", "compression"]}
 
 [dev-dependencies]
 lazy_static = {version = "1.4.0", default-features = false}

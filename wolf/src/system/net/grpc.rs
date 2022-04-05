@@ -29,13 +29,13 @@ where
     S: tonic::codegen::Service<
             hyper::Request<hyper::Body>,
             Response = hyper::Response<tonic::body::BoxBody>,
+            Error = std::convert::Infallible,
         > + tonic::transport::NamedService
         + Clone
         + Send
         + 'static,
     S::Future: Send + 'static,
-    S::Error: Into<Box<dyn std::error::Error + Send + Sync>> + Send,
-    F: core::future::Future<Output = ()> + Send,
+    F: std::future::Future<Output = ()> + Send,
 {
     const TRACE: &str = "run_server";
 
