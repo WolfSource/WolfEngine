@@ -1,4 +1,4 @@
-use std::{borrow::BorrowMut, time::Duration};
+use std::time::Duration;
 
 /// A timeout handler function
 /// # Arguments

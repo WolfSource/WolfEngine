@@ -22,12 +22,12 @@ path = "src/lib.rs"
 #brotli = { version = "3.3.3" }
 anyhow = {version = "1.0.56", default-features = false}
 instant = {version = "0.1.12", default-features = false, features = ["wasm-bindgen"]}
-serde = { version = "1.0.136", features = ["derive"] }
 wgpu = {version = "0.12.0", default-features = false, features = ["webgl"]}
 
 # Wasm dependencies
-#[target.'cfg(target_arch = "wasm32")'.dependencies]
+[target.'cfg(target_arch = "wasm32")'.dependencies]
 console_error_panic_hook = {version = "0.1.7", default-features = false}
+serde = { version = "1.0.136", default-features = false, features = ["derive"]}
 serde_closure = { version = "0.3.2", default-features = false}
 wasm-bindgen = { version = "0.2.79", default-features = false }
 wasm-bindgen-futures = { version = "0.4.29", default-features = false }
@@ -49,7 +49,7 @@ pollster = {version = "0.2.5", default-features = false}
 prost = {version = "0.10.0", default-features = false}
 rustls-pemfile = {version = "0.3.0", default-features = false}
 serde_json = {version = "1.0.79", default-features = false, features = ["std"]}
-sysinfo = {version = "0.23.7", default-features = false, features = ["multithread"]}
+#sysinfo = {version = "0.23.7", default-features = false, features = ["multithread"]}
 tokio = {version = "1.17.0", default-features = false, features = ["full"]}
 tokio-rustls = {version = "0.23.3", default-features = false, features = ["logging", "tls12"]}
 tokio-tungstenite = {version = "0.17.1", default-features = false, features = ["connect", "rustls"]}

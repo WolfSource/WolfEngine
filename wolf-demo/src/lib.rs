@@ -1,7 +1,7 @@
 #![feature(async_closure)]
 
 use wasm_bindgen::prelude::*;
-use wasm_mt::{prelude::*, utils::console_ln};
+use wasm_mt::prelude::*;
 use wolf::{
     system::{os::thread::WThread, script::javascript::WJavaScript},
     wlog,
@@ -44,20 +44,3 @@ pub fn main() {
     };
     WThread::spawn_local(f);
 }
-
-// async fn run_async_js(th: &Thread) -> Result<(), JsValue> {
-//     let ans = exec_js_async!(
-//         th,
-//         "
-//         const sub = (a, b) => new Promise(resolve => {
-//             setTimeout(() => resolve(a - b), 1000);
-//         });
-//         return await sub(1, 2);
-//     "
-//     )
-//     .await?;
-//     assert_eq!(ans, JsValue::from(-1));
-//     console_ln!("run_async_js ans: {:?}", ans);
-
-//     Ok(())
-// }
