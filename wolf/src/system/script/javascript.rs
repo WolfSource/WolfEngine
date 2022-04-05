@@ -1,7 +1,6 @@
-use crate::wlog;
 use anyhow::{bail, Result};
 use wasm_bindgen::JsValue;
-use wasm_mt::{exec_js, exec_js_async, MtAsyncClosure, WasmMt};
+use wasm_mt::{exec_js, exec_js_async, WasmMt};
 
 pub struct WJavaScript {
     js_worker_path: String,
