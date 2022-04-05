@@ -2828,7 +2828,6 @@ dependencies = [
  "prost",
  "rustls-pemfile",
  "serde",
- "serde_closure 0.3.2",
  "serde_json",
  "tokio",
  "tokio-rustls",

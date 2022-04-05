@@ -2,7 +2,6 @@
 
 use core::future::Future;
 use std::pin::Pin;
-
 /// Signal Slot manager
 ///
 /// # Examples
@@ -55,15 +54,15 @@ impl SigSlot {
 async fn tests() {
     let mut s = SigSlot::new();
     s.connect(async {
-        println!("slot 1 just called from main thread");
+        wlog!("slot 1 just called from main thread");
     });
     s.connect(async {
-        println!("slot 2 just called from main thread");
+        wlog!("slot 2 just called from main thread");
     });
     //run thread
     let _r = tokio::spawn(async move {
         s.connect(async {
-            println!("slot 3 just called from tokio thread");
+            wlog!("slot 3 just called from tokio thread");
         });
         s.emit().await;
     })

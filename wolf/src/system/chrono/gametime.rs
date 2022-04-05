@@ -21,8 +21,8 @@ fn seconds_to_ticks(p_seconds: f64) -> f64 {
 /// Example:
 ///
 /// ```no_run
-/// use wolf::chrono::gametime::GameTime;
-/// let mut gtime = GameTime::new();
+/// use wolf::chrono::gametime::WGameTime;
+/// let mut gtime = WGameTime::new();
 /// gtime.set_fixed_time_step(true);
 /// gtime.set_target_elapsed_seconds(1.0 / 60.0); //ticks every 0.016 sec (60 fps)
 ///
@@ -33,7 +33,7 @@ fn seconds_to_ticks(p_seconds: f64) -> f64 {
 /// }
 /// ```
 #[derive(Debug, Clone, Copy)]
-pub struct GameTime {
+pub struct WGameTime {
     pub last_time: Instant,
     pub max_delta: f64,
     pub elapsed_ticks: f64,
@@ -47,7 +47,7 @@ pub struct GameTime {
     pub target_elapsed_ticks: f64,
 }
 
-impl Default for GameTime {
+impl Default for WGameTime {
     fn default() -> Self {
         Self {
             last_time: Instant::now(),
@@ -65,30 +65,30 @@ impl Default for GameTime {
     }
 }
 
-// Implementation block, all `GameTime` methods go in here
-impl GameTime {
-    /// initialize and returns a `GameTime` instance
+// Implementation block, all `WGameTime` methods go in here
+impl WGameTime {
+    /// initialize and returns a `WGameTime` instance
     ///
     /// Example:
     ///
     /// ```
-    /// use wolf::chrono::gametime::GameTime;
+    /// use wolf::chrono::gametime::WGameTime;
     ///
-    /// let gtime = GameTime::new();
+    /// let gtime = WGameTime::new();
     /// ```
     #[must_use]
     pub fn new() -> Self {
         Self::default()
     }
 
-    /// reset the `GameTime` instance
+    /// reset the `WGameTime` instance
     ///
     /// Example:
     ///
     /// ```
-    /// use wolf::chrono::gametime::GameTime;
+    /// use wolf::chrono::gametime::WGameTime;
     ///
-    /// let mut gtime = GameTime::new();
+    /// let mut gtime = WGameTime::new();
     /// gtime.reset();
     /// ```
     pub fn reset(&mut self) {
@@ -100,7 +100,7 @@ impl GameTime {
         self.seconds_counter = 0.0;
     }
 
-    /// set fixed time step mode for the `GameTime` instance
+    /// set fixed time step mode for the `WGameTime` instance
     ///
     /// # Arguments
     ///
@@ -109,9 +109,9 @@ impl GameTime {
     /// Example:
     ///
     /// ```
-    /// use wolf::chrono::gametime::GameTime;
+    /// use wolf::chrono::gametime::WGameTime;
     ///
-    /// let mut gtime = GameTime::new();
+    /// let mut gtime = WGameTime::new();
     /// gtime.set_fixed_time_step(true);//fixed time step is enable
     /// gtime.tick_fn(|| { /* tick on certain interval */ });
     /// ```
@@ -124,9 +124,9 @@ impl GameTime {
     /// Example:
     ///
     /// ```
-    /// use wolf::chrono::gametime::GameTime;
+    /// use wolf::chrono::gametime::WGameTime;
     ///
-    /// let mut gtime = GameTime::new();
+    /// let mut gtime = WGameTime::new();
     /// let is_enable = gtime.get_fixed_time_step();
     /// ```
     #[must_use]
@@ -140,9 +140,9 @@ impl GameTime {
     /// Example:
     ///
     /// ```
-    /// use wolf::chrono::gametime::GameTime;
+    /// use wolf::chrono::gametime::WGameTime;
     ///
-    /// let mut gtime = GameTime::new();
+    /// let mut gtime = WGameTime::new();
     /// let elapsed_time = gtime.get_elapsed_seconds();
     /// ```
     pub fn get_elapsed_seconds(&self) -> f64 {
@@ -154,9 +154,9 @@ impl GameTime {
     /// Example:
     ///
     /// ```
-    /// use wolf::chrono::gametime::GameTime;
+    /// use wolf::chrono::gametime::WGameTime;
     ///
-    /// let gtime = GameTime::new();
+    /// let gtime = WGameTime::new();
     /// let total_time = gtime.get_total_elapsed_seconds();
     /// ```
     #[must_use]
@@ -173,9 +173,9 @@ impl GameTime {
     /// Example:
     ///
     /// ```
-    /// use wolf::chrono::gametime::GameTime;
+    /// use wolf::chrono::gametime::WGameTime;
     ///
-    /// let mut gtime = GameTime::new();
+    /// let mut gtime = WGameTime::new();
     /// gtime.set_target_elapsed_seconds(1.0 / 60.0); //ticks every 0.016 sec (60 fps)
     /// ```
     pub fn set_target_elapsed_seconds(&mut self, p_value: f64) {
@@ -191,9 +191,9 @@ impl GameTime {
     /// Example:
     ///
     /// ```
-    /// use wolf::chrono::gametime::GameTime;
+    /// use wolf::chrono::gametime::WGameTime;
     ///
-    /// let mut gtime = GameTime::new();
+    /// let mut gtime = WGameTime::new();
     ///
     /// gtime.set_target_elapsed_seconds(1.0 / 60.0);
     /// gtime.tick_fn(move || {
@@ -267,9 +267,9 @@ impl GameTime {
     /// Example:
     ///
     /// ```
-    /// use wolf::chrono::gametime::GameTime;
+    /// use wolf::chrono::gametime::WGameTime;
     ///
-    /// let mut gtime = GameTime::new();
+    /// let mut gtime = WGameTime::new();
     /// gtime.set_target_elapsed_seconds(1.0 / 60.0);
     /// gtime.tick();// a simple tick with no callback
     /// ```
@@ -334,8 +334,8 @@ impl GameTime {
 
 #[test]
 fn test() {
-    use super::gametime::GameTime;
-    let mut gtime = GameTime::new();
+    use super::gametime::WGameTime;
+    let mut gtime = WGameTime::new();
     gtime.set_fixed_time_step(true);
     gtime.set_target_elapsed_seconds(1.0 / 60.0); //ticks every 16 ms (60 fps)
 

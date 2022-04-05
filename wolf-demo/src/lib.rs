@@ -1,5 +1,6 @@
 #![feature(async_closure)]
-
+#![allow(unused_imports)]
+#![allow(unreachable_code)]
 use wasm_bindgen::prelude::*;
 use wasm_mt::prelude::*;
 use wolf::{
