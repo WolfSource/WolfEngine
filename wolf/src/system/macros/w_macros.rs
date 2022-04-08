@@ -1,6 +1,6 @@
-#[cfg(not(target_arch = "wasm32"))]
+#[cfg(not(feature = "wasm"))]
 #[macro_export]
-macro_rules! wlog {
+macro_rules! w_log {
     ($fmt:expr) => {
         println!($fmt)
     };
@@ -9,9 +9,9 @@ macro_rules! wlog {
     };
 }
 
-#[cfg(target_arch = "wasm32")]
+#[cfg(feature = "wasm")]
 #[macro_export]
-macro_rules! wlog {
+macro_rules! w_log {
     ($fmt:expr) => {
         web_sys::console::log_1(&($fmt).into())
     };

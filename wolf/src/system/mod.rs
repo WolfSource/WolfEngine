@@ -1,11 +1,11 @@
-#[cfg(not(target_arch = "wasm32"))]
-pub mod algorithm;
-
 pub mod chrono;
 pub mod macros;
-// pub mod compression;
-// pub mod db;
-#[cfg(not(target_arch = "wasm32"))]
-pub mod net;
 pub mod os;
 pub mod script;
+
+#[cfg(not(feature = "wasm"))]
+pub mod algorithm;
+#[cfg(not(feature = "wasm"))]
+pub mod net;
+// pub mod compression;
+// pub mod db;

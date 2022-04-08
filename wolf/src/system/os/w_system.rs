@@ -1,18 +1,19 @@
+use anyhow::{bail, Result};
 use sysinfo::{ProcessExt, SystemExt};
 use tokio::process::{Child, Command};
 
 #[derive(Debug)]
-pub struct System {
+pub struct WSystem {
     sys: sysinfo::System,
 }
 
-impl Default for System {
+impl Default for WSystem {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl System {
+impl WSystem {
     #[must_use]
     pub fn new() -> Self {
         // create sysinfo system object
@@ -110,23 +111,22 @@ impl System {
     }
 }
 
-pub async fn create_process(
-    p_process_path: &str,
-    p_process_args: &[&str],
-) -> anyhow::Result<Child> {
+pub async fn create_process(p_process_path: &str, p_process_args: &[&str]) -> Result<Child> {
     //check is file
     let meta = tokio::fs::metadata(p_process_path).await?;
     if meta.is_file() {
         let child = Command::new(p_process_path).args(p_process_args).spawn()?;
-        anyhow::Result::Ok(child)
+        Ok(child)
     } else {
-        anyhow::bail!("Process {} is not a valid file", p_process_path)
+        bail!("Process {} is not a valid file", p_process_path)
     }
 }
 
-#[tokio::main]
-#[test]
-async fn tests() {
+#[tokio::test]
+async fn test() {
+    use crate::system::os::w_runtime::WRuntime;
+    use crate::w_log;
+
     let path_to_the_process: &str;
 
     #[cfg(target_os = "windows")]
@@ -142,23 +142,23 @@ async fn tests() {
         path_to_the_process = "TextEdit";
     }
 
-    let sys = System::new();
-    println!(
+    let sys = WSystem::new();
+    w_log!(
         "Memory: {}KB/{}KB",
         sys.used_memory_in_kb(),
         sys.total_memory_in_kb()
     );
-    println!(
+    w_log!(
         "Swap: {}KB/{}KB",
         sys.used_swap_in_kb(),
         sys.total_swap_in_kb()
     );
     // check path
     if path_to_the_process.is_empty() {
-        println!("process name is empty");
+        w_log!("process name is empty");
     } else {
         let child_res = create_process(path_to_the_process, &[]).await;
-        std::thread::sleep(std::time::Duration::from_secs(5));
-        println!("process status is {:?}", child_res);
+        WRuntime::async_sleep(std::time::Duration::from_secs(5)).await;
+        w_log!("process status is {:?}", child_res);
     }
 }

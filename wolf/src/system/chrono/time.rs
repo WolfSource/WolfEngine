@@ -27,16 +27,11 @@ pub async fn timeout<F>(p_duration: Duration, p_future: F) -> anyhow::Result<()>
 where
     F: std::future::Future<Output = ()> + Send + 'static,
 {
-    #[cfg(not(target_arch = "wasm32"))]
+    #[cfg(not(feature = "wasm"))]
     {
         if let Err(e) = tokio::time::timeout(p_duration, p_future).await {
             anyhow::bail!("timeout reached after {}", e)
         }
-    }
-
-    //#[cfg(target_arch = "wasm32")]
-    {
-        //wasm_bindgen_futures::spawn_local(p_future);
     }
 
     Ok(())

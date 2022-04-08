@@ -234,7 +234,7 @@ rustflags = [                       # custom flags to pass to all compiler invoc
     "-Dunsupported_calling_conventions",	
     "-Dunused_assignments",	
     "-Dunused_attributes",	
-    "-Dunused_crate_dependencies",	
+    "-Dunused_crate_dependencies",
     "-Dunused_doc_comments",	
     "-Dunused_extern_crates",	
     "-Dunused_features",	

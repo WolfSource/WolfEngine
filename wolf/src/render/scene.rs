@@ -1,4 +1,4 @@
-use crate::wlog;
+use crate::w_log;
 
 /// This example shows how to describe the adapter in use.
 async fn run() {
@@ -7,20 +7,20 @@ async fn run() {
         .await;
     match adapter_res {
         Some(adapter) => {
-            wlog!("adapter info: {:?}", adapter.get_info());
+            w_log!("adapter info: {:?}", adapter.get_info());
         }
         None => {
-            wlog!("couldn't get adapter info");
+            w_log!("couldn't get adapter info");
         }
     }
 }
 
 pub fn start() {
-    #[cfg(not(target_arch = "wasm32"))]
+    #[cfg(not(feature = "wasm"))]
     {
-        pollster::block_on(run());
+        futures::executor::block_on(run());
     }
-    #[cfg(target_arch = "wasm32")]
+    #[cfg(feature = "wasm")]
     {
         std::panic::set_hook(Box::new(console_error_panic_hook::hook));
         wasm_bindgen_futures::spawn_local(run());

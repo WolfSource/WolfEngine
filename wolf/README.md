@@ -1,4 +1,4 @@
-# Wolf Engine [![LGPL v3 licensed](https://img.shields.io/badge/license-Apache-blue)](https://github.com/WolfEngine/Wolf.Engine/blob/main/LICENSE.md)
+# Wolf Engine [![LGPL v3 licensed](https://img.shields.io/badge/license-Apache-blue)](https://github.com/WolfEngine/Wolf.Engine/blob/main/LICENSE.md) [![wakatime](https://wakatime.com/badge/github/WolfEngine/WolfEngine.svg)](https://wakatime.com/badge/github/WolfEngine/WolfEngine)
 <img src="https://raw.githubusercontent.com/WolfEngine/WolfEngine/main/Logo.png" width="256" height="256" alt="WolfEngine"/>
 
 **Wolf Engine** is the next generation of [Persian Game Engine](https://github.com/PooyaEimandar/PersianEngine) which is a
@@ -17,20 +17,25 @@ This Wolf is a comprehensive set of Rust/C libraries for realtime rendering, rea
 
 ## Build
 - **Wolf 2/1** via CMake
-- **Wolf 3**
+- **Wolf 3 via Nightly toolchain**
+  ```bash
+  rustup default nightly
+  ```
   - For **Webassembly** :\
   First you need to setup wasm32
   ```bash
   rustup target add wasm32-unknown-unknown
   ```
-  Now run hello example from root of workspace
+  Now run hello wolf demo
   ```bash
-  cargo run-wasm --example hello
+  ./build-wasm.sh
+  ./run-wasm.sh
   ```
-  Finally the example will be served at http://localhost:8000
+  Finally the demo will be served at http://localhost:8000
   - For **Native** :
   ```bash
-  cargo run --example hello
+  cd wolf-demo
+  cargo run
   ```
 ## Copyright & License
 Wolf Engine © 2014-2022 [Pooya Eimandar](https://www.linkedin.com/in/pooyaeimandar)

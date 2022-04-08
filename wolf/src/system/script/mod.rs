@@ -1,5 +1,4 @@
-#[cfg(all(feature = "lua"))]
-pub mod lua;
-
 #[cfg(feature = "wasm")]
-pub mod javascript;
+pub mod w_javascript;
+
+pub mod w_rhai;

@@ -1,7 +1,7 @@
 #![allow(clippy::missing_errors_doc)]
 #![feature(async_closure)]
 
-#[cfg(not(target_arch = "wasm32"))]
+#[cfg(not(feature = "wasm"))]
 #[global_allocator]
 static GLOBAL: mimalloc::MiMalloc = mimalloc::MiMalloc;
 
