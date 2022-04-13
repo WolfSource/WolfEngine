@@ -3,7 +3,8 @@
 #![allow(unreachable_code)]
 
 use wolf::{
-    system::{os::w_runtime::WRuntime, script::w_rhai::WRhai},
+    render::{w_graphics_device::WGraphicsDevice, w_scene::WScene},
+    system::{chrono::w_gametime::WGameTime, os::w_runtime::WRunTime, script::w_rhai::WRhai},
     w_log,
 };
 
@@ -15,6 +16,16 @@ use {
 // Normal function
 fn add(x: i64, y: i64) -> i64 {
     x + y
+}
+
+fn load(_p_gdevice: &mut WGraphicsDevice) -> anyhow::Result<()> {
+    w_log!("scene just loaded");
+    Ok(())
+}
+
+fn render(_p_gdevice: &mut WGraphicsDevice, _p_game_time: &mut WGameTime) -> anyhow::Result<()> {
+    w_log!("scene is rendering");
+    Ok(())
 }
 
 async fn app() {
@@ -37,12 +48,12 @@ async fn app() {
     {
         let f = async move || {
             println!("t1 started");
-            WRuntime::sleep(std::time::Duration::from_secs(1));
+            WRunTime::sleep(std::time::Duration::from_secs(1));
             w_log!("t1 just stopped after 2 seconds");
         };
         // execute thread
-        WRuntime::green_thread(f()).await;
-        WRuntime::async_sleep(std::time::Duration::from_secs(2)).await;
+        WRunTime::green_thread(f()).await;
+        WRunTime::async_sleep(std::time::Duration::from_secs(2)).await;
     }
 
     #[cfg(target_arch = "wasm32")]
@@ -76,7 +87,7 @@ async fn app() {
         WRuntime::thread(f2);
     }
 
-    use wolf::system::os::w_runtime::WRuntime;
+    use wolf::system::os::w_runtime::WRunTime;
     use wolf::system::os::w_sigslot::WSigSlot;
     use wolf::w_log;
 
@@ -101,15 +112,22 @@ async fn app() {
     }
 
     // wait for threads
-    WRuntime::async_sleep(std::time::Duration::from_secs(1)).await;
+    WRunTime::async_sleep(std::time::Duration::from_secs(1)).await;
     // emit all
     sig_slot.emit();
+
+    // run the test scene
+    use wolf::render::w_scenes_manager::WScenesManager;
+
+    let _scene = WScene::new("hello world", &mut load, &mut render);
+    //let _sm = WScenesManager::run(&mut scene).await;
 }
 
 #[cfg(target_arch = "wasm32")]
 #[wasm_bindgen]
 pub fn main() {
     w_log!("starting wolf-demo in wasm mode");
+    std::panic::set_hook(Box::new(console_error_panic_hook::hook));
     WRuntime::spawn_local(async {
         app().await;
     });

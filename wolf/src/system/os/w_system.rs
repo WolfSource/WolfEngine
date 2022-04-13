@@ -124,7 +124,7 @@ pub async fn create_process(p_process_path: &str, p_process_args: &[&str]) -> Re
 
 #[tokio::test]
 async fn test() {
-    use crate::system::os::w_runtime::WRuntime;
+    use crate::system::os::w_runtime::WRunTime;
     use crate::w_log;
 
     let path_to_the_process: &str;
@@ -158,7 +158,7 @@ async fn test() {
         w_log!("process name is empty");
     } else {
         let child_res = create_process(path_to_the_process, &[]).await;
-        WRuntime::async_sleep(std::time::Duration::from_secs(5)).await;
+        WRunTime::async_sleep(std::time::Duration::from_secs(5)).await;
         w_log!("process status is {:?}", child_res);
     }
 }

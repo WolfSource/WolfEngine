@@ -8,9 +8,9 @@ use {
     wasm_mt::WasmMt,
 };
 
-pub struct WRuntime {}
+pub struct WRunTime {}
 
-impl WRuntime {
+impl WRunTime {
     #[cfg(not(feature = "wasm"))]
     pub fn thread<F, T>(p_fn: F) -> std::thread::JoinHandle<T>
     where
@@ -26,7 +26,7 @@ impl WRuntime {
         F: FnOnce() -> T + Serialize + DeserializeOwned + 'static,
         T: Future<Output = Result<JsValue, JsValue>> + 'static,
     {
-        const TRACE: &str = "WRuntime::thread";
+        const TRACE: &str = "WRunTime::thread";
         const PKG_JS_PATH: &str = "./pkg/wolf_demo.js";
 
         let f = async move {

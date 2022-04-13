@@ -1,7 +1,8 @@
+use instant::Instant;
+
 // Note that even if the wasm-bindgen feature is enabled,
 // this crate will continue to rely on std::time::Instant as long as you are not targeting wasm32.
 // This allows for portable code that will work on both native and WASM platforms.
-use instant::Instant;
 
 //integer format represents time using 10,000,000 ticks per second
 const TICKS_PER_SECOND: f64 = 10_000_000.0;
@@ -186,7 +187,7 @@ impl WGameTime {
     ///
     /// # Arguments
     ///
-    /// * `p_on_tick_call_back` - the function callback which will be raised in each tick
+    /// * `p_on_tick_call_back` - the async function callback which will be raised in each tick
     ///
     /// Example:
     ///
@@ -200,7 +201,7 @@ impl WGameTime {
     ///     //this callback function will call every 16 ms
     /// });
     /// ```
-    pub fn tick_fn(&mut self, mut p_on_tick_call_back: impl FnMut()) {
+    pub async fn tick_fn(&mut self, mut p_on_tick_fn: impl FnMut()) {
         // Query the current time.
         let current_time = Instant::now();
         let mut time_delta = (current_time - self.last_time).as_secs_f64();
@@ -240,7 +241,7 @@ impl WGameTime {
                 self.left_over_ticks -= self.target_elapsed_ticks;
                 self.frame_count += 1;
 
-                p_on_tick_call_back();
+                p_on_tick_fn();
             }
         } else {
             // Variable timestep update logic.
@@ -249,7 +250,7 @@ impl WGameTime {
             self.left_over_ticks = 0.0;
             self.frame_count += 1;
 
-            p_on_tick_call_back();
+            p_on_tick_fn();
         }
 
         // Track the current framerate.
