@@ -2168,7 +2168,18 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "72ac0cf76e43f003c77b40e506a2dcf5ff86e28b9da31061d7a3bfe6f2a46667"
 dependencies = [
  "serde",
- "serde_closure_derive",
+ "serde_closure_derive 0.2.14",
+]
+
+[[package]]
+name = "serde_closure"
+version = "0.3.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8dfcafdff09f246e0bca489d8dc841fa557debc1ced3ed7e619623cfe8795698"
+dependencies = [
+ "rustversion",
+ "serde",
+ "serde_closure_derive 0.3.2",
 ]
 
 [[package]]
@@ -2176,6 +2187,17 @@ name = "serde_closure_derive"
 version = "0.2.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "bafa9aff20ca4a0e92b36e2b8f0c3414ae79402267ee830cab95f8a9ab1d21f0"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
+name = "serde_closure_derive"
+version = "0.3.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e51569ae5ecb8561699059dbbf1181e13f59c042438552e56c6ddf794f84eb7c"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -2926,7 +2948,7 @@ dependencies = [
  "bincode",
  "js-sys",
  "serde",
- "serde_closure",
+ "serde_closure 0.2.14",
  "serde_traitobject",
  "uuid",
  "wasm-bindgen",
@@ -3289,8 +3311,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "wolf-demo"
+version = "3.0.3"
+dependencies = [
+ "anyhow",
+ "serde",
+ "serde_closure 0.3.2",
+ "tokio",
+ "wasm-bindgen",
+ "wasm-mt",
+ "web-sys",
+ "wolfengine",
+]
+
+[[package]]
 name = "wolfengine"
-version = "3.0.2"
+version = "3.0.3"
 dependencies = [
  "anyhow",
  "async-raft",
