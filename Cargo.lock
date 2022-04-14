@@ -3315,7 +3315,6 @@ name = "wolf-demo"
 version = "3.0.2"
 dependencies = [
  "anyhow",
- "console_error_panic_hook",
  "serde",
  "serde_closure 0.3.2",
  "tokio",

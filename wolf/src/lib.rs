@@ -1,4 +1,3 @@
-#![allow(clippy::missing_errors_doc)]
 #![feature(async_closure)]
 
 #[cfg(not(feature = "wasm"))]

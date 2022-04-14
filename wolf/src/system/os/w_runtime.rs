@@ -64,11 +64,11 @@ impl WRunTime {
     }
 
     #[cfg(not(feature = "wasm"))]
-    pub fn spawn_local<F>(p_future: F) -> <F as Future>::Output
+    pub fn spawn_local<F>(f: F) -> F::Output
     where
-        F: Future + 'static,
+        F: Future,
     {
-        futures::executor::block_on(p_future)
+        futures::executor::block_on(f)
     }
 
     #[cfg(feature = "wasm")]
