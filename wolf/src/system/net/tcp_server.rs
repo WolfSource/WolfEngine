@@ -1,27 +1,17 @@
 use super::{
     callback::{MessageType, OnCloseSocketCallback, OnMessageCallback, OnSocketCallback},
-    tls::{load_root_ca, TlsPrivateKeyType},
+    protocols::{TcpProtocol, MAX_MSG_SIZE},
+    tls::TlsPrivateKeyType,
 };
-use anyhow::anyhow;
+use crate::system::net::timeouts;
+use anyhow::{bail, Result};
 use futures::StreamExt;
-use std::time::Duration;
-use std::{net::SocketAddr, path::Path, str::FromStr, sync::Arc};
+use std::{net::SocketAddr, path::Path, str::FromStr};
 use tokio::{
     io::{split, AsyncReadExt, AsyncWriteExt},
     time::Instant,
 };
-use tokio_rustls::{
-    rustls::{self},
-    TlsAcceptor, TlsConnector,
-};
-
-const MAX_BUFFER_SIZE: usize = 1024; //1K
-
-#[derive(Debug, Copy, Clone)]
-pub enum TcpProtocol {
-    TcpNative = 0,
-    TcpWebsocket,
-}
+use tokio_rustls::TlsAcceptor;
 
 #[derive(Debug)]
 pub struct TcpServerConfig<'a> {
@@ -37,59 +27,18 @@ pub struct TcpServerConfig<'a> {
     tls_private_type: Option<&'a TlsPrivateKeyType>,
 }
 
-#[derive(Debug)]
-pub struct TcpClientConfig<'a> {
-    //protocol: TcpProtocol,
-    pub endpoint_address: &'a str,
-    pub port: u16,
-    pub io_timeout_in_secs: f64,
-    pub tls: bool,
-    pub tls_ca_path: Option<&'a Path>,
-}
-
-async fn timeout_for_accept(
-    p_timeout_in_secs: f64,
-) -> std::io::Result<(tokio::net::TcpStream, SocketAddr)> {
-    use std::io::{Error, ErrorKind};
-
-    tokio::time::sleep(Duration::from_secs_f64(p_timeout_in_secs)).await;
-    //return Error
-    Err(Error::new(
-        ErrorKind::TimedOut,
-        "timeout for accept tcp connection reached",
-    ))
-}
-
-async fn timeout_for_read(p_timeout_in_secs: f64) -> std::io::Result<usize> {
-    use std::io::{Error, ErrorKind};
-
-    tokio::time::sleep(Duration::from_secs_f64(p_timeout_in_secs)).await;
-    Err(Error::new(
-        ErrorKind::TimedOut,
-        "timeout for read from tcp socket reached",
-    ))
-}
-
-async fn timeout_for_read_ws(
-    p_timeout_in_secs: f64,
-) -> Option<Result<tokio_tungstenite::tungstenite::Message, tokio_tungstenite::tungstenite::Error>>
-{
-    tokio::time::sleep(Duration::from_secs_f64(p_timeout_in_secs)).await;
-    None
-}
-
 async fn handle_tcp_connection<S>(
     p_stream: S,
     p_peer_address: SocketAddr,
     p_io_timeout_in_secs: f64,
     p_on_msg_callback: OnMessageCallback,
-) -> anyhow::Result<String>
+) -> Result<String>
 where
     S: tokio::io::AsyncRead + tokio::io::AsyncWrite + Unpin + Send,
 {
     let close_msg: String;
     let mut msg_type = MessageType::BINARY;
-    let mut msg_buf = [0_u8; MAX_BUFFER_SIZE];
+    let mut msg_buf = [0_u8; MAX_MSG_SIZE];
     let mut msg_size: usize;
     let conn_live_time = Instant::now();
 
@@ -101,7 +50,7 @@ where
         if p_io_timeout_in_secs > 0.0 {
             //try for accept incoming session within specific timeout
             res = tokio::select! {
-                res1 = timeout_for_read(p_io_timeout_in_secs) => res1,
+                res1 = timeouts::timeout_for_read(p_io_timeout_in_secs) => res1,
                 res2 = async {reader.read(&mut msg_buf).await} => res2,
             };
         } else {
@@ -232,7 +181,7 @@ async fn handle_ws_connection<S>(
     p_peer_address: SocketAddr,
     p_io_timeout_in_secs: f64,
     p_on_msg_callback: OnMessageCallback,
-) -> anyhow::Result<String>
+) -> Result<String>
 where
     S: tokio::io::AsyncRead + tokio::io::AsyncWrite + Unpin + Send,
 {
@@ -243,7 +192,7 @@ where
 
     let mut close_msg = String::new();
     let mut msg_type = MessageType::TEXT;
-    let mut msg_buf = [0_u8; MAX_BUFFER_SIZE];
+    let mut msg_buf = [0_u8; MAX_MSG_SIZE];
     let mut msg_size: usize;
     let mut close_code = CloseCode::Unsupported;
     let mut res: Option<Result<Message, Error>>;
@@ -255,7 +204,7 @@ where
         if p_io_timeout_in_secs > 0.0 {
             //try for accept incoming session within specific timeout
             res = tokio::select! {
-                res1 = timeout_for_read_ws(p_io_timeout_in_secs) =>
+                res1 = timeouts::timeout_for_read_ws(p_io_timeout_in_secs) =>
                 {
                     res1
                 },
@@ -277,16 +226,16 @@ where
                 } else if !msg.is_empty() && (msg.is_text() || msg.is_binary()) {
                     msg_size = msg.len();
                     // don not allow process message more than 1K
-                    if msg_size > MAX_BUFFER_SIZE {
+                    if msg_size > MAX_MSG_SIZE {
                         close_msg = format!(
                                     "websocket connection is going to close. Reason: Received message size is greater than {}",
-                                    MAX_BUFFER_SIZE
+                                    MAX_MSG_SIZE
                                 );
                         close_code = CloseCode::Size;
                         break;
                     }
 
-                    let want_to_close_conn: anyhow::Result<()>;
+                    let want_to_close_conn: Result<()>;
                     let elapsed_secs = conn_live_time.elapsed().as_secs_f64();
                     if msg.is_text() {
                         let msg_res = msg.into_text();
@@ -377,7 +326,7 @@ async fn accept_connection<S>(
     p_on_accept_connection: OnSocketCallback,
     p_on_msg_callback: OnMessageCallback,
     p_on_close_connection: OnCloseSocketCallback,
-) -> anyhow::Result<()>
+) -> Result<()>
 where
     S: tokio::io::AsyncRead + tokio::io::AsyncWrite + Unpin + Send,
 {
@@ -444,7 +393,7 @@ async fn server_main_loop(
         //try for accept incoming session within specific timeout
         let res = if p_config.accept_timeout_in_secs > 0.0 {
             tokio::select! {
-                res1 = timeout_for_accept(p_config.accept_timeout_in_secs) => res1,
+                res1 = timeouts::timeout_for_accept(p_config.accept_timeout_in_secs) => res1,
                 res2 = async {p_tcp_listener.accept().await} => res2,
             }
         } else {
@@ -487,7 +436,7 @@ async fn server_main_loop(
                             .await
                         }
                         Err(e) => {
-                            anyhow::bail!("could not accept tls connection. because {:?}", e)
+                            bail!("could not accept tls connection. because {:?}", e)
                         }
                     };
                     if ret_accept.is_err() {
@@ -537,7 +486,7 @@ pub async fn server(
         std::sync::mpsc::Sender<bool>,
         std::sync::mpsc::Receiver<bool>,
     )>,
-) -> anyhow::Result<()> {
+) -> Result<()> {
     //create address
     let address = format!("{}:{}", p_config.address, p_config.port);
     let socket_addr = SocketAddr::from_str(&address)?;
@@ -579,286 +528,173 @@ pub async fn server(
     p_on_close_socket.run(&socket_addr)
 }
 
-async fn handle_client_stream<T>(
-    p_stream: T,
-    p_peer_address: &SocketAddr,
-    p_io_timeout_in_secs: f64,
-    p_on_message: OnMessageCallback,
-) -> anyhow::Result<()>
-where
-    T: tokio::io::AsyncRead + tokio::io::AsyncWrite + Send,
-{
-    // don't read more than 1K
-    let mut msg_type = MessageType::BINARY;
-    let mut msg_buf = [0_u8; MAX_BUFFER_SIZE];
-    let mut msg_size = 0;
-    let socket_live_time = Instant::now();
+// #[allow(clippy::too_many_lines)]
+// #[tokio::main]
+// #[test]
+// async fn test_native() {
+//     use std::sync::mpsc::{channel, Receiver, Sender};
+//     use std::time::Duration;
 
-    let (mut reader, mut writer) = split(p_stream);
-    let mut res: std::io::Result<usize>;
+//     static TCP_SERVER_CONFIG: TcpServerConfig = TcpServerConfig {
+//         protocol: TcpProtocol::TcpNative,
+//         address: "0.0.0.0",
+//         port: 8000,
+//         ttl: 100,
+//         accept_timeout_in_secs: 5.0, //5 seconds
+//         io_timeout_in_secs: 3.0,     // 3 seconds
+//         tls: false,
+//         tls_certificate_path: None,
+//         tls_private_key_path: None,
+//         tls_private_type: None,
+//     };
 
-    // let's loop for read and writing to the socket
-    loop {
-        let elapsed_secs = socket_live_time.elapsed().as_secs_f64();
-        if p_on_message
-            .run(
-                elapsed_secs,
-                p_peer_address,
-                &mut msg_type,
-                &mut msg_size,
-                &mut msg_buf,
-            )
-            .is_err()
-        {
-            break;
-        }
-        if msg_size > 0 {
-            let v = msg_buf[0..msg_size].to_vec();
-            let s = writer.write(&v).await?;
-            if s > 0 {
-                writer.flush().await?;
-            }
-        }
+//     lazy_static::lazy_static! {
+//         static ref CHANNEL_MUTEX: parking_lot::Mutex<(Sender<bool>, Receiver<bool>)> = parking_lot::Mutex::new(channel::<bool>());
+//     }
 
-        if p_io_timeout_in_secs > 0.0 {
-            //try for accept incoming session within specific timeout
-            res = tokio::select! {
-                res1 = timeout_for_read(p_io_timeout_in_secs) => res1,
-                res2 = async {reader.read(&mut msg_buf).await} => res2,
-            };
-        } else {
-            res = reader.read(&mut msg_buf).await;
-        }
+//     let _r = tokio::spawn(async move {
+//         // wait for server to be created
+//         tokio::time::sleep(Duration::from_secs(2)).await;
 
-        // read from buffer
-        msg_size = res?;
-    }
+//         let on_accept_connection = OnSocketCallback::new(Box::new(
+//             |p_socket_address: &SocketAddr| -> anyhow::Result<()> {
+//                 println!("client {:?} just connected to the server", p_socket_address);
+//                 Ok(())
+//             },
+//         ));
+//         let on_close_connection = OnSocketCallback::new(Box::new(
+//             |p_socket_address: &SocketAddr| -> anyhow::Result<()> {
+//                 println!("client {:?} just closed", p_socket_address);
 
-    Ok(())
-}
+//                 //send request to close the server socket
+//                 let _r = CHANNEL_MUTEX.lock().0.send(true).map_err(|e| {
+//                     println!("could not send data to close_sig_channel. error: {:?}", e);
+//                     e
+//                 });
+//                 Ok(())
+//             },
+//         ));
 
-pub async fn client(
-    p_config: &TcpClientConfig<'_>,
-    p_on_accept_connection: OnSocketCallback,
-    p_on_message: OnMessageCallback,
-    p_on_close_connection: OnSocketCallback,
-) -> anyhow::Result<()> {
-    //create address
-    let address = format!("{}:{}", p_config.endpoint_address, p_config.port);
-    let socket_addr = SocketAddr::from_str(&address)?;
+//         let on_msg_callback = OnMessageCallback::new(Box::new(
+//             |p_socket_time_in_secs: f64,
+//              p_peer_address: &SocketAddr,
+//              _p_msg_type: &mut MessageType,
+//              p_msg_size: &mut usize,
+//              p_msg_buf: &mut [u8]|
+//              -> anyhow::Result<()> {
+//                 println!(
+//                     "client: number of received byte(s) from {:?} is {}. socket live time {}",
+//                     p_peer_address, *p_msg_size, p_socket_time_in_secs
+//                 );
 
-    p_on_accept_connection.run(&socket_addr)?;
+//                 if *p_msg_size > 0 {
+//                     let msg = std::str::from_utf8(p_msg_buf)?;
+//                     println!("client: received buffer is {}", msg);
+//                 }
+//                 //now store new bytes for write
+//                 let msg = "hello...world!"; //make sure append NULL terminate
+//                 p_msg_buf[0..msg.len()].copy_from_slice(msg.as_bytes());
+//                 *p_msg_size = msg.len();
 
-    if p_config.tls {
-        // create root cert store
-        let root_cert_store = load_root_ca(p_config.tls_ca_path)?;
-        // load tls config
-        let config = rustls::ClientConfig::builder()
-            .with_safe_defaults()
-            .with_root_certificates(root_cert_store)
-            .with_no_client_auth();
-        // create tls connector
-        let connector = TlsConnector::from(Arc::new(config));
-        // create tcp stream
-        let stream = tokio::net::TcpStream::connect(&socket_addr).await?;
+//                 if p_socket_time_in_secs > 5.0 {
+//                     anyhow::bail!("closing socket");
+//                 }
+//                 Ok(())
+//             },
+//         ));
 
-        // domain
-        let domain = rustls::ServerName::try_from(p_config.endpoint_address)
-            .map_err(|e| anyhow!("invalid DNS name {:?}", e).context("tcp::client"))?;
-        let peer_address = stream.peer_addr()?;
+//         let tcp_client_config = TcpClientConfig {
+//             //protocol: TcpProtocol::TcpNative, //we need to provide ws client code from rust
+//             endpoint_address: "0.0.0.0",
+//             port: 8000,
+//             io_timeout_in_secs: 3.0, // 3 seconds
+//             tls: false,
+//             tls_ca_path: None,
+//         };
 
-        // create tls tcp stream
-        let stream = connector.connect(domain, stream).await?;
-        handle_client_stream(
-            stream,
-            &peer_address,
-            p_config.io_timeout_in_secs,
-            p_on_message,
-        )
-        .await?;
-    } else {
-        // create tcp stream
-        let stream = tokio::net::TcpStream::connect(&socket_addr).await?;
-        let peer_address = stream.peer_addr()?;
+//         let ret = client(
+//             &tcp_client_config,
+//             on_accept_connection,
+//             on_msg_callback,
+//             on_close_connection,
+//         )
+//         .await;
+//         assert!(ret.is_ok(), "{:?}", ret);
+//     });
 
-        handle_client_stream(
-            stream,
-            &peer_address,
-            p_config.io_timeout_in_secs,
-            p_on_message,
-        )
-        .await?;
-    }
-    p_on_close_connection.run(&socket_addr)
-}
+//     // block main thread with tcp server
+//     let on_bind_socket = OnSocketCallback::new(Box::new(
+//         |p_socket_address: &SocketAddr| -> anyhow::Result<()> {
+//             println!("server: socket {:?} just bound", p_socket_address);
+//             Ok(())
+//         },
+//     ));
 
-#[allow(clippy::too_many_lines)]
-#[tokio::main]
-#[test]
-async fn test_native() {
-    use std::sync::mpsc::{channel, Receiver, Sender};
-    use std::time::Duration;
+//     let on_accept_connection = OnSocketCallback::new(Box::new(
+//         |p_socket_address: &SocketAddr| -> anyhow::Result<()> {
+//             println!(
+//                 "server: remote address with peer id {:?} just connected",
+//                 p_socket_address
+//             );
+//             Ok(())
+//         },
+//     ));
 
-    static TCP_SERVER_CONFIG: TcpServerConfig = TcpServerConfig {
-        protocol: TcpProtocol::TcpNative,
-        address: "0.0.0.0",
-        port: 8000,
-        ttl: 100,
-        accept_timeout_in_secs: 5.0, //5 seconds
-        io_timeout_in_secs: 3.0,     // 3 seconds
-        tls: false,
-        tls_certificate_path: None,
-        tls_private_key_path: None,
-        tls_private_type: None,
-    };
+//     let on_msg_callback = OnMessageCallback::new(Box::new(
+//         |p_socket_time_in_secs: f64,
+//          p_peer_address: &SocketAddr,
+//          _p_msg_type: &mut MessageType,
+//          p_msg_size: &mut usize,
+//          p_msg_buf: &mut [u8]|
+//          -> anyhow::Result<()> {
+//             println!(
+//                 "server: number of received byte(s) from {:?} is {}. socket live time {}",
+//                 p_peer_address, *p_msg_size, p_socket_time_in_secs
+//             );
+//             if *p_msg_size > 0 {
+//                 let msg = std::str::from_utf8(p_msg_buf)?;
+//                 println!("server: received buffer is {}", msg);
 
-    lazy_static::lazy_static! {
-        static ref CHANNEL_MUTEX: parking_lot::Mutex<(Sender<bool>, Receiver<bool>)> = parking_lot::Mutex::new(channel::<bool>());
-    }
+//                 //now store new bytes for write
+//                 let msg = "hello client!"; //make sure append NULL terminate
+//                 p_msg_buf[0..msg.len()].copy_from_slice(msg.as_bytes());
+//                 *p_msg_size = msg.len();
+//             }
+//             Ok(())
+//         },
+//     ));
 
-    let _r = tokio::spawn(async move {
-        // wait for server to be created
-        tokio::time::sleep(Duration::from_secs(2)).await;
+//     let on_close_connection = OnCloseSocketCallback::new(Box::new(
+//         |p_socket_address: &SocketAddr, p_close_msg: &str| -> anyhow::Result<()> {
+//             println!(
+//                 "server: remote address with peer id {:?} just disconnected. close message is {}",
+//                 p_socket_address, p_close_msg
+//             );
+//             Ok(())
+//         },
+//     ));
 
-        let on_accept_connection = OnSocketCallback::new(Box::new(
-            |p_socket_address: &SocketAddr| -> anyhow::Result<()> {
-                println!("client {:?} just connected to the server", p_socket_address);
-                Ok(())
-            },
-        ));
-        let on_close_connection = OnSocketCallback::new(Box::new(
-            |p_socket_address: &SocketAddr| -> anyhow::Result<()> {
-                println!("client {:?} just closed", p_socket_address);
+//     let on_close_socket = OnSocketCallback::new(Box::new(
+//         |p_socket_address: &SocketAddr| -> anyhow::Result<()> {
+//             println!("server: socket {:?} just closed", p_socket_address);
+//             Ok(())
+//         },
+//     ));
 
-                //send request to close the server socket
-                let _r = CHANNEL_MUTEX.lock().0.send(true).map_err(|e| {
-                    println!("could not send data to close_sig_channel. error: {:?}", e);
-                    e
-                });
-                Ok(())
-            },
-        ));
+//     let ret = server(
+//         &TCP_SERVER_CONFIG,
+//         on_bind_socket,
+//         on_accept_connection,
+//         on_msg_callback,
+//         on_close_connection,
+//         on_close_socket,
+//         &CHANNEL_MUTEX,
+//     )
+//     .await;
+//     assert!(ret.is_ok(), "{:?}", ret);
 
-        let on_msg_callback = OnMessageCallback::new(Box::new(
-            |p_socket_time_in_secs: f64,
-             p_peer_address: &SocketAddr,
-             _p_msg_type: &mut MessageType,
-             p_msg_size: &mut usize,
-             p_msg_buf: &mut [u8]|
-             -> anyhow::Result<()> {
-                println!(
-                    "client: number of received byte(s) from {:?} is {}. socket live time {}",
-                    p_peer_address, *p_msg_size, p_socket_time_in_secs
-                );
-
-                if *p_msg_size > 0 {
-                    let msg = std::str::from_utf8(p_msg_buf)?;
-                    println!("client: received buffer is {}", msg);
-                }
-                //now store new bytes for write
-                let msg = "hello...world!"; //make sure append NULL terminate
-                p_msg_buf[0..msg.len()].copy_from_slice(msg.as_bytes());
-                *p_msg_size = msg.len();
-
-                if p_socket_time_in_secs > 5.0 {
-                    anyhow::bail!("closing socket");
-                }
-                Ok(())
-            },
-        ));
-
-        let tcp_client_config = TcpClientConfig {
-            //protocol: TcpProtocol::TcpNative, //we need to provide ws client code from rust
-            endpoint_address: "0.0.0.0",
-            port: 8000,
-            io_timeout_in_secs: 3.0, // 3 seconds
-            tls: false,
-            tls_ca_path: None,
-        };
-
-        let ret = client(
-            &tcp_client_config,
-            on_accept_connection,
-            on_msg_callback,
-            on_close_connection,
-        )
-        .await;
-        assert!(ret.is_ok(), "{:?}", ret);
-    });
-
-    // block main thread with tcp server
-    let on_bind_socket = OnSocketCallback::new(Box::new(
-        |p_socket_address: &SocketAddr| -> anyhow::Result<()> {
-            println!("server: socket {:?} just bound", p_socket_address);
-            Ok(())
-        },
-    ));
-
-    let on_accept_connection = OnSocketCallback::new(Box::new(
-        |p_socket_address: &SocketAddr| -> anyhow::Result<()> {
-            println!(
-                "server: remote address with peer id {:?} just connected",
-                p_socket_address
-            );
-            Ok(())
-        },
-    ));
-
-    let on_msg_callback = OnMessageCallback::new(Box::new(
-        |p_socket_time_in_secs: f64,
-         p_peer_address: &SocketAddr,
-         _p_msg_type: &mut MessageType,
-         p_msg_size: &mut usize,
-         p_msg_buf: &mut [u8]|
-         -> anyhow::Result<()> {
-            println!(
-                "server: number of received byte(s) from {:?} is {}. socket live time {}",
-                p_peer_address, *p_msg_size, p_socket_time_in_secs
-            );
-            if *p_msg_size > 0 {
-                let msg = std::str::from_utf8(p_msg_buf)?;
-                println!("server: received buffer is {}", msg);
-
-                //now store new bytes for write
-                let msg = "hello client!"; //make sure append NULL terminate
-                p_msg_buf[0..msg.len()].copy_from_slice(msg.as_bytes());
-                *p_msg_size = msg.len();
-            }
-            Ok(())
-        },
-    ));
-
-    let on_close_connection = OnCloseSocketCallback::new(Box::new(
-        |p_socket_address: &SocketAddr, p_close_msg: &str| -> anyhow::Result<()> {
-            println!(
-                "server: remote address with peer id {:?} just disconnected. close message is {}",
-                p_socket_address, p_close_msg
-            );
-            Ok(())
-        },
-    ));
-
-    let on_close_socket = OnSocketCallback::new(Box::new(
-        |p_socket_address: &SocketAddr| -> anyhow::Result<()> {
-            println!("server: socket {:?} just closed", p_socket_address);
-            Ok(())
-        },
-    ));
-
-    let ret = server(
-        &TCP_SERVER_CONFIG,
-        on_bind_socket,
-        on_accept_connection,
-        on_msg_callback,
-        on_close_connection,
-        on_close_socket,
-        &CHANNEL_MUTEX,
-    )
-    .await;
-    assert!(ret.is_ok(), "{:?}", ret);
-
-    println!("native tcp tests were done");
-}
+//     println!("native tcp tests were done");
+// }
 
 //#[allow(clippy::too_many_lines)]
 //#[tokio::main]

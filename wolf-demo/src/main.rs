@@ -1,4 +1,4 @@
-#![feature(async_closure)]
+#![cfg_attr(target_arch = "wasm32", feature(async_closure))]
 #![allow(unused_imports)]
 #![allow(unreachable_code)]
 use anyhow::Result;
@@ -40,13 +40,13 @@ async fn test() {
 
     #[cfg(not(target_arch = "wasm32"))]
     {
-        let f = async move || {
+        let f = async move {
             println!("t1 started");
             WRunTime::sleep(std::time::Duration::from_secs(1));
             w_log!("t1 just stopped after 2 seconds");
         };
         // execute thread
-        WRunTime::green_thread(f()).await;
+        WRunTime::green_thread(f).await;
         WRunTime::async_sleep(std::time::Duration::from_secs(2)).await;
     }
 

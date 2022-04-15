@@ -1,7 +1,8 @@
-use anyhow::{anyhow, bail, Result};
-use std::{path::Path, time::Duration};
+use anyhow::{bail, Result};
+use std::path::Path;
 use tonic::transport::{Certificate, Channel, ClientTlsConfig, Endpoint};
 
+#[cfg(not(any(target_os = "android", target_os = "ios", target_arch = "wasm32")))]
 #[derive(Debug)]
 pub struct GrpcServerConfig<'a> {
     address: &'a str,
@@ -10,12 +11,13 @@ pub struct GrpcServerConfig<'a> {
     tls_certificate_path: Option<&'a Path>,
     tls_private_key_path: Option<&'a Path>,
     tcp_no_delay: bool,
-    tcp_keep_alive: Option<Duration>,
-    http2_keepalive_interval: Option<Duration>,
-    http2_keepalive_timeout: Option<Duration>,
+    tcp_keep_alive: Option<std::time::Duration>,
+    http2_keepalive_interval: Option<std::time::Duration>,
+    http2_keepalive_timeout: Option<std::time::Duration>,
     accept_http1: bool,
 }
 
+#[cfg(not(any(target_os = "android", target_os = "ios", target_arch = "wasm32")))]
 /// # Errors
 ///
 /// Will return `Err` if `p_config` does not provide TLS certificates or
@@ -79,7 +81,9 @@ where
             .add_service(p_service)
             .serve_with_shutdown(addr, p_shutdown_signal)
             .await
-            .map_err(|e| anyhow!("could not build grpc tls server because {:?}", e).context(TRACE))
+            .map_err(|e| {
+                anyhow::anyhow!("could not build grpc tls server because {:?}", e).context(TRACE)
+            })
     } else {
         tonic::transport::Server::builder()
             .tcp_nodelay(p_config.tcp_no_delay)
@@ -90,7 +94,9 @@ where
             .add_service(p_service)
             .serve_with_shutdown(addr, p_shutdown_signal)
             .await
-            .map_err(|e| anyhow!("could not build grpc tls server because {:?}", e).context(TRACE))
+            .map_err(|e| {
+                anyhow::anyhow!("could not build grpc tls server because {:?}", e).context(TRACE)
+            })
     }
 }
 
@@ -204,6 +210,7 @@ pub async fn create_channel(p_end_point: String) -> Result<Channel> {
 #[test]
 async fn test() {
     use crate::system::algorithm::raft::raft_srv::get_service;
+    use std::time::Duration;
 
     let (s, r) = tokio::sync::oneshot::channel();
     let _r = tokio::spawn(async {

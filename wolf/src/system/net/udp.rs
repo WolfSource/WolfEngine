@@ -1,9 +1,9 @@
 use super::callback::MessageType;
 use super::callback::{OnCloseSocketCallback, OnMessageCallback, OnSocketCallback};
+use super::protocols::MAX_MSG_SIZE;
+use anyhow::{anyhow, Result};
 use std::{net::SocketAddr, str::FromStr};
 use tokio::{net::UdpSocket, time::Instant};
-
-const MAX_BUFFER_SIZE: usize = 1024; //1K
 
 #[derive(Debug)]
 pub enum UdpConnectionType {
@@ -33,7 +33,7 @@ async fn timeout_for_send(p_timeout_in_secs: f64) -> std::io::Result<usize> {
 
 async fn read(
     p_socket: &UdpSocket,
-    p_buffer: &mut [u8; MAX_BUFFER_SIZE],
+    p_buffer: &mut [u8; MAX_MSG_SIZE],
     p_read_write_timeout_in_secs: f64,
 ) -> std::io::Result<(usize, SocketAddr)> {
     let res = if p_read_write_timeout_in_secs > 0.0 {
@@ -57,7 +57,7 @@ async fn read(
 async fn send(
     p_socket: &UdpSocket,
     peer_addr: &SocketAddr,
-    p_buffer: &mut [u8; MAX_BUFFER_SIZE],
+    p_buffer: &mut [u8; MAX_MSG_SIZE],
     p_read_write_timeout_in_secs: f64,
 ) -> std::io::Result<usize> {
     let res = if p_read_write_timeout_in_secs > 0.0 {
@@ -86,18 +86,23 @@ pub async fn connect(
     p_on_bind_socket: OnSocketCallback,
     p_on_message: OnMessageCallback,
     p_on_close_socket: OnCloseSocketCallback,
-) -> anyhow::Result<()> {
+) -> Result<()> {
+    const TRACE: &str = "udp::connect";
+
     let address = format!("{}:{}", p_address, p_port);
-    let socket_addr = SocketAddr::from_str(&address)?;
+    let socket_addr =
+        SocketAddr::from_str(&address).map_err(|e| anyhow!("{:?}. trace info:{}", e, TRACE))?;
 
     //no tls-mode
-    let socket = UdpSocket::bind(socket_addr).await?;
+    let socket = UdpSocket::bind(socket_addr)
+        .await
+        .map_err(|e| anyhow!("{:?}. trace info:{}", e, TRACE))?;
     // on bind
     p_on_bind_socket.run(&socket_addr)?;
 
     // don't read more than 1K
     let mut msg_type = MessageType::BINARY;
-    let mut msg_buf = [0_u8; MAX_BUFFER_SIZE];
+    let mut msg_buf = [0_u8; MAX_MSG_SIZE];
     let mut r_res: std::io::Result<(usize, SocketAddr)>;
     let mut s_res: std::io::Result<usize>;
     let close_msg: String;
@@ -115,7 +120,9 @@ pub async fn connect(
                     close_msg = format!("{:?}", r_res);
                     break;
                 }
-                let (mut msg_size, peer_addr) = r_res?;
+                let (mut msg_size, peer_addr) =
+                    r_res.map_err(|e| anyhow!("{:?}. trace info:{}", e, TRACE))?;
+
                 let want_to_close_conn = p_on_message.run(
                     elpased_secs,
                     &peer_addr,
@@ -148,7 +155,10 @@ pub async fn connect(
         }
         UdpConnectionType::UDPClient => {
             let mut msg_size: usize = 0;
-            let peer_addr = socket.local_addr()?;
+            let peer_addr = socket
+                .local_addr()
+                .map_err(|e| anyhow!("{:?}. trace info:{}", e, TRACE))?;
+
             // let's loop for write and reading to the socket
             loop {
                 let elpased_secs = socket_live_time.elapsed().as_secs_f64();

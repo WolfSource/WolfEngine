@@ -1,6 +1,6 @@
 use super::{
     callback::{MessageType, OnCloseSocketCallback, OnMessageCallback, OnSocketCallback},
-    tcp::TcpProtocol,
+    protocols::TcpProtocol,
 };
 use std::{
     net::SocketAddr,
@@ -343,7 +343,8 @@ async fn test_native() {
             },
         ));
 
-        let tcp_client_config = super::tcp::TcpClientConfig {
+        use crate::system::net::tcp_client::TcpClientConfig;
+        let tcp_client_config = TcpClientConfig {
             //protocol: TcpProtocol::TcpNative, //we need to provide ws client code from rust
             endpoint_address: "0.0.0.0",
             port: 8000,
@@ -352,7 +353,7 @@ async fn test_native() {
             tls_ca_path: None,
         };
 
-        let ret = super::tcp::client(
+        let ret = super::tcp_client::client(
             &tcp_client_config,
             on_accept_connection,
             on_msg_callback,

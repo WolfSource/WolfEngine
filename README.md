@@ -17,25 +17,46 @@ This Wolf is a comprehensive set of Rust/C libraries for realtime rendering, rea
 
 ## Build
 - **Wolf 2/1** via CMake
-- **Wolf 3 via Nightly toolchain**
+- **Wolf 3**
+  - For **Webassembly** :\
+  From WolfEngine folder
   ```bash
   rustup default nightly
-  ```
-  - For **Webassembly** :\
-  First you need to setup wasm32
-  ```bash
   rustup target add wasm32-unknown-unknown
-  ```
-  Now run hello wolf demo
-  ```bash
+  cd wolf-demo
   ./build-wasm.sh
   ./run-wasm.sh
   ```
   Finally the demo will be served at http://localhost:8000
-  - For **Native** :
+  - For **Windows, MacOS, Linux** :
   ```bash
+  rustup default stable
   cd wolf-demo
   cargo run
   ```
+  - For **Android** :
+  ```bash
+  rustup default stable
+  rustup target add \
+    aarch64-linux-android \
+    armv7-linux-androideabi \
+    x86_64-linux-android \
+    i686-linux-android
+  cargo install cargo-ndk
+  cd wolf
+  cargo ndk -t armeabi-v7a -t arm64-v8a -o ./jniLibs build --release 
+  ```
+
+  - For **iOS** :
+  ```bash
+  rustup default stable
+  rustup target add \
+    aarch64-apple-ios \
+    x86_64-apple-ios
+  cargo install cargo-lipo
+  cd wolf
+  cargo lipo --release
+  ```
+
 ## Copyright & License
 Wolf Engine © 2014-2022 [Pooya Eimandar](https://www.linkedin.com/in/pooyaeimandar)

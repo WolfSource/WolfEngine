@@ -68,7 +68,7 @@ impl WRunTime {
     where
         F: Future,
     {
-        futures::executor::block_on(f)
+        pollster::block_on(f)
     }
 
     #[cfg(feature = "wasm")]
