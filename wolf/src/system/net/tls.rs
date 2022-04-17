@@ -18,7 +18,7 @@ pub fn load_certs(p_path: &Path) -> Result<Vec<Certificate>> {
             rustls_pemfile::certs(&mut buf)
                 .map(|mut certs| certs.drain(..).map(Certificate).collect())
         })
-        .map_err(std::convert::Into::into) //|e| e.into()
+        .map_err(std::convert::Into::into)
 }
 
 pub fn load_private_keys(p_path: &Path, p_type: &TlsPrivateKeyType) -> Result<Vec<PrivateKey>> {
@@ -32,7 +32,7 @@ pub fn load_private_keys(p_path: &Path, p_type: &TlsPrivateKeyType) -> Result<Ve
                     .map(|mut keys| keys.drain(..).map(PrivateKey).collect()),
             }
         })
-        .map_err(std::convert::Into::into) //e.into()
+        .map_err(std::convert::Into::into)
 }
 
 pub fn init_tls_acceptor(

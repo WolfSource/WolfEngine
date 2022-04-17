@@ -8,6 +8,7 @@
 #[global_allocator]
 static GLOBAL: mimalloc::MiMalloc = mimalloc::MiMalloc;
 
+pub mod ffi;
 pub mod render;
 pub mod system;
 

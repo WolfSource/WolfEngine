@@ -18,6 +18,11 @@ This Wolf is a comprehensive set of Rust/C libraries for realtime rendering, rea
 ## Build
 - **Wolf 2/1** via CMake
 - **Wolf 3**
+  First install the command-line bindgen tool for linking Wolf/CC dependencies
+  ```bash
+  cargo install bindgen
+  ```
+  
   - For **Webassembly** :\
   From WolfEngine folder
   ```bash
