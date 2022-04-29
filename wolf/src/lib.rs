@@ -1,3 +1,5 @@
+#![allow(unused_crate_dependencies)]
+
 // #[cfg(any(target_os = "android", target_os = "ios"))]
 // use std::{
 //     ffi::{CStr, CString},
@@ -8,7 +10,6 @@
 #[global_allocator]
 static GLOBAL: mimalloc::MiMalloc = mimalloc::MiMalloc;
 
-pub mod ffi;
 pub mod render;
 pub mod system;
 

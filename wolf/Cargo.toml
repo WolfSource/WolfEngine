@@ -29,17 +29,18 @@ winit = {version = "0.26.1", default-features = false, features = ["x11", "wayla
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 console_error_panic_hook = { version = "0.1.7", default-features = false }
 instant = {version = "0.1.12", default-features = false, features = ["wasm-bindgen"]}
-rhai = { version = "1.6.0", default-features = false, features = ["sync", "internals", "wasm-bindgen"] }
+rhai = { version = "1.6.1", default-features = false, features = ["sync", "internals", "wasm-bindgen"] }
 serde = { version = "1.0.136", default-features = false, features = ["derive"]}
-wasm-bindgen = { version = "0.2.79", default-features = false }
-wasm-bindgen-futures = { version = "0.4.29", default-features = false }
+wasm-bindgen = { version = "0.2.80", default-features = false }
+wasm-bindgen-futures = { version = "0.4.30", default-features = false }
 wasm-mt = {version = "0.1.2", default-features = false }
-web-sys = {version = "0.3.56", default-features = false, features = ["console", "Document", "Window", "Element"]}
+web-sys = {version = "0.3.57", default-features = false, features = ["console", "Document", "Window", "Element"]}
 wgpu = {version = "0.12.0", default-features = false, features = ["webgl"]}
 
 # shared dependencies between arm, aarch64 & x86_64
 [target.'cfg(any(target_arch = "arm", target_arch = "aarch64", target_arch = "x86_64"))'.dependencies]
 instant = {version = "0.1.12", default-features = false}
+cxx = {version = "1.0.66", default-features = false, features = ["alloc"]}
 pollster = {version = "0.2.5", default-features = false}
 rhai = { version = "1.6.0", default-features = false, features = ["sync", "internals"]}
 rustls-pemfile = {version = "1.0.0", default-features = false}
@@ -68,10 +69,11 @@ serde_json = {version = "1.0.79", default-features = false, features = ["std"]}
 sysinfo = {version = "0.23.10", default-features = false, features = ["multithread"]}
 tracing = {version = "0.1.34", default-features = false, features = ["std", "attributes"]}
 tokio-tungstenite = {version = "0.17.1", default-features = false, features = ["connect", "rustls"]}
-uuid = {version = "0.8.2", default-features = false, features = ["v5"]}
+uuid = {version = "1.0.0", default-features = false, features = ["v5"]}
 
 [build-dependencies]
-bindgen = { version = "0.59.2", default-features = false, features = ["logging", "clap", "runtime", "which-rustfmt"] }
+cfg-if = { version = "1.0.0", default-features = false}
+cxx-build = {version = "1.0.66", default-features = false}
 tonic-build = {version = "0.7.0", default-features = false, features = ["transport", "prost", "compression"]}
 
 [dev-dependencies]
@@ -80,9 +82,29 @@ lazy_static = {version = "1.4.0", default-features = false}
 # Wasm features
 [features]
 default = ["system"]
-render = []
-stream = []
-system = []
-wasm = [] #remove this in order to native local debuging for tests
+brotli = [] # enable brotli compression
+fiber = [] # enable fiber
+grpc = [] # enable gRPC connection
+http_client = [] # enable http 1.1/2 client
+http_server = [] # enable http 1.1/2 server
+kafka_client = [] # enable Kafka client
+lz4 = [] # enable LZ4 compression
+lzma = [] # enable LZMA Compression
+nng = [] # enable nng socket for tcp/udp/ipc protocols
+quic = [] # enable QUIC protocol
+redis_client = [] # enable redis client
+render = [] # enable real-time rendering
+rocksDB_client = [] # enable rocksDB client
+rtsp_client = [] # enable real time streaming protocol for client
+rtsp_server = [] # enable real time streaming protocol for server
+script = [] # enable embedded script engine
+simd = [] # enable SIMD
+skyllaDB_client = [] # enable ScyllaDB client
+socket = [] # enable native socket for tcp/udp protocols
+system = [] # base system features
+wasm = [] # build wolf for WASM. Remove this in order to native local debuging for tests
+webRTC_client = [] # enable webRTC
+websocket_client = [] # enable websocket client
+websocket_server = [] # enable websocket server
 
 

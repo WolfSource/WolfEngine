@@ -7,7 +7,7 @@ profile/
 release/
 target/
 test/
-wolf/cc/build/*
+wolf/cxx/build/*
 
 # Created by https://www.toptal.com/developers/gitignore/api/dotenv,linux,macos,osx,rust,visualstudiocode,windows
 # Edit at https://www.toptal.com/developers/gitignore?templates=dotenv,linux,macos,osx,rust,visualstudiocode,windows

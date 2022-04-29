@@ -1,6 +1,6 @@
-#include "lz4.hpp"
-#include "wolf_system/src/compression/lz4.rs.h"
-#include <mimalloc/mimalloc.h>
+#include "LZ4.hpp"
+#include "wolfengine/src/system/compression/lz4.rs.h"
+#include <mimalloc.h>
 #include <gsl/gsl>
 
 #include <lz4.h>

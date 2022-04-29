@@ -9,6 +9,8 @@
     "editor.guides.bracketPairs": "active",
     "editor.inlineSuggest.enabled": true,
     "files.associations": {
+        "*.cppm": "cpp",
+        "*.ixx": "cpp",
         "array": "cpp",
         "string_view": "cpp",
         "__hash_table": "cpp",
@@ -86,7 +88,18 @@
         "xlocmes": "cpp",
         "xlocmon": "cpp",
         "xloctime": "cpp",
-        "xtree": "cpp"
+        "xtree": "cpp",
+        "cinttypes": "cpp",
+        "condition_variable": "cpp",
+        "cstdarg": "cpp",
+        "cwctype": "cpp",
+        "set": "cpp",
+        "future": "cpp",
+        "numbers": "cpp",
+        "numeric": "cpp",
+        "regex": "cpp",
+        "semaphore": "cpp",
+        "variant": "cpp"
     },
     "files.watcherExclude": {
         "**/*.db-*": true,

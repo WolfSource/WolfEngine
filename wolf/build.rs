@@ -1,4 +1,7 @@
+#![allow(unused_mut)]
 use std::{io, path::Path, process::Command};
+
+const MACOSX_DEPLOYMENT_TARGET: &str = "12.0";
 
 fn main() {
     // get the current path
@@ -10,6 +13,11 @@ fn main() {
     //get current target os
     let target_os =
         std::env::var("CARGO_CFG_TARGET_OS").expect("Build failed: could not get target OS");
+
+    if target_os == "macos" {
+        std::env::set_var("MACOSX_DEPLOYMENT_TARGET", MACOSX_DEPLOYMENT_TARGET);
+    }
+
     // compile protos
     let mut build_server_proto = true;
     let build_client_proto = true;
@@ -19,9 +27,9 @@ fn main() {
     }
 
     let wolf_lib_ext = if target_os == "windows" {
-        "wolf_cc.lib"
+        "libwolf_cxx.lib"
     } else {
-        "libwolf_cc.a"
+        "libwolf_cxx.a"
     };
     let proto_path_include = current_dir_path.join("proto");
     let proto_path_include_src = proto_path_include
@@ -41,16 +49,35 @@ fn main() {
     )
     .expect("couldn't read the protos directory");
 
-    // execute cmake
-    build_cmake(&current_dir_path, wolf_lib_ext);
+    // get opt_level
+    let opt_level_str = std::env::var("OPT_LEVEL").expect("could not get OPT_LEVEL profile");
 
-    // link to wolf_cc library
-    println!("cargo:rustc-link-search=native=/usr/lib/");
-    println!(
-        "cargo:rustc-link-search=native={}/cc/build/Debug/",
-        current_dir_path_str
-    );
-    println!("cargo:rustc-link-lib=static=wolf_cc");
+    // get current build profile
+    let profile_str = std::env::var("PROFILE").expect("could not get PROFILE");
+    let build_profile = match &opt_level_str[..] {
+        "0" => "Debug",
+        "1" | "2" | "3" => {
+            if profile_str == "debug" {
+                "RelWithDebInfo"
+            } else {
+                "Release"
+            }
+        }
+        "s" | "z" => "MinSizeRel",
+        _ => {
+            if profile_str == "debug" {
+                "Debug"
+            } else {
+                "Release"
+            }
+        }
+    };
+
+    // execute cmake of wolf_cxx
+    build_cmake(&current_dir_path, wolf_lib_ext, build_profile);
+
+    // build cxx
+    build_cxx(current_dir_path_str, build_profile);
 }
 
 /// # Errors
@@ -71,64 +98,54 @@ pub fn compile_protos(
 /// # Panic
 ///
 /// Will be panic `if cmake failed
-pub fn build_cmake(p_current_path: &Path, p_wolf_cc_file_name: &str) {
-    // get current build profile
-    let profile_str = std::env::var("PROFILE").expect("could not get PROFILE");
-    // get opt_level
-    let opt_level_str = std::env::var("OPT_LEVEL").expect("could not get OPT_LEVEL profile");
-    // set CMake build config
-    let build_profile = match &opt_level_str[..] {
-        "0" => "Debug",
-        "1" | "2" | "3" => {
-            if profile_str == "debug" {
-                "RelWithDebInfo"
-            } else {
-                "Release"
-            }
-        }
-        "s" | "z" => "MinSizeRel",
-        _ => {
-            if profile_str == "debug" {
-                "Debug"
-            } else {
-                "Release"
-            }
-        }
-    };
-
+pub fn build_cmake(p_current_path: &Path, p_wolf_cxx_file_name: &str, p_build_profile: &str) {
     // get parent path
-    let cmake_current_path = p_current_path.join("cc/");
+    let cmake_current_path = p_current_path.join("cxx/");
     let cmake_current_path_str = cmake_current_path
         .to_str()
         .expect("could not convert cmake current path to &str");
 
     // get cmake build path
-    let install_folder = format!("build/{}", build_profile);
+    let install_folder = format!("build/{}", p_build_profile);
     let cmake_build_path = cmake_current_path.join(install_folder);
     let cmake_build_path_str = cmake_build_path
         .to_str()
         .expect("could not convert cmake build path to &str");
 
-    // return if wolf_cc library was found
-    let wolf_cc_path = cmake_build_path.join(p_wolf_cc_file_name);
-    if std::path::Path::new(&wolf_cc_path).exists() {
+    // return if wolf_cxx library was found
+    let wolf_cxx_path = cmake_build_path.join(p_wolf_cxx_file_name);
+    if std::path::Path::new(&wolf_cxx_path).exists() {
         return;
     }
+
+    // args
+    let b_arg = format!("-B{}", cmake_build_path_str);
+    let s_arg = format!("-S{}", cmake_current_path_str);
+    let type_arg = format!("-DCMAKE_BUILD_TYPE:STRING={}", p_build_profile);
+    let mut args = [
+        ".",
+        "--no-warn-unused-cli",
+        "-Wdev",
+        "--debug-output",
+        "-DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE",
+        &b_arg,
+        &s_arg,
+        &type_arg,
+    ]
+    .to_vec();
+
+    cfg_if::cfg_if! {
+        if #[cfg(feature = "lz4")] {
+            args.push("-DWOLF_ENABLE_LZ4=ON");
+        }
+    }
+
     // configure
     let mut out = Command::new("cmake")
         .current_dir(&cmake_current_path)
-        .args([
-            ".",
-            "--no-warn-unused-cli",
-            "-Wdev",
-            "--debug-output",
-            "-DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE",
-            format!("-B{}", cmake_build_path_str).as_str(),
-            format!("-S{}", cmake_current_path_str).as_str(),
-            format!("-DCMAKE_BUILD_TYPE:STRING={}", build_profile).as_str(),
-        ])
+        .args(args)
         .output()
-        .expect("could not configure cmake of wolf/cc");
+        .expect("could not configure cmake of wolf/cxx");
 
     assert!(
         out.status.success(),
@@ -143,12 +160,12 @@ pub fn build_cmake(p_current_path: &Path, p_wolf_cc_file_name: &str) {
             "--build",
             cmake_build_path_str,
             "--config",
-            build_profile,
+            p_build_profile,
             "--parallel",
             "8",
         ])
         .output()
-        .expect("could not build cmake of wolf/cc");
+        .expect("could not build cmake of wolf/cxx");
 
     assert!(
         out.status.success(),
@@ -156,32 +173,56 @@ pub fn build_cmake(p_current_path: &Path, p_wolf_cc_file_name: &str) {
         cmake_current_path_str,
         std::str::from_utf8(&out.stderr)
     );
-
-    // generate rust codes from c headers
-    generate_bindgens(p_current_path);
 }
 
-fn generate_bindgens(p_current_path: &Path) {
-    // list of headers
-    let headers = ["wolf"];
+fn build_cxx(p_current_dir_path_str: &str, p_build_profile: &str) {
+    // includes + rust & cpp sources
+    let gsl_include = format!("cxx/build/{}/_deps/gsl-src/include", p_build_profile);
+    let mimalloc_include = format!("cxx/build/{}/_deps/mimalloc-src/include", p_build_profile);
 
-    let out_rust_path = p_current_path.join("src/ffi/");
-    let path = p_current_path.join("cc");
-    for header in headers {
-        let header_name = format!("{}.h", header);
-        let rust_name = format!("{}.rs", header);
+    let mut rusts = Vec::<&str>::new();
+    let mut cpps = Vec::<&str>::new();
+    let mut includes = vec!["./", "cxx/", &gsl_include, &mimalloc_include];
 
-        // create a path buffer to header
-        let pb = path.join(header_name);
-        let h = pb.to_str().unwrap();
-        let binding = bindgen::Builder::default()
-            .header(h)
-            .generate()
-            .expect("unable to generate rust bindings");
+    println!("cargo:rustc-link-search=native=/usr/lib/");
 
-        let out = out_rust_path.join(rust_name);
-        binding
-            .write_to_file(out)
-            .unwrap_or_else(|e| panic!("couldn't write bindings for {} because {}", h, e));
+    cfg_if::cfg_if! {
+            if #[cfg(feature = "lz4")] {
+                // update rust & cpp sources
+                rusts.push("src/system/compression/lz4.rs");
+                cpps.push("src/system/compression/cxx/lz4/LZ4.cpp");
+
+                // lz4 includes
+                let lz4_include = format!("cxx/build/{}/_deps/lz4-src/lib", p_build_profile);
+                includes.push(&lz4_include);
+
+                let dir = "src/system/compression/cxx/lz4";
+                println!("cargo:rerun-if-changed={}/LZ4.hpp", dir);
+                println!("cargo:rerun-if-changed={}/LZ4.cpp", dir);
+
+            // link to lz4 library
+            println!(
+                "cargo:rustc-link-search=native={}/cxx/build/{}/_deps/lz4-build/",
+                p_current_dir_path_str, p_build_profile
+            );
+            println!("cargo:rustc-link-lib=static=lz4");
+        }
+    }
+
+    if !rusts.is_empty() {
+        cxx_build::bridges(rusts) // returns a cc::Build
+            .files(cpps)
+            .includes(includes)
+            .flag_if_supported("-std=c++20")
+            .flag_if_supported("-fPIC ")
+            .flag_if_supported("-Wall ")
+            .compile("wolf_cxx_bridge");
+
+        // link to wolf_cxx library
+        println!(
+            "cargo:rustc-link-search=native={}/cxx/build/{}/",
+            p_current_dir_path_str, p_build_profile
+        );
+        println!("cargo:rustc-link-lib=static=wolf_cxx");
     }
 }
