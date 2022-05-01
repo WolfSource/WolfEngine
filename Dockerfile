@@ -3,7 +3,7 @@
 ARG PACKAGE=${PACKAGE:-"wolfengine"}
 ARG REF_NAME=${REF_NAME:-"gcr.io/distroless/static-debian11:nonroot@sha256:bca3c203cdb36f5914ab8568e4c25165643ea9b711b41a8a58b42c80a51ed609"}
 
-FROM docker.io/curlimages/curl:7.80.0 as wolf
+FROM docker.io/curlimages/curl:7.83.0 as wolf
 ARG BUILDARCH
 ARG BUILDOS
 ARG BUILDPLATFORM
