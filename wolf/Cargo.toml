@@ -61,7 +61,7 @@ futures = { version = "0.3.21", default-features = false }
 hyper = {version = "0.14.18", default-features = false}
 may = {version = "0.3.21", default-features = false}
 memstore = {version = "0.2.0", default-features = false}
-mimalloc = {version = "0.1.28", default-features = false, features = ["secure"]}
+mimalloc = {version = "0.1.29", default-features = false, features = ["secure"]}
 parking_lot = {version = "0.12.0",  default-features = false, features = ["deadlock_detection"]}
 prost = {version = "0.10.1", default-features = false}
 serde_json = {version = "1.0.79", default-features = false, features = ["std"]}
