@@ -73,7 +73,7 @@ uuid = {version = "1.0.0", default-features = false, features = ["v5"]}
 [build-dependencies]
 cfg-if = { version = "1.0.0", default-features = false}
 cxx-build = {version = "1.0.67", default-features = false}
-tonic-build = {version = "0.7.0", default-features = false, features = ["transport", "prost", "compression"]}
+tonic-build = {version = "0.7.1", default-features = false, features = ["transport", "prost", "compression"]}
 
 [dev-dependencies]
 lazy_static = {version = "1.4.0", default-features = false}
