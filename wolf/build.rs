@@ -27,9 +27,9 @@ fn main() {
     }
 
     let wolf_lib_ext = if target_os == "windows" {
-        "libwolf_cxx.lib"
+        "wolf_cxx.dll"
     } else {
-        "libwolf_cxx.a"
+        "libwolf_cxx.so"
     };
     let proto_path_include = current_dir_path.join("proto");
     let proto_path_include_src = proto_path_include
@@ -74,10 +74,10 @@ fn main() {
     };
 
     // execute cmake of wolf_cxx
-    build_cmake(&current_dir_path, wolf_lib_ext, build_profile);
+    build_cmake(&current_dir_path, wolf_lib_ext, build_profile, &target_os);
 
     // build cxx
-    build_cxx(current_dir_path_str, build_profile);
+    build_cxx(current_dir_path_str, build_profile, &target_os);
 }
 
 /// # Errors
@@ -98,7 +98,12 @@ pub fn compile_protos(
 /// # Panic
 ///
 /// Will be panic `if cmake failed
-pub fn build_cmake(p_current_path: &Path, p_wolf_cxx_file_name: &str, p_build_profile: &str) {
+pub fn build_cmake(
+    p_current_path: &Path,
+    p_wolf_cxx_file_name: &str,
+    p_build_profile: &str,
+    p_target_os: &str,
+) {
     // get parent path
     let cmake_current_path = p_current_path.join("cxx/");
     let cmake_current_path_str = cmake_current_path
@@ -113,7 +118,13 @@ pub fn build_cmake(p_current_path: &Path, p_wolf_cxx_file_name: &str, p_build_pr
         .expect("could not convert cmake build path to &str");
 
     // return if wolf_cxx library was found
-    let wolf_cxx_path = cmake_build_path.join(p_wolf_cxx_file_name);
+    let wolf_cxx_path = if p_target_os == "windows" {
+        cmake_build_path
+            .join(p_build_profile)
+            .join(p_wolf_cxx_file_name)
+    } else {
+        cmake_build_path.join(p_wolf_cxx_file_name)
+    };
     if std::path::Path::new(&wolf_cxx_path).exists() {
         return;
     }
@@ -175,7 +186,22 @@ pub fn build_cmake(p_current_path: &Path, p_wolf_cxx_file_name: &str, p_build_pr
     );
 }
 
-fn build_cxx(p_current_dir_path_str: &str, p_build_profile: &str) {
+fn build_cxx(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &str) {
+    let post_lib_path = if p_target_os == "windows" {
+        if p_build_profile == "Debug" {
+            println!("cargo:rustc-link-lib=msvcrtd");
+        } else {
+            println!("cargo:rustc-link-lib=msvcrt");
+        }
+        println!("cargo:rustc-link-lib=dylib=Shell32");
+        println!("cargo:rustc-link-lib=dylib=Rpcrt4");
+        println!("cargo:rustc-link-lib=dylib=Mswsock");
+
+        p_build_profile
+    } else {
+        ""
+    };
+
     // includes + rust & cpp sources
     let gsl_include = format!("cxx/build/{}/_deps/gsl-src/include", p_build_profile);
     let mimalloc_include = format!("cxx/build/{}/_deps/mimalloc-src/include", p_build_profile);
@@ -202,8 +228,8 @@ fn build_cxx(p_current_dir_path_str: &str, p_build_profile: &str) {
 
             // link to lz4 library
             println!(
-                "cargo:rustc-link-search=native={}/cxx/build/{}/_deps/lz4-build/",
-                p_current_dir_path_str, p_build_profile
+                "cargo:rustc-link-search=native={}/cxx/build/{}/_deps/lz4-build/{}",
+                p_current_dir_path_str, p_build_profile, post_lib_path
             );
             println!("cargo:rustc-link-lib=static=lz4");
         }
@@ -214,15 +240,15 @@ fn build_cxx(p_current_dir_path_str: &str, p_build_profile: &str) {
             .files(cpps)
             .includes(includes)
             .flag_if_supported("-std=c++20")
-            .flag_if_supported("-fPIC ")
-            .flag_if_supported("-Wall ")
+            .flag_if_supported("-fPIC")
+            .flag_if_supported("-Wall")
             .compile("wolf_cxx_bridge");
 
         // link to wolf_cxx library
         println!(
-            "cargo:rustc-link-search=native={}/cxx/build/{}/",
-            p_current_dir_path_str, p_build_profile
+            "cargo:rustc-link-search=native={}/cxx/build/{}/{}",
+            p_current_dir_path_str, p_build_profile, post_lib_path
         );
-        println!("cargo:rustc-link-lib=static=wolf_cxx");
+        println!("cargo:rustc-link-lib=dylib=wolf_cxx");
     }
 }

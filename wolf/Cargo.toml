@@ -10,7 +10,7 @@ repository = "https://github.com/WolfEngine/WolfEngine/"
 version = "3.0.3"
 
 [lib]
-crate-type = ["rlib", "cdylib", "staticlib"]
+crate-type = ["rlib", "cdylib"]
 name = "wolf"
 path = "src/lib.rs"
 
@@ -39,7 +39,7 @@ wgpu = {version = "0.12.0", default-features = false, features = ["webgl"]}
 # shared dependencies between arm, aarch64 & x86_64
 [target.'cfg(any(target_arch = "arm", target_arch = "aarch64", target_arch = "x86_64"))'.dependencies]
 instant = {version = "0.1.12", default-features = false}
-cxx = {version = "1.0.66", default-features = false, features = ["alloc"]}
+cxx = {version = "1.0.67", default-features = false, features = ["alloc", "c++20"]}
 pollster = {version = "0.2.5", default-features = false}
 rhai = { version = "1.6.0", default-features = false, features = ["sync", "internals"]}
 rustls-pemfile = {version = "1.0.0", default-features = false}
@@ -72,7 +72,7 @@ uuid = {version = "1.0.0", default-features = false, features = ["v5"]}
 
 [build-dependencies]
 cfg-if = { version = "1.0.0", default-features = false}
-cxx-build = {version = "1.0.66", default-features = false}
+cxx-build = {version = "1.0.67", default-features = false}
 tonic-build = {version = "0.7.0", default-features = false, features = ["transport", "prost", "compression"]}
 
 [dev-dependencies]
@@ -80,7 +80,7 @@ lazy_static = {version = "1.4.0", default-features = false}
 
 # Wasm features
 [features]
-default = ["system"]
+default = ["system", "lz4"]
 brotli = [] # enable brotli compression
 fiber = [] # enable fiber
 grpc = [] # enable gRPC connection

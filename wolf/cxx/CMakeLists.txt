@@ -30,7 +30,7 @@ option(WOLF_ENABLE_LIVE555_RTSP_SERVER "Enable real time streaming for server" O
 option(WOLF_ENABLE_WEBRTC "Enable webRTC" OFF)
 option(WOLF_ENABLE_WEBSOCKET_SERVER "Enable websocket" OFF)
 
-set(LIBRARY_TYPE "STATIC" CACHE STRING "Library type")
+set(LIBRARY_TYPE "SHARED" CACHE STRING "Library type")
 
 set(CMAKE_C_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -45,6 +45,10 @@ set(CMAKE_CXX_FLAGS_DEBUG "-g")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 endif()
 
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE Debug)
+endif()
+
 # fetch gsl
 message("fetching https://github.com/microsoft/GSL.git")
 FetchContent_Declare(
@@ -53,7 +57,6 @@ FetchContent_Declare(
   GIT_TAG        main
 )
 FetchContent_Populate(gsl)
-
 
 set(INCLUDES ${CMAKE_CURRENT_SOURCE_DIR})
 set(LIBS "")
@@ -78,10 +81,6 @@ if (WOLF_ENABLE_LZ4)
     GIT_REPOSITORY https://github.com/lz4/lz4.git
     GIT_TAG        dev
     SOURCE_SUBDIR  build/cmake
-  )
-
-  list(APPEND INCLUDES
-    ${lz4_SOURCE_DIR}/lib
   )
   list(APPEND LIBS lz4)
 endif()
@@ -116,6 +115,10 @@ add_library(${PROJECT_NAME} ${LIBRARY_TYPE}
 )
 
 # link libraries
+if (MSVC AND WOLF_ENABLE_LZ4)
+    target_link_directories(${PROJECT_NAME} PRIVATE ${lz4_BINARY_DIR}/${CMAKE_BUILD_TYPE}/)
+endif()
+
 target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBS})
 target_compile_options(${PROJECT_NAME} PRIVATE -Wall -fPIC -Wall)
 #target_compile_definitions(${PROJECT_NAME} PRIVATE)
