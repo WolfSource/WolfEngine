@@ -1,30 +1,40 @@
 use anyhow::{bail, Result};
-use winit::{dpi::PhysicalSize, window::Window};
 
-use crate::w_log;
+pub struct WWindowInfo {
+    pub handle: raw_window_handle::RawWindowHandle,
+    pub width: u32,
+    pub height: u32,
+}
 
-#[allow(dead_code)] //TODO: will be removed
+unsafe impl raw_window_handle::HasRawWindowHandle for WWindowInfo {
+    fn raw_window_handle(&self) -> raw_window_handle::RawWindowHandle {
+        self.handle
+    }
+}
+
 pub struct WGraphicsDevice {
-    adaptor: wgpu::Adapter,
-    config: wgpu::SurfaceConfiguration,
-    device: wgpu::Device,
-    queue: wgpu::Queue,
-    pub size: winit::dpi::PhysicalSize<u32>,
-    surface: Option<wgpu::Surface>,
+    pub adaptor: wgpu::Adapter,
+    pub config: wgpu::SurfaceConfiguration,
+    pub device: wgpu::Device,
+    pub queue: wgpu::Queue,
+    pub size: (u32, u32),
+    pub surface: Option<wgpu::Surface>,
 }
 
 impl WGraphicsDevice {
-    pub async fn new(p_window: Option<&Window>) -> Result<Self> {
-        let size: PhysicalSize<u32>;
+    pub async fn new(p_window_info: Option<WWindowInfo>) -> Result<Self> {
         let surface: Option<wgpu::Surface>;
+        let size: (u32, u32);
 
         // Backends::all means select Vulkan or Metal or DX12 or Browser
         // the WebGPU will be choose a backend based on the host platform
         let instance = wgpu::Instance::new(wgpu::Backends::all());
-        let adapter_res = if let Some(window) = p_window {
+        let adapter_res = if let Some(win_info) = p_window_info {
+            // get size
+            size = (win_info.width, win_info.height);
             // create an adaptor for window
-            size = window.inner_size();
-            surface = Some(unsafe { instance.create_surface(window) });
+            surface = Some(unsafe { instance.create_surface(&win_info) });
+            // create instance
             instance
                 .request_adapter(&wgpu::RequestAdapterOptions {
                     power_preference: wgpu::PowerPreference::default(),
@@ -35,7 +45,8 @@ impl WGraphicsDevice {
         } else {
             // create an adaptor for off screen rendering
             surface = None;
-            size = PhysicalSize::<u32>::new(640, 480);
+            // set default size
+            size = (800, 600);
             instance
                 .request_adapter(&wgpu::RequestAdapterOptions::default())
                 .await
@@ -47,7 +58,7 @@ impl WGraphicsDevice {
                         &wgpu::DeviceDescriptor {
                             label: None,
                             features: wgpu::Features::empty(),
-                            // WebGL doesn't support all of wgpu's features, so if
+                            // WebGL doesn't support all of WGPU's features, so if
                             // we're building for the web we'll have to disable some.
                             limits: if cfg!(target_arch = "wasm32") {
                                 wgpu::Limits::downlevel_webgl2_defaults()
@@ -71,21 +82,24 @@ impl WGraphicsDevice {
                             let config = wgpu::SurfaceConfiguration {
                                 usage: wgpu::TextureUsages::RENDER_ATTACHMENT,
                                 format: texture_format,
-                                width: size.width,
-                                height: size.height,
+                                width: size.0,
+                                height: size.1,
                                 present_mode: wgpu::PresentMode::Fifo,
                             };
+
                             // configure the surface
                             g_surface.configure(&device, &config);
+
                             // create graphics device
                             let g_device = Self {
+                                adaptor: adapter,
                                 config,
                                 device,
                                 queue,
                                 size,
                                 surface: Some(g_surface),
-                                adaptor: adapter,
                             };
+
                             // return the graphics device
                             Ok(g_device)
                         }
@@ -98,18 +112,18 @@ impl WGraphicsDevice {
                     let config = wgpu::SurfaceConfiguration {
                         usage: wgpu::TextureUsages::RENDER_ATTACHMENT,
                         format: wgpu::TextureFormat::Rgba32Sint,
-                        width: size.width,
-                        height: size.height,
+                        width: size.0,
+                        height: size.1,
                         present_mode: wgpu::PresentMode::Fifo,
                     };
                     // create graphics device
                     let g_device = Self {
+                        adaptor: adapter,
                         config,
                         device,
                         queue,
                         size,
                         surface: None,
-                        adaptor: adapter,
                     };
                     Ok(g_device)
                 }
@@ -120,63 +134,22 @@ impl WGraphicsDevice {
         }
     }
 
-    pub fn resize(&mut self, new_size: PhysicalSize<u32>) {
-        if new_size.width > 0 && new_size.height > 0 {
-            self.size = new_size;
-            self.config.width = new_size.width;
-            self.config.height = new_size.height;
+    pub fn resize(&mut self, p_size: (u32, u32)) {
+        if p_size.0 > 0 && p_size.1 > 0 {
+            self.config.width = p_size.0;
+            self.config.height = p_size.1;
+            self.size = p_size;
             if let Some(surf) = &self.surface {
                 surf.configure(&self.device, &self.config);
             }
         }
     }
 
-    pub fn render(&mut self) -> Result<(), wgpu::SurfaceError> {
-        // get output from surface
-        let output_res = if let Some(surf) = &self.surface {
-            surf.get_current_texture()
-        } else {
-            w_log!("surface is None, make sure use render_to_texture function for offscreen rendering mode");
-            Err(wgpu::SurfaceError::Outdated)
-        };
-        let output = output_res?;
+    pub fn get_adapter_info(&self) -> wgpu::AdapterInfo {
+        self.adaptor.get_info()
+    }
 
-        // create texture view
-        let view = output
-            .texture
-            .create_view(&wgpu::TextureViewDescriptor::default());
-
-        // create command encoder
-        let mut cmd_encoder = self
-            .device
-            .create_command_encoder(&wgpu::CommandEncoderDescriptor {
-                label: Some("Render Encoder"),
-            });
-        // execute command
-        {
-            let _render_pass = cmd_encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
-                label: Some("Render Pass"),
-                color_attachments: &[wgpu::RenderPassColorAttachment {
-                    view: &view,
-                    resolve_target: None,
-                    ops: wgpu::Operations {
-                        load: wgpu::LoadOp::Clear(wgpu::Color {
-                            r: 0.1,
-                            g: 0.2,
-                            b: 0.3,
-                            a: 1.0,
-                        }),
-                        store: true,
-                    },
-                }],
-                depth_stencil_attachment: None,
-            });
-        }
-        // submit to the queue
-        self.queue.submit(std::iter::once(cmd_encoder.finish()));
-        // send to output
-        output.present();
-        // return OK
-        Ok(())
+    pub fn get_size(&self) -> (u32, u32) {
+        self.size
     }
 }

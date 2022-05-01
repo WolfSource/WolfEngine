@@ -1490,15 +1490,15 @@ dependencies = [
 
 [[package]]
 name = "ndk-context"
-version = "0.1.0"
+version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4e3c5cc68637e21fe8f077f6a1c9e0b9ca495bb74895226b476310f613325884"
+checksum = "27b02d87554356db9e9a873add8782d4ea6e3e58ea071a9adb9a2e8ddb884a8b"
 
 [[package]]
 name = "ndk-glue"
-version = "0.5.1"
+version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a1c68f70683c5fc9a747a383744206cd371741b2f0b31781ab6770487ec572e2"
+checksum = "c71bee8ea72d685477e28bd004cfe1bf99c754d688cd78cad139eae4089484d4"
 dependencies = [
  "lazy_static",
  "libc",
@@ -1990,9 +1990,9 @@ checksum = "63e935c45e09cc6dcf00d2f0b2d630a58f4095320223d47fc68918722f0538b6"
 
 [[package]]
 name = "raw-window-handle"
-version = "0.4.2"
+version = "0.4.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fba75eee94a9d5273a68c9e1e105d9cffe1ef700532325788389e5a83e2522b7"
+checksum = "b800beb9b6e7d2df1fe337c9e3d04e3af22a124460fb4c30fcc22c9117cefb41"
 dependencies = [
  "cty",
 ]
@@ -2370,9 +2370,9 @@ dependencies = [
 
 [[package]]
 name = "smithay-client-toolkit"
-version = "0.15.3"
+version = "0.15.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1325f292209cee78d5035530932422a30aa4c8fda1a16593ac083c1de211e68a"
+checksum = "8a28f16a97fa0e8ce563b2774d1e732dd5d4025d2772c5dba0a41a0f90a29da3"
 dependencies = [
  "bitflags",
  "calloop",
@@ -2624,9 +2624,9 @@ dependencies = [
 
 [[package]]
 name = "toml"
-version = "0.5.8"
+version = "0.5.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a31142970826733df8241ef35dc040ef98c679ab14d7c3e54d827099b3acecaa"
+checksum = "8d82e1a7758622a465f8cee077614c73484dac5b836c02ff6a40d5d1010324d7"
 dependencies = [
  "serde",
 ]
@@ -3366,12 +3366,16 @@ name = "wolf-demo"
 version = "3.0.3"
 dependencies = [
  "anyhow",
+ "console_error_panic_hook",
+ "raw-window-handle",
  "serde",
  "serde_closure 0.3.2",
  "tokio",
  "wasm-bindgen",
  "wasm-mt",
  "web-sys",
+ "wgpu",
+ "winit",
  "wolfengine",
 ]
 
@@ -3383,7 +3387,6 @@ dependencies = [
  "async-raft",
  "async-trait",
  "cfg-if 1.0.0",
- "console_error_panic_hook",
  "cxx",
  "cxx-build",
  "futures",
@@ -3396,6 +3399,7 @@ dependencies = [
  "parking_lot 0.12.0",
  "pollster",
  "prost",
+ "raw-window-handle",
  "rhai",
  "rustls-pemfile 1.0.0",
  "serde",
@@ -3415,7 +3419,6 @@ dependencies = [
  "web-sys",
  "webpki-roots",
  "wgpu",
- "winit",
 ]
 
 [[package]]

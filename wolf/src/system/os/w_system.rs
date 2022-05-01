@@ -62,7 +62,8 @@ impl WSystem {
     #[must_use]
     pub fn is_process_running_by_pid(&self, p_process_id: &usize) -> bool {
         for pid in self.sys.processes().keys() {
-            if pid == p_process_id {
+            let id = usize::from(*pid);
+            if id == *p_process_id {
                 return true;
             }
         }
