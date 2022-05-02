@@ -13,12 +13,13 @@ static GLOBAL: mimalloc::MiMalloc = mimalloc::MiMalloc;
 pub mod render;
 pub mod system;
 
-// sample for connecting to wolf
-//#[no_mangle]
-//extern "C" fn wolf_init() {
-//    println!("Wolf initialized!");
-//
-//#[no_mangle]
-//pub extern "C" fn wolf_fini() {
-//    println!("Wolf released!");
-//}
+// sample for exposing as c ABI
+// #[no_mangle]
+// extern "C" fn wolf_init() {
+//     println!("Wolf initialized!");
+// }
+
+// #[no_mangle]
+// pub extern "C" fn wolf_fini() {
+//     println!("Wolf released!");
+// }
