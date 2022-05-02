@@ -13,16 +13,12 @@ static GLOBAL: mimalloc::MiMalloc = mimalloc::MiMalloc;
 pub mod render;
 pub mod system;
 
-// cfg_if::cfg_if! {
-//     if #[cfg(any(target_os = "android", target_os = "ios"))] {
-//         #[no_mangle]
-//         extern "C" fn wolf_init() {
-//             println!("Wolf initialized!");
-//         }
-
-//         #[no_mangle]
-//         pub extern "C" fn wolf_fini() {
-//             println!("Wolf released!");
-//         }
-//     }
-// }
+// sample for connecting to wolf
+//#[no_mangle]
+//extern "C" fn wolf_init() {
+//    println!("Wolf initialized!");
+//
+//#[no_mangle]
+//pub extern "C" fn wolf_fini() {
+//    println!("Wolf released!");
+//}

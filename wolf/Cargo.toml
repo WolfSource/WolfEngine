@@ -80,30 +80,34 @@ lazy_static = {version = "1.4.0", default-features = false}
 
 # Wasm features
 [features]
-default = ["system", "lz4"]
-brotli = [] # enable brotli compression
-fiber = [] # enable fiber
-grpc = [] # enable gRPC connection
-http_client = [] # enable http 1.1/2 client
-http_server = [] # enable http 1.1/2 server
-kafka_client = [] # enable Kafka client
+default = ["system"]
 lz4 = [] # enable LZ4 compression
-lzma = [] # enable LZMA Compression
-nng = [] # enable nng socket for tcp/udp/ipc protocols
-quic = [] # enable QUIC protocol
-redis_client = [] # enable redis client
-render = [] # enable real-time rendering
-rocksDB_client = [] # enable rocksDB client
-rtsp_client = [] # enable real time streaming protocol for client
-rtsp_server = [] # enable real time streaming protocol for server
-script = [] # enable embedded script engine
-simd = [] # enable SIMD
-skyllaDB_client = [] # enable ScyllaDB client
-socket = [] # enable native socket for tcp/udp protocols
 system = [] # base system features
 #wasm = [] # build wolf for WASM. Remove this in order to native local debuging for tests
-webRTC_client = [] # enable webRTC
-websocket_client = [] # enable websocket client
-websocket_server = [] # enable websocket server
+
+
+
+
+# brotli = [] # enable brotli compression
+# fiber = [] # enable fiber
+# grpc = [] # enable gRPC connection
+# http_client = [] # enable http 1.1/2 client
+# http_server = [] # enable http 1.1/2 server
+# kafka_client = [] # enable Kafka client
+# lzma = [] # enable LZMA Compression
+# nng = [] # enable nng socket for tcp/udp/ipc protocols
+# quic = [] # enable QUIC protocol
+# redis_client = [] # enable redis client
+# render = [] # enable real-time rendering
+# rocksDB_client = [] # enable rocksDB client
+# rtsp_client = [] # enable real time streaming protocol for client
+# rtsp_server = [] # enable real time streaming protocol for server
+# script = [] # enable embedded script engine
+# simd = [] # enable SIMD
+# skyllaDB_client = [] # enable ScyllaDB client
+# socket = [] # enable native socket for tcp/udp protocols
+# webRTC_client = [] # enable webRTC
+# websocket_client = [] # enable websocket client
+# websocket_server = [] # enable websocket server
 
 

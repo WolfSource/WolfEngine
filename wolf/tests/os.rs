@@ -1,6 +1,8 @@
+#![allow(unused_crate_dependencies)]
+
 #[tokio::test]
 async fn test_runtime() {
-    use wolf::system::os::w_runtime::WRuntime;
+    use wolf::system::os::w_runtime::WRunTime;
     use wolf::w_log;
 
     // declare a function
@@ -9,21 +11,20 @@ async fn test_runtime() {
         true
     };
     // run the function on a OS thread
-    WRuntime::thread(move || {
+    WRunTime::thread(move || {
         f("os thread".to_owned());
     });
     // sleep for a sec
-    WRuntime::sleep(std::time::Duration::from_secs(1));
+    WRunTime::sleep(std::time::Duration::from_secs(1));
     // run the function on a green thread
-    WRuntime::green_thread(async move { f("green thread".to_owned()) }).await;
+    WRunTime::green_thread(async move { f("green thread".to_owned()) }).await;
     // wait for all
-    WRuntime::async_sleep(std::time::Duration::from_secs(5)).await;
+    WRunTime::async_sleep(std::time::Duration::from_secs(5)).await;
 }
 
 #[tokio::test]
-async fn tes_sigslot() {
-    use wolf::system::os::w_runtime::WRuntime;
-    use wolf::system::os::w_sigslot::WSigSlot;
+async fn test_sigslot() {
+    use wolf::system::os::{w_runtime::WRunTime, w_sigslot::WSigSlot};
     use wolf::w_log;
 
     // create SigSlot
@@ -40,12 +41,12 @@ async fn tes_sigslot() {
     let con_2 = sig_slot.connect(|| {
         w_log!("hello from slot2");
     });
-    let _j = WRuntime::thread(move || {
+    let _j = WRunTime::thread(move || {
         sig_cloned_1.connect(|| {
             w_log!("hello from slot of os thread");
         });
     });
-    WRuntime::green_thread(async move {
+    WRunTime::green_thread(async move {
         sig_cloned_2.connect(|| {
             w_log!("hello from slot of green thread");
         });
@@ -60,7 +61,7 @@ async fn tes_sigslot() {
     }
 
     // wait for threads
-    WRuntime::async_sleep(std::time::Duration::from_secs(1)).await;
+    WRunTime::async_sleep(std::time::Duration::from_secs(1)).await;
     // emit all
     sig_slot.emit();
 }

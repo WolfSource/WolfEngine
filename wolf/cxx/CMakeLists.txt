@@ -115,8 +115,12 @@ add_library(${PROJECT_NAME} ${LIBRARY_TYPE}
 )
 
 # link libraries
-if (MSVC AND WOLF_ENABLE_LZ4)
+if (WOLF_ENABLE_LZ4)
+  if (MSVC)
     target_link_directories(${PROJECT_NAME} PRIVATE ${lz4_BINARY_DIR}/${CMAKE_BUILD_TYPE}/)
+  else()
+    target_link_directories(${PROJECT_NAME} PRIVATE ${lz4_BINARY_DIR}/)
+  endif()
 endif()
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBS})

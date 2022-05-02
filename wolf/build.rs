@@ -1,5 +1,6 @@
 #![allow(unused_mut)]
-use std::{io, path::Path, process::Command};
+#![allow(unused_imports)]
+use std::{env, fs, io, path::Path, process::Command};
 
 const MACOSX_DEPLOYMENT_TARGET: &str = "12.0";
 
@@ -26,11 +27,14 @@ fn main() {
         build_server_proto = false;
     }
 
-    let wolf_lib_ext = if target_os == "windows" {
+    let wolf_lib_name = if target_os == "windows" {
         "wolf_cxx.dll"
+    } else if target_os == "macos" {
+        "libwolf_cxx.dylib"
     } else {
         "libwolf_cxx.so"
     };
+
     let proto_path_include = current_dir_path.join("proto");
     let proto_path_include_src = proto_path_include
         .to_str()
@@ -74,10 +78,15 @@ fn main() {
     };
 
     // execute cmake of wolf_cxx
-    build_cmake(&current_dir_path, wolf_lib_ext, build_profile, &target_os);
+    build_cmake(&current_dir_path, wolf_lib_name, build_profile, &target_os);
 
     // build cxx
-    build_cxx(current_dir_path_str, build_profile, &target_os);
+    build_cxx(
+        current_dir_path_str,
+        wolf_lib_name,
+        build_profile,
+        &target_os,
+    );
 }
 
 /// # Errors
@@ -186,7 +195,12 @@ pub fn build_cmake(
     );
 }
 
-fn build_cxx(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &str) {
+fn build_cxx(
+    p_current_dir_path_str: &str,
+    p_wolf_cxx_file_name: &str,
+    p_build_profile: &str,
+    p_target_os: &str,
+) {
     let post_lib_path = if p_target_os == "windows" {
         if p_build_profile == "Debug" {
             println!("cargo:rustc-link-lib=msvcrtd");
@@ -235,6 +249,10 @@ fn build_cxx(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &
         }
     }
 
+    let lib_dir = format!(
+        "{}/cxx/build/{}/{}",
+        p_current_dir_path_str, p_build_profile, post_lib_path
+    );
     if !rusts.is_empty() {
         cxx_build::bridges(rusts) // returns a cc::Build
             .files(cpps)
@@ -245,10 +263,13 @@ fn build_cxx(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &
             .compile("wolf_cxx_bridge");
 
         // link to wolf_cxx library
-        println!(
-            "cargo:rustc-link-search=native={}/cxx/build/{}/{}",
-            p_current_dir_path_str, p_build_profile, post_lib_path
-        );
+        println!("cargo:rustc-link-search=native={}", &lib_dir);
         println!("cargo:rustc-link-lib=dylib=wolf_cxx");
     }
+
+    // copy the dynamic library
+    let from_path = Path::new(&lib_dir).join(p_wolf_cxx_file_name);
+    let out = env::var("OUT_DIR").unwrap();
+    let to_path = Path::new(&out).join("../../..").join(p_wolf_cxx_file_name);
+    fs::copy(from_path, to_path).unwrap();
 }
