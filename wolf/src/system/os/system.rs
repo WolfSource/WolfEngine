@@ -3,17 +3,17 @@ use sysinfo::{ProcessExt, SystemExt};
 use tokio::process::{Child, Command};
 
 #[derive(Debug)]
-pub struct WSystem {
+pub struct System {
     sys: sysinfo::System,
 }
 
-impl Default for WSystem {
+impl Default for System {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl WSystem {
+impl System {
     #[must_use]
     pub fn new() -> Self {
         // create sysinfo system object
@@ -125,7 +125,7 @@ pub async fn create_process(p_process_path: &str, p_process_args: &[&str]) -> Re
 
 #[tokio::test]
 async fn test() {
-    use crate::system::os::w_runtime::WRunTime;
+    use crate::system::os::runtime::RunTime;
     use crate::w_log;
 
     let path_to_the_process: &str;
@@ -143,7 +143,7 @@ async fn test() {
         path_to_the_process = "TextEdit";
     }
 
-    let sys = WSystem::new();
+    let sys = System::new();
     w_log!(
         "Memory: {}KB/{}KB",
         sys.used_memory_in_kb(),
@@ -159,7 +159,7 @@ async fn test() {
         w_log!("process name is empty");
     } else {
         let child_res = create_process(path_to_the_process, &[]).await;
-        WRunTime::async_sleep(std::time::Duration::from_secs(5)).await;
+        RunTime::async_sleep(std::time::Duration::from_secs(5)).await;
         w_log!("process status is {:?}", child_res);
     }
 }

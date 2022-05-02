@@ -11,6 +11,7 @@
 static GLOBAL: mimalloc::MiMalloc = mimalloc::MiMalloc;
 
 pub mod render;
+pub mod stream;
 pub mod system;
 
 // sample for exposing as c ABI

@@ -2,7 +2,7 @@
 
 #[tokio::test]
 async fn test_runtime() {
-    use wolf::system::os::w_runtime::WRunTime;
+    use wolf::system::os::runtime::RunTime;
     use wolf::w_log;
 
     // declare a function
@@ -11,24 +11,24 @@ async fn test_runtime() {
         true
     };
     // run the function on a OS thread
-    WRunTime::thread(move || {
+    RunTime::thread(move || {
         f("os thread".to_owned());
     });
     // sleep for a sec
-    WRunTime::sleep(std::time::Duration::from_secs(1));
+    RunTime::sleep(std::time::Duration::from_secs(1));
     // run the function on a green thread
-    WRunTime::green_thread(async move { f("green thread".to_owned()) }).await;
+    RunTime::green_thread(async move { f("green thread".to_owned()) }).await;
     // wait for all
-    WRunTime::async_sleep(std::time::Duration::from_secs(5)).await;
+    RunTime::async_sleep(std::time::Duration::from_secs(5)).await;
 }
 
 #[tokio::test]
 async fn test_sigslot() {
-    use wolf::system::os::{w_runtime::WRunTime, w_sigslot::WSigSlot};
+    use wolf::system::os::{runtime::RunTime, sigslot::SigSlot};
     use wolf::w_log;
 
     // create SigSlot
-    let mut sig_slot = WSigSlot::new();
+    let mut sig_slot = SigSlot::new();
     // make two clones for os & green threads
     let sig_cloned_1 = sig_slot.clone();
     let sig_cloned_2 = sig_slot.clone();
@@ -41,12 +41,12 @@ async fn test_sigslot() {
     let con_2 = sig_slot.connect(|| {
         w_log!("hello from slot2");
     });
-    let _j = WRunTime::thread(move || {
+    let _j = RunTime::thread(move || {
         sig_cloned_1.connect(|| {
             w_log!("hello from slot of os thread");
         });
     });
-    WRunTime::green_thread(async move {
+    RunTime::green_thread(async move {
         sig_cloned_2.connect(|| {
             w_log!("hello from slot of green thread");
         });
@@ -61,7 +61,7 @@ async fn test_sigslot() {
     }
 
     // wait for threads
-    WRunTime::async_sleep(std::time::Duration::from_secs(1)).await;
+    RunTime::async_sleep(std::time::Duration::from_secs(1)).await;
     // emit all
     sig_slot.emit();
 }

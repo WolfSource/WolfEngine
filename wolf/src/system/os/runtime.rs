@@ -1,6 +1,6 @@
 use std::future::Future;
 
-#[cfg(feature = "wasm")]
+#[cfg(target_arch = "wasm32")]
 use {
     crate::w_log,
     serde::{de::DeserializeOwned, Serialize},
@@ -8,10 +8,10 @@ use {
     wasm_mt::WasmMt,
 };
 
-pub struct WRunTime {}
+pub struct RunTime {}
 
-impl WRunTime {
-    #[cfg(not(feature = "wasm"))]
+impl RunTime {
+    #[cfg(not(target_arch = "wasm32"))]
     pub fn thread<F, T>(p_fn: F) -> std::thread::JoinHandle<T>
     where
         F: FnOnce() -> T + Send + 'static,
@@ -20,13 +20,13 @@ impl WRunTime {
         std::thread::spawn(p_fn)
     }
 
-    #[cfg(feature = "wasm")]
+    #[cfg(target_arch = "wasm32")]
     pub fn thread<F, T>(p_fn: F)
     where
         F: FnOnce() -> T + Serialize + DeserializeOwned + 'static,
         T: Future<Output = Result<JsValue, JsValue>> + 'static,
     {
-        const TRACE: &str = "WRunTime::thread";
+        const TRACE: &str = "RunTime::thread";
         const PKG_JS_PATH: &str = "./pkg/wolf_demo.js";
 
         let f = async move {
@@ -54,7 +54,7 @@ impl WRunTime {
         wasm_bindgen_futures::spawn_local(f);
     }
 
-    #[cfg(not(feature = "wasm"))]
+    #[cfg(not(target_arch = "wasm32"))]
     pub async fn green_thread<F>(p_future: F) -> tokio::task::JoinHandle<F::Output>
     where
         F: Future + Send + 'static,
@@ -63,7 +63,7 @@ impl WRunTime {
         tokio::spawn(p_future)
     }
 
-    #[cfg(not(feature = "wasm"))]
+    #[cfg(not(target_arch = "wasm32"))]
     pub fn spawn_local<F>(f: F) -> F::Output
     where
         F: Future,
@@ -71,7 +71,7 @@ impl WRunTime {
         pollster::block_on(f)
     }
 
-    #[cfg(feature = "wasm")]
+    #[cfg(target_arch = "wasm32")]
     pub fn spawn_local<F>(p_future: F)
     where
         F: Future<Output = ()> + 'static,
@@ -79,15 +79,15 @@ impl WRunTime {
         wasm_bindgen_futures::spawn_local(p_future);
     }
 
-    #[cfg(not(feature = "wasm"))]
+    #[cfg(not(target_arch = "wasm32"))]
     pub fn sleep(p_duration: std::time::Duration) {
         std::thread::sleep(p_duration);
     }
-    #[cfg(not(feature = "wasm"))]
+    #[cfg(not(target_arch = "wasm32"))]
     pub async fn async_sleep(p_duration: std::time::Duration) {
         tokio::time::sleep(p_duration).await;
     }
-    #[cfg(feature = "wasm")]
+    #[cfg(target_arch = "wasm32")]
     pub async fn async_sleep(p_duration: std::time::Duration) {
         wasm_mt::utils::sleep(p_duration.as_millis() as u32).await;
     }

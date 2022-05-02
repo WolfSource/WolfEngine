@@ -1,4 +1,4 @@
-#[cfg(not(feature = "wasm"))]
+#[cfg(not(target_arch = "wasm32"))]
 #[macro_export]
 macro_rules! w_fn_once {
     ($($args:tt)*) => {
@@ -6,7 +6,7 @@ macro_rules! w_fn_once {
     };
 }
 
-#[cfg(feature = "wasm")]
+#[cfg(target_arch = "wasm32")]
 #[macro_export]
 macro_rules! w_fn_once {
     ($($args:tt)*) => {

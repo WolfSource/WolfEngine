@@ -9,10 +9,10 @@ readme = "README.md"
 repository = "https://github.com/WolfEngine/WolfEngine/"
 version = "3.0.3"
 
-# [lib] # remove this for native local debugging
-# name = "wolf_demo"
-# path = "src/main.rs"
-# crate-type = ["cdylib"]
+[lib] # remove this for native local debugging
+name = "wolf_demo"
+path = "src/main.rs"
+crate-type = ["cdylib"]
 
 [[bin]]
 name = "wolf_demo"
@@ -31,7 +31,7 @@ wasm-bindgen = { version = "0.2.79", default-features = false }
 wasm-mt = {version = "0.1.2", default-features = false }
 web-sys = {version = "0.3.56", default-features = false, features = ['console'] }
 wgpu = {version = "0.12.0", default-features = false, features = ["webgl"]}
-wolfengine = { path = "../wolf", version = "3.0.2", default-features = false, features= ["system"]}#, "wasm"]}
+wolfengine = { path = "../wolf", version = "3.0.2", default-features = false, features= ["system"]}
 
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
 tokio = {version = "1.17.0", default-features = false, features= ["rt-multi-thread"]}

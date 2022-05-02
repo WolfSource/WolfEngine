@@ -1,10 +1,10 @@
 use signals2::*;
 
-pub struct WSlot {
+pub struct Slot {
     status: Connection,
 }
 
-impl WSlot {
+impl Slot {
     fn new(conn: Connection) -> Self {
         Self { status: conn }
     }
@@ -16,34 +16,34 @@ impl WSlot {
     }
 }
 
-pub struct WSigSlot {
+pub struct SigSlot {
     s: Signal<()>,
 }
 
-impl Clone for WSigSlot {
+impl Clone for SigSlot {
     fn clone(&self) -> Self {
         Self { s: self.s.clone() }
     }
 }
 
-impl Default for WSigSlot {
+impl Default for SigSlot {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl WSigSlot {
+impl SigSlot {
     #[must_use]
     pub fn new() -> Self {
         Self { s: Signal::new() }
     }
 
-    pub fn connect<F>(&self, p_slot: F) -> WSlot
+    pub fn connect<F>(&self, p_slot: F) -> Slot
     where
         F: Fn() + Send + Sync + 'static,
     {
         let c = self.s.connect(p_slot);
-        WSlot::new(c)
+        Slot::new(c)
     }
 
     pub fn emit(&mut self) {

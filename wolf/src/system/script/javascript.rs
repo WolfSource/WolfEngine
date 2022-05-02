@@ -2,11 +2,11 @@ use anyhow::{bail, Result};
 use wasm_bindgen::JsValue;
 use wasm_mt::{exec_js, exec_js_async, WasmMt};
 
-pub struct WJavaScript {
+pub struct JavaScript {
     js_worker_path: String,
 }
 
-impl WJavaScript {
+impl JavaScript {
     pub fn new(p_path_to_js_worker: Option<String>) -> Self {
         let path_to_pkg_js = if p_path_to_js_worker.is_some() {
             p_path_to_js_worker.unwrap_or_default()

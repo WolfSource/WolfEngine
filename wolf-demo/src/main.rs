@@ -7,18 +7,16 @@ use wgpu::SurfaceError;
 use winit::event::{ElementState, Event, KeyboardInput, VirtualKeyCode, WindowEvent};
 use winit::event_loop::{ControlFlow, EventLoop};
 use winit::window::WindowBuilder;
-use wolf::render::w_graphics_device::WWindowInfo;
-use wolf::system::os::w_sigslot::WSigSlot;
+use wolf::render::graphics_device::WindowInfo;
+use wolf::system::os::sigslot::SigSlot;
 use wolf::{
-    render::{w_graphics_device::WGraphicsDevice, w_scene::IWScene},
-    system::{chrono::w_gametime::WGameTime, os::w_runtime::WRunTime, script::w_rhai::WRhai},
+    render::{graphics_device::GraphicsDevice, scene::IScene},
+    system::{chrono::gametime::GameTime, os::runtime::RunTime, script::rhai::Rhai},
     w_log,
 };
 
 #[cfg(target_arch = "wasm32")]
-use {
-    wasm_bindgen::prelude::*, wasm_mt::prelude::*, wolf::system::script::w_javascript::WJavaScript,
-};
+use {wasm_bindgen::prelude::*, wasm_mt::prelude::*, wolf::system::script::javascript::JavaScript};
 
 // Normal function
 fn add(x: i64, y: i64) -> i64 {
@@ -26,7 +24,7 @@ fn add(x: i64, y: i64) -> i64 {
 }
 
 async fn test() {
-    let mut script = WRhai::new();
+    let mut script = Rhai::new();
 
     // register add function for our embedded script
     script.register_function("add", add);
@@ -45,18 +43,18 @@ async fn test() {
     {
         let f = async move {
             println!("t1 started");
-            WRunTime::sleep(std::time::Duration::from_secs(1));
+            RunTime::sleep(std::time::Duration::from_secs(1));
             w_log!("t1 just stopped after 2 seconds");
         };
         // execute thread
-        WRunTime::green_thread(f).await;
-        WRunTime::async_sleep(std::time::Duration::from_secs(2)).await;
+        RunTime::green_thread(f).await;
+        RunTime::async_sleep(std::time::Duration::from_secs(2)).await;
     }
 
     #[cfg(target_arch = "wasm32")]
     {
         let f1 = async move {
-            let js = WJavaScript::new(None);
+            let js = JavaScript::new(None);
             let _js_res = js
                 .execute(
                     "
@@ -71,21 +69,21 @@ async fn test() {
                 )
                 .await;
         };
-        WRunTime::spawn_local(f1);
+        RunTime::spawn_local(f1);
 
         #[cfg(target_arch = "wasm32")]
         let f2 = FnOnce!(async move || {
             w_log!("t1 worker started");
-            WRunTime::async_sleep(std::time::Duration::from_secs(2)).await;
+            RunTime::async_sleep(std::time::Duration::from_secs(2)).await;
             w_log!("t1 worker just stopped after 5 seconds");
             Ok(JsValue::null())
         });
         // execute thread
-        WRunTime::thread(f2);
+        RunTime::thread(f2);
     }
 
     // create SigSlot
-    let mut sig_slot = WSigSlot::new();
+    let mut sig_slot = SigSlot::new();
 
     // create slots
     let i = 1;
@@ -105,7 +103,7 @@ async fn test() {
     }
 
     // wait for threads
-    WRunTime::async_sleep(std::time::Duration::from_secs(1)).await;
+    RunTime::async_sleep(std::time::Duration::from_secs(1)).await;
 
     // emit all
     sig_slot.emit();
@@ -114,10 +112,10 @@ async fn test() {
 #[derive(Default)]
 struct WScene {}
 
-impl IWScene for WScene {
-    fn load(&self, _p_g_device: &mut WGraphicsDevice) -> Result<()> {
+impl IScene for WScene {
+    fn load(&self, _p_g_device: &mut GraphicsDevice) -> Result<()> {
         w_log!("scene is going to loaded");
-        WRunTime::spawn_local(async move {
+        RunTime::spawn_local(async move {
             test().await;
         });
         w_log!("scene just loaded");
@@ -125,8 +123,8 @@ impl IWScene for WScene {
     }
     fn render(
         &self,
-        p_gdevice: &mut WGraphicsDevice,
-        p_gametime: &mut WGameTime,
+        p_gdevice: &mut GraphicsDevice,
+        p_gametime: &mut GameTime,
     ) -> std::result::Result<(), wgpu::SurfaceError> {
         w_log!(
             "scene is rendering {}",
@@ -187,7 +185,7 @@ impl IWScene for WScene {
 
 async fn run<I>(p_scene: I) -> Result<()>
 where
-    I: IWScene + Sync + 'static,
+    I: IScene + Sync + 'static,
 {
     const TRACE: &str = "WSceneManager::run";
 
@@ -216,15 +214,15 @@ where
     }
 
     let size = window.inner_size();
-    let win_info = WWindowInfo {
+    let win_info = WindowInfo {
         handle: window.raw_window_handle(),
         width: size.width,
         height: size.height,
     };
 
     // create a graphics device
-    let mut g_device = WGraphicsDevice::new(Some(win_info)).await?;
-    let mut game_time = WGameTime::new();
+    let mut g_device = GraphicsDevice::new(Some(win_info)).await?;
+    let mut game_time = GameTime::new();
 
     // load scene
     let load_res = p_scene.load(&mut g_device);
@@ -290,7 +288,7 @@ pub fn main() {
     std::panic::set_hook(Box::new(console_error_panic_hook::hook));
     // run scene
     w_log!("starting wolf-demo in wasm mode");
-    WRunTime::spawn_local(async move {
+    RunTime::spawn_local(async move {
         let _res = run(WScene::default()).await;
     });
 }

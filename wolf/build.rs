@@ -12,6 +12,9 @@ fn main() {
         .expect("could not convert current dir path to &str");
 
     //get current target os
+    let target_arch =
+        std::env::var("CARGO_CFG_TARGET_ARCH").expect("Build failed: could not get target arch");
+
     let target_os =
         std::env::var("CARGO_CFG_TARGET_OS").expect("Build failed: could not get target OS");
 
@@ -52,6 +55,11 @@ fn main() {
         build_server_proto,
     )
     .expect("couldn't read the protos directory");
+
+    // don't compoile any c++ codes for wasm32
+    if target_arch == "wasm32" {
+        return;
+    }
 
     // get opt_level
     let opt_level_str = std::env::var("OPT_LEVEL").expect("could not get OPT_LEVEL profile");

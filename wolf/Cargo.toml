@@ -82,9 +82,8 @@ lazy_static = {version = "1.4.0", default-features = false}
 [features]
 default = ["system"]
 lz4 = [] # enable LZ4 compression
+socket = [] # enable native socket for tcp/udp protocols
 system = [] # base system features
-#wasm = [] # build wolf for WASM. Remove this in order to native local debuging for tests
-
 
 
 
@@ -105,7 +104,6 @@ system = [] # base system features
 # script = [] # enable embedded script engine
 # simd = [] # enable SIMD
 # skyllaDB_client = [] # enable ScyllaDB client
-# socket = [] # enable native socket for tcp/udp protocols
 # webRTC_client = [] # enable webRTC
 # websocket_client = [] # enable websocket client
 # websocket_server = [] # enable websocket server

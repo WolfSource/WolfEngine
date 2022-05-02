@@ -27,7 +27,7 @@ pub async fn timeout<F>(p_duration: Duration, p_future: F) -> anyhow::Result<()>
 where
     F: std::future::Future<Output = ()> + Send + 'static,
 {
-    #[cfg(not(feature = "wasm"))]
+    #[cfg(not(target_arch = "wasm32"))]
     {
         if let Err(e) = tokio::time::timeout(p_duration, p_future).await {
             anyhow::bail!("timeout reached after {}", e)

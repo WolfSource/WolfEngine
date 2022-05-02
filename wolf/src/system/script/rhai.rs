@@ -1,17 +1,17 @@
 use anyhow::{anyhow, Result};
 use rhai::{Engine, Identifier, RegisterNativeFunction, Variant};
 
-pub struct WRhai {
+pub struct Rhai {
     engine: Engine,
 }
 
-impl Default for WRhai {
+impl Default for Rhai {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl WRhai {
+impl Rhai {
     pub fn new() -> Self {
         Self {
             engine: Engine::new(),

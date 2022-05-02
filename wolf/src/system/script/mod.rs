@@ -1,3 +1,3 @@
-#[cfg(feature = "wasm")]
-pub mod w_javascript;
-pub mod w_rhai;
+#[cfg(target_arch = "wasm32")]
+pub mod javascript;
+pub mod rhai;

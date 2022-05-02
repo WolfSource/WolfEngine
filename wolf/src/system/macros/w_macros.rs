@@ -1,4 +1,4 @@
-#[cfg(not(feature = "wasm"))]
+#[cfg(not(target_arch = "wasm32"))]
 #[macro_export]
 macro_rules! w_log {
     ($fmt:expr) => {
@@ -9,7 +9,7 @@ macro_rules! w_log {
     };
 }
 
-#[cfg(feature = "wasm")]
+#[cfg(target_arch = "wasm32")]
 #[macro_export]
 macro_rules! w_log {
     ($fmt:expr) => {

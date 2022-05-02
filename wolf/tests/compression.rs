@@ -2,6 +2,7 @@
 
 #[tokio::test]
 async fn test_lz4() {
+    // TODO: add assert for test
     use wolf::system::compression::lz4;
 
     let content = "HELLO WOLF\r\nHELLO WOLF!*&%!HELLO WOLF!07*&%!".as_bytes();

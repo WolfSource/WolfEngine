@@ -1,18 +1,18 @@
 use anyhow::{bail, Result};
 
-pub struct WWindowInfo {
+pub struct WindowInfo {
     pub handle: raw_window_handle::RawWindowHandle,
     pub width: u32,
     pub height: u32,
 }
 
-unsafe impl raw_window_handle::HasRawWindowHandle for WWindowInfo {
+unsafe impl raw_window_handle::HasRawWindowHandle for WindowInfo {
     fn raw_window_handle(&self) -> raw_window_handle::RawWindowHandle {
         self.handle
     }
 }
 
-pub struct WGraphicsDevice {
+pub struct GraphicsDevice {
     pub adaptor: wgpu::Adapter,
     pub config: wgpu::SurfaceConfiguration,
     pub device: wgpu::Device,
@@ -21,8 +21,8 @@ pub struct WGraphicsDevice {
     pub surface: Option<wgpu::Surface>,
 }
 
-impl WGraphicsDevice {
-    pub async fn new(p_window_info: Option<WWindowInfo>) -> Result<Self> {
+impl GraphicsDevice {
+    pub async fn new(p_window_info: Option<WindowInfo>) -> Result<Self> {
         let surface: Option<wgpu::Surface>;
         let size: (u32, u32);
 
@@ -75,7 +75,7 @@ impl WGraphicsDevice {
                 if let Some(g_surface) = surface {
                     // create a graphics device for this surface window
                     let format_res = g_surface.get_preferred_format(&adapter);
-                    // in this match block, we are going to return a Result<WGraphicsDevice> object
+                    // in this match block, we are going to return a Result<GraphicsDevice> object
                     match format_res {
                         Some(texture_format) => {
                             // create config

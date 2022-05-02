@@ -1,2 +1,2 @@
-pub mod w_graphics_device;
-pub mod w_scene;
+pub mod graphics_device;
+pub mod scene;
