@@ -19,7 +19,7 @@ name = "wolf_demo"
 path = "src/main.rs"
 
 [dependencies]
-anyhow = {version = "1.0.56", default-features = false}
+anyhow = {version = "1.0.57", default-features = false}
 raw-window-handle = {version = "0.4.3", default-features = false, features = ["alloc"]} 
 winit = {version = "0.26.1", default-features = false, features = ["x11", "wayland", "wayland-dlopen"]}
 wolfengine = { path = "../wolf", version = "3.0.2", default-features = false, features= ["system_script"]}
