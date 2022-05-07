@@ -199,14 +199,13 @@ pub fn cmake(
 
     assert!(
         out.status.success(),
-        "CMake Build failed for {} because: {:?}",
-        cmake_current_path_str,
-        std::str::from_utf8(&out.stderr)
+        "CMake Build failed for {}CMakeLists.txt",
+        cmake_current_path_str
     );
 }
 
 fn link(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &str) {
-    let post_lib_path = if p_target_os == "windows" {
+    let post_fix = if p_target_os == "windows" {
         if p_build_profile == "Debug" {
             println!("cargo:rustc-link-lib=msvcrtd");
         } else {
@@ -223,7 +222,7 @@ fn link(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &str) 
 
     let lib_dir = format!(
         "{}/sys/build/{}/{}",
-        p_current_dir_path_str, p_build_profile, post_lib_path
+        p_current_dir_path_str, p_build_profile, post_fix
     );
 
     println!("cargo:rustc-link-search=native={}", &lib_dir);

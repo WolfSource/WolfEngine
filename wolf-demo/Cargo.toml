@@ -20,8 +20,9 @@ path = "src/main.rs"
 
 [dependencies]
 anyhow = {version = "1.0.56", default-features = false}
-winit = {version = "0.26.1", default-features = false, features = ["x11", "wayland", "wayland-dlopen"]}
 raw-window-handle = {version = "0.4.3", default-features = false, features = ["alloc"]} 
+winit = {version = "0.26.1", default-features = false, features = ["x11", "wayland", "wayland-dlopen"]}
+wolfengine = { path = "../wolf", version = "3.0.2", default-features = false, features= ["system_script"]}
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 console_error_panic_hook = { version = "0.1.7", default-features = false }
@@ -31,9 +32,7 @@ wasm-bindgen = { version = "0.2.79", default-features = false }
 wasm-mt = {version = "0.1.2", default-features = false }
 web-sys = {version = "0.3.56", default-features = false, features = ['console'] }
 wgpu = {version = "0.12.0", default-features = false, features = ["webgl"]}
-wolfengine = { path = "../wolf", version = "3.0.2", default-features = false, features= []}
 
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
 tokio = {version = "1.17.0", default-features = false, features= ["rt-multi-thread"]}
 wgpu = {version = "0.12.0", default-features = false}
-wolfengine = { path = "../wolf", version = "3.0.2", default-features = false, features= []}

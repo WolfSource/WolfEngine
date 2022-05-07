@@ -10,11 +10,18 @@ extern "C"
 #define BUFFER_ALIGNED_SIZE 16
 
 // aligned and packed of buffer
+#ifdef _MSC_VER
+#pragma pack(BUFFER_ALIGNED_SIZE)
+#endif
 typedef struct buffer
 {
     uint8_t *data;
     size_t size;
-} buffer __attribute__((aligned(BUFFER_ALIGNED_SIZE)));
+} buffer 
+#ifdef __clang__
+    __attribute__((aligned(BUFFER_ALIGNED_SIZE)))
+#endif
+    ;
 
 /**
  * allocate buffer

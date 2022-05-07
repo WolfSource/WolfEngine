@@ -64,14 +64,14 @@ set(LIBS "")
 # fetch mimalloc
 message("fetching https://github.com/microsoft/mimalloc.git")
 FetchContent_Declare(
-  mimalloc
+  mimalloc-static
   GIT_REPOSITORY https://github.com/microsoft/mimalloc.git
   GIT_TAG        master
 )
 list(APPEND INCLUDES
   ${mimalloc_SOURCE_DIR}/include
 )
-list(APPEND LIBS mimalloc)
+list(APPEND LIBS mimalloc-static)
 
 # fetch lz4
 if (WOLF_ENABLE_LZ4)
@@ -95,11 +95,16 @@ if (WOLF_ENABLE_RIST)
   endif()
 endif()
 
+# apply some changes to CMake cache file
+set(MI_BUILD_SHARED OFF CACHE BOOL "MI_BUILD_SHARED")
+set(MI_BUILD_TESTS OFF CACHE BOOL "MI_BUILD_TESTS")
+
 FetchContent_MakeAvailable(${LIBS})
 
 set(CMAKE_CXX_CLANG_TIDY
     clang-tidy;
     -format-style=file;)  
+
 
 # set defenitions
 if (MSVC)

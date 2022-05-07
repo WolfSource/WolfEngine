@@ -218,5 +218,5 @@ rpath = false
 resolver = "2"
 members = [
   "wolf",
-  #"wolf-demo",
+  "wolf-demo",
 ]

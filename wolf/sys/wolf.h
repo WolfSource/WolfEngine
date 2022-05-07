@@ -35,6 +35,7 @@ extern "C"
 #endif // _WIN32
 
 #include <stdlib.h>
+#include <stdint.h>
 
 #ifdef __cplusplus
 }
