@@ -74,7 +74,7 @@ uuid = {version = "1.0.0", default-features = false, features = ["v5"]}
 
 [build-dependencies]
 bindgen = {version = "0.59.2"}
-tonic-build = {version = "0.7.0", default-features = false, features = ["transport", "prost", "compression"]}
+tonic-build = {version = "0.7.2", default-features = false, features = ["transport", "prost", "compression"]}
 
 [dev-dependencies]
 lazy_static = {version = "1.4.0", default-features = false}
