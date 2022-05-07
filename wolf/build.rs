@@ -1,6 +1,11 @@
 #![allow(unused_mut)]
-#![allow(unused_imports)]
-use std::{env, fs, io, path::Path, process::Command};
+
+use std::{
+    fs,
+    io::{self, Write},
+    path::Path,
+    process::Command,
+};
 
 const MACOSX_DEPLOYMENT_TARGET: &str = "12.0";
 
@@ -31,11 +36,9 @@ fn main() {
     }
 
     let wolf_lib_name = if target_os == "windows" {
-        "wolf_cxx.dll"
-    } else if target_os == "macos" {
-        "libwolf_cxx.dylib"
+        "wolf_sys.lib"
     } else {
-        "libwolf_cxx.so"
+        "libwolf_sys.a"
     };
 
     let proto_path_include = current_dir_path.join("proto");
@@ -48,7 +51,7 @@ fn main() {
         .to_str()
         .expect("could not convert source proto path to &str");
 
-    compile_protos(
+    protos(
         &[proto_path_str],
         &[proto_path_include_src],
         build_client_proto,
@@ -85,22 +88,20 @@ fn main() {
         }
     };
 
-    // execute cmake of wolf_cxx
-    build_cmake(&current_dir_path, wolf_lib_name, build_profile, &target_os);
+    // execute cmake of wolf_sys
+    cmake(&current_dir_path, wolf_lib_name, build_profile, &target_os);
 
-    // build cxx
-    build_cxx(
-        current_dir_path_str,
-        wolf_lib_name,
-        build_profile,
-        &target_os,
-    );
+    // link to wolf_sys
+    link(current_dir_path_str, build_profile, &target_os);
+
+    // create bindgens from wolf_sys
+    bindgens(current_dir_path_str);
 }
 
 /// # Errors
 ///
 /// Will return `Err` if `proto` does not exist or is invalid.
-pub fn compile_protos(
+pub fn protos(
     p_proto_paths: &[&str],
     p_proto_includes: &[&str],
     p_build_client: bool,
@@ -115,14 +116,14 @@ pub fn compile_protos(
 /// # Panic
 ///
 /// Will be panic `if cmake failed
-pub fn build_cmake(
-    p_current_path: &Path,
-    p_wolf_cxx_file_name: &str,
+pub fn cmake(
+    p_current_dir_path_str: &Path,
+    p_wolf_sys_file_name: &str,
     p_build_profile: &str,
     p_target_os: &str,
 ) {
     // get parent path
-    let cmake_current_path = p_current_path.join("cxx/");
+    let cmake_current_path = p_current_dir_path_str.join("sys/");
     let cmake_current_path_str = cmake_current_path
         .to_str()
         .expect("could not convert cmake current path to &str");
@@ -134,15 +135,15 @@ pub fn build_cmake(
         .to_str()
         .expect("could not convert cmake build path to &str");
 
-    // return if wolf_cxx library was found
-    let wolf_cxx_path = if p_target_os == "windows" {
+    // return if wolf_sys library was found
+    let wolf_sys_path = if p_target_os == "windows" {
         cmake_build_path
             .join(p_build_profile)
-            .join(p_wolf_cxx_file_name)
+            .join(p_wolf_sys_file_name)
     } else {
-        cmake_build_path.join(p_wolf_cxx_file_name)
+        cmake_build_path.join(p_wolf_sys_file_name)
     };
-    if std::path::Path::new(&wolf_cxx_path).exists() {
+    if std::path::Path::new(&wolf_sys_path).exists() {
         return;
     }
 
@@ -162,18 +163,19 @@ pub fn build_cmake(
     ]
     .to_vec();
 
-    cfg_if::cfg_if! {
-        if #[cfg(feature = "lz4")] {
-            args.push("-DWOLF_ENABLE_LZ4=ON");
-        }
-    }
+    // set defines
+    #[cfg(feature = "system_lz4")]
+    args.push("-DWOLF_ENABLE_LZ4=ON");
+
+    #[cfg(feature = "stream_rist")]
+    args.push("-DWOLF_ENABLE_RIST=ON");
 
     // configure
     let mut out = Command::new("cmake")
         .current_dir(&cmake_current_path)
         .args(args)
         .output()
-        .expect("could not configure cmake of wolf/cxx");
+        .expect("could not configure cmake of wolf/sys");
 
     assert!(
         out.status.success(),
@@ -193,7 +195,7 @@ pub fn build_cmake(
             "8",
         ])
         .output()
-        .expect("could not build cmake of wolf/cxx");
+        .expect("could not build cmake of wolf/sys");
 
     assert!(
         out.status.success(),
@@ -203,12 +205,7 @@ pub fn build_cmake(
     );
 }
 
-fn build_cxx(
-    p_current_dir_path_str: &str,
-    p_wolf_cxx_file_name: &str,
-    p_build_profile: &str,
-    p_target_os: &str,
-) {
+fn link(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &str) {
     let post_lib_path = if p_target_os == "windows" {
         if p_build_profile == "Debug" {
             println!("cargo:rustc-link-lib=msvcrtd");
@@ -224,60 +221,83 @@ fn build_cxx(
         ""
     };
 
-    // includes + rust & cpp sources
-    let gsl_include = format!("cxx/build/{}/_deps/gsl-src/include", p_build_profile);
-    let mimalloc_include = format!("cxx/build/{}/_deps/mimalloc-src/include", p_build_profile);
-
-    let mut rusts = Vec::<&str>::new();
-    let mut cpps = Vec::<&str>::new();
-    let mut includes = vec!["./", "cxx/", &gsl_include, &mimalloc_include];
-
-    println!("cargo:rustc-link-search=native=/usr/lib/");
-
-    cfg_if::cfg_if! {
-            if #[cfg(feature = "lz4")] {
-                // update rust & cpp sources
-                rusts.push("src/system/compression/lz4.rs");
-                cpps.push("src/system/compression/cxx/lz4/LZ4.cpp");
-
-                // lz4 includes
-                let lz4_include = format!("cxx/build/{}/_deps/lz4-src/lib", p_build_profile);
-                includes.push(&lz4_include);
-
-                let dir = "src/system/compression/cxx/lz4";
-                println!("cargo:rerun-if-changed={}/LZ4.hpp", dir);
-                println!("cargo:rerun-if-changed={}/LZ4.cpp", dir);
-
-            // link to lz4 library
-            println!(
-                "cargo:rustc-link-search=native={}/cxx/build/{}/_deps/lz4-build/{}",
-                p_current_dir_path_str, p_build_profile, post_lib_path
-            );
-            println!("cargo:rustc-link-lib=static=lz4");
-        }
-    }
-
     let lib_dir = format!(
-        "{}/cxx/build/{}/{}",
+        "{}/sys/build/{}/{}",
         p_current_dir_path_str, p_build_profile, post_lib_path
     );
-    if !rusts.is_empty() {
-        cxx_build::bridges(rusts) // returns a cc::Build
-            .files(cpps)
-            .includes(includes)
-            .flag_if_supported("-std=c++20")
-            .flag_if_supported("-fPIC")
-            .flag_if_supported("-Wall")
-            .compile("wolf_cxx_bridge");
 
-        // link to wolf_cxx library
-        println!("cargo:rustc-link-search=native={}", &lib_dir);
-        println!("cargo:rustc-link-lib=dylib=wolf_cxx");
+    println!("cargo:rustc-link-search=native={}", &lib_dir);
+    println!("cargo:rustc-link-lib=static=wolf_sys");
+}
+
+fn bindgens(p_current_dir_path_str: &str) {
+    // mod
+    let mut mod_rs = "#![allow(non_upper_case_globals)]\r\n#![allow(non_camel_case_types)]\r\n#![allow(non_snake_case)]\r\npub mod buffer;\r\n".to_owned();
+
+    // remove all rust sources from ffi
+    let ffi_path = Path::new(p_current_dir_path_str).join("src/ffi");
+    fs::remove_dir_all(ffi_path.clone()).expect("could not remove sys ffi");
+
+    // create ffi
+    fs::create_dir(ffi_path.clone()).expect("could not create sys ffi");
+
+    // set source maps
+    // output rust, c header name, allowlist types, allowlist functions,
+    let mut srcs = vec![(
+        "src/ffi/buffer.rs",
+        "sys/memory/buffer.h",
+        vec!["buffer"],
+        vec!["w_malloc", "w_free"],
+    )];
+
+    // set defines
+    if cfg!(feature = "system_lz4") {
+        srcs.push((
+            "src/ffi/lz4.rs",
+            "sys/compression/lz4.h",
+            vec![],
+            vec!["compress"],
+        ));
+        mod_rs += "#[cfg(feature = \"system_lz4\")]\r\npub mod lz4;\r\n";
     }
 
-    // copy the dynamic library
-    let from_path = Path::new(&lib_dir).join(p_wolf_cxx_file_name);
-    let out = env::var("OUT_DIR").unwrap();
-    let to_path = Path::new(&out).join("../../..").join(p_wolf_cxx_file_name);
-    fs::copy(from_path, to_path).unwrap();
+    let include_path = format!("-I{}/sys", p_current_dir_path_str);
+    for src in srcs {
+        // generate bindgen
+        println!("cargo:rerun-if-changed={}", src.1);
+
+        let mut builder = bindgen::Builder::default()
+            // The input header we would like to generate
+            // bindings for.
+            .header(src.1)
+            .clang_arg(&include_path);
+
+        for t in src.2 {
+            builder = builder.allowlist_type(t);
+        }
+        for f in src.3 {
+            builder = builder.allowlist_function(f);
+        }
+
+        let bindings = builder
+            // Tell cargo to invalidate the built crate whenever any of the
+            // included header files changed.
+            .parse_callbacks(Box::new(bindgen::CargoCallbacks))
+            // Finish the builder and generate the bindings.
+            .generate()
+            // Unwrap the Result and panic on failure.
+            .unwrap_or_else(|_| panic!("couldn't build bindings for {}", src.1));
+
+        // write the bindings to the file.
+        let out_path = format!("{}/{}", p_current_dir_path_str, src.0);
+        bindings
+            .write_to_file(Path::new(&out_path))
+            .unwrap_or_else(|e| panic!("couldn't write bindings for {} because {}", src.0, e));
+    }
+
+    // handle mod.rs
+    let ffi_mod_path = ffi_path.join("mod.rs");
+    let mut file = fs::File::create(ffi_mod_path).expect("couldn't create ffi/mod.rs");
+    file.write_all(mod_rs.as_bytes())
+        .expect("couldn't write to ffi/mod.rs");
 }

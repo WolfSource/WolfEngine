@@ -25,7 +25,8 @@ This Wolf is a comprehensive set of Rust/C libraries for realtime rendering, rea
 ## Build
 - **Wolf 2/1** via CMake
 - **Wolf 3**
-  Install CMake & Ninja for building & linking wolf_cxx
+  - Install CMake
+  - Install Ninja & Meson (0.47 or higher), Alternatively, use "pip3 install meson" and "pip3 install ninja"
 
   - For **Webassembly** :\
   From WolfEngine folder

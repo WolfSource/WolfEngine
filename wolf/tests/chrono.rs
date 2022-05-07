@@ -2,6 +2,8 @@
 
 #[tokio::test]
 async fn test_gametime() {
+    let buffer = unsafe { wolf::ffi::buffer::w_malloc(32) };
+
     use wolf::system::chrono::gametime::GameTime;
     let mut gtime = GameTime::new();
     gtime.set_fixed_time_step(true);

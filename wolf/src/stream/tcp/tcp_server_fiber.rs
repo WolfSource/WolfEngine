@@ -1,4 +1,4 @@
-use super::{
+use crate::stream::common::{
     callback::{MessageType, OnCloseSocketCallback, OnMessageCallback, OnSocketCallback},
     protocols::TcpProtocol,
 };
@@ -266,169 +266,169 @@ pub fn server(
     });
 }
 
-#[allow(clippy::too_many_lines)]
-#[tokio::main]
-#[test]
-async fn test_native() {
-    use super::callback::MessageType;
-    use std::sync::mpsc::{channel, Receiver, Sender};
+// #[allow(clippy::too_many_lines)]
+// #[tokio::main]
+// #[test]
+// async fn test_native() {
+//     use super::callback::MessageType;
+//     use std::sync::mpsc::{channel, Receiver, Sender};
 
-    static TCP_FIBER_SERVER_CONFIG: TcpFiberServerConfig = TcpFiberServerConfig {
-        protocol: TcpProtocol::TcpNative,
-        address: "0.0.0.0",
-        port: 8000,
-        fiber_num_of_workers: 4,
-        accept_timeout_in_secs: 15.0,
-        io_timeout_in_secs: 3.0,
-    };
+//     static TCP_FIBER_SERVER_CONFIG: TcpFiberServerConfig = TcpFiberServerConfig {
+//         protocol: TcpProtocol::TcpNative,
+//         address: "0.0.0.0",
+//         port: 8000,
+//         fiber_num_of_workers: 4,
+//         accept_timeout_in_secs: 15.0,
+//         io_timeout_in_secs: 3.0,
+//     };
 
-    lazy_static::lazy_static! {
-        static ref CHANNEL_MUTEX: parking_lot::Mutex<(Sender<bool>, Receiver<bool>)> = parking_lot::Mutex::new(channel::<bool>());
-        static ref MUTEX_CV_PAIR : std::sync::Arc<(parking_lot::Mutex<bool>, parking_lot::Condvar)> = std::sync::Arc::new((parking_lot::Mutex::new(false), parking_lot::Condvar::new()));
-    }
+//     lazy_static::lazy_static! {
+//         static ref CHANNEL_MUTEX: parking_lot::Mutex<(Sender<bool>, Receiver<bool>)> = parking_lot::Mutex::new(channel::<bool>());
+//         static ref MUTEX_CV_PAIR : std::sync::Arc<(parking_lot::Mutex<bool>, parking_lot::Condvar)> = std::sync::Arc::new((parking_lot::Mutex::new(false), parking_lot::Condvar::new()));
+//     }
 
-    let _r = tokio::spawn(async move {
-        // wait for server to be created
-        tokio::time::sleep(Duration::from_secs(2)).await;
+//     let _r = tokio::spawn(async move {
+//         // wait for server to be created
+//         tokio::time::sleep(Duration::from_secs(2)).await;
 
-        let on_accept_connection = OnSocketCallback::new(Box::new(
-            |p_socket_address: &SocketAddr| -> anyhow::Result<()> {
-                println!("client {:?} just connected to the server", p_socket_address);
-                Ok(())
-            },
-        ));
-        let on_close_connection = OnSocketCallback::new(Box::new(
-            |p_socket_address: &SocketAddr| -> anyhow::Result<()> {
-                println!("client {:?} just closed", p_socket_address);
+//         let on_accept_connection = OnSocketCallback::new(Box::new(
+//             |p_socket_address: &SocketAddr| -> anyhow::Result<()> {
+//                 println!("client {:?} just connected to the server", p_socket_address);
+//                 Ok(())
+//             },
+//         ));
+//         let on_close_connection = OnSocketCallback::new(Box::new(
+//             |p_socket_address: &SocketAddr| -> anyhow::Result<()> {
+//                 println!("client {:?} just closed", p_socket_address);
 
-                //release current condition variable
-                let mut started = MUTEX_CV_PAIR.0.lock();
-                *started = true;
-                let _notified = MUTEX_CV_PAIR.1.notify_one();
+//                 //release current condition variable
+//                 let mut started = MUTEX_CV_PAIR.0.lock();
+//                 *started = true;
+//                 let _notified = MUTEX_CV_PAIR.1.notify_one();
 
-                //send request to close the server socket
-                let _r = CHANNEL_MUTEX.lock().0.send(true).map_err(|e| {
-                    println!("could not send data to close_sig_channel. error: {:?}", e);
-                    e
-                });
-                Ok(())
-            },
-        ));
+//                 //send request to close the server socket
+//                 let _r = CHANNEL_MUTEX.lock().0.send(true).map_err(|e| {
+//                     println!("could not send data to close_sig_channel. error: {:?}", e);
+//                     e
+//                 });
+//                 Ok(())
+//             },
+//         ));
 
-        let on_msg_callback = OnMessageCallback::new(Box::new(
-            |p_socket_time_in_secs: f64,
-             p_peer_address: &SocketAddr,
-             _p_msg_type: &mut MessageType,
-             p_msg_size: &mut usize,
-             p_msg_buf: &mut [u8]|
-             -> anyhow::Result<()> {
-                println!(
-                    "client: number of received byte(s) from {:?} is {}. socket live time {}",
-                    p_peer_address, *p_msg_size, p_socket_time_in_secs
-                );
+//         let on_msg_callback = OnMessageCallback::new(Box::new(
+//             |p_socket_time_in_secs: f64,
+//              p_peer_address: &SocketAddr,
+//              _p_msg_type: &mut MessageType,
+//              p_msg_size: &mut usize,
+//              p_msg_buf: &mut [u8]|
+//              -> anyhow::Result<()> {
+//                 println!(
+//                     "client: number of received byte(s) from {:?} is {}. socket live time {}",
+//                     p_peer_address, *p_msg_size, p_socket_time_in_secs
+//                 );
 
-                if *p_msg_size > 0 {
-                    let msg = std::str::from_utf8(p_msg_buf)?;
-                    println!("client: received buffer is {}", msg);
-                }
-                //now store new bytes for write
-                let msg = "hello...world!"; //make sure append NULL terminate
-                p_msg_buf[0..msg.len()].copy_from_slice(msg.as_bytes());
-                *p_msg_size = msg.len();
+//                 if *p_msg_size > 0 {
+//                     let msg = std::str::from_utf8(p_msg_buf)?;
+//                     println!("client: received buffer is {}", msg);
+//                 }
+//                 //now store new bytes for write
+//                 let msg = "hello...world!"; //make sure append NULL terminate
+//                 p_msg_buf[0..msg.len()].copy_from_slice(msg.as_bytes());
+//                 *p_msg_size = msg.len();
 
-                if p_socket_time_in_secs > 5.0 {
-                    anyhow::bail!("closing socket");
-                }
-                Ok(())
-            },
-        ));
+//                 if p_socket_time_in_secs > 5.0 {
+//                     anyhow::bail!("closing socket");
+//                 }
+//                 Ok(())
+//             },
+//         ));
 
-        use crate::system::net::tcp_client::TcpClientConfig;
-        let tcp_client_config = TcpClientConfig {
-            //protocol: TcpProtocol::TcpNative, //we need to provide ws client code from rust
-            endpoint_address: "0.0.0.0",
-            port: 8000,
-            io_timeout_in_secs: 3.0, // 3 seconds
-            tls: false,
-            tls_ca_path: None,
-        };
+//         use crate::system::net::tcp_client::TcpClientConfig;
+//         let tcp_client_config = TcpClientConfig {
+//             //protocol: TcpProtocol::TcpNative, //we need to provide ws client code from rust
+//             endpoint_address: "0.0.0.0",
+//             port: 8000,
+//             io_timeout_in_secs: 3.0, // 3 seconds
+//             tls: false,
+//             tls_ca_path: None,
+//         };
 
-        let ret = super::tcp_client::client(
-            &tcp_client_config,
-            on_accept_connection,
-            on_msg_callback,
-            on_close_connection,
-        )
-        .await;
-        assert!(ret.is_ok(), "{:?}", ret);
-    });
+//         let ret = super::tcp_client::client(
+//             &tcp_client_config,
+//             on_accept_connection,
+//             on_msg_callback,
+//             on_close_connection,
+//         )
+//         .await;
+//         assert!(ret.is_ok(), "{:?}", ret);
+//     });
 
-    // block main thread with tcp server
-    let on_bind_socket = OnSocketCallback::new(Box::new(
-        |p_socket_address: &SocketAddr| -> anyhow::Result<()> {
-            println!("fiber server: socket {:?} just bound", p_socket_address);
-            Ok(())
-        },
-    ));
+//     // block main thread with tcp server
+//     let on_bind_socket = OnSocketCallback::new(Box::new(
+//         |p_socket_address: &SocketAddr| -> anyhow::Result<()> {
+//             println!("fiber server: socket {:?} just bound", p_socket_address);
+//             Ok(())
+//         },
+//     ));
 
-    let on_accept_connection = OnSocketCallback::new(Box::new(
-        |p_socket_address: &SocketAddr| -> anyhow::Result<()> {
-            println!(
-                "fiber server: remote address with peer id {:?} just connected",
-                p_socket_address
-            );
-            Ok(())
-        },
-    ));
+//     let on_accept_connection = OnSocketCallback::new(Box::new(
+//         |p_socket_address: &SocketAddr| -> anyhow::Result<()> {
+//             println!(
+//                 "fiber server: remote address with peer id {:?} just connected",
+//                 p_socket_address
+//             );
+//             Ok(())
+//         },
+//     ));
 
-    let on_msg_callback = OnMessageCallback::new(Box::new(
-        |p_socket_time_in_secs: f64,
-         p_peer_address: &SocketAddr,
-         _p_msg_type: &mut MessageType,
-         p_msg_size: &mut usize,
-         p_msg_buf: &mut [u8]|
-         -> anyhow::Result<()> {
-            println!(
-                "fiber server: number of received byte(s) from {:?} is {}. socket live time {}",
-                p_peer_address, *p_msg_size, p_socket_time_in_secs
-            );
-            if *p_msg_size > 0 {
-                let msg = std::str::from_utf8(p_msg_buf)?;
-                println!("server: received buffer is {}", msg);
+//     let on_msg_callback = OnMessageCallback::new(Box::new(
+//         |p_socket_time_in_secs: f64,
+//          p_peer_address: &SocketAddr,
+//          _p_msg_type: &mut MessageType,
+//          p_msg_size: &mut usize,
+//          p_msg_buf: &mut [u8]|
+//          -> anyhow::Result<()> {
+//             println!(
+//                 "fiber server: number of received byte(s) from {:?} is {}. socket live time {}",
+//                 p_peer_address, *p_msg_size, p_socket_time_in_secs
+//             );
+//             if *p_msg_size > 0 {
+//                 let msg = std::str::from_utf8(p_msg_buf)?;
+//                 println!("server: received buffer is {}", msg);
 
-                //now store new bytes for write
-                let msg = "hello client!"; //make sure append NULL terminate
-                p_msg_buf[0..msg.len()].copy_from_slice(msg.as_bytes());
-                *p_msg_size = msg.len();
-            }
-            Ok(())
-        },
-    ));
+//                 //now store new bytes for write
+//                 let msg = "hello client!"; //make sure append NULL terminate
+//                 p_msg_buf[0..msg.len()].copy_from_slice(msg.as_bytes());
+//                 *p_msg_size = msg.len();
+//             }
+//             Ok(())
+//         },
+//     ));
 
-    let on_close_connection = OnCloseSocketCallback::new(Box::new(
-        |p_socket_address: &SocketAddr, p_close_msg: &str| -> anyhow::Result<()> {
-            println!(
-                "fiber server: remote address with peer id {:?} just disconnected. close message is {}",
-                p_socket_address, p_close_msg
-            );
-            Ok(())
-        },
-    ));
+//     let on_close_connection = OnCloseSocketCallback::new(Box::new(
+//         |p_socket_address: &SocketAddr, p_close_msg: &str| -> anyhow::Result<()> {
+//             println!(
+//                 "fiber server: remote address with peer id {:?} just disconnected. close message is {}",
+//                 p_socket_address, p_close_msg
+//             );
+//             Ok(())
+//         },
+//     ));
 
-    server(
-        &TCP_FIBER_SERVER_CONFIG,
-        on_bind_socket,
-        on_accept_connection,
-        on_msg_callback,
-        on_close_connection,
-        &CHANNEL_MUTEX,
-    );
+//     server(
+//         &TCP_FIBER_SERVER_CONFIG,
+//         on_bind_socket,
+//         on_accept_connection,
+//         on_msg_callback,
+//         on_close_connection,
+//         &CHANNEL_MUTEX,
+//     );
 
-    //wait for fiber
-    let mut started = MUTEX_CV_PAIR.0.lock();
-    if !*started {
-        MUTEX_CV_PAIR.1.wait(&mut started);
-    }
+//     //wait for fiber
+//     let mut started = MUTEX_CV_PAIR.0.lock();
+//     if !*started {
+//         MUTEX_CV_PAIR.1.wait(&mut started);
+//     }
 
-    println!("native tcp_fiber tests were done");
-}
+//     println!("native tcp_fiber tests were done");
+// }

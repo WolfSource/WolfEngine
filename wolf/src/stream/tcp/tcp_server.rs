@@ -1,9 +1,9 @@
-use super::{
+use crate::stream::common::{
     callback::{MessageType, OnCloseSocketCallback, OnMessageCallback, OnSocketCallback},
     protocols::{TcpProtocol, MAX_MSG_SIZE},
-    tls::TlsPrivateKeyType,
+    timeouts,
+    tls::{self, TlsPrivateKeyType},
 };
-use crate::system::net::timeouts;
 use anyhow::{bail, Result};
 use futures::StreamExt;
 use std::{net::SocketAddr, path::Path, str::FromStr};
@@ -493,7 +493,7 @@ pub async fn server(
 
     //create tls acceptor
     let tls_acc = if p_config.tls {
-        let tls = super::tls::init_tls_acceptor(
+        let tls = tls::init_tls_acceptor(
             p_config.tls_certificate_path,
             p_config.tls_private_key_path,
             p_config.tls_private_type,

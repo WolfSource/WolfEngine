@@ -9,6 +9,10 @@ readme = "README.md"
 repository = "https://github.com/WolfEngine/WolfEngine/"
 version = "3.0.3"
 
+[build]
+rustc-link-lib = ["wolf_sys"]
+rustc-link-search = ["sys/build/"]
+
 [lib]
 crate-type = ["rlib", "cdylib"]
 name = "wolf"
@@ -21,7 +25,6 @@ path = "src/lib.rs"
 [dependencies]
 #brotli = { version = "3.3.3" }
 anyhow = {version = "1.0.56", default-features = false}
-cfg-if = { version = "1.0.0", default-features = false}
 signals2 = {version = "0.3.2", default-features = false}
 raw-window-handle = {version = "0.4.3", default-features = false, features = ["alloc"]} 
 
@@ -39,7 +42,6 @@ wgpu = {version = "0.12.0", default-features = false, features = ["webgl"]}
 # shared dependencies between arm, aarch64 & x86_64
 [target.'cfg(any(target_arch = "arm", target_arch = "aarch64", target_arch = "x86_64"))'.dependencies]
 instant = {version = "0.1.12", default-features = false}
-cxx = {version = "1.0.67", default-features = false, features = ["alloc", "c++20"]}
 pollster = {version = "0.2.5", default-features = false}
 rhai = { version = "1.6.0", default-features = false, features = ["sync", "internals"]}
 rustls-pemfile = {version = "1.0.0", default-features = false}
@@ -71,8 +73,7 @@ tokio-tungstenite = {version = "0.17.1", default-features = false, features = ["
 uuid = {version = "1.0.0", default-features = false, features = ["v5"]}
 
 [build-dependencies]
-cfg-if = { version = "1.0.0", default-features = false}
-cxx-build = {version = "1.0.67", default-features = false}
+bindgen = {version = "0.59.2"}
 tonic-build = {version = "0.7.0", default-features = false, features = ["transport", "prost", "compression"]}
 
 [dev-dependencies]
@@ -80,18 +81,15 @@ lazy_static = {version = "1.4.0", default-features = false}
 
 # Wasm features
 [features]
-default = ["system"]
-lz4 = [] # enable LZ4 compression
-socket = [] # enable native socket for tcp/udp protocols
-system = [] # base system features
-
-
+default = []
+stream_grpc = [] # enable gRPC (http2/1.1) for stream module
+stream_rist = [] # enable RIST streaming protocol for stream module
+system_lz4 = [] # enable LZ4 compression for system module
+system_raft = [] # enable raft algorithm for system module
+system_script = [] # enable embedded script engine for system module
 
 # brotli = [] # enable brotli compression
 # fiber = [] # enable fiber
-# grpc = [] # enable gRPC connection
-# http_client = [] # enable http 1.1/2 client
-# http_server = [] # enable http 1.1/2 server
 # kafka_client = [] # enable Kafka client
 # lzma = [] # enable LZMA Compression
 # nng = [] # enable nng socket for tcp/udp/ipc protocols
@@ -101,7 +99,6 @@ system = [] # base system features
 # rocksDB_client = [] # enable rocksDB client
 # rtsp_client = [] # enable real time streaming protocol for client
 # rtsp_server = [] # enable real time streaming protocol for server
-# script = [] # enable embedded script engine
 # simd = [] # enable SIMD
 # skyllaDB_client = [] # enable ScyllaDB client
 # webRTC_client = [] # enable webRTC

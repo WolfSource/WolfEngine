@@ -1,8 +1,9 @@
-# cmake . -B build -DCMAKE_TOOLCHAIN_FILE=$NDK/build/cmake/android.toolchain.cmake -DANDROID_ABI=armeabi-v7a -DANDROID_NDK=$NDK -DANDROID_PLATFORM=android-21 -DCMAKE_ANDROID_ARCH_ABI=armeabi-v7a -DCMAKE_ANDROID_NDK=$NDK -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_SYSTEM_NAME=Android -DCMAKE_SYSTEM_VERSION=21 -DCMAKE_BUILD_TYPE=Debug -GNinja 
+#cmake . -B build -DCMAKE_TOOLCHAIN_FILE=$NDK/build/cmake/android.toolchain.cmake -DANDROID_ABI=armeabi-v7a -DANDROID_NDK=$NDK -DANDROID_PLATFORM=android-21 -DCMAKE_ANDROID_ARCH_ABI=armeabi-v7a -DCMAKE_ANDROID_NDK=$NDK -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_SYSTEM_NAME=Android -DCMAKE_SYSTEM_VERSION=21 -DCMAKE_BUILD_TYPE=Debug -GNinja
 
 cmake_minimum_required(VERSION 3.22)
 
-project(wolf_cxx)
+project(wolf_sys)
+set(TEST_PROJECT_NAME "${PROJECT_NAME}_tests")
 message("CXX Compiler ID is ${CMAKE_CXX_COMPILER_ID}")
 
 # required packages
@@ -25,12 +26,11 @@ include(FetchContent)
 option(WOLF_ENABLE_LZ4 "Enable LZ4 Compression" OFF)
 option(WOLF_ENABLE_LZMA "Enable LZMA Compression" OFF)
 option(WOLF_ENABLE_NNG "Enable nng socket for tcp/udp/ipc client/server" OFF)
-option(WOLF_ENABLE_FFMPEG_RTSP_CLIENT "Enable real time streaming for client" OFF)
-option(WOLF_ENABLE_LIVE555_RTSP_SERVER "Enable real time streaming for server" OFF)
-option(WOLF_ENABLE_WEBRTC "Enable webRTC" OFF)
-option(WOLF_ENABLE_WEBSOCKET_SERVER "Enable websocket" OFF)
+option(WOLF_ENABLE_RIST "Enable RIST streaming protocol" OFF)
+option(WOLF_ENABLE_RTSP "Enable real time streaming for client" OFF)
+option(WOLF_ENABLE_SRT "Enable RIST streaming protocol" OFF)
 
-set(LIBRARY_TYPE "SHARED" CACHE STRING "Library type")
+set(LIBRARY_TYPE "STATIC" CACHE STRING "Library type")
 
 set(CMAKE_C_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -73,8 +73,8 @@ list(APPEND INCLUDES
 )
 list(APPEND LIBS mimalloc)
 
+# fetch lz4
 if (WOLF_ENABLE_LZ4)
-  # fetch lz4
   message("fetching https://github.com/lz4/lz4.git")
     FetchContent_Declare(
     lz4
@@ -85,11 +85,21 @@ if (WOLF_ENABLE_LZ4)
   list(APPEND LIBS lz4)
 endif()
 
+if (WOLF_ENABLE_RIST)
+  execute_process(COMMAND chmod +x ${CMAKE_CURRENT_SOURCE_DIR}/shell/librist.sh)
+
+  if(CMAKE_BUILD_TYPE MATCHES DEBUG)
+    add_custom_target(librist COMMAND /bin/sh -c "${CMAKE_CURRENT_SOURCE_DIR}/shell/librist.sh --debug")
+  else()
+    add_custom_target(librist COMMAND /bin/sh -c "${CMAKE_CURRENT_SOURCE_DIR}/shell/librist.sh")
+  endif()
+endif()
+
 FetchContent_MakeAvailable(${LIBS})
 
-# set(CMAKE_CXX_CLANG_TIDY
-#     clang-tidy;
-#     -format-style=file;)  
+set(CMAKE_CXX_CLANG_TIDY
+    clang-tidy;
+    -format-style=file;)  
 
 # set defenitions
 if (MSVC)
@@ -111,7 +121,8 @@ endif()
 include_directories(${INCLUDES})
 
 add_library(${PROJECT_NAME} ${LIBRARY_TYPE}
-    Wolf.cpp
+    wolf.cpp
+    memory/buffer.cpp
 )
 
 # link libraries
@@ -123,6 +134,20 @@ if (WOLF_ENABLE_LZ4)
   endif()
 endif()
 
+if (WOLF_ENABLE_RIST)
+  add_dependencies(${PROJECT_NAME} librist)
+endif()
+
 target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBS})
 target_compile_options(${PROJECT_NAME} PRIVATE -Wall -fPIC -Wall)
 #target_compile_definitions(${PROJECT_NAME} PRIVATE)
+
+# build tests
+if (NOT ${CMAKE_SYSTEM_NAME} MATCHES "Android")
+  add_executable (${TEST_PROJECT_NAME} test.cpp)
+  target_link_libraries(${TEST_PROJECT_NAME} PRIVATE ${PROJECT_NAME} )
+  target_compile_options(${TEST_PROJECT_NAME} PRIVATE -Wall -std=c++20)
+  target_compile_definitions(${TEST_PROJECT_NAME} PRIVATE 
+    FOLLY_ASSUME_NO_JEMALLOC 
+    FOLLY_ASSUME_NO_TCMALLOC)
+endif()

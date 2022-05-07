@@ -1,8 +1,8 @@
-use super::{
+use crate::stream::common::{
     callback::{MessageType, OnMessageCallback, OnSocketCallback},
     protocols::MAX_MSG_SIZE,
+    timeouts,
 };
-use crate::system::net::timeouts;
 use anyhow::{anyhow, Result};
 use std::{fs::File, io::BufReader, path::Path};
 use std::{net::SocketAddr, str::FromStr};

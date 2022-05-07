@@ -1,7 +1,9 @@
-use crate::system::algorithm::raft::{
-    raft_converter, raft_srv::wolf_raft, raft_srv::wolf_raft::raft_client::RaftClient,
+use crate::{
+    stream::http::grpc,
+    system::algorithm::raft::{
+        raft_converter, raft_srv::wolf_raft, raft_srv::wolf_raft::raft_client::RaftClient,
+    },
 };
-use crate::system::net::grpc;
 use anyhow::{bail, Result};
 use async_raft::{
     raft::{self, InstallSnapshotRequest, InstallSnapshotResponse, VoteRequest, VoteResponse},
@@ -128,7 +130,7 @@ impl RaftNetwork<ClientRequest> for RaftRouter {
 
         //create a channel for grpc
         let uri = format!("http://localhost:{}", BASE_PORT + p_target_node);
-        let ret = match crate::system::net::grpc::create_channel(uri).await {
+        let ret = match grpc::create_channel(uri).await {
             Ok(c) => {
                 //call request with channel
                 let uuid = Uuid::new_v5(&Uuid::NAMESPACE_X500, b"wolf_raft_install_snapshot");
@@ -201,7 +203,7 @@ impl RaftNetwork<ClientRequest> for RaftRouter {
 
         //create a channel for grpc
         let uri = format!("http://localhost:{}", BASE_PORT + p_target_node);
-        let ret = match crate::system::net::grpc::create_channel(uri).await {
+        let ret = match grpc::create_channel(uri).await {
             Ok(c) => {
                 //call request with channel
                 let uuid = Uuid::new_v5(&Uuid::NAMESPACE_X500, b"wolf_raft_vote");

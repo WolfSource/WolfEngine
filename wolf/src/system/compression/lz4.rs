@@ -1,7 +1,7 @@
 #[cxx::bridge(namespace = "lz4_cxx")]
 pub mod ffi {
     unsafe extern "C++" {
-        include!("src/system/compression/cxx/lz4/LZ4.hpp");
+        include!("src/system/_cxx/lz4/lz4.hpp");
 
         /// Compress a buffer via lz4 algorithm
         ///
