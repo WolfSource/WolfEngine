@@ -127,7 +127,7 @@ include_directories(${INCLUDES})
 
 add_library(${PROJECT_NAME} ${LIBRARY_TYPE}
     wolf.cpp
-    memory/buffer.cpp
+    compression/lz4.cpp
 )
 
 # link libraries

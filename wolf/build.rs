@@ -269,7 +269,8 @@ fn bindgens(p_current_dir_path_str: &str) {
             // The input header we would like to generate
             // bindings for.
             .header(src.1)
-            .clang_arg(&include_path);
+            .layout_tests(false)
+            .clang_args(&[&include_path, "-std=c++20"]);
 
         for t in src.2 {
             builder = builder.allowlist_type(t);

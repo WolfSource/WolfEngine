@@ -5,10 +5,17 @@
 
 // #include <lz4.h>
 
-// int compress(buffer* p_buffer)
-// {
-//     return 0;
-// }
+int compress(const uint8_t *p_src_buffer,
+             size_t p_src_buffer_len,
+             uint8_t *p_compressed_buffer,
+             size_t *p_compressed_buffer_len,
+             int p_fast_mode,
+             uint32_t p_acceleration,
+             char *p_trace_buffer,
+             size_t *p_trace_buffer_len)
+{
+    return 0;
+}
 
 // namespace lz4_cxx
 // {
