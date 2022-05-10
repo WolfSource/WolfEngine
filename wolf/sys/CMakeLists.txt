@@ -58,8 +58,9 @@ FetchContent_Declare(
 )
 FetchContent_Populate(gsl)
 
-set(INCLUDES ${CMAKE_CURRENT_SOURCE_DIR})
-set(LIBS "")
+set(INCLUDES 
+  ${CMAKE_CURRENT_SOURCE_DIR}
+  ${gsl_SOURCE_DIR}/include)
 
 # fetch mimalloc
 message("fetching https://github.com/microsoft/mimalloc.git")
@@ -69,20 +70,28 @@ FetchContent_Declare(
   GIT_TAG        master
 )
 list(APPEND INCLUDES
-  ${mimalloc_SOURCE_DIR}/include
+  ${CMAKE_CURRENT_BINARY_DIR}/_deps/gsl-src/include
+  ${CMAKE_CURRENT_BINARY_DIR}/_deps/mimalloc-static-src/include
 )
-list(APPEND LIBS mimalloc-static)
+set(DEPS mimalloc-static)
+set(CODES wolf.c)
 
 # fetch lz4
 if (WOLF_ENABLE_LZ4)
   message("fetching https://github.com/lz4/lz4.git")
-    FetchContent_Declare(
+  FetchContent_Declare(
     lz4
     GIT_REPOSITORY https://github.com/lz4/lz4.git
     GIT_TAG        dev
     SOURCE_SUBDIR  build/cmake
   )
-  list(APPEND LIBS lz4)
+  list(APPEND CODES
+    compression/lz4.c
+  )
+  list(APPEND INCLUDES
+    ${CMAKE_CURRENT_BINARY_DIR}/_deps/lz4-src/lib
+  )
+  list(APPEND DEPS lz4)
 endif()
 
 if (WOLF_ENABLE_RIST)
@@ -99,13 +108,12 @@ endif()
 set(MI_BUILD_SHARED OFF CACHE BOOL "MI_BUILD_SHARED")
 set(MI_BUILD_TESTS OFF CACHE BOOL "MI_BUILD_TESTS")
 
-FetchContent_MakeAvailable(${LIBS})
+FetchContent_MakeAvailable(${DEPS})
 
+# for rustc, we don't need any link
 set(CMAKE_CXX_CLANG_TIDY
     clang-tidy;
     -format-style=file;)  
-
-
 # set defenitions
 if (MSVC)
   add_definitions(-D_WIN32)
@@ -115,44 +123,33 @@ elseif (APPLE)
     -DTARGET_OS_SIMULATOR=0
     -DTARGET_OS_IPHONE=0)
 endif()
-
 if(CMAKE_BUILD_TYPE MATCHES DEBUG)
   add_definitions(-DDEBUG)
 else()
   add_definitions(-DNDEBUG)
 endif()
-
 # add includes
 include_directories(${INCLUDES})
-
-add_library(${PROJECT_NAME} ${LIBRARY_TYPE}
-    wolf.cpp
-    compression/lz4.cpp
-)
-
-# link libraries
-if (WOLF_ENABLE_LZ4)
-  if (MSVC)
-    target_link_directories(${PROJECT_NAME} PRIVATE ${lz4_BINARY_DIR}/${CMAKE_BUILD_TYPE}/)
-  else()
-    target_link_directories(${PROJECT_NAME} PRIVATE ${lz4_BINARY_DIR}/)
-  endif()
-endif()
-
+add_library(${PROJECT_NAME} ${LIBRARY_TYPE} ${CODES})
 if (WOLF_ENABLE_RIST)
   add_dependencies(${PROJECT_NAME} librist)
 endif()
-
-target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBS})
+# link libraries
+if (WOLF_ENABLE_LZ4)
+  if (MSVC)
+    target_link_libraries(${PROJECT_NAME} PRIVATE ${lz4_BINARY_DIR}/${CMAKE_BUILD_TYPE}/liblz4.lib)
+  else()
+    target_link_libraries(${PROJECT_NAME} PRIVATE ${lz4_BINARY_DIR}/liblz4.a)
+  endif()
+endif()
 target_compile_options(${PROJECT_NAME} PRIVATE -Wall -fPIC -Wall)
 #target_compile_definitions(${PROJECT_NAME} PRIVATE)
-
 # build tests
-if (NOT ${CMAKE_SYSTEM_NAME} MATCHES "Android")
-  add_executable (${TEST_PROJECT_NAME} test.cpp)
-  target_link_libraries(${TEST_PROJECT_NAME} PRIVATE ${PROJECT_NAME} )
-  target_compile_options(${TEST_PROJECT_NAME} PRIVATE -Wall -std=c++20)
-  target_compile_definitions(${TEST_PROJECT_NAME} PRIVATE 
-    FOLLY_ASSUME_NO_JEMALLOC 
-    FOLLY_ASSUME_NO_TCMALLOC)
-endif()
+# if (NOT ${CMAKE_SYSTEM_NAME} MATCHES "Android")
+#   add_executable (${TEST_PROJECT_NAME} test.cpp)
+#   target_link_libraries(${TEST_PROJECT_NAME} PRIVATE ${PROJECT_NAME} )
+#   target_compile_options(${TEST_PROJECT_NAME} PRIVATE -Wall -std=c++20)
+#   target_compile_definitions(${TEST_PROJECT_NAME} PRIVATE 
+#     FOLLY_ASSUME_NO_JEMALLOC 
+#     FOLLY_ASSUME_NO_TCMALLOC)
+# endif()

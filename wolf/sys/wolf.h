@@ -36,6 +36,11 @@ extern "C"
 
 #include <stdlib.h>
 #include <stdint.h>
+#include <stdio.h>
+
+#ifndef MAX_TRACE_LEN
+#define MAX_TRACE_LEN 256
+#endif
 
 #ifdef __cplusplus
 }

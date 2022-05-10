@@ -2,12 +2,11 @@
 #include "catch.hpp" // NOLINT
 
 #include <wolf.h>
-#include <memory/buffer.h>
 
-TEST_CASE("w_memory tests", "[single-file]")
+TEST_CASE("compression tests", "[single-file]")
 {
-    auto a = w_malloc(32);
-    w_free(a);
+    // auto a = w_malloc(32);
+    // w_free(a);
     // w_sys_version();
     //  REQUIRE(_str == "hello"); // NOLINT
 }
