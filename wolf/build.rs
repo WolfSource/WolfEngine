@@ -231,10 +231,10 @@ fn link(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &str) 
         search_path: sys_build_dir,
         lib_name: "wolf_sys".to_string(),
     });
-    deps.push(Dep {
-        search_path: format!("{}/mimalloc-static-build/", sys_deps_dir),
-        lib_name: format!("mimalloc-{}", p_build_profile.to_lowercase()),
-    });
+    // deps.push(Dep {
+    //     search_path: format!("{}/mimalloc-static-build/", sys_deps_dir),
+    //     lib_name: format!("mimalloc-{}", p_build_profile.to_lowercase()),
+    // });
     if cfg!(feature = "system_lz4") {
         deps.push(Dep {
             search_path: format!("{}/lz4-build/", sys_deps_dir),
