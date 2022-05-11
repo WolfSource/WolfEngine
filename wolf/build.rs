@@ -88,10 +88,10 @@ fn main() {
         }
     };
 
-    // execute cmake of wolf_sys
+    // execute cmake for building deps of wolf_sys
     cmake(&current_dir_path, wolf_lib_name, build_profile, &target_os);
 
-    // link to wolf_sys
+    // compile c/cpp sources and link
     link(current_dir_path_str, build_profile, &target_os);
 
     // create bindgens from wolf_sys
@@ -204,6 +204,9 @@ pub fn cmake(
     );
 }
 
+/// # Panic
+///
+/// Will be panic `if link failed
 fn link(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &str) {
     if p_target_os == "windows" {
         if p_build_profile == "Debug" {
@@ -225,8 +228,8 @@ fn link(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &str) 
     }
     let mut deps = Vec::new();
     deps.push(Dep {
-        search_path: format!("{}", sys_build_dir),
-        lib_name: format!("wolf_sys"),
+        search_path: sys_build_dir,
+        lib_name: "wolf_sys".to_string(),
     });
     deps.push(Dep {
         search_path: format!("{}/mimalloc-static-build/", sys_deps_dir),
@@ -245,6 +248,9 @@ fn link(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &str) 
     }
 }
 
+/// # Panic
+///
+/// Will be panic `if bindgen failed
 fn bindgens(p_current_dir_path_str: &str) {
     // mod
     let mut mod_rs = "#![allow(non_upper_case_globals)]\r\n#![allow(non_camel_case_types)]\r\n#![allow(non_snake_case)]\r\n".to_owned();
