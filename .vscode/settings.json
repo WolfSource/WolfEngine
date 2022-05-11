@@ -99,7 +99,8 @@
         "numeric": "cpp",
         "regex": "cpp",
         "semaphore": "cpp",
-        "variant": "cpp"
+        "variant": "cpp",
+        "span": "c"
     },
     "files.watcherExclude": {
         "**/*.db-*": true,

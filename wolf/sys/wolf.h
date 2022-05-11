@@ -34,13 +34,25 @@ extern "C"
 
 #endif // _WIN32
 
-#include <stdlib.h>
-#include <stdint.h>
 #include <stdio.h>
+#include <stdint.h>
 
-#ifndef MAX_TRACE_LEN
-#define MAX_TRACE_LEN 256
+#ifndef ALIGNMENT_16
+#define ALIGNMENT_16 16
 #endif
+
+#ifdef _MSVC
+#pragma pack(push, ALIGNMENT_16)
+#endif
+	typedef struct buf
+	{
+		uint8_t *data;
+		size_t len;
+	} buf __attribute__((aligned(ALIGNMENT_16)));
+	typedef struct buf *buf_t;
+
+	/// <div rustbindgen opaque></div>
+	int is_buf_valid(buf_t p_buf);
 
 #ifdef __cplusplus
 }

@@ -272,9 +272,9 @@ fn bindgens(p_current_dir_path_str: &str) {
         srcs.push(BindgenPipeline {
             rust_src: "src/ffi/lz4.rs",
             header_src: "sys/compression/lz4.h",
-            c_src: "sys/compression/lz4.cpp",
-            allowlist_types: vec![],
-            allowlist_funcs: vec!["compress"],
+            c_src: "sys/compression/lz4.c",
+            allowlist_types: vec![""],
+            allowlist_funcs: vec!["compress", "decompress", "free_buf"],
         });
         mod_rs += "#[cfg(feature = \"system_lz4\")]\r\npub mod lz4;\r\n";
     }

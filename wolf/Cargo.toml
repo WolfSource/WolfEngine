@@ -81,7 +81,7 @@ lazy_static = {version = "1.4.0", default-features = false}
 
 # Wasm features
 [features]
-default = []
+default = ["system_lz4"]
 stream_grpc = [] # enable gRPC (http2/1.1) for stream module
 stream_rist = [] # enable RIST streaming protocol for stream module
 system_lz4 = [] # enable LZ4 compression for system module
