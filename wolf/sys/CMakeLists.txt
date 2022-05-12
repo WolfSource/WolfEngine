@@ -1,4 +1,9 @@
 #cmake . -B build -DCMAKE_TOOLCHAIN_FILE=$NDK/build/cmake/android.toolchain.cmake -DANDROID_ABI=armeabi-v7a -DANDROID_NDK=$NDK -DANDROID_PLATFORM=android-21 -DCMAKE_ANDROID_ARCH_ABI=armeabi-v7a -DCMAKE_ANDROID_NDK=$NDK -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_SYSTEM_NAME=Android -DCMAKE_SYSTEM_VERSION=21 -DCMAKE_BUILD_TYPE=Debug -GNinja
+# cmake . -B build -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_HOME/build/cmake/android.toolchain.cmake -DANDROID_ABI=armeabi-v7a -DANDROID_NDK=$ANDROID_NDK_HOME -DANDROID_PLATFORM=android-21 -DCMAKE_ANDROID_ARCH_ABI=armeabi-v7a -DCMAKE_ANDROID_NDK=$ANDROID_NDK_HOME -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_SYSTEM_NAME=Android -DCMAKE_SYSTEM_VERSION=21 -DCMAKE_BUILD_TYPE=Debug -GNinja
+# cd build
+# ninja
+# cd ../..
+
 
 cmake_minimum_required(VERSION 3.22)
 
@@ -105,7 +110,14 @@ if (WOLF_ENABLE_RIST)
     stream/rist.c
   )
   list(APPEND INCLUDES
+    ${CMAKE_CURRENT_BINARY_DIR}/librist/contrib
+    ${CMAKE_CURRENT_BINARY_DIR}/librist/contrib/mbedtls/include
+    ${CMAKE_CURRENT_BINARY_DIR}/librist/build
+    ${CMAKE_CURRENT_BINARY_DIR}/librist/build/include
+    ${CMAKE_CURRENT_BINARY_DIR}/librist/build/include/librist
     ${CMAKE_CURRENT_BINARY_DIR}/librist/include
+    ${CMAKE_CURRENT_BINARY_DIR}/librist/include/librist
+    ${CMAKE_CURRENT_BINARY_DIR}/librist/src
   )
 endif()
 

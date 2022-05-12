@@ -24,15 +24,15 @@ path = "src/lib.rs"
 # shared dependencies between all
 [dependencies]
 #brotli = { version = "3.3.3" }
-anyhow = {version = "1.0.56", default-features = false}
+anyhow = {version = "1.0.57", default-features = false}
 signals2 = {version = "0.3.2", default-features = false}
 raw-window-handle = {version = "0.4.3", default-features = false, features = ["alloc"]} 
 
 # dependencies of wasm 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 instant = {version = "0.1.12", default-features = false, features = ["wasm-bindgen"]}
-rhai = { version = "1.6.1", default-features = false, features = ["sync", "internals", "wasm-bindgen"] }
-serde = { version = "1.0.136", default-features = false, features = ["derive"]}
+rhai = { version = "1.7.0", default-features = false, features = ["sync", "internals", "wasm-bindgen"] }
+serde = { version = "1.0.137", default-features = false, features = ["derive"]}
 wasm-bindgen = { version = "0.2.80", default-features = false }
 wasm-bindgen-futures = { version = "0.4.30", default-features = false }
 wasm-mt = {version = "0.1.2", default-features = false }
@@ -43,11 +43,11 @@ wgpu = {version = "0.12.0", default-features = false, features = ["webgl"]}
 [target.'cfg(any(target_arch = "arm", target_arch = "aarch64", target_arch = "x86_64"))'.dependencies]
 instant = {version = "0.1.12", default-features = false}
 pollster = {version = "0.2.5", default-features = false}
-rhai = { version = "1.6.0", default-features = false, features = ["sync", "internals"]}
+rhai = { version = "1.7.0", default-features = false, features = ["sync", "internals"]}
 rustls-pemfile = {version = "1.0.0", default-features = false}
-tokio = {version = "1.17.0", default-features = false, features = ["full"]}
-tokio-rustls = {version = "0.23.3", default-features = false, features = ["logging", "tls12"]}
-tonic = {version = "0.7.1", default-features = false, features = ["codegen", "prost", "tls", "compression"]}
+tokio = {version = "1.18.2", default-features = false, features = ["full"]}
+tokio-rustls = {version = "0.23.4", default-features = false, features = ["logging", "tls12"]}
+tonic = {version = "0.7.2", default-features = false, features = ["codegen", "prost", "tls", "compression"]}
 webpki-roots = {version = "0.22.3", default-features = false}
 wgpu = {version = "0.12.0", default-features = false}
 
@@ -63,25 +63,25 @@ futures = { version = "0.3.21", default-features = false }
 hyper = {version = "0.14.18", default-features = false}
 may = {version = "0.3.21", default-features = false}
 memstore = {version = "0.2.0", default-features = false}
-mimalloc = {version = "0.1.28", default-features = false, features = ["secure"]}
+mimalloc = {version = "0.1.29", default-features = false, features = ["secure"]}
 parking_lot = {version = "0.12.0",  default-features = false, features = ["deadlock_detection"]}
-prost = {version = "0.10.1", default-features = false}
-serde_json = {version = "1.0.79", default-features = false, features = ["std"]}
-sysinfo = {version = "0.23.10", default-features = false, features = ["multithread"]}
+prost = {version = "0.10.3", default-features = false}
+serde_json = {version = "1.0.81", default-features = false, features = ["std"]}
+sysinfo = {version = "0.23.12", default-features = false, features = ["multithread"]}
 tracing = {version = "0.1.34", default-features = false, features = ["std", "attributes"]}
 tokio-tungstenite = {version = "0.17.1", default-features = false, features = ["connect", "rustls"]}
 uuid = {version = "1.0.0", default-features = false, features = ["v5"]}
 
 [build-dependencies]
 bindgen = {version = "0.59.2"}
-tonic-build = {version = "0.7.0", default-features = false, features = ["transport", "prost", "compression"]}
+tonic-build = {version = "0.7.2", default-features = false, features = ["transport", "prost", "compression"]}
 
 [dev-dependencies]
 lazy_static = {version = "1.4.0", default-features = false}
 
 # Wasm features
 [features]
-default = ["system_lz4"]
+default = []
 stream_grpc = [] # enable gRPC (http2/1.1) for stream module
 stream_rist = [] # enable RIST streaming protocol for stream module
 system_lz4 = [] # enable LZ4 compression for system module

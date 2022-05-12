@@ -11,9 +11,6 @@ int w_lz4_compress(
 {
     if (is_buf_valid(p_src) != 0 || is_buf_valid(p_trace) != 0)
     {
-        (void)snprintf((char *)p_trace->data,
-                       p_trace->len,
-                       "missing p_src or p_trace data");
         return 1;
     }
 
@@ -25,7 +22,7 @@ int w_lz4_compress(
         (void)snprintf((char *)p_trace->data,
                        p_trace->len,
                        "could not allocate memory for compressed buffer");
-        return 1;
+        return -1;
     }
 
     int len = -1;
@@ -60,7 +57,7 @@ int w_lz4_compress(
         (void)snprintf((char *)p_trace->data,
                        p_trace->len,
                        "could not compress");
-        return 1;
+        return -1;
     }
 
     // realloc compress_data to free up memory
@@ -70,7 +67,7 @@ int w_lz4_compress(
         (void)snprintf((char *)p_trace->data,
                        p_trace->len,
                        "could not realloc compressed memory");
-        return 1;
+        return -1;
     }
 
     p_dst->data = (uint8_t *)data;
@@ -100,7 +97,7 @@ int w_lz4_decompress(
         (void)snprintf((char *)p_trace->data,
                        p_trace->len,
                        "could not allocate memory for decompressed buffer");
-        return 1;
+        return -1;
     }
 
     int _decompressed_len = -1;
@@ -138,7 +135,7 @@ int w_lz4_decompress(
                        p_trace->len,
                        "size of decompress buffer must be greater than zero");
         mi_free(data);
-        return 1;
+        return -1;
     }
 
     data = (char *)mi_realloc(data, _decompressed_len);
@@ -148,7 +145,7 @@ int w_lz4_decompress(
                        p_trace->len,
                        "could not reallocate memory for decompressed buffer");
         mi_free(data);
-        return 1;
+        return -1;
     }
 
     p_dst->data = (uint8_t *)data;

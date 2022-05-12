@@ -273,7 +273,6 @@ fn bindgens(p_current_dir_path_str: &str) {
     }
     let mut srcs = Vec::new();
 
-    // set defines
     if cfg!(feature = "system_lz4") {
         srcs.push(BindgenPipeline {
             rust_src: "src/ffi/lz4.rs",
@@ -283,6 +282,17 @@ fn bindgens(p_current_dir_path_str: &str) {
             allowlist_funcs: vec!["w_lz4_compress", "w_lz4_decompress", "w_lz4_free_buf"],
         });
         mod_rs += "#[cfg(feature = \"system_lz4\")]\r\npub mod lz4;\r\n";
+    }
+
+    if cfg!(feature = "stream_rist") {
+        srcs.push(BindgenPipeline {
+            rust_src: "src/ffi/rist.rs",
+            header_src: "sys/stream/rist.h",
+            c_src: "sys/stream/rist.c",
+            allowlist_types: vec![""],
+            allowlist_funcs: vec!["w_rist_init"],
+        });
+        mod_rs += "#[cfg(feature = \"stream_rist\")]\r\npub mod rist;\r\n";
     }
 
     let include_path = format!("-I{}/sys", p_current_dir_path_str);

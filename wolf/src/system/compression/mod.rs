@@ -1,3 +1,2 @@
-#[cfg(feature = "system_lz4")]
-pub mod lz4;
+//#[cfg(feature = "system_lzma")]
 //pub mod lzma;

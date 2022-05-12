@@ -5,11 +5,6 @@
 cross-platform open source game engine created by [Pooya Eimandar](https://pooyaeimandar.github.io)
 This Wolf is a comprehensive set of Rust/C libraries for realtime rendering, realtime streaming and game developing, which is support **Lua** & **Python** as an embedded script and binding language.</p>
 
-## Projects using Wolf
-- [Wolf.Playout](https://www.youtube.com/watch?v=EZSdEjBvuGY) is a playout automation software
-- [Falcon](https://youtu.be/ygpz35ddZ_4) is a real time 3D monitoring system, developed at [FANAP Co.](https://fanap.ir/)
-- Barf is a real time streaming core for cloud gaming platform
-
 ## Branches
 - [main](https://github.com/WolfEngine/WolfEngine/tree/main), Wolf3, is the latest version of Wolf which is written in **Rust and contains some unsafe codes** and is not ready for production
 - [Wolf2](https://github.com/WolfEngine/WolfEngine/tree/wolf-2) is written in **C/C++ and is in maintenance mode**

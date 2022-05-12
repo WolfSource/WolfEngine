@@ -5,11 +5,6 @@
 cross-platform open source game engine created by [Pooya Eimandar](https://pooyaeimandar.github.io)
 This Wolf is a comprehensive set of Rust/C libraries for realtime rendering, realtime streaming and game developing, which is support **Lua** & **Python** as an embedded script and binding language.</p>
 
-## Projects using Wolf
-- [Wolf.Playout](https://www.youtube.com/watch?v=EZSdEjBvuGY) is a playout automation software
-- [Falcon](https://youtu.be/ygpz35ddZ_4) is a real time 3D monitoring system, developed at [FANAP Co.](https://fanap.ir/)
-- Barf is a real time streaming core for cloud gaming platform
-
 ## Branches
 - [main](https://github.com/WolfEngine/WolfEngine/tree/main), Wolf3, is the latest version of Wolf which is written in **Rust and contains some unsafe codes** and is not ready for production
 - [Wolf2](https://github.com/WolfEngine/WolfEngine/tree/wolf-2) is written in **C/C++ and is in maintenance mode**
@@ -54,12 +49,8 @@ This Wolf is a comprehensive set of Rust/C libraries for realtime rendering, rea
     x86_64-linux-android \
     i686-linux-android
   cargo install cargo-ndk
-  export NDK = /path/to/the/root/of/NDK
-  cd wolf/cxx
-  cmake . -B build -DCMAKE_TOOLCHAIN_FILE=$NDK/build/cmake/android.toolchain.cmake -DANDROID_ABI=armeabi-v7a -DANDROID_NDK=$NDK -DANDROID_PLATFORM=android-21 -DCMAKE_ANDROID_ARCH_ABI=armeabi-v7a -DCMAKE_ANDROID_NDK=$NDK -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_SYSTEM_NAME=Android -DCMAKE_SYSTEM_VERSION=21 -DCMAKE_BUILD_TYPE=Debug -GNinja
-  cd build
-  ninja
-  cd ../..
+  export ANDROID_NDK_HOME = /path/to/the/root/of/NDK22
+  cargo ndk -t armeabi-v7a -t arm64-v8a -o ./jniLibs build
   cargo ndk -t armeabi-v7a -t arm64-v8a -o ./jniLibs build --release 
   ```
 

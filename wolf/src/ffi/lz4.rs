@@ -16,7 +16,7 @@ extern "C" {
     #[doc = " @param p_fast_mode 1 means Fast mode and 0 is Default mode"]
     #[doc = " @param p_acceleration the acceleration of process. the default value is 1"]
     #[doc = " @param p_trace the trace information in the string format with maximum size of 256"]
-    #[doc = " @return 0 means success"]
+    #[doc = " @return 0 on success, 1 on invalid parameter and -1 on error which the error description will be printed into the p_trace"]
     pub fn w_lz4_compress(
         p_src: w_buf,
         p_dst: w_buf,
@@ -30,12 +30,12 @@ extern "C" {
     #[doc = " @param p_src the compressed source buffer"]
     #[doc = " @param p_dst the decompressed buffer"]
     #[doc = " @param p_trace the trace information in the string fromat with maximum size of 256"]
-    #[doc = " @return 0 means success"]
+    #[doc = " @return 0 on success, 1 on invalid parameter and -1 on error which the error description will be printed into the p_trace"]
     pub fn w_lz4_decompress(p_src: w_buf, p_dst: w_buf, p_trace: w_buf) -> ::std::os::raw::c_int;
 }
 extern "C" {
     #[doc = " free buffer"]
     #[doc = " @param p_buf the buffer"]
-    #[doc = " @return 0 means success"]
+    #[doc = " @return 0 on success, 1 on invalid parameter and -1 on error which the error description will be printed into the p_trace"]
     pub fn w_lz4_free_buf(p_buf: w_buf) -> ::std::os::raw::c_int;
 }

@@ -14,7 +14,7 @@ extern "C"
      * @param p_fast_mode 1 means Fast mode and 0 is Default mode
      * @param p_acceleration the acceleration of process. the default value is 1
      * @param p_trace the trace information in the string format with maximum size of 256
-     * @return 0 means success
+     * @return 0 on success, 1 on invalid parameter and -1 on error which the error description will be printed into the p_trace
      */
     int w_lz4_compress(
         w_buf p_src,
@@ -28,7 +28,7 @@ extern "C"
      * @param p_src the compressed source buffer
      * @param p_dst the decompressed buffer
      * @param p_trace the trace information in the string fromat with maximum size of 256
-     * @return 0 means success
+     * @return 0 on success, 1 on invalid parameter and -1 on error which the error description will be printed into the p_trace
      */
     int w_lz4_decompress(
         w_buf p_src,
@@ -38,7 +38,7 @@ extern "C"
     /**
      * free buffer
      * @param p_buf the buffer
-     * @return 0 means success
+     * @return 0 on success, 1 on invalid parameter and -1 on error which the error description will be printed into the p_trace
      */
     int w_lz4_free_buf(w_buf p_buf);
 

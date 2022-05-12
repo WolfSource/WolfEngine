@@ -3,3 +3,5 @@
 #![allow(non_snake_case)]
 #[cfg(feature = "system_lz4")]
 pub mod lz4;
+#[cfg(feature = "stream_rist")]
+pub mod rist;
