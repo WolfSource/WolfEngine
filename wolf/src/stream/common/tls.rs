@@ -18,7 +18,7 @@ pub fn load_certs(p_path: &Path) -> Result<Vec<Certificate>> {
             rustls_pemfile::certs(&mut buf)
                 .map(|mut certs| certs.drain(..).map(Certificate).collect())
         })
-        .map_err(std::convert::Into::into)
+        .map_err(|e| anyhow!("could not load certs {:?} because of {:?}", p_path, e))
 }
 
 pub fn load_private_keys(p_path: &Path, p_type: &TlsPrivateKeyType) -> Result<Vec<PrivateKey>> {
@@ -32,7 +32,14 @@ pub fn load_private_keys(p_path: &Path, p_type: &TlsPrivateKeyType) -> Result<Ve
                     .map(|mut keys| keys.drain(..).map(PrivateKey).collect()),
             }
         })
-        .map_err(std::convert::Into::into)
+        .map_err(|e| {
+            anyhow!(
+                "could not load private keys {:?} with type {:?} because of {:?}",
+                p_path,
+                p_type,
+                e
+            )
+        })
 }
 
 pub fn init_tls_acceptor(
@@ -66,7 +73,7 @@ pub fn init_tls_acceptor(
         .with_safe_defaults()
         .with_no_client_auth()
         .with_single_cert(certs, keys.remove(0))
-        .map_err(|err| std::io::Error::new(std::io::ErrorKind::InvalidInput, err))?;
+        .map_err(|e| anyhow!("could not build tls server config because of {:?}", e))?;
 
     // run acceptor & listener
     let tls_acceptor = TlsAcceptor::from(Arc::new(tls_server_config));

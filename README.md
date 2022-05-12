@@ -42,14 +42,14 @@ This Wolf is a comprehensive set of Rust/C libraries for realtime rendering, rea
   ```
   - For **Android** :
   ```bash
-  rustup default stable
+  rustup default nightly
   rustup target add \
     aarch64-linux-android \
     armv7-linux-androideabi \
     x86_64-linux-android \
     i686-linux-android
   cargo install cargo-ndk
-  export ANDROID_NDK_HOME = /path/to/the/root/of/NDK22
+  export ANDROID_NDK_HOME = /path/to/the/root/of/NDK/Folder
   cargo ndk -t armeabi-v7a -t arm64-v8a -o ./jniLibs build
   cargo ndk -t armeabi-v7a -t arm64-v8a -o ./jniLibs build --release 
   ```

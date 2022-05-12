@@ -4,13 +4,10 @@
 #[global_allocator]
 static GLOBAL: mimalloc::MiMalloc = mimalloc::MiMalloc;
 
-#[cfg(not(any(target_os = "android", target_os = "ios", target_arch = "wasm32")))]
+#[cfg(not(target_arch = "wasm32"))]
 pub mod ffi;
-#[cfg(not(any(target_os = "android", target_os = "ios", target_arch = "wasm32")))]
 pub mod render;
-#[cfg(not(any(target_os = "android", target_os = "ios", target_arch = "wasm32")))]
 pub mod stream;
-#[cfg(not(any(target_os = "android", target_os = "ios", target_arch = "wasm32")))]
 pub mod system;
 
 // sample for exposing as c ABI
