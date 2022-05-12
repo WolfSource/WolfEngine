@@ -2,12 +2,12 @@
 #include <lz4.h>
 #include <mimalloc.h>
 
-int compress(
-    buf_t p_src,
-    buf_t p_dst,
+int w_lz4_compress(
+    w_buf p_src,
+    w_buf p_dst,
     int p_fast_mode,
     int p_acceleration,
-    buf_t p_trace)
+    w_buf p_trace)
 {
     if (is_buf_valid(p_src) != 0 || is_buf_valid(p_trace) != 0)
     {
@@ -79,10 +79,10 @@ int compress(
     return 0;
 }
 
-int decompress(
-    buf_t p_src,
-    buf_t p_dst,
-    buf_t p_trace)
+int w_lz4_decompress(
+    w_buf p_src,
+    w_buf p_dst,
+    w_buf p_trace)
 {
     if (is_buf_valid(p_src) != 0 || is_buf_valid(p_trace) != 0)
     {
@@ -157,7 +157,7 @@ int decompress(
     return 0;
 }
 
-int free_buf(buf_t p_buf)
+int w_lz4_free_buf(w_buf p_buf)
 {
     if (p_buf == NULL ||
         p_buf->data == NULL)

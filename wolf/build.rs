@@ -280,7 +280,7 @@ fn bindgens(p_current_dir_path_str: &str) {
             header_src: "sys/compression/lz4.h",
             c_src: "sys/compression/lz4.c",
             allowlist_types: vec![""],
-            allowlist_funcs: vec!["compress", "decompress", "free_buf"],
+            allowlist_funcs: vec!["w_lz4_compress", "w_lz4_decompress", "w_lz4_free_buf"],
         });
         mod_rs += "#[cfg(feature = \"system_lz4\")]\r\npub mod lz4;\r\n";
     }

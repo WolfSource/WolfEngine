@@ -1,12 +1,6 @@
-#define CATCH_CONFIG_MAIN
-#include "catch.hpp" // NOLINT
+#include "wolf.h"
 
-#include <wolf.h>
-
-TEST_CASE("compression tests", "[single-file]")
+int main()
 {
-    // auto a = w_malloc(32);
-    // w_free(a);
-    // w_sys_version();
-    //  REQUIRE(_str == "hello"); // NOLINT
+    return 0;
 }

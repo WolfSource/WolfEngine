@@ -26,9 +26,9 @@ include(FetchContent)
 option(WOLF_ENABLE_LZ4 "Enable LZ4 Compression" OFF)
 option(WOLF_ENABLE_LZMA "Enable LZMA Compression" OFF)
 option(WOLF_ENABLE_NNG "Enable nng socket for tcp/udp/ipc client/server" OFF)
-option(WOLF_ENABLE_RIST "Enable RIST streaming protocol" OFF)
+option(WOLF_ENABLE_RIST "Enable RIST streaming protocol" ON)
 option(WOLF_ENABLE_RTSP "Enable real time streaming for client" OFF)
-option(WOLF_ENABLE_SRT "Enable RIST streaming protocol" OFF)
+option(WOLF_ENABLE_SRT "Enable SRT streaming protocol" OFF)
 
 set(LIBRARY_TYPE "STATIC" CACHE STRING "Library type")
 
@@ -72,7 +72,7 @@ list(APPEND INCLUDES
   ${CMAKE_CURRENT_BINARY_DIR}/_deps/mimalloc-static-src/include
 )
 set(DEPS mimalloc-static)
-set(CODES wolf.c)
+set(SOURCES wolf.c)
 
 # fetch lz4
 if (WOLF_ENABLE_LZ4)
@@ -83,7 +83,7 @@ if (WOLF_ENABLE_LZ4)
     GIT_TAG        dev
     SOURCE_SUBDIR  build/cmake
   )
-  list(APPEND CODES
+  list(APPEND SOURCES
     compression/lz4.c
   )
   list(APPEND INCLUDES
@@ -100,6 +100,13 @@ if (WOLF_ENABLE_RIST)
   else()
     add_custom_target(librist COMMAND /bin/sh -c "${CMAKE_CURRENT_SOURCE_DIR}/shell/librist.sh")
   endif()
+
+  list(APPEND SOURCES
+    stream/rist.c
+  )
+  list(APPEND INCLUDES
+    ${CMAKE_CURRENT_BINARY_DIR}/librist/include
+  )
 endif()
 
 # apply some changes to CMake cache file
@@ -126,13 +133,14 @@ if(CMAKE_BUILD_TYPE MATCHES DEBUG)
 else()
   add_definitions(-DNDEBUG)
 endif()
+
 # add includes
 include_directories(${INCLUDES})
-add_library(${PROJECT_NAME} ${LIBRARY_TYPE} ${CODES})
-if (WOLF_ENABLE_RIST)
-  add_dependencies(${PROJECT_NAME} librist)
-endif()
-# link libraries
+
+# add libraries
+add_library(${PROJECT_NAME} ${LIBRARY_TYPE} ${SOURCES})
+
+# link lz4
 if (WOLF_ENABLE_LZ4)
   if (MSVC)
     target_link_libraries(${PROJECT_NAME} PRIVATE ${lz4_BINARY_DIR}/${CMAKE_BUILD_TYPE}/liblz4.lib)
@@ -140,14 +148,24 @@ if (WOLF_ENABLE_LZ4)
     target_link_libraries(${PROJECT_NAME} PRIVATE ${lz4_BINARY_DIR}/liblz4.a)
   endif()
 endif()
+
+# link rist
+if (WOLF_ENABLE_RIST)
+  add_dependencies(${PROJECT_NAME} librist)
+  if (MSVC)
+    target_link_libraries(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/librist/build/librist.lib)
+  else()
+    target_link_libraries(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/librist/build/librist.a)
+  endif()
+endif()
+
 target_compile_options(${PROJECT_NAME} PRIVATE -Wall -fPIC -Wall)
-#target_compile_definitions(${PROJECT_NAME} PRIVATE)
+# target_compile_definitions(${PROJECT_NAME} PRIVATE)
+
 # build tests
 # if (NOT ${CMAKE_SYSTEM_NAME} MATCHES "Android")
 #   add_executable (${TEST_PROJECT_NAME} test.cpp)
 #   target_link_libraries(${TEST_PROJECT_NAME} PRIVATE ${PROJECT_NAME} )
-#   target_compile_options(${TEST_PROJECT_NAME} PRIVATE -Wall -std=c++20)
-#   target_compile_definitions(${TEST_PROJECT_NAME} PRIVATE 
-#     FOLLY_ASSUME_NO_JEMALLOC 
-#     FOLLY_ASSUME_NO_TCMALLOC)
+#   target_compile_options(${TEST_PROJECT_NAME} PRIVATE -Wall)
+#   # target_compile_definitions(${TEST_PROJECT_NAME} PRIVATE )
 # endif()

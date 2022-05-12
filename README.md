@@ -16,8 +16,8 @@ This Wolf is a comprehensive set of Rust/C libraries for realtime rendering, rea
 - [releases](https://github.com/WolfEngine/WolfEngine/releases) contains old releases and source codes
 
 ## Linter tools
-- **C++** make sure enable [clang-tidy for Visual Studio Code](https://devblogs.microsoft.com/cppblog/visual-studio-code-c-december-2021-update-clang-tidy/)
-- **Rust** enable rust clippy from settings.json of [Visual Studio Code](https://code.visualstudio.com)
+- **C++**: make sure enable [clang-tidy for Visual Studio Code](https://devblogs.microsoft.com/cppblog/visual-studio-code-c-december-2021-update-clang-tidy/)
+- **Rust**: enable rust clippy from settings.json of [Visual Studio Code](https://code.visualstudio.com)
   ```bash
   "rust-analyzer.checkOnSave.command": "clippy"
   ```

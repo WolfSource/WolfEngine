@@ -16,6 +16,10 @@ extern "C"
 
 #ifdef _WIN32
 
+#ifdef _MSC_VER
+#define ASM __asm
+#endif
+
 #define WOLF_API __declspec(dllexport)
 
 #ifndef NOMINMAX
@@ -30,29 +34,31 @@ extern "C"
 
 #else
 
+// define dummies
 #define WOLF_API
+
+#define ASM __asm__
 
 #endif // _WIN32
 
 #include <stdio.h>
 #include <stdint.h>
 
-#ifndef ALIGNMENT_16
-#define ALIGNMENT_16 16
+#ifndef _ALIGNMENT_
+#define _ALIGNMENT_ 16
 #endif
 
 #ifdef _MSVC
-#pragma pack(push, ALIGNMENT_16)
+#pragma pack(push, _ALIGNMENT_)
 #endif
-	typedef struct buf
+	typedef struct w_buf_t
 	{
 		uint8_t *data;
 		size_t len;
-	} buf __attribute__((aligned(ALIGNMENT_16)));
-	typedef struct buf *buf_t;
+	} w_buf_t __attribute__((aligned(_ALIGNMENT_)));
+	typedef struct w_buf_t *w_buf;
 
-	/// <div rustbindgen opaque></div>
-	int is_buf_valid(buf_t p_buf);
+	int is_buf_valid(w_buf p_buf);
 
 #ifdef __cplusplus
 }
