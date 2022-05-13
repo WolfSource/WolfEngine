@@ -1,10 +1,3 @@
-#cmake . -B build -DCMAKE_TOOLCHAIN_FILE=$NDK/build/cmake/android.toolchain.cmake -DANDROID_ABI=armeabi-v7a -DANDROID_NDK=$NDK -DANDROID_PLATFORM=android-21 -DCMAKE_ANDROID_ARCH_ABI=armeabi-v7a -DCMAKE_ANDROID_NDK=$NDK -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_SYSTEM_NAME=Android -DCMAKE_SYSTEM_VERSION=21 -DCMAKE_BUILD_TYPE=Debug -GNinja
-# cmake . -B build -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_HOME/build/cmake/android.toolchain.cmake -DANDROID_ABI=armeabi-v7a -DANDROID_NDK=$ANDROID_NDK_HOME -DANDROID_PLATFORM=android-21 -DCMAKE_ANDROID_ARCH_ABI=armeabi-v7a -DCMAKE_ANDROID_NDK=$ANDROID_NDK_HOME -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_SYSTEM_NAME=Android -DCMAKE_SYSTEM_VERSION=21 -DCMAKE_BUILD_TYPE=Debug -GNinja
-# cd build
-# ninja
-# cd ../..
-
-
 cmake_minimum_required(VERSION 3.22)
 
 project(wolf_sys)
@@ -31,7 +24,7 @@ include(FetchContent)
 option(WOLF_ENABLE_LZ4 "Enable LZ4 Compression" OFF)
 option(WOLF_ENABLE_LZMA "Enable LZMA Compression" OFF)
 option(WOLF_ENABLE_NNG "Enable nng socket for tcp/udp/ipc client/server" OFF)
-option(WOLF_ENABLE_RIST "Enable RIST streaming protocol" ON)
+option(WOLF_ENABLE_RIST "Enable RIST streaming protocol" OFF)
 option(WOLF_ENABLE_RTSP "Enable real time streaming for client" OFF)
 option(WOLF_ENABLE_SRT "Enable SRT streaming protocol" OFF)
 
@@ -131,6 +124,7 @@ FetchContent_MakeAvailable(${DEPS})
 set(CMAKE_CXX_CLANG_TIDY
     clang-tidy;
     -format-style=file;)  
+
 # set defenitions
 if (MSVC)
   add_definitions(-D_WIN32)

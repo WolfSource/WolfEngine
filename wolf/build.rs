@@ -7,7 +7,12 @@ use std::{
     process::Command,
 };
 
-const MACOSX_DEPLOYMENT_TARGET: &str = "12.0";
+// TODO: read these params from args
+const ANDROID_API_LEVEL: i32 = 21;
+// https://cmake.org/cmake/help/latest/variable/CMAKE_ANDROID_ARCH_ABI.html
+const ANDROID_ARCH_API: &str = "armeabi-v7a";
+// https://developer.android.com/ndk/guides/other_build_systems
+const ANDROID_NDK_OS_VARIANT: &str = "darwin-x86_64";
 
 fn main() {
     // get the current path
@@ -24,7 +29,16 @@ fn main() {
         std::env::var("CARGO_CFG_TARGET_OS").expect("Build failed: could not get target OS");
 
     if target_os == "macos" {
-        std::env::set_var("MACOSX_DEPLOYMENT_TARGET", MACOSX_DEPLOYMENT_TARGET);
+        let file = std::fs::read_to_string("/System/Library/CoreServices/SystemVersion.plist")
+            .expect("could not read SystemVersion.plist");
+        let cur = std::io::Cursor::new(file.as_bytes());
+        let v = plist::Value::from_reader(cur).expect("could not read value from plist");
+
+        let version = v
+            .as_dictionary()
+            .and_then(|d| d.get("ProductVersion")?.as_string())
+            .expect("SystemVersion.plist is not a dictionary");
+        std::env::set_var("MACOSX_DEPLOYMENT_TARGET", version);
     }
 
     // compile protos
@@ -94,8 +108,8 @@ fn main() {
     // compile c/cpp sources and link
     link(current_dir_path_str, build_profile, &target_os);
 
-    // create bindgens from wolf_sys
-    bindgens(current_dir_path_str);
+    // generate bindgens from wolf_sys
+    bindgens(current_dir_path_str, &target_os);
 }
 
 /// # Errors
@@ -148,27 +162,42 @@ pub fn cmake(
     }
 
     // args
-    let b_arg = format!("-B{}", cmake_build_path_str);
-    let s_arg = format!("-S{}", cmake_current_path_str);
-    let type_arg = format!("-DCMAKE_BUILD_TYPE:STRING={}", p_build_profile);
     let mut args = [
-        ".",
-        "--no-warn-unused-cli",
-        "-Wdev",
-        "--debug-output",
-        "-DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE",
-        &b_arg,
-        &s_arg,
-        &type_arg,
+        ".".to_owned(),
+        "--no-warn-unused-cli".to_owned(),
+        "-Wdev".to_owned(),
+        "--debug-output".to_owned(),
+        "-DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE".to_owned(),
+        format!("-B{}", cmake_build_path_str),
+        format!("-S{}", cmake_current_path_str),
+        format!("-DCMAKE_BUILD_TYPE:STRING={}", p_build_profile),
+        "-GNinja".to_owned(),
     ]
     .to_vec();
 
     // set defines
     #[cfg(feature = "system_lz4")]
-    args.push("-DWOLF_ENABLE_LZ4=ON");
+    args.push("-DWOLF_ENABLE_LZ4=ON".to_owned());
 
     #[cfg(feature = "stream_rist")]
-    args.push("-DWOLF_ENABLE_RIST=ON");
+    args.push("-DWOLF_ENABLE_RIST=ON".to_owned());
+
+    if p_target_os == "android" {
+        let android_ndk_home_env =
+            std::env::var("ANDROID_NDK_HOME").expect("could not get ANDROID_NDK_HOME");
+        args.push(format!(
+            "-DCMAKE_TOOLCHAIN_FILE={}/build/cmake/android.toolchain.cmake",
+            android_ndk_home_env
+        ));
+        args.push(format!("-DANDROID_ABI={}", ANDROID_ARCH_API));
+        args.push(format!("-DANDROID_NDK={}", android_ndk_home_env));
+        args.push(format!("-DANDROID_PLATFORM=android-{}", ANDROID_API_LEVEL));
+        args.push(format!("-DCMAKE_ANDROID_ARCH_ABI={}", ANDROID_ARCH_API));
+        args.push(format!("-DCMAKE_ANDROID_NDK={}", android_ndk_home_env));
+        args.push("-DCMAKE_EXPORT_COMPILE_COMMANDS=ON".to_owned());
+        args.push("-DCMAKE_SYSTEM_NAME=Android".to_owned());
+        args.push(format!("-DCMAKE_SYSTEM_VERSION={}", ANDROID_API_LEVEL));
+    }
 
     // configure
     let mut out = Command::new("cmake")
@@ -226,15 +255,16 @@ fn link(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &str) 
         search_path: String,
         lib_name: String,
     }
-    let mut deps = Vec::new();
-    deps.push(Dep {
+    let mut deps = vec![Dep {
         search_path: sys_build_dir,
         lib_name: "wolf_sys".to_string(),
-    });
-    deps.push(Dep {
-        search_path: format!("{}/mimalloc-static-build/", sys_deps_dir),
-        lib_name: format!("mimalloc-{}", p_build_profile.to_lowercase()),
-    });
+    }];
+
+    // mimalloc was already linked via global allocator of rust
+    // deps.push(Dep {
+    //     search_path: format!("{}/mimalloc-static-build/", sys_deps_dir),
+    //     lib_name: format!("mimalloc-{}", p_build_profile.to_lowercase()),
+    // });
     if cfg!(feature = "system_lz4") {
         deps.push(Dep {
             search_path: format!("{}/lz4-build/", sys_deps_dir),
@@ -251,9 +281,9 @@ fn link(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &str) 
 /// # Panic
 ///
 /// Will be panic `if bindgen failed
-fn bindgens(p_current_dir_path_str: &str) {
+fn bindgens(p_current_dir_path_str: &str, p_target_os: &str) {
     // mod
-    let mut mod_rs = "#![allow(non_upper_case_globals)]\r\n#![allow(non_camel_case_types)]\r\n#![allow(non_snake_case)]\r\n".to_owned();
+    let mut mod_rs = "#![allow(non_upper_case_globals)]\r\n#![allow(non_camel_case_types)]\r\n#![allow(non_snake_case)]\r\n\r\n".to_owned();
 
     // remove all rust sources from ffi
     let ffi_path = Path::new(p_current_dir_path_str).join("src/ffi");
@@ -295,18 +325,37 @@ fn bindgens(p_current_dir_path_str: &str) {
         mod_rs += "#[cfg(feature = \"stream_rist\")]\r\npub mod rist;\r\n";
     }
 
-    let include_path = format!("-I{}/sys", p_current_dir_path_str);
+    let sys_include_path = format!("-I{}/sys", p_current_dir_path_str);
+    let clang_includes = if p_target_os == "android" {
+        let android_ndk_home_env =
+            std::env::var("ANDROID_NDK_HOME").expect("could not get ANDROID_NDK_HOME");
+
+        let clang_include = format!(
+            "-I{}toolchains/llvm/prebuilt/{}/sysroot/usr/include",
+            android_ndk_home_env, ANDROID_NDK_OS_VARIANT
+        );
+        let clang_include_asm = format!("{}/arm-linux-androideabi", clang_include);
+
+        //return includes
+        (clang_include, clang_include_asm)
+    } else {
+        (".".to_owned(), ".".to_owned())
+    };
+
+    // generate bindgen
     for src in srcs {
-        // generate bindgen
         println!("cargo:rerun-if-changed={}", src.header_src);
         println!("cargo:rerun-if-changed={}", src.c_src);
 
         let mut builder = bindgen::Builder::default()
-            // The input header we would like to generate
-            // bindings for.
             .header(src.header_src)
             .layout_tests(false)
-            .clang_args(&[&include_path, "-std=c18"]);
+            .clang_args(&[
+                &sys_include_path,
+                &clang_includes.0,
+                &clang_includes.1,
+                "-std=c18",
+            ]);
 
         for t in src.allowlist_types {
             builder = builder.allowlist_type(t);

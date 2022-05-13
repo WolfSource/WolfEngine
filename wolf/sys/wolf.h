@@ -41,8 +41,8 @@ extern "C"
 
 #endif // _WIN32
 
-#include <stdio.h>
 #include <stdint.h>
+#include <stdio.h>
 
 #ifndef _ALIGNMENT_
 #define _ALIGNMENT_ 16
