@@ -213,16 +213,8 @@ pub fn cmake(
     );
 
     // build cmake
-    out = Command::new("cmake")
-        .current_dir(&cmake_current_path)
-        .args([
-            "--build",
-            cmake_build_path_str,
-            "--config",
-            p_build_profile,
-            "--parallel",
-            "8",
-        ])
+    out = Command::new("ninja")
+        .current_dir(&cmake_build_path)
         .output()
         .expect("could not build cmake of wolf/sys");
 
@@ -260,11 +252,12 @@ fn link(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &str) 
         lib_name: "wolf_sys".to_string(),
     }];
 
-    // mimalloc was already linked via global allocator of rust
+    // mimalloc was already linked via global allocator of rust for windows, macos and linux
     // deps.push(Dep {
     //     search_path: format!("{}/mimalloc-static-build/", sys_deps_dir),
     //     lib_name: format!("mimalloc-{}", p_build_profile.to_lowercase()),
     // });
+
     if cfg!(feature = "system_lz4") {
         deps.push(Dep {
             search_path: format!("{}/lz4-build/", sys_deps_dir),

@@ -2,8 +2,8 @@
 
 use wolf::ffi::lz4::size_t;
 
-#[test]
-fn test_lz4() {
+#[tokio::test]
+async fn test_lz4() {
     use wolf::ffi::lz4::{w_buf, w_buf_t, w_lz4_compress, w_lz4_decompress, w_lz4_free_buf};
 
     let content = "HELLO WOLF\r\nHELLO WOLF!*&%!HELLO WOLF!07*&%!\r\nThe quick brown fox jumps over the lazy dog!";
