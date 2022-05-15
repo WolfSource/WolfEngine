@@ -324,7 +324,7 @@ fn bindgens(p_current_dir_path_str: &str, p_target_os: &str) {
             std::env::var("ANDROID_NDK_HOME").expect("could not get ANDROID_NDK_HOME");
 
         let clang_include = format!(
-            "-I{}toolchains/llvm/prebuilt/{}/sysroot/usr/include",
+            "-I{}/toolchains/llvm/prebuilt/{}/sysroot/usr/include",
             android_ndk_home_env, ANDROID_NDK_OS_VARIANT
         );
         let clang_include_asm = format!("{}/arm-linux-androideabi", clang_include);
