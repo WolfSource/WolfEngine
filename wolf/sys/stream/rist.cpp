@@ -1,89 +1,89 @@
 #include "rist.h"
+#include "common.hpp"
+#include <atomic>
 #include <rist-private.h>
-#include <mimalloc.h>
-#include <stdatomic.h>
+#include <thread>
 
 #ifdef _MSVC
 #pragma pack(push, _ALIGN_32_)
 #endif
-typedef struct w_rist_t
+struct w_rist_t
 {
-    struct rist_ctx *ctx;
+    rist_ctx *ctx;
     w_rist_mode mode;
     int loss_percent;
     int receive_timeout;
-    // set 1 to stop loop
-    atomic_bool stop;
-} w_rist_t _ALIGNMENT_32_;
+    std::atomic<bool> stop;
+} _ALIGNMENT_32_;
 
-struct rist_ctx *init_rist_sender(int p_profile, const char *p_url, w_buf p_trace)
+auto init_rist_sender(rist_profile p_profile, const char *p_url, w_buf p_trace) -> rist_ctx *
 {
-    struct rist_ctx *ctx = NULL;
-    if (rist_sender_create(&ctx, p_profile, 0, NULL) != 0)
+    rist_ctx *ctx = nullptr;
+    if (rist_sender_create(&ctx, p_profile, 0, nullptr) != 0)
     {
-        (void)snprintf((char *)p_trace->data,
+        (void)snprintf(p_trace->data,
                        p_trace->len,
                        "could not create rist sender context\n");
-        return NULL;
+        return nullptr;
     }
 
-    const struct rist_peer_config *peer_config_link = NULL;
-    if (rist_parse_address2(p_url, (void *)&peer_config_link))
+    rist_peer_config *peer_config_link = nullptr;
+    if (rist_parse_address2(p_url, &peer_config_link) != 0)
     {
-        (void)snprintf((char *)p_trace->data,
+        (void)snprintf(p_trace->data,
                        p_trace->len,
                        "could not parse peer options for sender\n");
-        return NULL;
+        return nullptr;
     }
 
-    struct rist_peer *peer = NULL;
-    if (rist_peer_create(ctx, &peer, peer_config_link) == -1)
+    rist_peer *peer = nullptr;
+    if (rist_peer_create(ctx, &peer, peer_config_link) != 0)
     {
-        (void)snprintf((char *)p_trace->data,
+        (void)snprintf(p_trace->data,
                        p_trace->len,
                        "could not add peer connector to sender\n");
-        return NULL;
+        return nullptr;
     }
-    mi_free((void *)peer_config_link);
+    mi_free(gsl::narrow_cast<void *>(peer_config_link));
 
     return ctx;
 }
 
-struct rist_ctx *init_rist_receiver(
-    int p_profile,
+auto init_rist_receiver(
+    rist_profile p_profile,
     const char *p_url,
     int p_loss_percent,
-    w_buf p_trace)
+    w_buf p_trace) -> rist_ctx *
 {
-    struct rist_ctx *ctx = NULL;
-    int ret = rist_receiver_create(&ctx, p_profile, NULL);
+    rist_ctx *ctx = nullptr;
+    int ret = rist_receiver_create(&ctx, p_profile, nullptr);
     if (ret != 0)
     {
-        (void)snprintf((char *)p_trace->data,
+        (void)snprintf(p_trace->data,
                        p_trace->len,
                        "could not create rist receiver context\n");
-        return NULL;
+        return nullptr;
     }
 
     // Rely on the library to parse the url
-    struct rist_peer_config *peer_config = NULL;
-    if (rist_parse_address2(p_url, (void *)&peer_config))
+    struct rist_peer_config *peer_config = nullptr;
+    if (rist_parse_address2(p_url, &peer_config) != 0)
     {
-        (void)snprintf((char *)p_trace->data,
+        (void)snprintf(p_trace->data,
                        p_trace->len,
                        "could not parse peer options for receiver url\n");
-        return NULL;
+        return nullptr;
     }
 
-    struct rist_peer *peer = NULL;
-    if (rist_peer_create(ctx, &peer, peer_config) == -1)
+    struct rist_peer *peer = nullptr;
+    if (rist_peer_create(ctx, &peer, peer_config) != 0)
     {
-        (void)snprintf((char *)p_trace->data,
+        (void)snprintf(p_trace->data,
                        p_trace->len,
                        "could not add peer connector to receiver\n");
-        return NULL;
+        return nullptr;
     }
-    mi_free((void *)peer_config);
+    mi_free(gsl::narrow_cast<void *>(peer_config));
 
     if (p_loss_percent > 0)
     {
@@ -97,13 +97,15 @@ struct rist_ctx *init_rist_receiver(
 
 void start_receiving(w_rist p_rist)
 {
+    const auto max_size = 1316;
     bool got_first = false;
-    int receive_count = 1;
-    struct rist_data_block *block = NULL;
+    std::array<char, max_size> rcompare = {0};
+    int64_t receive_count = 1;
+    rist_data_block *block = nullptr;
 #pragma unroll
     while (true)
     {
-        if (atomic_load(&p_rist->stop))
+        if (p_rist->stop)
         {
             break;
         }
@@ -113,96 +115,107 @@ void start_receiving(w_rist p_rist)
         {
             if (!got_first)
             {
-                receive_count = (int)block->seq;
+                receive_count = gsl::narrow_cast<int64_t>(block->seq);
                 got_first = true;
             }
 
+            (void)sprintf(rcompare.data(), "DEADBEAF TEST PACKET #%" PRId64 "\n", receive_count);
+            if (strcmp(rcompare.data(), gsl::narrow_cast<const char *>(block->payload)) != 0)
+            {
+                p_rist->stop = true;
+                break;
+            }
+
             receive_count++;
-            rist_receiver_data_block_free2((struct rist_data_block * *const)&block);
+            rist_receiver_data_block_free2(&block);
         }
     }
 }
 
 void start_sending(w_rist p_rist)
 {
-    const int64_t one_miliseconds = 1000;
     const int max_size = 1316;
 
     int send_counter = 0;
-    char buffer[max_size] = {0};
-    struct rist_data_block data = {0};
+    std::array<char, max_size> buffer = {0};
+    rist_data_block data = {};
     // we just try to send some string at ~20mbs for ~8 seconds
 #pragma unroll
     while (true)
     {
-        if (atomic_load(&p_rist->stop))
+        if (p_rist->stop)
         {
             break;
         }
-        sprintf(buffer, "DEADBEAF TEST PACKET #%i", send_counter);
+        (void)sprintf(buffer.data(), "DEADBEAF TEST PACKET #%i", send_counter);
         data.payload = &buffer;
         data.payload_len = max_size;
-        int ret = rist_sender_data_write(p_rist->ctx, &data);
-        if (ret < 0)
+        int len = rist_sender_data_write(p_rist->ctx, &data);
+        if (len < 0)
         {
             // fprintf(stderr, "Failed to send test packet with error code %d!\n", ret);
-            // atomic_store(&failed, 1);
-            atomic_store(&p_rist->stop, 1);
+            p_rist->stop = true;
             break;
         }
-        if (ret != (int)data.payload_len)
+        if (len != gsl::narrow_cast<int>(data.payload_len))
         {
             // fprintf(stderr, "Failed to send test packet %d != %d !\n", ret, (int)data.payload_len);
-            // atomic_store(&failed, 1);
-            atomic_store(&p_rist->stop, 1);
+            p_rist->stop = true;
             break;
         }
         send_counter++;
 
-        w_sleep(one_miliseconds);
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
 
-    w_sleep(one_miliseconds);
+    std::this_thread::sleep_for(std::chrono::milliseconds(1));
 }
 
-int w_rist_init(w_rist *p_rist,
+int w_rist_bind(w_rist *p_rist,
                 const char *p_url,
                 w_rist_config p_config,
                 w_buf p_trace)
 {
-    if (is_buf_valid(p_trace) != 0 || p_config == NULL)
+    if (p_config == nullptr || !is_valid_buffer(p_trace))
     {
         return 1;
     }
 
-    w_rist rist = (w_rist)mi_malloc(sizeof(w_rist_t));
-    if (rist == NULL)
+    auto *rist = gsl::narrow_cast<w_rist>(mi_malloc(sizeof(w_rist_t)));
+    if (rist == nullptr)
     {
-        (void)snprintf((char *)p_trace->data,
+        (void)snprintf(p_trace->data,
                        p_trace->len,
                        "could not allocate memory for w_rist object");
         return -1;
     }
     rist->loss_percent = p_config->loss_percent;
     rist->receive_timeout = p_config->timeout;
-    atomic_store(&rist->stop, 0);
+    rist->stop = false;
+    auto profile = gsl::narrow_cast<rist_profile>(p_config->profile);
 
     switch (p_config->mode)
     {
-    case w_rist_mode_receiver:
+    case w_rist_mode::W_RIST_MODE_RECEIVER:
     {
         // setup rist
-        rist->ctx = init_rist_receiver(p_config->profile, p_url, p_config->loss_percent, p_trace);
+        rist->ctx = init_rist_receiver(
+            profile,
+            p_url, p_config->loss_percent,
+            p_trace);
         break;
     }
-    case w_rist_mode_sender:
+    case w_rist_mode::W_RIST_MODE_SENDER:
     {
-        rist->ctx = init_rist_sender(p_config->profile, p_url, p_trace);
+        rist->ctx = init_rist_sender(
+            profile,
+            p_url,
+            p_trace);
         break;
     }
     default:
     {
-        (void)snprintf((char *)p_trace->data,
+        (void)snprintf(p_trace->data,
                        p_trace->len,
                        "undefined w_rist_mode");
         return -1;
@@ -216,7 +229,7 @@ int w_rist_init(w_rist *p_rist,
 
 int w_rist_start(w_rist p_rist, w_buf p_trace)
 {
-    if (p_rist == NULL || p_rist->ctx == NULL || is_buf_valid(p_trace) != 0)
+    if (p_rist == nullptr || p_rist->ctx == nullptr || !is_valid_buffer(p_trace))
     {
         return 1;
     }
@@ -225,7 +238,7 @@ int w_rist_start(w_rist p_rist, w_buf p_trace)
     int ret = rist_start(p_rist->ctx);
     if (ret == -1)
     {
-        (void)snprintf((char *)p_trace->data,
+        (void)snprintf(p_trace->data,
                        p_trace->len,
                        "could not start rist");
         return -1;
@@ -233,49 +246,49 @@ int w_rist_start(w_rist p_rist, w_buf p_trace)
 
     switch (p_rist->mode)
     {
-    case w_rist_mode_receiver:
+    case w_rist_mode::W_RIST_MODE_RECEIVER:
     {
         start_receiving(p_rist);
         break;
     }
-    case w_rist_mode_sender:
+    case w_rist_mode::W_RIST_MODE_SENDER:
     {
         start_sending(p_rist);
         break;
     }
     default:
     {
-        (void)snprintf((char *)p_trace->data,
+        (void)snprintf(p_trace->data,
                        p_trace->len,
                        "undefined w_rist_mode");
         return -1;
     }
     };
 
-    // rest state
-    atomic_store(&p_rist->stop, 0);
+    // reset state
+    p_rist->stop = false;
+
     return 0;
 }
 
-int w_rist_stop(w_rist p_rist, w_buf p_trace)
+int w_rist_stop(w_rist p_rist)
 {
-    if (p_rist == NULL || p_rist->ctx == NULL || is_buf_valid(p_trace) != 0)
+    if (p_rist == nullptr || p_rist->ctx == nullptr)
     {
         return 1;
     }
-    atomic_store(&p_rist->stop, 1);
-
+    p_rist->stop = true;
     return 0;
 }
 
 bool w_rist_is_stopped(w_rist p_rist)
 {
-    return (atomic_load(&p_rist->stop) == 0);
+    return p_rist->stop;
 }
 
 int w_rist_fini(w_rist *p_rist)
 {
-    if (p_rist == NULL || *p_rist == NULL || (*p_rist)->ctx == NULL)
+    if (p_rist == nullptr || *p_rist == nullptr || (*p_rist)->ctx == nullptr)
     {
         return 1;
     }

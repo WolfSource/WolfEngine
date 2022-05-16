@@ -48,6 +48,7 @@ extern "C"
 
 #endif // _WIN32
 
+#include <inttypes.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>

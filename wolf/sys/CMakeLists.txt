@@ -21,13 +21,13 @@ endif()
 include(FetchContent)
 
 # CMAKE GUI Options
-option(WOLF_ENABLE_LZ4 "Enable LZ4 Compression" ON)
+option(WOLF_ENABLE_LZ4 "Enable LZ4 Compression" OFF)
 option(WOLF_ENABLE_LZMA "Enable LZMA Compression" OFF)
 option(WOLF_ENABLE_NNG "Enable nng socket for tcp/udp/ipc client/server" OFF)
 option(WOLF_ENABLE_RIST "Enable RIST streaming protocol" OFF)
 option(WOLF_ENABLE_RTSP "Enable real time streaming for client" OFF)
 option(WOLF_ENABLE_SRT "Enable SRT streaming protocol" OFF)
-option(WOLF_LINK_MIMALLOC "Enable SRT streaming protocol" ON)
+option(WOLF_LINK_MIMALLOC "Enable SRT streaming protocol" OFF)
 
 set(LIBRARY_TYPE "STATIC" CACHE STRING "Library type")
 

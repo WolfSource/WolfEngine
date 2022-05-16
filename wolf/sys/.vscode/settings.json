@@ -82,6 +82,7 @@
         "iterator": "cpp",
         "utility": "cpp",
         "pointers": "cpp",
-        "assert": "cpp"
+        "assert": "cpp",
+        "gsl": "cpp"
     }
 }

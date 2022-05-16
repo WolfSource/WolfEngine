@@ -9,7 +9,7 @@ auto w_lz4_compress(
     int p_acceleration,
     w_buf p_trace) -> int
 {
-    if (!is_valid(p_src) || !is_valid(p_trace))
+    if (!is_valid_buffer(p_src) || !is_valid_buffer(p_trace))
     {
         return 1;
     }
@@ -90,7 +90,7 @@ auto w_lz4_decompress(
     w_buf p_dst,
     w_buf p_trace) -> int
 {
-    if (!is_valid(p_src) || !is_valid(p_trace))
+    if (!is_valid_buffer(p_src) || !is_valid_buffer(p_trace))
     {
         (void)snprintf(p_trace->data,
                        p_trace->len,

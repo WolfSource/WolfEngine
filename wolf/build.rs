@@ -296,11 +296,17 @@ fn bindgens(p_current_dir_path_str: &str, p_target_os: &str) {
 
     if cfg!(feature = "stream_rist") {
         srcs.push(BindgenPipeline {
-            rust_src: "src/stream/rist.rs",
+            rust_src: "src/stream/ffi/rist.rs",
             header_src: "sys/stream/rist.h",
             c_src: "sys/stream/rist.cpp",
             allowlist_types: vec![""],
-            allowlist_funcs: vec!["w_rist_init"],
+            allowlist_funcs: vec![
+                "w_rist_bind",
+                "w_rist_start",
+                "w_rist_stop",
+                "w_rist_is_stopped",
+                "w_rist_fini",
+            ],
         });
         //mod_rs += "#[cfg(feature = \"stream_rist\")]\r\npub mod rist;\r\n";
     }
