@@ -4,8 +4,6 @@
 #[global_allocator]
 static GLOBAL: mimalloc::MiMalloc = mimalloc::MiMalloc;
 
-#[cfg(not(target_arch = "wasm32"))]
-pub mod ffi;
 pub mod render;
 pub mod stream;
 pub mod system;

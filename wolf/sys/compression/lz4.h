@@ -11,7 +11,7 @@ extern "C"
      * compress stream using lz4 algorithm
      * @param p_src the source buffer
      * @param p_dst the result of compressed buffer
-     * @param p_fast_mode 1 means Fast mode and 0 is Default mode
+     * @param p_is_fast_mode true means Fast mode and false is Default mode
      * @param p_acceleration the acceleration of process. the default value is 1
      * @param p_trace the trace information in the string format with maximum size of 256
      * @return 0 on success, 1 on invalid parameter and -1 on error which the error description will be printed into the p_trace
@@ -19,7 +19,7 @@ extern "C"
     int w_lz4_compress(
         w_buf p_src,
         w_buf p_dst,
-        int p_fast_mode,
+        bool p_is_fast_mode,
         int p_acceleration,
         w_buf p_trace);
 

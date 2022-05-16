@@ -27,6 +27,7 @@ option(WOLF_ENABLE_NNG "Enable nng socket for tcp/udp/ipc client/server" OFF)
 option(WOLF_ENABLE_RIST "Enable RIST streaming protocol" OFF)
 option(WOLF_ENABLE_RTSP "Enable real time streaming for client" OFF)
 option(WOLF_ENABLE_SRT "Enable SRT streaming protocol" OFF)
+option(WOLF_LINK_MIMALLOC "Enable SRT streaming protocol" ON)
 
 set(LIBRARY_TYPE "STATIC" CACHE STRING "Library type")
 
@@ -48,16 +49,15 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 # fetch gsl
-# message("fetching https://github.com/microsoft/GSL.git")
-# FetchContent_Declare(
-#   gsl
-#   GIT_REPOSITORY https://github.com/microsoft/GSL.git
-#   GIT_TAG        main
-# )
-# FetchContent_Populate(gsl)
+message("fetching https://github.com/microsoft/GSL.git")
+FetchContent_Declare(
+  gsl
+  GIT_REPOSITORY https://github.com/microsoft/GSL.git
+  GIT_TAG        main
+)
+FetchContent_Populate(gsl)
 
-set(INCLUDES 
-  ${CMAKE_CURRENT_SOURCE_DIR})
+set(INCLUDES ${CMAKE_CURRENT_SOURCE_DIR})
 
 # fetch mimalloc
 message("fetching https://github.com/microsoft/mimalloc.git")
@@ -67,10 +67,11 @@ FetchContent_Declare(
   GIT_TAG        master
 )
 list(APPEND INCLUDES
+  ${CMAKE_CURRENT_BINARY_DIR}/_deps/gsl-src/include
   ${CMAKE_CURRENT_BINARY_DIR}/_deps/mimalloc-static-src/include
 )
 set(DEPS mimalloc-static)
-set(SOURCES wolf.c)
+set(SOURCES wolf.cpp)
 
 # fetch lz4
 if (WOLF_ENABLE_LZ4)
@@ -82,7 +83,7 @@ if (WOLF_ENABLE_LZ4)
     SOURCE_SUBDIR  build/cmake
   )
   list(APPEND SOURCES
-    compression/lz4.c
+    compression/lz4.cpp
   )
   list(APPEND INCLUDES
     ${CMAKE_CURRENT_BINARY_DIR}/_deps/lz4-src/lib
@@ -100,7 +101,7 @@ if (WOLF_ENABLE_RIST)
   endif()
 
   list(APPEND SOURCES
-    stream/rist.c
+    stream/rist.cpp
   )
   list(APPEND INCLUDES
     ${CMAKE_CURRENT_BINARY_DIR}/librist/contrib
@@ -146,6 +147,15 @@ include_directories(${INCLUDES})
 # add libraries
 add_library(${PROJECT_NAME} ${LIBRARY_TYPE} ${SOURCES})
 
+# link mimalloc
+if (WOLF_LINK_MIMALLOC)
+  if (MSVC)
+    target_link_libraries(${PROJECT_NAME} PRIVATE ${mimalloc-static_BINARY_DIR}/libmimalloc-debug.lib)
+  else()
+    target_link_libraries(${PROJECT_NAME} PRIVATE ${mimalloc-static_BINARY_DIR}/libmimalloc-debug.a)
+  endif()
+endif()
+
 # link lz4
 if (WOLF_ENABLE_LZ4)
   if (MSVC)
@@ -169,9 +179,9 @@ target_compile_options(${PROJECT_NAME} PRIVATE -Wall -fPIC -Wall)
 # target_compile_definitions(${PROJECT_NAME} PRIVATE)
 
 # build tests
-# if (NOT ${CMAKE_SYSTEM_NAME} MATCHES "Android")
-#   add_executable (${TEST_PROJECT_NAME} test.cpp)
-#   target_link_libraries(${TEST_PROJECT_NAME} PRIVATE ${PROJECT_NAME} )
-#   target_compile_options(${TEST_PROJECT_NAME} PRIVATE -Wall)
-#   # target_compile_definitions(${TEST_PROJECT_NAME} PRIVATE )
-# endif()
+if (NOT ${CMAKE_SYSTEM_NAME} MATCHES "Android")
+  # add_executable (${TEST_PROJECT_NAME} test.cpp)
+  # target_link_libraries(${TEST_PROJECT_NAME} PRIVATE ${PROJECT_NAME})
+  # target_compile_options(${TEST_PROJECT_NAME} PRIVATE -Wall)
+  # target_compile_definitions(${TEST_PROJECT_NAME} PRIVATE )
+endif()

@@ -1,16 +1,18 @@
 #![allow(unused_crate_dependencies)]
 
-use wolf::ffi::lz4::size_t;
+use wolf::system::compression::lz4::size_t;
 
-#[tokio::test]
-async fn test_lz4() {
-    use wolf::ffi::lz4::{w_buf, w_buf_t, w_lz4_compress, w_lz4_decompress, w_lz4_free_buf};
+#[test]
+fn test_lz4() {
+    use wolf::system::compression::lz4::{
+        w_buf, w_buf_t, w_lz4_compress, w_lz4_decompress, w_lz4_free_buf,
+    };
 
     let content = "HELLO WOLF\r\nHELLO WOLF!*&%!HELLO WOLF!07*&%!\r\nThe quick brown fox jumps over the lazy dog!";
     println!("original memory is {} with size {}", content, content.len(),);
 
     let mut source_buffer = w_buf_t {
-        data: content.as_ptr() as *mut u8,
+        data: content.as_ptr() as *mut i8,
         len: content.len() as size_t,
     };
     let source_buffer_ptr = &mut source_buffer as w_buf;
@@ -21,14 +23,14 @@ async fn test_lz4() {
     };
     let compressed_buffer_ptr = &mut compressed_buffer as w_buf;
 
-    let mut trace_data = [0u8; 256];
+    let mut trace_data = [0i8; 256];
     let mut trace_buffer = w_buf_t {
         data: trace_data.as_mut_ptr(),
         len: 256,
     };
     let trace_buffer_ptr = &mut trace_buffer as w_buf;
 
-    let fast_mode = 1;
+    let fast_mode = true;
     let acceleration = 1;
 
     // compress

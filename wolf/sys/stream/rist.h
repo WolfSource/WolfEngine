@@ -15,21 +15,26 @@ extern "C"
         w_rist_mode_sender
     } w_rist_mode;
 
+    struct w_rist_config_t
+    {
+        w_rist_mode mode;
+        int profile;
+        int loss_percent;
+        int timeout; // will be used for receiving
+    } _ALIGNMENT_16_;
+    typedef struct w_rist_config_t *w_rist_config;
+
     /**
      * initialize rist
      * @param p_rist the object of rist
-     * @param p_mode the sender or receiver modes
-     * @param p_profile the profile of rist
      * @param p_url the url
-     * @param p_loss_percent the loss percent an int value between 0 to 100
+     * @param p_profile the profile of rist
      * @param p_trace the trace information in the string format with maximum size of 256
      * @return 0 on success, 1 on invalid parameter and -1 on error which the error description will be printed into p_trace
      */
     int w_rist_init(w_rist *p_rist,
-                    w_rist_mode p_mode,
-                    int p_profile,
                     const char *p_url,
-                    int p_loss_percent,
+                    w_rist_config p_config,
                     w_buf p_trace);
 
     /**
@@ -47,6 +52,13 @@ extern "C"
      * @return 0 on success, 1 on invalid parameter and -1 on error which the error description will be printed into p_trace
      */
     int w_rist_stop(w_rist p_rist, w_buf p_trace);
+
+    /**
+     * is rist stream stopped
+     * @param p_rist the object of rist
+     * @return true on stop condition
+     */
+    bool w_rist_is_stopped(w_rist p_rist);
 
     /**
      * release rist resources

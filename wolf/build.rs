@@ -1,8 +1,7 @@
 #![allow(unused_mut)]
 
 use std::{
-    fs,
-    io::{self, Write},
+    io::{self},
     path::Path,
     process::Command,
 };
@@ -275,18 +274,6 @@ fn link(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &str) 
 ///
 /// Will be panic `if bindgen failed
 fn bindgens(p_current_dir_path_str: &str, p_target_os: &str) {
-    // mod
-    let mut mod_rs = "#![allow(non_upper_case_globals)]\r\n#![allow(non_camel_case_types)]\r\n#![allow(non_snake_case)]\r\n\r\n".to_owned();
-
-    // remove all rust sources from ffi
-    let ffi_path = Path::new(p_current_dir_path_str).join("src/ffi");
-    if ffi_path.exists() {
-        fs::remove_dir_all(ffi_path.clone()).expect("could not remove sys ffi");
-    }
-
-    // create ffi
-    fs::create_dir(ffi_path.clone()).expect("could not create sys ffi");
-
     struct BindgenPipeline<'a> {
         rust_src: &'a str,
         header_src: &'a str,
@@ -298,24 +285,24 @@ fn bindgens(p_current_dir_path_str: &str, p_target_os: &str) {
 
     if cfg!(feature = "system_lz4") {
         srcs.push(BindgenPipeline {
-            rust_src: "src/ffi/lz4.rs",
+            rust_src: "src/system/compression/lz4.rs",
             header_src: "sys/compression/lz4.h",
-            c_src: "sys/compression/lz4.c",
+            c_src: "sys/compression/lz4.cpp",
             allowlist_types: vec![""],
             allowlist_funcs: vec!["w_lz4_compress", "w_lz4_decompress", "w_lz4_free_buf"],
         });
-        mod_rs += "#[cfg(feature = \"system_lz4\")]\r\npub mod lz4;\r\n";
+        //mod_rs += "#[cfg(feature = \"system_lz4\")]\r\npub mod lz4;\r\n";
     }
 
     if cfg!(feature = "stream_rist") {
         srcs.push(BindgenPipeline {
-            rust_src: "src/ffi/rist.rs",
+            rust_src: "src/stream/rist.rs",
             header_src: "sys/stream/rist.h",
-            c_src: "sys/stream/rist.c",
+            c_src: "sys/stream/rist.cpp",
             allowlist_types: vec![""],
             allowlist_funcs: vec!["w_rist_init"],
         });
-        mod_rs += "#[cfg(feature = \"stream_rist\")]\r\npub mod rist;\r\n";
+        //mod_rs += "#[cfg(feature = \"stream_rist\")]\r\npub mod rist;\r\n";
     }
 
     let sys_include_path = format!("-I{}/sys", p_current_dir_path_str);
@@ -374,10 +361,4 @@ fn bindgens(p_current_dir_path_str: &str, p_target_os: &str) {
                 panic!("couldn't write bindings for {} because {}", src.rust_src, e)
             });
     }
-
-    // handle mod.rs
-    let ffi_mod_path = ffi_path.join("mod.rs");
-    let mut file = fs::File::create(ffi_mod_path).expect("couldn't create ffi/mod.rs");
-    file.write_all(mod_rs.as_bytes())
-        .expect("couldn't write to ffi/mod.rs");
 }

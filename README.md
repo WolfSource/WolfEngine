@@ -50,7 +50,7 @@ This Wolf is a comprehensive set of Rust/C libraries for realtime rendering, rea
     i686-linux-android
   cargo install cargo-ndk
   export ANDROID_NDK_HOME = /path/to/the/root/of/NDK/Folder
-  cargo ndk -t armeabi-v7a -o ./jniLibs build
+  cargo ndk -t armeabi-v7a build
   cargo ndk -t armeabi-v7a -o ./jniLibs build --release 
   ```
 

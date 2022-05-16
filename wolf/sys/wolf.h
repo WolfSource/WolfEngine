@@ -34,31 +34,40 @@ extern "C"
 
 #else
 
-// define dummies
-#define WOLF_API
+#include <time.h>
 
+// defines
+#define WOLF_API
 #define ASM __asm__
+
+#define _ALIGN_16_ 16
+#define _ALIGN_32_ 32
+
+#define _ALIGNMENT_16_ __attribute__((aligned(_ALIGN_16_)))
+#define _ALIGNMENT_32_ __attribute__((aligned(_ALIGN_32_)))
 
 #endif // _WIN32
 
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 
-#ifndef _ALIGNMENT_
-#define _ALIGNMENT_ 16
-#endif
-
 #ifdef _MSVC
-#pragma pack(push, _ALIGNMENT_)
+#pragma pack(push, _ALIGN_16_)
 #endif
-	typedef struct w_buf_t
+	struct w_ubuf_t
 	{
 		uint8_t *data;
 		size_t len;
-	} w_buf_t __attribute__((aligned(_ALIGNMENT_)));
-	typedef struct w_buf_t *w_buf;
+	} _ALIGNMENT_16_;
+	typedef struct w_ubuf_t *w_ubuf;
 
-	int is_buf_valid(w_buf p_buf);
+	struct w_buf_t
+	{
+		char *data;
+		size_t len;
+	} _ALIGNMENT_16_;
+	typedef struct w_buf_t *w_buf;
 
 #ifdef __cplusplus
 }
