@@ -7,6 +7,7 @@ use std::{
 };
 
 // TODO: read these params from args
+const OSX_DEPLOYMENT_TARGET: &str = "12.0";
 const ANDROID_API_LEVEL: i32 = 21;
 // https://cmake.org/cmake/help/latest/variable/CMAKE_ANDROID_ARCH_ABI.html
 const ANDROID_ARCH_API: &str = "armeabi-v7a";
@@ -28,16 +29,7 @@ fn main() {
         std::env::var("CARGO_CFG_TARGET_OS").expect("Build failed: could not get target OS");
 
     if target_os == "macos" {
-        let file = std::fs::read_to_string("/System/Library/CoreServices/SystemVersion.plist")
-            .expect("could not read SystemVersion.plist");
-        let cur = std::io::Cursor::new(file.as_bytes());
-        let v = plist::Value::from_reader(cur).expect("could not read value from plist");
-
-        let version = v
-            .as_dictionary()
-            .and_then(|d| d.get("ProductVersion")?.as_string())
-            .expect("SystemVersion.plist is not a dictionary");
-        std::env::set_var("MACOSX_DEPLOYMENT_TARGET", version);
+        std::env::set_var("MACOSX_DEPLOYMENT_TARGET", OSX_DEPLOYMENT_TARGET);
     }
 
     // compile protos
@@ -179,7 +171,13 @@ pub fn cmake(
     args.push("-DWOLF_ENABLE_LZ4=ON".to_owned());
 
     #[cfg(feature = "stream_rist")]
-    args.push("-DWOLF_ENABLE_RIST=ON".to_owned());
+    {
+        args.push("-DWOLF_ENABLE_RIST=ON".to_owned());
+        args.push(format!(
+            "-DWOLF_OSX_DEPLOYMENT_TARGET:STRING={}",
+            OSX_DEPLOYMENT_TARGET
+        ));
+    }
 
     if p_target_os == "android" {
         let android_ndk_home_env =
@@ -256,13 +254,22 @@ fn link(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &str) 
     //     search_path: format!("{}/mimalloc-static-build/", sys_deps_dir),
     //     lib_name: format!("mimalloc-{}", p_build_profile.to_lowercase()),
     // });
-
     if cfg!(feature = "system_lz4") {
         deps.push(Dep {
             search_path: format!("{}/lz4-build/", sys_deps_dir),
             lib_name: "lz4".to_owned(),
         });
     }
+
+    if cfg!(feature = "stream_rist") {
+        deps.push(Dep {
+            search_path: format!("{}/../librist/build/", sys_deps_dir),
+            lib_name: "rist".to_owned(),
+        });
+    }
+
+    println!("cargo:rustc-link-search=native=/usr/lib");
+    println!("cargo:rustc-link-lib=dylib=c++");
 
     for dep in deps {
         println!("cargo:rustc-link-search=native={}", dep.search_path);
@@ -336,12 +343,7 @@ fn bindgens(p_current_dir_path_str: &str, p_target_os: &str) {
         let mut builder = bindgen::Builder::default()
             .header(src.header_src)
             .layout_tests(false)
-            .clang_args(&[
-                &sys_include_path,
-                &clang_includes.0,
-                &clang_includes.1,
-                "-std=c18",
-            ]);
+            .clang_args(&[&sys_include_path, &clang_includes.0, &clang_includes.1]);
 
         for t in src.allowlist_types {
             builder = builder.allowlist_type(t);

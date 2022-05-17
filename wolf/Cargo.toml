@@ -76,15 +76,12 @@ uuid = {version = "1.0.0", default-features = false, features = ["v5"]}
 bindgen = {version = "0.59.2"}
 tonic-build = {version = "0.7.2", default-features = false, features = ["transport", "prost", "compression"]}
 
-[target.'cfg(target_os = "macos")'.build-dependencies]
-plist = { version = "1.3.1", default-features = false }
-
 [dev-dependencies]
 lazy_static = {version = "1.4.0", default-features = false}
 
 # Wasm features
 [features]
-default = ["stream_rist"]
+default = ["system_lz4"]
 stream_grpc = [] # enable gRPC (http2/1.1) for stream module
 stream_rist = [] # enable RIST streaming protocol for stream module
 system_lz4 = [] # enable LZ4 compression for system module

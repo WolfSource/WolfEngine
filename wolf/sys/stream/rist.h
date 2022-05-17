@@ -18,8 +18,8 @@ extern "C"
 
     typedef enum w_rist_mode
     {
-        W_RIST_MODE_RECEIVER = 0,
-        W_RIST_MODE_SENDER
+        W_RIST_MODE_SENDER = 0,
+        W_RIST_MODE_RECEIVER,
     } w_rist_mode;
 
 #ifdef _MSVC

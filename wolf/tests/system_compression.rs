@@ -1,5 +1,7 @@
 #![allow(unused_crate_dependencies)]
 
+use std::os::raw::c_char;
+
 use wolf::system::compression::lz4::size_t;
 
 #[test]
@@ -12,7 +14,7 @@ fn test_lz4() {
     println!("original memory is {} with size {}", content, content.len(),);
 
     let mut source_buffer = w_buf_t {
-        data: content.as_ptr() as *mut i8,
+        data: content.as_ptr() as *mut u8,
         len: content.len() as size_t,
     };
     let source_buffer_ptr = &mut source_buffer as w_buf;
@@ -23,7 +25,7 @@ fn test_lz4() {
     };
     let compressed_buffer_ptr = &mut compressed_buffer as w_buf;
 
-    let mut trace_data = [0i8; 256];
+    let mut trace_data = [0u8; 256];
     let mut trace_buffer = w_buf_t {
         data: trace_data.as_mut_ptr(),
         len: 256,
@@ -53,7 +55,7 @@ fn test_lz4() {
             compressed_buffer.len,
         );
     } else {
-        let str = unsafe { std::ffi::CStr::from_ptr(trace_buffer.data as *mut i8) };
+        let str = unsafe { std::ffi::CStr::from_ptr(trace_buffer.data as *mut c_char) };
         println!("error just happened while compressing buffer {:?}", str);
     }
 
@@ -74,7 +76,7 @@ fn test_lz4() {
     };
     duration = std::time::Instant::now() - now;
     if ret == 0 {
-        let content = unsafe { std::ffi::CStr::from_ptr(decompressed_buffer.data as *mut i8) };
+        let content = unsafe { std::ffi::CStr::from_ptr(decompressed_buffer.data as *mut c_char) };
         println!(
             "lz4 decompressed just done in {} sec(s). memory is {:?} with size: {}",
             duration.as_secs_f64(),
@@ -82,7 +84,7 @@ fn test_lz4() {
             decompressed_buffer.len,
         );
     } else {
-        let str = unsafe { std::ffi::CStr::from_ptr(trace_buffer.data as *mut i8) };
+        let str = unsafe { std::ffi::CStr::from_ptr(trace_buffer.data as *mut c_char) };
         println!("error just happened while decompressing buffer {:?}", str);
     }
 

@@ -56,16 +56,9 @@ extern "C"
 #ifdef _MSVC
 #pragma pack(push, _ALIGN_16_)
 #endif
-	struct w_ubuf_t
-	{
-		uint8_t *data;
-		size_t len;
-	} _ALIGNMENT_16_;
-	typedef struct w_ubuf_t *w_ubuf;
-
 	struct w_buf_t
 	{
-		char *data;
+		uint8_t *data;
 		size_t len;
 	} _ALIGNMENT_16_;
 	typedef struct w_buf_t *w_buf;

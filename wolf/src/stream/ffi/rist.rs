@@ -6,7 +6,7 @@ pub type size_t = __darwin_size_t;
 #[repr(align(16))]
 #[derive(Debug, Copy, Clone)]
 pub struct w_buf_t {
-    pub data: *mut ::std::os::raw::c_char,
+    pub data: *mut u8,
     pub len: size_t,
 }
 pub type w_buf = *mut w_buf_t;
@@ -20,8 +20,8 @@ pub const w_rist_profile_W_RIST_PROFILE_SIMPLE: w_rist_profile = 0;
 pub const w_rist_profile_W_RIST_PROFILE_MAIN: w_rist_profile = 1;
 pub const w_rist_profile_W_RIST_PROFILE_ADVANCED: w_rist_profile = 2;
 pub type w_rist_profile = ::std::os::raw::c_uint;
-pub const w_rist_mode_W_RIST_MODE_RECEIVER: w_rist_mode = 0;
-pub const w_rist_mode_W_RIST_MODE_SENDER: w_rist_mode = 1;
+pub const w_rist_mode_W_RIST_MODE_SENDER: w_rist_mode = 0;
+pub const w_rist_mode_W_RIST_MODE_RECEIVER: w_rist_mode = 1;
 pub type w_rist_mode = ::std::os::raw::c_uint;
 #[repr(C)]
 #[repr(align(16))]

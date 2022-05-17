@@ -11,6 +11,7 @@ struct w_rist_t
 {
     rist_ctx *ctx;
     w_rist_mode mode;
+    rist_profile profile;
     int loss_percent;
     int receive_timeout;
     std::atomic<bool> stop;
@@ -18,11 +19,14 @@ struct w_rist_t
 
 auto init_rist_sender(rist_profile p_profile, const char *p_url, w_buf p_trace) -> rist_ctx *
 {
+    auto *trace_buf = reinterpret_cast<char *>(p_trace->data);
+    auto trace_buf_len = p_trace->len;
+
     rist_ctx *ctx = nullptr;
     if (rist_sender_create(&ctx, p_profile, 0, nullptr) != 0)
     {
-        (void)snprintf(p_trace->data,
-                       p_trace->len,
+        (void)snprintf(trace_buf,
+                       trace_buf_len,
                        "could not create rist sender context\n");
         return nullptr;
     }
@@ -30,8 +34,8 @@ auto init_rist_sender(rist_profile p_profile, const char *p_url, w_buf p_trace) 
     rist_peer_config *peer_config_link = nullptr;
     if (rist_parse_address2(p_url, &peer_config_link) != 0)
     {
-        (void)snprintf(p_trace->data,
-                       p_trace->len,
+        (void)snprintf(trace_buf,
+                       trace_buf_len,
                        "could not parse peer options for sender\n");
         return nullptr;
     }
@@ -39,8 +43,8 @@ auto init_rist_sender(rist_profile p_profile, const char *p_url, w_buf p_trace) 
     rist_peer *peer = nullptr;
     if (rist_peer_create(ctx, &peer, peer_config_link) != 0)
     {
-        (void)snprintf(p_trace->data,
-                       p_trace->len,
+        (void)snprintf(trace_buf,
+                       trace_buf_len,
                        "could not add peer connector to sender\n");
         return nullptr;
     }
@@ -55,12 +59,15 @@ auto init_rist_receiver(
     int p_loss_percent,
     w_buf p_trace) -> rist_ctx *
 {
+    auto *trace_buf = reinterpret_cast<char *>(p_trace->data);
+    auto trace_buf_len = p_trace->len;
+
     rist_ctx *ctx = nullptr;
     int ret = rist_receiver_create(&ctx, p_profile, nullptr);
     if (ret != 0)
     {
-        (void)snprintf(p_trace->data,
-                       p_trace->len,
+        (void)snprintf(trace_buf,
+                       trace_buf_len,
                        "could not create rist receiver context\n");
         return nullptr;
     }
@@ -69,8 +76,8 @@ auto init_rist_receiver(
     struct rist_peer_config *peer_config = nullptr;
     if (rist_parse_address2(p_url, &peer_config) != 0)
     {
-        (void)snprintf(p_trace->data,
-                       p_trace->len,
+        (void)snprintf(trace_buf,
+                       trace_buf_len,
                        "could not parse peer options for receiver url\n");
         return nullptr;
     }
@@ -78,8 +85,8 @@ auto init_rist_receiver(
     struct rist_peer *peer = nullptr;
     if (rist_peer_create(ctx, &peer, peer_config) != 0)
     {
-        (void)snprintf(p_trace->data,
-                       p_trace->len,
+        (void)snprintf(trace_buf,
+                       trace_buf_len,
                        "could not add peer connector to receiver\n");
         return nullptr;
     }
@@ -181,26 +188,30 @@ int w_rist_bind(w_rist *p_rist,
         return 1;
     }
 
+    auto *trace_buf = reinterpret_cast<char *>(p_trace->data);
+    auto trace_buf_len = p_trace->len;
+
     auto *rist = gsl::narrow_cast<w_rist>(mi_malloc(sizeof(w_rist_t)));
     if (rist == nullptr)
     {
-        (void)snprintf(p_trace->data,
-                       p_trace->len,
+        (void)snprintf(trace_buf,
+                       trace_buf_len,
                        "could not allocate memory for w_rist object");
         return -1;
     }
+    rist->mode = p_config->mode;
+    rist->profile = gsl::narrow_cast<rist_profile>(p_config->profile);
     rist->loss_percent = p_config->loss_percent;
     rist->receive_timeout = p_config->timeout;
     rist->stop = false;
-    auto profile = gsl::narrow_cast<rist_profile>(p_config->profile);
 
-    switch (p_config->mode)
+    switch (rist->mode)
     {
     case w_rist_mode::W_RIST_MODE_RECEIVER:
     {
         // setup rist
         rist->ctx = init_rist_receiver(
-            profile,
+            rist->profile,
             p_url, p_config->loss_percent,
             p_trace);
         break;
@@ -208,15 +219,15 @@ int w_rist_bind(w_rist *p_rist,
     case w_rist_mode::W_RIST_MODE_SENDER:
     {
         rist->ctx = init_rist_sender(
-            profile,
+            rist->profile,
             p_url,
             p_trace);
         break;
     }
     default:
     {
-        (void)snprintf(p_trace->data,
-                       p_trace->len,
+        (void)snprintf(trace_buf,
+                       trace_buf_len,
                        "undefined w_rist_mode");
         return -1;
     }
@@ -234,12 +245,15 @@ int w_rist_start(w_rist p_rist, w_buf p_trace)
         return 1;
     }
 
+    auto *trace_buf = reinterpret_cast<char *>(p_trace->data);
+    auto trace_buf_len = p_trace->len;
+
     // start rist
     int ret = rist_start(p_rist->ctx);
     if (ret == -1)
     {
-        (void)snprintf(p_trace->data,
-                       p_trace->len,
+        (void)snprintf(trace_buf,
+                       trace_buf_len,
                        "could not start rist");
         return -1;
     }
@@ -258,8 +272,8 @@ int w_rist_start(w_rist p_rist, w_buf p_trace)
     }
     default:
     {
-        (void)snprintf(p_trace->data,
-                       p_trace->len,
+        (void)snprintf(trace_buf,
+                       trace_buf_len,
                        "undefined w_rist_mode");
         return -1;
     }

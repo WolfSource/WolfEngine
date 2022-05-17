@@ -14,6 +14,9 @@ auto w_lz4_compress(
         return 1;
     }
 
+    auto *trace_buf = reinterpret_cast<char *>(p_trace->data);
+    auto trace_buf_len = p_trace->len;
+
     // allocate size for compressed data
     auto size = gsl::narrow_cast<int>(p_src->len);
     if (size <= 0)
@@ -26,14 +29,14 @@ auto w_lz4_compress(
     auto *data = gsl::narrow_cast<char *>(mi_malloc(_max_dst_size));
     if (data == nullptr)
     {
-        (void)snprintf(p_trace->data,
-                       p_trace->len,
+        (void)snprintf(trace_buf,
+                       trace_buf_len,
                        "could not allocate memory for compressed buffer");
         return -1;
     }
 
     auto len = -1;
-    const auto *src_data = gsl::narrow_cast<const char *>(p_src->data);
+    const auto *src_data = reinterpret_cast<char *>(p_src->data);
     const auto src_len = gsl::narrow_cast<int>(p_src->len);
     if (p_is_fast_mode)
     {
@@ -63,8 +66,8 @@ auto w_lz4_compress(
 
     if (len <= 0)
     {
-        (void)snprintf(p_trace->data,
-                       p_trace->len,
+        (void)snprintf(trace_buf,
+                       trace_buf_len,
                        "could not compress");
         return -1;
     }
@@ -73,13 +76,13 @@ auto w_lz4_compress(
     data = gsl::narrow_cast<char *>(mi_realloc(data, len));
     if (data == nullptr)
     {
-        (void)snprintf(p_trace->data,
-                       p_trace->len,
+        (void)snprintf(trace_buf,
+                       trace_buf_len,
                        "could not realloc compressed memory");
         return -1;
     }
 
-    p_dst->data = data;
+    p_dst->data = reinterpret_cast<uint8_t *>(data);
     p_dst->len = len;
 
     return 0;
@@ -92,26 +95,26 @@ auto w_lz4_decompress(
 {
     if (!is_valid_buffer(p_src) || !is_valid_buffer(p_trace))
     {
-        (void)snprintf(p_trace->data,
-                       p_trace->len,
-                       "missing p_src or p_trace data");
         return 1;
     }
+
+    auto *trace_buf = reinterpret_cast<char *>(p_trace->data);
+    auto trace_buf_len = p_trace->len;
 
     // allocate memory for decompress
     auto _destination_len = gsl::narrow_cast<int>(p_src->len * 2);
     auto *data = gsl::narrow_cast<char *>(mi_malloc(_destination_len));
     if (data == nullptr)
     {
-        (void)snprintf(p_trace->data,
-                       p_trace->len,
+        (void)snprintf(trace_buf,
+                       trace_buf_len,
                        "could not allocate memory for decompressed buffer");
         return -1;
     }
 
     auto _decompressed_len = -1;
     const auto _max_num_try = 10;
-    const auto *src_data = gsl::narrow_cast<const char *>(p_src->data);
+    const auto *src_data = reinterpret_cast<const char *>(p_src->data);
     const auto src_len = gsl::narrow_cast<int>(p_src->len);
 
 // try for decompressing
@@ -133,8 +136,8 @@ auto w_lz4_decompress(
         data = gsl::narrow_cast<char *>(mi_realloc(data, _destination_len));
         if (data == nullptr)
         {
-            (void)snprintf(p_trace->data,
-                           p_trace->len,
+            (void)snprintf(trace_buf,
+                           trace_buf_len,
                            "could not re-allocate memory of decompressed buffer");
             break;
         }
@@ -142,8 +145,8 @@ auto w_lz4_decompress(
 
     if (_decompressed_len <= 0)
     {
-        (void)snprintf(p_trace->data,
-                       p_trace->len,
+        (void)snprintf(trace_buf,
+                       trace_buf_len,
                        "size of decompress buffer must be greater than zero");
         mi_free(data);
         return -1;
@@ -152,14 +155,14 @@ auto w_lz4_decompress(
     data = gsl::narrow_cast<char *>(mi_realloc(data, _decompressed_len));
     if (data == nullptr)
     {
-        (void)snprintf(p_trace->data,
-                       p_trace->len,
+        (void)snprintf(trace_buf,
+                       trace_buf_len,
                        "could not reallocate memory for decompressed buffer");
         mi_free(data);
         return -1;
     }
 
-    p_dst->data = data;
+    p_dst->data = reinterpret_cast<uint8_t *>(data);
     p_dst->len = _decompressed_len;
 
     return 0;

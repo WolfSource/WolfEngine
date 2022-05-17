@@ -6,7 +6,7 @@ pub type size_t = __darwin_size_t;
 #[repr(align(16))]
 #[derive(Debug, Copy, Clone)]
 pub struct w_buf_t {
-    pub data: *mut ::std::os::raw::c_char,
+    pub data: *mut u8,
     pub len: size_t,
 }
 pub type w_buf = *mut w_buf_t;

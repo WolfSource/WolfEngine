@@ -34,6 +34,7 @@ set(LIBRARY_TYPE "STATIC" CACHE STRING "Library type")
 set(CMAKE_C_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS ON)
+set(THREADS_PREFER_PTHREAD_FLAG ON)
 if (MSVC)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_FLAGS "/EHsc")
@@ -43,6 +44,8 @@ set(CMAKE_CXX_FLAGS "-fexceptions")
 set(CMAKE_CXX_FLAGS_DEBUG "-g")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 endif()
+
+find_package(Threads REQUIRED)
 
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Debug)
@@ -146,6 +149,9 @@ include_directories(${INCLUDES})
 
 # add libraries
 add_library(${PROJECT_NAME} ${LIBRARY_TYPE} ${SOURCES})
+
+# the following parts will not affect on rust side and build.rs will be responsible for linking libs
+# we can use the following part just for local C++ tests
 
 # link mimalloc
 if (WOLF_LINK_MIMALLOC)

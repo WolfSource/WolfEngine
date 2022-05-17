@@ -3,6 +3,8 @@
 #[cfg(not(any(target_os = "android", target_os = "ios", target_arch = "wasm32")))]
 #[global_allocator]
 static GLOBAL: mimalloc::MiMalloc = mimalloc::MiMalloc;
+
+#[allow(dead_code)]
 const MAX_TRACE_BUFFER_SIZE: usize = 256;
 
 pub mod render;

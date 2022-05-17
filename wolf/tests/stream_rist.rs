@@ -1,10 +1,23 @@
 #![allow(unused_crate_dependencies)]
 
-use wolf::stream::rist::*;
+use wolf::stream::{
+    ffi::rist::{
+        w_rist_config_t, w_rist_mode_W_RIST_MODE_SENDER, w_rist_profile_W_RIST_PROFILE_SIMPLE,
+    },
+    rist::*,
+};
 
 #[test]
 fn test_rist() {
-    //use wolf::stream::rist::{w_buf, w_buf_t, w_rist_init};
+    let mut sender = rist::new(w_rist_config_t {
+        mode: w_rist_mode_W_RIST_MODE_SENDER,
+        profile: w_rist_profile_W_RIST_PROFILE_SIMPLE,
+        loss_percent: 10,
+        timeout: 0,
+    });
+    let mut ret = sender.bind("127.0.0.1:9999".to_owned());
+    assert!(ret.is_ok());
 
-    //w_rist_init()
+    ret = sender.start();
+    assert!(ret.is_ok());
 }

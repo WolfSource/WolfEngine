@@ -1,7 +1,8 @@
 use crate::{
     stream::ffi::rist::{
-        w_buf, w_buf_t, w_rist, w_rist_bind, w_rist_config_t, w_rist_fini,
-        w_rist_mode_W_RIST_MODE_RECEIVER, w_rist_profile_W_RIST_PROFILE_SIMPLE,
+        size_t, w_buf, w_buf_t, w_rist, w_rist_bind, w_rist_config_t, w_rist_fini,
+        w_rist_is_stopped, w_rist_mode_W_RIST_MODE_RECEIVER, w_rist_profile_W_RIST_PROFILE_SIMPLE,
+        w_rist_start, w_rist_stop,
     },
     w_log, MAX_TRACE_BUFFER_SIZE,
 };
@@ -15,9 +16,11 @@ pub struct rist {
 
 impl Drop for rist {
     fn drop(&mut self) {
-        let ret = unsafe { w_rist_fini(&mut self.core) };
-        if ret != 0 {
-            w_log!("could not drop rist");
+        if !self.core.is_null() {
+            let ret = unsafe { w_rist_fini(&mut self.core) };
+            if ret != 0 {
+                w_log!("could not drop rist");
+            }
         }
     }
 }
@@ -47,17 +50,17 @@ impl rist {
         // cast String to *const c_char
         let c_str = CString::new(p_url).map_err(|e| {
             anyhow!(
-                "could not convert p_url to CString because {:?}. trace info: {}",
+                "could not convert p_url to CString because of {:?}. trace info: {}",
                 e,
                 TRACE
             )
         })?;
         let c_url = c_str.as_ptr() as *const c_char;
 
-        let mut trace_data = [0i8; MAX_TRACE_BUFFER_SIZE];
+        let mut trace_data = [0u8; MAX_TRACE_BUFFER_SIZE];
         let mut trace_buffer = w_buf_t {
             data: trace_data.as_mut_ptr(),
-            len: MAX_TRACE_BUFFER_SIZE as u64,
+            len: MAX_TRACE_BUFFER_SIZE as size_t,
         };
         let trace_buffer_ptr = &mut trace_buffer as w_buf;
 
@@ -65,8 +68,53 @@ impl rist {
         if ret == 0 {
             Ok(())
         } else {
-            let e = unsafe { std::ffi::CStr::from_ptr(trace_buffer.data as *mut i8) };
-            bail!("could not bind rist because {:?}. trace info: {}", e, TRACE)
+            let e = unsafe { std::ffi::CStr::from_ptr(trace_buffer.data as *mut c_char) };
+            bail!(
+                "could not bind rist because of {:?}. trace info: {}",
+                e,
+                TRACE
+            )
         }
+    }
+
+    pub fn start(&self) -> Result<()> {
+        const TRACE: &str = "rist::start";
+
+        // create trace log
+        let mut trace_data = [0u8; MAX_TRACE_BUFFER_SIZE];
+        let mut trace_buffer = w_buf_t {
+            data: trace_data.as_mut_ptr(),
+            len: MAX_TRACE_BUFFER_SIZE as size_t,
+        };
+        let trace_buffer_ptr = &mut trace_buffer as w_buf;
+
+        // start rist
+        let ret = unsafe { w_rist_start(self.core, trace_buffer_ptr) };
+        if ret == 0 {
+            Ok(())
+        } else {
+            let e = unsafe { std::ffi::CStr::from_ptr(trace_buffer.data as *mut c_char) };
+            bail!(
+                "could not start rist because of {:?}. trace info: {}",
+                e,
+                TRACE
+            )
+        }
+    }
+
+    pub fn stop(&self) -> Result<()> {
+        const TRACE: &str = "rist::stop";
+
+        // start rist
+        let ret = unsafe { w_rist_stop(self.core) };
+        if ret == 0 {
+            Ok(())
+        } else {
+            bail!("could not stop rist. trace info: {}", TRACE)
+        }
+    }
+
+    pub fn is_stopped(&self) -> bool {
+        unsafe { w_rist_is_stopped(self.core) }
     }
 }
