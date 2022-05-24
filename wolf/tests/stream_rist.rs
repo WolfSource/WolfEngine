@@ -7,6 +7,7 @@ use wolf::stream::{
     rist::*,
 };
 
+#[cfg(feature = "stream_rist")]
 #[test]
 fn test_rist() {
     let mut sender = rist::new(w_rist_config_t {

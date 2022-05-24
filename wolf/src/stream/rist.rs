@@ -9,6 +9,7 @@ use crate::{
 use anyhow::{anyhow, bail, Result};
 use std::{ffi::CString, os::raw::c_char};
 
+#[cfg(all(not(target_arch = "wasm32"), feature = "stream_rist"))]
 pub struct rist {
     pub config: w_rist_config_t,
     pub core: w_rist,

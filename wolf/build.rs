@@ -13,6 +13,12 @@ const ANDROID_API_LEVEL: i32 = 21;
 const ANDROID_ARCH_API: &str = "armeabi-v7a";
 // https://developer.android.com/ndk/guides/other_build_systems
 const ANDROID_NDK_OS_VARIANT: &str = "darwin-x86_64";
+// Cmake Compiler
+#[cfg(target_family = "windows")]
+const CMAKE_C_COMPILER: &str = "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.32.31326/bin/Hostx64/x64/cl.exe";
+
+#[cfg(any(target_family = "unix"))]
+const CMAKE_C_COMPILER: &str = "usr/bin/clang";
 
 fn main() {
     // get the current path
@@ -152,6 +158,12 @@ pub fn cmake(
         return;
     }
 
+    #[cfg(not(target_os = "windows"))]
+    let build_cmd = "-GNinja";
+
+    #[cfg(target_os = "windows")]
+    let build_cmd = "";
+    
     // args
     let mut args = [
         ".".to_owned(),
@@ -159,10 +171,11 @@ pub fn cmake(
         "-Wdev".to_owned(),
         "--debug-output".to_owned(),
         "-DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE".to_owned(),
+        format!("-DCMAKE_C_COMPILER={}", CMAKE_C_COMPILER),
+        format!("-DCMAKE_BUILD_TYPE:STRING={}", p_build_profile),
         format!("-B{}", cmake_build_path_str),
         format!("-S{}", cmake_current_path_str),
-        format!("-DCMAKE_BUILD_TYPE:STRING={}", p_build_profile),
-        "-GNinja".to_owned(),
+        build_cmd.to_owned(),
     ]
     .to_vec();
 
@@ -170,7 +183,7 @@ pub fn cmake(
     #[cfg(feature = "system_lz4")]
     args.push("-DWOLF_ENABLE_LZ4=ON".to_owned());
 
-    #[cfg(feature = "stream_rist")]
+    if cfg!(feature = "stream_rist")
     {
         args.push("-DWOLF_ENABLE_RIST=ON".to_owned());
         args.push(format!(
@@ -210,10 +223,21 @@ pub fn cmake(
     );
 
     // build cmake
-    out = Command::new("ninja")
+    if cfg!(target_os = "windows")
+    {
+        out = Command::new("cmake")
+            .current_dir(&cmake_build_path)
+            .args(["--build", ".", "--parallel 8"])
+            .output()
+            .expect("could not build cmake of wolf/sys");
+    }
+    else 
+    {
+        out = Command::new("ninja")
         .current_dir(&cmake_build_path)
         .output()
         .expect("could not build cmake of wolf/sys");
+    }
 
     assert!(
         out.status.success(),
@@ -226,7 +250,7 @@ pub fn cmake(
 ///
 /// Will be panic `if link failed
 fn link(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &str) {
-    if p_target_os == "windows" {
+    let sys_build_dir = if p_target_os == "windows" {
         if p_build_profile == "Debug" {
             println!("cargo:rustc-link-lib=msvcrtd");
         } else {
@@ -235,10 +259,15 @@ fn link(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &str) 
         println!("cargo:rustc-link-lib=dylib=Shell32");
         println!("cargo:rustc-link-lib=dylib=Rpcrt4");
         println!("cargo:rustc-link-lib=dylib=Mswsock");
-    }
 
-    let sys_build_dir = format!("{}/sys/build/{}", p_current_dir_path_str, p_build_profile,);
-    let sys_deps_dir = format!("{}/_deps", sys_build_dir,);
+        format!("{}/sys/build/{}/{}", p_current_dir_path_str, p_build_profile, p_build_profile)
+    }
+    else
+    {
+        format!("{}/sys/build/{}", p_current_dir_path_str, p_build_profile)
+    };
+
+    let sys_deps_dir = format!("{}/_deps", sys_build_dir);
 
     struct Dep {
         search_path: String,
@@ -249,11 +278,6 @@ fn link(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &str) 
         lib_name: "wolf_sys".to_string(),
     }];
 
-    // mimalloc was already linked via global allocator of rust for windows, macos and linux
-    // deps.push(Dep {
-    //     search_path: format!("{}/mimalloc-static-build/", sys_deps_dir),
-    //     lib_name: format!("mimalloc-{}", p_build_profile.to_lowercase()),
-    // });
     if cfg!(feature = "system_lz4") {
         deps.push(Dep {
             search_path: format!("{}/lz4-build/", sys_deps_dir),
@@ -268,8 +292,11 @@ fn link(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &str) 
         });
     }
 
-    println!("cargo:rustc-link-search=native=/usr/lib");
-    println!("cargo:rustc-link-lib=dylib=c++");
+    if cfg!(target_family = "unix")
+    {
+        println!("cargo:rustc-link-search=native=/usr/lib");
+        println!("cargo:rustc-link-lib=dylib=c++");
+    }
 
     for dep in deps {
         println!("cargo:rustc-link-search=native={}", dep.search_path);

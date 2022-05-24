@@ -110,6 +110,7 @@ fn test_lz4_compression(mock_compression_data: &str, acceleration: i32, fast_mod
     }
 }
 
+#[cfg(feature = "system_lz4")]
 #[test]
 fn test_lz4() {
     let mock_compression_data = "HELLO WOLF\r\nHELLO WOLF!*&%!HELLO WOLF!07*&%!\r\nThe quick brown fox jumps over the lazy dog!";
