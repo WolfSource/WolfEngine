@@ -1,9 +1,13 @@
 #![allow(unused_crate_dependencies)]
 
-use std::{ffi::CStr, os::raw::c_char, ptr, time::Instant};
-use wolf::system::compression::lz4::{self, size_t, w_buf, w_buf_t};
+#[cfg(feature = "system_lz4")]
+use 
+{   std::{ffi::CStr, os::raw::c_char, ptr, time::Instant},
+    wolf::system::compression::lz4::{self, size_t, w_buf, w_buf_t}
+};
 
 // Executes and verifies compression and decompression of a buffer
+#[cfg(feature = "system_lz4")]
 fn action_executor(
     name: &str,
     acceleration: i32,
@@ -34,6 +38,7 @@ fn action_executor(
     );
 }
 
+#[cfg(feature = "system_lz4")]
 fn test_lz4_compression(mock_compression_data: &str, acceleration: i32, fast_mode: bool) {
     // Compression
     let mut trace_data = [0u8; 256];

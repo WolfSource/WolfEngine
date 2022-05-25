@@ -250,7 +250,7 @@ pub fn cmake(
 ///
 /// Will be panic `if link failed
 fn link(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &str) {
-    let sys_build_dir = if p_target_os == "windows" {
+    if p_target_os == "windows" {
         if p_build_profile == "Debug" {
             println!("cargo:rustc-link-lib=msvcrtd");
         } else {
@@ -259,14 +259,9 @@ fn link(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &str) 
         println!("cargo:rustc-link-lib=dylib=Shell32");
         println!("cargo:rustc-link-lib=dylib=Rpcrt4");
         println!("cargo:rustc-link-lib=dylib=Mswsock");
-
-        format!("{}/sys/build/{}/{}", p_current_dir_path_str, p_build_profile, p_build_profile)
     }
-    else
-    {
-        format!("{}/sys/build/{}", p_current_dir_path_str, p_build_profile)
-    };
 
+    let sys_build_dir =  format!("{}/sys/build/{}", p_current_dir_path_str, p_build_profile);
     let sys_deps_dir = format!("{}/_deps", sys_build_dir);
 
     struct Dep {
@@ -298,8 +293,15 @@ fn link(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &str) 
         println!("cargo:rustc-link-lib=dylib=c++");
     }
 
+    let post_path = if p_target_os == "windows" 
+    { 
+        p_build_profile 
+    } 
+    else { 
+        ""
+    };
     for dep in deps {
-        println!("cargo:rustc-link-search=native={}", dep.search_path);
+        println!("cargo:rustc-link-search=native={}/{}", dep.search_path, post_path);
         println!("cargo:rustc-link-lib=static={}", dep.lib_name);
     }
 }

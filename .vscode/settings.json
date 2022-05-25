@@ -121,10 +121,10 @@
     },
     "lldb.verboseLogging": true,
     "redhat.telemetry.enabled": true,
-    "rust-analyzer.cargo.allFeatures": true,
+    //"rust-analyzer.cargo.allFeatures": true,
     "rust-analyzer.checkOnSave.command": "clippy",
     //"rust-analyzer.checkOnSave.overrideCommand": ["make", "clippy", "MESSAGE_FORMAT=json"],
     "terminal.integrated.sendKeybindingsToShell": true,
-    "window.zoomLevel": 1,
+    "window.zoomLevel": 0,
     "workbench.iconTheme": "material-icon-theme"
 }

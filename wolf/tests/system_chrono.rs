@@ -11,12 +11,11 @@ async fn test_gametime() {
         gtime
             .tick_fn(move || {
                 println!(
-                    "elapsed seconds from last tick {}. total elapsed seconds {}",
+                    "elapsed seconds from last tick {} sec. total elapsed seconds {} sec",
                     gtime.get_elapsed_seconds(),
                     gtime.get_total_elapsed_seconds(),
                 );
-            })
-            .await;
+            });
 
         // break after 5 seconds
         if gtime.get_total_elapsed_seconds() > 5.0 {
