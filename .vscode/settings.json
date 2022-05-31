@@ -126,5 +126,8 @@
     //"rust-analyzer.checkOnSave.overrideCommand": ["make", "clippy", "MESSAGE_FORMAT=json"],
     "terminal.integrated.sendKeybindingsToShell": true,
     "window.zoomLevel": 0,
-    "workbench.iconTheme": "material-icon-theme"
+    "workbench.iconTheme": "material-icon-theme",
+    "[rust]": {
+        "editor.defaultFormatter": "rust-lang.rust-analyzer"
+    }
 }

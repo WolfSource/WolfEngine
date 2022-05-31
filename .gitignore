@@ -8,6 +8,10 @@ release/
 target/
 test/
 wolf/jniLibs/*
+wolf/sys/build/*
+wolf/sys/third_party/shells/*
+!wolf/sys/third_party/shells/librist.bat
+!wolf/sys/third_party/shells/librist.sh
 
 # Created by https://www.toptal.com/developers/gitignore/api/dotenv,linux,macos,osx,rust,visualstudiocode,windows
 # Edit at https://www.toptal.com/developers/gitignore?templates=dotenv,linux,macos,osx,rust,visualstudiocode,windows

@@ -1,5 +1,5 @@
 ---
-Checks: '*,boost-*,bugprone-*,cert-*,clang-analyzer-*,concurrency-*,cppcoreguidelines-*,modernize-*,performance-*,portability-*,readability-*,-llvmlibc-restrict-system-libc-headers,-llvmlibc-*,-fuchsia-trailing-return,-llvm-header-guard,-clang-diagnostic-pragma-once-outside-header,-modernize-use-trailing-return-type,-clang-diagnostic-c++98-compat,-clang-diagnostic-implicit-function-declaration,-cppcoreguidelines-pro-type-vararg,-hicpp-vararg,-fuchsia-default-arguments-calls'
+Checks: '*,boost-*,bugprone-*,cert-*,clang-analyzer-*,concurrency-*,cppcoreguidelines-*,modernize-*,performance-*,portability-*,readability-*,-llvmlibc-restrict-system-libc-headers,-llvmlibc-*,-fuchsia-trailing-return,-llvm-header-guard,-clang-diagnostic-pragma-once-outside-header,-modernize-use-trailing-return-type,-clang-diagnostic-c++98-compat,-cppcoreguidelines-pro-type-vararg,-hicpp-vararg'
 WarningsAsErrors: true
 HeaderFilterRegex: ''
 AnalyzeTemporaryDtors: false

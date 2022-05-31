@@ -1,0 +1,5 @@
+// False positive report - memory is deallocated.
+memleak:/home/gijs/Projects/librist/extra/lz4/lz4frame.c:546
+
+// Only occurs when size is 0 so there is no harm
+nullPointerArithmetic:/home/gijs/Projects/librist/extra/lz4/lz4frame.c:1384

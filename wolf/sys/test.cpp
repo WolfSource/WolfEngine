@@ -1,24 +1,15 @@
-#include "wolf.h"
-#include "stream/rist.h"
+#define CATCH_CONFIG_MAIN
+#include <catch2/catch.hpp> // NOLINT
 
-int main()
-{
-    w_buf_t trace;
-    trace.len = 256;
-    trace.data = new uint8_t[trace.len];
+import wolf;
+import wolf.stream;
 
-    w_rist_config_t config =
-        {
-            w_rist_mode::w_rist_mode_sender,
-            0,
-            10,
-            0,
-        };
-    w_rist rist = nullptr;
-    w_rist_init(&rist,
-                "rist://127.0.0.1:9999",
-                &config,
-                &trace);
+#include <iostream>
+#include <format>
 
-    w_rist_start(rist, &trace);
+TEST_CASE("wolf", "[single-file]") {
+
+  using namespace wolf::stream::rist;
+  w_rist_ctx_t r{};
+  w_rist_receiver_create(&r);
 }

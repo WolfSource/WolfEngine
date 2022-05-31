@@ -1,121 +1,97 @@
-use crate::{
-    stream::ffi::rist::{
-        size_t, w_buf, w_buf_t, w_rist, w_rist_bind, w_rist_config_t, w_rist_fini,
-        w_rist_is_stopped, w_rist_mode_W_RIST_MODE_RECEIVER, w_rist_profile_W_RIST_PROFILE_SIMPLE,
-        w_rist_start, w_rist_stop,
-    },
-    w_log, MAX_TRACE_BUFFER_SIZE,
-};
-use anyhow::{anyhow, bail, Result};
-use std::{ffi::CString, os::raw::c_char};
+#![allow(improper_ctypes)]
 
-#[cfg(all(not(target_arch = "wasm32"), feature = "stream_rist"))]
+use std::mem::MaybeUninit;
+use std::os::raw::{c_char, c_int, c_void};
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct w_rist_ctx {
+    _unused: [u8; 0],
+}
+
+pub enum RistMode {
+    SENDER,
+    RECEIVER,
+}
+
+impl std::fmt::Debug for RistMode {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::SENDER => write!(f, "RistMode_SENDER"),
+            Self::RECEIVER => write!(f, "RistMode_RECEIVER"),
+        }
+    }
+}
+
+#[repr(C)]
+pub enum rist_log_level {
+    RIST_LOG_DISABLE = -1,
+    RIST_LOG_ERROR = 3,
+    RIST_LOG_WARN = 4,
+    RIST_LOG_NOTICE = 5,
+    RIST_LOG_INFO = 6,
+    RIST_LOG_DEBUG = 7,
+    RIST_LOG_SIMULATE = 100,
+}
+
+impl std::fmt::Debug for rist_log_level {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::RIST_LOG_DISABLE => write!(f, "RIST_LOG_DISABLE"),
+            Self::RIST_LOG_ERROR => write!(f, "RIST_LOG_ERROR"),
+            Self::RIST_LOG_WARN => write!(f, "RIST_LOG_WARN"),
+            Self::RIST_LOG_NOTICE => write!(f, "RIST_LOG_NOTICE"),
+            Self::RIST_LOG_INFO => write!(f, "RIST_LOG_INFO"),
+            Self::RIST_LOG_DEBUG => write!(f, "RIST_LOG_DEBUG"),
+            Self::RIST_LOG_SIMULATE => write!(f, "RIST_LOG_SIMULATE"),
+        }
+    }
+}
+
+extern "C" {
+    fn w_rist_receiver_create(
+        p_rist: *mut w_rist_ctx,
+        p_log_callback: extern "C" fn(*mut c_void, rist_log_level, *const c_char) -> c_int,
+    ) -> std::os::raw::c_int;
+    //fn w_rist_drop(p_rist: *mut w_rist_ctx);
+}
+
 pub struct rist {
-    pub config: w_rist_config_t,
-    pub core: w_rist,
+    pub ctx: MaybeUninit<w_rist_ctx>,
+    pub mode: RistMode,
 }
 
 impl Drop for rist {
     fn drop(&mut self) {
-        if !self.core.is_null() {
-            let ret = unsafe { w_rist_fini(&mut self.core) };
-            if ret != 0 {
-                w_log!("could not drop rist");
-            }
-        }
-    }
-}
-
-impl Default for rist {
-    fn default() -> Self {
-        Self::new(w_rist_config_t {
-            mode: w_rist_mode_W_RIST_MODE_RECEIVER,
-            profile: w_rist_profile_W_RIST_PROFILE_SIMPLE,
-            loss_percent: 0,
-            timeout: 0,
-        })
+        //drop rist context
     }
 }
 
 impl rist {
-    pub fn new(p_config: w_rist_config_t) -> Self {
-        Self {
-            config: p_config,
-            core: std::ptr::null_mut(),
-        }
-    }
-
-    pub fn bind(&mut self, p_url: String) -> Result<()> {
-        const TRACE: &str = "rist::bind";
-
-        // cast String to *const c_char
-        let c_str = CString::new(p_url).map_err(|e| {
-            anyhow!(
-                "could not convert p_url to CString because of {:?}. trace info: {}",
-                e,
-                TRACE
-            )
-        })?;
-        let c_url = c_str.as_ptr() as *const c_char;
-
-        let mut trace_data = [0u8; MAX_TRACE_BUFFER_SIZE];
-        let mut trace_buffer = w_buf_t {
-            data: trace_data.as_mut_ptr(),
-            len: MAX_TRACE_BUFFER_SIZE as size_t,
+    pub fn new(
+        p_mode: RistMode,
+        p_log_callback: extern "C" fn(*mut c_void, rist_log_level, *const c_char) -> c_int,
+    ) -> anyhow::Result<Self> {
+        // create a memory for rist context
+        let mut context: MaybeUninit<w_rist_ctx> = MaybeUninit::uninit();
+        // create sender/receiver context
+        let ret = match p_mode {
+            RistMode::SENDER => 0,
+            RistMode::RECEIVER => unsafe {
+                w_rist_receiver_create(context.as_mut_ptr(), p_log_callback)
+            },
         };
-        let trace_buffer_ptr = &mut trace_buffer as w_buf;
-
-        let ret = unsafe { w_rist_bind(&mut self.core, c_url, &mut self.config, trace_buffer_ptr) };
-        if ret == 0 {
-            Ok(())
-        } else {
-            let e = unsafe { std::ffi::CStr::from_ptr(trace_buffer.data as *mut c_char) };
-            bail!(
-                "could not bind rist because of {:?}. trace info: {}",
-                e,
-                TRACE
-            )
+        match ret {
+            0 => {
+                unsafe { context.assume_init() };
+                Ok(Self {
+                    ctx: context,
+                    mode: p_mode,
+                })
+            }
+            _ => {
+                anyhow::bail!("could not create rist {:?}", p_mode)
+            }
         }
-    }
-
-    pub fn start(&self) -> Result<()> {
-        const TRACE: &str = "rist::start";
-
-        // create trace log
-        let mut trace_data = [0u8; MAX_TRACE_BUFFER_SIZE];
-        let mut trace_buffer = w_buf_t {
-            data: trace_data.as_mut_ptr(),
-            len: MAX_TRACE_BUFFER_SIZE as size_t,
-        };
-        let trace_buffer_ptr = &mut trace_buffer as w_buf;
-
-        // start rist
-        let ret = unsafe { w_rist_start(self.core, trace_buffer_ptr) };
-        if ret == 0 {
-            Ok(())
-        } else {
-            let e = unsafe { std::ffi::CStr::from_ptr(trace_buffer.data as *mut c_char) };
-            bail!(
-                "could not start rist because of {:?}. trace info: {}",
-                e,
-                TRACE
-            )
-        }
-    }
-
-    pub fn stop(&self) -> Result<()> {
-        const TRACE: &str = "rist::stop";
-
-        // start rist
-        let ret = unsafe { w_rist_stop(self.core) };
-        if ret == 0 {
-            Ok(())
-        } else {
-            bail!("could not stop rist. trace info: {}", TRACE)
-        }
-    }
-
-    pub fn is_stopped(&self) -> bool {
-        unsafe { w_rist_is_stopped(self.core) }
     }
 }
