@@ -81,7 +81,7 @@ jobs:
           username: ${{ github.actor }}
       -
         name: Build and Load Docker Image
-        uses: docker/build-push-action@a66e35b9cbcf4ad0ea91ffcaf7bbad63ad9e0229
+        uses: docker/build-push-action@e551b19e49efd4e98792db7592c17c09b89db8d8
         with:
           build-args: |
             PACKAGE=${{ matrix.package }}
@@ -136,7 +136,7 @@ jobs:
           wait-for-processing: true
       -
         name: Build and Push Docker Image
-        uses: docker/build-push-action@a66e35b9cbcf4ad0ea91ffcaf7bbad63ad9e0229
+        uses: docker/build-push-action@e551b19e49efd4e98792db7592c17c09b89db8d8
         with:
           build-args: |
             PACKAGE=${{ matrix.package }}
