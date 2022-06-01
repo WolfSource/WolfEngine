@@ -70,7 +70,7 @@ serde_json = {version = "1.0.81", default-features = false, features = ["std"]}
 sysinfo = {version = "0.23.12", default-features = false, features = ["multithread"]}
 tracing = {version = "0.1.34", default-features = false, features = ["std", "attributes"]}
 tokio-tungstenite = {version = "0.17.1", default-features = false, features = ["connect", "rustls"]}
-uuid = {version = "1.0.0", default-features = false, features = ["v5"]}
+uuid = {version = "1.1.1", default-features = false, features = ["v5"]}
 
 [build-dependencies]
 #bindgen = {version = "0.59.2"}
