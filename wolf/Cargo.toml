@@ -60,7 +60,7 @@ wgpu = {version = "0.12.0", default-features = false, optional = true}
 async-raft = {version = "0.6.1", default-features = false, optional = true}
 async-trait = {version = "0.1.53", default-features = false}
 futures = { version = "0.3.21", default-features = false }
-hyper = {version = "0.14.18", default-features = false}
+hyper = {version = "0.14.19", default-features = false}
 may = {version = "0.3.21", default-features = false}
 memstore = {version = "0.2.0", default-features = false}
 mimalloc = {version = "0.1.29", default-features = false, features = ["secure"]}
