@@ -1,10 +1,6 @@
 #![allow(unused_mut)]
 
-use std::{
-    io::{self},
-    path::Path,
-    process::Command,
-};
+use std::{path::Path, process::Command};
 
 // TODO: read these params from args
 const OSX_DEPLOYMENT_TARGET: &str = "12.0";
@@ -41,37 +37,14 @@ fn main() {
         std::env::set_var("MACOSX_DEPLOYMENT_TARGET", OSX_DEPLOYMENT_TARGET);
     }
 
-    // compile protos
-    let mut build_server_proto = true;
-    let build_client_proto = true;
-    // we don't want proto server for android and ios clients
-    if target_os == "android" || target_os == "ios" {
-        build_server_proto = false;
-    }
-
     let wolf_lib_name = if target_os == "windows" {
         "wolf_sys.lib"
     } else {
         "libwolf_sys.a"
     };
 
-    let proto_path_include = current_dir_path.join("proto");
-    let proto_path_include_src = proto_path_include
-        .to_str()
-        .expect("could not convert include proto path to &str");
-
-    let proto_path = proto_path_include.join("raft.proto");
-    let proto_path_str = proto_path
-        .to_str()
-        .expect("could not convert source proto path to &str");
-
-    protos(
-        &[proto_path_str],
-        &[proto_path_include_src],
-        build_client_proto,
-        build_server_proto,
-    )
-    .expect("couldn't read the protos directory");
+    #[cfg(feature = "system_raft")]
+    build_protos(current_dir_path, target_os);
 
     // don't compoile any c++ codes for wasm32
     if target_arch == "wasm32" {
@@ -107,14 +80,44 @@ fn main() {
 
     // compile c/cpp sources and link
     link(current_dir_path_str, build_profile, &target_os);
-
-    // generate bindgens from wolf_sys
-    //bindgens(current_dir_path_str, &target_os);
 }
 
 /// # Errors
 ///
 /// Will return `Err` if `proto` does not exist or is invalid.
+#[cfg(feature = "system_raft")]
+fn build_protos(p_current_dir_path: &str, p_target_os: &str) {
+    // compile protos
+    let mut build_server_proto = true;
+    let build_client_proto = true;
+    // we don't want proto server for android and ios clients
+    if p_target_os == "android" || p_target_os == "ios" {
+        build_server_proto = false;
+    }
+
+    let proto_path_include = p_current_dir_path.join("proto");
+    let proto_path_include_src = proto_path_include
+        .to_str()
+        .expect("could not convert include proto path to &str");
+
+    let proto_path = proto_path_include.join("raft.proto");
+    let proto_path_str = proto_path
+        .to_str()
+        .expect("could not convert source proto path to &str");
+
+    protos(
+        &[proto_path_str],
+        &[proto_path_include_src],
+        build_client_proto,
+        build_server_proto,
+    )
+    .expect("couldn't read the protos directory");
+}
+
+/// # Errors
+///
+/// Will return `Err` if `proto` does not exist or is invalid.
+#[cfg(feature = "system_raft")]
 pub fn protos(
     p_proto_paths: &[&str],
     p_proto_includes: &[&str],

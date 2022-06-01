@@ -1,14 +1,10 @@
 #![allow(improper_ctypes)]
 
-use std::mem::MaybeUninit;
 use std::os::raw::{c_char, c_int, c_void};
 
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct w_rist_ctx {
-    _unused: [u8; 0],
-}
+pub type w_rist_ctx = *mut c_void;
 
+#[derive(Clone)]
 pub enum RistMode {
     SENDER,
     RECEIVER,
@@ -23,6 +19,7 @@ impl std::fmt::Debug for RistMode {
     }
 }
 
+#[derive(Clone)]
 #[repr(C)]
 pub enum rist_log_level {
     RIST_LOG_DISABLE = -1,
@@ -53,17 +50,19 @@ extern "C" {
         p_rist: *mut w_rist_ctx,
         p_log_callback: extern "C" fn(*mut c_void, rist_log_level, *const c_char) -> c_int,
     ) -> std::os::raw::c_int;
-    //fn w_rist_drop(p_rist: *mut w_rist_ctx);
+    fn w_rist_destroy(p_rist: *mut w_rist_ctx);
 }
 
+#[derive(Clone)]
 pub struct rist {
-    pub ctx: MaybeUninit<w_rist_ctx>,
+    pub ctx: w_rist_ctx,
     pub mode: RistMode,
 }
 
 impl Drop for rist {
     fn drop(&mut self) {
         //drop rist context
+        unsafe { w_rist_destroy(&mut self.ctx) };
     }
 }
 
@@ -72,25 +71,20 @@ impl rist {
         p_mode: RistMode,
         p_log_callback: extern "C" fn(*mut c_void, rist_log_level, *const c_char) -> c_int,
     ) -> anyhow::Result<Self> {
-        // create a memory for rist context
-        let mut context: MaybeUninit<w_rist_ctx> = MaybeUninit::uninit();
+        let mut obj = Self {
+            ctx: std::ptr::null_mut(),
+            mode: p_mode,
+        };
+
         // create sender/receiver context
-        let ret = match p_mode {
+        let ret = match obj.mode {
             RistMode::SENDER => 0,
-            RistMode::RECEIVER => unsafe {
-                w_rist_receiver_create(context.as_mut_ptr(), p_log_callback)
-            },
+            RistMode::RECEIVER => unsafe { w_rist_receiver_create(&mut obj.ctx, p_log_callback) },
         };
         match ret {
-            0 => {
-                unsafe { context.assume_init() };
-                Ok(Self {
-                    ctx: context,
-                    mode: p_mode,
-                })
-            }
+            0 => Ok(obj),
             _ => {
-                anyhow::bail!("could not create rist {:?}", p_mode)
+                anyhow::bail!("could not create rist {:?}", obj.mode)
             }
         }
     }

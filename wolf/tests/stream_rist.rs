@@ -21,6 +21,8 @@ extern "C" fn log_callback(
 async fn test_rist() {
     println!("wolf_sys version is : {:?}", wolf::sys_version());
 
-    let r = rist::new(RistMode::RECEIVER, log_callback);
-    assert!(r.is_ok());
+    let rist_ret = rist::new(RistMode::RECEIVER, log_callback);
+    assert!(rist_ret.is_ok());
+
+    // let rist = rist_ret.unwrap();
 }
