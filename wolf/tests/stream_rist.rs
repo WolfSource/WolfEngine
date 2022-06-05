@@ -95,7 +95,7 @@ fn test_send_receive_rist() {
         test_send_rist();
     });
     let t_receiver_handle = std::thread::spawn(|| {
-        //std::thread::sleep(std::time::Duration::from_secs(1));
+        std::thread::sleep(std::time::Duration::from_secs(1));
         test_receive_rist();
     });
 

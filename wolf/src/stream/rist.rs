@@ -2,7 +2,7 @@
 
 use crate::size_t;
 use anyhow::{bail, Result};
-use std::os::raw::{c_char, c_int, c_void};
+use std::os::raw::{c_char, c_int, c_ushort, c_void};
 
 pub type w_rist_ctx = *mut c_void;
 pub type w_rist_data_block = *mut c_void;
@@ -40,7 +40,7 @@ extern "C" {
         p_url: *const c_char,
         p_mode: rist_ctx_mode,
         p_profile: rist_profile,
-        p_loss_percentage: u16,
+        p_loss_percentage: c_ushort,
         p_log_level: rist_log_level,
         p_log_callback: extern "C" fn(*mut c_void, rist_log_level, *const c_char) -> c_int,
     ) -> c_int;
@@ -145,7 +145,7 @@ impl rist {
             url: p_url.to_owned(),
             mode: p_mode,
             profile: p_profile,
-            loss_percentage: p_loss_percentage,
+            loss_percentage: p_loss_percentage as c_ushort,
             log_level: p_log_level,
         };
 
@@ -174,12 +174,6 @@ impl rist {
     }
 
     pub fn read(&self, p_data_block: &mut rist_data_block, p_timeout: i32) -> i32 {
-        unsafe {
-            w_rist_read_data_block(
-                self.ctx,
-                &mut p_data_block.block as *mut w_rist_data_block,
-                p_timeout,
-            )
-        }
+        unsafe { w_rist_read_data_block(self.ctx, &mut p_data_block.block, p_timeout as c_int) }
     }
 }

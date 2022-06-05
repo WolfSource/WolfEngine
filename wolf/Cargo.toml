@@ -89,16 +89,6 @@ system_raft = ["async-raft", "prost"] # enable raft algorithm for system module
 system_script = ["rhai"] # enable embedded script engine for system module
 render = ["wgpu"]
 
-# [[test]]
-# name = "test_gametime"
-# path = "tests/system_chrono.rs"
-# required-features = ["default"]
-
-# [[test]]
-# name = "test_lz4"
-# path = "tests/system_compression.rs"
-# required-features = ["default", "system_lz4"]
-
 # brotli = [] # enable brotli compression
 # fiber = [] # enable fiber
 # kafka_client = [] # enable Kafka client
