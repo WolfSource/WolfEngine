@@ -8,6 +8,10 @@ static GLOBAL: mimalloc::MiMalloc = mimalloc::MiMalloc;
 #[allow(dead_code)]
 const MAX_TRACE_BUFFER_SIZE: usize = 256;
 
+#[allow(non_camel_case_types)]
+#[cfg(any(target_os = "windows"))] //should be 64bit and 32bit
+pub type size_t = std::os::raw::c_ulonglong;
+
 #[cfg(feature = "render")]
 pub mod render;
 pub mod stream;

@@ -1,8 +1,11 @@
 #![allow(improper_ctypes)]
 
+use crate::size_t;
+use anyhow::{bail, Result};
 use std::os::raw::{c_char, c_int, c_void};
 
 pub type w_rist_ctx = *mut c_void;
+pub type w_rist_data_block = *mut c_void;
 
 #[derive(Debug, Clone, Copy)]
 #[repr(C)]
@@ -37,13 +40,78 @@ extern "C" {
         p_url: *const c_char,
         p_mode: rist_ctx_mode,
         p_profile: rist_profile,
-        p_simulate_loos: bool,
         p_loss_percentage: u16,
         p_log_level: rist_log_level,
         p_log_callback: extern "C" fn(*mut c_void, rist_log_level, *const c_char) -> c_int,
     ) -> c_int;
-    fn w_rist_send(p_rist: w_rist_ctx, p_buffer: *const c_char, p_buffer_len: c_int) -> c_int;
+
+    fn w_rist_init_data_block(p_block: *mut w_rist_data_block) -> c_int;
+
+    fn w_rist_get_data_block(p_block: w_rist_data_block) -> *const c_void;
+    fn w_rist_get_data_block_len(p_block: w_rist_data_block) -> size_t;
+    fn w_rist_set_data_block(p_block: w_rist_data_block, p_data: *const c_void, p_data_len: size_t);
+    fn w_rist_free_data_block(p_block: *mut w_rist_data_block);
+
+    fn w_rist_send_data_block(p_rist: w_rist_ctx, p_block: w_rist_data_block) -> c_int;
+    fn w_rist_read_data_block(
+        p_rist: w_rist_ctx,
+        p_block: *mut w_rist_data_block,
+        p_timeout: c_int,
+    ) -> c_int;
+
     fn w_rist_fini(p_rist: *mut w_rist_ctx);
+}
+
+#[derive(Clone)]
+pub struct rist_data_block {
+    pub block: w_rist_data_block,
+}
+
+impl Default for rist_data_block {
+    fn default() -> Self {
+        Self {
+            block: std::ptr::null_mut(),
+        }
+    }
+}
+
+impl Drop for rist_data_block {
+    fn drop(&mut self) {
+        if !self.block.is_null() {
+            unsafe { w_rist_free_data_block(&mut self.block) };
+        }
+    }
+}
+
+impl rist_data_block {
+    pub fn new() -> Result<Self> {
+        let mut rist_block = Self {
+            block: std::ptr::null_mut(),
+        };
+        let ret = unsafe { w_rist_init_data_block(&mut rist_block.block) };
+        if ret == 0 {
+            return Ok(rist_block);
+        }
+        bail!("could not allocate memory for rist_data_block")
+    }
+
+    pub fn read(&mut self) -> &[u8] {
+        unsafe {
+            let ptr = w_rist_get_data_block(self.block);
+            let len = w_rist_get_data_block_len(self.block);
+            std::slice::from_raw_parts(ptr as *mut u8, len as usize)
+        }
+    }
+
+    pub fn set(&mut self, p_data: &[u8]) {
+        unsafe {
+            w_rist_set_data_block(
+                self.block,
+                p_data.as_ptr() as *const c_void,
+                p_data.len() as size_t,
+            )
+        };
+    }
 }
 
 #[derive(Clone)]
@@ -52,7 +120,6 @@ pub struct rist {
     pub url: String,
     pub mode: rist_ctx_mode,
     pub profile: rist_profile,
-    pub simulate_loos: bool,
     pub loss_percentage: u16,
     pub log_level: rist_log_level,
 }
@@ -69,17 +136,15 @@ impl rist {
         p_url: &str,
         p_mode: rist_ctx_mode,
         p_profile: rist_profile,
-        p_simulate_loos: bool,
         p_loss_percentage: u16,
         p_log_level: rist_log_level,
         p_log_callback: extern "C" fn(*mut c_void, rist_log_level, *const c_char) -> c_int,
-    ) -> anyhow::Result<Self> {
+    ) -> Result<Self> {
         let mut obj = Self {
             ctx: std::ptr::null_mut(),
             url: p_url.to_owned(),
             mode: p_mode,
             profile: p_profile,
-            simulate_loos: p_simulate_loos,
             loss_percentage: p_loss_percentage,
             log_level: p_log_level,
         };
@@ -91,7 +156,6 @@ impl rist {
                 obj.url.as_ptr() as *const c_char,
                 obj.mode,
                 obj.profile,
-                obj.simulate_loos,
                 obj.loss_percentage,
                 obj.log_level,
                 p_log_callback,
@@ -100,19 +164,22 @@ impl rist {
         match ret {
             0 => Ok(obj),
             _ => {
-                anyhow::bail!("could not create rist {:?}", obj.mode)
+                bail!("could not create rist {:?}", obj.mode)
             }
         }
     }
 
-    pub fn send(&self, p_buffer: &[u8], p_buffer_len: u32) -> anyhow::Result<()> {
-        let len = p_buffer_len as i32;
-        let ret = unsafe { w_rist_send(self.ctx, p_buffer.as_ptr() as *const c_char, len) };
-        match ret {
-            0 => Ok(()),
-            _ => {
-                anyhow::bail!("could not send the buffer")
-            }
+    pub fn send(&self, p_data_block: rist_data_block) -> i32 {
+        unsafe { w_rist_send_data_block(self.ctx, p_data_block.block) }
+    }
+
+    pub fn read(&self, p_data_block: &mut rist_data_block, p_timeout: i32) -> i32 {
+        unsafe {
+            w_rist_read_data_block(
+                self.ctx,
+                &mut p_data_block.block as *mut w_rist_data_block,
+                p_timeout,
+            )
         }
     }
 }
