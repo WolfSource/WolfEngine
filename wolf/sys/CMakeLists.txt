@@ -141,6 +141,7 @@ if (WOLF_STREAM_RIST)
   )
   file(GLOB_RECURSE RIST_SRCS
     "${CMAKE_CURRENT_SOURCE_DIR}/stream/rist.cppm"
+    "${CMAKE_CURRENT_SOURCE_DIR}/stream/rist_data_block.cppm"
   )
   list(APPEND SRCS ${RIST_SRCS})
   list(APPEND INCLUDES

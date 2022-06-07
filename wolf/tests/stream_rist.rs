@@ -1,5 +1,7 @@
 #![allow(unused_crate_dependencies)]
 
+use wolf::stream::rist::{w_rist_data_block, w_rist_oob_block, w_rist_stats};
+
 #[cfg(feature = "stream_rist")]
 use {
     std::os::raw::{c_char, c_int, c_void},
@@ -20,25 +22,53 @@ extern "C" fn log_callback(
     0
 }
 
+extern "C" fn rist_connection_status_callback(
+    _p_arg: *mut c_void,
+    _p_peer: wolf::stream::rist::w_rist_peer,
+    p_peer_connection_status: wolf::stream::rist::rist_connection_status,
+) -> c_int {
+    w_log!("{:?}", p_peer_connection_status);
+    0
+}
+
+extern "C" fn rist_out_of_band_callback(
+    _p_arg: *mut c_void,
+    _p_oob_block: w_rist_oob_block,
+) -> c_int {
+    w_log!("rist_out_of_band_callback");
+    0
+}
+
+extern "C" fn rist_stats_callback(_p_arg: *mut c_void, _p_stats_container: w_rist_stats) -> c_int {
+    w_log!("rist_stats_callback");
+    0
+}
+
+extern "C" fn receiver_data_callback(
+    _p_arg: *const c_void,
+    _p_data_block: w_rist_data_block,
+) -> c_int {
+    w_log!("receiver_data_callback");
+    0
+}
+
 #[cfg(feature = "stream_rist")]
 #[test]
 fn test_send_rist() {
     println!("wolf_sys version is : {:?}", wolf::sys_version());
 
-    let url = "rist://127.0.0.1:1234?rtt-max=10&rtt-min=3";
-    let rist_ret = rist::new(
-        url,
+    let mut sender = rist::new(
         rist_ctx_mode::RIST_SENDER_MODE,
         rist_profile::RIST_PROFILE_MAIN,
         0u16,
         rist_log_level::RIST_LOG_DEBUG,
         log_callback,
-    );
-    assert!(rist_ret.is_ok());
+    )
+    .unwrap();
 
-    let sender = rist_ret.unwrap();
+    sender.connect("rist://127.0.0.1:1234").unwrap();
+
     let mock_data = "HELLO WOLF!";
-
     loop {
         let mut data_block = rist_data_block::new().unwrap();
         data_block.set(mock_data.as_bytes());
@@ -58,33 +88,33 @@ fn test_send_rist() {
 fn test_receive_rist() {
     println!("wolf_sys version is : {:?}", wolf::sys_version());
 
-    let url = "rist://@127.0.0.1:1234?rtt-max=10&rtt-min=3";
-    let rist_ret = rist::new(
-        url,
+    let mut receiver = rist::new(
         rist_ctx_mode::RIST_RECEIVER_MODE,
         rist_profile::RIST_PROFILE_MAIN,
         0u16,
         rist_log_level::RIST_LOG_DEBUG,
         log_callback,
-    );
-    assert!(rist_ret.is_ok());
+    )
+    .unwrap();
 
-    let receiver = rist_ret.unwrap();
+    unsafe {
+        receiver
+            .set_conn_status_callback(std::ptr::null_mut(), rist_connection_status_callback)
+            .unwrap();
+        receiver
+            .set_out_of_band_callback(std::ptr::null_mut(), rist_out_of_band_callback)
+            .unwrap();
+        receiver
+            .set_stats_callback(1000, std::ptr::null_mut(), rist_stats_callback)
+            .unwrap();
+        receiver
+            .set_receiver_data_callback(std::ptr::null_mut(), receiver_data_callback)
+            .unwrap();
+    }
 
-    let mut retry: i32 = 10;
+    receiver.connect("rist://@127.0.0.1:1234").unwrap();
     loop {
-        let mut data_block = rist_data_block::default();
-        let read = receiver.read(&mut data_block, 5);
-        if read > 0 {
-            println!("{} bytes just received from rist stream", read);
-        } else {
-            eprintln!("Error: Could not read from rist {}", url);
-            retry -= 1;
-            if retry < 0 {
-                break;
-            }
-        }
-        std::thread::sleep(std::time::Duration::from_millis(100));
+        std::thread::sleep(std::time::Duration::from_millis(10));
     }
 }
 
