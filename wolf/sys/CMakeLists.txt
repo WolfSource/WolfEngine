@@ -24,7 +24,6 @@ include(FetchContent)
 option(WOLF_STREAM_NNG "Enable nng socket for tcp/udp/ipc client/server" OFF)
 option(WOLF_STREAM_RIST "Enable RIST streaming protocol" OFF)
 option(WOLF_STREAM_RTSP "Enable real time streaming for client" OFF)
-option(WOLF_STREAM_SRT "Enable SRT streaming protocol" OFF)
 option(WOLF_STREAM_WEBRTC_CLIENT "Enable webRTC client" OFF)
 
 option(WOLF_SYSTEM_LZ4 "Enable LZ4 Compression" OFF)
@@ -155,27 +154,25 @@ if (WOLF_STREAM_RIST)
 
   STRING(TOLOWER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_LOWER)
 
-  add_custom_command(OUTPUT rist_command.out COMMAND cmd /c "meson setup ${librist_BINARY_DIR} --backend vs2022 --buildtype ${CMAKE_BUILD_TYPE_LOWER} &
+  add_custom_command(OUTPUT rist_command.out COMMAND cmd /c "meson setup ${librist_BINARY_DIR} --backend vs2022 --default-library static --buildtype ${CMAKE_BUILD_TYPE_LOWER} &
 			 meson compile -C ${librist_BINARY_DIR}"
 			WORKING_DIRECTORY ${librist_SOURCE_DIR})
 
   add_custom_target(rist ALL DEPENDS rist_command.out)
 
   list(APPEND INCLUDES
+    ${librist_BINARY_DIR}
+    ${librist_BINARY_DIR}/include
+    ${librist_BINARY_DIR}/include/librist
     ${librist_SOURCE_DIR}/src
     ${librist_SOURCE_DIR}/include
     ${librist_SOURCE_DIR}/include/librist
     ${librist_SOURCE_DIR}/contrib
     ${librist_SOURCE_DIR}/contrib/mbedtls/include
-    ${librist_BINARY_DIR}
-    ${librist_BINARY_DIR}/include
-    ${librist_BINARY_DIR}/include/librist
-    ${CMAKE_CURRENT_SOURCE_DIR}/third_party/librist/include/librist
-    ${CMAKE_CURRENT_SOURCE_DIR}/third_party/librist/include/contrib
-    ${CMAKE_CURRENT_SOURCE_DIR}/third_party/librist/include/contrib/mbedtls/include
   )
-  list(APPEND LIBS 
-    ${librist_BINARY_DIR}/librist.lib)  
+  list(APPEND LIBS
+    ws2_32
+    ${librist_BINARY_DIR}/librist.a)  
 endif()
 
 # set clang tidy
