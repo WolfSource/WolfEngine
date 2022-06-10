@@ -11,16 +11,21 @@ if (LINUX)
     message("make sure libtool was installed.(apt-get install libtool-bin)")
 endif()
 
-if(CMAKE_SIZEOF_VOID_P EQUAL 8)
-    if (WIN32)
-        set(WIN64 TRUE)
-    endif()
+# check for win64
+if (WIN32)
+  if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+    set(WIN64 TRUE)
+  endif()
+  set(LIB_EXT "lib")
+else()
+  set(LIB_EXT "a")
 endif()
 
 # FetchContent for cloning repositories, avaiable since CMAKE 3.11
 include(FetchContent)
 
 # CMAKE GUI Options
+option(WOLF_MEDIA_FFMPEG "Enable FFMPEG for multimedia files" OFF)
 option(WOLF_STREAM_NNG "Enable nng socket for tcp/udp/ipc client/server" OFF)
 option(WOLF_STREAM_RIST "Enable RIST streaming protocol" OFF)
 option(WOLF_STREAM_RTSP "Enable real time streaming for client" OFF)
@@ -104,6 +109,9 @@ list(APPEND INCLUDES ${mimalloc-static_SRC_DIR}/include)
 list(APPEND LIBS mimalloc-static)    
 
 # include sources
+file(GLOB_RECURSE MEDIA_SRCS
+    "${CMAKE_CURRENT_SOURCE_DIR}/media/media.cppm"
+)
 file(GLOB_RECURSE STREAM_SRCS
     "${CMAKE_CURRENT_SOURCE_DIR}/stream/stream.cppm"
 )
@@ -111,9 +119,33 @@ file(GLOB_RECURSE SYSTEM_SRCS
     "${CMAKE_CURRENT_SOURCE_DIR}/system/system.cppm"
 )
 list(APPEND SRCS 
+    ${MEDIA_SRCS}
     ${STREAM_SRCS}
     ${SYSTEM_SRCS}
 )
+
+# link to ffmpeg
+if (WOLF_MEDIA_FFMPEG)
+  file(GLOB_RECURSE FFMPEG_SRCS
+    "${CMAKE_CURRENT_SOURCE_DIR}/media/ffmpeg.cppm"
+  )
+  list(APPEND SRCS ${FFMPEG_SRCS})
+  list(APPEND INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/third_party/FFMPEG/include)
+
+  list(APPEND FFMPEG_LIBS 
+    avcodec 
+    avdevice 
+    avfilter
+    avformat
+    avutil
+    swresample
+    swscale)
+
+  foreach (lib_name ${FFMPEG_LIBS})
+    list(APPEND LIBS ${CMAKE_CURRENT_SOURCE_DIR}/third_party/FFMPEG/lib/${CMAKE_HOST_SYSTEM_NAME}/${lib_name}.${LIB_EXT})
+  endforeach()
+  
+endif()
 
 # fetch lz4
 if (WOLF_SYSTEM_LZ4)
@@ -135,9 +167,6 @@ if (WOLF_SYSTEM_LZ4)
 endif()
 
 if (WOLF_STREAM_RIST)
-  list(APPEND SOURCES
-    stream/rist.cpp
-  )
   file(GLOB_RECURSE RIST_SRCS
     "${CMAKE_CURRENT_SOURCE_DIR}/stream/rist.cppm"
     "${CMAKE_CURRENT_SOURCE_DIR}/stream/rist_data_block.cppm"
@@ -219,23 +248,20 @@ target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBS})
 source_group("wolf" FILES 
     ${WOLF_SRCS}
 )
-source_group("stream" FILES 
-    ${STREAM_SRCS}
-)
-source_group("system" FILES 
-    ${SYSTEM_SRCS}
+source_group("media" FILES 
+    ${MEDIA_SRCS}
+    ${FFMPEG_SRCS}
 )
 
-if (WOLF_STREAM_RIST)
-    source_group("stream" FILES 
-        ${RIST_SRCS}
-    )
-endif()
-if (WOLF_SYSTEM_LZ4)
-    source_group("system" FILES 
-        ${LZ4_SRCS}
-    )
-endif()
+source_group("stream" FILES 
+    ${STREAM_SRCS}
+    ${RIST_SRCS}
+)
+
+source_group("system" FILES 
+    ${SYSTEM_SRCS}
+    ${LZ4_SRCS}
+)
 
 if (NOT MSVC)
     target_compile_options(${PROJECT_NAME} PRIVATE -std=c++2b -fPIC -Wall)

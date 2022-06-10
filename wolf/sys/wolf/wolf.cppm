@@ -31,7 +31,7 @@ auto w_sys_version(char *p_buf, size_t p_len) -> void {
   constexpr auto WOLF_DEBUG_VERSION = 0;
 
   (void)snprintf(p_buf, p_len, "v%d.%d.%d.%d", WOLF_MAJOR_VERSION,
-            WOLF_MINOR_VERSION, WOLF_PATCH_VERSION, WOLF_DEBUG_VERSION);
+                 WOLF_MINOR_VERSION, WOLF_PATCH_VERSION, WOLF_DEBUG_VERSION);
 }
 
 } // namespace wolf

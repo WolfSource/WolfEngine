@@ -194,6 +194,9 @@ pub fn cmake(
     #[cfg(feature = "stream_rist")]
     args.push("-DWOLF_STREAM_RIST=ON".to_owned());
 
+    #[cfg(any(feature = "ffmpeg"))]
+    args.push("-DWOLF_MEDIA_FFMPEG=ON".to_owned());
+
     if p_target_os == "android" {
         let android_ndk_home_env =
             std::env::var("ANDROID_NDK_HOME").expect("could not get ANDROID_NDK_HOME");
