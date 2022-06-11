@@ -78,9 +78,9 @@ tonic-build = {version = "0.7.2", default-features = false, features = ["transpo
 [dev-dependencies]
 lazy_static = {version = "1.4.0", default-features = false}
 
-# Wasm features
+# features
 [features]
-default = ["media_av1"]
+default = []
 ffmpeg = [] # enable multimedia features
 media_av1 = ["ffmpeg"] # enable AV1 video coding format for stream module
 media_vpx = ["ffmpeg"] # enable VP9/VP8 video coding format for stream module
