@@ -50,6 +50,7 @@ auto rgb2yuv(uint8_t *p_rgb_raw, int p_width, int p_height, w_av_frame *p_frame,
   AVFrame* _frame_yuv = nullptr;
   uint8_t *frame_buffer_in = nullptr;
 
+  // finally will be rised at the end
   auto _ = gsl::finally([&] {
     if (rgb_to_I420_ctx != nullptr) {
       sws_freeContext(rgb_to_I420_ctx);
@@ -77,13 +78,14 @@ auto rgb2yuv(uint8_t *p_rgb_raw, int p_width, int p_height, w_av_frame *p_frame,
         p_error,
         "failed to allocate RGB to I420 conversion context. trace info: %s",
         _trace);
+    return ret = -1;
   }
 
   _frame_yuv = av_frame_alloc();
   if (_frame_yuv == nullptr) {
     std::printf(p_error, "failed to allocate av frame context. trace info: %s",
                 _trace);
-    return -1;
+    return ret = -1;
   }
 
   frame_buffer_in = gsl::narrow_cast<uint8_t *>(av_malloc(
@@ -92,7 +94,7 @@ auto rgb2yuv(uint8_t *p_rgb_raw, int p_width, int p_height, w_av_frame *p_frame,
     av_frame_free(&_frame_yuv);
     std::printf(p_error, "failed to allocate av buffer. trace info: %s",
                 _trace);
-    return -1;
+    return ret = -1;
   }
 
   av_image_fill_arrays(_frame_yuv->data, _frame_yuv->linesize, frame_buffer_in,
@@ -103,15 +105,13 @@ auto rgb2yuv(uint8_t *p_rgb_raw, int p_width, int p_height, w_av_frame *p_frame,
                 p_height, _frame_yuv->data, _frame_yuv->linesize);
 
   if (to_I420_res < 0) {
-    ret = -1;
-
     char _error_log[_MAX_PATH] = {0};
     av_make_error_string( _error_log, _MAX_PATH, to_I420_res);
     std::printf(
         p_error,
         "conversion from RGB to I420 failed, because %s. trace info: %s",
         _error_log, _trace);
-    return ret;
+    return ret = -1;
   }
 
   _frame_yuv->width = p_width;
@@ -120,7 +120,7 @@ auto rgb2yuv(uint8_t *p_rgb_raw, int p_width, int p_height, w_av_frame *p_frame,
 
   *p_frame = _frame_yuv;
 
-  return 0;
+  return ret;
 }
 
 #pragma endregion
