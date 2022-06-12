@@ -47,7 +47,7 @@ auto rgb2yuv(uint8_t *p_rgb_raw, int p_width, int p_height, w_av_frame *p_frame,
   uint8_t *rgb[3] = {p_rgb_raw, nullptr, nullptr};
   int rgb_stride[3] = {p_width * 3, 0, 0};
   SwsContext *rgb_to_I420_ctx = nullptr;
-  AVFrame* _frame_yuv = nullptr;
+  AVFrame *_frame_yuv = nullptr;
   uint8_t *frame_buffer_in = nullptr;
 
   // finally will be rised at the end
@@ -56,8 +56,7 @@ auto rgb2yuv(uint8_t *p_rgb_raw, int p_width, int p_height, w_av_frame *p_frame,
       sws_freeContext(rgb_to_I420_ctx);
     }
     // the following vars should be released on failure
-    if (ret != 0)
-    {
+    if (ret != 0) {
       if (_frame_yuv != nullptr) {
         av_frame_free(&_frame_yuv);
       }
@@ -106,7 +105,7 @@ auto rgb2yuv(uint8_t *p_rgb_raw, int p_width, int p_height, w_av_frame *p_frame,
 
   if (to_I420_res < 0) {
     char _error_log[_MAX_PATH] = {0};
-    av_make_error_string( _error_log, _MAX_PATH, to_I420_res);
+    av_make_error_string(_error_log, _MAX_PATH, to_I420_res);
     std::printf(
         p_error,
         "conversion from RGB to I420 failed, because %s. trace info: %s",

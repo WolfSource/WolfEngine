@@ -65,3 +65,39 @@ async fn test_sigslot() {
     // emit all
     sig_slot.emit();
 }
+
+#[test]
+fn test_screen_captures() {
+    use wolf::system::os::screen::Screen;
+    use wolf::w_log;
+
+    let mut screen = Screen::new_primary().unwrap();
+    assert!(screen.width != 0);
+    assert!(screen.height != 0);
+
+    let mut i: u32 = 0;
+    loop {
+        let frame_res = screen.capture();
+        match frame_res {
+            Ok(frame) => {
+                i += 1;
+                w_log!("length of frame #{} is {}", i, frame.len());
+            }
+            Err(e) => {
+                if e.kind() == std::io::ErrorKind::WouldBlock {
+                    // Keep spinning.
+                    const ONE_SEC: std::time::Duration = std::time::Duration::from_secs(1);
+                    let one_frame = ONE_SEC / 60;
+                    std::thread::sleep(one_frame);
+                    continue;
+                } else {
+                    panic!("could not capture: {}", e);
+                }
+            }
+        }
+
+        if i > 5 {
+            break;
+        }
+    }
+}
