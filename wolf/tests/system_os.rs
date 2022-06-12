@@ -6,18 +6,18 @@ async fn test_runtime() {
     use wolf::w_log;
 
     // declare a function
-    let f = move |p_msg: String| {
+    let fun = move |p_msg: String| {
         w_log!("hello from {}", &p_msg);
         true
     };
     // run the function on a OS thread
     RunTime::thread(move || {
-        f("os thread".to_owned());
+        fun("os thread".to_owned());
     });
     // sleep for a sec
     RunTime::sleep(std::time::Duration::from_secs(1));
     // run the function on a green thread
-    RunTime::green_thread(async move { f("green thread".to_owned()) }).await;
+    RunTime::green_thread(async move { fun("green thread".to_owned()) }).await;
     // wait for all
     RunTime::async_sleep(std::time::Duration::from_secs(5)).await;
 }

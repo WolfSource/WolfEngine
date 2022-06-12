@@ -73,7 +73,7 @@ tracing = {version = "0.1.34", default-features = false, features = ["std", "att
 uuid = {version = "1.1.1", default-features = false, features = ["v5"]}
 
 [build-dependencies]
-#bindgen = {version = "0.59.2"}
+bindgen = {version = "0.60.1"}
 tonic-build = {version = "0.7.2", default-features = false, features = ["transport", "prost", "compression"]}
 
 [dev-dependencies]
@@ -81,7 +81,7 @@ lazy_static = {version = "1.4.0", default-features = false}
 
 # features
 [features]
-default = ["system_capture"]
+default = []
 ffmpeg = [] # enable multimedia features
 media_av1 = ["ffmpeg"] # enable AV1 video coding format for stream module
 media_vpx = ["ffmpeg"] # enable VP9/VP8 video coding format for stream module

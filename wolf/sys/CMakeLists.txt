@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.22)
+cmake_minimum_required(VERSION 3.21)
 
 project(wolf_sys)
 set(TEST_PROJECT_NAME "${PROJECT_NAME}_tests")
@@ -38,7 +38,7 @@ option(WOLF_ENABLE_TESTS "Enable test for wolf_sys" ON)
 
 set(LIBRARY_TYPE "SHARED" CACHE STRING "Library type")
 
-set(CMAKE_C_STANDARD 17)
+set(CMAKE_C_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS ON)
 set(THREADS_PREFER_PTHREAD_FLAG ON)
@@ -60,8 +60,9 @@ endif()
 
 # include sources
 file(GLOB_RECURSE WOLF_SRCS
-    "${CMAKE_CURRENT_SOURCE_DIR}/wolf/wolf.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/wolf/wolf.cppm"
+    "${CMAKE_CURRENT_SOURCE_DIR}/wolf/wolf.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/wolf/version.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/wolf/version.c"
 )
 set(SRCS ${WOLF_SRCS})
 set(INCLUDES 
@@ -72,15 +73,15 @@ set(INCLUDES
 set(LIBS)
 
 # fetch gsl
-message("fetching https://github.com/microsoft/GSL.git")
-FetchContent_Declare(
-  gsl
-  GIT_REPOSITORY https://github.com/microsoft/GSL.git
-  GIT_TAG        main
-  SOURCE_SUBDIR  include
-)
-FetchContent_Populate(gsl)
-list(APPEND INCLUDES ${CMAKE_CURRENT_BINARY_DIR}/_deps/gsl-src/include/)
+#message("fetching https://github.com/microsoft/GSL.git")
+#FetchContent_Declare(
+#  gsl
+#  GIT_REPOSITORY https://github.com/microsoft/GSL.git
+#  GIT_TAG        main
+#  SOURCE_SUBDIR  include
+#)
+#FetchContent_Populate(gsl)
+#list(APPEND INCLUDES ${CMAKE_CURRENT_BINARY_DIR}/_deps/gsl-src/include/)
 
 # fetch catch2 for tests
 if (WOLF_ENABLE_TESTS)

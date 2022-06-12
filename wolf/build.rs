@@ -80,6 +80,9 @@ fn main() {
 
     // compile c/cpp sources and link
     link(current_dir_path_str, build_profile, &target_os);
+
+    //bindgen
+    bindgens(current_dir_path_str);
 }
 
 /// # Errors
@@ -301,5 +304,44 @@ fn copy_shared_libs(p_lib_path: String) {
         let file = format!("{}/{}", p_lib_path, name);
         let _ = std::fs::copy(&file, deps_path.join(name));
         let _ = std::fs::copy(&file, out_path.join(name));
+    }
+}
+
+fn bindgens(p_current_dir_path_str: &str) {
+    struct Binding<'a> {
+        src: &'a str,
+        dst: &'a str,
+    };
+    let headers = vec![Binding {
+        src: "sys/wolf/version.h",
+        dst: "src/system/ffi/version.rs",
+    }];
+
+    for header in headers {
+        println!("cargo:rerun-if-changed=sys/{}", header.src);
+
+        // The bindgen::Builder is the main entry point
+        // to bindgen, and lets you build up options for
+        // the resulting bindings.
+        let bindings = bindgen::Builder::default()
+            // The input header we would like to generate bindings for.
+            .header(header.src)
+            // tell cargo to invalidate the built crate whenever any of the
+            // included header files changed.
+            .parse_callbacks(Box::new(bindgen::CargoCallbacks))
+            // finish the builder and generate the bindings.
+            .generate()
+            // unwrap the Result and panic on failure.
+            .unwrap_or_else(|e| {
+                panic!(
+                    "couldn't create bindings for header {} because {:?}",
+                    header.src, e
+                );
+            });
+
+        let out_path = Path::new(p_current_dir_path_str).join(header.dst);
+        bindings.write_to_file(out_path).unwrap_or_else(|e| {
+            panic!("couldn't write bindings for {} because {:?}", header.src, e);
+        });
     }
 }

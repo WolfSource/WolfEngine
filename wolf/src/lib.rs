@@ -8,30 +8,22 @@ static GLOBAL: mimalloc::MiMalloc = mimalloc::MiMalloc;
 #[allow(dead_code)]
 const MAX_TRACE_BUFFER_SIZE: usize = 256;
 
-#[allow(non_camel_case_types)]
-#[cfg(any(target_os = "windows"))] //should be 64bit and 32bit
-pub type size_t = std::os::raw::c_ulonglong;
-
 #[cfg(feature = "render")]
 pub mod render;
 pub mod stream;
 pub mod system;
 
-// wolf_sys
-#[cfg(not(target_arch = "wasm32"))]
-extern "C" {
-    fn w_sys_version(p_buf: *mut std::os::raw::c_char, p_len: usize) -> std::ffi::c_void;
-}
-
 #[cfg(not(target_arch = "wasm32"))]
 pub fn sys_version() -> String {
+    use crate::system::ffi::version::*;
+
     // create a buffer
     let mut buf = [0i8; 32];
     let buf_ptr = buf.as_mut_ptr();
 
     // call unsafe function
     let cstr = unsafe {
-        w_sys_version(buf_ptr, buf.len());
+        w_sys_version(buf_ptr, buf.len() as size_t);
         std::ffi::CStr::from_ptr(buf_ptr)
     };
 
