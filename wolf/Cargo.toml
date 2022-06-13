@@ -81,7 +81,7 @@ lazy_static = {version = "1.4.0", default-features = false}
 
 # features
 [features]
-default = []
+default = ["system_lz4"]
 ffmpeg = [] # enable multimedia features
 media_av1 = ["ffmpeg"] # enable AV1 video coding format for stream module
 media_vpx = ["ffmpeg"] # enable VP9/VP8 video coding format for stream module

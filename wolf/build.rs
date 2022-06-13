@@ -311,11 +311,21 @@ fn bindgens(p_current_dir_path_str: &str) {
     struct Binding<'a> {
         src: &'a str,
         dst: &'a str,
-    };
-    let headers = vec![Binding {
+    }
+    let mut headers = vec![Binding {
         src: "sys/wolf/version.h",
         dst: "src/system/ffi/version.rs",
     }];
+
+    #[cfg(feature = "system_lz4")]
+    headers.push(Binding {
+        src: "sys/system/lz4.h",
+        dst: "src/system/ffi/lz4.rs",
+    });
+
+    // add include paths
+    let clang_include_arg_0 = format!("-I{}/sys", p_current_dir_path_str);
+    let clang_include_arg_1 = format!("-I{}/sys/wolf", p_current_dir_path_str);
 
     for header in headers {
         println!("cargo:rerun-if-changed=sys/{}", header.src);
@@ -325,7 +335,8 @@ fn bindgens(p_current_dir_path_str: &str) {
         // the resulting bindings.
         let bindings = bindgen::Builder::default()
             // The input header we would like to generate bindings for.
-            .header(header.src)
+            .header(header.src.clone())
+            .clang_args([clang_include_arg_0.as_str(), clang_include_arg_1.as_str()])
             // tell cargo to invalidate the built crate whenever any of the
             // included header files changed.
             .parse_callbacks(Box::new(bindgen::CargoCallbacks))

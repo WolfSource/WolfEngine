@@ -73,15 +73,15 @@ set(INCLUDES
 set(LIBS)
 
 # fetch gsl
-#message("fetching https://github.com/microsoft/GSL.git")
-#FetchContent_Declare(
-#  gsl
-#  GIT_REPOSITORY https://github.com/microsoft/GSL.git
-#  GIT_TAG        main
-#  SOURCE_SUBDIR  include
-#)
-#FetchContent_Populate(gsl)
-#list(APPEND INCLUDES ${CMAKE_CURRENT_BINARY_DIR}/_deps/gsl-src/include/)
+message("fetching https://github.com/microsoft/GSL.git")
+FetchContent_Declare(
+  gsl
+  GIT_REPOSITORY https://github.com/microsoft/GSL.git
+  GIT_TAG        main
+  SOURCE_SUBDIR  include
+)
+FetchContent_Populate(gsl)
+list(APPEND INCLUDES ${CMAKE_CURRENT_BINARY_DIR}/_deps/gsl-src/include/)
 
 # fetch catch2 for tests
 if (WOLF_ENABLE_TESTS)
@@ -116,13 +116,9 @@ file(GLOB_RECURSE MEDIA_SRCS
 file(GLOB_RECURSE STREAM_SRCS
     "${CMAKE_CURRENT_SOURCE_DIR}/stream/stream.cppm"
 )
-file(GLOB_RECURSE SYSTEM_SRCS
-    "${CMAKE_CURRENT_SOURCE_DIR}/system/system.cppm"
-)
 list(APPEND SRCS 
     ${MEDIA_SRCS}
     ${STREAM_SRCS}
-    ${SYSTEM_SRCS}
 )
 
 # link to ffmpeg
@@ -160,7 +156,8 @@ if (WOLF_SYSTEM_LZ4)
   FetchContent_MakeAvailable(lz4_static)
 
   file(GLOB_RECURSE LZ4_SRCS
-    "${CMAKE_CURRENT_SOURCE_DIR}/system/lz4.cppm"
+    "${CMAKE_CURRENT_SOURCE_DIR}/system/lz4.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/system/lz4.c"
   )
   list(APPEND SRCS ${LZ4_SRCS})
   list(APPEND INCLUDES ${lz4_SRC_DIR}/include)
@@ -250,47 +247,18 @@ source_group("wolf" FILES
     ${WOLF_SRCS}
 )
 source_group("media" FILES 
-    ${MEDIA_SRCS}
     ${FFMPEG_SRCS}
 )
-
 source_group("stream" FILES 
-    ${STREAM_SRCS}
     ${RIST_SRCS}
 )
-
 source_group("system" FILES 
-    ${SYSTEM_SRCS}
     ${LZ4_SRCS}
 )
 
 if (NOT MSVC)
     target_compile_options(${PROJECT_NAME} PRIVATE -std=c++2b -fPIC -Wall)
 endif()
-
-# link mimalloc
-# if (WOLF_LINK_MIMALLOC)
-#   if (MSVC)
-#     target_link_libraries(${PROJECT_NAME} PRIVATE ${mimalloc-static_BINARY_DIR}/libmimalloc-debug.lib)
-#   else()
-#     target_link_libraries(${PROJECT_NAME} PRIVATE ${mimalloc-static_BINARY_DIR}/libmimalloc-debug.a)
-#   endif()
-# endif()
-
-# link lz4
-# if (WOLF_ENABLE_LZ4)
-#   if (MSVC)
-#     target_link_libraries(${PROJECT_NAME} PRIVATE ${lz4_BINARY_DIR}/${CMAKE_BUILD_TYPE}/liblz4.lib)
-#   else()
-#     target_link_libraries(${PROJECT_NAME} PRIVATE ${lz4_BINARY_DIR}/liblz4.a)
-#   endif()
-# endif()
-
-# link rist
-# if (WOLF_ENABLE_RIST)
-#   add_dependencies(${PROJECT_NAME} librist)
-#   target_link_libraries(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/librist/build/librist.a)
-# endif()
 
 # build tests
 if (WOLF_ENABLE_TESTS)

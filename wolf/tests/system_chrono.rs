@@ -2,6 +2,8 @@
 
 #[tokio::test]
 async fn test_gametime() {
+    println!("wolf_sys version is : {:?}", wolf::sys_version());
+
     use wolf::system::chrono::gametime::GameTime;
     let mut gtime = GameTime::new();
     gtime.set_fixed_time_step(true);

@@ -1,7 +1,7 @@
-#![allow(non_upper_case_globals)]
-#![allow(non_camel_case_types)]
-
-use std::os::raw::{c_char, c_int};
+use crate::system::ffi::lz4::{
+    w_lz4_compress_bound, w_lz4_compress_default, w_lz4_compress_fast, w_lz4_decompress_safe,
+};
+use std::os::raw::c_char;
 
 #[derive(Copy, Clone)]
 pub enum LZ4CompressMode {
@@ -16,32 +16,6 @@ impl std::fmt::Debug for LZ4CompressMode {
             Self::FAST => write!(f, "LZ4CompressMode_FAST"),
         }
     }
-}
-
-extern "C" {
-    fn w_lz4_compress_bound(p_src_len: c_int) -> c_int;
-
-    fn w_lz4_compress_default(
-        p_dst: *mut c_char,
-        p_dst_size: c_int,
-        p_source: *const c_char,
-        p_src_size: c_int,
-    ) -> c_int;
-
-    fn w_lz4_compress_fast(
-        p_dst: *mut c_char,
-        p_dst_size: c_int,
-        p_src: *const c_char,
-        p_src_size: c_int,
-        p_acceleration: c_int,
-    ) -> c_int;
-
-    fn w_lz4_decompress_safe(
-        p_dst: *mut c_char,
-        p_dst_size: c_int,
-        p_src: *const c_char,
-        p_src_size: c_int,
-    ) -> c_int;
 }
 
 pub fn compress(
@@ -61,18 +35,18 @@ pub fn compress(
     max_dst_size = match p_mode {
         LZ4CompressMode::DEFAULT => unsafe {
             w_lz4_compress_default(
-                p_dst.as_mut_ptr() as *mut c_char,
-                max_dst_size,
                 p_src.as_ptr() as *mut c_char,
+                p_dst.as_mut_ptr() as *mut c_char,
                 src_len,
+                max_dst_size,
             )
         },
         LZ4CompressMode::FAST => unsafe {
             w_lz4_compress_fast(
-                p_dst.as_mut_ptr() as *mut c_char,
-                max_dst_size,
                 p_src.as_ptr() as *mut c_char,
+                p_dst.as_mut_ptr() as *mut c_char,
                 src_len,
+                max_dst_size,
                 p_acceleration,
             )
         },
@@ -102,10 +76,10 @@ pub fn de_compress(p_dst: &mut Vec<u8>, p_src: &[u8]) -> anyhow::Result<()> {
         // try for decompress
         ret_size = unsafe {
             w_lz4_decompress_safe(
+                p_src.as_ptr() as *const c_char,
                 p_dst.as_mut_ptr() as *mut c_char,
-                max_dst_size,
-                p_src.as_ptr() as *mut c_char,
                 src_len,
+                max_dst_size,
             )
         };
         if ret_size > 0 {

@@ -1,7 +1,11 @@
-#include "wolf.h"
+#include "version.h"
 #include <stdio.h>
 
 void w_sys_version(char *p_buf, size_t p_len) {
+
+  if (p_buf == NULL || p_len == 0) {
+    return;
+  }
 
   // Making incompatible API changes
   const int WOLF_MAJOR_VERSION = 3;
