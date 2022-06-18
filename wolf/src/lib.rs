@@ -13,6 +13,9 @@ pub mod render;
 pub mod stream;
 pub mod system;
 
+pub mod media;
+use crate::media::ffi::ffmpeg::*;
+
 #[cfg(not(target_arch = "wasm32"))]
 pub fn sys_version() -> String {
     use crate::system::ffi::version::*;
@@ -30,4 +33,21 @@ pub fn sys_version() -> String {
     // return result
     let str = cstr.to_str().unwrap_or_default();
     String::from(str)
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+#[allow(clippy::not_unsafe_ptr_arg_deref)]
+pub fn ffmpeg_encode(
+    p_ffmpeg_opt: w_ffmpeg_opt,
+    p_data_in: *mut u8,
+    p_data_out: *mut *mut u8,
+    p_size_out: *mut ::std::os::raw::c_int,
+    p_error: *mut ::std::os::raw::c_char,
+) -> ::std::os::raw::c_int {
+    let ret = unsafe {
+        let result = w_ffmpeg_encode(p_ffmpeg_opt, p_data_in, p_data_out, p_size_out, p_error);
+        result
+    };
+
+    ret
 }

@@ -323,15 +323,16 @@ fn bindgens(p_current_dir_path_str: &str) {
         dst: "src/system/ffi/lz4.rs",
     });
 
-    #[cfg(feature = "stream_rist")]
+    #[cfg(feature = "ffmpeg")]
     headers.push(Binding {
-        src: "sys/stream/rist.h",
-        dst: "src/stream/ffi/rist.rs",
+        src: "sys/media/ffmpeg.h",
+        dst: "src/media/ffi/ffmpeg.rs",
     });
 
     // add include paths
     let clang_include_arg_0 = format!("-I{}/sys", p_current_dir_path_str);
     let clang_include_arg_1 = format!("-I{}/sys/wolf", p_current_dir_path_str);
+    let clang_include_arg_2 = format!("-I{}/sys/media", p_current_dir_path_str);
 
     for header in headers {
         println!("cargo:rerun-if-changed=sys/{}", header.src);
@@ -341,8 +342,12 @@ fn bindgens(p_current_dir_path_str: &str) {
         // the resulting bindings.
         let bindings = bindgen::Builder::default()
             // The input header we would like to generate bindings for.
-            .header(header.src.clone())
-            .clang_args([clang_include_arg_0.as_str(), clang_include_arg_1.as_str()])
+            .header(&(*header.src))
+            .clang_args([
+                clang_include_arg_0.as_str(),
+                clang_include_arg_1.as_str(),
+                clang_include_arg_2.as_str(),
+            ])
             // tell cargo to invalidate the built crate whenever any of the
             // included header files changed.
             .parse_callbacks(Box::new(bindgen::CargoCallbacks))
