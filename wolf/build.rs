@@ -323,6 +323,12 @@ fn bindgens(p_current_dir_path_str: &str) {
         dst: "src/system/ffi/lz4.rs",
     });
 
+    #[cfg(feature = "stream_rist")]
+    headers.push(Binding {
+        src: "sys/stream/rist.h",
+        dst: "src/stream/ffi/rist.rs",
+    });
+
     // add include paths
     let clang_include_arg_0 = format!("-I{}/sys", p_current_dir_path_str);
     let clang_include_arg_1 = format!("-I{}/sys/wolf", p_current_dir_path_str);

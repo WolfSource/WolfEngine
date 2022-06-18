@@ -1,46 +1,17 @@
 #![allow(improper_ctypes)]
 
-use crate::size_t;
+use crate::stream::ffi::rist::{
+    w_receiver_data_callback, w_rist_auth_connect_callback, w_rist_auth_disconnect_callback,
+    w_rist_connect, w_rist_connection_status_callback, w_rist_ctx, w_rist_data_block, w_rist_fini,
+    w_rist_free_data_block, w_rist_get_data_block, w_rist_get_data_block_len, w_rist_init,
+    w_rist_init_data_block, w_rist_log_callback, w_rist_out_of_band_callback, w_rist_read,
+    w_rist_set_auth_handler, w_rist_set_conn_status_callback, w_rist_set_data_block,
+    w_rist_set_out_of_band_callback, w_rist_set_receiver_data_callback, w_rist_set_stats_callback,
+    w_rist_stats_callback, w_rist_write,
+};
+use crate::system::ffi::version::size_t;
 use anyhow::{bail, Result};
 use std::os::raw::{c_char, c_int, c_ushort, c_void};
-
-// types
-pub type w_rist_peer = *mut c_void;
-pub type w_rist_data_block = *mut c_void;
-pub type w_rist_oob_block = *const c_void;
-pub type w_rist_stats = *const c_void;
-pub type w_rist_ctx = *mut c_void;
-
-// callbacks
-pub type w_rist_log_callback =
-    extern "C" fn(p_arg: *mut c_void, p_log_level: rist_log_level, p_msg: *const c_char) -> c_int;
-
-pub type w_rist_auth_connect_callback = extern "C" fn(
-    p_arg: *mut c_void,
-    p_conn_ip: *const c_char,
-    p_conn_port: c_ushort,
-    p_local_ip: *const c_char,
-    p_local_port: c_ushort,
-    p_peer: w_rist_peer,
-) -> c_int;
-
-pub type w_rist_auth_disconnect_callback =
-    extern "C" fn(p_arg: *mut c_void, p_peer: w_rist_peer) -> c_int;
-
-pub type w_rist_connection_status_callback = extern "C" fn(
-    p_arg: *mut c_void,
-    p_peer: w_rist_peer,
-    p_peer_connection_status: rist_connection_status,
-) -> c_int;
-
-pub type w_rist_out_of_band_callback =
-    extern "C" fn(p_arg: *mut c_void, p_oob_block: w_rist_oob_block) -> c_int;
-
-pub type w_rist_stats_callback =
-    extern "C" fn(p_arg: *mut c_void, p_stats_container: w_rist_stats) -> c_int;
-
-pub type w_receiver_data_callback =
-    extern "C" fn(p_arg: *const c_void, p_data_block: w_rist_data_block) -> c_int;
 
 #[derive(Debug, Clone, Copy)]
 #[repr(C)]
@@ -55,7 +26,7 @@ pub enum rist_connection_status {
 #[repr(C)]
 pub enum rist_ctx_mode {
     RIST_SENDER_MODE = 0,
-    RIST_RECEIVER_MODE,
+    RIST_RECEIVER_MODE = 1,
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -77,61 +48,18 @@ pub enum rist_log_level {
     RIST_LOG_DEBUG = 7,
     RIST_LOG_SIMULATE = 100,
 }
-
-// extern functions
-extern "C" {
-    fn w_rist_init(
-        p_rist: *mut w_rist_ctx,
-        p_mode: rist_ctx_mode,
-        p_profile: rist_profile,
-        p_loss_percentage: c_ushort,
-        p_log_level: rist_log_level,
-        p_log_callback: w_rist_log_callback,
-    ) -> c_int;
-    fn w_rist_connect(p_rist: w_rist_ctx, p_url: *const c_char) -> c_int;
-
-    fn w_rist_set_auth_handler(
-        p_rist: w_rist_ctx,
-        p_arg: *mut c_void,
-        p_on_auth_connect_cb: w_rist_auth_connect_callback,
-        p_on_auth_disconnect_cb: w_rist_auth_disconnect_callback,
-    ) -> c_int;
-
-    fn w_rist_set_conn_status_callback(
-        p_rist: w_rist_ctx,
-        p_arg: *mut c_void,
-        p_on_connect_status_cb: w_rist_connection_status_callback,
-    ) -> c_int;
-
-    fn w_rist_set_out_of_band_callback(
-        p_rist: w_rist_ctx,
-        p_arg: *mut c_void,
-        p_on_out_of_band_cb: w_rist_out_of_band_callback,
-    ) -> c_int;
-
-    fn w_rist_set_stats_callback(
-        p_rist: w_rist_ctx,
-        p_interval: c_int,
-        p_arg: *mut c_void,
-        p_on_stats_cb: w_rist_stats_callback,
-    ) -> c_int;
-
-    fn w_rist_set_receiver_data_callback(
-        p_rist: w_rist_ctx,
-        p_on_receive_cb: w_receiver_data_callback,
-        p_arg: *mut c_void,
-    ) -> c_int;
-
-    fn w_rist_init_data_block(p_block: *mut w_rist_data_block) -> c_int;
-    fn w_rist_get_data_block(p_block: w_rist_data_block) -> *const c_void;
-    fn w_rist_get_data_block_len(p_block: w_rist_data_block) -> size_t;
-    fn w_rist_set_data_block(p_block: w_rist_data_block, p_data: *const c_void, p_data_len: size_t);
-    fn w_rist_free_data_block(p_block: *mut w_rist_data_block);
-
-    fn w_rist_write(p_rist: w_rist_ctx, p_block: w_rist_data_block) -> c_int;
-    fn w_rist_read(p_rist: w_rist_ctx, p_block: *mut w_rist_data_block, p_timeout: c_int) -> c_int;
-
-    fn w_rist_fini(p_rist: *mut w_rist_ctx);
+impl rist_log_level {
+    pub fn from_i32(value: i32) -> Self {
+        match value {
+            3 => rist_log_level::RIST_LOG_ERROR,
+            4 => rist_log_level::RIST_LOG_WARN,
+            5 => rist_log_level::RIST_LOG_NOTICE,
+            6 => rist_log_level::RIST_LOG_INFO,
+            7 => rist_log_level::RIST_LOG_DEBUG,
+            100 => rist_log_level::RIST_LOG_SIMULATE,
+            _ => rist_log_level::RIST_LOG_DISABLE,
+        }
+    }
 }
 
 #[derive(Clone)]
@@ -235,10 +163,10 @@ impl rist {
         let ret = unsafe {
             w_rist_init(
                 &mut obj.ctx,
-                obj.mode,
-                obj.profile,
+                obj.mode as i32,
+                obj.profile as i32,
                 obj.loss_percentage,
-                obj.log_level,
+                obj.log_level as i32,
                 p_log_callback,
             )
         };

@@ -62,7 +62,7 @@ endif()
 file(GLOB_RECURSE WOLF_SRCS
     "${CMAKE_CURRENT_SOURCE_DIR}/wolf/wolf.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/wolf/version.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/wolf/version.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/wolf/version.cpp"
 )
 set(SRCS ${WOLF_SRCS})
 set(INCLUDES 
@@ -109,18 +109,6 @@ FetchContent_MakeAvailable(mimalloc-static)
 list(APPEND INCLUDES ${mimalloc-static_SRC_DIR}/include)
 list(APPEND LIBS mimalloc-static)    
 
-# include sources
-file(GLOB_RECURSE MEDIA_SRCS
-    "${CMAKE_CURRENT_SOURCE_DIR}/media/media.cppm"
-)
-file(GLOB_RECURSE STREAM_SRCS
-    "${CMAKE_CURRENT_SOURCE_DIR}/stream/stream.cppm"
-)
-list(APPEND SRCS 
-    ${MEDIA_SRCS}
-    ${STREAM_SRCS}
-)
-
 # link to ffmpeg
 if (WOLF_MEDIA_FFMPEG)
   file(GLOB_RECURSE FFMPEG_SRCS
@@ -157,7 +145,7 @@ if (WOLF_SYSTEM_LZ4)
 
   file(GLOB_RECURSE LZ4_SRCS
     "${CMAKE_CURRENT_SOURCE_DIR}/system/lz4.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/system/lz4.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/system/lz4.cpp"
   )
   list(APPEND SRCS ${LZ4_SRCS})
   list(APPEND INCLUDES ${lz4_SRC_DIR}/include)
@@ -166,8 +154,10 @@ endif()
 
 if (WOLF_STREAM_RIST)
   file(GLOB_RECURSE RIST_SRCS
-    "${CMAKE_CURRENT_SOURCE_DIR}/stream/rist.cppm"
-    "${CMAKE_CURRENT_SOURCE_DIR}/stream/rist_data_block.cppm"
+    "${CMAKE_CURRENT_SOURCE_DIR}/stream/rist.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/stream/rist.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/stream/rist_data_block.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/stream/rist_data_block.cpp"
   )
   list(APPEND SRCS ${RIST_SRCS})
 

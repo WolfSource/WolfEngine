@@ -3,6 +3,7 @@
 #![allow(non_snake_case)]
 
 pub mod common;
+pub mod ffi;
 pub mod http;
 #[cfg(all(not(target_arch = "wasm32"), feature = "stream_rist"))]
 pub mod rist;

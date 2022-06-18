@@ -13,6 +13,8 @@ extern "C" {
 
 /**
  * returns wolf version
+ * @param p_buf buffer with maximum size of 260 characters
+ * @param p_len the length of buffer, maximum size is 260
  * @return string format with the following style
  * "<major>.<minor>.<patch>.<debug>"
  */
