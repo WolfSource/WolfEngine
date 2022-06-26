@@ -22,6 +22,9 @@ pub type int_fast8_t = i8;
 pub type uint_fast8_t = u8;
 pub type intmax_t = ::std::os::raw::c_longlong;
 pub type uintmax_t = ::std::os::raw::c_ulonglong;
+pub const w_ffmpeg_action_W_ENCODE: w_ffmpeg_action = 0;
+pub const w_ffmpeg_action_W_DECODE: w_ffmpeg_action = 1;
+pub type w_ffmpeg_action = ::std::os::raw::c_int;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct w_ffmpeg_ctx_t {
@@ -32,17 +35,18 @@ pub type w_ffmpeg_ctx = *mut w_ffmpeg_ctx_t;
 #[derive(Debug, Copy, Clone)]
 pub struct w_ffmpeg_opt_t {
     pub fps: ::std::os::raw::c_int,
-    pub width: ::std::os::raw::c_int,
-    pub height: ::std::os::raw::c_int,
+    pub width: i64,
+    pub height: i64,
     pub bitrate: i64,
     pub codec_id: ::std::os::raw::c_int,
+    pub type_: w_ffmpeg_action,
     pub ctx: w_ffmpeg_ctx,
 }
 #[test]
 fn bindgen_test_layout_w_ffmpeg_opt_t() {
     assert_eq!(
         ::std::mem::size_of::<w_ffmpeg_opt_t>(),
-        40usize,
+        48usize,
         concat!("Size of: ", stringify!(w_ffmpeg_opt_t))
     );
     assert_eq!(
@@ -74,7 +78,7 @@ fn bindgen_test_layout_w_ffmpeg_opt_t() {
                 let ptr = uninit.as_ptr();
                 ::std::ptr::addr_of!((*ptr).width) as usize - ptr as usize
             },
-            4usize,
+            8usize,
             concat!(
                 "Offset of field: ",
                 stringify!(w_ffmpeg_opt_t),
@@ -91,7 +95,7 @@ fn bindgen_test_layout_w_ffmpeg_opt_t() {
                 let ptr = uninit.as_ptr();
                 ::std::ptr::addr_of!((*ptr).height) as usize - ptr as usize
             },
-            8usize,
+            16usize,
             concat!(
                 "Offset of field: ",
                 stringify!(w_ffmpeg_opt_t),
@@ -108,7 +112,7 @@ fn bindgen_test_layout_w_ffmpeg_opt_t() {
                 let ptr = uninit.as_ptr();
                 ::std::ptr::addr_of!((*ptr).bitrate) as usize - ptr as usize
             },
-            16usize,
+            24usize,
             concat!(
                 "Offset of field: ",
                 stringify!(w_ffmpeg_opt_t),
@@ -125,7 +129,7 @@ fn bindgen_test_layout_w_ffmpeg_opt_t() {
                 let ptr = uninit.as_ptr();
                 ::std::ptr::addr_of!((*ptr).codec_id) as usize - ptr as usize
             },
-            24usize,
+            32usize,
             concat!(
                 "Offset of field: ",
                 stringify!(w_ffmpeg_opt_t),
@@ -135,6 +139,23 @@ fn bindgen_test_layout_w_ffmpeg_opt_t() {
         );
     }
     test_field_codec_id();
+    fn test_field_type() {
+        assert_eq!(
+            unsafe {
+                let uninit = ::std::mem::MaybeUninit::<w_ffmpeg_opt_t>::uninit();
+                let ptr = uninit.as_ptr();
+                ::std::ptr::addr_of!((*ptr).type_) as usize - ptr as usize
+            },
+            36usize,
+            concat!(
+                "Offset of field: ",
+                stringify!(w_ffmpeg_opt_t),
+                "::",
+                stringify!(type_)
+            )
+        );
+    }
+    test_field_type();
     fn test_field_ctx() {
         assert_eq!(
             unsafe {
@@ -142,7 +163,7 @@ fn bindgen_test_layout_w_ffmpeg_opt_t() {
                 let ptr = uninit.as_ptr();
                 ::std::ptr::addr_of!((*ptr).ctx) as usize - ptr as usize
             },
-            32usize,
+            40usize,
             concat!(
                 "Offset of field: ",
                 stringify!(w_ffmpeg_opt_t),
@@ -154,6 +175,16 @@ fn bindgen_test_layout_w_ffmpeg_opt_t() {
     test_field_ctx();
 }
 pub type w_ffmpeg_opt = *mut w_ffmpeg_opt_t;
+extern "C" {
+    #[doc = " initialize ffmpeg"]
+    #[doc = " @param p_ffmpeg_opt the ffmpeg options"]
+    #[doc = " @param p_error the error buffer"]
+    #[doc = " @return int the result of encoding the frame"]
+    pub fn w_ffmpeg_init(
+        p_ffmpeg_opt: w_ffmpeg_opt,
+        p_error: *mut ::std::os::raw::c_char,
+    ) -> ::std::os::raw::c_int;
+}
 extern "C" {
     #[doc = " encode the frame"]
     #[doc = " @param p_ffmpeg_opt the ffmpeg options"]
@@ -176,6 +207,7 @@ extern "C" {
     #[doc = " @param p_data_in the input decode data"]
     #[doc = " @param p_data_size the size of input decode data"]
     #[doc = " @param p_data_out the output buffer containing the decoded data"]
+    #[doc = " @param p_size_out the size of decoded buffer"]
     #[doc = " @param p_error the error buffer"]
     #[doc = " @return int the result of encoding the frame"]
     pub fn w_ffmpeg_decode(
@@ -183,6 +215,7 @@ extern "C" {
         p_data_in: *mut u8,
         p_data_size: ::std::os::raw::c_int,
         p_data_out: *mut *mut u8,
+        p_size_out: *mut ::std::os::raw::c_int,
         p_error: *mut ::std::os::raw::c_char,
     ) -> ::std::os::raw::c_int;
 }

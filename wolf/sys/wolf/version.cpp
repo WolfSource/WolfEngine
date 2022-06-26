@@ -16,6 +16,11 @@ void w_sys_version(char *p_buf, size_t p_len) {
   // for debugging
   constexpr auto WOLF_DEBUG_VERSION = 0;
 
+#if defined (WIN32) || defined (WIN64)
   sprintf_s(p_buf, p_len , "v%d.%d.%d.%d", WOLF_MAJOR_VERSION, WOLF_MINOR_VERSION,
                WOLF_PATCH_VERSION, WOLF_DEBUG_VERSION);
+#else
+  sprintf(p_buf , "v%d.%d.%d.%d", WOLF_MAJOR_VERSION, WOLF_MINOR_VERSION,
+               WOLF_PATCH_VERSION, WOLF_DEBUG_VERSION);
+#endif
 }
