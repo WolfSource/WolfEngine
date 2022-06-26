@@ -13,6 +13,8 @@ pub mod render;
 pub mod stream;
 pub mod system;
 
+pub mod media;
+
 #[cfg(not(target_arch = "wasm32"))]
 pub fn sys_version() -> String {
     use crate::system::ffi::version::*;

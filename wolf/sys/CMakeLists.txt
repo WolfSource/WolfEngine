@@ -112,7 +112,10 @@ list(APPEND LIBS mimalloc-static)
 # link to ffmpeg
 if (WOLF_MEDIA_FFMPEG)
   file(GLOB_RECURSE FFMPEG_SRCS
-    "${CMAKE_CURRENT_SOURCE_DIR}/media/ffmpeg.cppm"
+    "${CMAKE_CURRENT_SOURCE_DIR}/media/ffmpeg.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/media/ffmpeg.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/media/conversion.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/media/conversion.h"
   )
   list(APPEND SRCS ${FFMPEG_SRCS})
   list(APPEND INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/third_party/FFMPEG/include)

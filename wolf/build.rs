@@ -14,7 +14,7 @@ const ANDROID_NDK_OS_VARIANT: &str = "darwin-x86_64";
 
 // Cmake Compiler
 #[cfg(target_family = "windows")]
-const CMAKE_C_COMPILER: &str = "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.32.31326/bin/Hostx64/x64/cl.exe";
+const CMAKE_C_COMPILER: &str = "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/VC/Tools/MSVC/14.32.31326/bin/Hostx64/x64/cl.exe";
 
 #[cfg(any(target_family = "unix"))]
 const CMAKE_C_COMPILER: &str = "usr/bin/clang";
@@ -284,23 +284,119 @@ fn link(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &str) 
     println!("cargo:rustc-link-search=native={}", lib_path);
     println!("cargo:rustc-link-lib=dylib=wolf_sys");
 
-    // copy to target and deps folder
-    copy_shared_libs(lib_path);
-}
-
-#[cfg(target_os = "windows")]
-fn copy_shared_libs(p_lib_path: String) {
-    let out_dir = std::env::var("OUT_DIR").unwrap();
-
-    let out_path = std::path::Path::new(&out_dir).join("../../..");
-    let deps_path = out_path.join("deps");
     let names = [
         "wolf_sys.dll",
         "wolf_sys.exp",
         "wolf_sys.lib",
         "wolf_sys.pdb",
-    ];
-    for name in names {
+    ]
+    .to_vec();
+
+    // copy to target and deps folder
+    copy_shared_libs(lib_path, names);
+
+    copy_ffmpeg(p_current_dir_path_str, p_build_profile, p_target_os);
+
+    copy_dav1d(p_current_dir_path_str, p_build_profile, p_target_os);
+
+    copy_svt(p_current_dir_path_str, p_build_profile, p_target_os);
+}
+
+fn copy_ffmpeg(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &str) {
+    let ffmpeg_dll_names = [
+        "avcodec-59.dll",
+        "avdevice-59.dll",
+        "avfilter-8.dll",
+        "avformat-59.dll",
+        "avutil-57.dll",
+        "swresample-4.dll",
+        "swscale-6.dll",
+    ]
+    .to_vec();
+
+    let ffmpeg_bin_path = format!("{}/sys/third_party/FFMPEG/bin", p_current_dir_path_str);
+    println!("cargo:rustc-link-search=native={}", ffmpeg_bin_path);
+
+    // copy to target and deps folder
+    copy_shared_libs(ffmpeg_bin_path, ffmpeg_dll_names);
+
+    let ffmpeg_lib_names = [
+        "avcodec.lib",
+        "avdevice.lib",
+        "avfilter.lib",
+        "avformat.lib",
+        "avutil.lib",
+        "swresample.lib",
+        "swscale.lib",
+    ]
+    .to_vec();
+
+    let ffmpeg_lib_path = format!(
+        "{}/sys/third_party/FFMPEG/lib/{}",
+        p_current_dir_path_str, p_target_os
+    );
+    println!("cargo:rustc-link-search=native={}", ffmpeg_lib_path);
+
+    // copy to target and deps folder
+    copy_shared_libs(ffmpeg_lib_path, ffmpeg_lib_names);
+}
+
+fn copy_dav1d(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &str) {
+    let dav1d_lib_names = ["dav1d.lib"].to_vec();
+
+    let dav1d_lib_path = format!(
+        "{}/sys/third_party/DAV1D/lib/{}",
+        p_current_dir_path_str, p_build_profile
+    );
+    println!("cargo:rustc-link-search=native={}", dav1d_lib_path);
+
+    // copy to target and deps folder
+    copy_shared_libs(dav1d_lib_path, dav1d_lib_names);
+
+    let dav1d_bin_names = ["dav1d.dll"].to_vec();
+
+    let dav1d_bin_path = format!(
+        "{}/sys/third_party/DAV1D/bin/{}",
+        p_current_dir_path_str, p_build_profile
+    );
+    println!("cargo:rustc-link-search=native={}", dav1d_bin_path);
+
+    // copy to target and deps folder
+    copy_shared_libs(dav1d_bin_path, dav1d_bin_names);
+}
+
+fn copy_svt(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &str) {
+    let svt_lib_names = ["SvtAv1Dec.lib", "SvtAv1Enc.lib"].to_vec();
+
+    let svt_lib_path = format!(
+        "{}/sys/third_party/SVT-AV1/lib/{}",
+        p_current_dir_path_str, p_build_profile
+    );
+    println!("cargo:rustc-link-search=native={}", svt_lib_path);
+
+    // copy to target and deps folder
+    copy_shared_libs(svt_lib_path, svt_lib_names);
+
+    let svt_bin_names = ["SvtAv1Dec.dll", "SvtAv1Enc.dll"].to_vec();
+
+    let svt_bin_path = format!(
+        "{}/sys/third_party/SVT-AV1/bin/{}",
+        p_current_dir_path_str, p_build_profile
+    );
+    println!("cargo:rustc-link-search=native={}", svt_bin_path);
+
+    // copy to target and deps folder
+    copy_shared_libs(svt_bin_path, svt_bin_names);
+}
+
+#[cfg(target_os = "windows")]
+fn copy_shared_libs(p_lib_path: String, p_lib_names: Vec<&str>) {
+    let out_dir = std::env::var("OUT_DIR").unwrap();
+
+    let out_path = std::path::Path::new(&out_dir).join("../../..");
+    let deps_path = out_path.join("deps");
+
+    for name in p_lib_names.iter() {
         let file = format!("{}/{}", p_lib_path, name);
         let _ = std::fs::copy(&file, deps_path.join(name));
         let _ = std::fs::copy(&file, out_path.join(name));
@@ -329,9 +425,16 @@ fn bindgens(p_current_dir_path_str: &str) {
         dst: "src/stream/ffi/rist.rs",
     });
 
+    #[cfg(feature = "ffmpeg")]
+    headers.push(Binding {
+        src: "sys/media/ffmpeg.h",
+        dst: "src/media/ffi/ffmpeg.rs",
+    });
+
     // add include paths
     let clang_include_arg_0 = format!("-I{}/sys", p_current_dir_path_str);
     let clang_include_arg_1 = format!("-I{}/sys/wolf", p_current_dir_path_str);
+    let clang_include_arg_2 = format!("-I{}/sys/media", p_current_dir_path_str);
 
     for header in headers {
         println!("cargo:rerun-if-changed=sys/{}", header.src);
@@ -341,8 +444,12 @@ fn bindgens(p_current_dir_path_str: &str) {
         // the resulting bindings.
         let bindings = bindgen::Builder::default()
             // The input header we would like to generate bindings for.
-            .header(header.src.clone())
-            .clang_args([clang_include_arg_0.as_str(), clang_include_arg_1.as_str()])
+            .header(&(*header.src))
+            .clang_args([
+                clang_include_arg_0.as_str(),
+                clang_include_arg_1.as_str(),
+                clang_include_arg_2.as_str(),
+            ])
             // tell cargo to invalidate the built crate whenever any of the
             // included header files changed.
             .parse_callbacks(Box::new(bindgen::CargoCallbacks))
