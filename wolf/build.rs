@@ -14,7 +14,7 @@ const ANDROID_NDK_OS_VARIANT: &str = "darwin-x86_64";
 
 // Cmake Compiler
 #[cfg(target_family = "windows")]
-const CMAKE_C_COMPILER: &str = "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/VC/Tools/MSVC/14.32.31326/bin/Hostx64/x64/cl.exe";
+const CMAKE_C_COMPILER: &str = "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.32.31326/bin/Hostx64/x64/cl.exe";
 
 #[cfg(any(target_family = "unix"))]
 const CMAKE_C_COMPILER: &str = "usr/bin/clang";

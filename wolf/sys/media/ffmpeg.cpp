@@ -71,11 +71,6 @@ constexpr int MAX_ARRAY_SIZE = 6;
 
 #pragma region functions
 
-//w_ffmpeg_opt_t::w_ffmpeg_opt_t()
-//{
-//    ctx = nullptr;
-//}
-
 template<typename T>
 bool check_null(T a)
 {
@@ -267,16 +262,19 @@ int w_ffmpeg_init_encoder(w_ffmpeg_opt p_ffmpeg_opt, char *p_error)
    (p_ffmpeg_opt->ctx->context)->time_base.den = p_ffmpeg_opt->fps;
    (p_ffmpeg_opt->ctx->context)->pix_fmt = AV_PIX_FMT_YUV420P;
 
-   if (p_ffmpeg_opt->codec_id == AV_CODEC_ID_H264)
+   ret = av_opt_set_int(p_ffmpeg_opt->ctx->context->priv_data, "preset", p_ffmpeg_opt->preset, 0);
+   if (ret < 0)
    {
-       ret = av_opt_set(p_ffmpeg_opt->ctx->context->priv_data, "preset", "slow", 0);
+       make_error(p_error, _trace, "failed to set preset option", ret);
+       return ret = -1;
+   }
 
-       if (ret < 0)
-       {
-           make_error(p_error, _trace, "failed to set the options", ret);
-           return ret = -1;
-       }
-    }
+   ret = av_opt_set_int(p_ffmpeg_opt->ctx->context->priv_data, "crf", p_ffmpeg_opt->crf, 0);
+   if (ret < 0)
+   {
+       make_error(p_error, _trace, "failed to set crf option", ret);
+       return ret = -1;
+   }
 
    ret = avcodec_open2(p_ffmpeg_opt->ctx->context, p_ffmpeg_opt->ctx->codec, nullptr);
 	if (ret < 0) {

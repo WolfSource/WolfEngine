@@ -26,12 +26,10 @@ typedef struct w_ffmpeg_opt_t {
    int64_t height;
    int64_t bitrate;
    int codec_id;
+   int preset;
+   int crf;
    w_ffmpeg_action type;
    w_ffmpeg_ctx ctx;
-
-   //w_ffmpeg_opt_t()
-   //{
-   //};
 }w_ffmpeg_opt_t;
 
 typedef w_ffmpeg_opt_t* w_ffmpeg_opt;

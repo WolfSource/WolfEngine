@@ -39,6 +39,8 @@ pub struct w_ffmpeg_opt_t {
     pub height: i64,
     pub bitrate: i64,
     pub codec_id: ::std::os::raw::c_int,
+    pub preset: ::std::os::raw::c_int,
+    pub crf: ::std::os::raw::c_int,
     pub type_: w_ffmpeg_action,
     pub ctx: w_ffmpeg_ctx,
 }
@@ -46,7 +48,7 @@ pub struct w_ffmpeg_opt_t {
 fn bindgen_test_layout_w_ffmpeg_opt_t() {
     assert_eq!(
         ::std::mem::size_of::<w_ffmpeg_opt_t>(),
-        48usize,
+        56usize,
         concat!("Size of: ", stringify!(w_ffmpeg_opt_t))
     );
     assert_eq!(
@@ -139,6 +141,40 @@ fn bindgen_test_layout_w_ffmpeg_opt_t() {
         );
     }
     test_field_codec_id();
+    fn test_field_preset() {
+        assert_eq!(
+            unsafe {
+                let uninit = ::std::mem::MaybeUninit::<w_ffmpeg_opt_t>::uninit();
+                let ptr = uninit.as_ptr();
+                ::std::ptr::addr_of!((*ptr).preset) as usize - ptr as usize
+            },
+            36usize,
+            concat!(
+                "Offset of field: ",
+                stringify!(w_ffmpeg_opt_t),
+                "::",
+                stringify!(preset)
+            )
+        );
+    }
+    test_field_preset();
+    fn test_field_crf() {
+        assert_eq!(
+            unsafe {
+                let uninit = ::std::mem::MaybeUninit::<w_ffmpeg_opt_t>::uninit();
+                let ptr = uninit.as_ptr();
+                ::std::ptr::addr_of!((*ptr).crf) as usize - ptr as usize
+            },
+            40usize,
+            concat!(
+                "Offset of field: ",
+                stringify!(w_ffmpeg_opt_t),
+                "::",
+                stringify!(crf)
+            )
+        );
+    }
+    test_field_crf();
     fn test_field_type() {
         assert_eq!(
             unsafe {
@@ -146,7 +182,7 @@ fn bindgen_test_layout_w_ffmpeg_opt_t() {
                 let ptr = uninit.as_ptr();
                 ::std::ptr::addr_of!((*ptr).type_) as usize - ptr as usize
             },
-            36usize,
+            44usize,
             concat!(
                 "Offset of field: ",
                 stringify!(w_ffmpeg_opt_t),
@@ -163,7 +199,7 @@ fn bindgen_test_layout_w_ffmpeg_opt_t() {
                 let ptr = uninit.as_ptr();
                 ::std::ptr::addr_of!((*ptr).ctx) as usize - ptr as usize
             },
-            40usize,
+            48usize,
             concat!(
                 "Offset of field: ",
                 stringify!(w_ffmpeg_opt_t),

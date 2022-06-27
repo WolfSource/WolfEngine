@@ -12,11 +12,16 @@ fn test_encode() {
     use std::{io::Write, path::Path};
     use wolf::{media::ffi::ffmpeg::w_ffmpeg_action_W_ENCODE, w_log};
 
+    // open jpeg file sample
+    let input_image = Path::new("Logo.jpg");
+    let img = image::open(input_image).unwrap();
+    let tmp = img.as_bytes();
+
     // initalize variables
     let av_codec_id_av1 = 226;
     const LIMIT: usize = 255;
-    let width: i64 = 1024;
-    let height: i64 = 1024;
+    let width: i64 = img.width().into();
+    let height: i64 = img.height().into();
     let mut error = ['0' as u8; LIMIT];
 
     let mut encoded_buffer = CBuffer {
@@ -32,12 +37,9 @@ fn test_encode() {
         codec_id: av_codec_id_av1,
         ctx: std::ptr::null_mut(),
         type_: w_ffmpeg_action_W_ENCODE,
+        preset: 10,
+        crf: 30,
     } as *mut w_ffmpeg_opt_t;
-
-    // open jpeg file sample
-    let input_image = Path::new("Logo.jpg");
-    let img = image::open(input_image).unwrap();
-    let tmp = img.as_bytes();
 
     // initialize ffmpeg
     let mut res = ffmpeg_init(encode_options, &error);
@@ -98,8 +100,8 @@ fn test_decode() {
     // initialize variables
     let av_codec_id_av1 = 226;
     const LIMIT: usize = 255;
-    let width: u32 = 1024;
-    let height: u32 = 1024;
+    let width: u32 = 1920;
+    let height: u32 = 1080;
     let mut error = ['0' as u8; LIMIT];
 
     let mut decoded_buffer = CBuffer {
@@ -115,6 +117,8 @@ fn test_decode() {
         codec_id: av_codec_id_av1,
         ctx: std::ptr::null_mut(),
         type_: w_ffmpeg_action_W_DECODE,
+        preset: 10,
+        crf: 30,
     } as *mut w_ffmpeg_opt_t;
 
     // open encoding file sample
