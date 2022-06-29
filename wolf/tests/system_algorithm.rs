@@ -2,7 +2,7 @@
 #[tokio::test]
 async fn test_raft_over_grpc() {
     use std::time::Duration;
-    use wolf::stream::http::grpc::*;
+    use wolf::stream::http::grpc::{run_server, GrpcServerConfig};
     use wolf::system::algorithm::raft::raft_srv::get_service;
 
     let (s, r) = tokio::sync::oneshot::channel();

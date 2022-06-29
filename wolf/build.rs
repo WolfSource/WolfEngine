@@ -1,6 +1,6 @@
 #![allow(unused_mut)]
-
 use std::{path::Path, process::Command};
+use tonic_build as _;
 
 // TODO: read these params from args
 const OSX_DEPLOYMENT_TARGET: &str = "12.0";
@@ -12,7 +12,7 @@ const ANDROID_ARCH_API: &str = "armeabi-v7a";
 // https://developer.android.com/ndk/guides/other_build_systems
 const ANDROID_NDK_OS_VARIANT: &str = "darwin-x86_64";
 
-// Cmake Compiler
+// CMake Compiler
 #[cfg(target_os = "windows")]
 const CMAKE_C_COMPILER: &str = "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/VC/Tools/MSVC/14.32.31326/bin/Hostx64/x64/cl.exe";
 
@@ -49,7 +49,7 @@ fn main() {
     #[cfg(feature = "system_raft")]
     build_protos(&current_dir_path, &target_os);
 
-    // don't compoile any c++ codes for wasm32
+    // don't compile any c++ codes for wasm32
     if target_arch == "wasm32" {
         return;
     }
@@ -136,9 +136,9 @@ pub fn protos(
         .compile(p_proto_paths, p_proto_includes)
 }
 
-/// # Panic
+/// # Panics
 ///
-/// Will be panic `if cmake failed
+/// Will be panic if `CMake` process will be failed
 pub fn cmake(
     p_current_dir_path_str: &Path,
     p_wolf_sys_file_name: &str,
@@ -257,7 +257,7 @@ pub fn cmake(
     );
 }
 
-fn copy_shared_libs(p_lib_path: String, p_lib_names: Vec<&str>) {
+fn copy_shared_libs(p_lib_path: &str, p_lib_names: &[&str]) {
     let out_dir = std::env::var("OUT_DIR").unwrap();
 
     let out_path = std::path::Path::new(&out_dir).join("../../..");
@@ -265,14 +265,14 @@ fn copy_shared_libs(p_lib_path: String, p_lib_names: Vec<&str>) {
 
     for name in p_lib_names.iter() {
         let file = format!("{}/{}", p_lib_path, name);
-        let _ = std::fs::copy(&file, deps_path.join(name));
-        let _ = std::fs::copy(&file, out_path.join(name));
+        let _file1 = std::fs::copy(&file, deps_path.join(name));
+        let _file2 = std::fs::copy(&file, out_path.join(name));
     }
 }
 
 /// # Panic
 ///
-/// Will be panic `if link failed
+/// Will be panic if the link process will be failed
 fn link(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &str) {
     if p_target_os == "windows" {
         if p_build_profile == "Debug" {
@@ -309,20 +309,20 @@ fn link(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &str) 
     .to_vec();
 
     // copy to target and deps folder
-    copy_shared_libs(lib_path, names);
+    copy_shared_libs(&lib_path, &names);
 
     #[cfg(feature = "ffmpeg")]
-    copy_ffmpeg(p_current_dir_path_str, p_build_profile, p_target_os);
+    copy_ffmpeg(p_current_dir_path_str, p_target_os);
 
     #[cfg(feature = "media_av1")]
-    copy_dav1d(p_current_dir_path_str, p_build_profile, p_target_os);
+    copy_dav1d(p_current_dir_path_str, p_build_profile);
 
     #[cfg(feature = "media_av1")]
-    copy_svt(p_current_dir_path_str, p_build_profile, p_target_os);
+    copy_svt(p_current_dir_path_str, p_build_profile);
 }
 
 #[cfg(feature = "ffmpeg")]
-fn copy_ffmpeg(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &str) {
+fn copy_ffmpeg(p_current_dir_path_str: &str, p_target_os: &str) {
     let ffmpeg_dll_names = [
         "avcodec-59.dll",
         "avdevice-59.dll",
@@ -331,14 +331,13 @@ fn copy_ffmpeg(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os:
         "avutil-57.dll",
         "swresample-4.dll",
         "swscale-6.dll",
-    ]
-    .to_vec();
+    ];
 
     let ffmpeg_bin_path = format!("{}/sys/third_party/FFMPEG/bin", p_current_dir_path_str);
     println!("cargo:rustc-link-search=native={}", ffmpeg_bin_path);
 
     // copy to target and deps folder
-    copy_shared_libs(ffmpeg_bin_path, ffmpeg_dll_names);
+    copy_shared_libs(&ffmpeg_bin_path, &ffmpeg_dll_names);
 
     let ffmpeg_lib_names = [
         "avcodec.lib",
@@ -348,8 +347,7 @@ fn copy_ffmpeg(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os:
         "avutil.lib",
         "swresample.lib",
         "swscale.lib",
-    ]
-    .to_vec();
+    ];
 
     let ffmpeg_lib_path = format!(
         "{}/sys/third_party/FFMPEG/lib/{}",
@@ -358,11 +356,11 @@ fn copy_ffmpeg(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os:
     println!("cargo:rustc-link-search=native={}", ffmpeg_lib_path);
 
     // copy to target and deps folder
-    copy_shared_libs(ffmpeg_lib_path, ffmpeg_lib_names);
+    copy_shared_libs(&ffmpeg_lib_path, &ffmpeg_lib_names);
 }
 
 #[cfg(feature = "media_av1")]
-fn copy_dav1d(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &str) {
+fn copy_dav1d(p_current_dir_path_str: &str, p_build_profile: &str) {
     let dav1d_lib_names = ["dav1d.lib"].to_vec();
 
     let dav1d_lib_path = format!(
@@ -372,7 +370,7 @@ fn copy_dav1d(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: 
     println!("cargo:rustc-link-search=native={}", dav1d_lib_path);
 
     // copy to target and deps folder
-    copy_shared_libs(dav1d_lib_path, dav1d_lib_names);
+    copy_shared_libs(&dav1d_lib_path, &dav1d_lib_names);
 
     let dav1d_bin_names = ["dav1d.dll"].to_vec();
 
@@ -383,11 +381,11 @@ fn copy_dav1d(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: 
     println!("cargo:rustc-link-search=native={}", dav1d_bin_path);
 
     // copy to target and deps folder
-    copy_shared_libs(dav1d_bin_path, dav1d_bin_names);
+    copy_shared_libs(&dav1d_bin_path, &dav1d_bin_names);
 }
 
 #[cfg(feature = "media_av1")]
-fn copy_svt(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &str) {
+fn copy_svt(p_current_dir_path_str: &str, p_build_profile: &str) {
     let svt_lib_names = ["SvtAv1Dec.lib", "SvtAv1Enc.lib"].to_vec();
 
     let svt_lib_path = format!(
@@ -397,9 +395,9 @@ fn copy_svt(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &s
     println!("cargo:rustc-link-search=native={}", svt_lib_path);
 
     // copy to target and deps folder
-    copy_shared_libs(svt_lib_path, svt_lib_names);
+    copy_shared_libs(&svt_lib_path, &svt_lib_names);
 
-    let svt_bin_names = ["SvtAv1Dec.dll", "SvtAv1Enc.dll"].to_vec();
+    let svt_bin_names = ["SvtAv1Dec.dll", "SvtAv1Enc.dll"];
 
     let svt_bin_path = format!(
         "{}/sys/third_party/SVT-AV1/bin/{}",
@@ -408,7 +406,7 @@ fn copy_svt(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &s
     println!("cargo:rustc-link-search=native={}", svt_bin_path);
 
     // copy to target and deps folder
-    copy_shared_libs(svt_bin_path, svt_bin_names);
+    copy_shared_libs(&svt_bin_path, &svt_bin_names);
 }
 
 fn bindgens(p_current_dir_path_str: &str) {
@@ -453,6 +451,7 @@ fn bindgens(p_current_dir_path_str: &str) {
         let bindings = bindgen::Builder::default()
             // The input header we would like to generate bindings for.
             .header(&(*header.src))
+            .layout_tests(false)
             .clang_args([
                 clang_include_arg_0.as_str(),
                 clang_include_arg_1.as_str(),

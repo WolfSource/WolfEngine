@@ -8,6 +8,9 @@ pub struct Screen {
 }
 
 impl Screen {
+    /// # Errors
+    ///
+    /// TODO:
     pub fn new_primary() -> Result<Self> {
         const TRACE: &str = "screen::new_primary";
 
@@ -36,6 +39,9 @@ impl Screen {
         })
     }
 
+    /// # Errors
+    ///
+    /// TODO:
     pub fn new_all() -> Result<Vec<Self>> {
         const TRACE: &str = "screen::new_all";
 
@@ -69,6 +75,9 @@ impl Screen {
         Ok(instances)
     }
 
+    /// # Errors
+    ///
+    /// TODO:
     pub fn capture(&mut self) -> std::io::Result<Frame> {
         self.capturer.frame()
     }

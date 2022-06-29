@@ -11,7 +11,7 @@ use crate::stream::ffi::rist::{
 };
 use crate::system::ffi::version::size_t;
 use anyhow::{bail, Result};
-use std::os::raw::{c_char, c_int, c_ushort, c_void};
+use std::os::raw::c_void;
 
 #[derive(Debug, Clone, Copy)]
 #[repr(C)]
@@ -49,15 +49,16 @@ pub enum rist_log_level {
     RIST_LOG_SIMULATE = 100,
 }
 impl rist_log_level {
-    pub fn from_i32(value: i32) -> Self {
+    #[must_use]
+    pub const fn from_i32(value: i32) -> Self {
         match value {
-            3 => rist_log_level::RIST_LOG_ERROR,
-            4 => rist_log_level::RIST_LOG_WARN,
-            5 => rist_log_level::RIST_LOG_NOTICE,
-            6 => rist_log_level::RIST_LOG_INFO,
-            7 => rist_log_level::RIST_LOG_DEBUG,
-            100 => rist_log_level::RIST_LOG_SIMULATE,
-            _ => rist_log_level::RIST_LOG_DISABLE,
+            3 => Self::RIST_LOG_ERROR,
+            4 => Self::RIST_LOG_WARN,
+            5 => Self::RIST_LOG_NOTICE,
+            6 => Self::RIST_LOG_INFO,
+            7 => Self::RIST_LOG_DEBUG,
+            100 => Self::RIST_LOG_SIMULATE,
+            _ => Self::RIST_LOG_DISABLE,
         }
     }
 }
@@ -84,6 +85,9 @@ impl Drop for rist_data_block {
 }
 
 impl rist_data_block {
+    /// # Errors
+    ///
+    /// TODO: add error description
     pub fn new() -> Result<Self> {
         let mut rist_block = Self {
             block: std::ptr::null_mut(),
@@ -95,6 +99,9 @@ impl rist_data_block {
         bail!("could not allocate memory for rist_data_block")
     }
 
+    /// # Errors
+    ///
+    /// TODO: add error description
     pub fn from(p_data_block: w_rist_data_block) -> Result<Self> {
         let mut rist_block = Self {
             block: p_data_block,
@@ -106,11 +113,19 @@ impl rist_data_block {
         bail!("could not allocate memory for rist_data_block")
     }
 
-    pub fn read(&mut self) -> &[u8] {
+    /// # Errors
+    ///
+    /// TODO: add error description
+    pub fn read(&mut self) -> Result<&[u8]> {
+        const TRACE: &str = "rist::read";
         unsafe {
             let ptr = w_rist_get_data_block(self.block);
             let len = w_rist_get_data_block_len(self.block);
-            std::slice::from_raw_parts(ptr as *mut u8, len as usize)
+            let len_usize = usize::try_from(len).unwrap_or(0);
+            if len_usize > 0 {
+                return Ok(std::slice::from_raw_parts(ptr as *mut u8, len_usize));
+            }
+            bail!("invalid len size. trace info {}", TRACE)
         }
     }
 
@@ -118,9 +133,9 @@ impl rist_data_block {
         unsafe {
             w_rist_set_data_block(
                 self.block,
-                p_data.as_ptr() as *const c_void,
+                p_data.as_ptr().cast::<std::ffi::c_void>(),
                 p_data.len() as size_t,
-            )
+            );
         };
     }
 }
@@ -143,6 +158,9 @@ impl Drop for rist {
 }
 
 impl rist {
+    /// # Errors
+    ///
+    /// TODO: add error description
     pub fn new(
         p_mode: rist_ctx_mode,
         p_profile: rist_profile,
@@ -155,7 +173,7 @@ impl rist {
             url: "".to_owned(),
             mode: p_mode,
             profile: p_profile,
-            loss_percentage: p_loss_percentage as c_ushort,
+            loss_percentage: p_loss_percentage,
             log_level: p_log_level,
         };
 
@@ -178,9 +196,12 @@ impl rist {
         }
     }
 
+    /// # Errors
+    ///
+    /// TODO: add error description
     pub fn connect(&mut self, p_url: &str) -> Result<()> {
         self.url = p_url.to_string();
-        let ret = unsafe { w_rist_connect(self.ctx, self.url.as_ptr() as *const c_char) };
+        let ret = unsafe { w_rist_connect(self.ctx, self.url.as_ptr().cast::<i8>()) };
         match ret {
             0 => Ok(()),
             _ => {
@@ -189,6 +210,9 @@ impl rist {
         }
     }
 
+    /// # Errors
+    ///
+    /// TODO: add error description
     /// # Safety
     ///
     /// This function use void* for arg
@@ -212,6 +236,9 @@ impl rist {
         }
     }
 
+    /// # Errors
+    ///
+    /// TODO: add error description
     /// # Safety
     ///
     /// This function use void* for arg
@@ -229,6 +256,9 @@ impl rist {
         }
     }
 
+    /// # Errors
+    ///
+    /// TODO: add error description
     /// # Safety
     ///
     /// This function use void* for arg
@@ -245,7 +275,9 @@ impl rist {
             }
         }
     }
-
+    /// # Errors
+    ///
+    /// TODO: add error description
     /// # Safety
     ///
     /// This function use void* for arg
@@ -255,7 +287,7 @@ impl rist {
         p_arg: *mut c_void,
         p_on_callback: w_rist_stats_callback,
     ) -> Result<()> {
-        let ret = w_rist_set_stats_callback(self.ctx, p_interval as c_int, p_arg, p_on_callback);
+        let ret = w_rist_set_stats_callback(self.ctx, p_interval, p_arg, p_on_callback);
         match ret {
             0 => Ok(()),
             _ => {
@@ -264,6 +296,9 @@ impl rist {
         }
     }
 
+    /// # Errors
+    ///
+    /// TODO: add error description
     /// # Safety
     ///
     /// This function use void* for arg
@@ -281,11 +316,12 @@ impl rist {
         }
     }
 
-    pub fn send(&self, p_data_block: rist_data_block) -> i32 {
+    #[must_use]
+    pub fn send(&self, p_data_block: &rist_data_block) -> i32 {
         unsafe { w_rist_write(self.ctx, p_data_block.block) }
     }
 
     pub fn read(&self, p_data_block: &mut rist_data_block, p_timeout: i32) -> i32 {
-        unsafe { w_rist_read(self.ctx, &mut p_data_block.block, p_timeout as c_int) }
+        unsafe { w_rist_read(self.ctx, &mut p_data_block.block, p_timeout) }
     }
 }

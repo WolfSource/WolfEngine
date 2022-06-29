@@ -12,11 +12,16 @@ impl Default for Rhai {
 }
 
 impl Rhai {
+    #[must_use]
     pub fn new() -> Self {
         Self {
             engine: Engine::new(),
         }
     }
+
+    /// # Errors
+    ///
+    /// TODO:
     pub fn run_return_void(&self, p_script: &str) -> Result<()> {
         const TRACE: &str = "WRhai::run_return_void";
         self.engine
@@ -24,6 +29,9 @@ impl Rhai {
             .map_err(|e| anyhow!("{:?}", e).context(TRACE))
     }
 
+    /// # Errors
+    ///
+    /// TODO:
     pub fn run_return_any<T>(&self, p_script: &str) -> Result<T>
     where
         T: Clone + Variant,

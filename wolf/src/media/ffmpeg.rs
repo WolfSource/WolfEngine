@@ -1,5 +1,5 @@
 use crate::media::ffi::ffmpeg::{
-    w_ffmpeg_action, w_ffmpeg_decode, w_ffmpeg_encode, w_ffmpeg_fini, w_ffmpeg_init, w_ffmpeg_opt,
+    w_ffmpeg_decode, w_ffmpeg_encode, w_ffmpeg_fini, w_ffmpeg_init, w_ffmpeg_opt,
 };
 use anyhow::{bail, Result};
 use std::os::raw::c_char;
@@ -10,9 +10,12 @@ pub struct CBuffer {
     pub len: i32,
 }
 
+/// # Errors
+///
+/// Will return `Err` if `ffmpeg` could not initialize
 #[allow(clippy::not_unsafe_ptr_arg_deref)]
 pub fn ffmpeg_init(p_ffmpeg_opt: w_ffmpeg_opt, p_error: &[u8]) -> Result<()> {
-    let mut ret: i32 = unsafe { w_ffmpeg_init(p_ffmpeg_opt, p_error.as_ptr() as *mut c_char) };
+    let ret: i32 = unsafe { w_ffmpeg_init(p_ffmpeg_opt, p_error.as_ptr() as *mut c_char) };
 
     match ret {
         0 => Ok(()),
@@ -22,6 +25,9 @@ pub fn ffmpeg_init(p_ffmpeg_opt: w_ffmpeg_opt, p_error: &[u8]) -> Result<()> {
     }
 }
 
+/// # Errors
+///
+/// Will return `Err` if `ffmpeg` could encode the frame.
 #[allow(clippy::not_unsafe_ptr_arg_deref)]
 pub fn ffmpeg_encode(
     p_ffmpeg_opt: w_ffmpeg_opt,
@@ -29,7 +35,7 @@ pub fn ffmpeg_encode(
     p_encoded_buffer: &mut CBuffer,
     p_error: &[u8],
 ) -> Result<()> {
-    let mut ret: i32 = unsafe {
+    let ret: i32 = unsafe {
         w_ffmpeg_encode(
             p_ffmpeg_opt,
             p_data_in.as_ptr() as *mut u8,
@@ -47,6 +53,9 @@ pub fn ffmpeg_encode(
     }
 }
 
+/// # Errors
+///
+/// Will return `Err` if `ffmpeg` failed on decoding the frame.
 #[allow(clippy::not_unsafe_ptr_arg_deref)]
 pub fn ffmpeg_decode(
     p_ffmpeg_opt: w_ffmpeg_opt,
@@ -55,7 +64,7 @@ pub fn ffmpeg_decode(
     p_decoded_buffer: &mut CBuffer,
     p_error: &[u8],
 ) -> Result<()> {
-    let mut ret: i32 = unsafe {
+    let ret: i32 = unsafe {
         w_ffmpeg_decode(
             p_ffmpeg_opt,
             p_data_in.as_ptr() as *mut u8,
@@ -75,8 +84,6 @@ pub fn ffmpeg_decode(
 }
 
 #[allow(clippy::not_unsafe_ptr_arg_deref)]
-pub fn ffmpeg_fini(p_ffmpeg_opt: w_ffmpeg_opt) -> Result<()> {
+pub fn ffmpeg_fini(p_ffmpeg_opt: w_ffmpeg_opt) {
     unsafe { w_ffmpeg_fini(p_ffmpeg_opt) };
-
-    Ok(())
 }

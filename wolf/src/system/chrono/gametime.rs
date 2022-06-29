@@ -134,7 +134,7 @@ impl GameTime {
     /// let mut gtime = GameTime::new();
     /// let elapsed_time = gtime.get_elapsed_seconds();
     /// ```
-    pub fn get_elapsed_seconds(&self) -> f64 {
+    pub const fn get_elapsed_seconds(&self) -> f64 {
         self.elapsed_secs
     }
 
@@ -149,7 +149,7 @@ impl GameTime {
     /// let total_time = gtime.get_total_elapsed_seconds();
     /// ```
     #[must_use]
-    pub fn get_total_elapsed_seconds(&self) -> f64 {
+    pub const fn get_total_elapsed_seconds(&self) -> f64 {
         self.total_secs
     }
 
@@ -171,7 +171,7 @@ impl GameTime {
         self.target_elapsed_secs = p_value;
     }
 
-     /// the update tick function
+    /// the update tick function
     ///
     /// # Arguments
     ///
@@ -189,7 +189,7 @@ impl GameTime {
     /// ```
     #[allow(unused_must_use)]
     pub fn tick(&mut self) {
-        self.tick_fn(move ||{});
+        self.tick_fn(move || {});
     }
 
     /// the update tick function

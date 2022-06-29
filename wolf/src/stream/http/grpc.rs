@@ -101,6 +101,9 @@ where
 }
 
 ///create a tls grpc endpoint
+/// # Errors
+///
+/// TODO: add error description
 pub async fn create_tls_endpoint(
     p_end_point: String,
     p_domain_name: String,
@@ -152,6 +155,9 @@ pub async fn create_tls_endpoint(
 }
 
 ///create a tls channel for connecting to grpc server
+/// # Errors
+///
+/// TODO: add error description
 pub async fn create_tls_channel(p_tls_endpoint: &Endpoint) -> Result<Channel> {
     const TRACE: &str = "create_tls_channel";
     //configures TLS for the endpoint
@@ -174,6 +180,9 @@ pub async fn create_tls_channel(p_tls_endpoint: &Endpoint) -> Result<Channel> {
 }
 
 ///create a none tls channel for connecting to grpc server
+/// # Errors
+///
+/// TODO: add error description
 pub async fn create_channel(p_end_point: String) -> Result<Channel> {
     const TRACE: &str = "create_channel";
     //create endpoint

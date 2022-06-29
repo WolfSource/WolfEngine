@@ -24,6 +24,9 @@ impl OnMessageCallback {
         Self { f: Arc::new(f) }
     }
 
+    /// # Errors
+    ///
+    /// TODO: add error description
     pub fn run(
         &self,
         p_socket_time_in_secs: f64,
@@ -76,6 +79,9 @@ impl OnSocketCallback {
         Self { f: Arc::new(f) }
     }
 
+    /// # Errors
+    ///
+    /// TODO: add error description
     pub fn run(&self, p_arg: &SocketAddr) -> Result<()> {
         (self.f)(p_arg)
     }
@@ -114,6 +120,9 @@ impl OnCloseSocketCallback {
         Self { f: Arc::new(f) }
     }
 
+    /// # Errors
+    ///
+    /// TODO: add error description
     pub fn run(&self, p_arg1: &SocketAddr, p_arg2: &str) -> Result<()> {
         (self.f)(p_arg1, p_arg2)
     }

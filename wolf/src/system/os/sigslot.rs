@@ -1,4 +1,4 @@
-use signals2::*;
+use signals2::{Connect0, Connection, Emit0, Signal};
 
 pub struct Slot {
     status: Connection,
@@ -8,11 +8,12 @@ impl Slot {
     fn new(conn: Connection) -> Self {
         Self { status: conn }
     }
+    #[must_use]
     pub fn is_connected(&self) -> bool {
         self.status.connected()
     }
     pub fn disconnect(&self) {
-        self.status.disconnect()
+        self.status.disconnect();
     }
 }
 

@@ -3,7 +3,7 @@
 #[cfg(feature = "system_lz4")]
 #[test]
 fn test_lz4() {
-    use wolf::system::compression::lz4::{self, *};
+    use wolf::system::compression::lz4::{self, LZ4CompressMode};
 
     let mock_compression_data = "HELLO WOLF\r\nHELLO WOLF!*&%!HELLO WOLF!07*&%!\r\nThe quick brown fox jumps over the lazy dog!";
     println!(

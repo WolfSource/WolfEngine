@@ -11,25 +11,31 @@ pub enum TlsPrivateKeyType {
     RSA,
 }
 
+/// # Errors
+///
+/// TODO: add error description
 pub fn load_certs(p_path: &Path) -> Result<Vec<Certificate>> {
     std::fs::File::open(p_path)
         .and_then(|f| {
             let mut buf = std::io::BufReader::new(f);
             rustls_pemfile::certs(&mut buf)
-                .map(|mut certs| certs.drain(..).map(Certificate).collect())
+                .map(|certs| certs.into_iter().map(Certificate).collect())
         })
         .map_err(|e| anyhow!("could not load certs {:?} because of {:?}", p_path, e))
 }
 
+/// # Errors
+///
+/// TODO: add error description
 pub fn load_private_keys(p_path: &Path, p_type: &TlsPrivateKeyType) -> Result<Vec<PrivateKey>> {
     std::fs::File::open(p_path)
         .and_then(|f| {
             let mut buf = std::io::BufReader::new(f);
             match p_type {
                 TlsPrivateKeyType::PKCS8 => rustls_pemfile::pkcs8_private_keys(&mut buf)
-                    .map(|mut keys| keys.drain(..).map(PrivateKey).collect()),
+                    .map(|keys| keys.into_iter().map(PrivateKey).collect()),
                 TlsPrivateKeyType::RSA => rustls_pemfile::rsa_private_keys(&mut buf)
-                    .map(|mut keys| keys.drain(..).map(PrivateKey).collect()),
+                    .map(|keys| keys.into_iter().map(PrivateKey).collect()),
             }
         })
         .map_err(|e| {
@@ -42,6 +48,9 @@ pub fn load_private_keys(p_path: &Path, p_type: &TlsPrivateKeyType) -> Result<Ve
         })
 }
 
+/// # Errors
+///
+/// TODO: add error description
 pub fn init_tls_acceptor(
     p_tls_certificate_path: Option<&Path>,
     p_tls_private_key_path: Option<&Path>,

@@ -18,6 +18,12 @@ impl std::fmt::Debug for LZ4CompressMode {
     }
 }
 
+/// # Errors
+///
+/// TODO: add error description
+/// # Panics
+///
+/// TODO: add panic description
 pub fn compress(
     p_dst: &mut Vec<u8>,
     p_src: &[u8],
@@ -27,32 +33,43 @@ pub fn compress(
     const TRACE: &str = "lz4::compress";
 
     // allocate size for compressed data
-    let src_len = p_src.len() as i32;
-    let mut max_dst_size = unsafe { w_lz4_compress_bound(src_len) };
-    p_dst.clear();
-    p_dst.resize(max_dst_size as usize, 0u8);
+    let src_len = i32::try_from(p_src.len()).unwrap_or(0);
+    if src_len == 0 {
+        anyhow::bail!("invalid source size. trace info: {}", TRACE)
+    }
 
-    max_dst_size = match p_mode {
+    let max_dst_size = unsafe { w_lz4_compress_bound(src_len) };
+    let safe_max_dst_size = usize::try_from(max_dst_size).unwrap_or(0);
+    if safe_max_dst_size == 0 {
+        anyhow::bail!("invalid destination size. trace info: {}", TRACE)
+    }
+
+    // now we are sure that safe_max_dst_size is a signed integer
+
+    p_dst.clear();
+    p_dst.resize(safe_max_dst_size, 0u8);
+
+    let new_size_i32 = match p_mode {
         LZ4CompressMode::DEFAULT => unsafe {
             w_lz4_compress_default(
                 p_src.as_ptr() as *mut c_char,
-                p_dst.as_mut_ptr() as *mut c_char,
+                p_dst.as_mut_ptr().cast::<i8>(),
                 src_len,
-                max_dst_size,
+                safe_max_dst_size.try_into().unwrap(),
             )
         },
         LZ4CompressMode::FAST => unsafe {
             w_lz4_compress_fast(
                 p_src.as_ptr() as *mut c_char,
-                p_dst.as_mut_ptr() as *mut c_char,
+                p_dst.as_mut_ptr().cast::<i8>(),
                 src_len,
-                max_dst_size,
+                safe_max_dst_size.try_into().unwrap(),
                 p_acceleration,
             )
         },
     };
 
-    let new_size = max_dst_size as usize;
+    let new_size = usize::try_from(new_size_i32).unwrap_or(0);
     if new_size > 0 {
         p_dst.shrink_to(new_size);
         unsafe { p_dst.set_len(new_size) };
@@ -61,23 +78,34 @@ pub fn compress(
     anyhow::bail!("missing buffer destination size. trace info: {}", TRACE)
 }
 
+/// # Errors
+///
+/// TODO: add error description
 pub fn de_compress(p_dst: &mut Vec<u8>, p_src: &[u8]) -> anyhow::Result<()> {
     const TRACE: &str = "lz4::decompress";
 
     // allocate size for decompressed data
-    let src_len = p_src.len() as i32;
+    let src_len = i32::try_from(p_src.len()).unwrap_or(0);
+    if src_len == 0 {
+        anyhow::bail!("invalid source length. trace info: {}", TRACE)
+    }
     let mut max_dst_size = src_len * 2;
     let mut ret_size = 0;
 
     p_dst.clear();
     for _ in 0..10 {
+        let max_dst_safe_usize = usize::try_from(max_dst_size).unwrap_or(0);
+        if max_dst_safe_usize == 0 {
+            break;
+        }
+
         // reserve new size for destination
-        p_dst.resize(max_dst_size as usize, 0u8);
+        p_dst.resize(max_dst_safe_usize, 0u8);
         // try for decompress
         ret_size = unsafe {
             w_lz4_decompress_safe(
-                p_src.as_ptr() as *const c_char,
-                p_dst.as_mut_ptr() as *mut c_char,
+                p_src.as_ptr().cast::<i8>(),
+                p_dst.as_mut_ptr().cast::<i8>(),
                 src_len,
                 max_dst_size,
             )
@@ -88,8 +116,8 @@ pub fn de_compress(p_dst: &mut Vec<u8>, p_src: &[u8]) -> anyhow::Result<()> {
         max_dst_size *= 2;
     }
 
-    if ret_size > 0 {
-        let new_size = ret_size as usize;
+    let new_size = usize::try_from(ret_size).unwrap_or(0);
+    if new_size > 0 {
         p_dst.shrink_to(new_size);
         unsafe { p_dst.set_len(new_size) };
         return Ok(());

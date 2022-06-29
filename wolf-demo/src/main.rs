@@ -1,6 +1,8 @@
 #![cfg_attr(target_arch = "wasm32", feature(async_closure))]
 #![allow(unused_imports)]
 #![allow(unreachable_code)]
+#![allow(clippy::future_not_send)]
+
 use anyhow::{anyhow, Result};
 use raw_window_handle::HasRawWindowHandle;
 use wgpu::SurfaceError;
@@ -19,7 +21,7 @@ use wolf::{
 use {wasm_bindgen::prelude::*, wasm_mt::prelude::*, wolf::system::script::javascript::JavaScript};
 
 // Normal function
-fn add(x: i64, y: i64) -> i64 {
+const fn add(x: i64, y: i64) -> i64 {
     x + y
 }
 
@@ -132,12 +134,10 @@ impl IScene for WScene {
         );
 
         // get output from surface
-        let output_res = if let Some(surf) = &p_gdevice.surface {
-            surf.get_current_texture()
-        } else {
+        let output_res = p_gdevice.surface.as_ref().map_or_else(|| {
             w_log!("surface is None, make sure use render_to_texture function for offscreen rendering mode");
             Err(SurfaceError::Outdated)
-        };
+            }, wgpu::Surface::get_current_texture);
 
         let output = output_res?;
 
@@ -185,7 +185,7 @@ impl IScene for WScene {
 
 async fn run<I>(p_scene: I) -> Result<()>
 where
-    I: IScene + Sync + 'static,
+    I: IScene + Sync + Send + 'static,
 {
     const TRACE: &str = "WSceneManager::run";
 

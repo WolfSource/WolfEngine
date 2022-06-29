@@ -26,6 +26,9 @@ pub struct TcpClientConfig<'a> {
     pub tls_ca_path: Option<&'a Path>,
 }
 
+/// # Errors
+///
+/// TODO: add error description
 pub async fn client(
     p_config: &TcpClientConfig<'_>,
     p_on_accept_connection: OnSocketCallback,

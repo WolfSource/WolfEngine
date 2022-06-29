@@ -16,20 +16,21 @@ pub mod system;
 pub mod media;
 
 #[cfg(not(target_arch = "wasm32"))]
+#[must_use]
 pub fn sys_version() -> String {
-    use crate::system::ffi::version::*;
+    use crate::system::ffi::version::{size_t, w_sys_version};
 
     // create a buffer
     let mut buf = [0i8; 32];
     let buf_ptr = buf.as_mut_ptr();
 
     // call unsafe function
-    let cstr = unsafe {
+    let c_str = unsafe {
         w_sys_version(buf_ptr, buf.len() as size_t);
         std::ffi::CStr::from_ptr(buf_ptr)
     };
 
     // return result
-    let str = cstr.to_str().unwrap_or_default();
+    let str = c_str.to_str().unwrap_or_default();
     String::from(str)
 }

@@ -6,6 +6,8 @@ pub struct WindowInfo {
     pub height: u32,
 }
 
+unsafe impl Send for WindowInfo {}
+
 unsafe impl raw_window_handle::HasRawWindowHandle for WindowInfo {
     fn raw_window_handle(&self) -> raw_window_handle::RawWindowHandle {
         self.handle
@@ -22,6 +24,11 @@ pub struct GraphicsDevice {
 }
 
 impl GraphicsDevice {
+    /// # Panics
+    ///
+    /// # Errors
+    ///
+    /// TODO: replace with gfx
     pub async fn new(p_window_info: Option<WindowInfo>) -> Result<Self> {
         let surface: Option<wgpu::Surface>;
         let size: (u32, u32);
@@ -149,7 +156,7 @@ impl GraphicsDevice {
         self.adaptor.get_info()
     }
 
-    pub fn get_size(&self) -> (u32, u32) {
+    pub const fn get_size(&self) -> (u32, u32) {
         self.size
     }
 }

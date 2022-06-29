@@ -90,9 +90,8 @@ fn test_screen_captures() {
                     let one_frame = ONE_SEC / 60;
                     std::thread::sleep(one_frame);
                     continue;
-                } else {
-                    panic!("could not capture: {}", e);
                 }
+                panic!("could not capture: {}", e);
             }
         }
 

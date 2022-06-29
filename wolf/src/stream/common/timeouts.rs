@@ -4,6 +4,9 @@ use instant::Duration;
 use std::net::SocketAddr;
 
 #[cfg(not(target_arch = "wasm32"))]
+/// # Errors
+///
+/// TODO: add error description
 pub async fn timeout_for_read(p_timeout_in_secs: f64) -> std::io::Result<usize> {
     use std::io::{Error, ErrorKind};
 
@@ -23,6 +26,9 @@ pub async fn timeout_for_read_ws(
     None
 }
 
+/// # Errors
+///
+/// TODO: add error description
 #[cfg(not(any(target_os = "android", target_os = "ios", target_arch = "wasm32")))]
 pub async fn timeout_for_accept(
     p_timeout_in_secs: f64,

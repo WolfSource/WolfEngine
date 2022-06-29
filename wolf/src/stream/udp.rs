@@ -81,6 +81,9 @@ async fn send(
     res
 }
 
+/// # Errors
+///
+/// TODO: add error description
 pub async fn connect(
     p_address: &str,
     p_port: u16,

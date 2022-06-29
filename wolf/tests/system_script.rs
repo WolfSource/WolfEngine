@@ -1,5 +1,5 @@
 // Normal function
-fn add(x: i64, y: i64) -> i64 {
+const fn add(x: i64, y: i64) -> i64 {
     x + y
 }
 
