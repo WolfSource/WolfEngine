@@ -13,10 +13,13 @@ const ANDROID_ARCH_API: &str = "armeabi-v7a";
 const ANDROID_NDK_OS_VARIANT: &str = "darwin-x86_64";
 
 // Cmake Compiler
-#[cfg(target_family = "windows")]
+#[cfg(target_os = "windows")]
 const CMAKE_C_COMPILER: &str = "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/VC/Tools/MSVC/14.32.31326/bin/Hostx64/x64/cl.exe";
 
-#[cfg(any(target_family = "unix"))]
+#[cfg(any(target_os = "macos", target_os = "ios"))]
+const CMAKE_C_COMPILER: &str = "/Library/Developer/CommandLineTools/usr/bin/clang";
+
+#[cfg(any(target_os = "unix"))]
 const CMAKE_C_COMPILER: &str = "usr/bin/clang";
 
 fn main() {
@@ -44,7 +47,7 @@ fn main() {
     };
 
     #[cfg(feature = "system_raft")]
-    build_protos(current_dir_path, target_os);
+    build_protos(&current_dir_path, &target_os);
 
     // don't compoile any c++ codes for wasm32
     if target_arch == "wasm32" {
@@ -89,7 +92,7 @@ fn main() {
 ///
 /// Will return `Err` if `proto` does not exist or is invalid.
 #[cfg(feature = "system_raft")]
-fn build_protos(p_current_dir_path: &str, p_target_os: &str) {
+fn build_protos(p_current_dir_path: &std::path::Path, p_target_os: &str) {
     // compile protos
     let mut build_server_proto = true;
     let build_client_proto = true;
@@ -126,7 +129,7 @@ pub fn protos(
     p_proto_includes: &[&str],
     p_build_client: bool,
     p_build_server: bool,
-) -> io::Result<()> {
+) -> std::io::Result<()> {
     tonic_build::configure()
         .build_client(p_build_client)
         .build_server(p_build_server)
@@ -254,6 +257,19 @@ pub fn cmake(
     );
 }
 
+fn copy_shared_libs(p_lib_path: String, p_lib_names: Vec<&str>) {
+    let out_dir = std::env::var("OUT_DIR").unwrap();
+
+    let out_path = std::path::Path::new(&out_dir).join("../../..");
+    let deps_path = out_path.join("deps");
+
+    for name in p_lib_names.iter() {
+        let file = format!("{}/{}", p_lib_path, name);
+        let _ = std::fs::copy(&file, deps_path.join(name));
+        let _ = std::fs::copy(&file, out_path.join(name));
+    }
+}
+
 /// # Panic
 ///
 /// Will be panic `if link failed
@@ -295,13 +311,17 @@ fn link(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &str) 
     // copy to target and deps folder
     copy_shared_libs(lib_path, names);
 
+    #[cfg(feature = "ffmpeg")]
     copy_ffmpeg(p_current_dir_path_str, p_build_profile, p_target_os);
 
+    #[cfg(feature = "media_av1")]
     copy_dav1d(p_current_dir_path_str, p_build_profile, p_target_os);
 
+    #[cfg(feature = "media_av1")]
     copy_svt(p_current_dir_path_str, p_build_profile, p_target_os);
 }
 
+#[cfg(feature = "ffmpeg")]
 fn copy_ffmpeg(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &str) {
     let ffmpeg_dll_names = [
         "avcodec-59.dll",
@@ -341,6 +361,7 @@ fn copy_ffmpeg(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os:
     copy_shared_libs(ffmpeg_lib_path, ffmpeg_lib_names);
 }
 
+#[cfg(feature = "media_av1")]
 fn copy_dav1d(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &str) {
     let dav1d_lib_names = ["dav1d.lib"].to_vec();
 
@@ -365,6 +386,7 @@ fn copy_dav1d(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: 
     copy_shared_libs(dav1d_bin_path, dav1d_bin_names);
 }
 
+#[cfg(feature = "media_av1")]
 fn copy_svt(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &str) {
     let svt_lib_names = ["SvtAv1Dec.lib", "SvtAv1Enc.lib"].to_vec();
 
@@ -387,20 +409,6 @@ fn copy_svt(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &s
 
     // copy to target and deps folder
     copy_shared_libs(svt_bin_path, svt_bin_names);
-}
-
-#[cfg(target_os = "windows")]
-fn copy_shared_libs(p_lib_path: String, p_lib_names: Vec<&str>) {
-    let out_dir = std::env::var("OUT_DIR").unwrap();
-
-    let out_path = std::path::Path::new(&out_dir).join("../../..");
-    let deps_path = out_path.join("deps");
-
-    for name in p_lib_names.iter() {
-        let file = format!("{}/{}", p_lib_path, name);
-        let _ = std::fs::copy(&file, deps_path.join(name));
-        let _ = std::fs::copy(&file, out_path.join(name));
-    }
 }
 
 fn bindgens(p_current_dir_path_str: &str) {

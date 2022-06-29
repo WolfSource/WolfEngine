@@ -9,10 +9,6 @@ readme = "README.md"
 repository = "https://github.com/WolfEngine/WolfEngine/"
 version = "3.0.3"
 
-[build]
-rustc-link-lib = ["wolf_sys"]
-rustc-link-search = ["sys/build/"]
-
 [lib]
 crate-type = ["rlib"]
 name = "wolf"
@@ -24,7 +20,7 @@ path = "src/lib.rs"
 # shared dependencies between all
 [dependencies]
 #brotli = { version = "3.3.3" }
-anyhow = {version = "1.0.57", default-features = false}
+anyhow = {version = "1.0.58", default-features = false}
 signals2 = {version = "0.3.2", default-features = false}
 raw-window-handle = {version = "0.4.3", default-features = false, features = ["alloc"]} 
 
@@ -33,8 +29,8 @@ raw-window-handle = {version = "0.4.3", default-features = false, features = ["a
 instant = {version = "0.1.12", default-features = false, features = ["wasm-bindgen"]}
 rhai = { version = "1.7.0", default-features = false, features = ["sync", "internals", "wasm-bindgen"], optional = true }
 serde = { version = "1.0.137", default-features = false, features = ["derive"]}
-wasm-bindgen = { version = "0.2.80", default-features = false }
-wasm-bindgen-futures = { version = "0.4.30", default-features = false }
+wasm-bindgen = { version = "0.2.81", default-features = false }
+wasm-bindgen-futures = { version = "0.4.31", default-features = false }
 wasm-mt = {version = "0.1.2", default-features = false }
 web-sys = {version = "0.3.57", default-features = false, features = ["console", "Document", "Window", "Element"]}
 wgpu = {version = "0.12.0", default-features = false, features = ["webgl"], optional = true}
@@ -67,10 +63,10 @@ parking_lot = {version = "0.12.1",  default-features = false, features = ["deadl
 prost = {version = "0.10.4", default-features = false, optional = true}
 scrap ={version = "0.5.0", default-features = false, optional = true}
 serde_json = {version = "1.0.81", default-features = false, features = ["std"]}
-sysinfo = {version = "0.24.1", default-features = false, features = ["multithread"]}
+sysinfo = {version = "0.24.5", default-features = false, features = ["multithread"]}
 tokio-tungstenite = {version = "0.17.1", default-features = false, features = ["connect", "rustls"]}
-tracing = {version = "0.1.34", default-features = false, features = ["std", "attributes"]}
-uuid = {version = "1.1.1", default-features = false, features = ["v5"]}
+tracing = {version = "0.1.35", default-features = false, features = ["std", "attributes"]}
+uuid = {version = "1.1.2", default-features = false, features = ["v5"]}
 
 [build-dependencies]
 bindgen = {version = "0.60.1"}
@@ -82,7 +78,7 @@ image = {version ="0.24.2", default-features = false, features = ["jpeg", "png",
 
 # features
 [features]
-default = ["ffmpeg"]
+default = []
 ffmpeg = [] # enable multimedia features
 media_av1 = ["ffmpeg"] # enable AV1 video coding format for stream module
 media_vpx = ["ffmpeg"] # enable VP9/VP8 video coding format for stream module
@@ -93,7 +89,7 @@ system_fiber = ["may"] # enable fiber
 system_lz4 = [] # enable LZ4 compression for system module
 system_raft = ["async-raft", "prost"] # enable raft algorithm for system module
 system_script = ["rhai"] # enable embedded script engine for system module
-system_capture = ["scrap"] # enable screen capture
+system_screen_capture = ["scrap"] # enable screen capture
 
 # brotli = [] # enable brotli compression
 # fiber = [] 

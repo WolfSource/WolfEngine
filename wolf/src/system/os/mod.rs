@@ -5,7 +5,7 @@ pub mod sigslot;
 pub mod system;
 
 #[cfg(all(
-    feature = "system_capture",
+    feature = "system_screen_capture",
     not(any(target_os = "android", target_os = "ios", target_arch = "wasm32"))
 ))]
 pub mod screen;
