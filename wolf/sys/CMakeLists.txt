@@ -45,9 +45,14 @@ set(THREADS_PREFER_PTHREAD_FLAG ON)
 if (MSVC)
     set(CMAKE_CXX_STANDARD 23)
     set(CMAKE_CXX_FLAGS "/EHsc /W4")
-else()
+elseif(APPLE)
     set(CMAKE_CXX_STANDARD 20)
     set(CMAKE_CXX_FLAGS "-fcoroutines-ts -fexceptions")
+    set(CMAKE_CXX_FLAGS_DEBUG "-g")
+    set(CMAKE_CXX_FLAGS_RELEASE "-O3")
+else()
+    set(CMAKE_CXX_STANDARD 20)
+    set(CMAKE_CXX_FLAGS "-fexceptions")
     set(CMAKE_CXX_FLAGS_DEBUG "-g")
     set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 endif()
@@ -112,10 +117,7 @@ list(APPEND LIBS mimalloc-static)
 # link to ffmpeg
 if (WOLF_MEDIA_FFMPEG)
   file(GLOB_RECURSE FFMPEG_SRCS
-    "${CMAKE_CURRENT_SOURCE_DIR}/media/ffmpeg.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/media/ffmpeg.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/media/conversion.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/media/conversion.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/media/ffmpeg.cppm"
   )
   list(APPEND SRCS ${FFMPEG_SRCS})
   list(APPEND INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/third_party/FFMPEG/include)
@@ -175,8 +177,8 @@ if (WOLF_STREAM_RIST)
   STRING(TOLOWER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_LOWER)
 
   add_custom_command(OUTPUT rist_command.out COMMAND cmd /c "meson setup ${librist_BINARY_DIR} --backend vs2022 --default-library static --buildtype ${CMAKE_BUILD_TYPE_LOWER} &
-       meson compile -C ${librist_BINARY_DIR}"
-      WORKING_DIRECTORY ${librist_SOURCE_DIR})
+			 meson compile -C ${librist_BINARY_DIR}"
+			WORKING_DIRECTORY ${librist_SOURCE_DIR})
 
   add_custom_target(rist ALL DEPENDS rist_command.out)
 

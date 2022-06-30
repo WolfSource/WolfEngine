@@ -1,9 +1,6 @@
-#![allow(unreachable_code)]
 #![allow(unused_mut)]
-#![allow(unused_variables)]
 
 use std::{path::Path, process::Command};
-use tonic_build as _;
 
 // TODO: read these params from args
 const OSX_DEPLOYMENT_TARGET: &str = "12.0";
@@ -15,15 +12,12 @@ const ANDROID_ARCH_API: &str = "armeabi-v7a";
 // https://developer.android.com/ndk/guides/other_build_systems
 const ANDROID_NDK_OS_VARIANT: &str = "darwin-x86_64";
 
-// CMake Compiler
-#[cfg(target_os = "windows")]
-const CMAKE_C_COMPILER: &str = "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/VC/Tools/MSVC/14.32.31326/bin/Hostx64/x64/cl.exe";
+// Cmake Compiler
+#[cfg(target_family = "windows")]
+const CMAKE_C_COMPILER: &str = "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.32.31326/bin/Hostx64/x64/cl.exe";
 
-#[cfg(any(target_os = "macos", target_os = "ios"))]
-const CMAKE_C_COMPILER: &str = "/Library/Developer/CommandLineTools/usr/bin/clang";
-
-#[cfg(any(target_os = "unix"))]
-const CMAKE_C_COMPILER: &str = "usr/bin/clang";
+#[cfg(any(target_family = "unix"))]
+const CMAKE_C_COMPILER: &str = "/usr/bin/clang";
 
 fn main() {
     // get the current path
@@ -43,10 +37,16 @@ fn main() {
         std::env::set_var("MACOSX_DEPLOYMENT_TARGET", OSX_DEPLOYMENT_TARGET);
     }
 
-    #[cfg(feature = "system_raft")]
-    build_protos(&current_dir_path, &target_os);
+    let wolf_lib_name = if target_os == "windows" {
+        "wolf_sys.lib"
+    } else {
+        "libwolf_sys.a"
+    };
 
-    // don't compile any c++ codes for wasm32
+    #[cfg(feature = "system_raft")]
+    build_protos(current_dir_path.as_path(), target_os.as_str());
+
+    // don't compoile any c++ codes for wasm32
     if target_arch == "wasm32" {
         return;
     }
@@ -76,7 +76,7 @@ fn main() {
     };
 
     // execute cmake for building deps of wolf_sys
-    cmake(&current_dir_path, build_profile, &target_os);
+    cmake(&current_dir_path, wolf_lib_name, build_profile, &target_os);
 
     // compile c/cpp sources and link
     link(current_dir_path_str, build_profile, &target_os);
@@ -89,7 +89,7 @@ fn main() {
 ///
 /// Will return `Err` if `proto` does not exist or is invalid.
 #[cfg(feature = "system_raft")]
-fn build_protos(p_current_dir_path: &std::path::Path, p_target_os: &str) {
+fn build_protos(p_current_dir_path: &Path, p_target_os: &str) {
     // compile protos
     let mut build_server_proto = true;
     let build_client_proto = true;
@@ -135,8 +135,13 @@ pub fn protos(
 
 /// # Panics
 ///
-/// Will be panic if `CMake` process will be failed
-pub fn cmake(p_current_dir_path_str: &Path, p_build_profile: &str, p_target_os: &str) {
+/// Will panic if cmake failed
+pub fn cmake(
+    p_current_dir_path_str: &Path,
+    p_wolf_sys_file_name: &str,
+    p_build_profile: &str,
+    p_target_os: &str,
+) {
     // get parent path
     let cmake_current_path = p_current_dir_path_str.join("sys/");
     let cmake_current_path_str = cmake_current_path
@@ -152,13 +157,12 @@ pub fn cmake(p_current_dir_path_str: &Path, p_build_profile: &str, p_target_os: 
 
     // return if wolf_sys library was found
     let wolf_sys_path = if p_target_os == "windows" {
-        cmake_build_path.join(p_build_profile).join("wolf_sys.dll")
-    } else if p_target_os == "macos" || p_target_os == "ios" {
-        cmake_build_path.join("libwolf_sys.dylib")
+        cmake_build_path
+            .join(p_build_profile)
+            .join(p_wolf_sys_file_name)
     } else {
-        cmake_build_path.join("libwolf_sys.so")
+        cmake_build_path.join(p_wolf_sys_file_name)
     };
-
     if std::path::Path::new(&wolf_sys_path).exists() {
         return;
     }
@@ -171,16 +175,16 @@ pub fn cmake(p_current_dir_path_str: &Path, p_build_profile: &str, p_target_os: 
 
     // args
     let mut args = [
-        ".".to_owned(),
+        build_cmd.to_owned(),
         "--no-warn-unused-cli".to_owned(),
         "-Wdev".to_owned(),
         "--debug-output".to_owned(),
         "-DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE".to_owned(),
         format!("-DCMAKE_C_COMPILER={}", CMAKE_C_COMPILER),
         format!("-DCMAKE_BUILD_TYPE:STRING={}", p_build_profile),
-        format!("-B{}", cmake_build_path_str),
-        format!("-S{}", cmake_current_path_str),
-        build_cmd.to_owned(),
+        format!("-B {}", cmake_build_path_str),
+        format!("-S {}", cmake_current_path_str),
+        ".".to_owned(),
     ]
     .to_vec();
 
@@ -190,11 +194,11 @@ pub fn cmake(p_current_dir_path_str: &Path, p_build_profile: &str, p_target_os: 
     #[cfg(feature = "system_lz4")]
     args.push("-DWOLF_SYSTEM_LZ4=ON".to_owned());
 
-    #[cfg(feature = "stream_rist")]
-    args.push("-DWOLF_STREAM_RIST=ON".to_owned());
-
-    #[cfg(any(feature = "ffmpeg"))]
-    args.push("-DWOLF_MEDIA_FFMPEG=ON".to_owned());
+// TODO: Uncomment after fixing the ninja error
+//    #[cfg(feature = "stream_rist")]
+//    args.push("-DWOLF_STREAM_RIST=ON".to_owned());
+//    #[cfg(any(feature = "ffmpeg"))]
+//    args.push("-DWOLF_MEDIA_FFMPEG=ON".to_owned());
 
     if p_target_os == "android" {
         let android_ndk_home_env =
@@ -212,7 +216,6 @@ pub fn cmake(p_current_dir_path_str: &Path, p_build_profile: &str, p_target_os: 
         args.push("-DCMAKE_SYSTEM_NAME=Android".to_owned());
         args.push(format!("-DCMAKE_SYSTEM_VERSION={}", ANDROID_API_LEVEL));
     }
-
     // configure
     let mut out = Command::new("cmake")
         .current_dir(&cmake_current_path)
@@ -250,22 +253,9 @@ pub fn cmake(p_current_dir_path_str: &Path, p_build_profile: &str, p_target_os: 
     );
 }
 
-fn copy_shared_libs(p_lib_path: &str, p_lib_names: &[&str]) {
-    let out_dir = std::env::var("OUT_DIR").unwrap();
-
-    let out_path = std::path::Path::new(&out_dir).join("../../..");
-    let deps_path = out_path.join("deps");
-
-    for name in p_lib_names.iter() {
-        let file = format!("{}/{}", p_lib_path, name);
-        let _file1 = std::fs::copy(&file, deps_path.join(name));
-        let _file2 = std::fs::copy(&file, out_path.join(name));
-    }
-}
-
-/// # Panic
+/// # Panics
 ///
-/// Will be panic if the link process will be failed
+/// Will panic if link failed
 fn link(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &str) {
     if p_target_os == "windows" {
         if p_build_profile == "Debug" {
@@ -293,122 +283,32 @@ fn link(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &str) 
     println!("cargo:rustc-link-search=native={}", lib_path);
     println!("cargo:rustc-link-lib=dylib=wolf_sys");
 
-    let names = if p_target_os == "windows" {
-        [
-            "wolf_sys.dll",
-            "wolf_sys.exp",
-            "wolf_sys.lib",
-            "wolf_sys.pdb",
-        ]
-        .to_vec()
-    } else if p_target_os == "macos" || p_target_os == "ios" {
-        ["libwolf_sys.dylib"].to_vec()
-    } else {
-        ["libwolf_sys.so"].to_vec()
-    };
-
     // copy to target and deps folder
-    copy_shared_libs(&lib_path, &names);
-
-    #[cfg(feature = "ffmpeg")]
-    copy_ffmpeg(p_current_dir_path_str, p_target_os);
-
-    #[cfg(feature = "media_av1")]
-    copy_dav1d(p_current_dir_path_str, p_build_profile);
-
-    #[cfg(feature = "media_av1")]
-    copy_svt(p_current_dir_path_str, p_build_profile);
+    #[cfg(target_os = "windows")]
+    copy_shared_libs(lib_path);
 }
 
-#[cfg(feature = "ffmpeg")]
-fn copy_ffmpeg(p_current_dir_path_str: &str, p_target_os: &str) {
-    let ffmpeg_dll_names = [
-        "avcodec-59.dll",
-        "avdevice-59.dll",
-        "avfilter-8.dll",
-        "avformat-59.dll",
-        "avutil-57.dll",
-        "swresample-4.dll",
-        "swscale-6.dll",
+#[cfg(target_os = "windows")]
+fn copy_shared_libs(p_lib_path: String) {
+    let out_dir = std::env::var("OUT_DIR").unwrap();
+
+    let out_path = std::path::Path::new(&out_dir).join("../../..");
+    let deps_path = out_path.join("deps");
+    let names = [
+        "wolf_sys.dll",
+        "wolf_sys.exp",
+        "wolf_sys.lib",
+        "wolf_sys.pdb",
     ];
-
-    let ffmpeg_bin_path = format!("{}/sys/third_party/FFMPEG/bin", p_current_dir_path_str);
-    println!("cargo:rustc-link-search=native={}", ffmpeg_bin_path);
-
-    // copy to target and deps folder
-    copy_shared_libs(&ffmpeg_bin_path, &ffmpeg_dll_names);
-
-    let ffmpeg_lib_names = [
-        "avcodec.lib",
-        "avdevice.lib",
-        "avfilter.lib",
-        "avformat.lib",
-        "avutil.lib",
-        "swresample.lib",
-        "swscale.lib",
-    ];
-
-    let ffmpeg_lib_path = format!(
-        "{}/sys/third_party/FFMPEG/lib/{}",
-        p_current_dir_path_str, p_target_os
-    );
-    println!("cargo:rustc-link-search=native={}", ffmpeg_lib_path);
-
-    // copy to target and deps folder
-    copy_shared_libs(&ffmpeg_lib_path, &ffmpeg_lib_names);
-}
-
-#[cfg(feature = "media_av1")]
-fn copy_dav1d(p_current_dir_path_str: &str, p_build_profile: &str) {
-    let dav1d_lib_names = ["dav1d.lib"].to_vec();
-
-    let dav1d_lib_path = format!(
-        "{}/sys/third_party/DAV1D/lib/{}",
-        p_current_dir_path_str, p_build_profile
-    );
-    println!("cargo:rustc-link-search=native={}", dav1d_lib_path);
-
-    // copy to target and deps folder
-    copy_shared_libs(&dav1d_lib_path, &dav1d_lib_names);
-
-    let dav1d_bin_names = ["dav1d.dll"].to_vec();
-
-    let dav1d_bin_path = format!(
-        "{}/sys/third_party/DAV1D/bin/{}",
-        p_current_dir_path_str, p_build_profile
-    );
-    println!("cargo:rustc-link-search=native={}", dav1d_bin_path);
-
-    // copy to target and deps folder
-    copy_shared_libs(&dav1d_bin_path, &dav1d_bin_names);
-}
-
-#[cfg(feature = "media_av1")]
-fn copy_svt(p_current_dir_path_str: &str, p_build_profile: &str) {
-    let svt_lib_names = ["SvtAv1Dec.lib", "SvtAv1Enc.lib"].to_vec();
-
-    let svt_lib_path = format!(
-        "{}/sys/third_party/SVT-AV1/lib/{}",
-        p_current_dir_path_str, p_build_profile
-    );
-    println!("cargo:rustc-link-search=native={}", svt_lib_path);
-
-    // copy to target and deps folder
-    copy_shared_libs(&svt_lib_path, &svt_lib_names);
-
-    let svt_bin_names = ["SvtAv1Dec.dll", "SvtAv1Enc.dll"];
-
-    let svt_bin_path = format!(
-        "{}/sys/third_party/SVT-AV1/bin/{}",
-        p_current_dir_path_str, p_build_profile
-    );
-    println!("cargo:rustc-link-search=native={}", svt_bin_path);
-
-    // copy to target and deps folder
-    copy_shared_libs(&svt_bin_path, &svt_bin_names);
+    for name in names {
+        let file = format!("{}/{}", p_lib_path, name);
+        let _ = std::fs::copy(&file, deps_path.join(name));
+        let _ = std::fs::copy(&file, out_path.join(name));
+    }
 }
 
 fn bindgens(p_current_dir_path_str: &str) {
+    #[derive(Clone)]
     struct Binding<'a> {
         src: &'a str,
         dst: &'a str,
@@ -430,16 +330,9 @@ fn bindgens(p_current_dir_path_str: &str) {
         dst: "src/stream/ffi/rist.rs",
     });
 
-    #[cfg(feature = "ffmpeg")]
-    headers.push(Binding {
-        src: "sys/media/ffmpeg.h",
-        dst: "src/media/ffi/ffmpeg.rs",
-    });
-
     // add include paths
     let clang_include_arg_0 = format!("-I{}/sys", p_current_dir_path_str);
     let clang_include_arg_1 = format!("-I{}/sys/wolf", p_current_dir_path_str);
-    let clang_include_arg_2 = format!("-I{}/sys/media", p_current_dir_path_str);
 
     for header in headers {
         println!("cargo:rerun-if-changed=sys/{}", header.src);
@@ -449,13 +342,8 @@ fn bindgens(p_current_dir_path_str: &str) {
         // the resulting bindings.
         let bindings = bindgen::Builder::default()
             // The input header we would like to generate bindings for.
-            .header(header.src)
-            .layout_tests(false)
-            .clang_args([
-                clang_include_arg_0.as_str(),
-                clang_include_arg_1.as_str(),
-                clang_include_arg_2.as_str(),
-            ])
+            .header(header.clone().src)
+            .clang_args([clang_include_arg_0.as_str(), clang_include_arg_1.as_str()])
             // tell cargo to invalidate the built crate whenever any of the
             // included header files changed.
             .parse_callbacks(Box::new(bindgen::CargoCallbacks))

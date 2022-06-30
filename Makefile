@@ -108,14 +108,16 @@ ifeq ("$(DETECTED_OS)", "Darwin")
 	&& echo "export PKG_CONFIG_PATH=${PKG_CONFIG_PATH}" >> ~/.zshenv
 else ifeq ("$(DETECTED_OS)", "Linux")
 	export DEBIAN_FRONTEND="noninteractive" \
-	&& sudo apt-get update \
+	&& export TZ="noninteractive" \
+	&& apt-get update \
+	&& apt-get install -yq tzdata \
+	&& apt-get install sudo --yes \
 	&& sudo apt-get install --no-install-recommends --yes \
+		clang-tidy-14 \
+		clang-14 \
 		cmake \
-		libatk1.0-dev \
-		libpango1.0-dev \
-		libsoup-gnome2.4-dev \
-		libgtk-3-dev \
-		libwebkit2gtk-4.0-dev \
+		g++ \
+		git \
 		gstreamer1.0-alsa \
 		gstreamer1.0-gl \
 		gstreamer1.0-gtk3 \
@@ -128,14 +130,23 @@ else ifeq ("$(DETECTED_OS)", "Linux")
 		gstreamer1.0-qt5 \
 		gstreamer1.0-tools \
 		gstreamer1.0-x \
+		libatk1.0-dev \
+		libges-1.0-dev \
 		libgstreamer-plugins-bad1.0-dev \
 		libgstreamer-plugins-base1.0-dev \
 		libgstreamer1.0-dev \
-		libges-1.0-dev \
 		libgstrtspserver-1.0-dev \
+		libgtk-3-dev \
+		libpango1.0-dev \
+		libsoup-gnome2.4-dev \
+		libwebkit2gtk-4.0-dev \
+		ninja-build \
+	 	gcc \
 	&& sudo apt-get autoremove --yes \
 	&& sudo apt-get clean --yes \
-	&& sudo rm -fr /tmp/* /var/lib/apt/lists/* /var/tmp/*
+	&& sudo rm -fr /tmp/* /var/lib/apt/lists/* /var/tmp/* \
+	&& sudo ln -sf /usr/bin/clang-14 /usr/bin/clang \
+	&& sudo ln -sf /usr/bin/clang-tidy-14 /usr/bin/clang-tidy
 else
 	echo "Please install dependencies on $(DETECTED_OS)"
 endif
