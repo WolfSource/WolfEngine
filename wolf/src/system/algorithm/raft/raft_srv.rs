@@ -110,7 +110,7 @@ impl Raft for Srv {
         let inner_req = p_request.into_inner();
         let req_result =
             super::raft_converter::grpc_append_entries_req_to_raft_append_entries_req(&inner_req);
-        let response = match req_result {
+        match req_result {
             Ok(req) => {
                 let res = self.raft_node.append_entries(req).await;
                 let resp = match res {
@@ -160,8 +160,7 @@ impl Raft for Srv {
                 };
                 Ok(Response::new(resp))
             }
-        };
-        response
+        }
     }
 
     async fn install_snapshot(
@@ -180,7 +179,7 @@ impl Raft for Srv {
             &inner_req,
         );
         let res = self.raft_node.install_snapshot(req).await;
-        let response = match res {
+        match res {
             Ok(r) => {
                 let ok_resp = super::raft_converter::raft_install_snapshot_res_to_grpc_install_snapshot_ok_res(
                     inner_req.msg_id,
@@ -206,8 +205,7 @@ impl Raft for Srv {
                 };
                 Ok(Response::new(resp))
             }
-        };
-        response
+        }
     }
 
     async fn vote(&self, p_request: Request<RaftVoteReq>) -> Result<Response<RaftVoteRes>, Status> {
@@ -221,7 +219,7 @@ impl Raft for Srv {
         let inner_req = p_request.into_inner();
         let req = super::raft_converter::grpc_vote_req_to_raft_vote_req(&inner_req);
         let res = self.raft_node.vote(req).await;
-        let response = match res {
+        match res {
             Ok(r) => {
                 let ok_resp =
                     super::raft_converter::raft_vote_res_to_grpc_vote_ok_res(inner_req.msg_id, &r);
@@ -242,8 +240,7 @@ impl Raft for Srv {
                 };
                 Ok(Response::new(resp))
             }
-        };
-        response
+        }
     }
 
     async fn get_metrics(

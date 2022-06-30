@@ -49,17 +49,17 @@ impl RaftNetwork<ClientRequest> for RaftRouter {
             uuid.to_string(),
             &p_rpc,
         );
-        let ret = match res_append {
+        match res_append {
             Ok(raft_req) => {
                 //create a channel for grpc
                 let uri = format!("http://localhost:{}", BASE_PORT + p_target_node);
-                let ret_1 = match grpc::create_channel(uri).await {
+                match grpc::create_channel(uri).await {
                     Ok(c) => {
                         //call request with channel
                         let mut client = RaftClient::new(c).send_gzip().accept_gzip();
-                        let ret_2 = match client.append_entries(raft_req).await {
+                        match client.append_entries(raft_req).await {
                             Ok(r) => {
-                                let ret_3 = match r.into_inner().response {
+                                match r.into_inner().response {
                                     Some(s) => {
                                         use wolf_raft::raft_append_entries_res::Response;
                                         if let Response::OkRes(ok) = s {
@@ -88,8 +88,7 @@ impl RaftNetwork<ClientRequest> for RaftRouter {
                                             TRACE
                                         )
                                     }
-                                };
-                                ret_3
+                                }
                             }
                             Err(e) => {
                                 bail!(
@@ -99,8 +98,7 @@ impl RaftNetwork<ClientRequest> for RaftRouter {
                                     TRACE
                                 )
                             }
-                        };
-                        ret_2
+                        }
                     }
                     Err(e) => {
                         bail!(
@@ -110,14 +108,12 @@ impl RaftNetwork<ClientRequest> for RaftRouter {
                             TRACE
                         )
                     }
-                };
-                ret_1
+                }
             }
             Err(e) => {
                 bail!("{:?}. trace: {}", e, TRACE)
             }
-        };
-        ret
+        }
     }
 
     /// Send an `InstallSnapshot` RPC to the target Raft node
@@ -130,7 +126,7 @@ impl RaftNetwork<ClientRequest> for RaftRouter {
 
         //create a channel for grpc
         let uri = format!("http://localhost:{}", BASE_PORT + p_target_node);
-        let ret = match grpc::create_channel(uri).await {
+        match grpc::create_channel(uri).await {
             Ok(c) => {
                 //call request with channel
                 let uuid = Uuid::new_v5(&Uuid::NAMESPACE_X500, b"wolf_raft_install_snapshot");
@@ -141,39 +137,36 @@ impl RaftNetwork<ClientRequest> for RaftRouter {
                     );
 
                 let mut client = RaftClient::new(c).send_gzip().accept_gzip();
-                let ret_1 = match client.install_snapshot(rpc_req).await {
-                    Ok(r) => {
-                        let ret_2 = match r.into_inner().response {
-                            Some(s) => {
-                                use wolf_raft::raft_install_snapshot_res::Response;
-                                if let Response::OkRes(ok) = s {
-                                    let response = raft_converter::grpc_install_snapshot_ok_res_to_raft_install_snapshot_res(&ok);
-                                    Ok(response)
-                                } else if let Response::ErrorRes(e) = s {
-                                    bail!(
+                match client.install_snapshot(rpc_req).await {
+                    Ok(r) => match r.into_inner().response {
+                        Some(s) => {
+                            use wolf_raft::raft_install_snapshot_res::Response;
+                            if let Response::OkRes(ok) = s {
+                                let response = raft_converter::grpc_install_snapshot_ok_res_to_raft_install_snapshot_res(&ok);
+                                Ok(response)
+                            } else if let Response::ErrorRes(e) = s {
+                                bail!(
                                         "InstallSnapshotResponse for node {} contains Error {:?}. Trace: {}",
                                         p_target_node,
                                         e,
                                         TRACE
                                     )
-                                } else {
-                                    bail!(
+                            } else {
+                                bail!(
                                         "InstallSnapshotResponse for node {} contains Unknown error. Trace: {}",
                                         p_target_node,
                                         TRACE
                                     )
-                                }
                             }
-                            None => {
-                                bail!(
+                        }
+                        None => {
+                            bail!(
                                     "inner message of InstallSnapshotResponse is None for node {}. Trace: {}",
                                     p_target_node,
                                     TRACE
                                 )
-                            }
-                        };
-                        ret_2
-                    }
+                        }
+                    },
                     Err(e) => {
                         bail!(
                             "InstallSnapshotResponse for node {} contains error status {:?}. Trace: {}",
@@ -182,8 +175,7 @@ impl RaftNetwork<ClientRequest> for RaftRouter {
                             TRACE
                         )
                     }
-                };
-                ret_1
+                }
             }
             Err(e) => {
                 bail!(
@@ -193,8 +185,7 @@ impl RaftNetwork<ClientRequest> for RaftRouter {
                     TRACE
                 )
             }
-        };
-        ret
+        }
     }
 
     /// Send an `Vote` RPC to the target Raft node
@@ -203,47 +194,44 @@ impl RaftNetwork<ClientRequest> for RaftRouter {
 
         //create a channel for grpc
         let uri = format!("http://localhost:{}", BASE_PORT + p_target_node);
-        let ret = match grpc::create_channel(uri).await {
+        match grpc::create_channel(uri).await {
             Ok(c) => {
                 //call request with channel
                 let uuid = Uuid::new_v5(&Uuid::NAMESPACE_X500, b"wolf_raft_vote");
                 let msg_id = uuid.to_string();
                 let rpc_req = raft_converter::raft_vote_req_to_grpc_vote_req(msg_id, &p_rpc);
                 let mut client = RaftClient::new(c).send_gzip().accept_gzip();
-                let ret_1 = match client.vote(rpc_req).await {
-                    Ok(r) => {
-                        let ret_2 = match r.into_inner().response {
-                            Some(s) => {
-                                use wolf_raft::raft_vote_res::Response;
-                                if let Response::OkRes(ok) = s {
-                                    let res_vote =
-                                        raft_converter::grpc_vote_ok_res_to_raft_vote_res(&ok);
-                                    Ok(res_vote)
-                                } else if let Response::ErrorRes(e) = s {
-                                    bail!(
-                                        "VoteResponse for node {} contains Error {:?}. Trace: {}",
-                                        p_target_node,
-                                        e,
-                                        TRACE
-                                    )
-                                } else {
-                                    bail!(
-                                        "VoteResponse for node {} contains Unknown error. Trace: {}",
-                                        p_target_node,
-                                        TRACE
-                                    )
-                                }
-                            }
-                            None => {
+                match client.vote(rpc_req).await {
+                    Ok(r) => match r.into_inner().response {
+                        Some(s) => {
+                            use wolf_raft::raft_vote_res::Response;
+                            if let Response::OkRes(ok) = s {
+                                let res_vote =
+                                    raft_converter::grpc_vote_ok_res_to_raft_vote_res(&ok);
+                                Ok(res_vote)
+                            } else if let Response::ErrorRes(e) = s {
                                 bail!(
-                                    "inner message of VoteResponse is None for node {}. Trace: {}",
+                                    "VoteResponse for node {} contains Error {:?}. Trace: {}",
+                                    p_target_node,
+                                    e,
+                                    TRACE
+                                )
+                            } else {
+                                bail!(
+                                    "VoteResponse for node {} contains Unknown error. Trace: {}",
                                     p_target_node,
                                     TRACE
                                 )
                             }
-                        };
-                        ret_2
-                    }
+                        }
+                        None => {
+                            bail!(
+                                "inner message of VoteResponse is None for node {}. Trace: {}",
+                                p_target_node,
+                                TRACE
+                            )
+                        }
+                    },
                     Err(e) => {
                         bail!(
                             "VoteResponse for node {} contains error status {:?}. Trace: {}",
@@ -252,8 +240,7 @@ impl RaftNetwork<ClientRequest> for RaftRouter {
                             TRACE
                         )
                     }
-                };
-                ret_1
+                }
             }
             Err(e) => {
                 bail!(
@@ -262,8 +249,7 @@ impl RaftNetwork<ClientRequest> for RaftRouter {
                     e,
                     TRACE)
             }
-        };
-        ret
+        }
     }
 }
 

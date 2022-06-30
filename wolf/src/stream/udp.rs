@@ -39,7 +39,7 @@ async fn read(
     p_buffer: &mut [u8; MAX_MSG_SIZE],
     p_read_write_timeout_in_secs: f64,
 ) -> std::io::Result<(usize, SocketAddr)> {
-    let res = if p_read_write_timeout_in_secs > 0.0 {
+    if p_read_write_timeout_in_secs > 0.0 {
         //try to read data from UDP socket
         tokio::select! {
             res1 = timeout_for_read(p_read_write_timeout_in_secs) =>
@@ -53,8 +53,7 @@ async fn read(
         }
     } else {
         p_socket.recv_from(p_buffer).await
-    };
-    res
+    }
 }
 
 async fn send(
@@ -63,7 +62,7 @@ async fn send(
     p_buffer: &mut [u8; MAX_MSG_SIZE],
     p_read_write_timeout_in_secs: f64,
 ) -> std::io::Result<usize> {
-    let res = if p_read_write_timeout_in_secs > 0.0 {
+    if p_read_write_timeout_in_secs > 0.0 {
         //try to send data via UDP
         tokio::select! {
             res1 = timeout_for_send(p_read_write_timeout_in_secs) =>
@@ -77,8 +76,7 @@ async fn send(
         }
     } else {
         p_socket.send_to(p_buffer, peer_addr).await
-    };
-    res
+    }
 }
 
 /// # Errors

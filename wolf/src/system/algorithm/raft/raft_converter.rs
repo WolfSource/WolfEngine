@@ -39,13 +39,12 @@ pub fn grpc_append_entries_req_to_raft_append_entries_req(
         async_raft::raft::AppendEntriesRequest<memstore::ClientRequest>,
         serde_json::Error,
     > = serde_json::from_str(&p_req.req);
-    let ret = match app_res {
+    match app_res {
         Ok(aer) => Ok(aer),
         Err(e) => {
             bail!("could not deserialize json to async_raft::raft::AppendEntriesRequest<memstore::ClientRequest> to json because: {:?}. trace: {}", e, TRACE)
         }
-    };
-    ret
+    }
 }
 
 /// convert `async_raft`'s `AppendEntriesResponse` to grpc's `RaftAppendEntriesOkRes`

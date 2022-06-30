@@ -43,12 +43,6 @@ fn main() {
         std::env::set_var("MACOSX_DEPLOYMENT_TARGET", OSX_DEPLOYMENT_TARGET);
     }
 
-    let wolf_lib_name = if target_os == "windows" {
-        "wolf_sys.lib"
-    } else {
-        "libwolf_sys.a"
-    };
-
     #[cfg(feature = "system_raft")]
     build_protos(&current_dir_path, &target_os);
 
@@ -82,7 +76,7 @@ fn main() {
     };
 
     // execute cmake for building deps of wolf_sys
-    cmake(&current_dir_path, wolf_lib_name, build_profile, &target_os);
+    cmake(&current_dir_path, build_profile, &target_os);
 
     // compile c/cpp sources and link
     link(current_dir_path_str, build_profile, &target_os);
@@ -142,12 +136,7 @@ pub fn protos(
 /// # Panics
 ///
 /// Will be panic if `CMake` process will be failed
-pub fn cmake(
-    p_current_dir_path_str: &Path,
-    p_wolf_sys_file_name: &str,
-    p_build_profile: &str,
-    p_target_os: &str,
-) {
+pub fn cmake(p_current_dir_path_str: &Path, p_build_profile: &str, p_target_os: &str) {
     // get parent path
     let cmake_current_path = p_current_dir_path_str.join("sys/");
     let cmake_current_path_str = cmake_current_path
@@ -163,15 +152,22 @@ pub fn cmake(
 
     // return if wolf_sys library was found
     let wolf_sys_path = if p_target_os == "windows" {
-        cmake_build_path
-            .join(p_build_profile)
-            .join(p_wolf_sys_file_name)
+        cmake_build_path.join(p_build_profile).join("wolf_sys.dll")
+    } else if p_target_os == "macos" || p_target_os == "ios" {
+        cmake_build_path.join("libwolf_sys.dylib")
     } else {
-        cmake_build_path.join(p_wolf_sys_file_name)
+        cmake_build_path.join("libwolf_sys.so")
     };
+
     if std::path::Path::new(&wolf_sys_path).exists() {
         return;
     }
+
+    #[cfg(not(target_os = "windows"))]
+    let build_cmd = "-GNinja";
+
+    #[cfg(target_os = "windows")]
+    let build_cmd = "";
 
     // args
     let mut args = [
@@ -184,6 +180,7 @@ pub fn cmake(
         format!("-DCMAKE_BUILD_TYPE:STRING={}", p_build_profile),
         format!("-B{}", cmake_build_path_str),
         format!("-S{}", cmake_current_path_str),
+        build_cmd.to_owned(),
     ]
     .to_vec();
 
@@ -231,11 +228,18 @@ pub fn cmake(
     );
 
     // build cmake
-    out = Command::new("cmake")
-        .current_dir(&cmake_build_path)
-        .args(["--build", ".", "--parallel 8"])
-        .output()
-        .expect("could not build cmake of wolf/sys");
+    if cfg!(target_os = "windows") {
+        out = Command::new("cmake")
+            .current_dir(&cmake_build_path)
+            .args(["--build", ".", "--parallel 8"])
+            .output()
+            .expect("could not build cmake of wolf/sys");
+    } else {
+        out = Command::new("ninja")
+            .current_dir(&cmake_build_path)
+            .output()
+            .expect("could not build cmake of wolf/sys");
+    }
 
     assert!(
         out.status.success(),

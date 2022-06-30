@@ -111,11 +111,11 @@ pub async fn create_tls_endpoint(
 ) -> Result<Endpoint> {
     const TRACE: &str = "create_grpc_channel";
     let pem_res = tokio::fs::read(p_tls_certificate).await;
-    let res = match pem_res {
+    match pem_res {
         Ok(pem) => {
             //create endpoint
             let endpoint_res = Channel::from_shared(p_end_point.clone());
-            let res = match endpoint_res {
+            match endpoint_res {
                 Ok(endpoint) => {
                     //load tls certificate
                     let cert = Certificate::from_pem(pem);
@@ -142,16 +142,14 @@ pub async fn create_tls_endpoint(
                     e,
                     TRACE
                 ),
-            };
-            res
+            }
         }
         Err(e) => bail!(
             "could not load certificate for grpc client because: {:?}. trace: {}",
             e,
             TRACE
         ),
-    };
-    res
+    }
 }
 
 ///create a tls channel for connecting to grpc server
@@ -161,7 +159,7 @@ pub async fn create_tls_endpoint(
 pub async fn create_tls_channel(p_tls_endpoint: &Endpoint) -> Result<Channel> {
     const TRACE: &str = "create_tls_channel";
     //configures TLS for the endpoint
-    let ret = p_tls_endpoint
+    p_tls_endpoint
         .connect()
         .await
         .and_then(|channel| {
@@ -175,8 +173,7 @@ pub async fn create_tls_channel(p_tls_endpoint: &Endpoint) -> Result<Channel> {
                 e,
                 TRACE
             )
-        });
-    ret
+        })
 }
 
 ///create a none tls channel for connecting to grpc server
@@ -187,7 +184,7 @@ pub async fn create_channel(p_end_point: String) -> Result<Channel> {
     const TRACE: &str = "create_channel";
     //create endpoint
     let endpoint_res = Channel::from_shared(p_end_point.clone());
-    let res = match endpoint_res {
+    match endpoint_res {
         Ok(endpoint) => {
             endpoint
                 .connect()
@@ -211,6 +208,5 @@ pub async fn create_channel(p_end_point: String) -> Result<Channel> {
             e,
             TRACE
         ),
-    };
-    res
+    }
 }

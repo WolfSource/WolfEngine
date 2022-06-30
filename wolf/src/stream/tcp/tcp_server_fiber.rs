@@ -59,7 +59,8 @@ fn handle_tcp_connection(
                         }
                     }).map_err(|e|
                     {
-                        close_msg += &format!("{:?}", e);
+                        let err_str = format!("{:?}", e);
+                        close_msg += &err_str;
                     });
                 }
             })
