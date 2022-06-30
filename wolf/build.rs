@@ -1,6 +1,6 @@
 #![allow(unused_mut)]
 
-use std::{path::Path, process::Command};
+use std::{fs, path::Path, process::Command};
 
 // TODO: read these params from args
 const OSX_DEPLOYMENT_TARGET: &str = "12.0";
@@ -194,11 +194,11 @@ pub fn cmake(
     #[cfg(feature = "system_lz4")]
     args.push("-DWOLF_SYSTEM_LZ4=ON".to_owned());
 
-// TODO: Uncomment after fixing the ninja error
-//    #[cfg(feature = "stream_rist")]
-//    args.push("-DWOLF_STREAM_RIST=ON".to_owned());
-//    #[cfg(any(feature = "ffmpeg"))]
-//    args.push("-DWOLF_MEDIA_FFMPEG=ON".to_owned());
+    // TODO: Uncomment after fixing the ninja error
+    // #[cfg(feature = "stream_rist")]
+    // args.push("-DWOLF_STREAM_RIST=ON".to_owned());
+    // #[cfg(any(feature = "ffmpeg"))]
+    // args.push("-DWOLF_MEDIA_FFMPEG=ON".to_owned());
 
     if p_target_os == "android" {
         let android_ndk_home_env =
@@ -358,8 +358,16 @@ fn bindgens(p_current_dir_path_str: &str) {
             });
 
         let out_path = Path::new(p_current_dir_path_str).join(header.dst);
-        bindings.write_to_file(out_path).unwrap_or_else(|e| {
+        bindings.write_to_file(&out_path).unwrap_or_else(|e| {
             panic!("couldn't write bindings for {} because {:?}", header.src, e);
         });
+
+        // Ignore clippy check in generated files
+        let bindings = vec![
+            String::from("#[allow(clippy::all)]"),
+            fs::read_to_string(&out_path).unwrap(),
+        ]
+        .join("\n");
+        fs::write(out_path, bindings).unwrap_or_default();
     }
 }

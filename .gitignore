@@ -41,7 +41,6 @@ wolf/sys/build/*
 # Icon must end with two \r
 Icon
 
-
 # Thumbnails
 ._*
 
@@ -77,6 +76,11 @@ Temporary Items
 # will have compiled files and executables
 debug/
 target/
+
+# Bindgen
+wolf/src/stream/ffi/rist.rs
+wolf/src/system/ffi/lz4.rs
+wolf/src/system/ffi/version.rs
 
 # Remove Cargo.lock from gitignore if creating an executable, leave it for libraries
 # More information here https://doc.rust-lang.org/cargo/guide/cargo-toml-vs-cargo-lock.html
