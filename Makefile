@@ -51,13 +51,8 @@ CARGO_TEST = $(CARGO) $(NIGHTLY) test --all-features --all-targets --frozen --me
 
 CARGO_AUDIT = $(CARGO) audit
 CARGO_CLIPPY = $(CARGO) clippy --all-features --all-targets --frozen --message-format $(MESSAGE_FORMAT) --workspace -- \
-	--deny clippy::all \
-	--deny clippy::cargo \
-	--deny clippy::nursery \
-	--deny clippy::pedantic \
 	--deny warnings \
 	--allow clippy::multiple_crate_versions \
-	\
 	--allow clippy::module_name_repetitions
 CARGO_DENY = $(CARGO) deny --all-features --format $(MESSAGE_FORMAT) --workspace
 CARGO_FMT = $(CARGO) fmt --all --message-format $(MESSAGE_FORMAT)
