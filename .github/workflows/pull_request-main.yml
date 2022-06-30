@@ -3,11 +3,11 @@ env:
 jobs:
   audit:
     container:
-      image: docker://rust:1.58-bullseye
+      image: docker://devraymondsh/ubuntu-docker-rust
     name: Cargo Audit
     needs:
       - clippy
-      - fmt-check
+      # - fmt-check
     permissions:
       contents: read
     runs-on: ubuntu-latest
@@ -40,11 +40,11 @@ jobs:
     timeout-minutes: 30
   check:
     container:
-      image: docker://rust:1.58-bullseye
+      image: docker://devraymondsh/ubuntu-docker-rust
     name: Cargo Check
     needs:
       - clippy
-      - fmt-check
+      # - fmt-check
     permissions:
       contents: read
     runs-on: ubuntu-latest
@@ -74,12 +74,12 @@ jobs:
     timeout-minutes: 30
   deny-check:
     container:
-      image: docker://rust:1.58-bullseye
+      image: docker://devraymondsh/ubuntu-docker-rust
     continue-on-error: ${{ matrix.checks == 'advisories' }}
     name: Cargo Deny Check
     needs:
       - clippy
-      - fmt-check
+      # - fmt-check
     permissions:
       contents: read
     runs-on: ubuntu-latest
@@ -127,7 +127,7 @@ jobs:
     timeout-minutes: 30
   clippy:
     container:
-      image: docker://rust:1.58-bullseye
+      image: docker://devraymondsh/ubuntu-docker-rust
     name: Cargo Clippy
     permissions:
       contents: read
@@ -158,11 +158,11 @@ jobs:
     timeout-minutes: 30
   coverage:
     container:
-      image: docker://rust:1.58-bullseye
+      image: docker://devraymondsh/ubuntu-docker-rust
     name: Coverage
     needs:
       - clippy
-      - fmt-check
+      # - fmt-check
       - test
     permissions:
       contents: read
@@ -209,7 +209,7 @@ jobs:
     needs:
       - clippy
       - coverage
-      - fmt-check
+      # - fmt-check
       - test
     permissions:
       contents: read
@@ -221,37 +221,37 @@ jobs:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         parallel-finished: true
     timeout-minutes: 30
-  fmt-check:
-    container:
-      image: docker://rust:1.58-bullseye
-    name: Cargo Format Check
-    permissions:
-      contents: read
-    runs-on: ubuntu-latest
-    steps:
-      -
-        name: Check Out
-        uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579
-      -
-        name: Cache
-        uses: actions/cache@937d24475381cd9c75ae6db12cb4e79714b926ed
-        with:
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-          path: |
-            ~/.cargo/bin/
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            target/
-      -
-        name: Add OS Dependency
-        run: make add-os-dependency
-        shell: bash
-      -
-        name: Format Check
-        run: make fmt-check
-        shell: bash
-    timeout-minutes: 30
+  # fmt-check:
+  #   container:
+  #     image: docker://devraymondsh/ubuntu-docker-rust
+  #   name: Cargo Format Check
+  #   permissions:
+  #     contents: read
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     -
+  #       name: Check Out
+  #       uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579
+  #     -
+  #       name: Cache
+  #       uses: actions/cache@937d24475381cd9c75ae6db12cb4e79714b926ed
+  #       with:
+  #         key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+  #         path: |
+  #           ~/.cargo/bin/
+  #           ~/.cargo/registry/index/
+  #           ~/.cargo/registry/cache/
+  #           ~/.cargo/git/db/
+  #           target/
+  #     -
+  #       name: Add OS Dependency
+  #       run: make add-os-dependency
+  #       shell: bash
+  #     -
+  #       name: Format Check
+  #       run: make fmt-check
+  #       shell: bash
+  #   timeout-minutes: 30
   # scan:
   #   name: Scan
   #   needs:
@@ -295,11 +295,11 @@ jobs:
   #   timeout-minutes: 30
   test:
     container:
-      image: docker://rust:1.58-bullseye
+      image: docker://devraymondsh/ubuntu-docker-rust
     name: Cargo Test
     needs:
       - clippy
-      - fmt-check
+      # - fmt-check
     permissions:
       contents: read
     runs-on: ubuntu-latest
