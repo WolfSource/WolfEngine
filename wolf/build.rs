@@ -1,4 +1,7 @@
+#![allow(unreachable_code)]
 #![allow(unused_mut)]
+#![allow(unused_variables)]
+
 use std::{path::Path, process::Command};
 use tonic_build as _;
 
@@ -170,12 +173,6 @@ pub fn cmake(
         return;
     }
 
-    #[cfg(not(target_os = "windows"))]
-    let build_cmd = "-GNinja";
-
-    #[cfg(target_os = "windows")]
-    let build_cmd = "";
-
     // args
     let mut args = [
         ".".to_owned(),
@@ -187,7 +184,6 @@ pub fn cmake(
         format!("-DCMAKE_BUILD_TYPE:STRING={}", p_build_profile),
         format!("-B{}", cmake_build_path_str),
         format!("-S{}", cmake_current_path_str),
-        build_cmd.to_owned(),
     ]
     .to_vec();
 
@@ -235,18 +231,11 @@ pub fn cmake(
     );
 
     // build cmake
-    if cfg!(target_os = "windows") {
-        out = Command::new("cmake")
-            .current_dir(&cmake_build_path)
-            .args(["--build", ".", "--parallel 8"])
-            .output()
-            .expect("could not build cmake of wolf/sys");
-    } else {
-        out = Command::new("ninja")
-            .current_dir(&cmake_build_path)
-            .output()
-            .expect("could not build cmake of wolf/sys");
-    }
+    out = Command::new("cmake")
+        .current_dir(&cmake_build_path)
+        .args(["--build", ".", "--parallel 8"])
+        .output()
+        .expect("could not build cmake of wolf/sys");
 
     assert!(
         out.status.success(),
@@ -300,13 +289,19 @@ fn link(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &str) 
     println!("cargo:rustc-link-search=native={}", lib_path);
     println!("cargo:rustc-link-lib=dylib=wolf_sys");
 
-    let names = [
-        "wolf_sys.dll",
-        "wolf_sys.exp",
-        "wolf_sys.lib",
-        "wolf_sys.pdb",
-    ]
-    .to_vec();
+    let names = if p_target_os == "windows" {
+        [
+            "wolf_sys.dll",
+            "wolf_sys.exp",
+            "wolf_sys.lib",
+            "wolf_sys.pdb",
+        ]
+        .to_vec()
+    } else if p_target_os == "macos" || p_target_os == "ios" {
+        ["libwolf_sys.dylib"].to_vec()
+    } else {
+        ["libwolf_sys.so"].to_vec()
+    };
 
     // copy to target and deps folder
     copy_shared_libs(&lib_path, &names);
@@ -450,7 +445,7 @@ fn bindgens(p_current_dir_path_str: &str) {
         // the resulting bindings.
         let bindings = bindgen::Builder::default()
             // The input header we would like to generate bindings for.
-            .header(&(*header.src))
+            .header(header.src)
             .layout_tests(false)
             .clang_args([
                 clang_include_arg_0.as_str(),

@@ -175,8 +175,8 @@ if (WOLF_STREAM_RIST)
   STRING(TOLOWER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_LOWER)
 
   add_custom_command(OUTPUT rist_command.out COMMAND cmd /c "meson setup ${librist_BINARY_DIR} --backend vs2022 --default-library static --buildtype ${CMAKE_BUILD_TYPE_LOWER} &
-			 meson compile -C ${librist_BINARY_DIR}"
-			WORKING_DIRECTORY ${librist_SOURCE_DIR})
+       meson compile -C ${librist_BINARY_DIR}"
+      WORKING_DIRECTORY ${librist_SOURCE_DIR})
 
   add_custom_target(rist ALL DEPENDS rist_command.out)
 
