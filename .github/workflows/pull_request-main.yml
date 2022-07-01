@@ -155,7 +155,7 @@ jobs:
     needs:
       - clippy
       - fmt-check
-      - test
+      # - test
     permissions:
       contents: read
     runs-on: ubuntu-latest
@@ -202,7 +202,7 @@ jobs:
       - clippy
       - coverage
       - fmt-check
-      - test
+      # - test
     permissions:
       contents: read
     runs-on: ubuntu-latest
@@ -285,47 +285,47 @@ jobs:
           sarif_file: reports
           wait-for-processing: true
     timeout-minutes: 30
-  test:
-    container:
-      image: docker://devraymondsh/ubuntu-docker-rust
-    name: Cargo Test
-    needs:
-      - clippy
-      - fmt-check
-    permissions:
-      contents: read
-    runs-on: ubuntu-latest
-    steps:
-      -
-        name: Check Out
-        uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579
-      -
-        name: Cache
-        uses: actions/cache@937d24475381cd9c75ae6db12cb4e79714b926ed
-        with:
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-          path: |
-            ~/.cargo/bin/
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            target/
-      -
-        name: Add OS Dependency
-        run: make add-os-dependency
-        shell: bash
-      -
-        env:
-          PACKAGE: ${{ matrix.package }}
-          # TARGET: ${{ matrix.target }}
-        name: Test
-        run: make test
-        shell: bash
-    strategy:
-      matrix:
-        package:
-          - wolf
-    timeout-minutes: 30
+  # test:
+  #   container:
+  #     image: docker://devraymondsh/ubuntu-docker-rust
+  #   name: Cargo Test
+  #   needs:
+  #     - clippy
+  #     - fmt-check
+  #   permissions:
+  #     contents: read
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     -
+  #       name: Check Out
+  #       uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579
+  #     -
+  #       name: Cache
+  #       uses: actions/cache@937d24475381cd9c75ae6db12cb4e79714b926ed
+  #       with:
+  #         key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+  #         path: |
+  #           ~/.cargo/bin/
+  #           ~/.cargo/registry/index/
+  #           ~/.cargo/registry/cache/
+  #           ~/.cargo/git/db/
+  #           target/
+  #     -
+  #       name: Add OS Dependency
+  #       run: make add-os-dependency
+  #       shell: bash
+  #     -
+  #       env:
+  #         PACKAGE: ${{ matrix.package }}
+  #         # TARGET: ${{ matrix.target }}
+  #       name: Test
+  #       run: make test
+  #       shell: bash
+  #   strategy:
+  #     matrix:
+  #       package:
+  #         - wolf
+  #   timeout-minutes: 30
 name: Pull Request Main
 on:
   pull_request:
