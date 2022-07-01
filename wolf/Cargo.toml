@@ -62,7 +62,7 @@ mimalloc = {version = "0.1.29", default-features = false, features = ["secure"]}
 parking_lot = {version = "0.12.1",  default-features = false, features = ["deadlock_detection"]}
 prost = {version = "0.10.4", default-features = false, optional = true}
 scrap ={version = "0.5.0", default-features = false, optional = true}
-serde_json = {version = "1.0.81", default-features = false, features = ["std"]}
+serde_json = {version = "1.0.82", default-features = false, features = ["std"]}
 sysinfo = {version = "0.24.5", default-features = false, features = ["multithread"]}
 tokio-tungstenite = {version = "0.17.1", default-features = false, features = ["connect", "rustls"]}
 tracing = {version = "0.1.35", default-features = false, features = ["std", "attributes"]}
