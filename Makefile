@@ -39,27 +39,27 @@ COVERAGE_DIR := $(TARGET_DIR)/cov
 DETECTED_OS := $(shell uname 2>/dev/null || echo "Windows")
 DOCUMENTATION_DIR := $(TARGET_DIR)/doc
 
-CARGO_BENCH = $(CARGO) $(NIGHTLY) bench --all-features --all-targets --frozen --message-format $(MESSAGE_FORMAT) --package $(PACKAGE) $(RELEASE) --target $(TARGET)
-CARGO_BUILD = $(CARGO) $(NIGHTLY) build --all-features --all-targets --frozen --message-format $(MESSAGE_FORMAT) --package $(PACKAGE) $(RELEASE) --target $(TARGET)
-CARGO_CHECK = $(CARGO) $(NIGHTLY) check --all-features --all-targets --frozen --message-format $(MESSAGE_FORMAT) --package $(PACKAGE) $(RELEASE) --target $(TARGET)
+CARGO_BENCH = $(CARGO) $(NIGHTLY) bench  --all-targets --frozen --message-format $(MESSAGE_FORMAT) --package $(PACKAGE) $(RELEASE) --target $(TARGET)
+CARGO_BUILD = $(CARGO) $(NIGHTLY) build  --all-targets --frozen --message-format $(MESSAGE_FORMAT) --package $(PACKAGE) $(RELEASE) --target $(TARGET)
+CARGO_CHECK = $(CARGO) $(NIGHTLY) check  --all-targets --frozen --message-format $(MESSAGE_FORMAT) --package $(PACKAGE) $(RELEASE) --target $(TARGET)
 CARGO_CLEAN = $(CARGO) $(NIGHTLY) clean --frozen --package $(PACKAGE) $(RELEASE) --target $(TARGET)
-CARGO_DOC = $(CARGO) $(NIGHTLY) doc --all-features --document-private-items --frozen --no-deps --message-format $(MESSAGE_FORMAT) --package $(PACKAGE) $(RELEASE) --target $(TARGET)
+CARGO_DOC = $(CARGO) $(NIGHTLY) doc  --document-private-items --frozen --no-deps --message-format $(MESSAGE_FORMAT) --package $(PACKAGE) $(RELEASE) --target $(TARGET)
 CARGO_FETCH = $(CARGO) $(NIGHTLY) fetch --locked --target $(TARGET)
-CARGO_FIX = $(CARGO) $(NIGHTLY) fix --all-features --all-targets --frozen --message-format $(MESSAGE_FORMAT) --package $(PACKAGE) $(RELEASE) --target $(TARGET)
-CARGO_RUN = $(CARGO) $(NIGHTLY) run --all-features --frozen --message-format $(MESSAGE_FORMAT) --package $(PACKAGE) $(RELEASE) --target $(TARGET)
-CARGO_TEST = $(CARGO) $(NIGHTLY) test --all-features --all-targets --frozen --message-format $(MESSAGE_FORMAT) --package $(PACKAGE) $(RELEASE) --target $(TARGET)
+CARGO_FIX = $(CARGO) $(NIGHTLY) fix  --all-targets --frozen --message-format $(MESSAGE_FORMAT) --package $(PACKAGE) $(RELEASE) --target $(TARGET)
+CARGO_RUN = $(CARGO) $(NIGHTLY) run  --frozen --message-format $(MESSAGE_FORMAT) --package $(PACKAGE) $(RELEASE) --target $(TARGET)
+CARGO_TEST = $(CARGO) $(NIGHTLY) test  --all-targets --frozen --message-format $(MESSAGE_FORMAT) --package $(PACKAGE) $(RELEASE) --target $(TARGET)
 
 CARGO_AUDIT = $(CARGO) audit
-CARGO_CLIPPY = $(CARGO) clippy --all-features --all-targets --frozen --message-format $(MESSAGE_FORMAT) --workspace -- \
+CARGO_CLIPPY = $(CARGO) clippy  --all-targets --frozen --message-format $(MESSAGE_FORMAT) --workspace -- \
 	--deny warnings \
 	--allow clippy::multiple_crate_versions \
 	--allow clippy::module_name_repetitions
-CARGO_DENY = $(CARGO) deny --all-features --format $(MESSAGE_FORMAT) --workspace
+CARGO_DENY = $(CARGO) deny  --format $(MESSAGE_FORMAT) --workspace
 CARGO_FMT = $(CARGO) fmt --all --message-format $(MESSAGE_FORMAT)
 ifeq ("$(MIRI_SUB_COMMAND)", "run")
-	CARGO_MIRI = $(CARGO) +nightly miri run --all-features --frozen --package $(PACKAGE) $(RELEASE) --target $(TARGET)
+	CARGO_MIRI = $(CARGO) +nightly miri run  --frozen --package $(PACKAGE) $(RELEASE) --target $(TARGET)
 else
-	CARGO_MIRI = $(CARGO) +nightly miri test --all-features --all-targets --frozen --package $(PACKAGE) $(RELEASE) --target $(TARGET)
+	CARGO_MIRI = $(CARGO) +nightly miri test  --all-targets --frozen --package $(PACKAGE) $(RELEASE) --target $(TARGET)
 endif
 
 $(BIN): add-fmt fetch
