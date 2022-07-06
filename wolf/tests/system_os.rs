@@ -66,6 +66,7 @@ async fn test_sigslot() {
     sig_slot.emit();
 }
 
+#[cfg(feature = "system_screen_capture")]
 #[test]
 fn test_screen_captures() {
     use wolf::system::os::screen::Screen;

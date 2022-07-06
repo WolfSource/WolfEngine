@@ -1,50 +1,53 @@
 #![allow(unused_crate_dependencies)]
 
-use wolf::stream::ffi::rist::{w_rist_data_block, w_rist_oob_block, w_rist_stats};
+#[cfg(feature = "stream_rist")]
+use wolf::stream::rist::{rist, rist_ctx_mode, rist_data_block, rist_log_level, rist_profile};
 
 #[cfg(feature = "stream_rist")]
-use {
-    std::os::raw::{c_char, c_int, c_void},
-    wolf::{
-        stream::rist::{rist, rist_ctx_mode, rist_data_block, rist_log_level, rist_profile},
-        w_log,
-    },
-};
-
-#[cfg(feature = "stream_rist")]
-extern "C" fn log_callback(p_arg: *mut c_void, p_level: i32, p_msg: *const c_char) -> c_int {
+extern "C" fn log_callback(
+    p_arg: *mut std::os::raw::c_void,
+    p_level: i32,
+    p_msg: *const std::os::raw::c_char,
+) -> std::os::raw::c_int {
     let level = rist_log_level::from_i32(p_level);
     let c_str = unsafe { std::ffi::CStr::from_ptr(p_msg) };
-    w_log!("{:?} {:?} with args {:?}", level, c_str, p_arg);
+    wolf::w_log!("{:?} {:?} with args {:?}", level, c_str, p_arg);
     0
 }
 
+#[cfg(feature = "stream_rist")]
 extern "C" fn rist_connection_status_callback(
-    _p_arg: *mut c_void,
+    _p_arg: *mut std::os::raw::c_void,
     _p_peer: wolf::stream::ffi::rist::w_rist_peer,
     p_peer_connection_status: wolf::stream::ffi::rist::rist_connection_status,
 ) {
-    w_log!("{:?}", p_peer_connection_status);
+    wolf::w_log!("{:?}", p_peer_connection_status);
 }
 
+#[cfg(feature = "stream_rist")]
 extern "C" fn rist_out_of_band_callback(
-    _p_arg: *mut c_void,
-    _p_oob_block: w_rist_oob_block,
-) -> c_int {
-    w_log!("rist_out_of_band_callback");
+    _p_arg: *mut std::os::raw::c_void,
+    _p_oob_block: wolf::stream::ffi::rist::w_rist_oob_block,
+) -> std::os::raw::c_int {
+    wolf::w_log!("rist_out_of_band_callback");
     0
 }
 
-extern "C" fn rist_stats_callback(_p_arg: *mut c_void, _p_stats_container: w_rist_stats) -> c_int {
-    w_log!("rist_stats_callback");
+#[cfg(feature = "stream_rist")]
+extern "C" fn rist_stats_callback(
+    _p_arg: *mut std::os::raw::c_void,
+    _p_stats_container: wolf::stream::ffi::rist::w_rist_stats,
+) -> std::os::raw::c_int {
+    wolf::w_log!("rist_stats_callback");
     0
 }
 
+#[cfg(feature = "stream_rist")]
 extern "C" fn receiver_data_callback(
-    _p_arg: *mut c_void,
-    _p_data_block: w_rist_data_block,
-) -> c_int {
-    w_log!("receiver_data_callback");
+    _p_arg: *mut std::os::raw::c_void,
+    _p_data_block: wolf::stream::ffi::rist::w_rist_data_block,
+) -> std::os::raw::c_int {
+    wolf::w_log!("receiver_data_callback");
     0
 }
 
