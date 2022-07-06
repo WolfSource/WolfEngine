@@ -111,6 +111,7 @@ else ifeq ("$(DETECTED_OS)", "Linux")
 	export DEBIAN_FRONTEND="noninteractive" \
 	&& apt-get update \
 	&& apt-get install --no-install-recommends --yes \
+		clang \
 		cmake \
 		ninja-build \
 		libatk1.0-dev \

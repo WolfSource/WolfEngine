@@ -22,7 +22,7 @@ const CMAKE_C_COMPILER: &str = "C:/Program Files/Microsoft Visual Studio/2022/En
 #[cfg(any(target_os = "macos", target_os = "ios"))]
 const CMAKE_C_COMPILER: &str = "/Library/Developer/CommandLineTools/usr/bin/clang";
 
-#[cfg(any(target_os = "unix"))]
+#[cfg(any(target_os = "linux"))]
 const CMAKE_C_COMPILER: &str = "usr/bin/clang";
 
 fn main() {
