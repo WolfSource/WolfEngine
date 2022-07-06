@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.21)
+cmake_minimum_required(VERSION 3.18)
 
 project(wolf_sys)
 set(TEST_PROJECT_NAME "${PROJECT_NAME}_tests")
