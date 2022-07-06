@@ -109,8 +109,8 @@ ifeq ("$(DETECTED_OS)", "Darwin")
 	&& echo "export PKG_CONFIG_PATH=${PKG_CONFIG_PATH}" >> ~/.zshenv
 else ifeq ("$(DETECTED_OS)", "Linux")
 	export DEBIAN_FRONTEND="noninteractive" \
-	&& sudo apt-get update \
-	&& sudo apt-get install --no-install-recommends --yes \
+	&& apt-get update \
+	&& apt-get install --no-install-recommends --yes \
 		cmake \
 		ninja-build \
 		libatk1.0-dev \
@@ -135,9 +135,9 @@ else ifeq ("$(DETECTED_OS)", "Linux")
 		libgstreamer1.0-dev \
 		libges-1.0-dev \
 		libgstrtspserver-1.0-dev \
-	&& sudo apt-get autoremove --yes \
-	&& sudo apt-get clean --yes \
-	&& sudo rm -fr /tmp/* /var/lib/apt/lists/* /var/tmp/*
+	&& apt-get autoremove --yes \
+	&& apt-get clean --yes \
+	&& rm -fr /tmp/* /var/lib/apt/lists/* /var/tmp/*
 else
 	echo "Please install dependencies on $(DETECTED_OS)"
 endif

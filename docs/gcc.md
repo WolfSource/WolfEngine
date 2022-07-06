@@ -7,9 +7,9 @@ cd gcc-${GCC_VERSION}
 ./contrib/download_prerequisites
 cd ../obj.gcc-${GCC_VERSION}
 #RedHat base
-sudo yum groupinstall "Development Tools"
+yum groupinstall "Development Tools"
 #Debian
-sudo apt-get install build-essential
+apt-get install build-essential
 ../gcc-${GCC_VERSION}/configure --disable-multilib --enable-languages=c,c++
 make -j $(nproc)
 make install
