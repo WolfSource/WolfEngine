@@ -250,7 +250,7 @@ source_group("system" FILES
 )
 
 if (NOT MSVC)
-    target_compile_options(${PROJECT_NAME} PRIVATE -std=c++2b -fPIC -Wall)
+    target_compile_options(${PROJECT_NAME} PRIVATE -std=c++20 -fPIC -Wall)
 endif()
 
 # build tests
@@ -258,7 +258,7 @@ if (WOLF_ENABLE_TESTS)
   add_executable (${TEST_PROJECT_NAME} test.cpp)
   target_link_libraries(${TEST_PROJECT_NAME} PRIVATE ${PROJECT_NAME})
   if (MSVC)
-    target_compile_options(${TEST_PROJECT_NAME} PRIVATE -std=c++2b)
+    target_compile_options(${TEST_PROJECT_NAME} PRIVATE -std=c++20)
   else()
     target_compile_options(${TEST_PROJECT_NAME} PRIVATE -Wall)
   endif()
