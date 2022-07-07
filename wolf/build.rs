@@ -280,7 +280,7 @@ fn link(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &str) 
 
     let sys_build_dir = format!("{}/sys/build/{}", p_current_dir_path_str, p_build_profile);
 
-    if cfg!(target_family = "unix") {
+    if cfg!(target_os = "macos") {
         println!("cargo:rustc-link-search=native=/usr/lib");
         println!("cargo:rustc-link-lib=dylib=c++");
     }
@@ -311,7 +311,7 @@ fn link(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &str) 
     copy_shared_libs(&lib_path, &names);
 
     // copy lib to linux
-    if cfg!(p_target_os = "linux") {
+    if cfg!(target_os = "linux") {
         copy_shared_libs("/usr/lib", &names);
     }
 
