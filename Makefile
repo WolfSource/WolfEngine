@@ -112,6 +112,7 @@ else ifeq ("$(DETECTED_OS)", "Linux")
 	&& apt-get update \
 	&& apt-get install --no-install-recommends --yes \
 	 	clang \
+		clang-tidy \
 		cmake \
 		ninja-build \
 		libatk1.0-dev \
