@@ -111,7 +111,8 @@ else ifeq ("$(DETECTED_OS)", "Linux")
 	export DEBIAN_FRONTEND="noninteractive" \
 	&& apt-get update \
 	&& apt-get install --no-install-recommends --yes \
-		clang \
+	 	clang-14 \
+		clang-tidy-14 \
 		cmake \
 		ninja-build \
 		libatk1.0-dev \
@@ -138,7 +139,9 @@ else ifeq ("$(DETECTED_OS)", "Linux")
 		libgstrtspserver-1.0-dev \
 	&& apt-get autoremove --yes \
 	&& apt-get clean --yes \
-	&& rm -fr /tmp/* /var/lib/apt/lists/* /var/tmp/*
+	&& rm -fr /tmp/* /var/lib/apt/lists/* /var/tmp/* \ 
+	&& sudo ln -sf /usr/bin/clang-14 /usr/bin/clang \
+ 	&& sudo ln -sf /usr/bin/clang-tidy-14 /usr/bin/clang-tidy
 else
 	echo "Please install dependencies on $(DETECTED_OS)"
 endif

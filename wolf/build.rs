@@ -23,7 +23,7 @@ const CMAKE_C_COMPILER: &str = "C:/Program Files/Microsoft Visual Studio/2022/En
 const CMAKE_C_COMPILER: &str = "/Library/Developer/CommandLineTools/usr/bin/clang";
 
 #[cfg(any(target_os = "linux"))]
-const CMAKE_C_COMPILER: &str = "usr/bin/clang";
+const CMAKE_C_COMPILER: &str = "/usr/bin/clang";
 
 fn main() {
     // get the current path
