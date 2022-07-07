@@ -138,9 +138,7 @@ else ifeq ("$(DETECTED_OS)", "Linux")
 		libgstrtspserver-1.0-dev \
 	&& apt-get autoremove --yes \
 	&& apt-get clean --yes \
-	&& rm -fr /tmp/* /var/lib/apt/lists/* /var/tmp/* \ 
-	&& sudo ln -sf /usr/bin/clang-14 /usr/bin/clang \
- 	&& sudo ln -sf /usr/bin/clang-tidy-14 /usr/bin/clang-tidy
+	&& rm -fr /tmp/* /var/lib/apt/lists/* /var/tmp/*
 else
 	echo "Please install dependencies on $(DETECTED_OS)"
 endif
