@@ -310,6 +310,11 @@ fn link(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &str) 
     // copy to target and deps folder
     copy_shared_libs(&lib_path, &names);
 
+    // copy lib to linux
+    if cfg!(target_os = "linux") {
+        copy_shared_libs("/usr/lib", &names);
+    }
+
     #[cfg(feature = "ffmpeg")]
     copy_ffmpeg(p_current_dir_path_str, p_target_os);
 
