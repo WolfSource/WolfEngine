@@ -27,7 +27,6 @@ RUN set -eux \
 FROM ${REF_NAME} as base
 ARG PACKAGE
 COPY --chown=nonroot:nonroot --from=wolf /tmp/${PACKAGE} /${PACKAGE}
-# COPY --chown=nonroot:nonroot --from=linkerd-await /tmp/linkerd-await /linkerd-await
 
 FROM base AS wolfengine
 

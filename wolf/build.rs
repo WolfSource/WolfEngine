@@ -280,7 +280,7 @@ fn link(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &str) 
 
     let sys_build_dir = format!("{}/sys/build/{}", p_current_dir_path_str, p_build_profile);
 
-    if cfg!(target_os = "macos") {
+    if cfg!(target_os = "macos") || cfg!(target_os = "ios") {
         println!("cargo:rustc-link-search=native=/usr/lib");
         println!("cargo:rustc-link-lib=dylib=c++");
     }

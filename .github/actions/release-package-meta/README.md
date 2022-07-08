@@ -18,4 +18,4 @@ The release package name.
 
 uses: actions/release-package-meta@v1
 with:
-  package: 'wolf'
+  package: 'wolfengine'

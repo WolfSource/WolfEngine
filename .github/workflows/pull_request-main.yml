@@ -203,7 +203,7 @@ jobs:
     strategy:
       matrix:
         package:
-          - wolf
+          - wolfengine
     timeout-minutes: 30
   coverage-finished:
     needs:
