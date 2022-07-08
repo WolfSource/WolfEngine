@@ -1,8 +1,10 @@
 // Normal function
+#[allow(dead_code)]
 const fn add(x: i64, y: i64) -> i64 {
     x + y
 }
 
+#[cfg(feature = "system_script")]
 #[tokio::test]
 async fn test_rhai() {
     use wolf::{

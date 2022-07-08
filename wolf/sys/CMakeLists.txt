@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.21)
+cmake_minimum_required(VERSION 3.18)
 
 project(wolf_sys)
 set(TEST_PROJECT_NAME "${PROJECT_NAME}_tests")
@@ -34,11 +34,11 @@ option(WOLF_STREAM_WEBRTC_CLIENT "Enable webRTC client" OFF)
 option(WOLF_SYSTEM_LZ4 "Enable LZ4 Compression" OFF)
 option(WOLF_SYSTEM_LZMA "Enable LZMA Compression" OFF)
 
-option(WOLF_ENABLE_TESTS "Enable test for wolf_sys" ON)
+option(WOLF_ENABLE_TESTS "Enable test for wolf_sys" OFF)
 
 set(LIBRARY_TYPE "SHARED" CACHE STRING "Library type")
 
-set(CMAKE_C_STANDARD 23)
+set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS ON)
 set(THREADS_PREFER_PTHREAD_FLAG ON)
@@ -47,7 +47,7 @@ if (MSVC)
     set(CMAKE_CXX_FLAGS "/EHsc /W4")
 else()
     set(CMAKE_CXX_STANDARD 20)
-    set(CMAKE_CXX_FLAGS "-fcoroutines-ts -fexceptions")
+    set(CMAKE_CXX_FLAGS "-fexceptions")
     set(CMAKE_CXX_FLAGS_DEBUG "-g")
     set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 endif()
@@ -250,7 +250,7 @@ source_group("system" FILES
 )
 
 if (NOT MSVC)
-    target_compile_options(${PROJECT_NAME} PRIVATE -std=c++2b -fPIC -Wall)
+    target_compile_options(${PROJECT_NAME} PRIVATE -std=c++20 -fPIC -Wall)
 endif()
 
 # build tests
@@ -258,7 +258,7 @@ if (WOLF_ENABLE_TESTS)
   add_executable (${TEST_PROJECT_NAME} test.cpp)
   target_link_libraries(${TEST_PROJECT_NAME} PRIVATE ${PROJECT_NAME})
   if (MSVC)
-    target_compile_options(${TEST_PROJECT_NAME} PRIVATE -std=c++2b)
+    target_compile_options(${TEST_PROJECT_NAME} PRIVATE -std=c++20)
   else()
     target_compile_options(${TEST_PROJECT_NAME} PRIVATE -Wall)
   endif()

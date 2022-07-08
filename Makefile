@@ -39,18 +39,18 @@ COVERAGE_DIR := $(TARGET_DIR)/cov
 DETECTED_OS := $(shell uname 2>/dev/null || echo "Windows")
 DOCUMENTATION_DIR := $(TARGET_DIR)/doc
 
-CARGO_BENCH = $(CARGO) $(NIGHTLY) bench --all-features --all-targets --frozen --message-format $(MESSAGE_FORMAT) --package $(PACKAGE) $(RELEASE) --target $(TARGET)
-CARGO_BUILD = $(CARGO) $(NIGHTLY) build --all-features --all-targets --frozen --message-format $(MESSAGE_FORMAT) --package $(PACKAGE) $(RELEASE) --target $(TARGET)
-CARGO_CHECK = $(CARGO) $(NIGHTLY) check --all-features --all-targets --frozen --message-format $(MESSAGE_FORMAT) --package $(PACKAGE) $(RELEASE) --target $(TARGET)
+CARGO_BENCH = $(CARGO) $(NIGHTLY) bench --all-targets --frozen --message-format $(MESSAGE_FORMAT) --package $(PACKAGE) $(RELEASE) --target $(TARGET)
+CARGO_BUILD = $(CARGO) $(NIGHTLY) build --all-targets --frozen --message-format $(MESSAGE_FORMAT) --package $(PACKAGE) $(RELEASE) --target $(TARGET)
+CARGO_CHECK = $(CARGO) $(NIGHTLY) check --all-targets --frozen --message-format $(MESSAGE_FORMAT) --package $(PACKAGE) $(RELEASE) --target $(TARGET)
 CARGO_CLEAN = $(CARGO) $(NIGHTLY) clean --frozen --package $(PACKAGE) $(RELEASE) --target $(TARGET)
-CARGO_DOC = $(CARGO) $(NIGHTLY) doc --all-features --document-private-items --frozen --no-deps --message-format $(MESSAGE_FORMAT) --package $(PACKAGE) $(RELEASE) --target $(TARGET)
+CARGO_DOC = $(CARGO) $(NIGHTLY) doc --document-private-items --frozen --no-deps --message-format $(MESSAGE_FORMAT) --package $(PACKAGE) $(RELEASE) --target $(TARGET)
 CARGO_FETCH = $(CARGO) $(NIGHTLY) fetch --locked --target $(TARGET)
-CARGO_FIX = $(CARGO) $(NIGHTLY) fix --all-features --all-targets --frozen --message-format $(MESSAGE_FORMAT) --package $(PACKAGE) $(RELEASE) --target $(TARGET)
-CARGO_RUN = $(CARGO) $(NIGHTLY) run --all-features --frozen --message-format $(MESSAGE_FORMAT) --package $(PACKAGE) $(RELEASE) --target $(TARGET)
-CARGO_TEST = $(CARGO) $(NIGHTLY) test --all-features --all-targets --frozen --message-format $(MESSAGE_FORMAT) --package $(PACKAGE) $(RELEASE) --target $(TARGET)
+CARGO_FIX = $(CARGO) $(NIGHTLY) fix --all-targets --frozen --message-format $(MESSAGE_FORMAT) --package $(PACKAGE) $(RELEASE) --target $(TARGET)
+CARGO_RUN = $(CARGO) $(NIGHTLY) run --frozen --message-format $(MESSAGE_FORMAT) --package $(PACKAGE) $(RELEASE) --target $(TARGET)
+CARGO_TEST = $(CARGO) $(NIGHTLY) test --all-targets --frozen --message-format $(MESSAGE_FORMAT) --package $(PACKAGE) $(RELEASE) --target $(TARGET)
 
 CARGO_AUDIT = $(CARGO) audit
-CARGO_CLIPPY = $(CARGO) clippy --all-features --all-targets --frozen --message-format $(MESSAGE_FORMAT) --workspace -- \
+CARGO_CLIPPY = $(CARGO) clippy --all-targets --frozen --message-format $(MESSAGE_FORMAT) --workspace -- \
 	--deny clippy::all \
 	--deny clippy::cargo \
 	--deny clippy::nursery \
@@ -59,12 +59,12 @@ CARGO_CLIPPY = $(CARGO) clippy --all-features --all-targets --frozen --message-f
 	--allow clippy::multiple_crate_versions \
 	\
 	--allow clippy::module_name_repetitions
-CARGO_DENY = $(CARGO) deny --all-features --format $(MESSAGE_FORMAT) --workspace
+CARGO_DENY = $(CARGO) deny --format $(MESSAGE_FORMAT) --workspace
 CARGO_FMT = $(CARGO) fmt --all --message-format $(MESSAGE_FORMAT)
 ifeq ("$(MIRI_SUB_COMMAND)", "run")
-	CARGO_MIRI = $(CARGO) +nightly miri run --all-features --frozen --package $(PACKAGE) $(RELEASE) --target $(TARGET)
+	CARGO_MIRI = $(CARGO) +nightly miri run --frozen --package $(PACKAGE) $(RELEASE) --target $(TARGET)
 else
-	CARGO_MIRI = $(CARGO) +nightly miri test --all-features --all-targets --frozen --package $(PACKAGE) $(RELEASE) --target $(TARGET)
+	CARGO_MIRI = $(CARGO) +nightly miri test --all-targets --frozen --package $(PACKAGE) $(RELEASE) --target $(TARGET)
 endif
 
 $(BIN): add-fmt fetch
@@ -102,15 +102,20 @@ ifeq ("$(DETECTED_OS)", "Darwin")
 	bash -c "$(curl --fail --location --show-error --silent https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" \
 	&& brew install \
 		cmake \
+		ninja \
 		glib \
 	&& PKG_CONFIG_PATH=$(pkg-config --variable pc_path pkg-config) \
 	&& PKG_CONFIG_PATH="/Library/Frameworks/GStreamer.framework/Versions/Current/lib/pkgconfig${PKG_CONFIG_PATH:+:}${PKG_CONFIG_PATH}" \
 	&& echo "export PKG_CONFIG_PATH=${PKG_CONFIG_PATH}" >> ~/.zshenv
 else ifeq ("$(DETECTED_OS)", "Linux")
 	export DEBIAN_FRONTEND="noninteractive" \
-	&& sudo apt-get update \
-	&& sudo apt-get install --no-install-recommends --yes \
+	&& apt-get update \
+	&& apt-get install --no-install-recommends --yes \
+		g++ \
+	 	clang \
+		clang-tidy \
 		cmake \
+		ninja-build \
 		libatk1.0-dev \
 		libpango1.0-dev \
 		libsoup-gnome2.4-dev \
@@ -133,9 +138,9 @@ else ifeq ("$(DETECTED_OS)", "Linux")
 		libgstreamer1.0-dev \
 		libges-1.0-dev \
 		libgstrtspserver-1.0-dev \
-	&& sudo apt-get autoremove --yes \
-	&& sudo apt-get clean --yes \
-	&& sudo rm -fr /tmp/* /var/lib/apt/lists/* /var/tmp/*
+	&& apt-get autoremove --yes \
+	&& apt-get clean --yes \
+	&& rm -fr /tmp/* /var/lib/apt/lists/* /var/tmp/*
 else
 	echo "Please install dependencies on $(DETECTED_OS)"
 endif

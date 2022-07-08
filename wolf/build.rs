@@ -22,8 +22,8 @@ const CMAKE_C_COMPILER: &str = "C:/Program Files/Microsoft Visual Studio/2022/En
 #[cfg(any(target_os = "macos", target_os = "ios"))]
 const CMAKE_C_COMPILER: &str = "/Library/Developer/CommandLineTools/usr/bin/clang";
 
-#[cfg(any(target_os = "unix"))]
-const CMAKE_C_COMPILER: &str = "usr/bin/clang";
+#[cfg(any(target_os = "linux"))]
+const CMAKE_C_COMPILER: &str = "/usr/bin/clang";
 
 fn main() {
     // get the current path
@@ -280,7 +280,7 @@ fn link(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &str) 
 
     let sys_build_dir = format!("{}/sys/build/{}", p_current_dir_path_str, p_build_profile);
 
-    if cfg!(target_family = "unix") {
+    if cfg!(target_os = "macos") || cfg!(target_os = "ios") {
         println!("cargo:rustc-link-search=native=/usr/lib");
         println!("cargo:rustc-link-lib=dylib=c++");
     }
@@ -309,6 +309,11 @@ fn link(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &str) 
 
     // copy to target and deps folder
     copy_shared_libs(&lib_path, &names);
+
+    // copy lib to linux
+    if cfg!(target_os = "linux") {
+        copy_shared_libs("/usr/lib", &names);
+    }
 
     #[cfg(feature = "ffmpeg")]
     copy_ffmpeg(p_current_dir_path_str, p_target_os);

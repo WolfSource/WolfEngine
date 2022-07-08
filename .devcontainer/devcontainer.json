@@ -3,7 +3,7 @@
 {
     "build": {
         "args": {
-            "VARIANT": "1.58-bullseye"
+            "VARIANT": "1.62-bullseye"
         },
         "dockerfile": "Dockerfile"
     },
@@ -30,7 +30,7 @@
         "source=${env:HOME}${env:USERPROFILE}/.kube,target=/usr/local/share/kube-localhost,type=bind"
         // "source=${env:HOME}${env:USERPROFILE}/.minikube,target=/usr/local/share/minikube-localhost,type=bind"
     ],
-    "name": "wolf",
+    "name": "wolfengine",
     "postStartCommand": "make add-os-dependency fetch",
     "runArgs": [
         "--cap-add=SYS_PTRACE",
