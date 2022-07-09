@@ -1,17 +1,17 @@
 use crate::stream::common::{
-    callback::{MessageType, OnCloseSocketCallback, OnMessageCallback, OnSocketCallback},
-    protocols::{TcpProtocol, MAX_MSG_SIZE},
+    buffer::{Buffer, BufferType, MAX_MSG_SIZE},
+    callback::{OnCloseSocketCallback, OnMessageCallback, OnSocketCallback},
+    protocols::TcpProtocol,
     timeouts,
-    tls::{self, TlsPrivateKeyType},
+    tls::{self},
 };
 use anyhow::{bail, Result};
 use futures::StreamExt;
-use std::{net::SocketAddr, path::Path, str::FromStr};
+use std::{net::SocketAddr, str::FromStr};
 use tokio::{
     io::{split, AsyncReadExt, AsyncWriteExt},
     time::Instant,
 };
-use tokio_rustls::TlsAcceptor;
 
 #[derive(Debug)]
 pub struct TcpServerConfig<'a> {
@@ -21,10 +21,7 @@ pub struct TcpServerConfig<'a> {
     ttl: u32,
     accept_timeout_in_secs: f64,
     io_timeout_in_secs: f64,
-    tls: bool,
-    tls_certificate_path: Option<&'a Path>,
-    tls_private_key_path: Option<&'a Path>,
-    tls_private_type: Option<&'a TlsPrivateKeyType>,
+    tls: Option<std::sync::Arc<tls::Tls>>,
 }
 
 async fn handle_tcp_connection<S>(
@@ -37,9 +34,11 @@ where
     S: tokio::io::AsyncRead + tokio::io::AsyncWrite + Unpin + Send,
 {
     let close_msg: String;
-    let mut msg_type = MessageType::BINARY;
-    let mut msg_buf = [0_u8; MAX_MSG_SIZE];
-    let mut msg_size: usize;
+    let mut msg = Buffer {
+        type_: BufferType::BINARY,
+        size: 0,
+        buf: [0_u8; MAX_MSG_SIZE],
+    };
     let conn_live_time = Instant::now();
 
     // split stream into reader and writer
@@ -51,10 +50,10 @@ where
             //try for accept incoming session within specific timeout
             res = tokio::select! {
                 res1 = timeouts::timeout_for_read(p_io_timeout_in_secs) => res1,
-                res2 = async {reader.read(&mut msg_buf).await} => res2,
+                res2 = async {reader.read(&mut msg.buf).await} => res2,
             };
         } else {
-            res = reader.read(&mut msg_buf).await;
+            res = reader.read(&mut msg.buf).await;
         }
 
         if res.is_err() {
@@ -63,15 +62,9 @@ where
         }
 
         // read buffer
-        msg_size = res.unwrap_or(0);
+        msg.size = res.unwrap_or(0);
         let elapsed_secs = conn_live_time.elapsed().as_secs_f64();
-        let want_to_close_conn = p_on_msg_callback.run(
-            elapsed_secs,
-            &p_peer_address,
-            &mut msg_type,
-            &mut msg_size,
-            &mut msg_buf,
-        );
+        let want_to_close_conn = p_on_msg_callback.run(elapsed_secs, &p_peer_address, &mut msg);
         if want_to_close_conn.is_err() {
             close_msg = format!(
                         "tcp connection will be closed because of the p_on_msg_callback request. Reason: {:?}",
@@ -79,8 +72,8 @@ where
                     );
             break;
         }
-        if msg_size > 0 {
-            let v = msg_buf[0..msg_size].to_vec();
+        if msg.size > 0 {
+            let v = msg.buf[0..msg.size].to_vec();
             let w_ret = writer.write(&v).await;
             if w_ret.is_ok() {
                 let _r = writer.flush().await;
@@ -90,21 +83,17 @@ where
             }
         }
     }
-
     Ok(close_msg)
 }
 
-// TODO: fix too_many_arguments
 #[allow(clippy::too_many_arguments)]
 async fn handle_ws_text_msg<S>(
-    p_msg: &Result<String, tokio_tungstenite::tungstenite::Error>,
+    p_ws_msg: &Result<String, tokio_tungstenite::tungstenite::Error>,
     p_on_msg_callback: &OnMessageCallback,
     p_peer_address: &SocketAddr,
     p_elapsed_secs: f64,
+    p_msg_buffer: &mut Buffer,
     p_ws_stream: &mut tokio_tungstenite::WebSocketStream<S>,
-    p_msg_buf: &mut [u8; 1024],
-    p_msg_size: &mut usize,
-    p_msg_type: &mut MessageType,
     p_close_code: &mut tokio_tungstenite::tungstenite::protocol::frame::coding::CloseCode,
     p_close_msg: &mut String,
 ) -> bool
@@ -114,25 +103,19 @@ where
     use tokio_tungstenite::tungstenite::protocol::frame::coding::CloseCode;
     use tokio_tungstenite::tungstenite::Message;
 
-    *p_msg_type = MessageType::TEXT;
-    match p_msg {
+    p_msg_buffer.type_ = BufferType::TEXT;
+    match p_ws_msg {
         Ok(str) => {
             // memory copy
             unsafe {
                 let src_len = str.len();
                 let src_ptr = str.as_bytes().as_ptr();
-                let dst_ptr = p_msg_buf.as_mut_ptr();
+                let dst_ptr = p_msg_buffer.buf.as_mut_ptr();
 
                 std::ptr::copy_nonoverlapping(src_ptr, dst_ptr, src_len);
             }
 
-            let close = p_on_msg_callback.run(
-                p_elapsed_secs,
-                p_peer_address,
-                p_msg_type,
-                p_msg_size,
-                p_msg_buf,
-            );
+            let close = p_on_msg_callback.run(p_elapsed_secs, p_peer_address, p_msg_buffer);
 
             // close the connection
             if close.is_err() {
@@ -142,9 +125,9 @@ where
             }
 
             //fill other data to zero for better converting array to string
-            p_msg_buf[*p_msg_size..1024].fill(0_u8);
+            p_msg_buffer.reset();
 
-            let str_res = std::str::from_utf8(p_msg_buf);
+            let str_res = std::str::from_utf8(p_msg_buffer.buf.as_slice());
             if str_res.is_ok() {
                 let r = futures::SinkExt::send(
                     p_ws_stream,
@@ -191,9 +174,7 @@ where
     use tokio_tungstenite::tungstenite::Message;
 
     let mut close_msg = String::new();
-    let mut msg_type = MessageType::TEXT;
-    let mut msg_buf = [0_u8; MAX_MSG_SIZE];
-    let mut msg_size: usize;
+    let mut msg_buffer = Buffer::new(BufferType::TEXT);
     let mut close_code = CloseCode::Unsupported;
     let mut res: Option<Result<Message, Error>>;
     let conn_live_time = Instant::now();
@@ -224,9 +205,9 @@ where
                 if msg.is_close() {
                     break;
                 } else if !msg.is_empty() && (msg.is_text() || msg.is_binary()) {
-                    msg_size = msg.len();
+                    msg_buffer.size = msg.len();
                     // don not allow process message more than 1K
-                    if msg_size > MAX_MSG_SIZE {
+                    if msg_buffer.size > MAX_MSG_SIZE {
                         close_msg = format!(
                                     "websocket connection is going to close. Reason: Received message size is greater than {}",
                                     MAX_MSG_SIZE
@@ -244,10 +225,8 @@ where
                             &p_on_msg_callback,
                             &p_peer_address,
                             elapsed_secs,
+                            &mut msg_buffer,
                             &mut ws_stream,
-                            &mut msg_buf,
-                            &mut msg_size,
-                            &mut msg_type,
                             &mut close_code,
                             &mut close_msg,
                         )
@@ -257,20 +236,18 @@ where
                         }
                     } else if msg.is_binary() {
                         //TODO: This section should refactor
-                        msg_type = MessageType::BINARY;
+                        msg_buffer.type_ = BufferType::BINARY;
                         let msg_vec = msg.clone().into_data();
                         let msg_res: Result<&[u8; 1024], std::array::TryFromSliceError> =
                             msg_vec.as_slice().try_into();
                         match msg_res {
                             Ok(arr) => {
-                                msg_buf.copy_from_slice(arr);
+                                msg_buffer.buf.copy_from_slice(arr);
 
                                 want_to_close_conn = p_on_msg_callback.run(
                                     elapsed_secs,
                                     &p_peer_address,
-                                    &mut msg_type,
-                                    &mut msg_size,
-                                    &mut msg_buf,
+                                    &mut msg_buffer,
                                 );
 
                                 if want_to_close_conn.is_err() {
@@ -281,7 +258,7 @@ where
 
                                 let r = futures::SinkExt::send(
                                     &mut ws_stream,
-                                    Message::Binary(msg_buf.to_vec()),
+                                    Message::Binary(msg_buffer.buf.to_vec()),
                                 )
                                 .await;
                                 if r.is_err() {
@@ -363,7 +340,6 @@ where
 async fn server_main_loop(
     p_config: &'static TcpServerConfig<'static>,
     p_tcp_listener: tokio::net::TcpListener,
-    p_tls_acceptor: Option<TlsAcceptor>,
     p_on_accept_connection: OnSocketCallback,
     p_on_message: OnMessageCallback,
     p_on_close_connection: OnCloseSocketCallback,
@@ -414,15 +390,12 @@ async fn server_main_loop(
         let on_accept_connection = p_on_accept_connection.clone();
         let on_close_connection_callback = p_on_close_connection.clone();
 
-        if p_config.tls {
+        if let Some(tls) = p_config.tls.clone() {
             // start main loop
             if let Ok((stream, peer_addr)) = res {
-                //clone from tls
-                let tls = p_tls_acceptor.clone().unwrap();
-
                 // accept a new tls connection
                 let _j = tokio::spawn(async move {
-                    let ret_accept = match tls.accept(stream).await {
+                    let ret_accept = match tls.acceptor.accept(stream).await {
                         Ok(tls_stream) => {
                             accept_connection(
                                 protocol,
@@ -490,19 +463,6 @@ pub async fn server(
     //create address
     let address = format!("{}:{}", p_config.address, p_config.port);
     let socket_addr = SocketAddr::from_str(&address)?;
-
-    //create tls acceptor
-    let tls_acc = if p_config.tls {
-        let tls = tls::init_tls_acceptor(
-            p_config.tls_certificate_path,
-            p_config.tls_private_key_path,
-            p_config.tls_private_type,
-        )?;
-        Option::from(tls)
-    } else {
-        None
-    };
-
     //bind to the tcp listener
     let tcp_listener = tokio::net::TcpListener::bind(socket_addr).await?;
 
@@ -516,7 +476,6 @@ pub async fn server(
     server_main_loop(
         p_config,
         tcp_listener,
-        tls_acc,
         p_on_accept_connection,
         p_on_message,
         p_on_close_connection,

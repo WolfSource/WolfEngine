@@ -1,18 +1,10 @@
 #![allow(missing_debug_implementations)]
-
+use super::buffer::Buffer;
 use anyhow::Result;
 use std::{net::SocketAddr, sync::Arc};
 
-#[derive(Debug)]
-pub enum MessageType {
-    BINARY = 0,
-    TEXT,
-}
-
 // OnMessageCallback
-type Fp1 = Box<
-    dyn Fn(f64, &SocketAddr, &mut MessageType, &mut usize, &mut [u8]) -> Result<()> + Send + Sync,
->;
+type Fp1 = Box<dyn Fn(f64, &SocketAddr, &mut Buffer) -> Result<()> + Send + Sync>;
 
 pub struct OnMessageCallback {
     f: Arc<Fp1>,
@@ -31,17 +23,9 @@ impl OnMessageCallback {
         &self,
         p_socket_time_in_secs: f64,
         p_peer_address: &SocketAddr,
-        p_type_of_msg: &mut MessageType,
-        p_size_of_msg: &mut usize,
-        p_buf: &mut [u8],
+        p_msg: &mut Buffer,
     ) -> Result<()> {
-        (self.f)(
-            p_socket_time_in_secs,
-            p_peer_address,
-            p_type_of_msg,
-            p_size_of_msg,
-            p_buf,
-        )
+        (self.f)(p_socket_time_in_secs, p_peer_address, p_msg)
     }
 }
 
