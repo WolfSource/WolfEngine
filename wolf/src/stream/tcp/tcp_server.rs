@@ -311,7 +311,7 @@ where
     p_on_accept_connection.run(&p_peer_address)?;
 
     let close_msg_res = match p_protocol {
-        TcpProtocol::TcpNative => {
+        TcpProtocol::Native => {
             handle_tcp_connection(
                 p_stream,
                 p_peer_address,
@@ -320,7 +320,7 @@ where
             )
             .await
         }
-        TcpProtocol::TcpWebsocket => {
+        TcpProtocol::Websocket => {
             handle_ws_connection(
                 p_stream,
                 p_peer_address,

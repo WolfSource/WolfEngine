@@ -28,7 +28,6 @@ impl GraphicsDevice {
     ///
     /// # Errors
     ///
-    /// TODO: replace with gfx
     pub async fn new(p_window_info: Option<WindowInfo>) -> Result<Self> {
         let surface: Option<wgpu::Surface>;
         let size: (u32, u32);
@@ -81,39 +80,35 @@ impl GraphicsDevice {
 
                 if let Some(g_surface) = surface {
                     // create a graphics device for this surface window
-                    let format_res = g_surface.get_preferred_format(&adapter);
+                    let format_res = g_surface.get_supported_formats(&adapter);
                     // in this match block, we are going to return a Result<GraphicsDevice> object
-                    match format_res {
-                        Some(texture_format) => {
-                            // create config
-                            let config = wgpu::SurfaceConfiguration {
-                                usage: wgpu::TextureUsages::RENDER_ATTACHMENT,
-                                format: texture_format,
-                                width: size.0,
-                                height: size.1,
-                                present_mode: wgpu::PresentMode::Fifo,
-                            };
-
-                            // configure the surface
-                            g_surface.configure(&device, &config);
-
-                            // create graphics device
-                            let g_device = Self {
-                                adaptor: adapter,
-                                config,
-                                device,
-                                queue,
-                                size,
-                                surface: Some(g_surface),
-                            };
-
-                            // return the graphics device
-                            Ok(g_device)
-                        }
-                        None => {
-                            bail!("couldn't create texture format")
-                        }
+                    if format_res.is_empty() {
+                        bail!("get_supported_formats returns nothing")
                     }
+                    // create config
+                    let config = wgpu::SurfaceConfiguration {
+                        usage: wgpu::TextureUsages::RENDER_ATTACHMENT,
+                        format: format_res[0],
+                        width: size.0,
+                        height: size.1,
+                        present_mode: wgpu::PresentMode::Fifo,
+                    };
+
+                    // configure the surface
+                    g_surface.configure(&device, &config);
+
+                    // create graphics device
+                    let g_device = Self {
+                        adaptor: adapter,
+                        config,
+                        device,
+                        queue,
+                        size,
+                        surface: Some(g_surface),
+                    };
+
+                    // return the graphics device
+                    Ok(g_device)
                 } else {
                     // create config
                     let config = wgpu::SurfaceConfiguration {

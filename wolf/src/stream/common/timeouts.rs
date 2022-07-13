@@ -17,7 +17,7 @@ pub async fn timeout_for_read(p_timeout_in_secs: f64) -> std::io::Result<usize> 
     ))
 }
 
-#[cfg(not(any(target_os = "android", target_os = "ios", target_arch = "wasm32")))]
+#[cfg(feature = "stream_socket_server")]
 pub async fn timeout_for_read_ws(
     p_timeout_in_secs: f64,
 ) -> Option<Result<tokio_tungstenite::tungstenite::Message, tokio_tungstenite::tungstenite::Error>>
