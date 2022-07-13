@@ -1,6 +1,6 @@
 use crate::stream::common::{
-    callback::{MessageType, OnMessageCallback, OnSocketCallback},
-    protocols::MAX_MSG_SIZE,
+    buffer::{Buffer, BufferType},
+    callback::{OnMessageCallback, OnSocketCallback},
     timeouts,
 };
 use anyhow::{anyhow, Result};
@@ -150,9 +150,7 @@ where
     const TRACE: &str = "tcp_client::handle_client_stream";
 
     // don't read more than 1K
-    let mut msg_type = MessageType::BINARY;
-    let mut msg_buf = [0_u8; MAX_MSG_SIZE];
-    let mut msg_size = 0;
+    let mut msg_buffer = Buffer::new(BufferType::BINARY);
     let socket_live_time = Instant::now();
 
     let (mut reader, mut writer) = split(p_stream);
@@ -162,19 +160,13 @@ where
     loop {
         let elapsed_secs = socket_live_time.elapsed().as_secs_f64();
         if p_on_message
-            .run(
-                elapsed_secs,
-                p_peer_address,
-                &mut msg_type,
-                &mut msg_size,
-                &mut msg_buf,
-            )
+            .run(elapsed_secs, p_peer_address, &mut msg_buffer)
             .is_err()
         {
             break;
         }
-        if msg_size > 0 {
-            let v = msg_buf[0..msg_size].to_vec();
+        if msg_buffer.size > 0 {
+            let v = msg_buffer.buf[0..msg_buffer.size].to_vec();
             let s = writer
                 .write(&v)
                 .await
@@ -191,14 +183,14 @@ where
             //try for accept incoming session within specific timeout
             res = tokio::select! {
                 res1 = timeouts::timeout_for_read(p_io_timeout_in_secs) => res1,
-                res2 = async {reader.read(&mut msg_buf).await} => res2,
+                res2 = async {reader.read(&mut msg_buffer.buf).await} => res2,
             };
         } else {
-            res = reader.read(&mut msg_buf).await;
+            res = reader.read(&mut msg_buffer.buf).await;
         }
 
         // read from buffer
-        msg_size = res.map_err(|e| anyhow!("{:?}. trace info:{}", e, TRACE))?;
+        msg_buffer.size = res.map_err(|e| anyhow!("{:?}. trace info:{}", e, TRACE))?;
     }
 
     Ok(())

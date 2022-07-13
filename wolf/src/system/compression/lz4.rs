@@ -45,7 +45,6 @@ pub fn compress(
     }
 
     // now we are sure that safe_max_dst_size is a signed integer
-
     p_dst.clear();
     p_dst.resize(safe_max_dst_size, 0u8);
 

@@ -1,5 +1,6 @@
 use crate::stream::common::{
-    callback::{MessageType, OnCloseSocketCallback, OnMessageCallback, OnSocketCallback},
+    buffer::{Buffer, BufferType},
+    callback::{OnCloseSocketCallback, OnMessageCallback, OnSocketCallback},
     protocols::TcpProtocol,
 };
 use std::{
@@ -7,7 +8,6 @@ use std::{
     str::FromStr,
     time::{Duration, Instant},
 };
-const MAX_BUFFER_SIZE: usize = 1024; //1K
 
 #[derive(Debug)]
 pub struct TcpFiberServerConfig<'a> {
@@ -26,31 +26,27 @@ fn handle_tcp_connection(
     p_on_msg_callback: &OnMessageCallback,
 ) -> String {
     let mut close_msg: String = String::new();
-    let mut msg_type = MessageType::BINARY;
-    let mut msg_buf = [0_u8; MAX_BUFFER_SIZE];
-    let mut msg_size: usize = 0;
+    let mut msg = Buffer::new(BufferType::BINARY);
     let conn_live_time = Instant::now();
 
     loop {
-        let _r = std::io::Read::read(&mut p_stream, &mut msg_buf)
+        let _r = std::io::Read::read(&mut p_stream, &mut msg.buf)
             .map(|n| {
-                msg_size = n;
+                msg.size  = n;
                 let elapsed_secs = conn_live_time.elapsed().as_secs_f64();
                 let close_conn = p_on_msg_callback.run(
                     elapsed_secs,
                     &p_peer_address,
-                    &mut msg_type,
-                    &mut msg_size,
-                    &mut msg_buf,
+                    &mut msg,
                 );
                 if close_conn.is_err()
                 {
                     close_msg = format!("{:?}. ", close_conn);
                 }
 
-                if msg_size > 0
+                if msg.size > 0
                 {
-                    let _r = std::io::Write::write(&mut p_stream, &msg_buf).map(|sent|
+                    let _r = std::io::Write::write(&mut p_stream, &msg.buf).map(|sent|
                     {
                         if sent > 0
                         {
@@ -110,8 +106,8 @@ fn accept_connection(
     p_stream.set_write_timeout(Some(Duration::from_secs_f64(p_io_timeout_in_secs)))?;
 
     let close_msg = match p_protocol {
-        TcpProtocol::TcpNative => handle_tcp_connection(p_stream, p_peer_address, p_on_msg),
-        TcpProtocol::TcpWebsocket => handle_ws_connection(p_stream, p_peer_address, p_on_msg),
+        TcpProtocol::Native => handle_tcp_connection(p_stream, p_peer_address, p_on_msg),
+        TcpProtocol::Websocket => handle_ws_connection(p_stream, p_peer_address, p_on_msg),
     };
 
     p_on_close_connection.run(&p_peer_address, &close_msg)

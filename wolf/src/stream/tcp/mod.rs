@@ -1,8 +1,6 @@
+#[cfg(feature = "stream_socket_client")]
 pub mod tcp_client;
-#[cfg(not(any(target_os = "android", target_os = "ios")))]
+#[cfg(feature = "stream_socket_server")]
 pub mod tcp_server;
-#[cfg(all(
-    feature = "system_fiber",
-    not(any(target_os = "android", target_os = "ios", target_arch = "wasm32"))
-))]
+#[cfg(all(feature = "stream_socket_server", feature = "system_fiber"))]
 pub mod tcp_server_fiber;

@@ -1,12 +1,12 @@
 use crate::stream::common::{
-    callback::{
-        MessageType, {OnCloseSocketCallback, OnMessageCallback, OnSocketCallback},
-    },
-    protocols::MAX_MSG_SIZE,
+    buffer::{Buffer, BufferType},
+    callback::{OnCloseSocketCallback, OnMessageCallback, OnSocketCallback},
 };
 use anyhow::{anyhow, Result};
 use std::{net::SocketAddr, str::FromStr};
 use tokio::{net::UdpSocket, time::Instant};
+
+use super::common::buffer::MAX_MSG_SIZE;
 
 #[derive(Debug)]
 pub enum UdpConnectionType {
@@ -105,8 +105,7 @@ pub async fn connect(
     p_on_bind_socket.run(&socket_addr)?;
 
     // don't read more than 1K
-    let mut msg_type = MessageType::BINARY;
-    let mut msg_buf = [0_u8; MAX_MSG_SIZE];
+    let mut msg = Buffer::new(BufferType::BINARY);
     let mut r_res: std::io::Result<(usize, SocketAddr)>;
     let mut s_res: std::io::Result<usize>;
     let close_msg: String;
@@ -119,21 +118,19 @@ pub async fn connect(
             loop {
                 let elpased_secs = socket_live_time.elapsed().as_secs_f64();
 
-                r_res = read(&socket, &mut msg_buf, p_read_write_timeout_in_secs).await;
+                r_res = read(&socket, &mut msg.buf, p_read_write_timeout_in_secs).await;
                 if r_res.is_err() {
                     close_msg = format!("{:?}", r_res);
                     break;
                 }
-                let (mut msg_size, peer_addr) =
+
+                let (msg_size, peer_addr) =
                     r_res.map_err(|e| anyhow!("{:?}. trace info:{}", e, TRACE))?;
 
-                let want_to_close_conn = p_on_message.run(
-                    elpased_secs,
-                    &peer_addr,
-                    &mut msg_type,
-                    &mut msg_size,
-                    &mut msg_buf,
-                );
+                // copy msg size
+                msg.size = msg_size;
+
+                let want_to_close_conn = p_on_message.run(elpased_secs, &peer_addr, &mut msg);
                 if want_to_close_conn.is_err() {
                     close_msg = format!(
                         "udp connection will be closed because of the p_on_msg_callback request. Reason: {:?}",
@@ -146,7 +143,7 @@ pub async fn connect(
                     let s_res = send(
                         &socket,
                         &peer_addr,
-                        &mut msg_buf,
+                        &mut msg.buf,
                         p_read_write_timeout_in_secs,
                     )
                     .await;
@@ -158,7 +155,7 @@ pub async fn connect(
             }
         }
         UdpConnectionType::UDPClient => {
-            let mut msg_size: usize = 0;
+            let mut msg_size: usize;
             let peer_addr = socket
                 .local_addr()
                 .map_err(|e| anyhow!("{:?}. trace info:{}", e, TRACE))?;
@@ -167,13 +164,7 @@ pub async fn connect(
             loop {
                 let elpased_secs = socket_live_time.elapsed().as_secs_f64();
                 // write buffer
-                let want_to_close_conn = p_on_message.run(
-                    elpased_secs,
-                    &peer_addr,
-                    &mut msg_type,
-                    &mut msg_size,
-                    &mut msg_buf,
-                );
+                let want_to_close_conn = p_on_message.run(elpased_secs, &peer_addr, &mut msg);
                 if want_to_close_conn.is_err() {
                     close_msg = format!(
                         "udp client will be closed because of the p_on_msg_callback request. Reason: {:?}",
@@ -181,11 +172,13 @@ pub async fn connect(
                     );
                     break;
                 }
+                msg_size = msg.size;
+
                 if msg_size > 0 {
                     s_res = send(
                         &socket,
                         &peer_addr,
-                        &mut msg_buf,
+                        &mut msg.buf,
                         p_read_write_timeout_in_secs,
                     )
                     .await;
@@ -193,7 +186,7 @@ pub async fn connect(
                         close_msg = format!("{:?}", s_res);
                         break;
                     }
-                    r_res = read(&socket, &mut msg_buf, p_read_write_timeout_in_secs).await;
+                    r_res = read(&socket, &mut msg.buf, p_read_write_timeout_in_secs).await;
                     if r_res.is_err() {
                         close_msg = format!("{:?}", r_res);
                         break;
@@ -245,23 +238,21 @@ async fn test() {
     let on_msg_callback = OnMessageCallback::new(Box::new(
         |p_socket_time_in_secs: f64,
          p_peer_address: &SocketAddr,
-         _p_msg_type: &mut MessageType,
-         p_msg_size: &mut usize,
-         p_msg_buffer: &mut [u8]|
+         p_msg: &mut crate::stream::common::buffer::Buffer|
          -> anyhow::Result<()> {
             println!(
                 "client: number of received byte(s) from {:?} is {}. socket live time {}",
-                p_peer_address, *p_msg_size, p_socket_time_in_secs
+                p_peer_address, p_msg.size, p_socket_time_in_secs
             );
 
-            if *p_msg_size > 0 {
-                let msg = std::str::from_utf8(p_msg_buffer)?;
+            if p_msg.size > 0 {
+                let msg = std::str::from_utf8(p_msg.buf.as_slice())?;
                 println!("client: received buffer is {}", msg);
             }
             //now store new bytes for write
             let msg = "hello...world!\0"; //make sure append NULL terminate
-            p_msg_buffer[0..msg.len()].copy_from_slice(msg.as_bytes());
-            *p_msg_size = msg.len();
+            p_msg.buf[0..msg.len()].copy_from_slice(msg.as_bytes());
+            p_msg.size = msg.len();
 
             if p_socket_time_in_secs > 10.0 {
                 anyhow::bail!("closing socket");

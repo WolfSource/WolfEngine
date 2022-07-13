@@ -1,7 +1,7 @@
 #![allow(unused_crate_dependencies)]
 
-#[tokio::test]
-async fn test_gametime() {
+#[test]
+fn test_gametime() {
     println!("wolf_sys version is : {:?}", wolf::sys_version());
 
     let mut gtime = wolf::system::chrono::gametime::GameTime::new();

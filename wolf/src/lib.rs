@@ -8,12 +8,11 @@ static GLOBAL: mimalloc::MiMalloc = mimalloc::MiMalloc;
 #[allow(dead_code)]
 const MAX_TRACE_BUFFER_SIZE: usize = 256;
 
+pub mod media;
 #[cfg(feature = "render")]
 pub mod render;
 pub mod stream;
 pub mod system;
-
-pub mod media;
 
 #[cfg(not(target_arch = "wasm32"))]
 #[must_use]
