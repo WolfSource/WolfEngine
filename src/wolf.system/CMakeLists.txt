@@ -138,6 +138,7 @@ if(WIN32 OR WIN64)
 endif()
 
 if (UNIX)
+    # TODO refactor all of this into external.cmake with proper interface library target.
     if(IOS)
         # build apr via shell script
         execute_process(COMMAND chmod +x ${CMAKE_CURRENT_SOURCE_DIR}/shell/apr.sh)
@@ -158,7 +159,15 @@ if (UNIX)
     endif()
 
     add_dependencies(libapr_target expat)
-    add_dependencies(${PROJECT_NAME} libapr_target)
+
+    # TODO complete this later so linux build would work. it's currently broken.
+    #add_library(apr-2 INTERFACE)
+    #add_dependencies(apr-2 libapr_target)
+    #target_include_directories(apr-2 INTERFACE "")
+    #target_link_libraries(apr-2 INTERFACE "")
+
+    #add_dependencies(${PROJECT_NAME} libapr_target) # remove this line.
+    #target_link_libraries(${PROJECT_NAME} PRIVATE apr-2)
 endif()
 
 # add includes
@@ -277,7 +286,8 @@ endif()
 #add_executable(${TEST_PROJECT_NAME} test.cpp)
 #target_link_libraries(${TEST_PROJECT_NAME} PRIVATE ${PROJECT_NAME})
 
-# create filter for each folder
+### target sources and source groups
+
 if (WOLF_ENABLE_AVX2 AND NOT IOS AND NOT LINUX)
     file(GLOB_RECURSE W_BASE64_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/w_base64/*")
 endif()
