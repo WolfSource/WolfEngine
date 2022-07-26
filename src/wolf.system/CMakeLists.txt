@@ -9,7 +9,8 @@ set(LIBRARY_TYPE "SHARED" CACHE STRING "Library type")
 
 if("${TARGET}" STREQUAL "IOS")
     set(IOS TRUE)
-endif()													
+endif()
+
 if(UNIX AND NOT APPLE AND NOT IOS)
    set(LINUX TRUE)
 endif()
@@ -18,11 +19,11 @@ endif()
 if (IOS)
     project(wolf_system_ios)						 
 elseif (APPLE)
-	project(wolf_system_osx)
+    project(wolf_system_osx)
 elseif (WIN32)
-	project(wolf_system_win)
+    project(wolf_system_win)
 elseif (LINUX)
-	project(wolf_system_linux)
+    project(wolf_system_linux)
 endif()
 
 add_library(${PROJECT_NAME} ${LIBRARY_TYPE})
@@ -36,27 +37,9 @@ if(WIN32 AND CMAKE_SIZEOF_VOID_P EQUAL 8)
     set(WIN64 TRUE)
 endif()
 
-if(IOS)
-    set(PREFIX_LIB_PATH "ios")
-    if(NOT ${DEVELOPMENT_TEAM_ID})
-        set(DEVELOPMENT_TEAM_ID "") # set your dev id for signing package
-    endif()  
-elseif(APPLE)
-    set(PREFIX_LIB_PATH "osx")
-elseif(WIN64)
-    set(PREFIX_LIB_PATH "win/x64")
-elseif(WIN32)
-    set(PREFIX_LIB_PATH "win/x86")
-elseif(LINUX)
-    set(PREFIX_LIB_PATH "linux")
-endif()
-
-# required packages
-#find_package(Git REQUIRED)
-#if (LINUX)
-    #find_package(Wget REQUIRED)
-    #message("make sure libtool was installed.(apt-get install libtool-bin)")
-#endif()
+if(IOS AND NOT ${DEVELOPMENT_TEAM_ID})
+    set(DEVELOPMENT_TEAM_ID "") # set your dev id for signing package
+endif()  
 
 set(WOLF_EXTERN_DEPS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/_deps")
 include("cmake/external.cmake")
@@ -77,7 +60,7 @@ option(WOLF_ENABLE_QUIC "Enable QUIC protocol" OFF)
 option(WOLF_ENABLE_SSL "Enable WOLF SSL" OFF)
 
 set(CMAKE_C_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_STANDARD_REQUIRED YES)
 set(CMAKE_CXX_EXTENSIONS ENABLE_CXX_EXTENSIONS)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED YES)
@@ -135,14 +118,11 @@ if(WOLF_ENABLE_SSL)
     wolf_find_wolfssl()
 endif()
 
-if (UNIX)
-    if (WOLF_ENABLE_ACTIVEMQ)
-        # build activeMQ via shell script
-        execute_process(COMMAND chmod +x ${CMAKE_CURRENT_SOURCE_DIR}/shell/amq.sh)
-        add_custom_target(libamq_target COMMAND /bin/sh -c
-        "${CMAKE_CURRENT_SOURCE_DIR}/shell/amq.sh --build_dir=${CMAKE_CURRENT_BINARY_DIR} --${CMAKE_BUILD_TYPE}")
-    endif()
-	
+if (WOLF_ENABLE_ACTIVEMQ AND UNIX)
+    wolf_find_activemq_cpp()
+endif()
+
+if (UNIX)	
     if(IOS)
         # build apr via shell script
         execute_process(COMMAND chmod +x ${CMAKE_CURRENT_SOURCE_DIR}/shell/apr.sh)
@@ -161,6 +141,8 @@ if (UNIX)
         add_custom_target(libapr_target COMMAND /bin/sh -c
         "${CMAKE_CURRENT_SOURCE_DIR}/shell/apr.sh --bypass_ios=1 --bypass_ios_simulator=1 --bypass_macos=1  --arch=${CMAKE_SYSTEM_PROCESSOR} --build_dir=${CMAKE_CURRENT_BINARY_DIR} --${CMAKE_BUILD_TYPE}")
     endif()
+
+    add_dependencies(${PROJECT_NAME} libapr_target)
 endif()
 
 if(IOS)
@@ -414,13 +396,6 @@ target_sources(${PROJECT_NAME} PUBLIC
     ${WOLF_SRC_DIR}
  )
 
-if (UNIX)
-    if (WOLF_ENABLE_ACTIVEMQ)
-        add_dependencies(${PROJECT_NAME} libamq_target)
-    endif()
-    add_dependencies(${PROJECT_NAME} libapr_target)
-endif()
-
 source_group("w_base64" FILES ${W_BASE64_SRC_DIR})
 source_group("w_chrono" FILES ${W_CHRONO_SRC_DIR})
 source_group("w_compression/lz4" FILES ${W_COMPRESSION_LZ4_SRC_DIR})
@@ -569,7 +544,6 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     $<$<BOOL:${WIN32}>:Shlwapi>
     $<$<BOOL:${WIN64}>:Shlwapi>
 
-    $<$<BOOL:${WOLF_ENABLE_ACTIVEMQ}>:activemq-cpp::activemq-cpp>
     $<$<BOOL:${WOLF_ENABLE_CURL}>:libcurl>
     $<$<BOOL:${WOLF_ENABLE_FIBER}>:Boost>
 
@@ -582,6 +556,10 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     $<$<BOOL:${WOLF_ENABLE_QUIC}>:quiche>
     $<$<BOOL:${WOLF_ENABLE_SSL}>:wolfssl>
 )
+
+if (WOLF_ENABLE_ACTIVEMQ AND UNIX)
+    target_link_libraries(${PROJECT_NAME} PRIVATE activemq-cpp::activemq-cpp)
+endif()
 
 #set(TEST_PROJECT_NAME "${PROJECT_NAME}_test")
 #add_executable(${TEST_PROJECT_NAME} test.cpp)

@@ -1,3 +1,5 @@
+### requires WOLF_EXTERN_DEPS_DIR
+
 include_guard()
 
 include(FetchContent)
@@ -186,8 +188,48 @@ function(wolf_find_quiche)
     target_link_libraries(quiche INTERFACE "${WOLF_EXTERN_DEPS_DIR}/quiche/lib/${PREFIX_LIB_PATH}/${CMAKE_BUILD_TYPE}/quiche.lib")
 endfunction()
 
-function(wolf_find_activemq)
-    message(FATAL_ERROR "wolf dependency activemq: not implemented.")
-    # TODO implement.
+function(wolf_find_activemq_cpp)
+    if (NOT UNIX)
+        message(FATAL_ERROR "wolf dependency active-mq: it's only available for *nix systems.")
+    endif()
+
+    message(STATUS "wolf dependency activemq-cpp")
+
+    FetchContent_Declare(
+        activemq_cpp
+        GIT_REPOSITORY https://github.com/apache/activemq-cpp
+        GIT_TAG        master
+    )
+
+    list(APPEND HANDLED_BY_EXTERNAL activemq_cpp)
+
+    FetchContent_GetProperties(activemq_cpp)
+    if (NOT activemq_cpp_POPULATED)
+        FetchContent_Populate(activemq_cpp)
+
+        message(STATUS "building activemq-cpp at ${activemq_cpp_BINARY_DIR}")
+
+        find_program(MAKE_PROGRAM make REQUIRED)
+
+        add_custom_target(
+            activemq-cpp-build
+            COMMAND chmod +x ./autogen.sh
+            COMMAND ./autogen.sh
+            COMMAND ./configure --prefix=${activemq_cpp_BINARY_DIR}
+            COMMAND ${MAKE_PROGRAM} install
+            WORKING_DIRECTORY "${activemq_cpp_SOURCE_DIR}/activemq-cpp"
+            BYPRODUCTS "${activemq_cpp_BINARY_DIR}"
+        )
+
+        add_library(activemq-cpp INTERFACE)
+        add_library(activemq-cpp::activemq-cpp ALIAS activemq-cpp)
+
+        target_include_directories(activemq-cpp INTERFACE
+            ${activemq_cpp_BINARY_DIR}/include/activemq-3.10.0/)
+        target_link_libraries(activemq-cpp INTERFACE
+            ${activemq_cpp_BINARY_DIR}/lib/libactivemq-cpp.a)
+
+        add_dependencies(activemq-cpp activemq-cpp-build)
+    endif()
 endfunction()
 
