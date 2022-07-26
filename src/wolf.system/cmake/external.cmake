@@ -36,13 +36,18 @@ endfunction()
 
 function(wolf_find_apr)
     message(STATUS "wolf dependency apr")
+
+    set(APR_MINIMAL_BUILD ON CACHE BOOL "APR_MINIMAL_BUILD")
+
     FetchContent_Declare(
         apr
         GIT_REPOSITORY https://github.com/apache/apr.git
         GIT_TAG        trunk
     )
+
     list(APPEND HANDLED_BY_EXTERNAL apr)
     FetchContent_MakeAvailable(apr)
+
     FetchContent_GetProperties(apr)
     target_include_directories(apr-2 PUBLIC "${apr_BUILD_DIR}")
     target_include_directories(apr-2 PUBLIC "${apr_SOURCE_DIR}/include")

@@ -23,13 +23,13 @@ endif()
 
 # set the project name
 if (IOS)
-    project(wolf_system_ios)						 
+    project(wolf_system_ios VERSION 2.1.0)
 elseif (APPLE)
-    project(wolf_system_osx)
+    project(wolf_system_osx VERSION 2.1.0)
 elseif (WIN32)
-    project(wolf_system_win)
+    project(wolf_system_win VERSION 2.1.0)
 elseif (LINUX)
-    project(wolf_system_linux)
+    project(wolf_system_linux VERSION 2.1.0)
 endif()
 
 add_library(${PROJECT_NAME} ${LIBRARY_TYPE})
@@ -73,6 +73,8 @@ option(WOLF_ENABLE_LUA "Enable Lua Scripting" OFF)
 option(WOLF_ENABLE_PYTHON3 "Enable Python3 Scripting" OFF)
 option(WOLF_ENABLE_QUIC "Enable QUIC protocol" OFF)
 option(WOLF_ENABLE_SSL "Enable WOLF SSL" OFF)
+
+option(WOLF_INSTALL "Generate installation and cpack configs" OFF)
 
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED YES)
@@ -174,10 +176,16 @@ endif()
 target_include_directories(
     ${PROJECT_NAME}
     PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR}
-        ${CMAKE_CURRENT_SOURCE_DIR}/w_log
-        ${CMAKE_CURRENT_SOURCE_DIR}/w_compression/msgpack
-        ${CMAKE_CURRENT_SOURCE_DIR}/w_net/uSockets
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/w_log>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/w_compression/msgpack>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/w_net/uSockets>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+
+        $<INSTALL_INTERFACE:include>
+        $<INSTALL_INTERFACE:include/w_log>
+        $<INSTALL_INTERFACE:include/w_compression/msgpack>
+        $<INSTALL_INTERFACE:include/w_net/uSockets>
 )
 
 # set global compiler options
@@ -483,7 +491,7 @@ file(GLOB_RECURSE WOLF_SRC_DIR
 )
 
 # add sources
-target_sources(${PROJECT_NAME} PUBLIC
+target_sources(${PROJECT_NAME} PRIVATE
     ${W_BASE64_SRC_DIR}
     ${W_CHRONO_SRC_DIR}
     ${W_COMPRESSION_LZ4_SRC_DIR}
@@ -570,5 +578,62 @@ if (APPLE OR IOS)
         "${CMAKE_CURRENT_SOURCE_DIR}/w_io/w_io.c"
         PROPERTIES
             COMPILE_FLAGS "-x objective-c" )
+endif()
+
+### installation and packaging
+
+if(WOLF_INSTALL)
+  include(GNUInstallDirs)
+  include(CMakePackageConfigHelpers)
+
+  configure_package_config_file(
+    "${PROJECT_SOURCE_DIR}/cmake/WolfSystemConfig.cmake.in"
+    "${PROJECT_BINARY_DIR}/WolfSystemConfig.cmake"
+    INSTALL_DESTINATION "share/cmake/${PROJECT_NAME}")
+
+  write_basic_package_version_file(
+   "${PROJECT_BINARY_DIR}/WolfSystemConfigVersion.cmake"
+    COMPATIBILITY SameMajorVersion)
+
+  install(
+    TARGETS ${PROJECT_NAME}
+    EXPORT "WolfSystemTargets"
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    INCLUDES DESTINATION include)
+
+  export(
+    TARGETS ${PROJECT_NAME}
+    NAMESPACE wolf::
+    FILE ${PROJECT_BINARY_DIR}/WolfSystemTargets.cmake)
+
+  install(
+    EXPORT "WolfSystemTargets"
+    NAMESPACE wolf::
+    DESTINATION cmake)
+
+  install(
+    FILES "${PROJECT_BINARY_DIR}/WolfSystemConfig.cmake"
+          "${PROJECT_BINARY_DIR}/WolfSystemConfigVersion.cmake"
+    DESTINATION "${CMAKE_INSTALL_DATADIR}/cmake/${PROJECT_NAME}")
+
+  # cpack config
+
+  list(APPEND source-generators TBZ2 TGZ TXZ ZIP)
+  list(APPEND binary-generators TBZ2 TGZ TXZ ZIP)
+
+  set(CPACK_SOURCE_GENERATOR ${source-generators})
+  set(CPACK_GENERATOR ${binary-generators})
+
+  set(CPACK_PACKAGE_FILE_NAME "${PROJECT_NAME}-${PROJECT_VERSION}")
+  set(CPACK_SOURCE_PACKAGE_FILE_NAME "${PROJECT_NAME}-${PROJECT_VERSION}")
+
+  #set(CPACK_DEBIAN_PACKAGE_MAINTAINER "PlayPod")
+  set(CPACK_PACKAGE_CONTACT "https://playpod.ir")
+
+  list(APPEND CPACK_SOURCE_IGNORE_FILES /.git/ /build/ .gitignore .DS_Store)
+
+  include(CPack)
 endif()
 
