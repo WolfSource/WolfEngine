@@ -27,6 +27,7 @@ elseif (LINUX)
 endif()
 
 add_library(${PROJECT_NAME} ${LIBRARY_TYPE})
+add_library(wolf::system ALIAS ${PROJECT_NAME})
 
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_20)
 
