@@ -9,6 +9,12 @@ set(LIBRARY_TYPE "SHARED" CACHE STRING "Library type")
 
 if("${TARGET}" STREQUAL "IOS")
     set(IOS TRUE)
+    set(CMAKE_OSX_SYSROOT iphoneos)
+    set(CMAKE_SYSTEM_NAME iOS)
+    set(CMAKE_OSX_ARCHITECTURES ${ARCH})
+    # signing the project
+    #set_xcode_property(${PROJECT_NAME} CODE_SIGN_IDENTITY "Apple Development")  
+    #set_xcode_property(${PROJECT_NAME} DEVELOPMENT_TEAM ${DEVELOPMENT_TEAM_ID})
 endif()
 
 if(UNIX AND NOT APPLE AND NOT IOS)
@@ -34,6 +40,14 @@ target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_20)
 # -fPIC on linux and others
 set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE ON)
 
+if (APPLE OR IOS)
+    macro (set_xcode_property TARGET XCODE_PROPERTY XCODE_VALUE)
+        set_property (TARGET ${TARGET} PROPERTY
+            XCODE_ATTRIBUTE_${XCODE_PROPERTY} ${XCODE_VALUE})
+    endmacro (set_xcode_property)
+    set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS -liconv)
+endif()		 
+
 if(WIN32 AND CMAKE_SIZEOF_VOID_P EQUAL 8)
     set(WIN64 TRUE)
 endif()
@@ -42,7 +56,7 @@ if(IOS AND NOT ${DEVELOPMENT_TEAM_ID})
     set(DEVELOPMENT_TEAM_ID "") # set your dev id for signing package
 endif()  
 
-set(WOLF_EXTERN_DEPS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/_deps")
+set(WOLF_EXTERN_DEPS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/_deps") # required by external.cmake
 include("cmake/external.cmake")
 
 # CMAKE GUI Options
@@ -92,10 +106,6 @@ set(EXPAT_BUILD_TOOLS OFF CACHE BOOL "EXPAT_BUILD_TOOLS")
 
 wolf_find_expat()
 
-if(WIN32 OR WIN64)
-    wolf_find_apr()
-endif()
-
 if(WOLF_ENABLE_CURL)
     set(BUILD_CURL_EXE OFF CACHE BOOL "BUILD_CURL_EXE")
     set(BUILD_SHARED_LIBS OFF CACHE BOOL "BUILD_SHARED_LIBS")
@@ -123,7 +133,11 @@ if (WOLF_ENABLE_ACTIVEMQ AND UNIX)
     wolf_find_activemq_cpp()
 endif()
 
-if (UNIX)	
+if(WIN32 OR WIN64)
+    wolf_find_apr()
+endif()
+
+if (UNIX)
     if(IOS)
         # build apr via shell script
         execute_process(COMMAND chmod +x ${CMAKE_CURRENT_SOURCE_DIR}/shell/apr.sh)
@@ -143,14 +157,125 @@ if (UNIX)
         "${CMAKE_CURRENT_SOURCE_DIR}/shell/apr.sh --bypass_ios=1 --bypass_ios_simulator=1 --bypass_macos=1  --arch=${CMAKE_SYSTEM_PROCESSOR} --build_dir=${CMAKE_CURRENT_BINARY_DIR} --${CMAKE_BUILD_TYPE}")
     endif()
 
+    add_dependencies(libapr_target expat)
     add_dependencies(${PROJECT_NAME} libapr_target)
 endif()
 
-if(IOS)
-    set(CMAKE_OSX_SYSROOT iphoneos)
-    set(CMAKE_SYSTEM_NAME iOS)
-    set(CMAKE_OSX_ARCHITECTURES ${ARCH})
+# add includes
+target_include_directories(
+    ${PROJECT_NAME}
+    PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}
+        ${CMAKE_CURRENT_SOURCE_DIR}/w_log
+        ${CMAKE_CURRENT_SOURCE_DIR}/w_compression/msgpack
+        ${CMAKE_CURRENT_SOURCE_DIR}/w_net/uSockets
+)
+
+# set global compiler options
+target_compile_definitions(
+    ${PROJECT_NAME}
+    PUBLIC
+        APR_DECLARE_EXPORT
+        libapr_1_EXPORTS
+        APU_DECLARE_STATIC
+        APU_DSO_MODULE_BUILD
+        XML_STATIC
+        expat_EXPORTS
+        _CRT_RAND_S
+        NO_FSEEKO
+        ASMV
+        ASMINF
+        SPDLOG_COMPILED_LIB
+        SPDLOG_WCHAR_FILENAMES
+        SPDLOG_USE_WCHAR
+        EV_STANDALONE
+)
+
+if (CMAKE_BUILD_TYPE MATCHES Debug)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC DEBUG)
+else()
+    target_compile_definitions(${PROJECT_NAME} PUBLIC NDEBUG)
 endif()
+
+if (WOLF_ENABLE_AVX2)
+    if (APPLE OR IOS)
+		set_xcode_property(${PROJECT_NAME} CLANG_X86_VECTOR_INSTRUCTIONS "avx2")
+    elseif (LINUX)
+        set (AVX2_FLAGS "-D__AVX -DUSE_AVX2")
+        set (AVX2_FLAGS "${AVX2_FLAGS} -mavx2 -mfma")
+        target_compile_definitions(${PROJECT_NAME} PUBLIC
+                ${AVX2_FLAGS})
+    endif()
+    target_compile_definitions(${PROJECT_NAME} PUBLIC
+        WOLF_ENABLE_AVX2
+    )
+endif()
+
+if (WOLF_ENABLE_AVX512 AND UNIX)
+    set(AVX512_FLAGS "-D__AVX -DWOLF_ENABLE_AVX512 -mavx512f -mfma")
+    target_compile_definitions(${PROJECT_NAME} PUBLIC ${AVX512_FLAGS})
+endif()
+
+target_compile_definitions(${PROJECT_NAME} PUBLIC
+    # activemq
+    $<$<BOOL:${WOLF_ENABLE_ACTIVEMQ}>:WOLF_ENABLE_ACTIVEMQ>
+    $<$<BOOL:${WOLF_ENABLE_ACTIVEMQ}>:_HAS_AUTO_PTR_ETC=1>
+    # avx512
+    $<$<BOOL:${WOLF_ENABLE_AVX512}>:WOLF_ENABLE_AVX512>
+    # curl
+    $<$<BOOL:${WOLF_ENABLE_CURL}>:WOLF_ENABLE_CURL>
+    $<$<BOOL:${WOLF_ENABLE_CURL}>:CURL_STATICLIB>
+    # cxx extensions
+    $<$<BOOL:${WOLF_ENABLE_CXX_EXTENSIONS}>:WOLF_ENABLE_CXX_EXTENSIONS>
+    # fiber
+    $<$<BOOL:${WOLF_ENABLE_FIBER}>:WOLF_ENABLE_FIBER>
+    $<$<BOOL:${WOLF_ENABLe_FIBER}>:BOOST_BIND_GLOBAL_PLACEHOLDERS>
+    # http 1.1 ws
+    $<$<BOOL:${WOLF_ENABLE_HTTP1_1_WS}>:WOLF_ENABLE_HTTP1_1_WS>
+    $<$<BOOL:${WOLF_ENABLE_HTTP1_1_WS}>:LIBUS_USE_LIBUV>
+    $<$<BOOL:${WOLF_ENABLE_HTTP1_1_WS}>:LIBUS_USE_OPENSSL>
+    # lua
+    $<$<BOOL:${WOLF_ENABLE_LUA}>:WOLF_ENABLE_LUA>
+    # lz4
+    $<$<BOOL:${WOLF_ENABLE_LZ4}>:WOLF_ENABLE_LZ4>
+    # lzma
+    $<$<BOOL:${WOLF_ENABLE_LZMA}>:WOLF_ENABLE_LZMA>
+    # python3
+    $<$<BOOL:${WOLF_ENABLE_PYTHON3}>:WOLF_ENABLE_PYTHON3>
+    # quic
+    $<$<BOOL:${WOLF_ENABLE_QUIC}>:WOLF_ENABLE_QUIC>
+    # ssl
+    $<$<BOOL:${WOLF_ENABLE_SSL}>:WOLF_ENABLE_SSL>
+)
+
+target_link_libraries(${PROJECT_NAME} PRIVATE
+    expat
+    apr-2
+
+    $<$<BOOL:${WIN32}>:Shlwapi>
+    $<$<BOOL:${WIN64}>:Shlwapi>
+
+    $<$<BOOL:${WOLF_ENABLE_CURL}>:libcurl>
+    $<$<BOOL:${WOLF_ENABLE_FIBER}>:Boost>
+
+    $<$<BOOL:${WOLF_ENABLE_HTTP1_1_WS}>:uv_a>
+    $<$<BOOL:${WOLF_ENABLE_HTTP1_1_WS}>:libzstatic>
+    $<$<BOOL:${WOLF_ENABLE_HTTP1_1_WS}>:OpenSSL::SSL>
+    $<$<BOOL:${WOLF_ENABLE_HTTP1_1_WS}>:OpenSSL::Crypto>
+
+    $<$<BOOL:${WOLF_ENABLE_LUA}>:luajit-static>
+    $<$<BOOL:${WOLF_ENABLE_QUIC}>:quiche>
+    $<$<BOOL:${WOLF_ENABLE_SSL}>:wolfssl>
+)
+
+if (WOLF_ENABLE_ACTIVEMQ AND UNIX)
+    target_link_libraries(${PROJECT_NAME} PRIVATE activemq-cpp::activemq-cpp)
+endif()
+
+# test is disabled temporarily until adding an intermediate interface library.
+#set(TEST_PROJECT_NAME "${PROJECT_NAME}_test")
+#add_executable(${TEST_PROJECT_NAME} test.cpp)
+#target_link_libraries(${TEST_PROJECT_NAME} PRIVATE ${PROJECT_NAME})
 
 # create filter for each folder
 if (WOLF_ENABLE_AVX2 AND NOT IOS AND NOT LINUX)
@@ -165,9 +290,9 @@ file(GLOB_RECURSE W_COMPRESSION_LZ4_SRC_DIR
 )
 
 if(MSVC)
-file(GLOB_RECURSE W_COMPRESSION_LZMA_SRC_DIR
-    "${CMAKE_CURRENT_SOURCE_DIR}/w_compression/lzma/*"
-)
+    file(GLOB_RECURSE W_COMPRESSION_LZMA_SRC_DIR
+        "${CMAKE_CURRENT_SOURCE_DIR}/w_compression/lzma/*"
+    )
 endif()
 
 file(GLOB_RECURSE W_COMPRESSION_MSGPACK_SRC_DIR
@@ -347,16 +472,6 @@ file(GLOB_RECURSE WOLF_SRC_DIR
     "${CMAKE_CURRENT_SOURCE_DIR}/wolf.h"
 )
 
-# add includes
-target_include_directories(
-    ${PROJECT_NAME}
-    PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR}
-        ${CMAKE_CURRENT_SOURCE_DIR}/w_log
-        ${CMAKE_CURRENT_SOURCE_DIR}/w_compression/msgpack
-        ${CMAKE_CURRENT_SOURCE_DIR}/w_net/uSockets
-)
-
 # add sources
 target_sources(${PROJECT_NAME} PUBLIC
     ${W_BASE64_SRC_DIR}
@@ -440,129 +555,10 @@ source_group("w_script" FILES ${W_SCRIPT_SRC_DIR})
 source_group("w_test" FILES ${W_TEST_SRC_DIR})
 source_group("wolf" FILES ${WOLF_SRC_DIR})
 
-# set global compiler options
-target_compile_definitions(
-    ${PROJECT_NAME}
-    PUBLIC
-        APR_DECLARE_EXPORT
-        libapr_1_EXPORTS
-        APU_DECLARE_STATIC
-        APU_DSO_MODULE_BUILD
-        XML_STATIC
-        expat_EXPORTS
-        _CRT_RAND_S
-        NO_FSEEKO
-        ASMV
-        ASMINF
-        SPDLOG_COMPILED_LIB
-        SPDLOG_WCHAR_FILENAMES
-        SPDLOG_USE_WCHAR
-        EV_STANDALONE
-)
-
-if (CMAKE_BUILD_TYPE MATCHES Debug)
-    target_compile_definitions(${PROJECT_NAME} PUBLIC DEBUG)
-else()
-    target_compile_definitions(${PROJECT_NAME} PUBLIC NDEBUG)
-endif()
-
-if (APPLE OR IOS)
-    macro (set_xcode_property TARGET XCODE_PROPERTY XCODE_VALUE)
-        set_property (TARGET ${TARGET} PROPERTY
-            XCODE_ATTRIBUTE_${XCODE_PROPERTY} ${XCODE_VALUE})
-    endmacro (set_xcode_property)
-    set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS -liconv)
-endif()		 
-
-if (WOLF_ENABLE_AVX2)
-    if (APPLE OR IOS)
-		set_xcode_property(${PROJECT_NAME} CLANG_X86_VECTOR_INSTRUCTIONS "avx2")
-    elseif (LINUX)
-        set (AVX2_FLAGS "-D__AVX -DUSE_AVX2")
-        set (AVX2_FLAGS "${AVX2_FLAGS} -mavx2 -mfma")
-        target_compile_definitions(${PROJECT_NAME} PUBLIC
-                ${AVX2_FLAGS})
-    endif()
-    target_compile_definitions(${PROJECT_NAME} PUBLIC
-        WOLF_ENABLE_AVX2
-    )
-endif()
-
-if (WOLF_ENABLE_AVX512 AND UNIX)
-    set(AVX512_FLAGS "-D__AVX -DWOLF_ENABLE_AVX512 -mavx512f -mfma")
-    target_compile_definitions(${PROJECT_NAME} PUBLIC ${AVX512_FLAGS})
-endif()
-
-target_compile_definitions(${PROJECT_NAME} PUBLIC
-    # activemq
-    $<$<BOOL:${WOLF_ENABLE_ACTIVEMQ}>:WOLF_ENABLE_ACTIVEMQ>
-    $<$<BOOL:${WOLF_ENABLE_ACTIVEMQ}>:_HAS_AUTO_PTR_ETC=1>
-    # avx512
-    $<$<BOOL:${WOLF_ENABLE_AVX512}>:WOLF_ENABLE_AVX512>
-    # curl
-    $<$<BOOL:${WOLF_ENABLE_CURL}>:WOLF_ENABLE_CURL>
-    $<$<BOOL:${WOLF_ENABLE_CURL}>:CURL_STATICLIB>
-    # cxx extensions
-    $<$<BOOL:${WOLF_ENABLE_CXX_EXTENSIONS}>:WOLF_ENABLE_CXX_EXTENSIONS>
-    # fiber
-    $<$<BOOL:${WOLF_ENABLE_FIBER}>:WOLF_ENABLE_FIBER>
-    $<$<BOOL:${WOLF_ENABLe_FIBER}>:BOOST_BIND_GLOBAL_PLACEHOLDERS>
-    # http 1.1 ws
-    $<$<BOOL:${WOLF_ENABLE_HTTP1_1_WS}>:WOLF_ENABLE_HTTP1_1_WS>
-    $<$<BOOL:${WOLF_ENABLE_HTTP1_1_WS}>:LIBUS_USE_LIBUV>
-    $<$<BOOL:${WOLF_ENABLE_HTTP1_1_WS}>:LIBUS_USE_OPENSSL>
-    # lua
-    $<$<BOOL:${WOLF_ENABLE_LUA}>:WOLF_ENABLE_LUA>
-    # lz4
-    $<$<BOOL:${WOLF_ENABLE_LZ4}>:WOLF_ENABLE_LZ4>
-    # lzma
-    $<$<BOOL:${WOLF_ENABLE_LZMA}>:WOLF_ENABLE_LZMA>
-    # python3
-    $<$<BOOL:${WOLF_ENABLE_PYTHON3}>:WOLF_ENABLE_PYTHON3>
-    # quic
-    $<$<BOOL:${WOLF_ENABLE_QUIC}>:WOLF_ENABLE_QUIC>
-    # ssl
-    $<$<BOOL:${WOLF_ENABLE_SSL}>:WOLF_ENABLE_SSL>
-)
-
-# signing project
-#if(IOS)
-#    set_xcode_property(${PROJECT_NAME} CODE_SIGN_IDENTITY "Apple Development")  
-#    set_xcode_property(${PROJECT_NAME} DEVELOPMENT_TEAM ${DEVELOPMENT_TEAM_ID})
-#endif()
-
 if (APPLE OR IOS)
     set_source_files_properties(
         "${CMAKE_CURRENT_SOURCE_DIR}/w_io/w_io.c"
         PROPERTIES
             COMPILE_FLAGS "-x objective-c" )
 endif()
-
-target_link_libraries(${PROJECT_NAME} PRIVATE
-    expat
-    apr-2
-
-    $<$<BOOL:${WIN32}>:Shlwapi>
-    $<$<BOOL:${WIN64}>:Shlwapi>
-
-    $<$<BOOL:${WOLF_ENABLE_CURL}>:libcurl>
-    $<$<BOOL:${WOLF_ENABLE_FIBER}>:Boost>
-
-    $<$<BOOL:${WOLF_ENABLE_HTTP1_1_WS}>:uv_a>
-    $<$<BOOL:${WOLF_ENABLE_HTTP1_1_WS}>:libzstatic>
-    $<$<BOOL:${WOLF_ENABLE_HTTP1_1_WS}>:OpenSSL::SSL>
-    $<$<BOOL:${WOLF_ENABLE_HTTP1_1_WS}>:OpenSSL::Crypto>
-
-    $<$<BOOL:${WOLF_ENABLE_LUA}>:luajit-static>
-    $<$<BOOL:${WOLF_ENABLE_QUIC}>:quiche>
-    $<$<BOOL:${WOLF_ENABLE_SSL}>:wolfssl>
-)
-
-if (WOLF_ENABLE_ACTIVEMQ AND UNIX)
-    target_link_libraries(${PROJECT_NAME} PRIVATE activemq-cpp::activemq-cpp)
-endif()
-
-#set(TEST_PROJECT_NAME "${PROJECT_NAME}_test")
-#add_executable(${TEST_PROJECT_NAME} test.cpp)
-#target_link_libraries(${TEST_PROJECT_NAME} PRIVATE ${PROJECT_NAME})
 
