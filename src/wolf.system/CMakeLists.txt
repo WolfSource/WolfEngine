@@ -56,6 +56,19 @@ if(IOS AND NOT ${DEVELOPMENT_TEAM_ID})
     set(DEVELOPMENT_TEAM_ID "") # set your dev id for signing package
 endif()  
 
+# required by external.cmake
+if(IOS)
+    set(PREFIX_LIB_PATH "ios")
+elseif(APPLE)
+    set(PREFIX_LIB_PATH "osx")
+elseif(WIN64)
+    set(PREFIX_LIB_PATH "win/x64")
+elseif(WIN32)
+    set(PREFIX_LIB_PATH "win/x86")
+elseif(LINUX)
+    set(PREFIX_LIB_PATH "linux")
+endif()
+
 set(WOLF_EXTERN_DEPS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/_deps") # required by external.cmake
 include("cmake/external.cmake")
 
