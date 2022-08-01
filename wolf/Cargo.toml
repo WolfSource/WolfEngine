@@ -60,7 +60,7 @@ may = {version = "0.3.21", default-features = false, optional = true}
 memstore = {version = "0.2.0", default-features = false}
 mimalloc = {version = "0.1.29", default-features = false, features = ["secure"]}
 parking_lot = {version = "0.12.1",  default-features = false, features = ["deadlock_detection"]}
-prost = {version = "0.10.4", default-features = false, optional = true}
+prost = {version = "0.11.0", default-features = false, optional = true}
 scrap ={version = "0.5.0", default-features = false, optional = true}
 serde_json = {version = "1.0.82", default-features = false, features = ["std"]}
 sysinfo = {version = "0.24.6", default-features = false, features = ["multithread"]}
