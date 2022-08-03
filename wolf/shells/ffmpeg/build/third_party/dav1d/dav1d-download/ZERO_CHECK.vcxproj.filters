@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="D:\SourceCodes\WolfEngine\WolfEngine-cpp2b\wolf\shells\ffmpeg\build\third_party\dav1d\dav1d-download\CMakeFiles\4e9baa74aae02ce0273053d9f03fb4aa\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{43BB72AF-3ACE-32C5-B668-28773240D323}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

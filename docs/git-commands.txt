@@ -1,0 +1,14 @@
+//subtrees
+
+git config commit.gpgsign false
+git fetch git@github.com:g-truc/glm.git master
+git subtree add --prefix=engine/dependencies/glm-master/ --squash git@github.com:g-truc/glm.git master
+git subtree pull --prefix=engine/dependencies/glm-master/ --squash git@github.com:g-truc/glm.git master
+
+git fetch git@github.com:dwd/rapidxml.git master
+git subtree add --prefix=engine/dependencies/rapidxml-master/ --squash git@github.com:dwd/rapidxml.git master
+git subtree pull --prefix=engine/dependencies/rapidxml-master/ --squash git@github.com:dwd/rapidxml.git master
+
+git fetch git@github.com:miloyip/rapidjson.git master
+git subtree add --prefix=engine/dependencies/rapidjson-master/ --squash git@github.com:miloyip/rapidjson.git master
+git subtree pull --prefix=engine/dependencies/rapidjson-master/ --squash git@github.com:miloyip/rapidjson.git master

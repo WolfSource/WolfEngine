@@ -1,0 +1,14 @@
+# Target labels
+ svtav1
+# Source files and their labels
+D:/SourceCodes/WolfEngine/WolfEngine-cpp2b/wolf/shells/ffmpeg/build/third_party/svt-av1/svtav1-download/CMakeFiles/svtav1
+D:/SourceCodes/WolfEngine/WolfEngine-cpp2b/wolf/shells/ffmpeg/build/third_party/svt-av1/svtav1-download/CMakeFiles/e5ad995306dd5210e0ebe29a7262c674/svtav1.rule
+D:/SourceCodes/WolfEngine/WolfEngine-cpp2b/wolf/shells/ffmpeg/build/third_party/svt-av1/svtav1-download/CMakeFiles/912c4cac0f191fb6ab7db41c29417667/svtav1-complete.rule
+D:/SourceCodes/WolfEngine/WolfEngine-cpp2b/wolf/shells/ffmpeg/build/third_party/svt-av1/svtav1-download/CMakeFiles/c46564c2a62d8f502418b429df5cf690/svtav1-build.rule
+D:/SourceCodes/WolfEngine/WolfEngine-cpp2b/wolf/shells/ffmpeg/build/third_party/svt-av1/svtav1-download/CMakeFiles/c46564c2a62d8f502418b429df5cf690/svtav1-configure.rule
+D:/SourceCodes/WolfEngine/WolfEngine-cpp2b/wolf/shells/ffmpeg/build/third_party/svt-av1/svtav1-download/CMakeFiles/c46564c2a62d8f502418b429df5cf690/svtav1-download.rule
+D:/SourceCodes/WolfEngine/WolfEngine-cpp2b/wolf/shells/ffmpeg/build/third_party/svt-av1/svtav1-download/CMakeFiles/c46564c2a62d8f502418b429df5cf690/svtav1-install.rule
+D:/SourceCodes/WolfEngine/WolfEngine-cpp2b/wolf/shells/ffmpeg/build/third_party/svt-av1/svtav1-download/CMakeFiles/c46564c2a62d8f502418b429df5cf690/svtav1-mkdir.rule
+D:/SourceCodes/WolfEngine/WolfEngine-cpp2b/wolf/shells/ffmpeg/build/third_party/svt-av1/svtav1-download/CMakeFiles/c46564c2a62d8f502418b429df5cf690/svtav1-patch.rule
+D:/SourceCodes/WolfEngine/WolfEngine-cpp2b/wolf/shells/ffmpeg/build/third_party/svt-av1/svtav1-download/CMakeFiles/c46564c2a62d8f502418b429df5cf690/svtav1-test.rule
+D:/SourceCodes/WolfEngine/WolfEngine-cpp2b/wolf/shells/ffmpeg/build/third_party/svt-av1/svtav1-download/CMakeFiles/c46564c2a62d8f502418b429df5cf690/svtav1-update.rule

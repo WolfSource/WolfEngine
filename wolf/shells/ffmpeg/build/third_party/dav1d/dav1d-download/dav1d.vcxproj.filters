@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="D:\SourceCodes\WolfEngine\WolfEngine-cpp2b\wolf\shells\ffmpeg\build\third_party\dav1d\dav1d-download\CMakeFiles\cd8ab440639a76945e7532648083bca3\dav1d-mkdir.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="D:\SourceCodes\WolfEngine\WolfEngine-cpp2b\wolf\shells\ffmpeg\build\third_party\dav1d\dav1d-download\CMakeFiles\cd8ab440639a76945e7532648083bca3\dav1d-download.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="D:\SourceCodes\WolfEngine\WolfEngine-cpp2b\wolf\shells\ffmpeg\build\third_party\dav1d\dav1d-download\CMakeFiles\cd8ab440639a76945e7532648083bca3\dav1d-update.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="D:\SourceCodes\WolfEngine\WolfEngine-cpp2b\wolf\shells\ffmpeg\build\third_party\dav1d\dav1d-download\CMakeFiles\cd8ab440639a76945e7532648083bca3\dav1d-patch.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="D:\SourceCodes\WolfEngine\WolfEngine-cpp2b\wolf\shells\ffmpeg\build\third_party\dav1d\dav1d-download\CMakeFiles\cd8ab440639a76945e7532648083bca3\dav1d-configure.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="D:\SourceCodes\WolfEngine\WolfEngine-cpp2b\wolf\shells\ffmpeg\build\third_party\dav1d\dav1d-download\CMakeFiles\cd8ab440639a76945e7532648083bca3\dav1d-build.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="D:\SourceCodes\WolfEngine\WolfEngine-cpp2b\wolf\shells\ffmpeg\build\third_party\dav1d\dav1d-download\CMakeFiles\cd8ab440639a76945e7532648083bca3\dav1d-install.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="D:\SourceCodes\WolfEngine\WolfEngine-cpp2b\wolf\shells\ffmpeg\build\third_party\dav1d\dav1d-download\CMakeFiles\cd8ab440639a76945e7532648083bca3\dav1d-test.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="D:\SourceCodes\WolfEngine\WolfEngine-cpp2b\wolf\shells\ffmpeg\build\third_party\dav1d\dav1d-download\CMakeFiles\81f892fd1693a015740345bc8c36ae81\dav1d-complete.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="D:\SourceCodes\WolfEngine\WolfEngine-cpp2b\wolf\shells\ffmpeg\build\third_party\dav1d\dav1d-download\CMakeFiles\4e9baa74aae02ce0273053d9f03fb4aa\dav1d.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="D:\SourceCodes\WolfEngine\WolfEngine-cpp2b\wolf\shells\ffmpeg\build\third_party\dav1d\dav1d-download\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="D:\SourceCodes\WolfEngine\WolfEngine-cpp2b\wolf\shells\ffmpeg\build\third_party\dav1d\dav1d-download\CMakeFiles\dav1d" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{43BB72AF-3ACE-32C5-B668-28773240D323}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

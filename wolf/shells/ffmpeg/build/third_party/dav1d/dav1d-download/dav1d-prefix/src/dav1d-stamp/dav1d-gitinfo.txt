@@ -1,0 +1,3 @@
+repository='https://code.videolan.org/videolan/dav1d.git'
+module=''
+tag='origin'

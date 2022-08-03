@@ -1,0 +1,16 @@
+# CMake generation dependency list for this directory.
+C:/Program Files/CMake/share/cmake-3.22/Modules/CMakeGenericSystem.cmake
+C:/Program Files/CMake/share/cmake-3.22/Modules/CMakeInitializeConfigs.cmake
+C:/Program Files/CMake/share/cmake-3.22/Modules/CMakeSystemSpecificInformation.cmake
+C:/Program Files/CMake/share/cmake-3.22/Modules/CMakeSystemSpecificInitialize.cmake
+C:/Program Files/CMake/share/cmake-3.22/Modules/ExternalProject-gitupdate.cmake.in
+C:/Program Files/CMake/share/cmake-3.22/Modules/ExternalProject.cmake
+C:/Program Files/CMake/share/cmake-3.22/Modules/FindGit.cmake
+C:/Program Files/CMake/share/cmake-3.22/Modules/FindPackageHandleStandardArgs.cmake
+C:/Program Files/CMake/share/cmake-3.22/Modules/FindPackageMessage.cmake
+C:/Program Files/CMake/share/cmake-3.22/Modules/Platform/Windows.cmake
+C:/Program Files/CMake/share/cmake-3.22/Modules/Platform/WindowsPaths.cmake
+C:/Program Files/CMake/share/cmake-3.22/Modules/RepositoryInfo.txt.in
+D:/SourceCodes/WolfEngine/WolfEngine-cpp2b/wolf/shells/ffmpeg/build/third_party/dav1d/dav1d-download/CMakeFiles/3.22.0-rc1/CMakeSystem.cmake
+D:/SourceCodes/WolfEngine/WolfEngine-cpp2b/wolf/shells/ffmpeg/build/third_party/dav1d/dav1d-download/CMakeLists.txt
+D:/SourceCodes/WolfEngine/WolfEngine-cpp2b/wolf/shells/ffmpeg/build/third_party/dav1d/dav1d-download/dav1d-prefix/tmp/dav1d-cfgcmd.txt.in

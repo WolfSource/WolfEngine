@@ -1,0 +1,3 @@
+D:/SourceCodes/WolfEngine/WolfEngine-cpp2b/wolf/shells/ffmpeg/build/third_party/svt-av1/svtav1-download/CMakeFiles/svtav1.dir
+D:/SourceCodes/WolfEngine/WolfEngine-cpp2b/wolf/shells/ffmpeg/build/third_party/svt-av1/svtav1-download/CMakeFiles/ALL_BUILD.dir
+D:/SourceCodes/WolfEngine/WolfEngine-cpp2b/wolf/shells/ffmpeg/build/third_party/svt-av1/svtav1-download/CMakeFiles/ZERO_CHECK.dir

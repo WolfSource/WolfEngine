@@ -1,0 +1,15 @@
+cmake_minimum_required(VERSION 2.8.2)
+
+project(svtav1-download NONE)
+
+include(ExternalProject)
+ExternalProject_Add(svtav1
+  GIT_REPOSITORY    https://github.com/AOMediaCodec/SVT-AV1.git
+  GIT_TAG           master
+  SOURCE_DIR        "D:/SourceCodes/WolfEngine/WolfEngine-cpp2b/wolf/shells/ffmpeg/build/third_party/svt-av1/svtav1-src"
+  BINARY_DIR        "D:/SourceCodes/WolfEngine/WolfEngine-cpp2b/wolf/shells/ffmpeg/build/third_party/svt-av1/svtav1-build"
+  CONFIGURE_COMMAND ""
+  BUILD_COMMAND     ""
+  INSTALL_COMMAND   ""
+  TEST_COMMAND      ""
+)
