@@ -1,6 +1,10 @@
 #pragma once
 
 #include <wolf.hpp>
+#include <memory>
+#include <lsquic.h>
+#include <lsquic_types.h>
+#include <lsxpack_header.h>
 
 namespace wolf::stream::quic
 {
@@ -11,5 +15,6 @@ namespace wolf::stream::quic
     virtual ~w_quic(){};
 
   private:
+    std::unique_ptr<lsquic_engine_t> quic_engine;
   };
 } // namespace wolf::stream::http
