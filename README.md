@@ -7,6 +7,16 @@ generation of&nbsp;<a href="https://github.com/PooyaEimandar/PersianEngine">Pers
 cross-platform open source game engine created by&nbsp;<a href="https://pooyaeimandar.github.io/">Pooya Eimandar</a>.
 The Wolf is a comprehensive set of C++ open source libraries for realtime rendering, realtime streaming and game developing, which is support <b>Lua</b> as an embedded script language and <b>Python</b> as a binding language.</p>
 
+# Build
+- Install 
+      - For windows, make sure install the latest Windows 11/10 SDK
+	- [git](https://git-scm.com/downloads)
+	- [CMake]()
+	- optional: [Ninja](https://ninja-build.org/). Alternatively, use "pip3 install ninja"
+	- [Nasm](https://nasm.us/)
+	- [Perl](https://www.perl.org/get.html) for boringSSL. Strawberry Perl is recommended for Windows.
+	- [Go](https://go.dev/dl/) for boringSSL
+
 <!--pyWolf-->
 # pyWolf [![LGPL licensed](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](https://github.com/WolfEngine/WolfEngine/blob/main/LICENSE)
 <p><b>pyWolf</b> is set of Python bindings for Wolf.Engine which works with Python 2.7</p>
