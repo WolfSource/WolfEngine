@@ -32,7 +32,7 @@ jobs:
           entrypoint: make
       -
         name: Upload Artifacts
-        uses: actions/upload-artifact@82c141cc518b40d92cc801eee768e7aafc9c2fa2
+        uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8
         with:
           path: release/*
     strategy:
