@@ -1,0 +1,111 @@
+[package]
+categories = ["game-development", "game-engines", "games", "graphics", "multimedia"]
+description = "Wolf is a set of modules for realtime rendering, realtime streaming and game developing"
+edition = "2021"
+keywords = ["gamedev", "system", "gamedev", "render"]
+license = "Apache-2.0"
+name = "wolfengine"
+readme = "README.md"
+repository = "https://github.com/WolfEngine/WolfEngine/"
+version = "3.0.3"
+
+[lib]
+crate-type = ["rlib"]
+name = "wolf"
+path = "src/lib.rs"
+
+# before adding any dependency please check it out from
+# https://android.googlesource.com/platform/external/rust/crates/
+
+# shared dependencies between all
+[dependencies]
+#brotli = { version = "3.3.3" }
+anyhow = {version = "1.0.58", default-features = false}
+signals2 = {version = "0.3.2", default-features = false}
+raw-window-handle = {version = "0.4.3", default-features = false, features = ["alloc"]} 
+
+# dependencies of wasm 
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+instant = {version = "0.1.12", default-features = false, features = ["wasm-bindgen"]}
+rhai = { version = "1.8.0", default-features = false, features = ["sync", "internals", "wasm-bindgen"], optional = true }
+serde = { version = "1.0.139", default-features = false, features = ["derive"]}
+wasm-bindgen = { version = "0.2.81", default-features = false }
+wasm-bindgen-futures = { version = "0.4.31", default-features = false }
+wasm-mt = {version = "0.1.2", default-features = false }
+web-sys = {version = "0.3.58", default-features = false, features = ["console", "Document", "Window", "Element"]}
+wgpu = {version = "0.13.1", default-features = false, features = ["webgl"], optional = true}
+
+# shared dependencies between arm, aarch64 & x86_64
+[target.'cfg(any(target_arch = "arm", target_arch = "aarch64", target_arch = "x86_64"))'.dependencies]
+instant = {version = "0.1.12", default-features = false}
+pollster = {version = "0.2.5", default-features = false}
+rhai = { version = "1.8.0", default-features = false, features = ["sync", "internals"], optional = true}
+rustls-pemfile = {version = "1.0.0", default-features = false}
+tokio = {version = "1.19.2", default-features = false, features = ["full"]}
+tokio-rustls = {version = "0.23.4", default-features = false, features = ["logging", "tls12"]}
+tonic = {version = "0.7.2", default-features = false, features = ["codegen", "prost", "tls", "compression"], optional = true}
+webpki-roots = {version = "0.22.4", default-features = false}
+wgpu = {version = "0.13.1", default-features = false, optional = true}
+
+# dependencies of arm, aarch64
+# [target.'cfg(any(target_arch = "arm", target_arch = "aarch64"))'.dependencies]
+
+# dependencies of x86_64
+[target.'cfg(target_arch = "x86_64")'.dependencies]
+async-raft = {version = "0.6.1", default-features = false, optional = true}
+async-trait = {version = "0.1.56", default-features = false}
+futures = { version = "0.3.21", default-features = false }
+hyper = {version = "0.14.20", default-features = false}
+may = {version = "0.3.21", default-features = false, optional = true}
+memstore = {version = "0.2.0", default-features = false}
+mimalloc = {version = "0.1.29", default-features = false, features = ["secure"]}
+parking_lot = {version = "0.12.1",  default-features = false, features = ["deadlock_detection"]}
+prost = {version = "0.10.4", default-features = false, optional = true}
+scrap ={version = "0.5.0", default-features = false, optional = true}
+serde_json = {version = "1.0.82", default-features = false, features = ["std"]}
+sysinfo = {version = "0.24.6", default-features = false, features = ["multithread"]}
+tokio-tungstenite = {version = "0.17.1", default-features = false, features = ["connect", "rustls"], optional = true}
+tracing = {version = "0.1.35", default-features = false, features = ["std", "attributes"]}
+uuid = {version = "1.1.2", default-features = false, features = ["v5"]}
+
+[build-dependencies]
+bindgen = {version = "0.60.1"}
+tonic-build = {version = "0.7.2", default-features = false, features = ["transport", "prost", "compression"]}
+
+[dev-dependencies]
+lazy_static = {version = "1.4.0", default-features = false}
+image = {version ="0.24.2", default-features = false, features = ["jpeg", "png", "rgb"]}
+
+# features
+[features]
+default = []
+ffmpeg = [] # enable multimedia features
+media_av1 = ["ffmpeg"] # enable AV1 video coding format for stream module
+media_vpx = ["ffmpeg"] # enable VP9/VP8 video coding format for stream module
+render = ["wgpu"] # enable real-time rendering
+stream_grpc = ["tonic", "prost"] # enable gRPC (http2/1.1) for stream module
+stream_rist = [] # enable RIST streaming protocol for stream module
+stream_socket_client = ["tokio-tungstenite"] # enable tcp/udp/ws server for stream module
+stream_socket_server = ["tokio-tungstenite"] # enable tcp/udp/ws client for stream module
+system_fiber = ["may"] # enable fiber
+system_lz4 = [] # enable LZ4 compression for system module
+system_raft = ["async-raft", "prost"] # enable raft algorithm for system module
+system_script = ["rhai"] # enable embedded script engine for system module
+system_screen_capture = ["scrap"] # enable screen capture
+
+# brotli = [] # enable brotli compression
+# fiber = [] 
+# kafka_client = [] # enable Kafka client
+# lzma = [] # enable LZMA Compression
+# nng = [] # enable nng socket for tcp/udp/ipc protocols
+# quic = [] # enable QUIC protocol
+# redis_client = [] # enable redis client
+# rocksDB_client = [] # enable rocksDB client
+# rtsp_client = [] # enable real time streaming protocol for client
+# rtsp_server = [] # enable real time streaming protocol for server
+# simd = [] # enable SIMD
+# webRTC_client = [] # enable webRTC
+# websocket_client = [] # enable websocket client
+# websocket_server = [] # enable websocket server
+
+

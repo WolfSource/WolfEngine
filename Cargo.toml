@@ -1,0 +1,222 @@
+# cargo-features
+
+# [[bench]]
+
+# [[bin]]
+
+# [[test]]
+
+# [badges]
+
+# [build-dependencies]
+
+# [dependencies]
+
+# [features]
+
+# [lib]
+
+# [package]
+
+# [patch]
+
+[profile.bench]
+# code-model
+codegen-units = 1
+# control-flow-guard
+debug = false
+debug-assertions = false
+# debuginfo
+# default-linker-libraries
+# embed-bitcode
+# extra-filename
+# force-frame-pointers
+# force-unwind-tables
+incremental = false
+# inline-threshold
+# link-arg
+# link-args
+# link-dead-code = false
+# link-self-contained
+# linker
+# linker-flavor
+# linker-plugin-lto
+# llvm-args
+lto = true
+# metadata
+# no-prepopulate-passes
+# no-redzone
+# no-stack-check
+# no-vectorize-loops
+# no-vectorize-slp
+opt-level = 3
+overflow-checks = false
+panic = "abort"
+# passes
+# prefer-dynamic
+# profile-generate
+# profile-use
+# relocation-model
+# remark
+rpath = false
+# save-temps
+# soft-float
+# split-debuginfo
+# target-cpu
+# target-feature
+# tune-cpu
+
+[profile.dev]
+# code-model
+# code-model
+codegen-units = 1
+# control-flow-guard
+debug = true
+debug-assertions = true
+# debuginfo
+# default-linker-libraries
+# embed-bitcode
+# extra-filename
+# force-frame-pointers
+# force-unwind-tables
+incremental = true
+# inline-threshold
+# link-arg
+# link-args
+# link-dead-code = true
+# link-self-contained
+# linker
+# linker-flavor
+# linker-plugin-lto
+# llvm-args
+lto = false
+# metadata
+# no-prepopulate-passes
+# no-redzone
+# no-stack-check
+# no-vectorize-loops
+# no-vectorize-slp
+opt-level = 0
+overflow-checks = true
+panic = "abort"
+# passes
+# prefer-dynamic
+# profile-generate
+# profile-use
+# relocation-model
+# remark
+rpath = false
+# save-temps
+# soft-float
+# split-debuginfo
+# target-cpu
+# target-feature
+# tune-cpu
+
+[profile.test]
+# code-model
+# code-model
+codegen-units = 1
+# control-flow-guard
+debug = true
+debug-assertions = true
+# debuginfo
+# default-linker-libraries
+# embed-bitcode
+# extra-filename
+# force-frame-pointers
+# force-unwind-tables
+incremental = true
+# inline-threshold
+# link-arg
+# link-args
+# link-dead-code = true
+# link-self-contained
+# linker
+# linker-flavor
+# linker-plugin-lto
+# llvm-args
+lto = false
+# metadata
+# no-prepopulate-passes
+# no-redzone
+# no-stack-check
+# no-vectorize-loops
+# no-vectorize-slp
+opt-level = 0
+overflow-checks = true
+panic = "abort"
+# passes
+# prefer-dynamic
+# profile-generate
+# profile-use
+# relocation-model
+# remark
+rpath = false
+# save-temps
+# soft-float
+# split-debuginfo
+# target-cpu
+# target-feature
+# tune-cpu
+
+[profile.release]
+# code-model
+codegen-units = 1
+# control-flow-guard
+debug = false
+debug-assertions = false
+# debuginfo
+# default-linker-libraries
+# embed-bitcode
+# extra-filename
+# force-frame-pointers
+# force-unwind-tables
+incremental = false
+# inline-threshold
+# link-arg
+# link-args
+# link-dead-code = false
+# link-self-contained
+# linker
+# linker-flavor
+# linker-plugin-lto
+# llvm-args
+lto = true
+# metadata
+# no-prepopulate-passes
+# no-redzone
+# no-stack-check
+# no-vectorize-loops
+# no-vectorize-slp
+opt-level = 's' # 3 for native 's' or 'z' for wasm32
+overflow-checks = false
+panic = "abort"
+# passes
+# prefer-dynamic
+# profile-generate
+# profile-use
+# relocation-model
+# remark
+rpath = false
+# save-temps
+# soft-float
+# split-debuginfo
+# target-cpu
+# target-feature
+# tune-cpu
+
+# [replace]
+
+# [target.<cfg>]
+
+# [target.<triple>]
+
+# [target.<triple>.<links>]
+
+[workspace]
+resolver = "2"
+members = [
+  "wolf",
+  "wolf-demo",
+]
