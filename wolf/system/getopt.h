@@ -56,7 +56,7 @@
   * POSSIBILITY OF SUCH DAMAGE.
   */
 
-#pragma warning(disable:4996);
+#pragma warning(disable:4996)
 
 #define __GETOPT_H__
 
@@ -109,11 +109,7 @@ extern "C" {
 	extern char __declspec(dllimport)* __progname;
 #endif
 
-#ifdef __CYGWIN__
-	static char EMSG[] = "";
-#else
-#define	EMSG		""
-#endif
+	constexpr char	EMSG[] = "";
 
 	static int getopt_internal(int, char* const*, const char*,
 		const struct option*, int*, int);
@@ -122,7 +118,7 @@ extern "C" {
 	static int gcd(int, int);
 	static void permute_args(int, int, int, char* const*);
 
-	static char* place = EMSG; /* option letter processing */
+	static const char* place = EMSG; /* option letter processing */
 
 	/* XXX: set optreset to 1 rather than these two */
 	static int nonopt_start = -1; /* first non option argument (for permute) */
@@ -298,7 +294,7 @@ extern "C" {
 	 long_options[(_x)].flag == long_options[(_y)].flag &&          \
 	 long_options[(_x)].val == long_options[(_y)].val)
 
-		current_argv = place;
+		current_argv = (char*)place;
 		match = -1;
 		ambiguous = 0;
 
@@ -593,7 +589,7 @@ extern "C" {
 		else {				/* takes (optional) argument */
 			optarg = NULL;
 			if (*place)			/* no white space */
-				optarg = place;
+				optarg = (char*)place;
 			else if (oli[1] != ':') {	/* arg not optional */
 				if (++optind >= nargc) {	/* no arg */
 					place = EMSG;

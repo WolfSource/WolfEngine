@@ -79,12 +79,12 @@ option(WOLF_TESTS "Enable tests" ON)
 # option(WOLF_STREAM_GRPC "Enable gRPC connection" OFF)
 # option(WOLF_STREAM_KAFKA_CLIENT "Enable Kafka API connector" OFF)
 # option(WOLF_STREAM_NNG "Enable nng socket for tcp/udp/ipc client/server" OFF)
-option(WOLF_STREAM_QUIC "Enable QUIC protocol" ON)
-option(WOLF_STREAM_RIST "Enable RIST streaming protocol" ON)
+option(WOLF_STREAM_QUIC "Enable QUIC protocol" OFF)
+option(WOLF_STREAM_RIST "Enable RIST streaming protocol" OFF)
 # option(WOLF_STREAM_RTSP_CLIENT "Enable RTSP for client" OFF)
 # option(WOLF_STREAM_RTSP_SERVER "Enable RTSP for server" OFF)
-option(WOLF_STREAM_HTTP_WS "Enable http 1.1/3 and websocket protocols" OFF)
-option(WOLF_STREAM_WEBRTC "Enable native webRTC" OFF)
+#option(WOLF_STREAM_HTTP_WS "Enable http 1.1/3 and websocket protocols" OFF)
+#option(WOLF_STREAM_WEBRTC "Enable native webRTC" OFF)
 
 # system modules
 # option(WOLF_SYSTEM_AVX2 "Enable avx2" OFF)
@@ -93,13 +93,15 @@ option(WOLF_STREAM_WEBRTC "Enable native webRTC" OFF)
 # option(WOLF_SYSTEM_LUA "Enable lua scripting" OFF)
 # option(WOLF_SYSTEM_LZ4 "Enable LZ4 Compression" OFF)
 # option(WOLF_SYSTEM_LZMA "Enable LZMA Compression" OFF)
-# option(WOLF_SYSTEM_MIMALLOC "Enable Microsoft mimalloc" OFF)
 # option(WOLF_SYSTEM_RAFT "Enable raft algorithm" OFF)
 
-option(WOLF_SYSTEM_BORINGSSL "Enable BoringSSL" ON)
-option(WOLF_SYSTEM_EXECUTION "Enable the prototype implementation of the C++26 sender/receiver async programming model based on libunifex" ON)
-option(WOLF_SYSTEM_JSON "Enable Json based on RapidJson" ON)
-option(WOLF_SYSTEM_LIBEVENT "Enable libevent2" ON)
+option(WOLF_SYSTEM_BORINGSSL "Enable BoringSSL" OFF)
+option(WOLF_SYSTEM_EXECUTION "Enable the prototype implementation of the C++26 sender/receiver async programming model based on libunifex" OFF)
+#option(WOLF_SYSTEM_JSON "Enable Json based on RapidJson" ON)
+option(WOLF_SYSTEM_MIMALLOC "Enable Microsoft's mimalloc memory allocator" OFF)
+option(WOLF_SYSTEM_ZLIB "Enable ZLib" OFF)
+
+#option(WOLF_SYSTEM_LIBEVENT "Enable libevent2" ON)
 
 # set type of library
 set(LIBRARY_TYPE "SHARED" CACHE STRING "Library type")
@@ -161,249 +163,13 @@ set(INCLUDES
 set(LIBS)
 
 if (NOT EMSCRIPTEN)
+    # currently threads was not supported with WASM
     list(APPEND LIBS Threads::Threads)
 endif()
 
-if (WOLF_SYSTEM_EXECUTION)
-    # fetch libunifex
-    message("fetching https://github.com/facebookexperimental/libunifex.git")
-    FetchContent_Declare(
-        unifex
-        GIT_REPOSITORY https://github.com/facebookexperimental/libunifex.git
-        GIT_TAG        main
-    )
-    FetchContent_MakeAvailable(unifex)
-    list(APPEND INCLUDES 
-        ${unifex_SOURCE_DIR}/include
-        ${unifex_BINARY_DIR}/include
-    )
-    list(APPEND LIBS unifex)
-endif()
-
-if (WOLF_SYSTEM_LIBEVENT)
-   	# fetch libevent
-    message("fetching https://github.com/libevent/libevent.git")
-    FetchContent_Declare(
-        libevent
-        GIT_REPOSITORY https://github.com/libevent/libevent.git
-        GIT_TAG        master
-    )
-    
-    if(CMAKE_BUILD_TYPE MATCHES Debug)
-        set(EVENT__DISABLE_DEBUG_MODE OFF CACHE BOOL "EVENT__DISABLE_DEBUG_MODE")
-    else()
-        set(EVENT__DISABLE_DEBUG_MODE ON CACHE BOOL "EVENT__DISABLE_DEBUG_MODE")
-    endif()
-
-    set(EVENT__DISABLE_BENCHMARK ON CACHE BOOL "EVENT__DISABLE_BENCHMARK")
-    set(EVENT__DISABLE_MBEDTLS ON CACHE BOOL "EVENT__DISABLE_MBEDTLS")
-    set(EVENT__DISABLE_OPENSSL ON CACHE BOOL "EVENT__DISABLE_OPENSSL")
-    set(EVENT__DISABLE_SAMPLES ON CACHE BOOL "EVENT__DISABLE_SAMPLES")
-    set(EVENT__DISABLE_TESTS ON CACHE BOOL "EVENT__DISABLE_TESTS")
-    set(EVENT__LIBRARY_TYPE "STATIC")
-    
-    FetchContent_MakeAvailable(libevent)
-    set (EVENT_INCLUDE_DIR ${libevent_SOURCE_DIR}/include)
-    set (EVENT_LIB event_static)
-
-    set_target_properties(
-		event_core_static
-        event_extra_static
-        event_static
-        uninstall
-		PROPERTIES FOLDER "Libevent")
-	
-    list(APPEND INCLUDES 
-        ${EVENT_INCLUDE_DIR}
-    )
-    list(APPEND LIBS ${EVENT_LIB})
-endif()
-
-if (WOLF_SYSTEM_BORINGSSL)
-   	# get boringSSL
-    message("fetching https://github.com/google/boringssl")
-    FetchContent_Declare(
-        boringssl
-        GIT_REPOSITORY https://github.com/google/boringssl
-        GIT_TAG        master
-    )
-    FetchContent_MakeAvailable(boringssl)
-	set_target_properties(
-		all_tests boringssl_gtest boringssl_gtest_main bssl bssl_shim crypto crypto_test crypto_test_data
-		decrepit decrepit_test fips_specific_tests_if_any fipsmodule global_target handshaker run_tests
-		ssl ssl_test test_support_lib urandom_test
-		PROPERTIES FOLDER "BoringSSL")
-	
-    set (GETOPT_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/system)
-    set (BORINGSSL_INCLUDE ${boringssl_SOURCE_DIR}/include)
-    set (BORINGSSL_LIB_ssl ${boringssl_BINARY_DIR}/ssl/${CMAKE_BUILD_TYPE}/ssl.${LIB_EXT})
-    set (BORINGSSL_LIB_crypto ${boringssl_BINARY_DIR}/crypto/${CMAKE_BUILD_TYPE}/crypto.${LIB_EXT})
-
-    list(APPEND INCLUDES 
-        ${BORINGSSL_INCLUDE}
-    )
-    list(APPEND LIBS ${BORINGSSL_LIB_ssl} ${BORINGSSL_LIB_crypto})
-endif()
-
-if (WOLF_STREAM_QUIC)
-    if (NOT WOLF_SYSTEM_BORINGSSL)
-        message( FATAL_ERROR "'WOLF_STREAM_QUIC' needs 'WOLF_SYSTEM_BORINGSSL' = ON" )
-    endif()
-
-    # get quic
-    message("fetching https://github.com/litespeedtech/lsquic.git")
-    FetchContent_Declare(
-        quic
-        GIT_REPOSITORY https://github.com/litespeedtech/lsquic.git
-        GIT_TAG        master
-    )
-    
-    if(CMAKE_BUILD_TYPE MATCHES Debug)
-        set(LSQUIC_DEVEL ON CACHE BOOL "LSQUIC_DEVEL")
-    else()
-        set(LSQUIC_DEVEL OFF CACHE BOOL "LSQUIC_DEVEL")
-    endif()
-
-    set(LSQUIC_BIN OFF CACHE BOOL "LSQUIC_BIN")
-    set(LSQUIC_SHARED_LIB OFF CACHE BOOL "LSQUIC_SHARED_LIB")
-    set(LSQUIC_TESTS OFF CACHE BOOL "LSQUIC_TESTS")
-    
-    FetchContent_MakeAvailable(quic)
-	
-    list(APPEND INCLUDES 
-        ${quic_SOURCE_DIR}/include
-        ${quic_BINARY_DIR}/include
-    )
-    list(APPEND LIBS quic)
-endif()
-
-if (WOLF_SYSTEM_MIMALLOC)
-    message("fetching https://github.com/microsoft/mimalloc.git")
-    FetchContent_Declare(
-        mimalloc-static
-        GIT_REPOSITORY https://github.com/microsoft/mimalloc.git
-        GIT_TAG        master
-    )
-    FetchContent_MakeAvailable(mimalloc-static)
-    list(APPEND INCLUDES
-        ${mimalloc_static_SOURCE_DIR}/include
-    )
-    list(APPEND LIBS mimalloc-static)
-endif()
-
-if (WOLF_STREAM_WEBRTC)
-    # we need http & json for webrtc
-    
-    if (NOT WOLF_SYSTEM_JSON)
-        message( FATAL_ERROR "'WOLF_STREAM_WEBRTC' needs 'WOLF_SYSTEM_JSON' = ON" )
-    endif()
-
-    if (NOT WOLF_STREAM_HTTP)
-        message( FATAL_ERROR "'WOLF_STREAM_WEBRTC' needs 'WOLF_STREAM_HTTP' = ON" )
-    endif()
-   
-    list(APPEND INCLUDES
-        ${WEBRTC_SRC}
-        ${WEBRTC_SRC}/third_party/abseil-cpp
-        ${WEBRTC_SRC}/third_party/libyuv/include
-    )
-    if (WIN32)
-        # enable/disable debug option
-        if(CMAKE_BUILD_TYPE MATCHES Debug)
-            add_definitions(
-                -D_HAS_ITERATOR_DEBUGGING=1
-                -D_ITERATOR_DEBUG_LEVEL=2
-            )
-        else()
-            add_definitions(
-                -D_HAS_ITERATOR_DEBUGGING=0
-                -D_ITERATOR_DEBUG_LEVEL=0
-            )
-        endif()
-
-        add_definitions(
-            -DWEBRTC_WIN 
-            -D__PRETTY_FUNCTION__=__FUNCTION__
-            #-DUSE_X11 
-            #-D_WINSOCKAPI_
-            -DHAVE_SOUND) 
-
-        list(APPEND LIBS
-            secur32 
-            dmoguids 
-            wmcodecdspuuid 
-            strmiids 
-            msdmo 
-            winmm 
-            dxgi 
-            d3d11 
-            iphlpapi 
-            dwmapi
-        )
-    elseif (APPLE)
-
-        add_definitions(
-            -DHAVE_SOUND 
-            -DWEBRTC_MAC 
-            -DWEBRTC_POSIX 
-            -fno-rtti)
-        
-        find_library(FOUNDATION Foundation)
-        find_library(CORE_FOUNDATION CoreFoundation)
-        find_library(APPLICATION_SERVICES ApplicationServices)
-        find_library(CORE_SERVICES CoreServices)
-        find_library(CORE_AUDIO CoreAudio)
-        find_library(AUDIO_TOOLBOX AudioToolBox)
-
-        list(APPEND LIBS
-            ${FOUNDATION} 
-            ${CORE_FOUNDATION} 
-            ${APPLICATION_SERVICES} 
-            ${CORE_SERVICES}
-            ${CORE_AUDIO} 
-            ${AUDIO_TOOLBOX} 
-        )
-    endif()
-    add_definitions(-DHAVE_JPEG)
-    link_directories(${WEBRTC_SRC}/out/${TARGET_OS}/${CMAKE_BUILD_TYPE}/obj/)
-    list(APPEND LIBS webrtc)
-endif()
-
-if (WOLF_STREAM_HTTP)
-    message("fetching https://github.com/civetweb/civetweb.git")
-    FetchContent_Declare(
-        civetweb
-        GIT_REPOSITORY https://github.com/civetweb/civetweb.git
-        GIT_TAG        master
-    )
-    set(BUILD_TESTING OFF CACHE BOOL "BUILD_TESTING")
-    set(CIVETWEB_BUILD_TESTING OFF CACHE BOOL "CIVETWEB_BUILD_TESTING")
-    set(CIVETWEB_ENABLE_CXX ON CACHE BOOL "CIVETWEB_ENABLE_CXX")
-    set(CIVETWEB_ENABLE_ASAN OFF CACHE BOOL "CIVETWEB_ENABLE_ASAN")
-
-    FetchContent_MakeAvailable(civetweb)
-
-    list(APPEND INCLUDES
-        ${civetweb_SOURCE_DIR}/include
-    )
-    link_directories(${civetweb_BINARY_DIR}/src/)
-    list(APPEND LIBS civetweb-cpp)
-    #add_definitions(-DOPENSSL_API_1_1 -DUSE_WEBSOCKET)
-endif()
-
-if (WOLF_SYSTEM_JSON)
-    message("fetching https://github.com/Tencent/rapidjson.git")
-    FetchContent_Declare(
-        rapidjson
-        GIT_REPOSITORY https://github.com/Tencent/rapidjson.git
-        GIT_TAG        master
-    )
-    FetchContent_Populate(rapidjson)
-
-    list(APPEND INCLUDES
-        ${rapidjson_SOURCE_DIR}/include
-    )
-endif()
+# include cmakes
+include(cmake/system.cmake)
+include(cmake/stream.cmake)
 
 # fetch catch2 for tests
 if (WOLF_TESTS)
@@ -434,6 +200,7 @@ if (MSVC)
         -EHsc 
         -DNOMINMAX
         -DWIN64
+        -DWIN32
     )
 elseif(APPLE)
     add_definitions(-DNEED_XLOCALE_H=1)
@@ -457,11 +224,13 @@ endforeach()
 # include sources
 file(GLOB_RECURSE WOLF_SRCS
     "${CMAKE_CURRENT_SOURCE_DIR}/dllmain.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/getopt.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/wolf.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/wolf.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/DISABLE_ANALYSIS_BEGIN"
     "${CMAKE_CURRENT_SOURCE_DIR}/DISABLE_ANALYSIS_END"
+)
+file(GLOB_RECURSE WOLF_CMAKES
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/*"
 )
 file(GLOB_RECURSE WOLF_STREAM_WEBRTC_CAPTURER_SRC
     "${CMAKE_CURRENT_SOURCE_DIR}/stream/webrtc/capturer/*"
@@ -491,6 +260,7 @@ include_directories(${INCLUDES})
 # add source codes
 add_library(${PROJECT_NAME} ${LIBRARY_TYPE}
     ${WOLF_SRCS}
+    ${WOLF_CMAKES}
 	${WOLF_STREAM_QUIC_SRC}
     ${WOLF_STREAM_WEBRTC_CAPTURER_SRC}
     ${WOLF_STREAM_WEBRTC_DATA_SRC}
@@ -502,9 +272,9 @@ add_library(${PROJECT_NAME} ${LIBRARY_TYPE}
 		
 if (MSVC)
     if(CMAKE_BUILD_TYPE MATCHES Debug)
-        set_property(TARGET ${PROJECT_NAME} PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreadedDebug")
+        set_property(TARGET ${PROJECT_NAME} PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreadedDebugDLL")
     else()
-        set_property(TARGET ${PROJECT_NAME} PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded")
+        set_property(TARGET ${PROJECT_NAME} PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreadedDLL")
     endif()
 endif()
 
@@ -513,6 +283,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBS})
 
 # create source group
 source_group("wolf" FILES ${WOLF_SRCS})
+source_group("cmake" FILES ${WOLF_CMAKES})
 source_group("stream/quic" FILES ${WOLF_STREAM_QUIC_SRC})
 source_group("stream/webrtc/capturer" FILES ${WOLF_STREAM_WEBRTC_CAPTURER_SRC})
 source_group("stream/webrtc/data" FILES ${WOLF_STREAM_WEBRTC_DATA_SRC})
