@@ -6,10 +6,8 @@ documentation/
 profile/
 release/
 target/
-test/
 wolf/jniLibs/*
 wolf/sys/build/*
-!wolf/sys/third_party/*
 
 # Created by https://www.toptal.com/developers/gitignore/api/dotenv,linux,macos,osx,rust,visualstudiocode,windows
 # Edit at https://www.toptal.com/developers/gitignore?templates=dotenv,linux,macos,osx,rust,visualstudiocode,windows
@@ -86,7 +84,7 @@ target/
 **/*.rs.bk
 
 # MSVC Windows builds of rustc generate these, which store debugging information
-*.pdb
+#*.pdb
 
 ### VisualStudioCode ###
 .vscode/*
