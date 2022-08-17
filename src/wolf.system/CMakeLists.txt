@@ -1,5 +1,10 @@
 cmake_minimum_required (VERSION 3.11)
 
+set(WOLF_VERSION_MAJOR 2)
+set(WOLF_VERSION_MINOR 1)
+set(WOLF_VERSION_PATCH 0)
+set(WOLF_VERSION_STRING "${WOLF_VERSION_MAJOR}.${WOLF_VERSION_MINOR}.${WOLF_VERSION_PATCH}")
+
 if(APPLE)
     set(TARGET "OSX" CACHE STRING "target platform")
     set(ARCH "x86_64" CACHE STRING "target architecture")
@@ -23,13 +28,13 @@ endif()
 
 # set the project name
 if (IOS)
-    project(wolf_system_ios VERSION 2.1.0)
+    project(wolf_system_ios VERSION ${WOLF_VERSION_STRING})
 elseif (APPLE)
-    project(wolf_system_osx VERSION 2.1.0)
+    project(wolf_system_osx VERSION ${WOLF_VERSION_STRING})
 elseif (WIN32)
-    project(wolf_system_win VERSION 2.1.0)
+    project(wolf_system_win VERSION ${WOLF_VERSION_STRING})
 elseif (LINUX)
-    project(wolf_system_linux VERSION 2.1.0)
+    project(wolf_system_linux VERSION ${WOLF_VERSION_STRING})
 endif()
 
 add_library(${PROJECT_NAME} ${LIBRARY_TYPE})
