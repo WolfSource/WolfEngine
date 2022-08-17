@@ -23,6 +23,10 @@ macro(find_package)
 endmacro()
 
 function(wolf_find_expat)
+    set(EXPAT_SHARED_LIBS OFF)
+    set(EXPAT_BUILD_TESTS OFF)
+    set(EXPAT_BUILD_TOOLS OFF)
+
     message(STATUS "wolf dependency libexpat")
     FetchContent_Declare(
         expat
