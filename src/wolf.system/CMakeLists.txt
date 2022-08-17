@@ -128,7 +128,7 @@ wolf_find_expat()
 if(WOLF_ENABLE_CURL)
     set(BUILD_CURL_EXE OFF CACHE BOOL "BUILD_CURL_EXE")
     set(BUILD_SHARED_LIBS OFF CACHE BOOL "BUILD_SHARED_LIBS")
-    wolf_find_curl()
+    wolf_find_libcurl()
 endif()
 
 if(WOLF_ENABLE_LUA)
