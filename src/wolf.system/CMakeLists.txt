@@ -35,8 +35,6 @@ endif()
 add_library(${PROJECT_NAME} ${LIBRARY_TYPE})
 add_library(wolf::system ALIAS ${PROJECT_NAME})
 
-target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_20)
-
 # -fPIC on linux and others
 set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE ON)
 
@@ -90,10 +88,11 @@ option(WOLF_ENABLE_SSL "Enable WOLF SSL" OFF)
 option(WOLF_INSTALL "Generate installation and cpack configs" OFF)
 
 set(CMAKE_C_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED YES)
-set(CMAKE_CXX_EXTENSIONS ENABLE_CXX_EXTENSIONS)
+set(CMAKE_C_STANDARD_REQUIRED YES)
+set(CMAKE_CXX_EXTENSIONS ${ENABLE_CXX_EXTENSIONS})
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED YES)
+target_compile_features(${PROJECT_NAME} PUBLIC "cxx_std_${CMAKE_CXX_STANDARD}")
 
 if (WOLF_ENABLE_AVX2)
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -mavx -march=native")
