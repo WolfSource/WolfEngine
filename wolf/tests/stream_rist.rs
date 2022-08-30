@@ -54,8 +54,6 @@ extern "C" fn receiver_data_callback(
 #[cfg(feature = "stream_rist")]
 #[test]
 fn test_send_rist() {
-    println!("wolf_sys version is : {:?}", wolf::sys_version());
-
     let mut sender = rist::new(
         rist_ctx_mode::RIST_SENDER_MODE,
         rist_profile::RIST_PROFILE_MAIN,
@@ -95,8 +93,6 @@ fn test_send_rist() {
 #[cfg(feature = "stream_rist")]
 #[test]
 fn test_receive_rist() {
-    println!("wolf_sys version is : {:?}", wolf::sys_version());
-
     let mut receiver = rist::new(
         rist_ctx_mode::RIST_RECEIVER_MODE,
         rist_profile::RIST_PROFILE_MAIN,
@@ -139,10 +135,14 @@ fn test_receive_rist() {
 #[cfg(feature = "stream_rist")]
 #[test]
 fn test_send_receive_rist() {
-    let t_sender_handle = std::thread::spawn(|| {
+    use wolf::system::os::runtime::RunTime;
+
+    println!("wolf_sys version is : {:?}", wolf::sys_version());
+
+    let t_sender_handle = RunTime::thread(|| {
         test_send_rist();
     });
-    let t_receiver_handle = std::thread::spawn(|| {
+    let t_receiver_handle = RunTime::thread(|| {
         std::thread::sleep(std::time::Duration::from_secs(1));
         test_receive_rist();
     });

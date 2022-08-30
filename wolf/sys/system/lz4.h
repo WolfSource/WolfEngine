@@ -11,17 +11,30 @@ extern "C" {
 
 #include <wolf.h>
 
-W_EXPORT
-int w_lz4_compress_bound(int p_input_size);
+    W_API
+        int w_lz4_compress_bound(_In_ int p_size);
 
-W_EXPORT
-int w_lz4_compress_default(const char *p_src, char *p_dst, int p_src_size, int p_dst_size);
+    W_API
+        int w_lz4_compress_default(
+            _In_ int p_src_len,
+            _In_z_ const char* p_src,
+            _In_ int p_dst_len,
+            _Inout_z_ char* p_dst);
 
-W_EXPORT
-int w_lz4_compress_fast(const char *p_source, char *p_dst, int p_src_size, int p_dst_size, int p_acceleration);
+    W_API
+        int w_lz4_compress_fast(
+            _In_ int p_acceleration,
+            _In_ int p_src_len,
+            _In_z_ const char* p_src,
+            _In_ int p_dst_len,
+            _Inout_z_ char* p_dst);
 
-W_EXPORT
-int w_lz4_decompress_safe(const char *p_src, char *p_dst,  int p_src_size, int p_dst_size);
+    W_API
+        int w_lz4_decompress_safe(
+            _In_ int p_src_len,
+            _In_z_ const char* p_src,
+            _In_ int p_dst_len,
+            _Inout_z_ char* p_dst);
 
 #ifdef __cplusplus
 }

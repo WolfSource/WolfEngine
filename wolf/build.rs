@@ -193,7 +193,7 @@ pub fn cmake(p_current_dir_path_str: &Path, p_build_profile: &str, p_target_os: 
     #[cfg(feature = "stream_rist")]
     args.push("-DWOLF_STREAM_RIST=ON".to_owned());
 
-    #[cfg(any(feature = "ffmpeg"))]
+    #[cfg(any(feature = "media_ffmpeg"))]
     args.push("-DWOLF_MEDIA_FFMPEG=ON".to_owned());
 
     if p_target_os == "android" {
@@ -315,29 +315,29 @@ fn link(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &str) 
         copy_shared_libs("/usr/lib", &names);
     }
 
-    #[cfg(feature = "ffmpeg")]
-    copy_ffmpeg(p_current_dir_path_str, p_target_os);
-
-    #[cfg(feature = "media_av1")]
-    copy_dav1d(p_current_dir_path_str, p_build_profile);
-
-    #[cfg(feature = "media_av1")]
-    copy_svt(p_current_dir_path_str, p_build_profile);
+    #[cfg(feature = "media_ffmpeg")]
+    copy_ffmpeg(p_current_dir_path_str, p_target_os, p_build_profile);
 }
 
-#[cfg(feature = "ffmpeg")]
-fn copy_ffmpeg(p_current_dir_path_str: &str, p_target_os: &str) {
+#[cfg(feature = "media_ffmpeg")]
+fn copy_ffmpeg(p_current_dir_path_str: &str, p_target_os: &str, p_build_profile: &str) {
     let ffmpeg_dll_names = [
         "avcodec-59.dll",
         "avdevice-59.dll",
         "avfilter-8.dll",
         "avformat-59.dll",
         "avutil-57.dll",
+        "dav1d.dll",
+        "SvtAv1Dec.dll",
+        "SvtAv1Enc.dll",
         "swresample-4.dll",
         "swscale-6.dll",
     ];
 
-    let ffmpeg_bin_path = format!("{}/sys/third_party/FFMPEG/bin", p_current_dir_path_str);
+    let ffmpeg_bin_path = format!(
+        "{}/sys/third_party/ffmpeg/bin/{}/{}",
+        p_current_dir_path_str, p_target_os, p_build_profile
+    );
     println!("cargo:rustc-link-search=native={}", ffmpeg_bin_path);
 
     // copy to target and deps folder
@@ -349,68 +349,22 @@ fn copy_ffmpeg(p_current_dir_path_str: &str, p_target_os: &str) {
         "avfilter.lib",
         "avformat.lib",
         "avutil.lib",
+        "dav1d.lib",
+        "SvtAv1Dec.lib",
+        "SvtAv1Enc.lib",
         "swresample.lib",
         "swscale.lib",
+        "vpx.lib",
     ];
 
     let ffmpeg_lib_path = format!(
-        "{}/sys/third_party/FFMPEG/lib/{}",
-        p_current_dir_path_str, p_target_os
+        "{}/sys/third_party/ffmpeg/lib/{}/{}",
+        p_current_dir_path_str, p_target_os, p_build_profile
     );
     println!("cargo:rustc-link-search=native={}", ffmpeg_lib_path);
 
     // copy to target and deps folder
     copy_shared_libs(&ffmpeg_lib_path, &ffmpeg_lib_names);
-}
-
-#[cfg(feature = "media_av1")]
-fn copy_dav1d(p_current_dir_path_str: &str, p_build_profile: &str) {
-    let dav1d_lib_names = ["dav1d.lib"].to_vec();
-
-    let dav1d_lib_path = format!(
-        "{}/sys/third_party/DAV1D/lib/{}",
-        p_current_dir_path_str, p_build_profile
-    );
-    println!("cargo:rustc-link-search=native={}", dav1d_lib_path);
-
-    // copy to target and deps folder
-    copy_shared_libs(&dav1d_lib_path, &dav1d_lib_names);
-
-    let dav1d_bin_names = ["dav1d.dll"].to_vec();
-
-    let dav1d_bin_path = format!(
-        "{}/sys/third_party/DAV1D/bin/{}",
-        p_current_dir_path_str, p_build_profile
-    );
-    println!("cargo:rustc-link-search=native={}", dav1d_bin_path);
-
-    // copy to target and deps folder
-    copy_shared_libs(&dav1d_bin_path, &dav1d_bin_names);
-}
-
-#[cfg(feature = "media_av1")]
-fn copy_svt(p_current_dir_path_str: &str, p_build_profile: &str) {
-    let svt_lib_names = ["SvtAv1Dec.lib", "SvtAv1Enc.lib"].to_vec();
-
-    let svt_lib_path = format!(
-        "{}/sys/third_party/SVT-AV1/lib/{}",
-        p_current_dir_path_str, p_build_profile
-    );
-    println!("cargo:rustc-link-search=native={}", svt_lib_path);
-
-    // copy to target and deps folder
-    copy_shared_libs(&svt_lib_path, &svt_lib_names);
-
-    let svt_bin_names = ["SvtAv1Dec.dll", "SvtAv1Enc.dll"];
-
-    let svt_bin_path = format!(
-        "{}/sys/third_party/SVT-AV1/bin/{}",
-        p_current_dir_path_str, p_build_profile
-    );
-    println!("cargo:rustc-link-search=native={}", svt_bin_path);
-
-    // copy to target and deps folder
-    copy_shared_libs(&svt_bin_path, &svt_bin_names);
 }
 
 fn bindgens(p_current_dir_path_str: &str) {
@@ -435,7 +389,7 @@ fn bindgens(p_current_dir_path_str: &str) {
         dst: "src/stream/ffi/rist.rs",
     });
 
-    #[cfg(feature = "ffmpeg")]
+    #[cfg(feature = "media_ffmpeg")]
     headers.push(Binding {
         src: "sys/media/ffmpeg.h",
         dst: "src/media/ffi/ffmpeg.rs",

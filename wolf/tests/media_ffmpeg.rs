@@ -1,15 +1,14 @@
 #![allow(unused_crate_dependencies)]
-
+use wolf::media::ffmpeg::FFmpeg;
 // use image::EncodableLayout;
 // use std::fs::File;
 // use wolf::media::ffi::ffmpeg::w_ffmpeg_opt_t;
 // use wolf::media::ffmpeg::ffmpeg::{self, *};
 
-#[cfg(feature = "ffmpeg")]
+#[cfg(feature = "media_ffmpeg")]
 #[test]
-const fn test_encode() {
-    // use std::{io::Write, path::Path};
-    // use wolf::{media::ffi::ffmpeg::w_ffmpeg_action_W_ENCODE, w_log};
+fn test_encode() {
+    let _ffmpeg = FFmpeg::new();
 
     // // initalize variables
     // let av_codec_id_av1 = 226;
@@ -85,7 +84,7 @@ const fn test_encode() {
     // };
 }
 
-#[cfg(feature = "ffmpeg")]
+#[cfg(feature = "media_ffmpeg")]
 #[test]
 const fn test_decode() {
     // use std::{

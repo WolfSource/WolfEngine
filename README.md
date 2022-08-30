@@ -20,8 +20,8 @@ This Wolf is a comprehensive set of Rust/C libraries for realtime rendering, rea
 ## Build
 - **Wolf 2/1** via CMake
 - **Wolf 3**
-  - Install CMake
-  - Install Ninja & Meson (0.47 or higher), Alternatively, use "pip3 install meson" and "pip3 install ninja"
+  - Install [CMake](https://cmake.org/install/)
+  - Install [Ninja](https://ninja-build.org/) & [Meson](https://github.com/mesonbuild/meson/releases)
   - Install [clang](https://github.com/llvm/llvm-project/releases/tag/llvmorg-14.0.0) for bindgen
 
   - For **Webassembly** :\

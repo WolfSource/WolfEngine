@@ -1,0 +1,54 @@
+/*
+    Project: Wolf Engine. Copyright © 2014-2022 Pooya Eimandar
+    https://github.com/WolfEngine/WolfEngine
+*/
+
+#pragma once
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#include <wolf.h>
+
+    struct AVFrame;
+    typedef struct AVFrame* w_av_frame;
+
+    /**
+     * initialize the ffmpeg AVFrame
+     * @param p_frame, the ffmpeg AVFrame
+     * @param p_width, the width of ffmpeg AVFrame
+     * @param p_height, the height of ffmpeg AVFrame
+     * @param p_pixel_format, the pixel format of ffmpeg AVFrame
+     * @returns zero on success
+     */
+    W_API
+        int w_av_frame_init(
+            _Inout_ w_av_frame* p_frame,
+            _In_ uint32_t p_width,
+            _In_ uint32_t p_height,
+            _In_ uint32_t p_pixel_format,
+            _Inout_z_ char* p_error);
+
+    /**
+      * convert the ffmpeg AVFrame
+      * @param p_frame, the ffmpeg AVFrame
+      * @param p_error, the error buffer
+      * @returns zero on success
+      */
+    W_API
+        int w_av_frame_convert(
+            _In_ w_av_frame p_src_frame,
+            _Inout_ w_av_frame* p_dst_frame,
+            _Inout_ char* p_error);
+
+    /**
+     * release all ffmpeg resources
+     * @param p_ffmpeg, the ffmpeg AVFrame
+     */
+    W_API
+        void w_av_frame_fini(_Inout_ w_av_frame* p_ffmpeg);
+
+#ifdef __cplusplus
+}
+#endif

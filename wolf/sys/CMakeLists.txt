@@ -24,17 +24,21 @@ endif()
 # FetchContent for cloning repositories, avaiable since CMAKE 3.11
 include(FetchContent)
 
+if (WIN32)
+set(TARGET_OS "windows")
+elseif(LINUX)
+set(TARGET_OS "linux")
+endif()
+
 # CMAKE GUI Options
 option(WOLF_MEDIA_FFMPEG "Enable FFMPEG for multimedia files" OFF)
-option(WOLF_STREAM_NNG "Enable nng socket for tcp/udp/ipc client/server" OFF)
 option(WOLF_STREAM_RIST "Enable RIST streaming protocol" OFF)
-option(WOLF_STREAM_RTSP "Enable real time streaming for client" OFF)
-option(WOLF_STREAM_WEBRTC_CLIENT "Enable webRTC client" OFF)
+option(WOLF_STREAM_RTSP_CLIENT "Enable real time streaming for client" OFF)
 
 option(WOLF_SYSTEM_LZ4 "Enable LZ4 Compression" OFF)
 option(WOLF_SYSTEM_LZMA "Enable LZMA Compression" OFF)
 
-option(WOLF_ENABLE_TESTS "Enable test for wolf_sys" OFF)
+option(WOLF_ENABLE_TESTS "Enable test for wolf_sys" ON)
 
 set(LIBRARY_TYPE "SHARED" CACHE STRING "Library type")
 
@@ -60,9 +64,13 @@ endif()
 
 # include sources
 file(GLOB_RECURSE WOLF_SRCS
+    "${CMAKE_CURRENT_SOURCE_DIR}/dllmain.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/wolf/wolf.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/wolf/wolf.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/wolf/version.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/wolf/version.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/wolf/DISABLE_ANALYSIS_BEGIN"
+    "${CMAKE_CURRENT_SOURCE_DIR}/wolf/DISABLE_ANALYSIS_END"
 )
 set(SRCS ${WOLF_SRCS})
 set(INCLUDES 
@@ -112,13 +120,13 @@ list(APPEND LIBS mimalloc-static)
 # link to ffmpeg
 if (WOLF_MEDIA_FFMPEG)
   file(GLOB_RECURSE FFMPEG_SRCS
-    "${CMAKE_CURRENT_SOURCE_DIR}/media/ffmpeg.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/media/ffmpeg.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/media/conversion.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/media/conversion.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/media/ffmpeg.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/media/av_frame.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/media/av_frame.cpp"
   )
   list(APPEND SRCS ${FFMPEG_SRCS})
-  list(APPEND INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/third_party/FFMPEG/include)
+  list(APPEND INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/third_party/ffmpeg/include)
 
   list(APPEND FFMPEG_LIBS 
     avcodec 
@@ -126,11 +134,15 @@ if (WOLF_MEDIA_FFMPEG)
     avfilter
     avformat
     avutil
+    dav1d
+    SvtAv1Dec
+    SvtAv1Enc
     swresample
-    swscale)
+    swscale
+    vpx)
 
   foreach (lib_name ${FFMPEG_LIBS})
-    list(APPEND LIBS ${CMAKE_CURRENT_SOURCE_DIR}/third_party/FFMPEG/lib/${CMAKE_HOST_SYSTEM_NAME}/${lib_name}.${LIB_EXT})
+    list(APPEND LIBS ${CMAKE_CURRENT_SOURCE_DIR}/third_party/ffmpeg/lib/${TARGET_OS}/${CMAKE_BUILD_TYPE}/${lib_name}.${LIB_EXT})
   endforeach()
   
 endif()

@@ -51,19 +51,19 @@ pub fn compress(
     let new_size_i32 = match p_mode {
         LZ4CompressMode::DEFAULT => unsafe {
             w_lz4_compress_default(
-                p_src.as_ptr() as *mut c_char,
-                p_dst.as_mut_ptr().cast::<i8>(),
                 src_len,
+                p_src.as_ptr() as *mut c_char,
                 safe_max_dst_size.try_into().unwrap(),
+                p_dst.as_mut_ptr().cast::<i8>(),
             )
         },
         LZ4CompressMode::FAST => unsafe {
             w_lz4_compress_fast(
-                p_src.as_ptr() as *mut c_char,
-                p_dst.as_mut_ptr().cast::<i8>(),
-                src_len,
-                safe_max_dst_size.try_into().unwrap(),
                 p_acceleration,
+                src_len,
+                p_src.as_ptr() as *mut c_char,
+                safe_max_dst_size.try_into().unwrap(),
+                p_dst.as_mut_ptr().cast::<i8>(),
             )
         },
     };
@@ -103,10 +103,10 @@ pub fn de_compress(p_dst: &mut Vec<u8>, p_src: &[u8]) -> anyhow::Result<()> {
         // try for decompress
         ret_size = unsafe {
             w_lz4_decompress_safe(
-                p_src.as_ptr().cast::<i8>(),
-                p_dst.as_mut_ptr().cast::<i8>(),
                 src_len,
+                p_src.as_ptr().cast::<i8>(),
                 max_dst_size,
+                p_dst.as_mut_ptr().cast::<i8>(),
             )
         };
         if ret_size > 0 {

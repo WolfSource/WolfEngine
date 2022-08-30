@@ -1,3 +1,3 @@
 pub mod ffi;
-#[cfg(all(not(target_arch = "wasm32"), any(feature = "ffmpeg")))]
+#[cfg(all(feature = "media_ffmpeg", not(target_arch = "wasm32")))]
 pub mod ffmpeg;

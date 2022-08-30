@@ -12,35 +12,19 @@ pub const _HAS_CXX17: u32 = 0;
 pub const _HAS_CXX20: u32 = 0;
 pub const _HAS_CXX23: u32 = 0;
 pub const _HAS_NODISCARD: u32 = 0;
-pub const _ARM_WINAPI_PARTITION_DESKTOP_SDK_AVAILABLE: u32 = 1;
-pub const _CRT_BUILD_DESKTOP_APP: u32 = 1;
-pub const _ARGMAX: u32 = 100;
-pub const _CRT_INT_MAX: u32 = 2147483647;
-pub const _CRT_FUNCTIONS_REQUIRED: u32 = 1;
-pub const _CRT_HAS_CXX17: u32 = 0;
-pub const _CRT_HAS_C11: u32 = 1;
-pub const _CRT_INTERNAL_NONSTDC_NAMES: u32 = 1;
-pub const __STDC_SECURE_LIB__: u32 = 200411;
-pub const __GOT_SECURE_LIB__: u32 = 200411;
-pub const __STDC_WANT_SECURE_LIB__: u32 = 1;
-pub const _SECURECRT_FILL_BUFFER_PATTERN: u32 = 254;
-pub const _CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES: u32 = 0;
-pub const _CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES_COUNT: u32 = 0;
-pub const _CRT_SECURE_CPP_OVERLOAD_SECURE_NAMES: u32 = 1;
-pub const _CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES_MEMORY: u32 = 0;
-pub const _CRT_SECURE_CPP_OVERLOAD_SECURE_NAMES_MEMORY: u32 = 0;
 pub const WCHAR_MIN: u32 = 0;
 pub const WCHAR_MAX: u32 = 65535;
 pub const WINT_MIN: u32 = 0;
 pub const WINT_MAX: u32 = 65535;
 pub const W_MAX_PATH: u32 = 260;
+pub type size_t = ::std::os::raw::c_ulonglong;
+pub type wchar_t = ::std::os::raw::c_ushort;
+pub type max_align_t = f64;
 pub type va_list = *mut ::std::os::raw::c_char;
 extern "C" {
     pub fn __va_start(arg1: *mut *mut ::std::os::raw::c_char, ...);
 }
-pub type size_t = ::std::os::raw::c_ulonglong;
 pub type __vcrt_bool = bool;
-pub type wchar_t = ::std::os::raw::c_ushort;
 extern "C" {
     pub fn __security_init_cookie();
 }
@@ -52,66 +36,6 @@ extern "C" {
 }
 extern "C" {
     pub static mut __security_cookie: usize;
-}
-pub type __crt_bool = bool;
-extern "C" {
-    pub fn _invalid_parameter_noinfo();
-}
-extern "C" {
-    pub fn _invalid_parameter_noinfo_noreturn();
-}
-extern "C" {
-    pub fn _invoke_watson(
-        _Expression: *const wchar_t,
-        _FunctionName: *const wchar_t,
-        _FileName: *const wchar_t,
-        _LineNo: ::std::os::raw::c_uint,
-        _Reserved: usize,
-    );
-}
-pub type errno_t = ::std::os::raw::c_int;
-pub type wint_t = ::std::os::raw::c_ushort;
-pub type wctype_t = ::std::os::raw::c_ushort;
-pub type __time32_t = ::std::os::raw::c_long;
-pub type __time64_t = ::std::os::raw::c_longlong;
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct __crt_locale_data_public {
-    pub _locale_pctype: *const ::std::os::raw::c_ushort,
-    pub _locale_mb_cur_max: ::std::os::raw::c_int,
-    pub _locale_lc_codepage: ::std::os::raw::c_uint,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct __crt_locale_pointers {
-    pub locinfo: *mut __crt_locale_data,
-    pub mbcinfo: *mut __crt_multibyte_data,
-}
-pub type _locale_t = *mut __crt_locale_pointers;
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct _Mbstatet {
-    pub _Wchar: ::std::os::raw::c_ulong,
-    pub _Byte: ::std::os::raw::c_ushort,
-    pub _State: ::std::os::raw::c_ushort,
-}
-pub type mbstate_t = _Mbstatet;
-pub type time_t = __time64_t;
-pub type rsize_t = size_t;
-extern "C" {
-    pub fn _errno() -> *mut ::std::os::raw::c_int;
-}
-extern "C" {
-    pub fn _set_errno(_Value: ::std::os::raw::c_int) -> errno_t;
-}
-extern "C" {
-    pub fn _get_errno(_Value: *mut ::std::os::raw::c_int) -> errno_t;
-}
-extern "C" {
-    pub fn __threadid() -> ::std::os::raw::c_ulong;
-}
-extern "C" {
-    pub fn __threadhandle() -> usize;
 }
 pub type int_least8_t = ::std::os::raw::c_schar;
 pub type int_least16_t = ::std::os::raw::c_short;
@@ -132,40 +56,30 @@ pub type uint_fast64_t = ::std::os::raw::c_ulonglong;
 pub type intmax_t = ::std::os::raw::c_longlong;
 pub type uintmax_t = ::std::os::raw::c_ulonglong;
 extern "C" {
-    pub fn w_lz4_compress_bound(p_input_size: ::std::os::raw::c_int) -> ::std::os::raw::c_int;
+    pub fn w_lz4_compress_bound(p_size: ::std::os::raw::c_int) -> ::std::os::raw::c_int;
 }
 extern "C" {
     pub fn w_lz4_compress_default(
+        p_src_len: ::std::os::raw::c_int,
         p_src: *const ::std::os::raw::c_char,
+        p_dst_len: ::std::os::raw::c_int,
         p_dst: *mut ::std::os::raw::c_char,
-        p_src_size: ::std::os::raw::c_int,
-        p_dst_size: ::std::os::raw::c_int,
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
     pub fn w_lz4_compress_fast(
-        p_source: *const ::std::os::raw::c_char,
-        p_dst: *mut ::std::os::raw::c_char,
-        p_src_size: ::std::os::raw::c_int,
-        p_dst_size: ::std::os::raw::c_int,
         p_acceleration: ::std::os::raw::c_int,
+        p_src_len: ::std::os::raw::c_int,
+        p_src: *const ::std::os::raw::c_char,
+        p_dst_len: ::std::os::raw::c_int,
+        p_dst: *mut ::std::os::raw::c_char,
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
     pub fn w_lz4_decompress_safe(
+        p_src_len: ::std::os::raw::c_int,
         p_src: *const ::std::os::raw::c_char,
+        p_dst_len: ::std::os::raw::c_int,
         p_dst: *mut ::std::os::raw::c_char,
-        p_src_size: ::std::os::raw::c_int,
-        p_dst_size: ::std::os::raw::c_int,
     ) -> ::std::os::raw::c_int;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct __crt_locale_data {
-    pub _address: u8,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct __crt_multibyte_data {
-    pub _address: u8,
 }

@@ -5,5 +5,5 @@
 #![allow(clippy::unreadable_literal)]
 #![allow(clippy::use_self)]
 
-#[cfg(all(feature = "ffmpeg", not(target_arch = "wasm32")))]
+#[cfg(all(feature = "media_ffmpeg", not(target_arch = "wasm32")))]
 pub mod ffmpeg;

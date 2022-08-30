@@ -13,7 +13,7 @@ use wolf::render::graphics_device::WindowInfo;
 use wolf::system::os::sigslot::SigSlot;
 use wolf::{
     render::{graphics_device::GraphicsDevice, scene::IScene},
-    system::{chrono::gametime::GameTime, os::runtime::RunTime, script::rhai::Rhai},
+    system::{chrono::gametime::GameTime, os::runtime::RunTime},
     w_log,
 };
 
@@ -21,25 +21,25 @@ use wolf::{
 use {wasm_bindgen::prelude::*, wasm_mt::prelude::*, wolf::system::script::javascript::JavaScript};
 
 // Normal function
-const fn add(x: i64, y: i64) -> i64 {
-    x + y
-}
+//const fn add(x: i64, y: i64) -> i64 {
+//    x + y
+//}
 
 async fn test() {
-    let mut script = Rhai::new();
+    // let mut script = Rhai::new();
 
-    // register add function for our embedded script
-    script.register_function("add", add);
+    // // register add function for our embedded script
+    // script.register_function("add", add);
 
-    let res = script.run_return_any::<i64>(r#"add(10, 7)"#);
-    match res {
-        Ok(v) => {
-            w_log!("add returns: {}", v);
-        }
-        Err(e) => {
-            w_log!("add returns error: {:?}", e);
-        }
-    };
+    // let res = script.run_return_any::<i64>(r#"add(10, 7)"#);
+    // match res {
+    //     Ok(v) => {
+    //         w_log!("add returns: {}", v);
+    //     }
+    //     Err(e) => {
+    //         w_log!("add returns error: {:?}", e);
+    //     }
+    // };
 
     #[cfg(not(target_arch = "wasm32"))]
     {

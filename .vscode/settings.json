@@ -121,7 +121,7 @@
     },
     "lldb.verboseLogging": true,
     "redhat.telemetry.enabled": true,
-    //"rust-analyzer.cargo.allFeatures": true,
+    "rust-analyzer.cargo.allFeatures": false,
     "rust-analyzer.checkOnSave.command": "clippy",
     //"rust-analyzer.checkOnSave.overrideCommand": ["make", "clippy", "MESSAGE_FORMAT=json"],
     "terminal.integrated.sendKeybindingsToShell": true,

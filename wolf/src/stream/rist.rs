@@ -133,8 +133,8 @@ impl rist_data_block {
         unsafe {
             w_rist_set_data_block(
                 self.block,
-                p_data.as_ptr().cast::<std::ffi::c_void>(),
                 p_data.len() as size_t,
+                p_data.as_ptr().cast::<std::ffi::c_void>(),
             );
         };
     }
