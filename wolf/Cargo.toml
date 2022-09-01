@@ -54,7 +54,7 @@ wgpu = {version = "0.13.1", default-features = false, optional = true}
 [target.'cfg(target_arch = "x86_64")'.dependencies]
 async-raft = {version = "0.6.1", default-features = false, optional = true}
 async-trait = {version = "0.1.57", default-features = false}
-futures = { version = "0.3.23", default-features = false }
+futures = { version = "0.3.24", default-features = false }
 hyper = {version = "0.14.20", default-features = false}
 may = {version = "0.3.22", default-features = false, optional = true}
 memstore = {version = "0.2.0", default-features = false}
