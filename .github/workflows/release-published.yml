@@ -114,7 +114,7 @@ jobs:
           template: "@/contrib/sarif.tpl"
       -
         name: Upload Sarif
-        uses: github/codeql-action/upload-sarif@5f532563584d71fdef14ee64d17bafb34f751ce5
+        uses: github/codeql-action/upload-sarif@b398f525a5587552e573b247ac661067fafa920b
         with:
           category: Aqua Security Trivy
           sarif_file: trivy.sarif
@@ -129,7 +129,7 @@ jobs:
           severity-cutoff: negligible
       -
         name: Upload Sarif
-        uses: github/codeql-action/upload-sarif@5f532563584d71fdef14ee64d17bafb34f751ce5
+        uses: github/codeql-action/upload-sarif@b398f525a5587552e573b247ac661067fafa920b
         with:
           category: Anchore Scan
           sarif_file: ${{ steps.anchore.outputs.sarif }}
