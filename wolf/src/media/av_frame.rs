@@ -1,6 +1,6 @@
 use super::ffi::av_frame::{
-    w_av_frame, w_av_frame_convert, w_av_frame_fini, w_av_frame_init,
-    w_av_get_required_buffer_size, W_MAX_PATH,
+    size_t, w_av_frame, w_av_frame_convert, w_av_frame_fini, w_av_frame_init,
+    w_av_get_required_buffer_size, w_av_set_data, W_MAX_PATH,
 };
 use anyhow::{bail, Result};
 
@@ -464,7 +464,7 @@ impl AVFrame {
         p_width: u32,
         p_height: u32,
         p_alignment: u32,
-        p_data: &mut [u8],
+        p_data: &[u8],
     ) -> Result<Self> {
         let mut obj = Self {
             ctx: std::ptr::null_mut(),
@@ -485,7 +485,7 @@ impl AVFrame {
                 obj.width,
                 obj.height,
                 obj.align,
-                p_data.as_mut_ptr(),
+                p_data.as_ptr(),
                 err_ptr,
             );
 
@@ -509,9 +509,34 @@ impl AVFrame {
         p_width: u32,
         p_height: u32,
         p_alignment: u32,
-    ) -> ::std::os::raw::c_int {
+    ) -> size_t {
         unsafe {
             w_av_get_required_buffer_size(p_pixel_format as u32, p_width, p_height, p_alignment)
+        }
+    }
+
+    /// # Errors
+    ///
+    /// TODO: add error description
+    pub fn set_data(&self, p_data: &[u8]) -> Result<()> {
+        // create a buffer for error
+        let mut err = [1i8; W_MAX_PATH as usize];
+        let err_ptr = err.as_mut_ptr();
+
+        unsafe {
+            let ret = w_av_set_data(self.ctx, p_data.as_ptr(), self.align as i32, err_ptr);
+            match ret {
+                0 => Ok(()),
+                _ => {
+                    let c_err_str = std::ffi::CStr::from_ptr(err_ptr);
+                    let str = c_err_str.to_str().unwrap_or_default();
+                    bail!(
+                        "could not set data to av_frame because {}. trace: {:?}",
+                        String::from(str),
+                        std::backtrace::Backtrace::force_capture()
+                    )
+                }
+            }
         }
     }
 

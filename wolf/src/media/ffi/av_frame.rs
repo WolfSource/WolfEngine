@@ -76,7 +76,7 @@ extern "C" {
         p_width: u32,
         p_height: u32,
         p_alignment: u32,
-        p_data: *mut u8,
+        p_data: *const u8,
         p_error: *mut ::std::os::raw::c_char,
     ) -> ::std::os::raw::c_int;
 }
@@ -89,10 +89,16 @@ extern "C" {
     #[doc = " @returns zero on success"]
     pub fn w_av_set_data(
         p_frame: w_av_frame,
-        p_data: *mut u8,
+        p_data: *const u8,
         p_alignment: ::std::os::raw::c_int,
         p_error: *mut ::std::os::raw::c_char,
     ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    #[doc = " get data of ffmpeg AVFrame"]
+    #[doc = " @param p_error, the error buffer"]
+    #[doc = " @returns zero on success"]
+    pub fn w_av_get_data(p_frame: w_av_frame, p_error: *mut ::std::os::raw::c_char) -> *const u8;
 }
 extern "C" {
     #[doc = " initialize the ffmpeg AVFrame"]
@@ -106,7 +112,7 @@ extern "C" {
         p_width: u32,
         p_height: u32,
         p_alignment: u32,
-    ) -> ::std::os::raw::c_int;
+    ) -> size_t;
 }
 extern "C" {
     #[doc = " convert the ffmpeg AVFrame"]

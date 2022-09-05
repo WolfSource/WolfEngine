@@ -25,8 +25,9 @@ This Wolf is a comprehensive set of Rust/C libraries for realtime rendering, rea
   - Install [clang](https://github.com/llvm/llvm-project/releases/tag/llvmorg-14.0.0) for bindgen
 
   - For **Webassembly** :\
-  From WolfEngine folder
+  From workspace folder run
   ```bash
+  cargo install wasm-pack
   rustup default nightly
   rustup target add wasm32-unknown-unknown
   cd wolf-demo

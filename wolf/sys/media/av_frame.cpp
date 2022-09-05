@@ -25,7 +25,7 @@ int w_av_frame_init(
     _In_ uint32_t p_width,
     _In_ uint32_t p_height,
     _In_ uint32_t p_alignment,
-    _In_ uint8_t* p_data,
+    _In_ const uint8_t* p_data,
     _Inout_ char* p_error)
 {
     constexpr auto TRACE = "ffmpeg::w_av_frame_init";
@@ -77,7 +77,7 @@ int w_av_frame_init(
 
 int w_av_set_data(
     _In_ w_av_frame p_frame,
-    _In_ uint8_t* p_data,
+    _In_ const uint8_t* p_data,
     _In_ int p_alignment,
     _Inout_ char* p_error)
 {
@@ -108,7 +108,27 @@ int w_av_set_data(
     return 0;
 }
 
-int w_av_get_required_buffer_size(
+const uint8_t* w_av_get_data(
+    _In_ w_av_frame p_frame,
+    _Inout_ char* p_error)
+{
+    constexpr auto TRACE = "ffmpeg::w_av_get_data";
+    const auto _error = gsl::not_null<char*>(p_error);
+
+    if (p_frame == nullptr ||
+        p_frame->linesize == nullptr ||
+        p_frame->linesize[0] <= 0)
+    {
+        snprintf(
+            _error,
+            W_MAX_PATH,
+            "bad argumans. trace info: %s",
+            TRACE);
+    }
+    return p_frame->data[0];
+}
+
+size_t w_av_get_required_buffer_size(
     _In_ uint32_t p_pixel_format,
     _In_ uint32_t p_width,
     _In_ uint32_t p_height,
@@ -119,7 +139,8 @@ int w_av_get_required_buffer_size(
     const auto _h = gsl::narrow_cast<int>(p_height);
     const auto _align = gsl::narrow_cast<int>(p_alignment);
 
-    return av_image_get_buffer_size(_pixel_format, _w, _h, _align);
+    auto _size = av_image_get_buffer_size(_pixel_format, _w, _h, _align);
+    return _size > 0 ? gsl::narrow_cast<size_t>(_size) : 0;
 }
 
 int w_av_frame_convert(

@@ -1,5 +1,5 @@
 #![allow(unused_crate_dependencies)]
-use wolf::media::av_frame::{AVFrame, AVPixelFormat};
+//use wolf::media::av_frame::{AVFrame, AVPixelFormat};
 // use wolf::media::ffmpeg::FFmpeg;
 // use image::EncodableLayout;
 // use std::fs::File;
@@ -9,18 +9,33 @@ use wolf::media::av_frame::{AVFrame, AVPixelFormat};
 #[cfg(feature = "media_ffmpeg")]
 #[test]
 fn test_encode() {
-    let data_size_bgra = AVFrame::get_required_buffer_size(AVPixelFormat::RGB24, 1920, 1080, 1);
-    let data_size_rgba = AVFrame::get_required_buffer_size(AVPixelFormat::BGR24, 1920, 1080, 1);
+    use image::{EncodableLayout, GenericImageView};
+    use wolf::media::av_frame::{AVFrame, AVPixelFormat};
 
-    // let data_rgba = Vec::<u8>::new();
+    // load image
+    let img = image::open("D:/SourceCodes/WolfEngine/WolfEngine/wolf/sample.png").unwrap();
+    let img_size = img.dimensions();
+    let pixels = img.as_rgba8().unwrap().as_bytes();
 
-    // let data_rgba = [1u8, data_size_bgra.try_into().unwrap()];
-    // let data_rgba = [1u8, data_size_rgba];
+    // create a source frame from img
+    let src_frame = AVFrame::new(AVPixelFormat::RGBA, img_size.0, img_size.1, 1, pixels).unwrap();
 
-    let src_frame = AVFrame::new(AVPixelFormat::RGB24, 1920, 1080, 1).unwrap();
-    let mut dst_frame = AVFrame::new(AVPixelFormat::BGR24, 1920, 1080, 1).unwrap();
+    // create dst frame
+    let dst_frame_size =
+        AVFrame::get_required_buffer_size(AVPixelFormat::RGB24, img_size.0, img_size.1, 1);
+    let mut dst_pixels = Vec::<u8>::with_capacity(dst_frame_size as usize);
+    dst_pixels.fill(0u8);
+    let mut dst_frame = AVFrame::new(
+        AVPixelFormat::BGR24,
+        img_size.0,
+        img_size.1,
+        1,
+        dst_pixels.as_bytes(),
+    )
+    .unwrap();
 
-    let _ret = src_frame.convert(&mut dst_frame);
+    src_frame.convert(&mut dst_frame).unwrap();
+
     //let _ffmpeg = FFmpeg::new();
 
     // // initalize variables

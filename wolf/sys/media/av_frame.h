@@ -20,7 +20,7 @@ extern "C" {
      * @param p_pixel_format, the pixel format of ffmpeg AVFrame
      * @param p_width, the width of ffmpeg AVFrame
      * @param p_height, the height of ffmpeg AVFrame
-     * @param p_alignment, the alignment 
+     * @param p_alignment, the alignment
      * @param p_data, the initial data of ffmpeg AVFrame
      * @param p_error, the error buffer
      * @returns zero on success
@@ -32,7 +32,7 @@ extern "C" {
             _In_ uint32_t p_width,
             _In_ uint32_t p_height,
             _In_ uint32_t p_alignment,
-            _In_ uint8_t* p_data,
+            _In_ const uint8_t* p_data,
             _Inout_ char* p_error);
 
     /**
@@ -43,11 +43,22 @@ extern "C" {
      * @param p_error, the error buffer
      * @returns zero on success
      */
-    int w_av_set_data(
-        _In_ w_av_frame p_frame,
-        _In_ uint8_t* p_data,
-        _In_ int p_alignment,
-        _Inout_ char* p_error);
+    W_API
+        int w_av_set_data(
+            _In_ w_av_frame p_frame,
+            _In_ const uint8_t* p_data,
+            _In_ int p_alignment,
+            _Inout_ char* p_error);
+
+    /**
+     * get data of ffmpeg AVFrame
+     * @param p_error, the error buffer
+     * @returns zero on success
+    */
+    W_API
+        const uint8_t* w_av_get_data(
+            _In_ w_av_frame p_frame,
+            _Inout_ char* p_error);
 
     /**
      * initialize the ffmpeg AVFrame
@@ -58,7 +69,7 @@ extern "C" {
      * @returns zero on success
      */
     W_API
-        int w_av_get_required_buffer_size(
+        size_t w_av_get_required_buffer_size(
             _In_ uint32_t p_pixel_format,
             _In_ uint32_t p_width,
             _In_ uint32_t p_height,

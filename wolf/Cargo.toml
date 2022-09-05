@@ -20,14 +20,14 @@ path = "src/lib.rs"
 # shared dependencies between all
 [dependencies]
 #brotli = { version = "3.3.3" }
-anyhow = {version = "1.0.62", default-features = false}
+anyhow = {version = "1.0.64", default-features = false}
 signals2 = {version = "0.3.2", default-features = false}
 raw-window-handle = {version = "0.4.3", default-features = false, features = ["alloc"]} 
 
 # dependencies of wasm 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 instant = {version = "0.1.12", default-features = false, features = ["wasm-bindgen"]}
-rhai = { version = "1.9.0", default-features = false, features = ["sync", "internals", "wasm-bindgen"], optional = true }
+rhai = { version = "1.9.1", default-features = false, features = ["sync", "internals", "wasm-bindgen"], optional = true }
 serde = { version = "1.0.144", default-features = false, features = ["derive"]}
 wasm-bindgen = { version = "0.2.82", default-features = false }
 wasm-bindgen-futures = { version = "0.4.32", default-features = false }
@@ -39,9 +39,9 @@ wgpu = {version = "0.13.1", default-features = false, features = ["webgl"], opti
 [target.'cfg(any(target_arch = "arm", target_arch = "aarch64", target_arch = "x86_64"))'.dependencies]
 instant = {version = "0.1.12", default-features = false}
 pollster = {version = "0.2.5", default-features = false}
-rhai = { version = "1.9.0", default-features = false, features = ["sync", "internals"], optional = true}
+rhai = { version = "1.9.1", default-features = false, features = ["sync", "internals"], optional = true}
 rustls-pemfile = {version = "1.0.1", default-features = false}
-tokio = {version = "1.20.1", default-features = false, features = ["full"]}
+tokio = {version = "1.21.0", default-features = false, features = ["full"]}
 tokio-rustls = {version = "0.23.4", default-features = false, features = ["logging", "tls12"]}
 tonic = {version = "0.8.0", default-features = false, features = ["codegen", "prost", "tls"], optional = true}
 webpki-roots = {version = "0.22.4", default-features = false}
@@ -54,7 +54,7 @@ wgpu = {version = "0.13.1", default-features = false, optional = true}
 [target.'cfg(target_arch = "x86_64")'.dependencies]
 async-raft = {version = "0.6.1", default-features = false, optional = true}
 async-trait = {version = "0.1.57", default-features = false}
-futures = { version = "0.3.23", default-features = false }
+futures = { version = "0.3.24", default-features = false }
 hyper = {version = "0.14.20", default-features = false}
 may = {version = "0.3.22", default-features = false, optional = true}
 memstore = {version = "0.2.0", default-features = false}
