@@ -37,6 +37,7 @@ option(WOLF_STREAM_RTSP_CLIENT "Enable real time streaming for client" OFF)
 
 option(WOLF_SYSTEM_LZ4 "Enable LZ4 Compression" OFF)
 option(WOLF_SYSTEM_LZMA "Enable LZMA Compression" OFF)
+option(WOLF_SYSTEM_OPENAL "Enable openAL soft" OFF)
 
 option(WOLF_ENABLE_TESTS "Enable test for wolf_sys" ON)
 
@@ -66,6 +67,7 @@ endif()
 file(GLOB_RECURSE WOLF_SRCS
     "${CMAKE_CURRENT_SOURCE_DIR}/dllmain.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/wolf/wolf.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/wolf/wolf.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/wolf/wolf.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/wolf/version.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/wolf/version.cpp"
@@ -80,16 +82,10 @@ set(INCLUDES
 )
 set(LIBS)
 
-# fetch gsl
-message("fetching https://github.com/microsoft/GSL.git")
-FetchContent_Declare(
-  gsl
-  GIT_REPOSITORY https://github.com/microsoft/GSL.git
-  GIT_TAG        main
-  SOURCE_SUBDIR  include
-)
-FetchContent_Populate(gsl)
-list(APPEND INCLUDES ${CMAKE_CURRENT_BINARY_DIR}/_deps/gsl-src/include/)
+# include cmakes
+include(cmake/system.cmake)
+include(cmake/stream.cmake)
+include(cmake/media.cmake)
 
 # fetch catch2 for tests
 if (WOLF_ENABLE_TESTS)
@@ -101,110 +97,6 @@ if (WOLF_ENABLE_TESTS)
     )
     FetchContent_Populate(catch2)
     list(APPEND INCLUDES ${CMAKE_CURRENT_BINARY_DIR}/_deps/catch2-src/single_include/)
-endif()
-
-# fetch mimalloc
-message("fetching https://github.com/microsoft/mimalloc.git")
-FetchContent_Declare(
-    mimalloc-static
-    GIT_REPOSITORY https://github.com/microsoft/mimalloc.git
-    GIT_TAG        master
-)
-set(MI_BUILD_SHARED OFF CACHE BOOL "MI_BUILD_SHARED")
-set(MI_BUILD_TESTS OFF CACHE BOOL "MI_BUILD_TESTS")
-
-FetchContent_MakeAvailable(mimalloc-static)
-list(APPEND INCLUDES ${mimalloc-static_SRC_DIR}/include)
-list(APPEND LIBS mimalloc-static)    
-
-# link to ffmpeg
-if (WOLF_MEDIA_FFMPEG)
-  file(GLOB_RECURSE FFMPEG_SRCS
-    "${CMAKE_CURRENT_SOURCE_DIR}/media/ffmpeg.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/media/ffmpeg.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/media/av_frame.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/media/av_frame.cpp"
-  )
-  list(APPEND SRCS ${FFMPEG_SRCS})
-  list(APPEND INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/third_party/ffmpeg/include)
-
-  list(APPEND FFMPEG_LIBS 
-    avcodec 
-    avdevice 
-    avfilter
-    avformat
-    avutil
-    dav1d
-    SvtAv1Dec
-    SvtAv1Enc
-    swresample
-    swscale
-    vpx)
-
-  foreach (lib_name ${FFMPEG_LIBS})
-    list(APPEND LIBS ${CMAKE_CURRENT_SOURCE_DIR}/third_party/ffmpeg/lib/${TARGET_OS}/${CMAKE_BUILD_TYPE}/${lib_name}.${LIB_EXT})
-  endforeach()
-  
-endif()
-
-# fetch lz4
-if (WOLF_SYSTEM_LZ4)
-  message("fetching https://github.com/lz4/lz4.git")
-  FetchContent_Declare(
-    lz4_static
-    GIT_REPOSITORY https://github.com/lz4/lz4.git
-    GIT_TAG        dev
-    SOURCE_SUBDIR  build/cmake
-  )
-  FetchContent_MakeAvailable(lz4_static)
-
-  file(GLOB_RECURSE LZ4_SRCS
-    "${CMAKE_CURRENT_SOURCE_DIR}/system/lz4.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/system/lz4.cpp"
-  )
-  list(APPEND SRCS ${LZ4_SRCS})
-  list(APPEND INCLUDES ${lz4_SRC_DIR}/include)
-  list(APPEND LIBS lz4_static)    
-endif()
-
-if (WOLF_STREAM_RIST)
-  file(GLOB_RECURSE RIST_SRCS
-    "${CMAKE_CURRENT_SOURCE_DIR}/stream/rist.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/stream/rist.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/stream/rist_data_block.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/stream/rist_data_block.cpp"
-  )
-  list(APPEND SRCS ${RIST_SRCS})
-
-  message("fetching https://code.videolan.org/rist/librist.git")
-  FetchContent_Declare(
-    librist
-    GIT_REPOSITORY https://code.videolan.org/rist/librist.git
-    GIT_TAG        master
-  )
-  FetchContent_MakeAvailable(librist)
-
-  STRING(TOLOWER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_LOWER)
-
-  add_custom_command(OUTPUT rist_command.out COMMAND cmd /c "meson setup ${librist_BINARY_DIR} --backend vs2022 --default-library static --buildtype ${CMAKE_BUILD_TYPE_LOWER} &
-       meson compile -C ${librist_BINARY_DIR}"
-      WORKING_DIRECTORY ${librist_SOURCE_DIR})
-
-  add_custom_target(rist ALL DEPENDS rist_command.out)
-
-  list(APPEND INCLUDES
-    ${librist_BINARY_DIR}
-    ${librist_BINARY_DIR}/include
-    ${librist_BINARY_DIR}/include/librist
-    ${librist_SOURCE_DIR}/src
-    ${librist_SOURCE_DIR}/include
-    ${librist_SOURCE_DIR}/include/librist
-    ${librist_SOURCE_DIR}/contrib
-    ${librist_SOURCE_DIR}/contrib/mbedtls/include
-  )
-  list(APPEND LIBS
-    ws2_32
-    ${librist_BINARY_DIR}/librist.a)  
 endif()
 
 # set clang tidy

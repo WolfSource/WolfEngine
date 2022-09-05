@@ -1,11 +1,11 @@
 #include "version.h"
-#include <cstdio>
+#include <wolf.hpp>
 
-void w_sys_version(_Inout_z_ char* p_buf, _In_ size_t p_buf_len)
+int w_sys_version(_Inout_z_ char* p_buf, _In_ size_t p_buf_len)
 {
     if (p_buf == nullptr || p_buf_len == 0)
     {
-        return;
+        return -1;
     }
 
     // Making incompatible API changes
@@ -24,4 +24,6 @@ void w_sys_version(_Inout_z_ char* p_buf, _In_ size_t p_buf_len)
     (void)sprintf(p_buf, "%d.%d.%d.%d", WOLF_MAJOR_VERSION, WOLF_MINOR_VERSION,
         WOLF_PATCH_VERSION, WOLF_DEBUG_VERSION);
 #endif
+
+    return 0;
 }

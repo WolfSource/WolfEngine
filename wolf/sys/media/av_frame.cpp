@@ -21,18 +21,26 @@ extern "C" {
 
 int w_av_frame_init(
     _Inout_ w_av_frame* p_frame,
+    _In_ uint32_t p_pixel_format,
     _In_ uint32_t p_width,
     _In_ uint32_t p_height,
-    _In_ uint32_t p_pixel_format,
-    _Inout_z_ char* p_error)
+    _In_ uint32_t p_alignment,
+    _In_ uint8_t* p_data,
+    _Inout_ char* p_error)
 {
     constexpr auto TRACE = "ffmpeg::w_av_frame_init";
+
     int _ret = 0;
 
-    if (p_width == 0 || p_height == 0 || p_pixel_format == 0 || p_error == nullptr)
+    if (p_width == 0 || p_height == 0)
     {
         return -1;
     }
+
+    const auto _error = gsl::not_null<char*>(p_error);
+    const auto _w = gsl::narrow_cast<int>(p_width);
+    const auto _h = gsl::narrow_cast<int>(p_height);
+    const auto _pixel_format = gsl::narrow_cast<AVPixelFormat>(p_pixel_format);
 
     defer _(nullptr, [&](...)
         {
@@ -42,11 +50,11 @@ int w_av_frame_init(
             }
         });
 
-    auto* _av_frame = gsl::narrow_cast<AVFrame*>(av_malloc(sizeof(AVFrame)));
+    auto* _av_frame = av_frame_alloc();
     if (w_is_null(_av_frame))
     {
         snprintf(
-            p_error,
+            _error,
             W_MAX_PATH,
             "could not allocate memory for w_av_frame. trace info: %s",
             TRACE);
@@ -54,47 +62,64 @@ int w_av_frame_init(
         return _ret = -1;
     }
 
-    const auto _w = gsl::narrow_cast<int>(p_width);
-    const auto _h = gsl::narrow_cast<int>(p_height);
-    const auto _pixel_format = gsl::narrow_cast<AVPixelFormat>(p_pixel_format);
+    _av_frame->width = _w;
+    _av_frame->height = _h;
+    _av_frame->format = _pixel_format;
 
-    const auto _buffer_size = av_image_get_buffer_size(_pixel_format, p_width, p_height, 1);
-    auto* _buffer = gsl::narrow_cast<uint8_t*>(av_malloc(_buffer_size));
-
-    if (w_is_null(_buffer))
+    _ret = w_av_set_data(_av_frame, p_data, p_alignment, _error);
+    if (_ret == 0)
     {
-        snprintf(
-            p_error,
-            W_MAX_PATH,
-            "could not allocate memory for av image. trace info: %s",
-            TRACE);
-
-        return _ret = -1;
+        *p_frame = _av_frame;
     }
 
+    return _ret;
+}
+
+int w_av_set_data(
+    _In_ w_av_frame p_frame,
+    _In_ uint8_t* p_data,
+    _In_ int p_alignment,
+    _Inout_ char* p_error)
+{
+    constexpr auto TRACE = "ffmpeg::w_av_set_data";
+
+    const auto _error = gsl::not_null<char*>(p_error);
+
     const auto _size = av_image_fill_arrays(
-        static_cast<uint8_t**>(_av_frame->data),
-        static_cast<int*>(_av_frame->linesize),
-        _buffer,
-        _pixel_format,
-        _w,
-        _h,
-        1);
+        static_cast<uint8_t**>(p_frame->data),
+        static_cast<int*>(p_frame->linesize),
+        p_data,
+        gsl::narrow_cast<AVPixelFormat>(p_frame->format),
+        p_frame->width,
+        p_frame->height,
+        p_alignment);
 
     if (_size < 0)
     {
         snprintf(
-            p_error,
+            _error,
             W_MAX_PATH,
-            "failed to fill image array. trace info: %s",
+            "failed to fill image buffer. trace info: %s",
             TRACE);
 
-        return _ret = -1;
+        return -1;
     }
 
-    *p_frame = _av_frame;
+    return 0;
+}
 
-    return _ret;
+int w_av_get_required_buffer_size(
+    _In_ uint32_t p_pixel_format,
+    _In_ uint32_t p_width,
+    _In_ uint32_t p_height,
+    _In_ uint32_t p_alignment)
+{
+    const auto _pixel_format = gsl::narrow_cast<AVPixelFormat>(p_pixel_format);
+    const auto _w = gsl::narrow_cast<int>(p_width);
+    const auto _h = gsl::narrow_cast<int>(p_height);
+    const auto _align = gsl::narrow_cast<int>(p_alignment);
+
+    return av_image_get_buffer_size(_pixel_format, _w, _h, _align);
 }
 
 int w_av_frame_convert(
@@ -104,12 +129,10 @@ int w_av_frame_convert(
 {
     constexpr auto TRACE = "ffmpeg::w_av_frame_convert";
 
-    if (p_src_frame == nullptr ||
-        p_error == nullptr ||
-        p_dst_frame == nullptr || *p_dst_frame == nullptr)
-    {
-        return -1;
-    }
+    const auto _dst_frame_ptr = gsl::not_null<w_av_frame*>(p_dst_frame);
+    const auto _dst_frame = gsl::not_null<w_av_frame>(*_dst_frame_ptr);
+    const auto _src_frame = gsl::not_null<w_av_frame>(p_src_frame);
+    const auto _error = gsl::not_null<char*>(p_error);
 
     int _ret = 0;
     SwsContext* _context = nullptr;
@@ -123,17 +146,17 @@ int w_av_frame_convert(
             }
         });
 
-#ifdef DEBUG
-    av_log_set_level(AV_LOG_DEBUG);
-#endif
+//#ifdef DEBUG
+//    av_log_set_level(AV_LOG_DEBUG);
+//#endif
 
-    const auto _src_w = gsl::narrow_cast<int>(p_src_frame->width);
-    const auto _src_h = gsl::narrow_cast<int>(p_src_frame->height);
-    const auto _src_pixel_fmt = gsl::narrow_cast<AVPixelFormat>(p_src_frame->format);
+    const auto _src_w = gsl::narrow_cast<int>(_src_frame->width);
+    const auto _src_h = gsl::narrow_cast<int>(_src_frame->height);
+    const auto _src_pixel_fmt = gsl::narrow_cast<AVPixelFormat>(_src_frame->format);
 
-    const auto _dst_w = gsl::narrow_cast<int>((*p_dst_frame)->width);
-    const auto _dst_h = gsl::narrow_cast<int>((*p_dst_frame)->height);
-    const auto _dst_pixel_fmt = gsl::narrow_cast<AVPixelFormat>((*p_dst_frame)->format);
+    const auto _dst_w = gsl::narrow_cast<int>(_dst_frame->width);
+    const auto _dst_h = gsl::narrow_cast<int>(_dst_frame->height);
+    const auto _dst_pixel_fmt = gsl::narrow_cast<AVPixelFormat>(_dst_frame->format);
 
     _context = sws_getContext(
         _src_w,
@@ -160,12 +183,12 @@ int w_av_frame_convert(
 
     const auto _height = sws_scale(
         _context,
-        static_cast<const uint8_t* const*>(p_src_frame->data),
-        gsl::narrow_cast<const int*>(p_src_frame->linesize),
+        static_cast<const uint8_t* const*>(_src_frame->data),
+        gsl::narrow_cast<const int*>(_src_frame->linesize),
         0,
         _src_h,
-        gsl::narrow_cast<uint8_t* const*>((*p_dst_frame)->data),
-        gsl::narrow_cast<const int*>((*p_dst_frame)->linesize));
+        gsl::narrow_cast<uint8_t* const*>(_dst_frame->data),
+        gsl::narrow_cast<const int*>(_dst_frame->linesize));
 
     if (_height < 0)
     {
@@ -182,7 +205,7 @@ int w_av_frame_convert(
 
 void w_av_frame_fini(_Inout_ w_av_frame* p_ffmpeg)
 {
-    if (p_ffmpeg)
+    if (p_ffmpeg != nullptr)
     {
         av_frame_free(p_ffmpeg);
         *p_ffmpeg = nullptr;

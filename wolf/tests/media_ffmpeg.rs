@@ -1,5 +1,6 @@
 #![allow(unused_crate_dependencies)]
-use wolf::media::ffmpeg::FFmpeg;
+use wolf::media::av_frame::{AVFrame, AVPixelFormat};
+// use wolf::media::ffmpeg::FFmpeg;
 // use image::EncodableLayout;
 // use std::fs::File;
 // use wolf::media::ffi::ffmpeg::w_ffmpeg_opt_t;
@@ -8,7 +9,19 @@ use wolf::media::ffmpeg::FFmpeg;
 #[cfg(feature = "media_ffmpeg")]
 #[test]
 fn test_encode() {
-    let _ffmpeg = FFmpeg::new();
+    let data_size_bgra = AVFrame::get_required_buffer_size(AVPixelFormat::RGB24, 1920, 1080, 1);
+    let data_size_rgba = AVFrame::get_required_buffer_size(AVPixelFormat::BGR24, 1920, 1080, 1);
+
+    // let data_rgba = Vec::<u8>::new();
+
+    // let data_rgba = [1u8, data_size_bgra.try_into().unwrap()];
+    // let data_rgba = [1u8, data_size_rgba];
+
+    let src_frame = AVFrame::new(AVPixelFormat::RGB24, 1920, 1080, 1).unwrap();
+    let mut dst_frame = AVFrame::new(AVPixelFormat::BGR24, 1920, 1080, 1).unwrap();
+
+    let _ret = src_frame.convert(&mut dst_frame);
+    //let _ffmpeg = FFmpeg::new();
 
     // // initalize variables
     // let av_codec_id_av1 = 226;

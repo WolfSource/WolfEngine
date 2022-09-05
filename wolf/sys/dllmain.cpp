@@ -1,6 +1,7 @@
 #if defined(_WIN32)
 
-#include <wolf.h>
+#include <wolf.h> 
+#include <wolf.hpp>
 
 BOOL APIENTRY DllMain(_In_ HMODULE pHModule, _In_ DWORD pULReasonForCall, _In_ LPVOID pLPReserved) noexcept
 {

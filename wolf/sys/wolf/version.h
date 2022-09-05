@@ -16,9 +16,10 @@ extern "C" {
      * @param p_buf, an inout buffer with maximum size of 260 characters
      * @param p_buf_len, the input length of buffer
      * the version will be printed like this: "<major>.<minor>.<patch>.<debug>"
+     * @returns zero on success
      */
     W_API
-        void w_sys_version(_Inout_z_ char* p_buf, _In_ size_t p_buf_len);
+        int w_sys_version(_Inout_z_ char* p_buf, _In_ size_t p_buf_len);
 
 #ifdef __cplusplus
 }

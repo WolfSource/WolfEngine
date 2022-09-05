@@ -1,10 +1,9 @@
 ﻿#include "ffmpeg.h"
+#include <wolf.hpp>
 
 #include <cstdint>
 #include <cstdarg>
 #include <vector>
-
-#include <wolf.hpp>
 
 #include <DISABLE_ANALYSIS_BEGIN>
 #ifdef __cplusplus

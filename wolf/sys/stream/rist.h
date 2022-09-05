@@ -49,8 +49,6 @@ extern "C" {
     typedef int (*w_receiver_data_callback)(void* /*p_arg*/,
         w_rist_data_block /*p_data_block*/);
 
-    // functions
-
     W_API
         int w_rist_init(w_rist_ctx* p_rist, enum rist_ctx_mode p_mode,
             enum rist_profile p_profile, uint16_t p_loss_percentage,

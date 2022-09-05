@@ -23,10 +23,10 @@ extern "C" {
             _In_ const void* p_data);
 
     W_API
-        const void* w_rist_get_data_block(_In_ w_rist_data_block p_block);
+        const void* w_rist_get_data_block(_In_ const w_rist_data_block p_block);
 
     W_API
-        size_t w_rist_get_data_block_len(_In_ w_rist_data_block p_block);
+        size_t w_rist_get_data_block_len(_In_ const w_rist_data_block p_block);
 
     W_API
         void w_rist_free_data_block(_Inout_ w_rist_data_block* p_block);

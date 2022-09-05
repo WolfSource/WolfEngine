@@ -5,15 +5,26 @@
 
 #pragma once
 
+#ifdef WIN32
+
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
+
+#include <Windows.h>
+
+#endif
+
 #include <memory>
+#include <cstddef>
+
+//gsl always terminate (std::terminate) on contract violation
 #include <gsl/gsl>
-
-#include <DISABLE_ANALYSIS_BEGIN>
-
-//#include <mimalloc-new-delete.h>
 #include <mimalloc-override.h>
-
-#include <DISABLE_ANALYSIS_END>
 
 using defer = std::shared_ptr<void>;
 

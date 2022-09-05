@@ -389,16 +389,22 @@ fn bindgens(p_current_dir_path_str: &str) {
         dst: "src/stream/ffi/rist.rs",
     });
 
-    #[cfg(feature = "media_ffmpeg")]
-    headers.push(Binding {
-        src: "sys/media/ffmpeg.h",
-        dst: "src/media/ffi/ffmpeg.rs",
-    });
+    if cfg!(feature = "media_ffmpeg") {
+        headers.push(Binding {
+            src: "sys/media/ffmpeg.h",
+            dst: "src/media/ffi/ffmpeg.rs",
+        });
+        headers.push(Binding {
+            src: "sys/media/av_frame.h",
+            dst: "src/media/ffi/av_frame.rs",
+        });
+    }
 
     // add include paths
     let clang_include_arg_0 = format!("-I{}/sys", p_current_dir_path_str);
     let clang_include_arg_1 = format!("-I{}/sys/wolf", p_current_dir_path_str);
-    let clang_include_arg_2 = format!("-I{}/sys/media", p_current_dir_path_str);
+    //let clang_include_arg_2 = format!("-I{}/sys/media", p_current_dir_path_str);
+    //let clang_include_arg_2 = format!("-I{}/sys/stream", p_current_dir_path_str);
 
     for header in headers {
         println!("cargo:rerun-if-changed=sys/{}", header.src);
@@ -413,7 +419,7 @@ fn bindgens(p_current_dir_path_str: &str) {
             .clang_args([
                 clang_include_arg_0.as_str(),
                 clang_include_arg_1.as_str(),
-                clang_include_arg_2.as_str(),
+                //clang_include_arg_2.as_str(),
             ])
             // tell cargo to invalidate the built crate whenever any of the
             // included header files changed.

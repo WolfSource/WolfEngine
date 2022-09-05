@@ -54,50 +54,73 @@ pub type uint_fast32_t = ::std::os::raw::c_uint;
 pub type uint_fast64_t = ::std::os::raw::c_ulonglong;
 pub type intmax_t = ::std::os::raw::c_longlong;
 pub type uintmax_t = ::std::os::raw::c_ulonglong;
-pub const w_ffmpeg_action_W_ENCODE: w_ffmpeg_action = 0;
-pub const w_ffmpeg_action_W_DECODE: w_ffmpeg_action = 1;
-pub type w_ffmpeg_action = ::std::os::raw::c_int;
-#[doc = "< planar YUV 4:2:0, 12bpp, (1 Cr & Cb sample per 2x2 Y samples)"]
-pub const w_ffmpeg_pixel_format_W_PIX_FMT_YUV420P: w_ffmpeg_pixel_format = 0;
-#[doc = "< packed RGB 8:8:8, 24bpp, RGBRGB"]
-pub const w_ffmpeg_pixel_format_W_PIX_FMT_RGB24: w_ffmpeg_pixel_format = 2;
-#[doc = "< packed RGB 8:8:8, 24bpp, BGRBGR"]
-pub const w_ffmpeg_pixel_format_W_PIX_FMT_BGR24: w_ffmpeg_pixel_format = 3;
-#[doc = "< planar YUV 4:2:2, 16bpp, (1 Cr & Cb sample per 2x1 Y samples)"]
-pub const w_ffmpeg_pixel_format_W_PIX_FMT_YUV422P: w_ffmpeg_pixel_format = 4;
-#[doc = "< planar YUV 4:4:4, 24bpp, (1 Cr & Cb sample per 1x1 Y samples)"]
-pub const w_ffmpeg_pixel_format_W_PIX_FMT_YUV444P: w_ffmpeg_pixel_format = 5;
-pub type w_ffmpeg_pixel_format = ::std::os::raw::c_int;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
-pub struct w_ffmpeg_ctx_t {
+pub struct AVFrame {
     _unused: [u8; 0],
 }
-pub type w_ffmpeg_ctx = *mut w_ffmpeg_ctx_t;
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct w_ffmpeg_t {
-    pub fps: ::std::os::raw::c_int,
-    pub width: u32,
-    pub height: u32,
-    pub bitrate: u32,
-    pub codec_id: u32,
-    pub pix_fmt: w_ffmpeg_pixel_format,
-    pub type_: w_ffmpeg_action,
-    pub ctx: w_ffmpeg_ctx,
-}
-pub type w_ffmpeg = *mut w_ffmpeg_t;
+pub type w_av_frame = *mut AVFrame;
 extern "C" {
-    #[doc = " initialize the ffmpeg context"]
-    #[doc = " @param p_ffmpeg, the ffmpeg object"]
+    #[doc = " initialize the ffmpeg AVFrame"]
+    #[doc = " @param p_frame, the ffmpeg AVFrame"]
+    #[doc = " @param p_pixel_format, the pixel format of ffmpeg AVFrame"]
+    #[doc = " @param p_width, the width of ffmpeg AVFrame"]
+    #[doc = " @param p_height, the height of ffmpeg AVFrame"]
+    #[doc = " @param p_alignment, the alignment"]
+    #[doc = " @param p_data, the initial data of ffmpeg AVFrame"]
     #[doc = " @param p_error, the error buffer"]
-    #[doc = " @return int the result of encoding the frame"]
-    pub fn w_ffmpeg_init(
-        p_ffmpeg: *mut w_ffmpeg,
+    #[doc = " @returns zero on success"]
+    pub fn w_av_frame_init(
+        p_frame: *mut w_av_frame,
+        p_pixel_format: u32,
+        p_width: u32,
+        p_height: u32,
+        p_alignment: u32,
+        p_data: *mut u8,
+        p_error: *mut ::std::os::raw::c_char,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    #[doc = " initialize the ffmpeg AVFrame"]
+    #[doc = " @param p_frame, the ffmpeg AVFrame"]
+    #[doc = " @param p_data, the initial data of ffmpeg AVFrame"]
+    #[doc = " @param p_alignment, the alignment"]
+    #[doc = " @param p_error, the error buffer"]
+    #[doc = " @returns zero on success"]
+    pub fn w_av_set_data(
+        p_frame: w_av_frame,
+        p_data: *mut u8,
+        p_alignment: ::std::os::raw::c_int,
+        p_error: *mut ::std::os::raw::c_char,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    #[doc = " initialize the ffmpeg AVFrame"]
+    #[doc = " @param p_pixel_format, the pixel format of ffmpeg AVFrame"]
+    #[doc = " @param p_width, the width of ffmpeg AVFrame"]
+    #[doc = " @param p_height, the height of ffmpeg AVFrame"]
+    #[doc = " @param p_alignment, the aligmnet which is usually 1"]
+    #[doc = " @returns zero on success"]
+    pub fn w_av_get_required_buffer_size(
+        p_pixel_format: u32,
+        p_width: u32,
+        p_height: u32,
+        p_alignment: u32,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    #[doc = " convert the ffmpeg AVFrame"]
+    #[doc = " @param p_frame, the ffmpeg AVFrame"]
+    #[doc = " @param p_error, the error buffer"]
+    #[doc = " @returns zero on success"]
+    pub fn w_av_frame_convert(
+        p_src_frame: w_av_frame,
+        p_dst_frame: *mut w_av_frame,
         p_error: *mut ::std::os::raw::c_char,
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
     #[doc = " release all ffmpeg resources"]
-    pub fn w_ffmpeg_fini(p_ffmpeg: *mut w_ffmpeg);
+    #[doc = " @param p_ffmpeg, the ffmpeg AVFrame"]
+    pub fn w_av_frame_fini(p_ffmpeg: *mut w_av_frame);
 }

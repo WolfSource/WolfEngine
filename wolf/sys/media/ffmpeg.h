@@ -30,8 +30,8 @@ extern "C" {
 
     typedef struct w_ffmpeg_ctx_t* w_ffmpeg_ctx;
 
-    struct AVFrame;
-    typedef struct AVFrame* w_ffmpeg_frame;
+    //struct AVFrame;
+    //typedef struct AVFrame* w_ffmpeg_frame;
 
     typedef struct w_ffmpeg_t {
         int fps;
