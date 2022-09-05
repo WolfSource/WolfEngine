@@ -39,22 +39,23 @@ wgpu = {version = "0.13.1", default-features = false, features = ["webgl"], opti
 [target.'cfg(any(target_arch = "arm", target_arch = "aarch64", target_arch = "x86_64"))'.dependencies]
 instant = {version = "0.1.12", default-features = false}
 pollster = {version = "0.2.5", default-features = false}
-#rhai = { version = "1.10.0", default-features = false, features = ["sync", "internals"], optional = true}
+quinn = { default-features = false, version = "0.8.5", features = ["native-certs", "tls-rustls", "ring"] }
+rcgen = { default-features = false, version = "0.9.3" }
+rhai = { version = "1.9.0", default-features = false, features = ["sync", "internals"], optional = true}
+rustls = { default-features = false, version = "0.20.6", features = ["dangerous_configuration"] }
 rustls-pemfile = {version = "1.0.1", default-features = false}
 tokio = {version = "1.21.0", default-features = false, features = ["full"]}
 tokio-rustls = {version = "0.23.4", default-features = false, features = ["logging", "tls12"]}
+tokio-stream = { default-features = false, version = "0.1.9" }
 tonic = {version = "0.8.1", default-features = false, features = ["codegen", "prost", "tls"], optional = true}
 webpki-roots = {version = "0.22.4", default-features = false}
 wgpu = {version = "0.13.1", default-features = false, optional = true}
-
-# dependencies of arm, aarch64
-# [target.'cfg(any(target_arch = "arm", target_arch = "aarch64"))'.dependencies]
 
 # dependencies of x86_64
 [target.'cfg(target_arch = "x86_64")'.dependencies]
 async-raft = {version = "0.6.1", default-features = false, optional = true}
 async-trait = {version = "0.1.57", default-features = false}
-futures = { version = "0.3.24", default-features = false }
+futures = { default-features = false, version = "0.3.24", features = ["executor"] }
 hyper = {version = "0.14.20", default-features = false}
 may = {version = "0.3.22", default-features = false, optional = true}
 memstore = {version = "0.2.0", default-features = false}
@@ -73,8 +74,8 @@ bindgen = {version = "0.60.1"}
 tonic-build = {version = "0.8.0", default-features = false, features = ["transport", "prost"]}
 
 [dev-dependencies]
-lazy_static = {version = "1.4.0", default-features = false}
 image = {version ="0.24.3", default-features = false, features = ["jpeg", "png", "rgb"]}
+lazy_static = {version = "1.4.0", default-features = false}
 
 # features
 [features]
@@ -90,6 +91,7 @@ system_lz4 = [] # enable LZ4 compression for system module
 system_raft = ["async-raft", "prost"] # enable raft algorithm for system module
 system_js = [] # enable javascript embedded engine for system module
 system_screen_capture = ["scrap"] # enable screen capture
+system_script = ["rhai"] # enable embedded script engine for system module
 
 # brotli = [] # enable brotli compression
 # kafka_client = [] # enable Kafka client
@@ -104,5 +106,3 @@ system_screen_capture = ["scrap"] # enable screen capture
 # webRTC_client = [] # enable webRTC
 # websocket_client = [] # enable websocket client
 # websocket_server = [] # enable websocket server
-
-

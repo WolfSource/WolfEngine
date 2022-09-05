@@ -13,6 +13,7 @@ pub mod media;
 pub mod render;
 pub mod stream;
 pub mod system;
+pub mod quic;
 
 #[cfg(not(target_arch = "wasm32"))]
 #[must_use]
