@@ -23,6 +23,7 @@ This Wolf is a comprehensive set of Rust/C libraries for realtime rendering, rea
   - Install [CMake](https://cmake.org/install/)
   - Install [Ninja](https://ninja-build.org/) & [Meson](https://github.com/mesonbuild/meson/releases)
   - Install [clang](https://github.com/llvm/llvm-project/releases/tag/llvmorg-14.0.0) for bindgen
+  - Install [python3](https://www.python.org/downloads/) for running wasm
 
   - For **Webassembly** :\
   From workspace folder run

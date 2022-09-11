@@ -29,7 +29,6 @@ int w_av_frame_init(
     _Inout_ char* p_error)
 {
     constexpr auto TRACE = "ffmpeg::w_av_frame_init";
-
     int _ret = 0;
 
     if (p_width == 0 || p_height == 0)
@@ -50,18 +49,15 @@ int w_av_frame_init(
             }
         });
 
-    auto* _av_frame = av_frame_alloc();
-    if (w_is_null(_av_frame))
+    auto _av_frame = av_frame_alloc();
+    if (_av_frame == nullptr)
     {
         snprintf(
             _error,
             W_MAX_PATH,
-            "could not allocate memory for w_av_frame. trace info: %s",
+            "could not allocate av frame. trace info: %s",
             TRACE);
-
-        return _ret = -1;
     }
-
     _av_frame->width = _w;
     _av_frame->height = _h;
     _av_frame->format = _pixel_format;
@@ -82,7 +78,6 @@ int w_av_set_data(
     _Inout_ char* p_error)
 {
     constexpr auto TRACE = "ffmpeg::w_av_set_data";
-
     const auto _error = gsl::not_null<char*>(p_error);
 
     const auto _size = av_image_fill_arrays(
@@ -108,13 +103,14 @@ int w_av_set_data(
     return 0;
 }
 
-const uint8_t* w_av_get_data(
+int w_av_get_data(
     _In_ w_av_frame p_frame,
+    _Inout_ uint8_t* p_frame_data,
     _Inout_ char* p_error)
 {
     constexpr auto TRACE = "ffmpeg::w_av_get_data";
     const auto _error = gsl::not_null<char*>(p_error);
-
+    
     if (p_frame == nullptr ||
         p_frame->linesize == nullptr ||
         p_frame->linesize[0] <= 0)
@@ -124,8 +120,11 @@ const uint8_t* w_av_get_data(
             W_MAX_PATH,
             "bad argumans. trace info: %s",
             TRACE);
+        return -1;
     }
-    return p_frame->data[0];
+    p_frame_data = p_frame->data[0];
+
+    return 0;
 }
 
 size_t w_av_get_required_buffer_size(

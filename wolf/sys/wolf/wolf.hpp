@@ -39,4 +39,3 @@ bool w_is_null(T p, Args... args)
 {
     return p == nullptr || w_is_null(args...);
 }
-

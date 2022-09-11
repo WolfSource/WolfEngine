@@ -1,3 +1,4 @@
+#[cfg(not(target_arch = "wasm32"))]
 use instant::Duration;
 
 #[cfg(not(any(target_os = "android", target_os = "ios", target_arch = "wasm32")))]

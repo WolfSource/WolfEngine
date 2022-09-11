@@ -1,5 +1,5 @@
 use super::ffi::av_frame::{
-    size_t, w_av_frame, w_av_frame_convert, w_av_frame_fini, w_av_frame_init,
+    size_t, w_av_frame, w_av_frame_convert, w_av_frame_fini, w_av_frame_init, w_av_get_data,
     w_av_get_required_buffer_size, w_av_set_data, W_MAX_PATH,
 };
 use anyhow::{bail, Result};
@@ -525,6 +525,32 @@ impl AVFrame {
 
         unsafe {
             let ret = w_av_set_data(self.ctx, p_data.as_ptr(), self.align as i32, err_ptr);
+            match ret {
+                0 => Ok(()),
+                _ => {
+                    let c_err_str = std::ffi::CStr::from_ptr(err_ptr);
+                    let str = c_err_str.to_str().unwrap_or_default();
+                    bail!(
+                        "could not set data to av_frame because {}. trace: {:?}",
+                        String::from(str),
+                        std::backtrace::Backtrace::force_capture()
+                    )
+                }
+            }
+        }
+    }
+
+    #[allow(clippy::not_unsafe_ptr_arg_deref)]
+    /// # Errors
+    ///
+    /// TODO: add error description
+    pub fn get_data(&self, p_data: *mut u8) -> Result<()> {
+        // create a buffer for error
+        let mut err = [1i8; W_MAX_PATH as usize];
+        let err_ptr = err.as_mut_ptr();
+
+        unsafe {
+            let ret = w_av_get_data(self.ctx, p_data, err_ptr);
             match ret {
                 0 => Ok(()),
                 _ => {

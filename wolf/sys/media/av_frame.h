@@ -56,8 +56,9 @@ extern "C" {
      * @returns zero on success
     */
     W_API
-        const uint8_t* w_av_get_data(
+        int w_av_get_data(
             _In_ w_av_frame p_frame,
+            _Inout_ uint8_t* p_frame_data,
             _Inout_ char* p_error);
 
     /**

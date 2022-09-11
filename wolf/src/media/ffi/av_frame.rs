@@ -98,7 +98,11 @@ extern "C" {
     #[doc = " get data of ffmpeg AVFrame"]
     #[doc = " @param p_error, the error buffer"]
     #[doc = " @returns zero on success"]
-    pub fn w_av_get_data(p_frame: w_av_frame, p_error: *mut ::std::os::raw::c_char) -> *const u8;
+    pub fn w_av_get_data(
+        p_frame: w_av_frame,
+        p_frame_data: *mut u8,
+        p_error: *mut ::std::os::raw::c_char,
+    ) -> ::std::os::raw::c_int;
 }
 extern "C" {
     #[doc = " initialize the ffmpeg AVFrame"]
