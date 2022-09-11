@@ -15,15 +15,15 @@ name = "wolf_demo"
 path = "src/main.rs"
 crate-type = ["cdylib"]
 
-[[bin]]
-name = "wolf_demo"
-path = "src/main.rs"
+#[[bin]]
+#name = "wolf_demo"
+#path = "src/main.rs"
 
 [dependencies]
 anyhow = {version = "1.0.62", default-features = false}
 raw-window-handle = {version = "0.4.3", default-features = false, features = ["alloc"]} 
 winit = {version = "0.27.2", default-features = false, features = ["x11", "wayland", "wayland-dlopen"]}
-wolfengine = { path = "../wolf", version = "3.0.2", default-features = false, features= ["system_script", "render"]}
+wolfengine = { path = "../wolf", version = "3.0.2", default-features = false, features= ["system_js", "render"]}
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 console_error_panic_hook = { version = "0.1.7", default-features = false }

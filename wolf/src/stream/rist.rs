@@ -170,7 +170,7 @@ impl rist {
     ) -> Result<Self> {
         let mut obj = Self {
             ctx: std::ptr::null_mut(),
-            url: "".to_owned(),
+            url: String::new(),
             mode: p_mode,
             profile: p_profile,
             loss_percentage: p_loss_percentage,

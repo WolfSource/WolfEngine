@@ -49,7 +49,7 @@ async fn test() {
             w_log!("t1 just stopped after 2 seconds");
         };
         // execute thread
-        RunTime::green_thread(f).await;
+        let _res = RunTime::green_thread(f).await;
         RunTime::async_sleep(std::time::Duration::from_secs(2)).await;
     }
 

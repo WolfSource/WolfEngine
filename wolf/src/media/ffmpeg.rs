@@ -30,15 +30,14 @@ impl FFmpeg {
         unsafe {
             let ret = w_ffmpeg_init(&mut obj.ctx, buf_ptr);
             let c_err_str = std::ffi::CStr::from_ptr(buf_ptr);
-            match ret {
-                0 => Ok(obj),
-                _ => {
-                    let str = c_err_str.to_str().unwrap_or_default();
-                    bail!(
-                        "could not create ffmpeg object because {}",
-                        String::from(str)
-                    )
-                }
+            if ret == 0 {
+                Ok(obj)
+            } else {
+                let str = c_err_str.to_str().unwrap_or_default();
+                bail!(
+                    "could not create ffmpeg object because {}",
+                    String::from(str)
+                )
             }
         }
     }

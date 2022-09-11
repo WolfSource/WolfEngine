@@ -55,7 +55,7 @@ impl RunTime {
     }
 
     #[cfg(not(target_arch = "wasm32"))]
-    pub async fn green_thread<F>(p_future: F) -> tokio::task::JoinHandle<F::Output>
+    pub fn green_thread<F>(p_future: F) -> tokio::task::JoinHandle<F::Output>
     where
         F: Future + Send + 'static,
         F::Output: Send + 'static,

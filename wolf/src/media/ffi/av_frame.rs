@@ -90,7 +90,7 @@ extern "C" {
     pub fn w_av_set_data(
         p_frame: w_av_frame,
         p_data: *const u8,
-        p_alignment: ::std::os::raw::c_int,
+        p_alignment: u32,
         p_error: *mut ::std::os::raw::c_char,
     ) -> ::std::os::raw::c_int;
 }

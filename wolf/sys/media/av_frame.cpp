@@ -74,7 +74,7 @@ int w_av_frame_init(
 int w_av_set_data(
     _In_ w_av_frame p_frame,
     _In_ const uint8_t* p_data,
-    _In_ int p_alignment,
+    _In_ uint32_t p_alignment,
     _Inout_ char* p_error)
 {
     constexpr auto TRACE = "ffmpeg::w_av_set_data";

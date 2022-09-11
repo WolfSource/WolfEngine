@@ -1,4 +1,5 @@
 #![allow(unused_crate_dependencies)]
+#![allow(clippy::cast_possible_truncation)]
 
 static IMAGE_DIR: &str = "G:/SourceCodes/WolfEngine_rs/WolfEngine/wolf";
 

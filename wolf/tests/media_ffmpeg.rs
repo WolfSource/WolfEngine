@@ -1,4 +1,5 @@
 #![allow(unused_crate_dependencies)]
+#![allow(clippy::cast_possible_truncation)]
 //use wolf::media::av_frame::{AVFrame, AVPixelFormat};
 // use wolf::media::ffmpeg::FFmpeg;
 // use image::EncodableLayout;

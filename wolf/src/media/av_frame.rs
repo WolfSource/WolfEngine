@@ -489,21 +489,21 @@ impl AVFrame {
                 err_ptr,
             );
 
-            match ret {
-                0 => Ok(obj),
-                _ => {
-                    let c_err_str = std::ffi::CStr::from_ptr(err_ptr);
-                    let str = c_err_str.to_str().unwrap_or_default();
-                    bail!(
-                        "could not create av_frame object because {}. trace: {:?}",
-                        String::from(str),
-                        std::backtrace::Backtrace::force_capture()
-                    )
-                }
+            if ret == 0 {
+                Ok(obj)
+            } else {
+                let c_err_str = std::ffi::CStr::from_ptr(err_ptr);
+                let str = c_err_str.to_str().unwrap_or_default();
+                bail!(
+                    "could not create av_frame object because {}. trace: {:?}",
+                    String::from(str),
+                    std::backtrace::Backtrace::force_capture()
+                )
             }
         }
     }
 
+    #[must_use]
     pub fn get_required_buffer_size(
         p_pixel_format: AVPixelFormat,
         p_width: u32,
@@ -524,18 +524,17 @@ impl AVFrame {
         let err_ptr = err.as_mut_ptr();
 
         unsafe {
-            let ret = w_av_set_data(self.ctx, p_data.as_ptr(), self.align as i32, err_ptr);
-            match ret {
-                0 => Ok(()),
-                _ => {
-                    let c_err_str = std::ffi::CStr::from_ptr(err_ptr);
-                    let str = c_err_str.to_str().unwrap_or_default();
-                    bail!(
-                        "could not set data to av_frame because {}. trace: {:?}",
-                        String::from(str),
-                        std::backtrace::Backtrace::force_capture()
-                    )
-                }
+            let ret = w_av_set_data(self.ctx, p_data.as_ptr(), self.align, err_ptr);
+            if ret == 0 {
+                Ok(())
+            } else {
+                let c_err_str = std::ffi::CStr::from_ptr(err_ptr);
+                let str = c_err_str.to_str().unwrap_or_default();
+                bail!(
+                    "could not set data to av_frame because {}. trace: {:?}",
+                    String::from(str),
+                    std::backtrace::Backtrace::force_capture()
+                )
             }
         }
     }
@@ -551,17 +550,16 @@ impl AVFrame {
 
         unsafe {
             let ret = w_av_get_data(self.ctx, p_data, err_ptr);
-            match ret {
-                0 => Ok(()),
-                _ => {
-                    let c_err_str = std::ffi::CStr::from_ptr(err_ptr);
-                    let str = c_err_str.to_str().unwrap_or_default();
-                    bail!(
-                        "could not set data to av_frame because {}. trace: {:?}",
-                        String::from(str),
-                        std::backtrace::Backtrace::force_capture()
-                    )
-                }
+            if ret == 0 {
+                Ok(())
+            } else {
+                let c_err_str = std::ffi::CStr::from_ptr(err_ptr);
+                let str = c_err_str.to_str().unwrap_or_default();
+                bail!(
+                    "could not set data to av_frame because {}. trace: {:?}",
+                    String::from(str),
+                    std::backtrace::Backtrace::force_capture()
+                )
             }
         }
     }
@@ -569,24 +567,23 @@ impl AVFrame {
     /// # Errors
     ///
     /// TODO: add error description
-    pub fn convert(&self, p_dst: &mut AVFrame) -> Result<()> {
+    pub fn convert(&self, p_dst: &mut Self) -> Result<()> {
         // create a buffer for error
         let mut err = [1i8; W_MAX_PATH as usize];
         let err_ptr = err.as_mut_ptr();
 
         unsafe {
             let ret = w_av_frame_convert(self.ctx, &mut p_dst.ctx, err_ptr);
-            match ret {
-                0 => Ok(()),
-                _ => {
-                    let c_err_str = std::ffi::CStr::from_ptr(err_ptr);
-                    let str = c_err_str.to_str().unwrap_or_default();
-                    bail!(
-                        "could not create av_frame object because {}. trace: {:?}",
-                        String::from(str),
-                        std::backtrace::Backtrace::force_capture()
-                    )
-                }
+            if ret == 0 {
+                Ok(())
+            } else {
+                let c_err_str = std::ffi::CStr::from_ptr(err_ptr);
+                let str = c_err_str.to_str().unwrap_or_default();
+                bail!(
+                    "could not create av_frame object because {}. trace: {:?}",
+                    String::from(str),
+                    std::backtrace::Backtrace::force_capture()
+                )
             }
         }
     }

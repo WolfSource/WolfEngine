@@ -15,6 +15,7 @@ pub mod stream;
 pub mod system;
 
 #[cfg(not(target_arch = "wasm32"))]
+#[must_use]
 pub fn sys_version() -> String {
     use crate::system::ffi::version::{size_t, w_sys_version};
 

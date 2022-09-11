@@ -17,7 +17,9 @@ async fn test_runtime() {
     // sleep for a sec
     RunTime::sleep(std::time::Duration::from_secs(1));
     // run the function on a green thread
-    RunTime::green_thread(async move { fun("green thread".to_owned()) }).await;
+    RunTime::green_thread(async move { fun("green thread".to_owned()) })
+        .await
+        .unwrap();
     // wait for all
     RunTime::async_sleep(std::time::Duration::from_secs(5)).await;
 }
@@ -51,7 +53,8 @@ async fn test_sigslot() {
             w_log!("hello from slot of green thread");
         });
     })
-    .await;
+    .await
+    .unwrap();
     // check for connections
     if con_1.is_connected() && con_2.is_connected() {
         w_log!("slot 1 & 2 was connected");
