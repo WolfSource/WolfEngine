@@ -63,7 +63,9 @@ fn test_send_rist() {
     )
     .unwrap();
 
-    sender.connect("rist://127.0.0.1:1234").unwrap();
+    sender
+        .connect("rist://127.0.0.1:1234?cname=wolf&bandwidth=6000")
+        .unwrap();
 
     let t0 = std::time::Instant::now();
     let mock_data = "HELLO WOLF!";
@@ -117,7 +119,9 @@ fn test_receive_rist() {
             .unwrap();
     }
 
-    receiver.connect("rist://@127.0.0.1:1234").unwrap();
+    receiver
+        .connect("rist://@127.0.0.1:1234?cname=wolf&bandwidth=6000")
+        .unwrap();
     let t0 = std::time::Instant::now();
     loop {
         std::thread::sleep(std::time::Duration::from_millis(10));
