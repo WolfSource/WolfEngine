@@ -10,7 +10,7 @@ fn test_av_frame_convert() {
     use wolf::media::av_frame::{AVFrame, AVPixelFormat};
 
     // load image
-    let path = std::path::Path::new(IMAGE_DIR).join("sample.png");
+    let path = std::path::Path::new(IMAGE_DIR).join("sample_rgba.png");
     let img = image::open(path).unwrap();
     let img_size = img.dimensions();
     let pixels = img.as_rgba8().unwrap().as_bytes();
@@ -41,7 +41,7 @@ fn test_av_frame_convert() {
         dst_pixels.set_len(dst_frame_size_usize);
     }
 
-    let out_path = std::path::Path::new(IMAGE_DIR).join("bgra_sample.png");
+    let out_path = std::path::Path::new(IMAGE_DIR).join("sample_bgra.png");
     image::save_buffer_with_format(
         out_path,
         &dst_pixels,
