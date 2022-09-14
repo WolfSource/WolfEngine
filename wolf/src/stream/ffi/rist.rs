@@ -17,13 +17,14 @@ pub const WCHAR_MAX: u32 = 65535;
 pub const WINT_MIN: u32 = 0;
 pub const WINT_MAX: u32 = 65535;
 pub const W_MAX_PATH: u32 = 260;
+pub type size_t = ::std::os::raw::c_ulonglong;
+pub type wchar_t = ::std::os::raw::c_ushort;
+pub type max_align_t = f64;
 pub type va_list = *mut ::std::os::raw::c_char;
 extern "C" {
     pub fn __va_start(arg1: *mut *mut ::std::os::raw::c_char, ...);
 }
-pub type size_t = ::std::os::raw::c_ulonglong;
 pub type __vcrt_bool = bool;
-pub type wchar_t = ::std::os::raw::c_ushort;
 extern "C" {
     pub fn __security_init_cookie();
 }

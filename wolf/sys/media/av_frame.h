@@ -58,7 +58,7 @@ extern "C" {
     W_API
         int w_av_get_data(
             _In_ w_av_frame p_frame,
-            _Inout_ uint8_t* p_frame_data,
+            _Out_ uint8_t* p_frame_data,
             _Inout_ char* p_error);
 
     /**
@@ -67,7 +67,7 @@ extern "C" {
      * @param p_width, the width of ffmpeg AVFrame
      * @param p_height, the height of ffmpeg AVFrame
      * @param p_alignment, the aligmnet which is usually 1
-     * @returns zero on success
+     * @returns the size of buffer
      */
     W_API
         size_t w_av_get_required_buffer_size(

@@ -2,10 +2,9 @@
 #include <wolf.hpp>
 
 #include <DISABLE_ANALYSIS_BEGIN>
-#ifdef __cplusplus
-extern "C" {
-#endif
 
+extern "C"
+{
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
 #include <libavformat/avio.h>
@@ -13,10 +12,8 @@ extern "C" {
 #include <libavutil/opt.h>
 #include <libavutil/time.h>
 #include <libswscale/swscale.h>
-
-#ifdef __cplusplus
 }
-#endif
+
 #include <DISABLE_ANALYSIS_END>
 
 int w_av_frame_init(
@@ -28,47 +25,39 @@ int w_av_frame_init(
     _In_ const uint8_t* p_data,
     _Inout_ char* p_error)
 {
-    constexpr auto TRACE = "ffmpeg::w_av_frame_init";
-    int _ret = 0;
+    const char* TRACE = "ffmpeg::w_av_frame_init";
+    const auto _error_nn = gsl::not_null<char*>(p_error);
+    
+    // check width and height
+    const int _width = gsl::narrow_cast<int>(p_width);
+    const int _height = gsl::narrow_cast<int>(p_height);
+    const auto _pixel_format = gsl::narrow_cast<AVPixelFormat>(p_pixel_format);
 
-    if (p_width == 0 || p_height == 0)
+    if (_width == 0 || _height == 0)
     {
+        (void)snprintf(
+            _error_nn,
+            W_MAX_PATH,
+            "width or height is zero. trace info: %s",
+            TRACE);
         return -1;
     }
 
-    const auto _error = gsl::not_null<char*>(p_error);
-    const auto _w = gsl::narrow_cast<int>(p_width);
-    const auto _h = gsl::narrow_cast<int>(p_height);
-    const auto _pixel_format = gsl::narrow_cast<AVPixelFormat>(p_pixel_format);
+    auto* _av_frame = av_frame_alloc();
+    const auto _av_frame_nn = gsl::not_null<AVFrame*>(_av_frame);
 
-    defer _(nullptr, [&](...)
-        {
-            if (_ret == -1)
-            {
-                w_av_frame_fini(p_frame);
-            }
-        });
+    _av_frame_nn->width = _width;
+    _av_frame_nn->height = _height;
+    _av_frame_nn->format = _pixel_format;
 
-    auto _av_frame = av_frame_alloc();
-    if (_av_frame == nullptr)
+    auto* _ptr = _av_frame_nn.get();
+    if (w_av_set_data(_ptr, p_data, p_alignment, _error_nn.get()) != 0)
     {
-        snprintf(
-            _error,
-            W_MAX_PATH,
-            "could not allocate av frame. trace info: %s",
-            TRACE);
-    }
-    _av_frame->width = _w;
-    _av_frame->height = _h;
-    _av_frame->format = _pixel_format;
-
-    _ret = w_av_set_data(_av_frame, p_data, p_alignment, _error);
-    if (_ret == 0)
-    {
-        *p_frame = _av_frame;
+        w_av_frame_fini(&_ptr);
     }
 
-    return _ret;
+    *p_frame = _av_frame;
+    return 0;
 }
 
 int w_av_set_data(
@@ -78,20 +67,22 @@ int w_av_set_data(
     _Inout_ char* p_error)
 {
     constexpr auto TRACE = "ffmpeg::w_av_set_data";
+    
     const auto _error = gsl::not_null<char*>(p_error);
+    const auto _av_frame = gsl::not_null<w_av_frame>(p_frame);
 
     const auto _size = av_image_fill_arrays(
-        static_cast<uint8_t**>(p_frame->data),
-        static_cast<int*>(p_frame->linesize),
+        static_cast<uint8_t**>(_av_frame->data),
+        static_cast<int*>(_av_frame->linesize),
         p_data,
-        gsl::narrow_cast<AVPixelFormat>(p_frame->format),
-        p_frame->width,
-        p_frame->height,
-        p_alignment);
+        gsl::narrow_cast<AVPixelFormat>(_av_frame->format),
+        _av_frame->width,
+        _av_frame->height,
+        gsl::narrow_cast<int>(p_alignment));
 
     if (_size < 0)
     {
-        snprintf(
+        (void)snprintf(
             _error,
             W_MAX_PATH,
             "failed to fill image buffer. trace info: %s",
@@ -105,24 +96,24 @@ int w_av_set_data(
 
 int w_av_get_data(
     _In_ w_av_frame p_frame,
-    _Inout_ uint8_t* p_frame_data,
+    _Out_ uint8_t* p_frame_data,
     _Inout_ char* p_error)
 {
     constexpr auto TRACE = "ffmpeg::w_av_get_data";
+
     const auto _error = gsl::not_null<char*>(p_error);
-    
-    if (p_frame == nullptr ||
-        p_frame->linesize == nullptr ||
-        p_frame->linesize[0] <= 0)
+    const auto _av_frame = gsl::not_null<w_av_frame>(p_frame);
+
+    if (_av_frame->linesize[0] <= 0)
     {
-        snprintf(
+        (void)snprintf(
             _error,
             W_MAX_PATH,
             "bad argumans. trace info: %s",
             TRACE);
         return -1;
     }
-    p_frame_data = p_frame->data[0];
+    p_frame_data = _av_frame->data[0];
 
     return 0;
 }
@@ -134,14 +125,15 @@ size_t w_av_get_required_buffer_size(
     _In_ uint32_t p_alignment)
 {
     const auto _pixel_format = gsl::narrow_cast<AVPixelFormat>(p_pixel_format);
-    const auto _w = gsl::narrow_cast<int>(p_width);
-    const auto _h = gsl::narrow_cast<int>(p_height);
+    const auto _width = gsl::narrow_cast<int>(p_width);
+    const auto _height = gsl::narrow_cast<int>(p_height);
     const auto _align = gsl::narrow_cast<int>(p_alignment);
 
-    auto _size = av_image_get_buffer_size(_pixel_format, _w, _h, _align);
+    auto _size = av_image_get_buffer_size(_pixel_format, _width, _height, _align);
     return _size > 0 ? gsl::narrow_cast<size_t>(_size) : 0;
 }
 
+//https://youtu.be/cMMiaCtOzV0?t=85
 int w_av_frame_convert(
     _In_ w_av_frame p_src_frame,
     _Inout_ w_av_frame* p_dst_frame,
@@ -149,36 +141,20 @@ int w_av_frame_convert(
 {
     constexpr auto TRACE = "ffmpeg::w_av_frame_convert";
 
-    const auto _dst_frame_ptr = gsl::not_null<w_av_frame*>(p_dst_frame);
-    const auto _dst_frame = gsl::not_null<w_av_frame>(*_dst_frame_ptr);
-    const auto _src_frame = gsl::not_null<w_av_frame>(p_src_frame);
-    const auto _error = gsl::not_null<char*>(p_error);
+    const auto _error_nn = gsl::not_null<char*>(p_error);
+    const auto _src_frame_nn = gsl::not_null<w_av_frame>(p_src_frame);
+    const auto _dst_frame_ptr_nn = gsl::not_null<w_av_frame*>(p_dst_frame);
+    const auto _dst_frame_nn = gsl::not_null<w_av_frame>(*_dst_frame_ptr_nn);
 
-    int _ret = 0;
-    SwsContext* _context = nullptr;
+    const auto _src_w = gsl::narrow_cast<int>(_src_frame_nn->width);
+    const auto _src_h = gsl::narrow_cast<int>(_src_frame_nn->height);
+    const auto _src_pixel_fmt = gsl::narrow_cast<AVPixelFormat>(_src_frame_nn->format);
 
-    // defer will be rised at the end
-    defer _(nullptr, [&](...)
-        {
-            if (_context != nullptr)
-            {
-                sws_freeContext(_context);
-            }
-        });
+    const auto _dst_w = gsl::narrow_cast<int>(_dst_frame_nn->width);
+    const auto _dst_h = gsl::narrow_cast<int>(_dst_frame_nn->height);
+    const auto _dst_pixel_fmt = gsl::narrow_cast<AVPixelFormat>(_dst_frame_nn->format);
 
-//#ifdef DEBUG
-//    av_log_set_level(AV_LOG_DEBUG);
-//#endif
-
-    const auto _src_w = gsl::narrow_cast<int>(_src_frame->width);
-    const auto _src_h = gsl::narrow_cast<int>(_src_frame->height);
-    const auto _src_pixel_fmt = gsl::narrow_cast<AVPixelFormat>(_src_frame->format);
-
-    const auto _dst_w = gsl::narrow_cast<int>(_dst_frame->width);
-    const auto _dst_h = gsl::narrow_cast<int>(_dst_frame->height);
-    const auto _dst_pixel_fmt = gsl::narrow_cast<AVPixelFormat>(_dst_frame->format);
-
-    _context = sws_getContext(
+    auto* _context = sws_getContext(
         _src_w,
         _src_h,
         _src_pixel_fmt,
@@ -189,45 +165,36 @@ int w_av_frame_convert(
         nullptr,
         nullptr,
         nullptr);
-
-    if (w_is_null(_context))
-    {
-        snprintf(
-            p_error,
-            W_MAX_PATH,
-            "failed to create a context for converting frames. trace info: %s",
-            TRACE);
-
-        return _ret = -1;
-    }
+    const auto _context_nn = gsl::not_null<SwsContext*>(_context);
 
     const auto _height = sws_scale(
-        _context,
-        static_cast<const uint8_t* const*>(_src_frame->data),
-        gsl::narrow_cast<const int*>(_src_frame->linesize),
+        _context_nn,
+        static_cast<const uint8_t* const*>(_src_frame_nn->data),
+        gsl::narrow_cast<const int*>(_src_frame_nn->linesize),
         0,
         _src_h,
-        gsl::narrow_cast<uint8_t* const*>(_dst_frame->data),
-        gsl::narrow_cast<const int*>(_dst_frame->linesize));
+        gsl::narrow_cast<uint8_t* const*>(_dst_frame_nn->data),
+        gsl::narrow_cast<const int*>(_dst_frame_nn->linesize));
+
+    // free context
+    sws_freeContext(_context_nn);
 
     if (_height < 0)
     {
-        snprintf(
-            p_error,
+        (void)snprintf(
+            _error_nn,
             W_MAX_PATH,
             "sws_scale failed. trace info: %s",
             TRACE);
-        _ret = -1;
+        return -1;
     }
 
-    return _ret;
+    return 0;
 }
 
 void w_av_frame_fini(_Inout_ w_av_frame* p_ffmpeg)
 {
-    if (p_ffmpeg != nullptr)
-    {
-        av_frame_free(p_ffmpeg);
-        *p_ffmpeg = nullptr;
-    }
+    const auto _ptr = gsl::not_null<w_av_frame*>(p_ffmpeg);
+    av_frame_free(_ptr);
+    *p_ffmpeg = nullptr;
 }

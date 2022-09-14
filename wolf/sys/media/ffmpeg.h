@@ -9,52 +9,63 @@
 extern "C" {
 #endif
 
-#include <wolf.h>
+#include "av_frame.h"
 
-    typedef enum w_ffmpeg_action
+    typedef struct w_av_opt_set_str
+    { 
+        // name of option 
+        char* name; 
+        // value of option
+        char* value;
+    } w_av_opt_set_str W_ALIGNMENT_16;
+
+    typedef struct w_av_opt_set_int
     {
-        W_ENCODE,
-        W_DECODE
-    }w_ffmpeg_action;
+        // name of option 
+        char* name;
+        // value of option
+        int value;
+    } w_av_opt_set_int W_ALIGNMENT_16;
 
-    typedef enum w_ffmpeg_pixel_format
+    typedef struct w_av_opt_set_double
     {
-        W_PIX_FMT_YUV420P = 0, ///< planar YUV 4:2:0, 12bpp, (1 Cr & Cb sample per 2x2 Y samples)
-        W_PIX_FMT_RGB24 = 2,   ///< packed RGB 8:8:8, 24bpp, RGBRGB
-        W_PIX_FMT_BGR24 = 3,   ///< packed RGB 8:8:8, 24bpp, BGRBGR
-        W_PIX_FMT_YUV422P = 4, ///< planar YUV 4:2:2, 16bpp, (1 Cr & Cb sample per 2x1 Y samples)
-        W_PIX_FMT_YUV444P = 5, ///< planar YUV 4:4:4, 24bpp, (1 Cr & Cb sample per 1x1 Y samples)
-    }w_ffmpeg_pixel_format;
+        // name of option 
+        char* name;
+        // value of option
+        double value;
+    } w_av_opt_set_double W_ALIGNMENT_16;
 
-    struct w_ffmpeg_ctx_t;
-
-    typedef struct w_ffmpeg_ctx_t* w_ffmpeg_ctx;
-
-    //struct AVFrame;
-    //typedef struct AVFrame* w_ffmpeg_frame;
-
-    typedef struct w_ffmpeg_t {
-        int fps;
-        uint32_t width;
-        uint32_t height;
-        uint32_t bitrate;
-        uint32_t codec_id;
-        w_ffmpeg_pixel_format pix_fmt;
-        w_ffmpeg_action type;
-        w_ffmpeg_ctx ctx;
-    }w_ffmpeg_t;
-
-    typedef w_ffmpeg_t* w_ffmpeg;
+    struct w_ffmpeg_t;
+    typedef struct w_ffmpeg_t* w_ffmpeg;
 
     /**
      * initialize the ffmpeg context
-     * @param p_ffmpeg, the ffmpeg object
+     * @param w_av_frame p_frame,
+     * @param p_avcodec_id, the avcodec id
+     * @param p_fps, the frames per second value
+     * @param p_bitrate, the bitrate of encoder
+     * @param p_preset_strings, the string presets
+     * @param p_preset_strings_size, the size of string presets
+     * @param p_preset_ints, the integer presets
+     * @param p_preset_ints_size, the size of integer presets
+     * @param p_preset_doubles, the double presets
+     * @param p_preset_doubles_size, the size of double presets
      * @param p_error, the error buffer
      * @return int the result of encoding the frame
      */
     W_API
-        int w_ffmpeg_init(
+        int w_ffmpeg_init_encoder(
             _Inout_ w_ffmpeg* p_ffmpeg,
+            _In_ w_av_frame p_frame,
+            _In_ uint32_t p_avcodec_id,
+            _In_ uint32_t p_fps,
+            _In_ uint64_t p_bitrate,
+            _In_ w_av_opt_set_str* p_preset_strings,
+            _In_ uint32_t p_preset_strings_size,
+            _In_ w_av_opt_set_int* p_preset_ints,
+            _In_ uint32_t p_preset_ints_size,
+            _In_ w_av_opt_set_double* p_preset_doubles,
+            _In_ uint32_t p_preset_doubles_size,
             _Inout_z_ char* p_error);
 
     /**

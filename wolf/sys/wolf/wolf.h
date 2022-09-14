@@ -9,6 +9,7 @@
 extern "C" {
 #endif
 
+#include <stddef.h>
 #include <stdint.h>
 
 #ifndef W_UNUSED
@@ -41,6 +42,19 @@ extern "C" {
 #define _Inout_z_
 #define _Inout_opt_
 
+#endif
+
+#ifdef __clang__
+#define W_ALIGNMENT_8 __attribute__((packed)) __attribute__((aligned(8)))
+#define W_ALIGNMENT_16 __attribute__((packed)) __attribute__((aligned(16)))
+#define W_ALIGNMENT_32 __attribute__((packed)) __attribute__((aligned(32)))
+#define W_ALIGNMENT_64 __attribute__((packed)) __attribute__((aligned(64)))
+#define W_ALIGNMENT_128 __attribute__((packed)) __attribute__((aligned(128)))
+#else
+#define W_ALIGNMENT_16
+#define W_ALIGNMENT_32
+#define W_ALIGNMENT_64
+#define W_ALIGNMENT_128
 #endif
 
 #ifdef __cplusplus

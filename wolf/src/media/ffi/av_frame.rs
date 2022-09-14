@@ -17,13 +17,14 @@ pub const WCHAR_MAX: u32 = 65535;
 pub const WINT_MIN: u32 = 0;
 pub const WINT_MAX: u32 = 65535;
 pub const W_MAX_PATH: u32 = 260;
+pub type size_t = ::std::os::raw::c_ulonglong;
+pub type wchar_t = ::std::os::raw::c_ushort;
+pub type max_align_t = f64;
 pub type va_list = *mut ::std::os::raw::c_char;
 extern "C" {
     pub fn __va_start(arg1: *mut *mut ::std::os::raw::c_char, ...);
 }
-pub type size_t = ::std::os::raw::c_ulonglong;
 pub type __vcrt_bool = bool;
-pub type wchar_t = ::std::os::raw::c_ushort;
 extern "C" {
     pub fn __security_init_cookie();
 }
@@ -110,7 +111,7 @@ extern "C" {
     #[doc = " @param p_width, the width of ffmpeg AVFrame"]
     #[doc = " @param p_height, the height of ffmpeg AVFrame"]
     #[doc = " @param p_alignment, the aligmnet which is usually 1"]
-    #[doc = " @returns zero on success"]
+    #[doc = " @returns the size of buffer"]
     pub fn w_av_get_required_buffer_size(
         p_pixel_format: u32,
         p_width: u32,
