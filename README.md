@@ -1,7 +1,7 @@
 # Wolf Engine [![LGPL v3 licensed](https://img.shields.io/badge/license-Apache-blue)](https://github.com/WolfEngine/Wolf.Engine/blob/main/LICENSE.md) 
 [![coverage](https://shields.io/endpoint?url=https://github.com/WolfEngine/WolfEngine/tree/main/coverage/coverage.json)](https://github.com/WolfEngine/WolfEngine/tree/main/coverage/index.html)
 [![wakatime](https://wakatime.com/badge/github/WolfEngine/WolfEngine.svg)](https://wakatime.com/badge/github/WolfEngine/WolfEngine)
-<img src="https://raw.githubusercontent.com/WolfEngine/WolfEngine/main/Logo.jpg" width="256" height="256" alt="WolfEngine"/>
+<img src="https://raw.githubusercontent.com/WolfEngine/WolfEngine/main/Logo.png" width="256" height="256" alt="WolfEngine"/>
 
 **Wolf Engine** is the next generation of [Persian Game Engine](https://github.com/PooyaEimandar/PersianEngine) which is a
 cross-platform open source game engine created by [Pooya Eimandar](https://pooyaeimandar.github.io)
