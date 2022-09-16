@@ -9,14 +9,7 @@ This Wolf is a comprehensive set of Rust/C libraries for realtime rendering, rea
 ## Branches
 - [main](https://github.com/WolfEngine/WolfEngine/tree/main), Wolf3, is the latest version of Wolf which is written in **Rust and contains some unsafe codes** and is not ready for production
 - [Wolf2](https://github.com/WolfEngine/WolfEngine/tree/wolf-2) is written in **C/C++ and is in maintenance mode**
-- [releases](https://github.com/WolfEngine/WolfEngine/releases) contains old releases and source codes
-
-## Linter tools
-- **C++**: make sure enable [clang-tidy for Visual Studio Code](https://devblogs.microsoft.com/cppblog/visual-studio-code-c-december-2021-update-clang-tidy/)
-- **Rust**: enable rust clippy from settings.json of [Visual Studio Code](https://code.visualstudio.com)
-  ```bash
-  "rust-analyzer.checkOnSave.command": "clippy"
-  ```
+- [releases](https://github.com/WolfEngine/WolfEngine/releases) contains old releases and source codes (C++ & DirectX 11)
 
 ## Build
 - **Wolf 2/1** via CMake
