@@ -1,4 +1,4 @@
-use super::ffi::av_frame::{
+use super::ffi::ffmpeg::{
     size_t, w_av_frame, w_av_frame_convert, w_av_frame_fini, w_av_frame_init, w_av_get_data,
     w_av_get_required_buffer_size, w_av_set_data, W_MAX_PATH,
 };

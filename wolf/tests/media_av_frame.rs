@@ -1,16 +1,15 @@
 #![allow(unused_crate_dependencies)]
 #![allow(clippy::cast_possible_truncation)]
 
-static IMAGE_DIR: &str = "G:/SourceCodes/WolfEngine/WolfEngine/wolf";
-
 #[cfg(feature = "media_ffmpeg")]
 #[test]
 fn test_av_frame_convert() {
     use image::{EncodableLayout, GenericImageView};
     use wolf::media::av_frame::{AVFrame, AVPixelFormat};
 
+    let current_dir = std::env::current_dir().unwrap();
     // load image
-    let path = std::path::Path::new(IMAGE_DIR).join("sample_rgba.png");
+    let path = current_dir.join("sample_rgba.png");
     let img = image::open(path).unwrap();
     let img_size = img.dimensions();
     let pixels = img.as_rgba8().unwrap().as_bytes();
@@ -41,7 +40,7 @@ fn test_av_frame_convert() {
         dst_pixels.set_len(dst_frame_size_usize);
     }
 
-    let out_path = std::path::Path::new(IMAGE_DIR).join("sample_bgra.png");
+    let out_path = current_dir.join("sample_bgra.png");
     image::save_buffer_with_format(
         out_path,
         &dst_pixels,

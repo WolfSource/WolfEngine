@@ -133,7 +133,6 @@ size_t w_av_get_required_buffer_size(
     return _size > 0 ? gsl::narrow_cast<size_t>(_size) : 0;
 }
 
-//https://youtu.be/cMMiaCtOzV0?t=85
 int w_av_frame_convert(
     _In_ w_av_frame p_src_frame,
     _Inout_ w_av_frame* p_dst_frame,

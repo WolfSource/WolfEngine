@@ -1,2 +1,0 @@
-cargo clean
-cargo clippy --all-targets --frozen --message-format human --workspace -- --deny clippy::all --deny clippy::cargo --deny clippy::nursery --deny clippy::pedantic --deny warnings --allow clippy::multiple_crate_versions --allow clippy::module_name_repetitions

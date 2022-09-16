@@ -3,6 +3,9 @@
     https://github.com/WolfEngine/WolfEngine
 */
 
+#ifndef _AV_FRAME_H_
+#define _AV_FRAME_H_
+
 #pragma once
 
 #ifdef __cplusplus
@@ -97,4 +100,6 @@ extern "C" {
 
 #ifdef __cplusplus
 }
+#endif
+
 #endif

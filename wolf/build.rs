@@ -371,33 +371,39 @@ fn bindgens(p_current_dir_path_str: &str) {
     struct Binding<'a> {
         src: &'a str,
         dst: &'a str,
+        block_headers: &'a [&'a str],
     }
     let mut headers = vec![Binding {
         src: "sys/wolf/version.h",
         dst: "src/system/ffi/version.rs",
+        block_headers: &[],
     }];
 
     #[cfg(feature = "system_lz4")]
     headers.push(Binding {
         src: "sys/system/lz4.h",
         dst: "src/system/ffi/lz4.rs",
+        block_headers: &[],
     });
 
     #[cfg(feature = "stream_rist")]
     headers.push(Binding {
         src: "sys/stream/rist.h",
         dst: "src/stream/ffi/rist.rs",
+        block_headers: &[],
     });
 
     if cfg!(feature = "media_ffmpeg") {
         headers.push(Binding {
             src: "sys/media/ffmpeg.h",
             dst: "src/media/ffi/ffmpeg.rs",
+            block_headers: &[],
         });
-        headers.push(Binding {
-            src: "sys/media/av_frame.h",
-            dst: "src/media/ffi/av_frame.rs",
-        });
+        // headers.push(Binding {
+        //     src: "sys/media/test.h",
+        //     dst: "src/media/ffi/test.rs",
+        //     block_headers: &["sys/media/av_frame.h"],
+        // });
     }
 
     // add include paths
@@ -412,7 +418,7 @@ fn bindgens(p_current_dir_path_str: &str) {
         // The bindgen::Builder is the main entry point
         // to bindgen, and lets you build up options for
         // the resulting bindings.
-        let bindings = bindgen::Builder::default()
+        let mut builder = bindgen::Builder::default()
             // The input header we would like to generate bindings for.
             .header(header.src)
             .layout_tests(false)
@@ -423,8 +429,15 @@ fn bindgens(p_current_dir_path_str: &str) {
             ])
             // tell cargo to invalidate the built crate whenever any of the
             // included header files changed.
-            .parse_callbacks(Box::new(bindgen::CargoCallbacks))
-            // finish the builder and generate the bindings.
+            .parse_callbacks(Box::new(bindgen::CargoCallbacks));
+
+        for block_header in header.block_headers {
+            builder = builder.blocklist_file(block_header);
+        }
+
+        // finish the builder and generate the bindings.
+        let out_path = Path::new(p_current_dir_path_str).join(header.dst);
+        builder
             .generate()
             // unwrap the Result and panic on failure.
             .unwrap_or_else(|e| {
@@ -432,11 +445,10 @@ fn bindgens(p_current_dir_path_str: &str) {
                     "couldn't create bindings for header {} because {:?}",
                     header.src, e
                 );
+            })
+            .write_to_file(out_path)
+            .unwrap_or_else(|e| {
+                panic!("couldn't write bindings for {} because {:?}", header.src, e);
             });
-
-        let out_path = Path::new(p_current_dir_path_str).join(header.dst);
-        bindings.write_to_file(out_path).unwrap_or_else(|e| {
-            panic!("couldn't write bindings for {} because {:?}", header.src, e);
-        });
     }
 }

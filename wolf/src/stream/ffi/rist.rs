@@ -62,9 +62,17 @@ pub struct rist_data_block {
 }
 pub type w_rist_data_block = *mut rist_data_block;
 extern "C" {
+    #[doc = " initialize rist data block"]
+    #[doc = " @param p_block the rist block data,"]
+    #[doc = " @returns zero on success"]
     pub fn w_rist_init_data_block(p_block: *mut w_rist_data_block) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    #[doc = " set rist data block"]
+    #[doc = " @param p_block the rist block data,"]
+    #[doc = " @param p_data_len length of rist block data,"]
+    #[doc = " @param p_data the data,"]
+    #[doc = " @returns void"]
     pub fn w_rist_set_data_block(
         p_block: w_rist_data_block,
         p_data_len: size_t,
@@ -72,12 +80,19 @@ extern "C" {
     );
 }
 extern "C" {
+    #[doc = " get rist data block"]
+    #[doc = " @param p_block the rist block data,"]
+    #[doc = " @returns pointer to data block"]
     pub fn w_rist_get_data_block(p_block: w_rist_data_block) -> *const ::std::os::raw::c_void;
 }
 extern "C" {
+    #[doc = " get the length of rist data block"]
+    #[doc = " @returns the length as size_t"]
     pub fn w_rist_get_data_block_len(p_block: w_rist_data_block) -> size_t;
 }
 extern "C" {
+    #[doc = " free the rist data block"]
+    #[doc = " @returns void"]
     pub fn w_rist_free_data_block(p_block: *mut w_rist_data_block);
 }
 pub type rist_log_level = ::std::os::raw::c_int;
