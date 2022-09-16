@@ -8,6 +8,8 @@ release/
 target/
 wolf/jniLibs/*
 wolf/sys/build/*
+coverage/*
+!coverage/coverage.json
 
 # Created by https://www.toptal.com/developers/gitignore/api/dotenv,linux,macos,osx,rust,visualstudiocode,windows
 # Edit at https://www.toptal.com/developers/gitignore?templates=dotenv,linux,macos,osx,rust,visualstudiocode,windows
