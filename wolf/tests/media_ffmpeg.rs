@@ -13,7 +13,7 @@ fn test_encode() {
     use image::{EncodableLayout, GenericImageView};
     use wolf::media::{
         av_frame::{AVFrame, AVPixelFormat},
-        ffmpeg::{AVCodecID, FFmpeg},
+        ffmpeg::{AVCodeOptions, AVCodecID, FFmpeg},
     };
 
     println!("wolf_sys version is : {:?}", wolf::sys_init());
@@ -26,9 +26,19 @@ fn test_encode() {
     let pixels = img.as_rgba8().unwrap().as_bytes();
 
     // create a source frame from img
-    let src_frame = AVFrame::new(AVPixelFormat::RGBA, img_size.0, img_size.1, 1, pixels).unwrap();
+    let src_frame =
+        AVFrame::new(AVPixelFormat::YUV420P, img_size.0, img_size.1, 1, pixels).unwrap();
 
-    let _ffmpeg = FFmpeg::new(&src_frame, AVCodecID::H264, 60, 6000).unwrap();
+    let codec_opt = AVCodeOptions {
+        id: AVCodecID::H264,
+        fps: 60,
+        gop: 3,
+        refs: 3,
+        max_b_frames: 3,
+        thread_count: 1,
+        bitrate: 6000000,
+    };
+    let _ffmpeg = FFmpeg::new(&src_frame, codec_opt).unwrap();
 
     print!("test")
     //     use image::{EncodableLayout, GenericImageView};

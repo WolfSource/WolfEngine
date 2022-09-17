@@ -164,7 +164,13 @@ extern "C" {
     #[doc = " @param w_av_frame p_frame,"]
     #[doc = " @param p_avcodec_id, the avcodec id"]
     #[doc = " @param p_fps, the frames per second value"]
+    #[doc = " @param p_gop, the gop value"]
+    #[doc = " @param p_refs, the number of refrences"]
+    #[doc = " @param p_max_b_frames, the max b frames"]
+    #[doc = " @param p_thread_count, the thread count"]
     #[doc = " @param p_bitrate, the bitrate of encoder"]
+    #[doc = " @param p_width, width of av_frame"]
+    #[doc = " @param p_height, height of av_frame"]
     #[doc = " @param p_preset_strings, the string presets"]
     #[doc = " @param p_preset_strings_size, the size of string presets"]
     #[doc = " @param p_preset_ints, the integer presets"]
@@ -178,6 +184,10 @@ extern "C" {
         p_frame: w_av_frame,
         p_avcodec_id: u32,
         p_fps: u32,
+        p_gop: u32,
+        p_refs: u32,
+        p_max_b_frames: u32,
+        p_thread_count: u32,
         p_bitrate: u64,
         p_preset_strings: *mut w_av_opt_set_str,
         p_preset_strings_size: u32,

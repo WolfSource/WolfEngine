@@ -105,6 +105,10 @@ int w_ffmpeg_init_encoder(
     _In_ w_av_frame p_frame,
     _In_ uint32_t p_avcodec_id,
     _In_ uint32_t p_fps,
+    _In_ uint32_t p_gop,
+    _In_ uint32_t p_refs,
+    _In_ uint32_t p_max_b_frames,
+    _In_ uint32_t p_thread_count,
     _In_ uint64_t p_bitrate,
     _In_ w_av_opt_set_str* p_preset_strings,
     _In_ uint32_t p_preset_strings_size,
@@ -118,6 +122,16 @@ int w_ffmpeg_init_encoder(
     const auto _error_nn = gsl::not_null<char*>(p_error);
     auto _ret = 0;
     
+    if (p_avcodec_id == 0)
+    {
+        (void)snprintf(
+            p_error,
+            W_MAX_PATH,
+            "missing codec id. trace info: %s",
+            TRACE);
+        return _ret = -1;
+    }
+
     const auto _ffmpeg = gsl::not_null<w_ffmpeg_t*>((w_ffmpeg_t*)calloc(1, sizeof(w_ffmpeg_t)));
 
     defer _(nullptr, [&](...)
@@ -134,13 +148,106 @@ int w_ffmpeg_init_encoder(
     _ffmpeg->codec = gsl::not_null<const AVCodec*>(avcodec_find_encoder(_ffmpeg->codec_id));
     _ffmpeg->context = gsl::not_null<AVCodecContext*>(avcodec_alloc_context3(_ffmpeg->codec));
 
-    // set context settings
-    _ffmpeg->context->bit_rate = gsl::narrow_cast<int64_t>(p_bitrate);
-    _ffmpeg->context->time_base.num = 1;
-    _ffmpeg->context->time_base.den = gsl::narrow_cast<int>(p_fps);
-    _ffmpeg->context->pix_fmt = gsl::narrow_cast<AVPixelFormat>(p_frame->format);
+    _ffmpeg->context->codec_id = _ffmpeg->codec_id;
+    // note resolution must be a multiple of 2!!
     _ffmpeg->context->width = p_frame->width;
+    // note resolution must be a multiple of 2!!
     _ffmpeg->context->height = p_frame->height;
+    // bitrate of context
+    _ffmpeg->context->bit_rate = gsl::narrow_cast<int64_t>(p_bitrate);
+    // pixel format
+    _ffmpeg->context->pix_fmt = gsl::narrow_cast<AVPixelFormat>(p_frame->format);
+    // time based number
+    _ffmpeg->context->time_base.num = 1;
+    // frame per seconds
+    _ffmpeg->context->time_base.den = gsl::narrow_cast<int>(p_fps);
+    // set gop
+    _ffmpeg->context->gop_size = gsl::narrow_cast<int>(p_gop); 
+    // set refs
+    _ffmpeg->context->refs = gsl::narrow_cast<int>(p_refs); 
+    // set frames
+    _ffmpeg->context->max_b_frames = gsl::narrow_cast<int>(p_max_b_frames); 
+    // set thread numbers
+    _ffmpeg->context->thread_count = gsl::narrow_cast<int>(p_thread_count); 
+    
+    //pEncoder->video_codec_context->coder_type = FF_CODER_TYPE_VLC;
+    //pEncoder->video_codec_context->flags2 |= AV_CODEC_FLAG2_FAST;
+
+    //pEncoder->video_codec_context->me_subpel_quality = 4;
+    //pEncoder->video_codec_context->trellis = 0;
+
+    // if (pEncoder->_selected_encoder == AV_CODEC_ID_H264 ||
+    //     pEncoder->_selected_encoder == AV_CODEC_ID_H265)
+    // {
+    //     pEncoder->video_codec_context->level = pEncoder->h264_h265_level;		// Intra frames per x P frames
+
+    //     if (pEncoder->h264_h265_preset &&
+    //         pEncoder->h264_h265_preset[0] != '\0')
+    //     {
+    //         //change preset between ultrafast,superfast, veryfast, faster, fast, medium, slow, slower, veryslow, placebo
+    //         _ret = av_opt_set(
+    //             pEncoder->video_codec_context->priv_data,
+    //             "preset",
+    //             pEncoder->h264_h265_preset, 0);
+    //     }
+
+    //     if (pEncoder->h264_h265_tune &&
+    //         pEncoder->h264_h265_tune[0] != '\0')
+    //     {
+    //         //change tune between film, animation, grain, stillimage, fastdecode, zerolatency, psnr, ssim
+    //         _ret = av_opt_set(
+    //             pEncoder->video_codec_context->priv_data,
+    //             "tune",
+    //             pEncoder->h264_h265_tune, 0);
+    //     }
+
+    //     if (pEncoder->h264_h265_crf &&
+    //         pEncoder->h264_h265_crf[0] != '\0')
+    //     {
+    //         if (strcmp(pEncoder->h264_h265_crf, "-1") != 0)
+    //         {
+    //             //change crf
+    //             _ret = av_opt_set(
+    //                 pEncoder->video_codec_context->priv_data,
+    //                 "crf",
+    //                 pEncoder->h264_h265_crf,
+    //                 0);
+    //         }
+    //     }
+
+    //     if (pEncoder->_selected_encoder == AV_CODEC_ID_H264)
+    //     {
+    //         if (pEncoder->h264_profile &&
+    //             pEncoder->h264_profile[0] != '\0')
+    //         {
+    //             //change profile between baseline, main, high
+    //             _ret = av_opt_set(
+    //                 pEncoder->video_codec_context->priv_data,
+    //                 "profile",
+    //                 pEncoder->h264_profile, 0);
+    //         }
+
+    //         auto _str = std::to_string(pEncoder->intra_refresh);
+    //         _ret = av_opt_set(
+    //             pEncoder->video_codec_context->priv_data,
+    //             "intra-refresh",
+    //             _str.c_str(), 0);
+
+    //         /*_ret = av_opt_set_int(
+    //             pEncoder->video_codec_context->priv_data,
+    //             "slice-max-size",
+    //             pEncoder->slice_max_size, 0);*/
+    //     }
+    //     else
+    //     {
+
+    //     }
+    // }
+
+    if (_ffmpeg->context->flags & AVFMT_GLOBALHEADER)
+    {
+        _ffmpeg->context->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
+    }
 
 #ifdef __clang__
 #pragma unroll
@@ -526,29 +633,23 @@ int w_ffmpeg_init_encoder(
 
 void w_ffmpeg_fini(_Inout_ w_ffmpeg* p_ffmpeg)
 {
-    if (w_is_null(p_ffmpeg) || w_is_null(*p_ffmpeg))
+    const auto _ffmpeg_ptr_nn = gsl::not_null<w_ffmpeg*>(p_ffmpeg);
+    const auto _ffmpeg_nn = gsl::not_null<w_ffmpeg>(*_ffmpeg_ptr_nn);
+
+    if (_ffmpeg_nn->packet)
     {
-        return;
+        av_free(_ffmpeg_nn->packet);
+    }
+    if (_ffmpeg_nn->parser)
+    {
+        av_parser_close(_ffmpeg_nn->parser);
+    }
+    if (_ffmpeg_nn->context)
+    {
+        avcodec_close(_ffmpeg_nn->context);
+        avcodec_free_context(&_ffmpeg_nn->context);
     }
 
-    auto _ptr = *p_ffmpeg;
-    if (_ptr)
-    {
-        if (_ptr->packet)
-        {
-            av_free(_ptr->packet);
-        }
-        if (_ptr->parser)
-        {
-            av_parser_close(_ptr->parser);
-        }
-        if (_ptr->context)
-        {
-            avcodec_close(_ptr->context);
-            avcodec_free_context(&_ptr->context);
-        }
-    }
-
-    free(*p_ffmpeg);
+    free(_ffmpeg_nn);
     *p_ffmpeg = nullptr;
 }

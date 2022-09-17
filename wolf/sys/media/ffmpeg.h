@@ -43,7 +43,13 @@ extern "C" {
      * @param w_av_frame p_frame,
      * @param p_avcodec_id, the avcodec id
      * @param p_fps, the frames per second value
+     * @param p_gop, the gop value
+     * @param p_refs, the number of refrences
+     * @param p_max_b_frames, the max b frames
+     * @param p_thread_count, the thread count
      * @param p_bitrate, the bitrate of encoder
+     * @param p_width, width of av_frame
+     * @param p_height, height of av_frame
      * @param p_preset_strings, the string presets
      * @param p_preset_strings_size, the size of string presets
      * @param p_preset_ints, the integer presets
@@ -59,6 +65,10 @@ extern "C" {
             _In_ w_av_frame p_frame,
             _In_ uint32_t p_avcodec_id,
             _In_ uint32_t p_fps,
+            _In_ uint32_t p_gop,
+            _In_ uint32_t p_refs,
+            _In_ uint32_t p_max_b_frames,
+            _In_ uint32_t p_thread_count,
             _In_ uint64_t p_bitrate,
             _In_ w_av_opt_set_str* p_preset_strings,
             _In_ uint32_t p_preset_strings_size,

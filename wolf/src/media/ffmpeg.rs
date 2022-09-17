@@ -553,9 +553,20 @@ pub enum AVCodecID {
 }
 
 #[derive(Clone)]
+pub struct AVCodeOptions {
+    pub id: AVCodecID,
+    pub fps: u32,
+    pub gop: u32,
+    pub refs: u32,
+    pub max_b_frames: u32,
+    pub thread_count: u32,
+    pub bitrate: u64,
+}
+
+#[derive(Clone)]
 pub struct FFmpeg {
     pub ctx: w_ffmpeg,
-    pub codec_id: AVCodecID,
+    pub codec_opt: AVCodeOptions,
 }
 
 impl Drop for FFmpeg {
@@ -570,15 +581,10 @@ impl FFmpeg {
     /// # Errors
     ///
     /// TODO: add error description
-    pub fn new(
-        p_av_frame: &AVFrame,
-        p_codec_id: AVCodecID,
-        p_fps: u32,
-        p_bitrate: u64,
-    ) -> Result<Self> {
+    pub fn new(p_av_frame: &AVFrame, p_codec_opt: AVCodeOptions) -> Result<Self> {
         let mut obj = Self {
             ctx: std::ptr::null_mut(),
-            codec_id: p_codec_id,
+            codec_opt: p_codec_opt,
         };
 
         // create a buffer for error
@@ -589,9 +595,13 @@ impl FFmpeg {
             let ret = w_ffmpeg_init_encoder(
                 &mut obj.ctx,
                 p_av_frame.ctx,
-                0u32,
-                p_fps,
-                p_bitrate,
+                obj.codec_opt.id as u32,
+                obj.codec_opt.fps,
+                obj.codec_opt.gop,
+                obj.codec_opt.refs,
+                obj.codec_opt.max_b_frames,
+                obj.codec_opt.thread_count,
+                obj.codec_opt.bitrate,
                 null_mut(),
                 0,
                 null_mut(),
