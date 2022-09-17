@@ -5,7 +5,7 @@ jobs:
     name: Package
     permissions:
       contents: read
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       -
         name: Check Out
@@ -63,7 +63,7 @@ jobs:
       - package
     permissions:
       contents: write
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       -
         name: Check Out

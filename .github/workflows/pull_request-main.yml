@@ -10,7 +10,7 @@ jobs:
       - fmt-check
     permissions:
       contents: read
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       -
         name: Check Out
@@ -47,7 +47,7 @@ jobs:
       - fmt-check
     permissions:
       contents: read
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       -
         name: Check Out
@@ -82,7 +82,7 @@ jobs:
       - fmt-check
     permissions:
       contents: read
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       -
         name: Check Out
@@ -131,7 +131,7 @@ jobs:
     name: Cargo Clippy
     permissions:
       contents: read
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       -
         name: Check Out
@@ -166,7 +166,7 @@ jobs:
       - test
     permissions:
       contents: read
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       -
         name: Check Out
@@ -213,7 +213,7 @@ jobs:
       - test
     permissions:
       contents: read
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
     - name: Coveralls Finished
       uses: coverallsapp/github-action@9ba913c152ae4be1327bfb9085dc806cedb44057
@@ -227,7 +227,7 @@ jobs:
     name: Cargo Format Check
     permissions:
       contents: read
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       -
         name: Check Out
@@ -260,7 +260,7 @@ jobs:
   #   permissions:
   #     contents: read
   #     security-events: write
-  #   runs-on: windows-latest
+  #   runs-on: ubuntu-latest
   #   steps:
   #     -
   #       name: Check Out
@@ -302,7 +302,7 @@ jobs:
       - fmt-check
     permissions:
       contents: read
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       -
         name: Check Out
