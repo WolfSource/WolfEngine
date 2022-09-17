@@ -32,84 +32,12 @@ typedef struct w_ffmpeg_t
     AVCodecParserContext* parser = nullptr;
 }w_ffmpeg_t W_ALIGNMENT_64;
 
-//static int s_init_decoder(_Inout_ w_ffmpeg p_ffmpeg, _Inout_z_ char* p_error)
-//{
-//    constexpr auto TRACE = "ffmpeg::s_init_decoder";
-//    int _ret = 0;
-//
-//    if (w_is_null(p_ffmpeg, p_error))
-//    {
-//        return _ret = -1;
-//    }
-//
-//    p_ffmpeg->ctx->codec = avcodec_find_decoder(gsl::narrow_cast<AVCodecID>(p_ffmpeg->codec_id));
-//    if (w_is_null(p_ffmpeg->ctx->codec))
-//    {
-//        s_make_error(p_error, TRACE, "failed to find the specified coded for decoder", 0);
-//        return _ret = -1;
-//    }
-//
-//    p_ffmpeg->ctx->context = avcodec_alloc_context3(p_ffmpeg->ctx->codec);
-//    if (w_is_null(p_ffmpeg->ctx->context))
-//    {
-//        s_make_error(p_error, TRACE, "failed to allocate video codec context", 0);
-//        return _ret = -1;
-//    }
-//
-//    p_ffmpeg->ctx->rgb_frame = av_frame_alloc();
-//    if (w_is_null(p_ffmpeg->ctx->rgb_frame))
-//    {
-//        s_make_error(p_error, TRACE, "failed to allocate the frame", 0);
-//        return _ret = -1;
-//    }
-//
-//    const auto _w = gsl::narrow_cast<int>(p_ffmpeg->width);
-//    const auto _h = gsl::narrow_cast<int>(p_ffmpeg->height);
-//    const auto _pixel_fmt = gsl::narrow_cast<AVPixelFormat>(p_ffmpeg->pix_fmt);
-//    const auto _buffer_size = av_image_get_buffer_size(_pixel_fmt, _w, _h, 1);
-//
-//    auto* _frame_buffer = gsl::narrow_cast<const uint8_t*>(av_malloc(_buffer_size));
-//    if (w_is_null(_frame_buffer))
-//    {
-//        s_make_error(p_error, TRACE, "failed to allocate the buffer for frame", 0);
-//        return _ret = -1;
-//    }
-//
-//    _ret = av_image_fill_arrays(
-//        gsl::narrow_cast<uint8_t**>(p_ffmpeg->ctx->rgb_frame->data),
-//        gsl::narrow_cast<int*>(p_ffmpeg->ctx->rgb_frame->linesize),
-//        _frame_buffer,
-//        _pixel_fmt,
-//        _w,
-//        _h,
-//        1);
-//    if (_ret <= 0)
-//    {
-//        s_make_error(p_error, TRACE, "could not fill image arrays", 0);
-//        return _ret;
-//    }
-//
-//    p_ffmpeg->ctx->parser = av_parser_init(p_ffmpeg->ctx->codec->id);
-//
-//    if (w_is_null(p_ffmpeg->ctx->parser))
-//    {
-//        s_make_error(p_error, TRACE, "could not initialize parser", 0);
-//        return _ret = -1;
-//    }
-//
-//    return avcodec_open2(p_ffmpeg->ctx->context, p_ffmpeg->ctx->codec, nullptr);
-//}
-
-int w_ffmpeg_init_encoder(
-    _Inout_ w_ffmpeg* p_ffmpeg, 
+int w_ffmpeg_init(
+    _Inout_ w_ffmpeg* p_ffmpeg,
     _In_ w_av_frame p_frame,
+    _In_ uint32_t p_mode,
     _In_ uint32_t p_avcodec_id,
-    _In_ uint32_t p_fps,
-    _In_ uint32_t p_gop,
-    _In_ uint32_t p_refs,
-    _In_ uint32_t p_max_b_frames,
-    _In_ uint32_t p_thread_count,
-    _In_ uint64_t p_bitrate,
+    _In_ AVCodeOptions* p_codec_opt,
     _In_ w_av_opt_set_str* p_preset_strings,
     _In_ uint32_t p_preset_strings_size,
     _In_ w_av_opt_set_int* p_preset_ints,
@@ -132,8 +60,10 @@ int w_ffmpeg_init_encoder(
         return _ret = -1;
     }
 
+    const auto _codec_opt = gsl::not_null<AVCodeOptions*>(p_codec_opt);
     const auto _ffmpeg = gsl::not_null<w_ffmpeg_t*>((w_ffmpeg_t*)calloc(1, sizeof(w_ffmpeg_t)));
-
+    _ffmpeg->codec_id = gsl::narrow_cast<AVCodecID>(p_avcodec_id);
+    
     defer _(nullptr, [&](...)
         {
             *p_ffmpeg = _ffmpeg.get();
@@ -143,9 +73,17 @@ int w_ffmpeg_init_encoder(
             }
         });
 
+    if (p_mode == 0)
+    {
+        _ffmpeg->codec = gsl::not_null<const AVCodec*>(avcodec_find_encoder(_ffmpeg->codec_id));
+    }
+    else
+    {
+        _ffmpeg->codec = gsl::not_null<const AVCodec*>(avcodec_find_decoder(_ffmpeg->codec_id));
+        _ffmpeg->parser = av_parser_init(_ffmpeg->codec->id);
+    }
+
     _ffmpeg->packet = gsl::not_null<AVPacket*>(av_packet_alloc());
-    _ffmpeg->codec_id = gsl::narrow_cast<AVCodecID>(p_avcodec_id);
-    _ffmpeg->codec = gsl::not_null<const AVCodec*>(avcodec_find_encoder(_ffmpeg->codec_id));
     _ffmpeg->context = gsl::not_null<AVCodecContext*>(avcodec_alloc_context3(_ffmpeg->codec));
 
     _ffmpeg->context->codec_id = _ffmpeg->codec_id;
@@ -154,22 +92,24 @@ int w_ffmpeg_init_encoder(
     // note resolution must be a multiple of 2!!
     _ffmpeg->context->height = p_frame->height;
     // bitrate of context
-    _ffmpeg->context->bit_rate = gsl::narrow_cast<int64_t>(p_bitrate);
+    _ffmpeg->context->bit_rate = gsl::narrow_cast<int64_t>(_codec_opt->bitrate);
     // pixel format
     _ffmpeg->context->pix_fmt = gsl::narrow_cast<AVPixelFormat>(p_frame->format);
     // time based number
     _ffmpeg->context->time_base.num = 1;
     // frame per seconds
-    _ffmpeg->context->time_base.den = gsl::narrow_cast<int>(p_fps);
+    _ffmpeg->context->time_base.den = gsl::narrow_cast<int>(_codec_opt->fps);
     // set gop
-    _ffmpeg->context->gop_size = gsl::narrow_cast<int>(p_gop); 
+    _ffmpeg->context->gop_size = gsl::narrow_cast<int>(_codec_opt->gop);
     // set refs
-    _ffmpeg->context->refs = gsl::narrow_cast<int>(p_refs); 
+    _ffmpeg->context->refs = gsl::narrow_cast<int>(_codec_opt->refs);
     // set frames
-    _ffmpeg->context->max_b_frames = gsl::narrow_cast<int>(p_max_b_frames); 
+    _ffmpeg->context->max_b_frames = gsl::narrow_cast<int>(_codec_opt->max_b_frames);
     // set thread numbers
-    _ffmpeg->context->thread_count = gsl::narrow_cast<int>(p_thread_count); 
-    
+    _ffmpeg->context->thread_count = gsl::narrow_cast<int>(_codec_opt->thread_count);
+    // set level
+    _ffmpeg->context->level = _codec_opt->level;
+
     //pEncoder->video_codec_context->coder_type = FF_CODER_TYPE_VLC;
     //pEncoder->video_codec_context->flags2 |= AV_CODEC_FLAG2_FAST;
 
@@ -179,7 +119,7 @@ int w_ffmpeg_init_encoder(
     // if (pEncoder->_selected_encoder == AV_CODEC_ID_H264 ||
     //     pEncoder->_selected_encoder == AV_CODEC_ID_H265)
     // {
-    //     pEncoder->video_codec_context->level = pEncoder->h264_h265_level;		// Intra frames per x P frames
+    //     
 
     //     if (pEncoder->h264_h265_preset &&
     //         pEncoder->h264_h265_preset[0] != '\0')

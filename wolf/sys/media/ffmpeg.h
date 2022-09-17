@@ -11,6 +11,17 @@ extern "C" {
 
 #include "av_frame.h"
 
+    typedef struct AVCodeOptions
+    {
+        uint32_t fps;
+        uint32_t gop;
+        uint32_t refs;
+        uint32_t max_b_frames;
+        uint32_t thread_count;
+        uint64_t bitrate;
+        uint64_t level;
+    } AVCodeOptions;
+
     typedef struct w_av_opt_set_str
     { 
         // name of option 
@@ -42,14 +53,9 @@ extern "C" {
      * initialize the ffmpeg context
      * @param w_av_frame p_frame,
      * @param p_avcodec_id, the avcodec id
-     * @param p_fps, the frames per second value
-     * @param p_gop, the gop value
-     * @param p_refs, the number of refrences
-     * @param p_max_b_frames, the max b frames
-     * @param p_thread_count, the thread count
-     * @param p_bitrate, the bitrate of encoder
-     * @param p_width, width of av_frame
-     * @param p_height, height of av_frame
+     * @param p_mode, zero for encoder and non-zero for decoder
+     * @param p_avcodec_id, av codec id
+     * @param p_codec_opt, the av codec options
      * @param p_preset_strings, the string presets
      * @param p_preset_strings_size, the size of string presets
      * @param p_preset_ints, the integer presets
@@ -60,16 +66,12 @@ extern "C" {
      * @return int the result of encoding the frame
      */
     W_API
-        int w_ffmpeg_init_encoder(
+        int w_ffmpeg_init(
             _Inout_ w_ffmpeg* p_ffmpeg,
             _In_ w_av_frame p_frame,
+            _In_ uint32_t p_mode,
             _In_ uint32_t p_avcodec_id,
-            _In_ uint32_t p_fps,
-            _In_ uint32_t p_gop,
-            _In_ uint32_t p_refs,
-            _In_ uint32_t p_max_b_frames,
-            _In_ uint32_t p_thread_count,
-            _In_ uint64_t p_bitrate,
+            _In_ AVCodeOptions* p_codec_opt,
             _In_ w_av_opt_set_str* p_preset_strings,
             _In_ uint32_t p_preset_strings_size,
             _In_ w_av_opt_set_int* p_preset_ints,

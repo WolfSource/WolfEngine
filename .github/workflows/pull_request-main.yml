@@ -3,14 +3,14 @@ env:
 jobs:
   audit:
     container:
-      image: docker://rust:1.62-bullseye
+      image: docker://rust:1.63-bullseye
     name: Cargo Audit
     needs:
       - clippy
       - fmt-check
     permissions:
       contents: read
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       -
         name: Check Out
@@ -40,14 +40,14 @@ jobs:
     timeout-minutes: 30
   check:
     container:
-      image: docker://rust:1.62-bullseye
+      image: docker://rust:1.63-bullseye
     name: Cargo Check
     needs:
       - clippy
       - fmt-check
     permissions:
       contents: read
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       -
         name: Check Out
@@ -74,7 +74,7 @@ jobs:
     timeout-minutes: 30
   deny-check:
     container:
-      image: docker://rust:1.62-bullseye
+      image: docker://rust:1.63-bullseye
     continue-on-error: ${{ matrix.checks == 'advisories' }}
     name: Cargo Deny Check
     needs:
@@ -82,7 +82,7 @@ jobs:
       - fmt-check
     permissions:
       contents: read
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       -
         name: Check Out
@@ -127,11 +127,11 @@ jobs:
     timeout-minutes: 30
   clippy:
     container:
-      image: docker://rust:1.62-bullseye
+      image: docker://rust:1.63-bullseye
     name: Cargo Clippy
     permissions:
       contents: read
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       -
         name: Check Out
@@ -158,7 +158,7 @@ jobs:
     timeout-minutes: 30
   coverage:
     container:
-      image: docker://rust:1.62-bullseye
+      image: docker://rust:1.63-bullseye
     name: Coverage
     needs:
       - clippy
@@ -166,7 +166,7 @@ jobs:
       - test
     permissions:
       contents: read
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       -
         name: Check Out
@@ -213,7 +213,7 @@ jobs:
       - test
     permissions:
       contents: read
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
     - name: Coveralls Finished
       uses: coverallsapp/github-action@9ba913c152ae4be1327bfb9085dc806cedb44057
@@ -223,11 +223,11 @@ jobs:
     timeout-minutes: 30
   fmt-check:
     container:
-      image: docker://rust:1.62-bullseye
+      image: docker://rust:1.63-bullseye
     name: Cargo Format Check
     permissions:
       contents: read
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       -
         name: Check Out
@@ -260,7 +260,7 @@ jobs:
   #   permissions:
   #     contents: read
   #     security-events: write
-  #   runs-on: ubuntu-latest
+  #   runs-on: windows-latest
   #   steps:
   #     -
   #       name: Check Out
@@ -295,14 +295,14 @@ jobs:
   #   timeout-minutes: 30
   test:
     container:
-      image: docker://rust:1.62-bullseye
+      image: docker://rust:1.63-bullseye
     name: Cargo Test
     needs:
       - clippy
       - fmt-check
     permissions:
       contents: read
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       -
         name: Check Out
