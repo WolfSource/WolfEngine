@@ -1,6 +1,8 @@
 *.db-*
 *.prof*
 .git/
+*.png
+!Logo.png
 coverage/
 documentation/
 profile/

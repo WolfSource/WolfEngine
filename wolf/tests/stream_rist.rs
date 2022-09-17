@@ -141,7 +141,7 @@ fn test_receive_rist() {
 fn test_send_receive_rist() {
     use wolf::system::os::runtime::RunTime;
 
-    println!("wolf_sys version is : {:?}", wolf::sys_version());
+    println!("wolf_sys version is : {:?}", wolf::sys_init());
 
     let t_sender_handle = RunTime::thread(|| {
         test_send_rist();

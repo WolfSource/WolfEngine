@@ -374,8 +374,8 @@ fn bindgens(p_current_dir_path_str: &str) {
         block_headers: &'a [&'a str],
     }
     let mut headers = vec![Binding {
-        src: "sys/wolf/version.h",
-        dst: "src/system/ffi/version.rs",
+        src: "sys/wolf/sys_init.h",
+        dst: "src/system/ffi/sys_init.rs",
         block_headers: &[],
     }];
 

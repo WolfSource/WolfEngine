@@ -12,14 +12,14 @@ extern "C" {
 #include "wolf.h"
 
     /**
-     * returns wolf version
+     * initialize the wolf sys
+     * @param p_dump_path, the crash dump path
      * @param p_buf, an inout buffer with maximum size of 260 characters
-     * @param p_buf_len, the input length of buffer
-     * the version will be printed like this: "<major>.<minor>.<patch>.<debug>"
+     * @param p_buf_len, the input length of buffer. The version will be printed like this: "<major>.<minor>.<patch>.<debug>"
      * @returns zero on success
      */
     W_API
-        int w_sys_version(_Inout_z_ char* p_buf, _In_ size_t p_buf_len);
+        int w_sys_init(_In_z_ const char* p_dump_path, _Inout_z_ char* p_buf, _In_ size_t p_buf_len);
 
 #ifdef __cplusplus
 }

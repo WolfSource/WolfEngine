@@ -600,10 +600,10 @@ impl FFmpeg {
                 0,
                 buf_ptr,
             );
-            let c_err_str = std::ffi::CStr::from_ptr(buf_ptr);
             if ret == 0 {
                 Ok(obj)
             } else {
+                let c_err_str = std::ffi::CStr::from_ptr(buf_ptr);
                 let str = c_err_str.to_str().unwrap_or_default();
                 bail!(
                     "could not create ffmpeg object because {}",
@@ -686,9 +686,4 @@ impl FFmpeg {
 // //             bail!("could not decode the buffer")
 // //         }
 // //     }
-// // }
-
-// // #[allow(clippy::not_unsafe_ptr_arg_deref)]
-// // pub fn ffmpeg_fini(p_ffmpeg_opt: w_ffmpeg_opt) {
-// //     unsafe { w_ffmpeg_fini(p_ffmpeg_opt) };
 // // }

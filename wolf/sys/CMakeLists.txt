@@ -38,6 +38,7 @@ option(WOLF_STREAM_RTSP_CLIENT "Enable real time streaming for client" OFF)
 option(WOLF_SYSTEM_LZ4 "Enable LZ4 Compression" OFF)
 option(WOLF_SYSTEM_LZMA "Enable LZMA Compression" OFF)
 option(WOLF_SYSTEM_OPENAL "Enable openAL soft" OFF)
+option(WOLF_SYSTEM_STACKTRACE "Enable stacktrace" ON)
 
 option(WOLF_ENABLE_TESTS "Enable test for wolf_sys" ON)
 
@@ -67,10 +68,9 @@ endif()
 file(GLOB_RECURSE WOLF_SRCS
     "${CMAKE_CURRENT_SOURCE_DIR}/dllmain.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/wolf/wolf.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/wolf/wolf.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/wolf/wolf.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/wolf/version.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/wolf/version.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/wolf/sys_init.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/wolf/sys_init.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/wolf/DISABLE_ANALYSIS_BEGIN"
     "${CMAKE_CURRENT_SOURCE_DIR}/wolf/DISABLE_ANALYSIS_END"
 )
@@ -83,6 +83,7 @@ set(INCLUDES
 set(LIBS)
 
 # include cmakes
+include(cmake/boost.cmake)
 include(cmake/system.cmake)
 include(cmake/stream.cmake)
 include(cmake/media.cmake)

@@ -56,12 +56,13 @@ pub type uint_fast64_t = ::std::os::raw::c_ulonglong;
 pub type intmax_t = ::std::os::raw::c_longlong;
 pub type uintmax_t = ::std::os::raw::c_ulonglong;
 extern "C" {
-    #[doc = " returns wolf version"]
+    #[doc = " initialize the wolf sys"]
+    #[doc = " @param p_dump_path, the crash dump path"]
     #[doc = " @param p_buf, an inout buffer with maximum size of 260 characters"]
-    #[doc = " @param p_buf_len, the input length of buffer"]
-    #[doc = " the version will be printed like this: \"<major>.<minor>.<patch>.<debug>\""]
+    #[doc = " @param p_buf_len, the input length of buffer. The version will be printed like this: \"<major>.<minor>.<patch>.<debug>\""]
     #[doc = " @returns zero on success"]
-    pub fn w_sys_version(
+    pub fn w_sys_init(
+        p_dump_path: *const ::std::os::raw::c_char,
         p_buf: *mut ::std::os::raw::c_char,
         p_buf_len: size_t,
     ) -> ::std::os::raw::c_int;

@@ -9,7 +9,7 @@ use crate::stream::ffi::rist::{
     w_rist_set_out_of_band_callback, w_rist_set_receiver_data_callback, w_rist_set_stats_callback,
     w_rist_stats_callback, w_rist_write,
 };
-use crate::system::ffi::version::size_t;
+use crate::system::ffi::sys_init::size_t;
 use anyhow::{bail, Result};
 use std::os::raw::c_void;
 

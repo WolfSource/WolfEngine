@@ -7,98 +7,117 @@
 // // use wolf::media::ffi::ffmpeg::w_ffmpeg_opt_t;
 // // use wolf::media::ffmpeg::ffmpeg::{self, *};
 
-// static IMAGE_DIR: &str = "G:/SourceCodes/WolfEngine_rs/WolfEngine/wolf";
+#[cfg(feature = "media_ffmpeg")]
+#[test]
+fn test_encode() {
+    use image::{EncodableLayout, GenericImageView};
+    use wolf::media::{
+        av_frame::{AVFrame, AVPixelFormat},
+        ffmpeg::{AVCodecID, FFmpeg},
+    };
 
-// #[cfg(feature = "media_ffmpeg")]
-// #[test]
-// fn test_encode() {
-//     use image::{EncodableLayout, GenericImageView};
-//     use wolf::media::av_frame::{AVFrame, AVPixelFormat};
+    println!("wolf_sys version is : {:?}", wolf::sys_init());
 
-//     // load image
-//     let path = std::path::Path::new(IMAGE_DIR).join("sample.png");
-//     let img = image::open(path).unwrap();
-//     let img_size = img.dimensions();
-//     let pixels = img.as_rgba8().unwrap().as_bytes();
+    let current_dir = std::env::current_dir().unwrap();
+    // load image
+    let path = current_dir.join("sample_rgba.png");
+    let img = image::open(path).unwrap();
+    let img_size = img.dimensions();
+    let pixels = img.as_rgba8().unwrap().as_bytes();
 
-//     // create a source frame from img
-//     let _src_frame = AVFrame::new(AVPixelFormat::RGBA, img_size.0, img_size.1, 1, pixels).unwrap();
+    // create a source frame from img
+    let src_frame = AVFrame::new(AVPixelFormat::RGBA, img_size.0, img_size.1, 1, pixels).unwrap();
 
-//     //let _ffmpeg = FFmpeg::new();
+    let _ffmpeg = FFmpeg::new(&src_frame, AVCodecID::H264, 60, 6000).unwrap();
 
-//     // // initalize variables
-//     // let av_codec_id_av1 = 226;
-//     // const LIMIT: usize = 255;
-//     // let width: i64 = 1024;
-//     // let height: i64 = 1024;
-//     // let mut error = ['0' as u8; LIMIT];
+    print!("test")
+    //     use image::{EncodableLayout, GenericImageView};
+    //     use wolf::media::av_frame::{AVFrame, AVPixelFormat};
 
-//     // let mut encoded_buffer = CBuffer {
-//     //     ptr: std::ptr::null_mut(),
-//     //     len: 0,
-//     // };
+    //     // load image
+    //     let path = std::path::Path::new(IMAGE_DIR).join("sample.png");
+    //     let img = image::open(path).unwrap();
+    //     let img_size = img.dimensions();
+    //     let pixels = img.as_rgba8().unwrap().as_bytes();
 
-//     // let encode_options = &mut w_ffmpeg_opt_t {
-//     //     fps: 60,
-//     //     width: width,
-//     //     height: height,
-//     //     bitrate: 400000,
-//     //     codec_id: av_codec_id_av1,
-//     //     ctx: std::ptr::null_mut(),
-//     //     type_: w_ffmpeg_action_W_ENCODE,
-//     // } as *mut w_ffmpeg_opt_t;
+    //     // create a source frame from img
+    //     let _src_frame = AVFrame::new(AVPixelFormat::RGBA, img_size.0, img_size.1, 1, pixels).unwrap();
 
-//     // // open jpeg file sample
-//     // let input_image = Path::new("Logo.jpg");
-//     // let img = image::open(input_image).unwrap();
-//     // let tmp = img.as_bytes();
+    //     //let _ffmpeg = FFmpeg::new();
 
-//     // // initialize ffmpeg
-//     // let mut res = ffmpeg_init(encode_options, &error);
+    //     // // initalize variables
+    //     // let av_codec_id_av1 = 226;
+    //     // const LIMIT: usize = 255;
+    //     // let width: i64 = 1024;
+    //     // let height: i64 = 1024;
+    //     // let mut error = ['0' as u8; LIMIT];
 
-//     // match res {
-//     //     Ok(()) => {
-//     //         w_log!("FFMPEG is initialized successfully.");
-//     //     }
-//     //     Err(e) => {
-//     //         w_log!("Initializing failed: {:?}", error);
-//     //     }
-//     // };
+    //     // let mut encoded_buffer = CBuffer {
+    //     //     ptr: std::ptr::null_mut(),
+    //     //     len: 0,
+    //     // };
 
-//     // // encode the sample image
-//     // res = ffmpeg_encode(encode_options, tmp, &mut encoded_buffer, &error);
+    //     // let encode_options = &mut w_ffmpeg_opt_t {
+    //     //     fps: 60,
+    //     //     width: width,
+    //     //     height: height,
+    //     //     bitrate: 400000,
+    //     //     codec_id: av_codec_id_av1,
+    //     //     ctx: std::ptr::null_mut(),
+    //     //     type_: w_ffmpeg_action_W_ENCODE,
+    //     // } as *mut w_ffmpeg_opt_t;
 
-//     // match res {
-//     //     Ok(()) => {
-//     //         w_log!(
-//     //             "Image is encoded successfully. The encoded file size is: {}",
-//     //             encoded_buffer.len
-//     //         );
-//     //     }
-//     //     Err(e) => {
-//     //         w_log!("Encoding failed: {:?}", error);
-//     //     }
-//     // };
+    //     // // open jpeg file sample
+    //     // let input_image = Path::new("Logo.jpg");
+    //     // let img = image::open(input_image).unwrap();
+    //     // let tmp = img.as_bytes();
 
-//     // // open file to write encoding buffer into
-//     // let encoded_file_path = Path::new("encoded_buffer.svt1");
-//     // let encoded_file_display = encoded_file_path.display();
-//     // let mut encoded_file = match File::create(encoded_file_path) {
-//     //     Err(why) => panic!("couldn't create {}: {}", encoded_file_display, why),
-//     //     Ok(file) => file,
-//     // };
+    //     // // initialize ffmpeg
+    //     // let mut res = ffmpeg_init(encode_options, &error);
 
-//     // let data_in = unsafe {
-//     //     let buf = std::slice::from_raw_parts(encoded_buffer.ptr, encoded_buffer.len as usize);
-//     //     buf
-//     // };
+    //     // match res {
+    //     //     Ok(()) => {
+    //     //         w_log!("FFMPEG is initialized successfully.");
+    //     //     }
+    //     //     Err(e) => {
+    //     //         w_log!("Initializing failed: {:?}", error);
+    //     //     }
+    //     // };
 
-//     // // write encoded buffer into file
-//     // res = match encoded_file.write_all(data_in) {
-//     //     Err(why) => panic!("couldn't write to file {}: {}", encoded_file_display, why),
-//     //     Ok(()) => Ok(()),
-//     // };
-// }
+    //     // // encode the sample image
+    //     // res = ffmpeg_encode(encode_options, tmp, &mut encoded_buffer, &error);
+
+    //     // match res {
+    //     //     Ok(()) => {
+    //     //         w_log!(
+    //     //             "Image is encoded successfully. The encoded file size is: {}",
+    //     //             encoded_buffer.len
+    //     //         );
+    //     //     }
+    //     //     Err(e) => {
+    //     //         w_log!("Encoding failed: {:?}", error);
+    //     //     }
+    //     // };
+
+    //     // // open file to write encoding buffer into
+    //     // let encoded_file_path = Path::new("encoded_buffer.svt1");
+    //     // let encoded_file_display = encoded_file_path.display();
+    //     // let mut encoded_file = match File::create(encoded_file_path) {
+    //     //     Err(why) => panic!("couldn't create {}: {}", encoded_file_display, why),
+    //     //     Ok(file) => file,
+    //     // };
+
+    //     // let data_in = unsafe {
+    //     //     let buf = std::slice::from_raw_parts(encoded_buffer.ptr, encoded_buffer.len as usize);
+    //     //     buf
+    //     // };
+
+    //     // // write encoded buffer into file
+    //     // res = match encoded_file.write_all(data_in) {
+    //     //     Err(why) => panic!("couldn't write to file {}: {}", encoded_file_display, why),
+    //     //     Ok(()) => Ok(()),
+    //     // };
+}
 
 // #[cfg(feature = "media_ffmpeg")]
 // #[test]

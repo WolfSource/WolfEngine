@@ -1,4 +1,4 @@
-#if defined(_WIN32)
+#ifdef _MSC_VER
 
 #include <wolf.h> 
 #include <wolf.hpp>

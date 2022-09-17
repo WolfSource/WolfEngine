@@ -100,7 +100,8 @@
         "regex": "cpp",
         "semaphore": "cpp",
         "variant": "cpp",
-        "span": "c"
+        "span": "c",
+        "*.ipp": "cpp"
     },
     "files.watcherExclude": {
         "**/*.db-*": true,

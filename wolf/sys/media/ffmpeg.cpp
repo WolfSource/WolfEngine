@@ -114,63 +114,27 @@ int w_ffmpeg_init_encoder(
     _In_ uint32_t p_preset_doubles_size,
     _Inout_z_ char* p_error)
 {
-    constexpr auto TRACE = "ffmpeg::w_ffmpeg_init_encoder";
-
+    const char* TRACE = "ffmpeg::w_ffmpeg_init_encoder";
+    const auto _error_nn = gsl::not_null<char*>(p_error);
     auto _ret = 0;
-    if (w_is_null(p_error))
-    {
-        return _ret = -1;
-    }
     
-    auto* _ffmpeg = gsl::owner<w_ffmpeg_t*>(calloc(1, sizeof(w_ffmpeg_t)));
-    if (w_is_null(_ffmpeg))
-    {
-        return _ret = -1;
-    }
+    const auto _ffmpeg = gsl::not_null<w_ffmpeg_t*>((w_ffmpeg_t*)calloc(1, sizeof(w_ffmpeg_t)));
 
     defer _(nullptr, [&](...)
         {
-            *p_ffmpeg = _ffmpeg;
+            *p_ffmpeg = _ffmpeg.get();
             if (_ret != 0)
             {
                 w_ffmpeg_fini(p_ffmpeg);
             }
         });
 
-    _ffmpeg->packet = av_packet_alloc();
-    if (w_is_null(_ffmpeg->packet))
-    {
-        (void)snprintf(
-            p_error,
-            W_MAX_PATH,
-            "could nit allocate memory for ffmpeg packet. trace info: %s",
-            TRACE);
-        return _ret = -1;
-    }
-
+    _ffmpeg->packet = gsl::not_null<AVPacket*>(av_packet_alloc());
     _ffmpeg->codec_id = gsl::narrow_cast<AVCodecID>(p_avcodec_id);
-    _ffmpeg->codec = avcodec_find_encoder(_ffmpeg->codec_id);
-    if (w_is_null(_ffmpeg->codec))
-    {
-        (void)snprintf(
-            p_error,
-            W_MAX_PATH,
-            "failed to find the specified coded for encoder. trace info: %s",
-            TRACE);
-        return _ret = -1;
-    }
+    _ffmpeg->codec = gsl::not_null<const AVCodec*>(avcodec_find_encoder(_ffmpeg->codec_id));
+    _ffmpeg->context = gsl::not_null<AVCodecContext*>(avcodec_alloc_context3(_ffmpeg->codec));
 
-    _ffmpeg->context = avcodec_alloc_context3(_ffmpeg->codec);
-    if (w_is_null(_ffmpeg->context))
-    {
-        (void)snprintf(
-            p_error,
-            W_MAX_PATH,
-            "failed to allocate memory for ffmpeg context. trace info: %s",
-            TRACE);
-        return _ret = -1;
-    }
-
+    // set context settings
     _ffmpeg->context->bit_rate = gsl::narrow_cast<int64_t>(p_bitrate);
     _ffmpeg->context->time_base.num = 1;
     _ffmpeg->context->time_base.den = gsl::narrow_cast<int>(p_fps);
