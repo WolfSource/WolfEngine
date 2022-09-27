@@ -23,15 +23,9 @@ pub fn sys_init() -> String {
     let mut buf = [0i8; 32];
     let buf_ptr = buf.as_mut_ptr();
 
-    let current_exe_path = std::env::current_exe().unwrap_or_default();
-    let current_exe_str = current_exe_path.to_str().unwrap_or_default();
     // call unsafe function
     let c_str = unsafe {
-        w_sys_init(
-            current_exe_str.as_ptr() as *const std::os::raw::c_char,
-            buf_ptr,
-            buf.len() as size_t,
-        );
+        w_sys_init(buf_ptr, buf.len() as size_t);
         std::ffi::CStr::from_ptr(buf_ptr)
     };
 

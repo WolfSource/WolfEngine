@@ -35,15 +35,12 @@ fn test_av_frame_convert() {
     .unwrap();
 
     src_frame.convert(&mut dst_frame).unwrap();
-    let _ret = dst_frame.get_data(dst_pixels.as_mut_ptr());
-    unsafe {
-        dst_pixels.set_len(dst_frame_size_usize);
-    }
+    let dst_pixels = dst_frame.get_data(0).unwrap();
 
     let out_path = current_dir.join("sample_bgra.png");
     image::save_buffer_with_format(
         out_path,
-        &dst_pixels,
+        dst_pixels,
         img_size.0,
         img_size.1,
         image::ColorType::Rgba8,

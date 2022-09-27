@@ -163,55 +163,12 @@ pub fn cmake(p_current_dir_path_str: &Path, p_build_profile: &str, p_target_os: 
         return;
     }
 
-    #[cfg(not(target_os = "windows"))]
-    let build_cmd = "-GNinja";
-
-    #[cfg(target_os = "windows")]
-    let build_cmd = "";
-
-    // args
-    let mut args = [
-        ".".to_owned(),
-        "--no-warn-unused-cli".to_owned(),
-        "-Wdev".to_owned(),
-        "--debug-output".to_owned(),
-        "-DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE".to_owned(),
-        format!("-DCMAKE_C_COMPILER={}", CMAKE_C_COMPILER),
-        format!("-DCMAKE_BUILD_TYPE:STRING={}", p_build_profile),
-        format!("-B{}", cmake_build_path_str),
-        format!("-S{}", cmake_current_path_str),
-        build_cmd.to_owned(),
-    ]
-    .to_vec();
-
-    // set defines
-    args.push("-DWOLF_ENABLE_TESTS=OFF".to_owned());
-
-    #[cfg(feature = "system_lz4")]
-    args.push("-DWOLF_SYSTEM_LZ4=ON".to_owned());
-
-    #[cfg(feature = "stream_rist")]
-    args.push("-DWOLF_STREAM_RIST=ON".to_owned());
-
-    #[cfg(any(feature = "media_ffmpeg"))]
-    args.push("-DWOLF_MEDIA_FFMPEG=ON".to_owned());
-
-    if p_target_os == "android" {
-        let android_ndk_home_env =
-            std::env::var("ANDROID_NDK_HOME").expect("could not get ANDROID_NDK_HOME");
-        args.push(format!(
-            "-DCMAKE_TOOLCHAIN_FILE={}/build/cmake/android.toolchain.cmake",
-            android_ndk_home_env
-        ));
-        args.push(format!("-DANDROID_ABI={}", ANDROID_ARCH_API));
-        args.push(format!("-DANDROID_NDK={}", android_ndk_home_env));
-        args.push(format!("-DANDROID_PLATFORM=android-{}", ANDROID_API_LEVEL));
-        args.push(format!("-DCMAKE_ANDROID_ARCH_ABI={}", ANDROID_ARCH_API));
-        args.push(format!("-DCMAKE_ANDROID_NDK={}", android_ndk_home_env));
-        args.push("-DCMAKE_EXPORT_COMPILE_COMMANDS=ON".to_owned());
-        args.push("-DCMAKE_SYSTEM_NAME=Android".to_owned());
-        args.push(format!("-DCMAKE_SYSTEM_VERSION={}", ANDROID_API_LEVEL));
-    }
+    let args = get_cmake_defines(
+        p_target_os,
+        p_build_profile,
+        cmake_build_path_str,
+        cmake_current_path_str,
+    );
 
     // configure
     let mut out = Command::new("cmake")
@@ -248,6 +205,68 @@ pub fn cmake(p_current_dir_path_str: &Path, p_build_profile: &str, p_target_os: 
         std::str::from_utf8(&out.stdout),
         std::str::from_utf8(&out.stderr),
     );
+}
+
+fn get_cmake_defines(
+    p_target_os: &str,
+    p_build_profile: &str,
+    p_cmake_build_path: &str,
+    p_cmake_current_path: &str,
+) -> Vec<String> {
+    #[cfg(not(target_os = "windows"))]
+    let build_cmd = "-GNinja";
+
+    #[cfg(target_os = "windows")]
+    let build_cmd = "";
+
+    // args
+    let mut args = [
+        ".".to_owned(),
+        "--no-warn-unused-cli".to_owned(),
+        "-Wdev".to_owned(),
+        "--debug-output".to_owned(),
+        "-DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE".to_owned(),
+        format!("-DCMAKE_C_COMPILER={}", CMAKE_C_COMPILER),
+        format!("-DCMAKE_BUILD_TYPE:STRING={}", p_build_profile),
+        format!("-B{}", p_cmake_build_path),
+        format!("-S{}", p_cmake_current_path),
+        build_cmd.to_owned(),
+    ]
+    .to_vec();
+
+    // set defines
+    args.push("-DWOLF_ENABLE_TESTS=OFF".to_owned());
+
+    #[cfg(any(feature = "system_stacktrace"))]
+    args.push("-DWOLF_SYSTEM_STACKTRACE=ON".to_owned());
+
+    #[cfg(feature = "system_lz4")]
+    args.push("-DWOLF_SYSTEM_LZ4=ON".to_owned());
+
+    #[cfg(feature = "stream_rist")]
+    args.push("-DWOLF_STREAM_RIST=ON".to_owned());
+
+    #[cfg(any(feature = "media_ffmpeg"))]
+    args.push("-DWOLF_MEDIA_FFMPEG=ON".to_owned());
+
+    if p_target_os == "android" {
+        let android_ndk_home_env =
+            std::env::var("ANDROID_NDK_HOME").expect("could not get ANDROID_NDK_HOME");
+        args.push(format!(
+            "-DCMAKE_TOOLCHAIN_FILE={}/build/cmake/android.toolchain.cmake",
+            android_ndk_home_env
+        ));
+        args.push(format!("-DANDROID_ABI={}", ANDROID_ARCH_API));
+        args.push(format!("-DANDROID_NDK={}", android_ndk_home_env));
+        args.push(format!("-DANDROID_PLATFORM=android-{}", ANDROID_API_LEVEL));
+        args.push(format!("-DCMAKE_ANDROID_ARCH_ABI={}", ANDROID_ARCH_API));
+        args.push(format!("-DCMAKE_ANDROID_NDK={}", android_ndk_home_env));
+        args.push("-DCMAKE_EXPORT_COMPILE_COMMANDS=ON".to_owned());
+        args.push("-DCMAKE_SYSTEM_NAME=Android".to_owned());
+        args.push(format!("-DCMAKE_SYSTEM_VERSION={}", ANDROID_API_LEVEL));
+    }
+
+    args
 }
 
 fn copy_shared_libs(p_lib_path: &str, p_lib_names: &[&str]) {

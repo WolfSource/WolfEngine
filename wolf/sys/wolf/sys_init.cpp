@@ -1,24 +1,44 @@
 #include "sys_init.h"
-#include <wolf.hpp>
-#include <signal.h>
+#include "wolf.hpp"
 #include <filesystem>
+
+#ifdef WOLF_SYSTEM_STACKTRACE
+
+#include <signal.h>
 #include <fstream>
 #include <sstream>
 #include <boost/stacktrace.hpp>
 
-static std::string s_dump_path;
+#endif
+
+static std::filesystem::path s_current_process_dir()
+{
+#ifdef WIN32
+    std::array<wchar_t, W_MAX_PATH> _buffer;
+    GetModuleFileNameW(NULL, _buffer.data(), sizeof(_buffer));
+    return std::filesystem::path(_buffer.data()).parent_path();
+#else
+    std::string _str;
+    std::ifstream("/proc/self/comm") >> _str;
+    return std::filesystem::path(_str);
+#endif
+}
+
+#ifdef WOLF_SYSTEM_STACKTRACE
+
 static void w_signal_handler(int p_signum)
 {
-    auto _path = std::filesystem::path(s_dump_path);
-    _path = _path.parent_path().append("wolf.dump");
+    auto _path = s_current_process_dir();
+    _path = _path.append("wolf.dump");
 
     ::signal(p_signum, SIG_DFL);
 
     std::stringstream _traces;
     for (auto trace : boost::stacktrace::stacktrace())
     {
-        _traces << "name: " << trace.name() << "\r\n" <<
-            "source_file: " << trace.source_file() << "(" << std::to_string(trace.source_line()) << ")\r\n\r\n";
+        _traces << "name: " << trace.name() << 
+            " source_file: " << trace.source_file() << 
+            "(" << std::to_string(trace.source_line()) << ")\r\n";
     }
 
     std::fstream _file;
@@ -32,15 +52,15 @@ static void w_signal_handler(int p_signum)
     ::raise(SIGABRT);
 }
 
-int w_sys_init(_In_z_ const char* p_dump_path, _Inout_z_ char* p_buf, _In_ size_t p_buf_len)
-{
-    if (p_dump_path != nullptr)
-    {
-        s_dump_path = p_dump_path;
-    }
+#endif
 
+int w_sys_init(_Inout_z_ char* p_buf, _In_ size_t p_buf_len)
+{
+
+#ifdef WOLF_SYSTEM_STACKTRACE
     ::signal(SIGSEGV, &w_signal_handler);
     ::signal(SIGABRT, &w_signal_handler);
+#endif
 
     if (p_buf == nullptr || p_buf_len == 0)
     {

@@ -19,7 +19,7 @@ extern "C" {
      * @returns zero on success
      */
     W_API
-        int w_sys_init(_In_z_ const char* p_dump_path, _Inout_z_ char* p_buf, _In_ size_t p_buf_len);
+        int w_sys_init(_Inout_z_ char* p_buf, _In_ size_t p_buf_len);
 
 #ifdef __cplusplus
 }

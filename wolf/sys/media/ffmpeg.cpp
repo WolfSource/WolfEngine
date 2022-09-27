@@ -27,10 +27,29 @@ typedef struct w_ffmpeg_t
 {
     AVCodecID codec_id = AVCodecID::AV_CODEC_ID_NONE;
     AVCodecContext* context = nullptr;
-    AVPacket* packet = nullptr;
     const AVCodec* codec = nullptr;
     AVCodecParserContext* parser = nullptr;
 }w_ffmpeg_t W_ALIGNMENT_64;
+
+//template <typename ...Args>
+//static void s_print_error(
+//    _In_ int p_error_code,
+//    _In_ gsl::not_null<char*> p_trace,
+//    _In_ gsl::not_null<char*> p_buffer,
+//    _In_z_ char const* const p_fmt,
+//    _In_ Args&& ...args)
+//{
+//    char _av_error[W_MAX_PATH] = { 0 };
+//    if (p_error_code != 0)
+//    {
+//        std::ignore = av_make_error_string(_av_error, W_MAX_PATH, p_error_code);
+//    }
+//    std::ignore = snprintf(
+//        p_buffer,
+//        W_MAX_PATH,
+//        p_fmt,
+//        std::forward<Args>(args)...);
+//}
 
 int w_ffmpeg_init(
     _Inout_ w_ffmpeg* p_ffmpeg,
@@ -38,21 +57,17 @@ int w_ffmpeg_init(
     _In_ uint32_t p_mode,
     _In_ uint32_t p_avcodec_id,
     _In_ AVCodeOptions* p_codec_opt,
-    _In_ w_av_opt_set_str* p_preset_strings,
-    _In_ uint32_t p_preset_strings_size,
-    _In_ w_av_opt_set_int* p_preset_ints,
-    _In_ uint32_t p_preset_ints_size,
-    _In_ w_av_opt_set_double* p_preset_doubles,
-    _In_ uint32_t p_preset_doubles_size,
-    _Inout_z_ char* p_error)
+    _In_ const AVSetOption* p_av_opt_sets,
+    _In_ uint32_t p_av_opt_sets_size,
+    _Inout_ char* p_error)
 {
-    const char* TRACE = "ffmpeg::w_ffmpeg_init_encoder";
+    constexpr auto TRACE = "ffmpeg::w_ffmpeg_init_encoder";
     const auto _error_nn = gsl::not_null<char*>(p_error);
     auto _ret = 0;
     
     if (p_avcodec_id == 0)
     {
-        (void)snprintf(
+        std::ignore = snprintf(
             p_error,
             W_MAX_PATH,
             "missing codec id. trace info: %s",
@@ -60,8 +75,9 @@ int w_ffmpeg_init(
         return _ret = -1;
     }
 
+    auto _ptr = (w_ffmpeg_t*)calloc(1, sizeof(w_ffmpeg_t));
     const auto _codec_opt = gsl::not_null<AVCodeOptions*>(p_codec_opt);
-    const auto _ffmpeg = gsl::not_null<w_ffmpeg_t*>((w_ffmpeg_t*)calloc(1, sizeof(w_ffmpeg_t)));
+    const auto _ffmpeg = gsl::not_null<w_ffmpeg_t*>(_ptr);
     _ffmpeg->codec_id = gsl::narrow_cast<AVCodecID>(p_avcodec_id);
     
     defer _(nullptr, [&](...)
@@ -83,106 +99,45 @@ int w_ffmpeg_init(
         _ffmpeg->parser = av_parser_init(_ffmpeg->codec->id);
     }
 
-    _ffmpeg->packet = gsl::not_null<AVPacket*>(av_packet_alloc());
     _ffmpeg->context = gsl::not_null<AVCodecContext*>(avcodec_alloc_context3(_ffmpeg->codec));
 
-    _ffmpeg->context->codec_id = _ffmpeg->codec_id;
     // note resolution must be a multiple of 2!!
     _ffmpeg->context->width = p_frame->width;
     // note resolution must be a multiple of 2!!
     _ffmpeg->context->height = p_frame->height;
     // bitrate of context
     _ffmpeg->context->bit_rate = gsl::narrow_cast<int64_t>(_codec_opt->bitrate);
+    // time based number
+    _ffmpeg->context->time_base = AVRational{ 1, gsl::narrow_cast<int>(_codec_opt->fps) };
+    // frame rate
+    _ffmpeg->context->framerate = AVRational{ gsl::narrow_cast<int>(_codec_opt->fps) , 1 };
     // pixel format
     _ffmpeg->context->pix_fmt = gsl::narrow_cast<AVPixelFormat>(p_frame->format);
-    // time based number
-    _ffmpeg->context->time_base.num = 1;
-    // frame per seconds
-    _ffmpeg->context->time_base.den = gsl::narrow_cast<int>(_codec_opt->fps);
     // set gop
-    _ffmpeg->context->gop_size = gsl::narrow_cast<int>(_codec_opt->gop);
+    if (_codec_opt->gop >= 0)
+    {
+        _ffmpeg->context->gop_size = gsl::narrow_cast<int>(_codec_opt->gop);
+    }
     // set refs
-    _ffmpeg->context->refs = gsl::narrow_cast<int>(_codec_opt->refs);
+    if (_codec_opt->refs >= 0)
+    {
+        _ffmpeg->context->refs = gsl::narrow_cast<int>(_codec_opt->refs);
+    }
     // set frames
-    _ffmpeg->context->max_b_frames = gsl::narrow_cast<int>(_codec_opt->max_b_frames);
+    if (_codec_opt->max_b_frames >= 0)
+    {
+        _ffmpeg->context->max_b_frames = gsl::narrow_cast<int>(_codec_opt->max_b_frames);
+    }
     // set thread numbers
-    _ffmpeg->context->thread_count = gsl::narrow_cast<int>(_codec_opt->thread_count);
+    if (_codec_opt->thread_count >= 0)
+    {
+        _ffmpeg->context->thread_count = gsl::narrow_cast<int>(_codec_opt->thread_count);
+    }
     // set level
-    _ffmpeg->context->level = _codec_opt->level;
-
-    //pEncoder->video_codec_context->coder_type = FF_CODER_TYPE_VLC;
-    //pEncoder->video_codec_context->flags2 |= AV_CODEC_FLAG2_FAST;
-
-    //pEncoder->video_codec_context->me_subpel_quality = 4;
-    //pEncoder->video_codec_context->trellis = 0;
-
-    // if (pEncoder->_selected_encoder == AV_CODEC_ID_H264 ||
-    //     pEncoder->_selected_encoder == AV_CODEC_ID_H265)
-    // {
-    //     
-
-    //     if (pEncoder->h264_h265_preset &&
-    //         pEncoder->h264_h265_preset[0] != '\0')
-    //     {
-    //         //change preset between ultrafast,superfast, veryfast, faster, fast, medium, slow, slower, veryslow, placebo
-    //         _ret = av_opt_set(
-    //             pEncoder->video_codec_context->priv_data,
-    //             "preset",
-    //             pEncoder->h264_h265_preset, 0);
-    //     }
-
-    //     if (pEncoder->h264_h265_tune &&
-    //         pEncoder->h264_h265_tune[0] != '\0')
-    //     {
-    //         //change tune between film, animation, grain, stillimage, fastdecode, zerolatency, psnr, ssim
-    //         _ret = av_opt_set(
-    //             pEncoder->video_codec_context->priv_data,
-    //             "tune",
-    //             pEncoder->h264_h265_tune, 0);
-    //     }
-
-    //     if (pEncoder->h264_h265_crf &&
-    //         pEncoder->h264_h265_crf[0] != '\0')
-    //     {
-    //         if (strcmp(pEncoder->h264_h265_crf, "-1") != 0)
-    //         {
-    //             //change crf
-    //             _ret = av_opt_set(
-    //                 pEncoder->video_codec_context->priv_data,
-    //                 "crf",
-    //                 pEncoder->h264_h265_crf,
-    //                 0);
-    //         }
-    //     }
-
-    //     if (pEncoder->_selected_encoder == AV_CODEC_ID_H264)
-    //     {
-    //         if (pEncoder->h264_profile &&
-    //             pEncoder->h264_profile[0] != '\0')
-    //         {
-    //             //change profile between baseline, main, high
-    //             _ret = av_opt_set(
-    //                 pEncoder->video_codec_context->priv_data,
-    //                 "profile",
-    //                 pEncoder->h264_profile, 0);
-    //         }
-
-    //         auto _str = std::to_string(pEncoder->intra_refresh);
-    //         _ret = av_opt_set(
-    //             pEncoder->video_codec_context->priv_data,
-    //             "intra-refresh",
-    //             _str.c_str(), 0);
-
-    //         /*_ret = av_opt_set_int(
-    //             pEncoder->video_codec_context->priv_data,
-    //             "slice-max-size",
-    //             pEncoder->slice_max_size, 0);*/
-    //     }
-    //     else
-    //     {
-
-    //     }
-    // }
+    if (_codec_opt->level >= 0)
+    {
+        _ffmpeg->context->level = _codec_opt->level;
+    }
 
     if (_ffmpeg->context->flags & AVFMT_GLOBALHEADER)
     {
@@ -192,77 +147,100 @@ int w_ffmpeg_init(
 #ifdef __clang__
 #pragma unroll
 #endif
-    for (uint32_t i = 0; i < p_preset_strings_size; ++i)
+    for (uint32_t i = 0; i < p_av_opt_sets_size; ++i)
     {
-        auto* const _name = p_preset_strings[i].name;
-        auto* const _value = p_preset_strings[i].value;
+        auto* const _name = p_av_opt_sets[i].name;
 
-        _ret = av_opt_set(_ffmpeg->context->priv_data, _name, _value, 0);
-        if (_ret < 0)
+        if (_name == nullptr)
         {
-            (void)snprintf(
-                p_error,
-                W_MAX_PATH,
-                "could not set %s : %s. trace info: %s",
-                _name,
-                _value,
-                TRACE);
-            return _ret = -1;
+            continue;
         }
-    }
 
-#ifdef __clang__
-#pragma unroll
-#endif
-    for (uint32_t i = 0; i < p_preset_ints_size; ++i)
-    {
-        auto* const _name = p_preset_ints[i].name;
-        const auto _value = p_preset_ints[i].value;
-
-        _ret = av_opt_set_int(_ffmpeg->context->priv_data, _name, _value, 0);
-        if (_ret < 0)
+        switch (p_av_opt_sets[i].value_type)
         {
-            (void)snprintf(
-                p_error,
-                W_MAX_PATH,
-                "could not set %s : %d. trace info: %s",
-                _name,
-                _value,
-                TRACE);
-            return _ret = -1;
+        default:
+            break;
+        case AVSetOptionValueType::STRING:
+        {
+            const auto _value = p_av_opt_sets[i].value_str;
+            if (_value == nullptr)
+            {
+                _ret = av_opt_set(_ffmpeg->context->priv_data, _name, _value, 0);
+                if (_ret < 0)
+                {
+                    std::array<char, W_MAX_PATH> _av_error = { 0 };
+                    std::ignore = av_make_error_string(_av_error.data(), _av_error.size(), _ret);
+
+                    std::ignore = snprintf(
+                        p_error,
+                        W_MAX_PATH,
+                        "could not set %s : %s because: %s. trace info: %s",
+                        _name,
+                        _value,
+                        _av_error.data(),
+                        TRACE);
+                    return _ret = -1;
+                }
+            }
+            break;
         }
-    }
-
-#ifdef __clang__
-#pragma unroll
-#endif
-    for (uint32_t i = 0; i < p_preset_doubles_size; ++i)
-    {
-        auto* const _name = p_preset_doubles[i].name;
-        const auto _value = p_preset_doubles[i].value;
-
-        _ret = av_opt_set_double(_ffmpeg->context->priv_data, _name, _value, 0);
-        if (_ret < 0)
+        case AVSetOptionValueType::INTEGER:
         {
-            (void)snprintf(
-                p_error,
-                W_MAX_PATH,
-                "could not set %s : %f. trace info: %s",
-                _name,
-                _value,
-                TRACE);
-            return _ret = -1;
+            const auto _value = p_av_opt_sets[i].value_int;
+            _ret = av_opt_set_int(_ffmpeg->context->priv_data, _name, _value, 0);
+            if (_ret < 0)
+            {
+                std::array<char, W_MAX_PATH> _av_error = { 0 };
+                std::ignore = av_make_error_string(_av_error.data(), _av_error.size(), _ret);
+
+                std::ignore = snprintf(
+                    p_error,
+                    W_MAX_PATH,
+                    "could not set %s : %d because: %s. trace info: %s",
+                    _name,
+                    _value,
+                    _av_error.data(),
+                    TRACE);
+                return _ret = -1;
+            }
+            break;
+        }
+        case AVSetOptionValueType::DOUBLE:
+        {
+            const auto _value = p_av_opt_sets[i].value_double;
+            _ret = av_opt_set_double(_ffmpeg->context->priv_data, _name, _value, 0);
+            if (_ret < 0)
+            {
+                std::array<char, W_MAX_PATH> _av_error = { 0 };
+                std::ignore = av_make_error_string(_av_error.data(), _av_error.size(), _ret);
+
+                std::ignore = snprintf(
+                    p_error,
+                    W_MAX_PATH,
+                    "could not set %s : %f because: %s. trace info: %s",
+                    _name,
+                    _value,
+                    _av_error.data(),
+                    TRACE);
+                return _ret = -1;
+            }
+            break;
+        }
         }
     }
 
     _ret = avcodec_open2(_ffmpeg->context, _ffmpeg->codec, nullptr);
     if (_ret < 0)
     {
-        (void)snprintf(
+        std::array<char, W_MAX_PATH> _av_error = { 0 };
+        std::ignore = av_make_error_string(_av_error.data(), _av_error.size(), _ret);
+
+        std::ignore = snprintf(
             p_error,
             W_MAX_PATH,
-            "could not open avcodec for codec id: %d. trace info: %s",
+            "could not open avcodec for codec id: %d because: %s. trace info: %s",
             _ffmpeg->codec_id,
+            _av_error.data(),
             TRACE);
         return _ret = -1;
     }
@@ -270,316 +248,194 @@ int w_ffmpeg_init(
     return _ret;
 }
 
-//int w_ffmpeg_encode(
-//    w_ffmpeg p_ffmpeg,
-//    uint8_t* p_data_in,
-//    uint8_t** p_data_out,
-//    int* p_size_out,
-//    char* p_error)
-//{
-//    constexpr auto TRACE = "ffmpeg::w_ffmpeg_encode";
-//
-//    int ret = 0;
-//
-//    // initialize the output buffer
-//    if (w_is_null(p_ffmpeg, p_ffmpeg->ctx, p_error, p_data_in))
-//    {
-//        return -1;
-//    }
-//
-//    *p_size_out = 0;
-//    int write_index = 0;
-//
-//    p_ffmpeg->ctx->codec_id = gsl::narrow_cast<AVCodecID>(p_ffmpeg->codec_id);
-//
-//    // convert rgb to yuv
-//    if (rgb2yuv(p_data_in, p_ffmpeg->width, p_ffmpeg->height, &(p_ffmpeg->ctx)->yuv_frame, p_error) < 0)
-//    {
-//        return ret = -1;
-//    }
-//
-//    // initialize the output buffer
-//    *p_data_out = gsl::narrow_cast<uint8_t*>(calloc(1, p_ffmpeg->width * p_ffmpeg->height * 3));
-//    if (w_is_null(*p_data_out))
-//    {
-//        make_error(p_error, TRACE, "failed to allocate the output buffer", 0);
-//        return ret = -1;
-//    }
-//
-//    // start encoding
-//    if (w_ffmpeg_encode_frame(p_ffmpeg->ctx, write_index, p_data_out, p_size_out, p_error) < 0)
-//    {
-//        return ret = -1;
-//    }
-//
-//    // finish encoding
-//    p_ffmpeg->ctx->yuv_frame = nullptr;
-//    if (w_ffmpeg_encode_frame(p_ffmpeg->ctx, write_index, p_data_out, p_size_out, p_error) < 0)
-//    {
-//        return ret = -1;
-//    }
-//
-//    return ret;
-//}
+int w_ffmpeg_encode(
+    _In_ w_ffmpeg p_ffmpeg,
+    _In_ const w_av_frame p_av_frame,
+    _Inout_ w_av_packet* p_packet,
+    _Inout_ char* p_error)
+{
+    constexpr auto TRACE = "ffmpeg::w_ffmpeg_encode";
+    const auto _ffmpeg_nn = gsl::not_null<w_ffmpeg>(p_ffmpeg);
+    const auto _packet_ptr_nn = gsl::not_null<w_av_packet*>(p_packet);
+    const auto _packet_nn = gsl::not_null<w_av_packet>(*_packet_ptr_nn);
+    const auto _error = gsl::not_null<char*>(p_error);
 
-//int w_ffmpeg_decode_frame(w_ffmpeg_ctx p_ffmpeg_ctx, uint8_t** p_out_data,int *p_size_out, char *p_error) {
-//
-// constexpr auto TRACE = "ffmpeg::w_ffmpeg_decode_frame";
-// int ret = 0;
-// int tmp_res = 0;
-// const bool flag = true;
-//
-//	ret = avcodec_send_packet(p_ffmpeg_ctx->context, p_ffmpeg_ctx->packet);
-//    if (ret < 0)
-//    {
-//        make_error(p_error, TRACE, "failed to send the packet", 0);
-//        return -1;
-//    }
-//
-//#pragma unroll
-//	while (flag)
-//	{
-//        tmp_res = avcodec_receive_frame(p_ffmpeg_ctx->context, p_ffmpeg_ctx->yuv_frame);
-//		if (tmp_res == AVERROR(EAGAIN) || tmp_res == AVERROR_EOF) {
-//            break;
-//   }
-//		if (tmp_res < 0)
-//		{
-//            make_error(p_error, TRACE, "error during decoding", tmp_res);
-//       return -1;
-//		}
-//
-//		tmp_res = yuv2rgb(p_ffmpeg_ctx->yuv_frame, p_ffmpeg_ctx->yuv_frame->width, 
-//               p_ffmpeg_ctx->yuv_frame->height, p_ffmpeg_ctx->rgb_frame, p_error);
-//   if (tmp_res < 0) {
-//       make_error(p_error, TRACE, "failed in converting yuv to rgb", tmp_res);
-//       return -1;
-//   }
-//
-//   (*p_out_data) = p_ffmpeg_ctx->rgb_frame->data[0];
-//   tmp_res  = av_image_get_buffer_size(
-//       gsl::narrow_cast<AVPixelFormat>(p_ffmpeg_ctx->rgb_frame->format),
-//       p_ffmpeg_ctx->rgb_frame->width,
-//       p_ffmpeg_ctx->rgb_frame->height,
-//       3
-//   );
-//   if (tmp_res < 0)
-//   {
-//       make_error(p_error, TRACE, "failed in get the size of the frame buffer", 0);
-//       return -1;
-//   }
-//
-//   (*p_size_out) = tmp_res;
-//	}
-//
-// return ret;
-//}
-//
+    av_packet_unref(_packet_nn);
+    _packet_nn->data = nullptr;
+    _packet_nn->size = 0;
 
-//void cleanup(const std::array<std::vector<std::pair<int, void **>>, MAX_ARRAY_SIZE>* p_arg)
-//{
-//    bool flag = true;
-//    bool check = false;
-//    std::pair<int, void **> j;
-//    std::vector<std::pair<int, void **>> i;
-//
-//#pragma unroll
-//    for (int t = 0; t < gsl::narrow_cast<int>(p_arg->size()); t++)
-//    {
-//        i = p_arg->at(t);
-//        flag = true;
-//        check = false;
-//
-//#pragma unroll 10
-//        for (int k = 0; k < gsl::narrow_cast<int>(i.size()); k++)
-//        {
-//            check = true;
-//            j = i.at(k);
-//            flag &= !w_is_null(*j.second);
-//            if (!(flag))
-//            {
-//                break;
-//            }
-//        }
-//
-//        if (flag && check)
-//        {
-//            switch (j.first)
-//            {
-//                case W_PACKET:
-//                {
-//                    auto *packet = static_cast<AVPacket *>(*(j.second));
-//                    av_packet_free(&packet);
-//                    *(j.second) = nullptr;
-//                    continue;
-//                }
-//
-//                case W_CONTEXT:
-//                {
-//                    auto *context = static_cast<AVCodecContext *>(*(j.second));
-//                    avcodec_close(context);
-//                    avcodec_free_context(&context);
-//                    *(j.second) = nullptr;
-//                    continue;
-//                }
-//
-//                case W_FRAME:
-//                {
-//                    auto *frame = static_cast<AVFrame *>(*(j.second));
-//                    av_frame_free(&frame);
-//                    *(j.second) = nullptr;
-//                    continue;
-//                }
-//
-//                case W_PARSER:
-//                {
-//                    auto *parser = static_cast<AVCodecParserContext *>(*(j.second));
-//                    av_parser_close(parser);
-//                    *(j.second) = nullptr;
-//                    continue;
-//                }
-//
-//                case W_DATA:
-//                {
-//                    free(*(j.second));
-//                    *(j.second) = nullptr;
-//                    continue;
-//                }
-//
-//                default:
-//                break;
-//            }
-//        }
-//    }
-//}
+    auto _ret = avcodec_send_frame(_ffmpeg_nn->context, p_av_frame);
+    if (_ret < 0)
+    {
+        std::array<char, W_MAX_PATH> _av_error = { 0 };
+        std::ignore = av_make_error_string(_av_error.data(), _av_error.size(), _ret);
 
-//int w_ffmpeg_encode_frame(w_ffmpeg_ctx p_ffmpeg_ctx, int& p_index, uint8_t** p_data_out, int* p_size_out, char *p_error){
-//
-// constexpr auto TRACE = "ffmpeg::w_ffmpeg_encode_frame";
-//
-// int ret = 0;
-// int tmp_res = 0;
-// const bool flag = true;
-//
-// if (w_is_null(p_ffmpeg_ctx, p_error))
-// {
-//      return -1;
-// }
-//
-//	av_packet_unref(p_ffmpeg_ctx->packet);
-//	p_ffmpeg_ctx->packet->data = nullptr;
-//	p_ffmpeg_ctx->packet->size = 0;
-//
-//   ret = avcodec_send_frame(p_ffmpeg_ctx->context, p_ffmpeg_ctx->yuv_frame);
-//	if (ret < 0) {
-//        make_error(p_error, TRACE, "failed to send the frame for encoding", ret);
-//      return -1;
-//	}
-//
-//#pragma unroll
-//	while (flag) {
-//        tmp_res = avcodec_receive_packet(p_ffmpeg_ctx->context, p_ffmpeg_ctx->packet);
-//		if (tmp_res == AVERROR(EAGAIN) || tmp_res == AVERROR_EOF) {
-//            break;
-//   }
-//		if (tmp_res < 0) {
-//            make_error(p_error, TRACE, "error during the encoding", ret);
-//      return -1;
-//		}
-//
-//   memcpy(*p_data_out + p_index, p_ffmpeg_ctx->packet->data, p_ffmpeg_ctx->packet->size);
-//   p_index += p_ffmpeg_ctx->packet->size;
-//   *p_size_out += p_ffmpeg_ctx->packet->size;
-//
-//		av_packet_unref(p_ffmpeg_ctx->packet);
-//	}
-//
-//  return ret;
-//}
-//
+        std::ignore = snprintf(
+            _error,
+            W_MAX_PATH,
+            "failed to send the frame for encoding because: %s. trace info: %s",
+            _av_error.data(),
+            TRACE);
+        return -1;
+    }
 
-//int w_ffmpeg_decode(w_ffmpeg p_ffmpeg, uint8_t* p_data_in, int p_data_size, uint8_t** p_data_out,int *p_size_out, char *p_error) {
-//
-// constexpr auto TRACE = "ffmpeg::w_ffmpeg_decode";
-//
-// int ret = 0;
-//
-// // we, ourself initialize the output buffer
-// if (w_is_null(p_ffmpeg, p_ffmpeg->ctx, p_error, p_data_in))
-// {
-//      return -1;
-// }
-//
-// int tmp_res = 0;
-// int size = p_data_size;
-// uint8_t *data = p_data_in;
-// const bool flag = true;
-//
-//  // finally will be rised at the end
-// std::array<std::vector<std::pair<int, void **>>, MAX_ARRAY_SIZE> cleanup;
-// to_cleanup(&p_ffmpeg, cleanup);
-//
-// std::vector<std::pair<int, void **>> arg5;
-// arg5.emplace_back(std::make_pair(W_DATA, reinterpret_cast<void **>(p_data_out)));
-//
-// std::vector<std::pair<int, void **>> arg6;
-// arg6.emplace_back(std::make_pair(W_DATA, reinterpret_cast<void **>(&p_ffmpeg)));
-// arg6.emplace_back(std::make_pair(W_DATA, reinterpret_cast<void **>(&(p_ffmpeg->ctx))));
-//
-// cleanup[4] = arg5;
-// cleanup[5] = arg6;
-//
-//  auto _ = finally(&cleanup, &ret);  // establish exit action
-// 
-// p_ffmpeg->ctx->codec_id = gsl::narrow_cast<AVCodecID>(p_ffmpeg->codec_id);
-//
-// // initialize the output buffer
-// *p_data_out = gsl::narrow_cast<uint8_t *>(calloc(1, p_ffmpeg->width * p_ffmpeg->height * 3));
-// if (w_is_null(*p_data_out))
-// {
-//     make_error(p_error, TRACE, "failed to allocate the output buffer", 0);
-//     return ret = -1;
-// }
-//
-//#pragma unroll
-// while (flag) {
-//     tmp_res = av_parser_parse2(p_ffmpeg->ctx->parser, p_ffmpeg->ctx->context, &(p_ffmpeg->ctx->packet)->data,
-//   &(p_ffmpeg->ctx->packet)->size, data, size, AV_NOPTS_VALUE, AV_NOPTS_VALUE, 0);
-//
-//		if (tmp_res < 0) {
-//            make_error(p_error, TRACE, "failed in parsing during decoding", 0);
-//    return ret = -1;
-//		}
-//		
-//        data += tmp_res;
-//		size -= tmp_res;
-//
-//		if (p_ffmpeg->ctx->packet->size > 0) {
-//			ret = w_ffmpeg_decode_frame(p_ffmpeg->ctx, p_data_out, p_size_out, p_error);
-//   }
-//
-//        if (size <= 0)
-//        {
-//            break;
-//        }
-//	}
-//
-//	/* flush the decoder */
-// p_ffmpeg->ctx->packet = nullptr;
-//	ret = w_ffmpeg_decode_frame(p_ffmpeg->ctx, p_data_out, p_size_out, p_error);
-//
-// return ret;
-//}
+    _ret = avcodec_receive_packet(p_ffmpeg->context, _packet_nn);
+    if (_ret == AVERROR(EAGAIN) || _ret == AVERROR_EOF)
+    {
+        return 0;
+    }
+    
+    if (_ret < 0)
+    {
+        std::array<char, W_MAX_PATH> _av_error = { 0 };
+        std::ignore = av_make_error_string(_av_error.data(), _av_error.size(), _ret);
+
+        std::ignore = snprintf(
+            _error,
+            W_MAX_PATH,
+            "error happened during the encoding because: %s. trace info: %s",
+            _av_error.data(),
+            TRACE);
+        return _ret;
+    }
+
+    return _packet_nn->size;
+}
+
+int s_ffmpeg_packet_to_frame(
+    _In_ const gsl::not_null<w_ffmpeg>& p_ffmpeg, 
+    _In_ AVPacket* p_packet,
+    _Inout_ gsl::not_null<w_av_frame> p_av_frame,
+    _Inout_ const gsl::not_null<char*>& p_error)
+{
+    constexpr auto TRACE = "ffmpeg::s_ffmpeg_packet_to_frame";
+    
+    // start decoding
+    auto _ret = avcodec_send_packet(p_ffmpeg->context, p_packet);
+    if (_ret < 0)
+    {
+        std::array<char, W_MAX_PATH> _av_error = { 0 };
+        std::ignore = av_make_error_string(_av_error.data(), _av_error.size(), _ret);
+
+        std::ignore = snprintf(
+            p_error,
+            W_MAX_PATH,
+            "could not parse packet for decoding because: %s. trace info: %s",
+            _av_error.data(),
+            TRACE);
+        return _ret;
+    }
+
+    for (;;)
+    {
+        _ret = avcodec_receive_frame(p_ffmpeg->context, p_av_frame);
+        if (_ret == 0 || _ret == AVERROR(EAGAIN) || _ret == AVERROR_EOF)
+        {
+            break;
+        }
+
+        if (_ret < 0)
+        {
+            std::array<char, W_MAX_PATH> _av_error = { 0 };
+            std::ignore = av_make_error_string(_av_error.data(), _av_error.size(), _ret);
+
+            std::ignore = snprintf(
+                p_error,
+                W_MAX_PATH,
+                "error happened during the encoding because: %s. trace info: %s",
+                _av_error.data(),
+                TRACE);
+            break;
+        }
+    }
+    return _ret;
+}
+
+int w_ffmpeg_decode(
+    _In_ w_ffmpeg p_ffmpeg,
+    _In_ const w_av_packet p_packet,
+    _Inout_ w_av_frame* p_av_frame,
+    _Inout_ char* p_error)
+{
+    constexpr auto TRACE = "ffmpeg::w_ffmpeg_decode";
+    const auto _ffmpeg_nn = gsl::not_null<w_ffmpeg>(p_ffmpeg);
+
+    const auto _src_packet_nn = gsl::not_null<const w_av_packet>(p_packet);
+    auto _av_frame_ptr_nn = gsl::not_null<w_av_frame*>(p_av_frame);
+    auto _av_frame_nn = gsl::not_null<w_av_frame>(*_av_frame_ptr_nn);
+    const auto _error = gsl::not_null<char*>(p_error);
+
+    int _ret = 0;
+
+    auto _dst_packet = av_packet_alloc();
+    if (_dst_packet == nullptr)
+    {
+        std::ignore = snprintf(
+            _error,
+            W_MAX_PATH,
+            "could not allocate packet for decoding. trace info: %s",
+            TRACE);
+        return _ret = -1;
+    }
+
+#ifdef __clang__
+#pragma unroll
+#endif
+    for (;;)
+    {
+        const auto _num = av_parser_parse2(
+            _ffmpeg_nn->parser,
+            _ffmpeg_nn->context,
+            &_dst_packet->data,
+            &_dst_packet->size,
+            _src_packet_nn->data,
+            _src_packet_nn->size,
+            AV_NOPTS_VALUE,
+            AV_NOPTS_VALUE,
+            0);
+        if (_num < 0)
+        {
+            std::array<char, W_MAX_PATH> _av_error = { 0 };
+            std::ignore = av_make_error_string(_av_error.data(), _av_error.size(), _ret);
+
+            std::ignore = snprintf(
+                _error,
+                W_MAX_PATH,
+                "could not parse packet for decoding because: %s. trace info: %s",
+                _av_error.data(),
+                TRACE);
+            _ret = -1;
+            break;
+        }
+
+        _src_packet_nn->data += _num;
+        _src_packet_nn->size -= _num;
+        
+        if (_dst_packet->size == 0)
+        {
+            break;
+        }
+
+        if (_dst_packet->size > 0)
+        {
+            _ret = s_ffmpeg_packet_to_frame(_ffmpeg_nn, _dst_packet, _av_frame_nn, _error);
+            if (_ret != 0)
+            {
+                break;
+            }
+        }
+    }
+
+    av_packet_free(&_dst_packet);
+
+    return _ret;
+}
 
 void w_ffmpeg_fini(_Inout_ w_ffmpeg* p_ffmpeg)
 {
     const auto _ffmpeg_ptr_nn = gsl::not_null<w_ffmpeg*>(p_ffmpeg);
     const auto _ffmpeg_nn = gsl::not_null<w_ffmpeg>(*_ffmpeg_ptr_nn);
 
-    if (_ffmpeg_nn->packet)
-    {
-        av_free(_ffmpeg_nn->packet);
-    }
     if (_ffmpeg_nn->parser)
     {
         av_parser_close(_ffmpeg_nn->parser);

@@ -62,7 +62,6 @@ extern "C" {
     #[doc = " @param p_buf_len, the input length of buffer. The version will be printed like this: \"<major>.<minor>.<patch>.<debug>\""]
     #[doc = " @returns zero on success"]
     pub fn w_sys_init(
-        p_dump_path: *const ::std::os::raw::c_char,
         p_buf: *mut ::std::os::raw::c_char,
         p_buf_len: size_t,
     ) -> ::std::os::raw::c_int;

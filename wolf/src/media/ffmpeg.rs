@@ -1,16 +1,18 @@
 // use super::ffi::ffmpeg::{w_ffmpeg, w_ffmpeg_fini};
 
-use std::ptr::null_mut;
-
 use super::{
     av_frame::AVFrame,
-    ffi::ffmpeg::{w_ffmpeg, w_ffmpeg_fini, w_ffmpeg_init, AVCodeOptions, W_MAX_PATH},
+    av_packet::AVPacket,
+    ffi::ffmpeg::{
+        w_ffmpeg, w_ffmpeg_decode, w_ffmpeg_encode, w_ffmpeg_fini, w_ffmpeg_init, AVCodeOptions,
+        AVSetOption, W_MAX_PATH,
+    },
 };
 use anyhow::{bail, Result};
 
 #[allow(non_camel_case_types)]
 #[allow(clippy::upper_case_acronyms)]
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub enum AVCodecID {
     NONE,
 
@@ -583,6 +585,7 @@ impl FFmpeg {
         p_mode: FFmpegMode,
         p_codec_id: AVCodecID,
         p_codec_opt: AVCodeOptions,
+        p_av_set_options: &[AVSetOption],
     ) -> Result<Self> {
         let mut obj = Self {
             ctx: std::ptr::null_mut(),
@@ -602,12 +605,8 @@ impl FFmpeg {
                 obj.mode as u32,
                 obj.codec_id as u32,
                 &mut obj.codec_opt,
-                null_mut(),
-                0,
-                null_mut(),
-                0,
-                null_mut(),
-                0,
+                p_av_set_options.as_ptr(),
+                p_av_set_options.len() as u32,
                 buf_ptr,
             );
             if ret == 0 {
@@ -622,78 +621,44 @@ impl FFmpeg {
             }
         }
     }
+
+    /// # Errors
+    ///
+    /// TODO: add error description
+    pub fn encode(&self, p_av_frame: &AVFrame, p_packet: &mut AVPacket) -> Result<i32> {
+        // create a buffer for error
+        let mut buf = [1i8; W_MAX_PATH as usize];
+        let buf_ptr = buf.as_mut_ptr();
+
+        unsafe {
+            let packet_size = w_ffmpeg_encode(self.ctx, p_av_frame.ctx, &mut p_packet.ctx, buf_ptr);
+            if packet_size < 0 {
+                let c_err_str = std::ffi::CStr::from_ptr(buf_ptr);
+                let str = c_err_str.to_str().unwrap_or_default();
+                bail!("could not encode av frame because {}", String::from(str))
+            } else {
+                Ok(packet_size)
+            }
+        }
+    }
+
+    /// # Errors
+    ///
+    /// TODO: add error description
+    pub fn decode(&self, p_packet: &AVPacket, p_av_frame: &mut AVFrame) -> Result<()> {
+        // create a buffer for error
+        let mut buf = [1i8; W_MAX_PATH as usize];
+        let buf_ptr = buf.as_mut_ptr();
+
+        unsafe {
+            let ret = w_ffmpeg_decode(self.ctx, p_packet.ctx, &mut p_av_frame.ctx, buf_ptr);
+            if ret == 0 {
+                Ok(())
+            } else {
+                let c_err_str = std::ffi::CStr::from_ptr(buf_ptr);
+                let str = c_err_str.to_str().unwrap_or_default();
+                bail!("could not encode av frame because {}", String::from(str))
+            }
+        }
+    }
 }
-
-// // /// # Errors
-// // ///
-// // /// Will return `Err` if `ffmpeg` could not initialize
-// // #[allow(clippy::not_unsafe_ptr_arg_deref)]
-// // pub fn init(p_ffmpeg: w_ffmpeg) -> Result<()> {
-// //     const TRACE: &str = "rist::init";
-
-// //     let ret: i32 = unsafe { w_ffmpeg_init(p_ffmpeg, p_error.as_ptr() as *mut c_char) };
-// //     match ret {
-// //         0 => Ok(()),
-// //         _ => {
-// //             bail!("could not initialize ffmpeg")
-// //         }
-// //     }
-// // }
-
-// // /// # Errors
-// // ///
-// // /// Will return `Err` if `ffmpeg` could encode the frame.
-// // #[allow(clippy::not_unsafe_ptr_arg_deref)]
-// // pub fn ffmpeg_encode(
-// //     p_ffmpeg_opt: w_ffmpeg_opt,
-// //     p_data_in: &[u8],
-// //     p_encoded_buffer: &mut CBuffer,
-// //     p_error: &[u8],
-// // ) -> Result<()> {
-// //     let ret: i32 = unsafe {
-// //         w_ffmpeg_encode(
-// //             p_ffmpeg_opt,
-// //             p_data_in.as_ptr() as *mut u8,
-// //             &mut p_encoded_buffer.ptr,
-// //             &mut p_encoded_buffer.len,
-// //             p_error.as_ptr() as *mut c_char,
-// //         )
-// //     };
-
-// //     match ret {
-// //         0 => Ok(()),
-// //         _ => {
-// //             bail!("could not encode the buffer")
-// //         }
-// //     }
-// // }
-
-// // /// # Errors
-// // ///
-// // /// Will return `Err` if `ffmpeg` failed on decoding the frame.
-// // #[allow(clippy::not_unsafe_ptr_arg_deref)]
-// // pub fn ffmpeg_decode(
-// //     p_ffmpeg_opt: w_ffmpeg_opt,
-// //     p_data_in: &[u8],
-// //     p_data_size: i32,
-// //     p_decoded_buffer: &mut CBuffer,
-// //     p_error: &[u8],
-// // ) -> Result<()> {
-// //     let ret: i32 = unsafe {
-// //         w_ffmpeg_decode(
-// //             p_ffmpeg_opt,
-// //             p_data_in.as_ptr() as *mut u8,
-// //             p_data_size,
-// //             &mut p_decoded_buffer.ptr,
-// //             &mut p_decoded_buffer.len,
-// //             p_error.as_ptr() as *mut c_char,
-// //         )
-// //     };
-
-// //     match ret {
-// //         0 => Ok(()),
-// //         _ => {
-// //             bail!("could not decode the buffer")
-// //         }
-// //     }
-// // }
