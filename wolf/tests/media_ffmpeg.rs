@@ -2,7 +2,7 @@
 fn encode(
     p_packet: &mut wolf::media::av_packet::AVPacket,
     p_codec_id: wolf::media::ffmpeg::AVCodecID,
-) {
+) -> (u32, u32) {
     use image::{EncodableLayout, GenericImageView};
     use wolf::media::{
         av_frame::{AVFrame, AVPixelFormat},
@@ -12,7 +12,7 @@ fn encode(
 
     let current_dir = std::env::current_dir().unwrap();
     // load image
-    let path = current_dir.join("sample_rgba.png");
+    let path = current_dir.join("src.png");
     let img = image::open(path).unwrap();
     let img_size = img.dimensions();
     let pixels = img.as_rgba8().unwrap().as_bytes();
@@ -46,10 +46,16 @@ fn encode(
             break;
         }
     }
+
+    img_size
 }
 
 #[cfg(feature = "media_ffmpeg")]
-fn decode(p_packet: &wolf::media::av_packet::AVPacket, p_codec_id: wolf::media::ffmpeg::AVCodecID) {
+fn decode(
+    p_packet: &wolf::media::av_packet::AVPacket,
+    p_codec_id: wolf::media::ffmpeg::AVCodecID,
+    p_img_size: (u32, u32),
+) {
     use wolf::media::{
         av_frame::{AVFrame, AVPixelFormat},
         ffi::ffmpeg::AVCodeOptions,
@@ -58,7 +64,8 @@ fn decode(p_packet: &wolf::media::av_packet::AVPacket, p_codec_id: wolf::media::
     let current_dir = std::env::current_dir().unwrap();
 
     // create dst YUV frame
-    let mut yuv_frame = AVFrame::new(AVPixelFormat::YUV420P, 250, 250, 1, &[]).unwrap();
+    let mut yuv_frame =
+        AVFrame::new(AVPixelFormat::YUV420P, p_img_size.0, p_img_size.1, 1, &[]).unwrap();
     let codec_opt = AVCodeOptions {
         bitrate: 6000000,
         fps: 60,
@@ -73,17 +80,18 @@ fn decode(p_packet: &wolf::media::av_packet::AVPacket, p_codec_id: wolf::media::
     decoder.decode(p_packet, &mut yuv_frame).unwrap();
 
     // create a source frame from img
-    let mut rgba_frame = AVFrame::new(AVPixelFormat::RGBA, 250, 250, 1, &[]).unwrap();
+    let mut rgba_frame =
+        AVFrame::new(AVPixelFormat::RGBA, p_img_size.0, p_img_size.1, 1, &[]).unwrap();
     // convert YUV to RGBA frame
     yuv_frame.convert(&mut rgba_frame).unwrap();
 
     let pixels = rgba_frame.get_data(0).unwrap();
-    let out_path = current_dir.join("sample_bgra_decoded.png");
+    let out_path = current_dir.join("src_decoded.png");
     image::save_buffer_with_format(
         out_path,
         pixels,
-        250,
-        250,
+        p_img_size.0,
+        p_img_size.1,
         image::ColorType::Rgba8,
         image::ImageFormat::Png,
     )
@@ -102,7 +110,7 @@ fn test_encode_decode() {
 
     let mut packet = AVPacket::new().unwrap();
     let mut t0 = Instant::now();
-    encode(&mut packet, codec_id.clone());
+    let img_size = encode(&mut packet, codec_id.clone());
     let mut t1 = Instant::now();
 
     let (_, packet_size) = packet.get_data();
@@ -114,7 +122,7 @@ fn test_encode_decode() {
     );
 
     t0 = Instant::now();
-    decode(&packet, codec_id.clone());
+    decode(&packet, codec_id.clone(), img_size);
     t1 = Instant::now();
     println!(
         "CodeID:{:?}    Decode Time:{:?} ms",
