@@ -16,6 +16,10 @@ if (WOLF_STREAM_RIST)
   FetchContent_MakeAvailable(librist)
 
   STRING(TOLOWER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_LOWER)
+  
+  if (${CMAKE_BUILD_TYPE_LOWER} MATCHES "minsizerel")
+      set(CMAKE_BUILD_TYPE_LOWER "minsize")
+  endif()
 
   add_custom_command(OUTPUT rist_command.out COMMAND cmd /c "meson setup ${librist_BINARY_DIR} --backend vs2022 --default-library static --buildtype ${CMAKE_BUILD_TYPE_LOWER} &
        meson compile -C ${librist_BINARY_DIR}"

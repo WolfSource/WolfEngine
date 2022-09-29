@@ -12,15 +12,13 @@ if (WOLF_MEDIA_FFMPEG)
     avfilter
     avformat
     avutil
-    dav1d
-    SvtAv1Dec
-    SvtAv1Enc
+    postproc
     swresample
     swscale
-    vpx)
+    )
 
   foreach (lib_name ${FFMPEG_LIBS})
-    list(APPEND LIBS ${CMAKE_CURRENT_SOURCE_DIR}/third_party/ffmpeg/lib/${TARGET_OS}/${CMAKE_BUILD_TYPE}/${lib_name}.${LIB_EXT})
+    list(APPEND LIBS ${CMAKE_CURRENT_SOURCE_DIR}/third_party/ffmpeg/lib/${TARGET_OS}/${lib_name}.${LIB_EXT})
   endforeach()
   
 endif()

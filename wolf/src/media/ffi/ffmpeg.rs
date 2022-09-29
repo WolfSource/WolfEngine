@@ -223,7 +223,7 @@ extern "C" {
         p_ffmpeg: *mut w_ffmpeg,
         p_frame: w_av_frame,
         p_mode: u32,
-        p_avcodec_id: u32,
+        p_avcodec_id: *const ::std::os::raw::c_char,
         p_codec_opt: *mut AVCodeOptions,
         p_av_opt_sets: *const AVSetOption,
         p_av_opt_sets_size: u32,

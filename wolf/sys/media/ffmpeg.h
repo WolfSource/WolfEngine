@@ -64,7 +64,7 @@ extern "C" {
             _Inout_ w_ffmpeg* p_ffmpeg,
             _In_ w_av_frame p_frame,
             _In_ uint32_t p_mode,
-            _In_ uint32_t p_avcodec_id,
+            _In_ const char* p_avcodec_id,
             _In_ AVCodeOptions* p_codec_opt,
             _In_ const AVSetOption* p_av_opt_sets,
             _In_ uint32_t p_av_opt_sets_size,

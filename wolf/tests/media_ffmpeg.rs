@@ -1,12 +1,11 @@
 #[cfg(feature = "media_ffmpeg")]
-fn encode(
-    p_packet: &mut wolf::media::av_packet::AVPacket,
-    p_codec_id: wolf::media::ffmpeg::AVCodecID,
-) -> (u32, u32) {
+fn encode(p_packet: &mut wolf::media::av_packet::AVPacket, p_codec_id: &str) -> (u32, u32) {
+    use std::ptr::null;
+
     use image::{EncodableLayout, GenericImageView};
     use wolf::media::{
         av_frame::{AVFrame, AVPixelFormat},
-        ffi::ffmpeg::AVCodeOptions,
+        ffi::ffmpeg::{AVCodeOptions, AVSetOption, AVSetOptionValueType_INTEGER},
         ffmpeg::{FFmpeg, FFmpegMode},
     };
 
@@ -28,16 +27,44 @@ fn encode(
     rgba_frame.convert(&mut yuv_frame).unwrap();
 
     let codec_opt = AVCodeOptions {
-        bitrate: 6000000,
+        bitrate: 4000000,
         fps: 60,
-        gop: -1,
+        gop: 600,
         level: -1,
-        max_b_frames: -1,
-        refs: -1,
+        max_b_frames: 2,
+        refs: 3,
         thread_count: -1,
     };
 
-    let encoder = FFmpeg::new(&yuv_frame, FFmpegMode::ENCODER, p_codec_id, codec_opt, &[]).unwrap();
+    // for more info read https://trac.ffmpeg.org/wiki/Encode/AV1
+    let preset = "preset\0";
+    let crf = "crf\0";
+
+    let opts = [
+        AVSetOption {
+            name: preset.as_ptr() as *const ::std::os::raw::c_char,
+            value_type: AVSetOptionValueType_INTEGER,
+            value_str: null(),
+            value_int: 12,
+            value_double: 0.0,
+        },
+        AVSetOption {
+            name: crf.as_ptr() as *const ::std::os::raw::c_char,
+            value_type: AVSetOptionValueType_INTEGER,
+            value_str: null(),
+            value_int: 50,
+            value_double: 0.0,
+        },
+    ];
+
+    let encoder = FFmpeg::new(
+        &yuv_frame,
+        FFmpegMode::ENCODER,
+        p_codec_id,
+        codec_opt,
+        &opts,
+    )
+    .unwrap();
 
     loop {
         let packet_size = encoder.encode(&yuv_frame, p_packet).unwrap();
@@ -51,11 +78,7 @@ fn encode(
 }
 
 #[cfg(feature = "media_ffmpeg")]
-fn decode(
-    p_packet: &wolf::media::av_packet::AVPacket,
-    p_codec_id: wolf::media::ffmpeg::AVCodecID,
-    p_img_size: (u32, u32),
-) {
+fn decode(p_packet: &wolf::media::av_packet::AVPacket, p_codec_id: &str, p_img_size: (u32, u32)) {
     use wolf::media::{
         av_frame::{AVFrame, AVPixelFormat},
         ffi::ffmpeg::AVCodeOptions,
@@ -75,6 +98,7 @@ fn decode(
         refs: -1,
         thread_count: -1,
     };
+
     let decoder = FFmpeg::new(&yuv_frame, FFmpegMode::DECODER, p_codec_id, codec_opt, &[]).unwrap();
 
     decoder.decode(p_packet, &mut yuv_frame).unwrap();
@@ -103,30 +127,31 @@ fn decode(
 fn test_encode_decode() {
     use std::time::Instant;
 
-    use wolf::media::{av_packet::AVPacket, ffmpeg::AVCodecID};
+    use wolf::media::av_packet::AVPacket;
     println!("wolf_sys version is : {:?}", wolf::sys_init());
 
-    let codec_id = AVCodecID::AV1;
+    let encoder_codec_id = "libsvtav1\0";
+    let decoder_codec_id = "libdav1d\0";
 
     let mut packet = AVPacket::new().unwrap();
     let mut t0 = Instant::now();
-    let img_size = encode(&mut packet, codec_id.clone());
+    let img_size = encode(&mut packet, encoder_codec_id);
     let mut t1 = Instant::now();
 
     let (_, packet_size) = packet.get_data();
     println!(
         "CodeID:{:?}    Encoded packet:{:?} Encode Time:{:?} ms",
-        codec_id,
+        encoder_codec_id,
         packet_size,
         (t1 - t0).as_millis()
     );
 
     t0 = Instant::now();
-    decode(&packet, codec_id.clone(), img_size);
+    decode(&packet, decoder_codec_id, img_size);
     t1 = Instant::now();
     println!(
         "CodeID:{:?}    Decode Time:{:?} ms",
-        codec_id,
+        decoder_codec_id,
         (t1 - t0).as_millis()
     );
 }

@@ -55,31 +55,21 @@ int w_ffmpeg_init(
     _Inout_ w_ffmpeg* p_ffmpeg,
     _In_ w_av_frame p_frame,
     _In_ uint32_t p_mode,
-    _In_ uint32_t p_avcodec_id,
+    _In_ const char* p_avcodec_id,
     _In_ AVCodeOptions* p_codec_opt,
     _In_ const AVSetOption* p_av_opt_sets,
     _In_ uint32_t p_av_opt_sets_size,
     _Inout_ char* p_error)
 {
-    constexpr auto TRACE = "ffmpeg::w_ffmpeg_init_encoder";
+    constexpr auto TRACE = "ffmpeg::w_ffmpeg_init";
     const auto _error_nn = gsl::not_null<char*>(p_error);
     auto _ret = 0;
-    
-    if (p_avcodec_id == 0)
-    {
-        std::ignore = snprintf(
-            p_error,
-            W_MAX_PATH,
-            "missing codec id. trace info: %s",
-            TRACE);
-        return _ret = -1;
-    }
 
     auto _ptr = (w_ffmpeg_t*)calloc(1, sizeof(w_ffmpeg_t));
     const auto _codec_opt = gsl::not_null<AVCodeOptions*>(p_codec_opt);
     const auto _ffmpeg = gsl::not_null<w_ffmpeg_t*>(_ptr);
-    _ffmpeg->codec_id = gsl::narrow_cast<AVCodecID>(p_avcodec_id);
-    
+    const auto _codec_id_nn = gsl::not_null<const char*>(p_avcodec_id);
+
     defer _(nullptr, [&](...)
         {
             *p_ffmpeg = _ffmpeg.get();
@@ -91,11 +81,31 @@ int w_ffmpeg_init(
 
     if (p_mode == 0)
     {
-        _ffmpeg->codec = gsl::not_null<const AVCodec*>(avcodec_find_encoder(_ffmpeg->codec_id));
+        _ffmpeg->codec = avcodec_find_encoder_by_name(_codec_id_nn);
+        if (_ffmpeg->codec == nullptr)
+        {
+            std::ignore = snprintf(
+                p_error,
+                W_MAX_PATH,
+                "could not find encoder codec id %s. trace info: %s",
+                _codec_id_nn.get(),
+                TRACE);
+            return _ret = -1;
+        }
     }
     else
     {
-        _ffmpeg->codec = gsl::not_null<const AVCodec*>(avcodec_find_decoder(_ffmpeg->codec_id));
+        _ffmpeg->codec = avcodec_find_decoder_by_name(_codec_id_nn);
+        if (_ffmpeg->codec == nullptr)
+        {
+            std::ignore = snprintf(
+                p_error,
+                W_MAX_PATH,
+                "could not find encoder codec id %s. trace info: %s",
+                _codec_id_nn.get(),
+                TRACE);
+            return _ret = -1;
+        }
         _ffmpeg->parser = av_parser_init(_ffmpeg->codec->id);
     }
 
@@ -163,7 +173,7 @@ int w_ffmpeg_init(
         case AVSetOptionValueType::STRING:
         {
             const auto _value = p_av_opt_sets[i].value_str;
-            if (_value == nullptr)
+            if (_value != nullptr)
             {
                 _ret = av_opt_set(_ffmpeg->context->priv_data, _name, _value, 0);
                 if (_ret < 0)

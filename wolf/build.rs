@@ -346,16 +346,14 @@ fn copy_ffmpeg(p_current_dir_path_str: &str, p_target_os: &str, p_build_profile:
         "avfilter-8.dll",
         "avformat-59.dll",
         "avutil-57.dll",
-        "dav1d.dll",
-        "SvtAv1Dec.dll",
-        "SvtAv1Enc.dll",
+        "postproc-56.dll",
         "swresample-4.dll",
         "swscale-6.dll",
     ];
 
     let ffmpeg_bin_path = format!(
-        "{}/sys/third_party/ffmpeg/bin/{}/{}",
-        p_current_dir_path_str, p_target_os, p_build_profile
+        "{}/sys/third_party/ffmpeg/bin/{}",
+        p_current_dir_path_str, p_target_os
     );
     println!("cargo:rustc-link-search=native={}", ffmpeg_bin_path);
 
@@ -368,17 +366,14 @@ fn copy_ffmpeg(p_current_dir_path_str: &str, p_target_os: &str, p_build_profile:
         "avfilter.lib",
         "avformat.lib",
         "avutil.lib",
-        "dav1d.lib",
-        "SvtAv1Dec.lib",
-        "SvtAv1Enc.lib",
+        "postproc.lib",
         "swresample.lib",
         "swscale.lib",
-        "vpx.lib",
     ];
 
     let ffmpeg_lib_path = format!(
-        "{}/sys/third_party/ffmpeg/lib/{}/{}",
-        p_current_dir_path_str, p_target_os, p_build_profile
+        "{}/sys/third_party/ffmpeg/lib/{}",
+        p_current_dir_path_str, p_target_os
     );
     println!("cargo:rustc-link-search=native={}", ffmpeg_lib_path);
 

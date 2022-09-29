@@ -189,7 +189,7 @@ lto = true
 # no-stack-check
 # no-vectorize-loops
 # no-vectorize-slp
-opt-level = 's' # 3 for native 's' or 'z' for wasm32
+opt-level = 3 # 3 for native 's' or 'z' for wasm32
 overflow-checks = false
 panic = "abort"
 # passes
