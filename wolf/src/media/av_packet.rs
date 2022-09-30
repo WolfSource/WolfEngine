@@ -52,6 +52,7 @@ impl AVPacket {
     /// # Errors
     ///
     /// TODO: add error description
+    #[must_use]
     pub fn get_data(&self) -> (*mut u8, i32) {
         let data: *mut u8 = null_mut();
         let size = unsafe { w_av_packet_get(self.ctx, data) };

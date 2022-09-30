@@ -27,7 +27,7 @@ fn encode(p_packet: &mut wolf::media::av_packet::AVPacket, p_codec_id: &str) -> 
     rgba_frame.convert(&mut yuv_frame).unwrap();
 
     let codec_opt = AVCodeOptions {
-        bitrate: 4000000,
+        bitrate: 4_000_000,
         fps: 60,
         gop: 600,
         level: -1,
@@ -42,14 +42,14 @@ fn encode(p_packet: &mut wolf::media::av_packet::AVPacket, p_codec_id: &str) -> 
 
     let opts = [
         AVSetOption {
-            name: preset.as_ptr() as *const ::std::os::raw::c_char,
+            name: preset.as_ptr().cast::<i8>(),
             value_type: AVSetOptionValueType_INTEGER,
             value_str: null(),
             value_int: 12,
             value_double: 0.0,
         },
         AVSetOption {
-            name: crf.as_ptr() as *const ::std::os::raw::c_char,
+            name: crf.as_ptr().cast::<i8>(),
             value_type: AVSetOptionValueType_INTEGER,
             value_str: null(),
             value_int: 50,
@@ -90,7 +90,7 @@ fn decode(p_packet: &wolf::media::av_packet::AVPacket, p_codec_id: &str, p_img_s
     let mut yuv_frame =
         AVFrame::new(AVPixelFormat::YUV420P, p_img_size.0, p_img_size.1, 1, &[]).unwrap();
     let codec_opt = AVCodeOptions {
-        bitrate: 6000000,
+        bitrate: 6_000_000,
         fps: 60,
         gop: -1,
         level: -1,
@@ -122,6 +122,7 @@ fn decode(p_packet: &wolf::media::av_packet::AVPacket, p_codec_id: &str, p_img_s
     .unwrap();
 }
 
+//cargo test test_encode_decode --release -- --exact --nocapture
 #[cfg(feature = "media_ffmpeg")]
 #[test]
 fn test_encode_decode() {

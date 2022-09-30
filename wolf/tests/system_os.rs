@@ -1,6 +1,128 @@
 #![allow(unused_crate_dependencies)]
 
 #[tokio::test]
+async fn test_process() {
+    use wolf::{
+        system::os::{runtime::RunTime, system::System},
+        w_log,
+    };
+
+    let path_to_the_process: &str;
+    let process_name: &str;
+
+    #[cfg(target_os = "windows")]
+    {
+        path_to_the_process = "C:/Windows/System32/NotePad.exe";
+        process_name = "Notepad.exe";
+    }
+    #[cfg(target_os = "macos")]
+    {
+        path_to_the_process = "/System/Applications/TextEdit.app/Contents/MacOS/TextEdit";
+        process_name = "TextEdit";
+    }
+    #[cfg(target_os = "linux")]
+    {
+        path_to_the_process = "TextEdit";
+        process_name = "TextEdit";
+    }
+
+    let (sx, rx) = std::sync::mpsc::channel();
+
+    // try to create a unknown process
+    let unknown_process_name = "unknown";
+    let mut sys = System::new();
+    let p_res = sys.create_process(unknown_process_name, &[]).await;
+    assert!(
+        p_res.is_err(),
+        "error was expected on creating an unknown process"
+    );
+    assert!(
+        !sys.is_process_running_by_name(unknown_process_name),
+        "error was expected on checking unknown process"
+    );
+    assert!(
+        !sys.is_process_running_by_pid(&usize::MAX),
+        "error was expected on checking process_id = usize::MAX"
+    );
+
+    // check path
+    if path_to_the_process.is_empty() {
+        w_log!("process name is empty");
+    } else {
+        sys.refresh_disks();
+        sys.refresh_networks();
+        sys.refresh_processes();
+        sys.refresh_system();
+
+        w_log!(
+            "Memory: {}KB/{}KB",
+            sys.used_memory_in_kb(),
+            sys.total_memory_in_kb()
+        );
+        w_log!(
+            "Swap: {}KB/{}KB",
+            sys.used_swap_in_kb(),
+            sys.total_swap_in_kb()
+        );
+
+        // run process in one thread
+        let join_1 = RunTime::green_thread(async move {
+            let child = sys.create_process(path_to_the_process, &[]).await.unwrap();
+            RunTime::async_sleep(std::time::Duration::from_secs(3)).await;
+            w_log!("process status {:?}", child);
+            sx.send(child).expect("unable to send child process");
+        });
+
+        loop {
+            if join_1.is_finished() {
+                let mut sys = System::new();
+                sys.refresh_all();
+
+                w_log!(
+                    "Memory: {}KB/{}KB",
+                    sys.used_memory_in_kb(),
+                    sys.total_memory_in_kb()
+                );
+                w_log!(
+                    "Swap: {}KB/{}KB",
+                    sys.used_swap_in_kb(),
+                    sys.total_swap_in_kb()
+                );
+
+                let mut child = rx.recv().expect("could not receive an object");
+                let process_id = child.id().unwrap() as usize;
+
+                println!(
+                    "The number of Notepad process: {}",
+                    sys.number_of_process_instances(process_name)
+                );
+
+                if sys.is_process_running_by_name(process_name) {
+                    w_log!("Notepad.exe found");
+                } else {
+                    w_log!("could not find Notepad.exe");
+                }
+
+                // if process is avaiable then kill it
+                if sys.is_process_running_by_pid(&process_id) {
+                    let killed_res = child.kill().await;
+                    match killed_res {
+                        Ok(_) => {
+                            w_log!("process child just killed");
+                        }
+                        Err(err) => {
+                            w_log!("could not kill process because {:?}", err);
+                        }
+                    };
+                }
+                break;
+            }
+            RunTime::async_sleep(std::time::Duration::from_millis(50)).await;
+        }
+    }
+}
+
+#[tokio::test]
 async fn test_runtime() {
     use wolf::system::os::runtime::RunTime;
     use wolf::w_log;
@@ -11,17 +133,21 @@ async fn test_runtime() {
         true
     };
     // run the function on a OS thread
-    RunTime::thread(move || {
+    let j_1 = RunTime::thread(move || {
         fun("os thread".to_owned());
     });
     // sleep for a sec
     RunTime::sleep(std::time::Duration::from_secs(1));
     // run the function on a green thread
-    RunTime::green_thread(async move { fun("green thread".to_owned()) })
-        .await
-        .unwrap();
-    // wait for all
-    RunTime::async_sleep(std::time::Duration::from_secs(5)).await;
+    let jt_1 = RunTime::green_thread(async move { fun("green thread".to_owned()) });
+
+    // run a future on local thread
+    RunTime::spawn_local(async {
+        w_log!("future spawned on the local thread");
+    });
+    // wait for all joinables
+    j_1.join().unwrap();
+    jt_1.await.unwrap();
 }
 
 #[tokio::test]

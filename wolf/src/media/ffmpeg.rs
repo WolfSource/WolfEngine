@@ -55,11 +55,12 @@ impl FFmpeg {
         let buf_ptr = buf.as_mut_ptr();
 
         unsafe {
+            #[allow(clippy::cast_possible_truncation)]
             let ret = w_ffmpeg_init(
                 &mut obj.ctx,
                 p_av_frame.ctx,
                 obj.mode as u32,
-                p_codec_id.as_ptr() as *const i8,
+                p_codec_id.as_ptr().cast::<i8>(),
                 &mut obj.codec_opt,
                 p_av_set_options.as_ptr(),
                 p_av_set_options.len() as u32,
@@ -92,9 +93,8 @@ impl FFmpeg {
                 let c_err_str = std::ffi::CStr::from_ptr(buf_ptr);
                 let str = c_err_str.to_str().unwrap_or_default();
                 bail!("could not encode av frame because {}", String::from(str))
-            } else {
-                Ok(packet_size)
             }
+            Ok(packet_size)
         }
     }
 

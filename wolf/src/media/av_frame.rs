@@ -467,13 +467,11 @@ impl AVFrame {
         p_alignment: u32,
         p_data: &[u8],
     ) -> Result<Self> {
+        #[allow(clippy::pedantic)]
         // get data buffer size
-        let buffer_size = AVFrame::get_required_buffer_size(
-            p_pixel_format.clone(),
-            p_width,
-            p_height,
-            p_alignment,
-        ) as usize;
+        let buffer_size =
+            Self::get_required_buffer_size(p_pixel_format.clone(), p_width, p_height, p_alignment)
+                as usize;
 
         // create self object
         let mut obj = Self {
@@ -602,9 +600,8 @@ impl AVFrame {
                     String::from(str),
                     std::backtrace::Backtrace::force_capture()
                 )
-            } else {
-                Ok(size)
             }
+            Ok(size)
         }
     }
 

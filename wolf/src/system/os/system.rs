@@ -91,6 +91,23 @@ impl System {
         false
     }
 
+    /// # Errors
+    ///
+    /// TODO:
+    pub async fn create_process(
+        &self,
+        p_process_path: &str,
+        p_process_args: &[&str],
+    ) -> Result<Child> {
+        //check is file
+        let meta = tokio::fs::metadata(p_process_path).await?;
+        if meta.is_file() {
+            let child = Command::new(p_process_path).args(p_process_args).spawn()?;
+            return Ok(child);
+        }
+        bail!("Process {} is not a valid file", p_process_path)
+    }
+
     #[must_use]
     pub fn used_memory_in_kb(&self) -> u64 {
         self.sys.used_memory()
@@ -109,60 +126,5 @@ impl System {
     #[must_use]
     pub fn total_swap_in_kb(&self) -> u64 {
         self.sys.total_swap()
-    }
-}
-
-/// # Errors
-///
-/// TODO:
-pub async fn create_process(p_process_path: &str, p_process_args: &[&str]) -> Result<Child> {
-    //check is file
-    let meta = tokio::fs::metadata(p_process_path).await?;
-    if meta.is_file() {
-        let child = Command::new(p_process_path).args(p_process_args).spawn()?;
-        Ok(child)
-    } else {
-        bail!("Process {} is not a valid file", p_process_path)
-    }
-}
-
-#[tokio::test]
-async fn test() {
-    use crate::system::os::runtime::RunTime;
-    use crate::w_log;
-
-    let path_to_the_process: &str;
-
-    #[cfg(target_os = "windows")]
-    {
-        path_to_the_process = "C:/Windows/System32/NotePad.exe";
-    }
-    #[cfg(target_os = "macos")]
-    {
-        path_to_the_process = "/System/Applications/TextEdit.app/Contents/MacOS/TextEdit";
-    }
-    #[cfg(target_os = "linux")]
-    {
-        path_to_the_process = "TextEdit";
-    }
-
-    let sys = System::new();
-    w_log!(
-        "Memory: {}KB/{}KB",
-        sys.used_memory_in_kb(),
-        sys.total_memory_in_kb()
-    );
-    w_log!(
-        "Swap: {}KB/{}KB",
-        sys.used_swap_in_kb(),
-        sys.total_swap_in_kb()
-    );
-    // check path
-    if path_to_the_process.is_empty() {
-        w_log!("process name is empty");
-    } else {
-        let child_res = create_process(path_to_the_process, &[]).await;
-        RunTime::async_sleep(std::time::Duration::from_secs(5)).await;
-        w_log!("process status is {:?}", child_res);
     }
 }
