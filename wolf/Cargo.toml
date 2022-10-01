@@ -29,7 +29,7 @@ raw-window-handle = {version = "0.4.3", default-features = false, features = ["a
 instant = {version = "0.1.12", default-features = false, features = ["wasm-bindgen"]}
 #rhai = { version = "1.10.0", default-features = false, features = ["sync", "internals", "wasm-bindgen"], optional = true }
 serde = { version = "1.0.144", default-features = false, features = ["derive"]}
-wasm-bindgen = { version = "0.2.82", default-features = false }
+wasm-bindgen = { version = "0.2.83", default-features = false }
 wasm-bindgen-futures = { version = "0.4.32", default-features = false }
 wasm-mt = {version = "0.1.2", default-features = false }
 web-sys = {version = "0.3.59", default-features = false, features = ["console", "Document", "Window", "Element"]}
