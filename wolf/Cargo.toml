@@ -70,7 +70,7 @@ uuid = {version = "1.1.2", default-features = false, features = ["v5"]}
 
 [build-dependencies]
 bindgen = {version = "0.60.1"}
-tonic-build = {version = "0.8.0", default-features = false, features = ["transport", "prost"]}
+tonic-build = {version = "0.8.2", default-features = false, features = ["transport", "prost"]}
 
 [dev-dependencies]
 lazy_static = {version = "1.4.0", default-features = false}
