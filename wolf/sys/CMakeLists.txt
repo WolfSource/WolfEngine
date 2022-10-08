@@ -32,12 +32,13 @@ endif()
 
 # CMAKE GUI Options
 option(WOLF_MEDIA_FFMPEG "Enable FFMPEG for multimedia files" OFF)
+option(WOLF_MEDIA_OPENAL "Enable openAL soft" OFF)
+
 option(WOLF_STREAM_RIST "Enable RIST streaming protocol" OFF)
 option(WOLF_STREAM_RTSP_CLIENT "Enable real time streaming for client" OFF)
 
 option(WOLF_SYSTEM_LZ4 "Enable LZ4 Compression" OFF)
 option(WOLF_SYSTEM_LZMA "Enable LZMA Compression" OFF)
-option(WOLF_SYSTEM_OPENAL "Enable openAL soft" OFF)
 option(WOLF_SYSTEM_STACKTRACE "Enable stacktrace" OFF)
 
 option(WOLF_ENABLE_TESTS "Enable test for wolf_sys" OFF)
@@ -146,6 +147,7 @@ source_group("wolf" FILES
 )
 source_group("media" FILES 
     ${FFMPEG_SRCS}
+    ${OPENAL_SRCS}
 )
 source_group("stream" FILES 
     ${RIST_SRCS}

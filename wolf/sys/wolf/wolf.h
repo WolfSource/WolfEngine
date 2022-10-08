@@ -11,6 +11,7 @@ extern "C" {
 
 #include <stddef.h>
 #include <stdint.h>
+#include <stdbool.h>
 
 #ifndef W_UNUSED
 #define W_UNUSED(p) (void)(p) 

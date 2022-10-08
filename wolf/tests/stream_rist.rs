@@ -70,7 +70,7 @@ fn test_send_rist() {
     let t0 = std::time::Instant::now();
     let mock_data = "HELLO WOLF!";
     loop {
-        let mut data_block = rist_data_block::new().unwrap();
+        let mut data_block = rist_data_block::new();
         data_block.set(mock_data.as_bytes());
 
         let sent = sender.send(&data_block);

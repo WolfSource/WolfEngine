@@ -6,10 +6,12 @@
 #include <rist-private.h>
 #include <DISABLE_ANALYSIS_END>
 
-int w_rist_init_data_block(_Inout_ w_rist_data_block* p_block)
+void w_rist_init_data_block(_Inout_ w_rist_data_block* p_block)
 {
-    *p_block = gsl::owner<rist_data_block*>(calloc(1, sizeof(rist_data_block)));
-    return (*p_block == nullptr) ? -1 : 0;
+    auto _block = gsl::narrow_cast<rist_data_block*>(calloc(1, sizeof(rist_data_block)));
+    const auto _block_nn = gsl::not_null<rist_data_block*>(_block);
+
+    *p_block = _block_nn.get();
 }
 
 void w_rist_set_data_block(

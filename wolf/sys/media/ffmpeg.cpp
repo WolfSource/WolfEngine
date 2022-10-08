@@ -31,26 +31,6 @@ typedef struct w_ffmpeg_t
     AVCodecParserContext* parser = nullptr;
 }w_ffmpeg_t W_ALIGNMENT_64;
 
-//template <typename ...Args>
-//static void s_print_error(
-//    _In_ int p_error_code,
-//    _In_ gsl::not_null<char*> p_trace,
-//    _In_ gsl::not_null<char*> p_buffer,
-//    _In_z_ char const* const p_fmt,
-//    _In_ Args&& ...args)
-//{
-//    char _av_error[W_MAX_PATH] = { 0 };
-//    if (p_error_code != 0)
-//    {
-//        std::ignore = av_make_error_string(_av_error, W_MAX_PATH, p_error_code);
-//    }
-//    std::ignore = snprintf(
-//        p_buffer,
-//        W_MAX_PATH,
-//        p_fmt,
-//        std::forward<Args>(args)...);
-//}
-
 int w_ffmpeg_init(
     _Inout_ w_ffmpeg* p_ffmpeg,
     _In_ w_av_frame p_frame,

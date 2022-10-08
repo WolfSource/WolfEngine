@@ -16,6 +16,9 @@ pub const WCHAR_MIN: u32 = 0;
 pub const WCHAR_MAX: u32 = 65535;
 pub const WINT_MIN: u32 = 0;
 pub const WINT_MAX: u32 = 65535;
+pub const true_: u32 = 1;
+pub const false_: u32 = 0;
+pub const __bool_true_false_are_defined: u32 = 1;
 pub const W_MAX_PATH: u32 = 260;
 pub type size_t = ::std::os::raw::c_ulonglong;
 pub type wchar_t = ::std::os::raw::c_ushort;
@@ -64,8 +67,8 @@ pub type w_rist_data_block = *mut rist_data_block;
 extern "C" {
     #[doc = " initialize rist data block"]
     #[doc = " @param p_block the rist block data,"]
-    #[doc = " @returns zero on success"]
-    pub fn w_rist_init_data_block(p_block: *mut w_rist_data_block) -> ::std::os::raw::c_int;
+    #[doc = " @returns void"]
+    pub fn w_rist_init_data_block(p_block: *mut w_rist_data_block);
 }
 extern "C" {
     #[doc = " set rist data block"]

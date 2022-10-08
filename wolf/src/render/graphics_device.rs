@@ -8,6 +8,15 @@ pub struct WindowInfo {
 
 unsafe impl Send for WindowInfo {}
 
+unsafe impl raw_window_handle::HasRawDisplayHandle for WindowInfo {
+    fn raw_display_handle(&self) -> raw_window_handle::RawDisplayHandle {
+        #[cfg(target_os = "windows")]
+        raw_window_handle::RawDisplayHandle::Windows(
+            raw_window_handle::WindowsDisplayHandle::empty(),
+        )
+    }
+}
+
 unsafe impl raw_window_handle::HasRawWindowHandle for WindowInfo {
     fn raw_window_handle(&self) -> raw_window_handle::RawWindowHandle {
         self.handle
@@ -92,6 +101,7 @@ impl GraphicsDevice {
                         width: size.0,
                         height: size.1,
                         present_mode: wgpu::PresentMode::Fifo,
+                        alpha_mode: wgpu::CompositeAlphaMode::Auto,
                     };
 
                     // configure the surface
@@ -117,6 +127,7 @@ impl GraphicsDevice {
                         width: size.0,
                         height: size.1,
                         present_mode: wgpu::PresentMode::Fifo,
+                        alpha_mode: wgpu::CompositeAlphaMode::Auto,
                     };
                     // create graphics device
                     let g_device = Self {

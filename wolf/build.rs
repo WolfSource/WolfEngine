@@ -249,6 +249,9 @@ fn get_cmake_defines(
     #[cfg(any(feature = "media_ffmpeg"))]
     args.push("-DWOLF_MEDIA_FFMPEG=ON".to_owned());
 
+    #[cfg(any(feature = "media_openal"))]
+    args.push("-DWOLF_MEDIA_OPENAL=ON".to_owned());
+
     if p_target_os == "android" {
         let android_ndk_home_env =
             std::env::var("ANDROID_NDK_HOME").expect("could not get ANDROID_NDK_HOME");
@@ -335,11 +338,14 @@ fn link(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &str) 
     }
 
     #[cfg(feature = "media_ffmpeg")]
-    copy_ffmpeg(p_current_dir_path_str, p_target_os, p_build_profile);
+    copy_ffmpeg(p_current_dir_path_str, p_target_os);
+
+    #[cfg(feature = "media_openal")]
+    copy_openal(p_current_dir_path_str, p_build_profile);
 }
 
 #[cfg(feature = "media_ffmpeg")]
-fn copy_ffmpeg(p_current_dir_path_str: &str, p_target_os: &str, p_build_profile: &str) {
+fn copy_ffmpeg(p_current_dir_path_str: &str, p_target_os: &str) {
     let ffmpeg_dll_names = [
         "avcodec-59.dll",
         "avdevice-59.dll",
@@ -381,6 +387,26 @@ fn copy_ffmpeg(p_current_dir_path_str: &str, p_target_os: &str, p_build_profile:
     copy_shared_libs(&ffmpeg_lib_path, &ffmpeg_lib_names);
 }
 
+#[cfg(feature = "media_openal")]
+fn copy_openal(p_current_dir_path_str: &str, p_build_profile: &str) {
+    let dll_names = ["OpenAL32.dll"];
+
+    let bin_lib_path = format!(
+        "{}/sys/build/{}/_deps/openal-build/{}",
+        p_current_dir_path_str, p_build_profile, p_build_profile
+    );
+    println!("cargo:rustc-link-search=native={}", bin_lib_path);
+
+    // copy to target and deps folder
+    copy_shared_libs(&bin_lib_path, &dll_names);
+
+    let lib_names = ["OpenAL32.lib"];
+    println!("cargo:rustc-link-search=native={}", bin_lib_path);
+
+    // copy to target and deps folder
+    copy_shared_libs(&bin_lib_path, &lib_names);
+}
+
 fn bindgens(p_current_dir_path_str: &str) {
     struct Binding<'a> {
         src: &'a str,
@@ -418,6 +444,14 @@ fn bindgens(p_current_dir_path_str: &str) {
         //     dst: "src/media/ffi/test.rs",
         //     block_headers: &["sys/media/av_frame.h"],
         // });
+    }
+
+    if cfg!(feature = "media_openal") {
+        headers.push(Binding {
+            src: "sys/media/openal.h",
+            dst: "src/media/ffi/openal.rs",
+            block_headers: &[],
+        });
     }
 
     // add include paths

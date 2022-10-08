@@ -16,10 +16,10 @@ extern "C" {
     /**
      * initialize rist data block
      * @param p_block the rist block data,
-     * @returns zero on success
+     * @returns void
      */
     W_API
-        int w_rist_init_data_block(_Inout_ w_rist_data_block* p_block);
+        void w_rist_init_data_block(_Inout_ w_rist_data_block* p_block);
 
     /**
      * set rist data block

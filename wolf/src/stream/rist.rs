@@ -88,29 +88,24 @@ impl rist_data_block {
     /// # Errors
     ///
     /// TODO: add error description
-    pub fn new() -> Result<Self> {
+    #[must_use]
+    pub fn new() -> Self {
         let mut rist_block = Self {
             block: std::ptr::null_mut(),
         };
-        let ret = unsafe { w_rist_init_data_block(&mut rist_block.block) };
-        if ret == 0 {
-            return Ok(rist_block);
-        }
-        bail!("could not allocate memory for rist_data_block")
+        unsafe { w_rist_init_data_block(&mut rist_block.block) };
+        rist_block
     }
 
     /// # Errors
     ///
     /// TODO: add error description
-    pub fn from(p_data_block: w_rist_data_block) -> Result<Self> {
+    pub fn from(p_data_block: w_rist_data_block) -> Self {
         let mut rist_block = Self {
             block: p_data_block,
         };
-        let ret = unsafe { w_rist_init_data_block(&mut rist_block.block) };
-        if ret == 0 {
-            return Ok(rist_block);
-        }
-        bail!("could not allocate memory for rist_data_block")
+        unsafe { w_rist_init_data_block(&mut rist_block.block) };
+        rist_block
     }
 
     /// # Errors

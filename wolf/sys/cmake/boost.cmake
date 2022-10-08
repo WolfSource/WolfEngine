@@ -65,16 +65,16 @@ if (WOLF_SYSTEM_STACKTRACE)
 endif()
 
 if (WOLF_SYSTEM_STACKTRACE)
-    set_target_properties(
-        boost_stacktrace_basic
-        PROPERTIES FOLDER "boost")
     if(MSVC)
         set_target_properties(
+            boost_stacktrace_basic 
+            boost_stacktrace_noop
             boost_stacktrace_windbg
             PROPERTIES FOLDER "boost")
     else()
         set_target_properties(
+            boost_stacktrace_basic 
             boost_stacktrace_noop
             PROPERTIES FOLDER "boost")
-        endif()
+    endif()
 endif()

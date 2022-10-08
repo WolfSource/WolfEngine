@@ -94,11 +94,7 @@ impl System {
     /// # Errors
     ///
     /// TODO:
-    pub async fn create_process(
-        &self,
-        p_process_path: &str,
-        p_process_args: &[&str],
-    ) -> Result<Child> {
+    pub async fn create_process(p_process_path: &str, p_process_args: &[&str]) -> Result<Child> {
         //check is file
         let meta = tokio::fs::metadata(p_process_path).await?;
         if meta.is_file() {

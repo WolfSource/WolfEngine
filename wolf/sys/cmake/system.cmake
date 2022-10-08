@@ -20,8 +20,13 @@ set(MI_BUILD_SHARED OFF CACHE BOOL "MI_BUILD_SHARED")
 set(MI_BUILD_TESTS OFF CACHE BOOL "MI_BUILD_TESTS")
 
 FetchContent_MakeAvailable(mimalloc-static)
-list(APPEND INCLUDES ${mimalloc-static_SRC_DIR}/include)
-list(APPEND LIBS mimalloc-static)  
+list(APPEND INCLUDES ${mimalloc-static_SOURCE_DIR}/include)
+list(APPEND LIBS mimalloc-static) 
+
+set_target_properties(
+    mimalloc-obj 
+    mimalloc-static
+    PROPERTIES FOLDER "mimalloc")
 
 # fetch lz4
 if (WOLF_SYSTEM_LZ4)
@@ -39,6 +44,6 @@ if (WOLF_SYSTEM_LZ4)
     "${CMAKE_CURRENT_SOURCE_DIR}/system/lz4.cpp"
   )
   list(APPEND SRCS ${LZ4_SRCS})
-  list(APPEND INCLUDES ${lz4_SRC_DIR}/include)
+  list(APPEND INCLUDES ${lz4_SOURCE_DIR}/include)
   list(APPEND LIBS lz4_static)    
 endif()

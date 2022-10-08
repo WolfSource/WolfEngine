@@ -1,5 +1,6 @@
 #![allow(unused_crate_dependencies)]
 
+#[allow(clippy::too_many_lines)]
 #[tokio::test]
 async fn test_process() {
     use wolf::{
@@ -31,7 +32,7 @@ async fn test_process() {
     // try to create a unknown process
     let unknown_process_name = "unknown";
     let mut sys = System::new();
-    let p_res = sys.create_process(unknown_process_name, &[]).await;
+    let p_res = System::create_process(unknown_process_name, &[]).await;
     assert!(
         p_res.is_err(),
         "error was expected on creating an unknown process"
@@ -67,7 +68,9 @@ async fn test_process() {
 
         // run process in one thread
         let join_1 = RunTime::green_thread(async move {
-            let child = sys.create_process(path_to_the_process, &[]).await.unwrap();
+            let child = System::create_process(path_to_the_process, &[])
+                .await
+                .unwrap();
             RunTime::async_sleep(std::time::Duration::from_secs(3)).await;
             w_log!("process status {:?}", child);
             sx.send(child).expect("unable to send child process");
@@ -133,21 +136,21 @@ async fn test_runtime() {
         true
     };
     // run the function on a OS thread
-    let j_1 = RunTime::thread(move || {
+    let j_thread = RunTime::thread(move || {
         fun("os thread".to_owned());
     });
     // sleep for a sec
     RunTime::sleep(std::time::Duration::from_secs(1));
     // run the function on a green thread
-    let jt_1 = RunTime::green_thread(async move { fun("green thread".to_owned()) });
+    let j_green = RunTime::green_thread(async move { fun("green thread".to_owned()) });
 
     // run a future on local thread
     RunTime::spawn_local(async {
         w_log!("future spawned on the local thread");
     });
     // wait for all joinables
-    j_1.join().unwrap();
-    jt_1.await.unwrap();
+    j_thread.join().unwrap();
+    j_green.await.unwrap();
 }
 
 #[tokio::test]
@@ -166,14 +169,17 @@ async fn test_sigslot() {
     let con_1 = sig_slot.connect(move || {
         w_log!("hello from slot{}", i);
     });
+
     let con_2 = sig_slot.connect(|| {
         w_log!("hello from slot2");
     });
+
     let _j = RunTime::thread(move || {
         sig_cloned_1.connect(|| {
             w_log!("hello from slot of os thread");
         });
     });
+
     RunTime::green_thread(async move {
         sig_cloned_2.connect(|| {
             w_log!("hello from slot of green thread");
@@ -181,6 +187,7 @@ async fn test_sigslot() {
     })
     .await
     .unwrap();
+
     // check for connections
     if con_1.is_connected() && con_2.is_connected() {
         w_log!("slot 1 & 2 was connected");
@@ -191,6 +198,7 @@ async fn test_sigslot() {
 
     // wait for threads
     RunTime::async_sleep(std::time::Duration::from_secs(1)).await;
+
     // emit all
     sig_slot.emit();
 }
