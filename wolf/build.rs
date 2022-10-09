@@ -213,10 +213,10 @@ fn get_cmake_defines(
     p_cmake_build_path: &str,
     p_cmake_current_path: &str,
 ) -> Vec<String> {
-    #[cfg(not(target_os = "windows"))]
-    let build_cmd = "-GNinja";
+    // #[cfg(not(target_os = "windows"))]
+    // let build_cmd = "-GNinja";
 
-    #[cfg(target_os = "windows")]
+    // #[cfg(target_os = "windows")]
     let build_cmd = "";
 
     // args
