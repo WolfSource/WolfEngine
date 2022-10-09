@@ -11,6 +11,8 @@
 
 #endif
 
+#ifdef WOLF_SYSTEM_STACKTRACE
+
 static std::filesystem::path s_current_process_dir()
 {
 #ifdef WIN32
@@ -23,8 +25,6 @@ static std::filesystem::path s_current_process_dir()
     return std::filesystem::path(_str);
 #endif
 }
-
-#ifdef WOLF_SYSTEM_STACKTRACE
 
 static void w_signal_handler(int p_signum)
 {
