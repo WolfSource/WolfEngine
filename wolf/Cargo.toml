@@ -79,7 +79,7 @@ wav = {version = "1.0.0", default-features = false }
 
 # features
 [features]
-default = ["stream_rist", "media_ffmpeg", "media_openal", "system_stacktrace"]
+default = []
 media_ffmpeg = [] # enable ffmpeg
 media_openal = [] # enable openal
 render = ["wgpu"] # enable real-time rendering
