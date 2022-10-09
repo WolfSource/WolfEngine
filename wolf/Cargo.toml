@@ -88,6 +88,7 @@ stream_rist = [] # enable RIST streaming protocol for stream module
 stream_socket_client = ["tokio-tungstenite"] # enable tcp/udp/ws server for stream module
 stream_socket_server = ["tokio-tungstenite"] # enable tcp/udp/ws client for stream module
 system_fiber = ["may"] # enable fiber
+system_gamepad_sim = [] # enable gamepad simulator 
 system_js = [] # enable javascript embedded engine for system module
 system_lz4 = [] # enable LZ4 compression for system module
 system_raft = ["async-raft", "prost"] # enable raft algorithm for system module
