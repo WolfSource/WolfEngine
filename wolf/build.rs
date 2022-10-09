@@ -185,18 +185,18 @@ pub fn cmake(p_current_dir_path_str: &Path, p_build_profile: &str, p_target_os: 
     );
 
     // build cmake
-    if cfg!(target_os = "windows") {
-        out = Command::new("cmake")
-            .current_dir(&cmake_build_path)
-            .args(["--build", ".", "--parallel 8"])
-            .output()
-            .expect("could not build cmake of wolf/sys");
-    } else {
-        out = Command::new("ninja")
-            .current_dir(&cmake_build_path)
-            .output()
-            .expect("could not build cmake of wolf/sys");
-    }
+    //if cfg!(target_os = "windows") {
+    out = Command::new("cmake")
+        .current_dir(&cmake_build_path)
+        .args(["--build", ".", "--parallel 8"])
+        .output()
+        .expect("could not build cmake of wolf/sys");
+    // } else {
+    //     out = Command::new("ninja")
+    //         .current_dir(&cmake_build_path)
+    //         .output()
+    //         .expect("could not build cmake of wolf/sys");
+    // }
 
     assert!(
         out.status.success(),
