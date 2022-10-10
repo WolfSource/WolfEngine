@@ -117,6 +117,7 @@ else ifeq ("$(DETECTED_OS)", "Linux")
 		cmake \
 		meson \
 		ninja-build \
+		libx11-xcb-dev \
 		libatk1.0-dev \
 		libpango1.0-dev \
 		libsoup-gnome2.4-dev \
