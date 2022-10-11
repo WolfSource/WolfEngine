@@ -93,7 +93,12 @@ async fn test_process() {
                 );
 
                 let mut child = rx.recv().expect("could not receive an object");
+
+                #[cfg(target_os = "windows")]
                 let process_id = child.id().unwrap() as usize;
+
+                #[cfg(not(target_os = "windows"))]
+                let process_id = child.id().unwrap() as i32;
 
                 println!(
                     "The number of Notepad process: {}",
