@@ -102,7 +102,6 @@ ifeq ("$(DETECTED_OS)", "Darwin")
 	bash -c "$(curl --fail --location --show-error --silent https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" \
 	&& brew install \
 		cmake \
-		ninja \
 		glib \
 	&& PKG_CONFIG_PATH=$(pkg-config --variable pc_path pkg-config) \
 	&& PKG_CONFIG_PATH="/Library/Frameworks/GStreamer.framework/Versions/Current/lib/pkgconfig${PKG_CONFIG_PATH:+:}${PKG_CONFIG_PATH}" \
@@ -116,7 +115,6 @@ else ifeq ("$(DETECTED_OS)", "Linux")
 		clang-tidy \
 		cmake \
 		meson \
-		ninja-build \
 		libx11-xcb-dev \
 		libatk1.0-dev \
 		libpango1.0-dev \

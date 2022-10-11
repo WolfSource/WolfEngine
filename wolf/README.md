@@ -1,5 +1,6 @@
-# Wolf Engine [![LGPL v3 licensed](https://img.shields.io/badge/license-Apache-blue)](https://github.com/WolfEngine/Wolf.Engine/blob/main/LICENSE.md) [![wakatime](https://wakatime.com/badge/github/WolfEngine/WolfEngine.svg)](https://wakatime.com/badge/github/WolfEngine/WolfEngine)
-<img src="https://raw.githubusercontent.com/WolfEngine/WolfEngine/main/Logo.jpg" width="256" height="256" alt="WolfEngine"/>
+# Wolf Engine [![LGPL v3 licensed](https://img.shields.io/badge/license-Apache-blue)](https://github.com/WolfEngine/Wolf.Engine/blob/main/LICENSE.md) [![coverage](https://shields.io/endpoint?url=https://raw.githubusercontent.com/WolfEngine/WolfEngine/main/coverage/coverage.json)](https://github.com/WolfEngine/WolfEngine/tree/main/coverage/index.html) [![wakatime](https://wakatime.com/badge/github/WolfEngine/WolfEngine.svg)](https://wakatime.com/badge/github/WolfEngine/WolfEngine)
+
+<img src="https://raw.githubusercontent.com/WolfEngine/WolfEngine/main/Logo.png" width="256" height="256" alt="WolfEngine"/>
 
 **Wolf Engine** is the next generation of [Persian Game Engine](https://github.com/PooyaEimandar/PersianEngine) which is a
 cross-platform open source game engine created by [Pooya Eimandar](https://pooyaeimandar.github.io)
@@ -8,25 +9,20 @@ This Wolf is a comprehensive set of Rust/C libraries for realtime rendering, rea
 ## Branches
 - [main](https://github.com/WolfEngine/WolfEngine/tree/main), Wolf3, is the latest version of Wolf which is written in **Rust and contains some unsafe codes** and is not ready for production
 - [Wolf2](https://github.com/WolfEngine/WolfEngine/tree/wolf-2) is written in **C/C++ and is in maintenance mode**
-- [releases](https://github.com/WolfEngine/WolfEngine/releases) contains old releases and source codes
-
-## Linter tools
-- **C++**: make sure enable [clang-tidy for Visual Studio Code](https://devblogs.microsoft.com/cppblog/visual-studio-code-c-december-2021-update-clang-tidy/)
-- **Rust**: enable rust clippy from settings.json of [Visual Studio Code](https://code.visualstudio.com)
-  ```bash
-  "rust-analyzer.checkOnSave.command": "clippy"
-  ```
+- [releases](https://github.com/WolfEngine/WolfEngine/releases) contains old releases and source codes (C++ & DirectX 11)
 
 ## Build
 - **Wolf 2/1** via CMake
 - **Wolf 3**
-  - Install CMake
-  - Install Ninja & Meson (0.47 or higher), Alternatively, use "pip3 install meson" and "pip3 install ninja"
+  - Install [CMake](https://cmake.org/install/)
+  - Install [Meson](https://github.com/mesonbuild/meson/releases)
   - Install [clang](https://github.com/llvm/llvm-project/releases/tag/llvmorg-14.0.0) for bindgen
+  - Install [python3](https://www.python.org/downloads/) for running wasm
 
   - For **Webassembly** :\
-  From WolfEngine folder
+  From workspace folder run
   ```bash
+  cargo install wasm-pack
   rustup default nightly
   rustup target add wasm32-unknown-unknown
   cd wolf-demo
@@ -50,7 +46,7 @@ This Wolf is a comprehensive set of Rust/C libraries for realtime rendering, rea
     i686-linux-android
   cargo install cargo-ndk
   export ANDROID_NDK_HOME = /path/to/the/root/of/NDK/Folder
-  cargo ndk -t armeabi-v7a -o ./jniLibs build
+  cargo ndk -t armeabi-v7a build
   cargo ndk -t armeabi-v7a -o ./jniLibs build --release 
   ```
 

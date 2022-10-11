@@ -73,7 +73,7 @@ impl System {
     #[must_use]
     pub fn is_process_running_by_pid(&self, p_process_id: i32) -> bool {
         for pid in self.sys.processes().keys() {
-            let id = usize::from(pid) as i32;
+            let id = pid as i32;
             if id == p_process_id {
                 return true;
             }
