@@ -82,11 +82,11 @@ wav = {version = "1.0.0", default-features = false }
 all = [
     "media_ffmpeg", "media_openal", 
     "render", 
-    "stream_grpc", "stream_rist", "stream_socket_client", "stream_socket_server",
+    "stream_rist", "stream_socket_client", "stream_socket_server",
     "system_fiber", "system_gamepad_sim", "system_js", 
-    "system_lz4", "system_raft", "system_screen_capture", "system_stacktrace"
+    "system_lz4", "system_screen_capture", "system_stacktrace"
     ]
-default = ["system_gamepad_sim"]
+default = []
 media_ffmpeg = [] # enable ffmpeg
 media_openal = [] # enable openal
 render = ["wgpu"] # enable real-time rendering

@@ -145,7 +145,7 @@ public:
                 &pXInput,
                 sizeof(XINPUT_STATE));
 
-            //update x360 gamepad
+            // update x360 gamepad
             vigem_target_x360_update(
                 this->_driver_handler,
                 gsl::at(this->_gamepads, pGamePadIndex),

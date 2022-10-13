@@ -40,6 +40,7 @@ option(WOLF_STREAM_RTSP_CLIENT "Enable real time streaming for client" OFF)
 option(WOLF_SYSTEM_LZ4 "Enable LZ4 Compression" OFF)
 option(WOLF_SYSTEM_LZMA "Enable LZMA Compression" OFF)
 option(WOLF_SYSTEM_STACKTRACE "Enable stacktrace" OFF)
+option(WOLF_SYSTEM_GAMEPAD_SIM "Enable gamepad simulator based on ViGEm" OFF)
 
 option(WOLF_ENABLE_TESTS "Enable test for wolf_sys" OFF)
 
@@ -154,6 +155,7 @@ source_group("stream" FILES
 )
 source_group("system" FILES 
     ${LZ4_SRCS}
+    ${ViGEmClient_SRCS}
 )
 
 if (NOT MSVC)

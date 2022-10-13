@@ -18,6 +18,17 @@ This Wolf is a comprehensive set of Rust/C libraries for realtime rendering, rea
   - Install [Meson](https://github.com/mesonbuild/meson/releases)
   - Install [clang](https://github.com/llvm/llvm-project/releases/tag/llvmorg-14.0.0) for bindgen
   - Install [python3](https://www.python.org/downloads/) for running wasm
+  - Install protoc for 
+    - Windows: download protoc-x.y-win64.zip from [here](https://github.com/protocolbuffers/protobuf/releases/latest) then extract the file `bin\protoc.exe` and put it somewhere in the `PATH`
+    - MacOS:
+      ```bash
+        brew install protobuf
+      ```  
+    - Linux:
+      ```bash
+        sudo apt update && sudo apt upgrade -y
+        sudo apt install -y protobuf-compiler libprotobuf-dev
+      ```
 
   - For **Webassembly** :\
   From workspace folder run
