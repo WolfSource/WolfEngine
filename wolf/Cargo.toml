@@ -62,11 +62,11 @@ mimalloc = {version = "0.1.29", default-features = false, features = ["secure"]}
 parking_lot = {version = "0.12.1",  default-features = false, features = ["deadlock_detection"]}
 prost = {version = "0.11.0", default-features = false, optional = true}
 scrap ={version = "0.5.0", default-features = false, optional = true}
-serde_json = {version = "1.0.85", default-features = false, features = ["std"]}
+serde_json = {version = "1.0.86", default-features = false, features = ["std"]}
 sysinfo = {version = "0.26.4", default-features = false, features = ["multithread"]}
 tokio-tungstenite = {version = "0.17.2", default-features = false, features = ["connect", "rustls"], optional = true}
 tracing = {version = "0.1.37", default-features = false, features = ["std", "attributes"]}
-uuid = {version = "1.1.2", default-features = false, features = ["v5"]}
+uuid = {version = "1.2.1", default-features = false, features = ["v5"]}
 
 [build-dependencies]
 bindgen = {version = "0.60.1"}
@@ -79,7 +79,14 @@ wav = {version = "1.0.0", default-features = false }
 
 # features
 [features]
-default = ["stream_rist", "media_ffmpeg", "media_openal", "system_stacktrace"]
+all = [
+    "media_ffmpeg", "media_openal", 
+    "render", 
+    "stream_rist", "stream_socket_client", "stream_socket_server",
+    "system_fiber", "system_gamepad_sim", "system_js", 
+    "system_lz4", "system_screen_capture", "system_stacktrace"
+    ]
+default = []
 media_ffmpeg = [] # enable ffmpeg
 media_openal = [] # enable openal
 render = ["wgpu"] # enable real-time rendering
@@ -88,6 +95,7 @@ stream_rist = [] # enable RIST streaming protocol for stream module
 stream_socket_client = ["tokio-tungstenite"] # enable tcp/udp/ws server for stream module
 stream_socket_server = ["tokio-tungstenite"] # enable tcp/udp/ws client for stream module
 system_fiber = ["may"] # enable fiber
+system_gamepad_sim = [] # enable gamepad simulator 
 system_js = [] # enable javascript embedded engine for system module
 system_lz4 = [] # enable LZ4 compression for system module
 system_raft = ["async-raft", "prost"] # enable raft algorithm for system module
@@ -97,7 +105,6 @@ system_stacktrace = [] # enable boost stacktrace
 # brotli = [] # enable brotli compression
 # kafka_client = [] # enable Kafka client
 # lzma = [] # enable LZMA Compression
-# nng = [] # enable nng socket for tcp/udp/ipc protocols
 # quic = [] # enable QUIC protocol
 # redis_client = [] # enable redis client
 # rocksDB_client = [] # enable rocksDB client
@@ -105,7 +112,5 @@ system_stacktrace = [] # enable boost stacktrace
 # rtsp_server = [] # enable real time streaming protocol for server
 # simd = [] # enable SIMD
 # webRTC_client = [] # enable webRTC
-# websocket_client = [] # enable websocket client
-# websocket_server = [] # enable websocket server
 
 

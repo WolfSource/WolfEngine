@@ -60,10 +60,10 @@ impl System {
 
     #[cfg(target_os = "windows")]
     #[must_use]
-    pub fn is_process_running_by_pid(&self, p_process_id: &usize) -> bool {
+    pub fn is_process_running_by_pid(&self, p_process_id: usize) -> bool {
         for pid in self.sys.processes().keys() {
             let id = usize::from(*pid);
-            if id == *p_process_id {
+            if id == p_process_id {
                 return true;
             }
         }
@@ -72,9 +72,9 @@ impl System {
     #[cfg(not(target_os = "windows"))]
     #[must_use]
     pub fn is_process_running_by_pid(&self, p_process_id: i32) -> bool {
-        let pid = sysinfo::Pid::from(p_process_id);
-        for p in self.sys.processes().keys() {
-            if p == &pid {
+        for pid in self.sys.processes().keys() {
+            let id = pid as i32;
+            if id == p_process_id {
                 return true;
             }
         }

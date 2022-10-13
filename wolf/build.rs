@@ -144,7 +144,7 @@ pub fn cmake(p_current_dir_path_str: &Path, p_build_profile: &str, p_target_os: 
         .expect("could not convert cmake current path to &str");
 
     // get cmake build path
-    let install_folder = format!("build/{}", p_build_profile);
+    let install_folder = format!("build/{p_build_profile}");
     let cmake_build_path = cmake_current_path.join(install_folder);
     let cmake_build_path_str = cmake_build_path
         .to_str()
@@ -185,23 +185,22 @@ pub fn cmake(p_current_dir_path_str: &Path, p_build_profile: &str, p_target_os: 
     );
 
     // build cmake
-    if cfg!(target_os = "windows") {
-        out = Command::new("cmake")
-            .current_dir(&cmake_build_path)
-            .args(["--build", ".", "--parallel 8"])
-            .output()
-            .expect("could not build cmake of wolf/sys");
-    } else {
-        out = Command::new("ninja")
-            .current_dir(&cmake_build_path)
-            .output()
-            .expect("could not build cmake of wolf/sys");
-    }
+    //if cfg!(target_os = "windows") {
+    out = Command::new("cmake")
+        .current_dir(&cmake_build_path)
+        .args(["--build", ".", "--parallel 8"])
+        .output()
+        .expect("could not build cmake of wolf/sys");
+    // } else {
+    //     out = Command::new("ninja")
+    //         .current_dir(&cmake_build_path)
+    //         .output()
+    //         .expect("could not build cmake of wolf/sys");
+    // }
 
     assert!(
         out.status.success(),
-        "CMake Build failed for {}CMakeLists.txt\r\nstdout:{:?}\r\nstderr:{:?}",
-        cmake_current_path_str,
+        "CMake Build failed for {cmake_current_path_str}CMakeLists.txt\r\nstdout:{:?}\r\nstderr:{:?}",
         std::str::from_utf8(&out.stdout),
         std::str::from_utf8(&out.stderr),
     );
@@ -213,10 +212,10 @@ fn get_cmake_defines(
     p_cmake_build_path: &str,
     p_cmake_current_path: &str,
 ) -> Vec<String> {
-    #[cfg(not(target_os = "windows"))]
-    let build_cmd = "-GNinja";
+    // #[cfg(not(target_os = "windows"))]
+    // let build_cmd = "-GNinja";
 
-    #[cfg(target_os = "windows")]
+    // #[cfg(target_os = "windows")]
     let build_cmd = "";
 
     // args
@@ -226,10 +225,10 @@ fn get_cmake_defines(
         "-Wdev".to_owned(),
         "--debug-output".to_owned(),
         "-DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE".to_owned(),
-        format!("-DCMAKE_C_COMPILER={}", CMAKE_C_COMPILER),
-        format!("-DCMAKE_BUILD_TYPE:STRING={}", p_build_profile),
-        format!("-B{}", p_cmake_build_path),
-        format!("-S{}", p_cmake_current_path),
+        format!("-DCMAKE_C_COMPILER={CMAKE_C_COMPILER}"),
+        format!("-DCMAKE_BUILD_TYPE:STRING={p_build_profile}"),
+        format!("-B{p_cmake_build_path}"),
+        format!("-S{p_cmake_current_path}"),
         build_cmd.to_owned(),
     ]
     .to_vec();
@@ -242,6 +241,9 @@ fn get_cmake_defines(
 
     #[cfg(feature = "system_lz4")]
     args.push("-DWOLF_SYSTEM_LZ4=ON".to_owned());
+
+    #[cfg(feature = "system_gamepad_sim")]
+    args.push("-DWOLF_SYSTEM_GAMEPAD_SIM=ON".to_owned());
 
     #[cfg(feature = "stream_rist")]
     args.push("-DWOLF_STREAM_RIST=ON".to_owned());
@@ -256,17 +258,16 @@ fn get_cmake_defines(
         let android_ndk_home_env =
             std::env::var("ANDROID_NDK_HOME").expect("could not get ANDROID_NDK_HOME");
         args.push(format!(
-            "-DCMAKE_TOOLCHAIN_FILE={}/build/cmake/android.toolchain.cmake",
-            android_ndk_home_env
+            "-DCMAKE_TOOLCHAIN_FILE={android_ndk_home_env}/build/cmake/android.toolchain.cmake"
         ));
-        args.push(format!("-DANDROID_ABI={}", ANDROID_ARCH_API));
-        args.push(format!("-DANDROID_NDK={}", android_ndk_home_env));
-        args.push(format!("-DANDROID_PLATFORM=android-{}", ANDROID_API_LEVEL));
-        args.push(format!("-DCMAKE_ANDROID_ARCH_ABI={}", ANDROID_ARCH_API));
-        args.push(format!("-DCMAKE_ANDROID_NDK={}", android_ndk_home_env));
+        args.push(format!("-DANDROID_ABI={ANDROID_ARCH_API}"));
+        args.push(format!("-DANDROID_NDK={android_ndk_home_env}"));
+        args.push(format!("-DANDROID_PLATFORM=android-{ANDROID_API_LEVEL}"));
+        args.push(format!("-DCMAKE_ANDROID_ARCH_ABI={ANDROID_ARCH_API}"));
+        args.push(format!("-DCMAKE_ANDROID_NDK={android_ndk_home_env}"));
         args.push("-DCMAKE_EXPORT_COMPILE_COMMANDS=ON".to_owned());
         args.push("-DCMAKE_SYSTEM_NAME=Android".to_owned());
-        args.push(format!("-DCMAKE_SYSTEM_VERSION={}", ANDROID_API_LEVEL));
+        args.push(format!("-DCMAKE_SYSTEM_VERSION={ANDROID_API_LEVEL}"));
     }
 
     args
@@ -279,7 +280,7 @@ fn copy_shared_libs(p_lib_path: &str, p_lib_names: &[&str]) {
     let deps_path = out_path.join("deps");
 
     for name in p_lib_names.iter() {
-        let file = format!("{}/{}", p_lib_path, name);
+        let file = format!("{p_lib_path}/{name}");
         let _file1 = std::fs::copy(&file, deps_path.join(name));
         let _file2 = std::fs::copy(&file, out_path.join(name));
     }
@@ -300,7 +301,7 @@ fn link(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &str) 
         println!("cargo:rustc-link-lib=dylib=Mswsock");
     }
 
-    let sys_build_dir = format!("{}/sys/build/{}", p_current_dir_path_str, p_build_profile);
+    let sys_build_dir = format!("{p_current_dir_path_str}/sys/build/{p_build_profile}");
 
     if cfg!(target_os = "macos") || cfg!(target_os = "ios") {
         println!("cargo:rustc-link-search=native=/usr/lib");
@@ -308,11 +309,11 @@ fn link(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &str) 
     }
 
     let lib_path = if p_target_os == "windows" {
-        format!("{}/{}", sys_build_dir, p_build_profile)
+        format!("{sys_build_dir}/{p_build_profile}")
     } else {
         sys_build_dir
     };
-    println!("cargo:rustc-link-search=native={}", lib_path);
+    println!("cargo:rustc-link-search=native={lib_path}");
     println!("cargo:rustc-link-lib=dylib=wolf_sys");
 
     let names = if p_target_os == "windows" {
@@ -357,11 +358,9 @@ fn copy_ffmpeg(p_current_dir_path_str: &str, p_target_os: &str) {
         "swscale-6.dll",
     ];
 
-    let ffmpeg_bin_path = format!(
-        "{}/sys/third_party/ffmpeg/bin/{}",
-        p_current_dir_path_str, p_target_os
-    );
-    println!("cargo:rustc-link-search=native={}", ffmpeg_bin_path);
+    let ffmpeg_bin_path =
+        format!("{p_current_dir_path_str}/sys/third_party/ffmpeg/bin/{p_target_os}");
+    println!("cargo:rustc-link-search=native={ffmpeg_bin_path}");
 
     // copy to target and deps folder
     copy_shared_libs(&ffmpeg_bin_path, &ffmpeg_dll_names);
@@ -377,11 +376,9 @@ fn copy_ffmpeg(p_current_dir_path_str: &str, p_target_os: &str) {
         "swscale.lib",
     ];
 
-    let ffmpeg_lib_path = format!(
-        "{}/sys/third_party/ffmpeg/lib/{}",
-        p_current_dir_path_str, p_target_os
-    );
-    println!("cargo:rustc-link-search=native={}", ffmpeg_lib_path);
+    let ffmpeg_lib_path =
+        format!("{p_current_dir_path_str}/sys/third_party/ffmpeg/lib/{p_target_os}");
+    println!("cargo:rustc-link-search=native={ffmpeg_lib_path}");
 
     // copy to target and deps folder
     copy_shared_libs(&ffmpeg_lib_path, &ffmpeg_lib_names);
@@ -392,10 +389,9 @@ fn copy_openal(p_current_dir_path_str: &str, p_build_profile: &str) {
     let dll_names = ["OpenAL32.dll"];
 
     let bin_lib_path = format!(
-        "{}/sys/build/{}/_deps/openal-build/{}",
-        p_current_dir_path_str, p_build_profile, p_build_profile
+        "{p_current_dir_path_str}/sys/build/{p_build_profile}/_deps/openal-build/{p_build_profile}",
     );
-    println!("cargo:rustc-link-search=native={}", bin_lib_path);
+    println!("cargo:rustc-link-search=native={bin_lib_path}");
 
     // copy to target and deps folder
     copy_shared_libs(&bin_lib_path, &dll_names);
@@ -423,6 +419,13 @@ fn bindgens(p_current_dir_path_str: &str) {
     headers.push(Binding {
         src: "sys/system/lz4.h",
         dst: "src/system/ffi/lz4.rs",
+        block_headers: &[],
+    });
+
+    #[cfg(feature = "system_gamepad_sim")]
+    headers.push(Binding {
+        src: "sys/system/vigem_client.h",
+        dst: "src/system/ffi/vigem_client.rs",
         block_headers: &[],
     });
 
@@ -455,8 +458,8 @@ fn bindgens(p_current_dir_path_str: &str) {
     }
 
     // add include paths
-    let clang_include_arg_0 = format!("-I{}/sys", p_current_dir_path_str);
-    let clang_include_arg_1 = format!("-I{}/sys/wolf", p_current_dir_path_str);
+    let clang_include_arg_0 = format!("-I{p_current_dir_path_str}/sys");
+    let clang_include_arg_1 = format!("-I{p_current_dir_path_str}/sys/wolf");
     //let clang_include_arg_2 = format!("-I{}/sys/media", p_current_dir_path_str);
     //let clang_include_arg_2 = format!("-I{}/sys/stream", p_current_dir_path_str);
 
@@ -490,13 +493,13 @@ fn bindgens(p_current_dir_path_str: &str) {
             // unwrap the Result and panic on failure.
             .unwrap_or_else(|e| {
                 panic!(
-                    "couldn't create bindings for header {} because {:?}",
-                    header.src, e
+                    "couldn't create bindings for header {} because {e:?}",
+                    header.src
                 );
             })
             .write_to_file(out_path)
             .unwrap_or_else(|e| {
-                panic!("couldn't write bindings for {} because {:?}", header.src, e);
+                panic!("couldn't write bindings for {} because {e:?}", header.src);
             });
     }
 }

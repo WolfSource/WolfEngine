@@ -47,3 +47,26 @@ if (WOLF_SYSTEM_LZ4)
   list(APPEND INCLUDES ${lz4_SOURCE_DIR}/include)
   list(APPEND LIBS lz4_static)    
 endif()
+
+# fetch vigem client
+if (WOLF_SYSTEM_GAMEPAD_SIM)
+  if (NOT WIN32)
+    message( FATAL_ERROR "ViGem can only build for Windows")
+  endif()
+
+  message("fetching https://github.com/ViGEm/ViGEmClient.git")
+  FetchContent_Declare(
+    ViGEmClient
+    GIT_REPOSITORY https://github.com/ViGEm/ViGEmClient.git
+    GIT_TAG        master
+  )
+  FetchContent_MakeAvailable(ViGEmClient)
+
+  file(GLOB_RECURSE ViGEmClient_SRCS
+    "${CMAKE_CURRENT_SOURCE_DIR}/system/vigem_client.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/system/vigem_client.cpp"
+  )
+  list(APPEND SRCS ${ViGEmClient_SRCS})
+  list(APPEND INCLUDES ${ViGEmClient_SOURCE_DIR}/include)
+  list(APPEND LIBS ViGEmClient Xinput.lib SetupAPI.lib)
+endif()

@@ -11,9 +11,14 @@ unsafe impl Send for WindowInfo {}
 unsafe impl raw_window_handle::HasRawDisplayHandle for WindowInfo {
     fn raw_display_handle(&self) -> raw_window_handle::RawDisplayHandle {
         #[cfg(target_os = "windows")]
-        raw_window_handle::RawDisplayHandle::Windows(
+        let handle = raw_window_handle::RawDisplayHandle::Windows(
             raw_window_handle::WindowsDisplayHandle::empty(),
-        )
+        );
+        #[cfg(target_os = "linux")]
+        let handle =
+            raw_window_handle::RawDisplayHandle::Xcb(raw_window_handle::XcbDisplayHandle::empty());
+
+        handle
     }
 }
 

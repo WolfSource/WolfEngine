@@ -8,9 +8,15 @@ fn test_av_frame_convert() {
     use wolf::media::av_frame::{AVFrame, AVPixelFormat};
 
     let current_dir = std::env::current_dir().unwrap();
-    // load image
-    let path = current_dir.join("sample_rgba.png");
-    let img = image::open(path).unwrap();
+    let file_name = "sample_rgba.png";
+    let wolf_dir = current_dir.join("wolf");
+    let file_path = if wolf_dir.exists() {
+        wolf_dir.join(file_name)
+    } else {
+        current_dir.join(file_name)
+    };
+
+    let img = image::open(file_path).unwrap();
     let img_size = img.dimensions();
     let pixels = img.as_rgba8().unwrap().as_bytes();
 

@@ -56,7 +56,8 @@ impl RaftNetwork<ClientRequest> for RaftRouter {
                 match grpc::create_channel(uri).await {
                     Ok(c) => {
                         //call request with channel
-                        let mut client = RaftClient::new(c).send_gzip().accept_gzip();
+                        let raft_client = RaftClient::new(c);
+                        let mut client = raft_client.send_gzip().accept_gzip();
                         match client.append_entries(raft_req).await {
                             Ok(r) => {
                                 match r.into_inner().response {

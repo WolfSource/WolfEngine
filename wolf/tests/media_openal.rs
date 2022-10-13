@@ -9,14 +9,15 @@ fn test_media_openal() {
     println!("{:?}", devices);
 
     let current_dir = std::env::current_dir().unwrap();
+    let file_name = "sine.wav";
     let wolf_dir = current_dir.join("wolf");
-    let wav_dir = if wolf_dir.exists() {
-        wolf_dir.join("sine.wav")
+    let file_path = if wolf_dir.exists() {
+        wolf_dir.join(file_name)
     } else {
-        current_dir.join("sine.wav")
+        current_dir.join(file_name)
     };
 
-    let mut wav_file = File::open(wav_dir).unwrap();
+    let mut wav_file = File::open(file_path).unwrap();
     let (_header, data) = wav::read(&mut wav_file).unwrap();
 
     //println!("wav header:{:?} data:{:?}", header, data);

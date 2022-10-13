@@ -41,8 +41,15 @@ async fn test_process() {
         !sys.is_process_running_by_name(unknown_process_name),
         "error was expected on checking unknown process"
     );
+
+    #[cfg(target_os = "windows")]
     assert!(
-        !sys.is_process_running_by_pid(&usize::MAX),
+        !sys.is_process_running_by_pid(usize::MAX),
+        "error was expected on checking process_id = usize::MAX"
+    );
+    #[cfg(not(target_os = "windows"))]
+    assert!(
+        !sys.is_process_running_by_pid(i32::MAX),
         "error was expected on checking process_id = usize::MAX"
     );
 
@@ -93,7 +100,12 @@ async fn test_process() {
                 );
 
                 let mut child = rx.recv().expect("could not receive an object");
+
+                #[cfg(target_os = "windows")]
                 let process_id = child.id().unwrap() as usize;
+
+                #[cfg(not(target_os = "windows"))]
+                let process_id = child.id().unwrap() as i32;
 
                 println!(
                     "The number of Notepad process: {}",
@@ -107,7 +119,7 @@ async fn test_process() {
                 }
 
                 // if process is avaiable then kill it
-                if sys.is_process_running_by_pid(&process_id) {
+                if sys.is_process_running_by_pid(process_id) {
                     let killed_res = child.kill().await;
                     match killed_res {
                         Ok(_) => {

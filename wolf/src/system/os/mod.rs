@@ -10,5 +10,5 @@ pub mod system;
 ))]
 pub mod screen;
 
-//#[cfg(target_os = "windows")]
-//pub mod vigem_client;
+#[cfg(target_os = "windows")]
+pub mod vigem_client;
