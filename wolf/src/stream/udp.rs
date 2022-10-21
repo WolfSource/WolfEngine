@@ -93,7 +93,7 @@ pub async fn connect(
 ) -> Result<()> {
     const TRACE: &str = "udp::connect";
 
-    let address = format!("{}:{}", p_address, p_port);
+    let address = format!("{p_address}:{p_port}");
     let socket_addr =
         SocketAddr::from_str(&address).map_err(|e| anyhow!("{:?}. trace info:{}", e, TRACE))?;
 
@@ -120,7 +120,7 @@ pub async fn connect(
 
                 r_res = read(&socket, &mut msg.buf, p_read_write_timeout_in_secs).await;
                 if r_res.is_err() {
-                    close_msg = format!("{:?}", r_res);
+                    close_msg = format!("{r_res:?}");
                     break;
                 }
 
@@ -148,7 +148,7 @@ pub async fn connect(
                     )
                     .await;
                     if s_res.is_err() {
-                        close_msg = format!("{:?}", s_res);
+                        close_msg = format!("{s_res:?}");
                         break;
                     }
                 }
@@ -183,12 +183,12 @@ pub async fn connect(
                     )
                     .await;
                     if s_res.is_err() {
-                        close_msg = format!("{:?}", s_res);
+                        close_msg = format!("{s_res:?}");
                         break;
                     }
                     r_res = read(&socket, &mut msg.buf, p_read_write_timeout_in_secs).await;
                     if r_res.is_err() {
-                        close_msg = format!("{:?}", r_res);
+                        close_msg = format!("{r_res:?}");
                         break;
                     }
                 }
@@ -221,7 +221,7 @@ async fn test() {
     // block main thread with udp server
     let on_bind_socket = OnSocketCallback::new(Box::new(
         |p_socket_address: &SocketAddr| -> anyhow::Result<()> {
-            println!("udp socket {:?} just binded", p_socket_address);
+            println!("udp socket {p_socket_address:?} just binded");
             Ok(())
         },
     ));
@@ -247,7 +247,7 @@ async fn test() {
 
             if p_msg.size > 0 {
                 let msg = std::str::from_utf8(p_msg.buf.as_slice())?;
-                println!("client: received buffer is {}", msg);
+                println!("client: received buffer is {msg}");
             }
             //now store new bytes for write
             let msg = "hello...world!\0"; //make sure append NULL terminate
@@ -270,7 +270,7 @@ async fn test() {
         on_close_socket,
     )
     .await;
-    assert!(ret.is_ok(), "{:?}", ret);
+    assert!(ret.is_ok(), "{ret:?}");
 
     println!("udp tests done");
 }

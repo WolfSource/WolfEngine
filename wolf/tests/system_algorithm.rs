@@ -1,4 +1,4 @@
-#[cfg(feature = "stream_grpc")]
+#[cfg(all(feature = "stream_grpc", feature = "stream_raft"))]
 #[tokio::test]
 async fn test_raft_over_grpc() {
     use std::time::Duration;

@@ -6,7 +6,7 @@ fn test_media_openal() {
     use wolf::media::openal::{Format, OpenAl, SampleRate};
 
     let devices = OpenAl::list_all_devices();
-    println!("{:?}", devices);
+    println!("{devices:?}");
 
     let current_dir = std::env::current_dir().unwrap();
     let file_name = "sine.wav";
@@ -20,11 +20,10 @@ fn test_media_openal() {
     let mut wav_file = File::open(file_path).unwrap();
     let (_header, data) = wav::read(&mut wav_file).unwrap();
 
-    //println!("wav header:{:?} data:{:?}", header, data);
-
     let channels = std::num::NonZeroU32::new(2).unwrap();
     let openal = OpenAl::new(Format::Stereo16, SampleRate::_44100, 25, channels).unwrap();
     openal.open().unwrap();
+    openal.reset();
 
     let data = data.as_sixteen().unwrap();
     openal.update_from_heap_i16(data).unwrap();

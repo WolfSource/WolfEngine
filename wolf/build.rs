@@ -152,11 +152,9 @@ pub fn cmake(p_current_dir_path_str: &Path, p_build_profile: &str, p_target_os: 
 
     // return if wolf_sys library was found
     let wolf_sys_path = if p_target_os == "windows" {
-        cmake_build_path.join(p_build_profile).join("wolf_sys.dll")
-    } else if p_target_os == "macos" || p_target_os == "ios" {
-        cmake_build_path.join("libwolf_sys.dylib")
+        cmake_build_path.join(p_build_profile).join("wolf_sys.lib")
     } else {
-        cmake_build_path.join("libwolf_sys.so")
+        cmake_build_path.join("libwolf_sys.a")
     };
 
     if std::path::Path::new(&wolf_sys_path).exists() {
@@ -185,18 +183,11 @@ pub fn cmake(p_current_dir_path_str: &Path, p_build_profile: &str, p_target_os: 
     );
 
     // build cmake
-    //if cfg!(target_os = "windows") {
     out = Command::new("cmake")
         .current_dir(&cmake_build_path)
         .args(["--build", ".", "--parallel 8"])
         .output()
         .expect("could not build cmake of wolf/sys");
-    // } else {
-    //     out = Command::new("ninja")
-    //         .current_dir(&cmake_build_path)
-    //         .output()
-    //         .expect("could not build cmake of wolf/sys");
-    // }
 
     assert!(
         out.status.success(),
@@ -212,10 +203,6 @@ fn get_cmake_defines(
     p_cmake_build_path: &str,
     p_cmake_current_path: &str,
 ) -> Vec<String> {
-    // #[cfg(not(target_os = "windows"))]
-    // let build_cmd = "-GNinja";
-
-    // #[cfg(target_os = "windows")]
     let build_cmd = "";
 
     // args
@@ -316,6 +303,9 @@ fn link(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &str) 
     println!("cargo:rustc-link-search=native={lib_path}");
     println!("cargo:rustc-link-lib=dylib=wolf_sys");
 
+    //println!("cargo:rustc-link-search=native=G:/SourceCodes/WolfEngine/WolfEngine/wolf/sys/build/Debug/_deps/lz4_static-build/Debug/");
+    //println!("cargo:rustc-link-lib=static=lz4");
+
     let names = if p_target_os == "windows" {
         [
             "wolf_sys.dll",
@@ -324,19 +314,17 @@ fn link(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &str) 
             "wolf_sys.pdb",
         ]
         .to_vec()
-    } else if p_target_os == "macos" || p_target_os == "ios" {
-        ["libwolf_sys.dylib"].to_vec()
     } else {
-        ["libwolf_sys.so"].to_vec()
+        ["libwolf_sys.a"].to_vec()
     };
 
     // copy to target and deps folder
     copy_shared_libs(&lib_path, &names);
 
-    // copy lib to linux
-    if cfg!(target_os = "linux") {
-        copy_shared_libs("/usr/lib", &names);
-    }
+    // // copy lib to linux
+    // if cfg!(target_os = "linux") {
+    //     copy_shared_libs("/usr/lib", &names);
+    // }
 
     #[cfg(feature = "media_ffmpeg")]
     copy_ffmpeg(p_current_dir_path_str, p_target_os);
@@ -397,7 +385,7 @@ fn copy_openal(p_current_dir_path_str: &str, p_build_profile: &str) {
     copy_shared_libs(&bin_lib_path, &dll_names);
 
     let lib_names = ["OpenAL32.lib"];
-    println!("cargo:rustc-link-search=native={}", bin_lib_path);
+    println!("cargo:rustc-link-search=native={bin_lib_path}");
 
     // copy to target and deps folder
     copy_shared_libs(&bin_lib_path, &lib_names);

@@ -17,7 +17,7 @@ pub mod system;
 #[cfg(not(target_arch = "wasm32"))]
 #[must_use]
 pub fn sys_init() -> String {
-    use crate::system::ffi::sys_init::{size_t, w_sys_init};
+    use crate::system::ffi::sys_init::w_sys_init;
 
     // create a buffer
     let mut buf = [0i8; 32];
@@ -25,7 +25,7 @@ pub fn sys_init() -> String {
 
     // call unsafe function
     let c_str = unsafe {
-        w_sys_init(buf_ptr, buf.len() as size_t);
+        w_sys_init(buf_ptr, buf.len());
         std::ffi::CStr::from_ptr(buf_ptr)
     };
 

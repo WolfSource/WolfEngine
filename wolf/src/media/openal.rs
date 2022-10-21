@@ -1,5 +1,5 @@
 use super::ffi::openal::{
-    size_t, w_openal, w_openal_close, w_openal_fini, w_openal_init, w_openal_list_all_devices,
+    w_openal, w_openal_close, w_openal_fini, w_openal_init, w_openal_list_all_devices,
     w_openal_open, w_openal_reset, w_openal_update_i16,
 };
 use crate::system::ffi::sys_init::W_MAX_PATH;
@@ -121,7 +121,7 @@ impl OpenAl {
             let ret = w_openal_update_i16(
                 self.ctx,
                 p_audio_frame_buffer.as_ptr(),
-                p_audio_frame_buffer.len() as size_t,
+                p_audio_frame_buffer.len(),
                 buf_ptr,
             );
             if ret == 0 {
@@ -148,7 +148,7 @@ impl OpenAl {
             let ret = w_openal_update_i16(
                 self.ctx,
                 p_audio_frame_buffer.as_ptr(),
-                p_audio_frame_buffer.len() as size_t,
+                p_audio_frame_buffer.len(),
                 buf_ptr,
             );
             if ret == 0 {

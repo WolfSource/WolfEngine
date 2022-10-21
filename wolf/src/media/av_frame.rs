@@ -1,5 +1,5 @@
 use super::ffi::ffmpeg::{
-    size_t, w_av_frame, w_av_frame_convert, w_av_frame_fini, w_av_frame_init, w_av_get_data,
+    w_av_frame, w_av_frame_convert, w_av_frame_fini, w_av_frame_init, w_av_get_data,
     w_av_get_data_linesize, w_av_get_required_buffer_size, w_av_set_data, W_MAX_PATH,
 };
 use anyhow::{bail, Result};
@@ -470,8 +470,7 @@ impl AVFrame {
         #[allow(clippy::pedantic)]
         // get data buffer size
         let buffer_size =
-            Self::get_required_buffer_size(p_pixel_format.clone(), p_width, p_height, p_alignment)
-                as usize;
+            Self::get_required_buffer_size(p_pixel_format.clone(), p_width, p_height, p_alignment);
 
         // create self object
         let mut obj = Self {
@@ -524,7 +523,7 @@ impl AVFrame {
         p_width: u32,
         p_height: u32,
         p_alignment: u32,
-    ) -> size_t {
+    ) -> usize {
         unsafe {
             w_av_get_required_buffer_size(p_pixel_format as u32, p_width, p_height, p_alignment)
         }
@@ -561,7 +560,7 @@ impl AVFrame {
     /// # Errors
     ///
     /// TODO: add error description
-    pub fn get_data(&mut self, p_index: size_t) -> Result<&[u8]> {
+    pub fn get_data(&mut self, p_index: usize) -> Result<&[u8]> {
         // create a buffer for error
         let mut err = [1i8; W_MAX_PATH as usize];
         let err_ptr = err.as_mut_ptr();
@@ -585,7 +584,7 @@ impl AVFrame {
     /// # Errors
     ///
     /// TODO: add error description
-    pub fn get_data_linesize(&mut self, p_index: size_t) -> Result<i32> {
+    pub fn get_data_linesize(&mut self, p_index: usize) -> Result<i32> {
         // create a buffer for error
         let mut err = [1i8; W_MAX_PATH as usize];
         let err_ptr = err.as_mut_ptr();

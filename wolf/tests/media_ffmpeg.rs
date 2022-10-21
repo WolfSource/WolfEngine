@@ -77,7 +77,7 @@ fn encode(p_packet: &mut wolf::media::av_packet::AVPacket, p_codec_id: &str) -> 
     loop {
         let packet_size = encoder.encode(&yuv_frame, p_packet).unwrap();
         if packet_size > 0 {
-            println!("encoded packet size is {}", packet_size);
+            println!("encoded packet size is {packet_size}");
             break;
         }
     }

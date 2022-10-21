@@ -74,7 +74,7 @@ fn test_send_rist() {
         data_block.set(mock_data.as_bytes());
 
         let sent = sender.send(&data_block);
-        println!("{} bytes just sent to the rist stream", sent);
+        println!("{sent} bytes just sent to the rist stream");
         let sent_size = usize::try_from(sent).unwrap_or(0);
         if sent_size != mock_data.len() {
             eprintln!("Error: breaking from rist sender loop");

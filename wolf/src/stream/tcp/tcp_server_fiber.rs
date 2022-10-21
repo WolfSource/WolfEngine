@@ -41,7 +41,7 @@ fn handle_tcp_connection(
                 );
                 if close_conn.is_err()
                 {
-                    close_msg = format!("{:?}. ", close_conn);
+                    close_msg = format!("{close_conn:?}. ");
                 }
 
                 if msg.size > 0
@@ -55,7 +55,7 @@ fn handle_tcp_connection(
                         }
                     }).map_err(|e|
                     {
-                        let err_str = format!("{:?}", e);
+                        let err_str = format!("{e:?}");
                         close_msg += &err_str;
                     });
                 }
@@ -129,16 +129,7 @@ fn server_main_loop(
     loop {
         //check for shutting down the tcp server
         let close_res = p_shutdown_signal.try_lock();
-        let close = match close_res {
-            Some(chan) => {
-                if let Ok(b) = chan.1.try_recv() {
-                    b
-                } else {
-                    false
-                }
-            }
-            None => false,
-        };
+        let close = close_res.map_or(false, |chan| chan.1.try_recv().map_or(false, |b| b));
         if close {
             break;
         }
@@ -159,7 +150,7 @@ fn server_main_loop(
                 res1 = p_tcp_listener.accept() => { res = res1; },
                 _ = may::coroutine::sleep(std::time::Duration::from_secs_f64(accept_timeout_in_secs)) =>
                 {
-                    let msg = format!("timeout {} seconds reached for accepting fiber based tcp listener", accept_timeout_in_secs);
+                    let msg = format!("timeout {accept_timeout_in_secs} seconds reached for accepting fiber based tcp listener");
                     res = Err(std::io::Error::new( std::io::ErrorKind::TimedOut, msg));
                 }
             );

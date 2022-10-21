@@ -9,7 +9,6 @@ use crate::stream::ffi::rist::{
     w_rist_set_out_of_band_callback, w_rist_set_receiver_data_callback, w_rist_set_stats_callback,
     w_rist_stats_callback, w_rist_write,
 };
-use crate::system::ffi::sys_init::size_t;
 use anyhow::{bail, Result};
 use std::os::raw::c_void;
 
@@ -116,9 +115,8 @@ impl rist_data_block {
         unsafe {
             let ptr = w_rist_get_data_block(self.block);
             let len = w_rist_get_data_block_len(self.block);
-            let len_usize = usize::try_from(len).unwrap_or(0);
-            if len_usize > 0 {
-                return Ok(std::slice::from_raw_parts(ptr as *mut u8, len_usize));
+            if len > 0 {
+                return Ok(std::slice::from_raw_parts(ptr as *mut u8, len));
             }
             bail!("invalid len size. trace info {}", TRACE)
         }
@@ -128,7 +126,7 @@ impl rist_data_block {
         unsafe {
             w_rist_set_data_block(
                 self.block,
-                p_data.len() as size_t,
+                p_data.len(),
                 p_data.as_ptr().cast::<std::ffi::c_void>(),
             );
         };
@@ -183,12 +181,10 @@ impl rist {
                 p_log_callback,
             )
         };
-        match ret {
-            0 => Ok(obj),
-            _ => {
-                bail!("could not create rist {:?}", obj.mode)
-            }
+        if ret == 0 {
+            return Ok(obj);
         }
+        bail!("could not create rist {:?}", obj.mode)
     }
 
     /// # Errors
@@ -197,12 +193,10 @@ impl rist {
     pub fn connect(&mut self, p_url: &str) -> Result<()> {
         self.url = p_url.to_string();
         let ret = unsafe { w_rist_connect(self.ctx, self.url.as_ptr().cast::<i8>()) };
-        match ret {
-            0 => Ok(()),
-            _ => {
-                bail!("could not connect to {}", self.url)
-            }
+        if ret == 0 {
+            return Ok(());
         }
+        bail!("could not connect to {}", self.url)
     }
 
     /// # Errors
@@ -223,12 +217,10 @@ impl rist {
             p_on_auth_connect_cb,
             p_on_auth_disconnect_cb,
         );
-        match ret {
-            0 => Ok(()),
-            _ => {
-                bail!("could not set auth handler for {}", self.url)
-            }
+        if ret == 0 {
+            return Ok(());
         }
+        bail!("could not set auth handler for {}", self.url)
     }
 
     /// # Errors
@@ -243,12 +235,10 @@ impl rist {
         p_on_callback: w_rist_connection_status_callback,
     ) -> Result<()> {
         let ret = w_rist_set_conn_status_callback(self.ctx, p_arg, p_on_callback);
-        match ret {
-            0 => Ok(()),
-            _ => {
-                bail!("could not set connection status callback for {}", self.url)
-            }
+        if ret == 0 {
+            return Ok(());
         }
+        bail!("could not set connection status callback for {}", self.url)
     }
 
     /// # Errors
@@ -263,13 +253,12 @@ impl rist {
         p_on_callback: w_rist_out_of_band_callback,
     ) -> Result<()> {
         let ret = w_rist_set_out_of_band_callback(self.ctx, p_arg, p_on_callback);
-        match ret {
-            0 => Ok(()),
-            _ => {
-                bail!("could not set out of band callback for {}", self.url)
-            }
+        if ret == 0 {
+            return Ok(());
         }
+        bail!("could not set out of band callback for {}", self.url)
     }
+
     /// # Errors
     ///
     /// TODO: add error description
@@ -283,12 +272,10 @@ impl rist {
         p_on_callback: w_rist_stats_callback,
     ) -> Result<()> {
         let ret = w_rist_set_stats_callback(self.ctx, p_interval, p_arg, p_on_callback);
-        match ret {
-            0 => Ok(()),
-            _ => {
-                bail!("could not set stats callback for {}", self.url)
-            }
+        if ret == 0 {
+            return Ok(());
         }
+        bail!("could not set stats callback for {}", self.url)
     }
 
     /// # Errors
@@ -303,12 +290,10 @@ impl rist {
         p_on_callback: w_receiver_data_callback,
     ) -> Result<()> {
         let ret = w_rist_set_receiver_data_callback(self.ctx, p_on_callback, p_arg);
-        match ret {
-            0 => Ok(()),
-            _ => {
-                bail!("could not set receiver callback for {}", self.url)
-            }
+        if ret == 0 {
+            return Ok(());
         }
+        bail!("could not set receiver callback for {}", self.url)
     }
 
     #[must_use]
