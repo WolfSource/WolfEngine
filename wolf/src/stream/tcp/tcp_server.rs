@@ -57,7 +57,7 @@ where
         }
 
         if res.is_err() {
-            close_msg = format!("{:?}", res);
+            close_msg = format!("{res:?}");
             break;
         }
 
@@ -78,7 +78,7 @@ where
             if w_ret.is_ok() {
                 let _r = writer.flush().await;
             } else {
-                close_msg = format!("{:?}", w_ret);
+                close_msg = format!("{w_ret:?}");
                 break;
             }
         }
@@ -119,7 +119,7 @@ where
 
             // close the connection
             if close.is_err() {
-                *p_close_msg = format!("websocket connection is going to close because of the p_on_msg_callback request. Reason: {:?}", close);
+                *p_close_msg = format!("websocket connection is going to close because of the p_on_msg_callback request. Reason: {close:?}");
                 *p_close_code = CloseCode::Normal;
                 return false;
             }
@@ -135,7 +135,7 @@ where
                 )
                 .await;
                 if r.is_err() {
-                    *p_close_msg =  format!("websocket connection is going to close, because the TEXT message could not send. Reason: {:?}", r);
+                    *p_close_msg =  format!("websocket connection is going to close, because the TEXT message could not send. Reason: {r:?}");
                     *p_close_code = CloseCode::Abnormal;
                     return false;
                 }
@@ -251,7 +251,7 @@ where
                                 );
 
                                 if want_to_close_conn.is_err() {
-                                    close_msg = format!("websocket connection is going to close because of the p_on_msg_callback request. Reason: {:?}", want_to_close_conn);
+                                    close_msg = format!("websocket connection is going to close because of the p_on_msg_callback request. Reason: {want_to_close_conn:?}");
                                     close_code = CloseCode::Normal;
                                     break;
                                 }
@@ -262,13 +262,13 @@ where
                                 )
                                 .await;
                                 if r.is_err() {
-                                    close_msg = format!("websocket connection is going to close, because the BINARY message could not send. Reason: {:?}", r);
+                                    close_msg = format!("websocket connection is going to close, because the BINARY message could not send. Reason: {r:?}");
                                     close_code = CloseCode::Abnormal;
                                     break;
                                 }
                             }
                             Err(e) => {
-                                close_msg = format!("websocket connection is going to close. Reason: Unsupported binary message. {:?}", e);
+                                close_msg = format!("websocket connection is going to close. Reason: Unsupported binary message. {e:?}");
                                 close_code = CloseCode::Unsupported;
                                 break;
                             }
@@ -352,16 +352,7 @@ async fn server_main_loop(
     loop {
         //check for shutting down the tcp server
         let close_res = p_shutdown_signal.try_lock();
-        let close = match close_res {
-            Some(chan) => {
-                if let Ok(b) = chan.1.try_recv() {
-                    b
-                } else {
-                    false
-                }
-            }
-            None => false,
-        };
+        let close = close_res.map_or(false, |chan| chan.1.try_recv().map_or(false, |b| b));
         if close {
             break;
         }
@@ -434,7 +425,7 @@ async fn server_main_loop(
                     )
                     .await
                     {
-                        tracing::error!("accept_connection failed because {}", e);
+                        tracing::error!("accept_connection failed because {e:?}");
                     }
                 });
             }
@@ -443,9 +434,6 @@ async fn server_main_loop(
 }
 
 /// Run tcp server
-/// # Panics
-///
-/// Might panic
 #[allow(clippy::future_not_send)]
 #[tracing::instrument]
 pub async fn server(

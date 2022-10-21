@@ -21,8 +21,9 @@ path = "src/lib.rs"
 [dependencies]
 #brotli = { version = "3.3.3" }
 anyhow = {version = "1.0.65", default-features = false}
-signals2 = {version = "0.3.2", default-features = false}
 raw-window-handle = {version = "0.5.0", default-features = false, features = ["alloc"]} 
+signals2 = {version = "0.3.2", default-features = false}
+tracing = {version = "0.1.37", default-features = false, features = ["std", "attributes"]}
 
 # dependencies of wasm 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
@@ -53,23 +54,22 @@ wgpu = {version = "0.14.0", default-features = false, optional = true}
 # dependencies of x86_64
 [target.'cfg(target_arch = "x86_64")'.dependencies]
 async-raft = {version = "0.6.1", default-features = false, optional = true}
-async-trait = {version = "0.1.57", default-features = false}
-futures = { version = "0.3.24", default-features = false }
+async-trait = {version = "0.1.58", default-features = false}
+futures = { version = "0.3.25", default-features = false }
 hyper = {version = "0.14.20", default-features = false}
 may = {version = "0.3.22", default-features = false, optional = true}
 memstore = {version = "0.2.0", default-features = false}
-mimalloc = {version = "0.1.29", default-features = false, features = ["secure"]}
+mimalloc = {version = "0.1.30", default-features = false, features = ["secure"]}
 parking_lot = {version = "0.12.1",  default-features = false, features = ["deadlock_detection"]}
 prost = {version = "0.11.0", default-features = false, optional = true}
 scrap ={version = "0.5.0", default-features = false, optional = true}
-serde_json = {version = "1.0.86", default-features = false, features = ["std"]}
-sysinfo = {version = "0.26.4", default-features = false, features = ["multithread"]}
+serde_json = {version = "1.0.87", default-features = false, features = ["std"]}
+sysinfo = {version = "0.26.5", default-features = false, features = ["multithread"]}
 tokio-tungstenite = {version = "0.17.2", default-features = false, features = ["connect", "rustls"], optional = true}
-tracing = {version = "0.1.37", default-features = false, features = ["std", "attributes"]}
 uuid = {version = "1.2.1", default-features = false, features = ["v5"]}
 
 [build-dependencies]
-bindgen = {version = "0.60.1"}
+bindgen = {version = "0.61.0"}
 tonic-build = {version = "0.8.2", default-features = false, features = ["transport", "prost"]}
 
 [dev-dependencies]
@@ -86,7 +86,7 @@ all = [
     "system_fiber", "system_gamepad_sim", "system_js", 
     "system_lz4", "system_screen_capture", "system_stacktrace"
     ]
-default = []
+default = ["all"]
 media_ffmpeg = [] # enable ffmpeg
 media_openal = [] # enable openal
 render = ["wgpu"] # enable real-time rendering

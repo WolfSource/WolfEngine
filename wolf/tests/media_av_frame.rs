@@ -26,8 +26,7 @@ fn test_av_frame_convert() {
     // create dst frame
     let dst_frame_size =
         AVFrame::get_required_buffer_size(AVPixelFormat::RGBA, img_size.0, img_size.1, 1);
-    let dst_frame_size_usize = dst_frame_size as usize;
-    let mut dst_pixels = Vec::<u8>::with_capacity(dst_frame_size_usize);
+    let mut dst_pixels = Vec::<u8>::with_capacity(dst_frame_size);
     dst_pixels.fill(0u8);
 
     // create avframe

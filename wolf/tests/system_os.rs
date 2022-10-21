@@ -241,7 +241,7 @@ fn test_screen_captures() {
                     std::thread::sleep(one_frame);
                     continue;
                 }
-                panic!("could not capture: {}", e);
+                panic!("could not capture: {e}");
             }
         }
 
