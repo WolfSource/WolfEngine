@@ -56,9 +56,9 @@ if (WOLF_SYSTEM_GAMEPAD_SIM)
 
   message("fetching https://github.com/ViGEm/ViGEmClient.git")
   FetchContent_Declare(
-    ViGEmClient
-    GIT_REPOSITORY https://github.com/ViGEm/ViGEmClient.git
-    GIT_TAG        master
+  ViGEmClient
+  GIT_REPOSITORY https://github.com/ViGEm/ViGEmClient.git
+  GIT_TAG        master
   )
   FetchContent_MakeAvailable(ViGEmClient)
 
@@ -68,5 +68,8 @@ if (WOLF_SYSTEM_GAMEPAD_SIM)
   )
   list(APPEND SRCS ${ViGEmClient_SRCS})
   list(APPEND INCLUDES ${ViGEmClient_SOURCE_DIR}/include)
-  list(APPEND LIBS ViGEmClient Xinput.lib SetupAPI.lib)
+  list(APPEND LIBS 
+    ViGEmClient
+    Xinput.lib 
+    SetupAPI.lib)
 endif()

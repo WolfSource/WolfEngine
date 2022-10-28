@@ -14,30 +14,71 @@ extern "C" {
     struct w_vigem_client_t;
     typedef struct w_vigem_client_t* w_vigem_client;
 
-    struct XINPUT_GAMEPAD_SHARED;
-    typedef struct XINPUT_GAMEPAD_SHARED* XINPUT_GAMEPAD_SHARED_PTR;
+    typedef struct xinput_gamepad_t
+    {
+        uint16_t buttons;
+        uint8_t left_trigger;
+        uint8_t right_trigger;
+        int16_t thumb_lx;
+        int16_t thumb_ly;
+        int16_t thumb_rx;
+        int16_t thumb_ry;
+    } xinput_gamepad_t;
+    typedef struct xinput_gamepad_t* xinput_gamepad;
 
-    struct XINPUT_STATE_SHARED;
-    typedef struct XINPUT_STATE_SHARED* XINPUT_STATE_SHARED_PTR;
+    typedef struct xinput_state_t {
+        uint16_t packet_number;
+        xinput_gamepad_t gamepad;
+    } xinput_state_t;
+    typedef struct xinput_state_t* xinput_state;
 
    /**
-    * initialize the ViGEm client
+    * initialize the ViGEm client and connect to the bus
     * @param p_vigem, the vigem client object
-    * @param p_error, the error buffer
     * @returns zero on success
     */
     W_API
-        int w_vigem_client_init(_Inout_ w_vigem_client* p_vigem, _Inout_ char* p_error);
+        WRESULT w_vigem_client_init(_Inout_ w_vigem_client* p_vigem);
         
+    /**
+     * clear gamepad state
+     * @param p_vigem, the vigem client object
+     * @param p_index, the gamepad state
+     * @returns zero on success
+     */
+    W_API
+        WRESULT w_vigem_clear_gamepad_state(_In_ w_vigem_client p_vigem, _In_ size_t p_index);
+
    /**
-    * disconnects from the vigem bus device and resets the driver object state. 
-    * The driver object may be reused again after calling this function
+    * add a gamepad 
     * @param p_vigem, the vigem client object
-    * @param p_error, the error buffer
+    * @param p_index, the the index of new gamepad
     * @returns zero on success
     */
     W_API
-        int w_vigem_client_reset(_Inout_ w_vigem_client p_vigem, _Inout_ char* p_error);
+        WRESULT w_vigem_add_gamepad(_In_ w_vigem_client p_vigem, _Inout_ size_t* p_index);
+
+   /**
+    * remove a gamepad
+    * @param p_vigem, the vigem client object
+    * @param p_index, index of gamepad
+    * @returns zero on success
+    */
+    W_API
+        WRESULT w_vigem_remove_gamepad(_In_ w_vigem_client p_vigem, _In_ size_t p_index);
+
+   /**
+    * add a gamepad
+    * @param p_vigem, the vigem client object
+    * @param p_index, the index of gamepad
+    * @param p_xinput, the xinput data
+    * @returns zero on success
+    */
+    W_API
+        WRESULT w_vigem_send_input(
+            _In_ w_vigem_client p_vigem,
+            _In_ size_t p_index,
+            _In_ xinput_state p_xinput);
 
    /**
     * get number of gamepads.
@@ -47,47 +88,13 @@ extern "C" {
     W_API
         size_t w_vigem_get_number_of_gamepads(_In_ w_vigem_client p_vigem);
 
-    /**
-     * clear gamepad state
-     * @param p_vigem, the vigem client object
-     * @param p_index, the gamepad state
-     * @returns zero on success
-     */
-    W_API
-        int w_vigem_clear_gamepad_state(_In_ w_vigem_client p_vigem, _In_ size_t p_index);
-
    /**
-    * add a gamepad 
+    * disconnects from the ViGEm bus device and resets the driver object state and release the ViGEm client resources.
     * @param p_vigem, the vigem client object
-    * @param p_error, the error buffer
-    * @returns gamepad index on success and -1 on failure 
+    * @returns void
     */
     W_API
-        int w_vigem_add_gamepad(_In_ w_vigem_client p_vigem, _Inout_ char* p_error);
-
-   /**
-    * add a gamepad
-    * @param p_vigem, the vigem client object
-    * @param p_index, the index of gamepad
-    * @param p_xinput, the xinput data
-    * @param p_error, the error buffer
-    * @returns zero on success
-    */
-    W_API
-        int w_vigem_send_input(
-            _In_ w_vigem_client p_vigem,
-            _In_ size_t p_index,
-            _In_ XINPUT_GAMEPAD_SHARED_PTR p_xinput,
-            _Inout_ char* p_error);
-
-   /**
-    * release the vigem resources.
-    * @param p_vigem, the vigem client object
-    * @param p_error, the error buffer
-    * @returns zero on success
-    */
-    W_API
-        int w_vigem_client_fini(_Inout_ w_vigem_client* p_vigem, _Inout_ char* p_error);
+        void w_vigem_client_fini(_Inout_ w_vigem_client* p_vigem);
 
 #ifdef __cplusplus
 }

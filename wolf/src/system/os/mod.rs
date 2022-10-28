@@ -10,5 +10,5 @@ pub mod system;
 ))]
 pub mod screen;
 
-#[cfg(target_os = "windows")]
-pub mod vigem_client;
+#[cfg(all(feature = "system_gamepad_sim", target_os = "windows"))]
+pub mod gamepad_sim;

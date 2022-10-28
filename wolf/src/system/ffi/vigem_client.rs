@@ -65,42 +65,28 @@ pub struct w_vigem_client_t {
 pub type w_vigem_client = *mut w_vigem_client_t;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
-pub struct XINPUT_GAMEPAD_SHARED {
-    _unused: [u8; 0],
+pub struct xinput_gamepad_t {
+    pub buttons: u16,
+    pub left_trigger: u8,
+    pub right_trigger: u8,
+    pub thumb_lx: i16,
+    pub thumb_ly: i16,
+    pub thumb_rx: i16,
+    pub thumb_ry: i16,
 }
-pub type XINPUT_GAMEPAD_SHARED_PTR = *mut XINPUT_GAMEPAD_SHARED;
+pub type xinput_gamepad = *mut xinput_gamepad_t;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
-pub struct XINPUT_STATE_SHARED {
-    _unused: [u8; 0],
+pub struct xinput_state_t {
+    pub packet_number: u16,
+    pub gamepad: xinput_gamepad_t,
 }
-pub type XINPUT_STATE_SHARED_PTR = *mut XINPUT_STATE_SHARED;
+pub type xinput_state = *mut xinput_state_t;
 extern "C" {
-    #[doc = " initialize the ViGEm client"]
+    #[doc = " initialize the ViGEm client and connect to the bus"]
     #[doc = " @param p_vigem, the vigem client object"]
-    #[doc = " @param p_error, the error buffer"]
     #[doc = " @returns zero on success"]
-    pub fn w_vigem_client_init(
-        p_vigem: *mut w_vigem_client,
-        p_error: *mut ::std::os::raw::c_char,
-    ) -> ::std::os::raw::c_int;
-}
-extern "C" {
-    #[doc = " disconnects from the vigem bus device and resets the driver object state."]
-    #[doc = " The driver object may be reused again after calling this function"]
-    #[doc = " @param p_vigem, the vigem client object"]
-    #[doc = " @param p_error, the error buffer"]
-    #[doc = " @returns zero on success"]
-    pub fn w_vigem_client_reset(
-        p_vigem: w_vigem_client,
-        p_error: *mut ::std::os::raw::c_char,
-    ) -> ::std::os::raw::c_int;
-}
-extern "C" {
-    #[doc = " get number of gamepads."]
-    #[doc = " @param p_vigem, the vigem client object"]
-    #[doc = " @returns number of gamepads"]
-    pub fn w_vigem_get_number_of_gamepads(p_vigem: w_vigem_client) -> usize;
+    pub fn w_vigem_client_init(p_vigem: *mut w_vigem_client) -> ::std::os::raw::c_longlong;
 }
 extern "C" {
     #[doc = " clear gamepad state"]
@@ -110,39 +96,49 @@ extern "C" {
     pub fn w_vigem_clear_gamepad_state(
         p_vigem: w_vigem_client,
         p_index: usize,
-    ) -> ::std::os::raw::c_int;
+    ) -> ::std::os::raw::c_longlong;
 }
 extern "C" {
     #[doc = " add a gamepad"]
     #[doc = " @param p_vigem, the vigem client object"]
-    #[doc = " @param p_error, the error buffer"]
-    #[doc = " @returns gamepad index on success and -1 on failure"]
+    #[doc = " @param p_index, the the index of new gamepad"]
+    #[doc = " @returns zero on success"]
     pub fn w_vigem_add_gamepad(
         p_vigem: w_vigem_client,
-        p_error: *mut ::std::os::raw::c_char,
-    ) -> ::std::os::raw::c_int;
+        p_index: *mut usize,
+    ) -> ::std::os::raw::c_longlong;
+}
+extern "C" {
+    #[doc = " remove a gamepad"]
+    #[doc = " @param p_vigem, the vigem client object"]
+    #[doc = " @param p_index, index of gamepad"]
+    #[doc = " @returns zero on success"]
+    pub fn w_vigem_remove_gamepad(
+        p_vigem: w_vigem_client,
+        p_index: usize,
+    ) -> ::std::os::raw::c_longlong;
 }
 extern "C" {
     #[doc = " add a gamepad"]
     #[doc = " @param p_vigem, the vigem client object"]
     #[doc = " @param p_index, the index of gamepad"]
     #[doc = " @param p_xinput, the xinput data"]
-    #[doc = " @param p_error, the error buffer"]
     #[doc = " @returns zero on success"]
     pub fn w_vigem_send_input(
         p_vigem: w_vigem_client,
         p_index: usize,
-        p_xinput: XINPUT_GAMEPAD_SHARED_PTR,
-        p_error: *mut ::std::os::raw::c_char,
-    ) -> ::std::os::raw::c_int;
+        p_xinput: xinput_state,
+    ) -> ::std::os::raw::c_longlong;
 }
 extern "C" {
-    #[doc = " release the vigem resources."]
+    #[doc = " get number of gamepads."]
     #[doc = " @param p_vigem, the vigem client object"]
-    #[doc = " @param p_error, the error buffer"]
-    #[doc = " @returns zero on success"]
-    pub fn w_vigem_client_fini(
-        p_vigem: *mut w_vigem_client,
-        p_error: *mut ::std::os::raw::c_char,
-    ) -> ::std::os::raw::c_int;
+    #[doc = " @returns number of gamepads"]
+    pub fn w_vigem_get_number_of_gamepads(p_vigem: w_vigem_client) -> usize;
+}
+extern "C" {
+    #[doc = " disconnects from the ViGEm bus device and resets the driver object state and release the ViGEm client resources."]
+    #[doc = " @param p_vigem, the vigem client object"]
+    #[doc = " @returns void"]
+    pub fn w_vigem_client_fini(p_vigem: *mut w_vigem_client);
 }

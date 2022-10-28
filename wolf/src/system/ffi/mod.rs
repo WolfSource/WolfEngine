@@ -8,3 +8,6 @@
 pub mod lz4;
 #[cfg(not(target_arch = "wasm32"))]
 pub mod sys_init;
+
+#[cfg(all(feature = "system_gamepad_sim", target_os = "windows"))]
+pub mod vigem_client;

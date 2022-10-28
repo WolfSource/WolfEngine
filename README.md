@@ -30,7 +30,7 @@ This Wolf is a comprehensive set of Rust/C libraries for realtime rendering, rea
         sudo apt install -y protobuf-compiler libprotobuf-dev
       ```
 
-  - For **Webassembly** :\
+  - Install prerequisites of **Webassembly**:\
   From workspace folder run
   ```bash
   cargo install wasm-pack

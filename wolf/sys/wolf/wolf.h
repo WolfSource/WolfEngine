@@ -13,10 +13,6 @@ extern "C" {
 #include <stdint.h>
 #include <stdbool.h>
 
-#ifndef W_UNUSED
-#define W_UNUSED(p) (void)(p) 
-#endif
-
 #ifndef W_API
 #ifdef _MSC_VER
 #define W_API __declspec(dllexport)
@@ -27,6 +23,7 @@ extern "C" {
 #endif
 
 #define W_MAX_PATH 260 // maximum length of full pathname or name
+#define WRESULT long long
 
 #ifdef _MSC_VER
     #define ASM __asm

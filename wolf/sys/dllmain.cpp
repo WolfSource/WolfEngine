@@ -5,8 +5,8 @@
 
 BOOL APIENTRY DllMain(_In_ HMODULE pHModule, _In_ DWORD pULReasonForCall, _In_ LPVOID pLPReserved) noexcept
 {
-	W_UNUSED(pHModule);
-	W_UNUSED(pLPReserved);
+	std::ignore = pHModule;
+	std::ignore = pLPReserved;
 
 	switch (pULReasonForCall)
 	{
