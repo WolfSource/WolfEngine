@@ -20,7 +20,7 @@ path = "src/lib.rs"
 # shared dependencies between all
 [dependencies]
 #brotli = { version = "3.3.3" }
-anyhow = {version = "1.0.65", default-features = false}
+anyhow = {version = "1.0.66", default-features = false}
 raw-window-handle = {version = "0.5.0", default-features = false, features = ["alloc"]} 
 signals2 = {version = "0.3.2", default-features = false}
 thiserror = {version = "1.0.37", default-features = false}
@@ -30,7 +30,7 @@ tracing = {version = "0.1.37", default-features = false, features = ["std", "att
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 instant = {version = "0.1.12", default-features = false, features = ["wasm-bindgen"]}
 #rhai = { version = "1.10.0", default-features = false, features = ["sync", "internals", "wasm-bindgen"], optional = true }
-serde = { version = "1.0.145", default-features = false, features = ["derive"]}
+serde = { version = "1.0.147", default-features = false, features = ["derive"]}
 wasm-bindgen = { version = "0.2.83", default-features = false }
 wasm-bindgen-futures = { version = "0.4.33", default-features = false }
 wasm-mt = {version = "0.1.2", default-features = false }
@@ -45,7 +45,7 @@ pollster = {version = "0.2.5", default-features = false}
 rustls-pemfile = {version = "1.0.1", default-features = false}
 tokio = {version = "1.21.2", default-features = false, features = ["full"]}
 tokio-rustls = {version = "0.23.4", default-features = false, features = ["logging", "tls12"]}
-tonic = {version = "0.8.2", default-features = false, features = ["codegen", "prost", "tls"], optional = true}
+tonic = {version = "0.8.2", default-features = false, features = ["codegen", "prost", "tls", "gzip"], optional = true}
 webpki-roots = {version = "0.22.5", default-features = false}
 wgpu = {version = "0.14.0", default-features = false, optional = true}
 
@@ -65,7 +65,7 @@ parking_lot = {version = "0.12.1",  default-features = false, features = ["deadl
 prost = {version = "0.11.0", default-features = false, optional = true}
 scrap ={version = "0.5.0", default-features = false, optional = true}
 serde_json = {version = "1.0.87", default-features = false, features = ["std"]}
-sysinfo = {version = "0.26.5", default-features = false, features = ["multithread"]}
+sysinfo = {version = "0.26.6", default-features = false, features = ["multithread"]}
 tokio-tungstenite = {version = "0.17.2", default-features = false, features = ["connect", "rustls"], optional = true}
 uuid = {version = "1.2.1", default-features = false, features = ["v5"]}
 
@@ -83,9 +83,9 @@ wav = {version = "1.0.0", default-features = false }
 all = [
     "media_ffmpeg", "media_openal", 
     "render", 
-    "stream_rist", "stream_socket_client", "stream_socket_server",
+    "stream_rist", "stream_grpc", "stream_socket_client", "stream_socket_server",
     "system_fiber", "system_gamepad_sim", "system_js", 
-    "system_lz4", "system_screen_capture", "system_stacktrace"
+    "system_lz4", "system_lzma", "system_raft", "system_screen_capture", "system_stacktrace"
     ]
 default = ["all"]
 media_ffmpeg = [] # enable ffmpeg
@@ -99,6 +99,7 @@ system_fiber = ["may"] # enable fiber
 system_gamepad_sim = [] # enable gamepad simulator 
 system_js = [] # enable javascript embedded engine for system module
 system_lz4 = [] # enable LZ4 compression for system module
+system_lzma = [] # enable LZMA compression for system module
 system_raft = ["async-raft", "prost"] # enable raft algorithm for system module
 system_screen_capture = ["scrap"] # enable screen capture
 system_stacktrace = [] # enable boost stacktrace
@@ -109,8 +110,6 @@ system_stacktrace = [] # enable boost stacktrace
 # quic = [] # enable QUIC protocol
 # redis_client = [] # enable redis client
 # rocksDB_client = [] # enable rocksDB client
-# rtsp_client = [] # enable real time streaming protocol for client
-# rtsp_server = [] # enable real time streaming protocol for server
 # simd = [] # enable SIMD
 # webRTC_client = [] # enable webRTC
 

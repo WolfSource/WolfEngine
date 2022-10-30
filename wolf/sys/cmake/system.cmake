@@ -48,6 +48,25 @@ if (WOLF_SYSTEM_LZ4)
   list(APPEND LIBS lz4_static)    
 endif()
 
+# fetch lzma
+if (WOLF_SYSTEM_LZMA)
+  message("fetching https://github.com/WolfEngine/lzma.git")
+  FetchContent_Declare(
+    lzma
+    GIT_REPOSITORY https://github.com/WolfEngine/lzma.git
+    GIT_TAG        main
+  )
+  FetchContent_MakeAvailable(lzma)
+
+  file(GLOB_RECURSE lZMA_SRCS
+    "${CMAKE_CURRENT_SOURCE_DIR}/system/lzma.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/system/lzma.cpp"
+  )
+  list(APPEND SRCS ${lZMA_SRCS})
+  list(APPEND INCLUDES ${lzma_SOURCE_DIR}/src)
+  list(APPEND LIBS lzma)    
+endif()
+
 # fetch vigem client
 if (WOLF_SYSTEM_GAMEPAD_SIM)
   if (NOT WIN32)

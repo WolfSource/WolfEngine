@@ -62,9 +62,10 @@ int w_sys_init(_Inout_z_ char* p_buf, _In_ size_t p_buf_len)
     ::signal(SIGABRT, &w_signal_handler);
 #endif
 
-    if (p_buf == nullptr || p_buf_len == 0)
+    const auto _buf_nn = gsl::not_null<char*>(p_buf);
+    if (p_buf_len == 0)
     {
-        return -1;
+        return W_FAILURE;
     }
 
     // Making incompatible API changes
@@ -77,12 +78,12 @@ int w_sys_init(_Inout_z_ char* p_buf, _In_ size_t p_buf_len)
     constexpr auto WOLF_DEBUG_VERSION = 0;
 
 #if defined(_WIN32)
-    (void)sprintf_s(p_buf, p_buf_len, "%d.%d.%d.%d", WOLF_MAJOR_VERSION,
+    (void)sprintf_s(_buf_nn, p_buf_len, "%d.%d.%d.%d", WOLF_MAJOR_VERSION,
         WOLF_MINOR_VERSION, WOLF_PATCH_VERSION, WOLF_DEBUG_VERSION);
 #else
-    (void)sprintf(p_buf, "%d.%d.%d.%d", WOLF_MAJOR_VERSION, WOLF_MINOR_VERSION,
+    (void)sprintf(_buf_nn, "%d.%d.%d.%d", WOLF_MAJOR_VERSION, WOLF_MINOR_VERSION,
         WOLF_PATCH_VERSION, WOLF_DEBUG_VERSION);
 #endif
 
-    return 0;
+    return W_SUCCESS;
 }

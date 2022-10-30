@@ -23,11 +23,16 @@ extern "C" {
 #endif
 
 #define W_MAX_PATH 260 // maximum length of full pathname or name
-#define WRESULT long long
+#define W_RESULT long long
+#define W_SUCCESS  0
+#define W_FAILURE  -1
 
 #ifdef _MSC_VER
-    #define ASM __asm
+
+#define ASM __asm
+
 #else
+
 #define ASM __asm__
     //The Microsoft source-code annotation language (SAL) dummies
     // find out more at https://docs.microsoft.com/en-us/cpp/code-quality/understanding-sal?view=msvc-170

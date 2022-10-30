@@ -266,13 +266,13 @@ int w_ffmpeg_encode(
             "failed to send the frame for encoding because: %s. trace info: %s",
             _av_error.data(),
             TRACE);
-        return -1;
+        return W_FAILURE;
     }
 
     _ret = avcodec_receive_packet(p_ffmpeg->context, _packet_nn);
     if (_ret == AVERROR(EAGAIN) || _ret == AVERROR_EOF)
     {
-        return 0;
+        return W_SUCCESS;
     }
     
     if (_ret < 0)

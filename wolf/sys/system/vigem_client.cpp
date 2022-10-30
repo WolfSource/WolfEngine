@@ -16,9 +16,9 @@ struct w_vigem_client_t
 	std::vector<PVIGEM_TARGET>  gamepads;
 };
 
-WRESULT w_vigem_client_init(_Inout_ w_vigem_client* p_vigem)
+W_RESULT w_vigem_client_init(_Inout_ w_vigem_client* p_vigem)
 {
-    WRESULT _ret = 0;
+    W_RESULT _ret = 0;
 
     auto _ptr = new (std::nothrow) w_vigem_client_t();
     const auto _vigem = gsl::not_null<w_vigem_client_t*>(_ptr);
@@ -42,13 +42,13 @@ WRESULT w_vigem_client_init(_Inout_ w_vigem_client* p_vigem)
     const auto _res = vigem_connect(_vigem->driver_handler);
     if (VIGEM_SUCCESS(_res))
     {
-        return 0;
+        return W_SUCCESS;
     }
 
-    return gsl::narrow_cast<WRESULT>(_res);
+    return gsl::narrow_cast<W_RESULT>(_res);
 }
 
-WRESULT w_vigem_clear_gamepad_state(_In_ w_vigem_client p_vigem, _In_ size_t p_index)
+W_RESULT w_vigem_clear_gamepad_state(_In_ w_vigem_client p_vigem, _In_ size_t p_index)
 {
     const auto _vigem_nn = gsl::not_null<w_vigem_client>(p_vigem);
 
@@ -63,15 +63,15 @@ WRESULT w_vigem_clear_gamepad_state(_In_ w_vigem_client p_vigem, _In_ size_t p_i
             *reinterpret_cast<XUSB_REPORT*>(&_state));
         if (VIGEM_SUCCESS(_res))
         {
-            return 0;
+            return W_SUCCESS;
         }
-        return gsl::narrow_cast<WRESULT>(_res);
+        return gsl::narrow_cast<W_RESULT>(_res);
     }
 
-    return -1;
+    return W_FAILURE;
 }
 
-WRESULT w_vigem_add_gamepad(_In_ w_vigem_client p_vigem, _Inout_ size_t* p_index)
+W_RESULT w_vigem_add_gamepad(_In_ w_vigem_client p_vigem, _Inout_ size_t* p_index)
 {
     const auto _vigem_nn = gsl::not_null<w_vigem_client>(p_vigem);
     const auto _index = gsl::not_null<size_t*>(p_index);
@@ -79,14 +79,14 @@ WRESULT w_vigem_add_gamepad(_In_ w_vigem_client p_vigem, _Inout_ size_t* p_index
 
     if (!_vigem_nn->driver_handler)
     {
-        return gsl::narrow<WRESULT>(VIGEM_ERROR_BUS_NOT_FOUND);
+        return gsl::narrow<W_RESULT>(VIGEM_ERROR_BUS_NOT_FOUND);
     }
 
     // allocate handle to identify new pad
     auto _handle = vigem_target_x360_alloc();
     if (_handle == nullptr)
     {
-        return gsl::narrow<WRESULT>(VIGEM_ERROR_TARGET_UNINITIALIZED);
+        return gsl::narrow<W_RESULT>(VIGEM_ERROR_TARGET_UNINITIALIZED);
     }
 
     // add client to the bus, this equals a plug-in event
@@ -97,16 +97,16 @@ WRESULT w_vigem_add_gamepad(_In_ w_vigem_client p_vigem, _Inout_ size_t* p_index
     {
         _vigem_nn->gamepads.push_back(_handle);
         *_index = gsl::narrow_cast<int>(_vigem_nn->gamepads.size() - 1);
-        return 0;
+        return W_SUCCESS;
     }
 
     // we're done with this pad, free resources (this disconnects the virtual device)
     std::ignore = vigem_target_remove(_vigem_nn->driver_handler, _handle);
     vigem_target_free(_handle);
-    return gsl::narrow_cast<WRESULT>(_vigem_res);
+    return gsl::narrow_cast<W_RESULT>(_vigem_res);
 }
 
-WRESULT w_vigem_remove_gamepad(_In_ w_vigem_client p_vigem, _In_ size_t p_index)
+W_RESULT w_vigem_remove_gamepad(_In_ w_vigem_client p_vigem, _In_ size_t p_index)
 {
     const auto _vigem_nn = gsl::not_null<w_vigem_client>(p_vigem);
 
@@ -123,14 +123,14 @@ WRESULT w_vigem_remove_gamepad(_In_ w_vigem_client p_vigem, _In_ size_t p_index)
         }
         _vigem_nn->gamepads.erase(_iter);
 
-        return 0;
+        return W_SUCCESS;
     }
 
-    return -1;
+    return W_FAILURE;
 
 }
 
-WRESULT w_vigem_send_input(
+W_RESULT w_vigem_send_input(
     _In_ w_vigem_client p_vigem,
     _In_ size_t p_index,
     _In_ xinput_state p_xinput)
@@ -154,12 +154,12 @@ WRESULT w_vigem_send_input(
             *reinterpret_cast<XUSB_REPORT*>(&_xinput_state.Gamepad));
         if (VIGEM_SUCCESS(_res))
         {
-            return 0;
+            return W_SUCCESS;
         }
-        return gsl::narrow_cast<WRESULT>(_res);
+        return gsl::narrow_cast<W_RESULT>(_res);
     }
 
-    return -1;
+    return W_FAILURE;
 }
 
 size_t w_vigem_get_number_of_gamepads(_In_ w_vigem_client p_vigem)

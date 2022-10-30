@@ -274,7 +274,7 @@ int w_openal_open(
 			"could not set openal callbacks because: %s. trace info: %s",
 			_error,
 			TRACE);
-		return -1;
+		return W_FAILURE;
 	}
 	alSourcei(_openal_nn->source, AL_BUFFER, (ALint)(_openal_nn->buffer));
 	_error = s_openal_get_last_error();
@@ -286,10 +286,10 @@ int w_openal_open(
 			"could not set openal source because: %s. trace info: %s",
 			_error,
 			TRACE);
-		return -1;
+		return W_FAILURE;
 	}
 
-	return 0;
+	return W_SUCCESS;
 }
 
 int w_openal_update_i16(
@@ -399,7 +399,7 @@ int w_openal_update_i16(
 			(_openal_nn->data_size + _write_offset)) - _openal_nn->read_pos;
 		if (_readable == 0)
 		{
-			return -1;
+			return W_FAILURE;
 		}
 
 		/*
@@ -418,10 +418,10 @@ int w_openal_update_i16(
 				"error while updating openal because: %s. trace info: %s",
 				_error,
 				TRACE);
-			return -1;
+			return W_FAILURE;
 		}
 	}
-	return 0;
+	return W_SUCCESS;
 }
 
 void w_openal_reset(_In_ w_openal p_openal)

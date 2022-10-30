@@ -41,7 +41,7 @@ int w_av_frame_init(
             W_MAX_PATH,
             "width or height is zero. trace info: %s",
             TRACE);
-        return -1;
+        return W_FAILURE;
     }
 
     auto* _av_frame = av_frame_alloc();
@@ -58,7 +58,7 @@ int w_av_frame_init(
     }
 
     *p_avframe = _av_frame;
-    return 0;
+    return W_SUCCESS;
 }
 
 int w_av_set_data(
@@ -89,10 +89,10 @@ int w_av_set_data(
             "failed to fill image buffer. trace info: %s",
             TRACE);
 
-        return -1;
+        return W_FAILURE;
     }
 
-    return 0;
+    return W_SUCCESS;
 }
 
 int w_av_get_data(
@@ -116,11 +116,11 @@ int w_av_get_data(
             "bad argumans. trace info: %s",
             TRACE);
 
-        return -1;
+        return W_FAILURE;
     }
     p_data = _av_frame->data[p_index];
 
-    return 0;
+    return W_SUCCESS;
 }
 
 int w_av_get_data_linesize(
@@ -141,7 +141,7 @@ int w_av_get_data_linesize(
             "bad argumans. trace info: %s",
             TRACE);
 
-        return -1;
+        return W_FAILURE;
     }
 
     return _av_frame->linesize[p_index];
@@ -214,10 +214,10 @@ int w_av_frame_convert(
             W_MAX_PATH,
             "sws_scale failed. trace info: %s",
             TRACE);
-        return -1;
+        return W_FAILURE;
     }
 
-    return 0;
+    return W_SUCCESS;
 }
 
 void w_av_frame_fini(_Inout_ w_av_frame* p_avframe)

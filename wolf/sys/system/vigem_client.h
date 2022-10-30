@@ -38,7 +38,7 @@ extern "C" {
     * @returns zero on success
     */
     W_API
-        WRESULT w_vigem_client_init(_Inout_ w_vigem_client* p_vigem);
+        W_RESULT w_vigem_client_init(_Inout_ w_vigem_client* p_vigem);
         
     /**
      * clear gamepad state
@@ -47,7 +47,7 @@ extern "C" {
      * @returns zero on success
      */
     W_API
-        WRESULT w_vigem_clear_gamepad_state(_In_ w_vigem_client p_vigem, _In_ size_t p_index);
+        W_RESULT w_vigem_clear_gamepad_state(_In_ w_vigem_client p_vigem, _In_ size_t p_index);
 
    /**
     * add a gamepad 
@@ -56,7 +56,7 @@ extern "C" {
     * @returns zero on success
     */
     W_API
-        WRESULT w_vigem_add_gamepad(_In_ w_vigem_client p_vigem, _Inout_ size_t* p_index);
+        W_RESULT w_vigem_add_gamepad(_In_ w_vigem_client p_vigem, _Inout_ size_t* p_index);
 
    /**
     * remove a gamepad
@@ -65,7 +65,7 @@ extern "C" {
     * @returns zero on success
     */
     W_API
-        WRESULT w_vigem_remove_gamepad(_In_ w_vigem_client p_vigem, _In_ size_t p_index);
+        W_RESULT w_vigem_remove_gamepad(_In_ w_vigem_client p_vigem, _In_ size_t p_index);
 
    /**
     * add a gamepad
@@ -75,7 +75,7 @@ extern "C" {
     * @returns zero on success
     */
     W_API
-        WRESULT w_vigem_send_input(
+        W_RESULT w_vigem_send_input(
             _In_ w_vigem_client p_vigem,
             _In_ size_t p_index,
             _In_ xinput_state p_xinput);

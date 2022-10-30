@@ -25,11 +25,11 @@ int w_av_packet_init(
             W_MAX_PATH,
             "width or height is zero. trace info: %s",
             TRACE);
-        return -1;
+        return W_FAILURE;
     }
 
     *p_av_packets = _av_packet;
-    return 0;
+    return W_SUCCESS;
 }
 
 int w_av_packet_get(

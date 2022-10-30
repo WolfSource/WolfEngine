@@ -110,7 +110,7 @@ impl GamePadSim {
     /// # Errors
     ///
     /// TODO: add error description
-    pub fn new() -> core::result::Result<Self, ViGEmError> {
+    pub fn new() -> Result<Self, ViGEmError> {
         let mut obj = Self {
             ctx: std::ptr::null_mut(),
         };

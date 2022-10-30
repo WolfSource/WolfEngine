@@ -229,6 +229,9 @@ fn get_cmake_defines(
     #[cfg(feature = "system_lz4")]
     args.push("-DWOLF_SYSTEM_LZ4=ON".to_owned());
 
+    #[cfg(feature = "system_lzma")]
+    args.push("-DWOLF_SYSTEM_LZMA=ON".to_owned());
+
     #[cfg(feature = "system_gamepad_sim")]
     args.push("-DWOLF_SYSTEM_GAMEPAD_SIM=ON".to_owned());
 
@@ -407,6 +410,13 @@ fn bindgens(p_current_dir_path_str: &str) {
     headers.push(Binding {
         src: "sys/system/lz4.h",
         dst: "src/system/ffi/lz4.rs",
+        block_headers: &[],
+    });
+
+    #[cfg(feature = "system_lzma")]
+    headers.push(Binding {
+        src: "sys/system/lzma.h",
+        dst: "src/system/ffi/lzma.rs",
         block_headers: &[],
     });
 

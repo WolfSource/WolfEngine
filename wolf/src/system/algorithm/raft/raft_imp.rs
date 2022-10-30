@@ -57,7 +57,10 @@ impl RaftNetwork<ClientRequest> for RaftRouter {
                     Ok(c) => {
                         //call request with channel
                         let raft_client = RaftClient::new(c);
-                        let mut client = raft_client.send_gzip().accept_gzip();
+                        let compress_type = tonic::codec::CompressionEncoding::Gzip;
+                        let mut client = raft_client
+                            .send_compressed(compress_type)
+                            .accept_compressed(compress_type);
                         match client.append_entries(raft_req).await {
                             Ok(r) => {
                                 match r.into_inner().response {
@@ -136,8 +139,10 @@ impl RaftNetwork<ClientRequest> for RaftRouter {
                     raft_converter::raft_install_snapshot_req_to_grpc_install_snapshot_req(
                         msg_id, &p_rpc,
                     );
-
-                let mut client = RaftClient::new(c).send_gzip().accept_gzip();
+                let compress_type = tonic::codec::CompressionEncoding::Gzip;
+                let mut client = RaftClient::new(c)
+                    .send_compressed(compress_type)
+                    .accept_compressed(compress_type);
                 match client.install_snapshot(rpc_req).await {
                     Ok(r) => match r.into_inner().response {
                         Some(s) => {
@@ -201,7 +206,10 @@ impl RaftNetwork<ClientRequest> for RaftRouter {
                 let uuid = Uuid::new_v5(&Uuid::NAMESPACE_X500, b"wolf_raft_vote");
                 let msg_id = uuid.to_string();
                 let rpc_req = raft_converter::raft_vote_req_to_grpc_vote_req(msg_id, &p_rpc);
-                let mut client = RaftClient::new(c).send_gzip().accept_gzip();
+                let compress_type = tonic::codec::CompressionEncoding::Gzip;
+                let mut client = RaftClient::new(c)
+                    .send_compressed(compress_type)
+                    .accept_compressed(compress_type);
                 match client.vote(rpc_req).await {
                     Ok(r) => match r.into_inner().response {
                         Some(s) => {

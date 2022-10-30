@@ -67,6 +67,12 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 # include sources
+file(GLOB_RECURSE CMAKE_SRCS
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/boost.cmake"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/media.cmake"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/stream.cmake"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/system.cmake"
+)
 file(GLOB_RECURSE WOLF_SRCS
     "${CMAKE_CURRENT_SOURCE_DIR}/dllmain.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/wolf/wolf.h"
@@ -76,7 +82,10 @@ file(GLOB_RECURSE WOLF_SRCS
     "${CMAKE_CURRENT_SOURCE_DIR}/wolf/DISABLE_ANALYSIS_BEGIN"
     "${CMAKE_CURRENT_SOURCE_DIR}/wolf/DISABLE_ANALYSIS_END"
 )
-set(SRCS ${WOLF_SRCS})
+set(SRCS
+    ${CMAKE_SRCS}
+    ${WOLF_SRCS}
+)
 set(INCLUDES 
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/wolf/
@@ -143,6 +152,9 @@ add_library(${PROJECT_NAME} ${LIBRARY_TYPE}
 target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBS})
 
 # create source groups
+source_group("cmake" FILES 
+    ${CMAKE_SRCS}
+)
 source_group("wolf" FILES 
     ${WOLF_SRCS}
 )
@@ -155,6 +167,7 @@ source_group("stream" FILES
 )
 source_group("system" FILES 
     ${LZ4_SRCS}
+    ${lZMA_SRCS}
     ${ViGEmClient_SRCS}
 )
 

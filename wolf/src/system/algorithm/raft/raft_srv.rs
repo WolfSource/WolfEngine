@@ -289,5 +289,8 @@ impl Raft for Srv {
 #[must_use]
 pub fn get_service(p_cluster_name: &str, p_node_id: u64) -> RaftServer<Srv> {
     let srv = Srv::new(p_cluster_name, p_node_id);
-    RaftServer::new(srv).send_gzip().accept_gzip()
+    let compress_type = tonic::codec::CompressionEncoding::Gzip;
+    RaftServer::new(srv)
+        .send_compressed(compress_type)
+        .accept_compressed(compress_type)
 }

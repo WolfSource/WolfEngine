@@ -9,7 +9,9 @@ if (WOLF_SYSTEM_STACKTRACE)
         boost_container_hash
         boost_core
         boost_detail
+        boost_describe
         boost_integer
+        boost_mp11
         boost_predef
         boost_preprocessor
         boost_static_assert
