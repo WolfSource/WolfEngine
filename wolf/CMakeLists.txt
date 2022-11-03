@@ -45,10 +45,10 @@ endif()
 find_package(Git REQUIRED)
 if (NOT EMSCRIPTEN)
     find_package (Threads)
-endif()
-if (LINUX)
-    find_package(Wget REQUIRED)
-    message("make sure libtool was installed.(apt-get install libtool-bin)")
+    if (LINUX)
+        find_package(Wget REQUIRED)
+        message("make sure libtool was installed.(apt-get install libtool-bin)")
+    endif()
 endif()
 
 # use folders
@@ -58,32 +58,32 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 include(FetchContent)
 
 # CMAKE GUI Options
-option(WOLF_MEDIA_FFMPEG "Enable ffmpeg encoding and decoding" OFF)
-option(WOLF_MEDIA_IMAGE "Enable encode/decode image formats" OFF)
-option(WOLF_MEDIA_SCREEN_CAPTURE "Enable screen capture" OFF)
-option(WOLF_STREAM_BORINGSLL "Enable boringSSL" OFF)
-option(WOLF_STREAM_HTTP_SERVER "Enable http server" OFF)
+option(WOLF_RENDER "Enable cross platform render based on BGFX" OFF)
 option(WOLF_STREAM_QUIC "Enable QUIC" OFF)
 option(WOLF_STREAM_RIST "Enable RIST streaming protocol" OFF)
 option(WOLF_STREAM_RUDP "Enable reliable & unreliable stream over UDP" OFF)
-option(WOLF_STREAM_TCP  "Enable TCP protocol" OFF)
 option(WOLF_STREAM_WEBRTC "Enable webRTC" OFF)
 option(WOLF_STREAM_WEBSOCKET_CLIENT "Enable websocket client" OFF)
 option(WOLF_STREAM_WEBSOCKET_SERVER "Enable websocket server" OFF)
+option(WOLF_SYSTEM_BORINGSSL "Enable boringSSL" OFF)
+option(WOLF_SYSTEM_LIBUV "Enable asynchronous I/O libuv" OFF)
 option(WOLF_SYSTEM_LOG "Enable log" OFF)
-option(WOLF_SYSTEM_LZ4 "Enable lz4 for compression" ON)
-option(WOLF_SYSTEM_LZMA "Enable lzma for compression" ON)
+option(WOLF_SYSTEM_LZ4 "Enable lz4 for compression" OFF)
+option(WOLF_SYSTEM_LZMA "Enable lzma for compression" OFF)
 option(WOLF_SYSTEM_MIMALLOC "Enable Microsoft's mimalloc memory allocator" OFF)
+option(WOLF_SYSTEM_SOCKET "Enable TCP/UDP protocol over socket" OFF)
 option(WOLF_SYSTEM_STACKTRACE "Enable stacktrace" OFF)
-option(WOLF_SYSTEM_ZLIB "Enable zlib for compression" ON)
+option(WOLF_SYSTEM_ZLIB "Enable zlib for compression" OFF)
 option(WOLF_TESTS "Enable tests" OFF)
-
 # set type of library
 set(LIBRARY_TYPE "STATIC" CACHE STRING "Library type")
 
 
 #option(WOLF_SYSTEM_FIBER "Enable boost fiber" OFF)
-# option(WOLF_RENDER "Enable cross platform render based on BGFX" OFF)
+# media modules
+# option(WOLF_MEDIA_FFMPEG "Enable ffmpeg encoding and decoding" OFF)
+# option(WOLF_MEDIA_IMAGE "Enable WebP/BMP/JPG/PNG formats" OFF)
+# option(WOLF_MEDIA_SCREEN_CAPTURE "Enable screen capture" ON)
 
 # stream modules
 # option(WOLF_STREAM_GRPC "Enable gRPC connection" OFF)
@@ -118,12 +118,14 @@ set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeR
 
 set(CMAKE_CXX_STANDARD 23)
 if (MSVC)
-set(CMAKE_CXX_FLAGS "/EHsc /W3")
+set(CMAKE_CXX_FLAGS "/W3")
 else()
-set(CMAKE_CXX_FLAGS "-std=c++2b -fexceptions")
+set(CMAKE_CXX_FLAGS "-std=c++2b -fno-exceptions -fno-unwind-tables -fno-asynchronous-unwind-tables")
 set(CMAKE_CXX_FLAGS_DEBUG "-g")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 endif()
+
+set(GETOPT_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/system)
 
 #define includes, libs and srcs
 set(INCLUDES ${CMAKE_CURRENT_SOURCE_DIR})
@@ -168,8 +170,13 @@ if (MSVC)
     add_definitions(
         -EHsc
         -DNOMINMAX
+        -DWIN32_LEAN_AND_MEAN
         -DWIN64
         -DWIN32
+    )
+elseif (EMSCRIPTEN)
+    add_definitions(
+        -DEMSCRIPTEN
     )
 elseif(APPLE)
     add_definitions(-DNEED_XLOCALE_H=1)
@@ -194,7 +201,6 @@ endforeach()
 file(GLOB_RECURSE WOLF_SRCS
     "${CMAKE_CURRENT_SOURCE_DIR}/wolf.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/wolf.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/tbv.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/DISABLE_ANALYSIS_BEGIN"
     "${CMAKE_CURRENT_SOURCE_DIR}/DISABLE_ANALYSIS_END"
 )
@@ -223,6 +229,12 @@ add_library(${PROJECT_NAME} ${LIBRARY_TYPE} ${SRCS}
     ${WOLF_STREAM_WEBRTC_INTERCEPTOR_SRC}
     ${WOLF_STREAM_WEBRTC_MEDIA_SRC}
     ${WOLF_STREAM_WEBRTC_PEER_SRC}
+    ${WOLF_SYSTEM_USOCKET_CRYPTO_SRC}
+    ${WOLF_SYSTEM_USOCKET_EVENTING_SRC}
+    ${WOLF_SYSTEM_USOCKET_INTERNAL_EVENTING_SRC}
+    ${WOLF_SYSTEM_USOCKET_INTERNAL_NETWORKING_SRC}
+    ${WOLF_SYSTEM_USOCKET_INTERNAL_SRC}
+    ${WOLF_SYSTEM_USOCKET_SRC}
     ${WOLF_SYSTEM_SRC}
     ${WOLF_SYSTEM_IO_SRC}
     ${WOLF_SYSTEM_LOG_SRC}
@@ -252,6 +264,12 @@ source_group("stream/webrtc/peer" FILES ${WOLF_STREAM_WEBRTC_PEER_SRC})
 source_group("system" FILES ${WOLF_SYSTEM_SRC})
 source_group("system/io" FILES ${WOLF_SYSTEM_IO_SRC})
 source_group("system/log" FILES ${WOLF_SYSTEM_LOG_SRC})
+source_group("system/usocket/crypto" FILES ${WOLF_SYSTEM_USOCKET_CRYPTO_SRC})
+source_group("system/usocket/eventing" FILES ${WOLF_SYSTEM_USOCKET_EVENTING_SRC})
+source_group("system/usocket/internal/eventing" FILES ${WOLF_SYSTEM_USOCKET_INTERNAL_EVENTING_SRC})
+source_group("system/usocket/internal/networking" FILES ${WOLF_SYSTEM_USOCKET_INTERNAL_NETWORKING_SRC})
+source_group("system/usocket/internal" FILES ${WOLF_SYSTEM_USOCKET_INTERNAL_SRC})
+source_group("system/usocket" FILES ${WOLF_SYSTEM_USOCKET_SRC})
 
 # add compile options
 if (NOT WIN32)

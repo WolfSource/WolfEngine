@@ -1,9 +1,0 @@
-/*
-    Project: Wolf Engine. Copyright © 2014-2022 Pooya Eimandar
-    https://github.com/WolfEngine/WolfEngine
-*/
-#ifdef __clang__
-// NOLINTEND
-#elif defined(_MSC_VER)
-#pragma warning(pop)
-#endif
