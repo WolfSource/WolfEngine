@@ -8,12 +8,14 @@ This Wolf is a comprehensive set of Rust/C libraries for realtime rendering, rea
 
 ## Branches
 - [main](https://github.com/WolfEngine/WolfEngine/tree/main), Wolf3, is the latest version of Wolf which is written in **Rust and contains some unsafe codes** and is not ready for production
-- [Wolf2](https://github.com/WolfEngine/WolfEngine/tree/wolf-2) is written in **C/C++ and is in maintenance mode**
+- [Wolf2](https://github.com/WolfEngine/WolfEngine/tree/wolf-2) is written in **C and is in maintenance mode**
+- [Wolf3](https://github.com/WolfEngine/WolfEngine/tree/main) is the active branch which is developing based on **C/C++23**
+- [Wolf-rs](https://github.com/WolfEngine/WolfEngine/tree/wolf-rs) is an experimental version written in **Rust**
 - [releases](https://github.com/WolfEngine/WolfEngine/releases) contains old releases and source codes (C++ & DirectX 11)
 
 ## Build
-- **Wolf 2/1** via CMake
-- **Wolf 3**
+- Current **Wolf** via CMake
+- **Wolf-rs**
   - Install [CMake](https://cmake.org/install/)
   - Install [Meson](https://github.com/mesonbuild/meson/releases)
   - Install [clang](https://github.com/llvm/llvm-project/releases/tag/llvmorg-14.0.0) for bindgen
