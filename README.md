@@ -28,21 +28,13 @@ The Wolf is a comprehensive set of C++ open source libraries for realtime render
 |:-----------:|:--------------------------:|:--------------:|:-------------:|:-------------:|:-------------:|
 |   [![Build status](https://ci.appveyor.com/api/projects/status/nrk0kn83tp1n47h3/branch/master?svg=true)](https://ci.appveyor.com/project/PooyaEimandar/wolf-engine/branch/master)  |  in progress  |  in progress  |    [![Build Status](https://travis-ci.org/WolfEngine/Wolf.Engine.svg?branch=master)](https://travis-ci.org/WolfEngine/Wolf.Engine)   |  in progress  |  in progress  |
 
+### Projects using Wolf</h2>
+* [Wolf.Playout](https://www.youtube.com/watch?v=EZSdEjBvuGY), a playout automation software
+* [Falcon](https://youtu.be/ygpz35ddZ_4), a real time 3D monitoring system
+* [PlayPod](https://playpod.ir), the first cloud gaming platform launched in Middle East
+* [RivalArium](https://rivalarium.com), play and rival other users via our leagues and duels from any device, any location and let your skills generate income
 
-<!--Projects-->
-<h2><a id="user-content-projects" class="anchor" href="#projects" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Projects using Wolf</h2>
-<ul>
-<li>&quot;<a href="https://www.youtube.com/watch?v=EZSdEjBvuGY"><b>Wolf.Playout</b></a>&quot;, a playout automation software</li>
-<li>&quot;<a href="https://youtu.be/ygpz35ddZ_4"><b>Falcon</b></a>&quot;, a real time 3D monitoring system</a></li>
-<li>&quot;<a href="https://playpod.ir"><b>PlayPod</b></a>&quot;, the first cloud gaming platform launched in Middle East</li>
-<li>&quot;<a href="https://rivalarium.com"><b>RivalArium</b></a>&quot;, play and rival other users via our leagues and duels from any device, any location and let your skills generate income</li>
-</ul>
+### [Youtube](https://www.youtube.com/c/WolfEngine)
+### [Twitter](https://www.twitter.com/Wolf_Engine)
 
-### Youtube
-[WolfEngine]("https://www.youtube.com/c/WolfEngine")
-
-### Twitter
-[WolfEngine]("https://www.twitter.com/Wolf_Engine")
-
-### Copyright
 Wolf Engine © 2014-2022 [Pooya Eimandar](https://www.linkedin.com/in/pooyaeimandar/)
