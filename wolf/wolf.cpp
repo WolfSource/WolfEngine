@@ -72,7 +72,7 @@ std::string wolf::w_init()
 
 #ifndef EMSCRIPTEN
 
-boost::leaf::result<std::filesystem::path> wolf::system::w_current_process_dir()
+boost::leaf::result<std::filesystem::path> wolf::system::w_current_process_path()
 {
     using path = std::filesystem::path;
 

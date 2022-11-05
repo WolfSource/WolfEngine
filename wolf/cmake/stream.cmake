@@ -1,27 +1,5 @@
 # fetch, include and link stream modules
 
-#if (WOLF_STREAM_HTTP)
-#    message("fetching https://github.com/civetweb/civetweb.git")
-#    FetchContent_Declare(
-#        civetweb
-#        GIT_REPOSITORY https://github.com/civetweb/civetweb.git
-#        GIT_TAG        master
-#    )
-#    set(BUILD_TESTING OFF CACHE BOOL "BUILD_TESTING")
-#    set(CIVETWEB_BUILD_TESTING OFF CACHE BOOL "CIVETWEB_BUILD_TESTING")
-#    set(CIVETWEB_ENABLE_CXX ON CACHE BOOL "CIVETWEB_ENABLE_CXX")
-#    set(CIVETWEB_ENABLE_ASAN OFF CACHE BOOL "CIVETWEB_ENABLE_ASAN")
-#
-#    FetchContent_MakeAvailable(civetweb)
-#
-#    list(APPEND INCLUDES
-#        ${civetweb_SOURCE_DIR}/include
-#    )
-#    link_directories(${civetweb_BINARY_DIR}/src/)
-#    list(APPEND LIBS civetweb-cpp)
-#    #add_definitions(-DOPENSSL_API_1_1 -DUSE_WEBSOCKET)
-#endif()
-
 # fetch lsquic
 if (WOLF_STREAM_QUIC)
     message("fetching https://github.com/litespeedtech/lsquic.git")

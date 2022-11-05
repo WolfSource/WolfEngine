@@ -4,25 +4,121 @@ set(BOOST_MASTER_LIBS
     boost_leaf
 )
 
-if (WOLF_SYSTEM_STACKTRACE)
+if (WOLF_SYSTEM_FIBER)
+    list(APPEND BOOST_MASTER_LIBS   
+        boost_fiber
+        boost_filesystem
+        boost_format
+    )
+endif()
+
+if (WOLF_SYSTEM_SOCKET)
+    list(APPEND BOOST_MASTER_LIBS   
+        boost_asio
+        boost_chrono
+        boost_coroutine
+        boost_date_time
+        boost_io
+        boost_lexical_cast
+        boost_container
+        boost_numeric_conversion
+        boost_tokenizer
+        boost_ratio
+        boost_rational
+    )
+endif()
+
+if (WOLF_SYSTEM_SIG_SLOT)
     list(APPEND BOOST_MASTER_LIBS 
-        boost_align
-        boost_array
-        boost_assert
-        boost_config
-        boost_container_hash
-        boost_core
-        boost_describe
-        boost_detail
+        boost_parameter
+        boost_signals2
+        boost_variant
+    )
+endif()
+
+if (WOLF_SYSTEM_FIBER OR WOLF_SYSTEM_SIG_SLOT)
+    list(APPEND BOOST_MASTER_LIBS 
+        boost_io
+    )
+endif()
+
+if (WOLF_SYSTEM_FIBER OR WOLF_SYSTEM_SOCKET)
+    list(APPEND BOOST_MASTER_LIBS   
+        boost_context
+        boost_intrusive
+        boost_pool
+        boost_algorithm
+        boost_exception
+        boost_range
+        boost_regex
+        boost_unordered
+        boost_system
+        boost_variant2
+    )
+endif()
+
+if (WOLF_SYSTEM_FIBER OR WOLF_SYSTEM_STACKTRACE)
+    list(APPEND BOOST_MASTER_LIBS 
+        boost_integer 
+)
+endif()
+
+if (WOLF_SYSTEM_SOCKET OR WOLF_SYSTEM_SIG_SLOT)
+    list(APPEND BOOST_MASTER_LIBS   
         boost_integer
-        boost_mp11
-        boost_predef
-        boost_preprocessor
+    )
+endif()
+
+if (WOLF_SYSTEM_SOCKET OR WOLF_SYSTEM_STACKTRACE)
+    list(APPEND BOOST_MASTER_LIBS   
+        boost_align
+        
+    )
+endif()
+
+if (WOLF_SYSTEM_FIBER OR WOLF_SYSTEM_SOCKET OR WOLF_SYSTEM_STACKTRACE)
+    list(APPEND BOOST_MASTER_LIBS
+        boost_array
+        boost_winapi
+    )
+endif()
+
+if (WOLF_SYSTEM_FIBER OR WOLF_SYSTEM_SOCKET OR WOLF_SYSTEM_SIG_SLOT)
+    list(APPEND BOOST_MASTER_LIBS   
+        boost_smart_ptr
+        boost_move
+        boost_bind
+        boost_concept_check
+        boost_function
+        boost_functional
+        boost_iterator
+        boost_mpl
+        boost_tuple
+        boost_utility
+        boost_conversion
+        boost_typeof
+        boost_function_types
+        boost_fusion
+        boost_optional
+        boost_type_index
+    )
+endif()
+
+if (WOLF_SYSTEM_FIBER OR WOLF_SYSTEM_SOCKET OR WOLF_SYSTEM_SIG_SLOT OR WOLF_SYSTEM_STACKTRACE)
+    list(APPEND BOOST_MASTER_LIBS
+        boost_detail
+        boost_assert
+        boost_describe
         boost_static_assert
         boost_throw_exception
+        boost_config
+        boost_core
+        boost_mp11
+        boost_predef
         boost_type_traits
-        boost_winapi 
-)
+        boost_preprocessor
+        boost_container_hash
+    )
 endif()
 
 foreach (_var ${BOOST_MASTER_LIBS})
@@ -45,6 +141,7 @@ foreach (_var ${BOOST_MASTER_LIBS})
     list(APPEND INCLUDES
         ${source_dir}/include
     )
+    set_target_properties(${_var} PROPERTIES FOLDER "boost")
 endforeach()
 
 # add libraries

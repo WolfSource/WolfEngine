@@ -86,7 +86,7 @@ namespace wolf
      * @return string format with the following style
      * "<major>.<minor>.<patch>.<debug>"
      */
-    std::string w_init();
+    W_API std::string w_init();
 
     namespace system
     {
@@ -95,7 +95,7 @@ namespace wolf
          * get current exe path
          * @returns current exe path
          */
-        boost::leaf::result<std::filesystem::path> w_current_process_dir();
+        W_API boost::leaf::result<std::filesystem::path> w_current_process_path();
 #endif // EMSCRIPTEN
     } // namespace system
 } // namespace wolf

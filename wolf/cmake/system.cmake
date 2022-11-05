@@ -12,7 +12,7 @@ list(APPEND INCLUDES
     ${gsl_SOURCE_DIR}/include
 )
 
-# fetch WOLF_SYSTEM_BORINGSSL
+# fetch boringssl
 if (WOLF_SYSTEM_BORINGSSL)
     message("fetching https://github.com/google/boringssl.git")
     FetchContent_Declare(
@@ -58,29 +58,7 @@ if (WOLF_SYSTEM_BORINGSSL)
         PROPERTIES FOLDER "boringSSL") 
 endif()
 
-# fetch WOLF_SYSTEM_LIBUV
-if (WOLF_SYSTEM_LIBUV)
-    message("fetching https://github.com/libuv/libuv.git")
-    FetchContent_Declare(
-        uv_a
-        GIT_REPOSITORY https://github.com/libuv/libuv.git
-        GIT_TAG        master
-    )
-    FetchContent_MakeAvailable(uv_a)
-    list(APPEND INCLUDES 
-        ${uv_a_SOURCE_DIR}/include
-        ${uv_a_BINARY_DIR}/include
-    )
-    list(APPEND LIBS uv_a)   
-    
-    add_definitions(-DLIBUS_USE_LIBUV)
-
-    set_target_properties(
-        uv
-        uv_a
-        PROPERTIES FOLDER "libuv") 
-endif()
-
+# fetch spdlog
 if (WOLF_SYSTEM_LOG)
     message("fetching https://github.com/gabime/spdlog.git")
     FetchContent_Declare(
@@ -124,35 +102,9 @@ if (WOLF_SYSTEM_MIMALLOC)
 endif()
 
 if (WOLF_SYSTEM_SOCKET)
-   file(GLOB_RECURSE WOLF_SYSTEM_USOCKET_CRYPTO_SRC
-        "${CMAKE_CURRENT_SOURCE_DIR}/system/usocket/crypto/*"
-   )
-   file(GLOB_RECURSE WOLF_SYSTEM_USOCKET_EVENTING_SRC
-        "${CMAKE_CURRENT_SOURCE_DIR}/system/usocket/eventing/*"
-   )
-   file(GLOB_RECURSE WOLF_SYSTEM_USOCKET_INTERNAL_EVENTING_SRC
-        "${CMAKE_CURRENT_SOURCE_DIR}/system/usocket/internal/eventing/*"
-   )
-   file(GLOB_RECURSE WOLF_SYSTEM_USOCKET_INTERNAL_NETWORKING_SRC
-        "${CMAKE_CURRENT_SOURCE_DIR}/system/usocket/internal/networking/*"
-   )
-   file(GLOB_RECURSE WOLF_SYSTEM_USOCKET_SRC_INTERNAL_SRC
-        "${CMAKE_CURRENT_SOURCE_DIR}/system/usocket/crypto/internal.h"
-        "${CMAKE_CURRENT_SOURCE_DIR}/system/usocket/crypto/loop_data.h"
-   )
-   file(GLOB_RECURSE WOLF_SYSTEM_USOCKET_SRC
-        "${CMAKE_CURRENT_SOURCE_DIR}/system/usocket/bsd.c"
-        "${CMAKE_CURRENT_SOURCE_DIR}/system/usocket/context.c"
-        "${CMAKE_CURRENT_SOURCE_DIR}/system/usocket/libusockets.h"
-        "${CMAKE_CURRENT_SOURCE_DIR}/system/usocket/loop.c"
-        "${CMAKE_CURRENT_SOURCE_DIR}/system/usocket/quic.c"
-        "${CMAKE_CURRENT_SOURCE_DIR}/system/usocket/quic.h"
-        "${CMAKE_CURRENT_SOURCE_DIR}/system/usocket/socket.c"
-        "${CMAKE_CURRENT_SOURCE_DIR}/system/usocket/udp.c"
-   )
-   list(APPEND INCLUDES
-        ${CMAKE_CURRENT_SOURCE_DIR}/system/usocket
-   )
+    file(GLOB_RECURSE WOLF_SYSTEM_SOCKET_SRC
+        "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/*"
+    )
 endif()
 
 # fetch zlib

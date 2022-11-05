@@ -3,8 +3,6 @@
     https://github.com/WolfEngine/WolfEngine
 */
 
-#ifdef WOLF_SYSTEM_STACKTRACE
-
 #pragma once
 
 #include <deque>
@@ -94,4 +92,3 @@ inline std::string get_last_win_error(_In_ DWORD p_error_id)
 
 #endif
 
-#endif // WOLF_SYSTEM_STACKTRACE

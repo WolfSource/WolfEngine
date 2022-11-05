@@ -10,6 +10,7 @@
 #include <DISABLE_ANALYSIS_END>
 
 #include "w_gametime.hpp"
+#include "w_sig_slot.hpp"
 #include "w_trace.hpp"
 #include <iostream>
 #include <xcall_once.h>
@@ -80,13 +81,30 @@ TEST_CASE("wolf::system::w_gametime", "w_gametime")
 
 }
 
-#ifdef WOLF_SYSTEM_STACKTRACE
+#ifdef WOLF_SYSYEM_SIG_SLOT
+
+TEST_CASE("wolf::system::w_sig_slot", "w_sig_slot")
+{
+	auto sig = wolf::system::w_sig_slot<void()>();
+	sig.connect([]()
+		{
+		std::cout << "hello from slot 1" << std::endl;
+		});
+	sig.connect([]()
+		{
+		std::cout << "hello from slot 2" << std::endl;
+		});
+
+	sig();
+}
+
+#endif
 
 TEST_CASE("wolf::system::w_trace", "w_trace")
 {
 	const auto _function = []() -> boost::leaf::result<void>
 	{
-		auto _result = wolf::system::w_current_process_dir();
+		auto _result = wolf::system::w_current_process_path();
 		if (_result.has_error())
 		{
 			return _result.error();
@@ -110,5 +128,3 @@ TEST_CASE("wolf::system::w_trace", "w_trace")
 			std::cout << "caught a test exception!" << std::endl;
 		});
 }
-
-#endif

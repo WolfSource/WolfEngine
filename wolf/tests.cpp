@@ -12,13 +12,12 @@ TEST_CASE("wolf", "global namespace")
 	auto _wolf_version = wolf::w_init();
 	REQUIRE(_wolf_version.empty() == false);
 
-	auto _path_res = wolf::system::w_current_process_dir();
+	auto _path_res = wolf::system::w_current_process_path();
 	REQUIRE(_path_res.has_error() == false);
 
 	auto _path_str = _path_res.value();
 	REQUIRE(_path_str.string().empty() == false);
 }
-
 
 //#include <system/io/w_tcp_client.hpp>
 //#include <system/io/w_tcp_server.hpp>
