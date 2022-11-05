@@ -470,7 +470,7 @@ impl AVFrame {
         #[allow(clippy::pedantic)]
         // get data buffer size
         let buffer_size =
-            Self::get_required_buffer_size(p_pixel_format.clone(), p_width, p_height, p_alignment);
+            Self::get_required_buffer_size(p_pixel_format, p_width, p_height, p_alignment);
 
         // create self object
         let mut obj = Self {
