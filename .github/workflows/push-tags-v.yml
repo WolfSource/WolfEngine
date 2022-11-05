@@ -1,0 +1,102 @@
+env:
+  CARGO_TERM_COLOR: always
+jobs:
+  package:
+    name: Package
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Check Out
+        uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579
+      -
+        id: release-tag-meta
+        name: Release Tag Meta
+        uses: ./.github/actions/release-tag-meta
+        with:
+          git-ref: ${{ github.ref }}
+      -
+        env:
+          ARCHVARIANT: ${{ matrix.archvariant }}
+          CARGO: cross
+          PACKAGE: ${{ matrix.package }}
+          RELEASE: --release
+          STRIP: ${{ matrix.strip }}
+          TARGET: ${{ matrix.target }}
+          VERSION: ${{ steps.release-tag-meta.outputs.version }}
+        name: Package
+        uses: ./.github/actions/package
+        with:
+          args: release
+          entrypoint: make
+      -
+        name: Upload Artifacts
+        uses: actions/upload-artifact@82c141cc518b40d92cc801eee768e7aafc9c2fa2
+        with:
+          path: release/*
+    strategy:
+      matrix:
+        include:
+          -
+            archvariant: amd64
+            strip: strip
+            target: x86_64-unknown-linux-musl
+          -
+            archvariant: arm64
+            strip: aarch64-linux-gnu-strip
+            target: aarch64-unknown-linux-musl
+          -
+            archvariant: armv7
+            strip: arm-linux-gnueabihf-strip
+            target: armv7-unknown-linux-musleabihf
+        archvariant:
+          - amd64
+          - arm64
+          - armv7
+        package:
+          - wolfengine
+    timeout-minutes: 30
+  release:
+    name: GitHub Release
+    needs:
+      - package
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Check Out
+        uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579
+      -
+        id: release-tag-meta
+        name: Release Tag Meta
+        uses: ./.github/actions/release-tag-meta
+        with:
+          git-ref: ${{ github.ref }}
+      -
+        name: Download Artifacts
+        uses: actions/download-artifact@f023be2c48cc18debc3bacd34cb396e0295e2869
+        with:
+          path: artifact
+      -
+        name: Generate Changelog
+        run: echo "# CHANGELOG" > ${{ github.workspace }}-CHANGELOG.md
+        shell: bash
+      -
+        name: Release
+        uses: softprops/action-gh-release@1e07f4398721186383de40550babbdf2b84acfc5
+        with:
+          body_path: ${{ github.workspace }}-CHANGELOG.md
+          files: artifact/**/*
+          generate_release_notes: true
+          name: ${{ steps.release-tag-meta.outputs.name }}
+          prerelease: ${{ steps.release-tag-meta.outputs.prerelease }}
+          tag_name: ${{ steps.release-tag-meta.outputs.tag }}
+          token: ${{ secrets.PACKAGE_REGISTRY }}
+    timeout-minutes: 30
+name: Push Tags V
+on:
+  push:
+    tags:
+      - v*.*.*

@@ -1,40 +1,78 @@
-# Wolf Engine [![Apache licensed](https://img.shields.io/badge/license-Apache-blue)](https://github.com/WolfEngine/Wolf.Engine/blob/main/LICENSE.md)
+# Wolf Engine [![LGPL v3 licensed](https://img.shields.io/badge/license-Apache-blue)](https://github.com/WolfEngine/Wolf.Engine/blob/main/LICENSE.md) [![coverage](https://shields.io/endpoint?url=https://raw.githubusercontent.com/WolfEngine/WolfEngine/main/coverage/coverage.json)](https://github.com/WolfEngine/WolfEngine/tree/main/coverage/index.html) [![wakatime](https://wakatime.com/badge/github/WolfEngine/WolfEngine.svg)](https://wakatime.com/badge/github/WolfEngine/WolfEngine)
 
 <img src="https://raw.githubusercontent.com/WolfEngine/WolfEngine/main/Logo.png" width="256" height="256" alt="WolfEngine"/>
-<p><b>Welcome to the Wolf Engine source code.</b></p> 
-<p>The&nbsp;<b>Wolf Engine</b>&nbsp;is the next
-generation of&nbsp;<a href="https://github.com/PooyaEimandar/PersianEngine">Persian Game Engine</a>&nbsp;which is a
-cross-platform open source game engine created by&nbsp;<a href="https://pooyaeimandar.github.io/">Pooya Eimandar</a>.
-The Wolf is a comprehensive set of C++ open source libraries for realtime rendering, realtime streaming and game developing, which is support <b>Lua</b> and <b>WASM</b> as an embedded scripting languages.</p>
 
-# Build
-- Install 
-      - For windows, make sure install the latest Windows 11/10 SDK
-	- [git](https://git-scm.com/downloads)
-	- [CMake](https://cmake.org/download/)
-	- [Meson](https://github.com/mesonbuild/meson/releases)
-	- optional: [Ninja](https://ninja-build.org/). Alternatively, use "pip3 install ninja"
-	- [Nasm](https://nasm.us/)
-	- [Perl](https://www.perl.org/get.html) for boringSSL. [Strawberry Perl](https://strawberryperl.com/) is recommended for Windows.
-	- [Go](https://go.dev/dl/) for boringSSL
+**Wolf Engine** is the next generation of [Persian Game Engine](https://github.com/PooyaEimandar/PersianEngine) which is a
+cross-platform open source game engine created by [Pooya Eimandar](https://pooyaeimandar.github.io)
+This Wolf is a comprehensive set of Rust/C libraries for realtime rendering, realtime streaming and game developing, which is support **Lua** & **Python** as an embedded script and binding language.</p>
 
-### Recent Sample
-<p>Dynamic LOD Generation using <a href="https://www.simplygon.com/" target="_blank">Simplygon</a></p>
-<img src="https://raw.githubusercontent.com/WolfEngine/WolfEngine/wolf-2/samples/03_advances/07_lod/doc/view.gif" width="640" height="360" alt="Dynamic LOD Generation gif"/>
+## Branches
+- [main](https://github.com/WolfEngine/WolfEngine/tree/main), Wolf3, is the latest version of Wolf which is written in **Rust and contains some unsafe codes** and is not ready for production
+- [Wolf2](https://github.com/WolfEngine/WolfEngine/tree/wolf-2) is written in **C and is in maintenance mode**
+- [Wolf3](https://github.com/WolfEngine/WolfEngine/tree/main) is the active branch which is developing based on **C/C++23**
+- [Wolf-rs](https://github.com/WolfEngine/WolfEngine/tree/wolf-rs) is an experimental version written in **Rust**
+- [releases](https://github.com/WolfEngine/WolfEngine/releases) contains old releases and source codes (C++ & DirectX 11)
 
-### Supported Platforms and APIs
+## Build
+- Current **Wolf** via CMake
+- **Wolf-rs**
+  - Install [CMake](https://cmake.org/install/)
+  - Install [Meson](https://github.com/mesonbuild/meson/releases)
+  - Install [clang](https://github.com/llvm/llvm-project/releases/tag/llvmorg-14.0.0) for bindgen
+  - Install [python3](https://www.python.org/downloads/) for running wasm
+  - Install protoc for 
+    - Windows: download protoc-x.y-win64.zip from [here](https://github.com/protocolbuffers/protobuf/releases/latest) then extract the file `bin\protoc.exe` and put it somewhere in the `PATH`
+    - MacOS:
+      ```bash
+        brew install protobuf
+      ```  
+    - Linux:
+      ```bash
+        sudo apt update && sudo apt upgrade -y
+        sudo apt install -y protobuf-compiler libprotobuf-dev
+      ```
 
-|   Windows   | WASM |     Linux      |      OSX      |      iOS      |    Android    |
-|:-----------:|:--------------------------:|:--------------:|:-------------:|:-------------:|:-------------:|
-|   [![Build status](https://ci.appveyor.com/api/projects/status/nrk0kn83tp1n47h3/branch/master?svg=true)](https://ci.appveyor.com/project/PooyaEimandar/wolf-engine/branch/master)  |  in progress  |  in progress  |    [![Build Status](https://travis-ci.org/WolfEngine/Wolf.Engine.svg?branch=master)](https://travis-ci.org/WolfEngine/Wolf.Engine)   |  in progress  |  in progress  |
+  - Install prerequisites of **Webassembly**:\
+  From workspace folder run
+  ```bash
+  cargo install wasm-pack
+  rustup default nightly
+  rustup target add wasm32-unknown-unknown
+  cd wolf-demo
+  ./build-wasm.sh
+  ./run-wasm.sh
+  ```
+  Finally the demo will be served at http://localhost:8000
+  - For **Windows, MacOS, Linux** :
+  ```bash
+  rustup default stable
+  cd wolf-demo
+  cargo run
+  ```
+  - For **Android** :
+  ```bash
+  rustup default nightly
+  rustup target add \
+    aarch64-linux-android \
+    armv7-linux-androideabi \
+    x86_64-linux-android \
+    i686-linux-android
+  cargo install cargo-ndk
+  export ANDROID_NDK_HOME = /path/to/the/root/of/NDK/Folder
+  cargo ndk -t armeabi-v7a build
+  cargo ndk -t armeabi-v7a -o ./jniLibs build --release 
+  ```
 
-### Projects using Wolf</h2>
-* [Wolf.Playout](https://www.youtube.com/watch?v=EZSdEjBvuGY), a playout automation software
-* [Falcon](https://youtu.be/ygpz35ddZ_4), a real time 3D monitoring system
-* [PlayPod](https://playpod.ir), the first cloud gaming platform launched in Middle East
-* [RivalArium](https://rivalarium.com), play and rival other users via our leagues and duels from any device, any location and let your skills generate income
+  - For **iOS** :
+  ```bash
+  rustup default stable
+  rustup target add \
+    aarch64-apple-ios \
+    x86_64-apple-ios
+  cargo install cargo-lipo
+  cd wolf
+  cargo lipo --release
+  ```
 
-### [Youtube](https://www.youtube.com/c/WolfEngine)
-### [Twitter](https://www.twitter.com/Wolf_Engine)
-
-Wolf Engine © 2014-2022 [Pooya Eimandar](https://www.linkedin.com/in/pooyaeimandar/)
+## Copyright & License
+Wolf Engine © 2014-2022 [Pooya Eimandar](https://www.linkedin.com/in/pooyaeimandar)

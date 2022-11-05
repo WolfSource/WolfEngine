@@ -1,0 +1,14 @@
+description: Extract package metadata from the package
+inputs:
+  package:
+    description: The source package name
+    required: true
+name: Release package meta
+outputs:
+  package:
+    description: The release package name
+runs:
+  args:
+    - ${{ inputs.package }}
+  image: Dockerfile
+  using: docker
