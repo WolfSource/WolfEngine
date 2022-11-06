@@ -54,7 +54,7 @@ The Wolf is a comprehensive set of C++ open source libraries for realtime render
 
 | API | Windows | Linux | macOS | iOS | Android | Wasm |
 |:-----------:|:-----------:|:--------------------------:|:--------------:|:-------------:|:--------------:|:-------------:|
-| SOCKET | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :x: |
+| Socket | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :x: |
 | Fiber | :construction: | :memo: | :memo: | :x: | :x: | :x: |
 | Trace | :construction: | :memo: | :memo: | :memo: | :memo: | :x: |
 | Signal-Slot  | :construction: | :construction: | :construction: | :construction: | :construction: | :construction: |
