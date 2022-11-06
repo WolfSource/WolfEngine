@@ -62,6 +62,7 @@ The Wolf is a comprehensive set of C++ open source libraries for realtime render
 | WASM3  | :memo: | :memo: | :memo: | :memo: | :memo: | :memo: |
 | LZ4  | :construction: | :memo: | :memo: | :memo: | :memo: | :x: |
 | LZMA  | :construction: | :memo: | :memo: | :x: | :x: | :x: |
+| Log  | :construction: | :construction: | :construction: | :construction: | :construction: | :construction: |
 
 
 ### Projects using Wolf</h2>
