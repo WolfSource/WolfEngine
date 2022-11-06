@@ -23,6 +23,9 @@ The Wolf is a comprehensive set of C++ open source libraries for realtime render
 <img src="https://raw.githubusercontent.com/WolfEngine/WolfEngine/wolf-2/samples/03_advances/07_lod/doc/view.gif" width="640" height="360" alt="Dynamic LOD Generation gif"/>
 
 ### Supported platforms and APIs for render module
+| Planned | Under Construction | Done |
+|:-----------:|:-----------:|:-----------:|
+| :memo:  | :construction: | :white_check_mark: | 
 
 | API | Windows | Linux | macOS | iOS | Android | Wasm |
 |:-----------:|:-----------:|:--------------------------:|:--------------:|:-------------:|:--------------:|:-------------:|
