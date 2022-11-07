@@ -29,10 +29,8 @@ The Wolf is a comprehensive set of C++ open source libraries for realtime render
 
 | API | Windows | Linux | macOS | iOS | Android | Wasm |
 |:-----------:|:-----------:|:--------------------------:|:--------------:|:-------------:|:--------------:|:-------------:|
-|  Vulkan | :construction: | :memo: | :memo: | :memo: | :x: | :x: |
-|  OpenGL | :memo: | :memo: | :x: | :x: | :x: | :x: |
-|  WebGPU | :x: | :x: | :x: | :x: | :x: | :memo: |
-|  WebGL  | :x: | :x: | :x: | :x: | :x: | :memo: |
+|  Vulkan | :construction: | :memo: | MoltenVK :memo: | MoltenVK :memo: | :memo: | WebGPU :memo: |
+|  OpenGL | :memo: | :memo: | :x: | :x: | ES :memo: | WebGL :memo: |
 
 ### Supported platforms and APIs for media module
 
