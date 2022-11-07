@@ -17,6 +17,7 @@ The Wolf is a comprehensive set of C++ open source libraries for realtime render
 	- [Nasm](https://nasm.us/)
 	- [Perl](https://www.perl.org/get.html) for boringSSL. [Strawberry Perl](https://strawberryperl.com/) is recommended for Windows.
 	- [Go](https://go.dev/dl/) for boringSSL
+	- [QT6](https://www.qt.io/download) for wolf render, demos and examples
 
 ### Recent Sample
 <p>Dynamic LOD Generation using <a href="https://www.simplygon.com/" target="_blank">Simplygon</a></p>
