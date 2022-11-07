@@ -5,7 +5,7 @@
 
 #pragma once
 
-#ifdef WOLF_SYSTEM_IO
+#ifdef WOLF_SYSTEM_SOCKET
 
 #include <wolf.hpp>
 #include <chrono>

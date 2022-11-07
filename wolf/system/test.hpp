@@ -15,8 +15,12 @@
 #include <iostream>
 #include <xcall_once.h>
 
+#include <system/w_leak_detector.hpp>
+
 TEST_CASE("wolf::system::w_gametime", "w_gametime")
 {
+	wolf::system::w_leak_detector _detector = {};
+
 	std::once_flag _flag;
 	bool _done = false;
 
@@ -85,6 +89,8 @@ TEST_CASE("wolf::system::w_gametime", "w_gametime")
 
 TEST_CASE("wolf::system::w_sig_slot", "w_sig_slot")
 {
+	wolf::system::w_leak_detector _detector = {};
+
 	auto sig = wolf::system::w_sig_slot<void()>();
 	sig.connect([]()
 		{
@@ -102,6 +108,8 @@ TEST_CASE("wolf::system::w_sig_slot", "w_sig_slot")
 
 TEST_CASE("wolf::system::w_trace", "w_trace")
 {
+	wolf::system::w_leak_detector _detector = {};
+
 	const auto _function = []() -> boost::leaf::result<void>
 	{
 		auto _result = wolf::system::w_current_process_path();

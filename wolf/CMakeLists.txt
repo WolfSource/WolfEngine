@@ -224,6 +224,8 @@ file(GLOB_RECURSE WOLF_SYSTEM_SRC
     "${CMAKE_CURRENT_SOURCE_DIR}/system/w_trace.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/system/w_gametime.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/system/w_gametime.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/system/w_leak_detector.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/system/w_leak_detector.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/system/w_sig_slot.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/system/test.hpp"
 )

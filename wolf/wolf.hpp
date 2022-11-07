@@ -19,6 +19,7 @@
 #include <filesystem>
 #endif
 
+#include <exception>
 #include <format>
 #include <memory>
 #include <sstream>
@@ -39,7 +40,7 @@
 #include "DISABLE_ANALYSIS_END"
 
 constexpr auto W_MAX_PATH = 260;
-constexpr auto W_MAX_SIZE_ON_STACK = 4096;
+constexpr auto W_MAX_BUFFER_SIZE = 1024;
 
 using defer = std::shared_ptr<void>;
 

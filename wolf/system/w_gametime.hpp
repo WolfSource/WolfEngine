@@ -9,11 +9,11 @@
 #include <chrono>
 #include <cmath>
 
-constexpr auto MAX_DELTA_TIME_IN_SECS = 60000.0; // 60 minutes
-constexpr auto TARGET_ELAPSED_SECS = 1.0 / 60.0;
-
 namespace wolf::system
 {
+    constexpr auto MAX_DELTA_TIME_IN_SECS = 60000.0; // 60 minutes
+    constexpr auto TARGET_ELAPSED_SECS = 1.0 / 60.0;
+
     class w_gametime
     {
     public:
@@ -28,12 +28,6 @@ namespace wolf::system
 
         // move assignment operator.
         W_API w_gametime& operator=(w_gametime&& p_src) noexcept = default;
-
-        // copy constructor.
-        w_gametime(const w_gametime&) = delete;
-
-        // copy assignment operator.
-        w_gametime& operator=(const w_gametime&) = delete;
 
         W_API void reset() noexcept;
 
@@ -130,7 +124,11 @@ namespace wolf::system
         }
 
     private:
-        
+        // copy constructor.
+        w_gametime(const w_gametime&) = delete;
+        // copy assignment operator.
+        w_gametime& operator=(const w_gametime&) = delete;
+
         // configuring fixed timestep mode.
         bool _fixed_time_step = false;
 

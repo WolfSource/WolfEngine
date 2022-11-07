@@ -5,10 +5,11 @@
 
 #pragma once
 
-#ifdef WOLF_SYSTEM_IO
+#ifdef WOLF_SYSTEM_SOCKET
 
 #include <wolf.hpp>
-#include <system/io/w_socket_options.hpp>
+#include "w_socket_options.hpp"
+#include <boost/asio.hpp>
 
 namespace wolf::system::io
 {
@@ -25,7 +26,9 @@ namespace wolf::system::io
             boost::asio::io_context& p_io_context,
             boost::asio::ip::tcp::endpoint&& p_endpoint,
             w_socket_options&& p_socket_options,
-            std::function<w_result<bool>(std::span<char, W_MAX_BUFFER_SIZE> /*p_data*/, size_t /*p_read_bytes*/)> p_on_io_callback) noexcept;
+            std::function<boost::leaf::result<bool>(
+                std::span<char, W_MAX_BUFFER_SIZE> /*p_data*/,
+                size_t /*p_read_bytes*/)> p_on_io_callback) noexcept;
     };
 } // namespace wolf::system::io
 

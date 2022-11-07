@@ -147,6 +147,10 @@ endforeach()
 # add libraries
 list(APPEND LIBS ${BOOST_MASTER_LIBS})   
 
+if (WOLF_SYSTEM_FIBER)
+    set_target_properties(boost_fiber_numa PROPERTIES FOLDER "boost")
+endif()
+
 # fetch boost stacktrace
 if (WOLF_SYSTEM_STACKTRACE)
     message("fetching https://github.com/boostorg/stacktrace.git")

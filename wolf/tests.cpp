@@ -9,6 +9,8 @@
 
 TEST_CASE("wolf", "global namespace")
 {
+	wolf::system::w_leak_detector _detector = {};
+
 	auto _wolf_version = wolf::w_init();
 	REQUIRE(_wolf_version.empty() == false);
 
@@ -19,19 +21,41 @@ TEST_CASE("wolf", "global namespace")
 	REQUIRE(_path_str.string().empty() == false);
 }
 
-//#include <system/io/w_tcp_client.hpp>
-//#include <system/io/w_tcp_server.hpp>
-
-//#define _CRTDBG_MAP_ALLOC
 
 
-//int main()
-//{
 
-	//_CrtMemState sOld;
-	//_CrtMemState sNew;
-	//_CrtMemState sDiff;
-	//_CrtMemCheckpoint(&sOld); //take a snapshot
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	// using namespace wolf::system::io;
 	// using namespace boost::asio;
@@ -106,16 +130,7 @@ TEST_CASE("wolf", "global namespace")
 	//strcpy_s(ss, 14, "stackoverflow");
 	//delete[] ss;
 	
-	//_CrtMemCheckpoint(&sNew); //take a snapshot 
-	//if (_CrtMemDifference(&sDiff, &sOld, &sNew) == TRUE) // if there is a difference
-	//{
-	//	OutputDebugString("-----------_CrtMemDumpStatistics ---------");
-	//	_CrtMemDumpStatistics(&sDiff);
-	//	OutputDebugString("-----------_CrtMemDumpAllObjectsSince ---------");
-	//	_CrtMemDumpAllObjectsSince(&sOld);
-	//	OutputDebugString("-----------_CrtDumpMemoryLeaks ---------");
-	//	_CrtDumpMemoryLeaks();
-	//}
+
 
 	//return 0;
 //}
