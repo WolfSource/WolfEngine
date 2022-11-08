@@ -31,8 +31,8 @@ struct w_trace
     } W_ALIGNMENT_128;
 
     w_trace(_In_ int64_t p_err_code,
-        _In_ std::string_view p_err_msg,
-        _In_ std::string_view p_source_file,
+        _In_ std::string p_err_msg,
+        _In_ std::string p_source_file,
         _In_ uint32_t p_source_file_line)
     {
         this->_stacks.emplace_front(
@@ -40,8 +40,8 @@ struct w_trace
             {
                 std::this_thread::get_id(),
                 p_err_code,
-                p_err_msg.data(),
-                p_source_file.data(),
+                std::move(p_err_msg),
+                std::move(p_source_file),
                 p_source_file_line
             });
     }

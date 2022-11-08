@@ -57,30 +57,7 @@ TEST_CASE("wolf", "global namespace")
 
 
 
-	// using namespace wolf::system::io;
-	// using namespace boost::asio;
-	// using tcp = boost::asio::ip::tcp;
-
-	// auto _io = boost::asio::io_context();
-	// w_socket_options _opts = {};
-	// _opts.timeout = std::chrono::milliseconds(3000);
-
-	// tcp::endpoint _endpoint = { tcp::v4(), 8080 };
-
-	// auto t1 = std::jthread([&]()
-	// 	{
-	// 		//stop server
-	// 		std::this_thread::sleep_for(std::chrono::seconds(20));
-	// 		_io.stop();
-	// 	});
-
-	// w_tcp_server::init(_io, std::move(_endpoint), std::move(_opts),
-	// 	[](std::span<char, W_MAX_BUFFER_SIZE> p_data, size_t p_read_bytes) -> wolf::w_result<boost::system::errc::errc_t>
-	// 	{
-	// 		std::cout << "read: " << p_read_bytes << std::endl;
-	// 		return boost::system::errc::connection_aborted;
-	// 	});
-	// _io.run();
+	
 
 
 	//auto t2 = std::jthread([&]()

@@ -10,12 +10,13 @@
 #include <DISABLE_ANALYSIS_END>
 
 #include "w_gametime.hpp"
-#include "w_sig_slot.hpp"
 #include "w_trace.hpp"
 #include <iostream>
 #include <xcall_once.h>
 
 #include <system/w_leak_detector.hpp>
+
+#include "socket/test.hpp"
 
 TEST_CASE("wolf::system::w_gametime", "w_gametime")
 {

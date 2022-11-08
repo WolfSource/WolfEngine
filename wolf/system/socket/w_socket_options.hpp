@@ -9,8 +9,9 @@
 
 #include <wolf.hpp>
 #include <chrono>
+#include <functional>
 
-namespace wolf::system::io
+namespace wolf::system::socket
 {
     struct w_socket_options
     {
@@ -19,6 +20,8 @@ namespace wolf::system::io
         bool reuse_address = true;
         std::chrono::system_clock::duration timeout = std::chrono::milliseconds(10000);
     };
+    typedef std::function<
+        boost::leaf::result<void>(gsl::span<char> p_data, size_t p_read_bytes)> w_socket_on_data_callback;
 } // namespace wolf::system
 
 #endif

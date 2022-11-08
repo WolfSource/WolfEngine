@@ -9,9 +9,15 @@
 
 #include <wolf.hpp>
 #include "w_socket_options.hpp"
-#include <boost/asio.hpp>
 
-namespace wolf::system::io
+#include "DISABLE_ANALYSIS_BEGIN"
+#ifdef WIN32
+#pragma warning (disable:26458)
+#endif
+#include <boost/asio.hpp>
+#include "DISABLE_ANALYSIS_END"
+
+namespace wolf::system::socket
 {
     class w_tcp_server
     {
@@ -20,15 +26,14 @@ namespace wolf::system::io
          * @param p_io_context, the boost io context
          * @param p_endpoint, the endpoint of the server
          * @param p_socket_options, the socket options
-         * @returns void 
+         * @param p_on_data_callback, on data callback
+         * @returns void
          */
         W_API static void init(
             boost::asio::io_context& p_io_context,
             boost::asio::ip::tcp::endpoint&& p_endpoint,
             w_socket_options&& p_socket_options,
-            std::function<boost::leaf::result<bool>(
-                std::span<char, W_MAX_BUFFER_SIZE> /*p_data*/,
-                size_t /*p_read_bytes*/)> p_on_io_callback) noexcept;
+            w_socket_on_data_callback p_on_data_callback) noexcept;
     };
 } // namespace wolf::system::io
 
