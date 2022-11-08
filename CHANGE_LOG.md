@@ -1,9 +1,6 @@
-# ToDos
-- Dynamic lod creator for lod sample
-- Forward+
-- DirectX 12
-- Realtime Raytracing
-- DEBUG, RELEASE, MinSizeRelease(does not have assimp and just use wscene files)
+# 3.0
+A major release, rewrite wolf with Rust
+-
 
 # 2.1
 A major release, rewrite most of wolf.system with pure C
@@ -30,7 +27,7 @@ New features:
 A minor release with many compatibility-breaking changes.
 
 New features:
-- system::w_logger optimized and integrated with spdlog 
+- system::w_logger optimized and integrated with spdlog
 - framework::w_media_core optimized for streaming
 - gpu occlusion culling has been added
 
@@ -42,5 +39,5 @@ A minor release with many compatibility-breaking changes.
 New features:
 - Integrated with Vulkan SDK version 1.1.73.0
 - Integrated with VulkanMemoryAllocator for better gpu memory managment
-- The new coordinate system is Left handed Y-Up 
+- The new coordinate system is Left handed Y-Up
 - The function "contains" have been added to wolf::system::w_bounding_sphere
