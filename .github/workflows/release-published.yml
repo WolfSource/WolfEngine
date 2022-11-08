@@ -122,7 +122,7 @@ jobs:
       -
         id: anchore
         name: Anchore Scan
-        uses: anchore/scan-action@54980bbdae434b8e7903cfcffa98a2601c207962
+        uses: anchore/scan-action@3578976016e97642035dd9a0be842060e62422c6
         with:
           debug: true
           image: ghcr.io/${{ github.repository }}/${{ steps.release-package-meta.outputs.package }}:latest
