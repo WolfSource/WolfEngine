@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<RuleSet Name="cpp" ToolsVersion="17.0">
+<RuleSet Name="wolf" ToolsVersion="17.0">
   <Include Path="allrules.ruleset" Action="Default" />
   <Include Path="concurrencycheckrules.ruleset" Action="Default" />
   <Include Path="concurrencyrules.ruleset" Action="Default" />

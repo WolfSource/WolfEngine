@@ -59,3 +59,37 @@ pub type uint_fast32_t = ::std::os::raw::c_uint;
 pub type uint_fast64_t = ::std::os::raw::c_ulonglong;
 pub type intmax_t = ::std::os::raw::c_longlong;
 pub type uintmax_t = ::std::os::raw::c_ulonglong;
+extern "C" {
+    #[doc = " compress stream using lzma algorithm"]
+    #[doc = " @param p_dst is the destination buffer"]
+    #[doc = " @param p_dst_len is length of the destination buffer"]
+    #[doc = " @param p_src is the source buffer"]
+    #[doc = " @param p_src_len is length of the source buffer"]
+    #[doc = " @param p_type type of LZMA algorithm (0 = LZMA1 and 1 = LZMA2)"]
+    #[doc = " @param p_level 0 <= level <= 9"]
+    #[doc = " @returns zero on success"]
+    pub fn w_lzma_compress(
+        p_dst: *mut *mut u8,
+        p_dst_len: *mut usize,
+        p_src: *const u8,
+        p_src_len: usize,
+        p_type: u8,
+        p_level: u32,
+    ) -> ::std::os::raw::c_longlong;
+}
+extern "C" {
+    #[doc = " decompress stream using lzma algorithm"]
+    #[doc = " @param p_dst is the destination buffer"]
+    #[doc = " @param p_dst_len is length of the destination buffer"]
+    #[doc = " @param p_src is the source buffer"]
+    #[doc = " @param p_src_len is length of the source buffer"]
+    #[doc = " @param p_type type of LZMA algorithm (0 = LZMA1 and 1 = LZMA2)"]
+    #[doc = " @returns zero on success"]
+    pub fn w_lzma_decompress(
+        p_dst: *mut *mut u8,
+        p_dst_len: *mut usize,
+        p_src: *const u8,
+        p_src_len: usize,
+        p_type: u8,
+    ) -> ::std::os::raw::c_longlong;
+}

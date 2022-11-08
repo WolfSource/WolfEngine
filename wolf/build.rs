@@ -120,7 +120,7 @@ fn build_protos(p_current_dir_path: &std::path::Path, p_target_os: &str) {
 /// # Errors
 ///
 /// Will return `Err` if `proto` does not exist or is invalid.
-#[cfg(feature = "system_raft")]
+#[cfg(feature = "stream_grpc")]
 pub fn protos(
     p_proto_paths: &[&str],
     p_proto_includes: &[&str],
@@ -318,7 +318,7 @@ fn link(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &str) 
         ]
         .to_vec()
     } else {
-        ["libwolf_sys.a"].to_vec()
+        ["libwolf_sys.so"].to_vec()
     };
 
     // copy to target and deps folder

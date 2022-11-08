@@ -19,16 +19,33 @@ extern "C" {
 	  * @param p_src_len is length of the source buffer
 	  * @param p_type type of LZMA algorithm (0 = LZMA1 and 1 = LZMA2)
 	  * @param p_level 0 <= level <= 9
-	  * @return compressed memory
+	  * @returns zero on success
 	 */
-	//W_API 
-	//	W_RESULT compress(
-	//		uint8_t** p_dst,
-	//		size_t* p_dst_len,
-	//		const uint8_t* p_src,
-	//		const size_t p_src_len,
-	//		uint8_t p_type,
-	//		uint32_t p_level);
+	W_API 
+		W_RESULT w_lzma_compress(
+			_Inout_ uint8_t** p_dst,
+			_Inout_ size_t* p_dst_len,
+			_In_ const uint8_t* p_src,
+			_In_ const size_t p_src_len,
+			_In_ uint8_t p_type,
+			_In_ uint32_t p_level);
+
+	/**
+	  * decompress stream using lzma algorithm
+	  * @param p_dst is the destination buffer
+	  * @param p_dst_len is length of the destination buffer
+	  * @param p_src is the source buffer
+	  * @param p_src_len is length of the source buffer
+	  * @param p_type type of LZMA algorithm (0 = LZMA1 and 1 = LZMA2)
+	  * @returns zero on success
+	 */
+	W_API
+		W_RESULT w_lzma_decompress(
+			_Inout_ uint8_t** p_dst,
+			_Inout_ size_t* p_dst_len,
+			_In_ const uint8_t* p_src,
+			_In_ size_t p_src_len,
+			_In_ uint8_t p_type);
 
 #ifdef __cplusplus
 }
