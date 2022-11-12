@@ -45,10 +45,10 @@ endif()
 find_package(Git REQUIRED)
 if (NOT EMSCRIPTEN)
     find_package (Threads)
-endif()
-if (LINUX)
-    find_package(Wget REQUIRED)
-    message("make sure libtool was installed.(apt-get install libtool-bin)")
+    if (LINUX)
+        find_package(Wget REQUIRED)
+        message("make sure libtool was installed.(apt-get install libtool-bin)")
+    endif()
 endif()
 
 # use folders
@@ -57,33 +57,49 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 # FetchContent for cloning repositories, avaiable since CMAKE 3.11
 include(FetchContent)
 
-# CMAKE GUI Options
-option(WOLF_MEDIA_FFMPEG "Enable ffmpeg encoding and decoding" OFF)
-option(WOLF_MEDIA_IMAGE "Enable encode/decode image formats" OFF)
-option(WOLF_MEDIA_SCREEN_CAPTURE "Enable screen capture" OFF)
-option(WOLF_STREAM_BORINGSLL "Enable boringSSL" OFF)
-option(WOLF_STREAM_HTTP_SERVER "Enable http server" OFF)
-option(WOLF_STREAM_QUIC "Enable QUIC" OFF)
-option(WOLF_STREAM_RIST "Enable RIST streaming protocol" OFF)
-option(WOLF_STREAM_RUDP "Enable reliable & unreliable stream over UDP" OFF)
-option(WOLF_STREAM_TCP  "Enable TCP protocol" OFF)
-option(WOLF_STREAM_WEBRTC "Enable webRTC" OFF)
-option(WOLF_STREAM_WEBSOCKET_CLIENT "Enable websocket client" OFF)
-option(WOLF_STREAM_WEBSOCKET_SERVER "Enable websocket server" OFF)
-option(WOLF_SYSTEM_LOG "Enable log" OFF)
-option(WOLF_SYSTEM_LZ4 "Enable lz4 for compression" ON)
-option(WOLF_SYSTEM_LZMA "Enable lzma for compression" ON)
-option(WOLF_SYSTEM_MIMALLOC "Enable Microsoft's mimalloc memory allocator" OFF)
-option(WOLF_SYSTEM_STACKTRACE "Enable stacktrace" OFF)
-option(WOLF_SYSTEM_ZLIB "Enable zlib for compression" ON)
-option(WOLF_TESTS "Enable tests" OFF)
-
 # set type of library
 set(LIBRARY_TYPE "STATIC" CACHE STRING "Library type")
 
+# CMAKE GUI Options
+# render modules
+option(WOLF_RENDER "Enable cross platform render based on BGFX" OFF)
+
+# media modules
+option(WOLF_MEDIA_FFMPEG "Enable ffmpeg encoding and decoding" OFF)
+option(WOLF_MEDIA_SCREEN_CAPTURE "Enable screen capture" OFF)
+
+# stream modules
+option(WOLF_STREAM_QUIC "Enable QUIC" OFF)
+option(WOLF_STREAM_RIST "Enable RIST streaming protocol" OFF)
+option(WOLF_STREAM_RUDP "Enable reliable & unreliable stream over UDP" OFF)
+option(WOLF_STREAM_WEBRTC "Enable webRTC" OFF)
+option(WOLF_STREAM_WEBSOCKET_CLIENT "Enable websocket client" OFF)
+option(WOLF_STREAM_WEBSOCKET_SERVER "Enable websocket server" OFF)
+
+# system modules
+option(WOLF_SYSTEM_BORINGSSL "Enable boringSSL" OFF)
+option(WOLF_SYSTEM_LOG "Enable log" OFF)
+option(WOLF_SYSTEM_LUAJIT "Enable luaJIT" OFF)
+option(WOLF_SYSTEM_LZ4 "Enable lz4 for compression" OFF)
+option(WOLF_SYSTEM_LZMA "Enable lzma for compression" OFF)
+option(WOLF_SYSTEM_MIMALLOC "Enable Microsoft's mimalloc memory allocator" OFF)
+option(WOLF_SYSTEM_SIG_SLOT "Enable signal/slot based on boost signals2" OFF)
+option(WOLF_SYSTEM_SOCKET "Enable TCP/UDP protocol over socket" OFF)
+option(WOLF_SYSTEM_FIBER "Enable boost fiber" OFF)
+option(WOLF_SYSTEM_STACKTRACE "Enable boost stacktrace" OFF)
+option(WOLF_SYSTEM_WASM3 "Enable WebAssembly interpreter" OFF)
+option(WOLF_SYSTEM_ZLIB "Enable zlib for compression" OFF)
+
+option(WOLF_TESTS "Enable tests" OFF)
+if (NOT MSVC)
+    option(WOLF_ENABLE_ASAN "Enable ASAN" OFF)
+endif()
 
 #option(WOLF_SYSTEM_FIBER "Enable boost fiber" OFF)
-# option(WOLF_RENDER "Enable cross platform render based on BGFX" OFF)
+# media modules
+# 
+# option(WOLF_MEDIA_IMAGE "Enable WebP/BMP/JPG/PNG formats" OFF)
+# 
 
 # stream modules
 # option(WOLF_STREAM_GRPC "Enable gRPC connection" OFF)
@@ -98,9 +114,6 @@ set(LIBRARY_TYPE "STATIC" CACHE STRING "Library type")
 # option(WOLF_SYSTEM_AVX2 "Enable avx2" OFF)
 # option(WOLF_SYSTEM_AVX512 "Enable avx512" OFF)
 # option(WOLF_SYSTEM_BROTLI "Enable brotli compression" OFF)
-# option(WOLF_SYSTEM_LUA "Enable lua scripting" OFF)
-# option(WOLF_SYSTEM_LZ4 "Enable LZ4 Compression" OFF)
-# option(WOLF_SYSTEM_LZMA "Enable LZMA Compression" OFF)
 # option(WOLF_SYSTEM_RAFT "Enable raft algorithm" OFF)
 
 # set C/CXX ios standards
@@ -125,6 +138,8 @@ set(CMAKE_CXX_FLAGS_DEBUG "-g")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 endif()
 
+set(GETOPT_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/system)
+
 #define includes, libs and srcs
 set(INCLUDES ${CMAKE_CURRENT_SOURCE_DIR})
 set(LIBS)
@@ -140,18 +155,38 @@ include(cmake/boost.cmake)
 include(cmake/system.cmake)
 include(cmake/stream.cmake)
 
-# fetch catch2 for tests
+if (WOLF_ENABLE_ASAN)
+    set(ENABLE_ASAN TRUE)
+endif()
+
+#add_compile_options(-fsanitize=address)
+#add_link_options(-fsanitize=address)
+
+# fetch google test
 if (WOLF_TESTS)
-    message("fetching https://github.com/catchorg/Catch2.git")
+    message("fetching https://github.com/google/googletest.git")
+    
     FetchContent_Declare(
-    catch2
-    GIT_REPOSITORY https://github.com/catchorg/Catch2.git
-    GIT_TAG        v2.x
+        googletest
+        GIT_REPOSITORY https://github.com/google/googletest.git
+        GIT_TAG        main
     )
-    FetchContent_Populate(catch2)
+
+    FetchContent_Declare(googletest)
+    # For Windows: Prevent overriding the parent project's compiler/linker settings
+    set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+    set(BUILD_GMOCK OFF CACHE BOOL "" FORCE)
+
+    FetchContent_MakeAvailable(googletest)
+
     list(APPEND INCLUDES
-        ${catch2_SOURCE_DIR}/single_include
+        ${googletest_SOURCE_DIR}/googletest/include
     )
+
+    set_target_properties(
+        gtest
+        gtest_main
+        PROPERTIES FOLDER "gtest")
 endif()
 
 # enabling clang-tidy
@@ -168,8 +203,13 @@ if (MSVC)
     add_definitions(
         -EHsc
         -DNOMINMAX
+        -DWIN32_LEAN_AND_MEAN
         -DWIN64
         -DWIN32
+    )
+elseif (EMSCRIPTEN)
+    add_definitions(
+        -DEMSCRIPTEN
     )
 elseif(APPLE)
     add_definitions(-DNEED_XLOCALE_H=1)
@@ -192,22 +232,13 @@ endforeach()
 
 # include sources
 file(GLOB_RECURSE WOLF_SRCS
-    "${CMAKE_CURRENT_SOURCE_DIR}/wolf.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/wolf.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/tbv.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/wolf.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/DISABLE_ANALYSIS_BEGIN"
     "${CMAKE_CURRENT_SOURCE_DIR}/DISABLE_ANALYSIS_END"
 )
 file(GLOB_RECURSE WOLF_CMAKES
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/*"
-)
-
-file(GLOB_RECURSE WOLF_SYSTEM_SRC
-    "${CMAKE_CURRENT_SOURCE_DIR}/system/getopt.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/system/w_trace.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/system/w_gametime.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/system/w_gametime.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/system/test.hpp"
 )
 
 # includes
@@ -217,6 +248,7 @@ include_directories(${INCLUDES})
 add_library(${PROJECT_NAME} ${LIBRARY_TYPE} ${SRCS}
     ${WOLF_SRCS}
     ${WOLF_CMAKES}
+    ${WOLF_STREAM_SRC}
 	${WOLF_STREAM_QUIC_SRC}
     ${WOLF_STREAM_WEBRTC_CAPTURER_SRC}
     ${WOLF_STREAM_WEBRTC_DATA_SRC}
@@ -224,15 +256,15 @@ add_library(${PROJECT_NAME} ${LIBRARY_TYPE} ${SRCS}
     ${WOLF_STREAM_WEBRTC_MEDIA_SRC}
     ${WOLF_STREAM_WEBRTC_PEER_SRC}
     ${WOLF_SYSTEM_SRC}
-    ${WOLF_SYSTEM_IO_SRC}
+    ${WOLF_SYSTEM_SOCKET_SRC}
     ${WOLF_SYSTEM_LOG_SRC}
 )
 		
 #if (MSVC)
 #    if(CMAKE_BUILD_TYPE MATCHES Debug)
-#        set_property(TARGET ${PROJECT_NAME} PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreadedDebugDLL")
+#        set_property(TARGET ${PROJECT_NAME} PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreadedDebug")
 #    else()
-#        set_property(TARGET ${PROJECT_NAME} PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreadedDLL")
+#        set_property(TARGET ${PROJECT_NAME} PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded")
 #    endif()
 #endif()
 
@@ -249,22 +281,38 @@ source_group("stream/webrtc/data" FILES ${WOLF_STREAM_WEBRTC_DATA_SRC})
 source_group("stream/webrtc/interceptor" FILES ${WOLF_STREAM_WEBRTC_INTERCEPTOR_SRC})
 source_group("stream/webrtc/media" FILES ${WOLF_STREAM_WEBRTC_MEDIA_SRC})
 source_group("stream/webrtc/peer" FILES ${WOLF_STREAM_WEBRTC_PEER_SRC})
-source_group("system" FILES ${WOLF_SYSTEM_SRC})
-source_group("system/io" FILES ${WOLF_SYSTEM_IO_SRC})
+source_group("stream" FILES ${WOLF_STREAM_SRC})
+source_group("system/socket" FILES ${WOLF_SYSTEM_SOCKET_SRC})
 source_group("system/log" FILES ${WOLF_SYSTEM_LOG_SRC})
+source_group("system" FILES ${WOLF_SYSTEM_SRC})
 
 # add compile options
 if (NOT WIN32)
     target_compile_options(${PROJECT_NAME} PRIVATE -std=c++2b -fPIC)
 endif()
 
+if (WOLF_ENABLE_ASAN)
+    target_compile_options(${PROJECT_NAME} PRIVATE -fsanitize=address)
+    target_link_options(${PROJECT_NAME} PRIVATE -fsanitize=address)
+endif()
+
 # build tests
 if (WOLF_TESTS)
-    add_executable (${TEST_PROJECT_NAME} tests.cpp)
-    link_directories(${CMAKE_BINARY_DIR})
-    target_link_libraries(${TEST_PROJECT_NAME} PRIVATE ${PROJECT_NAME})
-    if (NOT EMSCRIPTEN)
-        target_link_libraries(${TEST_PROJECT_NAME} PRIVATE Threads::Threads)
+    enable_testing()
+
+    add_executable(${TEST_PROJECT_NAME}
+        tests.cpp
+    )
+    target_link_libraries(${TEST_PROJECT_NAME} PRIVATE ${PROJECT_NAME} GTest::gtest_main)
+    if (NOT WIN32)
+        target_compile_options(${TEST_PROJECT_NAME} PRIVATE -std=c++2b)
     endif()
-    target_compile_options(${TEST_PROJECT_NAME} PRIVATE -std=c++2b)
+
+    if (WOLF_ENABLE_ASAN)
+        target_compile_options(${TEST_PROJECT_NAME} PRIVATE -fsanitize=address)
+        target_link_options(${TEST_PROJECT_NAME} PRIVATE -fsanitize=address)
+    endif()
+   
+    include(GoogleTest)
+    gtest_discover_tests(wolf_tests)
 endif()
