@@ -33,7 +33,7 @@ The Wolf is a comprehensive set of C++ open source libraries for realtime render
 
 | API | Windows | Linux | macOS | iOS | Android | Wasm |
 |:-----------:|:-----------:|:--------------------------:|:--------------:|:-------------:|:--------------:|:-------------:|
-|  QT | Vulkan/OpenGL:construction: | Vulkan/OpenGL:memo: | Metal:memo: | Metal:memo: | Vulkan/OpenGL:memo: | WebGL:memo: |
+|  QT | Vulkan/OpenGL ES :construction: | Vulkan/OpenGL ES :memo: | Metal :memo: | Metal :memo: | Vulkan/OpenGL ES :memo: | WebGL:memo: |
 
 ### Supported platforms and APIs for media module
 
@@ -65,18 +65,19 @@ The Wolf is a comprehensive set of C++ open source libraries for realtime render
 |:-----------:|:-----------:|:--------------------------:|:--------------:|:-------------:|:--------------:|:-------------:|
 | Fiber | :white_check_mark: | :memo: | :memo: | :x: | :x: | :x: |
 | Gamepad | :construction: | :memo: | :memo: | :memo: | :memo: | :memo: |
-| Gamepad Simulator | :white_check_mark: | :memo: | :memo: | :x: | :x: | :x: |
-| Log  | :construction: | :construction: | :construction: | :construction: | :construction: | :construction: | 
+| Gamepad Simulator | :construction: | :memo: | :memo: | :x: | :x: | :x: |
+| Log  | :white_check_mark: | :construction: | :construction: | :construction: | :construction: | :construction: | 
 | LuaJit  | :memo: | :memo: | :memo: | :memo: | :memo: | :x: |
 | LZ4  | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :x: |
 | LZMA  | :white_check_mark: | :memo: | :memo: | :x: | :x: | :x: |
 | OpenTelemetry  | :memo: | :memo: | :memo: | :x: | :x: | :x: |
-| RAFT  | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :memo: |
-| Screen Capture  | :white_check_mark: | :construction: | :construction: | :x: | :x: | :x: |
-| Signal Slot  | :white_check_mark: | :construction: | :construction: | :construction: | :construction: | :white_check_mark: |
+| RAFT  | :memo: | :memo: | :memo: | :memo: | :memo: | :memo: |
+| Screen Capture  | :memo: | :construction: | :construction: | :x: | :x: | :x: |
+| Signal Slot  | :white_check_mark: | :construction: | :construction: | :x: | :x: | :x: |
 | Stacktrace  | :white_check_mark: | :construction: | :construction: | :construction: | :construction: | :x: |
 | Socket | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :x: |
-| Trace | :construction: | :memo: | :memo: | :memo: | :memo: | :x: |
+| Sycl  | :memo: | :memo: | :memo: | :x: | :x: | :x: |
+| Trace | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :x: |
 | Wasm3  | :memo: | :memo: | :memo: | :memo: | :memo: | :memo: |
 
 ## Projects using Wolf</h2>
