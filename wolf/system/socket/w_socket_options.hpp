@@ -8,7 +8,6 @@
 #ifdef WOLF_SYSTEM_SOCKET
 
 #include <wolf.hpp>
-#include <chrono>
 #include <functional>
 #include <boost/system/errc.hpp>
 
@@ -19,7 +18,6 @@ namespace wolf::system::socket
         bool keep_alive = true;
         bool no_delay = true;
         bool reuse_address = true;
-        std::chrono::system_clock::duration timeout = std::chrono::milliseconds(10000);
     };
 
     typedef std::function<

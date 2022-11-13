@@ -11,7 +11,6 @@ using w_tcp_server = wolf::system::socket::w_tcp_server;
 using w_session_on_data_callback = wolf::system::socket::w_session_on_data_callback;
 using w_session_on_timeout_callback = wolf::system::socket::w_session_on_timeout_callback;
 using w_socket_options = wolf::system::socket::w_socket_options;
-using duration = std::chrono::system_clock::duration;
 using steady_clock = std::chrono::steady_clock;
 using steady_timer = boost::asio::steady_timer;
 using io_context = boost::asio::io_context;
@@ -42,7 +41,7 @@ boost::asio::awaitable<void> on_echo(
     tcp::socket& p_socket,
     const std::string& p_conn_id,
     time_point& p_deadline,
-    duration p_timeout,
+    steady_clock::duration p_timeout,
     const w_session_on_data_callback& p_on_data_callback) noexcept
 {
     std::array<char, W_MAX_BUFFER_SIZE> _data = { 0 };
@@ -74,7 +73,7 @@ boost::asio::awaitable<void> on_echo(
 boost::asio::awaitable<void> handle_connection(
     const boost::asio::io_context& p_io_context,
     tcp::socket p_socket,
-    std::chrono::system_clock::duration p_timeout,
+    steady_clock::duration p_timeout,
     w_session_on_data_callback p_on_data_callback,
     w_session_on_timeout_callback p_on_timeout_callback)  noexcept
 {
@@ -104,8 +103,9 @@ boost::asio::awaitable<void> handle_connection(
 }
 
 boost::asio::awaitable<void> listen(
-    const boost::asio::io_context& p_io_context,
+    boost::asio::io_context& p_io_context,
     tcp::endpoint& p_endpoint,
+    steady_clock::duration& p_timeout,
     w_socket_options& p_socket_options,
     w_session_on_data_callback p_on_data_callback,
     w_session_on_timeout_callback p_on_timeout_callback) noexcept
@@ -138,23 +138,25 @@ boost::asio::awaitable<void> listen(
             handle_connection(
                 p_io_context,
                 std::move(_socket),
-                p_socket_options.timeout,
+                p_timeout,
                 p_on_data_callback,
                 p_on_timeout_callback),
             boost::asio::detached);
     }
 }
 
+//std::chrono::system_clock::duration& timeout = std::chrono::milliseconds(10000);
 void w_tcp_server::init(
     boost::asio::io_context& p_io_context,
-    boost::asio::ip::tcp::endpoint&& p_endpoint,
+    tcp::endpoint&& p_endpoint,
+    std::chrono::steady_clock::duration&& p_timeout,
     w_socket_options&& p_socket_options,
     w_session_on_data_callback p_on_data_callback,
     w_session_on_timeout_callback p_on_timeout_callback) noexcept
 {
     boost::asio::co_spawn(
         p_io_context,
-        listen(p_io_context, p_endpoint, p_socket_options, p_on_data_callback, p_on_timeout_callback),
+        listen(p_io_context, p_endpoint, p_timeout, p_socket_options, p_on_data_callback, p_on_timeout_callback),
         boost::asio::detached);
 }
 

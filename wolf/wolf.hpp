@@ -23,6 +23,7 @@
 #include <filesystem>
 #endif
 
+#include <chrono>
 #include <exception>
 #include <format>
 #include <memory>

@@ -109,6 +109,9 @@ if (WOLF_SYSTEM_SOCKET)
         "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_tcp_server.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_tcp_server.hpp"
     )
+    file(GLOB_RECURSE WOLF_SYSTEM_SOCKET_TEST_SRC
+        "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/test/tcp.hpp"
+    )
 endif()
 
 # fetch zlib
@@ -149,4 +152,10 @@ file(GLOB_RECURSE WOLF_SYSTEM_SRC
     "${CMAKE_CURRENT_SOURCE_DIR}/system/w_process.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/system/w_process.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/system/w_trace.hpp"
+)
+file(GLOB_RECURSE WOLF_SYSTEM_TEST_SRC
+    "${CMAKE_CURRENT_SOURCE_DIR}/system/test/gametime.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/system/test/process.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/system/test/signal_slot.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/system/test/trace.hpp"
 )

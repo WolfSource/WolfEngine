@@ -7,7 +7,7 @@
 
 #include "test/gametime.hpp"
 #include "test/process.hpp"
-#include "test/signal_slots.hpp"
+#include "test/signal_slot.hpp"
 #include "test/trace.hpp"
 
 #include "socket/test/tcp.hpp"

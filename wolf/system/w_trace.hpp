@@ -112,6 +112,11 @@ constexpr boost::leaf::result<T> W_OK(T & p_param)
     return boost::leaf::result<T>(std::move(p_param));
 }
 
+inline boost::leaf::result<void> W_OK()
+{
+    return boost::leaf::result<void>();
+}
+
 #define W_ERR(p_code, p_msg) boost::leaf::new_error(w_trace(p_code, p_msg, __FILE__, __LINE__))
 
 #ifdef WIN32

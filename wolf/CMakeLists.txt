@@ -256,7 +256,9 @@ add_library(${PROJECT_NAME} ${LIBRARY_TYPE} ${SRCS}
     ${WOLF_STREAM_WEBRTC_MEDIA_SRC}
     ${WOLF_STREAM_WEBRTC_PEER_SRC}
     ${WOLF_SYSTEM_SRC}
+    ${WOLF_SYSTEM_TEST_SRC}
     ${WOLF_SYSTEM_SOCKET_SRC}
+    ${WOLF_SYSTEM_SOCKET_TEST_SRC}
     ${WOLF_SYSTEM_LOG_SRC}
 )
 		
@@ -282,8 +284,10 @@ source_group("stream/webrtc/interceptor" FILES ${WOLF_STREAM_WEBRTC_INTERCEPTOR_
 source_group("stream/webrtc/media" FILES ${WOLF_STREAM_WEBRTC_MEDIA_SRC})
 source_group("stream/webrtc/peer" FILES ${WOLF_STREAM_WEBRTC_PEER_SRC})
 source_group("stream" FILES ${WOLF_STREAM_SRC})
-source_group("system/socket" FILES ${WOLF_SYSTEM_SOCKET_SRC})
 source_group("system/log" FILES ${WOLF_SYSTEM_LOG_SRC})
+source_group("system/socket/test" FILES ${WOLF_SYSTEM_SOCKET_TEST_SRC})
+source_group("system/socket" FILES ${WOLF_SYSTEM_SOCKET_SRC})
+source_group("system/test" FILES ${WOLF_SYSTEM_TEST_SRC})
 source_group("system" FILES ${WOLF_SYSTEM_SRC})
 
 # add compile options
