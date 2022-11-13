@@ -10,20 +10,13 @@
 #include <gtest.hpp>
 #include <boost/signals2.hpp>
 
-TEST(sigslot, sigslot_test)
-{
-	const wolf::system::w_leak_detector _detector = {};
+TEST(sigslot, sigslot_test) {
+  const wolf::system::w_leak_detector _detector = {};
 
-	auto sig = boost::signals2::signal<void()>();
-	sig.connect([]()
-		{
-			std::cout << "hello from slot 1" << std::endl;
-		});
-	sig.connect([]()
-		{
-			std::cout << "hello from slot 2" << std::endl;
-		});
-	sig();
+  auto sig = boost::signals2::signal<void()>();
+  sig.connect([]() { std::cout << "hello from slot 1" << std::endl; });
+  sig.connect([]() { std::cout << "hello from slot 2" << std::endl; });
+  sig();
 }
 
 #endif

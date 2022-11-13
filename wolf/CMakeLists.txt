@@ -199,6 +199,10 @@ endif()
 #     -format-style=file;)  
 
 # add definitions
+
+add_definitions(
+    -DBOOST_ASIO_NO_DEPRECATED
+)
 if (MSVC)
     add_definitions(
         -EHsc

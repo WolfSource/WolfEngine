@@ -11,32 +11,30 @@
 
 #include <wolf.hpp>
 
-namespace wolf::system
-{
-    class w_leak_detector
-    {
-    public:
-        // default constructor
-        W_API w_leak_detector() noexcept;
-        // destructor
-        W_API virtual ~w_leak_detector() noexcept;
+namespace wolf::system {
+class w_leak_detector {
+public:
+  // default constructor
+  W_API w_leak_detector() noexcept;
+  // destructor
+  W_API virtual ~w_leak_detector() noexcept;
 
-    private:
-        // move constructor
-        w_leak_detector(w_leak_detector&& p_src) noexcept = delete;
-        // move assignment operator.
-        w_leak_detector& operator=(w_leak_detector&& p_src) noexcept = delete;
-        // copy constructor.
-        w_leak_detector(const w_leak_detector&) = delete;
-        // copy assignment operator.
-        w_leak_detector& operator=(const w_leak_detector&) = delete;
+private:
+  // move constructor
+  w_leak_detector(w_leak_detector &&p_src) noexcept = delete;
+  // move assignment operator.
+  w_leak_detector &operator=(w_leak_detector &&p_src) noexcept = delete;
+  // copy constructor.
+  w_leak_detector(const w_leak_detector &) = delete;
+  // copy assignment operator.
+  w_leak_detector &operator=(const w_leak_detector &) = delete;
 
 #ifdef WIN32
-        _CrtMemState _mem_state;
+  _CrtMemState _mem_state;
 #endif
-    }
+}
 #ifdef __clang__
-    W_ALIGNMENT_64
+W_ALIGNMENT_64
 #endif
     ;
 } // namespace wolf::system

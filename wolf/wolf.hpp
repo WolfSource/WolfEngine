@@ -46,10 +46,36 @@
 
 #include <system/w_trace.hpp>
 
-using defer = std::shared_ptr<void>;
-
 constexpr auto W_MAX_PATH = 260;
 constexpr auto W_MAX_BUFFER_SIZE = 1024;
+
+using defer = std::shared_ptr<void>;
+
+struct w_buffer {
+
+  w_buffer() = default;
+
+  w_buffer(std::array<char, W_MAX_BUFFER_SIZE> &&p_array,
+           size_t &p_used_bytes) {
+    this->buf = std::move(p_array);
+    this->used_bytes = p_used_bytes;
+  }
+
+  w_buffer(const std::string_view &p_str) { from_string(p_str); }
+
+  void from_string(const std::string_view p_str) {
+    const auto _size = p_str.size();
+    this->used_bytes = _size > 1024 ? 1024 : _size;
+    std::copy(p_str.cbegin(), p_str.cbegin() + this->used_bytes, buf.begin());
+  }
+
+  std::string to_string() {
+    return std::string(buf.data(), used_bytes);
+  }
+
+  std::array<char, W_MAX_BUFFER_SIZE> buf = {0};
+  size_t used_bytes = 0;
+};
 
 //#ifdef __clang__
 //#define W_ALIGNMENT_16 __attribute__((packed)) __attribute__((aligned(16)))

@@ -11,23 +11,24 @@
 #include <functional>
 #include <boost/system/errc.hpp>
 
-namespace wolf::system::socket
-{
-    struct w_socket_options
-    {
-        bool keep_alive = true;
-        bool no_delay = true;
-        bool reuse_address = true;
-    };
+namespace wolf::system::socket {
 
-    typedef std::function<
-        boost::system::errc::errc_t(
-            const std::string& p_conn_id,
-            gsl::span<char> p_data,
-            size_t p_read_bytes)> w_session_on_data_callback;
+struct w_socket_options {
+  bool keep_alive = true;
+  bool no_delay = true;
+  bool reuse_address = true;
+};
 
-    typedef std::function<
-        void(const std::string& p_conn_id)> w_session_on_timeout_callback;
-} // namespace wolf::system
+typedef std::function<boost::system::errc::errc_t(const std::string &p_conn_id,
+                                                  w_buffer &p_mut_data)>
+    w_session_on_data_callback;
+
+typedef std::function<void(const std::string &p_conn_id)>
+    w_session_on_timeout_callback;
+
+typedef std::function<void(const std::string &p_conn_id,
+                           const std::exception &p_exp)>
+    w_session_on_error_callback;
+} // namespace wolf::system::socket
 
 #endif

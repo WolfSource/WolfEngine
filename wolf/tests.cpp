@@ -7,7 +7,7 @@
 #include <wolf.hpp>
 #include <system/w_leak_detector.hpp>
 
-TEST(Wolf, GlobalNamespace)
+TEST(wolf, global)
 {
 	const wolf::system::w_leak_detector _detector = {};
 
