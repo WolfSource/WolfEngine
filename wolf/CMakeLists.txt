@@ -252,7 +252,7 @@ include_directories(${INCLUDES})
 add_library(${PROJECT_NAME} ${LIBRARY_TYPE} ${SRCS}
     ${WOLF_SRCS}
     ${WOLF_CMAKES}
-    ${WOLF_STREAM_SRC}
+    ${WOLF_STREAM_TEST_SRC}
 	${WOLF_STREAM_QUIC_SRC}
     ${WOLF_STREAM_WEBRTC_CAPTURER_SRC}
     ${WOLF_STREAM_WEBRTC_DATA_SRC}
@@ -280,6 +280,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBS})
 # create source group
 source_group("wolf" FILES ${WOLF_SRCS})
 source_group("cmake" FILES ${WOLF_CMAKES})
+source_group("stream/test" FILES ${WOLF_STREAM_TEST_SRC})
 source_group("stream/quic" FILES ${WOLF_STREAM_QUIC_SRC})
 source_group("stream/rist" FILES ${WOLF_STREAM_RIST_SRC})
 source_group("stream/webrtc/capturer" FILES ${WOLF_STREAM_WEBRTC_CAPTURER_SRC})
@@ -287,6 +288,7 @@ source_group("stream/webrtc/data" FILES ${WOLF_STREAM_WEBRTC_DATA_SRC})
 source_group("stream/webrtc/interceptor" FILES ${WOLF_STREAM_WEBRTC_INTERCEPTOR_SRC})
 source_group("stream/webrtc/media" FILES ${WOLF_STREAM_WEBRTC_MEDIA_SRC})
 source_group("stream/webrtc/peer" FILES ${WOLF_STREAM_WEBRTC_PEER_SRC})
+source_group("stream/test" FILES ${WOLF_STREAM_QUIC_SRC})
 source_group("stream" FILES ${WOLF_STREAM_SRC})
 source_group("system/log" FILES ${WOLF_SYSTEM_LOG_SRC})
 source_group("system/socket/test" FILES ${WOLF_SYSTEM_SOCKET_TEST_SRC})

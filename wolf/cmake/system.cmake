@@ -143,7 +143,6 @@ endif()
 
 file(GLOB_RECURSE WOLF_SYSTEM_SRC
     "${CMAKE_CURRENT_SOURCE_DIR}/system/getopt.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/system/test.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/system/w_trace.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/system/w_gametime.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/system/w_gametime.hpp"
@@ -158,4 +157,5 @@ file(GLOB_RECURSE WOLF_SYSTEM_TEST_SRC
     "${CMAKE_CURRENT_SOURCE_DIR}/system/test/process.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/system/test/signal_slot.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/system/test/trace.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/system/test/tcp.hpp"
 )

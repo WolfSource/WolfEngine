@@ -26,7 +26,7 @@ TEST(trace, handle_all) {
         return {};
       },
       [](const w_trace &p_trace) {
-        std::cout << "caught an error! trace info:" << p_trace << std::endl;
+        std::cout << "caught a test error! trace info:" << p_trace << std::endl;
       },
       [] { std::cout << "caught an error!" << std::endl; });
 }

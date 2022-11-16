@@ -3,22 +3,32 @@
 	https://github.com/WolfEngine/WolfEngine
 */
 
-#include <gtest.hpp>
-#include <wolf.hpp>
-#include <system/w_leak_detector.hpp>
+//#include <gtest.hpp>
+//#include <wolf.hpp>
+//#include <system/w_leak_detector.hpp>
+//
+//TEST(wolf, global) {
+//  const wolf::system::w_leak_detector _detector = {};
+//  const auto _wolf_version = wolf::w_init();
+//  EXPECT_EQ(_wolf_version.empty(), false);
+//}
 
-TEST(wolf, global)
-{
-	const wolf::system::w_leak_detector _detector = {};
+#pragma region system tests
 
-	const auto _wolf_version = wolf::w_init();
-	EXPECT_EQ(_wolf_version.empty(), false);
-}
+//#include <system/test/gametime.hpp>
+//#include <system/test/process.hpp>
+//#include <system/test/signal_slot.hpp>
+//#include <system/test/trace.hpp>
+//#include <system/test/tcp.hpp>
 
-#include <system/tests.hpp>
-//#include <stream/test.hpp>
-//#include <media/test.hpp>
-//#include <render/test.hpp>
+#pragma endregion
+
+#pragma region stream tests
+
+#include <stream/test/rist.hpp>
+
+#pragma endregion
+
 
 
 

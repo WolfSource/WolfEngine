@@ -23,9 +23,9 @@
 //        // disable copy operator
 //        w_log& operator=(const w_log&) = delete;
 //
-//        // Move constructor.
+//        // move constructor.
 //        W_API w_log(w_log&& p_other) = delete;
-//        // Move assignment operator.
+//        // move assignment operator.
 //        W_API w_log& operator=(w_log&& p_other) = delete;
 //
 //        // destructor

@@ -176,8 +176,8 @@ TEST(tcp, tcp_read_write_test) {
 
         auto _reply = std::string(p_mut_data.buf.data(), p_mut_data.used_bytes);
 
-        std::cout << "tcp server just got: " << _reply
-                  << " from connection id: " << p_conn_id << std::endl;
+        std::cout << "tcp server just got: \"" << _reply
+                  << "\" from connection id: " << p_conn_id << std::endl;
 
         if (_reply == "exit") {
           return boost::system::errc::connection_aborted;

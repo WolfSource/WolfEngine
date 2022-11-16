@@ -1,259 +1,213 @@
-//#ifdef WOLF_STREAM_RIST
-//
-//#include "w_rist.hpp"
-//#include <librist/librist.h>
-//#include <rist-private.h>
-//
-//using w_rist = wolf::stream::w_rist;
-//
-//struct w_rist::priv
-//{
-//    priv() = default;
-//
-//    priv(const priv&) = delete;
-//    priv(priv&&) = delete;
-//    priv& operator=(const priv&) = delete;
-//    priv& operator=(priv&&) = delete;
-//
-//    ~priv()
-//    {
-//        if (this->ctx)
-//        {
-//            rist_destroy(this->ctx);
-//        }
-//        if (this->log) 
-//        {
-//            free(this->log);
-//        }
-//    }
-//
-//	rist_ctx* ctx = nullptr;
-//	rist_peer* peer = nullptr;
-//	rist_profile profile;
-//	uint16_t loss_percentage = 10;
-//	rist_logging_settings* log = nullptr;
-//};
-//
-//// callbacks
-//int s_on_log_callback(void* p_arg, rist_log_level p_log_level, const char* p_msg)
-//{
-//    auto _rist = gsl::narrow_cast<w_rist*>(p_arg);
-//    if (_rist != nullptr)
-//    {
-//        using log_level = wolf::stream::w_rist::log_level;
-//        _rist->on_log_sig(gsl::narrow_cast<log_level>(p_log_level), p_msg);
-//    }
-//
-//    return 0;
-//}
-//
-//int s_on_auth_handler_connect_callback(
-//    void* p_arg,
-//    const char* p_conn_ip,
-//    uint16_t p_conn_port,
-//    const char* p_local_ip,
-//    uint16_t p_local_port,
-//    rist_peer* p_peer)
-//{
-//    auto _rist = gsl::narrow_cast<w_rist*>(p_arg);
-//    if (_rist != nullptr)
-//    {
-//        _rist->on_auth_connected_sig(
-//            p_conn_ip,
-//            p_conn_port,
-//            p_local_ip,
-//            p_local_port);
-//    }
-//    return 0;
-//}
-//
-//int s_on_auth_handler_disconnect_callback(void* p_arg, rist_peer* p_peer)
-//{
-//    auto _rist = gsl::narrow_cast<w_rist*>(p_arg);
-//    if (_rist != nullptr)
-//    {
-//        _rist->on_auth_disconnected_sig();
-//    }
-//    return 0;
-//}
-//
-//int s_on_receiver_data_callback(void* p_arg, rist_data_block* p_data_block)
-//{
-//    auto _rist = gsl::narrow_cast<w_rist*>(p_arg);
-//    if (_rist != nullptr && p_data_block != nullptr)
-//    {
-//        _rist->on_receiver_data_sig(p_data_block->payload, p_data_block->payload_len);
-//    }
-//    return 0;
-//}
-//
-//w_rist::w_rist() : _priv(std::make_unique<w_rist::priv>())
-//{
-//}
-//
-//w_rist::~w_rist()
-//{
-//}
-//
-//tl::expected<void, w_result> w_rist::init(
-//    _In_ mode p_mode,
-//    _In_ profile p_profile,
-//    _In_ uint16_t p_loss_percentage,
-//    _In_ log_level p_log_level)
-//{
-//    this->_priv->profile = gsl::narrow_cast<rist_profile>(p_profile);
-//    this->_priv->loss_percentage = p_loss_percentage;
-//
-//    // create rist context
-//    auto _log_level = gsl::narrow_cast<rist_log_level>(p_log_level);
-//    switch (p_mode)
-//    {
-//    case mode::SENDER:
-//    {
-//        // create a log
-//        if (rist_logging_set(
-//            &this->_priv->log,
-//            _log_level,
-//            s_on_log_callback,
-//            this,
-//            nullptr,
-//            stderr) != 0)
-//        {
-//            auto _res = w_result("could not create rist log for sender");
-//            return tl::unexpected(_res);
-//        }
-//        // create a sender
-//        auto ret = rist_sender_create(&this->_priv->ctx, this->_priv->profile, 0, this->_priv->log);
-//        if (ret != 0)
-//        {
-//            auto _res = w_result("could not create rist sender context");
-//            return tl::unexpected(_res);
-//        }
-//        if (p_loss_percentage > 0)
-//        {
-//            this->_priv->ctx->sender_ctx->simulate_loss = true;
-//            this->_priv->ctx->sender_ctx->loss_percentage = p_loss_percentage * 10;
-//        }
-//        break;
-//    }
-//    case mode::RECEIVER:
-//    {
-//        //create a log
-//        if (rist_logging_set(
-//            &this->_priv->log,
-//            _log_level,
-//            s_on_log_callback,
-//            this,
-//            nullptr,
-//            stderr) != 0)
-//        {
-//            auto _res = w_result("could not create rist log for receiver");
-//            return tl::unexpected(_res);
-//        }
-//        // create a receiver
-//        auto ret = rist_receiver_create(&this->_priv->ctx, this->_priv->profile, this->_priv->log);
-//        if (ret != 0)
-//        {
-//            auto _res = w_result("could not create rist receiver context");
-//            return tl::unexpected(_res);
-//        }
-//        if (p_loss_percentage > 0)
-//        {
-//            this->_priv->ctx->receiver_ctx->simulate_loss = true;
-//            this->_priv->ctx->receiver_ctx->loss_percentage = p_loss_percentage * 10;
-//        }
-//
-//        break;
-//    }
-//    };
-//
-//    if (rist_auth_handler_set(
-//        this->_priv->ctx,
-//        s_on_auth_handler_connect_callback,
-//        s_on_auth_handler_disconnect_callback,
-//        this) != 0)
-//    {
-//        auto _res = w_result("could not set rist auth handler");
-//        return tl::unexpected(_res);
-//    }
-//
-//    if (rist_receiver_data_callback_set2(
-//        this->_priv->ctx,
-//        s_on_receiver_data_callback,
-//        this) != 0)
-//    {
-//        auto _res = w_result("could not set data_callback");
-//        return tl::unexpected(_res);
-//    }
-//
-//    W_EXPECTED_VOID
-//}
-//
-//tl::expected<void, w_result> w_rist::connect(_In_ std::string_view p_url)
-//{
-//    if (p_url.empty())
-//    {
-//        auto _res = w_result("missing url");
-//        return tl::unexpected(_res);
-//    }
-//
-//    // rely on the library to parse the url
-//    rist_peer_config* peer_config = nullptr;
-//    if (rist_parse_address2(p_url.data(), &peer_config))
-//    {
-//        auto _res = w_result("could not parse peer options for receiver");
-//        return tl::unexpected(_res);
-//    }
-//
-//    if (rist_peer_create(
-//        this->_priv->ctx, 
-//        &this->_priv->peer, 
-//        peer_config) == -1) 
-//    {
-//        auto _res = w_result("could not add peer connector to receiver");
-//        return tl::unexpected(_res);
-//    }
-//
-//    free((void*)peer_config);
-//
-//    if (rist_start(this->_priv->ctx) == -1)
-//    {
-//        auto _res = w_result("could not add peer connector to receiver");
-//        return tl::unexpected(_res);
-//    }
-//
-//    W_EXPECTED_VOID
-//}
-//
-//tl::expected<int, w_result> w_rist::send(_Inout_ w_rist_data_block& p_block)
-//{
-//    auto _ret = p_block.get_internal_block()
-//        .map([&](tl::expected<rist_data_block*, w_result> p_data)
-//            {
-//                auto _v = p_data.value();
-//                return rist_sender_data_write(this->_priv->ctx, _v);
-//            }).map_error([](w_result p_error)
-//                {
-//                    return p_error;
-//                });
-//
-//            return _ret;
-//}
-//
-//
-//tl::expected<int, w_result> w_rist::receive(_Inout_ w_rist_data_block& p_block, _In_ int p_timeout)
-//{
-//    auto _ret = p_block.get_internal_block()
-//        .map([&](tl::expected<rist_data_block*, w_result> p_data)
-//            {
-//                auto _v = p_data.value();
-//                return rist_receiver_data_read2(this->_priv->ctx, &_v, p_timeout);
-//            }).map_error([](w_result p_error)
-//                {
-//                    return p_error;
-//                });
-//
-//            return _ret;
-//}
-//
-//#endif
+#ifdef WOLF_STREAM_RIST
+
+#include "w_rist.hpp"
+#include <Objbase.h>
+
+using w_rist = wolf::stream::rist::w_rist;
+using w_rist_data_block = wolf::stream::rist::w_rist_data_block;
+
+#pragma region callbacks
+
+static int s_on_log_callback(_In_ void *p_arg, _In_ rist_log_level p_log_level,
+                             _In_z_ const char *p_msg) {
+  const gsl::not_null<w_rist *> _rist_nn(gsl::narrow_cast<w_rist *>(p_arg));
+  if (_rist_nn->on_log_callback) {
+    _rist_nn->on_log_callback(p_log_level, p_msg);
+  }
+  return W_SUCCESS;
+}
+
+static int s_on_auth_handler_connect_callback(_In_ void *p_arg,
+                                              _In_z_ const char *p_conn_ip,
+                                              _In_ uint16_t p_conn_port,
+                                              _In_z_ const char *p_local_ip,
+                                              _In_ uint16_t p_local_port,
+                                              _In_ rist_peer *p_peer) {
+  const auto _rist_nn =
+      gsl::not_null<w_rist *>(gsl::narrow_cast<w_rist *>(p_arg));
+
+  if (_rist_nn->on_auth_connected_callback) {
+    _rist_nn->on_auth_connected_callback(p_conn_ip, p_conn_port, p_local_ip,
+                                         p_local_port);
+  }
+
+  return W_SUCCESS;
+}
+
+static int s_on_auth_handler_disconnect_callback(_In_ void *p_arg,
+                                                 _In_ rist_peer *p_peer) {
+  const auto _rist_nn =
+      gsl::not_null<w_rist *>(gsl::narrow_cast<w_rist *>(p_arg));
+  if (_rist_nn->on_auth_disconnected_callback) {
+    _rist_nn->on_auth_disconnected_callback();
+  }
+  return W_SUCCESS;
+}
+
+static int s_on_receiver_data_callback(_In_ void *p_arg,
+                                       _In_ rist_data_block *p_data_block) {
+  const auto _rist_nn =
+      gsl::not_null<w_rist *>(gsl::narrow_cast<w_rist *>(p_arg));
+  const auto _data_block_nn = gsl::not_null<rist_data_block *>(p_data_block);
+
+  if (_rist_nn->on_receiver_data_callback) {
+    auto _data =
+        std::make_tuple(p_data_block->payload, p_data_block->payload_len);
+    auto _block = w_rist_data_block();
+    _block.set(_data);
+
+    _rist_nn->on_receiver_data_callback(_block);
+  }
+  return W_SUCCESS;
+}
+
+#pragma endregion
+
+w_rist::w_rist(_In_ rist_ctx_mode p_mode, _In_ rist_profile p_profile,
+               _In_ uint16_t p_loss_percentage,
+               _In_ rist_log_level p_log_level) noexcept
+    : _mode(p_mode), _profile(p_profile), _loss_percentage(p_loss_percentage),
+      _log_level(p_log_level), _log(nullptr), _ctx(nullptr), _peer(nullptr) {}
+ 
+ w_rist::~w_rist() noexcept {
+  if (this->_ctx != nullptr) {
+    if (this->_peer != nullptr) {
+      std::ignore = rist_peer_destroy(this->_ctx, this->_peer);
+      this->_peer = nullptr;
+    }
+    std::ignore = rist_destroy(this->_ctx);
+    this->_ctx = nullptr;
+  }
+  _release_log();
+}
+
+ void w_rist::_release_log() {
+  if (this->_log == nullptr)
+    return;
+
+  rist_logging_unset_global();
+  rist_logging_settings_free2(&this->_log);
+}
+
+boost::leaf::result<int> w_rist::init() {
+
+  // first release resources of context and log
+  _release_log();
+  if (this->_ctx != nullptr) {
+    std::ignore = rist_destroy(this->_ctx);
+  }
+
+  // now create a log
+  if (rist_logging_set(&this->_log, this->_log_level, s_on_log_callback, this,
+                       nullptr, stderr) != 0) {
+    return W_ERR(std::errc::operation_canceled,
+                 "could not create a rist log callback");
+  }
+
+  // create a rist context
+  constexpr uint16_t _max_loss = 22;
+  if (this->_mode == rist_ctx_mode::RIST_SENDER_MODE) {
+
+    // create a sender
+    const auto _ret =
+        rist_sender_create(&this->_ctx, this->_profile, 0, this->_log);
+    if (_ret != 0) {
+      return W_ERR(std::errc::operation_canceled,
+                   "could not create a rist sender context");
+    }
+
+    if (this->_loss_percentage > 0) {
+      this->_ctx->sender_ctx->simulate_loss = true;
+      this->_ctx->sender_ctx->loss_percentage =
+          this->_loss_percentage > _max_loss ? _max_loss
+                                             : this->_loss_percentage;
+    }
+  } else {
+    // create a receiver
+    const auto _ret =
+        rist_receiver_create(&this->_ctx, this->_profile, this->_log);
+
+    if (_ret != 0) {
+      return W_ERR(std::errc::operation_canceled,
+                   "could not create a rist receiver context");
+    }
+
+    if (this->_loss_percentage > 0) {
+      this->_ctx->receiver_ctx->simulate_loss = true;
+      this->_ctx->receiver_ctx->loss_percentage =
+          this->_loss_percentage > _max_loss ? _max_loss
+                                             : this->_loss_percentage;
+    }
+
+    if (rist_receiver_data_callback_set2(
+            this->_ctx, s_on_receiver_data_callback, this) != 0) {
+      return W_ERR(std::errc::operation_canceled,
+                   "could not set data receiver callback");
+    }
+  }
+
+  if (rist_auth_handler_set(this->_ctx, s_on_auth_handler_connect_callback,
+                            s_on_auth_handler_disconnect_callback, this) != 0) {
+    return W_ERR(std::errc::operation_canceled,
+                 "could not set rist auth handler");
+  }
+
+  return W_SUCCESS;
+}
+
+boost::leaf::result<int>
+w_rist::connect(_In_ const std::string_view p_endpoint) {
+
+  if (p_endpoint.empty()) {
+    return W_ERR(std::errc::bad_address, "missing endpoint url");
+  }
+
+  if (this->_peer != nullptr) {
+    std::ignore = rist_peer_destroy(this->_ctx, this->_peer);
+  }
+
+  // rely on the library to parse the url
+  rist_peer_config *_peer_config = nullptr;
+  if (rist_parse_address2(p_endpoint.data(), &_peer_config) != 0) {
+    return W_ERR(std::errc::bad_address,
+                 "could not parse peer options for receiver");
+  }
+
+  if (_peer_config == nullptr ||
+      rist_peer_create(this->_ctx, &this->_peer, _peer_config) != 0) {
+    return W_ERR(std::errc::operation_canceled,
+                 "could not add peer connector to receiver");
+  }
+
+  free(_peer_config);
+
+  if (rist_start(this->_ctx) != 0) {
+    return W_ERR(std::errc::operation_canceled,
+                 "could not add peer connector to receiver");
+  }
+
+  return W_SUCCESS;
+}
+
+boost::leaf::result<size_t>
+w_rist::send(_In_ const w_rist_data_block &p_block) {
+  auto _bytes = rist_sender_data_write(this->_ctx, p_block._block);
+  return _bytes >= 0
+             ? boost::leaf::result<size_t>(gsl::narrow_cast<size_t>(_bytes))
+             : W_ERR(std::errc::no_message,
+                     "could not send data block to the rist stream");
+}
+
+boost::leaf::result<size_t> w_rist::receive(_Inout_ w_rist_data_block &p_block,
+                                            _In_ int p_timeout_ms) {
+  const gsl::not_null<rist_ctx *> _ctx_nn(this->_ctx);
+  auto _bytes =
+      rist_receiver_data_read2(_ctx_nn, &p_block._block, p_timeout_ms);
+  return _bytes >= 0
+             ? boost::leaf::result<size_t>(gsl::narrow_cast<size_t>(_bytes))
+             : W_ERR(std::errc::no_message,
+                     "could not read data block from the rist stream");
+  return W_SUCCESS;
+}
+
+#endif

@@ -56,7 +56,7 @@ struct w_buffer {
   w_buffer() = default;
 
   w_buffer(std::array<char, W_MAX_BUFFER_SIZE> &&p_array,
-           size_t &p_used_bytes) {
+           size_t &p_used_bytes) noexcept {
     this->buf = std::move(p_array);
     this->used_bytes = p_used_bytes;
   }
@@ -69,9 +69,7 @@ struct w_buffer {
     std::copy(p_str.cbegin(), p_str.cbegin() + this->used_bytes, buf.begin());
   }
 
-  std::string to_string() {
-    return std::string(buf.data(), used_bytes);
-  }
+  std::string to_string() { return std::string(buf.data(), used_bytes); }
 
   std::array<char, W_MAX_BUFFER_SIZE> buf = {0};
   size_t used_bytes = 0;
@@ -111,12 +109,11 @@ struct w_buffer {
 
 #endif
 
-namespace wolf
-{
-    /**
-     * returns wolf version
-     * @return string format with the following style
-     * "<major>.<minor>.<patch>.<debug>"
-     */
-    W_API std::string w_init();
+namespace wolf {
+/**
+ * returns wolf version
+ * @return string format with the following style
+ * "<major>.<minor>.<patch>.<debug>"
+ */
+W_API std::string w_init();
 } // namespace wolf
