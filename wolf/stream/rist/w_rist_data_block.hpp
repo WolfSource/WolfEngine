@@ -24,6 +24,9 @@ public:
 
   // move constructor.
   W_API w_rist_data_block(w_rist_data_block &&p_other) noexcept = default;
+  // move constructor.
+  W_API w_rist_data_block(rist_data_block &&p_other) noexcept;
+
   // move assignment operator.
   W_API w_rist_data_block &
   operator=(w_rist_data_block &&p_other) noexcept = default;
@@ -53,7 +56,7 @@ private:
   // copy operator
   w_rist_data_block &operator=(const w_rist_data_block &) = delete;
 
-  rist_data_block *_block;
+  rist_data_block *_block = nullptr;
 };
 } // namespace wolf::stream::rist
 

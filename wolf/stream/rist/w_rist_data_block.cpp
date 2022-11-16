@@ -10,6 +10,14 @@ w_rist_data_block::w_rist_data_block() noexcept {
   std::ignore = gsl::not_null<rist_data_block *>(this->_block);
 }
 
+  // move constructor.
+w_rist_data_block::w_rist_data_block(rist_data_block &&p_other) noexcept {
+  if (this->_block != nullptr) {
+    rist_receiver_data_block_free2(&this->_block);
+  }
+  this->_block = std::move(&p_other);
+}
+
 w_rist_data_block::~w_rist_data_block() {
   if (this->_block == nullptr)
     return;

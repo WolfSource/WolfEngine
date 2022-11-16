@@ -51,12 +51,11 @@ static int s_on_receiver_data_callback(_In_ void *p_arg,
   const auto _data_block_nn = gsl::not_null<rist_data_block *>(p_data_block);
 
   if (_rist_nn->on_receiver_data_callback) {
-    auto _data =
-        std::make_tuple(p_data_block->payload, p_data_block->payload_len);
-    auto _block = w_rist_data_block();
-    _block.set(_data);
-
+    auto _block = w_rist_data_block(std::move(*p_data_block));
     _rist_nn->on_receiver_data_callback(_block);
+  } else {
+    // release block
+    rist_receiver_data_block_free2(&p_data_block);
   }
   return W_SUCCESS;
 }
