@@ -53,8 +53,8 @@ The Wolf is a comprehensive set of C++ open source libraries for realtime render
 | QUIC | :memo: | :memo: | :memo: | :memo: | :memo: | :x: |
 | RIST | :memo: | :memo: | :memo: | :memo: | :memo: | :x: |
 | RTMP | :memo: | :x: | :x: | :x: | :x: | :x: |
-| RTSP | :memo: | :memo: | :memo: | :memo: | :memo: | :x: |
-| SRT | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :x: |
+| RTSP | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :x: |
+| SRT | :memo: | :memo: | :memo: | :memo: | :memo: | :x: |
 | webRTC | :memo: | :memo: | :memo: | :memo: | :memo: | :memo: |
 | WS | :memo: | :memo: | :memo: | :memo: | :memo: | :memo: |
 
