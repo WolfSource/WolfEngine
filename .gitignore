@@ -21,6 +21,7 @@
 *.DS_Store
 
 /bin/*
+/build/*
 /wolf/coverage/*
 
 # Compiled Object files

@@ -12,6 +12,18 @@ if (WOLF_SYSTEM_FIBER)
     )
 endif()
 
+if (WOLF_SYSTEM_HTTP1_WS)
+    if (NOT WOLF_SYSTEM_SOCKET)
+        message(FATAL_ERROR "WOLF_STREAM_HTTP1_WS needs WOLF_SYSTEM_SOCKET module")
+    endif()
+    list(APPEND BOOST_MASTER_LIBS   
+        boost_beast
+        boost_endian
+        boost_logic
+        boost_static_string
+    )
+endif()
+
 if (WOLF_SYSTEM_SOCKET)
     list(APPEND BOOST_MASTER_LIBS   
         boost_asio
@@ -131,6 +143,12 @@ foreach (_var ${BOOST_MASTER_LIBS})
         GIT_TAG        master
     )
 endforeach()
+
+if (WOLF_STREAM_HTTP1_WS)
+    set(Beast_BUILD_EXAMPLES OFF CACHE BOOL "Beast_BUILD_EXAMPLES")
+    set(Beast_BUILD_TESTS OFF CACHE BOOL "Beast_BUILD_TESTS")
+    set(Boost_USE_STATIC_LIBS ON CACHE BOOL "Beast_USE_STATIC_LIBS")
+endif()
 
 # make them available
 FetchContent_MakeAvailable(${BOOST_MASTER_LIBS})

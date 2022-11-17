@@ -58,6 +58,18 @@ if (WOLF_SYSTEM_BORINGSSL)
         PROPERTIES FOLDER "boringSSL") 
 endif()
 
+# fetch http websocket
+if (WOLF_SYSTEM_HTTP_WS)
+    file(GLOB_RECURSE WOLF_SYSTEM_HTTP_WS_SRC
+        "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_ws_server.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_ws_server.hpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_ws_client.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_ws_client.hpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_http1_server.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_http1_server.hpp"
+    )
+endif()
+
 # fetch spdlog
 if (WOLF_SYSTEM_LOG)
     message("fetching https://github.com/gabime/spdlog.git")

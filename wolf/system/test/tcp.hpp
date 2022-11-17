@@ -3,6 +3,8 @@
     https://github.com/WolfEngine/WolfEngine
 */
 
+#ifdef WOLF_SYSTEM_SOCKET
+
 #pragma once
 
 #include <gtest.hpp> 
@@ -197,3 +199,5 @@ TEST(tcp, tcp_read_write_test) {
 
   _io.run();
 }
+
+#endif
