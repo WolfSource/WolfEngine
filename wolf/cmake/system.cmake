@@ -127,31 +127,31 @@ if (WOLF_SYSTEM_SOCKET)
 endif()
 
 # fetch zlib
-if (WOLF_SYSTEM_ZLIB)
-    message("fetching https://github.com/madler/zlib.git")
-    FetchContent_Declare(
-        zlibstatic
-        GIT_REPOSITORY https://github.com/madler/zlib.git
-        GIT_TAG        master
-    )
-    set(MI_BUILD_OBJECT OFF CACHE BOOL "MI_BUILD_OBJECT")
-    set(MI_BUILD_SHARED OFF CACHE BOOL "MI_BUILD_SHARED")
-    set(MI_BUILD_TESTS OFF CACHE BOOL "MI_BUILD_TESTS")
-    
-    FetchContent_MakeAvailable(zlibstatic)
-
-    list(APPEND INCLUDES
-        ${zlib_SOURCE_DIR}/include
-    )
-    list(APPEND LIBS zlibstatic)
-
-    set_target_properties(
-        example
-        minigzip
-        zlib
-        zlibstatic 
-        PROPERTIES FOLDER "zlib")
-endif()
+#if (WOLF_SYSTEM_ZLIB)
+#    message("fetching https://github.com/madler/zlib.git")
+#    FetchContent_Declare(
+#        zlibstatic
+#        GIT_REPOSITORY https://github.com/madler/zlib.git
+#        GIT_TAG        master
+#    )
+#    set(MI_BUILD_OBJECT OFF CACHE BOOL "MI_BUILD_OBJECT")
+#    set(MI_BUILD_SHARED OFF CACHE BOOL "MI_BUILD_SHARED")
+#    set(MI_BUILD_TESTS OFF CACHE BOOL "MI_BUILD_TESTS")
+#    
+#    FetchContent_MakeAvailable(zlibstatic)
+#
+#    list(APPEND INCLUDES
+#        ${zlib_SOURCE_DIR}/include
+#    )
+#    list(APPEND LIBS zlibstatic)
+#
+#    set_target_properties(
+#        example
+#        minigzip
+#        zlib
+#        zlibstatic 
+#        PROPERTIES FOLDER "zlib")
+#endif()
 
 file(GLOB_RECURSE WOLF_SYSTEM_SRC
     "${CMAKE_CURRENT_SOURCE_DIR}/system/getopt.h"
@@ -166,6 +166,7 @@ file(GLOB_RECURSE WOLF_SYSTEM_SRC
 )
 file(GLOB_RECURSE WOLF_SYSTEM_TEST_SRC
     "${CMAKE_CURRENT_SOURCE_DIR}/system/test/gametime.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/system/test/log.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/system/test/process.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/system/test/signal_slot.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/system/test/trace.hpp"

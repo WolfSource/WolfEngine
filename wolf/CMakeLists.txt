@@ -87,7 +87,7 @@ option(WOLF_SYSTEM_SIG_SLOT "Enable signal/slot based on boost signals2" OFF)
 option(WOLF_SYSTEM_SOCKET "Enable TCP/UDP protocol over socket" OFF)
 option(WOLF_SYSTEM_STACKTRACE "Enable boost stacktrace" OFF)
 option(WOLF_SYSTEM_WASM3 "Enable WebAssembly interpreter" OFF)
-option(WOLF_SYSTEM_ZLIB "Enable zlib for compression" OFF)
+#option(WOLF_SYSTEM_ZLIB "Enable zlib for compression" OFF)
 
 option(WOLF_TESTS "Enable tests" OFF)
 if (NOT MSVC)
