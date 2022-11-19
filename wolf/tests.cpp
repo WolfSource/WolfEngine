@@ -20,6 +20,7 @@ TEST(wolf, global) {
 #include <system/test/signal_slot.hpp>
 #include <system/test/trace.hpp>
 #include <system/test/tcp.hpp>
+#include <system/test/log.hpp>
 
 #pragma endregion
 

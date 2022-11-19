@@ -14,11 +14,1709 @@
 # EXTERNAL cache entries
 ########################
 
+//Boost.Context ABI (aapcs, eabi, ms, n32, n64, o32, o64, sysv,
+// x32)
+BOOST_CONTEXT_ABI:STRING=ms
+
+//Boost.Context architecture (arm, arm64, loongarch64, mips32,
+// mips64, ppc32, ppc64, riscv64, s390x, i386, x86_64, combined)
+BOOST_CONTEXT_ARCHITECTURE:STRING=x86_64
+
+//Boost.Context assembler source suffix (.asm, .S)
+BOOST_CONTEXT_ASM_SUFFIX:STRING=.asm
+
+//Boost.Context assembler (masm, gas, armasm)
+BOOST_CONTEXT_ASSEMBLER:STRING=masm
+
+//Boost.Context binary format (elf, mach-o, pe, xcoff)
+BOOST_CONTEXT_BINARY_FORMAT:STRING=pe
+
+//Boost.Context implementation (fcontext, ucontext, winfib)
+BOOST_CONTEXT_IMPLEMENTATION:STRING=fcontext
+
+//Boost.Regex: Enable Standalone Mode (i.e. no Boost dependencies)
+BOOST_REGEX_STANDALONE:BOOL=OFF
+
+//Boost.Stacktrace: build boost_stacktrace_addr2line
+BOOST_STACKTRACE_ENABLE_ADDR2LINE:BOOL=OFF
+
+//Boost.Stacktrace: build boost_stacktrace_backtrace
+BOOST_STACKTRACE_ENABLE_BACKTRACE:BOOL=OFF
+
+//Boost.Stacktrace: build boost_stacktrace_basic
+BOOST_STACKTRACE_ENABLE_BASIC:BOOL=ON
+
+//Boost.Stacktrace: build boost_stacktrace_noop
+BOOST_STACKTRACE_ENABLE_NOOP:BOOL=ON
+
+//Boost.Stacktrace: build boost_stacktrace_windbg
+BOOST_STACKTRACE_ENABLE_WINDBG:BOOL=ON
+
+//Boost.Stacktrace: build boost_stacktrace_windbg_cached
+BOOST_STACKTRACE_ENABLE_WINDBG_CACHED:BOOL=OFF
+
+//Builds the googlemock subproject
+BUILD_GMOCK:BOOL=OFF
+
+//Value Computed by CMake
+BoostPredef_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_predef-build
+
+//Value Computed by CMake
+BoostPredef_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+BoostPredef_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_predef-src
+
+//Path to a program.
+CMAKE_AR:FILEPATH=C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.34.31933/bin/Hostx64/x64/lib.exe
+
+//ASM_MASM compiler
+CMAKE_ASM_MASM_COMPILER:FILEPATH=C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.34.31933/bin/Hostx64/x64/ml64.exe
+
+//Flags used by the ASM_MASM compiler during all build types.
+CMAKE_ASM_MASM_FLAGS:STRING=
+
+//Flags used by the ASM_MASM compiler during DEBUG builds.
+CMAKE_ASM_MASM_FLAGS_DEBUG:STRING=
+
+//Flags used by the ASM_MASM compiler during MINSIZEREL builds.
+CMAKE_ASM_MASM_FLAGS_MINSIZEREL:STRING=
+
+//Flags used by the ASM_MASM compiler during RELEASE builds.
+CMAKE_ASM_MASM_FLAGS_RELEASE:STRING=
+
+//Flags used by the ASM_MASM compiler during RELWITHDEBINFO builds.
+CMAKE_ASM_MASM_FLAGS_RELWITHDEBINFO:STRING=
+
+//Choose the type of build.
+CMAKE_BUILD_TYPE:STRING=
+
+//Semicolon separated list of supported configuration types, only
+// supports Debug, Release, MinSizeRel, and RelWithDebInfo, anything
+// else will be ignored.
+CMAKE_CONFIGURATION_TYPES:STRING=Debug;Release;MinSizeRel;RelWithDebInfo
+
+//Flags used by the CXX compiler during all build types.
+CMAKE_CXX_FLAGS:STRING=/DWIN32 /D_WINDOWS /EHsc
+
+//Flags used by the CXX compiler during DEBUG builds.
+CMAKE_CXX_FLAGS_DEBUG:STRING=/Zi /Ob0 /Od /RTC1
+
+//Flags used by the CXX compiler during MINSIZEREL builds.
+CMAKE_CXX_FLAGS_MINSIZEREL:STRING=/O1 /Ob1 /DNDEBUG
+
+//Flags used by the CXX compiler during RELEASE builds.
+CMAKE_CXX_FLAGS_RELEASE:STRING=/O2 /Ob2 /DNDEBUG
+
+//Flags used by the CXX compiler during RELWITHDEBINFO builds.
+CMAKE_CXX_FLAGS_RELWITHDEBINFO:STRING=/Zi /O2 /Ob1 /DNDEBUG
+
+//Libraries linked by default with all C++ applications.
+CMAKE_CXX_STANDARD_LIBRARIES:STRING=kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib
+
+//Flags used by the C compiler during all build types.
+CMAKE_C_FLAGS:STRING=/DWIN32 /D_WINDOWS
+
+//Flags used by the C compiler during DEBUG builds.
+CMAKE_C_FLAGS_DEBUG:STRING=/Zi /Ob0 /Od /RTC1
+
+//Flags used by the C compiler during MINSIZEREL builds.
+CMAKE_C_FLAGS_MINSIZEREL:STRING=/O1 /Ob1 /DNDEBUG
+
+//Flags used by the C compiler during RELEASE builds.
+CMAKE_C_FLAGS_RELEASE:STRING=/O2 /Ob2 /DNDEBUG
+
+//Flags used by the C compiler during RELWITHDEBINFO builds.
+CMAKE_C_FLAGS_RELWITHDEBINFO:STRING=/Zi /O2 /Ob1 /DNDEBUG
+
+//Libraries linked by default with all C applications.
+CMAKE_C_STANDARD_LIBRARIES:STRING=kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib
+
+//Flags used by the linker during all build types.
+CMAKE_EXE_LINKER_FLAGS:STRING=/machine:x64
+
+//Flags used by the linker during DEBUG builds.
+CMAKE_EXE_LINKER_FLAGS_DEBUG:STRING=/debug /INCREMENTAL
+
+//Flags used by the linker during MINSIZEREL builds.
+CMAKE_EXE_LINKER_FLAGS_MINSIZEREL:STRING=/INCREMENTAL:NO
+
+//Flags used by the linker during RELEASE builds.
+CMAKE_EXE_LINKER_FLAGS_RELEASE:STRING=/INCREMENTAL:NO
+
+//Flags used by the linker during RELWITHDEBINFO builds.
+CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO:STRING=/debug /INCREMENTAL
+
+//Value Computed by CMake.
+CMAKE_FIND_PACKAGE_REDIRECTS_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/CMakeFiles/pkgRedirects
+
+//User executables (bin)
+CMAKE_INSTALL_BINDIR:PATH=bin
+
+//Read-only architecture-independent data (DATAROOTDIR)
+CMAKE_INSTALL_DATADIR:PATH=
+
+//Read-only architecture-independent data root (share)
+CMAKE_INSTALL_DATAROOTDIR:PATH=share
+
+//Documentation root (DATAROOTDIR/doc/PROJECT_NAME)
+CMAKE_INSTALL_DOCDIR:PATH=
+
+//C header files (include)
+CMAKE_INSTALL_INCLUDEDIR:PATH=include
+
+//Info documentation (DATAROOTDIR/info)
+CMAKE_INSTALL_INFODIR:PATH=
+
+//Object code libraries (lib)
+CMAKE_INSTALL_LIBDIR:PATH=lib
+
+//Program executables (libexec)
+CMAKE_INSTALL_LIBEXECDIR:PATH=libexec
+
+//Locale-dependent data (DATAROOTDIR/locale)
+CMAKE_INSTALL_LOCALEDIR:PATH=
+
+//Modifiable single-machine data (var)
+CMAKE_INSTALL_LOCALSTATEDIR:PATH=var
+
+//Man documentation (DATAROOTDIR/man)
+CMAKE_INSTALL_MANDIR:PATH=
+
+//C header files for non-gcc (/usr/include)
+CMAKE_INSTALL_OLDINCLUDEDIR:PATH=/usr/include
+
+//Install path prefix, prepended onto install directories.
+CMAKE_INSTALL_PREFIX:PATH=C:/Program Files/wolf
+
+//Run-time variable data (LOCALSTATEDIR/run)
+CMAKE_INSTALL_RUNSTATEDIR:PATH=
+
+//System admin executables (sbin)
+CMAKE_INSTALL_SBINDIR:PATH=sbin
+
+//Modifiable architecture-independent data (com)
+CMAKE_INSTALL_SHAREDSTATEDIR:PATH=com
+
+//Read-only single-machine data (etc)
+CMAKE_INSTALL_SYSCONFDIR:PATH=etc
+
+//Path to a program.
+CMAKE_LINKER:FILEPATH=C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.34.31933/bin/Hostx64/x64/link.exe
+
+//Flags used by the linker during the creation of modules during
+// all build types.
+CMAKE_MODULE_LINKER_FLAGS:STRING=/machine:x64
+
+//Flags used by the linker during the creation of modules during
+// DEBUG builds.
+CMAKE_MODULE_LINKER_FLAGS_DEBUG:STRING=/debug /INCREMENTAL
+
+//Flags used by the linker during the creation of modules during
+// MINSIZEREL builds.
+CMAKE_MODULE_LINKER_FLAGS_MINSIZEREL:STRING=/INCREMENTAL:NO
+
+//Flags used by the linker during the creation of modules during
+// RELEASE builds.
+CMAKE_MODULE_LINKER_FLAGS_RELEASE:STRING=/INCREMENTAL:NO
+
+//Flags used by the linker during the creation of modules during
+// RELWITHDEBINFO builds.
+CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO:STRING=/debug /INCREMENTAL
+
+//Path to a program.
+CMAKE_MT:FILEPATH=CMAKE_MT-NOTFOUND
+
+//Value Computed by CMake
+CMAKE_PROJECT_DESCRIPTION:STATIC=
+
+//Value Computed by CMake
+CMAKE_PROJECT_HOMEPAGE_URL:STATIC=
+
+//Value Computed by CMake
+CMAKE_PROJECT_NAME:STATIC=wolf
+
+//Value Computed by CMake
+CMAKE_PROJECT_VERSION:STATIC=
+
+//Value Computed by CMake
+CMAKE_PROJECT_VERSION_MAJOR:STATIC=
+
+//Value Computed by CMake
+CMAKE_PROJECT_VERSION_MINOR:STATIC=
+
+//Value Computed by CMake
+CMAKE_PROJECT_VERSION_PATCH:STATIC=
+
+//Value Computed by CMake
+CMAKE_PROJECT_VERSION_TWEAK:STATIC=
+
+//RC compiler
+CMAKE_RC_COMPILER:FILEPATH=rc
+
+//Flags for Windows Resource Compiler during all build types.
+CMAKE_RC_FLAGS:STRING=-DWIN32
+
+//Flags for Windows Resource Compiler during DEBUG builds.
+CMAKE_RC_FLAGS_DEBUG:STRING=-D_DEBUG
+
+//Flags for Windows Resource Compiler during MINSIZEREL builds.
+CMAKE_RC_FLAGS_MINSIZEREL:STRING=
+
+//Flags for Windows Resource Compiler during RELEASE builds.
+CMAKE_RC_FLAGS_RELEASE:STRING=
+
+//Flags for Windows Resource Compiler during RELWITHDEBINFO builds.
+CMAKE_RC_FLAGS_RELWITHDEBINFO:STRING=
+
+//Flags used by the linker during the creation of shared libraries
+// during all build types.
+CMAKE_SHARED_LINKER_FLAGS:STRING=/machine:x64
+
+//Flags used by the linker during the creation of shared libraries
+// during DEBUG builds.
+CMAKE_SHARED_LINKER_FLAGS_DEBUG:STRING=/debug /INCREMENTAL
+
+//Flags used by the linker during the creation of shared libraries
+// during MINSIZEREL builds.
+CMAKE_SHARED_LINKER_FLAGS_MINSIZEREL:STRING=/INCREMENTAL:NO
+
+//Flags used by the linker during the creation of shared libraries
+// during RELEASE builds.
+CMAKE_SHARED_LINKER_FLAGS_RELEASE:STRING=/INCREMENTAL:NO
+
+//Flags used by the linker during the creation of shared libraries
+// during RELWITHDEBINFO builds.
+CMAKE_SHARED_LINKER_FLAGS_RELWITHDEBINFO:STRING=/debug /INCREMENTAL
+
+//If set, runtime paths are not added when installing shared libraries,
+// but are added when building.
+CMAKE_SKIP_INSTALL_RPATH:BOOL=OFF
+
+//If set, runtime paths are not added when using shared libraries.
+CMAKE_SKIP_RPATH:BOOL=OFF
+
+//Flags used by the linker during the creation of static libraries
+// during all build types.
+CMAKE_STATIC_LINKER_FLAGS:STRING=/machine:x64
+
+//Flags used by the linker during the creation of static libraries
+// during DEBUG builds.
+CMAKE_STATIC_LINKER_FLAGS_DEBUG:STRING=
+
+//Flags used by the linker during the creation of static libraries
+// during MINSIZEREL builds.
+CMAKE_STATIC_LINKER_FLAGS_MINSIZEREL:STRING=
+
+//Flags used by the linker during the creation of static libraries
+// during RELEASE builds.
+CMAKE_STATIC_LINKER_FLAGS_RELEASE:STRING=
+
+//Flags used by the linker during the creation of static libraries
+// during RELWITHDEBINFO builds.
+CMAKE_STATIC_LINKER_FLAGS_RELWITHDEBINFO:STRING=
+
+//If this value is on, makefiles will be generated without the
+// .SILENT directive, and all commands will be echoed to the console
+// during the make.  This is useful for debugging only. With Visual
+// Studio IDE projects all commands are done without /nologo.
+CMAKE_VERBOSE_MAKEFILE:BOOL=OFF
+
+//Directory under which to collect all populated content
+FETCHCONTENT_BASE_DIR:PATH=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps
+
+//Disables all attempts to download or update content and assumes
+// source dirs already exist
+FETCHCONTENT_FULLY_DISCONNECTED:BOOL=OFF
+
+//Enables QUIET option for all content population
+FETCHCONTENT_QUIET:BOOL=ON
+
+//When not empty, overrides where to find pre-populated content
+// for boost_algorithm
+FETCHCONTENT_SOURCE_DIR_BOOST_ALGORITHM:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for boost_align
+FETCHCONTENT_SOURCE_DIR_BOOST_ALIGN:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for boost_array
+FETCHCONTENT_SOURCE_DIR_BOOST_ARRAY:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for boost_asio
+FETCHCONTENT_SOURCE_DIR_BOOST_ASIO:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for boost_assert
+FETCHCONTENT_SOURCE_DIR_BOOST_ASSERT:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for boost_beast
+FETCHCONTENT_SOURCE_DIR_BOOST_BEAST:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for boost_bind
+FETCHCONTENT_SOURCE_DIR_BOOST_BIND:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for boost_chrono
+FETCHCONTENT_SOURCE_DIR_BOOST_CHRONO:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for boost_concept_check
+FETCHCONTENT_SOURCE_DIR_BOOST_CONCEPT_CHECK:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for boost_config
+FETCHCONTENT_SOURCE_DIR_BOOST_CONFIG:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for boost_container
+FETCHCONTENT_SOURCE_DIR_BOOST_CONTAINER:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for boost_container_hash
+FETCHCONTENT_SOURCE_DIR_BOOST_CONTAINER_HASH:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for boost_context
+FETCHCONTENT_SOURCE_DIR_BOOST_CONTEXT:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for boost_conversion
+FETCHCONTENT_SOURCE_DIR_BOOST_CONVERSION:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for boost_core
+FETCHCONTENT_SOURCE_DIR_BOOST_CORE:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for boost_coroutine
+FETCHCONTENT_SOURCE_DIR_BOOST_COROUTINE:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for boost_date_time
+FETCHCONTENT_SOURCE_DIR_BOOST_DATE_TIME:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for boost_describe
+FETCHCONTENT_SOURCE_DIR_BOOST_DESCRIBE:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for boost_detail
+FETCHCONTENT_SOURCE_DIR_BOOST_DETAIL:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for boost_endian
+FETCHCONTENT_SOURCE_DIR_BOOST_ENDIAN:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for boost_exception
+FETCHCONTENT_SOURCE_DIR_BOOST_EXCEPTION:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for boost_function
+FETCHCONTENT_SOURCE_DIR_BOOST_FUNCTION:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for boost_functional
+FETCHCONTENT_SOURCE_DIR_BOOST_FUNCTIONAL:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for boost_function_types
+FETCHCONTENT_SOURCE_DIR_BOOST_FUNCTION_TYPES:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for boost_fusion
+FETCHCONTENT_SOURCE_DIR_BOOST_FUSION:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for boost_integer
+FETCHCONTENT_SOURCE_DIR_BOOST_INTEGER:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for boost_intrusive
+FETCHCONTENT_SOURCE_DIR_BOOST_INTRUSIVE:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for boost_io
+FETCHCONTENT_SOURCE_DIR_BOOST_IO:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for boost_iterator
+FETCHCONTENT_SOURCE_DIR_BOOST_ITERATOR:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for boost_leaf
+FETCHCONTENT_SOURCE_DIR_BOOST_LEAF:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for boost_lexical_cast
+FETCHCONTENT_SOURCE_DIR_BOOST_LEXICAL_CAST:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for boost_logic
+FETCHCONTENT_SOURCE_DIR_BOOST_LOGIC:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for boost_move
+FETCHCONTENT_SOURCE_DIR_BOOST_MOVE:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for boost_mp11
+FETCHCONTENT_SOURCE_DIR_BOOST_MP11:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for boost_mpl
+FETCHCONTENT_SOURCE_DIR_BOOST_MPL:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for boost_numeric_conversion
+FETCHCONTENT_SOURCE_DIR_BOOST_NUMERIC_CONVERSION:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for boost_optional
+FETCHCONTENT_SOURCE_DIR_BOOST_OPTIONAL:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for boost_pool
+FETCHCONTENT_SOURCE_DIR_BOOST_POOL:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for boost_predef
+FETCHCONTENT_SOURCE_DIR_BOOST_PREDEF:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for boost_preprocessor
+FETCHCONTENT_SOURCE_DIR_BOOST_PREPROCESSOR:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for boost_range
+FETCHCONTENT_SOURCE_DIR_BOOST_RANGE:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for boost_ratio
+FETCHCONTENT_SOURCE_DIR_BOOST_RATIO:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for boost_rational
+FETCHCONTENT_SOURCE_DIR_BOOST_RATIONAL:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for boost_regex
+FETCHCONTENT_SOURCE_DIR_BOOST_REGEX:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for boost_smart_ptr
+FETCHCONTENT_SOURCE_DIR_BOOST_SMART_PTR:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for boost_stacktrace
+FETCHCONTENT_SOURCE_DIR_BOOST_STACKTRACE:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for boost_static_assert
+FETCHCONTENT_SOURCE_DIR_BOOST_STATIC_ASSERT:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for boost_static_string
+FETCHCONTENT_SOURCE_DIR_BOOST_STATIC_STRING:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for boost_system
+FETCHCONTENT_SOURCE_DIR_BOOST_SYSTEM:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for boost_throw_exception
+FETCHCONTENT_SOURCE_DIR_BOOST_THROW_EXCEPTION:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for boost_tokenizer
+FETCHCONTENT_SOURCE_DIR_BOOST_TOKENIZER:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for boost_tuple
+FETCHCONTENT_SOURCE_DIR_BOOST_TUPLE:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for boost_typeof
+FETCHCONTENT_SOURCE_DIR_BOOST_TYPEOF:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for boost_type_index
+FETCHCONTENT_SOURCE_DIR_BOOST_TYPE_INDEX:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for boost_type_traits
+FETCHCONTENT_SOURCE_DIR_BOOST_TYPE_TRAITS:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for boost_unordered
+FETCHCONTENT_SOURCE_DIR_BOOST_UNORDERED:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for boost_utility
+FETCHCONTENT_SOURCE_DIR_BOOST_UTILITY:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for boost_variant2
+FETCHCONTENT_SOURCE_DIR_BOOST_VARIANT2:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for boost_winapi
+FETCHCONTENT_SOURCE_DIR_BOOST_WINAPI:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for googletest
+FETCHCONTENT_SOURCE_DIR_GOOGLETEST:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for gsl
+FETCHCONTENT_SOURCE_DIR_GSL:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for mimalloc-static
+FETCHCONTENT_SOURCE_DIR_MIMALLOC-STATIC:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for spdlog
+FETCHCONTENT_SOURCE_DIR_SPDLOG:PATH=
+
+//Enables UPDATE_DISCONNECTED behavior for all content population
+FETCHCONTENT_UPDATES_DISCONNECTED:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_algorithm
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_ALGORITHM:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_align
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_ALIGN:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_array
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_ARRAY:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_asio
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_ASIO:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_assert
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_ASSERT:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_beast
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_BEAST:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_bind
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_BIND:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_chrono
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_CHRONO:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_concept_check
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_CONCEPT_CHECK:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_config
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_CONFIG:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_container
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_CONTAINER:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_container_hash
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_CONTAINER_HASH:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_context
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_CONTEXT:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_conversion
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_CONVERSION:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_core
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_CORE:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_coroutine
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_COROUTINE:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_date_time
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_DATE_TIME:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_describe
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_DESCRIBE:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_detail
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_DETAIL:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_endian
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_ENDIAN:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_exception
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_EXCEPTION:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_function
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_FUNCTION:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_functional
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_FUNCTIONAL:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_function_types
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_FUNCTION_TYPES:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_fusion
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_FUSION:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_integer
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_INTEGER:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_intrusive
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_INTRUSIVE:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_io
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_IO:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_iterator
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_ITERATOR:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_leaf
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_LEAF:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_lexical_cast
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_LEXICAL_CAST:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_logic
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_LOGIC:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_move
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_MOVE:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_mp11
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_MP11:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_mpl
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_MPL:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_numeric_conversion
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_NUMERIC_CONVERSION:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_optional
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_OPTIONAL:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_pool
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_POOL:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_predef
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_PREDEF:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_preprocessor
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_PREPROCESSOR:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_range
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_RANGE:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_ratio
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_RATIO:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_rational
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_RATIONAL:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_regex
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_REGEX:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_smart_ptr
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_SMART_PTR:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_stacktrace
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_STACKTRACE:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_static_assert
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_STATIC_ASSERT:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_static_string
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_STATIC_STRING:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_system
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_SYSTEM:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_throw_exception
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_THROW_EXCEPTION:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_tokenizer
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_TOKENIZER:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_tuple
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_TUPLE:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_typeof
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_TYPEOF:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_type_index
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_TYPE_INDEX:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_type_traits
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_TYPE_TRAITS:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_unordered
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_UNORDERED:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_utility
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_UTILITY:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_variant2
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_VARIANT2:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_winapi
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_WINAPI:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of googletest
+FETCHCONTENT_UPDATES_DISCONNECTED_GOOGLETEST:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of gsl
+FETCHCONTENT_UPDATES_DISCONNECTED_GSL:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of mimalloc-static
+FETCHCONTENT_UPDATES_DISCONNECTED_MIMALLOC-STATIC:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of spdlog
+FETCHCONTENT_UPDATES_DISCONNECTED_SPDLOG:BOOL=OFF
+
+//Git command line client
+GIT_EXECUTABLE:FILEPATH=C:/Program Files/Git/cmd/git.exe
+
+//Use Abseil and RE2. Requires Abseil and RE2 to be separately
+// added to the build.
+GTEST_HAS_ABSL:BOOL=OFF
+
+//ICU data library (debug)
+ICU_DATA_LIBRARY_DEBUG:FILEPATH=ICU_DATA_LIBRARY_DEBUG-NOTFOUND
+
+//ICU data library (release)
+ICU_DATA_LIBRARY_RELEASE:FILEPATH=ICU_DATA_LIBRARY_RELEASE-NOTFOUND
+
+//ICU derb executable
+ICU_DERB_EXECUTABLE:FILEPATH=ICU_DERB_EXECUTABLE-NOTFOUND
+
+//ICU genbrk executable
+ICU_GENBRK_EXECUTABLE:FILEPATH=ICU_GENBRK_EXECUTABLE-NOTFOUND
+
+//ICU genccode executable
+ICU_GENCCODE_EXECUTABLE:FILEPATH=ICU_GENCCODE_EXECUTABLE-NOTFOUND
+
+//ICU gencfu executable
+ICU_GENCFU_EXECUTABLE:FILEPATH=ICU_GENCFU_EXECUTABLE-NOTFOUND
+
+//ICU gencmn executable
+ICU_GENCMN_EXECUTABLE:FILEPATH=ICU_GENCMN_EXECUTABLE-NOTFOUND
+
+//ICU gencnval executable
+ICU_GENCNVAL_EXECUTABLE:FILEPATH=ICU_GENCNVAL_EXECUTABLE-NOTFOUND
+
+//ICU gendict executable
+ICU_GENDICT_EXECUTABLE:FILEPATH=ICU_GENDICT_EXECUTABLE-NOTFOUND
+
+//ICU gennorm2 executable
+ICU_GENNORM2_EXECUTABLE:FILEPATH=ICU_GENNORM2_EXECUTABLE-NOTFOUND
+
+//ICU genrb executable
+ICU_GENRB_EXECUTABLE:FILEPATH=ICU_GENRB_EXECUTABLE-NOTFOUND
+
+//ICU gensprep executable
+ICU_GENSPREP_EXECUTABLE:FILEPATH=ICU_GENSPREP_EXECUTABLE-NOTFOUND
+
+//ICU i18n library (debug)
+ICU_I18N_LIBRARY_DEBUG:FILEPATH=ICU_I18N_LIBRARY_DEBUG-NOTFOUND
+
+//ICU i18n library (release)
+ICU_I18N_LIBRARY_RELEASE:FILEPATH=ICU_I18N_LIBRARY_RELEASE-NOTFOUND
+
+//ICU icu-config executable
+ICU_ICU-CONFIG_EXECUTABLE:FILEPATH=ICU_ICU-CONFIG_EXECUTABLE-NOTFOUND
+
+//ICU icuinfo executable
+ICU_ICUINFO_EXECUTABLE:FILEPATH=ICU_ICUINFO_EXECUTABLE-NOTFOUND
+
+//ICU icupkg executable
+ICU_ICUPKG_EXECUTABLE:FILEPATH=ICU_ICUPKG_EXECUTABLE-NOTFOUND
+
+//ICU include directory
+ICU_INCLUDE_DIR:PATH=ICU_INCLUDE_DIR-NOTFOUND
+
+//ICU makeconv executable
+ICU_MAKECONV_EXECUTABLE:FILEPATH=ICU_MAKECONV_EXECUTABLE-NOTFOUND
+
+//ICU Makefile.inc data file
+ICU_MAKEFILE_INC:FILEPATH=ICU_MAKEFILE_INC-NOTFOUND
+
+//ICU pkgdata executable
+ICU_PKGDATA_EXECUTABLE:FILEPATH=ICU_PKGDATA_EXECUTABLE-NOTFOUND
+
+//ICU pkgdata.inc data file
+ICU_PKGDATA_INC:FILEPATH=ICU_PKGDATA_INC-NOTFOUND
+
+//ICU uconv executable
+ICU_UCONV_EXECUTABLE:FILEPATH=ICU_UCONV_EXECUTABLE-NOTFOUND
+
+//ICU uc library (debug)
+ICU_UC_LIBRARY_DEBUG:FILEPATH=ICU_UC_LIBRARY_DEBUG-NOTFOUND
+
+//ICU uc library (release)
+ICU_UC_LIBRARY_RELEASE:FILEPATH=ICU_UC_LIBRARY_RELEASE-NOTFOUND
+
+//Enable installation of googletest. (Projects embedding googletest
+// may want to turn this OFF.)
+INSTALL_GTEST:BOOL=ON
+
+//Library type
+LIBRARY_TYPE:STRING=STATIC
+
+//Build object library
+MI_BUILD_OBJECT:BOOL=OFF
+
+//Build shared library
+MI_BUILD_SHARED:BOOL=OFF
+
+//Build static library
+MI_BUILD_STATIC:BOOL=ON
+
+//Build test executables
+MI_BUILD_TESTS:BOOL=OFF
+
+//Use full internal invariant checking in DEBUG mode (deprecated,
+// use MI_DEBUG_FULL instead)
+MI_CHECK_FULL:BOOL=OFF
+
+//Use full internal heap invariant checking in DEBUG mode (expensive)
+MI_DEBUG_FULL:BOOL=OFF
+
+//Build with thread sanitizer (needs clang)
+MI_DEBUG_TSAN:BOOL=OFF
+
+//Build with undefined-behavior sanitizer (needs clang++)
+MI_DEBUG_UBSAN:BOOL=OFF
+
+//Install directly into $CMAKE_INSTALL_PREFIX instead of PREFIX/lib/mimalloc-version
+// (deprecated)
+MI_INSTALL_TOPLEVEL:BOOL=OFF
+
+//Use slightly slower, dlopen-compatible TLS mechanism (Unix)
+MI_LOCAL_DYNAMIC_TLS:BOOL=OFF
+
+//Use interpose to override standard malloc on macOS
+MI_OSX_INTERPOSE:BOOL=ON
+
+//Use malloc zone to override standard malloc on macOS
+MI_OSX_ZONE:BOOL=ON
+
+//Override the standard malloc interface (e.g. define entry points
+// for malloc() etc)
+MI_OVERRIDE:BOOL=ON
+
+//Enable padding to detect heap block overflow (used only in DEBUG
+// mode or with Valgrind)
+MI_PADDING:BOOL=ON
+
+//Use full security mitigations (like guard pages, allocation randomization,
+// double-free mitigation, and free-list corruption detection)
+MI_SECURE:BOOL=OFF
+
+//Generate assembly files
+MI_SEE_ASM:BOOL=OFF
+
+//Show error and warning messages by default (only enabled by default
+// in DEBUG mode)
+MI_SHOW_ERRORS:BOOL=OFF
+
+//Skip collecting memory on program exit
+MI_SKIP_COLLECT_ON_EXIT,:BOOL=OFF
+
+//Use the C++ compiler to compile the library (instead of the C
+// compiler)
+MI_USE_CXX:BOOL=OFF
+
+//Explicitly link with -latomic (on older systems) (deprecated
+// and detected automatically)
+MI_USE_LIBATOMIC:BOOL=OFF
+
+//Compile with Valgrind support (adds a small overhead)
+MI_VALGRIND:BOOL=OFF
+
+//Use redirection module ('mimalloc-redirect') on Windows if compiling
+// mimalloc as a DLL
+MI_WIN_REDIRECT:BOOL=ON
+
+//Enable abort() call on memory allocation failure by default
+MI_XMALLOC:BOOL=OFF
+
+//Build all artifacts
+SPDLOG_BUILD_ALL:BOOL=OFF
+
+//Build benchmarks (Requires https://github.com/google/benchmark.git
+// to be installed)
+SPDLOG_BUILD_BENCH:BOOL=OFF
+
+//Build example
+SPDLOG_BUILD_EXAMPLE:BOOL=OFF
+
+//Build header only example
+SPDLOG_BUILD_EXAMPLE_HO:BOOL=OFF
+
+//Build position independent code (-fPIC)
+SPDLOG_BUILD_PIC:BOOL=OFF
+
+//Build shared library
+SPDLOG_BUILD_SHARED:BOOL=OFF
+
+//Build tests
+SPDLOG_BUILD_TESTS:BOOL=OFF
+
+//Build tests using the header only version
+SPDLOG_BUILD_TESTS_HO:BOOL=OFF
+
+//Enable compiler warnings
+SPDLOG_BUILD_WARNINGS:BOOL=OFF
+
+//non supported option
+SPDLOG_CLOCK_COARSE:BOOL=OFF
+
+//Disable default logger creation
+SPDLOG_DISABLE_DEFAULT_LOGGER:BOOL=OFF
+
+//Build static or shared library using precompiled header to speed
+// up compilation time
+SPDLOG_ENABLE_PCH:BOOL=OFF
+
+//Use external fmt library instead of bundled
+SPDLOG_FMT_EXTERNAL:BOOL=OFF
+
+//Use external fmt header-only library instead of bundled
+SPDLOG_FMT_EXTERNAL_HO:BOOL=OFF
+
+//Generate the install target
+SPDLOG_INSTALL:BOOL=OFF
+
+//prevent spdlog from using of std::atomic log levels (use only
+// if your code never modifies log levels concurrently
+SPDLOG_NO_ATOMIC_LEVELS:BOOL=OFF
+
+//Compile with -fno-exceptions. Call abort() on any spdlog exceptions
+SPDLOG_NO_EXCEPTIONS:BOOL=OFF
+
+//prevent spdlog from querying the thread id on each log call if
+// thread id is not needed
+SPDLOG_NO_THREAD_ID:BOOL=OFF
+
+//prevent spdlog from using thread local storage
+SPDLOG_NO_TLS:BOOL=OFF
+
+//Prevent from child processes to inherit log file descriptors
+SPDLOG_PREVENT_CHILD_FD:BOOL=OFF
+
+//Enable address sanitizer in tests
+SPDLOG_SANITIZE_ADDRESS:BOOL=OFF
+
+//run clang-tidy
+SPDLOG_TIDY:BOOL=OFF
+
+//Use std::format instead of fmt library.
+SPDLOG_USE_STD_FORMAT:BOOL=OFF
+
+//Support wchar filenames
+SPDLOG_WCHAR_FILENAMES:BOOL=OFF
+
+//Support wchar api
+SPDLOG_WCHAR_SUPPORT:BOOL=OFF
+
+//path to the root folder of webrtc folder
+WEBRTC_SRC:STRING=
+
+//Enable ffmpeg encoding and decoding
+WOLF_MEDIA_FFMPEG:BOOL=OFF
+
+//Enable screen capture
+WOLF_MEDIA_SCREEN_CAPTURE:BOOL=OFF
+
+//Enable cross platform render based on BGFX
+WOLF_RENDER:BOOL=OFF
+
+//Enable QUIC
+WOLF_STREAM_QUIC:BOOL=OFF
+
+//Enable RIST streaming protocol
+WOLF_STREAM_RIST:BOOL=OFF
+
+//Enable reliable & unreliable stream over UDP
+WOLF_STREAM_RUDP:BOOL=OFF
+
+//Enable webRTC
+WOLF_STREAM_WEBRTC:BOOL=OFF
+
+//Enable boringSSL
+WOLF_SYSTEM_BORINGSSL:BOOL=OFF
+
+//Enable boost fiber
+WOLF_SYSTEM_FIBER:BOOL=OFF
+
+//Enable http1.1 and websocket client/server based on boost beast
+WOLF_SYSTEM_HTTP1_WS:BOOL=ON
+
+//Enable log
+WOLF_SYSTEM_LOG:BOOL=ON
+
+//Enable luaJIT
+WOLF_SYSTEM_LUAJIT:BOOL=OFF
+
+//Enable lz4 for compression
+WOLF_SYSTEM_LZ4:BOOL=OFF
+
+//Enable lzma for compression
+WOLF_SYSTEM_LZMA:BOOL=OFF
+
+//Enable Microsoft's mimalloc memory allocator
+WOLF_SYSTEM_MIMALLOC:BOOL=ON
+
+//Enable signal/slot based on boost signals2
+WOLF_SYSTEM_SIG_SLOT:BOOL=OFF
+
+//Enable TCP/UDP protocol over socket
+WOLF_SYSTEM_SOCKET:BOOL=ON
+
+//Enable boost stacktrace
+WOLF_SYSTEM_STACKTRACE:BOOL=ON
+
+//Enable WebAssembly interpreter
+WOLF_SYSTEM_WASM3:BOOL=OFF
+
+//Enable zlib for compression
+WOLF_SYSTEM_ZLIB:BOOL=OFF
+
+//Enable tests
+WOLF_TESTS:BOOL=ON
+
+//Value Computed by CMake
+boost_algorithm_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_algorithm-build
+
+//Value Computed by CMake
+boost_algorithm_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+boost_algorithm_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_algorithm-src
+
+//Value Computed by CMake
+boost_align_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_align-build
+
+//Value Computed by CMake
+boost_align_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+boost_align_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_align-src
+
+//Value Computed by CMake
+boost_array_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_array-build
+
+//Value Computed by CMake
+boost_array_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+boost_array_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_array-src
+
+//Value Computed by CMake
+boost_asio_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_asio-build
+
+//Value Computed by CMake
+boost_asio_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+boost_asio_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_asio-src
+
+//Value Computed by CMake
+boost_assert_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_assert-build
+
+//Value Computed by CMake
+boost_assert_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+boost_assert_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_assert-src
+
+//Value Computed by CMake
+boost_beast_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_beast-build
+
+//Value Computed by CMake
+boost_beast_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+boost_beast_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_beast-src
+
+//Value Computed by CMake
+boost_bind_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_bind-build
+
+//Value Computed by CMake
+boost_bind_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+boost_bind_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_bind-src
+
+//Value Computed by CMake
+boost_chrono_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_chrono-build
+
+//Value Computed by CMake
+boost_chrono_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+boost_chrono_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_chrono-src
+
+//Value Computed by CMake
+boost_concept_check_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_concept_check-build
+
+//Value Computed by CMake
+boost_concept_check_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+boost_concept_check_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_concept_check-src
+
+//Value Computed by CMake
+boost_config_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_config-build
+
+//Value Computed by CMake
+boost_config_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+boost_config_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_config-src
+
+//Value Computed by CMake
+boost_container_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_container-build
+
+//Value Computed by CMake
+boost_container_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+boost_container_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_container-src
+
+//Value Computed by CMake
+boost_container_hash_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_container_hash-build
+
+//Value Computed by CMake
+boost_container_hash_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+boost_container_hash_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_container_hash-src
+
+//Value Computed by CMake
+boost_context_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_context-build
+
+//Value Computed by CMake
+boost_context_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+boost_context_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_context-src
+
+//Value Computed by CMake
+boost_conversion_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_conversion-build
+
+//Value Computed by CMake
+boost_conversion_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+boost_conversion_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_conversion-src
+
+//Value Computed by CMake
+boost_core_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_core-build
+
+//Value Computed by CMake
+boost_core_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+boost_core_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_core-src
+
+//Value Computed by CMake
+boost_coroutine_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_coroutine-build
+
+//Value Computed by CMake
+boost_coroutine_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+boost_coroutine_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_coroutine-src
+
+//Value Computed by CMake
+boost_date_time_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_date_time-build
+
+//Value Computed by CMake
+boost_date_time_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+boost_date_time_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_date_time-src
+
+//Value Computed by CMake
+boost_describe_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_describe-build
+
+//Value Computed by CMake
+boost_describe_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+boost_describe_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_describe-src
+
+//Value Computed by CMake
+boost_detail_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_detail-build
+
+//Value Computed by CMake
+boost_detail_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+boost_detail_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_detail-src
+
+//Value Computed by CMake
+boost_endian_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_endian-build
+
+//Value Computed by CMake
+boost_endian_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+boost_endian_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_endian-src
+
+//Value Computed by CMake
+boost_exception_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_exception-build
+
+//Value Computed by CMake
+boost_exception_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+boost_exception_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_exception-src
+
+//Value Computed by CMake
+boost_function_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_function-build
+
+//Value Computed by CMake
+boost_function_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+boost_function_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_function-src
+
+//Value Computed by CMake
+boost_function_types_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_function_types-build
+
+//Value Computed by CMake
+boost_function_types_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+boost_function_types_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_function_types-src
+
+//Value Computed by CMake
+boost_functional_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_functional-build
+
+//Value Computed by CMake
+boost_functional_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+boost_functional_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_functional-src
+
+//Value Computed by CMake
+boost_fusion_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_fusion-build
+
+//Value Computed by CMake
+boost_fusion_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+boost_fusion_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_fusion-src
+
+//Value Computed by CMake
+boost_integer_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_integer-build
+
+//Value Computed by CMake
+boost_integer_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+boost_integer_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_integer-src
+
+//Value Computed by CMake
+boost_intrusive_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_intrusive-build
+
+//Value Computed by CMake
+boost_intrusive_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+boost_intrusive_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_intrusive-src
+
+//Value Computed by CMake
+boost_io_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_io-build
+
+//Value Computed by CMake
+boost_io_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+boost_io_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_io-src
+
+//Value Computed by CMake
+boost_iterator_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_iterator-build
+
+//Value Computed by CMake
+boost_iterator_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+boost_iterator_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_iterator-src
+
+//Value Computed by CMake
+boost_leaf_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_leaf-build
+
+//Value Computed by CMake
+boost_leaf_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+boost_leaf_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_leaf-src
+
+//Value Computed by CMake
+boost_lexical_cast_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_lexical_cast-build
+
+//Value Computed by CMake
+boost_lexical_cast_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+boost_lexical_cast_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_lexical_cast-src
+
+//Value Computed by CMake
+boost_logic_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_logic-build
+
+//Value Computed by CMake
+boost_logic_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+boost_logic_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_logic-src
+
+//Value Computed by CMake
+boost_move_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_move-build
+
+//Value Computed by CMake
+boost_move_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+boost_move_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_move-src
+
+//Value Computed by CMake
+boost_mp11_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_mp11-build
+
+//Value Computed by CMake
+boost_mp11_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+boost_mp11_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_mp11-src
+
+//Value Computed by CMake
+boost_mpl_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_mpl-build
+
+//Value Computed by CMake
+boost_mpl_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+boost_mpl_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_mpl-src
+
+//Value Computed by CMake
+boost_numeric_conversion_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_numeric_conversion-build
+
+//Value Computed by CMake
+boost_numeric_conversion_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+boost_numeric_conversion_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_numeric_conversion-src
+
+//Value Computed by CMake
+boost_optional_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_optional-build
+
+//Value Computed by CMake
+boost_optional_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+boost_optional_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_optional-src
+
+//Value Computed by CMake
+boost_pool_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_pool-build
+
+//Value Computed by CMake
+boost_pool_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+boost_pool_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_pool-src
+
+//Value Computed by CMake
+boost_preprocessor_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_preprocessor-build
+
+//Value Computed by CMake
+boost_preprocessor_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+boost_preprocessor_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_preprocessor-src
+
+//Value Computed by CMake
+boost_range_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_range-build
+
+//Value Computed by CMake
+boost_range_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+boost_range_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_range-src
+
+//Value Computed by CMake
+boost_ratio_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_ratio-build
+
+//Value Computed by CMake
+boost_ratio_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+boost_ratio_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_ratio-src
+
+//Value Computed by CMake
+boost_rational_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_rational-build
+
+//Value Computed by CMake
+boost_rational_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+boost_rational_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_rational-src
+
+//Value Computed by CMake
+boost_regex_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_regex-build
+
+//Value Computed by CMake
+boost_regex_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+boost_regex_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_regex-src
+
+//Value Computed by CMake
+boost_smart_ptr_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_smart_ptr-build
+
+//Value Computed by CMake
+boost_smart_ptr_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+boost_smart_ptr_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_smart_ptr-src
+
+//Value Computed by CMake
+boost_stacktrace_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_stacktrace-build
+
+//Value Computed by CMake
+boost_stacktrace_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+boost_stacktrace_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_stacktrace-src
+
+//Value Computed by CMake
+boost_static_assert_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_static_assert-build
+
+//Value Computed by CMake
+boost_static_assert_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+boost_static_assert_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_static_assert-src
+
+//Value Computed by CMake
+boost_static_string_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_static_string-build
+
+//Value Computed by CMake
+boost_static_string_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+boost_static_string_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_static_string-src
+
+//Value Computed by CMake
+boost_system_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_system-build
+
+//Value Computed by CMake
+boost_system_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+boost_system_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_system-src
+
+//Value Computed by CMake
+boost_throw_exception_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_throw_exception-build
+
+//Value Computed by CMake
+boost_throw_exception_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+boost_throw_exception_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_throw_exception-src
+
+//Value Computed by CMake
+boost_tokenizer_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_tokenizer-build
+
+//Value Computed by CMake
+boost_tokenizer_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+boost_tokenizer_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_tokenizer-src
+
+//Value Computed by CMake
+boost_tuple_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_tuple-build
+
+//Value Computed by CMake
+boost_tuple_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+boost_tuple_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_tuple-src
+
+//Value Computed by CMake
+boost_type_index_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_type_index-build
+
+//Value Computed by CMake
+boost_type_index_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+boost_type_index_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_type_index-src
+
+//Value Computed by CMake
+boost_type_traits_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_type_traits-build
+
+//Value Computed by CMake
+boost_type_traits_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+boost_type_traits_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_type_traits-src
+
+//Value Computed by CMake
+boost_typeof_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_typeof-build
+
+//Value Computed by CMake
+boost_typeof_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+boost_typeof_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_typeof-src
+
+//Value Computed by CMake
+boost_unordered_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_unordered-build
+
+//Value Computed by CMake
+boost_unordered_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+boost_unordered_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_unordered-src
+
+//Value Computed by CMake
+boost_utility_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_utility-build
+
+//Value Computed by CMake
+boost_utility_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+boost_utility_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_utility-src
+
+//Value Computed by CMake
+boost_variant2_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_variant2-build
+
+//Value Computed by CMake
+boost_variant2_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+boost_variant2_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_variant2-src
+
+//Value Computed by CMake
+boost_winapi_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_winapi-build
+
+//Value Computed by CMake
+boost_winapi_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+boost_winapi_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_winapi-src
+
+//Value Computed by CMake
+googletest-distribution_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/googletest-build
+
+//Value Computed by CMake
+googletest-distribution_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+googletest-distribution_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/googletest-src
+
+//Value Computed by CMake
+gtest_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/googletest-build/googletest
+
+//Value Computed by CMake
+gtest_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+gtest_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/googletest-src/googletest
+
+//Build gtest's sample programs.
+gtest_build_samples:BOOL=OFF
+
+//Build all of gtest's own tests.
+gtest_build_tests:BOOL=OFF
+
+//Disable uses of pthreads in gtest.
+gtest_disable_pthreads:BOOL=OFF
+
+//Use shared (DLL) run-time lib even when Google Test is built
+// as static lib.
+gtest_force_shared_crt:BOOL=ON
+
+//Build gtest with internal symbols hidden in shared libraries.
+gtest_hide_internal_symbols:BOOL=OFF
+
+//Dependencies for the target
+gtest_main_LIB_DEPENDS:STATIC=general;gtest;
+
+//Value Computed by CMake
+libmimalloc_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/mimalloc-static-build
+
+//Value Computed by CMake
+libmimalloc_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+libmimalloc_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/mimalloc-static-src
+
+//Dependencies for the target
+mimalloc-static_LIB_DEPENDS:STATIC=general;psapi;general;shell32;general;user32;general;advapi32;general;bcrypt;
+
+//Value Computed by CMake
+spdlog_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/spdlog-build
+
+//Value Computed by CMake
+spdlog_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+spdlog_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/spdlog-src
+
+//Value Computed by CMake
+wolf_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/wolf
+
+//Value Computed by CMake
+wolf_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+wolf_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/wolf
+
 
 ########################
 # INTERNAL cache entries
 ########################
 
+//STRINGS property for variable: BOOST_CONTEXT_ABI
+BOOST_CONTEXT_ABI-STRINGS:INTERNAL=aapcs;eabi;ms;n32;n64;o32;o64;sysv;x32
+//STRINGS property for variable: BOOST_CONTEXT_ARCHITECTURE
+BOOST_CONTEXT_ARCHITECTURE-STRINGS:INTERNAL=arm;arm64;loongarch64;mips32;mips64;ppc32;ppc64;riscv64;s390x;i386;x86_64;combined
+//STRINGS property for variable: BOOST_CONTEXT_ASM_SUFFIX
+BOOST_CONTEXT_ASM_SUFFIX-STRINGS:INTERNAL=.asm;.S
+//STRINGS property for variable: BOOST_CONTEXT_ASSEMBLER
+BOOST_CONTEXT_ASSEMBLER-STRINGS:INTERNAL=masm;gas;armasm
+//STRINGS property for variable: BOOST_CONTEXT_BINARY_FORMAT
+BOOST_CONTEXT_BINARY_FORMAT-STRINGS:INTERNAL=elf;mach-o;pe;xcoff
+//STRINGS property for variable: BOOST_CONTEXT_IMPLEMENTATION
+BOOST_CONTEXT_IMPLEMENTATION-STRINGS:INTERNAL=fcontext;ucontext;winfib
+//Test BOOST_STACKTRACE_HAS_BACKTRACE
+BOOST_STACKTRACE_HAS_BACKTRACE:INTERNAL=
+//Test BOOST_STACKTRACE_HAS_WINDBG
+BOOST_STACKTRACE_HAS_WINDBG:INTERNAL=1
+//Test BOOST_STACKTRACE_HAS_WINDBG_CACHED
+BOOST_STACKTRACE_HAS_WINDBG_CACHED:INTERNAL=
+//ADVANCED property for variable: CMAKE_AR
+CMAKE_AR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_ASM_MASM_COMPILER
+CMAKE_ASM_MASM_COMPILER-ADVANCED:INTERNAL=1
+CMAKE_ASM_MASM_COMPILER_WORKS:INTERNAL=1
+//ADVANCED property for variable: CMAKE_ASM_MASM_FLAGS
+CMAKE_ASM_MASM_FLAGS-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_ASM_MASM_FLAGS_DEBUG
+CMAKE_ASM_MASM_FLAGS_DEBUG-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_ASM_MASM_FLAGS_MINSIZEREL
+CMAKE_ASM_MASM_FLAGS_MINSIZEREL-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_ASM_MASM_FLAGS_RELEASE
+CMAKE_ASM_MASM_FLAGS_RELEASE-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_ASM_MASM_FLAGS_RELWITHDEBINFO
+CMAKE_ASM_MASM_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
+//STRINGS property for variable: CMAKE_BUILD_TYPE
+CMAKE_BUILD_TYPE-STRINGS:INTERNAL=Debug;Release;MinSizeRel;RelWithDebInfo
 //This is the directory where this CMakeCache.txt was created
 CMAKE_CACHEFILE_DIR:INTERNAL=g:/SourceCodes/WolfEngine/WolfEngine/build
 //Major version of cmake used to create the current loaded cache
@@ -27,4 +1725,236 @@ CMAKE_CACHE_MAJOR_VERSION:INTERNAL=3
 CMAKE_CACHE_MINOR_VERSION:INTERNAL=24
 //Patch version of cmake used to create the current loaded cache
 CMAKE_CACHE_PATCH_VERSION:INTERNAL=0
+//Path to CMake executable.
+CMAKE_COMMAND:INTERNAL=C:/Program Files/CMake/bin/cmake.exe
+//Path to cpack program executable.
+CMAKE_CPACK_COMMAND:INTERNAL=C:/Program Files/CMake/bin/cpack.exe
+//Path to ctest program executable.
+CMAKE_CTEST_COMMAND:INTERNAL=C:/Program Files/CMake/bin/ctest.exe
+//ADVANCED property for variable: CMAKE_CXX_FLAGS
+CMAKE_CXX_FLAGS-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_CXX_FLAGS_DEBUG
+CMAKE_CXX_FLAGS_DEBUG-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_CXX_FLAGS_MINSIZEREL
+CMAKE_CXX_FLAGS_MINSIZEREL-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_CXX_FLAGS_RELEASE
+CMAKE_CXX_FLAGS_RELEASE-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_CXX_FLAGS_RELWITHDEBINFO
+CMAKE_CXX_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_CXX_STANDARD_LIBRARIES
+CMAKE_CXX_STANDARD_LIBRARIES-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_C_FLAGS
+CMAKE_C_FLAGS-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_C_FLAGS_DEBUG
+CMAKE_C_FLAGS_DEBUG-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_C_FLAGS_MINSIZEREL
+CMAKE_C_FLAGS_MINSIZEREL-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_C_FLAGS_RELEASE
+CMAKE_C_FLAGS_RELEASE-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_C_FLAGS_RELWITHDEBINFO
+CMAKE_C_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_C_STANDARD_LIBRARIES
+CMAKE_C_STANDARD_LIBRARIES-ADVANCED:INTERNAL=1
+//Executable file format
+CMAKE_EXECUTABLE_FORMAT:INTERNAL=Unknown
+//ADVANCED property for variable: CMAKE_EXE_LINKER_FLAGS
+CMAKE_EXE_LINKER_FLAGS-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_EXE_LINKER_FLAGS_DEBUG
+CMAKE_EXE_LINKER_FLAGS_DEBUG-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_EXE_LINKER_FLAGS_MINSIZEREL
+CMAKE_EXE_LINKER_FLAGS_MINSIZEREL-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_EXE_LINKER_FLAGS_RELEASE
+CMAKE_EXE_LINKER_FLAGS_RELEASE-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO
+CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
+//Name of external makefile project generator.
+CMAKE_EXTRA_GENERATOR:INTERNAL=
+//Name of generator.
+CMAKE_GENERATOR:INTERNAL=Visual Studio 17 2022
+//Generator instance identifier.
+CMAKE_GENERATOR_INSTANCE:INTERNAL=C:/Program Files/Microsoft Visual Studio/2022/Community
+//Name of generator platform.
+CMAKE_GENERATOR_PLATFORM:INTERNAL=x64
+//Name of generator toolset.
+CMAKE_GENERATOR_TOOLSET:INTERNAL=
+//Test CMAKE_HAVE_LIBC_PTHREAD
+CMAKE_HAVE_LIBC_PTHREAD:INTERNAL=
+//Have library pthreads
+CMAKE_HAVE_PTHREADS_CREATE:INTERNAL=
+//Have library pthread
+CMAKE_HAVE_PTHREAD_CREATE:INTERNAL=
+//Source directory with the top level CMakeLists.txt file for this
+// project
+CMAKE_HOME_DIRECTORY:INTERNAL=G:/SourceCodes/WolfEngine/WolfEngine
+//ADVANCED property for variable: CMAKE_INSTALL_BINDIR
+CMAKE_INSTALL_BINDIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_INSTALL_DATADIR
+CMAKE_INSTALL_DATADIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_INSTALL_DATAROOTDIR
+CMAKE_INSTALL_DATAROOTDIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_INSTALL_DOCDIR
+CMAKE_INSTALL_DOCDIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_INSTALL_INCLUDEDIR
+CMAKE_INSTALL_INCLUDEDIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_INSTALL_INFODIR
+CMAKE_INSTALL_INFODIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_INSTALL_LIBDIR
+CMAKE_INSTALL_LIBDIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_INSTALL_LIBEXECDIR
+CMAKE_INSTALL_LIBEXECDIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_INSTALL_LOCALEDIR
+CMAKE_INSTALL_LOCALEDIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_INSTALL_LOCALSTATEDIR
+CMAKE_INSTALL_LOCALSTATEDIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_INSTALL_MANDIR
+CMAKE_INSTALL_MANDIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_INSTALL_OLDINCLUDEDIR
+CMAKE_INSTALL_OLDINCLUDEDIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_INSTALL_RUNSTATEDIR
+CMAKE_INSTALL_RUNSTATEDIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_INSTALL_SBINDIR
+CMAKE_INSTALL_SBINDIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_INSTALL_SHAREDSTATEDIR
+CMAKE_INSTALL_SHAREDSTATEDIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_INSTALL_SYSCONFDIR
+CMAKE_INSTALL_SYSCONFDIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_LINKER
+CMAKE_LINKER-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_MODULE_LINKER_FLAGS
+CMAKE_MODULE_LINKER_FLAGS-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_MODULE_LINKER_FLAGS_DEBUG
+CMAKE_MODULE_LINKER_FLAGS_DEBUG-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_MODULE_LINKER_FLAGS_MINSIZEREL
+CMAKE_MODULE_LINKER_FLAGS_MINSIZEREL-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_MODULE_LINKER_FLAGS_RELEASE
+CMAKE_MODULE_LINKER_FLAGS_RELEASE-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO
+CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_MT
+CMAKE_MT-ADVANCED:INTERNAL=1
+//number of local generators
+CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=65
+//Platform information initialized
+CMAKE_PLATFORM_INFO_INITIALIZED:INTERNAL=1
+//noop for ranlib
+CMAKE_RANLIB:INTERNAL=:
+//ADVANCED property for variable: CMAKE_RC_COMPILER
+CMAKE_RC_COMPILER-ADVANCED:INTERNAL=1
+CMAKE_RC_COMPILER_WORKS:INTERNAL=1
+//ADVANCED property for variable: CMAKE_RC_FLAGS
+CMAKE_RC_FLAGS-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_RC_FLAGS_DEBUG
+CMAKE_RC_FLAGS_DEBUG-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_RC_FLAGS_MINSIZEREL
+CMAKE_RC_FLAGS_MINSIZEREL-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_RC_FLAGS_RELEASE
+CMAKE_RC_FLAGS_RELEASE-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_RC_FLAGS_RELWITHDEBINFO
+CMAKE_RC_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
+//Path to CMake installation.
+CMAKE_ROOT:INTERNAL=C:/Program Files/CMake/share/cmake-3.24
+//ADVANCED property for variable: CMAKE_SHARED_LINKER_FLAGS
+CMAKE_SHARED_LINKER_FLAGS-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_SHARED_LINKER_FLAGS_DEBUG
+CMAKE_SHARED_LINKER_FLAGS_DEBUG-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_SHARED_LINKER_FLAGS_MINSIZEREL
+CMAKE_SHARED_LINKER_FLAGS_MINSIZEREL-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_SHARED_LINKER_FLAGS_RELEASE
+CMAKE_SHARED_LINKER_FLAGS_RELEASE-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_SHARED_LINKER_FLAGS_RELWITHDEBINFO
+CMAKE_SHARED_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_SKIP_INSTALL_RPATH
+CMAKE_SKIP_INSTALL_RPATH-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_SKIP_RPATH
+CMAKE_SKIP_RPATH-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_STATIC_LINKER_FLAGS
+CMAKE_STATIC_LINKER_FLAGS-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_STATIC_LINKER_FLAGS_DEBUG
+CMAKE_STATIC_LINKER_FLAGS_DEBUG-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_STATIC_LINKER_FLAGS_MINSIZEREL
+CMAKE_STATIC_LINKER_FLAGS_MINSIZEREL-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_STATIC_LINKER_FLAGS_RELEASE
+CMAKE_STATIC_LINKER_FLAGS_RELEASE-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_STATIC_LINKER_FLAGS_RELWITHDEBINFO
+CMAKE_STATIC_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_VERBOSE_MAKEFILE
+CMAKE_VERBOSE_MAKEFILE-ADVANCED:INTERNAL=1
+//Details about finding Git
+FIND_PACKAGE_MESSAGE_DETAILS_Git:INTERNAL=[C:/Program Files/Git/cmd/git.exe][v2.37.1.windows.1()]
+//Details about finding Python
+FIND_PACKAGE_MESSAGE_DETAILS_Python:INTERNAL=[C:/Python310/python.exe][cfound components: Interpreter ][v3.10.7()]
+//Details about finding Threads
+FIND_PACKAGE_MESSAGE_DETAILS_Threads:INTERNAL=[TRUE][v()]
+//ADVANCED property for variable: GIT_EXECUTABLE
+GIT_EXECUTABLE-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: ICU_DATA_LIBRARY_DEBUG
+ICU_DATA_LIBRARY_DEBUG-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: ICU_DATA_LIBRARY_RELEASE
+ICU_DATA_LIBRARY_RELEASE-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: ICU_DERB_EXECUTABLE
+ICU_DERB_EXECUTABLE-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: ICU_GENBRK_EXECUTABLE
+ICU_GENBRK_EXECUTABLE-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: ICU_GENCCODE_EXECUTABLE
+ICU_GENCCODE_EXECUTABLE-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: ICU_GENCFU_EXECUTABLE
+ICU_GENCFU_EXECUTABLE-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: ICU_GENCMN_EXECUTABLE
+ICU_GENCMN_EXECUTABLE-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: ICU_GENCNVAL_EXECUTABLE
+ICU_GENCNVAL_EXECUTABLE-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: ICU_GENDICT_EXECUTABLE
+ICU_GENDICT_EXECUTABLE-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: ICU_GENNORM2_EXECUTABLE
+ICU_GENNORM2_EXECUTABLE-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: ICU_GENRB_EXECUTABLE
+ICU_GENRB_EXECUTABLE-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: ICU_GENSPREP_EXECUTABLE
+ICU_GENSPREP_EXECUTABLE-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: ICU_I18N_LIBRARY_DEBUG
+ICU_I18N_LIBRARY_DEBUG-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: ICU_I18N_LIBRARY_RELEASE
+ICU_I18N_LIBRARY_RELEASE-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: ICU_ICU-CONFIG_EXECUTABLE
+ICU_ICU-CONFIG_EXECUTABLE-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: ICU_ICUINFO_EXECUTABLE
+ICU_ICUINFO_EXECUTABLE-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: ICU_ICUPKG_EXECUTABLE
+ICU_ICUPKG_EXECUTABLE-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: ICU_MAKECONV_EXECUTABLE
+ICU_MAKECONV_EXECUTABLE-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: ICU_MAKEFILE_INC
+ICU_MAKEFILE_INC-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: ICU_PKGDATA_EXECUTABLE
+ICU_PKGDATA_EXECUTABLE-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: ICU_PKGDATA_INC
+ICU_PKGDATA_INC-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: ICU_UCONV_EXECUTABLE
+ICU_UCONV_EXECUTABLE-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: ICU_UC_LIBRARY_DEBUG
+ICU_UC_LIBRARY_DEBUG-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: ICU_UC_LIBRARY_RELEASE
+ICU_UC_LIBRARY_RELEASE-ADVANCED:INTERNAL=1
+//Result of TRY_COMPILE
+THREADS_HAVE_PTHREAD_ARG:INTERNAL=FALSE
+//CMAKE_INSTALL_PREFIX during last run
+_GNUInstallDirs_LAST_CMAKE_INSTALL_PREFIX:INTERNAL=C:/Program Files/wolf
+//Path to a program.
+_Python_EXECUTABLE:INTERNAL=C:/Python310/python.exe
+//Python Properties
+_Python_INTERPRETER_PROPERTIES:INTERNAL=Python;3;10;7;64;;cp310-win_amd64;C:\Python310\Lib;C:\Python310\Lib;C:\Python310\Lib\site-packages;C:\Python310\Lib\site-packages
+_Python_INTERPRETER_SIGNATURE:INTERNAL=4cb6b8d5fd90e217c459e5400d5fe50d
+cmake_package_name:INTERNAL=GTest
+generated_dir:INTERNAL=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/googletest-build/googletest/generated
+//ADVANCED property for variable: gtest_build_samples
+gtest_build_samples-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: gtest_build_tests
+gtest_build_tests-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: gtest_disable_pthreads
+gtest_disable_pthreads-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: gtest_force_shared_crt
+gtest_force_shared_crt-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: gtest_hide_internal_symbols
+gtest_hide_internal_symbols-ADVANCED:INTERNAL=1
+targets_export_name:INTERNAL=GTestTargets
 
