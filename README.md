@@ -1,4 +1,4 @@
-# Wolf Engine [![LGPL v3 licensed](https://img.shields.io/badge/license-Apache-blue)](https://github.com/WolfEngine/Wolf.Engine/blob/main/LICENSE.md) [![coverage](https://shields.io/endpoint?url=https://raw.githubusercontent.com/WolfEngine/WolfEngine/main/coverage/coverage.json)](https://github.com/WolfEngine/WolfEngine/tree/main/coverage/index.html) [![wakatime](https://wakatime.com/badge/github/WolfEngine/WolfEngine.svg)](https://wakatime.com/badge/github/WolfEngine/WolfEngine)
+# Wolf Engine [![LGPL v3 licensed](https://img.shields.io/badge/license-Apache-blue)](https://github.com/WolfEngine/Wolf.Engine/blob/main/LICENSE.md) [![coverage](https://shields.io/endpoint?url=https://github.com/WolfEngine/WolfEngine/tree/wolf-rs/coverage/coverage.json)](https://github.com/WolfEngine/WolfEngine/tree/main/coverage/index.html) [![wakatime](https://wakatime.com/badge/github/WolfEngine/WolfEngine.svg)](https://wakatime.com/badge/github/WolfEngine/WolfEngine)
 
 <img src="https://raw.githubusercontent.com/WolfEngine/WolfEngine/main/Logo.png" width="256" height="256" alt="WolfEngine"/>
 
