@@ -14,6 +14,150 @@
 # EXTERNAL cache entries
 ########################
 
+//The ALSA (asound) include directory
+ALSA_INCLUDE_DIR:PATH=ALSA_INCLUDE_DIR-NOTFOUND
+
+//The ALSA (asound) library
+ALSA_LIBRARY:FILEPATH=ALSA_LIBRARY-NOTFOUND
+
+//Enable DirectSound backend
+ALSOFT_BACKEND_DSOUND:BOOL=ON
+
+//Enable WASAPI backend
+ALSOFT_BACKEND_WASAPI:BOOL=ON
+
+//Enable Wave Writer backend
+ALSOFT_BACKEND_WAVE:BOOL=ON
+
+//Enable Windows Multimedia backend
+ALSOFT_BACKEND_WINMM:BOOL=ON
+
+//Build the router (EXPERIMENTAL; creates OpenAL32.dll and soft_oal.dll)
+ALSOFT_BUILD_ROUTER:BOOL=OFF
+
+//Enable SSE support
+ALSOFT_CPUEXT_SSE:BOOL=ON
+
+//Enable SSE2 support
+ALSOFT_CPUEXT_SSE2:BOOL=ON
+
+//Enable SSE3 support
+ALSOFT_CPUEXT_SSE3:BOOL=ON
+
+//Enable SSE4.1 support
+ALSOFT_CPUEXT_SSE4_1:BOOL=ON
+
+//Check for the dlopen API for loading optional libs
+ALSOFT_DLOPEN:BOOL=ON
+
+//Enable legacy EAX extensions
+ALSOFT_EAX:BOOL=ON
+
+//Embed the HRTF data files (increases library footprint)
+ALSOFT_EMBED_HRTF_DATA:BOOL=ON
+
+//Build example programs
+ALSOFT_EXAMPLES:BOOL=OFF
+
+//Install main library
+ALSOFT_INSTALL:BOOL=ON
+
+//Install AmbDec preset files
+ALSOFT_INSTALL_AMBDEC_PRESETS:BOOL=ON
+
+//Install alsoft.conf sample configuration file
+ALSOFT_INSTALL_CONFIG:BOOL=ON
+
+//Install example programs (alplay, alstream, ...)
+ALSOFT_INSTALL_EXAMPLES:BOOL=OFF
+
+//Install HRTF data files
+ALSOFT_INSTALL_HRTF_DATA:BOOL=ON
+
+//Install utility programs (openal-info, alsoft-config, ...)
+ALSOFT_INSTALL_UTILS:BOOL=ON
+
+//Disable building the alsoft-config utility
+ALSOFT_NO_CONFIG_UTIL:BOOL=OFF
+
+//Require ALSA backend
+ALSOFT_REQUIRE_ALSA:BOOL=OFF
+
+//Require CoreAudio backend
+ALSOFT_REQUIRE_COREAUDIO:BOOL=OFF
+
+//Require DirectSound backend
+ALSOFT_REQUIRE_DSOUND:BOOL=OFF
+
+//Require JACK backend
+ALSOFT_REQUIRE_JACK:BOOL=OFF
+
+//Require ARM NEON support
+ALSOFT_REQUIRE_NEON:BOOL=OFF
+
+//Require Oboe backend
+ALSOFT_REQUIRE_OBOE:BOOL=OFF
+
+//Require OpenSL backend
+ALSOFT_REQUIRE_OPENSL:BOOL=OFF
+
+//Require OSS backend
+ALSOFT_REQUIRE_OSS:BOOL=OFF
+
+//Require PipeWire backend
+ALSOFT_REQUIRE_PIPEWIRE:BOOL=OFF
+
+//Require PortAudio backend
+ALSOFT_REQUIRE_PORTAUDIO:BOOL=OFF
+
+//Require PulseAudio backend
+ALSOFT_REQUIRE_PULSEAUDIO:BOOL=OFF
+
+//Require SDL2 backend
+ALSOFT_REQUIRE_SDL2:BOOL=OFF
+
+//Require SndIO backend
+ALSOFT_REQUIRE_SNDIO:BOOL=OFF
+
+//Require Solaris backend
+ALSOFT_REQUIRE_SOLARIS:BOOL=OFF
+
+//Require SSE support
+ALSOFT_REQUIRE_SSE:BOOL=OFF
+
+//Require SSE2 support
+ALSOFT_REQUIRE_SSE2:BOOL=OFF
+
+//Require SSE3 support
+ALSOFT_REQUIRE_SSE3:BOOL=OFF
+
+//Require SSE4.1 support
+ALSOFT_REQUIRE_SSE4_1:BOOL=OFF
+
+//Require WASAPI backend
+ALSOFT_REQUIRE_WASAPI:BOOL=OFF
+
+//Require Windows Multimedia backend
+ALSOFT_REQUIRE_WINMM:BOOL=OFF
+
+//Search the installation data directory
+ALSOFT_SEARCH_INSTALL_DATADIR:BOOL=OFF
+
+//Update git build version info
+ALSOFT_UPDATE_BUILD_VERSION:BOOL=ON
+
+//Build utility programs
+ALSOFT_UTILS:BOOL=ON
+
+//Treat compile warnings as errors
+ALSOFT_WERROR:BOOL=OFF
+
+//The AudioIO include directory
+AUDIOIO_INCLUDE_DIR:PATH=AUDIOIO_INCLUDE_DIR-NOTFOUND
+
+//Path to a file.
+AUDIOUNIT_INCLUDE_DIR:PATH=AUDIOUNIT_INCLUDE_DIR-NOTFOUND
+
 //Boost.Context ABI (aapcs, eabi, ms, n32, n64, o32, o64, sysv,
 // x32)
 BOOST_CONTEXT_ABI:STRING=ms
@@ -33,6 +177,34 @@ BOOST_CONTEXT_BINARY_FORMAT:STRING=pe
 
 //Boost.Context implementation (fcontext, ucontext, winfib)
 BOOST_CONTEXT_IMPLEMENTATION:STRING=fcontext
+
+//Boost.Fiber target OS (aix, freebsd, hpux, linux, solaris, windows,
+// none)
+BOOST_FIBER_NUMA_TARGET_OS:STRING=windows
+
+//Disable usage of arc4random API in Boost.Filesystem
+BOOST_FILESYSTEM_DISABLE_ARC4RANDOM:BOOL=OFF
+
+//Disable usage of BCrypt API in Boost.Filesystem
+BOOST_FILESYSTEM_DISABLE_BCRYPT:BOOL=OFF
+
+//Disable usage of copy_file_range API in Boost.Filesystem
+BOOST_FILESYSTEM_DISABLE_COPY_FILE_RANGE:BOOL=OFF
+
+//Disable usage of getrandom API in Boost.Filesystem
+BOOST_FILESYSTEM_DISABLE_GETRANDOM:BOOL=OFF
+
+//Disable usage of sendfile API in Boost.Filesystem
+BOOST_FILESYSTEM_DISABLE_SENDFILE:BOOL=OFF
+
+//Disable usage of statx API in Boost.Filesystem
+BOOST_FILESYSTEM_DISABLE_STATX:BOOL=OFF
+
+//Use WASI under emscripten in Boost.Filesystem
+BOOST_FILESYSTEM_EMSCRIPTEN_USE_WASI:BOOL=OFF
+
+//Disable deprecated functionality of Boost.Filesystem
+BOOST_FILESYSTEM_NO_DEPRECATED:BOOL=OFF
 
 //Boost.Regex: Enable Standalone Mode (i.e. no Boost dependencies)
 BOOST_REGEX_STANDALONE:BOOL=OFF
@@ -57,6 +229,15 @@ BOOST_STACKTRACE_ENABLE_WINDBG_CACHED:BOOL=OFF
 
 //Builds the googlemock subproject
 BUILD_GMOCK:BOOL=OFF
+
+//Value Computed by CMake
+BoostFilesystem_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_filesystem-build
+
+//Value Computed by CMake
+BoostFilesystem_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+BoostFilesystem_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_filesystem-src
 
 //Value Computed by CMake
 BoostPredef_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_predef-build
@@ -131,6 +312,9 @@ CMAKE_C_FLAGS_RELWITHDEBINFO:STRING=/Zi /O2 /Ob1 /DNDEBUG
 
 //Libraries linked by default with all C applications.
 CMAKE_C_STANDARD_LIBRARIES:STRING=kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib
+
+//Library postfix for debug builds. Normally left blank.
+CMAKE_DEBUG_POSTFIX:STRING=
 
 //Flags used by the linker during all build types.
 CMAKE_EXE_LINKER_FLAGS:STRING=/machine:x64
@@ -322,6 +506,9 @@ CMAKE_STATIC_LINKER_FLAGS_RELWITHDEBINFO:STRING=
 // Studio IDE projects all commands are done without /nologo.
 CMAKE_VERBOSE_MAKEFILE:BOOL=OFF
 
+//Path to a library.
+COREAUDIO_FRAMEWORK:FILEPATH=COREAUDIO_FRAMEWORK-NOTFOUND
+
 //Directory under which to collect all populated content
 FETCHCONTENT_BASE_DIR:PATH=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps
 
@@ -417,6 +604,18 @@ FETCHCONTENT_SOURCE_DIR_BOOST_ENDIAN:PATH=
 FETCHCONTENT_SOURCE_DIR_BOOST_EXCEPTION:PATH=
 
 //When not empty, overrides where to find pre-populated content
+// for boost_fiber
+FETCHCONTENT_SOURCE_DIR_BOOST_FIBER:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for boost_filesystem
+FETCHCONTENT_SOURCE_DIR_BOOST_FILESYSTEM:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for boost_format
+FETCHCONTENT_SOURCE_DIR_BOOST_FORMAT:PATH=
+
+//When not empty, overrides where to find pre-populated content
 // for boost_function
 FETCHCONTENT_SOURCE_DIR_BOOST_FUNCTION:PATH=
 
@@ -481,6 +680,10 @@ FETCHCONTENT_SOURCE_DIR_BOOST_NUMERIC_CONVERSION:PATH=
 FETCHCONTENT_SOURCE_DIR_BOOST_OPTIONAL:PATH=
 
 //When not empty, overrides where to find pre-populated content
+// for boost_parameter
+FETCHCONTENT_SOURCE_DIR_BOOST_PARAMETER:PATH=
+
+//When not empty, overrides where to find pre-populated content
 // for boost_pool
 FETCHCONTENT_SOURCE_DIR_BOOST_POOL:PATH=
 
@@ -507,6 +710,10 @@ FETCHCONTENT_SOURCE_DIR_BOOST_RATIONAL:PATH=
 //When not empty, overrides where to find pre-populated content
 // for boost_regex
 FETCHCONTENT_SOURCE_DIR_BOOST_REGEX:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for boost_signals2
+FETCHCONTENT_SOURCE_DIR_BOOST_SIGNALS2:PATH=
 
 //When not empty, overrides where to find pre-populated content
 // for boost_smart_ptr
@@ -561,6 +768,10 @@ FETCHCONTENT_SOURCE_DIR_BOOST_UNORDERED:PATH=
 FETCHCONTENT_SOURCE_DIR_BOOST_UTILITY:PATH=
 
 //When not empty, overrides where to find pre-populated content
+// for boost_variant
+FETCHCONTENT_SOURCE_DIR_BOOST_VARIANT:PATH=
+
+//When not empty, overrides where to find pre-populated content
 // for boost_variant2
 FETCHCONTENT_SOURCE_DIR_BOOST_VARIANT2:PATH=
 
@@ -577,8 +788,24 @@ FETCHCONTENT_SOURCE_DIR_GOOGLETEST:PATH=
 FETCHCONTENT_SOURCE_DIR_GSL:PATH=
 
 //When not empty, overrides where to find pre-populated content
+// for lz4_static
+FETCHCONTENT_SOURCE_DIR_LZ4_STATIC:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for lzma
+FETCHCONTENT_SOURCE_DIR_LZMA:PATH=
+
+//When not empty, overrides where to find pre-populated content
 // for mimalloc-static
 FETCHCONTENT_SOURCE_DIR_MIMALLOC-STATIC:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for openal
+FETCHCONTENT_SOURCE_DIR_OPENAL:PATH=
+
+//When not empty, overrides where to find pre-populated content
+// for rist
+FETCHCONTENT_SOURCE_DIR_RIST:PATH=
 
 //When not empty, overrides where to find pre-populated content
 // for spdlog
@@ -650,6 +877,15 @@ FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_ENDIAN:BOOL=OFF
 //Enables UPDATE_DISCONNECTED behavior just for population of boost_exception
 FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_EXCEPTION:BOOL=OFF
 
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_fiber
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_FIBER:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_filesystem
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_FILESYSTEM:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_format
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_FORMAT:BOOL=OFF
+
 //Enables UPDATE_DISCONNECTED behavior just for population of boost_function
 FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_FUNCTION:BOOL=OFF
 
@@ -698,6 +934,9 @@ FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_NUMERIC_CONVERSION:BOOL=OFF
 //Enables UPDATE_DISCONNECTED behavior just for population of boost_optional
 FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_OPTIONAL:BOOL=OFF
 
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_parameter
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_PARAMETER:BOOL=OFF
+
 //Enables UPDATE_DISCONNECTED behavior just for population of boost_pool
 FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_POOL:BOOL=OFF
 
@@ -718,6 +957,9 @@ FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_RATIONAL:BOOL=OFF
 
 //Enables UPDATE_DISCONNECTED behavior just for population of boost_regex
 FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_REGEX:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_signals2
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_SIGNALS2:BOOL=OFF
 
 //Enables UPDATE_DISCONNECTED behavior just for population of boost_smart_ptr
 FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_SMART_PTR:BOOL=OFF
@@ -758,6 +1000,9 @@ FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_UNORDERED:BOOL=OFF
 //Enables UPDATE_DISCONNECTED behavior just for population of boost_utility
 FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_UTILITY:BOOL=OFF
 
+//Enables UPDATE_DISCONNECTED behavior just for population of boost_variant
+FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_VARIANT:BOOL=OFF
+
 //Enables UPDATE_DISCONNECTED behavior just for population of boost_variant2
 FETCHCONTENT_UPDATES_DISCONNECTED_BOOST_VARIANT2:BOOL=OFF
 
@@ -770,11 +1015,26 @@ FETCHCONTENT_UPDATES_DISCONNECTED_GOOGLETEST:BOOL=OFF
 //Enables UPDATE_DISCONNECTED behavior just for population of gsl
 FETCHCONTENT_UPDATES_DISCONNECTED_GSL:BOOL=OFF
 
+//Enables UPDATE_DISCONNECTED behavior just for population of lz4_static
+FETCHCONTENT_UPDATES_DISCONNECTED_LZ4_STATIC:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of lzma
+FETCHCONTENT_UPDATES_DISCONNECTED_LZMA:BOOL=OFF
+
 //Enables UPDATE_DISCONNECTED behavior just for population of mimalloc-static
 FETCHCONTENT_UPDATES_DISCONNECTED_MIMALLOC-STATIC:BOOL=OFF
 
+//Enables UPDATE_DISCONNECTED behavior just for population of openal
+FETCHCONTENT_UPDATES_DISCONNECTED_OPENAL:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of rist
+FETCHCONTENT_UPDATES_DISCONNECTED_RIST:BOOL=OFF
+
 //Enables UPDATE_DISCONNECTED behavior just for population of spdlog
 FETCHCONTENT_UPDATES_DISCONNECTED_SPDLOG:BOOL=OFF
+
+//Force /MT for static VC runtimes
+FORCE_STATIC_VCRT:BOOL=OFF
 
 //Git command line client
 GIT_EXECUTABLE:FILEPATH=C:/Program Files/Git/cmd/git.exe
@@ -823,7 +1083,7 @@ ICU_GENSPREP_EXECUTABLE:FILEPATH=ICU_GENSPREP_EXECUTABLE-NOTFOUND
 ICU_I18N_LIBRARY_DEBUG:FILEPATH=ICU_I18N_LIBRARY_DEBUG-NOTFOUND
 
 //ICU i18n library (release)
-ICU_I18N_LIBRARY_RELEASE:FILEPATH=ICU_I18N_LIBRARY_RELEASE-NOTFOUND
+ICU_I18N_LIBRARY_RELEASE:FILEPATH=C:/Program Files (x86)/Windows Kits/10/Lib/10.0.22621.0/um/x64/icuin.Lib
 
 //ICU icu-config executable
 ICU_ICU-CONFIG_EXECUTABLE:FILEPATH=ICU_ICU-CONFIG_EXECUTABLE-NOTFOUND
@@ -856,14 +1116,38 @@ ICU_UCONV_EXECUTABLE:FILEPATH=ICU_UCONV_EXECUTABLE-NOTFOUND
 ICU_UC_LIBRARY_DEBUG:FILEPATH=ICU_UC_LIBRARY_DEBUG-NOTFOUND
 
 //ICU uc library (release)
-ICU_UC_LIBRARY_RELEASE:FILEPATH=ICU_UC_LIBRARY_RELEASE-NOTFOUND
+ICU_UC_LIBRARY_RELEASE:FILEPATH=C:/Program Files (x86)/Windows Kits/10/Lib/10.0.22621.0/um/x64/icuuc.lib
 
 //Enable installation of googletest. (Projects embedding googletest
 // may want to turn this OFF.)
 INSTALL_GTEST:BOOL=ON
 
+//The JACK include directory
+JACK_INCLUDE_DIR:PATH=JACK_INCLUDE_DIR-NOTFOUND
+
+//The JACK library
+JACK_LIBRARY:FILEPATH=JACK_LIBRARY-NOTFOUND
+
 //Library type
 LIBRARY_TYPE:STRING=STATIC
+
+//Value Computed by CMake
+LZ4_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/lz4_static-build
+
+//Build lz4 program
+LZ4_BUILD_CLI:BOOL=ON
+
+//Build lz4c program with legacy argument support
+LZ4_BUILD_LEGACY_LZ4C:BOOL=ON
+
+//Value Computed by CMake
+LZ4_IS_TOP_LEVEL:STATIC=OFF
+
+//Use position independent code for static library (if applicable)
+LZ4_POSITION_INDEPENDENT_LIB:BOOL=ON
+
+//Value Computed by CMake
+LZ4_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/lz4_static-src/build/cmake
 
 //Build object library
 MI_BUILD_OBJECT:BOOL=OFF
@@ -942,6 +1226,78 @@ MI_WIN_REDIRECT:BOOL=ON
 
 //Enable abort() call on memory allocation failure by default
 MI_XMALLOC:BOOL=OFF
+
+//The MySOFA include directory
+MYSOFA_INCLUDE_DIR:PATH=MYSOFA_INCLUDE_DIR-NOTFOUND
+
+//The MySOFA library
+MYSOFA_LIBRARY:FILEPATH=MYSOFA_LIBRARY-NOTFOUND
+
+//The math library for MySOFA
+MYSOFA_M_LIBRARY:FILEPATH=MYSOFA_M_LIBRARY-NOTFOUND
+
+//The OpenSL Android include directory
+OPENSL_ANDROID_INCLUDE_DIR:PATH=OPENSL_ANDROID_INCLUDE_DIR-NOTFOUND
+
+//The OpenSL include directory
+OPENSL_INCLUDE_DIR:PATH=OPENSL_INCLUDE_DIR-NOTFOUND
+
+//The OpenSL library
+OPENSL_LIBRARY:FILEPATH=OPENSL_LIBRARY-NOTFOUND
+
+//The OSS include directory
+OSS_INCLUDE_DIR:PATH=OSS_INCLUDE_DIR-NOTFOUND
+
+//Optional OSS library
+OSS_LIBRARY:FILEPATH=OSS_LIBRARY-NOTFOUND
+
+//Value Computed by CMake
+OpenAL_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/openal-build
+
+//Value Computed by CMake
+OpenAL_IS_TOP_LEVEL:STATIC=OFF
+
+//Dependencies for the target
+OpenAL_LIB_DEPENDS:STATIC=general;common;general;winmm;
+
+//Value Computed by CMake
+OpenAL_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/openal-src
+
+//Arguments to supply to pkg-config
+PKG_CONFIG_ARGN:STRING=
+
+//pkg-config executable
+PKG_CONFIG_EXECUTABLE:FILEPATH=C:/Strawberry/perl/bin/pkg-config.bat
+
+//The PortAudio include directory
+PORTAUDIO_INCLUDE_DIR:PATH=PORTAUDIO_INCLUDE_DIR-NOTFOUND
+
+//The PortAudio library
+PORTAUDIO_LIBRARY:FILEPATH=PORTAUDIO_LIBRARY-NOTFOUND
+
+//The PulseAudio include directory
+PULSEAUDIO_INCLUDE_DIR:PATH=PULSEAUDIO_INCLUDE_DIR-NOTFOUND
+
+//The PulseAudio library
+PULSEAUDIO_LIBRARY:FILEPATH=PULSEAUDIO_LIBRARY-NOTFOUND
+
+//The directory containing a CMake configuration file for Qt5Widgets.
+Qt5Widgets_DIR:PATH=Qt5Widgets_DIR-NOTFOUND
+
+//The directory containing a CMake configuration file for SDL2.
+SDL2_DIR:PATH=SDL2_DIR-NOTFOUND
+
+//Path to a file.
+SNDFILE_INCLUDE_DIR:PATH=SNDFILE_INCLUDE_DIR-NOTFOUND
+
+//Path to a library.
+SNDFILE_LIBRARY:FILEPATH=SNDFILE_LIBRARY-NOTFOUND
+
+//The SoundIO include directory
+SOUNDIO_INCLUDE_DIR:PATH=SOUNDIO_INCLUDE_DIR-NOTFOUND
+
+//The SoundIO library
+SOUNDIO_LIBRARY:FILEPATH=SOUNDIO_LIBRARY-NOTFOUND
 
 //Build all artifacts
 SPDLOG_BUILD_ALL:BOOL=OFF
@@ -1026,7 +1382,10 @@ SPDLOG_WCHAR_SUPPORT:BOOL=OFF
 WEBRTC_SRC:STRING=
 
 //Enable ffmpeg encoding and decoding
-WOLF_MEDIA_FFMPEG:BOOL=OFF
+WOLF_MEDIA_FFMPEG:BOOL=ON
+
+//Enable OpenAL soft
+WOLF_MEDIA_OPENAL:BOOL=ON
 
 //Enable screen capture
 WOLF_MEDIA_SCREEN_CAPTURE:BOOL=OFF
@@ -1038,7 +1397,7 @@ WOLF_RENDER:BOOL=OFF
 WOLF_STREAM_QUIC:BOOL=OFF
 
 //Enable RIST streaming protocol
-WOLF_STREAM_RIST:BOOL=OFF
+WOLF_STREAM_RIST:BOOL=ON
 
 //Enable reliable & unreliable stream over UDP
 WOLF_STREAM_RUDP:BOOL=OFF
@@ -1050,7 +1409,7 @@ WOLF_STREAM_WEBRTC:BOOL=OFF
 WOLF_SYSTEM_BORINGSSL:BOOL=OFF
 
 //Enable boost fiber
-WOLF_SYSTEM_FIBER:BOOL=OFF
+WOLF_SYSTEM_FIBER:BOOL=ON
 
 //Enable http1.1 and websocket client/server based on boost beast
 WOLF_SYSTEM_HTTP1_WS:BOOL=ON
@@ -1062,16 +1421,16 @@ WOLF_SYSTEM_LOG:BOOL=ON
 WOLF_SYSTEM_LUAJIT:BOOL=OFF
 
 //Enable lz4 for compression
-WOLF_SYSTEM_LZ4:BOOL=OFF
+WOLF_SYSTEM_LZ4:BOOL=ON
 
 //Enable lzma for compression
-WOLF_SYSTEM_LZMA:BOOL=OFF
+WOLF_SYSTEM_LZMA:BOOL=ON
 
 //Enable Microsoft's mimalloc memory allocator
 WOLF_SYSTEM_MIMALLOC:BOOL=ON
 
 //Enable signal/slot based on boost signals2
-WOLF_SYSTEM_SIG_SLOT:BOOL=OFF
+WOLF_SYSTEM_SIG_SLOT:BOOL=ON
 
 //Enable TCP/UDP protocol over socket
 WOLF_SYSTEM_SOCKET:BOOL=ON
@@ -1082,11 +1441,26 @@ WOLF_SYSTEM_STACKTRACE:BOOL=ON
 //Enable WebAssembly interpreter
 WOLF_SYSTEM_WASM3:BOOL=OFF
 
-//Enable zlib for compression
-WOLF_SYSTEM_ZLIB:BOOL=OFF
-
 //Enable tests
 WOLF_TESTS:BOOL=ON
+
+//Path to a file.
+ZLIB_INCLUDE_DIR:PATH=C:/Strawberry/c/include
+
+//Path to a library.
+ZLIB_LIBRARY_DEBUG:FILEPATH=ZLIB_LIBRARY_DEBUG-NOTFOUND
+
+//Path to a library.
+ZLIB_LIBRARY_RELEASE:FILEPATH=ZLIB_LIBRARY_RELEASE-NOTFOUND
+
+//Value Computed by CMake
+alsoft-config_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/openal-build/utils/alsoft-config
+
+//Value Computed by CMake
+alsoft-config_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+alsoft-config_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/openal-src/utils/alsoft-config
 
 //Value Computed by CMake
 boost_algorithm_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_algorithm-build
@@ -1278,6 +1652,27 @@ boost_exception_IS_TOP_LEVEL:STATIC=OFF
 boost_exception_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_exception-src
 
 //Value Computed by CMake
+boost_fiber_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_fiber-build
+
+//Value Computed by CMake
+boost_fiber_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+boost_fiber_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_fiber-src
+
+//Dependencies for the target
+boost_filesystem_LIB_DEPENDS:STATIC=general;Boost::assert;general;Boost::config;general;Boost::container_hash;general;Boost::core;general;Boost::detail;general;Boost::io;general;Boost::iterator;general;Boost::smart_ptr;general;Boost::system;general;Boost::type_traits;general;Boost::predef;general;advapi32;general;Boost::winapi;
+
+//Value Computed by CMake
+boost_format_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_format-build
+
+//Value Computed by CMake
+boost_format_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+boost_format_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_format-src
+
+//Value Computed by CMake
 boost_function_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_function-build
 
 //Value Computed by CMake
@@ -1422,6 +1817,15 @@ boost_optional_IS_TOP_LEVEL:STATIC=OFF
 boost_optional_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_optional-src
 
 //Value Computed by CMake
+boost_parameter_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_parameter-build
+
+//Value Computed by CMake
+boost_parameter_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+boost_parameter_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_parameter-src
+
+//Value Computed by CMake
 boost_pool_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_pool-build
 
 //Value Computed by CMake
@@ -1474,6 +1878,15 @@ boost_regex_IS_TOP_LEVEL:STATIC=OFF
 
 //Value Computed by CMake
 boost_regex_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_regex-src
+
+//Value Computed by CMake
+boost_signals2_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_signals2-build
+
+//Value Computed by CMake
+boost_signals2_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+boost_signals2_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_signals2-src
 
 //Value Computed by CMake
 boost_smart_ptr_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_smart_ptr-build
@@ -1602,6 +2015,15 @@ boost_variant2_IS_TOP_LEVEL:STATIC=OFF
 boost_variant2_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_variant2-src
 
 //Value Computed by CMake
+boost_variant_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_variant-build
+
+//Value Computed by CMake
+boost_variant_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+boost_variant_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_variant-src
+
+//Value Computed by CMake
 boost_winapi_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_winapi-build
 
 //Value Computed by CMake
@@ -1609,6 +2031,9 @@ boost_winapi_IS_TOP_LEVEL:STATIC=OFF
 
 //Value Computed by CMake
 boost_winapi_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/boost_winapi-src
+
+//Dependencies for the target
+ex-common_LIB_DEPENDS:STATIC=general;OpenAL;
 
 //Value Computed by CMake
 googletest-distribution_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/googletest-build
@@ -1656,6 +2081,15 @@ libmimalloc_IS_TOP_LEVEL:STATIC=OFF
 //Value Computed by CMake
 libmimalloc_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/mimalloc-static-src
 
+//Value Computed by CMake
+lzma_BINARY_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/lzma-build
+
+//Value Computed by CMake
+lzma_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+lzma_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/lzma-src
+
 //Dependencies for the target
 mimalloc-static_LIB_DEPENDS:STATIC=general;psapi;general;shell32;general;user32;general;advapi32;general;bcrypt;
 
@@ -1682,6 +2116,12 @@ wolf_SOURCE_DIR:STATIC=G:/SourceCodes/WolfEngine/WolfEngine/wolf
 # INTERNAL cache entries
 ########################
 
+//ADVANCED property for variable: ALSA_INCLUDE_DIR
+ALSA_INCLUDE_DIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: ALSA_LIBRARY
+ALSA_LIBRARY-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: AUDIOIO_INCLUDE_DIR
+AUDIOIO_INCLUDE_DIR-ADVANCED:INTERNAL=1
 //STRINGS property for variable: BOOST_CONTEXT_ABI
 BOOST_CONTEXT_ABI-STRINGS:INTERNAL=aapcs;eabi;ms;n32;n64;o32;o64;sysv;x32
 //STRINGS property for variable: BOOST_CONTEXT_ARCHITECTURE
@@ -1694,12 +2134,64 @@ BOOST_CONTEXT_ASSEMBLER-STRINGS:INTERNAL=masm;gas;armasm
 BOOST_CONTEXT_BINARY_FORMAT-STRINGS:INTERNAL=elf;mach-o;pe;xcoff
 //STRINGS property for variable: BOOST_CONTEXT_IMPLEMENTATION
 BOOST_CONTEXT_IMPLEMENTATION-STRINGS:INTERNAL=fcontext;ucontext;winfib
+//STRINGS property for variable: BOOST_FIBER_NUMA_TARGET_OS
+BOOST_FIBER_NUMA_TARGET_OS-STRINGS:INTERNAL=aix;freebsd;hpux;linux;solaris;windows;none
+//Test BOOST_FILESYSTEM_HAS_BCRYPT
+BOOST_FILESYSTEM_HAS_BCRYPT:INTERNAL=
+//Test BOOST_FILESYSTEM_HAS_CXX20_ATOMIC_REF
+BOOST_FILESYSTEM_HAS_CXX20_ATOMIC_REF:INTERNAL=1
+//Test BOOST_FILESYSTEM_HAS_FDOPENDIR_NOFOLLOW
+BOOST_FILESYSTEM_HAS_FDOPENDIR_NOFOLLOW:INTERNAL=
+//Test BOOST_FILESYSTEM_HAS_INIT_PRIORITY
+BOOST_FILESYSTEM_HAS_INIT_PRIORITY:INTERNAL=
+//Test BOOST_FILESYSTEM_HAS_POSIX_AT_APIS
+BOOST_FILESYSTEM_HAS_POSIX_AT_APIS:INTERNAL=
+//Test BOOST_FILESYSTEM_HAS_STATX
+BOOST_FILESYSTEM_HAS_STATX:INTERNAL=
+//Test BOOST_FILESYSTEM_HAS_STATX_SYSCALL
+BOOST_FILESYSTEM_HAS_STATX_SYSCALL:INTERNAL=
+//Test BOOST_FILESYSTEM_HAS_STAT_ST_BIRTHTIMENSEC
+BOOST_FILESYSTEM_HAS_STAT_ST_BIRTHTIMENSEC:INTERNAL=
+//Test BOOST_FILESYSTEM_HAS_STAT_ST_BIRTHTIMESPEC
+BOOST_FILESYSTEM_HAS_STAT_ST_BIRTHTIMESPEC:INTERNAL=
+//Test BOOST_FILESYSTEM_HAS_STAT_ST_BLKSIZE
+BOOST_FILESYSTEM_HAS_STAT_ST_BLKSIZE:INTERNAL=
+//Test BOOST_FILESYSTEM_HAS_STAT_ST_MTIM
+BOOST_FILESYSTEM_HAS_STAT_ST_MTIM:INTERNAL=
+//Test BOOST_FILESYSTEM_HAS_STAT_ST_MTIMENSEC
+BOOST_FILESYSTEM_HAS_STAT_ST_MTIMENSEC:INTERNAL=
+//Test BOOST_FILESYSTEM_HAS_STAT_ST_MTIMESPEC
+BOOST_FILESYSTEM_HAS_STAT_ST_MTIMESPEC:INTERNAL=
+//List of all Boost library include paths
+BOOST_LIBRARY_INCLUDES:INTERNAL=
 //Test BOOST_STACKTRACE_HAS_BACKTRACE
 BOOST_STACKTRACE_HAS_BACKTRACE:INTERNAL=
 //Test BOOST_STACKTRACE_HAS_WINDBG
 BOOST_STACKTRACE_HAS_WINDBG:INTERNAL=1
 //Test BOOST_STACKTRACE_HAS_WINDBG_CACHED
 BOOST_STACKTRACE_HAS_WINDBG_CACHED:INTERNAL=
+//Test CFLAG_W4
+CFLAG_W4:INTERNAL=1
+//Test CFLAG_Wall
+CFLAG_Wall:INTERNAL=1
+//Test CFLAG_Wcast_align
+CFLAG_Wcast_align:INTERNAL=
+//Test CFLAG_Wcast_qual
+CFLAG_Wcast_qual:INTERNAL=
+//Test CFLAG_Wdeclaration_after_statement
+CFLAG_Wdeclaration_after_statement:INTERNAL=
+//Test CFLAG_Wextra
+CFLAG_Wextra:INTERNAL=
+//Test CFLAG_Wpointer_arith
+CFLAG_Wpointer_arith:INTERNAL=
+//Test CFLAG_Wshadow
+CFLAG_Wshadow:INTERNAL=
+//Test CFLAG_Wstrict_prototypes
+CFLAG_Wstrict_prototypes:INTERNAL=
+//Test CFLAG_Wswitch_enum
+CFLAG_Wswitch_enum:INTERNAL=
+//Test CFLAG_Wundef
+CFLAG_Wundef:INTERNAL=
 //ADVANCED property for variable: CMAKE_AR
 CMAKE_AR-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_ASM_MASM_COMPILER
@@ -1833,7 +2325,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_MT
 CMAKE_MT-ADVANCED:INTERNAL=1
 //number of local generators
-CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=65
+CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=75
 //Platform information initialized
 CMAKE_PLATFORM_INFO_INITIALIZED:INTERNAL=1
 //noop for ranlib
@@ -1881,12 +2373,62 @@ CMAKE_STATIC_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 CMAKE_VERBOSE_MAKEFILE-ADVANCED:INTERNAL=1
 //Details about finding Git
 FIND_PACKAGE_MESSAGE_DETAILS_Git:INTERNAL=[C:/Program Files/Git/cmd/git.exe][v2.37.1.windows.1()]
+//Details about finding PkgConfig
+FIND_PACKAGE_MESSAGE_DETAILS_PkgConfig:INTERNAL=[C:/Strawberry/perl/bin/pkg-config.bat][v0.26()]
 //Details about finding Python
 FIND_PACKAGE_MESSAGE_DETAILS_Python:INTERNAL=[C:/Python310/python.exe][cfound components: Interpreter ][v3.10.7()]
 //Details about finding Threads
 FIND_PACKAGE_MESSAGE_DETAILS_Threads:INTERNAL=[TRUE][v()]
 //ADVANCED property for variable: GIT_EXECUTABLE
 GIT_EXECUTABLE-ADVANCED:INTERNAL=1
+//Have include arm_neon.h
+HAVE_ARM_NEON_H:INTERNAL=
+//Have include cpuid.h
+HAVE_CPUID_H:INTERNAL=
+//Test HAVE_CPUID_INTRINSIC
+HAVE_CPUID_INTRINSIC:INTERNAL=1
+//Have include dlfcn.h
+HAVE_DLFCN_H:INTERNAL=
+//Have include dsound.h
+HAVE_DSOUND_H:INTERNAL=1
+//Have include emmintrin.h
+HAVE_EMMINTRIN_H:INTERNAL=1
+//Have symbol getopt
+HAVE_GETOPT:INTERNAL=
+//Have include guiddef.h
+HAVE_GUIDDEF_H:INTERNAL=1
+//Have include intrin.h
+HAVE_INTRIN_H:INTERNAL=1
+//Test HAVE_LIBATOMIC
+HAVE_LIBATOMIC:INTERNAL=
+//Have library dl
+HAVE_LIBDL:INTERNAL=
+//Have library m
+HAVE_LIBM:INTERNAL=
+//Have library rt
+HAVE_LIBRT:INTERNAL=
+//Have include malloc.h
+HAVE_MALLOC_H:INTERNAL=1
+//Have include mmdeviceapi.h
+HAVE_MMDEVICEAPI_H:INTERNAL=1
+//Test HAVE_PERMISSIVE_SWITCH
+HAVE_PERMISSIVE_SWITCH:INTERNAL=1
+//Have include pmmintrin.h
+HAVE_PMMINTRIN_H:INTERNAL=1
+//Have symbol posix_memalign
+HAVE_POSIX_MEMALIGN:INTERNAL=
+//Have symbol proc_pidpath
+HAVE_PROC_PIDPATH:INTERNAL=
+//Have include smmintrin.h
+HAVE_SMMINTRIN_H:INTERNAL=1
+//Test HAVE_SSE_INTRINSICS
+HAVE_SSE_INTRINSICS:INTERNAL=1
+//Have include xmmintrin.h
+HAVE_XMMINTRIN_H:INTERNAL=1
+//Have symbol _aligned_malloc
+HAVE__ALIGNED_MALLOC:INTERNAL=1
+//Test HAVE___RESTRICT
+HAVE___RESTRICT:INTERNAL=1
 //ADVANCED property for variable: ICU_DATA_LIBRARY_DEBUG
 ICU_DATA_LIBRARY_DEBUG-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: ICU_DATA_LIBRARY_RELEASE
@@ -1935,8 +2477,73 @@ ICU_UCONV_EXECUTABLE-ADVANCED:INTERNAL=1
 ICU_UC_LIBRARY_DEBUG-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: ICU_UC_LIBRARY_RELEASE
 ICU_UC_LIBRARY_RELEASE-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: JACK_INCLUDE_DIR
+JACK_INCLUDE_DIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: JACK_LIBRARY
+JACK_LIBRARY-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: MYSOFA_INCLUDE_DIR
+MYSOFA_INCLUDE_DIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: MYSOFA_LIBRARY
+MYSOFA_LIBRARY-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: OPENSL_ANDROID_INCLUDE_DIR
+OPENSL_ANDROID_INCLUDE_DIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: OPENSL_INCLUDE_DIR
+OPENSL_INCLUDE_DIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: OPENSL_LIBRARY
+OPENSL_LIBRARY-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: OSS_INCLUDE_DIR
+OSS_INCLUDE_DIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: OSS_LIBRARY
+OSS_LIBRARY-ADVANCED:INTERNAL=1
+PIPEWIRE_CFLAGS:INTERNAL=
+PIPEWIRE_CFLAGS_I:INTERNAL=
+PIPEWIRE_CFLAGS_OTHER:INTERNAL=
+PIPEWIRE_FOUND:INTERNAL=
+PIPEWIRE_INCLUDEDIR:INTERNAL=
+PIPEWIRE_LIBDIR:INTERNAL=
+PIPEWIRE_LIBS:INTERNAL=
+PIPEWIRE_LIBS_L:INTERNAL=
+PIPEWIRE_LIBS_OTHER:INTERNAL=
+PIPEWIRE_LIBS_PATHS:INTERNAL=
+PIPEWIRE_MODULE_NAME:INTERNAL=
+PIPEWIRE_PREFIX:INTERNAL=
+PIPEWIRE_STATIC_CFLAGS:INTERNAL=
+PIPEWIRE_STATIC_CFLAGS_I:INTERNAL=
+PIPEWIRE_STATIC_CFLAGS_OTHER:INTERNAL=
+PIPEWIRE_STATIC_LIBDIR:INTERNAL=
+PIPEWIRE_STATIC_LIBS:INTERNAL=
+PIPEWIRE_STATIC_LIBS_L:INTERNAL=
+PIPEWIRE_STATIC_LIBS_OTHER:INTERNAL=
+PIPEWIRE_STATIC_LIBS_PATHS:INTERNAL=
+PIPEWIRE_VERSION:INTERNAL=
+PIPEWIRE_libpipewire-0.3_INCLUDEDIR:INTERNAL=
+PIPEWIRE_libpipewire-0.3_LIBDIR:INTERNAL=
+PIPEWIRE_libpipewire-0.3_PREFIX:INTERNAL=
+PIPEWIRE_libpipewire-0.3_VERSION:INTERNAL=
+//ADVANCED property for variable: PKG_CONFIG_ARGN
+PKG_CONFIG_ARGN-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: PKG_CONFIG_EXECUTABLE
+PKG_CONFIG_EXECUTABLE-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: PORTAUDIO_INCLUDE_DIR
+PORTAUDIO_INCLUDE_DIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: PORTAUDIO_LIBRARY
+PORTAUDIO_LIBRARY-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: SNDFILE_INCLUDE_DIR
+SNDFILE_INCLUDE_DIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: SNDFILE_LIBRARY
+SNDFILE_LIBRARY-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: SOUNDIO_INCLUDE_DIR
+SOUNDIO_INCLUDE_DIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: SOUNDIO_LIBRARY
+SOUNDIO_LIBRARY-ADVANCED:INTERNAL=1
 //Result of TRY_COMPILE
 THREADS_HAVE_PTHREAD_ARG:INTERNAL=FALSE
+//ADVANCED property for variable: ZLIB_INCLUDE_DIR
+ZLIB_INCLUDE_DIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: ZLIB_LIBRARY_DEBUG
+ZLIB_LIBRARY_DEBUG-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: ZLIB_LIBRARY_RELEASE
+ZLIB_LIBRARY_RELEASE-ADVANCED:INTERNAL=1
 //CMAKE_INSTALL_PREFIX during last run
 _GNUInstallDirs_LAST_CMAKE_INSTALL_PREFIX:INTERNAL=C:/Program Files/wolf
 //Path to a program.
@@ -1944,6 +2551,7 @@ _Python_EXECUTABLE:INTERNAL=C:/Python310/python.exe
 //Python Properties
 _Python_INTERPRETER_PROPERTIES:INTERNAL=Python;3;10;7;64;;cp310-win_amd64;C:\Python310\Lib;C:\Python310\Lib;C:\Python310\Lib\site-packages;C:\Python310\Lib\site-packages
 _Python_INTERPRETER_SIGNATURE:INTERNAL=4cb6b8d5fd90e217c459e5400d5fe50d
+__pkg_config_checked_PIPEWIRE:INTERNAL=1
 cmake_package_name:INTERNAL=GTest
 generated_dir:INTERNAL=G:/SourceCodes/WolfEngine/WolfEngine/build/_deps/googletest-build/googletest/generated
 //ADVANCED property for variable: gtest_build_samples

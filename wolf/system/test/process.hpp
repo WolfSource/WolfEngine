@@ -12,7 +12,11 @@ TEST(process, current_exe_path) {
   const wolf::system::w_leak_detector _detector = {};
   using w_process = wolf::system::w_process;
 
-  auto _path = w_process::current_exe_path();
+  auto _path = w_process::current_path();
   EXPECT_EQ(_path.has_error(), false);
   EXPECT_EQ(_path.value().empty(), false);
+
+  auto _exe_path = w_process::current_exe_path();
+  EXPECT_EQ(_exe_path.has_error(), false);
+  EXPECT_EQ(_exe_path.value().empty(), false);
 }

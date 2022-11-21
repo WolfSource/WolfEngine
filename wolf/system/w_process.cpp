@@ -2,6 +2,11 @@
 
 using w_process = wolf::system::w_process;
 
+boost::leaf::result<std::filesystem::path> w_process::current_path() {
+  auto _path = std::filesystem::current_path();
+  return W_OK(_path);
+}
+
 boost::leaf::result<std::filesystem::path> w_process::current_exe_path() {
   using path = std::filesystem::path;
 

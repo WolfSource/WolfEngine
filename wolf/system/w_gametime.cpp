@@ -11,21 +11,21 @@ void w_gametime::reset() noexcept {
 }
 
 constexpr double w_gametime::get_elapsed_secs() const noexcept {
-        return this->_elapsed_secs;
+  return this->_elapsed_secs;
 }
 
 constexpr double w_gametime::get_total_secs() const noexcept {
-        return this->_total_secs;
+  return this->_total_secs;
 }
 
 uint32_t w_gametime::get_frames_count() const noexcept {
-        return this->_frames_count;
+  return this->_frames_count;
 }
 
 uint32_t w_gametime::get_fps() const noexcept { return this->_fps; }
 
 bool w_gametime::get_is_fixed_time_step() const noexcept {
-        return this->_fixed_time_step;
+  return this->_fixed_time_step;
 }
 
 void w_gametime::set_fixed_time_step(bool p_value) noexcept {

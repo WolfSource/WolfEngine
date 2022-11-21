@@ -66,6 +66,7 @@ option(WOLF_RENDER "Enable cross platform render based on BGFX" OFF)
 
 # media modules
 option(WOLF_MEDIA_FFMPEG "Enable ffmpeg encoding and decoding" OFF)
+option(WOLF_MEDIA_OPENAL "Enable OpenAL soft" OFF)
 option(WOLF_MEDIA_SCREEN_CAPTURE "Enable screen capture" OFF)
 
 # stream modules
@@ -152,6 +153,7 @@ endif()
 include(cmake/boost.cmake)
 include(cmake/system.cmake)
 include(cmake/stream.cmake)
+include(cmake/media.cmake)
 
 if (WOLF_ENABLE_ASAN)
     set(ENABLE_ASAN TRUE)
@@ -247,21 +249,10 @@ file(GLOB_RECURSE WOLF_CMAKES
 include_directories(${INCLUDES})
 
 # add source codes
-add_library(${PROJECT_NAME} ${LIBRARY_TYPE} ${SRCS}
+add_library(${PROJECT_NAME} ${LIBRARY_TYPE} 
+    ${SRCS}
     ${WOLF_SRCS}
     ${WOLF_CMAKES}
-    ${WOLF_STREAM_TEST_SRC}
-	${WOLF_STREAM_QUIC_SRC}
-    ${WOLF_STREAM_WEBRTC_CAPTURER_SRC}
-    ${WOLF_STREAM_WEBRTC_DATA_SRC}
-    ${WOLF_STREAM_WEBRTC_INTERCEPTOR_SRC}
-    ${WOLF_STREAM_WEBRTC_MEDIA_SRC}
-    ${WOLF_STREAM_WEBRTC_PEER_SRC}
-    ${WOLF_SYSTEM_SRC}
-    ${WOLF_SYSTEM_TEST_SRC}
-    ${WOLF_SYSTEM_SOCKET_SRC}
-    ${WOLF_SYSTEM_SOCKET_TEST_SRC}
-    ${WOLF_SYSTEM_LOG_SRC}
 )
 		
 #if (MSVC)
@@ -293,6 +284,9 @@ source_group("system/socket/test" FILES ${WOLF_SYSTEM_SOCKET_TEST_SRC})
 source_group("system/socket" FILES ${WOLF_SYSTEM_SOCKET_SRC})
 source_group("system/test" FILES ${WOLF_SYSTEM_TEST_SRC})
 source_group("system" FILES ${WOLF_SYSTEM_SRC})
+source_group("media/test" FILES ${WOLF_MEDIA_TEST_SRC})
+source_group("media/ffmpeg" FILES ${WOLF_MEDIA_FFMPEG_SRC})
+source_group("media" FILES ${WOLF_MEDIA_SRC})
 
 # add compile options
 if (NOT WIN32)

@@ -19,6 +19,8 @@ if (WOLF_STREAM_QUIC)
     
     add_definitions(-DLIBUS_USE_QUIC)
 
+    list(APPEND SRCS ${WOLF_STREAM_QUIC_SRC})
+      
 endif()
 
 if (WOLF_STREAM_RIST)
@@ -147,9 +149,18 @@ if (WOLF_STREAM_WEBRTC)
     file(GLOB_RECURSE WOLF_STREAM_WEBRTC_PEER_SRC
         "${CMAKE_CURRENT_SOURCE_DIR}/stream/webrtc/peer/*"
     )
+
+    list(APPEND SRCS 
+        ${WOLF_STREAM_WEBRTC_CAPTURER_SRC}
+        ${WOLF_STREAM_WEBRTC_DATA_SRC}
+        ${WOLF_STREAM_WEBRTC_INTERCEPTOR_SRC}
+        ${WOLF_STREAM_WEBRTC_MEDIA_SRC}
+        ${WOLF_STREAM_WEBRTC_PEER_SRC}
+    )
 endif()
 
 file(GLOB_RECURSE WOLF_STREAM_TEST_SRC
     "${CMAKE_CURRENT_SOURCE_DIR}/stream/test/rist.hpp"
 )
+list(APPEND SRCS ${WOLF_STREAM_TEST_SRC})
 

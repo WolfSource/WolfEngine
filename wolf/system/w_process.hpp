@@ -20,11 +20,18 @@ public:
   // move assignment operator.
   W_API w_process &operator=(w_process &&p_src) noexcept = default;
 
+
   /**
    * get current exe path
    * @returns current exe path
    */
-  W_API static boost::leaf::result<std::filesystem::path> current_exe_path();
+  W_API static boost::leaf::result<std::filesystem::path> current_path();
+
+  /**
+   * get current exe path
+   * @returns current exe path
+   */
+   W_API static boost::leaf::result<std::filesystem::path> current_exe_path();
 
 private:
   // copy constructor.

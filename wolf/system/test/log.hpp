@@ -21,7 +21,10 @@ TEST(log, stress_test) {
   auto _path = wolf::system::w_process::current_exe_path();
   EXPECT_EQ(_path.has_error(), false);
 
-  const auto _log_path = _path.value().append("/log/");
+  auto _p = _path.value();
+  EXPECT_EQ(_p.empty(), false);
+
+  const auto _log_path = _p.append("/log/");
   const w_log_config _config = {
       // create an async logger
       false,

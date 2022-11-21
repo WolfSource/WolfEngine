@@ -67,7 +67,7 @@ public:
    * @returns a coroutine with number of the written bytes
    */
   W_API
-  boost::asio::awaitable<size_t> async_write(_In_ w_buffer& p_buffer);
+  boost::asio::awaitable<size_t> async_write(_In_ w_buffer &p_buffer);
 
   /*
    * read from the socket into the buffer

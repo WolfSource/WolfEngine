@@ -91,6 +91,54 @@ if (WOLF_SYSTEM_LOG)
     file(GLOB_RECURSE WOLF_SYSTEM_LOG_SRC
         "${CMAKE_CURRENT_SOURCE_DIR}/system/log/*"
     )
+    
+    list(APPEND SRCS 
+        ${WOLF_SYSTEM_LOG_SRC} 
+    )
+endif()
+
+if (WOLF_SYSTEM_LZ4)
+  message("fetching https://github.com/lz4/lz4.git")
+  FetchContent_Declare(
+    lz4_static
+    GIT_REPOSITORY https://github.com/lz4/lz4.git
+    GIT_TAG        dev
+    SOURCE_SUBDIR  build/cmake
+  )
+  FetchContent_MakeAvailable(lz4_static)
+
+  file(GLOB_RECURSE LZ4_SRCS
+    "${CMAKE_CURRENT_SOURCE_DIR}/system/lz4.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/system/lz4.hpp"
+  )
+  list(APPEND SRCS ${LZ4_SRCS})
+  list(APPEND INCLUDES ${lz4_SOURCE_DIR}/include)
+  list(APPEND LIBS lz4_static)   
+
+  set_target_properties(
+    lz4_static
+    lz4c
+    lz4cli
+    PROPERTIES FOLDER "lz4") 
+
+endif()
+
+if (WOLF_SYSTEM_LZMA)
+  message("fetching https://github.com/WolfEngine/lzma.git")
+  FetchContent_Declare(
+    lzma
+    GIT_REPOSITORY https://github.com/WolfEngine/lzma.git
+    GIT_TAG        main
+  )
+  FetchContent_MakeAvailable(lzma)
+
+  file(GLOB_RECURSE lZMA_SRCS
+    "${CMAKE_CURRENT_SOURCE_DIR}/system/lzma.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/system/lzma.hpp"
+  )
+  list(APPEND SRCS ${lZMA_SRCS})
+  list(APPEND INCLUDES ${lzma_SOURCE_DIR}/src)
+  list(APPEND LIBS lzma)  
 endif()
 
 # fetch mimalloc
@@ -123,6 +171,10 @@ if (WOLF_SYSTEM_SOCKET)
     )
     file(GLOB_RECURSE WOLF_SYSTEM_SOCKET_TEST_SRC
         "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/test/tcp.hpp"
+    )
+    list(APPEND SRCS 
+        ${WOLF_SYSTEM_SOCKET_SRC} 
+        ${WOLF_SYSTEM_SOCKET_TEST_SRC}
     )
 endif()
 
@@ -165,6 +217,7 @@ file(GLOB_RECURSE WOLF_SYSTEM_SRC
     "${CMAKE_CURRENT_SOURCE_DIR}/system/w_trace.hpp"
 )
 file(GLOB_RECURSE WOLF_SYSTEM_TEST_SRC
+    "${CMAKE_CURRENT_SOURCE_DIR}/system/test/compress.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/system/test/gametime.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/system/test/log.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/system/test/process.hpp"
@@ -172,3 +225,9 @@ file(GLOB_RECURSE WOLF_SYSTEM_TEST_SRC
     "${CMAKE_CURRENT_SOURCE_DIR}/system/test/trace.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/system/test/tcp.hpp"
 )
+
+list(APPEND SRCS 
+    ${WOLF_SYSTEM_SRC} 
+    ${WOLF_SYSTEM_TEST_SRC}
+)
+
