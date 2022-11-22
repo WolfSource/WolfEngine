@@ -26,9 +26,9 @@ struct w_trace {
     uint32_t source_file_line = 0;
   } W_ALIGNMENT_128;
 
-  w_trace() = default;
+  w_trace() noexcept = default;
 
-  w_trace(_In_ const stack &p_stack) {
+  w_trace(_In_ stack &&p_stack) {
     this->_stacks.emplace_front(p_stack);
   }
 

@@ -17,7 +17,6 @@ if (WOLF_MEDIA_FFMPEG)
     avfilter
     avformat
     avutil
-    postproc
     swresample
     swscale
     )
@@ -61,8 +60,24 @@ if (WOLF_MEDIA_OPENAL)
 
 endif()
 
+if (WOLF_MEDIA_STB)
+  message("fetching https://github.com/nothings/stb.git")
+ 
+  FetchContent_Declare(
+    stb
+    GIT_REPOSITORY https://github.com/nothings/stb.git
+    GIT_TAG        master
+  )
+  
+  FetchContent_Populate(stb)
+
+  list(APPEND INCLUDES ${stb_SOURCE_DIR})
+
+endif()
+
 file(GLOB_RECURSE WOLF_MEDIA_TEST_SRC
     "${CMAKE_CURRENT_SOURCE_DIR}/media/test/av_frame_convert.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/media/test/openal.hpp"
+
 )
 list(APPEND SRCS ${WOLF_MEDIA_TEST_SRC})

@@ -9,110 +9,88 @@
 
 #include <wolf.hpp>
 
-//
-//    struct AVFrame;
-//    typedef struct AVFrame* w_av_frame;
-//
-//    /**
-//     * initialize the ffmpeg AVFrame
-//     * @param p_avframe, the ffmpeg AVFrame
-//     * @param p_pixel_format, the pixel format of ffmpeg AVFrame
-//     * @param p_width, the width of ffmpeg AVFrame
-//     * @param p_height, the height of ffmpeg AVFrame
-//     * @param p_alignment, the alignment
-//     * @param p_data, the initial data of ffmpeg AVFrame
-//     * @param p_error, the error buffer
-//     * @returns zero on success
-//     */
-//    W_API
-//        int w_av_frame_init(
-//            _Inout_ w_av_frame* p_avframe,
-//            _In_ uint32_t p_pixel_format,
-//            _In_ uint32_t p_width,
-//            _In_ uint32_t p_height,
-//            _In_ uint32_t p_alignment,
-//            _In_ const uint8_t* p_data,
-//            _Inout_ char* p_error);
-//
-//    /**
-//     * initialize the ffmpeg AVFrame
-//     * @param p_avframe, the ffmpeg AVFrame
-//     * @param p_data, the initial data of ffmpeg AVFrame
-//     * @param p_alignment, the alignment
-//     * @param p_error, the error buffer
-//     * @returns zero on success
-//     */
-//    W_API
-//        int w_av_set_data(
-//            _In_ w_av_frame p_avframe,
-//            _In_ const uint8_t* p_data,
-//            _In_ uint32_t p_alignment,
-//            _Inout_ char* p_error);
-//
-//    /**
-//     * get data of ffmpeg AVFrame
-//     * @param p_avframe, the avframe
-//     * @param p_index, the index of data pointer (0 - 7)
-//     * @param p_data, the pointer to the data
-//     * @param p_error, the error buffer
-//     * @returns zero on success
-//    */
-//    W_API
-//        int w_av_get_data(
-//            _In_ w_av_frame p_avframe,
-//            _In_ size_t p_index,
-//            _Out_ uint8_t* p_data,
-//            _Inout_ char* p_error);
-//
-//
-//    /**
-//     * get data of ffmpeg AVFrame
-//     * @param p_avframe, the avframe
-//     * @param p_index, the index of data pointer (0 - 7)
-//     * @returns the required linesize
-//    */
-//    W_API
-//        int w_av_get_data_linesize(
-//            _In_ w_av_frame p_avframe,
-//            _In_ size_t p_index,
-//            _Inout_ char* p_error);
-//
-//    /**
-//     * initialize the ffmpeg AVFrame
-//     * @param p_pixel_format, the pixel format of ffmpeg AVFrame
-//     * @param p_width, the width of ffmpeg AVFrame
-//     * @param p_height, the height of ffmpeg AVFrame
-//     * @param p_alignment, the aligmnet which is usually 1
-//     * @returns the size of buffer
-//     */
-//    W_API
-//        size_t w_av_get_required_buffer_size(
-//            _In_ uint32_t p_pixel_format,
-//            _In_ uint32_t p_width,
-//            _In_ uint32_t p_height,
-//            _In_ uint32_t p_alignment);
-//
-//    /**
-//      * convert the ffmpeg AVFrame
-//      * @param p_src_avframe, the source AVFrame
-//      * @param p_dst_avframe, the destination AVFrame
-//      * @param p_error, the error buffer
-//      * @returns zero on success
-//      */
-//    W_API
-//        int w_av_frame_convert(
-//            _In_ w_av_frame p_src_avframe,
-//            _Inout_ w_av_frame* p_dst_avframe,
-//            _Inout_ char* p_error);
-//
-//    /**
-//     * release resources of avframe
-//     * @param p_av_frame, the ffmpeg AVFrame
-//     */
-//    W_API
-//        void w_av_frame_fini(_Inout_ w_av_frame* p_avframe);
-//
-//#ifdef __cplusplus
-//}
+#include <DISABLE_ANALYSIS_BEGIN>
+extern "C" {
+#include <libavcodec/avcodec.h>
+#include <libavformat/avformat.h>
+}
+#include <DISABLE_ANALYSIS_END>
+
+namespace wolf::media::ffmpeg {
+
+struct w_av_frame_config {
+  // the pixel format of ffmpeg AVFrame
+  AVPixelFormat format;
+  // the width of ffmpeg AVFrame
+  int width;
+  // the height of ffmpeg AVFrame
+  int height;
+};
+
+class w_av_frame {
+public:
+  /**
+   * constructor the av_frame with specific config
+   * @param p_config, the AVFrame config
+   */
+  //
+  W_API w_av_frame(_In_ w_av_frame_config &&p_config) noexcept;
+
+  // move constructor.
+  W_API w_av_frame(w_av_frame &&p_other) noexcept = default;
+  // move assignment operator.
+  W_API w_av_frame &operator=(w_av_frame &&p_other) noexcept = default;
+
+  // destructor
+  W_API virtual ~w_av_frame() noexcept;
+
+  /**
+   * set the AVFrame data
+   * @param p_data, the initial data of ffmpeg AVFrame
+   * @param p_alignment, the alignment
+   * @returns zero on success
+   */
+  W_API boost::leaf::result<int> set(_In_ const uint8_t *p_data,
+                                     _In_ int p_alignment) noexcept;
+
+  /**
+   * get data and linesize as a tuple
+   * @returns tuple<int*[8], int[8]>
+   */
+  W_API
+  std::tuple<uint8_t **, int *> get() const noexcept;
+
+  /**
+   * convert the ffmpeg AVFrame
+   * @returns the converted instance of AVFrame
+   */
+  W_API
+  boost::leaf::result<w_av_frame>
+  convert(_In_ w_av_frame_config &&p_dst_config);
+
+  /**
+   * p_pixel_format, av pixle format
+   * p_width, the width of frame
+   * p_height, the height of frame
+   * p_alignment, the alignment
+   * @returns the required buffer size for frame
+   */
+  W_API
+  static size_t get_required_buffer_size(_In_ AVPixelFormat p_pixel_format,
+                                         _In_ int p_width, _In_ int p_height,
+                                         _In_ int p_alignment) noexcept;
+
+private:
+  // copy constructor.
+  w_av_frame(const w_av_frame &) = delete;
+  // copy assignment operator.
+  w_av_frame &operator=(const w_av_frame &) = delete;
+
+  void _release() noexcept;
+
+  w_av_frame_config _config;
+  AVFrame *_av_frame;
+};
+} // namespace wolf::media::ffmpeg
 
 #endif // WOLF_MEDIA_FFMPEG

@@ -12,9 +12,9 @@ namespace wolf::system {
 class w_process {
 public:
   // default constructor
-  W_API w_process() = default;
+  W_API w_process() noexcept = default;
   // destructor
-  W_API virtual ~w_process() = default;
+  W_API virtual ~w_process() noexcept = default;
   // move constructor
   W_API w_process(w_process &&p_src) noexcept = default;
   // move assignment operator.

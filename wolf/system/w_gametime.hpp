@@ -16,10 +16,10 @@ constexpr auto TARGET_ELAPSED_SECS = 1.0 / 60.0;
 class w_gametime {
 public:
   // default constructor
-  W_API w_gametime() = default;
+  W_API w_gametime() noexcept = default;
 
   // destructor
-  W_API virtual ~w_gametime() = default;
+  W_API virtual ~w_gametime() noexcept = default;
 
   // move constructor
   W_API w_gametime(w_gametime &&p_src) noexcept = default;
