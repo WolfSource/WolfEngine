@@ -32,7 +32,7 @@ struct w_av_config {
   /**
    * @returns the required buffer size for frame
    */
-  W_API size_t get_required_buffer_size() noexcept;
+  W_API int get_required_buffer_size() noexcept;
 };
 
 class w_av_frame {
@@ -92,11 +92,12 @@ public:
 
   /**
    * save to to the image file
+   * @param p_quality, quality will be used only for jpeg and is between 1 and 100
    * @returns zero on success
    */
   W_API
   boost::leaf::result<int>
-  save_to_img_file(_In_ const std::filesystem::path &p_path);
+  save_to_img_file(_In_ const std::filesystem::path &p_path, int p_quality = 100);
 
 #endif
 
@@ -118,7 +119,6 @@ private:
 
   // the ffmpeg AVFrame
   AVFrame *_av_frame = nullptr;
-  uint8_t *_buffer = nullptr;
 };
 } // namespace wolf::media::ffmpeg
 

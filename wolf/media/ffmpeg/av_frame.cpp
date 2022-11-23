@@ -10,17 +10,19 @@ extern "C" {
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include <stb_image_write.h>
+
 using w_av_frame = wolf::media::ffmpeg::w_av_frame;
 using w_av_config = wolf::media::ffmpeg::w_av_config;
 
-size_t w_av_config::get_required_buffer_size() noexcept {
-  auto _size = av_image_get_buffer_size(this->format, this->width, this->height,
-                                        this->alignment);
-  return _size > 0 ? gsl::narrow_cast<size_t>(_size) : 0;
+int w_av_config::get_required_buffer_size() noexcept {
+  return av_image_get_buffer_size(this->format, this->width, this->height,
+                                  this->alignment);
 }
 
 w_av_frame::w_av_frame(_In_ const w_av_config &p_config) noexcept
-    : _config(p_config), _av_frame(nullptr), _buffer(nullptr) {}
+    : _config(p_config), _av_frame(nullptr) {}
 
 w_av_frame::w_av_frame(w_av_frame &&p_other) noexcept {
   _move(std::move(p_other));
@@ -44,11 +46,12 @@ void w_av_frame::_move(w_av_frame &&p_other) noexcept {
 w_av_frame::~w_av_frame() noexcept { _release(); }
 
 void w_av_frame::_release() noexcept {
-  if (this->_buffer != nullptr) {
-    free(this->_buffer);
-    this->_buffer = nullptr;
-  }
   if (this->_av_frame != nullptr) {
+    for (auto data : this->_av_frame->data) {
+      if (data != nullptr) {
+        free(data);
+      }
+    }
     av_frame_free(&this->_av_frame);
     this->_av_frame = nullptr;
   }
@@ -79,17 +82,17 @@ boost::leaf::result<int> w_av_frame::set(_Inout_ uint8_t **p_data) noexcept {
   const auto _av_frame_nn = gsl::narrow_cast<AVFrame *>(this->_av_frame);
 
   // move the owenership of data to buffer
+  uint8_t *_data;
   if (p_data == nullptr) {
     const auto _buffer_size = this->_config.get_required_buffer_size();
-    this->_buffer = gsl::owner<uint8_t *>(malloc(_buffer_size));
-  }
-  else {
-    this->_buffer = std::exchange(*p_data, nullptr);
+    _data = gsl::owner<uint8_t *>(malloc(_buffer_size));
+  } else {
+    _data = std::exchange(*p_data, nullptr);
   }
   const auto _size = av_image_fill_arrays(
-      _av_frame_nn->data, _av_frame_nn->linesize, this->_buffer,
-      this->_config.format, _av_frame_nn->width, _av_frame_nn->height,
-      _alignment);
+      _av_frame_nn->data, _av_frame_nn->linesize,
+      gsl::narrow_cast<const uint8_t *>(_data), this->_config.format,
+      _av_frame_nn->width, _av_frame_nn->height, _alignment);
 
   return W_SUCCESS;
 }
@@ -171,11 +174,32 @@ w_av_frame::load_from_img_file(_In_ const std::filesystem::path &p_path,
   return _src_frame;
 }
 
-boost::leaf::result<int> w_av_frame::save_to_img_file(_In_ const std::filesystem::path &p_path) {
+boost::leaf::result<int>
+w_av_frame::save_to_img_file(_In_ const std::filesystem::path &p_path,
+                             int p_quality) {
   const auto _path = p_path.string();
-  if (!p_path.has_extension()) {
+  auto _ext = p_path.extension().string();
+  std::transform(_ext.cbegin(), _ext.cend(), _ext.begin(), tolower);
+
+  const auto _comp = this->_av_frame->linesize[0] / this->_av_frame->width;
+  if (_ext == ".bmp") {
+
+    return stbi_write_bmp(_path.c_str(), this->_config.width,
+                          this->_config.height, _comp,
+                          this->_av_frame->data[0]);
+  } else if (_ext == ".png") {
+
+    return stbi_write_png(_path.c_str(), this->_config.width,
+                          this->_config.height, _comp, this->_av_frame->data[0],
+                          this->_av_frame->linesize[0]);
+  } else if (_ext == ".jpg" || _ext == ".jpeg") {
+
+    return stbi_write_jpg(_path.c_str(), this->_config.width,
+                          this->_config.height, _comp, this->_av_frame->data[0],
+                          p_quality);
+  } else {
     return W_ERR(std::errc::invalid_argument,
-                 "please specify the file extension for the path: " + _path);
+                 "extension format not supported for " + _path);
   }
 }
 
