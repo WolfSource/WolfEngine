@@ -5,7 +5,7 @@
 
 #pragma once
 
-#ifdef WIN32
+#if defined(WIN32) && defined(DEBUG)
 #define _CRTDBG_MAP_ALLOC
 #endif
 
@@ -29,12 +29,8 @@ private:
   // copy assignment operator.
   w_leak_detector &operator=(const w_leak_detector &) = delete;
 
-#ifdef WIN32
+#if defined(WIN32) && defined(DEBUG)
   _CrtMemState _mem_state;
 #endif
-}
-#ifdef __clang__
-W_ALIGNMENT_64
-#endif
-    ;
+};
 } // namespace wolf::system
