@@ -5,18 +5,23 @@
 
 #pragma once
 
-#ifdef WOLF_SYSYEM_SIG_SLOT
+#if defined(WOLF_TESTS) && defined(WOLF_SYSYEM_SIG_SLOT)
 
-#include <gtest.hpp>
+#include <wolf.hpp>
+#include <system/w_leak_detector.hpp>
+#include <boost/test/included/unit_test.hpp>
+
 #include <boost/signals2.hpp>
 
-TEST(sigslot, sigslot_test) {
+BOOST_AUTO_TEST_CASE(w_sigslot_test) {
   const wolf::system::w_leak_detector _detector = {};
 
   auto sig = boost::signals2::signal<void()>();
   sig.connect([]() { std::cout << "hello from slot 1" << std::endl; });
   sig.connect([]() { std::cout << "hello from slot 2" << std::endl; });
   sig();
+
+  BOOST_REQUIRE(true);
 }
 
-#endif
+#endif // defined(WOLF_TESTS) && defined(WOLF_SYSYEM_SIG_SLOT)

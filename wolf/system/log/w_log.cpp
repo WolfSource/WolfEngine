@@ -104,88 +104,13 @@ void w_log::write(_In_ const spdlog::level::level_enum &p_level,
   }
 }
 
-//void w_log::write(_In_ const std::string_view& p_fmt) {
-//  if (this->_logger != nullptr) {
-//    this->_logger->log(spdlog::level::info, p_fmt);
-//  }
-//  if (this->_async_file_logger != nullptr) {
-//    this->_async_file_logger->log(spdlog::level::info, p_fmt);
-//  }
-//}
-
-
-//template <typename... Args>
-//void w_log::write(_In_ const spdlog::level::level_enum p_log_level,
-//                  _In_ const std::string_view& p_fmt, _In_ Args &&...p_args) {
-//  using level_enum = spdlog::level::level_enum;
-//  switch (p_log_level) {
-//  default:
-//  case level_enum::OFF:
-//    break;
-//  case level_enum::TRACE: {
-//    if (this->_logger != nullptr) {
-//      this->_logger->trace(p_fmt, std::forward<Args>(p_args)...);
-//    }
-//    if (this->_async_file_logger != nullptr) {
-//      this->_async_file_logger->trace(p_fmt, std::forward<Args>(p_args)...);
-//    }
-//    break;
-//  }
-//  case level_enum::DEBUG_: {
-//    if (this->_logger != nullptr) {
-//      this->_logger->debug(p_fmt, std::forward<Args>(p_args)...);
-//    }
-//    if (this->_async_file_logger != nullptr) {
-//      this->_async_file_logger->debug(p_fmt, std::forward<Args>(p_args)...);
-//    }
-//    break;
-//  }
-//  case level_enum::INFO: {
-//    if (this->_logger != nullptr) {
-//      this->_logger->info(p_fmt, std::forward<Args>(p_args)...);
-//    }
-//    if (this->_async_file_logger != nullptr) {
-//      this->_async_file_logger->info(p_fmt, std::forward<Args>(p_args)...);
-//    }
-//    break;
-//  }
-//  case level_enum::WARN: {
-//    if (this->_logger != nullptr) {
-//      this->_logger->warn(p_fmt, std::forward<Args>(p_args)...);
-//    }
-//    if (this->_async_file_logger != nullptr) {
-//      this->_async_file_logger->warn(p_fmt, std::forward<Args>(p_args)...);
-//    }
-//    break;
-//  }
-//  case level_enum::ERROR_: {
-//    if (this->_logger != nullptr) {
-//      this->_logger->error(p_fmt, std::forward<Args>(p_args)...);
-//    }
-//    if (this->_async_file_logger != nullptr) {
-//      this->_async_file_logger->error(p_fmt, std::forward<Args>(p_args)...);
-//    }
-//    break;
-//  }
-//  case level_enum::CRITICAL: {
-//    if (this->_logger != nullptr) {
-//      this->_logger->critical(p_fmt, std::forward<Args>(p_args)...);
-//    }
-//    if (this->_async_file_logger != nullptr) {
-//      this->_async_file_logger->critical(p_fmt, std::forward<Args>(p_args)...);
-//    }
-//    break;
-//  }
-//  }
-//}
-
 boost::leaf::result<int> w_log::flush() {
-  const auto _logger_nn = gsl::not_null<spdlog::logger *>(this->_logger.get());
-  const auto _async_file_logger_nn =
-      gsl::not_null<spdlog::logger *>(this->_async_file_logger.get());
-
-  _logger_nn->flush();
-  _async_file_logger_nn->flush();
+  if (this->_logger.get() != nullptr) {
+    this->_logger->flush();
+  }
+  if (this->_async_file_logger.get() != nullptr) {
+    this->_async_file_logger->flush();
+  }
 
   return W_SUCCESS;
 }

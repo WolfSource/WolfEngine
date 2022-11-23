@@ -3,12 +3,17 @@
     https://github.com/WolfEngine/WolfEngine
 */
 
+#ifdef WOLF_TESTS
+
 #pragma once
 
-#include <gtest.hpp>
+#include <wolf.hpp>
+#include <system/w_leak_detector.hpp>
+#include <boost/test/included/unit_test.hpp>
+
 #include <system/w_gametime.hpp>
 
-TEST(gametime, fixed_time) {
+BOOST_AUTO_TEST_CASE(fixed_time) {
   const wolf::system::w_leak_detector _detector = {};
   using w_gametime = wolf::system::w_gametime;
 
@@ -33,29 +38,31 @@ TEST(gametime, fixed_time) {
     _total_seconds = _gametime.get_total_secs();
   }
 
-  EXPECT_EQ(_ticked, true);
+  BOOST_REQUIRE(_ticked == true);
 }
 
-TEST(gametime, unfixed_time) {
-        const wolf::system::w_leak_detector _detector = {};
+BOOST_AUTO_TEST_CASE(unfixed_time) {
+  const wolf::system::w_leak_detector _detector = {};
 
-        constexpr double _stop_after_secs = 5.0;
-        constexpr double _target_elapsed_secs = 1.0 / 50.0; // 50 fps
+  constexpr double _stop_after_secs = 5.0;
+  constexpr double _target_elapsed_secs = 1.0 / 50.0; // 50 fps
 
-        using w_gametime = wolf::system::w_gametime;
+  using w_gametime = wolf::system::w_gametime;
 
-        auto _gametime = w_gametime();
-        _gametime.reset();
-        _gametime.set_fixed_time_step(false);
-        _gametime.set_target_elapsed_secs(_target_elapsed_secs);
+  auto _gametime = w_gametime();
+  _gametime.reset();
+  _gametime.set_fixed_time_step(false);
+  _gametime.set_target_elapsed_secs(_target_elapsed_secs);
 
-        EXPECT_EQ(_gametime.get_fps(), 0);
+  BOOST_REQUIRE(_gametime.get_fps() == 0);
 
-        auto _total_seconds = _gametime.get_total_secs();
-        while (_gametime.get_total_secs() < _stop_after_secs) {
-                _gametime.tick();
-                _total_seconds = _gametime.get_total_secs();
-        }
+  auto _total_seconds = _gametime.get_total_secs();
+  while (_gametime.get_total_secs() < _stop_after_secs) {
+    _gametime.tick();
+    _total_seconds = _gametime.get_total_secs();
+  }
 
-        EXPECT_GT(_gametime.get_fps(), 50);
+  BOOST_REQUIRE(_gametime.get_fps() >= 30);
 }
+
+#endif // WOLF_TESTS

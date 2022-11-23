@@ -3,16 +3,19 @@
     https://github.com/WolfEngine/WolfEngine
 */
 
-#ifdef WOLF_SYSTEM_SOCKET
+#if defined(WOLF_TEST) || defined(WOLF_SYSTEM_SOCKET)
 
 #pragma once
 
-#include <gtest.hpp> 
+#include <wolf.hpp>
+#include <system/w_leak_detector.hpp>
+#include <boost/test/included/unit_test.hpp>
+
 #include <system/socket/w_tcp_server.hpp>
 #include <system/socket/w_tcp_client.hpp>
 #include <system/w_timer.hpp>
 
-TEST(tcp, tcp_server_timeout_test) {
+BOOST_AUTO_TEST_CASE(server_timeout) {
   const wolf::system::w_leak_detector _detector = {};
 
   using tcp = boost::asio::ip::tcp;
@@ -45,9 +48,11 @@ TEST(tcp, tcp_server_timeout_test) {
                   << p_excp.what() << std::endl;
       });
   _io.run();
+
+  BOOST_REQUIRE(true);
 }
 
-TEST(tcp, tcp_client_connect_timeout_test) {
+BOOST_AUTO_TEST_CASE(client_timeout) {
   const wolf::system::w_leak_detector _detector = {};
 
   using tcp = boost::asio::ip::tcp;
@@ -70,14 +75,14 @@ TEST(tcp, tcp_client_connect_timeout_test) {
         auto _ret = co_await (_timer.async_wait(boost::asio::use_awaitable) ||
                               client.async_resolve(_endpoint));
         // expect timeout
-        EXPECT_EQ(_ret.index(), 0);
+        BOOST_REQUIRE(_ret.index() == 0);
 
         _timer.cancel();
         _timer.expires_after(std::chrono::seconds(5));
         _ret = co_await (_timer.async_wait(boost::asio::use_awaitable) ||
                          client.async_resolve("google.com", 443));
         // expect resolving
-        EXPECT_EQ(_ret.index(), 1);
+        BOOST_REQUIRE(_ret.index() == 1);
 
         _io.stop();
 
@@ -86,9 +91,11 @@ TEST(tcp, tcp_client_connect_timeout_test) {
       boost::asio::detached);
 
   _io.run();
+
+  BOOST_REQUIRE(true);
 }
 
-TEST(tcp, tcp_read_write_test) {
+BOOST_AUTO_TEST_CASE(read_write) {
   const wolf::system::w_leak_detector _detector = {};
 
   using tcp = boost::asio::ip::tcp;
@@ -118,10 +125,10 @@ TEST(tcp, tcp_read_write_test) {
             co_await (_timer.async_wait(boost::asio::use_awaitable) ||
                       client.async_resolve("127.0.0.1", 8080));
         // expect resolve
-        EXPECT_EQ(_resolve_res.index(), 1);
+        BOOST_REQUIRE(_resolve_res.index() == 1);
 
         auto _endpoints = std::get<1>(_resolve_res);
-        EXPECT_GT(_endpoints.size(), 0);
+        BOOST_REQUIRE(_endpoints.size() != 0);
 
         const auto _endpoint = _endpoints.cbegin()->endpoint();
 
@@ -129,7 +136,7 @@ TEST(tcp, tcp_read_write_test) {
             co_await (_timer.async_wait(boost::asio::use_awaitable) ||
                       client.async_connect(_endpoint, _opts));
         // expect the connection
-        EXPECT_EQ(_conn_res.index(), 1);
+        BOOST_REQUIRE(_conn_res.index() == 1);
 
         w_buffer _send_buffer("hello");
         w_buffer _recv_buffer{};
@@ -138,26 +145,25 @@ TEST(tcp, tcp_read_write_test) {
           auto _res = co_await (_timer.async_wait(boost::asio::use_awaitable) ||
                                 client.async_write(_send_buffer));
           // expect the connection
-          EXPECT_EQ(_res.index(), 1);
-          EXPECT_EQ(std::get<1>(_res), 5);
+          BOOST_REQUIRE(_res.index() == 1);
+          BOOST_REQUIRE(std::get<1>(_res) == 5);
 
           _res = co_await (_timer.async_wait(boost::asio::use_awaitable) ||
                            client.async_read(_recv_buffer));
           // expect the connection
-          EXPECT_EQ(_res.index(), 1);
+          BOOST_REQUIRE(_res.index() == 1);
           _recv_buffer.used_bytes = std::get<1>(_res);
 
-          EXPECT_EQ(_recv_buffer.used_bytes, 10); // hello-back
-          EXPECT_EQ(_recv_buffer.to_string(),
-                    "hello-back"); // hello-back
+          BOOST_REQUIRE(_recv_buffer.used_bytes == 10);          // hello-back
+          BOOST_REQUIRE(_recv_buffer.to_string() == "hello-back"); // hello-back
         }
 
         _send_buffer.from_string("exit");
         auto _res = co_await (_timer.async_wait(boost::asio::use_awaitable) ||
                               client.async_write(_send_buffer));
         // expect the connection
-        EXPECT_EQ(_res.index(), 1);
-        EXPECT_EQ(std::get<1>(_res), 4);
+        BOOST_REQUIRE(_res.index() == 1);
+        BOOST_REQUIRE(std::get<1>(_res) == 4);
 
         _io.stop();
 
@@ -198,6 +204,8 @@ TEST(tcp, tcp_read_write_test) {
       });
 
   _io.run();
+
+  BOOST_REQUIRE(true);
 }
 
 #endif

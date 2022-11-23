@@ -24,7 +24,7 @@ if (WOLF_SYSTEM_HTTP1_WS)
     )
 endif()
 
-if (WOLF_SYSTEM_SOCKET)
+if (WOLF_TESTS OR WOLF_SYSTEM_SOCKET)
     list(APPEND BOOST_MASTER_LIBS   
         boost_asio
         boost_chrono
@@ -54,7 +54,7 @@ if (WOLF_SYSTEM_FIBER OR WOLF_SYSTEM_SIG_SLOT)
     )
 endif()
 
-if (WOLF_SYSTEM_FIBER OR WOLF_SYSTEM_SOCKET)
+if (WOLF_TESTS OR WOLF_SYSTEM_FIBER OR WOLF_SYSTEM_SOCKET)
     list(APPEND BOOST_MASTER_LIBS   
         boost_context
         boost_intrusive
@@ -69,33 +69,27 @@ if (WOLF_SYSTEM_FIBER OR WOLF_SYSTEM_SOCKET)
     )
 endif()
 
-if (WOLF_SYSTEM_FIBER OR WOLF_SYSTEM_STACKTRACE)
+if (WOLF_TESTS OR WOLF_SYSTEM_FIBER OR WOLF_SYSTEM_SOCKET OR WOLF_SYSTEM_STACKTRACE)
     list(APPEND BOOST_MASTER_LIBS 
         boost_integer 
 )
 endif()
 
-if (WOLF_SYSTEM_SOCKET OR WOLF_SYSTEM_SIG_SLOT)
-    list(APPEND BOOST_MASTER_LIBS   
-        boost_integer
-    )
-endif()
-
-if (WOLF_SYSTEM_SOCKET OR WOLF_SYSTEM_STACKTRACE)
+if (WOLF_TESTS OR WOLF_SYSTEM_SOCKET OR WOLF_SYSTEM_STACKTRACE)
     list(APPEND BOOST_MASTER_LIBS   
         boost_align
         
     )
 endif()
 
-if (WOLF_SYSTEM_FIBER OR WOLF_SYSTEM_SOCKET OR WOLF_SYSTEM_STACKTRACE)
+if (WOLF_TESTS OR WOLF_SYSTEM_FIBER OR WOLF_SYSTEM_SOCKET OR WOLF_SYSTEM_STACKTRACE)
     list(APPEND BOOST_MASTER_LIBS
         boost_array
         boost_winapi
     )
 endif()
 
-if (WOLF_SYSTEM_FIBER OR WOLF_SYSTEM_SOCKET OR WOLF_SYSTEM_SIG_SLOT)
+if (WOLF_TESTS OR WOLF_SYSTEM_FIBER OR WOLF_SYSTEM_SOCKET OR WOLF_SYSTEM_SIG_SLOT)
     list(APPEND BOOST_MASTER_LIBS   
         boost_smart_ptr
         boost_move
@@ -116,7 +110,7 @@ if (WOLF_SYSTEM_FIBER OR WOLF_SYSTEM_SOCKET OR WOLF_SYSTEM_SIG_SLOT)
     )
 endif()
 
-if (WOLF_SYSTEM_FIBER OR WOLF_SYSTEM_SOCKET OR WOLF_SYSTEM_SIG_SLOT OR WOLF_SYSTEM_STACKTRACE)
+if (WOLF_TESTS OR WOLF_SYSTEM_FIBER OR WOLF_SYSTEM_SOCKET OR WOLF_SYSTEM_SIG_SLOT OR WOLF_SYSTEM_STACKTRACE)
     list(APPEND BOOST_MASTER_LIBS
         boost_detail
         boost_assert
@@ -196,4 +190,17 @@ if (WOLF_SYSTEM_STACKTRACE)
             boost_stacktrace_noop
             PROPERTIES FOLDER "boost")
     endif() 
+endif()
+
+if (WOLF_TESTS)
+    message("fetching https://github.com/boostorg/test.git")
+    FetchContent_Declare(
+        boost_test
+        GIT_REPOSITORY https://github.com/boostorg/test.git
+        GIT_TAG        master
+    )
+    FetchContent_Populate(boost_test)
+    list(APPEND INCLUDES
+        ${boost_test_SOURCE_DIR}/include
+    )
 endif()

@@ -7,15 +7,13 @@
 
 #pragma once
 
-#include <gtest.hpp> 
-
-
-TEST(compress, lz4_test) {
-  const wolf::system::w_leak_detector _detector = {};
-
-
-}
-
-
+//#include <gtest.hpp> 
+//
+//
+//TEST(compress, lz4_test) {
+//  const wolf::system::w_leak_detector _detector = {};
+//
+//
+//}
 
 #endif

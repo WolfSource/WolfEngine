@@ -163,33 +163,6 @@ endif()
 #add_compile_options(-fsanitize=address)
 #add_link_options(-fsanitize=address)
 
-# fetch google test
-if (WOLF_TESTS)
-    message("fetching https://github.com/google/googletest.git")
-    
-    FetchContent_Declare(
-        googletest
-        GIT_REPOSITORY https://github.com/google/googletest.git
-        GIT_TAG        main
-    )
-
-    FetchContent_Declare(googletest)
-    # For Windows: Prevent overriding the parent project's compiler/linker settings
-    set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-    set(BUILD_GMOCK OFF CACHE BOOL "" FORCE)
-
-    FetchContent_MakeAvailable(googletest)
-
-    list(APPEND INCLUDES
-        ${googletest_SOURCE_DIR}/googletest/include
-    )
-
-    set_target_properties(
-        gtest
-        gtest_main
-        PROPERTIES FOLDER "gtest")
-endif()
-
 # enabling clang-tidy
 # can be enabled with .CLANG-TIDY from Visual Studio Code
 # https://devblogs.microsoft.com/cppblog/visual-studio-code-c-december-2021-update-clang-tidy/
@@ -301,21 +274,11 @@ endif()
 
 # build tests
 if (WOLF_TESTS)
-    enable_testing()
-
     add_executable(${TEST_PROJECT_NAME}
         tests.cpp
     )
-    target_link_libraries(${TEST_PROJECT_NAME} PRIVATE ${PROJECT_NAME} GTest::gtest_main)
+    target_link_libraries(${TEST_PROJECT_NAME} PRIVATE ${PROJECT_NAME})
     if (NOT WIN32)
         target_compile_options(${TEST_PROJECT_NAME} PRIVATE -std=c++2b)
     endif()
-
-    if (WOLF_ENABLE_ASAN)
-        target_compile_options(${TEST_PROJECT_NAME} PRIVATE -fsanitize=address)
-        target_link_options(${TEST_PROJECT_NAME} PRIVATE -fsanitize=address)
-    endif()
-   
-    include(GoogleTest)
-    gtest_discover_tests(wolf_tests)
 endif()

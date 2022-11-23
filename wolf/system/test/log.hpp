@@ -3,15 +3,20 @@
     https://github.com/WolfEngine/WolfEngine
 */
 
+#if defined(WOLF_TESTS) && defined(WOLF_SYSTEM_LOG)
+
 #pragma once
 
-#include <gtest.hpp> 
+#include <wolf.hpp>
+#include <system/w_leak_detector.hpp>
+#include <boost/test/included/unit_test.hpp>
+
 #include <system/log/w_log.hpp>
 #include <system/w_process.hpp>
 #include <sstream>
 #include <random> 
 
-TEST(log, stress_test) {
+BOOST_AUTO_TEST_CASE(stress_test) {
   const wolf::system::w_leak_detector _detector = {};
 
   using w_log = wolf::system::log::w_log;
@@ -19,10 +24,10 @@ TEST(log, stress_test) {
   using w_log_sink = wolf::system::log::w_log_sink;
 
   auto _path = wolf::system::w_process::current_exe_path();
-  EXPECT_EQ(_path.has_error(), false);
+  BOOST_REQUIRE(_path.has_error() == false);
 
   auto _p = _path.value();
-  EXPECT_EQ(_p.empty(), false);
+  BOOST_REQUIRE(_p.empty() == false);
 
   const auto _log_path = _p.append("/log/");
   const w_log_config _config = {
@@ -52,7 +57,7 @@ TEST(log, stress_test) {
 
   w_log _log(_config);
   const auto _ret = _log.init();
-  EXPECT_EQ(_ret.has_error(), false);
+  BOOST_REQUIRE(_ret.has_error() == false);
 
   constexpr auto _max = 5;
   constexpr auto _min = 3;
@@ -91,4 +96,7 @@ TEST(log, stress_test) {
   for (auto &t : threads) {
     t.join();
   }
+  BOOST_REQUIRE(true);
 }
+
+#endif
