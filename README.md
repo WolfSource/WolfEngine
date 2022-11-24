@@ -39,10 +39,10 @@ The Wolf is a comprehensive set of C++ open source libraries for realtime render
 
 | API | Windows | Linux | macOS | iOS | Android | Wasm |
 |:-----------:|:-----------:|:--------------------------:|:--------------:|:-------------:|:--------------:|:-------------:|
-| FFmpeg | :memo: | :memo: | :memo: | :memo: | :memo: | :x: |
-| JPEG | :memo: | :memo: | :memo: | :memo: | :memo: | :x: |
-| OpenAL | :memo: | :memo: | :memo: | :memo: | :memo: | :x: |
-| PNG | :memo: | :memo: | :memo: | :memo: | :memo: | :x: |
+| FFmpeg | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :x: |
+| JPEG | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :x: |
+| OpenAL | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :x: |
+| PNG | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :x: |
 | WebP | :memo: | :memo: | :memo: | :memo: | :memo: | :x: |
 
 ### Supported platforms and APIs for stream module
@@ -56,7 +56,7 @@ The Wolf is a comprehensive set of C++ open source libraries for realtime render
 | RTSP | :memo: | :memo: | :memo: | :memo: | :memo: | :x: |
 | SRT | :memo: | :memo: | :memo: | :memo: | :memo: | :x: |
 | webRTC | :memo: | :memo: | :memo: | :memo: | :memo: | :memo: |
-| WS | :memo: | :memo: | :memo: | :memo: | :memo: | :memo: |
+| WS | :construction: | :memo: | :memo: | :memo: | :memo: | :memo: |
 
 
 ### Supported platforms and APIs for system module
