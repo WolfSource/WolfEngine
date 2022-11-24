@@ -102,16 +102,14 @@ public:
 #endif
 
 private:
-  // move implementation
-  void _move(w_av_frame &&p_other) noexcept;
-  // initialization
-  void _init() noexcept;
-
   // copy constructor.
   w_av_frame(const w_av_frame &) = delete;
   // copy assignment operator.
   w_av_frame &operator=(const w_av_frame &) = delete;
 
+    // move implementation
+  void _move(w_av_frame &&p_other) noexcept;
+  // release
   void _release() noexcept;
 
   // the pixel format of ffmpeg AVFrame

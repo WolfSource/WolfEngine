@@ -13,7 +13,8 @@
 
 #pragma once
 
-#include <media/ffmpeg/av_frame.hpp>
+#include <media/ffmpeg/w_av_frame.hpp>
+#include <media/ffmpeg/w_av_packet.hpp>
 
 BOOST_AUTO_TEST_CASE(avframe_test) {
   const wolf::system::w_leak_detector _detector = {};

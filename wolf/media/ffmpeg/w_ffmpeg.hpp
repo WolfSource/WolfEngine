@@ -1,10 +1,12 @@
-///*
-//    Project: Wolf Engine. Copyright © 2014-2022 Pooya Eimandar
-//    https://github.com/WolfEngine/WolfEngine
-//*/
-//
-//#pragma once
-//
+/*
+    Project: Wolf Engine. Copyright © 2014-2022 Pooya Eimandar
+    https://github.com/WolfEngine/WolfEngine
+*/
+
+#ifdef WOLF_MEDIA_FFMPEG
+
+#pragma once
+
 //#ifdef __cplusplus
 //extern "C" {
 //#endif
@@ -109,4 +111,5 @@
 //
 //#ifdef __cplusplus
 //}
-//#endif
+
+#endif // WOLF_MEDIA_FFMPEG

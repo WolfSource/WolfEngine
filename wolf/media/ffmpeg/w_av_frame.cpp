@@ -1,4 +1,6 @@
-#include "av_frame.hpp"
+#ifdef WOLF_MEDIA_FFMPEG
+
+#include "w_av_frame.hpp"
 
 #include <DISABLE_ANALYSIS_BEGIN>
 extern "C" {
@@ -199,8 +201,10 @@ w_av_frame::save_to_img_file(_In_ const std::filesystem::path &p_path,
                           p_quality);
   } else {
     return W_ERR(std::errc::invalid_argument,
-                 "extension format not supported for " + _path);
+                 "image format not supported for " + _path);
   }
 }
 
 #endif
+
+#endif // WOLF_MEDIA_FFMPEG

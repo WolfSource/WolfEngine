@@ -1,6 +1,7 @@
-﻿//#include "ffmpeg.h"
-//#include <wolf.hpp>
-//
+﻿#ifdef WOLF_MEDIA_FFMPEG
+
+#include "w_ffmpeg.hpp"
+
 //#include <cstdint>
 //#include <cstdarg>
 //#include <vector>
@@ -439,3 +440,5 @@
 //    free(_ffmpeg_nn);
 //    *p_ffmpeg = nullptr;
 //}
+
+#endif // WOLF_MEDIA_FFMPEG
