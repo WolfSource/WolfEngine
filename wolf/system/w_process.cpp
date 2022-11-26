@@ -1,4 +1,7 @@
 #include "w_process.hpp"
+#include "w_trace.hpp"
+
+#include <fstream>
 
 using w_process = wolf::system::w_process;
 
@@ -23,8 +26,10 @@ boost::leaf::result<std::filesystem::path> w_process::current_exe_path() {
   auto _path = path(_buffer.data(), path::auto_format).parent_path();
   return W_OK(_path);
 #else
-  std::string _str;
-  std::ifstream("/proc/self/comm") >> _str;
+  std::stringstream buffer;
+  buffer << std::ifstream("/proc/self/comm").rdbuf();
+  
+  std::string _str = buffer.str();
   return std::filesystem::path(_str);
 #endif
 }

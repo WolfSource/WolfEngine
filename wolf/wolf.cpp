@@ -63,9 +63,19 @@ std::string wolf::w_init()
     // for debugging
     constexpr auto WOLF_DEBUG_VERSION = 0;
 
+#ifdef __clang__
+    int _size = std::snprintf( nullptr, 0, "v{%d}.{%d}.{%d}.{%d}",
+        WOLF_MAJOR_VERSION, WOLF_MINOR_VERSION, WOLF_PATCH_VERSION, WOLF_DEBUG_VERSION);
+		
+    std::string _version(_size + 1, '\0');
+	
+    sprintf(&_version[0],
+        "v{%d}.{%d}.{%d}.{%d}",
+        WOLF_MAJOR_VERSION, WOLF_MINOR_VERSION, WOLF_PATCH_VERSION, WOLF_DEBUG_VERSION);
+#else
     auto _version = std::format(
         "v{}.{}.{}.{}",
         WOLF_MAJOR_VERSION, WOLF_MINOR_VERSION, WOLF_PATCH_VERSION, WOLF_DEBUG_VERSION);
-
+#endif
     return _version;
 }

@@ -45,10 +45,6 @@ endif()
 find_package(Git REQUIRED)
 if (NOT EMSCRIPTEN)
     find_package (Threads)
-    if (LINUX)
-        find_package(Wget REQUIRED)
-        message("make sure libtool was installed.(apt-get install libtool-bin)")
-    endif()
 endif()
 
 # use folders
