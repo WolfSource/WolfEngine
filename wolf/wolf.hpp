@@ -16,6 +16,7 @@
 #ifdef WIN32
 
 #include <Windows.h>
+#include <format>
 
 #endif
 
@@ -25,7 +26,6 @@
 
 #include <chrono>
 #include <exception>
-#include <format>
 #include <memory>
 #include <sstream>
 #include <string>
@@ -43,8 +43,6 @@
     #include <boost/stacktrace/stacktrace.hpp>
 #endif
 #include "DISABLE_ANALYSIS_END"
-
-#include <system/w_trace.hpp>
 
 constexpr auto W_MAX_PATH = 260;
 constexpr auto W_MAX_BUFFER_SIZE = 1024;

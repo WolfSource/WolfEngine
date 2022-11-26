@@ -18,6 +18,21 @@ The Wolf is a comprehensive set of C++ open source libraries for realtime render
 	- [Perl](https://www.perl.org/get.html) for boringSSL. [Strawberry Perl](https://strawberryperl.com/) is recommended for Windows.
 	- [Go](https://go.dev/dl/) for boringSSL
 	- [QT6](https://www.qt.io/download) for wolf render, demos and examples
+	
+## CMakePresets
+	
+To list configure presets: `cmake . --list-presets`
+To list build presets: `cmake --build --list-presets`
+
+### Android
+In order to configure, build and test using CMakePresets you must have set the following environment variables:
+ - NDK (e.g. C:\Android\android-ndk-r25b)
+ 
+In terminal/command line use presets:
+```
+cmake . --preset android-arm64-release
+cmake --build --preset default-build-android
+```
 
 ## Recent Sample
 <p>Dynamic LOD Generation using <a href="https://www.simplygon.com/" target="_blank">Simplygon</a></p>

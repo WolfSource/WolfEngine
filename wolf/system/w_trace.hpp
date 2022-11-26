@@ -70,7 +70,9 @@ private:
 constexpr inline int W_SUCCESS = 0;
 
 template<typename T>
+#ifndef __clang__
 requires std::movable<T>
+#endif
 constexpr inline boost::leaf::result<T> W_OK(T &p_param) {
     return boost::leaf::result<T>(std::move(p_param));
 }
