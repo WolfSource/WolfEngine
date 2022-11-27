@@ -77,7 +77,7 @@ public:
   /**
    * @returns av_config
    */
-  W_API w_av_config get_config() const;
+  W_API w_av_config get_config() const noexcept;
 
 #ifdef WOLF_MEDIA_STB
 

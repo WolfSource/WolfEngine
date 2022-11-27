@@ -20,12 +20,13 @@ namespace wolf::media::ffmpeg {
 class w_av_packet {
 public:
   /**
-   * construct an an av_packet
+   * construct an av_packet
    */
   W_API w_av_packet() noexcept;
 
   /**
-   * construct an an av_packet
+   * initialize the av_packet
+   * @returns zero on success
    */
   W_API boost::leaf::result<int> init() noexcept;
 
@@ -44,8 +45,6 @@ private:
   w_av_packet &operator=(const w_av_packet &) = delete;
 
   void _release() noexcept;
-  // move implementation
-  void _move(w_av_packet &&p_other) noexcept;
 
   std::unique_ptr<AVPacket> _packet = nullptr;
 };

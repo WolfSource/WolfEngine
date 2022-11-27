@@ -2,6 +2,210 @@
 
 #include "w_ffmpeg.hpp"
 
+#include <DISABLE_ANALYSIS_BEGIN>
+extern "C" {
+#include <libavutil/opt.h>
+}
+#include <DISABLE_ANALYSIS_END>
+
+using w_ffmpeg = wolf::media::ffmpeg::w_ffmpeg;
+using w_ffmpeg_ctx = wolf::media::ffmpeg::w_ffmpeg_ctx;
+using w_av_frame = wolf::media::ffmpeg::w_av_frame;
+using w_av_codec_opt = wolf::media::ffmpeg::w_av_codec_opt;
+using w_av_set_opt = wolf::media::ffmpeg::w_av_set_opt;
+using w_encoder = wolf::media::ffmpeg::w_encoder;
+using w_decoder = wolf::media::ffmpeg::w_decoder;
+
+static const std::string s_get_av_err_str(_In_ const int p_error_code) noexcept {
+  std::string _av_error;
+  _av_error.reserve(W_MAX_PATH);
+  std::ignore =
+      av_make_error_string(_av_error.data(), W_MAX_PATH, p_error_code);
+  return _av_error;
+}
+
+#pragma region w_ffmpeg_ctx
+
+w_ffmpeg_ctx::w_ffmpeg_ctx(w_ffmpeg_ctx &&p_other) noexcept {
+  _move(std::move(p_other));
+}
+
+w_ffmpeg_ctx &w_ffmpeg_ctx::operator=(w_ffmpeg_ctx &&p_other) noexcept {
+  _move(std::move(p_other));
+  return *this;
+}
+
+w_ffmpeg_ctx::~w_ffmpeg_ctx() noexcept { _release(); }
+
+void w_ffmpeg_ctx::_move(w_ffmpeg_ctx &&p_other) noexcept {
+  if (this == &p_other)
+    return;
+
+  _release();
+
+  this->codec = std::exchange(p_other.codec, nullptr);
+  this->codec_id = p_other.codec_id;
+  this->context = std::exchange(p_other.context, nullptr);
+  this->parser = std::exchange(p_other.parser, nullptr);
+}
+
+void w_ffmpeg_ctx::_release() noexcept {
+  if (this->parser != nullptr) {
+    av_parser_close(this->parser);
+    this->parser = nullptr;
+  }
+  if (this->context) {
+    avcodec_close(this->context);
+    avcodec_free_context(&this->context);
+    this->context = nullptr;
+  }
+}
+
+#pragma endregion
+
+static boost::leaf::result<int>
+create(_Inout_ w_ffmpeg_ctx &p_ctx, _In_ const w_av_frame &p_frame,
+       _In_ const std::string_view p_id, _In_ const w_av_codec_opt &p_settings,
+       _In_ const std::vector<w_av_set_opt> &p_opts) noexcept {
+
+  p_ctx.context = avcodec_alloc_context3(p_ctx.codec);
+  auto _context_nn = gsl::narrow_cast<AVCodecContext *>(p_ctx.context);
+
+  const auto _frame_config = p_frame.get_config();
+
+  _context_nn->width = _frame_config.width;
+  _context_nn->height = _frame_config.height;
+  _context_nn->bit_rate = p_settings.bitrate;
+  _context_nn->time_base = AVRational{1, p_settings.fps};
+  _context_nn->framerate = AVRational{p_settings.fps, 1};
+  _context_nn->pix_fmt = _frame_config.format;
+
+  // set gop
+  if (p_settings.gop >= 0) {
+    _context_nn->gop_size = gsl::narrow_cast<int>(p_settings.gop);
+  }
+  // set refs
+  if (p_settings.refs >= 0) {
+    _context_nn->refs = gsl::narrow_cast<int>(p_settings.refs);
+  }
+  // set frames
+  if (p_settings.max_b_frames >= 0) {
+    _context_nn->max_b_frames = gsl::narrow_cast<int>(p_settings.max_b_frames);
+  }
+  // set thread numbers
+  if (p_settings.thread_count >= 0) {
+    _context_nn->thread_count = gsl::narrow_cast<int>(p_settings.thread_count);
+  }
+  // set level
+  if (p_settings.level >= 0) {
+    _context_nn->level = p_settings.level;
+  }
+  // set flags
+  if (_context_nn->flags & AVFMT_GLOBALHEADER) {
+    _context_nn->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
+  }
+
+  for (const auto &_opt : p_opts) {
+    if (_opt.name.empty() == true) {
+      continue;
+    }
+
+    auto _name_str = _opt.name.c_str();
+    if (std::holds_alternative<int>(_opt.value)) {
+      // set an integer value
+      const auto _value = std::get<int>(_opt.value);
+      const auto _ret =
+          av_opt_set_int(_context_nn->priv_data, _name_str, _value, 0);
+      if (_ret < 0) {
+        std::string _value_str;
+        try {
+          _value_str = std::to_string(_value);
+        } catch (...) {
+        };
+        return W_ERR(std::errc::invalid_argument,
+                     "could not set int value for " + _opt.name + ":" +
+                         _value_str + " because " + s_get_av_err_str(_ret));
+      }
+    } else if (std::holds_alternative<double>(_opt.value)) {
+      // set double value
+      const auto _value = std::get<int>(_opt.value);
+      const auto _ret =
+          av_opt_set_double(_context_nn->priv_data, _name_str, _value, 0);
+      if (_ret < 0) {
+        std::string _value_str;
+        try {
+          _value_str = std::to_string(_value);
+        } catch (...) {
+        };
+        return W_ERR(std::errc::invalid_argument,
+                     "could not set double value for " + _opt.name + ":" +
+                         _value_str + " because " + s_get_av_err_str(_ret));
+      }
+    } else {
+      // set string value
+      const auto _value_str = std::get<std::string>(_opt.value);
+      if (_value_str.empty() == false) {
+        const auto _ret = av_opt_set(_context_nn->priv_data, _opt.name.c_str(),
+                                     _value_str.c_str(), 0);
+        if (_ret < 0) {
+          return W_ERR(std::errc::invalid_argument,
+                       "could not set string value for " + _opt.name + ":" +
+                           _value_str + " because " + s_get_av_err_str(_ret));
+        }
+      }
+    }
+    // open avcodec
+    const auto _ret = avcodec_open2(_context_nn, _context_nn->codec, nullptr);
+    if (_ret < 0) {
+      return W_ERR(std::errc::operation_canceled,
+                   "could not open avcodec because " + s_get_av_err_str(_ret));
+    }
+  }
+  return W_OK();
+}
+
+boost::leaf::result<w_encoder> w_ffmpeg::create_encoder(
+    _In_ const w_av_frame &p_frame, _In_ const std::string &p_id,
+    _In_ const w_av_codec_opt &p_settings,
+    _In_ const std::vector<w_av_set_opt> &p_opts) noexcept {
+
+  w_encoder _encoder = {};
+
+  _encoder.ctx.codec = avcodec_find_encoder_by_name(p_id.c_str());
+  if (_encoder.ctx.codec == nullptr) {
+    return W_ERR(std::errc::invalid_argument,
+                 "could not find encoder codec id: " + p_id);
+  }
+
+  BOOST_LEAF_CHECK(create(_encoder.ctx, p_frame, p_id, p_settings, p_opts));
+
+  return _encoder;
+}
+
+boost::leaf::result<w_decoder> w_ffmpeg::create_decoder(
+    _In_ const w_av_frame &p_frame, _In_ const std::string &p_id,
+    _In_ const w_av_codec_opt &p_settings,
+    _In_ const std::vector<w_av_set_opt> &p_opts) noexcept {
+
+  w_decoder _decoder = {};
+
+  _decoder.ctx.codec = avcodec_find_decoder_by_name(p_id.c_str());
+  if (_decoder.ctx.codec == nullptr) {
+    return W_ERR(std::errc::invalid_argument,
+                 "could not find decoder codec id: " + p_id);
+  }
+  _decoder.ctx.parser = av_parser_init(_decoder.ctx.codec->id);
+  if (_decoder.ctx.parser == nullptr) {
+    return W_ERR(std::errc::invalid_argument,
+                 "could not initialize parser for codec id: " + p_id);
+  }
+
+  BOOST_LEAF_CHECK(create(_decoder.ctx, p_frame, p_id, p_settings, p_opts));
+
+  return _decoder;
+}
+
+
 //#include <cstdint>
 //#include <cstdarg>
 //#include <vector>
@@ -22,223 +226,9 @@
 //#ifdef __cplusplus
 //}
 //#endif
-//#include <DISABLE_ANALYSIS_END>
-//
-//typedef struct w_ffmpeg_t
-//{
-//    AVCodecID codec_id = AVCodecID::AV_CODEC_ID_NONE;
-//    AVCodecContext* context = nullptr;
-//    const AVCodec* codec = nullptr;
-//    AVCodecParserContext* parser = nullptr;
-//}w_ffmpeg_t W_ALIGNMENT_64;
-//
-//int w_ffmpeg_init(
-//    _Inout_ w_ffmpeg* p_ffmpeg,
-//    _In_ w_av_frame p_frame,
-//    _In_ uint32_t p_mode,
-//    _In_ const char* p_avcodec_id,
-//    _In_ AVCodeOptions* p_codec_opt,
-//    _In_ const AVSetOption* p_av_opt_sets,
-//    _In_ uint32_t p_av_opt_sets_size,
-//    _Inout_ char* p_error)
-//{
-//    constexpr auto TRACE = "ffmpeg::w_ffmpeg_init";
-//    const auto _error_nn = gsl::not_null<char*>(p_error);
-//    auto _ret = 0;
-//
-//    auto _ptr = (w_ffmpeg_t*)calloc(1, sizeof(w_ffmpeg_t));
-//    const auto _codec_opt = gsl::not_null<AVCodeOptions*>(p_codec_opt);
-//    const auto _ffmpeg = gsl::not_null<w_ffmpeg_t*>(_ptr);
-//    const auto _codec_id_nn = gsl::not_null<const char*>(p_avcodec_id);
-//
-//    defer _(nullptr, [&](...)
-//        {
-//            *p_ffmpeg = _ffmpeg.get();
-//            if (_ret != 0)
-//            {
-//                w_ffmpeg_fini(p_ffmpeg);
-//            }
-//        });
-//
-//    if (p_mode == 0)
-//    {
-//        _ffmpeg->codec = avcodec_find_encoder_by_name(_codec_id_nn);
-//        if (_ffmpeg->codec == nullptr)
-//        {
-//            std::ignore = snprintf(
-//                p_error,
-//                W_MAX_PATH,
-//                "could not find encoder codec id %s. trace info: %s",
-//                _codec_id_nn.get(),
-//                TRACE);
-//            return _ret = -1;
-//        }
-//    }
-//    else
-//    {
-//        _ffmpeg->codec = avcodec_find_decoder_by_name(_codec_id_nn);
-//        if (_ffmpeg->codec == nullptr)
-//        {
-//            std::ignore = snprintf(
-//                p_error,
-//                W_MAX_PATH,
-//                "could not find encoder codec id %s. trace info: %s",
-//                _codec_id_nn.get(),
-//                TRACE);
-//            return _ret = -1;
-//        }
-//        _ffmpeg->parser = av_parser_init(_ffmpeg->codec->id);
-//    }
-//
-//    _ffmpeg->context = gsl::not_null<AVCodecContext*>(avcodec_alloc_context3(_ffmpeg->codec));
-//
-//    // note resolution must be a multiple of 2!!
-//    _ffmpeg->context->width = p_frame->width;
-//    // note resolution must be a multiple of 2!!
-//    _ffmpeg->context->height = p_frame->height;
-//    // bitrate of context
-//    _ffmpeg->context->bit_rate = gsl::narrow_cast<int64_t>(_codec_opt->bitrate);
-//    // time based number
-//    _ffmpeg->context->time_base = AVRational{ 1, gsl::narrow_cast<int>(_codec_opt->fps) };
-//    // frame rate
-//    _ffmpeg->context->framerate = AVRational{ gsl::narrow_cast<int>(_codec_opt->fps) , 1 };
-//    // pixel format
-//    _ffmpeg->context->pix_fmt = gsl::narrow_cast<AVPixelFormat>(p_frame->format);
-//    // set gop
-//    if (_codec_opt->gop >= 0)
-//    {
-//        _ffmpeg->context->gop_size = gsl::narrow_cast<int>(_codec_opt->gop);
-//    }
-//    // set refs
-//    if (_codec_opt->refs >= 0)
-//    {
-//        _ffmpeg->context->refs = gsl::narrow_cast<int>(_codec_opt->refs);
-//    }
-//    // set frames
-//    if (_codec_opt->max_b_frames >= 0)
-//    {
-//        _ffmpeg->context->max_b_frames = gsl::narrow_cast<int>(_codec_opt->max_b_frames);
-//    }
-//    // set thread numbers
-//    if (_codec_opt->thread_count >= 0)
-//    {
-//        _ffmpeg->context->thread_count = gsl::narrow_cast<int>(_codec_opt->thread_count);
-//    }
-//    // set level
-//    if (_codec_opt->level >= 0)
-//    {
-//        _ffmpeg->context->level = _codec_opt->level;
-//    }
-//
-//    if (_ffmpeg->context->flags & AVFMT_GLOBALHEADER)
-//    {
-//        _ffmpeg->context->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
-//    }
-//
-//#ifdef __clang__
-//#pragma unroll
-//#endif
-//    for (uint32_t i = 0; i < p_av_opt_sets_size; ++i)
-//    {
-//        auto* const _name = p_av_opt_sets[i].name;
-//
-//        if (_name == nullptr)
-//        {
-//            continue;
-//        }
-//
-//        switch (p_av_opt_sets[i].value_type)
-//        {
-//        default:
-//            break;
-//        case AVSetOptionValueType::STRING:
-//        {
-//            const auto _value = p_av_opt_sets[i].value_str;
-//            if (_value != nullptr)
-//            {
-//                _ret = av_opt_set(_ffmpeg->context->priv_data, _name, _value, 0);
-//                if (_ret < 0)
-//                {
-//                    std::array<char, W_MAX_PATH> _av_error = { 0 };
-//                    std::ignore = av_make_error_string(_av_error.data(), _av_error.size(), _ret);
-//
-//                    std::ignore = snprintf(
-//                        p_error,
-//                        W_MAX_PATH,
-//                        "could not set %s : %s because: %s. trace info: %s",
-//                        _name,
-//                        _value,
-//                        _av_error.data(),
-//                        TRACE);
-//                    return _ret = -1;
-//                }
-//            }
-//            break;
-//        }
-//        case AVSetOptionValueType::INTEGER:
-//        {
-//            const auto _value = p_av_opt_sets[i].value_int;
-//            _ret = av_opt_set_int(_ffmpeg->context->priv_data, _name, _value, 0);
-//            if (_ret < 0)
-//            {
-//                std::array<char, W_MAX_PATH> _av_error = { 0 };
-//                std::ignore = av_make_error_string(_av_error.data(), _av_error.size(), _ret);
-//
-//                std::ignore = snprintf(
-//                    p_error,
-//                    W_MAX_PATH,
-//                    "could not set %s : %d because: %s. trace info: %s",
-//                    _name,
-//                    _value,
-//                    _av_error.data(),
-//                    TRACE);
-//                return _ret = -1;
-//            }
-//            break;
-//        }
-//        case AVSetOptionValueType::DOUBLE:
-//        {
-//            const auto _value = p_av_opt_sets[i].value_double;
-//            _ret = av_opt_set_double(_ffmpeg->context->priv_data, _name, _value, 0);
-//            if (_ret < 0)
-//            {
-//                std::array<char, W_MAX_PATH> _av_error = { 0 };
-//                std::ignore = av_make_error_string(_av_error.data(), _av_error.size(), _ret);
-//
-//                std::ignore = snprintf(
-//                    p_error,
-//                    W_MAX_PATH,
-//                    "could not set %s : %f because: %s. trace info: %s",
-//                    _name,
-//                    _value,
-//                    _av_error.data(),
-//                    TRACE);
-//                return _ret = -1;
-//            }
-//            break;
-//        }
-//        }
-//    }
-//
-//    _ret = avcodec_open2(_ffmpeg->context, _ffmpeg->codec, nullptr);
-//    if (_ret < 0)
-//    {
-//        std::array<char, W_MAX_PATH> _av_error = { 0 };
-//        std::ignore = av_make_error_string(_av_error.data(), _av_error.size(), _ret);
-//
-//        std::ignore = snprintf(
-//            p_error,
-//            W_MAX_PATH,
-//            "could not open avcodec for codec id: %d because: %s. trace info: %s",
-//            _ffmpeg->codec_id,
-//            _av_error.data(),
-//            TRACE);
-//        return _ret = -1;
-//    }
-//
-//    return _ret;
-//}
-//
+
+
+
 //int w_ffmpeg_encode(
 //    _In_ w_ffmpeg p_ffmpeg,
 //    _In_ const w_av_frame p_av_frame,
@@ -420,25 +410,6 @@
 //    av_packet_free(&_dst_packet);
 //
 //    return _ret;
-//}
-//
-//void w_ffmpeg_fini(_Inout_ w_ffmpeg* p_ffmpeg)
-//{
-//    const auto _ffmpeg_ptr_nn = gsl::not_null<w_ffmpeg*>(p_ffmpeg);
-//    const auto _ffmpeg_nn = gsl::not_null<w_ffmpeg>(*_ffmpeg_ptr_nn);
-//
-//    if (_ffmpeg_nn->parser)
-//    {
-//        av_parser_close(_ffmpeg_nn->parser);
-//    }
-//    if (_ffmpeg_nn->context)
-//    {
-//        avcodec_close(_ffmpeg_nn->context);
-//        avcodec_free_context(&_ffmpeg_nn->context);
-//    }
-//
-//    free(_ffmpeg_nn);
-//    *p_ffmpeg = nullptr;
 //}
 
 #endif // WOLF_MEDIA_FFMPEG

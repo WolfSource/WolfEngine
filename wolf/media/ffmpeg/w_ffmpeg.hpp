@@ -7,109 +7,122 @@
 
 #pragma once
 
-//#ifdef __cplusplus
-//extern "C" {
-//#endif
-//
-//#include "av_packet.h"
-//#include "av_frame.h"
-//
-//    typedef struct AVCodeOptions
-//    {
-//        int gop;
-//        int level;
-//        int max_b_frames;
-//        int refs;
-//        int thread_count;
-//        uint32_t fps;
-//        uint64_t bitrate;
-//    } AVCodeOptions;
-//
-//    typedef enum AVSetOptionValueType
-//    {
-//        STRING = 0,
-//        INTEGER,
-//        DOUBLE
-//    } AVSetOptionValueType;
-//
-//    typedef struct AVSetOption
-//    {
-//        // name of option 
-//        const char* name;
-//        // value type
-//        AVSetOptionValueType value_type;
-//        // string value of option
-//        const char* value_str;
-//        // int value of option
-//        int value_int;
-//        // double value of option
-//        double value_double;
-//    } AVSetOption;
-//
-//    struct w_ffmpeg_t;
-//    typedef struct w_ffmpeg_t* w_ffmpeg;
-//
-//    /**
-//     * initialize the ffmpeg context
-//     * @param p_ffmpeg, ffmpeg object
-//     * @param p_frame, the av frame
-//     * @param p_mode, zero for encoder and non-zero for decoder
-//     * @param p_avcodec_id, av codec id
-//     * @param p_codec_opt, the av codec options
-//     * @param p_av_opt_sets, the av set options
-//     * @param p_av_opt_sets_size, the av set options size
-//     * @param p_error, the error buffer
-//     * @return int the result of encoding the frame
-//     */
-//    W_API
-//        int w_ffmpeg_init(
-//            _Inout_ w_ffmpeg* p_ffmpeg,
-//            _In_ w_av_frame p_frame,
-//            _In_ uint32_t p_mode,
-//            _In_ const char* p_avcodec_id,
-//            _In_ AVCodeOptions* p_codec_opt,
-//            _In_ const AVSetOption* p_av_opt_sets,
-//            _In_ uint32_t p_av_opt_sets_size,
-//            _Inout_z_ char* p_error);
-//
-//    /**
-//     * encode the ffmpeg avframe
-//     * @param p_ffmpeg, ffmpeg object
-//     * @param p_av_frame, the av frame
-//     * @param p_packet, the output packet
-//     * @param p_error, the error buffer
-//     * @returns an int which is the result of encoding the frame
-//     */
-//    W_API
-//        int w_ffmpeg_encode(
-//            _In_ w_ffmpeg p_ffmpeg,
-//            _In_ const w_av_frame p_av_frame,
-//            _Inout_ w_av_packet* p_packet,
-//            _Inout_ char* p_error);
-//
-//    /**
-//     * decode the ffmpeg avframe
-//     * @param p_ffmpeg, the ffmpeg object
-//     * @param p_packet, the av packet
-//     * @param p_av_frame, the avframe
-//     * @param p_error, the error buffer
-//     * @returns an int which is the result of encoding the frame
-//     */
-//    W_API
-//        int w_ffmpeg_decode(
-//            _In_ w_ffmpeg p_ffmpeg,
-//            _In_ const w_av_packet p_packet,
-//            _Inout_ w_av_frame* p_av_frame,
-//            _Inout_ char* p_error);
-//
-//    /**
-//     * @param p_ffmpeg, ffmpeg object
-//     * release all ffmpeg resources
-//     */
-//    W_API
-//        void w_ffmpeg_fini(_Inout_ w_ffmpeg* p_ffmpeg);
-//
-//#ifdef __cplusplus
-//}
+#include "w_av_frame.hpp"
+#include "w_av_packet.hpp"
+#include <variant>
+
+namespace wolf::media::ffmpeg {
+
+struct w_av_codec_opt {
+  int gop;
+  int level;
+  int max_b_frames;
+  int refs;
+  int thread_count;
+  int fps;
+  int64_t bitrate;
+};
+
+struct w_av_set_opt {
+  // name of option
+  std::string name;
+  // value type
+  std::variant<int, double, std::string> value;
+};
+
+struct w_ffmpeg_ctx {
+  AVCodecID codec_id = AVCodecID::AV_CODEC_ID_NONE;
+  AVCodecContext *context = nullptr;
+  const AVCodec *codec = nullptr;
+  AVCodecParserContext *parser = nullptr;
+
+  // constructor
+  W_API w_ffmpeg_ctx() = default;
+  // destructor
+  W_API virtual ~w_ffmpeg_ctx() noexcept;
+
+  // move constructor.
+  W_API w_ffmpeg_ctx(w_ffmpeg_ctx &&p_other) noexcept;
+  // move assignment operator.
+  W_API w_ffmpeg_ctx &operator=(w_ffmpeg_ctx &&p_other) noexcept;
+
+private:
+  // copy constructor
+  w_ffmpeg_ctx(const w_ffmpeg_ctx &) = delete;
+  // copy operator
+  w_ffmpeg_ctx &operator=(const w_ffmpeg_ctx &) = delete;
+
+  void _move(w_ffmpeg_ctx &&p_other) noexcept;
+  void _release() noexcept;
+};
+
+struct w_encoder {
+  w_ffmpeg_ctx ctx = {};
+
+  // constructor
+  W_API w_encoder() = default;
+  // destructor
+  W_API virtual ~w_encoder() noexcept = default;
+
+  // move constructor.
+  W_API w_encoder(w_encoder &&p_other) noexcept = default;
+  // move assignment operator.
+  W_API w_encoder &operator=(w_encoder &&p_other) noexcept = default;
+
+private:
+  // copy constructor
+  w_encoder(const w_encoder &) = delete;
+  // copy operator
+  w_encoder &operator=(const w_encoder &) = delete;
+};
+
+struct w_decoder {
+  w_ffmpeg_ctx ctx = {};
+
+  // constructor
+  W_API w_decoder() = default;
+  // destructor
+  W_API virtual ~w_decoder() noexcept = default;
+
+  // move constructor.
+  W_API w_decoder(w_decoder &&p_other) noexcept = default;
+  // move assignment operator.
+  W_API w_decoder &operator=(w_decoder &&p_other) noexcept = default;
+
+private:
+  // copy constructor
+  w_decoder(const w_decoder &) = delete;
+  // copy operator
+  w_decoder &operator=(const w_decoder &) = delete;
+};
+
+struct w_ffmpeg {
+  /*
+   * create ffmpeg encoder
+   * @param p_frame, the avframe object
+   * @param p_id, the avcodec id
+   * @param p_settings, the codec settings
+   * @param p_opts, the codec options
+   * @returns encoder object on success
+   */
+  W_API static boost::leaf::result<w_encoder>
+  create_encoder(_In_ const w_av_frame &p_frame, _In_ const std::string &p_id,
+                 _In_ const w_av_codec_opt &p_settings,
+                 _In_ const std::vector<w_av_set_opt> &p_opts) noexcept;
+
+  /*
+   * create ffmpeg decoder
+   * @param p_frame, the avframe object
+   * @param p_id, the avcodec id
+   * @param p_settings, the codec settings
+   * @param p_opts, the codec options
+   * @returns encoder object on success
+   */
+  W_API static boost::leaf::result<w_decoder>
+  create_decoder(_In_ const w_av_frame &p_frame, _In_ const std::string &p_id,
+                 _In_ const w_av_codec_opt &p_settings,
+                 _In_ const std::vector<w_av_set_opt> &p_opts) noexcept;
+};
+} // namespace wolf::media::ffmpeg
 
 #endif // WOLF_MEDIA_FFMPEG

@@ -13,11 +13,15 @@
 
 struct w_trace {
   struct stack {
-    friend std::ostream &operator<<(std::ostream &p_os, stack const &p_trace) {
-      return p_os << "|tid:" << p_trace.thread_id
-                  << "|code:" << p_trace.err_code << "|msg:" << p_trace.err_msg
-                  << "|src:" << p_trace.source_file << "("
-                  << p_trace.source_file_line << ")" << std::endl;
+    friend std::ostream &operator<<(std::ostream &p_os,
+                                    stack const &p_trace) noexcept {
+      try {
+        p_os << "|tid:" << p_trace.thread_id << "|code:" << p_trace.err_code
+             << "|msg:" << p_trace.err_msg << "|src:" << p_trace.source_file
+             << "(" << p_trace.source_file_line << ")" << std::endl;
+      } catch (...) {
+      }
+      return p_os;
     }
     std::thread::id thread_id;
     int64_t err_code = 0;
@@ -28,37 +32,53 @@ struct w_trace {
 
   w_trace() noexcept = default;
 
-  w_trace(_In_ stack &&p_stack) {
-    this->_stacks.emplace_front(p_stack);
+  w_trace(_In_ stack &&p_stack) noexcept {
+    try {
+      this->_stacks.emplace_front(p_stack);
+    } catch (...) {
+    }
   }
 
   w_trace(_In_ int64_t p_err_code, _In_ std::string p_err_msg,
-          _In_ std::string p_source_file, _In_ uint32_t p_source_file_line) {
-    this->_stacks.emplace_front(
-        stack{std::this_thread::get_id(), p_err_code, std::move(p_err_msg),
-              std::move(p_source_file), p_source_file_line});
+          _In_ const char *p_source_file,
+          _In_ uint32_t p_source_file_line) noexcept {
+    try {
+      this->_stacks.emplace_front(stack{std::this_thread::get_id(), p_err_code,
+                                        std::move(p_err_msg), p_source_file,
+                                        p_source_file_line});
+    } catch (...) {
+    }
   }
 
   w_trace(_In_ std::errc p_err_code, _In_ std::string p_err_msg,
-          _In_ std::string p_source_file, _In_ uint32_t p_source_file_line) {
-    this->_stacks.emplace_front(stack{
-        std::this_thread::get_id(), gsl::narrow_cast<int64_t>(p_err_code),
-        std::move(p_err_msg), std::move(p_source_file), p_source_file_line});
+          _In_ const char *p_source_file,
+          _In_ uint32_t p_source_file_line) noexcept {
+    try {
+      this->_stacks.emplace_front(stack{
+          std::this_thread::get_id(), gsl::narrow_cast<int64_t>(p_err_code),
+          std::move(p_err_msg), p_source_file, p_source_file_line});
+    } catch (...) {
+    }
   }
 
   void push(_In_ int64_t p_err_code, _In_ std::string p_err_msg,
-            _In_ std::string p_source_file, _In_ uint32_t p_source_file_line) {
-    this->_stacks.emplace_front(
-        stack{std::this_thread::get_id(), p_err_code, std::move(p_err_msg),
-              std::move(p_source_file), p_source_file_line});
+            _In_ const char *p_source_file,
+            _In_ uint32_t p_source_file_line) noexcept {
+    try {
+      this->_stacks.emplace_front(stack{std::this_thread::get_id(), p_err_code,
+                                        std::move(p_err_msg), p_source_file,
+                                        p_source_file_line});
+    } catch (...) {
+    }
   }
 
-  friend std::ostream &operator<<(std::ostream &p_os, w_trace const &p_trace) {
-#ifdef __clang__
-#pragma unroll
-#endif
-    for (const auto &index : p_trace._stacks) {
-      p_os << index;
+  friend std::ostream &operator<<(std::ostream &p_os,
+                                  w_trace const &p_trace) noexcept {
+    try {
+      for (const auto &index : p_trace._stacks) {
+        p_os << index;
+      }
+    } catch (...) {
     }
     return p_os;
   }
@@ -73,11 +93,11 @@ template<typename T>
 #ifndef __clang__
 requires std::movable<T>
 #endif
-constexpr inline boost::leaf::result<T> W_OK(T &p_param) {
+constexpr inline boost::leaf::result<T> W_OK(T &p_param) noexcept {
     return boost::leaf::result<T>(std::move(p_param));
 }
 
-inline boost::leaf::result<int> W_OK() { return boost::leaf::result<int>(W_SUCCESS); }
+inline boost::leaf::result<int> W_OK() noexcept { return {W_SUCCESS}; }
 
 #define W_ERR(p_code, p_msg) boost::leaf::new_error(w_trace(p_code, p_msg, __FILE__, __LINE__))
 

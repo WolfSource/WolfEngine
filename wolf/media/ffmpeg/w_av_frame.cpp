@@ -104,7 +104,7 @@ std::tuple<uint8_t **, int *> w_av_frame::get() const noexcept {
   return std::make_tuple(_av_frame_nn->data, _av_frame_nn->linesize);
 }
 
-w_av_config w_av_frame::get_config() const { return this->_config; }
+w_av_config w_av_frame::get_config() const noexcept { return this->_config; }
 
 boost::leaf::result<w_av_frame>
 w_av_frame::convert(_In_ const w_av_config &p_dst_config) {

@@ -107,6 +107,8 @@ struct w_buffer {
 
 #endif
 
+#include <system/w_trace.hpp>
+
 namespace wolf {
 /**
  * returns wolf version
