@@ -17,7 +17,13 @@ extern "C" {
 
 namespace wolf::media::ffmpeg {
 
+struct w_decoder;
+struct w_encoder;
+
 class w_av_packet {
+  friend w_decoder;
+  friend w_encoder;
+
 public:
   /**
    * construct an av_packet
@@ -38,6 +44,9 @@ public:
   // destructor
   W_API virtual ~w_av_packet() noexcept;
 
+  // get packet size
+  W_API int get_size() const noexcept;
+
 private:
   // copy constructor.
   w_av_packet(const w_av_packet &) = delete;
@@ -46,7 +55,7 @@ private:
 
   void _release() noexcept;
 
-  std::unique_ptr<AVPacket> _packet = nullptr;
+  AVPacket* _packet = nullptr;
 };
 } // namespace wolf::media::ffmpeg
 

@@ -49,10 +49,8 @@ w_av_frame::~w_av_frame() noexcept { _release(); }
 
 void w_av_frame::_release() noexcept {
   if (this->_av_frame != nullptr) {
-    for (auto data : this->_av_frame->data) {
-      if (data != nullptr) {
-        free(data);
-      }
+    if (this->_av_frame->data[0] != nullptr) {
+      free(this->_av_frame->data[0]);
     }
     av_frame_free(&this->_av_frame);
     this->_av_frame = nullptr;

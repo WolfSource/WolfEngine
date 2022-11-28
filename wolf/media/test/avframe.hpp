@@ -7,11 +7,8 @@
 
 #pragma once
 
-#include <wolf.hpp>
 #include <system/w_leak_detector.hpp>
 #include <boost/test/included/unit_test.hpp>
-
-#pragma once
 
 #include <media/ffmpeg/w_av_frame.hpp>
 #include <media/ffmpeg/w_av_packet.hpp>

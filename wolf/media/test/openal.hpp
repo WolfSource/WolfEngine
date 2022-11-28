@@ -7,7 +7,6 @@
 
 #pragma once
 
-#include <wolf.hpp>
 #include <system/w_leak_detector.hpp>
 #include <boost/test/included/unit_test.hpp>
 

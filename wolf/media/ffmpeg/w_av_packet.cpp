@@ -12,7 +12,7 @@ boost::leaf::result<int> w_av_packet::init() noexcept {
   if (this->_packet != nullptr) {
     _release();
   }
-  this->_packet.reset(av_packet_alloc());
+  this->_packet = av_packet_alloc();
   if (this->_packet == nullptr) {
     return W_ERR(std::errc::not_enough_memory,
                  "could not allocate memory for avpacket");
@@ -20,10 +20,12 @@ boost::leaf::result<int> w_av_packet::init() noexcept {
   return W_SUCCESS;
 }
 
+int w_av_packet::get_size() const noexcept { return this->_packet->size; }
+
 void w_av_packet::_release() noexcept {
   if (this->_packet != nullptr) {
-    auto _ptr = this->_packet.get();
-    av_packet_free(&_ptr);
+    av_packet_free(&this->_packet);
+    this->_packet = nullptr;
   }
 }
 
