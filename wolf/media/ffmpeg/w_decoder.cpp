@@ -56,7 +56,7 @@ w_decoder::_get_packet_from_frame(_In_ AVPacket *p_packet,
   auto _ret = avcodec_send_packet(this->ctx.codec_ctx, p_packet);
   if (_ret < 0) {
     return W_ERR(std::errc::operation_canceled,
-                 "could not parse packet for decoding because " +
+                 "could not parse packet for decoding because of " +
                      w_ffmpeg_ctx::get_av_error_str(_ret));
   }
 

@@ -24,7 +24,7 @@ int w_av_config::get_required_buffer_size() noexcept {
 }
 
 w_av_frame::w_av_frame(_In_ const w_av_config &p_config) noexcept
-    : _config(p_config), _av_frame(nullptr) {}
+    : _config(p_config), _av_frame(nullptr), _moved_data(nullptr) {}
 
 w_av_frame::w_av_frame(w_av_frame &&p_other) noexcept {
   _move(std::move(p_other));
@@ -43,19 +43,23 @@ void w_av_frame::_move(w_av_frame &&p_other) noexcept {
 
   this->_config = std::move(p_other._config);
   this->_av_frame = std::exchange(p_other._av_frame, nullptr);
+  this->_moved_data = std::exchange(p_other._moved_data, nullptr);
 }
 
 w_av_frame::~w_av_frame() noexcept { _release(); }
 
 void w_av_frame::_release() noexcept {
+  if (this->_moved_data != nullptr) {
+    free(this->_moved_data);
+    this->_moved_data = nullptr;
+  }
   if (this->_av_frame != nullptr) {
-    if (this->_av_frame->data[0] != nullptr) {
-      free(this->_av_frame->data[0]);
-    }
     av_frame_free(&this->_av_frame);
     this->_av_frame = nullptr;
   }
 }
+
+boost::leaf::result<int> w_av_frame::init() noexcept { return set(nullptr); }
 
 boost::leaf::result<int> w_av_frame::set(_Inout_ uint8_t **p_data) noexcept {
 
@@ -82,16 +86,17 @@ boost::leaf::result<int> w_av_frame::set(_Inout_ uint8_t **p_data) noexcept {
   const auto _av_frame_nn = gsl::narrow_cast<AVFrame *>(this->_av_frame);
 
   // move the owenership of data to buffer
-  uint8_t *_data;
+  uint8_t *_data_ptr;
   if (p_data == nullptr) {
     const auto _buffer_size = this->_config.get_required_buffer_size();
-    _data = gsl::owner<uint8_t *>(malloc(_buffer_size));
+    _data_ptr = this->_moved_data = gsl::owner<uint8_t *>(malloc(_buffer_size));
   } else {
-    _data = std::exchange(*p_data, nullptr);
+    _data_ptr = std::exchange(*p_data, nullptr);
+    this->_moved_data = nullptr;
   }
   const auto _size = av_image_fill_arrays(
       _av_frame_nn->data, _av_frame_nn->linesize,
-      gsl::narrow_cast<const uint8_t *>(_data), this->_config.format,
+      gsl::narrow_cast<const uint8_t *>(_data_ptr), this->_config.format,
       _av_frame_nn->width, _av_frame_nn->height, _alignment);
 
   return W_SUCCESS;
@@ -177,6 +182,11 @@ w_av_frame::load_from_img_file(_In_ const std::filesystem::path &p_path,
 boost::leaf::result<int>
 w_av_frame::save_to_img_file(_In_ const std::filesystem::path &p_path,
                              int p_quality) {
+  if (this->_av_frame == nullptr) {
+    return W_ERR(std::errc::invalid_argument,
+                 "missing avframe");
+  }
+
   const auto _path = p_path.string();
   auto _ext = p_path.extension().string();
   std::transform(_ext.cbegin(), _ext.cend(), _ext.begin(), tolower);

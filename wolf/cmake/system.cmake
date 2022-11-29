@@ -156,7 +156,7 @@ if (WOLF_SYSTEM_MIMALLOC)
     FetchContent_MakeAvailable(mimalloc-static)
 
     list(APPEND INCLUDES
-        ${mimalloc_static_SOURCE_DIR}/include
+        ${mimalloc-static_SOURCE_DIR}/include
     )
     list(APPEND LIBS mimalloc-static)
 endif()

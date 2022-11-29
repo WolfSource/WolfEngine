@@ -111,13 +111,14 @@ create(_Inout_ w_ffmpeg_ctx &p_ctx, _In_ const w_av_config &p_config,
         }
       }
     }
-    // open avcodec
-    const auto _ret = avcodec_open2(_context_nn, _context_nn->codec, nullptr);
-    if (_ret < 0) {
-      return W_ERR(std::errc::operation_canceled,
-                   "could not open avcodec because " +
-                       w_ffmpeg_ctx::get_av_error_str(_ret));
-    }
+  }
+
+  // open avcodec
+  const auto _ret = avcodec_open2(_context_nn, _context_nn->codec, nullptr);
+  if (_ret < 0) {
+    return W_ERR(std::errc::operation_canceled,
+                 "could not open avcodec because " +
+                     w_ffmpeg_ctx::get_av_error_str(_ret));
   }
   return W_OK();
 }

@@ -18,7 +18,6 @@ extern "C" {
 namespace wolf::media::ffmpeg {
 
 struct w_ffmpeg_ctx {
-  AVCodecID codec_id = AVCodecID::AV_CODEC_ID_NONE;
   AVCodecContext *codec_ctx = nullptr;
   const AVCodec *codec = nullptr;
   AVCodecParserContext *parser = nullptr;

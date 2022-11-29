@@ -35,6 +35,12 @@
 #include <boost/leaf.hpp>
 #include <gsl/gsl>
 
+#ifdef WOLF_SYSTEM_MIMALLOC
+
+#include <mimalloc-override.h>
+
+#endif
+
 #ifdef WOLF_SYSTEM_STACKTRACE
     // disable warning 26458
     #ifdef _MSC_VER

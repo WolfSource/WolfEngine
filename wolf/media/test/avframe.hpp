@@ -35,7 +35,7 @@ BOOST_AUTO_TEST_CASE(avframe_test) {
   BOOST_REQUIRE(_dst_frame_res.has_error() == false);
   BOOST_REQUIRE(_dst_frame_res.has_value() == true);
 
-  const auto _new_path =
+  auto _new_path =
       std::filesystem::current_path().append("/rgb_converted.png");
   const auto _dst_frame = &_dst_frame_res.value();
   auto _ret = _dst_frame->save_to_img_file(_new_path);

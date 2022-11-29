@@ -57,6 +57,13 @@ struct w_av_frame {
   W_API virtual ~w_av_frame() noexcept;
 
   /**
+   * initialize the avframe
+   * @returns zero on success
+   */
+  W_API
+  boost::leaf::result<int> init() noexcept;
+
+  /**
    * set the AVFrame data
    * @param p_data, the initial data of ffmpeg AVFrame
    * @param p_alignment, the alignment
@@ -96,12 +103,14 @@ struct w_av_frame {
 
   /**
    * save to to the image file
-   * @param p_quality, quality will be used only for jpeg and is between 1 and 100
+   * @param p_quality, quality will be used only for jpeg and is between 1 and
+   * 100
    * @returns zero on success
    */
   W_API
   boost::leaf::result<int>
-  save_to_img_file(_In_ const std::filesystem::path &p_path, int p_quality = 100);
+  save_to_img_file(_In_ const std::filesystem::path &p_path,
+                   int p_quality = 100);
 
 #endif
 
@@ -111,7 +120,7 @@ private:
   // copy assignment operator.
   w_av_frame &operator=(const w_av_frame &) = delete;
 
-    // move implementation
+  // move implementation
   void _move(w_av_frame &&p_other) noexcept;
   // release
   void _release() noexcept;
@@ -121,6 +130,7 @@ private:
 
   // the ffmpeg AVFrame
   AVFrame *_av_frame = nullptr;
+  uint8_t *_moved_data = nullptr;
 };
 } // namespace wolf::media::ffmpeg
 

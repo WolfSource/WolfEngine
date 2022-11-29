@@ -7,7 +7,7 @@ using w_av_packet = wolf::media::ffmpeg::w_av_packet;
 
 boost::leaf::result<int>
 w_encoder::start(_In_ const w_av_frame &p_frame,
-                  _Inout_ w_av_packet &p_packet) noexcept {
+                 _Inout_ w_av_packet &p_packet) noexcept {
 
   av_packet_unref(p_packet._packet);
   p_packet._packet->data = nullptr;
@@ -22,7 +22,7 @@ w_encoder::start(_In_ const w_av_frame &p_frame,
 
   _ret = avcodec_receive_packet(this->ctx.codec_ctx, p_packet._packet);
   if (_ret == AVERROR(EAGAIN) || _ret == AVERROR_EOF) {
-    return W_OK();
+    return 0;
   }
 
   if (_ret < 0) {
@@ -31,7 +31,7 @@ w_encoder::start(_In_ const w_av_frame &p_frame,
                      w_ffmpeg_ctx::get_av_error_str(_ret));
   }
 
-  return W_OK();
+  return p_packet._packet->size;
 }
 
 #endif // WOLF_MEDIA_FFMPEG

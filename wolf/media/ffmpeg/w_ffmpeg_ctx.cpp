@@ -22,7 +22,6 @@ void w_ffmpeg_ctx::_move(w_ffmpeg_ctx &&p_other) noexcept {
   _release();
 
   this->codec = std::exchange(p_other.codec, nullptr);
-  this->codec_id = p_other.codec_id;
   this->codec_ctx = std::exchange(p_other.codec_ctx, nullptr);
   this->parser = std::exchange(p_other.parser, nullptr);
 }
@@ -43,11 +42,9 @@ void w_ffmpeg_ctx::_release() noexcept {
 
 const std::string
 w_ffmpeg_ctx::get_av_error_str(_In_ const int p_error_code) noexcept {
-  std::string _av_error;
-  _av_error.reserve(W_MAX_PATH);
-  std::ignore =
-      av_make_error_string(_av_error.data(), W_MAX_PATH, p_error_code);
-  return _av_error;
+  char _error[W_MAX_PATH] = {'\0'};
+  std::ignore = av_make_error_string(_error, W_MAX_PATH, p_error_code);
+  return std::string(_error);
 }
 
 #endif // WOLF_MEDIA_FFMPEG

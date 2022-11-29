@@ -28,12 +28,11 @@ w_leak_detector::~w_leak_detector() noexcept {
       _CrtMemDumpStatistics(&_diff_mem);
       _CrtMemDumpAllObjectsSince(&this->_mem_state);
       _CrtDumpMemoryLeaks();
-      // TODO(Pooya): we should write to the log file and the log file
-      // will send to open telemetry or any preset configs
       std::cerr << "memory leak detected!\r\n";
-      // "~w_leak_detector thrown an exception:" << p_ex.what();
       assert(false);
       std::terminate();
+    } else {
+      std::cerr << "no memory leak!\r\n";
     }
   } catch (...) // const std::exception& p_ex)
   {

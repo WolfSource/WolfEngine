@@ -1,12 +1,7 @@
  # link to ffmpeg
 if (WOLF_MEDIA_FFMPEG)
   file(GLOB_RECURSE WOLF_MEDIA_FFMPEG_SRC
-    "${CMAKE_CURRENT_SOURCE_DIR}/media/ffmpeg/w_av_frame.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/media/ffmpeg/w_av_frame.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/media/ffmpeg/w_av_packet.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/media/ffmpeg/w_av_packet.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/media/ffmpeg/w_ffmpeg.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/media/ffmpeg/w_ffmpeg.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/media/ffmpeg/*"
   )
   list(APPEND SRCS ${WOLF_MEDIA_FFMPEG_SRC})
   list(APPEND INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/third_party/ffmpeg/include)
