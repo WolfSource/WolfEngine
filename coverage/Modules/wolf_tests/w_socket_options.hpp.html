@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
         <meta charset="utf-8"/>
-	    <title>process.hpp</title>
+	    <title>w_socket_options.hpp</title>
 	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
 	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
 	</head>
@@ -14,30 +14,35 @@
     https://github.com/WolfEngine/WolfEngine
 */
 
-#ifdef WOLF_TESTS
-
 #pragma once
 
+#ifdef WOLF_SYSTEM_SOCKET
+
 #include &lt;wolf.hpp&gt;
-#include &lt;system/w_leak_detector.hpp&gt;
-#include &lt;boost/test/included/unit_test.hpp&gt;
+#include &lt;functional&gt;
+#include &lt;boost/system/errc.hpp&gt;
 
-#include &lt;system/w_process.hpp&gt;
+namespace wolf::system::socket {
 
-<span style = "background-color:#dfd">BOOST_AUTO_TEST_CASE(process_current_path) {
-  const wolf::system::w_leak_detector _detector = {};</span>
-  using w_process = wolf::system::w_process;
+struct w_socket_options {
+<span style = "background-color:#dfd">  bool keep_alive = true;
+  bool no_delay = true;
+  bool reuse_address = true;</span>
+};
 
-<span style = "background-color:#dfd">  const auto _path = w_process::current_path();
-  BOOST_REQUIRE(_path.has_error() == false);
-  BOOST_REQUIRE(_path.value().empty() == false);</span>
+typedef std::function&lt;boost::system::errc::errc_t(const std::string &amp;p_conn_id,
+                                                  w_buffer &amp;p_mut_data)&gt;
+    w_session_on_data_callback;
 
-<span style = "background-color:#dfd">  const auto _exe_path = w_process::current_exe_path();
-  BOOST_REQUIRE(_exe_path.has_error() == false);
-  BOOST_REQUIRE(_exe_path.value().empty() == false);
-}</span>
+typedef std::function&lt;void(const std::string &amp;p_conn_id)&gt;
+    w_session_on_timeout_callback;
 
-#endif // WOLF_TESTS</pre>
+typedef std::function&lt;void(const std::string &amp;p_conn_id,
+                           const std::exception &amp;p_exp)&gt;
+    w_session_on_error_callback;
+} // namespace wolf::system::socket
+
+#endif</pre>
         <hr />
         <table width="100%">
             <thead>

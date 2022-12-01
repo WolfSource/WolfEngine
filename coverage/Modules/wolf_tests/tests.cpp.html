@@ -22,7 +22,7 @@
 #include &lt;boost/test/included/unit_test.hpp&gt;
 #include &lt;DISABLE_ANALYSIS_END&gt;
 
-<span style = "background-color:#fdd">BOOST_AUTO_TEST_CASE(global) {
+<span style = "background-color:#dfd">BOOST_AUTO_TEST_CASE(global) {
   const wolf::system::w_leak_detector _detector = {};
   const auto _wolf_version = wolf::w_init();
   BOOST_TEST(_wolf_version.empty() == false);
@@ -32,22 +32,23 @@
 
 #include &lt;system/test/gametime.hpp&gt;
 #include &lt;system/test/process.hpp&gt;
-//#include &lt;system/test/signal_slot.hpp&gt;
-//#include &lt;system/test/trace.hpp&gt;
-//#include &lt;system/test/tcp.hpp&gt;
-//#include &lt;system/test/log.hpp&gt;
+#include &lt;system/test/signal_slot.hpp&gt;
+#include &lt;system/test/trace.hpp&gt;
+#include &lt;system/test/tcp.hpp&gt;
+#include &lt;system/test/log.hpp&gt;
 
 #pragma endregion
 
 #pragma region stream tests
 
-//#include &lt;stream/test/rist.hpp&gt;
+#include &lt;stream/test/rist.hpp&gt;
 
 #pragma endregion
 
 #pragma region media tests
 
 //#include &lt;media/test/avframe.hpp&gt;
+//#include &lt;media/test/ffmpeg.hpp&gt;
 //#include &lt;media/test/openal.hpp&gt;
 
 #pragma endregion</pre>

@@ -1,0 +1,237 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>tcp.hpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+/*
+    Project: Wolf Engine. Copyright Â© 2014-2022 Pooya Eimandar
+    https://github.com/WolfEngine/WolfEngine
+*/
+
+#if defined(WOLF_TEST) || defined(WOLF_SYSTEM_SOCKET)
+
+#pragma once
+
+#include &lt;wolf.hpp&gt;
+#include &lt;system/w_leak_detector.hpp&gt;
+#include &lt;boost/test/included/unit_test.hpp&gt;
+
+#include &lt;system/socket/w_tcp_server.hpp&gt;
+#include &lt;system/socket/w_tcp_client.hpp&gt;
+#include &lt;system/w_timer.hpp&gt;
+
+<span style = "background-color:#dfd">BOOST_AUTO_TEST_CASE(server_timeout) {
+  const wolf::system::w_leak_detector _detector = {};</span>
+
+  using tcp = boost::asio::ip::tcp;
+  using w_tcp_server = wolf::system::socket::w_tcp_server;
+  using w_socket_options = wolf::system::socket::w_socket_options;
+
+<span style = "background-color:#dfd">  auto _io = boost::asio::io_context();</span>
+  w_socket_options _opts = {};
+<span style = "background-color:#dfd">  tcp::endpoint _endpoint = {tcp::v4(), 8080};
+  auto timeout = std::chrono::milliseconds(3000);</span>
+
+<span style = "background-color:#dfd">  auto t1 = std::jthread([&amp;]() {</span>
+    // stop server
+<span style = "background-color:#dfd">    std::this_thread::sleep_for(std::chrono::seconds(5));
+    _io.stop();
+  });</span>
+
+<span style = "background-color:#dfd">  w_tcp_server::run(</span>
+      _io, std::move(_endpoint), std::move(timeout), std::move(_opts),
+<span style = "background-color:#fdd">      [](const std::string &amp;p_conn_id, w_buffer &amp;p_mut_data) -&gt; auto{
+        std::cout &lt;&lt; "tcp server just got: " &lt;&lt; p_mut_data.used_bytes</span>
+                  &lt;&lt; " bytes from connection id: " &lt;&lt; p_conn_id &lt;&lt; std::endl;
+<span style = "background-color:#fdd">        return boost::system::errc::connection_aborted;
+      },
+      [](const std::string &amp;p_conn_id) {
+        std::cout &lt;&lt; "timeout for connection: " &lt;&lt; p_conn_id &lt;&lt; std::endl;
+      },
+      [](const std::string &amp;p_conn_id, const std::exception &amp;p_excp) {
+        std::cout &lt;&lt; "timeout for connection: " &lt;&lt; p_conn_id &lt;&lt; " because of "</span>
+                  &lt;&lt; p_excp.what() &lt;&lt; std::endl;
+<span style = "background-color:#fdd">      });</span>
+<span style = "background-color:#dfd">  _io.run();</span>
+
+<span style = "background-color:#dfd">  BOOST_REQUIRE(true);
+}</span>
+
+<span style = "background-color:#dfd">BOOST_AUTO_TEST_CASE(client_timeout) {
+  const wolf::system::w_leak_detector _detector = {};</span>
+
+  using tcp = boost::asio::ip::tcp;
+  using w_tcp_client = wolf::system::socket::w_tcp_client;
+  using w_socket_options = wolf::system::socket::w_socket_options;
+  using w_timer = wolf::system::w_timer;
+
+<span style = "background-color:#dfd">  auto _io = boost::asio::io_context();</span>
+
+  w_socket_options _opts = {};
+<span style = "background-color:#dfd">  tcp::endpoint _endpoint = {tcp::v4(), 8000};</span>
+
+<span style = "background-color:#dfd">  boost::asio::co_spawn(</span>
+      _io,
+<span style = "background-color:#dfd">      [&amp;]() -&gt; boost::asio::awaitable&lt;void&gt; {
+        auto client = w_tcp_client(_io);
+        auto _timer = w_timer(_io);
+        _timer.expires_after(std::chrono::nanoseconds(1));</span>
+
+<span style = "background-color:#dfd">        auto _ret = co_await (_timer.async_wait(boost::asio::use_awaitable) ||</span>
+                              client.async_resolve(_endpoint));
+        // expect timeout
+<span style = "background-color:#dfd">        BOOST_REQUIRE(_ret.index() == 0);</span>
+
+<span style = "background-color:#dfd">        _timer.cancel();
+        _timer.expires_after(std::chrono::seconds(5));
+        _ret = co_await (_timer.async_wait(boost::asio::use_awaitable) ||</span>
+                         client.async_resolve("google.com", 443));
+        // expect resolving
+<span style = "background-color:#fdd">        BOOST_REQUIRE(_ret.index() == 1);</span>
+
+<span style = "background-color:#fdd">        _io.stop();</span>
+
+<span style = "background-color:#fdd">        co_return;</span>
+<span style = "background-color:#dfd">      },</span>
+      boost::asio::detached);
+
+<span style = "background-color:#dfd">  _io.run();</span>
+
+<span style = "background-color:#dfd">  BOOST_REQUIRE(true);
+}</span>
+
+<span style = "background-color:#dfd">BOOST_AUTO_TEST_CASE(read_write) {
+  const wolf::system::w_leak_detector _detector = {};</span>
+
+  using tcp = boost::asio::ip::tcp;
+  using w_tcp_client = wolf::system::socket::w_tcp_client;
+  using w_tcp_server = wolf::system::socket::w_tcp_server;
+  using w_socket_options = wolf::system::socket::w_socket_options;
+  using w_timer = wolf::system::w_timer;
+  using namespace std::chrono_literals;
+
+<span style = "background-color:#dfd">  auto _io = boost::asio::io_context();</span>
+  w_socket_options _opts = {};
+<span style = "background-color:#dfd">  tcp::endpoint _endpoint = {tcp::v4(), 8080};
+  const auto timeout = 10s;</span>
+
+<span style = "background-color:#dfd">  boost::asio::co_spawn(</span>
+      _io,
+<span style = "background-color:#dfd">      [&amp;]() -&gt; boost::asio::awaitable&lt;void&gt; {</span>
+        // wait for server to be initialized
+<span style = "background-color:#dfd">        std::this_thread::sleep_for(3s);</span>
+        // start connecting to the server
+        w_socket_options _opts = {};
+<span style = "background-color:#dfd">        auto client = w_tcp_client(_io);
+        auto _timer = w_timer(_io);</span>
+
+<span style = "background-color:#dfd">        _timer.expires_after(timeout);
+        auto _resolve_res =</span>
+            co_await (_timer.async_wait(boost::asio::use_awaitable) ||
+                      client.async_resolve("127.0.0.1", 8080));
+        // expect resolve
+<span style = "background-color:#dfd">        BOOST_REQUIRE(_resolve_res.index() == 1);</span>
+
+<span style = "background-color:#dfd">        auto _endpoints = std::get&lt;1&gt;(_resolve_res);
+        BOOST_REQUIRE(_endpoints.size() != 0);</span>
+
+<span style = "background-color:#dfd">        const auto _endpoint = _endpoints.cbegin()-&gt;endpoint();</span>
+
+<span style = "background-color:#dfd">        auto _conn_res =</span>
+            co_await (_timer.async_wait(boost::asio::use_awaitable) ||
+                      client.async_connect(_endpoint, _opts));
+        // expect the connection
+<span style = "background-color:#dfd">        BOOST_REQUIRE(_conn_res.index() == 1);</span>
+
+<span style = "background-color:#dfd">        w_buffer _send_buffer("hello");
+        w_buffer _recv_buffer{};</span>
+
+<span style = "background-color:#dfd">        for (size_t i = 0; i &lt; 5; i++) {
+          auto _res = co_await (_timer.async_wait(boost::asio::use_awaitable) ||</span>
+                                client.async_write(_send_buffer));
+          // expect the connection
+<span style = "background-color:#dfd">          BOOST_REQUIRE(_res.index() == 1);
+          BOOST_REQUIRE(std::get&lt;1&gt;(_res) == 5);</span>
+
+<span style = "background-color:#dfd">          _res = co_await (_timer.async_wait(boost::asio::use_awaitable) ||</span>
+                           client.async_read(_recv_buffer));
+          // expect the connection
+<span style = "background-color:#dfd">          BOOST_REQUIRE(_res.index() == 1);
+          _recv_buffer.used_bytes = std::get&lt;1&gt;(_res);</span>
+
+<span style = "background-color:#dfd">          BOOST_REQUIRE(_recv_buffer.used_bytes == 10);          // hello-back
+          BOOST_REQUIRE(_recv_buffer.to_string() == "hello-back"); // hello-back
+        }</span>
+
+<span style = "background-color:#dfd">        _send_buffer.from_string("exit");
+        auto _res = co_await (_timer.async_wait(boost::asio::use_awaitable) ||</span>
+                              client.async_write(_send_buffer));
+        // expect the connection
+<span style = "background-color:#dfd">        BOOST_REQUIRE(_res.index() == 1);
+        BOOST_REQUIRE(std::get&lt;1&gt;(_res) == 4);</span>
+
+<span style = "background-color:#dfd">        _io.stop();</span>
+
+<span style = "background-color:#dfd">        co_return;
+      },</span>
+      boost::asio::detached);
+
+  // create a tcp server with 3 seconds timeout and wait for exit
+  // command from client
+<span style = "background-color:#dfd">  w_tcp_server::run(</span>
+      _io, std::move(_endpoint), timeout, std::move(_opts),
+      [](_In_ const std::string &amp;p_conn_id,
+<span style = "background-color:#dfd">         _Inout_ w_buffer &amp;p_mut_data) -&gt; auto{</span>
+        // close on overflow
+<span style = "background-color:#dfd">        if (p_mut_data.used_bytes &gt; 1025) {</span>
+<span style = "background-color:#fdd">          return boost::system::errc::connection_aborted;</span>
+        }
+
+<span style = "background-color:#dfd">        auto _reply = std::string(p_mut_data.buf.data(), p_mut_data.used_bytes);</span>
+
+<span style = "background-color:#dfd">        std::cout &lt;&lt; "tcp server just got: \"" &lt;&lt; _reply</span>
+                  &lt;&lt; "\" from connection id: " &lt;&lt; p_conn_id &lt;&lt; std::endl;
+
+<span style = "background-color:#dfd">        if (_reply == "exit") {
+          return boost::system::errc::connection_aborted;</span>
+        }
+<span style = "background-color:#dfd">        _reply += "-back";
+        p_mut_data.from_string(_reply);
+        return boost::system::errc::success;
+      },</span>
+<span style = "background-color:#fdd">      [](const std::string &amp;p_conn_id) {
+        std::cout &lt;&lt; "timeout for connection: " &lt;&lt; p_conn_id &lt;&lt; std::endl;
+      },
+      [&amp;](const std::string &amp;p_conn_id, const std::exception &amp;p_excp) {
+        std::cout &lt;&lt; "error happened for connection: " &lt;&lt; p_conn_id</span>
+                  &lt;&lt; " because of " &lt;&lt; p_excp.what() &lt;&lt; std::endl;
+<span style = "background-color:#fdd">        _io.stop();</span>
+<span style = "background-color:#dfd">      });</span>
+
+<span style = "background-color:#dfd">  _io.run();</span>
+
+<span style = "background-color:#dfd">  BOOST_REQUIRE(true);
+}</span>
+
+#endif</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

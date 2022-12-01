@@ -10,35 +10,40 @@
         <h4></h4>
         <pre class="prettyprint lang-cpp linenums">
 #include "w_process.hpp"
+#include "w_trace.hpp"
+
+#include &lt;fstream&gt;
 
 using w_process = wolf::system::w_process;
 
-<span style = "background-color:#fdd">boost::leaf::result&lt;std::filesystem::path&gt; w_process::current_path() {
+<span style = "background-color:#dfd">boost::leaf::result&lt;std::filesystem::path&gt; w_process::current_path() {
   auto _path = std::filesystem::current_path();
   return W_OK(_path);
 }</span>
 
-<span style = "background-color:#fdd">boost::leaf::result&lt;std::filesystem::path&gt; w_process::current_exe_path() {</span>
+<span style = "background-color:#dfd">boost::leaf::result&lt;std::filesystem::path&gt; w_process::current_exe_path() {</span>
   using path = std::filesystem::path;
 
 #ifdef WIN32
-<span style = "background-color:#fdd">  std::array&lt;wchar_t, W_MAX_PATH&gt; _buffer = {};
+<span style = "background-color:#dfd">  std::array&lt;wchar_t, W_MAX_PATH&gt; _buffer = {};
   std::ignore = GetModuleFileNameW(nullptr, _buffer.data(), sizeof(_buffer));
   const auto _ret = ::GetLastError();</span>
 
-<span style = "background-color:#fdd">  if (_ret != S_OK) {
-    return W_ERR(_ret, "GetModuleFileNameW failed because:" +</span>
+<span style = "background-color:#dfd">  if (_ret != S_OK) {</span>
+<span style = "background-color:#fdd">    return W_ERR(_ret, "GetModuleFileNameW failed because:" +</span>
                            get_last_win_error(_ret));
   }
 
-<span style = "background-color:#fdd">  auto _path = path(_buffer.data(), path::auto_format).parent_path();
+<span style = "background-color:#dfd">  auto _path = path(_buffer.data(), path::auto_format).parent_path();
   return W_OK(_path);</span>
 #else
-  std::string _str;
-  std::ifstream("/proc/self/comm") &gt;&gt; _str;
+  std::stringstream buffer;
+  buffer &lt;&lt; std::ifstream("/proc/self/comm").rdbuf();
+  
+  std::string _str = buffer.str();
   return std::filesystem::path(_str);
 #endif
-<span style = "background-color:#fdd">}</span>
+<span style = "background-color:#dfd">}</span>
 
 </pre>
         <hr />

@@ -14,43 +14,42 @@
 
 using w_leak_detector = wolf::system::w_leak_detector;
 
-w_leak_detector::w_leak_detector() noexcept :
-<span style = "background-color:#fdd">	_mem_state()
-{</span>
-#ifdef WIN32
-	//take a snapshot from memory
-<span style = "background-color:#fdd">	_CrtMemCheckpoint(&amp;this-&gt;_mem_state);</span>
+w_leak_detector::w_leak_detector() noexcept
+#if defined(WIN32) &amp;&amp; defined(DEBUG)
+<span style = "background-color:#dfd">    : _mem_state()</span>
 #endif
-<span style = "background-color:#fdd">}</span>
-
-<span style = "background-color:#fdd">w_leak_detector::~w_leak_detector() noexcept {</span>
-        try {
-#ifdef WIN32
-          // take a snapshot from memory
-          _CrtMemState _diff_mem;
-          _CrtMemState _new_mem_state;
-<span style = "background-color:#fdd">          _CrtMemCheckpoint(&amp;_new_mem_state);</span>
-
-<span style = "background-color:#fdd">          const auto _dif =</span>
-              _CrtMemDifference(&amp;_diff_mem, &amp;this-&gt;_mem_state, &amp;_new_mem_state);
-<span style = "background-color:#fdd">          if (_dif &gt; 0) {
-            _CrtMemDumpStatistics(&amp;_diff_mem);
-            _CrtMemDumpAllObjectsSince(&amp;this-&gt;_mem_state);
-            _CrtDumpMemoryLeaks();</span>
-            // TODO(Pooya): we should write to the log file and the log file
-            // will send to open telemetry or any preset configs
-<span style = "background-color:#fdd">            std::cerr &lt;&lt; "memory leak detected!\r\n";</span>
-            // "~w_leak_detector thrown an exception:" &lt;&lt; p_ex.what();
-<span style = "background-color:#fdd">            assert(false);
-            std::terminate();</span>
-          }
+<span style = "background-color:#dfd">{</span>
+#if defined(WIN32) &amp;&amp; defined(DEBUG)
+  // take a snapshot from memory
+<span style = "background-color:#dfd">  _CrtMemCheckpoint(&amp;this-&gt;_mem_state);</span>
 #endif
-        } catch (...) // const std::exception&amp; p_ex)
-<span style = "background-color:#fdd">        {</span>
-          // write to the log file
-          // "~w_leak_detector thrown an exception:" &lt;&lt; p_ex.what();
-<span style = "background-color:#fdd">        }
-}</span></pre>
+<span style = "background-color:#dfd">}</span>
+
+<span style = "background-color:#dfd">w_leak_detector::~w_leak_detector() noexcept {</span>
+#if defined(WIN32) &amp;&amp; defined(DEBUG)
+  try {
+    // take a snapshot from memory
+    _CrtMemState _diff_mem;
+    _CrtMemState _new_mem_state;
+<span style = "background-color:#dfd">    _CrtMemCheckpoint(&amp;_new_mem_state);</span>
+
+<span style = "background-color:#dfd">    const auto _dif =</span>
+        _CrtMemDifference(&amp;_diff_mem, &amp;this-&gt;_mem_state, &amp;_new_mem_state);
+<span style = "background-color:#dfd">    if (_dif &gt; 0) {</span>
+<span style = "background-color:#fdd">      _CrtMemDumpStatistics(&amp;_diff_mem);
+      _CrtMemDumpAllObjectsSince(&amp;this-&gt;_mem_state);
+      _CrtDumpMemoryLeaks();
+      std::cerr &lt;&lt; "memory leak detected!\r\n";
+      assert(false);
+      std::terminate();</span>
+    }
+  } catch (...) // const std::exception&amp; p_ex)
+<span style = "background-color:#fdd">  {</span>
+    // write to the log file
+    // "~w_leak_detector thrown an exception:" &lt;&lt; p_ex.what();
+<span style = "background-color:#fdd">  }</span>
+#endif
+<span style = "background-color:#dfd">}</span></pre>
         <hr />
         <table width="100%">
             <thead>

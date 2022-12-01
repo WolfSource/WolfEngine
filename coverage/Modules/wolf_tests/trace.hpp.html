@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
         <meta charset="utf-8"/>
-	    <title>process.hpp</title>
+	    <title>trace.hpp</title>
 	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
 	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
 	</head>
@@ -22,20 +22,34 @@
 #include &lt;system/w_leak_detector.hpp&gt;
 #include &lt;boost/test/included/unit_test.hpp&gt;
 
-#include &lt;system/w_process.hpp&gt;
-
-<span style = "background-color:#dfd">BOOST_AUTO_TEST_CASE(process_current_path) {
+<span style = "background-color:#dfd">BOOST_AUTO_TEST_CASE(w_trace_handle_all) {
   const wolf::system::w_leak_detector _detector = {};</span>
-  using w_process = wolf::system::w_process;
 
-<span style = "background-color:#dfd">  const auto _path = w_process::current_path();
-  BOOST_REQUIRE(_path.has_error() == false);
-  BOOST_REQUIRE(_path.value().empty() == false);</span>
+<span style = "background-color:#dfd">  const auto _function_1 = []() noexcept -&gt; boost::leaf::result&lt;void&gt; {
+    return W_ERR(std::errc::bad_message, "error from function 1");
+  };</span>
 
-<span style = "background-color:#dfd">  const auto _exe_path = w_process::current_exe_path();
-  BOOST_REQUIRE(_exe_path.has_error() == false);
-  BOOST_REQUIRE(_exe_path.value().empty() == false);
-}</span>
+<span style = "background-color:#dfd">  const auto _function_2 = [&amp;]() noexcept -&gt; boost::leaf::result&lt;void&gt; {
+    return _function_1();
+  };</span>
+
+  // how to use w_trace
+<span style = "background-color:#dfd">  boost::leaf::try_handle_all(
+      [&amp;]() -&gt; boost::leaf::result&lt;void&gt; {
+        BOOST_LEAF_CHECK(_function_2());</span>
+<span style = "background-color:#fdd">        std::cout &lt;&lt; "success!" &lt;&lt; std::endl;
+        BOOST_ERROR(false);
+        return {};</span>
+<span style = "background-color:#dfd">      },
+      [](const w_trace &amp;p_trace) {
+        std::cout &lt;&lt; "caught a test error! trace info:" &lt;&lt; p_trace &lt;&lt; std::endl;
+        BOOST_REQUIRE(true);
+      },</span>
+<span style = "background-color:#fdd">      [] {
+        std::cout &lt;&lt; "caught an error!" &lt;&lt; std::endl;
+        BOOST_ERROR(false);
+      });</span>
+<span style = "background-color:#dfd">}</span>
 
 #endif // WOLF_TESTS</pre>
         <hr />

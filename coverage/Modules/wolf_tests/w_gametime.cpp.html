@@ -13,7 +13,7 @@
 
 using w_gametime = wolf::system::w_gametime;
 
-<span style = "background-color:#fdd">void w_gametime::reset() noexcept {
+<span style = "background-color:#dfd">void w_gametime::reset() noexcept {
   this-&gt;_last_time = std::chrono::steady_clock::now();
   this-&gt;_left_over_ticks = 0.0;
   this-&gt;_fps = 0;
@@ -25,7 +25,7 @@ using w_gametime = wolf::system::w_gametime;
   return this-&gt;_elapsed_secs;
 }</span>
 
-<span style = "background-color:#fdd">constexpr double w_gametime::get_total_secs() const noexcept {
+<span style = "background-color:#dfd">constexpr double w_gametime::get_total_secs() const noexcept {
   return this-&gt;_total_secs;
 }</span>
 
@@ -33,17 +33,17 @@ using w_gametime = wolf::system::w_gametime;
   return this-&gt;_frames_count;
 }</span>
 
-<span style = "background-color:#fdd">uint32_t w_gametime::get_fps() const noexcept { return this-&gt;_fps; }</span>
+<span style = "background-color:#dfd">uint32_t w_gametime::get_fps() const noexcept { return this-&gt;_fps; }</span>
 
 <span style = "background-color:#fdd">bool w_gametime::get_is_fixed_time_step() const noexcept {
   return this-&gt;_fixed_time_step;
 }</span>
 
-<span style = "background-color:#fdd">void w_gametime::set_fixed_time_step(bool p_value) noexcept {
+<span style = "background-color:#dfd">void w_gametime::set_fixed_time_step(bool p_value) noexcept {
   this-&gt;_fixed_time_step = p_value;
 }</span>
 
-<span style = "background-color:#fdd">void w_gametime::set_target_elapsed_secs(double p_value) noexcept {
+<span style = "background-color:#dfd">void w_gametime::set_target_elapsed_secs(double p_value) noexcept {
   this-&gt;_target_elapsed_secs = p_value;
 }</span></pre>
         <hr />

@@ -27,10 +27,10 @@ constexpr auto TARGET_ELAPSED_SECS = 1.0 / 60.0;
 class w_gametime {
 public:
   // default constructor
-<span style = "background-color:#fdd">  W_API w_gametime() noexcept = default;</span>
+<span style = "background-color:#dfd">  W_API w_gametime() noexcept = default;</span>
 
   // destructor
-<span style = "background-color:#fdd">  W_API virtual ~w_gametime() noexcept = default;</span>
+<span style = "background-color:#dfd">  W_API virtual ~w_gametime() noexcept = default;</span>
 
   // move constructor
 <span style = "background-color:#fdd">  W_API w_gametime(w_gametime &amp;&amp;p_src) noexcept = default;</span>
@@ -54,24 +54,24 @@ public:
 
   W_API void set_target_elapsed_secs(double p_value) noexcept;
 
-<span style = "background-color:#fdd">  template &lt;typename F&gt; [[noreturn]] W_API void tick(F &amp;&amp;p_tick_function) {</span>
+<span style = "background-color:#dfd">  template &lt;typename F&gt; [[noreturn]] W_API void tick(F &amp;&amp;p_tick_function) {</span>
     using namespace std::chrono;
 
     // Query the current time.
-<span style = "background-color:#fdd">    const auto current_time = steady_clock::now();
+<span style = "background-color:#dfd">    const auto current_time = steady_clock::now();
     auto delta =</span>
         duration&lt;double, std::milli&gt;(current_time - this-&gt;_last_time).count() /
         1000.000;
 
-<span style = "background-color:#fdd">    this-&gt;_last_time = current_time;
+<span style = "background-color:#dfd">    this-&gt;_last_time = current_time;
     this-&gt;_secs_counter += delta;</span>
 
     // clamp excessively large time deltas (e.g. after paused in the debugger).
-<span style = "background-color:#fdd">    if (delta &gt; MAX_DELTA_TIME_IN_SECS) {
-      delta = MAX_DELTA_TIME_IN_SECS;</span>
+<span style = "background-color:#dfd">    if (delta &gt; MAX_DELTA_TIME_IN_SECS) {</span>
+<span style = "background-color:#fdd">      delta = MAX_DELTA_TIME_IN_SECS;</span>
     }
 
-<span style = "background-color:#fdd">    const auto last_frames_count = this-&gt;_frames_count;
+<span style = "background-color:#dfd">    const auto last_frames_count = this-&gt;_frames_count;
     if (this-&gt;_fixed_time_step) {</span>
       /*
          If the app is running very close to the target elapsed time (within
@@ -83,29 +83,29 @@ public:
          would drop a frame. It is better to just round small deviations down to
          zero to leave things running smoothly.
       */
-<span style = "background-color:#fdd">      constexpr auto quarter_of_one_milli_in_sec = 0.0004;
+<span style = "background-color:#dfd">      constexpr auto quarter_of_one_milli_in_sec = 0.0004;
       if (std::abs(delta - this-&gt;_target_elapsed_secs) &lt;</span>
           quarter_of_one_milli_in_sec) {
 <span style = "background-color:#fdd">        delta = this-&gt;_target_elapsed_secs;</span>
       }
 
-<span style = "background-color:#fdd">      this-&gt;_left_over_ticks += delta;
+<span style = "background-color:#dfd">      this-&gt;_left_over_ticks += delta;
       this-&gt;_elapsed_secs = this-&gt;_target_elapsed_secs;</span>
 
 #ifdef __clang__
 #pragma unroll
 #endif
-<span style = "background-color:#fdd">      while (this-&gt;_left_over_ticks &gt;= this-&gt;_target_elapsed_secs) {</span>
+<span style = "background-color:#dfd">      while (this-&gt;_left_over_ticks &gt;= this-&gt;_target_elapsed_secs) {</span>
 
-<span style = "background-color:#fdd">        this-&gt;_total_secs += this-&gt;_target_elapsed_secs;
+<span style = "background-color:#dfd">        this-&gt;_total_secs += this-&gt;_target_elapsed_secs;
         this-&gt;_left_over_ticks -= this-&gt;_target_elapsed_secs;</span>
 
-<span style = "background-color:#fdd">        this-&gt;_frames_count++;
+<span style = "background-color:#dfd">        this-&gt;_frames_count++;
         p_tick_function();
       }
     } else {</span>
       // variable timestep update logic.
-<span style = "background-color:#fdd">      this-&gt;_left_over_ticks = 0.0;
+<span style = "background-color:#dfd">      this-&gt;_left_over_ticks = 0.0;
       this-&gt;_total_secs += delta;
       this-&gt;_elapsed_secs = delta;
       this-&gt;_frames_count++;
@@ -113,17 +113,17 @@ public:
     }
 
     // track the current framerate.
-<span style = "background-color:#fdd">    this-&gt;_frames_this_sec += (this-&gt;_frames_count - last_frames_count);</span>
+<span style = "background-color:#dfd">    this-&gt;_frames_this_sec += (this-&gt;_frames_count - last_frames_count);</span>
 
-<span style = "background-color:#fdd">    auto one_sec = 1.0;
+<span style = "background-color:#dfd">    auto one_sec = 1.0;
     if (this-&gt;_secs_counter &gt;= one_sec) {
       this-&gt;_fps = this-&gt;_frames_this_sec;
       this-&gt;_frames_this_sec = 0;
       this-&gt;_secs_counter = std::modf(this-&gt;_secs_counter, &amp;one_sec);</span>
     }
-<span style = "background-color:#fdd">  }</span>
+<span style = "background-color:#dfd">  }</span>
 
-<span style = "background-color:#fdd">  [[noreturn]] W_API void tick() {
+<span style = "background-color:#dfd">  [[noreturn]] W_API void tick() {
     tick([] {});
   }</span>
 
@@ -134,9 +134,9 @@ private:
   w_gametime &amp;operator=(const w_gametime &amp;) = delete;
 
   // configuring fixed timestep mode.
-<span style = "background-color:#fdd">  bool _fixed_time_step = false;</span>
+<span style = "background-color:#dfd">  bool _fixed_time_step = false;</span>
 
-<span style = "background-color:#fdd">  double _target_elapsed_secs = {TARGET_ELAPSED_SECS};
+<span style = "background-color:#dfd">  double _target_elapsed_secs = {TARGET_ELAPSED_SECS};
   double _elapsed_secs = 0.0;
   double _total_secs = 0.0;
   double _left_over_ticks = 0.0;
@@ -146,7 +146,7 @@ private:
   uint32_t _frames_this_sec = 0;</span>
 
   std::chrono::steady_clock::time_point _last_time = {
-<span style = "background-color:#fdd">      std::chrono::steady_clock::now()};</span>
+<span style = "background-color:#dfd">      std::chrono::steady_clock::now()};</span>
 }
 #ifdef __clang__
 W_ALIGNMENT_64

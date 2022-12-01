@@ -1,0 +1,131 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>ffmpeg.hpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+/*
+    Project: Wolf Engine. Copyright Â© 2014-2022 Pooya Eimandar
+    https://github.com/WolfEngine/WolfEngine
+*/
+
+#if defined(WOLF_TESTS) &amp;&amp; defined(WOLF_MEDIA_FFMPEG) &amp;&amp; defined(WOLF_MEDIA_STB)
+
+#pragma once
+
+#include &lt;boost/test/included/unit_test.hpp&gt;
+#include &lt;system/w_leak_detector.hpp&gt;
+
+#include &lt;media/ffmpeg/w_ffmpeg.hpp&gt;
+#include &lt;media/ffmpeg/w_encoder.hpp&gt;
+
+<span style = "background-color:#dfd">BOOST_AUTO_TEST_CASE(av1_encode_test) {
+  const wolf::system::w_leak_detector _detector = {};</span>
+
+  using w_av_frame = wolf::media::ffmpeg::w_av_frame;
+  using w_av_config = wolf::media::ffmpeg::w_av_config;
+  using w_ffmpeg = wolf::media::ffmpeg::w_ffmpeg;
+  using w_av_set_opt = wolf::media::ffmpeg::w_av_set_opt;
+  using w_av_codec_opt = wolf::media::ffmpeg::w_av_codec_opt;
+  using w_av_packet = wolf::media::ffmpeg::w_av_packet;
+
+<span style = "background-color:#dfd">  boost::leaf::try_handle_all(
+      [&amp;]() -&gt; boost::leaf::result&lt;void&gt; {</span>
+        // create av frame from img
+<span style = "background-color:#dfd">        const auto _current_dir = std::filesystem::current_path().append(</span>
+            "../../content/texture/rgb.png");
+<span style = "background-color:#dfd">        BOOST_LEAF_AUTO(_src_frame,</span>
+                        w_av_frame::load_from_img_file(
+                            _current_dir, AVPixelFormat::AV_PIX_FMT_RGBA));
+
+        // source &amp; destination configs
+<span style = "background-color:#fdd">        const auto _src_config = _src_frame.get_config();
+        const auto _dst_config =</span>
+            w_av_config{AVPixelFormat::AV_PIX_FMT_YUV420P, _src_config.width,
+                        _src_config.height};
+
+<span style = "background-color:#fdd">        BOOST_LEAF_AUTO(_yuv_frame, _src_frame.convert(_dst_config));</span>
+
+<span style = "background-color:#fdd">        const auto _codec_opt = w_av_codec_opt{</span>
+            4'000'000, /*bitrate*/
+            60,        /*fps*/
+            600,       /*gop*/
+            -1,        /*level*/
+            2,         /*max_b_frames*/
+            3,         /*refs*/
+            -1,        /*thread_count*/
+        };
+
+        // for more info read https://trac.ffmpeg.org/wiki/Encode/AV1
+<span style = "background-color:#fdd">        const auto _opts = std::vector&lt;w_av_set_opt&gt;{</span>
+            w_av_set_opt{"preset", 12},
+            w_av_set_opt{"crf", 50},
+        };
+
+        // encode frame to packet
+<span style = "background-color:#fdd">        BOOST_LEAF_AUTO(_encoder,</span>
+                        w_ffmpeg::create_encoder(_dst_config, "libsvtav1",
+                                                 _codec_opt, _opts));
+<span style = "background-color:#fdd">        auto _packet = w_av_packet();
+        BOOST_LEAF_AUTO(_packet_init_res, _packet.init());</span>
+
+        for (;;) {
+<span style = "background-color:#fdd">          BOOST_LEAF_AUTO(_encode_result, _encoder.start(_yuv_frame, _packet));</span>
+
+          // break when we got the encoded packet
+<span style = "background-color:#fdd">          if (_encode_result &gt; 0) {
+            break;</span>
+          }
+<span style = "background-color:#fdd">        }</span>
+
+        // create destination avframe for decoder
+<span style = "background-color:#fdd">        auto _decoded_frame = w_av_frame(_dst_config);
+        BOOST_LEAF_AUTO(_frame_ret, _decoded_frame.init());</span>
+
+        // create a decoder
+<span style = "background-color:#fdd">        BOOST_LEAF_AUTO(_decoder,</span>
+                        w_ffmpeg::create_decoder(_decoded_frame.get_config(),
+                                                 "libdav1d", _codec_opt, {}));
+
+<span style = "background-color:#fdd">        BOOST_LEAF_AUTO(_result, _decoder.start(_packet, _decoded_frame));</span>
+
+<span style = "background-color:#fdd">        BOOST_LEAF_AUTO(final_frame, _decoded_frame.convert(_src_config));</span>
+
+<span style = "background-color:#fdd">        const auto _new_path =</span>
+            std::filesystem::current_path().append("/rgb_decoded.png");
+<span style = "background-color:#fdd">        BOOST_LEAF_AUTO(final_result,</span>
+                        final_frame.save_to_img_file(_new_path));
+
+<span style = "background-color:#fdd">        return {};</span>
+<span style = "background-color:#dfd">      },
+      [](const w_trace &amp;p_trace) {
+        std::cout &lt;&lt; "got error :" &lt;&lt; p_trace &lt;&lt; std::endl;
+        BOOST_REQUIRE(false);</span>
+<span style = "background-color:#fdd">      },
+      [] {
+        std::cout &lt;&lt; "got an error!" &lt;&lt; std::endl;
+        BOOST_ERROR(false);
+      });
+}</span>
+
+#endif</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

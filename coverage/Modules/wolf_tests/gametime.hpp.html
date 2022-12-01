@@ -24,56 +24,56 @@
 
 #include &lt;system/w_gametime.hpp&gt;
 
-<span style = "background-color:#fdd">BOOST_AUTO_TEST_CASE(fixed_time) {
+<span style = "background-color:#dfd">BOOST_AUTO_TEST_CASE(fixed_time) {
   const wolf::system::w_leak_detector _detector = {};</span>
   using w_gametime = wolf::system::w_gametime;
 
-<span style = "background-color:#fdd">  std::once_flag _flag;
+<span style = "background-color:#dfd">  std::once_flag _flag;
   bool _ticked = false;</span>
 
-<span style = "background-color:#fdd">  constexpr double _stop_after_secs = 3.0;
+<span style = "background-color:#dfd">  constexpr double _stop_after_secs = 3.0;
   constexpr double _target_elapsed_secs = 1.0 / 50.0; // 50 fps</span>
 
-<span style = "background-color:#fdd">  auto _gametime = w_gametime();
+<span style = "background-color:#dfd">  auto _gametime = w_gametime();
   _gametime.reset();
   _gametime.set_fixed_time_step(true);
   _gametime.set_target_elapsed_secs(_target_elapsed_secs);</span>
 
-<span style = "background-color:#fdd">  auto _total_seconds = _gametime.get_total_secs();</span>
+<span style = "background-color:#dfd">  auto _total_seconds = _gametime.get_total_secs();</span>
 #ifdef __clang__
 #pragma unroll
 #endif
-<span style = "background-color:#fdd">  while (_total_seconds &lt; _stop_after_secs) {
+<span style = "background-color:#dfd">  while (_total_seconds &lt; _stop_after_secs) {
     _gametime.tick([&amp;]() { std::call_once(_flag, [&amp;]() { _ticked = true; }); });</span>
 
-<span style = "background-color:#fdd">    _total_seconds = _gametime.get_total_secs();
+<span style = "background-color:#dfd">    _total_seconds = _gametime.get_total_secs();
   }</span>
 
-<span style = "background-color:#fdd">  BOOST_REQUIRE(_ticked == true);
+<span style = "background-color:#dfd">  BOOST_REQUIRE(_ticked == true);
 }</span>
 
-<span style = "background-color:#fdd">BOOST_AUTO_TEST_CASE(unfixed_time) {
+<span style = "background-color:#dfd">BOOST_AUTO_TEST_CASE(unfixed_time) {
   const wolf::system::w_leak_detector _detector = {};</span>
 
-<span style = "background-color:#fdd">  constexpr double _stop_after_secs = 5.0;
+<span style = "background-color:#dfd">  constexpr double _stop_after_secs = 5.0;
   constexpr double _target_elapsed_secs = 1.0 / 50.0; // 50 fps</span>
 
   using w_gametime = wolf::system::w_gametime;
 
-<span style = "background-color:#fdd">  auto _gametime = w_gametime();
+<span style = "background-color:#dfd">  auto _gametime = w_gametime();
   _gametime.reset();
   _gametime.set_fixed_time_step(false);
   _gametime.set_target_elapsed_secs(_target_elapsed_secs);</span>
 
-<span style = "background-color:#fdd">  BOOST_REQUIRE(_gametime.get_fps() == 0);</span>
+<span style = "background-color:#dfd">  BOOST_REQUIRE(_gametime.get_fps() == 0);</span>
 
-<span style = "background-color:#fdd">  auto _total_seconds = _gametime.get_total_secs();
+<span style = "background-color:#dfd">  auto _total_seconds = _gametime.get_total_secs();
   while (_gametime.get_total_secs() &lt; _stop_after_secs) {
     _gametime.tick();
     _total_seconds = _gametime.get_total_secs();
   }</span>
 
-<span style = "background-color:#fdd">  BOOST_REQUIRE(_gametime.get_fps() &gt;= 30);
+<span style = "background-color:#dfd">  BOOST_REQUIRE(_gametime.get_fps() &gt;= 30);
 }</span>
 
 #endif // WOLF_TESTS</pre>
