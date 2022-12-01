@@ -169,9 +169,6 @@ if (WOLF_SYSTEM_SOCKET)
         "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_tcp_server.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_tcp_server.hpp"
     )
-    file(GLOB_RECURSE WOLF_SYSTEM_SOCKET_TEST_SRC
-        "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/test/tcp.hpp"
-    )
     list(APPEND SRCS 
         ${WOLF_SYSTEM_SOCKET_SRC} 
         ${WOLF_SYSTEM_SOCKET_TEST_SRC}
@@ -217,13 +214,7 @@ file(GLOB_RECURSE WOLF_SYSTEM_SRC
     "${CMAKE_CURRENT_SOURCE_DIR}/system/w_trace.hpp"
 )
 file(GLOB_RECURSE WOLF_SYSTEM_TEST_SRC
-    "${CMAKE_CURRENT_SOURCE_DIR}/system/test/compress.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/system/test/gametime.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/system/test/log.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/system/test/process.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/system/test/signal_slot.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/system/test/trace.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/system/test/tcp.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/system/test/*"
 )
 
 list(APPEND SRCS 

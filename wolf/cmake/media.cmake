@@ -71,8 +71,6 @@ if (WOLF_MEDIA_STB)
 endif()
 
 file(GLOB_RECURSE WOLF_MEDIA_TEST_SRC
-    "${CMAKE_CURRENT_SOURCE_DIR}/media/test/avframe.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/media/test/openal.hpp"
-
+    "${CMAKE_CURRENT_SOURCE_DIR}/media/test/*"
 )
 list(APPEND SRCS ${WOLF_MEDIA_TEST_SRC})

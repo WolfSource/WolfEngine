@@ -160,7 +160,7 @@ if (WOLF_STREAM_WEBRTC)
 endif()
 
 file(GLOB_RECURSE WOLF_STREAM_TEST_SRC
-    "${CMAKE_CURRENT_SOURCE_DIR}/stream/test/rist.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/stream/test/*"
 )
 list(APPEND SRCS ${WOLF_STREAM_TEST_SRC})
 

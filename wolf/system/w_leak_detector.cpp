@@ -31,8 +31,6 @@ w_leak_detector::~w_leak_detector() noexcept {
       std::cerr << "memory leak detected!\r\n";
       assert(false);
       std::terminate();
-    } else {
-      std::cerr << "no memory leak!\r\n";
     }
   } catch (...) // const std::exception& p_ex)
   {

@@ -166,14 +166,24 @@ w_rist::connect(_In_ const std::string_view p_endpoint) {
   }
 
   // rely on the library to parse the url
-  rist_peer_config *_peer_config = nullptr;
+  auto *_peer_config =
+      gsl::owner<rist_peer_config *>(calloc(1, sizeof(rist_peer_config)));
+  // check for memory violation
+  std::ignore = gsl::not_null<rist_peer_config *>(_peer_config);
+
+
+  rist_peer_config_defaults_set(_peer_config);
+  //if (parse_url_options(url_local, _peer_config) != 0) {
+  //  return W_ERR(std::errc::bad_address,
+  //               "could not parse peer options for receiver");
+  //}
+
   if (rist_parse_address2(p_endpoint.data(), &_peer_config) != 0) {
     return W_ERR(std::errc::bad_address,
                  "could not parse peer options for receiver");
   }
 
-  if (_peer_config == nullptr ||
-      rist_peer_create(this->_ctx, &this->_peer, _peer_config) != 0) {
+  if (rist_peer_create(this->_ctx, &this->_peer, _peer_config) != 0) {
     return W_ERR(std::errc::operation_canceled,
                  "could not add peer connector to receiver");
   }
