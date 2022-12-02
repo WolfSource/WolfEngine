@@ -8,7 +8,7 @@ cross-platform open source game engine created by&nbsp;<a href="https://pooyaeim
 The Wolf is a comprehensive set of C++ open source libraries for realtime rendering, realtime streaming and game developing, which is support <b>Lua</b> and <b>WASM</b> as an embedded scripting languages.</p>
 
 # Build
-- Install 
+- Prerequisites 
       - For windows, make sure install the latest Windows 11/10 SDK
 	- [git](https://git-scm.com/downloads)
 	- [CMake](https://cmake.org/download/)
