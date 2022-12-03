@@ -263,7 +263,8 @@ fn get_cmake_defines(
     args
 }
 
-fn copy_shared_libs(p_lib_path: &str, p_lib_names: &[&str]) {
+#[allow(dead_code)]
+fn copy_shared_libs(p_lib_path: &str, p_lib_names: &[String]) {
     let out_dir = std::env::var("OUT_DIR").unwrap();
 
     let out_path = std::path::Path::new(&out_dir).join("../../..");
@@ -291,12 +292,33 @@ fn link(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &str) 
         println!("cargo:rustc-link-lib=dylib=Mswsock");
     }
 
-    let sys_build_dir = format!("{p_current_dir_path_str}/sys/build/{p_build_profile}");
-
     if cfg!(target_os = "macos") || cfg!(target_os = "ios") {
         println!("cargo:rustc-link-search=native=/usr/lib");
         println!("cargo:rustc-link-lib=dylib=c++");
     }
+
+    let lib_ext = if p_target_os == "windows" { "lib" } else { "a" };
+
+    //println!("cargo:rustc-link-search=native=G:/SourceCodes/WolfEngine/WolfEngine/wolf/sys/build/Debug/_deps/lz4_static-build/Debug/");
+    //println!("cargo:rustc-link-lib=static=lz4");
+
+    link_wolf(p_current_dir_path_str, p_target_os, p_build_profile);
+
+    // // copy lib to linux
+    // if cfg!(target_os = "linux") {
+    //     copy_shared_libs("/usr/lib", &names);
+    // }
+
+    #[cfg(feature = "media_ffmpeg")]
+    link_ffmpeg(p_current_dir_path_str, p_target_os);
+
+    #[cfg(feature = "media_openal")]
+    link_openal(p_current_dir_path_str, p_build_profile);
+}
+
+fn link_wolf(p_current_dir_path_str: &str, p_target_os: &str, p_build_profile: &str) {
+    // create system build directory
+    let sys_build_dir = format!("{p_current_dir_path_str}/sys/build/{p_build_profile}");
 
     let lib_path = if p_target_os == "windows" {
         format!("{sys_build_dir}/{p_build_profile}")
@@ -306,34 +328,19 @@ fn link(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &str) 
     println!("cargo:rustc-link-search=native={lib_path}");
     println!("cargo:rustc-link-lib=dylib=wolf_sys");
 
-    //println!("cargo:rustc-link-search=native=G:/SourceCodes/WolfEngine/WolfEngine/wolf/sys/build/Debug/_deps/lz4_static-build/Debug/");
-    //println!("cargo:rustc-link-lib=static=lz4");
+    // let names = if p_target_os == "windows" {
+    //     [
+    //         format!("wolf_sys.{p_lib_ext}"),
+    //         "wolf_sys.exp".to_owned(),
+    //         "wolf_sys.pdb".to_owned(),
+    //     ]
+    //     .to_vec()
+    // } else {
+    //     [format!("libwolf_sys.{p_lib_ext}")].to_vec()
+    // };
 
-    let names = if p_target_os == "windows" {
-        [
-            "wolf_sys.dll",
-            "wolf_sys.exp",
-            "wolf_sys.lib",
-            "wolf_sys.pdb",
-        ]
-        .to_vec()
-    } else {
-        ["libwolf_sys.a"].to_vec()
-    };
-
-    // copy to target and deps folder
-    copy_shared_libs(&lib_path, &names);
-
-    // // copy lib to linux
-    // if cfg!(target_os = "linux") {
-    //     copy_shared_libs("/usr/lib", &names);
-    // }
-
-    #[cfg(feature = "media_ffmpeg")]
-    copy_ffmpeg(p_current_dir_path_str, p_target_os);
-
-    #[cfg(feature = "media_openal")]
-    copy_openal(p_current_dir_path_str, p_build_profile);
+    // // copy to target and deps folder
+    // copy_shared_libs(&lib_path, &names);
 }
 
 #[cfg(feature = "media_ffmpeg")]

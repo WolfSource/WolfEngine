@@ -44,7 +44,7 @@ option(WOLF_SYSTEM_GAMEPAD_SIM "Enable gamepad simulator based on ViGEm" OFF)
 
 option(WOLF_ENABLE_TESTS "Enable test for wolf_sys" OFF)
 
-set(LIBRARY_TYPE "SHARED" CACHE STRING "Library type")
+set(LIBRARY_TYPE "STATIC" CACHE STRING "Library type")
 
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
