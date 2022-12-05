@@ -99,7 +99,7 @@ boost::leaf::result<int> w_av_frame::set(_Inout_ uint8_t **p_data) noexcept {
       gsl::narrow_cast<const uint8_t *>(_data_ptr), this->_config.format,
       _av_frame_nn->width, _av_frame_nn->height, _alignment);
 
-  return W_SUCCESS;
+  return S_OK;
 }
   
 std::tuple<uint8_t **, int *> w_av_frame::get() const noexcept {

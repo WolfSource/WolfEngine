@@ -84,7 +84,7 @@ option(WOLF_SYSTEM_MIMALLOC "Enable Microsoft's mimalloc memory allocator" OFF)
 option(WOLF_SYSTEM_SIG_SLOT "Enable signal/slot based on boost signals2" OFF)
 option(WOLF_SYSTEM_SOCKET "Enable TCP/UDP protocol over socket" OFF)
 option(WOLF_SYSTEM_STACKTRACE "Enable boost stacktrace" OFF)
-option(WOLF_SYSTEM_WASM3 "Enable WebAssembly interpreter" OFF)
+#option(WOLF_SYSTEM_WASM3 "Enable WebAssembly interpreter" OFF)
 #option(WOLF_SYSTEM_ZLIB "Enable zlib for compression" OFF)
 
 option(WOLF_TESTS "Enable tests" OFF)
@@ -172,6 +172,7 @@ endif()
 
 add_definitions(
     -DBOOST_ASIO_NO_DEPRECATED
+    -DLIBCXX_ENABLE_INCOMPLETE_FEATURES=ON # for llvm new features 
 )
 if (MSVC)
     add_definitions(
@@ -250,6 +251,7 @@ source_group("stream/webrtc/peer" FILES ${WOLF_STREAM_WEBRTC_PEER_SRC})
 source_group("stream/test" FILES ${WOLF_STREAM_QUIC_SRC})
 source_group("stream" FILES ${WOLF_STREAM_SRC})
 source_group("system/log" FILES ${WOLF_SYSTEM_LOG_SRC})
+source_group("system/compression" FILES ${WOLF_SYSTEM_LZ4_SRCS})
 source_group("system/socket/test" FILES ${WOLF_SYSTEM_SOCKET_TEST_SRC})
 source_group("system/socket" FILES ${WOLF_SYSTEM_SOCKET_SRC})
 source_group("system/test" FILES ${WOLF_SYSTEM_TEST_SRC})

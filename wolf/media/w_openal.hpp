@@ -166,7 +166,7 @@ public:
                      "error while updating openal because: " + _error);
       }
     }
-    return W_SUCCESS;
+    return S_OK;
   }
 
     /**

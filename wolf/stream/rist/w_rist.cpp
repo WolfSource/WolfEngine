@@ -14,7 +14,7 @@ static int s_on_log_callback(_In_ void *p_arg, _In_ rist_log_level p_log_level,
   if (_rist_nn->on_log_callback) {
     _rist_nn->on_log_callback(p_log_level, p_msg);
   }
-  return W_SUCCESS;
+  return S_OK;
 }
 
 static int s_on_auth_handler_connect_callback(_In_ void *p_arg,
@@ -31,7 +31,7 @@ static int s_on_auth_handler_connect_callback(_In_ void *p_arg,
                                          p_local_port);
   }
 
-  return W_SUCCESS;
+  return S_OK;
 }
 
 static int s_on_auth_handler_disconnect_callback(_In_ void *p_arg,
@@ -41,7 +41,7 @@ static int s_on_auth_handler_disconnect_callback(_In_ void *p_arg,
   if (_rist_nn->on_auth_disconnected_callback) {
     _rist_nn->on_auth_disconnected_callback();
   }
-  return W_SUCCESS;
+  return S_OK;
 }
 
 static int s_on_receiver_data_callback(_In_ void *p_arg,
@@ -57,7 +57,7 @@ static int s_on_receiver_data_callback(_In_ void *p_arg,
     // release block
     rist_receiver_data_block_free2(&p_data_block);
   }
-  return W_SUCCESS;
+  return S_OK;
 }
 
 #pragma endregion
@@ -151,7 +151,7 @@ boost::leaf::result<int> w_rist::init() {
                  "could not set rist auth handler");
   }
 
-  return W_SUCCESS;
+  return S_OK;
 }
 
 boost::leaf::result<int>
@@ -195,7 +195,7 @@ w_rist::connect(_In_ const std::string_view p_endpoint) {
                  "could not add peer connector to receiver");
   }
 
-  return W_SUCCESS;
+  return S_OK;
 }
 
 boost::leaf::result<size_t>
@@ -216,7 +216,7 @@ boost::leaf::result<size_t> w_rist::receive(_Inout_ w_rist_data_block &p_block,
              ? boost::leaf::result<size_t>(gsl::narrow_cast<size_t>(_bytes))
              : W_ERR(std::errc::no_message,
                      "could not read data block from the rist stream");
-  return W_SUCCESS;
+  return S_OK;
 }
 
 #endif

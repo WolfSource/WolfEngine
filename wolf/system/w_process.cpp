@@ -7,7 +7,7 @@ using w_process = wolf::system::w_process;
 
 boost::leaf::result<std::filesystem::path> w_process::current_path() {
   auto _path = std::filesystem::current_path();
-  return W_OK(_path);
+  return W_SUCCESS(_path);
 }
 
 boost::leaf::result<std::filesystem::path> w_process::current_exe_path() {
@@ -24,7 +24,7 @@ boost::leaf::result<std::filesystem::path> w_process::current_exe_path() {
   }
 
   auto _path = path(_buffer.data(), path::auto_format).parent_path();
-  return W_OK(_path);
+  return W_SUCCESS(_path);
 #else
   std::stringstream buffer;
   buffer << std::ifstream("/proc/self/comm").rdbuf();

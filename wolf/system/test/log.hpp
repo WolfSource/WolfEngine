@@ -74,7 +74,7 @@ BOOST_AUTO_TEST_CASE(stress_test) {
       const auto _thread_id = _sstream.str();
 
       std::default_random_engine _rand_engine = {};
-      std::uniform_int_distribution<size_t> _rand_gen(_min, _max);
+      std::uniform_int_distribution<long long> _rand_gen(_min, _max);
       const auto _max_delta_in_sec = _rand_gen(_rand_engine);
 
       const auto time_1 = std::chrono::high_resolution_clock::now();

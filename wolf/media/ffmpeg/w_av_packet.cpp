@@ -17,7 +17,7 @@ boost::leaf::result<int> w_av_packet::init() noexcept {
     return W_ERR(std::errc::not_enough_memory,
                  "could not allocate memory for avpacket");
   }
-  return W_SUCCESS;
+  return S_OK;
 }
 
 int w_av_packet::get_size() const noexcept { return this->_packet->size; }

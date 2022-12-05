@@ -14,7 +14,7 @@ w_decoder::start(_In_ const w_av_packet &p_packet,
                  "could not allocate packet for decoding");
   }
 
-  auto _ret = W_OK();
+  auto _ret = W_SUCCESS();
 #ifdef __clang__
 #pragma unroll
 #endif

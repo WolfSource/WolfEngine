@@ -107,11 +107,11 @@ if (WOLF_SYSTEM_LZ4)
   )
   FetchContent_MakeAvailable(lz4_static)
 
-  file(GLOB_RECURSE LZ4_SRCS
-    "${CMAKE_CURRENT_SOURCE_DIR}/system/lz4.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/system/lz4.hpp"
+  file(GLOB_RECURSE WOLF_SYSTEM_LZ4_SRCS
+    "${CMAKE_CURRENT_SOURCE_DIR}/system/compression/w_lz4.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/system/compression/w_lz4.hpp"
   )
-  list(APPEND SRCS ${LZ4_SRCS})
+  list(APPEND SRCS ${WOLF_SYSTEM_LZ4_SRCS})
   list(APPEND INCLUDES ${lz4_SOURCE_DIR}/include)
   list(APPEND LIBS lz4_static)   
 

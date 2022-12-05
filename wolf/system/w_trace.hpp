@@ -87,17 +87,19 @@ private:
   std::deque<stack> _stacks = {};
 };
 
-constexpr inline int W_SUCCESS = 0;
+#ifndef WIN32
+constexpr inline int S_OK = 0;
+#endif
 
 template<typename T>
 #ifndef __clang__
 requires std::movable<T>
 #endif
-constexpr inline boost::leaf::result<T> W_OK(T &p_param) noexcept {
+constexpr inline boost::leaf::result<T> W_SUCCESS(T &p_param) noexcept {
     return boost::leaf::result<T>(std::move(p_param));
 }
 
-inline boost::leaf::result<int> W_OK() noexcept { return {W_SUCCESS}; }
+inline boost::leaf::result<int> W_SUCCESS() noexcept { return {S_OK}; }
 
 #define W_ERR(p_code, p_msg) boost::leaf::new_error(w_trace(p_code, p_msg, __FILE__, __LINE__))
 

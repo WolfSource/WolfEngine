@@ -87,7 +87,7 @@ boost::leaf::result<int> w_log::init() {
   this->_logger->set_level(_level);
   this->_logger->flush_on(_flush_level);
 
-  return W_SUCCESS;
+  return S_OK;
 }
 
 void w_log::write(_In_ const std::string_view &p_fmt) {
@@ -112,7 +112,7 @@ boost::leaf::result<int> w_log::flush() {
     this->_async_file_logger->flush();
   }
 
-  return W_SUCCESS;
+  return S_OK;
 }
 
 w_log_config w_log::get_config() const { return this->_config; }
