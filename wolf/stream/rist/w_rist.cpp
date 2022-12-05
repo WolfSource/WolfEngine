@@ -1,7 +1,10 @@
 #ifdef WOLF_STREAM_RIST
 
 #include "w_rist.hpp"
+
+#ifndef __clang__
 #include <Objbase.h>
+#endif
 
 using w_rist = wolf::stream::rist::w_rist;
 using w_rist_data_block = wolf::stream::rist::w_rist_data_block;

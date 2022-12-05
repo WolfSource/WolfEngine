@@ -134,6 +134,10 @@ set(CMAKE_CXX_FLAGS_DEBUG "-g")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 endif()
 
+if (ANDROID)
+    set(CMAKE_CXX_STANDARD 17)
+endif()
+
 set(GETOPT_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/system)
 
 #define includes, libs and srcs
@@ -225,6 +229,10 @@ add_library(${PROJECT_NAME} ${LIBRARY_TYPE}
     ${WOLF_SRCS}
     ${WOLF_CMAKES}
 )
+
+if (WOLF_STREAM_RIST)
+    add_dependencies(${PROJECT_NAME} ${RIST_TARGET})
+endif()
 		
 #if (MSVC)
 #    if(CMAKE_BUILD_TYPE MATCHES Debug)

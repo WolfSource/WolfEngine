@@ -66,7 +66,7 @@ cmake --build --preset default-build-android
 |:-----------:|:-----------:|:--------------------------:|:--------------:|:-------------:|:--------------:|:-------------:|
 | gRPC | :memo: | :x: | :x: | :x: | :x: | :x: |
 | QUIC | :memo: | :memo: | :memo: | :memo: | :memo: | :x: |
-| RIST | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :x: |
+| RIST | :white_check_mark: | :memo: | :memo: | :memo: | :white_check_mark: | :x: |
 | RTMP | :memo: | :x: | :x: | :x: | :x: | :x: |
 | RTSP | :memo: | :memo: | :memo: | :memo: | :memo: | :x: |
 | SRT | :memo: | :memo: | :memo: | :memo: | :memo: | :x: |
