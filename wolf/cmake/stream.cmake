@@ -24,37 +24,50 @@ if (WOLF_STREAM_QUIC)
 endif()
 
 if (WOLF_STREAM_RIST)
-  message("fetching https://code.videolan.org/rist/librist.git")
-  FetchContent_Declare(
-    rist
-    GIT_REPOSITORY https://code.videolan.org/rist/librist.git
-    GIT_TAG        master
-  )
-  FetchContent_MakeAvailable(rist)
+    set(RIST_TARGET "rist")
+    message("fetching https://code.videolan.org/rist/librist.git")
+    FetchContent_Declare(
+        ${RIST_TARGET}
+        GIT_REPOSITORY https://code.videolan.org/rist/librist.git
+        GIT_TAG        master
+      )
+    FetchContent_MakeAvailable(${RIST_TARGET})
+      
+    if (ANDROID)
+      add_custom_command(OUTPUT rist_command.out COMMAND
+      /bin/bash "${CMAKE_CURRENT_SOURCE_DIR}/third_party/shells/librist/librist-android.sh" --build_dir=${rist_BINARY_DIR}
+       WORKING_DIRECTORY ${rist_SOURCE_DIR})
+      add_custom_target(rist ALL DEPENDS rist_command.out)
+      
+      list(APPEND LIBS
+        ${rist_BINARY_DIR}/librist.a)
+    else ()
+      STRING(TOLOWER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_LOWER)
+      
+      add_custom_command(OUTPUT rist_command.out COMMAND cmd /c "meson setup ${rist_BINARY_DIR} --backend vs2022 --default-library static --buildtype ${CMAKE_BUILD_TYPE_LOWER} & meson compile -C ${rist_BINARY_DIR}" WORKING_DIRECTORY ${rist_SOURCE_DIR})
+      add_custom_target(rist ALL DEPENDS rist_command.out)
 
-  STRING(TOLOWER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_LOWER)
-
-  add_custom_command(OUTPUT rist_command.out COMMAND cmd /c "meson setup ${rist_BINARY_DIR} --backend vs2022 --default-library static --buildtype ${CMAKE_BUILD_TYPE_LOWER} & meson compile -C ${rist_BINARY_DIR}" WORKING_DIRECTORY ${rist_SOURCE_DIR})
-  add_custom_target(rist ALL DEPENDS rist_command.out)
-
-  list(APPEND INCLUDES
-    ${rist_BINARY_DIR}
-    ${rist_BINARY_DIR}/include
-    ${rist_BINARY_DIR}/include/librist
-    ${rist_SOURCE_DIR}/src
-    ${rist_SOURCE_DIR}/include
-    ${rist_SOURCE_DIR}/include/librist
-    ${rist_SOURCE_DIR}/contrib
-    ${rist_SOURCE_DIR}/contrib/mbedtls/include
-  )
-  list(APPEND LIBS
-    ws2_32
-    ${rist_BINARY_DIR}/librist.a) 
-
-  file(GLOB_RECURSE WOLF_STREAM_RIST_SRC
-    "${CMAKE_CURRENT_SOURCE_DIR}/stream/rist/*"
-  )
-  list(APPEND SRCS ${WOLF_STREAM_RIST_SRC})
+      list(APPEND LIBS
+        ws2_32
+        ${rist_BINARY_DIR}/librist.a)
+        
+    endif()
+    
+    list(APPEND INCLUDES
+        ${rist_BINARY_DIR}
+        ${rist_BINARY_DIR}/include
+        ${rist_BINARY_DIR}/include/librist
+        ${rist_SOURCE_DIR}/src
+        ${rist_SOURCE_DIR}/include
+        ${rist_SOURCE_DIR}/include/librist
+        ${rist_SOURCE_DIR}/contrib
+        ${rist_SOURCE_DIR}/contrib/mbedtls/include
+      )
+      
+      file(GLOB_RECURSE WOLF_STREAM_RIST_SRC
+        "${CMAKE_CURRENT_SOURCE_DIR}/stream/rist/*"
+      )
+      list(APPEND SRCS ${WOLF_STREAM_RIST_SRC})
 endif()
 
 if (WOLF_STREAM_WEBRTC)
