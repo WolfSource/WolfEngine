@@ -19,7 +19,7 @@ boost::leaf::result<std::filesystem::path> w_process::current_exe_path() {
   const auto _ret = ::GetLastError();
 
   if (_ret != S_OK) {
-    return W_ERR(_ret, "GetModuleFileNameW failed because:" +
+    return W_FAILURE(_ret, "GetModuleFileNameW failed because:" +
                            get_last_win_error(_ret));
   }
 
@@ -28,7 +28,7 @@ boost::leaf::result<std::filesystem::path> w_process::current_exe_path() {
 #else
   std::stringstream buffer;
   buffer << std::ifstream("/proc/self/comm").rdbuf();
-  
+
   std::string _str = buffer.str();
   return std::filesystem::path(_str);
 #endif

@@ -76,7 +76,7 @@ create(_Inout_ w_ffmpeg_ctx &p_ctx, _In_ const w_av_config &p_config,
           _value_str = std::to_string(_value);
         } catch (...) {
         };
-        return W_ERR(std::errc::invalid_argument,
+        return W_FAILURE(std::errc::invalid_argument,
                      "could not set int value for " + _opt.name + ":" +
                          _value_str + " because " +
                          w_ffmpeg_ctx::get_av_error_str(_ret));
@@ -92,7 +92,7 @@ create(_Inout_ w_ffmpeg_ctx &p_ctx, _In_ const w_av_config &p_config,
           _value_str = std::to_string(_value);
         } catch (...) {
         };
-        return W_ERR(std::errc::invalid_argument,
+        return W_FAILURE(std::errc::invalid_argument,
                      "could not set double value for " + _opt.name + ":" +
                          _value_str + " because " +
                          w_ffmpeg_ctx::get_av_error_str(_ret));
@@ -104,7 +104,7 @@ create(_Inout_ w_ffmpeg_ctx &p_ctx, _In_ const w_av_config &p_config,
         const auto _ret = av_opt_set(_context_nn->priv_data, _opt.name.c_str(),
                                      _value_str.c_str(), 0);
         if (_ret < 0) {
-          return W_ERR(std::errc::invalid_argument,
+          return W_FAILURE(std::errc::invalid_argument,
                        "could not set string value for " + _opt.name + ":" +
                            _value_str + " because " +
                            w_ffmpeg_ctx::get_av_error_str(_ret));
@@ -116,11 +116,11 @@ create(_Inout_ w_ffmpeg_ctx &p_ctx, _In_ const w_av_config &p_config,
   // open avcodec
   const auto _ret = avcodec_open2(_context_nn, _context_nn->codec, nullptr);
   if (_ret < 0) {
-    return W_ERR(std::errc::operation_canceled,
+    return W_FAILURE(std::errc::operation_canceled,
                  "could not open avcodec because " +
                      w_ffmpeg_ctx::get_av_error_str(_ret));
   }
-  return W_SUCCESS();
+  return S_OK;
 }
 
 boost::leaf::result<w_encoder> w_ffmpeg::create_encoder(
@@ -132,7 +132,7 @@ boost::leaf::result<w_encoder> w_ffmpeg::create_encoder(
 
   _encoder.ctx.codec = avcodec_find_encoder_by_name(p_id.c_str());
   if (_encoder.ctx.codec == nullptr) {
-    return W_ERR(std::errc::invalid_argument,
+    return W_FAILURE(std::errc::invalid_argument,
                  "could not find encoder codec id: " + p_id);
   }
 
@@ -150,12 +150,12 @@ boost::leaf::result<w_decoder> w_ffmpeg::create_decoder(
 
   _decoder.ctx.codec = avcodec_find_decoder_by_name(p_id.c_str());
   if (_decoder.ctx.codec == nullptr) {
-    return W_ERR(std::errc::invalid_argument,
+    return W_FAILURE(std::errc::invalid_argument,
                  "could not find decoder codec id: " + p_id);
   }
   _decoder.ctx.parser = av_parser_init(_decoder.ctx.codec->id);
   if (_decoder.ctx.parser == nullptr) {
-    return W_ERR(std::errc::invalid_argument,
+    return W_FAILURE(std::errc::invalid_argument,
                  "could not initialize parser for codec id: " + p_id);
   }
 

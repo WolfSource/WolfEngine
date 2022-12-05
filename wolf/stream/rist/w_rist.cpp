@@ -102,7 +102,7 @@ boost::leaf::result<int> w_rist::init() {
   // now create a log
   if (rist_logging_set(&this->_log, this->_log_level, s_on_log_callback, this,
                        nullptr, stderr) != 0) {
-    return W_ERR(std::errc::operation_canceled,
+    return W_FAILURE(std::errc::operation_canceled,
                  "could not create a rist log callback");
   }
 
@@ -114,7 +114,7 @@ boost::leaf::result<int> w_rist::init() {
     const auto _ret =
         rist_sender_create(&this->_ctx, this->_profile, 0, this->_log);
     if (_ret != 0) {
-      return W_ERR(std::errc::operation_canceled,
+      return W_FAILURE(std::errc::operation_canceled,
                    "could not create a rist sender context");
     }
 
@@ -130,7 +130,7 @@ boost::leaf::result<int> w_rist::init() {
         rist_receiver_create(&this->_ctx, this->_profile, this->_log);
 
     if (_ret != 0) {
-      return W_ERR(std::errc::operation_canceled,
+      return W_FAILURE(std::errc::operation_canceled,
                    "could not create a rist receiver context");
     }
 
@@ -143,14 +143,14 @@ boost::leaf::result<int> w_rist::init() {
 
     if (rist_receiver_data_callback_set2(
             this->_ctx, s_on_receiver_data_callback, this) != 0) {
-      return W_ERR(std::errc::operation_canceled,
+      return W_FAILURE(std::errc::operation_canceled,
                    "could not set data receiver callback");
     }
   }
 
   if (rist_auth_handler_set(this->_ctx, s_on_auth_handler_connect_callback,
                             s_on_auth_handler_disconnect_callback, this) != 0) {
-    return W_ERR(std::errc::operation_canceled,
+    return W_FAILURE(std::errc::operation_canceled,
                  "could not set rist auth handler");
   }
 
@@ -161,7 +161,7 @@ boost::leaf::result<int>
 w_rist::connect(_In_ const std::string_view p_endpoint) {
 
   if (p_endpoint.empty()) {
-    return W_ERR(std::errc::bad_address, "missing endpoint url");
+    return W_FAILURE(std::errc::bad_address, "missing endpoint url");
   }
 
   if (this->_peer != nullptr) {
@@ -177,24 +177,24 @@ w_rist::connect(_In_ const std::string_view p_endpoint) {
 
   rist_peer_config_defaults_set(_peer_config);
   //if (parse_url_options(url_local, _peer_config) != 0) {
-  //  return W_ERR(std::errc::bad_address,
+  //  return W_FAILURE(std::errc::bad_address,
   //               "could not parse peer options for receiver");
   //}
 
   if (rist_parse_address2(p_endpoint.data(), &_peer_config) != 0) {
-    return W_ERR(std::errc::bad_address,
+    return W_FAILURE(std::errc::bad_address,
                  "could not parse peer options for receiver");
   }
 
   if (rist_peer_create(this->_ctx, &this->_peer, _peer_config) != 0) {
-    return W_ERR(std::errc::operation_canceled,
+    return W_FAILURE(std::errc::operation_canceled,
                  "could not add peer connector to receiver");
   }
 
   free(_peer_config);
 
   if (rist_start(this->_ctx) != 0) {
-    return W_ERR(std::errc::operation_canceled,
+    return W_FAILURE(std::errc::operation_canceled,
                  "could not add peer connector to receiver");
   }
 
@@ -206,7 +206,7 @@ w_rist::send(_In_ const w_rist_data_block &p_block) {
   auto _bytes = rist_sender_data_write(this->_ctx, p_block._block);
   return _bytes >= 0
              ? boost::leaf::result<size_t>(gsl::narrow_cast<size_t>(_bytes))
-             : W_ERR(std::errc::no_message,
+             : W_FAILURE(std::errc::no_message,
                      "could not send data block to the rist stream");
 }
 
@@ -217,7 +217,7 @@ boost::leaf::result<size_t> w_rist::receive(_Inout_ w_rist_data_block &p_block,
       rist_receiver_data_read2(_ctx_nn, &p_block._block, p_timeout_ms);
   return _bytes >= 0
              ? boost::leaf::result<size_t>(gsl::narrow_cast<size_t>(_bytes))
-             : W_ERR(std::errc::no_message,
+             : W_FAILURE(std::errc::no_message,
                      "could not read data block from the rist stream");
   return S_OK;
 }

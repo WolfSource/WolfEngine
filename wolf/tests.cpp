@@ -19,12 +19,13 @@ BOOST_AUTO_TEST_CASE(global) {
 
 #pragma region system tests
 
-#include <system/test/gametime.hpp>
-#include <system/test/process.hpp>
-#include <system/test/signal_slot.hpp>
-#include <system/test/trace.hpp>
-#include <system/test/tcp.hpp>
-#include <system/test/log.hpp>
+#include <system/test/compress.hpp>
+//#include <system/test/gametime.hpp>
+//#include <system/test/process.hpp>
+//#include <system/test/signal_slot.hpp>
+//#include <system/test/trace.hpp>
+//#include <system/test/tcp.hpp>
+//#include <system/test/log.hpp>
 
 #pragma endregion
 

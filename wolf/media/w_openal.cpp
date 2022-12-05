@@ -138,14 +138,14 @@ boost::leaf::result<int> w_openal::init() {
   this->_device = alcOpenDevice(nullptr);
   if (this->_device != nullptr) {
     _ret = -1;
-    return W_ERR(std::errc::operation_canceled,
+    return W_FAILURE(std::errc::operation_canceled,
                  "could not open a openal device");
   }
 
   this->_ctx = alcCreateContext(this->_device, nullptr);
   if (this->_ctx == nullptr || alcMakeContextCurrent(this->_ctx) == ALC_FALSE) {
     _ret = -1;
-    return W_ERR(std::errc::operation_canceled, "could not get openal context");
+    return W_FAILURE(std::errc::operation_canceled, "could not get openal context");
   }
 
   // get the sound format, and figure out the OpenAL format
@@ -176,7 +176,7 @@ boost::leaf::result<int> w_openal::init() {
   auto _error = get_last_error();
   if (!_error.empty()) {
     _ret = -1;
-    return W_ERR(std::errc::operation_canceled,
+    return W_FAILURE(std::errc::operation_canceled,
                  "could not generate buffer for openAL because " + _error);
   }
 
@@ -184,13 +184,13 @@ boost::leaf::result<int> w_openal::init() {
   _error = get_last_error();
   if (_error.empty()) {
     _ret = -1;
-    return W_ERR(std::errc::operation_canceled,
+    return W_FAILURE(std::errc::operation_canceled,
                  "could not generate sources for openAL");
   }
 
   if (alIsExtensionPresent("AL_SOFTX_callback_buffer") != 0) {
     _ret = -1;
-    return W_ERR(std::errc::operation_canceled,
+    return W_FAILURE(std::errc::operation_canceled,
                  "could not get AL_SOFT_callback_buffer");
   }
 
@@ -198,7 +198,7 @@ boost::leaf::result<int> w_openal::init() {
       alGetProcAddress("alBufferCallbackSOFT"));
   if (this->_callback_ptr == nullptr) {
     _ret = -1;
-    return W_ERR(std::errc::operation_canceled,
+    return W_FAILURE(std::errc::operation_canceled,
                  "could not get LPALBUFFERCALLBACKSOFT");
   }
 
@@ -215,7 +215,7 @@ boost::leaf::result<int> w_openal::init() {
   this->_data = gsl::narrow_cast<ALbyte *>(malloc(this->_data_size));
   if (this->_data == nullptr) {
     _ret = -1;
-    return W_ERR(std::errc::not_enough_memory,
+    return W_FAILURE(std::errc::not_enough_memory,
                  std::format("could not allocate {} byets for openal buffer",
                              this->_data_size));
   }
@@ -230,7 +230,7 @@ boost::leaf::result<int> w_openal::init() {
   _error = get_last_error();
   if (_error.empty()) {
     _ret = -1;
-    return W_ERR(std::errc::not_enough_memory,
+    return W_FAILURE(std::errc::not_enough_memory,
                  "could not set openal source because " + _error);
   }
 

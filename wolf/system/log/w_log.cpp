@@ -22,7 +22,7 @@ boost::leaf::result<int> w_log::init() {
     // try to create a directory for it
     const auto _dir_created = std::filesystem::create_directory(_parent_path);
     if (!_dir_created) {
-      return W_ERR(std::errc::invalid_argument,
+      return W_FAILURE(std::errc::invalid_argument,
                    "could not create log directory path");
     }
   }

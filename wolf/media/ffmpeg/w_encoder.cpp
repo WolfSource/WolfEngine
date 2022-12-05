@@ -15,7 +15,7 @@ w_encoder::start(_In_ const w_av_frame &p_frame,
 
   auto _ret = avcodec_send_frame(this->ctx.codec_ctx, p_frame._av_frame);
   if (_ret < 0) {
-    return W_ERR(std::errc::operation_canceled,
+    return W_FAILURE(std::errc::operation_canceled,
                  "failed to send the avframe for encoding because " +
                      w_ffmpeg_ctx::get_av_error_str(_ret));
   }
@@ -26,7 +26,7 @@ w_encoder::start(_In_ const w_av_frame &p_frame,
   }
 
   if (_ret < 0) {
-    return W_ERR(std::errc::operation_canceled,
+    return W_FAILURE(std::errc::operation_canceled,
                  "error happened during the encoding because " +
                      w_ffmpeg_ctx::get_av_error_str(_ret));
   }

@@ -10,11 +10,11 @@ w_decoder::start(_In_ const w_av_packet &p_packet,
 
   auto _dst_packet = av_packet_alloc();
   if (_dst_packet == nullptr) {
-    return W_ERR(std::errc::not_enough_memory,
+    return W_FAILURE(std::errc::not_enough_memory,
                  "could not allocate packet for decoding");
   }
 
-  auto _ret = W_SUCCESS();
+  boost::leaf::result<int> _ret = S_OK;
 #ifdef __clang__
 #pragma unroll
 #endif
@@ -25,7 +25,7 @@ w_decoder::start(_In_ const w_av_packet &p_packet,
         AV_NOPTS_VALUE, AV_NOPTS_VALUE, 0);
 
     if (_bytes < 0) {
-      return W_ERR(std::errc::not_enough_memory,
+      return W_FAILURE(std::errc::not_enough_memory,
                    "could not parse packet for decoding");
     }
 
@@ -55,7 +55,7 @@ w_decoder::_get_packet_from_frame(_In_ AVPacket *p_packet,
   // start decoding
   auto _ret = avcodec_send_packet(this->ctx.codec_ctx, p_packet);
   if (_ret < 0) {
-    return W_ERR(std::errc::operation_canceled,
+    return W_FAILURE(std::errc::operation_canceled,
                  "could not parse packet for decoding because of " +
                      w_ffmpeg_ctx::get_av_error_str(_ret));
   }
@@ -67,7 +67,7 @@ w_decoder::_get_packet_from_frame(_In_ AVPacket *p_packet,
     }
 
     if (_ret < 0) {
-      return W_ERR(std::errc::operation_canceled,
+      return W_FAILURE(std::errc::operation_canceled,
                    "error happened during the encoding because " +
                        w_ffmpeg_ctx::get_av_error_str(_ret));
       break;

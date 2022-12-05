@@ -149,7 +149,7 @@ public:
                                   : (this->_data_size + _write_offset)) -
                              this->_read_pos;
       if (_readable == 0) {
-        return W_ERR(std::errc::operation_canceled,
+        return W_FAILURE(std::errc::operation_canceled,
                      "no openal data avaiable for reading");
       }
 
@@ -162,7 +162,7 @@ public:
 
       auto _error = get_last_error();
       if (_error) {
-        return W_ERR(std::errc::operation_canceled,
+        return W_FAILURE(std::errc::operation_canceled,
                      "error while updating openal because: " + _error);
       }
     }

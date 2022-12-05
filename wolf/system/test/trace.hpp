@@ -15,7 +15,7 @@ BOOST_AUTO_TEST_CASE(w_trace_handle_all) {
   const wolf::system::w_leak_detector _detector = {};
 
   const auto _function_1 = []() noexcept -> boost::leaf::result<void> {
-    return W_ERR(std::errc::bad_message, "error from function 1");
+    return W_FAILURE(std::errc::bad_message, "error from function 1");
   };
 
   const auto _function_2 = [&]() noexcept -> boost::leaf::result<void> {
