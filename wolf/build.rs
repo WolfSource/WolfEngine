@@ -128,6 +128,7 @@ pub fn protos(
     p_build_server: bool,
 ) -> std::io::Result<()> {
     tonic_build::configure()
+        .protoc_arg("--experimental_allow_proto3_optional")
         .build_client(p_build_client)
         .build_server(p_build_server)
         .compile(p_proto_paths, p_proto_includes)
