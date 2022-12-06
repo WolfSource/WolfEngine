@@ -1,0 +1,339 @@
+# paths                             # path dependency overrides
+
+[alias]
+run-wasm = "run --release --package run-wasm --"
+
+[build]
+# dep-info-basedir                  # path for the base directory for targets in depfiles
+# incremental                       # whether or not to enable incremental compilation
+# jobs                              # number of parallel jobs, defaults to # of CPUs
+# pipelining                        # rustc pipelining
+# rustc                             # the rust compiler tool
+# rustc-workspace-wrapper           # run this wrapper instead of `rustc` for workspace members
+# rustc-wrapper                     # run this wrapper instead of `rustc`
+# rustdoc                           # the doc generator tool
+rustdocflags = [                    # custom flags to pass to rustdoc
+    "--cfg=web_sys_unstable_apis",
+    "-Dabsolute_paths_not_starting_with_crate",
+    "-Dambiguous_associated_items",	
+    "-Danonymous_parameters",	
+    "-Darithmetic_overflow",	
+    "-Dasm_sub_register",	
+    "-Dbad_asm_style",	
+    "-Dbare_trait_objects",	
+    "-Dbindings_with_variant_name",	
+    #"-Dbox_pointers",
+    "-Dbreak_with_label_and_loop",	
+    "-Dcenum_impl_drop_cast",	
+    "-Dclashing_extern_declarations",	
+    "-Dcoherence_leak_check",	
+    "-Dconflicting_repr_hints",	
+    "-Dconst_evaluatable_unchecked",	
+    "-Dconst_item_mutation",	
+    "-Ddead_code",	
+    "-Ddeprecated",	
+    "-Ddeprecated_in_future",	
+    "-Dderef_into_dyn_supertrait",	
+    "-Dderef_nullptr",	
+    #"-Delided_lifetimes_in_paths",	
+    "-Dellipsis_inclusive_range_patterns",	
+    "-Dexplicit_outlives_requirements",	
+    "-Dexported_private_dependencies",	
+    "-Dforbidden_lint_groups",	
+    "-Dfunction_item_references",	
+    "-Dillegal_floating_point_literal_pattern",	
+    "-Dill_formed_attribute_input",	
+    "-Dincomplete_features",	
+    "-Dincomplete_include",	
+    "-Dindirect_structural_match",
+    "-Dineffective_unstable_trait_impl",
+    "-Dinline_no_sanitize",	
+    "-Dinvalid_doc_attributes",	
+    "-Dinvalid_type_param_default",	
+    "-Dinvalid_value",	
+    "-Dirrefutable_let_patterns",	
+    "-Dkeyword_idents",	
+    "-Dlarge_assignments",	
+    "-Dlate_bound_lifetime_arguments",	
+    "-Dlegacy_derive_helpers",	
+    "-Dmacro_expanded_macro_exports_accessed_by_absolute_paths",	
+    "-Dmacro_use_extern_crate",	
+    "-Dmeta_variable_misuse",	
+    "-Dmissing_abi",	
+    #"-Dmissing_copy_implementations",	
+    #"-Dmissing_debug_implementations",	
+    #"-Dmissing_docs",	#problem with petgraph
+    "-Dmissing_fragment_specifier",	
+    #"-Dmust_not_suspend", #lint is unstable
+    #"-Dmutable_borrow_reservation_conflict",	
+    "-Dmutable_transmutes",	
+    "-Dnamed_asm_labels",	
+    "-Dnontrivial_structural_match",	
+    #"-Dnon_exhaustive_omitted_patterns", #lint is unstable	
+    "-Dnon_shorthand_field_patterns",	
+    "-Dno_mangle_const_items",	
+    "-Dno_mangle_generic_items",	
+    "-Dorder_dependent_trait_objects",	
+    "-Doverlapping_range_endpoints",	
+    "-Dpatterns_in_fns_without_body",	
+    "-Dpointer_structural_match",	
+    "-Dprivate_in_public",	
+    "-Dproc_macro_back_compat",	
+    "-Dpub_use_of_private_extern_crate",	
+    "-Drenamed_and_removed_lints",	
+    #"-Drust_2021_incompatible_closure_captures",
+    "-Drust_2021_incompatible_or_patterns",	
+    "-Drust_2021_prefixes_incompatible_syntax",	
+    "-Drust_2021_prelude_collisions",	
+    "-Dsemicolon_in_expressions_from_macros",	
+    "-Dsingle_use_lifetimes",	
+    "-Dsoft_unstable",	
+    "-Dstable_features",		
+    "-Dtext_direction_codepoint_in_comment",	
+    "-Dtrivial_bounds",	
+    "-Dtrivial_casts",	
+    "-Dtrivial_numeric_casts",	
+    "-Dtype_alias_bounds",	
+    "-Dtyvar_behind_raw_pointer",	
+    "-Dunaligned_references",	
+    "-Dunconditional_panic",	
+    "-Dunconditional_recursion",
+    "-Duninhabited_static",	
+    "-Dunknown_crate_types",	
+    "-Dunknown_lints",	
+    "-Dunnameable_test_items",	
+    "-Dunreachable_code",	
+    "-Dunreachable_patterns",	
+    #"-Dunreachable_pub",	
+    #"-Dunsafe_code",	
+    #"-Dunsafe_op_in_unsafe_fn",	
+    #"-Dunstable_features",	
+    "-Dunstable_name_collisions",	
+    "-Dunsupported_calling_conventions",	
+    "-Dunused_assignments",	
+    "-Dunused_attributes",	
+    "-Dunused_crate_dependencies",	
+    "-Dunused_doc_comments",	
+    "-Dunused_extern_crates",	
+    "-Dunused_features",	
+    "-Dunused_imports",	
+    "-Dunused_labels",	
+    "-Dunused_lifetimes",	
+    "-Dunused_macros",	
+    "-Dunused_mut",	
+    #"-Dunused_qualifications",
+    "-Dunused_unsafe",
+    "-Dunused_variables",	
+    "-Duseless_deprecated",	
+    "-Dwarnings",	
+    "-Dwhere_clauses_object_safety",	
+    "-Dwhile_true"
+]
+
+rustflags = [                       # custom flags to pass to all compiler invocations
+    "--cfg=web_sys_unstable_apis",
+    "-Dabsolute_paths_not_starting_with_crate",
+    "-Dambiguous_associated_items",	
+    "-Danonymous_parameters",	
+    "-Darithmetic_overflow",	
+    "-Dasm_sub_register",	
+    "-Dbad_asm_style",	
+    "-Dbare_trait_objects",	
+    "-Dbindings_with_variant_name",	
+    #"-Dbox_pointers",
+    "-Dbreak_with_label_and_loop",	
+    "-Dcenum_impl_drop_cast",	
+    "-Dclashing_extern_declarations",	
+    "-Dcoherence_leak_check",	
+    "-Dconflicting_repr_hints",	
+    "-Dconst_evaluatable_unchecked",	
+    "-Dconst_item_mutation",	
+    "-Ddead_code",	
+    "-Ddeprecated",	
+    "-Ddeprecated_in_future",	
+    "-Dderef_into_dyn_supertrait",	
+    "-Dderef_nullptr",	
+    #"-Delided_lifetimes_in_paths",	
+    "-Dellipsis_inclusive_range_patterns",	
+    "-Dexplicit_outlives_requirements",	
+    "-Dexported_private_dependencies",	
+    "-Dforbidden_lint_groups",	
+    "-Dfunction_item_references",	
+    "-Dillegal_floating_point_literal_pattern",	
+    "-Dill_formed_attribute_input",	
+    "-Dincomplete_features",	
+    "-Dincomplete_include",	
+    "-Dindirect_structural_match",
+    "-Dineffective_unstable_trait_impl",
+    "-Dinline_no_sanitize",	
+    "-Dinvalid_doc_attributes",	
+    "-Dinvalid_type_param_default",	
+    "-Dinvalid_value",	
+    "-Dirrefutable_let_patterns",	
+    "-Dkeyword_idents",	
+    "-Dlarge_assignments",	
+    "-Dlate_bound_lifetime_arguments",	
+    "-Dlegacy_derive_helpers",	
+    "-Dmacro_expanded_macro_exports_accessed_by_absolute_paths",	
+    "-Dmacro_use_extern_crate",	
+    "-Dmeta_variable_misuse",	
+    "-Dmissing_abi",	
+    #"-Dmissing_copy_implementations",	
+    #"-Dmissing_debug_implementations",	
+    #"-Dmissing_docs",
+    "-Dmissing_fragment_specifier",	
+    #"-Dmust_not_suspend", #lint is unstable
+    #"-Dmutable_borrow_reservation_conflict",	
+    "-Dmutable_transmutes",	
+    "-Dnamed_asm_labels",	
+    "-Dnontrivial_structural_match",	
+    #"-Dnon_exhaustive_omitted_patterns", #lint is unstable	
+    "-Dnon_shorthand_field_patterns",	
+    "-Dno_mangle_const_items",	
+    "-Dno_mangle_generic_items",	
+    "-Dorder_dependent_trait_objects",	
+    "-Doverlapping_range_endpoints",	
+    "-Dpatterns_in_fns_without_body",	
+    "-Dpointer_structural_match",	
+    "-Dprivate_in_public",	
+    "-Dproc_macro_back_compat",	
+    "-Dpub_use_of_private_extern_crate",	
+    "-Drenamed_and_removed_lints",	
+    #"-Drust_2021_incompatible_closure_captures",
+    "-Drust_2021_incompatible_or_patterns",	
+    "-Drust_2021_prefixes_incompatible_syntax",	
+    "-Drust_2021_prelude_collisions",	
+    "-Dsemicolon_in_expressions_from_macros",	
+    "-Dsingle_use_lifetimes",	
+    "-Dsoft_unstable",	
+    "-Dstable_features",		
+    "-Dtext_direction_codepoint_in_comment",	
+    "-Dtrivial_bounds",	
+    "-Dtrivial_casts",	
+    "-Dtrivial_numeric_casts",	
+    "-Dtype_alias_bounds",	
+    "-Dtyvar_behind_raw_pointer",	
+    "-Dunaligned_references",	
+    "-Dunconditional_panic",	
+    "-Dunconditional_recursion",
+    "-Duninhabited_static",	
+    "-Dunknown_crate_types",	
+    "-Dunknown_lints",	
+    "-Dunnameable_test_items",	
+    "-Dunreachable_code",	
+    "-Dunreachable_patterns",	
+    #"-Dunreachable_pub",	
+    #"-Dunsafe_code",	
+    #"-Dunsafe_op_in_unsafe_fn",	
+    #"-Dunstable_features",	
+    "-Dunstable_name_collisions",	
+    "-Dunsupported_calling_conventions",	
+    "-Dunused_assignments",	
+    "-Dunused_attributes",	
+    #"-Dunused_crate_dependencies", //TODO: revert it later
+    "-Dunused_doc_comments",	
+    "-Dunused_extern_crates",	
+    "-Dunused_features",	
+    "-Dunused_imports",	
+    "-Dunused_labels",	
+    "-Dunused_lifetimes",	
+    "-Dunused_macros",	
+    "-Dunused_mut",	
+    #"-Dunused_qualifications",
+    "-Dunused_unsafe",
+    "-Dunused_variables",	
+    "-Duseless_deprecated",	
+    "-Dwarnings",	
+    "-Dwhere_clauses_object_safety",	
+    "-Dwhile_true"
+]
+# target                            # build for the target triple (ignored by `cargo install`)
+# target-dir                        # path of where to place all generated artifacts
+
+# [cargo-new]
+# vcs
+
+# [doc]
+# browser
+
+# [env]
+
+# [http]
+# cainfo                            # path to Certificate Authority (CA) bundle
+# check-revoke                      # check for SSL certificate revocation
+# debug                             # HTTP debugging
+# low-speed-limit                   # network timeout threshold (bytes/sec)
+# multiplexing                      # HTTP/2 multiplexing
+# proxy                             # HTTP proxy in libcurl format
+# ssl-version                       # TLS version to use
+# ssl-version.max                   # maximum TLS version
+# ssl-version.min                   # minimum TLS version
+# timeout                           # timeout for each HTTP request, in seconds
+# user-agent                        # the user-agent header
+
+# [install]
+# git-fetch-with-cli                # use the `git` executable for git operations
+# offline                           # do not access the network
+# retry                             # network retries
+# root
+
+# [net]
+
+# [patch.<registry>]
+
+# [profile.<name>]
+# codegen-units                     # Number of code generation units.
+# debug                             # Include debug info.
+# debug-assertions                  # Enables debug assertions.
+# incremental                       # Incremental compilation.
+# lto                               # Sets link-time optimization.
+# opt-level                         # Optimization level.
+# overflow-checks                   # Enables runtime integer overflow checks.
+# panic                             # The panic strategy.
+# rpath                             # Sets the rpath linking option.
+# split-debuginfo                   # Debug info splitting behavior.
+
+# [profile.<name>.build-override]   # Overrides build-script settings.
+# Same keys for a normal profile.
+
+# [profile.<name>.package.<name>]   # Override profile for a package.
+
+# [registries.<name>]               # registries other than crates.io
+# index                             # URL of the registry index
+# token                             # authentication token for the registry
+
+# [registry]
+# default                           # name of the default registry
+# token                             # authentication token for crates.io
+
+# [source.<name>]
+# branch                            # branch name for the git repository
+# directory                         # path to a directory source
+# git                               # URL of a git repository source
+# local-registry                    # path to a local registry source
+# registry                          # URL to a registry source
+# replace-with                      # replace this source with the given named source
+# rev                               # revision for the git repository
+# tag                               # tag name for the git repository
+
+# [target.<cfg>]
+# runner                            # wrapper to run executables
+# rustflags                         # custom flags for `rustc`
+
+# [target.<triple>]
+
+# [target.<triple>.<links>]         # `links` build script override
+# metadata_key1
+# metadata_key2
+# rustc-cdylib-link-arg
+# rustc-cfg
+# rustc-env
+# rustc-flags
+# rustc-link-lib
+# rustc-link-search
+
+# [term]
+# color                             # whether cargo colorizes output
+# progress.when                     # whether cargo shows progress bar
+# progress.width                    # width of progress bar
+# verbose = false                   # whether cargo provides verbose output

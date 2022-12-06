@@ -1,0 +1,12 @@
+#!/bin/bash
+
+set -eux
+set -o errexit
+set -o pipefail
+set -o nounset
+
+make \
+    audit \
+    check \
+    deny-check \
+    test

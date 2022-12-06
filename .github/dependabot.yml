@@ -1,0 +1,17 @@
+updates:
+  -
+    directory: /
+    package-ecosystem: cargo
+    schedule:
+      interval: monthly
+  -
+    directory: /
+    package-ecosystem: docker
+    schedule:
+      interval: monthly
+  -
+    directory: /
+    package-ecosystem: github-actions
+    schedule:
+      interval: monthly
+version: 2
