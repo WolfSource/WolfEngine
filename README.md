@@ -6,6 +6,10 @@
 cross-platform open source game engine created by [Pooya Eimandar](https://pooyaeimandar.github.io)
 This Wolf is a comprehensive set of Rust/C libraries for realtime rendering, realtime streaming and game developing, which is support **Lua** & **Python** as an embedded script and binding language.</p>
 
+## Recent Sample
+<p>Dynamic LOD Generation using <a href="https://www.simplygon.com/" target="_blank">Simplygon</a></p>
+<img src="https://raw.githubusercontent.com/WolfEngine/WolfEngine/wolf-2/samples/03_advances/07_lod/doc/view.gif" width="640" height="360" alt="Dynamic LOD Generation gif"/>
+
 ### Supported platforms and APIs for render module
 | Planned | In Progress | Done |
 |:-----------:|:-----------:|:-----------:|
