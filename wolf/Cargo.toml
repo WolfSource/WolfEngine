@@ -66,7 +66,7 @@ prost = {version = "0.11.2", default-features = false, optional = true}
 scrap ={version = "0.5.0", default-features = false, optional = true}
 serde_json = {version = "1.0.87", default-features = false, features = ["std"]}
 sysinfo = {version = "0.26.7", default-features = false, features = ["multithread"]}
-tokio-tungstenite = {version = "0.17.2", default-features = false, features = ["connect", "rustls"], optional = true}
+tokio-tungstenite = {version = "0.18.0", default-features = false, features = ["connect", "rustls"], optional = true}
 uuid = {version = "1.2.1", default-features = false, features = ["v5"]}
 
 [build-dependencies]
