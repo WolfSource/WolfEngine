@@ -66,10 +66,7 @@ where
         let elapsed_secs = conn_live_time.elapsed().as_secs_f64();
         let want_to_close_conn = p_on_msg_callback.run(elapsed_secs, &p_peer_address, &mut msg);
         if want_to_close_conn.is_err() {
-            close_msg = format!(
-                        "tcp connection will be closed because of the p_on_msg_callback request. Reason: {:?}",
-                        want_to_close_conn
-                    );
+            close_msg = format!("tcp connection will be closed because of the p_on_msg_callback request. Reason: {want_to_close_conn:?}");
             break;
         }
         if msg.size > 0 {
@@ -147,8 +144,7 @@ where
         }
         Err(e) => {
             *p_close_msg = format!(
-                "websocket connection is going to close. Reason: Unsupported text message. {:?}",
-                e
+                "websocket connection is going to close. Reason: Unsupported text message. {e:?}"
             );
             *p_close_code = CloseCode::Unsupported;
             return false;
@@ -208,10 +204,7 @@ where
                     msg_buffer.size = msg.len();
                     // don not allow process message more than 1K
                     if msg_buffer.size > MAX_MSG_SIZE {
-                        close_msg = format!(
-                                    "websocket connection is going to close. Reason: Received message size is greater than {}",
-                                    MAX_MSG_SIZE
-                                );
+                        close_msg = format!("websocket connection is going to close. Reason: Received message size is greater than {MAX_MSG_SIZE}");
                         close_code = CloseCode::Size;
                         break;
                     }

@@ -132,10 +132,7 @@ pub async fn connect(
 
                 let want_to_close_conn = p_on_message.run(elpased_secs, &peer_addr, &mut msg);
                 if want_to_close_conn.is_err() {
-                    close_msg = format!(
-                        "udp connection will be closed because of the p_on_msg_callback request. Reason: {:?}",
-                        want_to_close_conn
-                    );
+                    close_msg = format!("udp connection will be closed because of the p_on_msg_callback request. Reason: {want_to_close_conn:?}");
                     break;
                 }
 
@@ -166,10 +163,7 @@ pub async fn connect(
                 // write buffer
                 let want_to_close_conn = p_on_message.run(elpased_secs, &peer_addr, &mut msg);
                 if want_to_close_conn.is_err() {
-                    close_msg = format!(
-                        "udp client will be closed because of the p_on_msg_callback request. Reason: {:?}",
-                        want_to_close_conn
-                    );
+                    close_msg = format!("udp client will be closed because of the p_on_msg_callback request. Reason: {want_to_close_conn:?}");
                     break;
                 }
                 msg_size = msg.size;
@@ -227,10 +221,7 @@ async fn test() {
     ));
     let on_close_socket = OnCloseSocketCallback::new(Box::new(
         |p_socket_address: &SocketAddr, p_close_msg: &str| -> anyhow::Result<()> {
-            println!(
-                "udp socket {:?} just closed, because: {}",
-                p_socket_address, p_close_msg
-            );
+            println!("udp socket {p_socket_address:?} just closed, because: {p_close_msg}");
             Ok(())
         },
     ));
@@ -241,8 +232,8 @@ async fn test() {
          p_msg: &mut crate::stream::common::buffer::Buffer|
          -> anyhow::Result<()> {
             println!(
-                "client: number of received byte(s) from {:?} is {}. socket live time {}",
-                p_peer_address, p_msg.size, p_socket_time_in_secs
+                "client: number of received byte(s) from {p_peer_address:?} is {}. socket live time {p_socket_time_in_secs}",
+                p_msg.size
             );
 
             if p_msg.size > 0 {

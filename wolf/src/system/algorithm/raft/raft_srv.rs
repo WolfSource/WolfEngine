@@ -1,6 +1,8 @@
 #![allow(clippy::default_trait_access)]
+#![allow(clippy::derive_partial_eq_without_eq)]
 #![allow(clippy::doc_markdown)]
 #![allow(clippy::future_not_send)]
+#![allow(clippy::missing_const_for_fn)]
 #![allow(clippy::missing_errors_doc)]
 #![allow(clippy::must_use_candidate)]
 #![allow(clippy::return_self_not_must_use)]
@@ -131,8 +133,7 @@ impl Raft for Srv {
                                 + (ErrorCode::RaftAppendEntriesFailed as i32),
                             msg_id: inner_req.msg_id,
                             msg: format!(
-                                "could not get response from raft::append_entries because {:?}",
-                                e
+                                "could not get response from raft::append_entries because {e:?}"
                             ),
                         };
                         let err = raft_append_entries_res::Response::ErrorRes(err_res);
@@ -149,10 +150,7 @@ impl Raft for Srv {
                     code: BASE_ERROR_CODE_RAFT
                         + (ErrorCode::RaftAppendEntriesJsonOfReqIsNotValid as i32),
                     msg_id: inner_req.msg_id,
-                    msg: format!(
-                        "could not deserialize append_entries request because {:?}",
-                        e
-                    ),
+                    msg: format!("could not deserialize append_entries request because {e:?}"),
                 };
                 let err = raft_append_entries_res::Response::ErrorRes(err_res);
                 let resp = RaftAppendEntriesRes {
@@ -195,8 +193,7 @@ impl Raft for Srv {
                     code: BASE_ERROR_CODE_RAFT + (ErrorCode::RaftInstallSnapshotFailed as i32),
                     msg_id: inner_req.msg_id,
                     msg: format!(
-                        "could not get response from raft::install_snapshot because {:?}",
-                        e
+                        "could not get response from raft::install_snapshot because {e:?}"
                     ),
                 };
                 let err = raft_install_snapshot_res::Response::ErrorRes(err_res);
@@ -272,10 +269,7 @@ impl Raft for Srv {
                 let err_res = RaftErrorRes {
                     code: BASE_ERROR_CODE_RAFT + (ErrorCode::RaftGetMetricsFailed as i32),
                     msg_id: inner_req.msg_id,
-                    msg: format!(
-                        "could not get json response from raft::metrics because {:?}",
-                        e
-                    ),
+                    msg: format!("could not get json response from raft::metrics because {e:?}"),
                 };
                 let err = raft_get_metrics_res::Response::ErrorRes(err_res);
                 let resp = RaftGetMetricsRes {

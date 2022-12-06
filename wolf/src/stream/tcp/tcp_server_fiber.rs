@@ -61,17 +61,11 @@ fn handle_tcp_connection(
                 }
             })
             .map_err(|e| {
-                close_msg = format!(
-                    "tcp connection will be closed because of the p_on_msg_callback request. Reason: {:?}",
-                    e
-                );
+                close_msg = format!("tcp connection will be closed because of the p_on_msg_callback request. Reason: {e:?}");
             });
 
         if !close_msg.is_empty() {
-            close_msg = format!(
-                    "tcp connection will be closed because of the p_on_msg_callback request. Reason: {}",
-                    close_msg
-                );
+            close_msg = format!("tcp connection will be closed because of the p_on_msg_callback request. Reason: {close_msg}");
             break;
         }
     }

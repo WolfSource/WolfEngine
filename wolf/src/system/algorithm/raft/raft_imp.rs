@@ -271,10 +271,7 @@ pub fn new(p_cluster_name: &str, p_node_id: u64) -> MemRaft {
     let config = Config::build(p_cluster_name.into())
         .validate()
         .unwrap_or_else(|e| {
-            panic!(
-                "failed to build Raft config for cluster:{} and node id:{}. error: {}",
-                p_cluster_name, p_node_id, e
-            )
+            panic!("failed to build Raft config for cluster:{p_cluster_name} and node id:{p_node_id}. error: {e}")
         });
 
     //now create MemRaft node
