@@ -115,6 +115,7 @@ else ifeq ("$(DETECTED_OS)", "Linux")
 		clang-tidy \
 		cmake \
 		meson \
+		protobuf-compiler \
 		libx11-xcb-dev \
 		libatk1.0-dev \
 		libpango1.0-dev \

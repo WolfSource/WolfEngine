@@ -3,7 +3,7 @@ env:
 jobs:
   audit:
     container:
-      image: docker://rust:1.64-bullseye
+      image: docker://rust:1.65-bullseye
     name: Cargo Audit
     needs:
       - clippy
@@ -40,7 +40,7 @@ jobs:
     timeout-minutes: 30
   check:
     container:
-      image: docker://rust:1.64-bullseye
+      image: docker://rust:1.65-bullseye
     name: Cargo Check
     needs:
       - clippy
@@ -74,7 +74,7 @@ jobs:
     timeout-minutes: 30
   deny-check:
     container:
-      image: docker://rust:1.64-bullseye
+      image: docker://rust:1.65-bullseye
     continue-on-error: ${{ matrix.checks == 'advisories' }}
     name: Cargo Deny Check
     needs:
@@ -127,7 +127,7 @@ jobs:
     timeout-minutes: 30
   clippy:
     container:
-      image: docker://rust:1.64-bullseye
+      image: docker://rust:1.65-bullseye
     name: Cargo Clippy
     permissions:
       contents: read
@@ -158,7 +158,7 @@ jobs:
     timeout-minutes: 30
   coverage:
     container:
-      image: docker://rust:1.64-bullseye
+      image: docker://rust:1.65-bullseye
     name: Coverage
     needs:
       - clippy
@@ -223,7 +223,7 @@ jobs:
     timeout-minutes: 30
   fmt-check:
     container:
-      image: docker://rust:1.64-bullseye
+      image: docker://rust:1.65-bullseye
     name: Cargo Format Check
     permissions:
       contents: read
@@ -295,7 +295,7 @@ jobs:
   #   timeout-minutes: 30
   test:
     container:
-      image: docker://rust:1.64-bullseye
+      image: docker://rust:1.65-bullseye
     name: Cargo Test
     needs:
       - clippy
