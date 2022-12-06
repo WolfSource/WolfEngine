@@ -69,7 +69,19 @@ impl System {
         }
         false
     }
-    #[cfg(not(target_os = "windows"))]
+
+    #[cfg(target_os = "linux")]
+    #[must_use]
+    pub fn is_process_running_by_pid(&self, p_process_id: &sysinfo::Pid) -> bool {
+        for pid in self.sys.processes().keys() {
+            if pid == p_process_id {
+                return true;
+            }
+        }
+        false
+    }
+
+    #[cfg(not(any(target_os = "windows", target_os = "linux")))]
     #[must_use]
     pub fn is_process_running_by_pid(&self, p_process_id: i32) -> bool {
         for pid in self.sys.processes().keys() {
