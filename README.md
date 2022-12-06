@@ -58,7 +58,7 @@ This Wolf is a comprehensive set of Rust/C libraries for realtime rendering, rea
 | Stacktrace  | :white_check_mark: | :construction: | :construction: | :construction: | :construction: | :x: |
 | Socket | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :x: |
 | Trace | :construction: | :memo: | :memo: | :memo: | :memo: | :x: |
-| Wasmer  | :memo: | :memo: | :memo: | :x: | :x: | :x: |
+| Wasmer  | :construction: | :memo: | :memo: | :x: | :x: | :x: |
 
 ## Branches
 - [main](https://github.com/WolfEngine/WolfEngine/tree/main), Wolf3, is the latest version of Wolf which is written in **Rust and contains some unsafe cpp codes** and is not ready for production
