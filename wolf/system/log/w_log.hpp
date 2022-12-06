@@ -46,21 +46,18 @@ public:
                    _In_ const std::string_view &p_fmt);
 
   template <class... Args>
-  W_API [[nodiscard]] void write(const std::_Fmt_string<Args...> p_fmt,
-                                 Args &&...p_args) {
-    const auto _str =
-        std::vformat(p_fmt._Str, std::make_format_args(p_args...));
-    write(_str);
+  W_API void write(_In_ const fmt::v9::format_string<Args...> p_fmt, _In_ Args&&... p_args) {
+    // const auto _str =
+    //     fmt::format(p_fmt, fmt::v9::make_format_args(p_args...));
+    // write(_str);
   }
 
   template <class... Args>
-  W_API [[nodiscard]] void write(_In_ const spdlog::level::level_enum &p_level,
-
-                                 const std::_Fmt_string<Args...> p_fmt,
-                                 Args &&...p_args) {
-    const auto _str =
-        std::vformat(p_fmt._Str, std::make_format_args(p_args...));
-    write(p_level, _str);
+  W_API void write(_In_ const spdlog::level::level_enum &p_level,
+    _In_ const fmt::v9::format_string<Args...> p_fmt, _In_ Args&&... p_args) {
+    // const auto _str =
+    //     fmt::format(p_fmt, fmt::v9::make_format_args(p_args...));
+    // write(p_level, _str);
   }
 
   W_API boost::leaf::result<int> flush();

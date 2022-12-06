@@ -58,13 +58,13 @@ set(LIBRARY_TYPE "STATIC" CACHE STRING "Library type")
 
 # CMAKE GUI Options
 # render modules
-option(WOLF_RENDER "Enable cross platform render based on BGFX" OFF)
+option(WOLF_RENDER "Enable cross platform render engine based on Vulkan / OpenGL ES" OFF)
 
 # media modules
 option(WOLF_MEDIA_FFMPEG "Enable ffmpeg encoding and decoding" OFF)
 option(WOLF_MEDIA_OPENAL "Enable OpenAL soft" OFF)
 option(WOLF_MEDIA_SCREEN_CAPTURE "Enable screen capture" OFF)
-option(WOLF_MEDIA_STB "Enable stb headers" OFF)
+option(WOLF_MEDIA_STB "Enable stb headers" ON)
 
 # stream modules
 option(WOLF_STREAM_QUIC "Enable QUIC" OFF)
@@ -76,18 +76,18 @@ option(WOLF_STREAM_WEBRTC "Enable webRTC" OFF)
 option(WOLF_SYSTEM_BORINGSSL "Enable boringSSL" OFF)
 option(WOLF_SYSTEM_FIBER "Enable boost fiber" OFF)
 option(WOLF_SYSTEM_HTTP1_WS "Enable http1.1 and websocket client/server based on boost beast" OFF)
-option(WOLF_SYSTEM_LOG "Enable log" OFF)
+option(WOLF_SYSTEM_LOG "Enable log" ON)
 option(WOLF_SYSTEM_LUAJIT "Enable luaJIT" OFF)
-option(WOLF_SYSTEM_LZ4 "Enable lz4 for compression" OFF)
-option(WOLF_SYSTEM_LZMA "Enable lzma for compression" OFF)
+option(WOLF_SYSTEM_LZ4 "Enable lz4 for compression" ON)
+option(WOLF_SYSTEM_LZMA "Enable lzma for compression" ON)
 option(WOLF_SYSTEM_MIMALLOC "Enable Microsoft's mimalloc memory allocator" OFF)
-option(WOLF_SYSTEM_SIG_SLOT "Enable signal/slot based on boost signals2" OFF)
-option(WOLF_SYSTEM_SOCKET "Enable TCP/UDP protocol over socket" OFF)
-option(WOLF_SYSTEM_STACKTRACE "Enable boost stacktrace" OFF)
+option(WOLF_SYSTEM_SIG_SLOT "Enable signal/slot based on boost signals2" ON)
+option(WOLF_SYSTEM_SOCKET "Enable TCP/UDP protocol over socket" ON)
+option(WOLF_SYSTEM_STACKTRACE "Enable boost stacktrace" ON)
 #option(WOLF_SYSTEM_WASM3 "Enable WebAssembly interpreter" OFF)
 #option(WOLF_SYSTEM_ZLIB "Enable zlib for compression" OFF)
 
-option(WOLF_TESTS "Enable tests" OFF)
+option(WOLF_TESTS "Enable tests" ON)
 if (NOT MSVC)
     option(WOLF_ENABLE_ASAN "Enable ASAN" OFF)
 endif()

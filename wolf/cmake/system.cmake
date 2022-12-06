@@ -12,6 +12,20 @@ list(APPEND INCLUDES
     ${gsl_SOURCE_DIR}/include
 )
 
+# fetch fmt
+message("fetching https://github.com/fmtlib/fmt.git")
+FetchContent_Declare(
+    fmt
+    GIT_REPOSITORY https://github.com/fmtlib/fmt.git
+    GIT_TAG        master
+)
+FetchContent_MakeAvailable(fmt)
+
+list(APPEND INCLUDES
+    ${fmt_SOURCE_DIR}/include
+)
+list(APPEND LIBS fmt)
+
 # fetch boringssl
 if (WOLF_SYSTEM_BORINGSSL)
     message("fetching https://github.com/google/boringssl.git")

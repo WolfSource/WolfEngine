@@ -84,8 +84,11 @@ boost::asio::awaitable<void> handle_connection(
 
   auto _rand_num = _rand_gen(_rand_engine);
 
-#ifdef __clang__
-// Get UTC time
+#ifdef _MSC_VER
+  const auto _conn_id =
+      fmt::format("{}_{}", std::chrono::utc_clock::now(), _rand_num);
+#else
+  // Get UTC time
   time_t _current_time = time(NULL);
   tm* tm_gmt = gmtime(&_current_time);
   
@@ -98,9 +101,6 @@ boost::asio::awaitable<void> handle_connection(
   std::sprintf(&_conn_id[0], "%d-%02d-%02d %02d:%02d:%d_%d",
   	tm_gmt->tm_year + 1900, tm_gmt->tm_mon, tm_gmt->tm_mday,
   	tm_gmt->tm_hour, tm_gmt->tm_min, tm_gmt->tm_sec, 36);
-#else  
-  const auto _conn_id =
-      std::format("{}_{}", std::chrono::utc_clock::now(), _rand_num);
 #endif
 
   time_point _deadline = {};

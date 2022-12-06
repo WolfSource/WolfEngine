@@ -12,6 +12,7 @@
 #include <boost/test/included/unit_test.hpp>
 
 #include <system/w_gametime.hpp>
+#include <mutex>
 
 BOOST_AUTO_TEST_CASE(fixed_time) {
   const wolf::system::w_leak_detector _detector = {};

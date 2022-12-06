@@ -29,9 +29,9 @@ public:
 
   W_API void reset() noexcept;
 
-  [[nodiscard]] W_API constexpr double get_elapsed_secs() const noexcept;
+  [[nodiscard]] W_API double get_elapsed_secs() const noexcept;
 
-  [[nodiscard]] W_API constexpr double get_total_secs() const noexcept;
+  [[nodiscard]] W_API double get_total_secs() const noexcept;
 
   [[nodiscard]] W_API uint32_t get_frames_count() const noexcept;
 
@@ -43,7 +43,7 @@ public:
 
   W_API void set_target_elapsed_secs(double p_value) noexcept;
 
-  template <typename F> [[noreturn]] W_API void tick(F &&p_tick_function) {
+  template <typename F> W_API void tick(F &&p_tick_function) {
     using namespace std::chrono;
 
     // Query the current time.
@@ -112,7 +112,7 @@ public:
     }
   }
 
-  [[noreturn]] W_API void tick() {
+  W_API void tick() {
     tick([] {});
   }
 

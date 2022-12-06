@@ -10,11 +10,11 @@ void w_gametime::reset() noexcept {
   this->_secs_counter = 0.0;
 }
 
-constexpr double w_gametime::get_elapsed_secs() const noexcept {
+double w_gametime::get_elapsed_secs() const noexcept {
   return this->_elapsed_secs;
 }
 
-constexpr double w_gametime::get_total_secs() const noexcept {
+double w_gametime::get_total_secs() const noexcept {
   return this->_total_secs;
 }
 

@@ -16,7 +16,6 @@
 #ifdef WIN32
 
 #include <Windows.h>
-#include <format>
 
 #endif
 
@@ -34,6 +33,7 @@
 
 #include <boost/leaf.hpp>
 #include <gsl/gsl>
+#include <fmt/format.h>
 
 #ifdef WOLF_SYSTEM_MIMALLOC
 
