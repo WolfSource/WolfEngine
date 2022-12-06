@@ -312,19 +312,34 @@ fn link(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &str) 
 
     let mut libs = Vec::new();
     #[cfg(feature = "system_lz4")]
-    libs.push(("lz4_static", "lz4"));
+    libs.push((
+        format!("lz4_static-build/{p_build_profile}"),
+        "lz4".to_owned(),
+    ));
 
     #[cfg(feature = "system_lz4")]
-    libs.push(("lzma", "lzma"));
+    libs.push((format!("lzma-build/{p_build_profile}"), "lzma".to_owned()));
 
     #[cfg(feature = "media_openal")]
     {
-        libs.push(("openal", "OpenAL32"));
+        libs.push((
+            format!("openal-build/{p_build_profile}"),
+            "OpenAL32".to_owned(),
+        ));
         copy_openal(p_current_dir_path_str, p_build_profile);
     }
 
+    #[cfg(feature = "stream_rist")]
+    libs.push(("librist-build".to_owned(), "rist".to_owned()));
+
+    #[cfg(feature = "system_gamepad_sim")]
+    libs.push((
+        format!("vigemclient-build/{p_build_profile}"),
+        "ViGEmClient".to_owned(),
+    ));
+
     for lib in libs {
-        println!("cargo:rustc-link-search=native={p_current_dir_path_str}/sys/build/{p_build_profile}/_deps/{}-build/{p_build_profile}/", lib.0);
+        println!("cargo:rustc-link-search=native={p_current_dir_path_str}/sys/build/{p_build_profile}/_deps/{}", lib.0);
         println!("cargo:rustc-link-lib=static={}", lib.1);
     }
 
@@ -335,14 +350,14 @@ fn link(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &str) 
 #[cfg(feature = "media_ffmpeg")]
 fn copy_ffmpeg(p_current_dir_path_str: &str, p_target_os: &str) {
     let ffmpeg_dll_names = [
-        "avcodec-59.dll",
-        "avdevice-59.dll",
-        "avfilter-8.dll",
-        "avformat-59.dll",
-        "avutil-57.dll",
-        "postproc-56.dll",
-        "swresample-4.dll",
-        "swscale-6.dll",
+        "avcodec-59.dll".to_owned(),
+        "avdevice-59.dll".to_owned(),
+        "avfilter-8.dll".to_owned(),
+        "avformat-59.dll".to_owned(),
+        "avutil-57.dll".to_owned(),
+        "postproc-56.dll".to_owned(),
+        "swresample-4.dll".to_owned(),
+        "swscale-6.dll".to_owned(),
     ];
 
     let ffmpeg_bin_path =
@@ -352,23 +367,21 @@ fn copy_ffmpeg(p_current_dir_path_str: &str, p_target_os: &str) {
     // copy to target and deps folder
     copy_shared_libs(&ffmpeg_bin_path, &ffmpeg_dll_names);
 
-    let ffmpeg_lib_names = [
-        "avcodec.lib",
-        "avdevice.lib",
-        "avfilter.lib",
-        "avformat.lib",
-        "avutil.lib",
-        "postproc.lib",
-        "swresample.lib",
-        "swscale.lib",
+    let libs = [
+        "avcodec",
+        "avdevice",
+        "avfilter",
+        "avformat",
+        "avutil",
+        "postproc",
+        "swresample",
+        "swscale",
     ];
 
-    let ffmpeg_lib_path =
-        format!("{p_current_dir_path_str}/sys/third_party/ffmpeg/lib/{p_target_os}");
-    println!("cargo:rustc-link-search=native={ffmpeg_lib_path}");
-
-    // copy to target and deps folder
-    copy_shared_libs(&ffmpeg_lib_path, &ffmpeg_lib_names);
+    for lib in libs {
+        println!("cargo:rustc-link-search=native={p_current_dir_path_str}/sys/third_party/ffmpeg/lib/{p_target_os}");
+        println!("cargo:rustc-link-lib=static={lib}");
+    }
 }
 
 #[cfg(feature = "media_openal")]

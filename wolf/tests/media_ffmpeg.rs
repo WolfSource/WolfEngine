@@ -10,16 +10,12 @@ fn encode(p_packet: &mut wolf::media::av_packet::AVPacket, p_codec_id: &str) -> 
     };
 
     let current_dir = std::env::current_dir().unwrap();
-    let file_name = "src.png";
-    let wolf_dir = current_dir.join("wolf");
-    let file_path = if wolf_dir.exists() {
-        wolf_dir.join(file_name)
-    } else {
-        current_dir.join(file_name)
-    };
+    let mut path = current_dir.join("content/texture/rgb.png");
+    if !path.exists() {
+        path = current_dir.join("../content/texture/rgb.png");
+    }
 
     // load image
-    let path = current_dir.join(file_path);
     let img = image::open(path).unwrap();
     let img_size = img.dimensions();
     let pixels = img.as_rgba8().unwrap().as_bytes();
@@ -94,13 +90,10 @@ fn decode(p_packet: &wolf::media::av_packet::AVPacket, p_codec_id: &str, p_img_s
     };
 
     let current_dir = std::env::current_dir().unwrap();
-    let file_name = "src_decoded.png";
-    let wolf_dir = current_dir.join("wolf");
-    let file_path = if wolf_dir.exists() {
-        wolf_dir.join(file_name)
-    } else {
-        current_dir.join(file_name)
-    };
+    let mut path = current_dir.join("content/texture/rgb_decoded.png");
+    if !path.exists() {
+        path = current_dir.join("../content/texture/rgb_decoded.png");
+    }
 
     // create dst YUV frame
     let mut yuv_frame =
@@ -127,7 +120,7 @@ fn decode(p_packet: &wolf::media::av_packet::AVPacket, p_codec_id: &str, p_img_s
 
     let pixels = rgba_frame.get_data(0).unwrap();
     image::save_buffer_with_format(
-        file_path,
+        path,
         pixels,
         p_img_size.0,
         p_img_size.1,
