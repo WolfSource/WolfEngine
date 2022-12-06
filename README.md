@@ -35,7 +35,6 @@ This Wolf is a comprehensive set of Rust/C libraries for realtime rendering, rea
 | RIST | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :x: |
 | RTMP | :memo: | :x: | :x: | :x: | :x: | :x: |
 | RTSP | :memo: | :memo: | :memo: | :memo: | :memo: | :x: |
-| SRT | :memo: | :memo: | :memo: | :memo: | :memo: | :x: |
 | webRTC | :memo: | :memo: | :memo: | :memo: | :memo: | :memo: |
 | WS | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :memo: |
 
