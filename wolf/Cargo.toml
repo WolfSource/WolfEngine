@@ -30,12 +30,12 @@ tracing = {version = "0.1.37", default-features = false, features = ["std", "att
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 instant = {version = "0.1.12", default-features = false, features = ["wasm-bindgen"]}
 #rhai = { version = "1.10.0", default-features = false, features = ["sync", "internals", "wasm-bindgen"], optional = true }
-serde = { version = "1.0.147", default-features = false, features = ["derive"]}
+serde = { version = "1.0.149", default-features = false, features = ["derive"]}
 wasm-bindgen = { version = "0.2.83", default-features = false }
 wasm-bindgen-futures = { version = "0.4.33", default-features = false }
-wasm-mt = {version = "0.1.2", default-features = false }
+wasm-mt = {version = "0.1.3", default-features = false }
 web-sys = {version = "0.3.60", default-features = false, features = ["console", "Document", "Window", "Element"]}
-wgpu = {version = "0.14.0", default-features = false, features = ["webgl"], optional = true}
+wgpu = {version = "0.14.2", default-features = false, features = ["webgl"], optional = true}
 
 # shared dependencies between arm, aarch64 & x86_64
 [target.'cfg(any(target_arch = "arm", target_arch = "aarch64", target_arch = "x86_64"))'.dependencies]
@@ -43,11 +43,11 @@ instant = {version = "0.1.12", default-features = false}
 pollster = {version = "0.2.5", default-features = false}
 #rhai = { version = "1.10.0", default-features = false, features = ["sync", "internals"], optional = true}
 rustls-pemfile = {version = "1.0.1", default-features = false}
-tokio = {version = "1.21.2", default-features = false, features = ["full"]}
+tokio = {version = "1.23.0", default-features = false, features = ["full"]}
 tokio-rustls = {version = "0.23.4", default-features = false, features = ["logging", "tls12"]}
-tonic = {version = "0.8.2", default-features = false, features = ["codegen", "prost", "tls", "gzip"], optional = true}
+tonic = {version = "0.8.3", default-features = false, features = ["codegen", "prost", "tls", "gzip"], optional = true}
 webpki-roots = {version = "0.22.5", default-features = false}
-wgpu = {version = "0.14.0", default-features = false, optional = true}
+wgpu = {version = "0.14.2", default-features = false, optional = true}
 
 # dependencies of arm, aarch64
 # [target.'cfg(any(target_arch = "arm", target_arch = "aarch64"))'.dependencies]
@@ -55,37 +55,41 @@ wgpu = {version = "0.14.0", default-features = false, optional = true}
 # dependencies of x86_64
 [target.'cfg(target_arch = "x86_64")'.dependencies]
 async-raft = {version = "0.6.1", default-features = false, optional = true}
-async-trait = {version = "0.1.58", default-features = false}
+async-trait = {version = "0.1.59", default-features = false}
 futures = { version = "0.3.25", default-features = false }
 hyper = {version = "0.14.23", default-features = false}
-may = {version = "0.3.22", default-features = false, optional = true}
+may = {version = "0.3.24", default-features = false, optional = true}
 memstore = {version = "0.2.0", default-features = false}
-mimalloc = {version = "0.1.30", default-features = false, features = ["secure"]}
+mimalloc = {version = "0.1.32", default-features = false, features = ["secure"]}
 parking_lot = {version = "0.12.1",  default-features = false, features = ["deadlock_detection"]}
-prost = {version = "0.11.2", default-features = false, optional = true}
+prost = {version = "0.11.3", default-features = false, optional = true}
 scrap ={version = "0.5.0", default-features = false, optional = true}
-serde_json = {version = "1.0.87", default-features = false, features = ["std"]}
-sysinfo = {version = "0.26.7", default-features = false, features = ["multithread"]}
-tokio-tungstenite = {version = "0.17.2", default-features = false, features = ["connect", "rustls"], optional = true}
-uuid = {version = "1.2.1", default-features = false, features = ["v5"]}
+serde_json = {version = "1.0.89", default-features = false, features = ["std"]}
+sysinfo = {version = "0.26.8", default-features = false, features = ["multithread"]}
+tokio-tungstenite = {version = "0.18.0", default-features = false, features = ["connect", "rustls"], optional = true}
+uuid = {version = "1.2.2", default-features = false, features = ["v5"]}
 
 [build-dependencies]
-bindgen = {version = "0.61.0"}
-tonic-build = {version = "0.8.2", default-features = false, features = ["transport", "prost"]}
+bindgen = {version = "0.63.0"}
+tonic-build = {version = "0.8.4", default-features = false, features = ["transport", "prost"]}
 
 [dev-dependencies]
-image = {version ="0.24.4", default-features = false, features = ["jpeg", "png", "rgb"]}
+image = {version ="0.24.5", default-features = false, features = ["jpeg", "png", "rgb"]}
 lazy_static = {version = "1.4.0", default-features = false}
 wav = {version = "1.0.0", default-features = false }
 
 # features
 [features]
 all = [
-    # "media_ffmpeg", "media_openal", 
+    "media_openal",
+    "system_lz4",
+    "system_lzma",
+
+    # "media_ffmpeg",  
     # "render", 
     # "stream_rist", "stream_grpc", "stream_socket_client", "stream_socket_server",
     # "system_fiber", "system_gamepad_sim", "system_js", 
-    # "system_lz4", "system_lzma", "system_raft", "system_screen_capture", "system_stacktrace"
+    # "system_raft", "system_screen_capture", "system_stacktrace"
     ]
 default = ["all"]
 media_ffmpeg = [] # enable ffmpeg

@@ -299,24 +299,6 @@ fn link(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &str) 
 
     let lib_ext = if p_target_os == "windows" { "lib" } else { "a" };
 
-    //println!("cargo:rustc-link-search=native=G:/SourceCodes/WolfEngine/WolfEngine/wolf/sys/build/Debug/_deps/lz4_static-build/Debug/");
-    //println!("cargo:rustc-link-lib=static=lz4");
-
-    link_wolf(p_current_dir_path_str, p_target_os, p_build_profile);
-
-    // // copy lib to linux
-    // if cfg!(target_os = "linux") {
-    //     copy_shared_libs("/usr/lib", &names);
-    // }
-
-    #[cfg(feature = "media_ffmpeg")]
-    link_ffmpeg(p_current_dir_path_str, p_target_os);
-
-    #[cfg(feature = "media_openal")]
-    link_openal(p_current_dir_path_str, p_build_profile);
-}
-
-fn link_wolf(p_current_dir_path_str: &str, p_target_os: &str, p_build_profile: &str) {
     // create system build directory
     let sys_build_dir = format!("{p_current_dir_path_str}/sys/build/{p_build_profile}");
 
@@ -328,19 +310,26 @@ fn link_wolf(p_current_dir_path_str: &str, p_target_os: &str, p_build_profile: &
     println!("cargo:rustc-link-search=native={lib_path}");
     println!("cargo:rustc-link-lib=dylib=wolf_sys");
 
-    // let names = if p_target_os == "windows" {
-    //     [
-    //         format!("wolf_sys.{p_lib_ext}"),
-    //         "wolf_sys.exp".to_owned(),
-    //         "wolf_sys.pdb".to_owned(),
-    //     ]
-    //     .to_vec()
-    // } else {
-    //     [format!("libwolf_sys.{p_lib_ext}")].to_vec()
-    // };
+    let mut libs = Vec::new();
+    #[cfg(feature = "system_lz4")]
+    libs.push(("lz4_static", "lz4"));
 
-    // // copy to target and deps folder
-    // copy_shared_libs(&lib_path, &names);
+    #[cfg(feature = "system_lz4")]
+    libs.push(("lzma", "lzma"));
+
+    #[cfg(feature = "media_openal")]
+    {
+        libs.push(("openal", "OpenAL32"));
+        copy_openal(p_current_dir_path_str, p_build_profile);
+    }
+
+    for lib in libs {
+        println!("cargo:rustc-link-search=native={p_current_dir_path_str}/sys/build/{p_build_profile}/_deps/{}-build/{p_build_profile}/", lib.0);
+        println!("cargo:rustc-link-lib=static={}", lib.1);
+    }
+
+    #[cfg(feature = "media_ffmpeg")]
+    copy_ffmpeg(p_current_dir_path_str, p_target_os);
 }
 
 #[cfg(feature = "media_ffmpeg")]
@@ -384,7 +373,7 @@ fn copy_ffmpeg(p_current_dir_path_str: &str, p_target_os: &str) {
 
 #[cfg(feature = "media_openal")]
 fn copy_openal(p_current_dir_path_str: &str, p_build_profile: &str) {
-    let dll_names = ["OpenAL32.dll"];
+    let dll_names = ["OpenAL32.dll".to_owned()].to_vec();
 
     let bin_lib_path = format!(
         "{p_current_dir_path_str}/sys/build/{p_build_profile}/_deps/openal-build/{p_build_profile}",
@@ -393,12 +382,6 @@ fn copy_openal(p_current_dir_path_str: &str, p_build_profile: &str) {
 
     // copy to target and deps folder
     copy_shared_libs(&bin_lib_path, &dll_names);
-
-    let lib_names = ["OpenAL32.lib"];
-    println!("cargo:rustc-link-search=native={bin_lib_path}");
-
-    // copy to target and deps folder
-    copy_shared_libs(&bin_lib_path, &lib_names);
 }
 
 fn bindgens(p_current_dir_path_str: &str) {
