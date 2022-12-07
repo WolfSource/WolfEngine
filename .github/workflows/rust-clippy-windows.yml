@@ -45,9 +45,6 @@ jobs:
           toolchain: stable
           components: clippy
           override: true
-
-      - name: Install Meson
-        uses: BSFishy/meson-build@v1.0.3
           
       - name: Install required cargo
         run: cargo install clippy-sarif sarif-fmt
