@@ -96,22 +96,8 @@ win_all = [
     "system_raft",
     "system_screen_capture",
     "system_stacktrace",
-    ]
-linux_all = [
-    "media_openal",
-    "render",
-    "stream_grpc",
-    "stream_socket_client",
-    "stream_socket_server",
-    "system_fiber",
-    "system_js",
-    "system_lz4",
-    "system_lzma",
-    "system_raft",
-    "system_screen_capture",
-    "system_stacktrace",
-    ]
-default = ["linux_all"]
+]
+default = ["all"]
 media_ffmpeg = [] # enable ffmpeg
 media_openal = [] # enable openal
 render = ["wgpu"] # enable real-time rendering
