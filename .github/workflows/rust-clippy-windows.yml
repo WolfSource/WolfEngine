@@ -45,7 +45,7 @@ jobs:
         run:
           cargo clippy
           --all-features
-          --message-format=json | clippy-sarif | tee rust-clippy-results.sarif | sarif-fmt --workspace
+          --message-format=json | clippy-sarif | tee rust-clippy-results.sarif | sarif-fmt -- --workspace
         continue-on-error: false
 
       - name: Upload analysis results to GitHub
