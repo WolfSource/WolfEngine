@@ -311,7 +311,7 @@ fn link(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &str) 
     println!("cargo:rustc-link-search=native={lib_path}");
     println!("cargo:rustc-link-lib=dylib=wolf_sys");
 
-    let mut libs = Vec::new();
+    let mut libs = Vec::<(String, String)>::new();
     #[cfg(feature = "system_lz4")]
     libs.push((
         format!("lz4_static-build/{p_build_profile}"),
