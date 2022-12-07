@@ -34,12 +34,7 @@ jobs:
         
       - name: Install Python
         uses: actions/setup-python@v1
-        
-      - name: Install Meson
-        uses: BSFishy/meson-build@v1.0.3
-        with:
-          action: test
-    
+            
       - name: Checkout code
         uses: actions/checkout@v2
 
@@ -51,9 +46,14 @@ jobs:
           components: clippy
           override: true
 
+      - name: Install Meson
+        uses: BSFishy/meson-build@v1.0.3
+        with:
+          action: test
+          
       - name: Install required cargo
         run: cargo install clippy-sarif sarif-fmt
-
+        
       - name: Run rust-clippy-windows
         run:
           cargo clippy
