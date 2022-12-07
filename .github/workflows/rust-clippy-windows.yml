@@ -51,7 +51,6 @@ jobs:
         
       - name: Run rust-clippy-windows
         run:
-          cargo clippy
           cargo clippy --all-targets --frozen --message-format=json | clippy-sarif | tee rust-clippy-results.sarif | sarif-fmt -- --workspace
         continue-on-error: false
 
