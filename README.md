@@ -45,7 +45,7 @@ This Wolf is a comprehensive set of Rust/C libraries for realtime rendering, rea
 |:-----------:|:-----------:|:--------------------------:|:--------------:|:-------------:|:--------------:|:-------------:|
 | Embedded JavaScript  | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :memo: |
 | Fiber | :white_check_mark: | :memo: | :memo: | :x: | :x: | :x: |
-| Gamepad | :construction: | :memo: | :memo: | :memo: | :memo: | :memo: |
+| Gamepad | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :memo: |
 | Gamepad Simulator | :white_check_mark: | :memo: | :memo: | :x: | :x: | :x: |
 | Log  | :construction: | :construction: | :construction: | :construction: | :construction: | :construction: | 
 | LuaJit  | :memo: | :memo: | :memo: | :memo: | :memo: | :x: |
