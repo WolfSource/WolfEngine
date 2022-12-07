@@ -101,7 +101,6 @@ linux_all = [
     "media_openal",
     "render",
     "stream_grpc",
-    "stream_rist",
     "stream_socket_client",
     "stream_socket_server",
     "system_fiber",
