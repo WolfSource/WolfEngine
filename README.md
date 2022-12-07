@@ -31,7 +31,7 @@ This Wolf is a comprehensive set of Rust/C libraries for realtime rendering, rea
 | API | Windows | Linux | macOS | iOS | Android | Wasm |
 |:-----------:|:-----------:|:--------------------------:|:--------------:|:-------------:|:--------------:|:-------------:|
 | gRPC | :white_check_mark: | :x: | :x: | :x: | :x: | :x: |
-| QUIC | :construction: | :memo: | :memo: | :memo: | :memo: | :x: |
+| QUIC | :memo: | :memo: | :memo: | :memo: | :memo: | :x: |
 | RIST | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :x: |
 | RTMP | :memo: | :x: | :x: | :x: | :x: | :x: |
 | RTSP | :memo: | :memo: | :memo: | :memo: | :memo: | :x: |
