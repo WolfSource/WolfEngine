@@ -80,7 +80,7 @@ wav = {version = "1.0.0", default-features = false }
 
 # features
 [features]
-win_all = [
+all = [
     "media_ffmpeg",
     "media_openal",
     "render",
