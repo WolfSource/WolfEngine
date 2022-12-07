@@ -52,7 +52,7 @@ jobs:
       - name: Run rust-clippy-windows
         run:
           cargo clippy
-          cargo clippy --all-targets --frozen --message-format=json | clippy-sarif | tee rust-clippy-results.sarif | sarif-fmt --workspace -- --deny clippy::all --deny clippy::cargo --deny clippy::nursery --deny clippy::pedantic --deny warnings --allow clippy::multiple_crate_versions --allow clippy::module_name_repetitions
+          cargo clippy --all-targets --frozen --message-format=json | clippy-sarif | tee rust-clippy-results.sarif | sarif-fmt -- --workspace -- --deny clippy::all --deny clippy::cargo --deny clippy::nursery --deny clippy::pedantic --deny warnings --allow clippy::multiple_crate_versions --allow clippy::module_name_repetitions
         continue-on-error: false
 
       - name: Upload analysis results to GitHub
