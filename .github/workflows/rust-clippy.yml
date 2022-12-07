@@ -47,7 +47,7 @@ jobs:
           --all-features
           --frozen
           --message-format=json | clippy-sarif | tee rust-clippy-results.sarif | sarif-fmt
-          --workspace -- --deny clippy::all --deny clippy::cargo --deny clippy::nursery --deny clippy::pedantic --deny warnings --allow clippy::multiple_crate_versions --allow clippy::module_name_repetitions
+          -- --workspace -- --deny clippy::all --deny clippy::cargo --deny clippy::nursery --deny clippy::pedantic --deny warnings --allow clippy::multiple_crate_versions --allow clippy::module_name_repetitions
         continue-on-error: true
 
       - name: Upload analysis results to GitHub
