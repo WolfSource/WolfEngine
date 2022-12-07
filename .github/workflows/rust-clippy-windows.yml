@@ -31,9 +31,6 @@ jobs:
         uses: arduino/setup-protoc@v1
         with:
           version: '3.x'
-        
-      - name: Install Python
-        uses: actions/setup-python@v1
             
       - name: Checkout code
         uses: actions/checkout@v2
