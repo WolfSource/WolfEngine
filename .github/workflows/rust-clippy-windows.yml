@@ -31,6 +31,13 @@ jobs:
         uses: arduino/setup-protoc@v1
         with:
           version: '3.x'
+          
+      - name: Install Meson
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v1
+      - uses: BSFishy/meson-build@v1.0.3
+        with:
+          action: test
     
       - name: Checkout code
         uses: actions/checkout@v2
