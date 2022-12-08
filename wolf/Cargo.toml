@@ -97,7 +97,7 @@ all = [
     "system_screen_capture",
     "system_stacktrace",
 ]
-default = []
+default = ["all"]
 media_ffmpeg = [] # enable ffmpeg
 media_openal = [] # enable openal
 render = ["wgpu"] # enable real-time rendering
