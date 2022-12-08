@@ -1,3 +1,78 @@
+# fetch gRPC
+if (WOLF_STREAM_GRPC)
+    message("fetching https://github.com/grpc/grpc")
+    FetchContent_Declare(
+        grpc
+        GIT_REPOSITORY https://github.com/grpc/grpc
+        GIT_TAG        master
+    )
+    
+    set(ABSL_BUILD_TESTING OFF CACHE BOOL "BUILD_TESTING")
+    set(BUILD_TESTING OFF CACHE BOOL "BUILD_TESTING")
+
+    set(gRPC_BUILD_CSHARP_EXT OFF CACHE BOOL "GRPC_BUILD_CSHARP_EXT")
+    set(gRPC_BUILD_GRPC_CPP_PLUGIN ON CACHE BOOL "gRPC_BUILD_GRPC_CPP_PLUGIN")
+    set(gRPC_BUILD_GRPC_CSHARP_PLUGIN OFF CACHE BOOL "gRPC_BUILD_GRPC_CSHARP_PLUGIN")
+    set(gRPC_BUILD_GRPC_NODE_PLUGIN OFF CACHE BOOL "gRPC_BUILD_GRPC_NODE_PLUGIN")
+    set(gRPC_BUILD_GRPC_OBJECTIVE_C_PLUGIN OFF CACHE BOOL "gRPC_BUILD_GRPC_OBJECTIVE_C_PLUGIN")
+    set(gRPC_BUILD_GRPC_PHP_PLUGIN OFF CACHE BOOL "gRPC_BUILD_GRPC_PHP_PLUGIN")
+    set(gRPC_BUILD_GRPC_PYTHON_PLUGIN OFF CACHE BOOL "gRPC_BUILD_GRPC_PYTHON_PLUGIN")
+    set(gRPC_BUILD_GRPC_RUBY_PLUGIN OFF CACHE BOOL "gRPC_BUILD_GRPC_RUBY_PLUGIN")
+    set(gRPC_BUILD_TESTS OFF CACHE BOOL "gRPC_BUILD_TESTS")
+    
+    set(RE2_BUILD_TESTING OFF CACHE BOOL "RE2_BUILD_TESTING")
+
+    set(FETCHCONTENT_QUIET OFF)
+    FetchContent_MakeAvailable(grpc)
+
+    file(GLOB_RECURSE WOLF_STREAM_GRPC_SRC
+        "${CMAKE_CURRENT_SOURCE_DIR}/stream/grpc/*"
+    )
+    list(APPEND SRCS 
+        ${WOLF_STREAM_GRPC_SRC} 
+    )
+    list(APPEND INCLUDES
+        ${grpc_SOURCE_DIR}/include
+    )
+    list(APPEND LIBS grpc)
+    
+    set_target_properties(
+        acountry 
+        address_sorting
+        adig
+        ahost
+        bssl
+        c-ares
+        crypto
+        example
+        gpr
+        grpc
+        grpc_authorization_provider
+        grpc_cpp_plugin
+        grpc_plugin_support
+        grpc_unsecure
+        grpc++
+        grpc++_alts
+        grpc++_error_details
+        grpc++_reflection
+        grpc++_unsecure
+        grpcpp_channelz
+        libprotobuf
+        libprotobuf-lite
+        libprotoc
+        minigzip
+        plugins
+        protoc
+        re2
+        ssl
+        tools
+        tools_c
+        tools_cxx
+        upb
+        PROPERTIES FOLDER "gRPC")
+
+endif()
+
 # fetch lsquic
 if (WOLF_STREAM_QUIC)
     message("fetching https://github.com/litespeedtech/lsquic.git")
@@ -9,6 +84,7 @@ if (WOLF_STREAM_QUIC)
 
     set(LSQUIC_TESTS OFF CACHE BOOL "LSQUIC_TESTS")
 
+    set(FETCHCONTENT_QUIET OFF)
     FetchContent_MakeAvailable(lsquic)
 
     list(APPEND INCLUDES
@@ -31,6 +107,8 @@ if (WOLF_STREAM_RIST)
         GIT_REPOSITORY https://code.videolan.org/rist/librist.git
         GIT_TAG        master
       )
+    
+    set(FETCHCONTENT_QUIET OFF)
     FetchContent_MakeAvailable(${RIST_TARGET})
       
     if (ANDROID)

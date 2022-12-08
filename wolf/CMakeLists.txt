@@ -64,9 +64,10 @@ option(WOLF_RENDER "Enable cross platform render engine based on Vulkan / OpenGL
 option(WOLF_MEDIA_FFMPEG "Enable ffmpeg encoding and decoding" OFF)
 option(WOLF_MEDIA_OPENAL "Enable OpenAL soft" OFF)
 option(WOLF_MEDIA_SCREEN_CAPTURE "Enable screen capture" OFF)
-option(WOLF_MEDIA_STB "Enable stb headers" ON)
+option(WOLF_MEDIA_STB "Enable stb headers" OFF)
 
 # stream modules
+option(WOLF_STREAM_GRPC "Enable gRPC connection" OFF)
 option(WOLF_STREAM_QUIC "Enable QUIC" OFF)
 option(WOLF_STREAM_RIST "Enable RIST streaming protocol" OFF)
 option(WOLF_STREAM_RUDP "Enable reliable & unreliable stream over UDP" OFF)
@@ -76,14 +77,14 @@ option(WOLF_STREAM_WEBRTC "Enable webRTC" OFF)
 option(WOLF_SYSTEM_BORINGSSL "Enable boringSSL" OFF)
 option(WOLF_SYSTEM_FIBER "Enable boost fiber" OFF)
 option(WOLF_SYSTEM_HTTP1_WS "Enable http1.1 and websocket client/server based on boost beast" OFF)
-option(WOLF_SYSTEM_LOG "Enable log" ON)
+option(WOLF_SYSTEM_LOG "Enable log" OFF)
 option(WOLF_SYSTEM_LUAJIT "Enable luaJIT" OFF)
-option(WOLF_SYSTEM_LZ4 "Enable lz4 for compression" ON)
-option(WOLF_SYSTEM_LZMA "Enable lzma for compression" ON)
+option(WOLF_SYSTEM_LZ4 "Enable lz4 for compression" OFF)
+option(WOLF_SYSTEM_LZMA "Enable lzma for compression" OFF)
 option(WOLF_SYSTEM_MIMALLOC "Enable Microsoft's mimalloc memory allocator" OFF)
-option(WOLF_SYSTEM_SIG_SLOT "Enable signal/slot based on boost signals2" ON)
-option(WOLF_SYSTEM_SOCKET "Enable TCP/UDP protocol over socket" ON)
-option(WOLF_SYSTEM_STACKTRACE "Enable boost stacktrace" ON)
+option(WOLF_SYSTEM_SIG_SLOT "Enable signal/slot based on boost signals2" OFF)
+option(WOLF_SYSTEM_SOCKET "Enable TCP/UDP protocol over socket" OFF)
+option(WOLF_SYSTEM_STACKTRACE "Enable boost stacktrace" OFF)
 #option(WOLF_SYSTEM_WASM3 "Enable WebAssembly interpreter" OFF)
 #option(WOLF_SYSTEM_ZLIB "Enable zlib for compression" OFF)
 
@@ -99,7 +100,6 @@ endif()
 # 
 
 # stream modules
-# option(WOLF_STREAM_GRPC "Enable gRPC connection" OFF)
 # option(WOLF_STREAM_KAFKA_CLIENT "Enable Kafka API connector" OFF)
 
 # option(WOLF_STREAM_RTSP_CLIENT "Enable RTSP for client" OFF)
@@ -129,7 +129,7 @@ set(CMAKE_CXX_STANDARD 23)
 if (MSVC)
 set(CMAKE_CXX_FLAGS "/EHsc /W3")
 else()
-set(CMAKE_CXX_FLAGS "-std=c++2b -fexceptions")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++2b -fexceptions -fcoroutines")
 set(CMAKE_CXX_FLAGS_DEBUG "-g")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 endif()
@@ -176,7 +176,8 @@ endif()
 
 add_definitions(
     -DBOOST_ASIO_NO_DEPRECATED
-    -DLIBCXX_ENABLE_INCOMPLETE_FEATURES=ON # for llvm new features 
+    -DBOOST_ASIO_HAS_CO_AWAIT
+    -DBOOST_ASIO_HAS_STD_COROUTINE 
 )
 if (MSVC)
     add_definitions(
@@ -259,7 +260,7 @@ source_group("stream/webrtc/peer" FILES ${WOLF_STREAM_WEBRTC_PEER_SRC})
 source_group("stream/test" FILES ${WOLF_STREAM_QUIC_SRC})
 source_group("stream" FILES ${WOLF_STREAM_SRC})
 source_group("system/log" FILES ${WOLF_SYSTEM_LOG_SRC})
-source_group("system/compression" FILES ${WOLF_SYSTEM_LZ4_SRCS})
+source_group("system/compression" FILES ${WOLF_SYSTEM_LZ4_SRCS} ${WOLF_SYSTEM_LZMA_SRCS})
 source_group("system/socket/test" FILES ${WOLF_SYSTEM_SOCKET_TEST_SRC})
 source_group("system/socket" FILES ${WOLF_SYSTEM_SOCKET_SRC})
 source_group("system/test" FILES ${WOLF_SYSTEM_TEST_SRC})

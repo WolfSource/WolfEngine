@@ -136,9 +136,5 @@ private:
 
   std::chrono::steady_clock::time_point _last_time = {
       std::chrono::steady_clock::now()};
-}
-#ifdef __clang__
-W_ALIGNMENT_64
-#endif
-    ;
+};
 } // namespace wolf::system

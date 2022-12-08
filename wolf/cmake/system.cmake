@@ -19,20 +19,22 @@ FetchContent_Declare(
     GIT_REPOSITORY https://github.com/fmtlib/fmt.git
     GIT_TAG        master
 )
+set(FETCHCONTENT_QUIET OFF)
 FetchContent_MakeAvailable(fmt)
 list(APPEND INCLUDES
     ${fmt_SOURCE_DIR}/include
 )
 add_definitions(-DFMT_HEADER_ONLY)
 
-# fetch boringssl
-if (WOLF_SYSTEM_BORINGSSL)
+# fetch boringssl, note that boringssl was already fetched by GRPC  
+if (WOLF_SYSTEM_BORINGSSL AND (NOT WOLF_STREAM_GRPC))
     message("fetching https://github.com/google/boringssl.git")
     FetchContent_Declare(
         boringssl
         GIT_REPOSITORY https://github.com/google/boringssl.git
         GIT_TAG        master
     )
+    set(FETCHCONTENT_QUIET OFF)
     FetchContent_MakeAvailable(boringssl)
     
     # we will need these for lsquic
@@ -94,6 +96,7 @@ if (WOLF_SYSTEM_LOG)
     set(SPDLOG_WCHAR_FILENAMES OFF CACHE BOOL "SPDLOG_WCHAR_FILENAMES")
     set(SPDLOG_WCHAR_SUPPORT OFF CACHE BOOL "SPDLOG_WCHAR_SUPPORT")
 
+    set(FETCHCONTENT_QUIET OFF)
     FetchContent_MakeAvailable(spdlog)
     
     list(APPEND INCLUDES
@@ -118,6 +121,7 @@ if (WOLF_SYSTEM_LZ4)
     GIT_TAG        dev
     SOURCE_SUBDIR  build/cmake
   )
+  set(FETCHCONTENT_QUIET OFF)
   FetchContent_MakeAvailable(lz4_static)
 
   file(GLOB_RECURSE WOLF_SYSTEM_LZ4_SRCS
@@ -143,13 +147,14 @@ if (WOLF_SYSTEM_LZMA)
     GIT_REPOSITORY https://github.com/WolfEngine/lzma.git
     GIT_TAG        main
   )
+  set(FETCHCONTENT_QUIET OFF)
   FetchContent_MakeAvailable(lzma)
 
-  file(GLOB_RECURSE lZMA_SRCS
+  file(GLOB_RECURSE WOLF_SYSTEM_LZMA_SRCS
     "${CMAKE_CURRENT_SOURCE_DIR}/system/compression/w_lzma.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/system/compression/w_lzma.hpp"
   )
-  list(APPEND SRCS ${lZMA_SRCS})
+  list(APPEND SRCS ${WOLF_SYSTEM_LZMA_SRCS})
   list(APPEND INCLUDES ${lzma_SOURCE_DIR}/src)
   list(APPEND LIBS lzma)  
 endif()
@@ -166,6 +171,7 @@ if (WOLF_SYSTEM_MIMALLOC)
     set(MI_BUILD_SHARED OFF CACHE BOOL "MI_BUILD_SHARED")
     set(MI_BUILD_TESTS OFF CACHE BOOL "MI_BUILD_TESTS")
     
+    set(FETCHCONTENT_QUIET OFF)
     FetchContent_MakeAvailable(mimalloc-static)
 
     list(APPEND INCLUDES
@@ -188,8 +194,8 @@ if (WOLF_SYSTEM_SOCKET)
     )
 endif()
 
-# fetch zlib
-#if (WOLF_SYSTEM_ZLIB)
+# fetch zlib, note that zlib was already fetched by GRPC  
+if (WOLF_SYSTEM_ZLIB AND (NOT WOLF_STREAM_GRPC))
 #    message("fetching https://github.com/madler/zlib.git")
 #    FetchContent_Declare(
 #        zlibstatic
@@ -213,7 +219,7 @@ endif()
 #        zlib
 #        zlibstatic 
 #        PROPERTIES FOLDER "zlib")
-#endif()
+endif()
 
 file(GLOB_RECURSE WOLF_SYSTEM_SRC
     "${CMAKE_CURRENT_SOURCE_DIR}/system/getopt.h"

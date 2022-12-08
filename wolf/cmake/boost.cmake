@@ -145,6 +145,7 @@ if (WOLF_STREAM_HTTP1_WS)
 endif()
 
 # make them available
+set(FETCHCONTENT_QUIET OFF)
 FetchContent_MakeAvailable(${BOOST_MASTER_LIBS})
 
 # add includes
@@ -171,6 +172,7 @@ if (WOLF_SYSTEM_STACKTRACE)
         GIT_REPOSITORY https://github.com/boostorg/stacktrace.git
         GIT_TAG        master
     )
+    set(FETCHCONTENT_QUIET OFF)
     FetchContent_MakeAvailable(boost_stacktrace)
     list(APPEND INCLUDES 
         ${boost_stacktrace_SOURCE_DIR}/include
