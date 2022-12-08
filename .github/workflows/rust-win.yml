@@ -19,6 +19,14 @@ jobs:
       uses: arduino/setup-protoc@v1
       with:
           version: '3.x'
+    - name: Setup Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+    - name: Install Python Dependencies
+      run: pip install meson ninja
+   
+    - name: Checkout code
     - uses: actions/checkout@v3
     - name: Build
       run: cargo build --verbose
