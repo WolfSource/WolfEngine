@@ -10,7 +10,7 @@ repository = "https://github.com/WolfEngine/WolfEngine/"
 version = "3.0.3"
 
 [lib]
-crate-type = ["rlib"]
+crate-type = ["rlib", "cdylib"]
 name = "wolf"
 path = "src/lib.rs"
 
