@@ -41,7 +41,7 @@ BOOST_AUTO_TEST_CASE(stress_test) {
       spdlog::level::level_enum::debug,
       // the flush level
       spdlog::level::level_enum::debug,
-      //the sinks of log
+  // the sinks of log
 #ifdef _MSC_VER
       w_log_sink::VISUAL_STUDIO | w_log_sink::CONSOLE,
 #else
