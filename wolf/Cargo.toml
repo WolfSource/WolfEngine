@@ -97,7 +97,19 @@ all = [
     "system_screen_capture",
     "system_stacktrace",
 ]
-default = ["all"]
+github_action = [
+    "render",
+    "stream_socket_client",
+    "stream_socket_server",
+    "system_fiber",
+    "system_gamepad_sim",
+    "system_js",
+    "system_lz4",
+    "system_lzma",
+    "system_screen_capture",
+    "system_stacktrace",
+]
+default = ["github_action"]
 media_ffmpeg = [] # enable ffmpeg
 media_openal = [] # enable openal
 render = ["wgpu"] # enable real-time rendering
