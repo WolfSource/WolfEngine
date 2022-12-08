@@ -1,0 +1,1 @@
+./glslangValidator.exe -V -t -o ~path/to/out.spv ~/path/to/in.vert
