@@ -1,4 +1,4 @@
-# Wolf Engine [![LGPL v3 licensed](https://img.shields.io/badge/license-Apache-blue)](https://github.com/WolfEngine/Wolf.Engine/blob/main/LICENSE.md) 
+# Wolf Engine [![LGPL v3 licensed](https://img.shields.io/badge/license-Apache-blue)](https://github.com/WolfEngine/Wolf.Engine/blob/main/LICENSE.md) [![Windows](https://github.com/WolfEngine/WolfEngine/actions/workflows/windows.yml/badge.svg)](https://github.com/WolfEngine/WolfEngine/actions/workflows/windows.yml)
 
 <img src="https://raw.githubusercontent.com/WolfEngine/WolfEngine/main/Logo.png" width="256" height="256" alt="WolfEngine"/>
 
