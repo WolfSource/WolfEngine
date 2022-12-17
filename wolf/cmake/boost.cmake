@@ -27,8 +27,8 @@ endif()
 if (WOLF_TESTS OR WOLF_SYSTEM_SOCKET)
     list(APPEND BOOST_MASTER_LIBS   
         boost_asio
-        boost_chrono
         boost_coroutine
+        boost_chrono
         boost_date_time
         boost_io
         boost_lexical_cast
@@ -55,7 +55,7 @@ if (WOLF_SYSTEM_FIBER OR WOLF_SYSTEM_SIG_SLOT)
 endif()
 
 if (WOLF_TESTS OR WOLF_SYSTEM_FIBER OR WOLF_SYSTEM_SOCKET)
-    list(APPEND BOOST_MASTER_LIBS   
+    list(APPEND BOOST_MASTER_LIBS
         boost_context
         boost_intrusive
         boost_pool

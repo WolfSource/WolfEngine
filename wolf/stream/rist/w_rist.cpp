@@ -210,16 +210,16 @@ w_rist::send(_In_ const w_rist_data_block &p_block) {
                      "could not send data block to the rist stream");
 }
 
-boost::leaf::result<size_t> w_rist::receive(_Inout_ w_rist_data_block &p_block,
-                                            _In_ int p_timeout_ms) {
-  const gsl::not_null<rist_ctx *> _ctx_nn(this->_ctx);
-  auto _bytes =
-      rist_receiver_data_read2(_ctx_nn, &p_block._block, p_timeout_ms);
-  return _bytes >= 0
-             ? boost::leaf::result<size_t>(gsl::narrow_cast<size_t>(_bytes))
-             : W_FAILURE(std::errc::no_message,
-                     "could not read data block from the rist stream");
-  return S_OK;
-}
+//boost::leaf::result<size_t> w_rist::receive(_Inout_ w_rist_data_block &p_block,
+//                                            _In_ int p_timeout_ms) {
+//  const gsl::not_null<rist_ctx *> _ctx_nn(this->_ctx);
+//  auto _bytes =
+//      rist_receiver_data_read2(_ctx_nn, &p_block._block, p_timeout_ms);
+//  return _bytes >= 0
+//             ? boost::leaf::result<size_t>(gsl::narrow_cast<size_t>(_bytes))
+//             : W_FAILURE(std::errc::no_message,
+//                     "could not read data block from the rist stream");
+//  return S_OK;
+//}
 
 #endif

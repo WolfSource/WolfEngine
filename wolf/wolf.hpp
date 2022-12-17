@@ -53,7 +53,7 @@
 constexpr auto W_MAX_PATH = 260;
 constexpr auto W_MAX_BUFFER_SIZE = 1024;
 
-using defer = std::shared_ptr<void>;
+#define DEFER auto _ = std::shared_ptr<void>(nullptr, [&](...) 
 
 struct w_buffer {
 

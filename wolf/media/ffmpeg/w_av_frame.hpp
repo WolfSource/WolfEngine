@@ -41,6 +41,14 @@ struct w_encoder;
 struct w_av_frame {
   friend w_decoder;
   friend w_encoder;
+
+  /**
+   * constructor the av_frame with default config
+   * @param p_config, the av frame config
+   */
+  //
+  W_API w_av_frame() noexcept = default;
+
   /**
    * constructor the av_frame with specific config
    * @param p_config, the av frame config

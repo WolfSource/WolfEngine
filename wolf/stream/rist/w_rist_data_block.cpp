@@ -28,12 +28,21 @@ w_rist_data_block::~w_rist_data_block() {
 
 void w_rist_data_block::set(
     _In_ const std::tuple<const void *, size_t> &p_data) noexcept {
+  this->_block->ts_ntp = 0; 
   this->_block->payload = std::get<0>(p_data);
   this->_block->payload_len = std::get<1>(p_data);
 }
 
 std::tuple<const void *, size_t> w_rist_data_block::get() const {
   return std::make_tuple(this->_block->payload, this->_block->payload_len);
+}
+
+const void* w_rist_data_block::get_data() const {
+  return this->_block->payload;
+}
+
+size_t w_rist_data_block::get_data_len() const {
+  return this->_block->payload_len;
 }
 
 std::string w_rist_data_block::to_string() const {

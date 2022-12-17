@@ -1,0 +1,190 @@
+syntax = "proto3";
+package wolf.raft;
+
+service Raft {
+    rpc Bootstrap (RaftBootstrapReq) returns (RaftBootstrapRes);
+    rpc AppendEntries (RaftAppendEntriesReq) returns (RaftAppendEntriesRes);
+    rpc InstallSnapshot (RaftInstallSnapshotReq) returns (RaftInstallSnapshotRes);
+    rpc Vote (RaftVoteReq) returns (RaftVoteRes);
+    rpc GetMetrics (RaftGetMetricsReq) returns (RaftGetMetricsRes);
+}
+
+/*
+    Represents all error codes of services
+*/
+enum ErrorCode {
+    RAFT_UNDEFINED_ERROR = 0;
+    RAFT_BOOTSTRAP_FAILED = 1;
+    RAFT_APPEND_ENTRIES_JSON_OF_REQ_IS_NOT_VALID = 2;
+    RAFT_APPEND_ENTRIES_FAILED = 3;
+    RAFT_INSTALL_SNAPSHOT_FAILED = 4;
+    RAFT_VOTE_FAILED = 5;
+    RAFT_GET_METRICS_FAILED = 6;
+}
+
+/*
+    The structure of the error response which is shared
+    between all rpc(s) of all services.
+*/
+message RaftErrorRes {
+    string msg_id = 1;
+    ErrorCode code = 2;
+    string msg = 3;
+}
+
+/*
+    messages for Bootstrap
+*/
+message RaftBootstrapReq {
+    string msg_id = 1;
+    uint64 number_of_nodes = 3;
+}
+
+message RaftBootstrapOkRes {
+    string msg_id = 1;
+}
+
+message RaftBootstrapRes {
+    oneof response {
+        RaftBootstrapOkRes ok_res = 1;
+        RaftErrorRes error_res = 2;
+    }
+}
+
+/*
+    messages for AppendEntries
+*/
+message RaftAppendEntriesReq {
+    string msg_id = 1;
+    string req = 2;
+}
+
+message ConflictOpt {
+    /// The term of the most recent entry which does not conflict with the received request.
+    uint64 term = 1;
+    /// The index of the most recent entry which does not conflict with the received request.
+    uint64 index =2;
+}
+
+message RaftAppendEntriesOkRes {
+    /// The message id.
+    string msg_id = 1;
+    /// The responding node's current term, for leader to update itself.
+    uint64 term = 2;
+    /// Will be true if follower contained entry matching `prev_log_index` and `prev_log_term`.
+    bool success = 3;
+    /// A value used to implement the _conflicting term_ optimization outlined in §5.3.
+    /// This value will only be present, and should only be considered, when `success` is `false`.
+    optional ConflictOpt conflict_opt = 4;
+}
+
+message RaftAppendEntriesRes {
+    oneof response {
+        RaftAppendEntriesOkRes ok_res = 1;
+        RaftErrorRes error_res = 2;
+    }
+}
+
+/*
+    messages for InstallSnapshot
+*/
+message RaftInstallSnapshotReq {
+
+    /// message ID
+    string msg_id = 1;
+
+    /// The leader's current term.
+    uint64 term = 2;
+
+    /// The leader's ID. Useful in redirecting clients.
+    uint64 leader_id = 3;
+
+    /// The snapshot replaces all log entries up through and including this index.
+    uint64 last_included_index = 4;
+
+    /// The term of the `last_included_index`.
+    uint64 last_included_term = 5;
+
+    /// The byte offset where this chunk of data is positioned in the snapshot file.
+    uint64 offset = 6;
+
+    /// Will be `true` if this is the last chunk in the snapshot.
+    bool done = 7;
+
+    /// The raw bytes of the snapshot chunk, starting at `offset`.
+    bytes data = 8;
+}
+
+message RaftInstallSnapshotOkRes {
+    /// message ID
+    string msg_id = 1;
+
+    /// The receiving node's current term, for leader to update itself.
+    uint64 term = 2;
+}
+
+message RaftInstallSnapshotRes {
+    oneof response {
+        RaftInstallSnapshotOkRes ok_res = 1;
+        RaftErrorRes error_res = 2;
+    }
+}
+
+/*
+    messages for Vote
+*/
+message RaftVoteReq {
+
+    /// message ID
+    string msg_id = 1;
+
+    /// The candidate's current term.
+    uint64 term = 2;
+
+    /// The candidate's ID.
+    uint64 candidate_id = 3;
+
+    /// The index of the candidate’s last log entry.
+    uint64 last_log_index = 4;
+
+    /// The term of the candidate’s last log entry.
+    uint64 last_log_term = 5;
+
+}
+
+message RaftVoteOkRes {
+    /// message ID
+    string msg_id = 1;
+
+    /// The current term of the responding node, for the candidate to update itself.
+    uint64 term = 2;
+
+    /// Will be true if the candidate received a vote from the responder.
+    bool vote_granted = 3;
+}
+
+message RaftVoteRes {
+    oneof response {
+        RaftVoteOkRes ok_res = 1;
+        RaftErrorRes error_res = 2;
+    }
+}
+
+/*
+    messages for GetMetrics
+*/
+message RaftGetMetricsReq {
+    string msg_id = 1;
+}
+
+message RaftGetMetricsOkRes {
+    string msg_id = 1;
+    string metrics = 2;
+}
+
+message RaftGetMetricsRes {
+    oneof response {
+        RaftGetMetricsOkRes ok_res = 1;
+        RaftErrorRes error_res = 2;
+    }
+}

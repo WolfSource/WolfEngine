@@ -24,14 +24,9 @@
 #include "rational.h"
 
 /**
- * @file
- * Colorspace value utility functions for libavutil.
- * @ingroup lavu_math_csp
+ * @file Colorspace value utility functions for libavutil.
  * @author Ronald S. Bultje <rsbultje@gmail.com>
  * @author Leo Izen <leo.izen@gmail.com>
- */
-
-/**
  * @defgroup lavu_math_csp Colorspace Utility
  * @ingroup lavu_math
  * @{

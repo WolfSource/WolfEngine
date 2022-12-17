@@ -88,9 +88,22 @@ option(WOLF_SYSTEM_STACKTRACE "Enable boost stacktrace" OFF)
 #option(WOLF_SYSTEM_WASM3 "Enable WebAssembly interpreter" OFF)
 #option(WOLF_SYSTEM_ZLIB "Enable zlib for compression" OFF)
 
+#option(WOLF_ENABLE_LTO "Enable cross language linking time optimization" OFF)
 option(WOLF_TESTS "Enable tests" ON)
 if (NOT MSVC)
     option(WOLF_ENABLE_ASAN "Enable ASAN" OFF)
+endif()
+
+if(ENABLE_LTO)
+  include(CheckIPOSupported)
+  check_ipo_supported(RESULT supported OUTPUT error)
+  if(supported)
+      message(STATUS "IPO / LTO enabled")
+      set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
+      add_link_options(-fuse-ld=lld)
+  else()
+      message(STATUS "IPO / LTO not supported: <${error}>")
+  endif()
 endif()
 
 #option(WOLF_SYSTEM_FIBER "Enable boost fiber" OFF)
@@ -127,7 +140,7 @@ set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeR
 
 set(CMAKE_CXX_STANDARD 23)
 if (MSVC)
-set(CMAKE_CXX_FLAGS "/EHsc /W3")
+set(CMAKE_CXX_FLAGS "/EHsc /W3 /bigobj")
 else()
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++2b -fexceptions -fcoroutines")
 set(CMAKE_CXX_FLAGS_DEBUG "-g")
@@ -152,9 +165,10 @@ endif()
 
 # include cmakes
 include(cmake/boost.cmake)
+include(cmake/media.cmake)
+include(cmake/rust.cmake)
 include(cmake/system.cmake)
 include(cmake/stream.cmake)
-include(cmake/media.cmake)
 
 if (WOLF_ENABLE_ASAN)
     set(ENABLE_ASAN TRUE)

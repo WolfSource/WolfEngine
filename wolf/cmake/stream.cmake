@@ -1,5 +1,8 @@
 # fetch gRPC
 if (WOLF_STREAM_GRPC)
+    # enable zlib and boringSSL
+    set(WOLF_SYSTEM_ZLIB TRUE)
+
     message("fetching https://github.com/grpc/grpc")
     FetchContent_Declare(
         grpc

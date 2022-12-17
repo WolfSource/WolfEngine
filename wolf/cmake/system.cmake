@@ -194,31 +194,39 @@ if (WOLF_SYSTEM_SOCKET)
     )
 endif()
 
-# fetch zlib, note that zlib was already fetched by GRPC  
-if (WOLF_SYSTEM_ZLIB AND (NOT WOLF_STREAM_GRPC))
-#    message("fetching https://github.com/madler/zlib.git")
-#    FetchContent_Declare(
-#        zlibstatic
-#        GIT_REPOSITORY https://github.com/madler/zlib.git
-#        GIT_TAG        master
-#    )
-#    set(MI_BUILD_OBJECT OFF CACHE BOOL "MI_BUILD_OBJECT")
-#    set(MI_BUILD_SHARED OFF CACHE BOOL "MI_BUILD_SHARED")
-#    set(MI_BUILD_TESTS OFF CACHE BOOL "MI_BUILD_TESTS")
-#    
-#    FetchContent_MakeAvailable(zlibstatic)
-#
-#    list(APPEND INCLUDES
-#        ${zlib_SOURCE_DIR}/include
-#    )
-#    list(APPEND LIBS zlibstatic)
-#
-#    set_target_properties(
-#        example
-#        minigzip
-#        zlib
-#        zlibstatic 
-#        PROPERTIES FOLDER "zlib")
+# fetch zlib 
+if (WOLF_SYSTEM_ZLIB)
+    # note that zlib was already fetched by GRPC 
+    if (NOT WOLF_STREAM_GRPC)
+        message("fetching https://github.com/madler/zlib.git")
+        FetchContent_Declare(
+            zlibstatic
+            GIT_REPOSITORY https://github.com/madler/zlib.git
+            GIT_TAG        master
+        )
+        set(MI_BUILD_OBJECT OFF CACHE BOOL "MI_BUILD_OBJECT")
+        set(MI_BUILD_SHARED OFF CACHE BOOL "MI_BUILD_SHARED")
+        set(MI_BUILD_TESTS OFF CACHE BOOL "MI_BUILD_TESTS")
+        
+        FetchContent_MakeAvailable(zlibstatic)
+    
+        list(APPEND INCLUDES
+            ${zlib_SOURCE_DIR}/include
+        )
+        list(APPEND LIBS zlibstatic)
+
+        set_target_properties(
+            zlib
+            zlibstatic 
+            PROPERTIES FOLDER "zlib")
+    else()
+        set_target_properties(
+            example
+            minigzip
+            zlib
+            zlibstatic 
+            PROPERTIES FOLDER "zlib")
+    endif()
 endif()
 
 file(GLOB_RECURSE WOLF_SYSTEM_SRC

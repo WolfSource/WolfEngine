@@ -39,10 +39,24 @@ public:
   W_API void set(_In_ const std::tuple<const void *, size_t> &p_data) noexcept;
 
   /**
-   * get data of rist data block
+   * get a tuple contains data and len of data
    * @returns result of data with size
    */
   W_API std::tuple<const void *, size_t> get() const;
+
+  /**
+   * get data of rist data block
+   * @returns pointer to the data
+   */
+  W_API
+  const void *get_data() const;
+
+  /**
+   * get data len of rist data block
+   * @returns size of data 
+   */
+  W_API
+  size_t get_data_len() const;
 
   /**
    * get data block as string

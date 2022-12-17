@@ -70,7 +70,7 @@ boost::leaf::result<int> w_av_frame::set(_Inout_ uint8_t **p_data) noexcept {
   // check for width and height
   if (_width <= 0 || _height <= 0) {
     return W_FAILURE(std::errc::invalid_argument,
-                 "width or height of w_av_frame is zero");
+                     "width or height of w_av_frame is zero");
   }
 
   if (this->_av_frame == nullptr) {
@@ -139,7 +139,8 @@ w_av_frame::convert(_In_ const w_av_config &p_dst_config) {
   sws_freeContext(_context_nn);
 
   if (_height < 0) {
-    return W_FAILURE(std::errc::invalid_argument, "w_av_frame sws_scale failed");
+    return W_FAILURE(std::errc::invalid_argument,
+                     "w_av_frame sws_scale failed");
   }
 
   return _dst_frame;
@@ -159,14 +160,14 @@ w_av_frame::load_from_img_file(_In_ const std::filesystem::path &p_path,
   const auto _path = p_path.string();
   if (std::filesystem::exists(p_path) == false) {
     return W_FAILURE(std::errc::invalid_argument,
-                 " path not exist for av_frame" + _path);
+                     " path not exist for av_frame" + _path);
   }
 
   auto *_raw_img_data = stbi_load(_path.c_str(), &_width, &_height, &_comp, 0);
 
   if (_raw_img_data == nullptr) {
     return W_FAILURE(std::errc::invalid_argument,
-                 "could not load image file " + _path);
+                     "could not load image file " + _path);
   }
 
   const auto _img_size = _width * _height * _comp;
@@ -182,9 +183,9 @@ w_av_frame::load_from_img_file(_In_ const std::filesystem::path &p_path,
 boost::leaf::result<int>
 w_av_frame::save_to_img_file(_In_ const std::filesystem::path &p_path,
                              int p_quality) {
-  if (this->_av_frame == nullptr) {
-    return W_FAILURE(std::errc::invalid_argument,
-                 "missing avframe");
+  if (this->_av_frame == nullptr || this->_av_frame->width == 0 ||
+      this->_av_frame->height == 0) {
+    return W_FAILURE(std::errc::invalid_argument, "bad parameters for avframe");
   }
 
   const auto _path = p_path.string();
@@ -209,7 +210,7 @@ w_av_frame::save_to_img_file(_In_ const std::filesystem::path &p_path,
                           p_quality);
   } else {
     return W_FAILURE(std::errc::invalid_argument,
-                 "image format not supported for " + _path);
+                     "image format not supported for " + _path);
   }
 }
 

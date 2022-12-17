@@ -97,10 +97,8 @@ EXPORTS
     av_channel_layout_uninit
     av_channel_name
     av_channel_name_bprint
-    av_chroma_location_enum_to_pos
     av_chroma_location_from_name
     av_chroma_location_name
-    av_chroma_location_pos_to_enum
     av_cmp_i
     av_color_primaries_from_name
     av_color_primaries_name
@@ -138,7 +136,6 @@ EXPORTS
     av_dict_free
     av_dict_get
     av_dict_get_string
-    av_dict_iterate
     av_dict_parse_string
     av_dict_set
     av_dict_set_int

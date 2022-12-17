@@ -52,14 +52,15 @@ public:
    */
   W_API boost::leaf::result<size_t> send(_In_ const w_rist_data_block &p_block);
 
-  /**
-   * set data to rist data block
-   * @param p_block, the data block
-   * @param p_timeout, read timeout in milliseconds
-   * @returns the number of read bytes with result
-   */
-  W_API boost::leaf::result<size_t> receive(_Inout_ w_rist_data_block &p_block,
-                                            _In_ int p_timeout_ms);
+  ///**
+  // * set data to rist data block
+  // * @param p_block, the data block
+  // * @param p_timeout, read timeout in milliseconds
+  // * @returns the number of read bytes with result
+  // */
+  // W_API boost::leaf::result<size_t> receive(_Inout_ w_rist_data_block
+  // &p_block,
+  //                                          _In_ int p_timeout_ms);
 
   // this callback will be called on log
   std::function<void(_In_ rist_log_level /*p_log_level*/,
@@ -76,7 +77,7 @@ public:
   std::function<void()> on_auth_disconnected_callback;
 
   // this signal will be called on receiving data
-  std::function<void(_In_ const w_rist_data_block&)> on_receiver_data_callback;
+  std::function<void(_In_ const w_rist_data_block &)> on_receiver_data_callback;
 
 private:
   w_rist(const w_rist &) = delete;
