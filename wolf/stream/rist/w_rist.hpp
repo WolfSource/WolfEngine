@@ -3,9 +3,9 @@
     https://github.com/WolfEngine/WolfEngine
 */
 
-#pragma once
-
 #ifdef WOLF_STREAM_RIST
+
+#pragma once
 
 #include <wolf.hpp>
 #include "w_rist_data_block.hpp"
@@ -94,6 +94,6 @@ private:
 };
 } // namespace wolf::stream::rist
 
-#endif
+#endif //WOLF_STREAM_RIST
 
 

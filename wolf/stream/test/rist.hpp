@@ -152,7 +152,7 @@ BOOST_AUTO_TEST_CASE(rist_receiver_ffmpeg_test) {
         auto _opt = std::vector<w_av_set_opt>();
         const auto t0 = std::chrono::high_resolution_clock::now();
 
-        auto _on_frame_cb = [t0](const w_av_packet& p_packet,
+        auto _on_frame_cb = [t0](const w_av_packet &p_packet,
                                  const std::vector<AVStream *> p_streams,
                                  const int p_video_stream_index,
                                  const int p_audio_stream_index) -> bool {

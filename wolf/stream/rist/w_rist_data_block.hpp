@@ -74,4 +74,4 @@ private:
 };
 } // namespace wolf::stream::rist
 
-#endif
+#endif // WOLF_STREAM_RIST

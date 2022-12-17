@@ -7,13 +7,18 @@ extern "C" {
 #include <libavutil/imgutils.h>
 #include <libswscale/swscale.h>
 }
-#include <DISABLE_ANALYSIS_END>
+
+#ifdef WOLF_MEDIA_STB
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include <stb_image_write.h>
+
+#endif //WOLF_MEDIA_STB
+
+#include <DISABLE_ANALYSIS_END>
 
 using w_av_frame = wolf::media::ffmpeg::w_av_frame;
 using w_av_config = wolf::media::ffmpeg::w_av_config;

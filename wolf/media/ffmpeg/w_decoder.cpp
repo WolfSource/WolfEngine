@@ -15,9 +15,6 @@ w_decoder::start(_In_ const w_av_packet &p_packet,
   }
 
   boost::leaf::result<int> _ret = S_OK;
-#ifdef __clang__
-#pragma unroll
-#endif
   for (;;) {
     const auto _bytes = av_parser_parse2(
         this->ctx.parser, this->ctx.codec_ctx, &_dst_packet->data,
