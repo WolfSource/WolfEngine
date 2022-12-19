@@ -80,12 +80,18 @@ void w_gamepad::update() {
   }
 }
 
+w_gamepad::w_gamepad() noexcept {}
+
 w_gamepad::~w_gamepad() noexcept {}
 
-w_gamepad::w_gamepad() noexcept {
+boost::leaf::result<int> w_gamepad::init() noexcept {
   // TODO: callback registration may fail, check for EMSCRIPTEN_RESULT_SUCCESS
-  emscripten_set_gamepadconnected_callback(this, EM_TRUE, gamepadconnected_callback);
-  emscripten_set_gamepaddisconnected_callback(this, EM_TRUE, gamepaddisconnected_callback);
+  emscripten_set_gamepadconnected_callback(this, EM_TRUE,
+                                           gamepadconnected_callback);
+  emscripten_set_gamepaddisconnected_callback(this, EM_TRUE,
+                                              gamepaddisconnected_callback);
+
+  return S_OK;
 }
 
 #endif

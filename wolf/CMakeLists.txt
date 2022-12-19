@@ -75,7 +75,6 @@ option(WOLF_STREAM_WEBRTC "Enable webRTC" OFF)
 
 # system modules
 option(WOLF_SYSTEM_BORINGSSL "Enable boringSSL" OFF)
-option(WOLF_SYSTEM_FIBER "Enable boost fiber" OFF)
 option(WOLF_SYSTEM_HTTP1_WS "Enable http1.1 and websocket client/server based on boost beast" OFF)
 option(WOLF_SYSTEM_LOG "Enable log" OFF)
 option(WOLF_SYSTEM_LUAJIT "Enable luaJIT" OFF)
@@ -107,7 +106,6 @@ if(ENABLE_LTO)
   endif()
 endif()
 
-#option(WOLF_SYSTEM_FIBER "Enable boost fiber" OFF)
 # media modules
 # 
 # option(WOLF_MEDIA_IMAGE "Enable WebP/BMP/JPG/PNG formats" OFF)
@@ -274,6 +272,7 @@ source_group("stream/webrtc/media" FILES ${WOLF_STREAM_WEBRTC_MEDIA_SRC})
 source_group("stream/webrtc/peer" FILES ${WOLF_STREAM_WEBRTC_PEER_SRC})
 source_group("stream/test" FILES ${WOLF_STREAM_QUIC_SRC})
 source_group("stream" FILES ${WOLF_STREAM_SRC})
+source_group("system/gamepad" FILES ${WOLF_SYSTEM_GAMEPAD_SRC})
 source_group("system/log" FILES ${WOLF_SYSTEM_LOG_SRC})
 source_group("system/compression" FILES ${WOLF_SYSTEM_LZ4_SRCS} ${WOLF_SYSTEM_LZMA_SRCS})
 source_group("system/socket/test" FILES ${WOLF_SYSTEM_SOCKET_TEST_SRC})

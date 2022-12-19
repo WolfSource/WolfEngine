@@ -9,10 +9,12 @@
 
 namespace wolf::system::gamepad {
 
+// TODO: should be static class
 class w_gamepad {
  public:
   W_API w_gamepad() noexcept;
   W_API ~w_gamepad() noexcept;
+  W_API boost::leaf::result<int> init() noexcept;
 
   W_API bool get_events(w_gamepad_event &p_event) {
     if (_events.empty()) {

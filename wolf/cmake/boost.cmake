@@ -4,14 +4,6 @@ set(BOOST_MASTER_LIBS
     boost_leaf
 )
 
-if (WOLF_SYSTEM_FIBER)
-    list(APPEND BOOST_MASTER_LIBS   
-        boost_fiber
-        boost_filesystem
-        boost_format
-    )
-endif()
-
 if (WOLF_SYSTEM_HTTP1_WS)
     if (NOT WOLF_SYSTEM_SOCKET)
         message(FATAL_ERROR "WOLF_STREAM_HTTP1_WS needs WOLF_SYSTEM_SOCKET module")
@@ -26,104 +18,83 @@ endif()
 
 if (WOLF_TESTS OR WOLF_SYSTEM_SOCKET)
     list(APPEND BOOST_MASTER_LIBS   
+        boost_algorithm
         boost_asio
-        boost_coroutine
         boost_chrono
+        boost_container
+        boost_context
+        boost_coroutine
         boost_date_time
+        boost_exception
+        boost_intrusive
         boost_io
         boost_lexical_cast
-        boost_container
         boost_numeric_conversion
-        boost_tokenizer
+        boost_pool
+        boost_range
         boost_ratio
         boost_rational
+        boost_regex
+        boost_system
+        boost_tokenizer
+        boost_unordered
+        boost_variant2
     )
 endif()
 
 if (WOLF_SYSTEM_SIG_SLOT)
     list(APPEND BOOST_MASTER_LIBS 
+        boost_io
         boost_parameter
         boost_signals2
         boost_variant
     )
 endif()
 
-if (WOLF_SYSTEM_FIBER OR WOLF_SYSTEM_SIG_SLOT)
-    list(APPEND BOOST_MASTER_LIBS 
-        boost_io
-    )
-endif()
-
-if (WOLF_TESTS OR WOLF_SYSTEM_FIBER OR WOLF_SYSTEM_SOCKET)
-    list(APPEND BOOST_MASTER_LIBS
-        boost_context
-        boost_intrusive
-        boost_pool
-        boost_algorithm
-        boost_exception
-        boost_range
-        boost_regex
-        boost_unordered
-        boost_system
-        boost_variant2
-    )
-endif()
-
-if (WOLF_TESTS OR WOLF_SYSTEM_FIBER OR WOLF_SYSTEM_SOCKET OR WOLF_SYSTEM_STACKTRACE)
-    list(APPEND BOOST_MASTER_LIBS 
-        boost_integer 
-)
-endif()
-
 if (WOLF_TESTS OR WOLF_SYSTEM_SOCKET OR WOLF_SYSTEM_STACKTRACE)
     list(APPEND BOOST_MASTER_LIBS   
         boost_align
-        
-    )
-endif()
-
-if (WOLF_TESTS OR WOLF_SYSTEM_FIBER OR WOLF_SYSTEM_SOCKET OR WOLF_SYSTEM_STACKTRACE)
-    list(APPEND BOOST_MASTER_LIBS
         boost_array
+        boost_integer
         boost_winapi
     )
 endif()
 
-if (WOLF_TESTS OR WOLF_SYSTEM_FIBER OR WOLF_SYSTEM_SOCKET OR WOLF_SYSTEM_SIG_SLOT)
+if (WOLF_TESTS OR WOLF_SYSTEM_SOCKET OR WOLF_SYSTEM_SIG_SLOT)
     list(APPEND BOOST_MASTER_LIBS   
-        boost_smart_ptr
-        boost_move
         boost_bind
         boost_concept_check
-        boost_function
-        boost_functional
-        boost_iterator
-        boost_mpl
-        boost_tuple
-        boost_utility
         boost_conversion
-        boost_typeof
+        boost_function
         boost_function_types
+        boost_functional
         boost_fusion
+        boost_iterator
+        boost_move
+        boost_mpl
         boost_optional
+        boost_smart_ptr
+        boost_tuple
         boost_type_index
+        boost_typeof
+        boost_utility
     )
 endif()
 
-if (WOLF_TESTS OR WOLF_SYSTEM_FIBER OR WOLF_SYSTEM_SOCKET OR WOLF_SYSTEM_SIG_SLOT OR WOLF_SYSTEM_STACKTRACE)
+if (WOLF_TESTS OR WOLF_SYSTEM_SOCKET OR WOLF_SYSTEM_SIG_SLOT OR WOLF_SYSTEM_STACKTRACE)
     list(APPEND BOOST_MASTER_LIBS
-        boost_detail
         boost_assert
-        boost_describe
-        boost_static_assert
-        boost_throw_exception
         boost_config
+        boost_container_hash
         boost_core
+        boost_describe
+        boost_detail
         boost_mp11
         boost_predef
-        boost_type_traits
         boost_preprocessor
-        boost_container_hash
+        boost_static_assert
+        boost_throw_exception
+        boost_type_traits
     )
 endif()
 
@@ -159,10 +130,6 @@ endforeach()
 
 # add libraries
 list(APPEND LIBS ${BOOST_MASTER_LIBS})   
-
-if (WOLF_SYSTEM_FIBER)
-    set_target_properties(boost_fiber_numa PROPERTIES FOLDER "boost")
-endif()
 
 # fetch boost stacktrace
 if (WOLF_SYSTEM_STACKTRACE)
