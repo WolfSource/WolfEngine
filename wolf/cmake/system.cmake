@@ -251,3 +251,28 @@ list(APPEND SRCS
     ${WOLF_SYSTEM_TEST_SRC}
 )
 
+if (WOLF_SYSTEM_GAMEPAD)
+    message("fetching https://github.com/libsdl-org/SDL")
+    FetchContent_Declare(
+            sdl
+            GIT_REPOSITORY https://github.com/libsdl-org/SDL
+            GIT_TAG        release-2.26.1
+    )
+
+    set(FETCHCONTENT_QUIET OFF)
+    FetchContent_MakeAvailable(sdl)
+
+    list(APPEND INCLUDES
+            ${sdl_SOURCE_DIR}/include
+            )
+    list(APPEND LIBS SDL2)
+
+    file(GLOB_RECURSE WOLF_SYSTEM_GAMEPAD_SRC
+            "${CMAKE_CURRENT_SOURCE_DIR}/system/gamepad/w_gamepad.hpp"
+            "${CMAKE_CURRENT_SOURCE_DIR}/system/gamepad/w_gamepad_emscripten.cpp"
+            "${CMAKE_CURRENT_SOURCE_DIR}/system/gamepad/w_gamepad_sdl.cpp"
+            )
+    list(APPEND SRCS
+            ${WOLF_SYSTEM_GAMEPAD_SRC}
+            )
+endif()
