@@ -187,6 +187,8 @@ if (WOLF_SYSTEM_SOCKET)
         "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_tcp_client.hpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_tcp_server.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_tcp_server.hpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_tcp_fiber_server.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_tcp_fiber_server.hpp"
     )
     list(APPEND SRCS 
         ${WOLF_SYSTEM_SOCKET_SRC} 

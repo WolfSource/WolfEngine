@@ -19,6 +19,9 @@ The Wolf is a comprehensive set of C++ open source libraries for realtime render
 	- [Go](https://go.dev/dl/) for boringSSL
 	- [QT6](https://www.qt.io/download) for wolf render, demos and examples
 	
+then make sure get the main branch 
+`git clone https://github.com/WolfEngine/WolfEngine.git --branch main --depth 1`
+
 ## CMakePresets
 	
 To list configure presets: `cmake . --list-presets`

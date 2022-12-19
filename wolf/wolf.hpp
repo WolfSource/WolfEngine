@@ -34,10 +34,11 @@
 #include <boost/leaf.hpp>
 #include <gsl/gsl>
 #include <fmt/format.h>
+#include <fmt/chrono.h>
 
 #ifdef WOLF_SYSTEM_MIMALLOC
 
-#include <mimalloc-override.h>
+//#include <mimalloc-override.h>
 
 #endif
 
