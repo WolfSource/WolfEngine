@@ -92,7 +92,9 @@ if (WOLF_SYSTEM_GAMEPAD)
     file(GLOB_RECURSE WOLF_SYSTEM_GAMEPAD_SRC
             "${CMAKE_CURRENT_SOURCE_DIR}/system/gamepad/w_gamepad.hpp"
             "${CMAKE_CURRENT_SOURCE_DIR}/system/gamepad/w_gamepad_emscripten.cpp"
+            "${CMAKE_CURRENT_SOURCE_DIR}/system/gamepad/w_gamepad_keymap.hpp"
             "${CMAKE_CURRENT_SOURCE_DIR}/system/gamepad/w_gamepad_sdl.cpp"
+            "${CMAKE_CURRENT_SOURCE_DIR}/system/gamepad/w_gamepad_types.hpp"
             )
     list(APPEND SRCS ${WOLF_SYSTEM_GAMEPAD_SRC})
 

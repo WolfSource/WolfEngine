@@ -1,22 +1,14 @@
-#pragma once
-
 #ifdef WOLF_SYSTEM_GAMEPAD
+
+#pragma once
 
 #include <cstdint>
 
 namespace wolf::system::gamepad {
 
-enum class w_gamepad_event_type {
-  BUTTON,
-  AXIS,
-  MAX
-};
+enum class w_gamepad_event_type { BUTTON, AXIS, MAX };
 
-enum class w_gamepad_state_type {
-  RELEASED,
-  PRESSED,
-  MAX
-};
+enum class w_gamepad_state_type { RELEASED, PRESSED, MAX };
 
 enum class w_gamepad_button_type {
   A,
@@ -34,11 +26,12 @@ enum class w_gamepad_button_type {
   DPAD_DOWN,
   DPAD_LEFT,
   DPAD_RIGHT,
-  MISC1,    /* Xbox Series X share button, PS5 microphone button, Nintendo Switch Pro capture button, Amazon Luna microphone button */
-  PADDLE1,  /* Xbox Elite paddle P1 */
-  PADDLE2,  /* Xbox Elite paddle P3 */
-  PADDLE3,  /* Xbox Elite paddle P2 */
-  PADDLE4,  /* Xbox Elite paddle P4 */
+  MISC1,   /* Xbox Series X share button, PS5 microphone button, Nintendo Switch
+              Pro capture button, Amazon Luna microphone button */
+  PADDLE1, /* Xbox Elite paddle P1 */
+  PADDLE2, /* Xbox Elite paddle P3 */
+  PADDLE3, /* Xbox Elite paddle P2 */
+  PADDLE4, /* Xbox Elite paddle P4 */
   TOUCHPAD, /* PS4/PS5 touchpad button */
   MAX
 };

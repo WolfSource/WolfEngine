@@ -1,8 +1,8 @@
-#pragma once
-
 #ifdef WOLF_SYSTEM_GAMEPAD
 
-#include "w_gamepad_types.h"
+#pragma once
+
+#include "w_gamepad_types.hpp"
 
 namespace wolf::system::gamepad {
 
