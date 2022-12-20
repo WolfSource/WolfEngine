@@ -101,7 +101,7 @@ constexpr inline boost::leaf::result<T> W_SUCCESS(T &p_param) noexcept {
 
 inline std::string get_last_win_error(_In_ DWORD p_error_id) {
     if (p_error_id == 0) {
-        return {};
+    return {};
     }
 
     LPSTR _msg_buffer = nullptr;
@@ -124,9 +124,5 @@ inline std::string get_last_win_error(_In_ DWORD p_error_id) {
 
     return _message;
 }
-
-#else
-
-constexpr inline int S_OK = 0;
 
 #endif

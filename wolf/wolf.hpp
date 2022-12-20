@@ -14,9 +14,9 @@
 #endif
 
 #ifdef WIN32
-
 #include <Windows.h>
-
+#else
+constexpr inline int S_OK = 0;
 #endif
 
 #ifndef EMSCRIPTEN
@@ -38,7 +38,7 @@
 
 #ifdef WOLF_SYSTEM_MIMALLOC
 
-//#include <mimalloc-override.h>
+#include <mimalloc-override.h>
 
 #endif
 

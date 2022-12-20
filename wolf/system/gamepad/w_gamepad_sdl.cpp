@@ -3,7 +3,7 @@
 #include "w_gamepad.hpp"
 
 #include <DISABLE_ANALYSIS_BEGIN>
-#include <SDL.h>
+#include <SDL3/SDL.h>
 #include <DISABLE_ANALYSIS_END>
 
 using w_gamepad = wolf::system::gamepad::w_gamepad;

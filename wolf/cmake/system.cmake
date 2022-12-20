@@ -74,39 +74,71 @@ if (WOLF_SYSTEM_BORINGSSL AND (NOT WOLF_STREAM_GRPC))
 endif()
 
 if (WOLF_SYSTEM_GAMEPAD)
-    message("fetching https://github.com/libsdl-org/SDL")
-    FetchContent_Declare(
-            sdl
-            GIT_REPOSITORY https://github.com/libsdl-org/SDL
-            GIT_TAG        release-2.26.1
-    )
-
-    set(FETCHCONTENT_QUIET OFF)
-    FetchContent_MakeAvailable(sdl)
-
-    list(APPEND INCLUDES
-            ${sdl_SOURCE_DIR}/include
-            )
-    list(APPEND LIBS SDL2)
-
     file(GLOB_RECURSE WOLF_SYSTEM_GAMEPAD_SRC
-            "${CMAKE_CURRENT_SOURCE_DIR}/system/gamepad/w_gamepad.hpp"
-            "${CMAKE_CURRENT_SOURCE_DIR}/system/gamepad/w_gamepad_emscripten.cpp"
-            "${CMAKE_CURRENT_SOURCE_DIR}/system/gamepad/w_gamepad_keymap.hpp"
-            "${CMAKE_CURRENT_SOURCE_DIR}/system/gamepad/w_gamepad_sdl.cpp"
-            "${CMAKE_CURRENT_SOURCE_DIR}/system/gamepad/w_gamepad_types.hpp"
-            )
+        "${CMAKE_CURRENT_SOURCE_DIR}/system/gamepad/w_gamepad.hpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/system/gamepad/w_gamepad_emscripten.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/system/gamepad/w_gamepad_keymap.hpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/system/gamepad/w_gamepad_sdl.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/system/gamepad/w_gamepad_types.hpp"
+    )
     list(APPEND SRCS ${WOLF_SYSTEM_GAMEPAD_SRC})
 
-    set_target_properties(
-        sdl_headers_copy
-        SDL2
-        SDL2_test
-        SDL2main
-        SDL2-static
-        uninstall
-        PROPERTIES FOLDER "SDL") 
+    if (NOT EMSCRIPTEN)
+        message("fetching https://github.com/libsdl-org/SDL")
+        FetchContent_Declare(
+            SDL3-static
+            GIT_REPOSITORY https://github.com/libsdl-org/SDL
+            GIT_TAG        main
+        )
 
+        set(SDL_AUDIO OFF CACHE BOOL "SDL_AUDIO")
+        set(SDL_DIRECTX OFF CACHE BOOL "SDL_DIRECTX")
+        set(SDL_DISKAUDIO OFF CACHE BOOL "SDL_DISKAUDIO")
+        set(SDL_DUMMYAUDIO OFF CACHE BOOL "SDL_DUMMYAUDIO")
+        set(SDL_DUMMYVIDEO OFF CACHE BOOL "SDL_DUMMYVIDEO")
+        set(SDL_FILE OFF CACHE BOOL "SDL_FILE")
+        set(SDL_FILESYSTEM OFF CACHE BOOL "SDL_FILESYSTEM")
+        set(SDL_METAL OFF CACHE BOOL "SDL_METAL")
+        set(SDL_OFFSCREEN OFF CACHE BOOL "SDL_OFFSCREEN")
+        set(SDL_OPENGL OFF CACHE BOOL "SDL_OPENGL")
+        set(SDL_OPENGLES OFF CACHE BOOL "SDL_OPENGLES")
+        set(SDL_RENDER OFF CACHE BOOL "SDL_RENDER")
+        set(SDL_RENDER_D3D OFF CACHE BOOL "SDL_RENDER_D3D")
+        set(SDL_RENDER_METAL OFF CACHE BOOL "SDL_RENDER_METAL")
+        set(SDL_TEST OFF CACHE BOOL "SDL_TEST")
+        set(SDL_TESTS OFF CACHE BOOL "SDL_TESTS")
+        set(SDL_VIDEO OFF CACHE BOOL "SDL_VIDEO")
+        set(SDL_VULKAN OFF CACHE BOOL "SDL_VULKAN")
+        set(SDL_WASAPI OFF CACHE BOOL "SDL_WASAPI")
+        set(SDL_SHARED OFF CACHE BOOL "SDL_SHARED")
+
+        set(SDL_STATIC ON CACHE BOOL "SDL_STATIC")
+        set(SDL_HIGHDAPI_JOYSTICK ON CACHE BOOL "SDL_HIGHDAPI_JOYSTICK")
+        set(SDL_JOYSTICK ON CACHE BOOL "SDL_JOYSTICK")
+        set(SDL_XINPUT ON CACHE BOOL "SDL_XINPUT")
+
+        set(FETCHCONTENT_QUIET OFF)
+        FetchContent_MakeAvailable(SDL3-static)
+
+        list(APPEND INCLUDES
+            ${SDL3-static_SOURCE_DIR}/include
+            )
+        list(APPEND LIBS SDL3-static)
+
+        file(GLOB_RECURSE WOLF_SYSTEM_GAMEPAD_SRC
+                "${CMAKE_CURRENT_SOURCE_DIR}/system/gamepad/w_gamepad.hpp"
+                "${CMAKE_CURRENT_SOURCE_DIR}/system/gamepad/w_gamepad_emscripten.cpp"
+                "${CMAKE_CURRENT_SOURCE_DIR}/system/gamepad/w_gamepad_keymap.hpp"
+                "${CMAKE_CURRENT_SOURCE_DIR}/system/gamepad/w_gamepad_sdl.cpp"
+                "${CMAKE_CURRENT_SOURCE_DIR}/system/gamepad/w_gamepad_types.hpp"
+                )
+        list(APPEND SRCS ${WOLF_SYSTEM_GAMEPAD_SRC})
+
+        set_target_properties(
+            SDL3-static
+            uninstall
+            PROPERTIES FOLDER "SDL") 
+    endif()
 endif()
 
 # fetch http websocket
@@ -223,8 +255,6 @@ if (WOLF_SYSTEM_SOCKET)
         "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_tcp_client.hpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_tcp_server.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_tcp_server.hpp"
-        "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_tcp_fiber_server.cpp"
-        "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_tcp_fiber_server.hpp"
     )
     list(APPEND SRCS 
         ${WOLF_SYSTEM_SOCKET_SRC} 
