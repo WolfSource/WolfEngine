@@ -74,7 +74,7 @@ cmake --build --preset default-build-android
 | RTSP | :memo: | :memo: | :memo: | :memo: | :memo: | :x: |
 | SRT | :memo: | :memo: | :memo: | :memo: | :memo: | :x: |
 | webRTC | :memo: | :memo: | :memo: | :memo: | :memo: | :memo: |
-| WS | :construction: | :memo: | :memo: | :memo: | :memo: | :memo: |
+| WS | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :memo: |
 
 
 ### Supported platforms and APIs for system module
