@@ -82,7 +82,7 @@ cmake --build --preset default-build-android
 | API | Windows | Linux | macOS | iOS | Android | Wasm |
 |:-----------:|:-----------:|:--------------------------:|:--------------:|:-------------:|:--------------:|:-------------:|
 | Fiber | :white_check_mark: | :memo: | :memo: | :x: | :x: | :x: |
-| Gamepad | :construction: | :memo: | :memo: | :memo: | :memo: | :memo: |
+| Gamepad | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :white_check_mark: |
 | Gamepad Simulator | :construction: | :memo: | :memo: | :x: | :x: | :x: |
 | Log  | :white_check_mark: | :construction: | :construction: | :construction: | :construction: | :construction: | 
 | LuaJit  | :memo: | :memo: | :memo: | :memo: | :memo: | :x: |
