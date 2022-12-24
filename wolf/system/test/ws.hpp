@@ -26,7 +26,7 @@ BOOST_AUTO_TEST_CASE(ws_server_timeout) {
 
   auto t1 = std::jthread([&]() {
     // stop server
-    std::this_thread::sleep_for(std::chrono::seconds(50));
+    std::this_thread::sleep_for(std::chrono::seconds(20));
     _io.stop();
   });
 
