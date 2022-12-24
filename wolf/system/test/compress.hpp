@@ -3,7 +3,7 @@
     https://github.com/WolfEngine/WolfEngine
 */
 
-#if defined(WOLF_TESTS)
+#ifdef WOLF_TEST
 
 #pragma once
 

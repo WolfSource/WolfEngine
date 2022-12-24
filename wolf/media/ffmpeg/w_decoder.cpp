@@ -21,8 +21,8 @@ w_decoder::start(_In_ const w_av_packet &p_packet,
         &_dst_packet->size, p_packet._packet->data, p_packet._packet->size,
         AV_NOPTS_VALUE, AV_NOPTS_VALUE, 0);
 
-    if (_bytes < 0) {
-      return W_FAILURE(std::errc::not_enough_memory,
+    if (_bytes <= 0) {
+      return W_FAILURE(std::errc::operation_canceled,
                        "could not parse packet for decoding");
     }
 
@@ -34,7 +34,7 @@ w_decoder::start(_In_ const w_av_packet &p_packet,
     }
 
     if (_dst_packet->size > 0) {
-      _ret = _get_frame_from_packet(p_packet._packet, p_frame);
+      _ret = _get_frame_from_packet(_dst_packet, p_frame);
       if (_ret.has_error()) {
         break;
       }

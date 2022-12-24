@@ -3,7 +3,7 @@
     https://github.com/WolfEngine/WolfEngine
 */
 
-#if defined(WOLF_TESTS) && defined(WOLF_MEDIA_FFMPEG) && defined(WOLF_MEDIA_STB)
+#if defined(WOLF_TEST) && defined(WOLF_MEDIA_FFMPEG) && defined(WOLF_MEDIA_STB)
 
 #pragma once
 
@@ -120,7 +120,7 @@ BOOST_AUTO_TEST_CASE(vp9_encode_decode_test) {
                         w_av_frame::load_from_img_file(
                             _current_dir, AVPixelFormat::AV_PIX_FMT_RGBA));
 
-        const auto _codec_id = AVCodecID::AV_CODEC_ID_VP9;
+        const auto _codec_id = AVCodecID::AV_CODEC_ID_H264;
         // source & destination configs
         const auto _src_config = _src_frame.get_config();
         const auto _dst_config =

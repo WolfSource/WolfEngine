@@ -3,7 +3,7 @@
     https://github.com/WolfEngine/WolfEngine
 */
 
-#if defined(WOLF_TEST) || defined(WOLF_SYSTEM_SOCKET)
+#if defined(WOLF_TEST) && defined(WOLF_SYSTEM_SOCKET)
 
 #pragma once
 
@@ -15,7 +15,7 @@
 #include <system/socket/w_tcp_client.hpp>
 #include <system/w_timer.hpp>
 
-BOOST_AUTO_TEST_CASE(server_timeout) {
+BOOST_AUTO_TEST_CASE(tcp_server_timeout) {
   const wolf::system::w_leak_detector _detector = {};
 
   using tcp = boost::asio::ip::tcp;
@@ -40,19 +40,18 @@ BOOST_AUTO_TEST_CASE(server_timeout) {
                   << " bytes from connection id: " << p_conn_id << std::endl;
         return boost::system::errc::connection_aborted;
       },
-      [](const std::string &p_conn_id) {
-        std::cout << "timeout for connection: " << p_conn_id << std::endl;
-      },
-      [](const std::string &p_conn_id, const std::exception &p_excp) {
+      [](const std::string &p_conn_id,
+         const boost::system::system_error &p_error) {
         std::cout << "timeout for connection: " << p_conn_id << " because of "
-                  << p_excp.what() << std::endl;
+                  << p_error.what() << "error code: " << p_error.code()
+                  << std::endl;
       });
   _io.run();
 
   BOOST_REQUIRE(true);
 }
 
-BOOST_AUTO_TEST_CASE(client_timeout) {
+BOOST_AUTO_TEST_CASE(tcp_client_timeout) {
   const wolf::system::w_leak_detector _detector = {};
 
   using tcp = boost::asio::ip::tcp;
@@ -95,7 +94,7 @@ BOOST_AUTO_TEST_CASE(client_timeout) {
   BOOST_REQUIRE(true);
 }
 
-BOOST_AUTO_TEST_CASE(read_write) {
+BOOST_AUTO_TEST_CASE(tcp_read_write) {
   const wolf::system::w_leak_detector _detector = {};
 
   using tcp = boost::asio::ip::tcp;
@@ -154,7 +153,7 @@ BOOST_AUTO_TEST_CASE(read_write) {
           BOOST_REQUIRE(_res.index() == 1);
           _recv_buffer.used_bytes = std::get<1>(_res);
 
-          BOOST_REQUIRE(_recv_buffer.used_bytes == 10);          // hello-back
+          BOOST_REQUIRE(_recv_buffer.used_bytes == 10);            // hello-back
           BOOST_REQUIRE(_recv_buffer.to_string() == "hello-back"); // hello-back
         }
 
@@ -194,12 +193,11 @@ BOOST_AUTO_TEST_CASE(read_write) {
         p_mut_data.from_string(_reply);
         return boost::system::errc::success;
       },
-      [](const std::string &p_conn_id) {
-        std::cout << "timeout for connection: " << p_conn_id << std::endl;
-      },
-      [&](const std::string &p_conn_id, const std::exception &p_excp) {
+      [&](const std::string &p_conn_id,
+          const boost::system::system_error &p_error) {
         std::cout << "error happened for connection: " << p_conn_id
-                  << " because of " << p_excp.what() << std::endl;
+                  << " because of " << p_error.what()
+                  << " error code: " << p_error.code() << std::endl;
         _io.stop();
       });
 

@@ -16,7 +16,7 @@ if (WOLF_SYSTEM_HTTP1_WS)
     )
 endif()
 
-if (WOLF_TESTS OR WOLF_SYSTEM_SOCKET)
+if (WOLF_TEST OR WOLF_SYSTEM_SOCKET)
     list(APPEND BOOST_MASTER_LIBS   
         boost_algorithm
         boost_asio
@@ -51,7 +51,7 @@ if (WOLF_SYSTEM_SIG_SLOT)
     )
 endif()
 
-if (WOLF_TESTS OR WOLF_SYSTEM_SOCKET OR WOLF_SYSTEM_STACKTRACE)
+if (WOLF_TEST OR WOLF_SYSTEM_SOCKET OR WOLF_SYSTEM_STACKTRACE)
     list(APPEND BOOST_MASTER_LIBS   
         boost_align
         boost_array
@@ -60,7 +60,7 @@ if (WOLF_TESTS OR WOLF_SYSTEM_SOCKET OR WOLF_SYSTEM_STACKTRACE)
     )
 endif()
 
-if (WOLF_TESTS OR WOLF_SYSTEM_SOCKET OR WOLF_SYSTEM_SIG_SLOT)
+if (WOLF_TEST OR WOLF_SYSTEM_SOCKET OR WOLF_SYSTEM_SIG_SLOT)
     list(APPEND BOOST_MASTER_LIBS   
         boost_bind
         boost_concept_check
@@ -81,7 +81,7 @@ if (WOLF_TESTS OR WOLF_SYSTEM_SOCKET OR WOLF_SYSTEM_SIG_SLOT)
     )
 endif()
 
-if (WOLF_TESTS OR WOLF_SYSTEM_SOCKET OR WOLF_SYSTEM_SIG_SLOT OR WOLF_SYSTEM_STACKTRACE)
+if (WOLF_TEST OR WOLF_SYSTEM_SOCKET OR WOLF_SYSTEM_SIG_SLOT OR WOLF_SYSTEM_STACKTRACE)
     list(APPEND BOOST_MASTER_LIBS
         boost_assert
         boost_config
@@ -161,7 +161,7 @@ if (WOLF_SYSTEM_STACKTRACE)
     endif() 
 endif()
 
-if (WOLF_TESTS)
+if (WOLF_TEST)
     message("fetching https://github.com/boostorg/test.git")
     FetchContent_Declare(
         boost_test

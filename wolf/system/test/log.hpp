@@ -3,7 +3,7 @@
     https://github.com/WolfEngine/WolfEngine
 */
 
-#if defined(WOLF_TESTS) && defined(WOLF_SYSTEM_LOG)
+#if defined(WOLF_TEST) && defined(WOLF_SYSTEM_LOG)
 
 #pragma once
 

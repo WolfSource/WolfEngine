@@ -3,7 +3,7 @@
     https://github.com/WolfEngine/WolfEngine
 */
 
-#if defined(WOLF_TESTS) && defined(WOLF_MEDIA_FFMPEG) && defined(WOLF_MEDIA_STB)
+#if defined(WOLF_TEST) && defined(WOLF_MEDIA_FFMPEG) && defined(WOLF_MEDIA_STB)
 
 #pragma once
 

@@ -5,7 +5,7 @@
 
 #pragma once
 
-#if defined(WOLF_TESTS) && defined(WOLF_SYSYEM_SIG_SLOT)
+#if defined(WOLF_TEST) && defined(WOLF_SYSYEM_SIG_SLOT)
 
 #include <wolf.hpp>
 #include <system/w_leak_detector.hpp>

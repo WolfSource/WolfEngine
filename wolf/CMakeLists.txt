@@ -89,7 +89,7 @@ option(WOLF_SYSTEM_GAMEPAD "Enable gamepad input handling" OFF)
 #option(WOLF_SYSTEM_ZLIB "Enable zlib for compression" OFF)
 
 #option(WOLF_ENABLE_LTO "Enable cross language linking time optimization" OFF)
-option(WOLF_TESTS "Enable tests" ON)
+option(WOLF_TEST "Enable tests" ON)
 if (NOT MSVC)
     option(WOLF_ENABLE_ASAN "Enable ASAN" OFF)
 endif()
@@ -294,7 +294,7 @@ if (WOLF_ENABLE_ASAN)
 endif()
 
 # build tests
-if (WOLF_TESTS)
+if (WOLF_TEST)
     add_executable(${TEST_PROJECT_NAME}
         tests.cpp
     )
