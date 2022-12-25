@@ -40,7 +40,7 @@ static boost::asio::awaitable<void> on_handle_session(
     steady_clock::duration p_timeout,
     const w_session_on_data_callback &p_on_data_callback,
     const w_session_on_error_callback &p_on_error_callback) noexcept {
-  w_buffer _mut_buffer = {};
+  w_buffer _buffer = {};
 
 #ifdef __clang__
 #pragma unroll
@@ -49,16 +49,16 @@ static boost::asio::awaitable<void> on_handle_session(
     p_deadline = steady_clock::now() + p_timeout;
 
     try {
-      _mut_buffer.used_bytes = co_await p_socket.async_receive(
-          boost::asio::buffer(_mut_buffer.buf), boost::asio::use_awaitable);
+      _buffer.used_bytes = co_await p_socket.async_receive(
+          boost::asio::buffer(_buffer.buf), boost::asio::use_awaitable);
 
       // call callback
-      const auto _res = p_on_data_callback(p_conn_id, _mut_buffer);
+      const auto _res = p_on_data_callback(p_conn_id, _buffer);
       if (_res == boost::system::errc::connection_aborted) {
         break;
       }
       co_await p_socket.async_send(
-          boost::asio::buffer(_mut_buffer.buf, _mut_buffer.used_bytes),
+          boost::asio::buffer(_buffer.buf, _buffer.used_bytes),
           boost::asio::use_awaitable);
     } catch (const boost::system::system_error &p_ex) {
       p_on_error_callback(p_conn_id, p_ex);

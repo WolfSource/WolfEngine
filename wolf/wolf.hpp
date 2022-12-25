@@ -74,7 +74,9 @@ struct w_buffer {
     std::copy(p_str.cbegin(), p_str.cbegin() + this->used_bytes, buf.begin());
   }
 
-  std::string to_string() { return std::string(this->buf.data(), this->used_bytes); }
+  std::string to_string() {
+    return std::string(this->buf.data(), this->used_bytes);
+  }
 
   std::array<char, W_MAX_BUFFER_SIZE> buf = {0};
   size_t used_bytes = 0;

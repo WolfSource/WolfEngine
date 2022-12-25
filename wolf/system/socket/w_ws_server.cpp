@@ -7,15 +7,12 @@ using w_session_ws_on_data_callback = wolf::system::socket::w_session_ws_on_data
 using w_session_on_error_callback = wolf::system::socket::w_session_on_error_callback;
 using w_socket_options = wolf::system::socket::w_socket_options;
 using io_context = boost::asio::io_context;
+using w_ws_stream = wolf::system::socket::w_ws_stream;
 using tcp = boost::asio::ip::tcp;
-
-using ws_stream = boost::beast::websocket::stream<typename boost::beast::tcp_stream::rebind_executor<
-    typename boost::asio::use_awaitable_t<>::executor_with_default<
-            boost::asio::any_io_executor>>::other>;
 
 static boost::asio::awaitable<void>
 s_session(_In_ const boost::asio::io_context &p_io_context,
-          _In_ ws_stream &&p_ws,
+          _In_ w_ws_stream &&p_ws,
           _In_ w_session_ws_on_data_callback p_on_data_callback) {
 
   // accept the websocket handshake
@@ -70,7 +67,7 @@ s_listen(_In_ const boost::asio::io_context &p_io_context,
 #pragma unroll
 #endif
   while (!p_io_context.stopped()) {
-    auto _ws = ws_stream(co_await _acceptor.async_accept());
+    auto _ws = w_ws_stream(co_await _acceptor.async_accept());
     // set timeout settings for the websocket
     _ws.set_option(p_timeout);
     // set a decorator to change the Server of the handshake

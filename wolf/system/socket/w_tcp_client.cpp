@@ -11,10 +11,9 @@ using namespace boost::asio::experimental::awaitable_operators;
 using w_tcp_client = wolf::system::socket::w_tcp_client;
 using tcp = boost::asio::ip::tcp;
 
-w_tcp_client::w_tcp_client(boost::asio::io_context &p_io_context) noexcept {
-  this->_resolver = std::make_unique<tcp::resolver>(p_io_context);
-  this->_socket = std::make_unique<tcp::socket>(p_io_context);
-}
+w_tcp_client::w_tcp_client(boost::asio::io_context &p_io_context) noexcept
+    : _resolver(std::make_unique<tcp::resolver>(p_io_context)),
+      _socket(std::make_unique<tcp::socket>(p_io_context)) {}
 
 w_tcp_client::~w_tcp_client() noexcept {
   try {
@@ -71,26 +70,25 @@ w_tcp_client::async_connect(_In_ const tcp::endpoint &p_endpoint,
 }
 
 boost::asio::awaitable<size_t>
-w_tcp_client::async_write(_In_ w_buffer &p_buffer) {
+w_tcp_client::async_write(_In_ const w_buffer &p_buffer) {
   const gsl::not_null<tcp::socket *> _socket_nn(this->_socket.get());
 
   return _socket_nn->async_send(
-      boost::asio::buffer(p_buffer.buf.data(), p_buffer.used_bytes),
+      boost::asio::buffer(p_buffer.buf, p_buffer.used_bytes),
       boost::asio::use_awaitable);
 }
 
 boost::asio::awaitable<size_t>
-w_tcp_client::async_read(_Inout_ w_buffer &p_buffer) {
+w_tcp_client::async_read(_Inout_ w_buffer &p_mut_buffer) {
   const gsl::not_null<tcp::socket *> _socket_nn(this->_socket.get());
 
-  return _socket_nn->async_receive(boost::asio::buffer(p_buffer.buf),
+  return _socket_nn->async_receive(boost::asio::buffer(p_mut_buffer.buf),
                                    boost::asio::use_awaitable);
 }
 
 bool w_tcp_client::get_is_open() const {
-    const gsl::not_null<tcp::socket *> _socket_nn(this->_socket.get());
-
-    return _socket_nn->is_open();
+  const gsl::not_null<tcp::socket *> _socket_nn(this->_socket.get());
+  return _socket_nn->is_open();
 }
 
 #endif

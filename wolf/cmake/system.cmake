@@ -244,6 +244,8 @@ if (WOLF_SYSTEM_SOCKET)
         "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_tcp_server.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_tcp_server.hpp"
 if (WOLF_SYSTEM_HTTP1_WS)
+        "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_ws_client.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_ws_client.hpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_ws_server.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_ws_server.hpp"
 endif()

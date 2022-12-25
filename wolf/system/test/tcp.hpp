@@ -7,12 +7,12 @@
 
 #pragma once
 
-#include <wolf.hpp>
-#include <system/w_leak_detector.hpp>
 #include <boost/test/included/unit_test.hpp>
+#include <system/w_leak_detector.hpp>
+#include <wolf.hpp>
 
-#include <system/socket/w_tcp_server.hpp>
 #include <system/socket/w_tcp_client.hpp>
+#include <system/socket/w_tcp_server.hpp>
 #include <system/w_timer.hpp>
 
 BOOST_AUTO_TEST_CASE(tcp_server_timeout) {

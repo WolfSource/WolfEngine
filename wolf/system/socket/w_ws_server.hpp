@@ -1,5 +1,7 @@
 #if defined(WOLF_SYSTEM_HTTP1_WS) && defined(WOLF_SYSTEM_SOCKET)
 
+#pragma once
+
 #include <wolf.hpp>
 #include "w_socket_options.hpp"
 
