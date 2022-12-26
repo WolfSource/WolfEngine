@@ -19,22 +19,23 @@ BOOST_AUTO_TEST_CASE(ws_server_timeout) {
   using tcp = boost::asio::ip::tcp;
   using w_ws_server = wolf::system::socket::w_ws_server;
   using w_socket_options = wolf::system::socket::w_socket_options;
+  using namespace std::chrono_literals;
 
   auto _io = boost::asio::io_context();
   w_socket_options _opts = {};
   tcp::endpoint _endpoint = {tcp::v4(), 8881};
 
   auto t1 = std::jthread([&]() {
-    // stop server
-    std::this_thread::sleep_for(std::chrono::seconds(20));
+    // stop websocket server after 10
+    std::this_thread::sleep_for(10s);
     _io.stop();
   });
 
   auto timeout =
       boost::beast::websocket::stream_base::timeout{// handshake_timeout
-                                                    std::chrono::seconds(5),
+                                                    5s,
                                                     // idle_timeout
-                                                    std::chrono::seconds(5),
+                                                    5s,
                                                     // keep_alive_pings
                                                     false};
 
