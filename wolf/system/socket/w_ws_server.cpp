@@ -13,22 +13,43 @@ using tcp = boost::asio::ip::tcp;
 static boost::asio::awaitable<void>
 s_session(_In_ const boost::asio::io_context &p_io_context,
           _In_ w_ws_stream &&p_ws,
+          _In_ const std::string &p_conn_id,
           _In_ w_session_ws_on_data_callback p_on_data_callback) {
 
   // accept the websocket handshake
   co_await p_ws.async_accept();
 
+  w_buffer _mut_buffer = {};
+  // incoming message
+  boost::beast::flat_buffer _buffer;
+
   while (!p_io_context.stopped()) {
     try {
       // This buffer will hold the incoming message
-      boost::beast::flat_buffer _ibuffer;
-
+      
       // Read a message
-      co_await p_ws.async_read(_ibuffer);
+      _mut_buffer.used_bytes = co_await p_ws.async_read(_buffer);
+
+      // an extra copy just for having stable ABI
+      const auto _size = std::min(_mut_buffer.buf.size(), _mut_buffer.used_bytes);
+      std::memcpy(_mut_buffer.buf.data(),
+                  static_cast<char const *>(_buffer.cdata().data()), _size);
+
+      // call callback
+      auto _is_binary = p_ws.got_binary();
+      const auto _code = p_on_data_callback(p_conn_id, _mut_buffer, _is_binary);
+      if (_code != boost::beast::websocket::close_code::none) {
+        break;
+      }
 
       // Echo the message back
-      p_ws.text(p_ws.got_text());
-      co_await p_ws.async_write(_ibuffer.data());
+      if (_is_binary) {
+        p_ws.binary(true);
+      } else {
+        p_ws.text(true);
+      }
+      co_await p_ws.async_write(
+          boost::asio::buffer(_mut_buffer.buf, _mut_buffer.used_bytes));
 
     } catch (const boost::system::system_error &p_exc) {
       if (p_exc.code() != boost::beast::websocket::error::closed) {
@@ -40,8 +61,8 @@ s_session(_In_ const boost::asio::io_context &p_io_context,
 
 static boost::asio::awaitable<void>
 s_listen(_In_ const boost::asio::io_context &p_io_context,
-         _In_ tcp::endpoint &p_endpoint,
-         _In_ boost::beast::websocket::stream_base::timeout &p_timeout,
+         _In_ const tcp::endpoint &p_endpoint,
+         _In_ const boost::beast::websocket::stream_base::timeout &p_timeout,
          _In_ w_socket_options &p_socket_options,
          _In_ w_session_ws_on_data_callback p_on_data_callback,
          _In_ w_session_on_error_callback p_on_error_callback) noexcept {
@@ -80,7 +101,7 @@ s_listen(_In_ const boost::asio::io_context &p_io_context,
 
     boost::asio::co_spawn(
         _acceptor.get_executor(),
-        s_session(p_io_context, std::move(_ws), p_on_data_callback),
+        s_session(p_io_context, std::move(_ws), _conn_id, p_on_data_callback),
         [&](const std::exception_ptr p_ex_ptr) {
           try {
             std::rethrow_exception(p_ex_ptr);
@@ -93,8 +114,8 @@ s_listen(_In_ const boost::asio::io_context &p_io_context,
 
 boost::leaf::result<int> w_ws_server::run(
     _In_ boost::asio::io_context &p_io_context,
-    _In_ boost::asio::ip::tcp::endpoint &&p_endpoint,
-    _In_ boost::beast::websocket::stream_base::timeout &p_timeout,
+    _In_ const boost::asio::ip::tcp::endpoint &&p_endpoint,
+    _In_ const boost::beast::websocket::stream_base::timeout &p_timeout,
     _In_ w_socket_options &&p_socket_options,
     _In_ w_session_ws_on_data_callback p_on_data_callback,
     _In_ w_session_on_error_callback p_on_error_callback) noexcept {

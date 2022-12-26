@@ -27,7 +27,7 @@ BOOST_AUTO_TEST_CASE(global) {
 #include <system/test/trace.hpp>
 #include <system/test/tcp.hpp>
 #include <system/test/ws.hpp>
-//#include <system/test/gamepad.hpp>
+#include <system/test/gamepad.hpp>
 
 #pragma endregion
 

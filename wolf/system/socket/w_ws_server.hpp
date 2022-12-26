@@ -20,8 +20,8 @@ public:
    */
   W_API static boost::leaf::result<int>
   run(_In_ boost::asio::io_context &p_io_context,
-      _In_ boost::asio::ip::tcp::endpoint &&p_endpoint,
-      _In_ boost::beast::websocket::stream_base::timeout &p_timeout,
+      _In_ const boost::asio::ip::tcp::endpoint &&p_endpoint,
+      _In_ const boost::beast::websocket::stream_base::timeout &p_timeout,
       _In_ w_socket_options &&p_socket_options,
       _In_ w_session_ws_on_data_callback p_on_data_callback,
       _In_ w_session_on_error_callback p_on_error_callback) noexcept;

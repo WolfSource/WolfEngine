@@ -75,10 +75,25 @@ boost::asio::awaitable<void> w_ws_client::async_connect(
 }
 
 boost::asio::awaitable<size_t>
-w_ws_client::async_write(_In_ const boost::asio::const_buffer &p_buffer,
-                         _In_ bool p_is_binary) {
-  this->_ws->binary(p_is_binary);
-  co_await this->_ws->async_write(p_buffer);
+w_ws_client::async_write(_In_ const w_buffer &p_buffer, _In_ bool p_is_binary) {
+  if (p_is_binary) {
+    this->_ws->binary(true);
+  } else {
+    this->_ws->text(true);
+  }
+  co_await this->_ws->async_write(
+      boost::asio::const_buffer(p_buffer.buf.data(), p_buffer.used_bytes));
+}
+
+boost::asio::awaitable<size_t>
+w_ws_client::async_read(_Inout_ w_buffer &p_mut_buffer) {
+  boost::beast::flat_buffer _buffer = {};
+  co_await this->_ws->async_read(_buffer);
+
+  // an extra copy just for having stable ABI
+  const auto _size = std::min(_buffer.cdata().size(), p_mut_buffer.buf.size());
+  std::memcpy(p_mut_buffer.buf.data(),
+              static_cast<char const *>(_buffer.cdata().data()), _size);
 }
 
 boost::asio::awaitable<size_t>

@@ -67,25 +67,23 @@ struct w_socket_options {
 };
 
 #ifdef WOLF_SYSTEM_HTTP1_WS
-
 using w_ws_stream = boost::beast::websocket::stream<
     typename boost::beast::tcp_stream::rebind_executor<
         typename boost::asio::use_awaitable_t<>::executor_with_default<
             boost::asio::any_io_executor>>::other>;
 
-typedef std::function<boost::system::errc::errc_t(
-    _In_ const std::string &p_conn_id,
-    _In_ const boost::beast::flat_buffer &p_i_data,
-    _Inout_ boost::beast::flat_buffer &p_o_mut_data)>
+typedef std::function<boost::beast::websocket::close_code(
+    _In_ const std::string &p_conn_id, _Inout_ w_buffer &p_mut_data,
+    _Inout_ bool &p_is_binary)>
     w_session_ws_on_data_callback;
 #endif
 
 typedef std::function<boost::system::errc::errc_t(
-    const std::string &p_conn_id, w_buffer &p_mut_data)>
+    _In_ const std::string &p_conn_id, _Inout_ w_buffer &p_mut_data)>
     w_session_on_data_callback;
 
-typedef std::function<void(const std::string &p_conn_id,
-                           const boost::system::system_error &p_error)>
+typedef std::function<void(_In_ const std::string &p_conn_id,
+                           _In_ const boost::system::system_error &p_error)>
     w_session_on_error_callback;
 
 } // namespace wolf::system::socket

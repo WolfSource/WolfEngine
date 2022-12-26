@@ -36,7 +36,8 @@ BOOST_AUTO_TEST_CASE(tcp_server_timeout) {
   w_tcp_server::run(
       _io, std::move(_endpoint), std::move(timeout), std::move(_opts),
       [](const std::string &p_conn_id, w_buffer &p_mut_data) -> auto{
-        std::cout << "tcp server just got: " << p_mut_data.used_bytes
+        std::cout << "tcp server just got: /'" << p_mut_data.to_string() << "/'"
+                  << " and " << p_mut_data.used_bytes
                   << " bytes from connection id: " << p_conn_id << std::endl;
         return boost::system::errc::connection_aborted;
       },
@@ -47,8 +48,6 @@ BOOST_AUTO_TEST_CASE(tcp_server_timeout) {
                   << std::endl;
       });
   _io.run();
-
-  BOOST_REQUIRE(true);
 }
 
 BOOST_AUTO_TEST_CASE(tcp_client_timeout) {
@@ -67,19 +66,23 @@ BOOST_AUTO_TEST_CASE(tcp_client_timeout) {
   boost::asio::co_spawn(
       _io,
       [&]() -> boost::asio::awaitable<void> {
-        auto client = w_tcp_client(_io);
+        // create a tcp client
+        auto _client = w_tcp_client(_io);
+        // create a timer with 1 nanosecond interval
         auto _timer = w_timer(_io);
         _timer.expires_after(std::chrono::nanoseconds(1));
 
+        // run a coroutine
         auto _ret = co_await (_timer.async_wait(boost::asio::use_awaitable) ||
-                              client.async_resolve(_endpoint));
+                              _client.async_resolve(_endpoint));
         // expect timeout
         BOOST_REQUIRE(_ret.index() == 0);
 
+        // run timer with 5 seconds interval
         _timer.cancel();
         _timer.expires_after(std::chrono::seconds(5));
         _ret = co_await (_timer.async_wait(boost::asio::use_awaitable) ||
-                         client.async_resolve("google.com", 443));
+                         _client.async_resolve("google.com", 443));
         // expect resolving
         BOOST_REQUIRE(_ret.index() == 1);
 
@@ -90,8 +93,6 @@ BOOST_AUTO_TEST_CASE(tcp_client_timeout) {
       boost::asio::detached);
 
   _io.run();
-
-  BOOST_REQUIRE(true);
 }
 
 BOOST_AUTO_TEST_CASE(tcp_read_write) {
@@ -107,7 +108,7 @@ BOOST_AUTO_TEST_CASE(tcp_read_write) {
   auto _io = boost::asio::io_context();
   w_socket_options _opts = {};
   tcp::endpoint _endpoint = {tcp::v4(), 8080};
-  const auto timeout = 10s;
+  const auto _timeout = 10s;
 
   boost::asio::co_spawn(
       _io,
@@ -116,13 +117,13 @@ BOOST_AUTO_TEST_CASE(tcp_read_write) {
         std::this_thread::sleep_for(3s);
         // start connecting to the server
         w_socket_options _opts = {};
-        auto client = w_tcp_client(_io);
+        auto _client = w_tcp_client(_io);
         auto _timer = w_timer(_io);
 
-        _timer.expires_after(timeout);
+        _timer.expires_after(_timeout);
         auto _resolve_res =
             co_await (_timer.async_wait(boost::asio::use_awaitable) ||
-                      client.async_resolve("127.0.0.1", 8080));
+                      _client.async_resolve("127.0.0.1", 8080));
         // expect resolve
         BOOST_REQUIRE(_resolve_res.index() == 1);
 
@@ -133,7 +134,7 @@ BOOST_AUTO_TEST_CASE(tcp_read_write) {
 
         auto _conn_res =
             co_await (_timer.async_wait(boost::asio::use_awaitable) ||
-                      client.async_connect(_endpoint, _opts));
+                      _client.async_connect(_endpoint, _opts));
         // expect the connection
         BOOST_REQUIRE(_conn_res.index() == 1);
 
@@ -142,13 +143,13 @@ BOOST_AUTO_TEST_CASE(tcp_read_write) {
 
         for (size_t i = 0; i < 5; i++) {
           auto _res = co_await (_timer.async_wait(boost::asio::use_awaitable) ||
-                                client.async_write(_send_buffer));
+                                _client.async_write(_send_buffer));
           // expect the connection
           BOOST_REQUIRE(_res.index() == 1);
           BOOST_REQUIRE(std::get<1>(_res) == 5);
 
           _res = co_await (_timer.async_wait(boost::asio::use_awaitable) ||
-                           client.async_read(_recv_buffer));
+                           _client.async_read(_recv_buffer));
           // expect the connection
           BOOST_REQUIRE(_res.index() == 1);
           _recv_buffer.used_bytes = std::get<1>(_res);
@@ -159,7 +160,7 @@ BOOST_AUTO_TEST_CASE(tcp_read_write) {
 
         _send_buffer.from_string("exit");
         auto _res = co_await (_timer.async_wait(boost::asio::use_awaitable) ||
-                              client.async_write(_send_buffer));
+                              _client.async_write(_send_buffer));
         // expect the connection
         BOOST_REQUIRE(_res.index() == 1);
         BOOST_REQUIRE(std::get<1>(_res) == 4);
@@ -173,7 +174,7 @@ BOOST_AUTO_TEST_CASE(tcp_read_write) {
   // create a tcp server with 3 seconds timeout and wait for exit
   // command from client
   w_tcp_server::run(
-      _io, std::move(_endpoint), timeout, std::move(_opts),
+      _io, std::move(_endpoint), _timeout, std::move(_opts),
       [](_In_ const std::string &p_conn_id,
          _Inout_ w_buffer &p_mut_data) -> auto{
         // close on overflow
@@ -202,8 +203,6 @@ BOOST_AUTO_TEST_CASE(tcp_read_write) {
       });
 
   _io.run();
-
-  BOOST_REQUIRE(true);
 }
 
 #endif
