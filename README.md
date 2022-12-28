@@ -74,7 +74,7 @@ cmake --build --preset default-build-android
 | RTSP | :memo: | :memo: | :memo: | :memo: | :memo: | :x: |
 | SRT | :memo: | :memo: | :memo: | :memo: | :memo: | :x: |
 | webRTC | :memo: | :memo: | :memo: | :memo: | :memo: | :memo: |
-| WS | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :memo: |
+| WebSocket | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :memo: |
 
 
 ### Supported platforms and APIs for system module
@@ -83,7 +83,7 @@ cmake --build --preset default-build-android
 |:-----------:|:-----------:|:--------------------------:|:--------------:|:-------------:|:--------------:|:-------------:|
 | Fiber | :white_check_mark: | :memo: | :memo: | :x: | :x: | :x: |
 | Gamepad | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :white_check_mark: |
-| Gamepad Simulator | :construction: | :memo: | :memo: | :x: | :x: | :x: |
+| Virtual Gamepad | :white_check_mark: | :memo: | :memo: | :x: | :x: | :x: |
 | Log  | :white_check_mark: | :construction: | :construction: | :construction: | :construction: | :construction: | 
 | LuaJit  | :memo: | :memo: | :memo: | :memo: | :memo: | :x: |
 | LZ4  | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :x: |
