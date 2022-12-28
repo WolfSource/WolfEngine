@@ -57,8 +57,8 @@ public:
    * @returns a number of the written bytes
    */
   W_API
-  boost::asio::awaitable<size_t>
-  async_write(_In_ const w_buffer &p_buffer, _In_ bool p_is_binary);
+  boost::asio::awaitable<size_t> async_write(_In_ const w_buffer &p_buffer,
+                                             _In_ bool p_is_binary);
 
   /*
    * read from the websocket into the buffer
@@ -74,7 +74,8 @@ public:
    * @returns a coroutine with number of read bytes
    */
   W_API
-  boost::asio::awaitable<size_t> async_read(_Inout_ boost::beast::flat_buffer &p_mut_buffer);
+  boost::asio::awaitable<size_t>
+  async_read(_Inout_ boost::beast::flat_buffer &p_mut_buffer);
 
   /*
    * close the websocket asynchronously
