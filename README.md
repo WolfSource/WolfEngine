@@ -31,7 +31,7 @@ To list build presets: `cmake --build --list-presets`
 In order to configure, build and test using CMakePresets you must have set the following environment variables:
  - NDK (e.g. C:\Android\android-ndk-r25b)
  
-In terminal/command line use presets:
+In terminal/command line use the following presets:
 ```
 cmake . --preset android-arm64-release
 cmake --build --preset default-build-android
