@@ -36,20 +36,20 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Configure CMake
-        run: cmake -B ${{ env.build }}
-        
       - name: Setup OpenCppCoverage and add to PATh
         id: setup_opencppcoverage
         run: |
           choco install OpenCppCoverage -y
           echo "C:\Program Files\OpenCppCoverage" >> $env:GITHUB_PATH
+          
+      - name: Configure CMake
+        run: cmake -B ${{ env.build }}
+        
+      # Build is not required for MSVC Code Analysis and will be used for Codecov
+      - name: Build CMake
+        run: cmake --build ${{ env.build }
 
-      # Build is not required unless generated source files are used
-      # - name: Build CMake
-      #   run: cmake --build ${{ env.build }}
-
-      - name: Initialize MSVC Code Analysis
+      - name: Run MSVC Code Analysis
         uses: microsoft/msvc-code-analysis-action@04825f6d9e00f87422d6bf04e1a38b1f3ed60d99
         # Provide a unique ID to access the sarif output path
         id: run-analysis
@@ -58,7 +58,7 @@ jobs:
           # Ruleset file that will determine what checks will be run
           ruleset: NativeRecommendedRules.ruleset
 
-      - name: Generate Report
+      - name: Generate Codecov Report
         id: generate_test_report
         shell: cmd
         run: OpenCppCoverage.exe --continue_after_cpp_exception --export_type cobertura:WolfCov.xml --sources %CD% --excluded_sources %CD%\build\_deps -- %CD%\build\wolf\Debug\wolf_tests.exe
