@@ -38,6 +38,12 @@ jobs:
 
       - name: Configure CMake
         run: cmake -B ${{ env.build }}
+        
+      - name: Setup OpenCppCoverage and add to PATh
+        id: setup_opencppcoverage
+        run: |
+          choco install OpenCppCoverage -y
+          echo "C:\Program Files\OpenCppCoverage" >> $env:GITHUB_PATH
 
       # Build is not required unless generated source files are used
       # - name: Build CMake
@@ -52,6 +58,17 @@ jobs:
           # Ruleset file that will determine what checks will be run
           ruleset: NativeRecommendedRules.ruleset
 
+      - name: Generate Report
+        id: generate_test_report
+        shell: cmd
+        run: OpenCppCoverage.exe --continue_after_cpp_exception --export_type cobertura:WolfCov.xml --sources %CD% --excluded_sources %CD%\build\_deps -- %CD%\build\wolf\Debug\wolf_tests.exe
+      - name: Upload Report to Codecov
+        uses: codecov/codecov-action@v2
+        with:
+          files: ./WolfCov.xml
+          fail_ci_if_error: true
+          functionalities: fix
+          
       # Upload SARIF file to GitHub Code Scanning Alerts
       #- name: Upload SARIF to GitHub
       #  uses: github/codeql-action/upload-sarif@v2
