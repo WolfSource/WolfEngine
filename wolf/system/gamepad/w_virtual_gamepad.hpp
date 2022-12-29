@@ -2,7 +2,7 @@
     Project: Wolf Engine. Copyright © 2014-2022 Pooya Eimandar
     https://github.com/WolfEngine/WolfEngine
 */
-#ifndef EMSCRIPTEN
+#if defined(WOLF_SYSTEM_VIRTUAL_GAMEPAD) && !defined(EMSCRIPTEN)
 
 #pragma once
 
@@ -82,4 +82,4 @@ public:
 };
 } // namespace wolf::system::gamepad
 
-#endif // EMSCRIPTEN
+#endif // defined(WOLF_SYSTEM_VIRTUAL_GAMEPAD) && !defined(EMSCRIPTEN)

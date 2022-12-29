@@ -3,7 +3,7 @@
     https://github.com/WolfEngine/WolfEngine
 */
 
-#ifdef WOLF_TESTS
+#if defined(WOLF_TEST)
 
 #pragma once
 
@@ -11,8 +11,10 @@
 #include <system/w_leak_detector.hpp>
 #include <boost/test/included/unit_test.hpp>
 
-BOOST_AUTO_TEST_CASE(w_trace_handle_all) {
+BOOST_AUTO_TEST_CASE(trace_test) {
   const wolf::system::w_leak_detector _detector = {};
+
+  std::cout << "trace_test is running" << std::endl;
 
   const auto _function_1 = []() noexcept -> boost::leaf::result<void> {
     return W_FAILURE(std::errc::bad_message, "error from function 1");
@@ -38,6 +40,8 @@ BOOST_AUTO_TEST_CASE(w_trace_handle_all) {
         std::cout << "caught an error!" << std::endl;
         BOOST_ERROR(false);
       });
+
+  std::cout << "trace_test just done" << std::endl;
 }
 
 #endif // WOLF_TESTS

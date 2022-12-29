@@ -15,8 +15,10 @@
 #include <system/socket/w_ws_client.hpp>
 #include <system/w_timer.hpp>
 
-BOOST_AUTO_TEST_CASE(ws_server_timeout) {
+BOOST_AUTO_TEST_CASE(ws_server_timeout_test) {
   const wolf::system::w_leak_detector _detector = {};
+
+  std::cout << "ws_server_timeout_test is running" << std::endl;
 
   using tcp = boost::asio::ip::tcp;
   using w_ws_server = wolf::system::socket::w_ws_server;
@@ -57,10 +59,14 @@ BOOST_AUTO_TEST_CASE(ws_server_timeout) {
                   << " error code: " << p_error.code() << std::endl;
       });
   _io.run();
+
+  std::cout << "ws_server_timeout_test just done" << std::endl;
 }
 
-BOOST_AUTO_TEST_CASE(ws_client_timeout) {
+BOOST_AUTO_TEST_CASE(ws_client_timeout_test) {
   const wolf::system::w_leak_detector _detector = {};
+
+  std::cout << "ws_client_timeout_test is running" << std::endl;
 
   using tcp = boost::asio::ip::tcp;
   using w_ws_client = wolf::system::socket::w_ws_client;
@@ -94,6 +100,8 @@ BOOST_AUTO_TEST_CASE(ws_client_timeout) {
       boost::asio::detached);
 
   _io.run();
+
+  std::cout << "ws_client_timeout_test just done" << std::endl;
 }
 
 //BOOST_AUTO_TEST_CASE(ws_read_write) {

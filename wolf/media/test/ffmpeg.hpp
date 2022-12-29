@@ -16,6 +16,8 @@
 BOOST_AUTO_TEST_CASE(av1_encode_decode_test) {
   const wolf::system::w_leak_detector _detector = {};
 
+  std::cout << "av1_encode_decode_test is running" << std::endl;
+
   using w_av_frame = wolf::media::ffmpeg::w_av_frame;
   using w_av_config = wolf::media::ffmpeg::w_av_config;
   using w_ffmpeg = wolf::media::ffmpeg::w_ffmpeg;
@@ -99,10 +101,14 @@ BOOST_AUTO_TEST_CASE(av1_encode_decode_test) {
         std::cout << "got an error!" << std::endl;
         BOOST_ERROR(false);
       });
+
+  std::cout << "av1_encode_decode_test just done" << std::endl;
 }
 
 BOOST_AUTO_TEST_CASE(vp9_encode_decode_test) {
   const wolf::system::w_leak_detector _detector = {};
+
+  std::cout << "vp9_encode_decode_test is running" << std::endl;
 
   using w_av_frame = wolf::media::ffmpeg::w_av_frame;
   using w_av_config = wolf::media::ffmpeg::w_av_config;
@@ -184,6 +190,8 @@ BOOST_AUTO_TEST_CASE(vp9_encode_decode_test) {
         std::cout << "got an error!" << std::endl;
         BOOST_ERROR(false);
       });
+
+  std::cout << "vp9_encode_decode_test just done" << std::endl;
 }
 
 #endif

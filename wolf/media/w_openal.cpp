@@ -128,7 +128,7 @@ w_openal_config w_openal::get_config() const { return this->_config; }
 boost::leaf::result<int> w_openal::init() {
 
   auto _ret = S_OK;
-  defer _(nullptr, [&](...) {
+  DEFER{
     if (_ret != S_OK) {
       _release();
     }

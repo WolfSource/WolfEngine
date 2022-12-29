@@ -1,3 +1,5 @@
+#if defined(WOLF_SYSTEM_VIRTUAL_GAMEPAD) && !defined(EMSCRIPTEN)
+
 #include "w_virtual_gamepad.hpp"
 
 using w_virtual_gamepad = wolf::system::gamepad::w_virtual_gamepad;
@@ -189,6 +191,8 @@ void w_virtual_gamepad::_release() noexcept {
     this->_driver_handler = nullptr;
   }
 }
+
+#endif // #if defined(WOLF_SYSTEM_VIRTUAL_GAMEPAD) && !defined(EMSCRIPTEN)
 
 
 

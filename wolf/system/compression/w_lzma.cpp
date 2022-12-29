@@ -279,8 +279,8 @@ w_lzma::decompress_lzma2(_In_ gsl::span<const std::byte> p_src) {
                          "Lzma2Dec_DecodeToBuf failed");
       }
 
-      _in_pos += _src_len;
-      _out_pos += _dest_len;
+      _in_pos += gsl::narrow_cast<uint32_t>(_src_len);
+      _out_pos += gsl::narrow_cast<uint32_t>(_dest_len);
       if (_status == LZMA_STATUS_FINISHED_WITH_MARK) {
         break;
       }

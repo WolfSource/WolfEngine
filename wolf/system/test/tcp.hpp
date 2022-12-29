@@ -15,8 +15,10 @@
 #include <system/socket/w_tcp_server.hpp>
 #include <system/w_timer.hpp>
 
-BOOST_AUTO_TEST_CASE(tcp_server_timeout) {
+BOOST_AUTO_TEST_CASE(tcp_server_timeout_test) {
   const wolf::system::w_leak_detector _detector = {};
+
+  std::cout << "tcp_server_timeout_test is running" << std::endl;
 
   using tcp = boost::asio::ip::tcp;
   using w_tcp_server = wolf::system::socket::w_tcp_server;
@@ -48,10 +50,14 @@ BOOST_AUTO_TEST_CASE(tcp_server_timeout) {
                   << std::endl;
       });
   _io.run();
+
+  std::cout << "tcp_server_timeout_test just done" << std::endl;
 }
 
-BOOST_AUTO_TEST_CASE(tcp_client_timeout) {
+BOOST_AUTO_TEST_CASE(tcp_client_timeout_test) {
   const wolf::system::w_leak_detector _detector = {};
+
+  std::cout << "tcp_client_timeout_test is running" << std::endl;
 
   using tcp = boost::asio::ip::tcp;
   using w_tcp_client = wolf::system::socket::w_tcp_client;
@@ -93,10 +99,14 @@ BOOST_AUTO_TEST_CASE(tcp_client_timeout) {
       boost::asio::detached);
 
   _io.run();
+
+  std::cout << "tcp_client_timeout_test just done" << std::endl;
 }
 
-BOOST_AUTO_TEST_CASE(tcp_read_write) {
+BOOST_AUTO_TEST_CASE(tcp_read_write_test) {
   const wolf::system::w_leak_detector _detector = {};
+
+  std::cout << "tcp_read_write_test is running" << std::endl;
 
   using tcp = boost::asio::ip::tcp;
   using w_tcp_client = wolf::system::socket::w_tcp_client;
@@ -203,6 +213,8 @@ BOOST_AUTO_TEST_CASE(tcp_read_write) {
       });
 
   _io.run();
+
+  std::cout << "tcp_read_write_test just done" << std::endl;
 }
 
 #endif

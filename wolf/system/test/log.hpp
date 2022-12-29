@@ -16,8 +16,10 @@
 #include <sstream>
 #include <random> 
 
-BOOST_AUTO_TEST_CASE(stress_test) {
+BOOST_AUTO_TEST_CASE(log_stress_test) {
   const wolf::system::w_leak_detector _detector = {};
+
+  std::cout << "log_stress_test is running" << std::endl;
 
   using w_log = wolf::system::log::w_log;
   using w_log_config = wolf::system::log::w_log_config;
@@ -100,7 +102,8 @@ BOOST_AUTO_TEST_CASE(stress_test) {
   for (auto &t : threads) {
     t.join();
   }
-  BOOST_REQUIRE(true);
+
+  std::cout << "log_stress_test just done" << std::endl;
 }
 
 #endif

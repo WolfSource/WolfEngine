@@ -14,10 +14,12 @@
 #include <system/w_gametime.hpp>
 #include <mutex>
 
-BOOST_AUTO_TEST_CASE(fixed_time) {
+BOOST_AUTO_TEST_CASE(gametime_fixed_time_test) {
   const wolf::system::w_leak_detector _detector = {};
   using w_gametime = wolf::system::w_gametime;
 
+  std::cout << "gametime_fixed_time_test is running" << std::endl;
+  
   std::once_flag _flag;
   bool _ticked = false;
 
@@ -39,16 +41,18 @@ BOOST_AUTO_TEST_CASE(fixed_time) {
     _total_seconds = _gametime.get_total_secs();
   }
 
-  BOOST_REQUIRE(_ticked == true);
+  std::cout << "gametime_fixed_time_test just done" << std::endl;
 }
 
-BOOST_AUTO_TEST_CASE(unfixed_time) {
+BOOST_AUTO_TEST_CASE(gametime_unfixed_time_test) {
   const wolf::system::w_leak_detector _detector = {};
+  
+  using w_gametime = wolf::system::w_gametime;
+
+  std::cout << "gametime_unfixed_time_test is running" << std::endl;
 
   constexpr double _stop_after_secs = 5.0;
   constexpr double _target_elapsed_secs = 1.0 / 50.0; // 50 fps
-
-  using w_gametime = wolf::system::w_gametime;
 
   auto _gametime = w_gametime();
   _gametime.reset();
@@ -64,6 +68,8 @@ BOOST_AUTO_TEST_CASE(unfixed_time) {
   }
 
   BOOST_REQUIRE(_gametime.get_fps() >= 30);
+
+  std::cout << "gametime_unfixed_time_test just done" << std::endl;
 }
 
 #endif // WOLF_TESTS

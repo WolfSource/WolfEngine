@@ -101,9 +101,9 @@ w_lz4::decompress(_In_ const gsl::span<const std::byte> p_src,
     // resize it for next round
     _tmp.resize(_resize);
 
-    const auto _bytes =
-        LZ4_decompress_safe((char *)p_src.data(), (char *)_tmp.data(), _src_size,
-                            gsl::narrow_cast<int>(_tmp.size()));
+    const auto _bytes = LZ4_decompress_safe(
+        (char *)p_src.data(), (char *)_tmp.data(),
+        gsl::narrow_cast<int>(_src_size), gsl::narrow_cast<int>(_tmp.size()));
     if (_bytes > 0) {
       return s_shrink_to_fit(_tmp, _bytes);
     }

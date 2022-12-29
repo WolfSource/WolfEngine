@@ -15,6 +15,9 @@
 
 BOOST_AUTO_TEST_CASE(avframe_test) {
   const wolf::system::w_leak_detector _detector = {};
+
+  std::cout << "avframe_test is running" << std::endl;
+
   using w_av_frame = wolf::media::ffmpeg::w_av_frame;
   using w_av_config = wolf::media::ffmpeg::w_av_config;
 
@@ -40,6 +43,8 @@ BOOST_AUTO_TEST_CASE(avframe_test) {
   const auto _dst_frame = &_dst_frame_res.value();
   auto _ret = _dst_frame->save_to_img_file(_new_path);
   BOOST_REQUIRE(_ret.has_error() == false);
+
+  std::cout << "avframe_test just done" << std::endl;
 }
 
 #endif

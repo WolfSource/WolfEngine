@@ -9,7 +9,7 @@
 using w_gamepad = wolf::system::gamepad::w_gamepad;
 using w_gamepad_event = wolf::system::gamepad::w_gamepad_event;
 
-std::vector<SDL_GameController*> s_controllers;
+std::vector<SDL_Gamepad*> s_controllers;
 std::vector<w_gamepad_event> w_gamepad::_events;
 
 static std::string s_get_sdl_last_error_msg() noexcept {
@@ -20,15 +20,15 @@ static std::string s_get_sdl_last_error_msg() noexcept {
 }
 
 boost::leaf::result<int> w_gamepad::init() noexcept {
-  const auto _ret = SDL_Init(SDL_INIT_GAMECONTROLLER);
+  const auto _ret = SDL_Init(SDL_INIT_GAMEPAD);
   if (_ret != 0) {
     return W_FAILURE(_ret,
                      "could not initialize the SDL for gamepad. SDL error: " +
                          s_get_sdl_last_error_msg());
   }
-  for (auto i = 0; i < SDL_NumJoysticks(); ++i) {
-    if (SDL_IsGameController(i)) {
-      s_controllers.push_back(SDL_GameControllerOpen(i));
+  for (auto i = 0; i < SDL_GetNumJoysticks(); ++i) {
+    if (SDL_IsGamepad(i)) {
+      s_controllers.push_back(SDL_OpenGamepad(i));
     }
   }
   return S_OK;
@@ -43,8 +43,8 @@ void w_gamepad::update() noexcept {
     switch (sdl_event.type) {
     default:
       break;
-    case SDL_CONTROLLERBUTTONDOWN:
-    case SDL_CONTROLLERBUTTONUP: {
+    case SDL_GAMEPADBUTTONDOWN:
+    case SDL_GAMEPADBUTTONUP: {
       button.which = sdl_event.cbutton.which;
       button.button =
           gsl::narrow_cast<w_gamepad_button_type>(sdl_event.cbutton.button + 1);
@@ -54,7 +54,7 @@ void w_gamepad::update() noexcept {
       _events.emplace_back(_event);
       break;
     }
-    case SDL_CONTROLLERAXISMOTION: {
+    case SDL_GAMEPADAXISMOTION: {
       axis.which = sdl_event.caxis.which;
       axis.axis =
           gsl::narrow_cast<w_gamepad_axis_type>(sdl_event.caxis.axis + 1);
@@ -63,16 +63,15 @@ void w_gamepad::update() noexcept {
       _events.emplace_back(_event);
       break;
     }
-    case SDL_CONTROLLERDEVICEADDED: {
-      s_controllers.push_back(SDL_GameControllerOpen(sdl_event.cdevice.which));
+    case SDL_GAMEPADADDED: {
+      s_controllers.push_back(SDL_OpenGamepad(sdl_event.cdevice.which));
       break;
     }
-    case SDL_CONTROLLERDEVICEREMOVED: {
-      auto controller =
-          SDL_GameControllerFromInstanceID(sdl_event.cdevice.which);
+    case SDL_GAMEPADREMOVED: {
+      auto controller = SDL_GetGamepadFromInstanceID(sdl_event.cdevice.which);
       auto _iter =
           std::find(s_controllers.cbegin(), s_controllers.cend(), controller);
-      SDL_GameControllerClose(*_iter);
+      SDL_CloseGamepad(*_iter);
       s_controllers.erase(_iter);
       break;
     }
@@ -83,7 +82,7 @@ void w_gamepad::update() noexcept {
 void w_gamepad::fini() noexcept {
   for (auto _iter : s_controllers) {
     if (_iter) {
-      SDL_GameControllerClose(_iter);
+      SDL_CloseGamepad(_iter);
     }
   }
   s_controllers.clear();
