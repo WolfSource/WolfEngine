@@ -22,7 +22,7 @@
 
 /bin/*
 /build/*
-/wolf/coverage/*
+/coverage/*
 
 # Compiled Object files
 *.slo

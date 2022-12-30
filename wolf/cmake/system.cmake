@@ -143,27 +143,27 @@ endif()
 
 if (WOLF_SYSTEM_VIRTUAL_GAMEPAD)
   if (NOT WIN32)
-    message(FATAL_ERROR "WOLF_SYSTEM_VIRTUAL_GAMEPAD can only build for Windows")
-  endif()
+    message(SEND_ERROR "WOLF_SYSTEM_VIRTUAL_GAMEPAD can only build for Windows")
+  else()
+    message("fetching https://github.com/ViGEm/ViGEmClient.git")
+    FetchContent_Declare(
+      ViGEmClient
+      GIT_REPOSITORY https://github.com/ViGEm/ViGEmClient.git
+      GIT_TAG        master
+    )
+    FetchContent_MakeAvailable(ViGEmClient)
 
-  message("fetching https://github.com/ViGEm/ViGEmClient.git")
-  FetchContent_Declare(
-    ViGEmClient
-    GIT_REPOSITORY https://github.com/ViGEm/ViGEmClient.git
-    GIT_TAG        master
-  )
-  FetchContent_MakeAvailable(ViGEmClient)
-
-  file(GLOB_RECURSE WOLF_SYSTEM_VIRTUAL_SRCS
-    "${CMAKE_CURRENT_SOURCE_DIR}/system/gamepad/w_virtual_gamepad.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/system/gamepad/w_virtual_gamepad.hpp"
-  )
-  list(APPEND SRCS ${WOLF_SYSTEM_VIRTUAL_SRCS})
-  list(APPEND INCLUDES ${ViGEmClient_SOURCE_DIR}/include)
-  list(APPEND LIBS 
-    ViGEmClient
-    Xinput.lib 
-    SetupAPI.lib)
+    file(GLOB_RECURSE WOLF_SYSTEM_VIRTUAL_SRCS
+      "${CMAKE_CURRENT_SOURCE_DIR}/system/gamepad/w_virtual_gamepad.cpp"
+      "${CMAKE_CURRENT_SOURCE_DIR}/system/gamepad/w_virtual_gamepad.hpp"
+    )
+    list(APPEND SRCS ${WOLF_SYSTEM_VIRTUAL_SRCS})
+    list(APPEND INCLUDES ${ViGEmClient_SOURCE_DIR}/include)
+    list(APPEND LIBS 
+      ViGEmClient
+      Xinput.lib 
+      SetupAPI.lib)
+   endif()
 endif()
 
 # fetch spdlog
