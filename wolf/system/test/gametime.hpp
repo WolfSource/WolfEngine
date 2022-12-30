@@ -62,7 +62,7 @@ BOOST_AUTO_TEST_CASE(gametime_unfixed_time_test) {
   BOOST_REQUIRE(_gametime.get_fps() == 0);
 
   auto _total_seconds = _gametime.get_total_secs();
-  while (_gametime.get_total_secs() < _stop_after_secs) {
+  while (_total_seconds < _stop_after_secs) {
     _gametime.tick();
     _total_seconds = _gametime.get_total_secs();
   }

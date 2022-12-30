@@ -14,7 +14,7 @@ The Wolf is a comprehensive set of C++ open source libraries for realtime render
 	- [CMake](https://cmake.org/download/)
 	- [Meson](https://github.com/mesonbuild/meson/releases)
 	- optional: [Ninja](https://ninja-build.org/). Alternatively, setup [Python3](https://www.python.org/downloads/) and use "pip3 install ninja"
-	- [Nasm](https://nasm.us/)
+	- [Nasm](https://nasm.us/) for fiber & boringSSL
 	- [Perl](https://www.perl.org/get.html) for boringSSL. [Strawberry Perl](https://strawberryperl.com/) is recommended for Windows.
 	- [Go](https://go.dev/dl/) for boringSSL
 	- [QT6](https://www.qt.io/download) for wolf render, demos and examples

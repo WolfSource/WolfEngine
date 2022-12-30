@@ -9,7 +9,7 @@ namespace wolf::system::socket {
 class w_ws_client {
 public:
   // default constructor
-  W_API w_ws_client(boost::asio::io_context &p_io_context) noexcept;
+  W_API explicit w_ws_client(boost::asio::io_context &p_io_context) noexcept;
 
   // move constructor.
   W_API w_ws_client(w_ws_client &&p_other) = default;
@@ -90,8 +90,7 @@ public:
    * get whether websocket is open or not
    * @returns true if socket was open
    */
-  W_API
-  bool get_is_open() const;
+  W_API [[maybe_unused]] bool get_is_open() const;
 
 private:
   // copy constructor

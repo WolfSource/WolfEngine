@@ -32,7 +32,7 @@ struct w_trace {
 
   w_trace() noexcept = default;
 
-  w_trace(_In_ stack &&p_stack) noexcept {
+  explicit w_trace(_In_ stack &&p_stack) noexcept {
     try {
       this->_stacks.emplace_front(p_stack);
     } catch (...) {

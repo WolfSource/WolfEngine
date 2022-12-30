@@ -35,7 +35,7 @@ public:
   /**
    * construct an av_packet
    */
-  W_API w_av_packet(AVPacket* p_av_packet) noexcept;
+  W_API explicit w_av_packet(AVPacket* p_av_packet) noexcept;
 
   // move constructor.
   W_API w_av_packet(w_av_packet &&p_other) noexcept = default;

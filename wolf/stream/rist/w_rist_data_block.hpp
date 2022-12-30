@@ -22,12 +22,12 @@ public:
   W_API w_rist_data_block() noexcept;
   W_API virtual ~w_rist_data_block();
 
-  // move constructor.
+  // move constructor
   W_API w_rist_data_block(w_rist_data_block &&p_other) noexcept = default;
-  // move constructor.
-  W_API w_rist_data_block(rist_data_block &&p_other) noexcept;
+  // move rist_data_block
+  W_API explicit w_rist_data_block(rist_data_block &&p_other) noexcept;
 
-  // move assignment operator.
+  // move assignment operator
   W_API w_rist_data_block &
   operator=(w_rist_data_block &&p_other) noexcept = default;
 

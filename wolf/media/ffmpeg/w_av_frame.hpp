@@ -54,7 +54,7 @@ struct w_av_frame {
    * @param p_config, the av frame config
    */
   //
-  W_API w_av_frame(_In_ const w_av_config &p_config) noexcept;
+  W_API explicit w_av_frame(_In_ const w_av_config &p_config) noexcept;
 
   // move constructor.
   W_API w_av_frame(w_av_frame &&p_other) noexcept;

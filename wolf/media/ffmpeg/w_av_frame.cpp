@@ -175,8 +175,6 @@ w_av_frame::load_from_img_file(_In_ const std::filesystem::path &p_path,
                      "could not load image file " + _path);
   }
 
-  const auto _img_size = _width * _height * _comp;
-
   w_av_config _src_config = {p_pixel_fmt, _width, _height};
   // create an av_frame from image raw data
   w_av_frame _src_frame(_src_config);

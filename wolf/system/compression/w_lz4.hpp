@@ -18,7 +18,8 @@ struct w_lz4 {
    * @param p_size, the input size
    * @returns the size of bound
    */
-  W_API static int get_compress_bound(_In_ int p_size) noexcept;
+  W_API [[maybe_unused]] static int
+  get_compress_bound(_In_ int p_size) noexcept;
 
   /*
    * compress using the default mode of lz4

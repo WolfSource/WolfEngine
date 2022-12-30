@@ -60,13 +60,13 @@ struct w_buffer {
 
   w_buffer() noexcept = default;
 
+  explicit w_buffer(const std::string_view &p_str) { from_string(p_str); }
+
   w_buffer(std::array<char, W_MAX_BUFFER_SIZE> &&p_array,
-           size_t &p_used_bytes) noexcept {
+           const size_t &p_used_bytes) noexcept {
     this->buf = std::move(p_array);
     this->used_bytes = p_used_bytes;
   }
-
-  w_buffer(const std::string_view &p_str) { from_string(p_str); }
 
   void from_string(const std::string_view p_str) {
     const auto _size = p_str.size();

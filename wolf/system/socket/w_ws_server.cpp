@@ -14,7 +14,8 @@ static boost::asio::awaitable<void>
 s_session(_In_ const boost::asio::io_context &p_io_context,
           _In_ w_ws_stream &&p_ws,
           _In_ const std::string &p_conn_id,
-          _In_ w_session_ws_on_data_callback p_on_data_callback) {
+          _In_ w_session_ws_on_data_callback p_on_data_callback,
+          _In_ w_session_on_error_callback p_on_error_callback) {
 
   // accept the websocket handshake
   co_await p_ws.async_accept();
@@ -53,7 +54,7 @@ s_session(_In_ const boost::asio::io_context &p_io_context,
 
     } catch (const boost::system::system_error &p_exc) {
       if (p_exc.code() != boost::beast::websocket::error::closed) {
-        throw;
+        p_on_error_callback(p_conn_id, p_exc);
       }
     }
   }
@@ -99,16 +100,9 @@ s_listen(_In_ const boost::asio::io_context &p_io_context,
         }));
     const auto _conn_id = wolf::system::socket::make_connection_id();
 
-    boost::asio::co_spawn(
-        _acceptor.get_executor(),
-        s_session(p_io_context, std::move(_ws), _conn_id, p_on_data_callback),
-        [&](const std::exception_ptr p_ex_ptr) {
-          try {
-            std::rethrow_exception(p_ex_ptr);
-          } catch (const boost::system::system_error &p_exp) {
-            p_on_error_callback(_conn_id, p_exp);
-          }
-        });
+    boost::asio::co_spawn(_acceptor.get_executor(),
+                          s_session(p_io_context, std::move(_ws), _conn_id,
+                                    p_on_data_callback, p_on_error_callback));
   }
 }
 

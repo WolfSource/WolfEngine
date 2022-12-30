@@ -208,29 +208,29 @@ public:
                                                _In_ ALsizei p_size);
   void _release() noexcept;
 
-  w_openal_config _config;
+  w_openal_config _config = {};
 
-  ALCdevice *_device;
-  ALCcontext *_ctx;
+  ALCdevice *_device = nullptr;
+  ALCcontext *_ctx = nullptr;
 
   // a lockless ring-buffer (supports single-provider, single-consumer
   // operation)
-  ALbyte *_data;
-  size_t _data_size;
-  size_t _read_pos;
-  size_t _write_pos;
+  ALbyte *_data = nullptr;
+  size_t _data_size = 0;
+  size_t _read_pos = 0;
+  size_t _write_pos = 0;
 
   // The buffer to get the callback, and source to play with
-  ALuint _buffer;
-  ALuint _source;
-  size_t _start_offset;
+  ALuint _buffer = 0;
+  ALuint _source = 0;
+  size_t _start_offset = 0;
 
   // Handle for the audio file to decode
-  size_t _decoder_offset;
+  size_t _decoder_offset = 0;
 
-  size_t _total_read_bytes;
-  size_t _size_of_chunk;
-  LPALBUFFERCALLBACKSOFT _callback_ptr;
+  size_t _total_read_bytes = 0;
+  size_t _size_of_chunk = 0;
+  LPALBUFFERCALLBACKSOFT _callback_ptr = nullptr;
 };
 } // namespace wolf::media
 

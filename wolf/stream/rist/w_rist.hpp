@@ -84,13 +84,13 @@ private:
   w_rist &operator=(const w_rist &) = delete;
   void _release_log();
 
-  rist_ctx_mode _mode;
-  rist_profile _profile;
-  uint16_t _loss_percentage;
-  rist_log_level _log_level;
-  rist_logging_settings *_log;
-  rist_ctx *_ctx;
-  rist_peer *_peer;
+  rist_ctx_mode _mode = rist_ctx_mode::RIST_SENDER_MODE;
+  rist_profile _profile = rist_profile::RIST_PROFILE_MAIN;
+  uint16_t _loss_percentage = 0;
+  rist_log_level _log_level = rist_log_level::RIST_LOG_DEBUG;
+  rist_logging_settings *_log = nullptr;
+  rist_ctx *_ctx = nullptr;
+  rist_peer *_peer = nullptr;
 };
 } // namespace wolf::stream::rist
 

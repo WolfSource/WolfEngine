@@ -19,7 +19,7 @@ namespace wolf::system::socket {
 class w_tcp_client {
 public:
   // default constructor
-  W_API w_tcp_client(boost::asio::io_context &p_io_context) noexcept;
+  W_API explicit w_tcp_client(boost::asio::io_context &p_io_context) noexcept;
 
   // move constructor.
   W_API w_tcp_client(w_tcp_client &&p_other) = default;

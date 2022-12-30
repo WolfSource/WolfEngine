@@ -27,8 +27,9 @@ struct w_decoder {
   // move assignment operator.
   W_API w_decoder &operator=(w_decoder &&p_other) noexcept = default;
 
-  W_API boost::leaf::result<int> start(_In_ const w_av_packet &p_packet,
-                                       _Inout_ w_av_frame &p_frame) noexcept;
+  W_API boost::leaf::result<int>
+  start(_In_ const w_av_packet &p_packet, _Inout_ w_av_frame &p_frame) noexcept;
+
 private:
   // copy constructor
   w_decoder(const w_decoder &) = delete;

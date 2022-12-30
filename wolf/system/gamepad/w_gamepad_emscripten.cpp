@@ -88,4 +88,9 @@ void w_gamepad::update() {
   }
 }
 
+void w_gamepad::fini() noexcept {
+  this->gamepads.clear();
+  this->_events.clear();
+}
+
 #endif //  defined(WOLF_SYSTEM_GAMEPAD) && defined(EMSCRIPTEN)

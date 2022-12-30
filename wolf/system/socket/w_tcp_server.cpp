@@ -85,6 +85,8 @@ s_session(const boost::asio::io_context &p_io_context, tcp::socket p_socket,
         make_error_code(boost::system::errc::timed_out));
     p_on_error_callback(_conn_id, _error);
   }
+
+  co_return;
 }
 
 static boost::asio::awaitable<void>

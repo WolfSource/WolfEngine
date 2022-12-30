@@ -1,4 +1,7 @@
 #ifndef __GETOPT_H__
+
+#pragma once
+
 /**
  * DISCLAIMER
  * This file is part of the mingw-w64 runtime package.

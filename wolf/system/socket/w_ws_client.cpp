@@ -47,9 +47,6 @@ boost::asio::awaitable<void> w_ws_client::async_connect(
       std::make_unique<w_ws_stream>(boost::asio::use_awaitable.as_default_on(
           boost::beast::websocket::stream<boost::beast::tcp_stream>(
               co_await boost::asio::this_coro::executor)));
-  if (this->_ws == nullptr) {
-    co_return;
-  }
 
   co_await boost::beast::get_lowest_layer(*this->_ws.get())
       .async_connect(p_endpoint, boost::asio::use_awaitable);

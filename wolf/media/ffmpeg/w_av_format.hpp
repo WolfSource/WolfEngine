@@ -51,9 +51,9 @@ private:
   // release
   void _release() noexcept;
 
-  uint8_t *_stream_buffer;
-  AVFormatContext *_fmt_ctx;
-  AVIOContext *_io_ctx;
+  uint8_t *_stream_buffer = nullptr;
+  AVFormatContext *_fmt_ctx = nullptr;
+  AVIOContext *_io_ctx = nullptr;
 
 };
 } // namespace wolf::media::ffmpeg

@@ -28,7 +28,7 @@ namespace wolf::system::log {
 class w_log {
 public:
   // constructor
-  W_API w_log(const w_log_config &p_config) noexcept;
+  W_API explicit w_log(const w_log_config &p_config) noexcept;
 
   // move constructor.
   W_API w_log(w_log &&p_other) = default;
@@ -64,7 +64,7 @@ public:
 
   W_API boost::leaf::result<int> flush();
 
-  W_API w_log_config get_config() const;
+  W_API [[maybe_unused]] w_log_config get_config() const;
 
 private:
   // disable copy constructor
@@ -72,9 +72,9 @@ private:
   // disable copy operator
   w_log &operator=(const w_log &) = delete;
 
-  w_log_config _config;
-  std::shared_ptr<spdlog::logger> _logger;
-  std::shared_ptr<spdlog::logger> _async_file_logger;
+  w_log_config _config = {};
+  std::shared_ptr<spdlog::logger> _logger = nullptr;
+  std::shared_ptr<spdlog::logger> _async_file_logger = nullptr;
 };
 } // namespace wolf::system::log
 
