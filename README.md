@@ -43,9 +43,9 @@ cmake --build --preset default-build-android
 
 ## Supported platforms
 
-| Planned | In Progress | Done |
-|:-----------:|:-----------:|:-----------:|
-| :memo:  | :construction: | :white_check_mark: | 
+| Not Supported | Planned | In Progress | Done |
+|:-----------:|:-----------:|:-----------:|:-----------:|
+| :x: | :memo: | :construction: | :white_check_mark: | 
 
 ### Supported platforms and APIs for render module
 
