@@ -1,21 +1,21 @@
-#if defined(WOLF_SYSTEM_GAMEPAD) && defined(EMSCRIPTEN)
+#if defined(WOLF_SYSTEM_GAMEPAD_CLIENT) && defined(EMSCRIPTEN)
 
-#include "w_gamepad.hpp"
-#include "w_gamepad_keymap.hpp"
+#include "w_gamepad_client.hpp"
+#include "w_gamepad_client_keymap.hpp"
 
 #include <DISABLE_ANALYSIS_BEGIN>
 #include <emscripten/html5.h>
 #include <DISABLE_ANALYSIS_END>
 
-using w_gamepad = wolf::system::gamepad::w_gamepad;
+using w_gamepad_client = wolf::system::gamepad::w_gamepad_client;
 using w_gamepad_event = wolf::system::gamepad::w_gamepad_event;
 
 std::vector<EmscriptenGamepadEvent> gamepads;
-std::vector<w_gamepad_event> w_gamepad::_events;
+std::vector<w_gamepad_event> w_gamepad_client::_events;
 
 EM_BOOL gamepadconnected_callback(int eventType, const EmscriptenGamepadEvent *gamepadEvent, void *userData) {
   gamepads.push_back(*gamepadEvent);
-  reinterpret_cast<w_gamepad *>(userData)->update();
+  reinterpret_cast<w_gamepad_client *>(userData)->update();
 
   return EM_TRUE;
 }
@@ -28,7 +28,7 @@ EM_BOOL gamepaddisconnected_callback(int eventType, const EmscriptenGamepadEvent
   return EM_TRUE;
 }
 
-boost::leaf::result<int> w_gamepad::init() noexcept {
+boost::leaf::result<int> w_gamepad_client::init() noexcept {
   // TODO: callback registration may fail, check for EMSCRIPTEN_RESULT_SUCCESS
   emscripten_set_gamepadconnected_callback(this, EM_TRUE,
                                            gamepadconnected_callback);
@@ -38,7 +38,7 @@ boost::leaf::result<int> w_gamepad::init() noexcept {
   return S_OK;
 }
 
-void w_gamepad::update() {
+void w_gamepad_client::update() {
   emscripten_sample_gamepad_data();
 
   for (auto &gamepad : gamepads) {
@@ -88,7 +88,7 @@ void w_gamepad::update() {
   }
 }
 
-void w_gamepad::fini() noexcept {
+void w_gamepad_client::fini() noexcept {
   this->gamepads.clear();
   this->_events.clear();
 }

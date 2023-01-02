@@ -73,15 +73,15 @@ if (WOLF_SYSTEM_BORINGSSL AND (NOT WOLF_STREAM_GRPC))
         PROPERTIES FOLDER "boringSSL") 
 endif()
 
-if (WOLF_SYSTEM_GAMEPAD)
-    file(GLOB_RECURSE WOLF_SYSTEM_GAMEPAD_SRC
-        "${CMAKE_CURRENT_SOURCE_DIR}/system/gamepad/w_gamepad.hpp"
-        "${CMAKE_CURRENT_SOURCE_DIR}/system/gamepad/w_gamepad_emscripten.cpp"
-        "${CMAKE_CURRENT_SOURCE_DIR}/system/gamepad/w_gamepad_keymap.hpp"
-        "${CMAKE_CURRENT_SOURCE_DIR}/system/gamepad/w_gamepad_sdl.cpp"
-        "${CMAKE_CURRENT_SOURCE_DIR}/system/gamepad/w_gamepad_types.hpp"
+if (WOLF_SYSTEM_GAMEPAD_CLIENT)
+    file(GLOB_RECURSE WOLF_SYSTEM_GAMEPAD_CLIENT_SRC
+        "${CMAKE_CURRENT_SOURCE_DIR}/system/gamepad/w_gamepad_client.hpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/system/gamepad/w_gamepad_client_emscripten.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/system/gamepad/w_gamepad_client_keymap.hpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/system/gamepad/w_gamepad_client_sdl.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/system/gamepad/w_gamepad_client_types.hpp"
     )
-    list(APPEND SRCS ${WOLF_SYSTEM_GAMEPAD_SRC})
+    list(APPEND SRCS ${WOLF_SYSTEM_GAMEPAD_CLIENT_SRC})
 
     if (NOT EMSCRIPTEN)
         message("fetching https://github.com/libsdl-org/SDL")
@@ -125,15 +125,6 @@ if (WOLF_SYSTEM_GAMEPAD)
             )
         list(APPEND LIBS SDL3-static)
 
-        file(GLOB_RECURSE WOLF_SYSTEM_GAMEPAD_SRC
-                "${CMAKE_CURRENT_SOURCE_DIR}/system/gamepad/w_gamepad.hpp"
-                "${CMAKE_CURRENT_SOURCE_DIR}/system/gamepad/w_gamepad_emscripten.cpp"
-                "${CMAKE_CURRENT_SOURCE_DIR}/system/gamepad/w_gamepad_keymap.hpp"
-                "${CMAKE_CURRENT_SOURCE_DIR}/system/gamepad/w_gamepad_sdl.cpp"
-                "${CMAKE_CURRENT_SOURCE_DIR}/system/gamepad/w_gamepad_types.hpp"
-                )
-        list(APPEND SRCS ${WOLF_SYSTEM_GAMEPAD_SRC})
-
         set_target_properties(
             SDL3-static
             uninstall
@@ -141,9 +132,9 @@ if (WOLF_SYSTEM_GAMEPAD)
     endif()
 endif()
 
-if (WOLF_SYSTEM_VIRTUAL_GAMEPAD)
+if (WOLF_SYSTEM_GAMEPAD_VIRTUAL)
   if (NOT WIN32)
-    message(SEND_ERROR "WOLF_SYSTEM_VIRTUAL_GAMEPAD can only build for Windows")
+    message(SEND_ERROR "WOLF_SYSTEM_GAMEPAD_VIRTUAL can only build for Windows")
   else()
     message("fetching https://github.com/ViGEm/ViGEmClient.git")
     FetchContent_Declare(
@@ -153,11 +144,13 @@ if (WOLF_SYSTEM_VIRTUAL_GAMEPAD)
     )
     FetchContent_MakeAvailable(ViGEmClient)
 
-    file(GLOB_RECURSE WOLF_SYSTEM_VIRTUAL_SRCS
-      "${CMAKE_CURRENT_SOURCE_DIR}/system/gamepad/w_virtual_gamepad.cpp"
-      "${CMAKE_CURRENT_SOURCE_DIR}/system/gamepad/w_virtual_gamepad.hpp"
+    file(GLOB_RECURSE WOLF_SYSTEM_GAMEPAD_VIRTUAL_SRCS
+      "${CMAKE_CURRENT_SOURCE_DIR}/system/gamepad/w_gamepad_virtual_pool.cpp"
+      "${CMAKE_CURRENT_SOURCE_DIR}/system/gamepad/w_gamepad_virtual_pool.hpp"
+      "${CMAKE_CURRENT_SOURCE_DIR}/system/gamepad/w_gamepad_virtual.cpp"
+      "${CMAKE_CURRENT_SOURCE_DIR}/system/gamepad/w_gamepad_virtual.hpp"
     )
-    list(APPEND SRCS ${WOLF_SYSTEM_VIRTUAL_SRCS})
+    list(APPEND SRCS ${WOLF_SYSTEM_GAMEPAD_VIRTUAL_SRCS})
     list(APPEND INCLUDES ${ViGEmClient_SOURCE_DIR}/include)
     list(APPEND LIBS 
       ViGEmClient

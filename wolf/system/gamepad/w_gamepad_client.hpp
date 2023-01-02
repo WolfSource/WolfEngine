@@ -1,17 +1,17 @@
 #pragma once
 
-#ifdef WOLF_SYSTEM_GAMEPAD
+#ifdef WOLF_SYSTEM_GAMEPAD_CLIENT
 
 #include <wolf.hpp>
 #include <vector>
-#include "w_gamepad_types.hpp"
+#include "w_gamepad_client_types.hpp"
 
 namespace wolf::system::gamepad {
-class w_gamepad {
+class w_gamepad_client {
 public:
   W_API static boost::leaf::result<int> init() noexcept;
 
-  W_API static bool get_events(_Inout_ w_gamepad_event &p_event) noexcept {
+  W_API static bool get_events(_Inout_ w_gamepad_client_event &p_event) noexcept {
     if (_events.empty()) {
       return false;
     }
@@ -28,7 +28,7 @@ public:
 
 private:
   // LIFO queue of events
-  static std::vector<w_gamepad_event> _events;
+  static std::vector<w_gamepad_client_event> _events;
 };
 } // namespace wolf::system::gamepad
 
