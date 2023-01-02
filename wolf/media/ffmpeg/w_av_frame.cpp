@@ -91,18 +91,17 @@ boost::leaf::result<int> w_av_frame::set(_Inout_ uint8_t **p_data) noexcept {
   const auto _av_frame_nn = gsl::narrow_cast<AVFrame *>(this->_av_frame);
 
   // move the owenership of data to buffer
-  uint8_t *_data_ptr;
   if (p_data == nullptr) {
     const auto _buffer_size = this->_config.get_required_buffer_size();
-    _data_ptr = this->_moved_data = gsl::owner<uint8_t *>(malloc(_buffer_size));
+    this->_moved_data = gsl::owner<uint8_t *>(malloc(_buffer_size));
   } else {
-    _data_ptr = std::exchange(*p_data, nullptr);
-    this->_moved_data = nullptr;
+    this->_moved_data = std::exchange(*p_data, nullptr);
   }
-  const auto _size = av_image_fill_arrays(
-      _av_frame_nn->data, _av_frame_nn->linesize,
-      gsl::narrow_cast<const uint8_t *>(_data_ptr), this->_config.format,
-      _av_frame_nn->width, _av_frame_nn->height, _alignment);
+  const auto _size =
+      av_image_fill_arrays(_av_frame_nn->data, _av_frame_nn->linesize,
+                           gsl::narrow_cast<const uint8_t *>(this->_moved_data),
+                           this->_config.format, _av_frame_nn->width,
+                           _av_frame_nn->height, _alignment);
 
   return S_OK;
 }

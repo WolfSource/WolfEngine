@@ -51,7 +51,7 @@ cmake --build --preset default-build-android
 
 | API | Windows | Linux | macOS | iOS | Android | Wasm |
 |:-----------:|:-----------:|:--------------------------:|:--------------:|:-------------:|:--------------:|:-------------:|
-|  QT | Vulkan/OpenGL ES :construction: | Vulkan/OpenGL ES :memo: | Metal :memo: | Metal :memo: | Vulkan/OpenGL ES :memo: | WebGL:memo: |
+|  QT | Vulkan/OpenGL ES :construction: | Vulkan/OpenGL ES :memo: | Metal :memo: | Metal :memo: | Vulkan/OpenGL ES :memo: | WebGL/WebGPU:memo: |
 
 ### Supported platforms and APIs for media module
 

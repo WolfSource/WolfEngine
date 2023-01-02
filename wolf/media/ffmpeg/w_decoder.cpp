@@ -15,23 +15,22 @@ w_decoder::start(_In_ const w_av_packet &p_packet,
   }
 
   boost::leaf::result<int> _ret = S_OK;
+
   for (;;) {
     const auto _bytes = av_parser_parse2(
         this->ctx.parser, this->ctx.codec_ctx, &_dst_packet->data,
         &_dst_packet->size, p_packet._packet->data, p_packet._packet->size,
         AV_NOPTS_VALUE, AV_NOPTS_VALUE, 0);
 
-    if (_bytes <= 0) {
+    if (_bytes == 0) {
+      break;
+    } else if (_bytes < 0) {
       return W_FAILURE(std::errc::operation_canceled,
                        "could not parse packet for decoding");
     }
 
     p_packet._packet->data += _bytes;
     p_packet._packet->size -= _bytes;
-
-    if (_dst_packet->size == 0) {
-      break;
-    }
 
     if (_dst_packet->size > 0) {
       _ret = _get_frame_from_packet(_dst_packet, p_frame);
@@ -49,6 +48,7 @@ w_decoder::start(_In_ const w_av_packet &p_packet,
 boost::leaf::result<int>
 w_decoder::_get_frame_from_packet(_In_ AVPacket *p_packet,
                                   _Inout_ w_av_frame &p_frame) {
+
   // start decoding
   auto _ret = avcodec_send_packet(this->ctx.codec_ctx, p_packet);
   if (_ret < 0) {
