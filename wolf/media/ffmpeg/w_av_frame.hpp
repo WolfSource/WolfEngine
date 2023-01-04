@@ -80,6 +80,13 @@ struct w_av_frame {
   W_API boost::leaf::result<int> set(_Inout_ uint8_t **p_data) noexcept;
 
   /**
+   * set the AVFrame's pts
+   * @param p_pts, the pts data
+   * @returns void
+   */
+  W_API void set_pts(_In_ int64_t p_pts) noexcept;
+
+  /**
    * get data and linesize as a tuple
    * @returns tuple<int*[8], int[8]>
    */

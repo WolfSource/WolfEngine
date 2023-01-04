@@ -19,6 +19,7 @@ using w_ffmpeg_ctx = wolf::media::ffmpeg::w_ffmpeg_ctx;
 static boost::leaf::result<void>
 s_set_opts(_In_ AVFormatContext *p_ctx,
          _In_ const std::vector<w_av_set_opt> &p_opts) {
+
   for (const auto &_opt : p_opts) {
     if (_opt.name.empty() == true) {
       continue;
@@ -73,6 +74,61 @@ s_set_opts(_In_ AVFormatContext *p_ctx,
   }
 
   return {};
+}
+
+static boost::leaf::result<AVDictionary*>
+s_set_dict(_In_ const std::vector<w_av_set_opt> &p_opts) {
+
+  AVDictionary *_dict = nullptr;
+  if (p_opts.size() == 0) {
+    return _dict;
+  }
+
+  auto _ret = av_dict_set(&_dict, nullptr, nullptr, 0);
+  if (_ret < 0) {
+    return W_FAILURE(std::errc::operation_canceled,
+                     "could not allocate memory for AVDictionary because: " +
+                         w_ffmpeg_ctx::get_av_error_str(_ret));
+  }
+
+  for (const auto &_opt : p_opts) {
+    if (_opt.name.empty() == true) {
+      continue;
+    }
+
+    auto _name_str = _opt.name.c_str();
+    if (std::holds_alternative<int>(_opt.value)) {
+      // set an integer value
+      const auto _value = std::get<int>(_opt.value);
+      const auto _ret = av_dict_set_int(&_dict, _name_str, _value, 0);
+      if (_ret < 0) {
+        std::string _value_str;
+        try {
+          _value_str = std::to_string(_value);
+        } catch (...) {
+        };
+        return W_FAILURE(std::errc::invalid_argument,
+                         "could not set int value for " + _opt.name + ":" +
+                             _value_str + " because " +
+                             w_ffmpeg_ctx::get_av_error_str(_ret));
+      }
+    } else {
+      // set string value
+      const auto _value_str = std::get<std::string>(_opt.value);
+      if (_value_str.empty() == false) {
+        const auto _ret =
+            av_dict_set(&_dict, _opt.name.c_str(), _value_str.c_str(), 0);
+        if (_ret < 0) {
+          return W_FAILURE(std::errc::invalid_argument,
+                           "could not set string value for " + _opt.name + ":" +
+                               _value_str + " because " +
+                               w_ffmpeg_ctx::get_av_error_str(_ret));
+        }
+      }
+    }
+  }
+
+  return _dict;
 }
 
 static boost::leaf::result<int>
@@ -300,17 +356,19 @@ boost::leaf::result<void> w_ffmpeg::open_stream_receiver(
   BOOST_LEAF_CHECK(_packet.init());
 
   // set options to av format context
-  if (p_opts.size() > 0) {
-    BOOST_LEAF_CHECK(s_set_opts(_fmt_ctx, p_opts));
-  }
+  BOOST_LEAF_AUTO(_dict, s_set_dict(p_opts));
 
   // open input url
-  int _ret = avformat_open_input(&_fmt_ctx, p_url.c_str(), nullptr, nullptr);
-  if (_ret == 0) {
+  int _ret = avformat_open_input(&_fmt_ctx, p_url.c_str(), nullptr, &_dict);
+  if (_ret < 0) {
+    return W_FAILURE(std::errc::operation_canceled,
+                     "could not open input url: " + p_url +
+                         " because: " + w_ffmpeg_ctx::get_av_error_str(_ret));
   }
 
   // find the stream info
-  if (avformat_find_stream_info(_fmt_ctx, nullptr) < 0) {
+  _ret = avformat_find_stream_info(_fmt_ctx, nullptr);
+  if (_ret < 0) {
     return W_FAILURE(std::errc::operation_canceled,
                      "could not find stream info from the url: " + p_url);
   }

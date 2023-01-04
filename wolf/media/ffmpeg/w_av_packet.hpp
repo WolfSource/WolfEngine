@@ -49,13 +49,19 @@ public:
    * initialize the av_packet
    * @returns zero on success
    */
-  W_API boost::leaf::result<int> init() noexcept;
+  W_API boost::leaf::result<void> init() noexcept;
+
+  /**
+   * initialize the av_packet
+   * @returns void
+   */
+  W_API boost::leaf::result<void> init(_Inout_ std::vector<uint8_t> &&p_data) noexcept;
 
   /**
    * initialize the av_packet from data
    * @returns zero on success
    */
-  W_API boost::leaf::result<int> init(_In_ uint8_t *p_data,
+  W_API boost::leaf::result<void> init(_In_ uint8_t *p_data,
                                       _In_ size_t p_data_len) noexcept;
 
   /**
@@ -81,6 +87,7 @@ private:
   void _release() noexcept;
 
   AVPacket* _packet = nullptr;
+  std::vector<uint8_t> _own_data;
 };
 } // namespace wolf::media::ffmpeg
 

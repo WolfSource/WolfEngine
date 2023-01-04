@@ -27,8 +27,9 @@ struct w_decoder {
   // move assignment operator.
   W_API w_decoder &operator=(w_decoder &&p_other) noexcept = default;
 
-  W_API boost::leaf::result<int> start(_In_ const w_av_packet &p_packet,
-                                       _Inout_ w_av_frame &p_frame) noexcept;
+  W_API boost::leaf::result<void> decode(_In_ const w_av_packet &p_packet,
+                                         _Inout_ w_av_frame &p_frame,
+                                         _In_ bool p_flush = false) noexcept;
 
 private:
   // copy constructor
@@ -36,8 +37,8 @@ private:
   // copy operator
   w_decoder &operator=(const w_decoder &) = delete;
 
-  boost::leaf::result<int> _get_frame_from_packet(_In_ AVPacket *p_packet,
-                                                  _Inout_ w_av_frame &p_frame);
+  boost::leaf::result<void> _decode(_In_ AVPacket *p_packet,
+                                    _Inout_ w_av_frame &p_frame);
 };
 } // namespace wolf::media::ffmpeg
 

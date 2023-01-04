@@ -106,6 +106,10 @@ boost::leaf::result<int> w_av_frame::set(_Inout_ uint8_t **p_data) noexcept {
   return S_OK;
 }
   
+void w_av_frame::set_pts(_In_ int64_t p_pts) noexcept {
+  this->_av_frame->pts = p_pts;
+}
+
 std::tuple<uint8_t **, int *> w_av_frame::get() const noexcept {
   const auto _av_frame_nn = gsl::narrow_cast<AVFrame *>(this->_av_frame);
   return std::make_tuple(_av_frame_nn->data, _av_frame_nn->linesize);

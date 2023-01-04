@@ -27,14 +27,19 @@ struct w_encoder {
   // move assignment operator.
   W_API w_encoder &operator=(w_encoder &&p_other) noexcept = default;
 
-  W_API boost::leaf::result<int> start(_In_ const w_av_frame &p_frame,
-                                       _Inout_ w_av_packet &p_packet) noexcept;
+  W_API boost::leaf::result<void> encode(_In_ w_av_frame &p_frame,
+                                         _Inout_ w_av_packet &p_packet,
+                                         _In_ bool p_flush = true) noexcept;
 
 private:
   // copy constructor
   w_encoder(const w_encoder &) = delete;
   // copy operator
   w_encoder &operator=(const w_encoder &) = delete;
+
+  boost::leaf::result<void>
+  _encode(_In_ const AVFrame *p_frame,
+          _Inout_ std::vector<uint8_t> &p_packet_data) noexcept;
 };
 } // namespace wolf::media::ffmpeg
 
