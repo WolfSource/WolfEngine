@@ -12,7 +12,7 @@ w_av_packet::w_av_packet(AVPacket *p_av_packet) noexcept
 
 w_av_packet::~w_av_packet() noexcept { _release(); }
 
-boost::leaf::result<void> w_av_packet::init() noexcept {
+boost::leaf::result<int> w_av_packet::init() noexcept {
   if (this->_packet != nullptr) {
     _release();
   }
@@ -21,10 +21,10 @@ boost::leaf::result<void> w_av_packet::init() noexcept {
     return W_FAILURE(std::errc::not_enough_memory,
                      "could not allocate memory for avpacket");
   }
-  return {};
+  return 0;
 }
 
-boost::leaf::result<void> w_av_packet::init(_In_ uint8_t *p_data,
+boost::leaf::result<int> w_av_packet::init(_In_ uint8_t *p_data,
                                             _In_ size_t p_data_len) noexcept {
   if (this->_packet != nullptr) {
     _release();
@@ -39,10 +39,10 @@ boost::leaf::result<void> w_av_packet::init(_In_ uint8_t *p_data,
   this->_packet->data = p_data;
   this->_packet->size = gsl::narrow_cast<int>(p_data_len);
 
-  return {};
+  return 0;
 }
 
-boost::leaf::result<void>
+boost::leaf::result<int>
 w_av_packet::init(_Inout_ std::vector<uint8_t> &&p_data) noexcept {
   if (p_data.size() == 0) {
     return {};

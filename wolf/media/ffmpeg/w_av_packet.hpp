@@ -35,7 +35,7 @@ public:
   /**
    * construct an av_packet
    */
-  W_API explicit w_av_packet(AVPacket* p_av_packet) noexcept;
+  W_API explicit w_av_packet(AVPacket *p_av_packet) noexcept;
 
   // move constructor.
   W_API w_av_packet(w_av_packet &&p_other) noexcept = default;
@@ -49,19 +49,20 @@ public:
    * initialize the av_packet
    * @returns zero on success
    */
-  W_API boost::leaf::result<void> init() noexcept;
+  W_API boost::leaf::result<int> init() noexcept;
 
   /**
    * initialize the av_packet
    * @returns void
    */
-  W_API boost::leaf::result<void> init(_Inout_ std::vector<uint8_t> &&p_data) noexcept;
+  W_API boost::leaf::result<int>
+  init(_Inout_ std::vector<uint8_t> &&p_data) noexcept;
 
   /**
    * initialize the av_packet from data
    * @returns zero on success
    */
-  W_API boost::leaf::result<void> init(_In_ uint8_t *p_data,
+  W_API boost::leaf::result<int> init(_In_ uint8_t *p_data,
                                       _In_ size_t p_data_len) noexcept;
 
   /**
@@ -70,7 +71,7 @@ public:
   W_API void unref() noexcept;
 
   // get packet data
-  W_API uint8_t* get_data() const noexcept;
+  W_API uint8_t *get_data() const noexcept;
 
   // get packet size
   W_API int get_size() const noexcept;
@@ -86,7 +87,7 @@ private:
 
   void _release() noexcept;
 
-  AVPacket* _packet = nullptr;
+  AVPacket *_packet = nullptr;
   std::vector<uint8_t> _own_data;
 };
 } // namespace wolf::media::ffmpeg

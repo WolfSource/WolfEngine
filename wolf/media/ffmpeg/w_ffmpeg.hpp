@@ -73,7 +73,7 @@ struct w_ffmpeg {
   create_decoder(_In_ const w_av_config &p_config, _In_ const AVCodecID p_id,
                  _In_ const w_av_codec_opt &p_codec_opts,
                  _In_ const std::vector<w_av_set_opt> &p_opts = {}) noexcept;
-;
+  ;
   /*
    * create ffmpeg decoder
    * @param p_config, the avconfig
@@ -94,7 +94,7 @@ struct w_ffmpeg {
    * @param p_on_frame, on frame data recieved callback
    * @returns encoder object on success
    */
-  W_API static boost::leaf::result<void> open_stream_receiver(
+  W_API static boost::leaf::result<int> open_stream_receiver(
       _In_ const std::string &p_url,
       _In_ const std::vector<w_av_set_opt> &p_opts,
       _In_ std::function<bool(const w_av_packet & /*p_packet*/,

@@ -320,7 +320,7 @@ boost::leaf::result<w_decoder> w_ffmpeg::create_decoder(
   return _decoder;
 }
 
-boost::leaf::result<void> w_ffmpeg::open_stream_receiver(
+boost::leaf::result<int> w_ffmpeg::open_stream_receiver(
     _In_ const std::string &p_url, _In_ const std::vector<w_av_set_opt> &p_opts,
     _In_ std::function<bool(const w_av_packet & /*p_packet*/,
                             const std::vector<AVStream *> /*p_streams*/,
@@ -413,7 +413,7 @@ boost::leaf::result<void> w_ffmpeg::open_stream_receiver(
     }
   }
 
-  return {};
+  return 0;
 }
 
 #endif // WOLF_MEDIA_FFMPEG

@@ -5,7 +5,7 @@
 using w_encoder = wolf::media::ffmpeg::w_encoder;
 using w_av_packet = wolf::media::ffmpeg::w_av_packet;
 
-boost::leaf::result<void>
+boost::leaf::result<int>
 w_encoder::_encode(_In_ const AVFrame *p_frame,
                    _Inout_ std::vector<uint8_t> &p_packet_data) noexcept {
   auto _packet = w_av_packet();
@@ -27,7 +27,7 @@ w_encoder::_encode(_In_ const AVFrame *p_frame,
                     _packet._packet->data + _packet._packet->size,
                     std::back_inserter(p_packet_data));
         }
-        return {};
+        return 0;
       } else if (_ret == AVERROR(EAGAIN)) {
         break;
       } else {
@@ -38,12 +38,12 @@ w_encoder::_encode(_In_ const AVFrame *p_frame,
       _packet.unref();
     }
   }
-  return {};
+  return 0;
 }
 
-boost::leaf::result<void> w_encoder::encode(_In_ w_av_frame &p_frame,
-                                            _Inout_ w_av_packet &p_packet,
-                                            _In_ bool p_flush) noexcept {
+boost::leaf::result<int> w_encoder::encode(_In_ w_av_frame &p_frame,
+                                           _Inout_ w_av_packet &p_packet,
+                                           _In_ bool p_flush) noexcept {
 
   std::vector<uint8_t> _packet_data;
 

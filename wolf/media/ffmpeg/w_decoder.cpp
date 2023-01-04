@@ -4,7 +4,7 @@
 
 using w_decoder = wolf::media::ffmpeg::w_decoder;
 
-boost::leaf::result<void> w_decoder::_decode(_In_ AVPacket *p_packet,
+boost::leaf::result<int> w_decoder::_decode(_In_ AVPacket *p_packet,
                                              _Inout_ w_av_frame &p_frame) {
   // start decoding
   auto _ret = avcodec_send_packet(this->ctx.codec_ctx, p_packet);
@@ -25,13 +25,12 @@ boost::leaf::result<void> w_decoder::_decode(_In_ AVPacket *p_packet,
                            w_ffmpeg_ctx::get_av_error_str(_ret));
     }
   }
-  return {};
+  return 0;
 }
 
-boost::leaf::result<void>
-w_decoder::decode(_In_ const w_av_packet &p_packet,
-                  _Inout_ w_av_frame &p_frame,
-                  _In_ bool p_flush) noexcept {
+boost::leaf::result<int> w_decoder::decode(_In_ const w_av_packet &p_packet,
+                                           _Inout_ w_av_frame &p_frame,
+                                           _In_ bool p_flush) noexcept {
   auto _dst_packet = w_av_packet();
   _dst_packet.init();
 
@@ -63,7 +62,7 @@ w_decoder::decode(_In_ const w_av_packet &p_packet,
     std::ignore = _decode(nullptr, p_frame);
   }
 
-  return {};
+  return 0;
 }
 
 #endif // WOLF_MEDIA_FFMPEG
