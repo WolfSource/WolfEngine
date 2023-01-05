@@ -207,7 +207,7 @@ w_rist::send(_In_ const w_rist_data_block &p_block) {
   return _bytes >= 0
              ? boost::leaf::result<size_t>(gsl::narrow_cast<size_t>(_bytes))
              : W_FAILURE(std::errc::no_message,
-                     "could not send data block to the rist stream");
+                         "could not send data block to the rist stream");
 }
 
 //boost::leaf::result<size_t> w_rist::receive(_Inout_ w_rist_data_block &p_block,

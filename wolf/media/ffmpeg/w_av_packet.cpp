@@ -10,6 +10,27 @@ w_av_packet::w_av_packet() noexcept
 w_av_packet::w_av_packet(AVPacket *p_av_packet) noexcept
     : _packet(p_av_packet) {}
 
+w_av_packet::w_av_packet(w_av_packet &&p_other) noexcept {
+  _move(std::move(p_other));
+}
+
+w_av_packet &w_av_packet::operator=(w_av_packet &&p_other) noexcept {
+  _move(std::move(p_other));
+  return *this;
+}
+
+void w_av_packet::_move(w_av_packet &&p_other) noexcept {
+  if (this == &p_other)
+    return;
+
+  _release();
+
+  this->_packet = std::exchange(p_other._packet, nullptr);
+  if (p_other._own_data.size()) {
+    this->_own_data.swap(p_other._own_data);
+  }
+}
+
 w_av_packet::~w_av_packet() noexcept { _release(); }
 
 boost::leaf::result<int> w_av_packet::init() noexcept {
@@ -64,8 +85,8 @@ int w_av_packet::get_stream_index() const noexcept {
 void w_av_packet::_release() noexcept {
   if (this->_packet != nullptr) {
     av_packet_free(&this->_packet);
-    this->_packet = nullptr;
   }
+  this->_own_data.clear();
 }
 
 #endif // WOLF_MEDIA_FFMPEG

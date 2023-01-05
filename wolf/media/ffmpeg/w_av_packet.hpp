@@ -38,9 +38,9 @@ public:
   W_API explicit w_av_packet(AVPacket *p_av_packet) noexcept;
 
   // move constructor.
-  W_API w_av_packet(w_av_packet &&p_other) noexcept = default;
+  W_API w_av_packet(w_av_packet &&p_other) noexcept;
   // move assignment operator.
-  W_API w_av_packet &operator=(w_av_packet &&p_other) noexcept = default;
+  W_API w_av_packet &operator=(w_av_packet &&p_other) noexcept;
 
   // destructor
   W_API virtual ~w_av_packet() noexcept;
@@ -85,6 +85,7 @@ private:
   // copy assignment operator.
   w_av_packet &operator=(const w_av_packet &) = delete;
 
+  void _move(w_av_packet &&p_other) noexcept;
   void _release() noexcept;
 
   AVPacket *_packet = nullptr;
