@@ -61,15 +61,15 @@ set(LIBRARY_TYPE "STATIC" CACHE STRING "Library type")
 option(WOLF_RENDER "Enable cross platform render engine based on Vulkan / OpenGL ES" OFF)
 
 # media modules
-option(WOLF_MEDIA_FFMPEG "Enable ffmpeg encoding and decoding" OFF)
+option(WOLF_MEDIA_FFMPEG "Enable ffmpeg encoding and decoding" ON)
 option(WOLF_MEDIA_OPENAL "Enable OpenAL soft" OFF)
 option(WOLF_MEDIA_SCREEN_CAPTURE "Enable screen capture" OFF)
-option(WOLF_MEDIA_STB "Enable stb headers" OFF)
+option(WOLF_MEDIA_STB "Enable stb headers" ON)
 
 # stream modules
 option(WOLF_STREAM_GRPC "Enable gRPC connection" OFF)
 option(WOLF_STREAM_QUIC "Enable QUIC" OFF)
-option(WOLF_STREAM_RIST "Enable RIST streaming protocol" OFF)
+option(WOLF_STREAM_RIST "Enable RIST streaming protocol" ON)
 option(WOLF_STREAM_WEBRTC "Enable webRTC" OFF)
 
 # system modules

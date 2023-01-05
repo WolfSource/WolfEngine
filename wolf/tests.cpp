@@ -38,7 +38,7 @@ BOOST_AUTO_TEST_CASE(wolf_test) {
 
 #pragma region stream tests
 
-//#include <stream/test/rist.hpp>
+#include <stream/test/rist.hpp>
 
 #pragma endregion
 
