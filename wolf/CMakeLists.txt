@@ -282,7 +282,7 @@ source_group("system/test" FILES ${WOLF_SYSTEM_TEST_SRC})
 source_group("system" FILES ${WOLF_SYSTEM_SRC})
 source_group("media/test" FILES ${WOLF_MEDIA_TEST_SRC})
 source_group("media/ffmpeg" FILES ${WOLF_MEDIA_FFMPEG_SRC})
-source_group("media" FILES ${WOLF_MEDIA_SRC})
+source_group("media" FILES ${WOLF_MEDIA_OPENAL_SRC} ${WOLF_MEDIA_STB_SRC})
 
 # add compile options
 if (NOT WIN32)

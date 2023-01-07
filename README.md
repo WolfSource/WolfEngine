@@ -58,9 +58,9 @@ cmake --build --preset default-build-android
 | API | Windows | Linux | macOS | iOS | Android | Wasm |
 |:-----------:|:-----------:|:--------------------------:|:--------------:|:-------------:|:--------------:|:-------------:|
 | Bitmap | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :x: |
-| FFmpeg | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :x: |
+| [FFmpeg](https://github.com/WolfEngine/WolfEngine/blob/main/wolf/stream/test/ffmpeg_stream.hpp) | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :x: |
 | JPEG | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :x: |
-| OpenAL | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :x: |
+| [OpenAL](https://github.com/WolfEngine/WolfEngine/blob/main/wolf/media/test/openal.hpp) | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :x: |
 | PNG | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :x: |
 | WebP | :memo: | :memo: | :memo: | :memo: | :memo: | :x: |
 

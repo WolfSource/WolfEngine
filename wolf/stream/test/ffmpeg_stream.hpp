@@ -43,7 +43,7 @@ BOOST_AUTO_TEST_CASE(ffmpeg_stream_test) {
         auto _height = 0;
 
         auto _on_frame_cb = [&](const w_av_packet &p_packet,
-                                const std::vector<AVStream *> p_streams,
+                                const std::vector<AVStream *>& p_streams,
                                 const int p_video_stream_index,
                                 const int p_audio_stream_index) -> bool {
           const auto _stream_index = p_packet.get_stream_index();

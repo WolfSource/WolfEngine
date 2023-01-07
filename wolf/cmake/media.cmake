@@ -37,12 +37,12 @@ if (WOLF_MEDIA_OPENAL)
   set(FETCHCONTENT_QUIET OFF)
   FetchContent_MakeAvailable(openal)
 
-  file(GLOB_RECURSE WOLF_MEDIA_SRC
+  file(GLOB_RECURSE WOLF_MEDIA_OPENAL_SRC
     "${CMAKE_CURRENT_SOURCE_DIR}/media/w_openal.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/media/w_openal.cpp"
   )
 
-  list(APPEND SRCS ${WOLF_MEDIA_SRC})
+  list(APPEND SRCS ${WOLF_MEDIA_OPENAL_SRC})
   list(APPEND INCLUDES ${openal_SOURCE_DIR}/include)
   list(APPEND LIBS ${openal_BINARY_DIR}/${CMAKE_BUILD_TYPE}/OpenAL32.${LIB_EXT})    
 
@@ -67,6 +67,12 @@ if (WOLF_MEDIA_STB)
   
   FetchContent_Populate(stb)
 
+  file(GLOB_RECURSE WOLF_MEDIA_STB_SRC
+    "${CMAKE_CURRENT_SOURCE_DIR}/media/w_image.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/media/w_image.cpp"
+  )
+
+  list(APPEND SRCS ${WOLF_MEDIA_STB_SRC})
   list(APPEND INCLUDES ${stb_SOURCE_DIR})
 
 endif()

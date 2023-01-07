@@ -323,7 +323,7 @@ boost::leaf::result<w_decoder> w_ffmpeg::create_decoder(
 boost::leaf::result<int> w_ffmpeg::open_stream_receiver(
     _In_ const std::string &p_url, _In_ const std::vector<w_av_set_opt> &p_opts,
     _In_ std::function<bool(const w_av_packet & /*p_packet*/,
-                            const std::vector<AVStream *> /*p_streams*/,
+                            const std::vector<AVStream *>& /*p_streams*/,
                             const int /*p_video_stream_index*/,
                             const int /*p_audio_stream_index*/)>
         p_on_frame) noexcept {
