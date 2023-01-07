@@ -116,7 +116,7 @@ BOOST_AUTO_TEST_CASE(ffmpeg_stream_test) {
 
               auto _rgba_frame = _av_frame.convert(_dst_config);
               if (_rgba_frame.has_error()) {
-                std::cout << "could not convert to rgb video frame"
+                std::cout << "could not convert av video frame to rgb frame"
                           << std::endl;
               } else {
                 const auto _path = std::filesystem::current_path().append(
