@@ -72,8 +72,8 @@ cmake --build --preset default-build-android
 | QUIC | :memo: | :memo: | :memo: | :memo: | :memo: | :x: |
 | RIST | :white_check_mark: | :memo: | :memo: | :memo: | :white_check_mark: | :x: |
 | RTMP | :memo: | :x: | :x: | :x: | :x: | :x: |
-| RTSP | :memo: | :memo: | :memo: | :memo: | :memo: | :x: |
-| SRT | :memo: | :memo: | :memo: | :memo: | :memo: | :x: |
+| RTSP | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :x: |
+| SRT | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :x: |
 | webRTC | :memo: | :memo: | :memo: | :memo: | :memo: | :memo: |
 | WebSocket | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :memo: |
 
