@@ -44,16 +44,19 @@ boost::leaf::result<int> w_decoder::decode(_In_ const w_av_packet &p_packet,
       break;
     }
 
-    if (_bytes < 0) {
-      return W_FAILURE(std::errc::operation_canceled,
-                       "could not parse packet for decoding");
-    }
-
-    p_packet._packet->data += _bytes;
-    p_packet._packet->size -= _bytes;
-
-    if (_dst_packet._packet->size > 0) {
-      BOOST_LEAF_CHECK(_decode(_dst_packet._packet, p_frame));
+    if (_dst_packet._packet->size == 0) {
+        // try decode the inputed packet
+      BOOST_LEAF_CHECK(_decode(p_packet._packet, p_frame));
+    } else {
+      if (_bytes < 0) {
+        return W_FAILURE(std::errc::operation_canceled,
+                         "could not parse packet for decoding");
+      }
+      p_packet._packet->data += _bytes;
+      p_packet._packet->size -= _bytes;
+      if (_dst_packet._packet->size > 0) {
+        BOOST_LEAF_CHECK(_decode(_dst_packet._packet, p_frame));
+      }
     }
   }
 
