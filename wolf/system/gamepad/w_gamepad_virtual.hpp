@@ -1,5 +1,5 @@
 /*
-    Project: Wolf Engine. Copyright © 2014-2022 Pooya Eimandar
+    Project: Wolf Engine. Copyright © 2014-2023 Pooya Eimandar
     https://github.com/WolfEngine/WolfEngine
 */
 #if defined(WOLF_SYSTEM_GAMEPAD_VIRTUAL) && !defined(EMSCRIPTEN)

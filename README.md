@@ -110,4 +110,4 @@ cmake --build --preset default-build-android
 ## [Youtube](https://www.youtube.com/c/WolfEngine)
 ## [Twitter](https://www.twitter.com/Wolf_Engine)
 
-Wolf Engine © 2014-2022 [Pooya Eimandar](https://www.linkedin.com/in/pooyaeimandar/)
+Wolf Engine © 2014-2023 [Pooya Eimandar](https://www.linkedin.com/in/pooyaeimandar/)

@@ -43,14 +43,14 @@ using w_image = wolf::media::w_image;
 //  }
 //}
 
-boost::leaf::result<int> w_image::save_png() {
-  // return stbi_write_png(_path.c_str(), this->_config.width,
-  //                       this->_config.height, _comp,
-  //                       this->_av_frame->data[0],
-  //                       this->_av_frame->linesize[0]);
-
-  return 0;
-}
+//boost::leaf::result<int> w_image::save_png() {
+//  // return stbi_write_png(_path.c_str(), this->_config.width,
+//  //                       this->_config.height, _comp,
+//  //                       this->_av_frame->data[0],
+//  //                       this->_av_frame->linesize[0]);
+//
+//  return 0;
+//}
 
 #endif
 
