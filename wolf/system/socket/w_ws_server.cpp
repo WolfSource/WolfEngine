@@ -66,7 +66,7 @@ s_listen(_In_ const boost::asio::io_context &p_io_context,
          _In_ const boost::beast::websocket::stream_base::timeout &p_timeout,
          _In_ w_socket_options &p_socket_options,
          _In_ w_session_ws_on_data_callback p_on_data_callback,
-         _In_ w_session_on_error_callback p_on_error_callback) noexcept {
+         _In_ w_session_on_error_callback p_on_error_callback) {
   // create acceptor from this coroutine
   auto _executor = co_await boost::asio::this_coro::executor;
   auto _acceptor =
@@ -117,8 +117,8 @@ boost::leaf::result<int> w_ws_server::run(
     // server with coroutines
     boost::asio::co_spawn(p_io_context,
                           s_listen(p_io_context, p_endpoint, p_timeout,
-                                   p_socket_options, p_on_data_callback,
-                                   p_on_error_callback),
+                                   p_socket_options, std::move(p_on_data_callback),
+                                   std::move(p_on_error_callback)),
                           boost::asio::detached);
     return S_OK;
 

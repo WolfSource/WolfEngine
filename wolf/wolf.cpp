@@ -38,8 +38,7 @@ static void w_signal_handler(int p_signum) {
   }
 
   std::fstream _file;
-  _file.open(_path_str.string(), std::ios_base::out,
-             std::ios_base::_Default_open_prot);
+  _file.open(_path_str.string(), std::ios_base::out);
   if (_file.is_open()) {
     _file << _traces.str();
     _file.close();

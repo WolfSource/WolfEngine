@@ -25,12 +25,11 @@ s_check_input_len(_In_ const size_t p_src_size) noexcept {
 }
 
 static std::vector<std::byte>
-s_shrink_to_fit(_In_ const std::vector<std::byte> &p_src,
-                _In_ const size_t p_shrink_size) noexcept {
+s_shrink_to_fit(_In_ const std::vector<std::byte> &p_src, _In_ const size_t p_shrink_size) noexcept {
   std::vector<std::byte> _dst;
   _dst.resize(p_shrink_size);
 
-  std::copy(p_src.begin(), p_src.begin() + p_shrink_size, _dst.begin());
+  std::copy(p_src.begin(), p_src.begin() + gsl::narrow_cast<int>(p_shrink_size), _dst.begin());
   return _dst;
 }
 
@@ -52,7 +51,7 @@ w_lz4::compress_default(_In_ const gsl::span<const std::byte> p_src) noexcept {
   _tmp.resize(_dst_capacity);
 
   const auto _bytes =
-      LZ4_compress_default((const char *)p_src.data(), (char *)_tmp.data(),
+      LZ4_compress_default(reinterpret_cast<const char *>(p_src.data()), reinterpret_cast<char *>(_tmp.data()),
                            gsl::narrow_cast<int>(_src_size), _dst_capacity);
   if (_bytes > 0) {
     return s_shrink_to_fit(_tmp, _bytes);
@@ -77,7 +76,7 @@ w_lz4::compress_fast(_In_ const gsl::span<const std::byte> p_src,
   _tmp.resize(_dst_capacity);
 
   const auto _bytes = LZ4_compress_fast(
-      (const char *)p_src.data(), (char *)_tmp.data(),
+      reinterpret_cast<const char *>(p_src.data()), reinterpret_cast<char *>(_tmp.data()),
       gsl::narrow_cast<int>(_src_size), _dst_capacity, p_acceleration);
   if (_bytes > 0) {
     return s_shrink_to_fit(_tmp, _bytes);
@@ -97,12 +96,16 @@ w_lz4::decompress(_In_ const gsl::span<const std::byte> p_src,
   // we will increase our size per each step
   std::vector<std::byte> _tmp;
   auto _resize = _src_size * 2;
+
+#ifdef __clang
+#pragma unroll
+#endif
   for (auto i = 0; i < p_max_retry; ++i) {
     // resize it for next round
     _tmp.resize(_resize);
 
     const auto _bytes = LZ4_decompress_safe(
-        (char *)p_src.data(), (char *)_tmp.data(),
+        reinterpret_cast<const char *>(p_src.data()), reinterpret_cast<char *>(_tmp.data()),
         gsl::narrow_cast<int>(_src_size), gsl::narrow_cast<int>(_tmp.size()));
     if (_bytes > 0) {
       return s_shrink_to_fit(_tmp, _bytes);

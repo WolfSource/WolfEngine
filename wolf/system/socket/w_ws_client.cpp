@@ -48,12 +48,12 @@ boost::asio::awaitable<void> w_ws_client::async_connect(
           boost::beast::websocket::stream<boost::beast::tcp_stream>(
               co_await boost::asio::this_coro::executor)));
 
-  co_await boost::beast::get_lowest_layer(*this->_ws.get())
+  co_await boost::beast::get_lowest_layer(*this->_ws)
       .async_connect(p_endpoint, boost::asio::use_awaitable);
 
   // turn off the timeout on the tcp_stream, because
   // the websocket stream has its own timeout system.
-  boost::beast::get_lowest_layer(*this->_ws.get()).expires_never();
+  boost::beast::get_lowest_layer(*this->_ws).expires_never();
 
   // set suggested timeout settings for the websocket
   this->_ws->set_option(

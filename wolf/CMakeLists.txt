@@ -64,7 +64,7 @@ option(WOLF_RENDER "Enable cross platform render engine based on Vulkan / OpenGL
 option(WOLF_MEDIA_FFMPEG "Enable ffmpeg encoding and decoding" OFF)
 option(WOLF_MEDIA_OPENAL "Enable OpenAL soft" OFF)
 option(WOLF_MEDIA_SCREEN_CAPTURE "Enable screen capture" OFF)
-option(WOLF_MEDIA_STB "Enable stb headers" OFF)
+option(WOLF_MEDIA_STB "Enable stb headers" ON)
 
 # stream modules
 option(WOLF_STREAM_GRPC "Enable gRPC connection" OFF)
@@ -76,15 +76,15 @@ option(WOLF_STREAM_WEBRTC "Enable webRTC" OFF)
 option(WOLF_SYSTEM_BORINGSSL "Enable boringSSL" OFF)
 option(WOLF_SYSTEM_GAMEPAD_CLIENT "Enable gamepad input handling" OFF)
 option(WOLF_SYSTEM_GAMEPAD_VIRTUAL "Enable virtual gamepad simulator" OFF)
-option(WOLF_SYSTEM_HTTP1_WS "Enable http1.1 and websocket client/server based on boost beast" OFF)
+option(WOLF_SYSTEM_HTTP1_WS "Enable http1.1 and websocket client/server based on boost beast" ON)
 option(WOLF_SYSTEM_LOG "Enable log" OFF)
 option(WOLF_SYSTEM_LUAJIT "Enable luaJIT" OFF)
-option(WOLF_SYSTEM_LZ4 "Enable lz4 for compression" OFF)
-option(WOLF_SYSTEM_LZMA "Enable lzma for compression" OFF)
+option(WOLF_SYSTEM_LZ4 "Enable lz4 for compression" ON)
+option(WOLF_SYSTEM_LZMA "Enable lzma for compression" ON)
 option(WOLF_SYSTEM_MIMALLOC "Enable Microsoft's mimalloc memory allocator" OFF)
-option(WOLF_SYSTEM_SIG_SLOT "Enable signal/slot based on boost signals2" OFF)
-option(WOLF_SYSTEM_SOCKET "Enable TCP/UDP protocol over socket" OFF)
-option(WOLF_SYSTEM_STACKTRACE "Enable boost stacktrace" OFF)
+option(WOLF_SYSTEM_SIG_SLOT "Enable signal/slot based on boost signals2" ON)
+option(WOLF_SYSTEM_SOCKET "Enable TCP/UDP protocol over socket" ON)
+option(WOLF_SYSTEM_STACKTRACE "Enable boost stacktrace" ON)
 
 #option(WOLF_SYSTEM_WASM3 "Enable WebAssembly interpreter" OFF)
 #option(WOLF_SYSTEM_ZLIB "Enable zlib for compression" OFF)
@@ -138,13 +138,23 @@ if ("${CMAKE_BUILD_TYPE}" STREQUAL "")
 endif()
 set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
 
+# set C++23 as the primary standard
 set(CMAKE_CXX_STANDARD 23)
-if (MSVC)
-set(CMAKE_CXX_FLAGS "/EHsc /W3 /bigobj")
-else()
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++2b -fexceptions -fcoroutines")
-set(CMAKE_CXX_FLAGS_DEBUG "-g")
-set(CMAKE_CXX_FLAGS_RELEASE "-O3")
+
+# set C++ flags based on compiler
+if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
+  # using Clang or AppleClang
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++2b -fexceptions -fcoroutines-ts")
+  set(CMAKE_CXX_FLAGS_DEBUG "-g")
+  set(CMAKE_CXX_FLAGS_RELEASE "-O3")
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+  # using GCC
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++2b -fexceptions -fcoroutines")
+  set(CMAKE_CXX_FLAGS_DEBUG "-g")
+  set(CMAKE_CXX_FLAGS_RELEASE "-O3")
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+  # using Visual Studio C++
+  set(CMAKE_CXX_FLAGS "/EHsc /W3 /bigobj")
 endif()
 
 if (ANDROID)
@@ -182,9 +192,9 @@ endif()
 # https://devblogs.microsoft.com/cppblog/visual-studio-code-c-december-2021-update-clang-tidy/
 # can be enabled with .CLANG-TIDY from Visual Studio
 # https://devblogs.microsoft.com/cppblog/code-analysis-with-clang-tidy-in-visual-studio/
-# set(CMAKE_CXX_CLANG_TIDY
-#     clang-tidy;
-#     -format-style=file;)  
+set(CMAKE_CXX_CLANG_TIDY
+     clang-tidy;
+     -format-style=file;)  
 
 # add definitions
 

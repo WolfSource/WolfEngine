@@ -86,7 +86,10 @@ w_image::save_hdr(_In_ const std::filesystem::path &p_path,
                      "could not save hdr file to the the following path: " +
                          p_path.string());
   }
-  return stbi_write_hdr(p_path.string().c_str(), p_width, p_height, p_comp,
+  return stbi_write_hdr(p_path.string().c_str(), 
+    gsl::narrow_cast<int>(p_width), 
+    gsl::narrow_cast<int>(p_height), 
+    gsl::narrow_cast<int>(p_comp),
                         p_data.data());
 }
 
@@ -101,7 +104,7 @@ w_image::save_jpg(_In_ const std::filesystem::path &p_path,
   }
   return stbi_write_jpg(p_path.string().c_str(), p_image_data.width,
                         p_image_data.height, p_image_data.comp,
-                        p_image_data.raw_data, p_quality);
+                        p_image_data.raw_data, gsl::narrow_cast<int>(p_quality));
 }
 
 boost::leaf::result<int>
@@ -115,7 +118,7 @@ w_image::save_png(_In_ const std::filesystem::path &p_path,
   }
   return stbi_write_png(p_path.string().c_str(), p_image_data.width,
                         p_image_data.height, p_image_data.comp,
-                        p_image_data.raw_data, p_stride);
+                        p_image_data.raw_data, gsl::narrow_cast<int>(p_stride));
 }
 
 #endif

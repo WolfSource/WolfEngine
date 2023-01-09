@@ -25,14 +25,14 @@ BOOST_AUTO_TEST_CASE(wolf_test) {
 #pragma region system tests
 
 #include <system/test/compress.hpp>
+#include <system/test/gamepad.hpp>
 #include <system/test/gametime.hpp>
 #include <system/test/log.hpp>
 #include <system/test/process.hpp>
 #include <system/test/signal_slot.hpp>
-#include <system/test/trace.hpp>
 #include <system/test/tcp.hpp>
+#include <system/test/trace.hpp>
 #include <system/test/ws.hpp>
-#include <system/test/gamepad.hpp>
 
 #pragma endregion
 
