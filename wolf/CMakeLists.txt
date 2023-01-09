@@ -192,9 +192,9 @@ endif()
 # https://devblogs.microsoft.com/cppblog/visual-studio-code-c-december-2021-update-clang-tidy/
 # can be enabled with .CLANG-TIDY from Visual Studio
 # https://devblogs.microsoft.com/cppblog/code-analysis-with-clang-tidy-in-visual-studio/
-set(CMAKE_CXX_CLANG_TIDY
-     clang-tidy;
-     -format-style=file;)  
+#set(CMAKE_CXX_CLANG_TIDY
+#     clang-tidy;
+#     -format-style=file;)  
 
 # add definitions
 
