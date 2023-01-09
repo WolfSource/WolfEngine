@@ -21,12 +21,11 @@ struct w_decoder;
 struct w_encoder;
 struct w_ffmpeg;
 
-class w_av_packet {
+struct w_av_packet {
   friend w_decoder;
   friend w_encoder;
   friend w_ffmpeg;
 
-public:
   /**
    * construct an av_packet
    */

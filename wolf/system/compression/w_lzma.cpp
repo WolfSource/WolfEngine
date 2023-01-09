@@ -32,7 +32,6 @@ static void s_lzma_prop(_Inout_ CLzmaEncProps *p_prop, _In_ uint32_t p_level,
 
   constexpr auto _min_dic_size = 1 << 12;
   constexpr auto _max_dic_size = 3 << 29;
-  constexpr auto _min_level = 0;
   constexpr auto _max_level = 9;
 
   constexpr auto _fb = 40;
@@ -49,8 +48,6 @@ static void s_lzma_prop(_Inout_ CLzmaEncProps *p_prop, _In_ uint32_t p_level,
 
   if (p_level >= _max_level) {
     p_level = _max_level;
-  } else if (p_level <= _min_level) {
-    p_level = _min_level;
   }
   p_prop->level = p_level;
 }

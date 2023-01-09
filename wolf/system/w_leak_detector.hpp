@@ -12,8 +12,7 @@
 #include <wolf.hpp>
 
 namespace wolf::system {
-class w_leak_detector {
-public:
+struct w_leak_detector {
   // default constructor
   W_API w_leak_detector() noexcept;
   // destructor

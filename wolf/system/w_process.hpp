@@ -9,8 +9,7 @@
 #include <wolf.hpp>
 
 namespace wolf::system {
-class w_process {
-public:
+struct w_process {
   // default constructor
   W_API w_process() noexcept = default;
   // destructor

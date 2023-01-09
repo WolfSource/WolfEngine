@@ -41,7 +41,7 @@ w_encoder::_encode(_In_ const AVFrame *p_frame,
   return 0;
 }
 
-boost::leaf::result<int> w_encoder::encode(_In_ w_av_frame &p_frame,
+boost::leaf::result<int> w_encoder::encode(_In_ const w_av_frame &p_frame,
                                            _Inout_ w_av_packet &p_packet,
                                            _In_ bool p_flush) noexcept {
 

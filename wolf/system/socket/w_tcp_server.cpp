@@ -91,7 +91,7 @@ s_session(const boost::asio::io_context &p_io_context, tcp::socket p_socket,
 
 static boost::asio::awaitable<void>
 s_listen(_In_ const boost::asio::io_context &p_io_context,
-         _In_ tcp::endpoint &p_endpoint, _In_ steady_clock::duration &p_timeout,
+         _In_ tcp::endpoint &p_endpoint, _In_ const steady_clock::duration &p_timeout,
          _In_ w_socket_options &p_socket_options,
          _In_ w_session_on_data_callback p_on_data_callback,
          _In_ w_session_on_error_callback p_on_error_callback) noexcept {

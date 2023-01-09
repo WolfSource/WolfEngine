@@ -13,8 +13,7 @@ namespace wolf::system {
 constexpr auto MAX_DELTA_TIME_IN_SECS = 60000.0; // 60 minutes
 constexpr auto TARGET_ELAPSED_SECS = 1.0 / 60.0;
 
-class w_gametime {
-public:
+struct w_gametime {
   // default constructor
   W_API w_gametime() noexcept = default;
 

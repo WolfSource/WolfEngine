@@ -27,7 +27,7 @@ struct w_encoder {
   // move assignment operator.
   W_API w_encoder &operator=(w_encoder &&p_other) noexcept = default;
 
-  W_API boost::leaf::result<int> encode(_In_ w_av_frame &p_frame,
+  W_API boost::leaf::result<int> encode(_In_ const w_av_frame &p_frame,
                                         _Inout_ w_av_packet &p_packet,
                                         _In_ bool p_flush = true) noexcept;
 
