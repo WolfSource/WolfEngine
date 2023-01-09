@@ -57,11 +57,11 @@ cmake --build --preset default-build-android
 
 | API | Windows | Linux | macOS | iOS | Android | Wasm |
 |:-----------:|:-----------:|:--------------------------:|:--------------:|:-------------:|:--------------:|:-------------:|
-| [Bitmap](https://github.com/WolfEngine/WolfEngine/blob/main/wolf/media/test/ffmpeg.hpp) | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :x: |
-| [FFmpeg](https://github.com/WolfEngine/WolfEngine/blob/main/wolf/stream/test/ffmpeg_stream.hpp) | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :x: |
-| [JPEG](https://github.com/WolfEngine/WolfEngine/blob/main/wolf/media/test/ffmpeg.hpp) | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :x: |
-| [OpenAL](https://github.com/WolfEngine/WolfEngine/blob/main/wolf/media/test/openal.hpp) | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :x: |
-| [PNG](https://github.com/WolfEngine/WolfEngine/blob/main/wolf/media/test/ffmpeg.hpp) | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :x: |
+| [Bitmap](https://github.com/WolfEngine/WolfEngine/blob/main/wolf/media/test/ffmpeg.hpp) | :white_check_mark: | :white_check_mark: | :memo: | :memo: | :memo: | :x: |
+| [FFmpeg](https://github.com/WolfEngine/WolfEngine/blob/main/wolf/stream/test/ffmpeg_stream.hpp) | :white_check_mark: | :white_check_mark: | :memo: | :memo: | :memo: | :x: |
+| [JPEG](https://github.com/WolfEngine/WolfEngine/blob/main/wolf/media/test/ffmpeg.hpp) | :white_check_mark: | :white_check_mark: | :memo: | :memo: | :memo: | :x: |
+| [OpenAL](https://github.com/WolfEngine/WolfEngine/blob/main/wolf/media/test/openal.hpp) | :white_check_mark: | :white_check_mark: | :memo: | :memo: | :memo: | :x: |
+| [PNG](https://github.com/WolfEngine/WolfEngine/blob/main/wolf/media/test/ffmpeg.hpp) | :white_check_mark: | :white_check_mark: | :memo: | :memo: | :memo: | :x: |
 | WebP | :memo: | :memo: | :memo: | :memo: | :memo: | :x: |
 
 ### Supported platforms and APIs for stream module
@@ -76,28 +76,28 @@ cmake --build --preset default-build-android
 | [RTSP](https://github.com/WolfEngine/WolfEngine/blob/main/wolf/stream/test/ffmpeg_stream.hpp) | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :x: |
 | [SRT](https://github.com/WolfEngine/WolfEngine/blob/main/wolf/stream/test/ffmpeg_stream.hpp) | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :x: |
 | webRTC | :memo: | :memo: | :memo: | :memo: | :memo: | :memo: |
-| [WebSocket](https://github.com/WolfEngine/WolfEngine/blob/main/wolf/system/test/ws.hpp) | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :memo: |
+| [WebSocket](https://github.com/WolfEngine/WolfEngine/blob/main/wolf/system/test/ws.hpp) | :white_check_mark: | :white_check_mark: | :memo: | :memo: | :memo: | :memo: |
 
 ### Supported platforms and APIs for system module
 
 | API | Windows | Linux | macOS | iOS | Android | Wasm |
 |:-----------:|:-----------:|:--------------------------:|:--------------:|:-------------:|:--------------:|:-------------:|
-| Coroutine | :white_check_mark: | :memo: | :memo: | :x: | :x: | :x: |
-| [GameTime](https://github.com/WolfEngine/WolfEngine/blob/main/wolf/system/test/gametime.hpp) | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :white_check_mark: |
-| [Gamepad](https://github.com/WolfEngine/WolfEngine/blob/main/wolf/system/test/gamepad.hpp) | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :white_check_mark: |
+| Coroutine | :white_check_mark: | :white_check_mark: | :memo: | :x: | :x: | :x: |
+| [GameTime](https://github.com/WolfEngine/WolfEngine/blob/main/wolf/system/test/gametime.hpp) | :white_check_mark: | :white_check_mark: | :memo: | :memo: | :memo: | :white_check_mark: |
+| [Gamepad](https://github.com/WolfEngine/WolfEngine/blob/main/wolf/system/test/gamepad.hpp) | :white_check_mark: | :white_check_mark: | :memo: | :memo: | :memo: | :white_check_mark: |
 | [Virtual Gamepad](https://github.com/WolfEngine/WolfEngine/blob/main/wolf/system/test/gamepad.hpp) | :white_check_mark: | :x: | :x: | :x: | :x: | :x: |
-| [Log](https://github.com/WolfEngine/WolfEngine/blob/main/wolf/system/test/log.hpp)  | :white_check_mark: | :construction: | :construction: | :construction: | :construction: | :construction: | 
+| [Log](https://github.com/WolfEngine/WolfEngine/blob/main/wolf/system/test/log.hpp)  | :white_check_mark: | :white_check_mark: | :construction: | :construction: | :construction: | :construction: | 
 | LuaJit  | :memo: | :memo: | :memo: | :memo: | :memo: | :x: |
-| [LZ4](https://github.com/WolfEngine/WolfEngine/blob/main/wolf/system/test/compress.hpp)  | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :x: |
-| [LZMA](https://github.com/WolfEngine/WolfEngine/blob/main/wolf/system/test/compress.hpp)  | :white_check_mark: | :memo: | :memo: | :x: | :x: | :x: |
+| [LZ4](https://github.com/WolfEngine/WolfEngine/blob/main/wolf/system/test/compress.hpp)  | :white_check_mark: | :white_check_mark: | :memo: | :memo: | :memo: | :x: |
+| [LZMA](https://github.com/WolfEngine/WolfEngine/blob/main/wolf/system/test/compress.hpp)  | :white_check_mark: | :white_check_mark: | :memo: | :x: | :x: | :x: |
 | OpenTelemetry  | :memo: | :memo: | :memo: | :x: | :x: | :x: |
 | RAFT  | :memo: | :memo: | :memo: | :memo: | :memo: | :memo: |
 | Screen Capture  | :memo: | :construction: | :construction: | :x: | :x: | :x: |
-| [Signal Slot](https://github.com/WolfEngine/WolfEngine/blob/main/wolf/system/test/signal_slot.hpp)  | :white_check_mark: | :construction: | :construction: | :x: | :x: | :x: |
-| [Stacktrace](https://github.com/WolfEngine/WolfEngine/blob/main/wolf/tests.cpp)  | :white_check_mark: | :construction: | :construction: | :construction: | :construction: | :x: |
+| [Signal Slot](https://github.com/WolfEngine/WolfEngine/blob/main/wolf/system/test/signal_slot.hpp)  | :white_check_mark: | :white_check_mark: | :construction: | :x: | :x: | :x: |
+| [Stacktrace](https://github.com/WolfEngine/WolfEngine/blob/main/wolf/tests.cpp)  | :white_check_mark: | :white_check_mark: | :construction: | :construction: | :construction: | :x: |
 | Sycl  | :memo: | :memo: | :memo: | :x: | :x: | :x: |
-| [TCP](https://github.com/WolfEngine/WolfEngine/blob/main/wolf/system/test/tcp.hpp) | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :x: |
-| [Trace](https://github.com/WolfEngine/WolfEngine/blob/main/wolf/system/test/trace.hpp) | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :x: |
+| [TCP](https://github.com/WolfEngine/WolfEngine/blob/main/wolf/system/test/tcp.hpp) | :white_check_mark: | :white_check_mark: | :memo: | :memo: | :memo: | :x: |
+| [Trace](https://github.com/WolfEngine/WolfEngine/blob/main/wolf/system/test/trace.hpp) | :white_check_mark: | :white_check_mark: | :memo: | :memo: | :memo: | :x: |
 | UDP | :construction: | :memo: | :memo: | :memo: | :memo: | :x: |
 | Wasm3  | :memo: | :memo: | :memo: | :memo: | :memo: | :memo: |
 
