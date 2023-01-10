@@ -4,7 +4,6 @@ if (WOLF_MEDIA_FFMPEG)
     "${CMAKE_CURRENT_SOURCE_DIR}/media/ffmpeg/*"
   )
   list(APPEND SRCS ${WOLF_MEDIA_FFMPEG_SRC})
-  list(APPEND INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/third_party/ffmpeg/include)
 
   list(APPEND FFMPEG_LIBS 
     avcodec 
@@ -16,9 +15,16 @@ if (WOLF_MEDIA_FFMPEG)
     swscale
     )
 
+  add_library(ffmpeg INTERFACE)
+  target_include_directories(ffmpeg INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/third_party/ffmpeg/include")
+  target_link_directories(ffmpeg INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/third_party/ffmpeg/bin")
+
   foreach (lib_name ${FFMPEG_LIBS})
-    list(APPEND LIBS ${CMAKE_CURRENT_SOURCE_DIR}/third_party/ffmpeg/lib/${TARGET_OS}/${lib_name}.${LIB_EXT})
+    set(lib_file "${CMAKE_CURRENT_SOURCE_DIR}/third_party/ffmpeg/lib/${TARGET_OS}/${lib_name}.${LIB_EXT}")
+    target_link_libraries(ffmpeg INTERFACE ${lib_file})
   endforeach()
+
+  list(APPEND LIBS ffmpeg)
 endif()
 
 # link openAL
@@ -43,8 +49,7 @@ if (WOLF_MEDIA_OPENAL)
   )
 
   list(APPEND SRCS ${WOLF_MEDIA_OPENAL_SRC})
-  list(APPEND INCLUDES ${openal_SOURCE_DIR}/include)
-  list(APPEND LIBS ${openal_BINARY_DIR}/${CMAKE_BUILD_TYPE}/OpenAL32.${LIB_EXT})    
+  list(APPEND LIBS OpenAL::OpenAL)
 
   set_target_properties(
     build_version
@@ -52,8 +57,7 @@ if (WOLF_MEDIA_OPENAL)
     ex-common
     OpenAL
     openal-info
-    PROPERTIES FOLDER "openAL") 
-
+    PROPERTIES FOLDER "openAL")
 endif()
 
 if (WOLF_MEDIA_STB)

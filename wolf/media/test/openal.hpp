@@ -3,7 +3,7 @@
     https://github.com/WolfEngine/WolfEngine
 */
 
-#if defined(WOLF_TEST) && defined(WOLF_MEDIA_OPENAL) && defined(WOLF_MEDIA_FFMPEG)
+#if defined(WOLF_TEST) && defined(WOLF_MEDIA_OPENAL)
 
 #pragma once
 
@@ -13,8 +13,10 @@
 #include <media/w_openal.hpp>
 
 BOOST_AUTO_TEST_CASE(openal_play_wav) {
+  using wolf::media::w_openal;
+  using wolf::media::w_openal_config;
+
   const wolf::system::w_leak_detector _detector = {};
-  using w_openal = wolf::media::w_openal;
 
   auto _current_dir =
       std::filesystem::current_path().append("../../content/audio/sine.wav");
@@ -26,6 +28,15 @@ BOOST_AUTO_TEST_CASE(openal_play_wav) {
   // let wolf_dir = current_dir.join("wolf");
   // let file_path = if wolf_dir.exists() { wolf_dir.join(file_name) }
   // else {current_dir.join(file_name)};
+
+  // make sure constructor works. later update with wav header.
+  [[maybe_unused]] auto openal = w_openal{
+    w_openal_config{
+      .format = AL_FORMAT_STEREO16,
+      .sample_rate = 48000,
+      .channels = 1
+    }
+  };
 }
 
 #endif

@@ -284,12 +284,12 @@ boost::leaf::result<w_decoder> w_ffmpeg::create_decoder(
   _decoder.ctx.codec = avcodec_find_decoder(p_id);
   if (_decoder.ctx.codec == nullptr) {
     return W_FAILURE(std::errc::invalid_argument,
-                     "could not find decoder codec id: " + p_id);
+                     "could not find decoder codec id: " + std::to_string(p_id));
   }
   _decoder.ctx.parser = av_parser_init(_decoder.ctx.codec->id);
   if (_decoder.ctx.parser == nullptr) {
     return W_FAILURE(std::errc::invalid_argument,
-                     "could not initialize parser for codec id: " + p_id);
+                     "could not initialize parser for codec id: " + std::to_string(p_id));
   }
 
   BOOST_LEAF_CHECK(s_create(_decoder.ctx, p_config, p_codec_opts, p_opts));
@@ -392,7 +392,7 @@ boost::leaf::result<int> w_ffmpeg::open_stream_receiver(
 
   std::vector<AVStream *> _streams;
   _streams.reserve(_fmt_ctx->nb_streams);
-  for (auto i = 0; i < _fmt_ctx->nb_streams; ++i) {
+  for (auto i = 0u; i < _fmt_ctx->nb_streams; ++i) {
     _streams.push_back(_fmt_ctx->streams[i]);
   }
 
