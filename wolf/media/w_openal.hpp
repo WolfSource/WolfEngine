@@ -161,7 +161,7 @@ public:
       alSourcePlay(this->_source);
 
       auto _error = get_last_error();
-      if (_error) {
+      if (!_error.empty()) {
         return W_FAILURE(std::errc::operation_canceled,
                      "error while updating openal because: " + _error);
       }
@@ -232,9 +232,7 @@ public:
   size_t _size_of_chunk = 0;
   LPALBUFFERCALLBACKSOFT _callback_ptr = nullptr;
 };
+
 } // namespace wolf::media
 
 #endif
-
-
-
