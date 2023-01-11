@@ -14,7 +14,155 @@
 #include <AL/alext.h>
 #include <DISABLE_ANALYSIS_END>
 
+#include <iostream>
+#include <concepts>
+
 namespace wolf::media {
+
+namespace internal {
+
+/**
+ * @brief spsc fixed-size continuous ring buffer. read/write in chunks.
+ *
+ * @tparam T an integral type. buffer read/write happens with memcopy.
+ */
+template <typename T>
+    requires std::is_integral_v<T>
+class w_ring_buffer {
+public:
+    using value_type = std::remove_cvref_t<T>;
+    using pointer = value_type*;
+    using const_pointer = const value_type*;
+
+public:
+    w_ring_buffer() noexcept {}
+    w_ring_buffer(const w_ring_buffer&) = delete;
+    w_ring_buffer(w_ring_buffer&&) noexcept = default;
+    ~w_ring_buffer() = default;
+
+    /**
+     * @brief initialize the buffer to given size.
+     * @param size maximum amount to initialize this buffer with.
+     */
+    [[nodiscard]] boost::leaf::result<int> init(_In_ std::size_t size) noexcept
+    {
+        _head_offset = 0;
+        _tail_offset = 0;
+
+        _size = size;
+        _buffer = std::make_unique<value_type[]>(size);
+        if (!_buffer) {
+            return W_FAILURE(std::errc::not_enough_memory,
+                             "could not allocate ring buffer memory");
+        }
+
+        return 0;
+    }
+
+    /**
+     * @return maximum amount that this buffer can hold.
+     */
+    [[nodiscard]] std::size_t max_size() const noexcept
+    {
+        return _size;
+    }
+
+    /**
+     * @return available size to read.
+     */
+    [[nodiscard]] std::size_t size() const noexcept
+    {
+        auto head = _head_offset.load();
+        auto tail = _tail_offset.load();
+
+        return (tail < head) ? _size - head : tail - head;
+    }
+
+    /**
+     * @brief read up to the requested size from buffer.
+     *
+     * only one thread (cosumer) at a time can call this method, or the behavior is undefined.
+     *
+     * @param outptr contiguous chunk of memory to copy into.
+     * @param size   amount requested. (make sure `outptr` array can hold this much)
+     *
+     * @return amount that was read into `outptr`.
+     */
+    std::size_t read(_Out_ pointer outptr, _In_ std::size_t size)
+    {
+        auto head = _head_offset.load();
+        auto tail = _tail_offset.load();
+
+        // available to read continuously.
+        const auto available = (tail < head) ? _size - head : tail - head;
+
+        auto amount = (size <= available) ? size : available;
+        std::memcpy(outptr, _buffer.get() + head, amount);
+
+        // sets head to either less than or equal to max, or 0
+        head = (head + amount) % _size;
+
+        // if more requested and more is available to read on the other side of buffer.
+        if (tail < head && amount < size) {
+            const auto remaining = size - amount;
+            const auto more = (remaining > tail) ? tail : remaining;
+            std::memcpy(outptr + amount, _buffer.get(), more);
+            amount += more;
+            head = more;
+        }
+
+        _head_offset = head; // update real head offset...
+
+        return amount;
+    }
+
+    /**
+     * @brief read up to the given size into buffer.
+     *
+     * @param data chunk of data to write into buffer.
+     * @param size amount of data to write into buffer.
+     *
+     * @return amount that was written to buffer.
+     */
+    std::size_t write(_In_ const_pointer data, _In_ std::size_t size)
+    {
+        auto tail = _tail_offset.load();
+        auto head = _head_offset.load();
+
+        // available to write continuously.
+        const auto available = (head <= tail) ? _size - tail : tail - head - 1;
+
+        auto amount = (size <= available) ? size : available;
+        std::memcpy(_buffer.get() + tail, data, amount);
+
+        tail += amount;
+
+        // if more was given and more is available to write on the other side of buffer.
+        if (head < tail && amount < size) {
+            const auto remaining = size - amount;
+            const auto more = (remaining > head) ? head : remaining;
+            std::memcpy(_buffer.get(), data + amount, more);
+            amount += more;
+            tail = more;
+        }
+
+        _tail_offset = tail; // update real tail offset...
+
+        return amount;
+    }
+
+private:
+    std::size_t _size = 0; //< total/maximum size that buffer can hold.
+    std::unique_ptr<value_type[]> _buffer{nullptr};
+
+    alignas(std::hardware_destructive_interference_size)
+    std::atomic<std::size_t> _head_offset = 0; //< starting point of valid data in circular buffer.
+
+    alignas(std::hardware_destructive_interference_size)
+    std::atomic<std::size_t> _tail_offset = 0; //< end point of valid data in circular buffer. (tail-1 = last byte)
+};
+
+}  // namespace internal
 
 struct w_openal_config {
   // the audio format
@@ -48,126 +196,40 @@ public:
   W_API
   boost::leaf::result<int> init();
 
-  /**
-   * update the openal
-   * @param p_audio_frame_buffer, the audio frame buffer
-   * @param p_audio_frame_buffer_len, the length of audio frame buffer
-   * @returns zero on success
-   */
-   template <typename T>
-     requires std::is_integral_v<int16_t> || std::is_integral_v<int8_t>
-   W_API boost::leaf::result<int>
-   update(_In_ const T *p_audio_frame_buffer,
-          _In_ const size_t p_audio_frame_buffer_len) {
-     // get state and pos
-     ALenum _state = 0;
-     ALint _pos = 0;
-     alGetSourcei(this->_source, AL_SAMPLE_OFFSET, &_pos);
-     alGetSourcei(this->_source, AL_SOURCE_STATE, &_state);
+   /**
+    * update the openal
+    * @param p_audio_frame_buffer, the audio frame buffer
+    * @param p_audio_frame_buffer_len, the length of audio frame buffer
+    * @returns zero on success
+    */
+    template <typename T>
+        requires std::is_integral_v<T>
+    W_API boost::leaf::result<int>
+    update(_In_ const T *p_audio_frame_buffer,
+           _In_ const size_t p_audio_frame_buffer_len)
+    {
+      // get state
+      ALenum _state = 0;
+      alGetSourcei(this->_source, AL_SOURCE_STATE, &_state);
 
-    const auto _frame_size = this->_config.channels * this->_size_of_chunk;
-    auto _write_offset = this->_write_pos;
+      this->_data_buffer.write(
+        reinterpret_cast<const ALbyte*>(p_audio_frame_buffer),
+        p_audio_frame_buffer_len * sizeof(T)
+      );
 
-    while (this->_total_read_bytes < p_audio_frame_buffer_len) {
-      size_t _read_bytes = 0;
-      const size_t _read_offset = this->_read_pos;
-      if (_read_offset > _write_offset) {
-        /*
-         * Note that the ring buffer's writable space is one byte less
-         * than the available area because the write offset ending up
-         * at the read offset would be interpreted as being empty
-         * instead of full.
-         */
-        auto _writable = _read_offset - _write_offset - 1;
-        if (_writable < _frame_size) {
-          break;
+      if (_state != AL_PLAYING && _state != AL_PAUSED) {
+        std::cout << "playing again..." << std::endl;
+        //alSourcei(this->_source, AL_SOURCE_RELATIVE, AL_TRUE);
+        alSourcePlay(this->_source);
+
+        auto _error = get_last_error();
+        if (_error != std::string("")) {
+            return W_FAILURE(std::errc::operation_canceled,
+                             "error while updating openal because: " + _error);
         }
-
-        _writable = (_writable > p_audio_frame_buffer_len)
-                        ? p_audio_frame_buffer_len
-                        : _writable;
-        std::memcpy(&this->_data[_write_offset], p_audio_frame_buffer,
-                    _frame_size *
-                        gsl::narrow_cast<int>(_writable / _frame_size));
-
-        const auto _num_frames = _writable / _frame_size;
-        if (_num_frames < 1) {
-          break;
-        }
-
-        _read_bytes = _num_frames * _frame_size;
-        _write_offset += _read_bytes;
-
-        this->_total_read_bytes += _read_bytes;
-      } else {
-        /*
-         * If the read offset is at or behind the write offset, the
-         * writeable area (might) wrap around. Make sure the sample
-         * data can fit, and calculate how much can go in front before
-         * wrapping.
-         */
-        auto _writable = !_read_offset ? this->_data_size - _write_offset - 1
-                                       : (this->_data_size - _write_offset);
-        if (_writable < _frame_size) {
-          break;
-        }
-
-        _writable = (_writable > p_audio_frame_buffer_len)
-                        ? p_audio_frame_buffer_len
-                        : _writable;
-
-        std::memcpy(&this->_data[_write_offset], p_audio_frame_buffer,
-                    _frame_size *
-                        gsl::narrow_cast<int>(_writable / _frame_size));
-
-        const auto _num_frames = _writable / _frame_size;
-        if (_num_frames < 1) {
-          break;
-        }
-
-        _read_bytes = _num_frames * _frame_size;
-        _write_offset += _read_bytes;
-        if (_write_offset == this->_data_size) {
-          _write_offset = 0;
-        }
-        this->_total_read_bytes += _read_bytes;
       }
-      this->_write_pos = _write_offset;
-      this->_decoder_offset += _read_bytes;
+      return S_OK;
     }
-
-    if (_state != AL_PLAYING && _state != AL_PAUSED) {
-
-      /*
-        if the source is not playing or paused, it either underrun
-        (AL_STOPPED) or is just getting started (AL_INITIAL).
-        if the ring buffer is empty, it's done,
-        otherwise play the source with what's available.
-      */
-      const auto _readable = ((_write_offset >= this->_read_pos)
-                                  ? _write_offset
-                                  : (this->_data_size + _write_offset)) -
-                             this->_read_pos;
-      if (_readable == 0) {
-        return W_FAILURE(std::errc::operation_canceled,
-                     "no openal data avaiable for reading");
-      }
-
-      /*
-       * store the playback offset that the source will start reading from,
-       * so it can be tracked during playback.
-       */
-      this->_start_offset = this->_decoder_offset - _readable;
-      alSourcePlay(this->_source);
-
-      auto _error = get_last_error();
-      if (!_error.empty()) {
-        return W_FAILURE(std::errc::operation_canceled,
-                     "error while updating openal because: " + _error);
-      }
-    }
-    return S_OK;
-  }
 
     /**
      * reset the openal
@@ -213,22 +275,12 @@ public:
   ALCdevice *_device = nullptr;
   ALCcontext *_ctx = nullptr;
 
-  // a lockless ring-buffer (supports single-provider, single-consumer
-  // operation)
-  ALbyte *_data = nullptr;
-  size_t _data_size = 0;
-  size_t _read_pos = 0;
-  size_t _write_pos = 0;
+  internal::w_ring_buffer<ALbyte> _data_buffer{};
 
   // The buffer to get the callback, and source to play with
   ALuint _buffer = 0;
   ALuint _source = 0;
-  size_t _start_offset = 0;
 
-  // Handle for the audio file to decode
-  size_t _decoder_offset = 0;
-
-  size_t _total_read_bytes = 0;
   size_t _size_of_chunk = 0;
   LPALBUFFERCALLBACKSOFT _callback_ptr = nullptr;
 };
