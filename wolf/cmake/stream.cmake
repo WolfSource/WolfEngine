@@ -113,34 +113,25 @@ if (WOLF_STREAM_RIST)
     
     set(FETCHCONTENT_QUIET OFF)
     FetchContent_MakeAvailable(${RIST_TARGET})
-
-    # this file should be available after building rist
-    set(RIST_LIBRARY_BINARY_FILE ${rist_BINARY_DIR}/librist.a)
       
     if (ANDROID)
-        add_custom_command(OUTPUT ${RIST_LIBRARY_BINARY_FILE}
-            COMMAND /bin/bash "${CMAKE_CURRENT_SOURCE_DIR}/third_party/shells/librist/librist-android.sh" --build_dir=${rist_BINARY_DIR}
-            WORKING_DIRECTORY ${rist_SOURCE_DIR})
-        add_custom_target(rist ALL DEPENDS ${RIST_LIBRARY_BINARY_FILE})
+      add_custom_command(OUTPUT rist_command.out COMMAND
+      /bin/bash "${CMAKE_CURRENT_SOURCE_DIR}/third_party/shells/librist/librist-android.sh" --build_dir=${rist_BINARY_DIR}
+       WORKING_DIRECTORY ${rist_SOURCE_DIR})
+      add_custom_target(rist ALL DEPENDS rist_command.out)
+      
+      list(APPEND LIBS
+        ${rist_BINARY_DIR}/librist.a)
+    else ()
+      STRING(TOLOWER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_LOWER)
+      
+      add_custom_command(OUTPUT rist_command.out COMMAND cmd /c "meson setup ${rist_BINARY_DIR} --backend vs2022 --default-library static --buildtype ${CMAKE_BUILD_TYPE_LOWER} & meson compile -C ${rist_BINARY_DIR}" WORKING_DIRECTORY ${rist_SOURCE_DIR})
+      add_custom_target(rist ALL DEPENDS rist_command.out)
 
-        add_library(rist INTERFACE)
-        add_dependencies(rist rist-build)
-        target_link_libraries(rist INTERFACE ${RIST_LIBRARY_BINARY_FILE})
-
-        list(APPEND LIBS rist)
-    else () # windows
-        STRING(TOLOWER "${CMAKE_BUILD_TYPE}" BUILD_TYPE_LOWER)
-
-        add_custom_command(OUTPUT ${RIST_LIBRARY_BINARY_FILE}
-            COMMAND cmd /c "meson setup ${rist_BINARY_DIR} --backend vs2022 --default-library static --buildtype ${BUILD_TYPE_LOWER} & meson compile -C ${rist_BINARY_DIR}"
-            WORKING_DIRECTORY ${rist_SOURCE_DIR})
-        add_custom_target(rist-build ALL DEPENDS ${RIST_LIBRARY_BINARY_FILE})
-
-        add_library(rist INTERFACE)
-        add_dependencies(rist rist-build)
-        target_link_libraries(rist INTERFACE ${RIST_LIBRARY_BINARY_FILE})
-
-        list(APPEND LIBS ws2_32 rist)
+      list(APPEND LIBS
+        ws2_32
+        ${rist_BINARY_DIR}/librist.a)
+        
     endif()
     
     list(APPEND INCLUDES

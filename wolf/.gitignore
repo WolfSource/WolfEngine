@@ -2,3 +2,4 @@
 *.suo
 /build/*
 /shells/ffmpeg/build/*
+/rust/target/*

@@ -10,18 +10,18 @@ message("CXX Compiler ID is ${CMAKE_CXX_COMPILER_ID}")
 set(WEBRTC_SRC $ENV{WEBRTC_ROOT} CACHE STRING "path to the root folder of webrtc folder")
 
 # check the OS
-if (CMAKE_SIZEOF_VOID_P EQUAL 8)
+if(CMAKE_SIZEOF_VOID_P EQUAL 8)
     if (WIN32)
         set(WIN64 TRUE)
     endif()
 endif()
 
-if (UNIX AND NOT APPLE)
+if(UNIX AND NOT APPLE)
    set(LINUX TRUE)
 endif()
 
 if (MSVC AND NOT WIN64)
-    message(FATAL_ERROR "Only Window 64 bit is supported")
+    message( FATAL_ERROR "Only Window 64 bit is supported" )
 endif()
 
 # set target os
@@ -29,23 +29,22 @@ if (WIN64)
     set(TARGET_OS "win")
     set(LIB_EXT "lib")
     set(SHARED_EXT "dll")
-elseif (APPLE)
+elseif(APPLE)
     set(TARGET_OS "mac")
     set(LIB_EXT "a")
     set(SHARED_EXT "dylib")
-elseif (LINUX)
+elseif(LINUX)
     set(TARGET_OS "linux")
     set(LIB_EXT "a")
     set(SHARED_EXT "so")
 else()
-    message(FATAL_ERROR "Unsuported OS, please open an issue at https://github.com/WolfEngine/WolfEngine")
+    message( FATAL_ERROR "Unsuported OS, please open an issue at https://github.com/WolfEngine/WolfEngine" )
 endif()
 
 # required packages
 find_package(Git REQUIRED)
-
 if (NOT EMSCRIPTEN)
-    find_package(Threads)
+    find_package (Threads)
 endif()
 
 # use folders
@@ -57,7 +56,7 @@ include(FetchContent)
 # set type of library
 set(LIBRARY_TYPE "STATIC" CACHE STRING "Library type")
 
-# CMAKE Options
+# CMAKE GUI Options
 # render modules
 option(WOLF_RENDER "Enable cross platform render engine based on Vulkan / OpenGL ES" OFF)
 
@@ -69,6 +68,7 @@ option(WOLF_MEDIA_STB "Enable stb headers" ON)
 
 # stream modules
 option(WOLF_STREAM_GRPC "Enable gRPC connection" OFF)
+option(WOLF_STREAM_HTTP1_WS "Enable http1.1 and websocket client/server based on boost beast" ON)
 option(WOLF_STREAM_QUIC "Enable QUIC" OFF)
 option(WOLF_STREAM_RIST "Enable RIST streaming protocol" OFF)
 option(WOLF_STREAM_WEBRTC "Enable webRTC" OFF)
@@ -77,7 +77,6 @@ option(WOLF_STREAM_WEBRTC "Enable webRTC" OFF)
 option(WOLF_SYSTEM_BORINGSSL "Enable boringSSL" OFF)
 option(WOLF_SYSTEM_GAMEPAD_CLIENT "Enable gamepad input handling" OFF)
 option(WOLF_SYSTEM_GAMEPAD_VIRTUAL "Enable virtual gamepad simulator" OFF)
-option(WOLF_SYSTEM_HTTP1_WS "Enable http1.1 and websocket client/server based on boost beast" ON)
 option(WOLF_SYSTEM_LOG "Enable log" OFF)
 option(WOLF_SYSTEM_LUAJIT "Enable luaJIT" OFF)
 option(WOLF_SYSTEM_LZ4 "Enable lz4 for compression" ON)
@@ -96,16 +95,16 @@ if (NOT MSVC)
     option(WOLF_ENABLE_ASAN "Enable ASAN" OFF)
 endif()
 
-if (ENABLE_LTO)
-    include(CheckIPOSupported)
-    check_ipo_supported(RESULT supported OUTPUT error)
-    if (supported)
-        message(STATUS "IPO / LTO enabled")
-        set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
-        add_link_options(-fuse-ld=lld)
-    else()
-        message(STATUS "IPO / LTO not supported: <${error}>")
-    endif()
+if(ENABLE_LTO)
+  include(CheckIPOSupported)
+  check_ipo_supported(RESULT supported OUTPUT error)
+  if(supported)
+      message(STATUS "IPO / LTO enabled")
+      set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
+      add_link_options(-fuse-ld=lld)
+  else()
+      message(STATUS "IPO / LTO not supported: <${error}>")
+  endif()
 endif()
 
 # media modules
@@ -133,36 +132,38 @@ set(CMAKE_CXX_EXTENSIONS ON)
 set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
 set(THREADS_PREFER_PTHREAD_FLAG TRUE)
 
-if(NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE "Debug")
+set(CMAKE_BUILD_TYPE "${default_build_type}" CACHE STRING "Choose the type of build." FORCE)
+if ("${CMAKE_BUILD_TYPE}" STREQUAL "")
+  set(CMAKE_BUILD_TYPE "Debug")
 endif()
+set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
 
 # set C++23 as the primary standard
 set(CMAKE_CXX_STANDARD 23)
 
 # set C++ flags based on compiler
 if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
-    # using Clang or AppleClang
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++2b -fexceptions -fcoroutines-ts")
-    set(CMAKE_CXX_FLAGS_DEBUG "-g")
-    set(CMAKE_CXX_FLAGS_RELEASE "-O3")
+  # using Clang or AppleClang
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++2b -fexceptions -fcoroutines-ts")
+  set(CMAKE_CXX_FLAGS_DEBUG "-g")
+  set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    # using GCC
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++2b -fexceptions -fcoroutines")
-    set(CMAKE_CXX_FLAGS_DEBUG "-g")
-    set(CMAKE_CXX_FLAGS_RELEASE "-O3")
+  # using GCC
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++2b -fexceptions -fcoroutines")
+  set(CMAKE_CXX_FLAGS_DEBUG "-g")
+  set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-    # using Visual Studio C++
-    set(CMAKE_CXX_FLAGS "/MDd /EHsc /W4 /bigobj")
+  # using Visual Studio C++
+  set(CMAKE_CXX_FLAGS "/EHsc /W3 /bigobj")
 endif()
 
 if (ANDROID)
-    set(CMAKE_CXX_STANDARD 20)
+    set(CMAKE_CXX_STANDARD 17)
 endif()
 
 set(GETOPT_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/system)
 
-# define includes, libs and srcs
+#define includes, libs and srcs
 set(INCLUDES ${CMAKE_CURRENT_SOURCE_DIR})
 set(LIBS)
 set(SRCS)
@@ -191,9 +192,9 @@ endif()
 # https://devblogs.microsoft.com/cppblog/visual-studio-code-c-december-2021-update-clang-tidy/
 # can be enabled with .CLANG-TIDY from Visual Studio
 # https://devblogs.microsoft.com/cppblog/code-analysis-with-clang-tidy-in-visual-studio/
-#set(CMAKE_CXX_CLANG_TIDY
-#     clang-tidy;
-#     -format-style=file;)  
+set(CMAKE_CXX_CLANG_TIDY
+     clang-tidy;
+     -format-style=file;)  
 
 # add definitions
 
@@ -211,8 +212,10 @@ if (MSVC)
         -DWIN32
     )
 elseif (EMSCRIPTEN)
-    add_definitions(-DEMSCRIPTEN)
-elseif (APPLE)
+    add_definitions(
+        -DEMSCRIPTEN
+    )
+elseif(APPLE)
     add_definitions(-DNEED_XLOCALE_H=1)
 endif()
 
@@ -221,6 +224,15 @@ if(CMAKE_BUILD_TYPE MATCHES Debug)
 else()
     add_definitions(-DNDEBUG)
 endif()
+
+# setup Wolf definitions
+get_cmake_property(_vars VARIABLES)
+foreach (_var ${_vars})
+    string(FIND ${_var} "WOLF_" out)
+    if(("${out}" EQUAL 0) AND ("(${${_var}}" MATCHES ON))
+        add_definitions("-D${_var}")
+    endif()
+endforeach()
 
 # include sources
 file(GLOB_RECURSE WOLF_SRCS
@@ -232,6 +244,9 @@ file(GLOB_RECURSE WOLF_SRCS
 file(GLOB_RECURSE WOLF_CMAKES
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/*"
 )
+
+# includes
+include_directories(${INCLUDES})
 
 # add source codes
 add_library(${PROJECT_NAME} ${LIBRARY_TYPE} 
@@ -252,21 +267,8 @@ endif()
 #    endif()
 #endif()
 
-# setup Wolf definitions
-get_cmake_property(_vars VARIABLES)
-foreach (_var ${_vars})
-    string(FIND ${_var} "WOLF_" out)
-    if(("${out}" EQUAL 0) AND ("(${${_var}}" MATCHES ON))
-        target_compile_definitions(${PROJECT_NAME} PUBLIC "-D${_var}")
-    endif()
-endforeach()
-
-# includes
-target_include_directories(${PROJECT_NAME} PUBLIC ${INCLUDES})
-target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-
 # link libraries
-target_link_libraries(${PROJECT_NAME} PUBLIC ${LIBS})
+target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBS})
 
 # create source group
 source_group("wolf" FILES ${WOLF_SRCS})
