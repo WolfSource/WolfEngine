@@ -11,7 +11,8 @@
 #include "w_rist_data_block.hpp"
 
 namespace wolf::stream::rist {
-struct w_rist {
+class w_rist {
+public:
   /*
    * constructor of the rist stream
    * @param p_mode, the context mode

@@ -356,6 +356,7 @@ else()
         "${CMAKE_CURRENT_SOURCE_DIR}/system/w_leak_detector.hpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/system/w_process.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/system/w_process.hpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/system/w_ring_buffer_spsc.hpp"
     )
 endif()
 

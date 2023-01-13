@@ -48,6 +48,6 @@ BOOST_AUTO_TEST_CASE(wolf_test) {
 #include <media/test/avframe.hpp>
 #include <media/test/ffmpeg.hpp>
 #include <media/test/image.hpp>
-#include <media/test/openal.hpp>
+//#include <media/test/openal.hpp>
 
 #pragma endregion

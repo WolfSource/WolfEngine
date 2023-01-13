@@ -14,7 +14,8 @@
 
 namespace wolf::media::ffmpeg {
 
-struct w_decoder {
+class w_decoder {
+public:
   w_ffmpeg_ctx ctx = {};
 
   // constructor

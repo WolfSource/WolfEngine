@@ -9,22 +9,16 @@ ALsizei AL_APIENTRY w_openal::s_openal_callback(_In_ void *p_user_ptr,
                                                 _In_ void *p_data,
                                                 _In_ ALsizei p_size) {
   const auto _openal_nn = gsl::narrow_cast<w_openal *>(p_user_ptr);
-
-  ALsizei _bytes = _openal_nn->_data_buffer.read(gsl::narrow_cast<ALbyte *>(p_data), p_size);
+  ALsizei _bytes =
+      _openal_nn->_data_buffer.get(gsl::narrow_cast<ALbyte *>(p_data), p_size);
   std::memset(gsl::narrow_cast<ALbyte *>(p_data) + _bytes, 0, p_size - _bytes);
 
   return p_size;
 }
 
 w_openal::w_openal(_In_ const w_openal_config &p_config) noexcept
-    : _config(p_config)
-    ,  _device(nullptr)
-    ,  _ctx(nullptr)
-    ,  _buffer(0)
-    ,  _source(0)
-    ,  _size_of_chunk(0)
-    ,  _callback_ptr(nullptr)
-{}
+    : _config(p_config), _device(nullptr), _ctx(nullptr), _buffer(0),
+      _source(0), _size_of_chunk(0), _callback_ptr(nullptr) {}
 
 w_openal::w_openal(w_openal &&p_other) noexcept {
 
@@ -45,10 +39,10 @@ w_openal::w_openal(w_openal &&p_other) noexcept {
 w_openal::~w_openal() noexcept { _release(); }
 
 void w_openal::reset() {
-    ALenum state;
-    alGetSourcei(this->_source, AL_SOURCE_STATE, &state);
-    if (state == AL_PLAYING)
-        alSourceStop(this->_source);
+  ALenum state;
+  alGetSourcei(this->_source, AL_SOURCE_STATE, &state);
+  if (state == AL_PLAYING)
+    alSourceStop(this->_source);
 }
 
 std::tuple<std::string, std::string> w_openal::get_all_devices() {
@@ -102,13 +96,14 @@ boost::leaf::result<int> w_openal::init() {
   if (this->_device == nullptr) {
     _ret = -1;
     return W_FAILURE(std::errc::operation_canceled,
-                 "could not open a openal device");
+                     "could not open a openal device");
   }
 
   this->_ctx = alcCreateContext(this->_device, nullptr);
   if (this->_ctx == nullptr || alcMakeContextCurrent(this->_ctx) == ALC_FALSE) {
     _ret = -1;
-    return W_FAILURE(std::errc::operation_canceled, "could not get openal context");
+    return W_FAILURE(std::errc::operation_canceled,
+                     "could not get openal context");
   }
 
   // get the sound format, and figure out the OpenAL format
@@ -138,7 +133,7 @@ boost::leaf::result<int> w_openal::init() {
   if (!_error.empty()) {
     _ret = -1;
     return W_FAILURE(std::errc::operation_canceled,
-                 "could not generate buffer for openAL because " + _error);
+                     "could not generate buffer for openAL because " + _error);
   }
 
   alGenSources(1, &this->_source);
@@ -146,13 +141,13 @@ boost::leaf::result<int> w_openal::init() {
   if (!_error.empty()) {
     _ret = -1;
     return W_FAILURE(std::errc::operation_canceled,
-                 "could not generate sources for openAL");
+                     "could not generate sources for openAL");
   }
 
   if (alIsExtensionPresent("AL_SOFTX_callback_buffer") != 0) {
     _ret = -1;
     return W_FAILURE(std::errc::operation_canceled,
-                 "could not get AL_SOFT_callback_buffer");
+                     "could not get AL_SOFT_callback_buffer");
   }
 
   this->_callback_ptr = reinterpret_cast<LPALBUFFERCALLBACKSOFT>(
@@ -160,14 +155,15 @@ boost::leaf::result<int> w_openal::init() {
   if (this->_callback_ptr == nullptr) {
     _ret = -1;
     return W_FAILURE(std::errc::operation_canceled,
-                 "could not get LPALBUFFERCALLBACKSOFT");
+                     "could not get LPALBUFFERCALLBACKSOFT");
   }
 
   alcGetIntegerv(this->_device, ALC_REFRESH, 1, &this->_config.refresh_rate);
 
   // allocate for 1 second of buffer.
-  BOOST_LEAF_CHECK(_data_buffer.init(gsl::narrow_cast<ALuint>(_sample_rate * _number_of_channels) *
-                    this->_size_of_chunk));
+  BOOST_LEAF_CHECK(_data_buffer.init(
+      gsl::narrow_cast<ALuint>(_sample_rate * _number_of_channels) *
+      this->_size_of_chunk));
 
   this->_callback_ptr(this->_buffer, _format, _sample_rate, s_openal_callback,
                       this /* send openal object on user's data*/
@@ -178,7 +174,7 @@ boost::leaf::result<int> w_openal::init() {
   if (!_error.empty()) {
     _ret = -1;
     return W_FAILURE(std::errc::not_enough_memory,
-                 "could not set openal source because " + _error);
+                     "could not set openal source because " + _error);
   }
 
   return _ret;

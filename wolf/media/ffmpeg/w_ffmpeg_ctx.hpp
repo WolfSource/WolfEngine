@@ -17,11 +17,8 @@ extern "C" {
 
 namespace wolf::media::ffmpeg {
 
-struct w_ffmpeg_ctx {
-  AVCodecContext *codec_ctx = nullptr;
-  const AVCodec *codec = nullptr;
-  AVCodecParserContext *parser = nullptr;
-
+class w_ffmpeg_ctx {
+public:
   // constructor
   W_API w_ffmpeg_ctx() = default;
   // destructor
@@ -32,7 +29,12 @@ struct w_ffmpeg_ctx {
   // move assignment operator.
   W_API w_ffmpeg_ctx &operator=(w_ffmpeg_ctx &&p_other) noexcept;
 
-  W_API static const std::string get_av_error_str(_In_ const int p_error_code) noexcept;
+  W_API static const std::string
+  get_av_error_str(_In_ const int p_error_code) noexcept;
+
+  AVCodecContext *codec_ctx = nullptr;
+  const AVCodec *codec = nullptr;
+  AVCodecParserContext *parser = nullptr;
 
 private:
   // copy constructor

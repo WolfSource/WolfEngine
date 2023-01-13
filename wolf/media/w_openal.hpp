@@ -8,7 +8,7 @@
 #pragma once
 
 #include <wolf.hpp>
-#include <system/w_spsc_ring_buffer.hpp>
+#include <system/w_ring_buffer_spsc.hpp>
 
 #include <DISABLE_ANALYSIS_BEGIN>
 #include <AL/al.h>
@@ -52,74 +52,72 @@ public:
   W_API
   boost::leaf::result<int> init();
 
-   /**
-    * update the openal
-    * @param p_audio_frame_buffer, the audio frame buffer
-    * @param p_audio_frame_buffer_len, the length of audio frame buffer
-    * @returns zero on success
-    */
-    template <typename T>
-        requires std::is_integral_v<T>
-    W_API boost::leaf::result<int>
-    update(_In_ const T *p_audio_frame_buffer,
-           _In_ const size_t p_audio_frame_buffer_len)
-    {
-      // get state
-      ALenum _state = 0;
-      alGetSourcei(this->_source, AL_SOURCE_STATE, &_state);
+  /**
+   * update the openal
+   * @param p_audio_frame_buffer, the audio frame buffer
+   * @param p_audio_frame_buffer_len, the length of audio frame buffer
+   * @returns zero on success
+   */
+  template <typename T>
+    requires std::is_integral_v<T>
+  W_API boost::leaf::result<int>
+  update(_In_ const T *p_audio_frame_buffer,
+         _In_ const size_t p_audio_frame_buffer_len) {
+    // get state
+    ALenum _state = 0;
+    alGetSourcei(this->_source, AL_SOURCE_STATE, &_state);
 
-      this->_data_buffer.write(
-        reinterpret_cast<const ALbyte*>(p_audio_frame_buffer),
-        p_audio_frame_buffer_len * sizeof(T)
-      );
+    this->_data_buffer.put(
+        reinterpret_cast<const ALbyte *>(p_audio_frame_buffer),
+        p_audio_frame_buffer_len * sizeof(T));
 
-      if (_state != AL_PLAYING && _state != AL_PAUSED) {
-        std::cout << "playing again..." << std::endl;
-        //alSourcei(this->_source, AL_SOURCE_RELATIVE, AL_TRUE);
-        alSourcePlay(this->_source);
+    if (_state != AL_PLAYING && _state != AL_PAUSED) {
+      std::cout << "playing again..." << std::endl;
+      // alSourcei(this->_source, AL_SOURCE_RELATIVE, AL_TRUE);
+      alSourcePlay(this->_source);
 
-        auto _error = get_last_error();
-        if (_error != std::string("")) {
-            return W_FAILURE(std::errc::operation_canceled,
-                             "error while updating openal because: " + _error);
-        }
+      auto _error = get_last_error();
+      if (_error != std::string("")) {
+        return W_FAILURE(std::errc::operation_canceled,
+                         "error while updating openal because: " + _error);
       }
-      return S_OK;
     }
+    return S_OK;
+  }
 
-    /**
-     * reset the openal
-     * @returns void
-     */
-    W_API
-    void reset();
-  
-    /**
-     * get openal config
-     * @returns the openal config
-     */
-    W_API
-    w_openal_config get_config() const;
-  
-    /**
-     * returns all output/input devices
-     * @returns output_devices, input_devices
-     */
-    W_API
-    static std::tuple<std::string, std::string> get_all_devices();
-  
-    /**
-     * get the last error
-     * @returns last error of openal
-     */
-    W_API
-    static std::string get_last_error();
-  
-   private:
-    // disable copy constructor
-    w_openal(const w_openal &) = delete;
-    // disable copy operator
-    w_openal &operator=(const w_openal &) = delete;
+  /**
+   * reset the openal
+   * @returns void
+   */
+  W_API
+  void reset();
+
+  /**
+   * get openal config
+   * @returns the openal config
+   */
+  W_API
+  w_openal_config get_config() const;
+
+  /**
+   * returns all output/input devices
+   * @returns output_devices, input_devices
+   */
+  W_API
+  static std::tuple<std::string, std::string> get_all_devices();
+
+  /**
+   * get the last error
+   * @returns last error of openal
+   */
+  W_API
+  static std::string get_last_error();
+
+private:
+  // disable copy constructor
+  w_openal(const w_openal &) = delete;
+  // disable copy operator
+  w_openal &operator=(const w_openal &) = delete;
 
   static ALsizei AL_APIENTRY s_openal_callback(_In_ void *p_user_ptr,
                                                _In_ void *p_data,
@@ -131,7 +129,7 @@ public:
   ALCdevice *_device = nullptr;
   ALCcontext *_ctx = nullptr;
 
-  ::wolf::system::w_spsc_ring_buffer<ALbyte> _data_buffer{};
+  wolf::system::w_ring_buffer_spsc<ALbyte> _data_buffer{};
 
   // The buffer to get the callback, and source to play with
   ALuint _buffer = 0;
@@ -140,7 +138,6 @@ public:
   size_t _size_of_chunk = 0;
   LPALBUFFERCALLBACKSOFT _callback_ptr = nullptr;
 };
-
 } // namespace wolf::media
 
 #endif

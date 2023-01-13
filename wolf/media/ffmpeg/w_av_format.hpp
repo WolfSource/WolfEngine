@@ -17,7 +17,8 @@ extern "C" {
 
 namespace wolf::media::ffmpeg {
 
-struct w_av_format {
+class w_av_format {
+public:
   /**
    * constructor the av_frame with specific config
    * @param p_config, the av frame config

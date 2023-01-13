@@ -14,9 +14,8 @@
 
 namespace wolf::media::ffmpeg {
 
-struct w_encoder {
-  w_ffmpeg_ctx ctx = {};
-
+class w_encoder {
+public:
   // constructor
   W_API w_encoder() = default;
   // destructor
@@ -30,6 +29,8 @@ struct w_encoder {
   W_API boost::leaf::result<int> encode(_In_ const w_av_frame &p_frame,
                                         _Inout_ w_av_packet &p_packet,
                                         _In_ bool p_flush = true) noexcept;
+
+  w_ffmpeg_ctx ctx = {};
 
 private:
   // copy constructor

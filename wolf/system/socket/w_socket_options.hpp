@@ -9,6 +9,7 @@
 
 #include <wolf.hpp>
 #include <functional>
+#include <random>
 
 #include "DISABLE_ANALYSIS_BEGIN"
 #include <boost/system/errc.hpp>

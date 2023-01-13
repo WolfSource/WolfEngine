@@ -33,8 +33,8 @@ struct w_av_set_opt {
   std::variant<int, double, std::string> value;
 };
 
-struct w_ffmpeg {
-
+class w_ffmpeg {
+public:
   /*
    * create ffmpeg encoder
    * @param p_config, the avconfig

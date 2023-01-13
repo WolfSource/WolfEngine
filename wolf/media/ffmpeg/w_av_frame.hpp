@@ -35,13 +35,14 @@ struct w_av_config {
   W_API int get_required_buffer_size() noexcept;
 };
 
-struct w_decoder;
-struct w_encoder;
+class w_decoder;
+class w_encoder;
 
-struct w_av_frame {
+class w_av_frame {
   friend w_decoder;
   friend w_encoder;
 
+public:
   /**
    * constructor the av_frame with default config
    * @param p_config, the av frame config

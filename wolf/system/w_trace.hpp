@@ -11,7 +11,8 @@
 #include <string>
 #include <thread>
 
-struct w_trace {
+class w_trace {
+public:
   struct stack {
     friend std::ostream &operator<<(std::ostream &p_os,
                                     stack const &p_trace) noexcept {

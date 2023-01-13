@@ -15,9 +15,10 @@
 #include <DISABLE_ANALYSIS_END>
 
 namespace wolf::stream::rist {
-struct w_rist_data_block {
-  friend struct w_rist;
+class w_rist_data_block {
+  friend class w_rist;
 
+public:
   W_API w_rist_data_block() noexcept;
   W_API virtual ~w_rist_data_block();
 
