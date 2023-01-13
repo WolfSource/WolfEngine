@@ -338,14 +338,19 @@ if (WOLF_SYSTEM_ZLIB)
     endif()
 endif()
 
-file (GLOB_RECURSE WOLF_SYSTEM_SRC
-    "${CMAKE_CURRENT_SOURCE_DIR}/system/w_trace.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/system/w_gametime.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/system/w_gametime.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/system/w_trace.hpp"
-)
-if (NOT EMSCRIPTEN)
-    list (APPEND ${WOLF_SYSTEM_SRC}
+if (EMSCRIPTEN)
+    file (GLOB_RECURSE WOLF_SYSTEM_SRC
+        "${CMAKE_CURRENT_SOURCE_DIR}/system/w_trace.hpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/system/w_gametime.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/system/w_gametime.hpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/system/w_trace.hpp"
+    )
+else()
+    file (GLOB_RECURSE WOLF_SYSTEM_SRC
+        "${CMAKE_CURRENT_SOURCE_DIR}/system/w_trace.hpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/system/w_gametime.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/system/w_gametime.hpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/system/w_trace.hpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/system/getopt.h"
         "${CMAKE_CURRENT_SOURCE_DIR}/system/w_leak_detector.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/system/w_leak_detector.hpp"
