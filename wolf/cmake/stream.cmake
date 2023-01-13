@@ -1,5 +1,9 @@
 # fetch gRPC
 if (WOLF_STREAM_GRPC)
+    if (EMSCRIPTEN)
+        message(FATAL_ERROR "the wasm32 target is not supported for WOLF_STREAM_GRPC")
+    endif()
+
     # enable zlib and boringSSL
     set(WOLF_SYSTEM_ZLIB TRUE)
 
@@ -78,6 +82,10 @@ endif()
 
 # fetch lsquic
 if (WOLF_STREAM_QUIC)
+    if (EMSCRIPTEN)
+        message(FATAL_ERROR "the wasm32 target is not supported for WOLF_STREAM_QUIC")
+    endif()
+    
     message("fetching https://github.com/litespeedtech/lsquic.git")
     FetchContent_Declare(
         lsquic
@@ -103,6 +111,10 @@ if (WOLF_STREAM_QUIC)
 endif()
 
 if (WOLF_STREAM_RIST)
+    if (EMSCRIPTEN)
+        message(FATAL_ERROR "the wasm32 target is not supported for WOLF_STREAM_RIST")
+    endif()
+
     set(RIST_TARGET "rist")
     message("fetching https://code.videolan.org/rist/librist.git")
     FetchContent_Declare(
@@ -152,6 +164,10 @@ if (WOLF_STREAM_RIST)
 endif()
 
 if (WOLF_STREAM_WEBRTC)
+    if (EMSCRIPTEN)
+        message(FATAL_ERROR "the wasm32 target is not supported for WOLF_STREAM_WEBRTC")
+    endif()
+
     # we need http & json for webrtc
     
     if (NOT WOLF_SYSTEM_JSON)

@@ -28,6 +28,10 @@ add_definitions(-DFMT_HEADER_ONLY)
 
 # fetch boringssl, note that boringssl was already fetched by GRPC  
 if (WOLF_SYSTEM_BORINGSSL AND (NOT WOLF_STREAM_GRPC))
+    if (EMSCRIPTEN)
+        message(FATAL_ERROR "the wasm32 target is not supported for WOLF_SYSTEM_BORINGSSL")
+    endif()
+
     message("fetching https://github.com/google/boringssl.git")
     FetchContent_Declare(
         boringssl
@@ -161,6 +165,10 @@ endif()
 
 # fetch spdlog
 if (WOLF_SYSTEM_LOG)
+    if (EMSCRIPTEN)
+        message(FATAL_ERROR "the wasm32 target is not supported for WOLF_SYSTEM_LOG")
+    endif()
+
     message("fetching https://github.com/gabime/spdlog.git")
     FetchContent_Declare(
         spdlog
@@ -188,6 +196,9 @@ if (WOLF_SYSTEM_LOG)
 endif()
 
 if (WOLF_SYSTEM_LZ4)
+  if (EMSCRIPTEN)
+        message(FATAL_ERROR "the wasm32 target is not supported for WOLF_SYSTEM_LZ4")
+  endif()
   message("fetching https://github.com/lz4/lz4.git")
   FetchContent_Declare(
     lz4_static
@@ -215,6 +226,9 @@ if (WOLF_SYSTEM_LZ4)
 endif()
 
 if (WOLF_SYSTEM_LZMA)
+  if (EMSCRIPTEN)
+        message(FATAL_ERROR "the wasm32 target is not supported for WOLF_SYSTEM_LZMA")
+  endif()
   message("fetching https://github.com/WolfEngine/lzma.git")
   FetchContent_Declare(
     lzma
@@ -235,6 +249,9 @@ endif()
 
 # fetch mimalloc
 if (WOLF_SYSTEM_MIMALLOC)
+    if (EMSCRIPTEN)
+        message(FATAL_ERROR "the wasm32 target is not supported for WOLF_SYSTEM_MIMALLOC")
+    endif()
     message("fetching https://github.com/microsoft/mimalloc.git")
     FetchContent_Declare(
         mimalloc-static
@@ -254,28 +271,40 @@ if (WOLF_SYSTEM_MIMALLOC)
     list(APPEND LIBS mimalloc-static)
 endif()
 
-if (WOLF_SYSTEM_SOCKET)
-    file(GLOB_RECURSE WOLF_SYSTEM_SOCKET_SRC
-        "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_socket_options.hpp"
-        "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_tcp_client.cpp"
-        "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_tcp_client.hpp"
-        "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_tcp_server.cpp"
-        "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_tcp_server.hpp"
-if (WOLF_SYSTEM_HTTP1_WS)
-        "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_ws_client.cpp"
-        "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_ws_client.hpp"
-        "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_ws_server.cpp"
-        "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_ws_server.hpp"
-endif()
-    )
+# include socket/websocket sources
+if (EMSCRIPTEN)
+    if (WOLF_STREAM_HTTP1_WS)
+        file(GLOB_RECURSE WOLF_SYSTEM_SOCKET_SRC
+            "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_ws_client_emscripten.cpp"
+            "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_ws_client_emscripten.hpp"
+        )
+    endif()
+else()
+    if (WOLF_SYSTEM_SOCKET)
+        file(GLOB_RECURSE WOLF_SYSTEM_SOCKET_SRC
+            "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_socket_options.hpp"
+            "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_tcp_client.cpp"
+            "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_tcp_client.hpp"
+            "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_tcp_server.cpp"
+            "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_tcp_server.hpp"
+    if (WOLF_STREAM_HTTP1_WS)
+            "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_ws_client.cpp"
+            "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_ws_client.hpp"
+            "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_ws_server.cpp"
+            "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_ws_server.hpp"
+    endif()
+        )
+    endif()
     list(APPEND SRCS 
         ${WOLF_SYSTEM_SOCKET_SRC} 
-        ${WOLF_SYSTEM_SOCKET_TEST_SRC}
     )
 endif()
 
 # fetch zlib 
 if (WOLF_SYSTEM_ZLIB)
+    if (EMSCRIPTEN)
+        message(FATAL_ERROR "the wasm32 target is not supported for WOLF_SYSTEM_ZLIB")
+    endif()
     # note that zlib was already fetched by GRPC 
     if (NOT WOLF_STREAM_GRPC)
         message("fetching https://github.com/madler/zlib.git")
@@ -309,17 +338,22 @@ if (WOLF_SYSTEM_ZLIB)
     endif()
 endif()
 
-file(GLOB_RECURSE WOLF_SYSTEM_SRC
-    "${CMAKE_CURRENT_SOURCE_DIR}/system/getopt.h"
+file (GLOB_RECURSE WOLF_SYSTEM_SRC
     "${CMAKE_CURRENT_SOURCE_DIR}/system/w_trace.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/system/w_gametime.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/system/w_gametime.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/system/w_leak_detector.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/system/w_leak_detector.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/system/w_process.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/system/w_process.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/system/w_trace.hpp"
 )
+if (NOT EMSCRIPTEN)
+    list (APPEND ${WOLF_SYSTEM_SRC}
+        "${CMAKE_CURRENT_SOURCE_DIR}/system/getopt.h"
+        "${CMAKE_CURRENT_SOURCE_DIR}/system/w_leak_detector.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/system/w_leak_detector.hpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/system/w_process.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/system/w_process.hpp"
+    )
+endif()
+
 file(GLOB_RECURSE WOLF_SYSTEM_TEST_SRC
     "${CMAKE_CURRENT_SOURCE_DIR}/system/test/*"
 )

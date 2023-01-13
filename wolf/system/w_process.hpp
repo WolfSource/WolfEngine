@@ -2,8 +2,6 @@
     Project: Wolf Engine. Copyright © 2014-2023 Pooya Eimandar
     https://github.com/WolfEngine/WolfEngine
 */
-#ifndef EMSCRIPTEN
-
 #pragma once
 
 #include <wolf.hpp>
@@ -38,5 +36,3 @@ private:
   w_process &operator=(const w_process &) = delete;
 };
 } // namespace wolf::system
-
-#endif // EMSCRIPTEN

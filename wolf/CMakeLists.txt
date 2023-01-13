@@ -64,11 +64,11 @@ option(WOLF_RENDER "Enable cross platform render engine based on Vulkan / OpenGL
 option(WOLF_MEDIA_FFMPEG "Enable ffmpeg encoding and decoding" OFF)
 option(WOLF_MEDIA_OPENAL "Enable OpenAL soft" OFF)
 option(WOLF_MEDIA_SCREEN_CAPTURE "Enable screen capture" OFF)
-option(WOLF_MEDIA_STB "Enable stb headers" ON)
+option(WOLF_MEDIA_STB "Enable stb headers" OFF)
 
 # stream modules
 option(WOLF_STREAM_GRPC "Enable gRPC connection" OFF)
-option(WOLF_STREAM_HTTP1_WS "Enable http1.1 and websocket client/server based on boost beast" ON)
+option(WOLF_STREAM_HTTP1_WS "Enable http1.1 and websocket client/server based on boost beast or Emscripten" OFF)
 option(WOLF_STREAM_QUIC "Enable QUIC" OFF)
 option(WOLF_STREAM_RIST "Enable RIST streaming protocol" OFF)
 option(WOLF_STREAM_WEBRTC "Enable webRTC" OFF)
@@ -79,12 +79,12 @@ option(WOLF_SYSTEM_GAMEPAD_CLIENT "Enable gamepad input handling" OFF)
 option(WOLF_SYSTEM_GAMEPAD_VIRTUAL "Enable virtual gamepad simulator" OFF)
 option(WOLF_SYSTEM_LOG "Enable log" OFF)
 option(WOLF_SYSTEM_LUAJIT "Enable luaJIT" OFF)
-option(WOLF_SYSTEM_LZ4 "Enable lz4 for compression" ON)
-option(WOLF_SYSTEM_LZMA "Enable lzma for compression" ON)
+option(WOLF_SYSTEM_LZ4 "Enable lz4 for compression" OFF)
+option(WOLF_SYSTEM_LZMA "Enable lzma for compression" OFF)
 option(WOLF_SYSTEM_MIMALLOC "Enable Microsoft's mimalloc memory allocator" OFF)
-option(WOLF_SYSTEM_SIG_SLOT "Enable signal/slot based on boost signals2" ON)
-option(WOLF_SYSTEM_SOCKET "Enable TCP/UDP protocol over socket" ON)
-option(WOLF_SYSTEM_STACKTRACE "Enable boost stacktrace" ON)
+option(WOLF_SYSTEM_SIG_SLOT "Enable signal/slot based on boost signals2" OFF)
+option(WOLF_SYSTEM_SOCKET "Enable TCP/UDP protocol over socket" OFF)
+option(WOLF_SYSTEM_STACKTRACE "Enable boost stacktrace" OFF)
 
 #option(WOLF_SYSTEM_WASM3 "Enable WebAssembly interpreter" OFF)
 #option(WOLF_SYSTEM_ZLIB "Enable zlib for compression" OFF)
@@ -138,27 +138,24 @@ if ("${CMAKE_BUILD_TYPE}" STREQUAL "")
 endif()
 set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
 
-# set C++23 as the primary standard
-set(CMAKE_CXX_STANDARD 23)
-
 # set C++ flags based on compiler
 if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
   # using Clang or AppleClang
+  set(CMAKE_CXX_STANDARD 20)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++2b -fexceptions -fcoroutines-ts")
   set(CMAKE_CXX_FLAGS_DEBUG "-g")
   set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
   # using GCC
+  set(CMAKE_CXX_STANDARD 20)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++2b -fexceptions -fcoroutines")
   set(CMAKE_CXX_FLAGS_DEBUG "-g")
   set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-  # using Visual Studio C++
+  # using Microsoft Visual C++
+  # set C++23 as the primary standard
+  set(CMAKE_CXX_STANDARD 23)
   set(CMAKE_CXX_FLAGS "/EHsc /W3 /bigobj")
-endif()
-
-if (ANDROID)
-    set(CMAKE_CXX_STANDARD 17)
 endif()
 
 set(GETOPT_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/system)
@@ -286,7 +283,6 @@ source_group("stream" FILES ${WOLF_STREAM_SRC})
 source_group("system/gamepad" FILES ${WOLF_SYSTEM_GAMEPAD_CLIENT_SRC} ${WOLF_SYSTEM_GAMEPAD_VIRTUAL_SRCS})
 source_group("system/log" FILES ${WOLF_SYSTEM_LOG_SRC})
 source_group("system/compression" FILES ${WOLF_SYSTEM_LZ4_SRCS} ${WOLF_SYSTEM_LZMA_SRCS})
-source_group("system/socket/test" FILES ${WOLF_SYSTEM_SOCKET_TEST_SRC})
 source_group("system/socket" FILES ${WOLF_SYSTEM_SOCKET_SRC})
 source_group("system/test" FILES ${WOLF_SYSTEM_TEST_SRC})
 source_group("system" FILES ${WOLF_SYSTEM_SRC})
@@ -305,7 +301,7 @@ if (WOLF_ENABLE_ASAN)
 endif()
 
 # build tests
-if (WOLF_TEST)
+if (WOLF_TEST AND NOT EMSCRIPTEN)
     add_executable(${TEST_PROJECT_NAME}
         tests.cpp
     )
