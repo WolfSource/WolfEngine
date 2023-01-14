@@ -11,13 +11,17 @@ ALsizei AL_APIENTRY w_openal::s_openal_callback(_In_ void *p_user_ptr,
   const auto _openal_nn = gsl::narrow_cast<w_openal *>(p_user_ptr);
   ALsizei _bytes =
       _openal_nn->_data_buffer.get(gsl::narrow_cast<ALbyte *>(p_data), p_size);
+
+  // fill the remaining by silence to avoid stop and smoothly play,
+  // this is also required as `read` returning less than size doesn't
+  // mean buffer is necessarily empty and the chunk written
+  // at the same time as `read` was called wouldn't be missed.
   std::memset(gsl::narrow_cast<ALbyte *>(p_data) + _bytes, 0, p_size - _bytes);
 
   return p_size;
 }
 
 w_openal::w_openal(w_openal &&p_other) noexcept {
-
   if (this == &p_other)
     return;
 
@@ -39,6 +43,10 @@ void w_openal::reset() {
   alGetSourcei(this->_source, AL_SOURCE_STATE, &state);
   if (state == AL_PLAYING)
     alSourceStop(this->_source);
+
+  // NOTE reset is not thread-safe and stop is non-blocking,
+  //      it might result in undefined behavior.
+  _data_buffer.reset();
 }
 
 std::tuple<std::string, std::string> w_openal::get_all_devices() {

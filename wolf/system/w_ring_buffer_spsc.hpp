@@ -61,6 +61,17 @@ public:
   }
 
   /**
+   * @brief clears the buffer.
+   *
+   * @note it is not thread-safe.
+   */
+  void reset() noexcept
+  {
+    _head_offset = 0;
+    _tail_offset = 0;
+  }
+
+  /**
    * @brief read up to the requested size from buffer.
    *
    * only one thread (consumer) at a time can call this method, or the behavior
@@ -80,7 +91,7 @@ public:
     const auto available = (tail < head) ? _size - head : tail - head;
 
     auto amount = (p_size <= available) ? p_size : available;
-    std::memcpy(p_out_ptr, _buffer.get() + head, amount);
+    std::memcpy(p_out_ptr, _buffer.get() + head, amount * sizeof(value_type));
 
     // sets head to either less than or equal to max, or 0
     head = (head + amount) % _size;
@@ -90,7 +101,7 @@ public:
     if (tail < head && amount < p_size) {
       const auto remaining = p_size - amount;
       const auto more = (remaining > tail) ? tail : remaining;
-      std::memcpy(p_out_ptr + amount, _buffer.get(), more);
+      std::memcpy(p_out_ptr + amount, _buffer.get(), more * sizeof(value_type));
       amount += more;
       head = more;
     }
@@ -116,7 +127,7 @@ public:
     const auto available = (head <= tail) ? _size - tail : tail - head - 1;
 
     auto amount = (p_size <= available) ? p_size : available;
-    std::memcpy(_buffer.get() + tail, p_data, amount);
+    std::memcpy(_buffer.get() + tail, p_data, amount * sizeof(value_type));
 
     tail += amount;
 
@@ -125,7 +136,7 @@ public:
     if (head < tail && amount < p_size) {
       const auto remaining = p_size - amount;
       const auto more = (remaining > head) ? head : remaining;
-      std::memcpy(_buffer.get(), p_data + amount, more);
+      std::memcpy(_buffer.get(), p_data + amount, more * sizeof(value_type));
       amount += more;
       tail = more;
     }
