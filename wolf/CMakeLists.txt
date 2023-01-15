@@ -180,12 +180,12 @@ if(NOT EMSCRIPTEN)
 endif()
 
 # include cmakes
-include(cmake/machine_learning.cmake)
 include(cmake/boost.cmake)
 include(cmake/media.cmake)
 include(cmake/rust.cmake)
 include(cmake/system.cmake)
 include(cmake/stream.cmake)
+include(cmake/machine_learning.cmake)
 
 if(WOLF_ENABLE_ASAN)
     set(ENABLE_ASAN TRUE)
