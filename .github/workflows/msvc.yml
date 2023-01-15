@@ -38,6 +38,9 @@ jobs:
       
       - uses: egorpugin/sw-action@master
 
+      - name: sw setup
+        run: ./sw setup
+
       - name: Setup OpenCppCoverage and add to PATh
         id: setup_opencppcoverage
         run: |
