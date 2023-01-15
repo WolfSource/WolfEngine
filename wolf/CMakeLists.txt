@@ -1,4 +1,4 @@
-#cmake . -B build -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_HOME/build/cmake/android.toolchain.cmake -DANDROID_ABI=armeabi-v7a -DANDROID_NDK=$ANDROID_NDK_HOME -DANDROID_PLATFORM=android-21 -DCMAKE_ANDROID_ARCH_ABI=armeabi-v7a -DCMAKE_ANDROID_NDK=$ANDROID_NDK_HOME -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_SYSTEM_NAME=Android -DCMAKE_SYSTEM_VERSION=21 -DCMAKE_BUILD_TYPE=Debug -GNinja
+# cmake . -B build -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_HOME/build/cmake/android.toolchain.cmake -DANDROID_ABI=armeabi-v7a -DANDROID_NDK=$ANDROID_NDK_HOME -DANDROID_PLATFORM=android-21 -DCMAKE_ANDROID_ARCH_ABI=armeabi-v7a -DCMAKE_ANDROID_NDK=$ANDROID_NDK_HOME -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_SYSTEM_NAME=Android -DCMAKE_SYSTEM_VERSION=21 -DCMAKE_BUILD_TYPE=Debug -GNinja
 cmake_minimum_required(VERSION 3.22...3.23)
 
 # set the name of the projects
@@ -11,21 +11,21 @@ set(WEBRTC_SRC $ENV{WEBRTC_ROOT} CACHE STRING "path to the root folder of webrtc
 
 # check the OS
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
-    if (WIN32)
+    if(WIN32)
         set(WIN64 TRUE)
     endif()
 endif()
 
 if(UNIX AND NOT APPLE)
-   set(LINUX TRUE)
+    set(LINUX TRUE)
 endif()
 
-if (MSVC AND NOT WIN64)
-    message( FATAL_ERROR "Only Window 64 bit is supported" )
+if(MSVC AND NOT WIN64)
+    message(FATAL_ERROR "Only Window 64 bit is supported")
 endif()
 
 # set target os
-if (WIN64)
+if(WIN64)
     set(TARGET_OS "win")
     set(LIB_EXT "lib")
     set(SHARED_EXT "dll")
@@ -38,13 +38,14 @@ elseif(LINUX)
     set(LIB_EXT "a")
     set(SHARED_EXT "so")
 else()
-    message( FATAL_ERROR "Unsuported OS, please open an issue at https://github.com/WolfEngine/WolfEngine" )
+    message(FATAL_ERROR "Unsuported OS, please open an issue at https://github.com/WolfEngine/WolfEngine")
 endif()
 
 # required packages
 find_package(Git REQUIRED)
-if (NOT EMSCRIPTEN)
-    find_package (Threads)
+
+if(NOT EMSCRIPTEN)
+    find_package(Threads)
 endif()
 
 # use folders
@@ -86,38 +87,44 @@ option(WOLF_SYSTEM_SIG_SLOT "Enable signal/slot based on boost signals2" OFF)
 option(WOLF_SYSTEM_SOCKET "Enable TCP/UDP protocol over socket" OFF)
 option(WOLF_SYSTEM_STACKTRACE "Enable boost stacktrace" OFF)
 
-#option(WOLF_SYSTEM_WASM3 "Enable WebAssembly interpreter" OFF)
-#option(WOLF_SYSTEM_ZLIB "Enable zlib for compression" OFF)
+# option(WOLF_SYSTEM_WASM3 "Enable WebAssembly interpreter" OFF)
+# option(WOLF_SYSTEM_ZLIB "Enable zlib for compression" OFF)
 
-#option(WOLF_ENABLE_LTO "Enable cross language linking time optimization" OFF)
+# machine learing modules
+option(WOLF_MACHINE_LEARNING_OCR "Enable machine learning referee ocr" ON)
+option(WOLF_MACHINE_LEARNING_NUDITY_DETECTION "Enable machine learning nudity detection" OFF)
+
+# option(WOLF_ENABLE_LTO "Enable cross language linking time optimization" OFF)
 option(WOLF_TEST "Enable tests" ON)
-if (NOT MSVC)
+
+if(NOT MSVC)
     option(WOLF_ENABLE_ASAN "Enable ASAN" OFF)
 endif()
 
 if(ENABLE_LTO)
-  include(CheckIPOSupported)
-  check_ipo_supported(RESULT supported OUTPUT error)
-  if(supported)
-      message(STATUS "IPO / LTO enabled")
-      set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
-      add_link_options(-fuse-ld=lld)
-  else()
-      message(STATUS "IPO / LTO not supported: <${error}>")
-  endif()
+    include(CheckIPOSupported)
+    check_ipo_supported(RESULT supported OUTPUT error)
+
+    if(supported)
+        message(STATUS "IPO / LTO enabled")
+        set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
+        add_link_options(-fuse-ld=lld)
+    else()
+        message(STATUS "IPO / LTO not supported: <${error}>")
+    endif()
 endif()
 
 # media modules
-# 
+#
 # option(WOLF_MEDIA_IMAGE "Enable WebP/BMP/JPG/PNG formats" OFF)
-# 
+#
 
 # stream modules
 # option(WOLF_STREAM_KAFKA_CLIENT "Enable Kafka API connector" OFF)
 
 # option(WOLF_STREAM_RTSP_CLIENT "Enable RTSP for client" OFF)
 # option(WOLF_STREAM_RTSP_SERVER "Enable RTSP for server" OFF)
-#option(WOLF_STREAM_WEBRTC "Enable native webRTC" OFF)
+# option(WOLF_STREAM_WEBRTC "Enable native webRTC" OFF)
 
 # system modules
 # option(WOLF_SYSTEM_AVX2 "Enable avx2" OFF)
@@ -133,39 +140,41 @@ set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
 set(THREADS_PREFER_PTHREAD_FLAG TRUE)
 
 set(CMAKE_BUILD_TYPE "${default_build_type}" CACHE STRING "Choose the type of build." FORCE)
-if ("${CMAKE_BUILD_TYPE}" STREQUAL "")
-  set(CMAKE_BUILD_TYPE "Debug")
+
+if("${CMAKE_BUILD_TYPE}" STREQUAL "")
+    set(CMAKE_BUILD_TYPE "Debug")
 endif()
+
 set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
 
 # set C++ flags based on compiler
-if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
-  # using Clang or AppleClang
-  set(CMAKE_CXX_STANDARD 20)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++2b -fexceptions -fcoroutines-ts")
-  set(CMAKE_CXX_FLAGS_DEBUG "-g")
-  set(CMAKE_CXX_FLAGS_RELEASE "-O3")
-elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-  # using GCC
-  set(CMAKE_CXX_STANDARD 23)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++2b -fexceptions -fcoroutines")
-  set(CMAKE_CXX_FLAGS_DEBUG "-g")
-  set(CMAKE_CXX_FLAGS_RELEASE "-O3")
-elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-  # using Microsoft Visual C++
-  # set C++23 as the primary standard
-  set(CMAKE_CXX_STANDARD 23)
-  set(CMAKE_CXX_FLAGS "/EHsc /W3 /bigobj")
+if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
+    # using Clang or AppleClang
+    set(CMAKE_CXX_STANDARD 20)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++2b -fexceptions -fcoroutines-ts")
+    set(CMAKE_CXX_FLAGS_DEBUG "-g")
+    set(CMAKE_CXX_FLAGS_RELEASE "-O3")
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    # using GCC
+    set(CMAKE_CXX_STANDARD 23)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++2b -fexceptions -fcoroutines")
+    set(CMAKE_CXX_FLAGS_DEBUG "-g")
+    set(CMAKE_CXX_FLAGS_RELEASE "-O3")
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    # using Microsoft Visual C++
+    # set C++23 as the primary standard
+    set(CMAKE_CXX_STANDARD 23)
+    set(CMAKE_CXX_FLAGS "/EHsc /W3 /bigobj")
 endif()
 
 set(GETOPT_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/system)
 
-#define includes, libs and srcs
+# define includes, libs and srcs
 set(INCLUDES ${CMAKE_CURRENT_SOURCE_DIR})
 set(LIBS)
 set(SRCS)
 
-if (NOT EMSCRIPTEN)
+if(NOT EMSCRIPTEN)
     # currently threads was not supported with WASM
     list(APPEND LIBS Threads::Threads)
 endif()
@@ -176,31 +185,32 @@ include(cmake/media.cmake)
 include(cmake/rust.cmake)
 include(cmake/system.cmake)
 include(cmake/stream.cmake)
+include(cmake/machine_learning.cmake)
 
-if (WOLF_ENABLE_ASAN)
+if(WOLF_ENABLE_ASAN)
     set(ENABLE_ASAN TRUE)
 endif()
 
-#add_compile_options(-fsanitize=address)
-#add_link_options(-fsanitize=address)
+# add_compile_options(-fsanitize=address)
+# add_link_options(-fsanitize=address)
 
 # enabling clang-tidy
 # can be enabled with .CLANG-TIDY from Visual Studio Code
 # https://devblogs.microsoft.com/cppblog/visual-studio-code-c-december-2021-update-clang-tidy/
 # can be enabled with .CLANG-TIDY from Visual Studio
 # https://devblogs.microsoft.com/cppblog/code-analysis-with-clang-tidy-in-visual-studio/
-#set(CMAKE_CXX_CLANG_TIDY
-#     clang-tidy;
-#     -format-style=file;)  
+# set(CMAKE_CXX_CLANG_TIDY
+# clang-tidy;
+# -format-style=file;)
 
 # add definitions
-
 add_definitions(
     -DBOOST_ASIO_NO_DEPRECATED
     -DBOOST_ASIO_HAS_CO_AWAIT
-    -DBOOST_ASIO_HAS_STD_COROUTINE 
+    -DBOOST_ASIO_HAS_STD_COROUTINE
 )
-if (MSVC)
+
+if(MSVC)
     add_definitions(
         -EHsc
         -DNOMINMAX
@@ -208,7 +218,7 @@ if (MSVC)
         -DWIN64
         -DWIN32
     )
-elseif (EMSCRIPTEN)
+elseif(EMSCRIPTEN)
     add_definitions(
         -DEMSCRIPTEN
     )
@@ -224,9 +234,11 @@ endif()
 
 # setup Wolf definitions
 get_cmake_property(_vars VARIABLES)
-foreach (_var ${_vars})
+
+foreach(_var ${_vars})
     string(FIND ${_var} "WOLF_" out)
-    if(("${out}" EQUAL 0) AND ("(${${_var}}" MATCHES ON))
+
+    if(("${out}" EQUAL 0) AND("(${${_var}}" MATCHES ON))
         add_definitions("-D${_var}")
     endif()
 endforeach()
@@ -246,23 +258,23 @@ file(GLOB_RECURSE WOLF_CMAKES
 include_directories(${INCLUDES})
 
 # add source codes
-add_library(${PROJECT_NAME} ${LIBRARY_TYPE} 
+add_library(${PROJECT_NAME} ${LIBRARY_TYPE}
     ${SRCS}
     ${WOLF_SRCS}
     ${WOLF_CMAKES}
 )
 
-if (WOLF_STREAM_RIST)
+if(WOLF_STREAM_RIST)
     add_dependencies(${PROJECT_NAME} ${RIST_TARGET})
 endif()
-		
-#if (MSVC)
-#    if(CMAKE_BUILD_TYPE MATCHES Debug)
-#        set_property(TARGET ${PROJECT_NAME} PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreadedDebug")
-#    else()
-#        set_property(TARGET ${PROJECT_NAME} PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded")
-#    endif()
-#endif()
+
+# if (MSVC)
+# if(CMAKE_BUILD_TYPE MATCHES Debug)
+# set_property(TARGET ${PROJECT_NAME} PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreadedDebug")
+# else()
+# set_property(TARGET ${PROJECT_NAME} PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded")
+# endif()
+# endif()
 
 # link libraries
 target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBS})
@@ -289,24 +301,26 @@ source_group("system" FILES ${WOLF_SYSTEM_SRC})
 source_group("media/test" FILES ${WOLF_MEDIA_TEST_SRC})
 source_group("media/ffmpeg" FILES ${WOLF_MEDIA_FFMPEG_SRC})
 source_group("media" FILES ${WOLF_MEDIA_OPENAL_SRC} ${WOLF_MEDIA_STB_SRC})
+source_group("machine_learning/referee_ocr" FILES ${WOLF_MACHINE_LEARNING_OCR_SRC})
 
 # add compile options
-if (NOT WIN32)
+if(NOT WIN32)
     target_compile_options(${PROJECT_NAME} PRIVATE -std=c++2b -fPIC)
 endif()
 
-if (WOLF_ENABLE_ASAN)
+if(WOLF_ENABLE_ASAN)
     target_compile_options(${PROJECT_NAME} PRIVATE -fsanitize=address)
     target_link_options(${PROJECT_NAME} PRIVATE -fsanitize=address)
 endif()
 
 # build tests
-if (WOLF_TEST AND NOT EMSCRIPTEN)
+if(WOLF_TEST AND NOT EMSCRIPTEN)
     add_executable(${TEST_PROJECT_NAME}
         tests.cpp
     )
     target_link_libraries(${TEST_PROJECT_NAME} PRIVATE ${PROJECT_NAME})
-    if (NOT WIN32)
+
+    if(NOT WIN32)
         target_compile_options(${TEST_PROJECT_NAME} PRIVATE -std=c++2b)
     endif()
 endif()

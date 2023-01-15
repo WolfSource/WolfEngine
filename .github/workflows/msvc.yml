@@ -35,6 +35,11 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+      
+      - uses: egorpugin/sw-action@master
+
+      - name: build
+        run: ./sw build
 
       - name: Setup OpenCppCoverage and add to PATh
         id: setup_opencppcoverage
