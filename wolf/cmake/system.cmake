@@ -80,7 +80,7 @@ endif()
 if (WOLF_SYSTEM_GAMEPAD_CLIENT)
     file(GLOB_RECURSE WOLF_SYSTEM_GAMEPAD_CLIENT_SRC
         "${CMAKE_CURRENT_SOURCE_DIR}/system/gamepad/w_gamepad_client.hpp"
-        "${CMAKE_CURRENT_SOURCE_DIR}/system/gamepad/w_gamepad_client_emscripten.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/system/gamepad/w_gamepad_client_emc.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/system/gamepad/w_gamepad_client_keymap.hpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/system/gamepad/w_gamepad_client_sdl.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/system/gamepad/w_gamepad_client_types.hpp"
@@ -273,10 +273,10 @@ endif()
 
 # include socket/websocket sources
 if (EMSCRIPTEN)
-    if (WOLF_STREAM_HTTP1_WS)
+    if (WOLF_SYSTEM_HTTP1_WS)
         file(GLOB_RECURSE WOLF_SYSTEM_SOCKET_SRC
-            "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_ws_client_emscripten.cpp"
-            "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_ws_client_emscripten.hpp"
+            "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_ws_client_emc.cpp"
+            "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_ws_client_emc.hpp"
         )
     endif()
 else()
@@ -287,18 +287,16 @@ else()
             "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_tcp_client.hpp"
             "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_tcp_server.cpp"
             "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_tcp_server.hpp"
-    if (WOLF_STREAM_HTTP1_WS)
-            "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_ws_client.cpp"
-            "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_ws_client.hpp"
-            "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_ws_server.cpp"
-            "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_ws_server.hpp"
-    endif()
+            if (WOLF_SYSTEM_HTTP1_WS)
+                "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_ws_client.cpp"
+                "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_ws_client.hpp"
+                "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_ws_server.cpp"
+                "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_ws_server.hpp"
+            endif()
         )
     endif()
-    list(APPEND SRCS 
-        ${WOLF_SYSTEM_SOCKET_SRC} 
-    )
 endif()
+list(APPEND SRCS ${WOLF_SYSTEM_SOCKET_SRC})
 
 # fetch zlib 
 if (WOLF_SYSTEM_ZLIB)

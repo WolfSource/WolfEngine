@@ -5,9 +5,9 @@ set(BOOST_MASTER_LIBS
 )
 
 if (NOT EMSCRIPTEN)
-    if (WOLF_STREAM_HTTP1_WS)
+    if (WOLF_SYSTEM_HTTP1_WS)
         if (NOT WOLF_SYSTEM_SOCKET)
-            message(FATAL_ERROR "WOLF_STREAM_HTTP1_WS needs WOLF_SYSTEM_SOCKET module")
+            message(FATAL_ERROR "WOLF_SYSTEM_HTTP1_WS needs WOLF_SYSTEM_SOCKET module")
         endif()
         list(APPEND BOOST_MASTER_LIBS   
             boost_beast
@@ -111,7 +111,7 @@ foreach (_var ${BOOST_MASTER_LIBS})
     )
 endforeach()
 
-if (WOLF_STREAM_HTTP1_WS AND NOT EMSCRIPTEN)
+if (WOLF_SYSTEM_HTTP1_WS AND NOT EMSCRIPTEN)
     set(Beast_BUILD_EXAMPLES OFF CACHE BOOL "Beast_BUILD_EXAMPLES")
     set(Beast_BUILD_TESTS OFF CACHE BOOL "Beast_BUILD_TESTS")
     set(Boost_USE_STATIC_LIBS ON CACHE BOOL "Beast_USE_STATIC_LIBS")

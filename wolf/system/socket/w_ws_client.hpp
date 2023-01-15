@@ -90,7 +90,7 @@ public:
    * get whether websocket is open or not
    * @returns true if socket was open
    */
-  W_API [[maybe_unused]] bool get_is_open() const;
+  W_API bool is_open() const;
 
 private:
   // copy constructor

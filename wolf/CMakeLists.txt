@@ -57,6 +57,8 @@ include(FetchContent)
 set(LIBRARY_TYPE "STATIC" CACHE STRING "Library type")
 
 # CMAKE GUI Options
+set(EMSDK "$ENV{EMSDK}" CACHE STRING "Emscripten SDK path")
+
 # render modules
 option(WOLF_RENDER "Enable cross platform render engine based on Vulkan / OpenGL ES" OFF)
 
@@ -68,7 +70,6 @@ option(WOLF_MEDIA_STB "Enable stb headers" OFF)
 
 # stream modules
 option(WOLF_STREAM_GRPC "Enable gRPC connection" OFF)
-option(WOLF_STREAM_HTTP1_WS "Enable http1.1 and websocket client/server based on boost beast or Emscripten" OFF)
 option(WOLF_STREAM_QUIC "Enable QUIC" OFF)
 option(WOLF_STREAM_RIST "Enable RIST streaming protocol" OFF)
 option(WOLF_STREAM_WEBRTC "Enable webRTC" OFF)
@@ -77,6 +78,7 @@ option(WOLF_STREAM_WEBRTC "Enable webRTC" OFF)
 option(WOLF_SYSTEM_BORINGSSL "Enable boringSSL" OFF)
 option(WOLF_SYSTEM_GAMEPAD_CLIENT "Enable gamepad input handling" OFF)
 option(WOLF_SYSTEM_GAMEPAD_VIRTUAL "Enable virtual gamepad simulator" OFF)
+option(WOLF_SYSTEM_HTTP1_WS "Enable http1.1 and websocket client/server based on boost beast or Emscripten" OFF)
 option(WOLF_SYSTEM_LOG "Enable log" OFF)
 option(WOLF_SYSTEM_LUAJIT "Enable luaJIT" OFF)
 option(WOLF_SYSTEM_LZ4 "Enable lz4 for compression" OFF)
@@ -165,7 +167,10 @@ set(INCLUDES ${CMAKE_CURRENT_SOURCE_DIR})
 set(LIBS)
 set(SRCS)
 
-if (NOT EMSCRIPTEN)
+if (EMSCRIPTEN)
+    cmake_path(GET CMAKE_CXX_COMPILER PARENT_PATH CXX_INCLUDE_PARENT)
+    list(APPEND INCLUDES "${CXX_INCLUDE_PARENT}/system/include")
+else()
     # currently threads was not supported with WASM
     list(APPEND LIBS Threads::Threads)
 endif()

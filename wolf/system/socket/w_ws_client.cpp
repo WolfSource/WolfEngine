@@ -106,7 +106,7 @@ boost::asio::awaitable<void> w_ws_client::async_close(
   co_await this->_ws->async_close(p_close_reason);
 }
 
-bool w_ws_client::get_is_open() const {
+bool w_ws_client::is_open() const {
   if (this->_ws == nullptr) {
     return false;
   }
