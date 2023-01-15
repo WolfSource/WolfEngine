@@ -36,9 +36,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
       
-      - uses: egorpugin/sw-action@master
-
       - name: SW setup and add to PATH
+        uses: egorpugin/sw-action@master
         run: |
           ./sw setup
           echo "D:\a\WolfEngine\WolfEngine" >> $env:GITHUB_PATH
