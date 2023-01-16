@@ -236,6 +236,7 @@ public:
   size_t _size_of_chunk = 0;
   LPALBUFFERCALLBACKSOFT _callback_ptr = nullptr;
 };
+
 } // namespace wolf::media
 
 #endif

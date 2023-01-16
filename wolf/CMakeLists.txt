@@ -46,6 +46,7 @@ endif()
 
 # required packages
 find_package(Git REQUIRED)
+
 if (NOT EMSCRIPTEN)
     find_package (Threads)
 endif()
@@ -59,8 +60,9 @@ include(FetchContent)
 # set type of library
 set(LIBRARY_TYPE "STATIC" CACHE STRING "Library type")
 
-# CMAKE GUI Options
 set(EMSDK "$ENV{EMSDK}" CACHE STRING "Emscripten SDK path")
+
+# CMAKE GUI Options
 
 # render modules
 option(WOLF_RENDER "Enable cross platform render engine based on Vulkan / OpenGL ES" OFF)
@@ -106,11 +108,11 @@ if(ENABLE_LTO)
   include(CheckIPOSupported)
   check_ipo_supported(RESULT supported OUTPUT error)
   if(supported)
-      message(STATUS "IPO / LTO enabled")
-      set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
-      add_link_options(-fuse-ld=lld)
+    message(STATUS "IPO / LTO enabled")
+    set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
+    add_link_options(-fuse-ld=lld)
   else()
-      message(STATUS "IPO / LTO not supported: <${error}>")
+    message(STATUS "IPO / LTO not supported: <${error}>")
   endif()
 endif()
 
@@ -139,11 +141,9 @@ set(CMAKE_CXX_EXTENSIONS ON)
 set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
 set(THREADS_PREFER_PTHREAD_FLAG TRUE)
 
-#set(CMAKE_BUILD_TYPE "${default_build_type}" CACHE STRING "Choose the type of build." FORCE)
-if ("${CMAKE_BUILD_TYPE}" STREQUAL "")
+if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE "Debug")
 endif()
-#set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
 
 # set C++ flags based on compiler
 if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
@@ -159,10 +159,10 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
   set(CMAKE_CXX_FLAGS_DEBUG "-g")
   set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-  # using Microsoft Visual C++
+  # using Visual Studio C++
   # set C++23 as the primary standard
   set(CMAKE_CXX_STANDARD 23)
-  set(CMAKE_CXX_FLAGS "/EHsc /W3 /bigobj")
+  set(CMAKE_CXX_FLAGS "/MDd /EHsc /W4 /bigobj")
 endif()
 
 set(GETOPT_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/system)
@@ -203,44 +203,6 @@ endif()
 #     clang-tidy;
 #     -format-style=file;)  
 
-# add definitions
-
-add_definitions(
-    -DBOOST_ASIO_NO_DEPRECATED
-    -DBOOST_ASIO_HAS_CO_AWAIT
-    -DBOOST_ASIO_HAS_STD_COROUTINE 
-)
-if (MSVC)
-    add_definitions(
-        -EHsc
-        -DNOMINMAX
-        -DWIN32_LEAN_AND_MEAN
-        -DWIN64
-        -DWIN32
-    )
-elseif (EMSCRIPTEN)
-    add_definitions(
-        -DEMSCRIPTEN
-    )
-elseif(APPLE)
-    add_definitions(-DNEED_XLOCALE_H=1)
-endif()
-
-if(CMAKE_BUILD_TYPE MATCHES Debug)
-    add_definitions(-DDEBUG -D_DEBUG)
-else()
-    add_definitions(-DNDEBUG)
-endif()
-
-# setup Wolf definitions
-get_cmake_property(_vars VARIABLES)
-foreach (_var ${_vars})
-    string(FIND ${_var} "WOLF_" out)
-    if(("${out}" EQUAL 0) AND ("(${${_var}}" MATCHES ON))
-        add_definitions("-D${_var}")
-    endif()
-endforeach()
-
 # include sources
 file(GLOB_RECURSE WOLF_SRCS
     "${CMAKE_CURRENT_SOURCE_DIR}/wolf.cpp"
@@ -251,9 +213,6 @@ file(GLOB_RECURSE WOLF_SRCS
 file(GLOB_RECURSE WOLF_CMAKES
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/*"
 )
-
-# includes
-include_directories(${INCLUDES})
 
 # add source codes
 add_library(${PROJECT_NAME} ${LIBRARY_TYPE} 
@@ -273,6 +232,50 @@ endif()
 #        set_property(TARGET ${PROJECT_NAME} PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded")
 #    endif()
 #endif()
+
+# add definitions
+
+target_compile_definitions(
+    ${PROJECT_NAME}
+    PUBLIC
+        -DBOOST_ASIO_NO_DEPRECATED
+        -DBOOST_ASIO_HAS_CO_AWAIT
+        -DBOOST_ASIO_HAS_STD_COROUTINE 
+)
+if (MSVC)
+    target_compile_definitions(
+	${PROJECT_NAME}
+	PUBLIC
+            -EHsc
+            -DNOMINMAX
+            -DWIN32_LEAN_AND_MEAN
+            -DWIN64
+            -DWIN32
+    )
+elseif (EMSCRIPTEN)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC -DEMSCRIPTEN)
+elseif (APPLE)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC -DNEED_XLOCALE_H=1)
+endif()
+
+if(CMAKE_BUILD_TYPE MATCHES Debug)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC -DDEBUG -D_DEBUG)
+else()
+    target_compile_definitions(${PROJECT_NAME} PUBLIC -DNDEBUG)
+endif()
+
+# setup Wolf definitions
+get_cmake_property(_vars VARIABLES)
+foreach (_var ${_vars})
+    string(FIND ${_var} "WOLF_" out)
+    if(("${out}" EQUAL 0) AND ("(${${_var}}" MATCHES ON))
+        target_compile_definitions(${PROJECT_NAME} PUBLIC "-D${_var}")
+    endif()
+endforeach()
+
+# includes
+target_include_directories(${PROJECT_NAME} PUBLIC ${INCLUDES})
+target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 # link libraries
 target_link_libraries(${PROJECT_NAME} PUBLIC ${LIBS})
