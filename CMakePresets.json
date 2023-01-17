@@ -17,6 +17,16 @@
             }
         },
         {
+            "name": "wasm32-unknown-emscripten",
+            "displayName": "wasm32-unknown-emscripten",
+            "description": "Configure based on Emscripten",
+            "inherits": "base",
+            "cacheVariables": {
+                "CMAKE_TOOLCHAIN_FILE": "$env{EMSDK}/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake",
+                "CMAKE_BUILD_TYPE": "Debug"
+            }
+        },
+        {
             "name": "win-x64-debug",
             "displayName": "Win x64 Debug",
             "description": "Sets windows platform and debug build type for x64 arch",
@@ -147,33 +157,39 @@
     ],
     "buildPresets": [
         {
+            "name": "wasm32-unknown-emscripten",
+            "displayName": "wasm32-unknown-emscripten",
+            "description": "Build WebAssembly with Emscripten",
+            "configurePreset": "wasm32-unknown-emscripten"
+        },
+        {
             "name": "default-build-windows",
             "displayName": "Default Windows",
-            "description": "Vanilla Build Windows",
+            "description": "Build Windows",
             "configurePreset": "win-x64-debug"
         },
         {
             "name": "android-arm64-debug",
             "displayName": "Android ARM64 v8a Debug",
-            "description": "Vanilla Build Android",
+            "description": "Build Android",
             "configurePreset": "android-arm64-debug"
         },
         {
             "name": "android-arm64-release",
             "displayName": "Android ARM64 v8a Release",
-            "description": "Vanilla Build Android",
+            "description": "Build Android",
             "configurePreset": "android-arm64-release"
         },
         {
             "name": "android-arm-release",
             "displayName": "Android ARM eabi v7a Release",
-            "description": "Vanilla Build Android",
+            "description": "Build Android",
             "configurePreset": "android-arm-release"
         },
         {
             "name": "android-arm-debug",
             "displayName": "Android ARM eabi v7a Debug",
-            "description": "Vanilla Build Android",
+            "description": "Build Android",
             "configurePreset": "android-arm-debug"
         }
     ],
