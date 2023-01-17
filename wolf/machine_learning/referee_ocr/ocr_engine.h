@@ -1,6 +1,8 @@
 #ifndef OCR_H
 #define OCR_H
 
+#include "DISABLE_ANALYSIS_BEGIN"
+
 #include <tesseract/baseapi.h>
 
 #include <algorithm>
@@ -10,6 +12,8 @@
 #include <sstream>
 #include <string>
 #include <vector>
+
+#include "DISABLE_ANALYSIS_END"
 
 #include "image_processor.h"
 
