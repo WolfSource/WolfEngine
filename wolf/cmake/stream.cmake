@@ -145,7 +145,7 @@ if (WOLF_STREAM_RIST)
         add_custom_command(OUTPUT ${RIST_LIBRARY_BINARY_FILE}
             COMMAND /bin/bash "${CMAKE_CURRENT_SOURCE_DIR}/third_party/shells/librist/librist-android.sh" --build_dir=${rist_BINARY_DIR}
             WORKING_DIRECTORY ${rist_SOURCE_DIR})
-        add_custom_target(rist ALL DEPENDS ${RIST_LIBRARY_BINARY_FILE})
+        add_custom_target(rist-build ALL DEPENDS ${RIST_LIBRARY_BINARY_FILE})
 
         add_library(rist INTERFACE)
         add_dependencies(rist rist-build)

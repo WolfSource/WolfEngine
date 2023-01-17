@@ -162,7 +162,7 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
   # using Visual Studio C++
   # set C++23 as the primary standard
   set(CMAKE_CXX_STANDARD 23)
-  set(CMAKE_CXX_FLAGS "/MDd /EHsc /W4 /bigobj")
+  set(CMAKE_CXX_FLAGS "/MD /EHsc /W4 /bigobj")
 endif()
 
 set(GETOPT_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/system)
