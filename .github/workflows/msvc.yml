@@ -55,10 +55,10 @@ jobs:
         id: run-analysis
         with:
           cmakeBuildDirectory: ${{ env.build }}
-          ignoredPaths: ${{ env.build }}/_deps
           # Ruleset file that will determine what checks will be run
           ruleset: NativeRecommendedRules.ruleset
-
+          ignoredPaths: build/_deps
+          
       - name: Generate Codecov Report
         id: generate_test_report
         shell: cmd
