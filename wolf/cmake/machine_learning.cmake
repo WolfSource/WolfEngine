@@ -32,8 +32,6 @@ if(WOLF_MACHINE_LEARNING_OCR)
         set(DEBUG_LIB_EXTENTION "")
     endif()
 
-    message(${CMAKE_BUILD_TYPE}"....DEBUG_LIB_EXTENTION: "${DEBUG_LIB_EXTENTION}"........")
-
     list(APPEND LIBS
         ${tesseract_BINARY_DIR}/${CMAKE_BUILD_TYPE}/tesseract53${DEBUG_LIB_EXTENTION}.lib
     )
