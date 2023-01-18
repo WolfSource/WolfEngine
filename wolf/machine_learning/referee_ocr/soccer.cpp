@@ -1,11 +1,15 @@
 #include "soccer.h"
 
+#include "DISABLE_ANALYSIS_BEGIN"
+
 #include <chrono>
 #include <cstdint>
 #include <filesystem>
 #include <fstream>
 #include <opencv2/opencv.hpp>
 #include <string>
+
+#include "DISABLE_ANALYSIS_END"
 
 #include "ocr_referee_class.h"
 #include "utilities.h"

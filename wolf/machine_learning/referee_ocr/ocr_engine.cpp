@@ -1,5 +1,7 @@
 #include "ocr_engine.h"
 
+#include "DISABLE_ANALYSIS_BEGIN"
+
 #include <stdio.h>
 #include <string.h>
 #include <sys/stat.h>
@@ -7,6 +9,8 @@
 #include <cctype>
 #include <cstring>
 #include <filesystem>
+
+#include "DISABLE_ANALYSIS_END"
 
 #include "utilities.h"
 namespace fs = std::filesystem;
