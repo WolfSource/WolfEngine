@@ -50,12 +50,12 @@ jobs:
           choco install OpenCppCoverage -y
           echo "C:\Program Files\OpenCppCoverage" >> $env:GITHUB_PATH
           
-      - name: Configure CMake
-        run: cmake -B ${{ env.build }}
+      # - name: Configure CMake
+      #   run: cmake -B ${{ env.build }}
         
-      # Build is not required for MSVC Code Analysis and will be used for Codecov
-      - name: Build CMake
-        run: cmake --build ${{ env.build }}
+      # # Build is not required for MSVC Code Analysis and will be used for Codecov
+      # - name: Build CMake
+      #   run: cmake --build ${{ env.build }}
 
       - name: Run MSVC Code Analysis
         uses: microsoft/msvc-code-analysis-action@04825f6d9e00f87422d6bf04e1a38b1f3ed60d99
