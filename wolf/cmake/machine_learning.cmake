@@ -7,8 +7,8 @@ if(WOLF_MACHINE_LEARNING_OCR)
         GIT_REPOSITORY https://github.com/tesseract-ocr/tesseract.git
         GIT_TAG main
 
-        # GIT_SHALLOW TRUE
-        # GIT_PROGRESS TRUE
+        GIT_SHALLOW TRUE
+        GIT_PROGRESS TRUE
     )
     set(FETCHCONTENT_QUIET OFF)
 
