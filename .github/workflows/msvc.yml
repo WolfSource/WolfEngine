@@ -65,6 +65,8 @@ jobs:
           cmakeBuildDirectory: ${{ env.build }}
           # Ruleset file that will determine what checks will be run
           ruleset: NativeRecommendedRules.ruleset
+          # Paths to ignore analysis of CMake targets and includes
+          ignoredPaths: ${{ github.workspace }}/build/_deps
 
       - name: Generate Codecov Report
         id: generate_test_report
