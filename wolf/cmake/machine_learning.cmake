@@ -1,4 +1,3 @@
-# cmake . -B build -DCMAKE_TOOLCHAIN_FILE=C:/src/vcpkg/scripts/buildsystems/vcpkg.cmake
 if(WOLF_MACHINE_LEARNING_OCR)
     # fetch tesseract
     message("fetching https://github.com/tesseract-ocr/tesseract.git")
