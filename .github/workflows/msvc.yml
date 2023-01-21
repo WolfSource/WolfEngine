@@ -57,9 +57,9 @@ jobs:
           cmakeBuildDirectory: ${{ env.build }}
           # Ruleset file that will determine what checks will be run
           ruleset: NativeRecommendedRules.ruleset
-          ignoreSystemHeaders: true
-          ignoredTargetPaths: D:/a/WolfEngine/WolfEngine/build/_deps/boost_chrono-src
-          ignoredIncludePaths: D:/a/WolfEngine/WolfEngine/build/_deps/boost_chrono-src/include
+          # ignoreSystemHeaders: true
+          # ignoredTargetPaths: D:/a/WolfEngine/WolfEngine/build/_deps/boost_chrono-src
+          ignoredIncludePaths: D:/a/WolfEngine/WolfEngine/build/_deps/boost_chrono-src/include;D:/a/WolfEngine/WolfEngine/build/_deps/boost_context-src/include;D:/a/WolfEngine/WolfEngine/build/_deps/boost_coroutine-src/include;D:/a/WolfEngine/WolfEngine/build/_deps/boost_date_time-src/include;D:/a/WolfEngine/WolfEngine/build/_deps/boost_exception-src/include;D:\a\WolfEngine\WolfEngine\build\_deps\fmt-src\include
           
       - name: Generate Codecov Report
         id: generate_test_report
