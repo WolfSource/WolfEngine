@@ -58,7 +58,7 @@ jobs:
           # Ruleset file that will determine what checks will be run
           ruleset: NativeRecommendedRules.ruleset
           ignoreSystemHeaders: true
-          ignoredPaths: ${{ env.build }}/_deps/boost_chrono-src/src;${{ env.build }}/_deps/boost_chrono-src/include;${{ env.build }};${{ env.build }}/_deps
+          ignoredPaths: D:/a/WolfEngine/WolfEngine/build/_deps/boost_chrono-src
           
       - name: Generate Codecov Report
         id: generate_test_report
