@@ -1,15 +1,11 @@
 #ifndef ImageProcessor_H
 #define ImageProcessor_H
 
-#include "DISABLE_ANALYSIS_BEGIN"
-
 #include <opencv2/opencv.hpp>
 #include <string>
 #include <vector>
 
 #include "salieri.h"
-
-#include "DISABLE_ANALYSIS_END"
 
 /*! \brief This class is responsible for image processing tasks.
 

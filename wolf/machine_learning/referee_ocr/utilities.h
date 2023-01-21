@@ -1,16 +1,12 @@
 #ifndef UTILITIES_H
 #define UTILITIES_H
 
-#include "DISABLE_ANALYSIS_BEGIN"
-
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
 #include <map>
 #include <opencv2/opencv.hpp>
 #include <vector>
-
-#include "DISABLE_ANALYSIS_END"
 
 #include "dlib_export.h"
 #include "ocr_referee_class.h"

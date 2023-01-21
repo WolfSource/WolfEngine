@@ -1,11 +1,7 @@
 #include "ocr_referee_class.h"
 
-#include "DISABLE_ANALYSIS_BEGIN"
-
 #include <chrono>
 #include <opencv2/opencv.hpp>
-
-#include "DISABLE_ANALYSIS_END"
 
 ocr_referee_class::ocr_referee_class() {}
 

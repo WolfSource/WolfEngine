@@ -1,12 +1,8 @@
 #ifndef READ_VIDEO_FRAMES_H
 #define READ_VIDEO_FRAMES_H
 
-#include "DISABLE_ANALYSIS_BEGIN"
-
 #include <iostream>
 #include <opencv2/opencv.hpp>
-
-#include "DISABLE_ANALYSIS_END"
 
 #include "dlib_export.h"
 

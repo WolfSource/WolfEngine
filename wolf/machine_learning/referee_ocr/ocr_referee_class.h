@@ -1,12 +1,8 @@
 #ifndef OCR_REFEREE_CLASS_H
 #define OCR_REFEREE_CLASS_H
 
-#include "DISABLE_ANALYSIS_BEGIN"
-
 #include <iostream>
 #include <opencv2/opencv.hpp>
-
-#include "DISABLE_ANALYSIS_END"
 
 #include "dlib_export.h"
 #include "ocr_engine.h"

@@ -1,7 +1,5 @@
 #include "utilities.h"
 
-#include "DISABLE_ANALYSIS_BEGIN"
-
 #include <rapidjson/document.h>
 #include <rapidjson/istreamwrapper.h>
 #include <rapidjson/ostreamwrapper.h>
@@ -20,8 +18,6 @@
 #include <sstream>
 #include <string>
 #include <vector>
-
-#include "DISABLE_ANALYSIS_END"
 
 // #include "spdlog/sinks/basic_file_sink.h"
 // #include "spdlog/sinks/stdout_color_sinks.h"

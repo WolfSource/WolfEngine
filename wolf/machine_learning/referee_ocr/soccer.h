@@ -1,13 +1,9 @@
 #ifndef SOCCER_H
 #define SOCCER_H
 
-#include "DISABLE_ANALYSIS_BEGIN"
-
 #include <fstream>
 #include <iostream>
 #include <map>
-
-#include "DISABLE_ANALYSIS_END"
 
 #include "dlib_export.h"
 #include "image_processor.h"
