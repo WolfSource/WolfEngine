@@ -12,6 +12,9 @@ message("CXX Compiler ID is ${CMAKE_CXX_COMPILER_ID}")
 # set the options and enviroment variables
 set(WEBRTC_SRC $ENV{WEBRTC_ROOT} CACHE STRING "path to the root folder of webrtc folder")
 
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${PROJECT_NAME})
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${PROJECT_NAME})
+
 # check the OS
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
     if (WIN32)

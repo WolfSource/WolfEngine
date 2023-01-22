@@ -62,7 +62,7 @@ jobs:
       - name: Generate Codecov Report
         id: generate_test_report
         shell: cmd
-        run: OpenCppCoverage.exe --continue_after_cpp_exception --export_type cobertura:WolfCov.xml --sources %CD% --excluded_sources %CD%\build\_deps -- %CD%\build\bin\Debug\wolf_tests.exe
+        run: OpenCppCoverage.exe --continue_after_cpp_exception --export_type cobertura:WolfCov.xml --sources %CD% --excluded_sources %CD%\build\_deps -- %CD%\build\wolf\Debug\wolf_tests.exe
       - name: Upload Report to Codecov
         uses: codecov/codecov-action@v2
         with:
