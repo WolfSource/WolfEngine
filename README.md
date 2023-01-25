@@ -69,7 +69,7 @@ cmake --build --preset default-build-android
 | API | Windows | Linux | macOS | iOS | Android | Wasm |
 |:-----------:|:-----------:|:--------------------------:|:--------------:|:-------------:|:--------------:|:-------------:|
 | gRPC | :memo: | :x: | :x: | :x: | :x: | :x: |
-| Janus | :construction: | :x: | :x: | :x: | :x: | :x: |
+| Janus | :construction: | :x: | :x: | :x: | :x: | :white_check_mark: |
 | QUIC | :memo: | :memo: | :memo: | :memo: | :memo: | :x: |
 | [RIST](https://github.com/WolfEngine/WolfEngine/blob/main/wolf/stream/test/rist.hpp) | :white_check_mark: | :memo: | :memo: | :memo: | :white_check_mark: | :x: |
 | RTMP | :memo: | :x: | :x: | :x: | :x: | :x: |
