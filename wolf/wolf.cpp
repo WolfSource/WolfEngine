@@ -3,18 +3,18 @@
 #ifdef WOLF_SYSTEM_MIMALLOC
 
 #include <DISABLE_ANALYSIS_BEGIN>
-#include <mimalloc-new-delete.h>
 #include <DISABLE_ANALYSIS_END>
+#include <mimalloc-new-delete.h>
 
 #endif
 
 #if defined(WOLF_SYSTEM_STACKTRACE) && !defined(WOLF_TESTS)
 
-#include <system/w_process.hpp>
 #include <csignal>
 #include <filesystem>
 #include <fstream>
 #include <sstream>
+#include <system/w_process.hpp>
 
 static void w_signal_handler(int p_signum) {
   auto _path = wolf::system::w_process::current_exe_path();
@@ -49,24 +49,23 @@ static void w_signal_handler(int p_signum) {
 
 #endif
 
-std::string wolf::w_init()
-{
+std::string wolf::w_init() {
 #if defined(WOLF_SYSTEM_STACKTRACE) && !defined(WOLF_TESTS)
-    std::ignore = signal(SIGSEGV, &w_signal_handler);
-    std::ignore = signal(SIGABRT, &w_signal_handler);
+  std::ignore = signal(SIGSEGV, &w_signal_handler);
+  std::ignore = signal(SIGABRT, &w_signal_handler);
 #endif
 
-    // Making incompatible API changes
-    constexpr auto WOLF_MAJOR_VERSION = 3;
-    // Adding functionality in a backwards - compatible manner
-    constexpr auto WOLF_MINOR_VERSION = 0;
-    // bug fixes
-    constexpr auto WOLF_PATCH_VERSION = 0;
-    // for debugging
-    constexpr auto WOLF_DEBUG_VERSION = 0;
+  // Making incompatible API changes
+  constexpr auto WOLF_MAJOR_VERSION = 3;
+  // Adding functionality in a backwards - compatible manner
+  constexpr auto WOLF_MINOR_VERSION = 0;
+  // bug fixes
+  constexpr auto WOLF_PATCH_VERSION = 0;
+  // for debugging
+  constexpr auto WOLF_DEBUG_VERSION = 0;
 
-    auto _version = fmt::format(
-        "v{}.{}.{}.{}",
-        WOLF_MAJOR_VERSION, WOLF_MINOR_VERSION, WOLF_PATCH_VERSION, WOLF_DEBUG_VERSION);
-    return _version;
+  auto _version =
+      fmt::format("v{}.{}.{}.{}", WOLF_MAJOR_VERSION, WOLF_MINOR_VERSION,
+                  WOLF_PATCH_VERSION, WOLF_DEBUG_VERSION);
+  return _version;
 }

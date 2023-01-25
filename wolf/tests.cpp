@@ -6,10 +6,10 @@
 #include <wolf/system/w_leak_detector.hpp>
 #include <wolf/wolf.hpp>
 
-#include <DISABLE_ANALYSIS_BEGIN>
+#include <wolf/DISABLE_ANALYSIS_BEGIN>
 #define BOOST_TEST_MODULE wolf
-#include <DISABLE_ANALYSIS_END>
 #include <boost/test/included/unit_test.hpp>
+#include <wolf/DISABLE_ANALYSIS_END>
 
 BOOST_AUTO_TEST_CASE(wolf_test) {
   const wolf::system::w_leak_detector _detector = {};

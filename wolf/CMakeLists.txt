@@ -167,7 +167,7 @@ endif()
 set(GETOPT_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/system)
 
 #define includes, libs and srcs
-set(INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/../)
+set(INCLUDES ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../)
 set(LIBS)
 set(SRCS)
 
