@@ -7,9 +7,9 @@
 
 #pragma once
 
-#include <wolf.hpp>
-#include <system/w_leak_detector.hpp>
 #include <boost/test/included/unit_test.hpp>
+#include <system/w_leak_detector.hpp>
+#include <wolf/wolf.hpp>
 
 #ifdef WOLF_SYSTEM_GAMEPAD_CLIENT
 
@@ -64,5 +64,3 @@ BOOST_AUTO_TEST_CASE(gamepad_virtual_test) {
 #endif // WOLF_SYSTEM_GAMEPAD_VIRTUAL
 
 #endif // WOLF_TEST
-
-

@@ -2,16 +2,17 @@
 
 #ifdef WOLF_SYSTEM_GAMEPAD_CLIENT
 
-#include <wolf.hpp>
-#include <vector>
 #include "w_gamepad_client_types.hpp"
+#include <vector>
+#include <wolf/wolf.hpp>
 
 namespace wolf::system::gamepad {
 class w_gamepad_client {
 public:
   W_API static boost::leaf::result<int> init() noexcept;
 
-  W_API static bool get_events(_Inout_ w_gamepad_client_event &p_event) noexcept {
+  W_API static bool
+  get_events(_Inout_ w_gamepad_client_event &p_event) noexcept {
     if (_events.empty()) {
       return false;
     }

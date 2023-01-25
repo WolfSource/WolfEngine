@@ -7,12 +7,12 @@
 
 #pragma once
 
-#include <wolf.hpp>
+#include <wolf/wolf.hpp>
 
 #include <DISABLE_ANALYSIS_BEGIN>
+#include <DISABLE_ANALYSIS_END>
 #include <librist/librist.h>
 #include <rist-private.h>
-#include <DISABLE_ANALYSIS_END>
 
 namespace wolf::stream::rist {
 class w_rist_data_block {
@@ -53,7 +53,7 @@ public:
 
   /**
    * get data len of rist data block
-   * @returns size of data 
+   * @returns size of data
    */
   W_API
   size_t get_data_len() const;

@@ -7,8 +7,8 @@
 
 #pragma once
 
-#include <wolf.hpp>
 #include "w_image_data.hpp"
+#include <wolf/wolf.hpp>
 
 namespace wolf::media {
 
@@ -102,6 +102,3 @@ public:
 } // namespace wolf::media
 
 #endif
-
-
-

@@ -7,13 +7,13 @@
 
 #ifdef WOLF_SYSTEM_SOCKET
 
-#include <wolf.hpp>
-#include <variant>
 #include "w_socket_options.hpp"
+#include <variant>
+#include <wolf/wolf.hpp>
 
 #include "DISABLE_ANALYSIS_BEGIN"
-#include <boost/asio.hpp>
 #include "DISABLE_ANALYSIS_END"
+#include <boost/asio.hpp>
 
 namespace wolf::system::socket {
 class w_tcp_client {

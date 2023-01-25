@@ -32,9 +32,9 @@ constexpr inline int S_OK = 0;
 #include "DISABLE_ANALYSIS_BEGIN"
 
 #include <boost/leaf.hpp>
-#include <gsl/gsl>
-#include <fmt/format.h>
 #include <fmt/chrono.h>
+#include <fmt/format.h>
+#include <gsl/gsl>
 
 #ifdef WOLF_SYSTEM_MIMALLOC
 
@@ -43,18 +43,18 @@ constexpr inline int S_OK = 0;
 #endif
 
 #ifdef WOLF_SYSTEM_STACKTRACE
-    // disable warning 26458
-    #ifdef _MSC_VER
-        #pragma warning (disable:26458)
-    #endif //_MSC_VER
-    #include <boost/stacktrace/stacktrace.hpp>
+// disable warning 26458
+#ifdef _MSC_VER
+#pragma warning(disable : 26458)
+#endif //_MSC_VER
+#include <boost/stacktrace/stacktrace.hpp>
 #endif
 #include "DISABLE_ANALYSIS_END"
 
 constexpr auto W_MAX_PATH = 260;
 constexpr auto W_MAX_BUFFER_SIZE = 1024;
 
-#define DEFER auto _ = std::shared_ptr<void>(nullptr, [&](...) 
+#define DEFER auto _ = std::shared_ptr<void>(nullptr, [&](...)
 
 struct w_buffer {
 
@@ -82,17 +82,17 @@ struct w_buffer {
   size_t used_bytes = 0;
 };
 
-//#ifdef __clang__
-//#define W_ALIGNMENT_16 __attribute__((packed)) __attribute__((aligned(16)))
-//#define W_ALIGNMENT_32 __attribute__((packed)) __attribute__((aligned(32)))
-//#define W_ALIGNMENT_64 __attribute__((packed)) __attribute__((aligned(64)))
-//#define W_ALIGNMENT_128 __attribute__((packed)) __attribute__((aligned(128)))
-//#else
-//#define W_ALIGNMENT_16
-//#define W_ALIGNMENT_32
-//#define W_ALIGNMENT_64
-//#define W_ALIGNMENT_128
-//#endif
+// #ifdef __clang__
+// #define W_ALIGNMENT_16 __attribute__((packed)) __attribute__((aligned(16)))
+// #define W_ALIGNMENT_32 __attribute__((packed)) __attribute__((aligned(32)))
+// #define W_ALIGNMENT_64 __attribute__((packed)) __attribute__((aligned(64)))
+// #define W_ALIGNMENT_128 __attribute__((packed)) __attribute__((aligned(128)))
+// #else
+// #define W_ALIGNMENT_16
+// #define W_ALIGNMENT_32
+// #define W_ALIGNMENT_64
+// #define W_ALIGNMENT_128
+// #endif
 
 #ifdef _MSC_VER
 
@@ -104,7 +104,7 @@ struct w_buffer {
 #define W_API
 #define ASM __asm__
 
-//define dummy SAL
+// define dummy SAL
 #define _In_
 #define _In_z_
 #define _Out_
@@ -116,7 +116,7 @@ struct w_buffer {
 
 #endif
 
-#include <system/w_trace.hpp>
+#include <wolf/system/w_trace.hpp>
 
 namespace wolf {
 /**

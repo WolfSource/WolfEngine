@@ -1,4 +1,7 @@
 #cmake . -B build -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_HOME/build/cmake/android.toolchain.cmake -DANDROID_ABI=armeabi-v7a -DANDROID_NDK=$ANDROID_NDK_HOME -DANDROID_PLATFORM=android-21 -DCMAKE_ANDROID_ARCH_ABI=armeabi-v7a -DCMAKE_ANDROID_NDK=$ANDROID_NDK_HOME -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_SYSTEM_NAME=Android -DCMAKE_SYSTEM_VERSION=21 -DCMAKE_BUILD_TYPE=Debug -GNinja
+#cd build
+#ninja
+
 cmake_minimum_required(VERSION 3.22...3.23)
 
 # set the name of the projects
@@ -69,16 +72,17 @@ option(WOLF_MEDIA_SCREEN_CAPTURE "Enable screen capture" OFF)
 option(WOLF_MEDIA_STB "Enable stb headers" OFF)
 
 # stream modules
-option(WOLF_STREAM_GRPC "Enable gRPC connection" OFF)
-option(WOLF_STREAM_QUIC "Enable QUIC" OFF)
-option(WOLF_STREAM_RIST "Enable RIST streaming protocol" OFF)
+option(WOLF_STREAM_GRPC   "Enable gRPC connection" OFF)
+option(WOLF_STREAM_JANUS  "Enable Janus client API" ON)
+option(WOLF_STREAM_QUIC   "Enable QUIC" OFF)
+option(WOLF_STREAM_RIST   "Enable RIST streaming protocol" OFF)
 option(WOLF_STREAM_WEBRTC "Enable webRTC" OFF)
 
 # system modules
 option(WOLF_SYSTEM_BORINGSSL "Enable boringSSL" OFF)
 option(WOLF_SYSTEM_GAMEPAD_CLIENT "Enable gamepad input handling" OFF)
 option(WOLF_SYSTEM_GAMEPAD_VIRTUAL "Enable virtual gamepad simulator" OFF)
-option(WOLF_SYSTEM_HTTP1_WS "Enable http1.1 and websocket client/server based on boost beast or Emscripten" OFF)
+option(WOLF_SYSTEM_HTTP1_WS "Enable http1.1 and websocket client/server based on boost beast or Emscripten" ON)
 option(WOLF_SYSTEM_LOG "Enable log" OFF)
 option(WOLF_SYSTEM_LUAJIT "Enable luaJIT" OFF)
 option(WOLF_SYSTEM_LZ4 "Enable lz4 for compression" OFF)
@@ -163,11 +167,14 @@ endif()
 set(GETOPT_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/system)
 
 #define includes, libs and srcs
-set(INCLUDES ${CMAKE_CURRENT_SOURCE_DIR})
+set(INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/../)
 set(LIBS)
 set(SRCS)
 
-if (NOT EMSCRIPTEN)
+if (EMSCRIPTEN)
+    message(WARNING "WOLF_TEST will be disabled for Emscripten")
+    set(WOLF_TEST OFF)
+else()
     # currently threads was not supported with WASM
     list(APPEND LIBS Threads::Threads)
 endif()
@@ -303,7 +310,7 @@ if (WOLF_ENABLE_ASAN)
 endif()
 
 # build tests
-if (WOLF_TEST AND NOT EMSCRIPTEN)
+if (WOLF_TEST)
     add_executable(${TEST_PROJECT_NAME}
         tests.cpp
     )

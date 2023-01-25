@@ -9,7 +9,7 @@
 
 #include <boost/test/included/unit_test.hpp>
 #include <system/w_leak_detector.hpp>
-#include <wolf.hpp>
+#include <wolf/wolf.hpp>
 
 #include <system/compression/w_lz4.hpp>
 #include <system/compression/w_lzma.hpp>
@@ -63,7 +63,7 @@ BOOST_AUTO_TEST_CASE(compress_lz4_test) {
   std::cout << "compress_lz4_test done" << std::endl;
 }
 
-#endif //WOLF_SYSTEM_LZ4
+#endif // WOLF_SYSTEM_LZ4
 
 #ifdef WOLF_SYSTEM_LZMA
 
@@ -109,6 +109,6 @@ BOOST_AUTO_TEST_CASE(compress_lzma_test) {
   std::cout << "compress_lzma_test just done" << std::endl;
 }
 
-#endif //WOLF_SYSTEM_LZMA
+#endif // WOLF_SYSTEM_LZMA
 
 #endif // WOLF_TESTS

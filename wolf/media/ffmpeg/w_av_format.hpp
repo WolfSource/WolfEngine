@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include <wolf.hpp>
+#include <wolf/wolf.hpp>
 
 #include <DISABLE_ANALYSIS_BEGIN>
 extern "C" {
@@ -40,7 +40,7 @@ public:
 
   std::function<int(_Inout_ uint8_t * /*p_buf*/, _In_ int /*p_buf_size*/)>
       on_read_callback;
-  
+
 private:
   // copy constructor.
   w_av_format(const w_av_format &) = delete;
@@ -55,7 +55,6 @@ private:
   uint8_t *_stream_buffer = nullptr;
   AVFormatContext *_fmt_ctx = nullptr;
   AVIOContext *_io_ctx = nullptr;
-
 };
 } // namespace wolf::media::ffmpeg
 

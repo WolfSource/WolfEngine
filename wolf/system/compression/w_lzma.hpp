@@ -7,7 +7,7 @@
 
 #ifdef WOLF_SYSTEM_LZMA
 
-#include <wolf.hpp>
+#include <wolf/wolf.hpp>
 
 namespace wolf::system::compression {
 

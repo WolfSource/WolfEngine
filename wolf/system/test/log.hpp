@@ -7,14 +7,14 @@
 
 #pragma once
 
-#include <wolf.hpp>
-#include <system/w_leak_detector.hpp>
 #include <boost/test/included/unit_test.hpp>
+#include <system/w_leak_detector.hpp>
+#include <wolf/wolf.hpp>
 
+#include <random>
+#include <sstream>
 #include <system/log/w_log.hpp>
 #include <system/w_process.hpp>
-#include <sstream>
-#include <random> 
 
 BOOST_AUTO_TEST_CASE(log_stress_test) {
   const wolf::system::w_leak_detector _detector = {};

@@ -7,9 +7,9 @@
 
 #if defined(WOLF_TEST) && defined(WOLF_SYSTEM_SIG_SLOT)
 
-#include <wolf.hpp>
-#include <system/w_leak_detector.hpp>
 #include <boost/test/included/unit_test.hpp>
+#include <system/w_leak_detector.hpp>
+#include <wolf/wolf.hpp>
 
 #include <boost/signals2.hpp>
 

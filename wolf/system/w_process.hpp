@@ -4,7 +4,7 @@
 */
 #pragma once
 
-#include <wolf.hpp>
+#include <wolf/wolf.hpp>
 
 namespace wolf::system {
 class w_process {

@@ -6,8 +6,8 @@
 
 #pragma once
 
-#include <wolf.hpp>
 #include "w_socket_options.hpp"
+#include <wolf/wolf.hpp>
 
 namespace wolf::system::socket {
 class w_tcp_server {

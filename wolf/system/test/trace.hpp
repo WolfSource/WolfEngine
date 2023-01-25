@@ -7,9 +7,9 @@
 
 #pragma once
 
-#include <wolf.hpp>
-#include <system/w_leak_detector.hpp>
 #include <boost/test/included/unit_test.hpp>
+#include <system/w_leak_detector.hpp>
+#include <wolf/wolf.hpp>
 
 BOOST_AUTO_TEST_CASE(trace_test) {
   const wolf::system::w_leak_detector _detector = {};

@@ -6,12 +6,12 @@
 
 #pragma once
 
-#include <wolf.hpp>
+#include <wolf/wolf.hpp>
 
 #include <DISABLE_ANALYSIS_BEGIN>
+#include <DISABLE_ANALYSIS_END>
 #include <ViGEm/Client.h>
 #include <Xinput.h>
-#include <DISABLE_ANALYSIS_END>
 
 namespace wolf::system::gamepad {
 struct w_gamepad_virtual {

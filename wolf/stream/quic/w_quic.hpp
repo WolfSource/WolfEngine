@@ -3,14 +3,14 @@
 //    https://github.com/WolfEngine/WolfEngine
 //*/
 //
-//#pragma once
+// #pragma once
 //
-//#ifdef WOLF_STREAM_QUIC
+// #ifdef WOLF_STREAM_QUIC
 //
-//#include <wolf.hpp>
-//#include <boost/signals2.hpp>
+// #include <wolf/wolf.hpp>
+// #include <boost/signals2.hpp>
 //
-//namespace wolf::stream::quic
+// namespace wolf::stream::quic
 //{
 //    enum class w_quic_type
 //    {
@@ -20,7 +20,7 @@
 //
 //    enum class w_quic_profile
 //    {
-//        LOW_LATENCY, 
+//        LOW_LATENCY,
 //        MAX_THROUGHPUT,
 //        SCAVENGER,
 //        REAL_TIME,
@@ -31,9 +31,9 @@
 //    public:
 //        //struct service_port;
 //        w_quic(
-//            std::string p_app_name, 
-//            uint16_t p_port, 
-//            w_quic_type p_quic_type, 
+//            std::string p_app_name,
+//            uint16_t p_port,
+//            w_quic_type p_quic_type,
 //            w_quic_profile p_profile);
 //        virtual ~w_quic();
 //
@@ -54,6 +54,6 @@
 //    };
 //} // namespace wolf::stream::quic
 //
-//#endif
+// #endif
 //
 //

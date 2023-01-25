@@ -2,8 +2,8 @@
 
 #pragma once
 
-#include <wolf.hpp>
 #include "w_socket_options.hpp"
+#include <wolf/wolf.hpp>
 
 namespace wolf::system::socket {
 class w_ws_server {
@@ -28,4 +28,4 @@ public:
 };
 } // namespace wolf::system::socket
 
-#endif //defined(WOLF_SYSTEM_HTTP1_WS) && defined(WOLF_SYSTEM_SOCKET)
+#endif // defined(WOLF_SYSTEM_HTTP1_WS) && defined(WOLF_SYSTEM_SOCKET)

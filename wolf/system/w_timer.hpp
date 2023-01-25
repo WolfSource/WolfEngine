@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include <wolf.hpp>
+#include <wolf/wolf.hpp>
 #ifndef EMSCRIPTEN
 #include <boost/asio.hpp>
 #include <boost/asio/experimental/awaitable_operators.hpp>

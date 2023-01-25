@@ -19,6 +19,7 @@
 *.db-wal
 *.opendb
 *.DS_Store
+*.pem
 
 /bin/*
 /build/*

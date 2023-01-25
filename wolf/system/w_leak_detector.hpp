@@ -9,7 +9,7 @@
 #define _CRTDBG_MAP_ALLOC
 #endif
 
-#include <wolf.hpp>
+#include <wolf/wolf.hpp>
 
 namespace wolf::system {
 class w_leak_detector {

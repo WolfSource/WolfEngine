@@ -6,8 +6,8 @@
 
 #pragma once
 
-#include <wolf.hpp>
 #include "w_gamepad_virtual.hpp"
+#include <wolf/wolf.hpp>
 
 namespace wolf::system::gamepad {
 class w_gamepad_virtual_pool {

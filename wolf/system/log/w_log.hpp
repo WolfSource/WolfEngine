@@ -7,8 +7,8 @@
 
 #ifdef WOLF_SYSTEM_LOG
 
-#include <wolf.hpp>
 #include "w_log_config.hpp"
+#include <wolf/wolf.hpp>
 
 #include <DISABLE_ANALYSIS_BEGIN>
 

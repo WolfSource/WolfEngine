@@ -5,10 +5,10 @@
 
 #pragma once
 
-#include <wolf.hpp>
+#include <wolf/wolf.hpp>
 
-#include <type_traits>
 #include <memory>
+#include <type_traits>
 
 namespace wolf::system {
 
@@ -22,7 +22,7 @@ template <typename T>
 class w_ring_buffer_spsc {
 public:
   using value_type = std::remove_cvref_t<T>;
-  
+
   w_ring_buffer_spsc() noexcept = default;
   w_ring_buffer_spsc(w_ring_buffer_spsc &&) noexcept = default;
   ~w_ring_buffer_spsc() = default;
@@ -63,7 +63,8 @@ public:
   /**
    * @brief read up to the requested size from buffer.
    *
-   * only one thread (consumer) at a time can call this method, or the behavior is undefined.
+   * only one thread (consumer) at a time can call this method, or the behavior
+   * is undefined.
    *
    * @param p_out_ptr, contiguous chunk of memory to copy into.
    * @param size, amount requested. (make sure `p_out_ptr` array can hold this
@@ -152,4 +153,3 @@ private:
       0; //< end point of valid data in circular buffer. (tail-1 = last byte)
 };
 } // namespace wolf::system
-

@@ -7,9 +7,9 @@
 
 #ifdef WOLF_SYSTEM_LOG
 
-#include <wolf.hpp>
 #include <filesystem>
 #include <spdlog/spdlog.h>
+#include <wolf/wolf.hpp>
 
 namespace wolf::system::log {
 

@@ -7,13 +7,8 @@
 
 #pragma once
 
-#include <wolf.hpp>
+#include <wolf/wolf.hpp>
 
-namespace wolf::media {
-
-} // namespace wolf::media
+namespace wolf::media {} // namespace wolf::media
 
 #endif
-
-
-

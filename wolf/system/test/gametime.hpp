@@ -7,19 +7,19 @@
 
 #pragma once
 
-#include <wolf.hpp>
-#include <system/w_leak_detector.hpp>
 #include <boost/test/included/unit_test.hpp>
+#include <system/w_leak_detector.hpp>
+#include <wolf/wolf.hpp>
 
-#include <system/w_gametime.hpp>
 #include <mutex>
+#include <system/w_gametime.hpp>
 
 BOOST_AUTO_TEST_CASE(gametime_fixed_time_test) {
   const wolf::system::w_leak_detector _detector = {};
   using w_gametime = wolf::system::w_gametime;
 
   std::cout << "gametime_fixed_time_test is running" << std::endl;
-  
+
   std::once_flag _flag;
   bool _ticked = false;
 
@@ -46,7 +46,7 @@ BOOST_AUTO_TEST_CASE(gametime_fixed_time_test) {
 
 BOOST_AUTO_TEST_CASE(gametime_unfixed_time_test) {
   const wolf::system::w_leak_detector _detector = {};
-  
+
   using w_gametime = wolf::system::w_gametime;
 
   std::cout << "gametime_unfixed_time_test is running" << std::endl;

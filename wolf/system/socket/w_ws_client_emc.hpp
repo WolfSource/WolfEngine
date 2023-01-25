@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include <wolf.hpp>
+#include <wolf/wolf.hpp>
 
 #include <emscripten/emscripten.h>
 #include <emscripten/websocket.h>

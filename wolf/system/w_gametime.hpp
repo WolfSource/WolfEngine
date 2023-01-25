@@ -5,9 +5,9 @@
 
 #pragma once
 
-#include <wolf.hpp>
 #include <chrono>
 #include <cmath>
+#include <wolf/wolf.hpp>
 
 namespace wolf::system {
 constexpr auto MAX_DELTA_TIME_IN_SECS = 60000.0; // 60 minutes

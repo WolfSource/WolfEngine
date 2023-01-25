@@ -80,6 +80,18 @@ if (WOLF_STREAM_GRPC)
 
 endif()
 
+if (WOLF_STREAM_JANUS)
+
+    file(GLOB_RECURSE WOLF_STREAM_JANUS_SRC
+        "${CMAKE_CURRENT_SOURCE_DIR}/stream/janus/*"
+    )
+
+    list(APPEND SRCS 
+        ${WOLF_STREAM_JANUS_SRC}
+    )
+
+endif()
+
 # fetch lsquic
 if (WOLF_STREAM_QUIC)
     if (EMSCRIPTEN)

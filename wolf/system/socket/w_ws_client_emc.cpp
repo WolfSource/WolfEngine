@@ -64,6 +64,7 @@ w_ws_client_emc::~w_ws_client_emc() noexcept {
 void w_ws_client_emc::set_onopen_callback(_In_ em_websocket_open_callback_func
                                               p_callback,
                                           _In_ void *p_user_data) noexcept {
+  this->_is_open = true;
   emscripten_websocket_set_onopen_callback(this->_ws, p_user_data, p_callback);
 }
 
@@ -83,6 +84,7 @@ void w_ws_client_emc::set_onmessage_callback(
 void w_ws_client_emc::set_onclose_callback(_In_ em_websocket_close_callback_func
                                                p_callback,
                                            _In_ void *p_user_data) noexcept {
+  this->_is_open = false;
   emscripten_websocket_set_onclose_callback(this->_ws, p_user_data, p_callback);
 }
 

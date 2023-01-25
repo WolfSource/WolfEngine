@@ -7,16 +7,16 @@
 
 #ifdef WOLF_SYSTEM_SOCKET
 
-#include <wolf.hpp>
 #include <functional>
 #include <random>
+#include <wolf/wolf.hpp>
 
 #include "DISABLE_ANALYSIS_BEGIN"
-#include <boost/system/errc.hpp>
 #include <boost/asio.hpp>
+#include <boost/system/errc.hpp>
 #ifdef WOLF_SYSTEM_HTTP1_WS
 #include <boost/asio/experimental/awaitable_operators.hpp>
-#include <boost/beast.hpp> 
+#include <boost/beast.hpp>
 #endif
 #include "DISABLE_ANALYSIS_END"
 

@@ -7,8 +7,8 @@
 
 #pragma once
 
-#include <wolf.hpp>
 #include "w_rist_data_block.hpp"
+#include <wolf/wolf.hpp>
 
 namespace wolf::stream::rist {
 class w_rist {
@@ -94,6 +94,4 @@ private:
 };
 } // namespace wolf::stream::rist
 
-#endif //WOLF_STREAM_RIST
-
-
+#endif // WOLF_STREAM_RIST

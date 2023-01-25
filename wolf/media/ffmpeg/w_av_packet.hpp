@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include <wolf.hpp>
+#include <wolf/wolf.hpp>
 
 #include <DISABLE_ANALYSIS_BEGIN>
 extern "C" {
