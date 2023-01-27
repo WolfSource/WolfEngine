@@ -13,11 +13,12 @@ The Wolf is a comprehensive set of C++ open source libraries for realtime render
 	- [git](https://git-scm.com/downloads)
 	- [CMake](https://cmake.org/download/)
 	- [Meson](https://github.com/mesonbuild/meson/releases)
-	- optional: [Ninja](https://ninja-build.org/). Alternatively, setup [Python3](https://www.python.org/downloads/) and use "pip3 install ninja"
+	- [Ninja](https://ninja-build.org/). Alternatively, setup [Python3](https://www.python.org/downloads/) and use "pip3 install ninja"
 	- [Nasm](https://nasm.us/) for fiber & boringSSL
 	- [Perl](https://www.perl.org/get.html) for boringSSL. [Strawberry Perl](https://strawberryperl.com/) is recommended for Windows.
 	- [Go](https://go.dev/dl/) for boringSSL
 	- [QT6](https://www.qt.io/download) for wolf render, demos and examples
+	- [NDK](https://developer.android.com/ndk/downloads) for android.
 	
 then make sure get the main branch 
 `git clone https://github.com/WolfEngine/WolfEngine.git --branch main --depth 1`
@@ -26,12 +27,7 @@ then make sure get the main branch
 	
 To list configure presets: `cmake . --list-presets`
 To list build presets: `cmake --build --list-presets`
-
-### Android
-In order to configure, build and test using CMakePresets you must have set the following environment variables:
- - NDK (e.g. C:\Android\android-ndk-r25b)
- 
-In terminal/command line use the following presets:
+For example for building wolf for android:
 ```
 cmake . --preset android-arm64-release
 cmake --build --preset default-build-android
@@ -69,7 +65,7 @@ cmake --build --preset default-build-android
 | API | Windows | Linux | macOS | iOS | Android | Wasm |
 |:-----------:|:-----------:|:--------------------------:|:--------------:|:-------------:|:--------------:|:-------------:|
 | gRPC | :memo: | :x: | :x: | :x: | :x: | :x: |
-| Janus | :construction: | :x: | :x: | :x: | :x: | :white_check_mark: |
+| [Janus](https://github.com/WolfEngine/WolfEngine/tree/main/wolf_demo/wasm) | :construction: | :x: | :x: | :x: | :x: | :white_check_mark: |
 | QUIC | :memo: | :memo: | :memo: | :memo: | :memo: | :x: |
 | [RIST](https://github.com/WolfEngine/WolfEngine/blob/main/wolf/stream/test/rist.hpp) | :white_check_mark: | :memo: | :memo: | :memo: | :white_check_mark: | :x: |
 | RTMP | :memo: | :x: | :x: | :x: | :x: | :x: |
