@@ -30,7 +30,7 @@ inline std::string make_connection_id() {
   std::uniform_int_distribution<int> _rand_gen(_min, _max);
 
   const auto _now = std::chrono::system_clock::now();
-  return fmt::format("{}_{}", _now, _rand_gen(_rand_engine));
+  return wolf::format("{}_{}", _now, _rand_gen(_rand_engine));
 }
 
 struct w_socket_options {

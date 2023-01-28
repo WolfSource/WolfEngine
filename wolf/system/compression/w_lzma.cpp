@@ -79,8 +79,9 @@ w_lzma::compress_lzma1(_In_ const gsl::span<const std::byte> p_src,
   _tmp.resize(_output_size_64);
 
   const auto _lzma_status =
-      LzmaEncode((Byte *)_tmp.data(), &_output_size_64, (Byte *)p_src.data(),
-                 p_src.size(), &_props, (Byte *)_props_encoded.data(),
+      LzmaEncode(reinterpret_cast<Byte *>(_tmp.data()), &_output_size_64,
+                 reinterpret_cast<const Byte *>(p_src.data()), p_src.size(),
+                 &_props, reinterpret_cast<Byte *>(_props_encoded.data()),
                  &_props_size, 0, nullptr, &s_alloc_funcs, &s_alloc_funcs);
 
   const auto _compressed_size =
@@ -149,8 +150,9 @@ w_lzma::compress_lzma2(_In_ const gsl::span<const std::byte> p_src,
   _tmp.resize(_output_size_64);
 
   const auto _encode_status = Lzma2Enc_Encode2(
-      _enc_handler, NULL, (Byte *)_tmp.data(), &_output_size_64, nullptr,
-      (const Byte *)p_src.data(), _src_size, nullptr);
+      _enc_handler, nullptr, reinterpret_cast<Byte *>(_tmp.data()),
+      &_output_size_64, nullptr, reinterpret_cast<const Byte *>(p_src.data()),
+      _src_size, nullptr);
   Lzma2Enc_Destroy(_enc_handler);
 
   const auto _compressed_size =
@@ -207,11 +209,11 @@ w_lzma::decompress_lzma1(_In_ const gsl::span<const std::byte> p_src) {
            _proc_in_size = _src_size - LZMA_HEADER_SRC_SIZE + LZMA_PROPS_SIZE;
     // decode via lzma
     const auto _status = LzmaDecode(
-        (Byte *)_dst.data(), &_proc_out_size,
-        (Byte *)(&gsl::at(p_src, LZMA_HEADER_SRC_SIZE + LZMA_PROPS_SIZE)),
-        &_proc_in_size, (const Byte *)p_src.data(), LZMA_PROPS_SIZE,
-        LZMA_FINISH_END,
-        &_lzma_status, &s_alloc_funcs);
+        reinterpret_cast<Byte *>(_dst.data()), &_proc_out_size,
+        reinterpret_cast<const Byte *>(
+            &gsl::at(p_src, LZMA_HEADER_SRC_SIZE + LZMA_PROPS_SIZE)),
+        &_proc_in_size, reinterpret_cast<const Byte *>(p_src.data()),
+        LZMA_PROPS_SIZE, LZMA_FINISH_END, &_lzma_status, &s_alloc_funcs);
     // return on success
     if (_status == SZ_OK && _proc_out_size == _size_from_header) {
       return _dst;
@@ -261,13 +263,14 @@ w_lzma::decompress_lzma2(_In_ gsl::span<const std::byte> p_src) {
     constexpr uint32_t BUF_SIZE = 10240;
 
     while (_out_pos < _pre_out_size) {
-      size_t _dest_len = std::min((uint64_t)BUF_SIZE, _pre_out_size - _out_pos);
-      size_t _src_len = std::min(gsl::narrow_cast<size_t>(BUF_SIZE),
-                                 _src_size - gsl::narrow_cast<size_t>(_in_pos));
+      auto _dest_len = std::min(gsl::narrow_cast<uint64_t>(BUF_SIZE),
+                                _pre_out_size - _out_pos);
+      auto _src_len = std::min(gsl::narrow_cast<size_t>(BUF_SIZE),
+                               _src_size - gsl::narrow_cast<size_t>(_in_pos));
 
       _res = Lzma2Dec_DecodeToBuf(
-          &_dec, (Byte *)&gsl::at(_dst, _out_pos), &_dest_len,
-          (const Byte *)&gsl::at(p_src, _in_pos), &_src_len,
+          &_dec, reinterpret_cast<Byte *>(&gsl::at(_dst, _out_pos)), &_dest_len,
+          reinterpret_cast<const Byte *>(&gsl::at(p_src, _in_pos)), &_src_len,
           (_out_pos + _dest_len == _size_from_header) ? LZMA_FINISH_END
                                                       : LZMA_FINISH_ANY,
           &_status);
@@ -292,6 +295,5 @@ w_lzma::decompress_lzma2(_In_ gsl::span<const std::byte> p_src) {
 
   return W_FAILURE(std::errc::operation_canceled, "lzma2 decompress failed");
 }
-
 
 #endif // WOLF_SYSTEM_LZMA

@@ -16,16 +16,14 @@ public:
     if (_events.empty()) {
       return false;
     }
-
     p_event = _events.back();
     _events.pop_back();
-
     return true;
   }
 
-  W_API static void update() noexcept;
+  //W_API static void update() noexcept;
 
-  W_API static void fini() noexcept;
+  // W_API static void fini() noexcept;
 
 private:
   // LIFO queue of events

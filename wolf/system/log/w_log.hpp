@@ -45,6 +45,7 @@ public:
   W_API void write(_In_ const spdlog::level::level_enum &p_level,
                    _In_ const std::string_view &p_fmt);
 
+#ifdef __clang__
   template <class... Args>
   W_API void write(_In_ const fmt::v9::format_string<Args...> p_fmt,
                    _In_ Args &&...p_args) {
@@ -61,6 +62,24 @@ public:
         fmt::v9::vformat(p_fmt, fmt::v9::make_format_args(p_args...));
     write(p_level, _str);
   }
+
+#else
+
+  template <class... Args>
+  W_API void write(_In_ const std::string_view p_fmt, _In_ Args &&...p_args) {
+    const auto _str =
+        std::vformat(p_fmt, std::make_format_args(p_args...));
+    write(_str);
+  }
+
+  template <class... Args>
+  W_API void write(_In_ const spdlog::level::level_enum &p_level,
+                   _In_ const std::string_view p_fmt, _In_ Args &&...p_args) {
+    const auto _str = std::vformat(p_fmt, std::make_format_args(p_args...));
+    write(p_level, _str);
+  }
+
+#endif // __clang__
 
   W_API boost::leaf::result<int> flush();
 

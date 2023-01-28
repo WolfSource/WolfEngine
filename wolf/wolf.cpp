@@ -65,7 +65,7 @@ std::string wolf::w_init() {
   constexpr auto WOLF_DEBUG_VERSION = 0;
 
   auto _version =
-      fmt::format("v{}.{}.{}.{}", WOLF_MAJOR_VERSION, WOLF_MINOR_VERSION,
-                  WOLF_PATCH_VERSION, WOLF_DEBUG_VERSION);
+      wolf::format("v{}.{}.{}.{}", WOLF_MAJOR_VERSION, WOLF_MINOR_VERSION,
+                   WOLF_PATCH_VERSION, WOLF_DEBUG_VERSION);
   return _version;
 }

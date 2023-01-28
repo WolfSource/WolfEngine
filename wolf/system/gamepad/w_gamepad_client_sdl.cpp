@@ -42,59 +42,59 @@ boost::leaf::result<int> w_gamepad_client::init() noexcept {
   return S_OK;
 }
 
-void w_gamepad_client::update() noexcept {
-  SDL_Event sdl_event = {};
-  w_gamepad_client_button button{.type = w_gamepad_client_event_type::button};
-  w_gamepad_client_axis axis{.type = w_gamepad_client_event_type::axis};
-  w_gamepad_client_event _event = {};
-  while (SDL_PollEvent(&sdl_event)) {
-    switch (sdl_event.type) {
-    default:
-      break;
-    case SDL_GAMEPAD_BUTTON_DPAD_DOWN:
-    case SDL_GAMEPAD_BUTTON_DPAD_UP: {
-      button.which = sdl_event.cbutton.which;
-      button.button =
-          gsl::narrow_cast<w_gamepad_client_button_type>(sdl_event.cbutton.button + 1);
-      button.state = sdl_event.cbutton.state ? w_gamepad_client_state_type::pressed
-                                             : w_gamepad_client_state_type::released;
-      _event.button = button;
-      _events.emplace_back(_event);
-      break;
-    }
-    case SDL_EVENT_GAMEPAD_AXIS_MOTION: {
-      axis.which = sdl_event.caxis.which;
-      axis.axis =
-          gsl::narrow_cast<w_gamepad_client_axis_type>(sdl_event.caxis.axis + 1);
-      axis.value = sdl_event.caxis.value;
-      _event.axis = axis;
-      _events.emplace_back(_event);
-      break;
-    }
-    case SDL_EVENT_GAMEPAD_ADDED: {
-      s_controllers.push_back(SDL_OpenGamepad(sdl_event.cdevice.which));
-      break;
-    }
-    case SDL_EVENT_GAMEPAD_REMOVED: {
-      auto controller = SDL_GetGamepadFromInstanceID(sdl_event.cdevice.which);
-      auto _iter =
-          std::find(s_controllers.cbegin(), s_controllers.cend(), controller);
-      SDL_CloseGamepad(*_iter);
-      s_controllers.erase(_iter);
-      break;
-    }
-    }
-  }
-}
-
-void w_gamepad_client::fini() noexcept {
-  for (auto _iter : s_controllers) {
-    if (_iter) {
-      SDL_CloseGamepad(_iter);
-    }
-  }
-  s_controllers.clear();
-  SDL_Quit();
-}
+//void w_gamepad_client::update() noexcept {
+//  SDL_Event sdl_event = {};
+//  w_gamepad_client_button button{.type = w_gamepad_client_event_type::button};
+//  w_gamepad_client_axis axis{.type = w_gamepad_client_event_type::axis};
+//  w_gamepad_client_event _event = {};
+//  while (SDL_PollEvent(&sdl_event)) {
+//    switch (sdl_event.type) {
+//    default:
+//      break;
+//    case SDL_GAMEPAD_BUTTON_DPAD_DOWN:
+//    case SDL_GAMEPAD_BUTTON_DPAD_UP: {
+//      button.which = sdl_event.cbutton.which;
+//      button.button =
+//          gsl::narrow_cast<w_gamepad_client_button_type>(sdl_event.cbutton.button + 1);
+//      button.state = sdl_event.cbutton.state ? w_gamepad_client_state_type::pressed
+//                                             : w_gamepad_client_state_type::released;
+//      _event.button = button;
+//      _events.emplace_back(_event);
+//      break;
+//    }
+//    case SDL_EVENT_GAMEPAD_AXIS_MOTION: {
+//      axis.which = sdl_event.caxis.which;
+//      axis.axis =
+//          gsl::narrow_cast<w_gamepad_client_axis_type>(sdl_event.caxis.axis + 1);
+//      axis.value = sdl_event.caxis.value;
+//      _event.axis = axis;
+//      _events.emplace_back(_event);
+//      break;
+//    }
+//    case SDL_EVENT_GAMEPAD_ADDED: {
+//      s_controllers.push_back(SDL_OpenGamepad(sdl_event.cdevice.which));
+//      break;
+//    }
+//    case SDL_EVENT_GAMEPAD_REMOVED: {
+//      auto controller = SDL_GetGamepadFromInstanceID(sdl_event.cdevice.which);
+//      auto _iter =
+//          std::find(s_controllers.cbegin(), s_controllers.cend(), controller);
+//      SDL_CloseGamepad(*_iter);
+//      s_controllers.erase(_iter);
+//      break;
+//    }
+//    }
+//  }
+//}
+//
+//void w_gamepad_client::fini() noexcept {
+//  for (auto _iter : s_controllers) {
+//    if (_iter) {
+//      SDL_CloseGamepad(_iter);
+//    }
+//  }
+//  s_controllers.clear();
+//  SDL_Quit();
+//}
 
 #endif // defined(WOLF_SYSTEM_GAMEPAD) && !defined(EMSCRIPTEN)

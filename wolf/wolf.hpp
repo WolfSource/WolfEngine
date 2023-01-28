@@ -32,8 +32,14 @@ constexpr inline int S_OK = 0;
 #include "DISABLE_ANALYSIS_BEGIN"
 
 #include <boost/leaf.hpp>
+
+#ifdef __clang__
 #include <fmt/chrono.h>
 #include <fmt/format.h>
+#else
+#include <format>
+#endif
+
 #include <gsl/gsl>
 
 #ifdef WOLF_SYSTEM_MIMALLOC
@@ -125,4 +131,19 @@ namespace wolf {
  * "<major>.<minor>.<patch>.<debug>"
  */
 W_API std::string w_init();
+
+#ifdef __clang__
+template <class... Args>
+W_API std::string format(_In_ const fmt::v9::format_string<Args...> p_fmt,
+                         _In_ Args &&...p_args) {
+  return fmt::v9::vformat(p_fmt, fmt::v9::make_format_args(p_args...));
+}
+#else
+template <class... Args>
+W_API std::string format(_In_ const std::string_view p_fmt,
+                         _In_ Args &&...p_args) {
+    return std::vformat(p_fmt, std::make_format_args(p_args...));
+}
+#endif // __clang__
+
 } // namespace wolf

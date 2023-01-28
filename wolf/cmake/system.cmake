@@ -12,19 +12,21 @@ list(APPEND INCLUDES
     ${gsl_SOURCE_DIR}/include
 )
 
-# fetch fmt
-message("fetching https://github.com/fmtlib/fmt.git")
-FetchContent_Declare(
-    fmt
-    GIT_REPOSITORY https://github.com/fmtlib/fmt.git
-    GIT_TAG        9.1.0 # this will work for spdlog
-)
-set(FETCHCONTENT_QUIET OFF)
-FetchContent_MakeAvailable(fmt)
-list(APPEND INCLUDES
-    ${fmt_SOURCE_DIR}/include
-)
-add_definitions(-DFMT_HEADER_ONLY)
+if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
+    # fetch fmt for clang
+    message("fetching https://github.com/fmtlib/fmt.git")
+    FetchContent_Declare(
+        fmt
+        GIT_REPOSITORY https://github.com/fmtlib/fmt.git
+        GIT_TAG        9.1.0 # this will work for spdlog
+    )
+    set(FETCHCONTENT_QUIET OFF)
+    FetchContent_MakeAvailable(fmt)
+    list(APPEND INCLUDES
+        ${fmt_SOURCE_DIR}/include
+    )
+    add_definitions(-DFMT_HEADER_ONLY)
+endif()
 
 # fetch boringssl, note that boringssl was already fetched by GRPC  
 if (WOLF_SYSTEM_BORINGSSL AND (NOT WOLF_STREAM_GRPC))
@@ -173,7 +175,7 @@ if (WOLF_SYSTEM_LOG)
     FetchContent_Declare(
         spdlog
         GIT_REPOSITORY https://github.com/gabime/spdlog.git
-        GIT_TAG        v1.11.0 #https://github.com/gabime/spdlog/releases/tag/v1.11.0
+        GIT_TAG        v1.x
     )
     set(SPDLOG_WCHAR_FILENAMES OFF CACHE BOOL "SPDLOG_WCHAR_FILENAMES")
     set(SPDLOG_WCHAR_SUPPORT OFF CACHE BOOL "SPDLOG_WCHAR_SUPPORT")
@@ -193,8 +195,11 @@ if (WOLF_SYSTEM_LOG)
     list(APPEND SRCS 
         ${WOLF_SYSTEM_LOG_SRC} 
     )
-    # use external fmt headers
-    add_definitions(-DSPDLOG_FMT_EXTERNAL_HQ)
+
+    # use external fmt headers for clang compiler
+    if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
+        add_definitions(-DSPDLOG_FMT_EXTERNAL_HQ)
+    endif()
 endif()
 
 if (WOLF_SYSTEM_LZ4)

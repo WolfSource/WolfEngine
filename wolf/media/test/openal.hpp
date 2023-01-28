@@ -30,7 +30,7 @@ BOOST_AUTO_TEST_CASE(openal_play_wav) {
   // else {current_dir.join(file_name)};
 
   // make sure constructor works. later update with wav header.
-  [[maybe_unused]] auto openal = w_openal{
+  auto openal = w_openal{
     w_openal_config{
       .format = AL_FORMAT_STEREO16,
       .sample_rate = 48000,
