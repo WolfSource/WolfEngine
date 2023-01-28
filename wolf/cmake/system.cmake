@@ -17,7 +17,7 @@ message("fetching https://github.com/fmtlib/fmt.git")
 FetchContent_Declare(
     fmt
     GIT_REPOSITORY https://github.com/fmtlib/fmt.git
-    GIT_TAG        master
+    GIT_TAG        9.1.0 # this will work for spdlog
 )
 set(FETCHCONTENT_QUIET OFF)
 FetchContent_MakeAvailable(fmt)
@@ -173,7 +173,7 @@ if (WOLF_SYSTEM_LOG)
     FetchContent_Declare(
         spdlog
         GIT_REPOSITORY https://github.com/gabime/spdlog.git
-        GIT_TAG        v1.x
+        GIT_TAG        v1.11.0 #https://github.com/gabime/spdlog/releases/tag/v1.11.0
     )
     set(SPDLOG_WCHAR_FILENAMES OFF CACHE BOOL "SPDLOG_WCHAR_FILENAMES")
     set(SPDLOG_WCHAR_SUPPORT OFF CACHE BOOL "SPDLOG_WCHAR_SUPPORT")
@@ -193,6 +193,8 @@ if (WOLF_SYSTEM_LOG)
     list(APPEND SRCS 
         ${WOLF_SYSTEM_LOG_SRC} 
     )
+    # use external fmt headers
+    add_definitions(-DSPDLOG_FMT_EXTERNAL_HQ)
 endif()
 
 if (WOLF_SYSTEM_LZ4)

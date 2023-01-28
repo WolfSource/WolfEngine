@@ -51,8 +51,8 @@ void w_gamepad_client::update() noexcept {
     switch (sdl_event.type) {
     default:
       break;
-    case SDL_GAMEPADBUTTONDOWN:
-    case SDL_GAMEPADBUTTONUP: {
+    case SDL_GAMEPAD_BUTTON_DPAD_DOWN:
+    case SDL_GAMEPAD_BUTTON_DPAD_UP: {
       button.which = sdl_event.cbutton.which;
       button.button =
           gsl::narrow_cast<w_gamepad_client_button_type>(sdl_event.cbutton.button + 1);
@@ -62,7 +62,7 @@ void w_gamepad_client::update() noexcept {
       _events.emplace_back(_event);
       break;
     }
-    case SDL_GAMEPADAXISMOTION: {
+    case SDL_EVENT_GAMEPAD_AXIS_MOTION: {
       axis.which = sdl_event.caxis.which;
       axis.axis =
           gsl::narrow_cast<w_gamepad_client_axis_type>(sdl_event.caxis.axis + 1);
@@ -71,11 +71,11 @@ void w_gamepad_client::update() noexcept {
       _events.emplace_back(_event);
       break;
     }
-    case SDL_GAMEPADADDED: {
+    case SDL_EVENT_GAMEPAD_ADDED: {
       s_controllers.push_back(SDL_OpenGamepad(sdl_event.cdevice.which));
       break;
     }
-    case SDL_GAMEPADREMOVED: {
+    case SDL_EVENT_GAMEPAD_REMOVED: {
       auto controller = SDL_GetGamepadFromInstanceID(sdl_event.cdevice.which);
       auto _iter =
           std::find(s_controllers.cbegin(), s_controllers.cend(), controller);

@@ -279,6 +279,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBS})
 # create source group
 source_group("wolf" FILES ${WOLF_SRCS})
 source_group("cmake" FILES ${WOLF_CMAKES})
+source_group("stream/janus" FILES ${WOLF_STREAM_JANUS_SRC})
 source_group("stream/test" FILES ${WOLF_STREAM_TEST_SRC})
 source_group("stream/quic" FILES ${WOLF_STREAM_QUIC_SRC})
 source_group("stream/rist" FILES ${WOLF_STREAM_RIST_SRC})

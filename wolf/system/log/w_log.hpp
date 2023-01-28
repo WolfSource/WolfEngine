@@ -64,7 +64,7 @@ public:
 
   W_API boost::leaf::result<int> flush();
 
-  W_API [[maybe_unused]] w_log_config get_config() const;
+  W_API w_log_config get_config() const;
 
 private:
   // disable copy constructor
