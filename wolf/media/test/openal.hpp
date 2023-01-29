@@ -18,6 +18,9 @@ BOOST_AUTO_TEST_CASE(openal_play_wav) {
 
   const wolf::system::w_leak_detector _detector = {};
 
+  auto a = w_openal();
+  a.init(w_openal_config{});
+
   auto _current_dir =
       std::filesystem::current_path().append("../../content/audio/sine.wav");
   std::cout << _current_dir.string();
@@ -30,13 +33,13 @@ BOOST_AUTO_TEST_CASE(openal_play_wav) {
   // else {current_dir.join(file_name)};
 
   // make sure constructor works. later update with wav header.
-  auto openal = w_openal{
-    w_openal_config{
-      .format = AL_FORMAT_STEREO16,
-      .sample_rate = 48000,
-      .channels = 1
-    }
-  };
+  //auto openal = w_openal{
+  //  w_openal_config{
+  //    .format = AL_FORMAT_STEREO16,
+  //    .sample_rate = 48000,
+  //    .channels = 1
+  //  }
+  //};
 }
 
 #endif

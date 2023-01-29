@@ -43,7 +43,7 @@ s_encode(_In_ const std::string &p_name,
                                        _src_config.width, _src_config.height};
 
   // convert source frame to yuv frame
-  BOOST_LEAF_AUTO(_yuv_frame, _src_frame.convert(_dst_config));
+  BOOST_LEAF_AUTO(_yuv_frame, _src_frame.convert_video(_dst_config));
 
   // encode frame to packet
   boost::leaf::result<w_encoder> _encoder_res;
@@ -109,7 +109,7 @@ static boost::leaf::result<void> s_decode(
       _decoder.decode(std::get<0>(p_encoded_tuple), _decoded_frame, p_flush));
 
   BOOST_LEAF_AUTO(_final_frame,
-                  _decoded_frame.convert(std::get<1>(p_encoded_tuple)));
+                  _decoded_frame.convert_video(std::get<1>(p_encoded_tuple)));
 
   const auto _path =
       std::filesystem::current_path().append("/" + p_name + "_rgb_decoded.png");
