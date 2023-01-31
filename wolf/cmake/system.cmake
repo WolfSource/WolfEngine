@@ -343,6 +343,18 @@ if (WOLF_SYSTEM_ZLIB)
     endif()
 endif()
 
+if (WOLF_SYSTEM_POSTGRESQL)
+    find_package(PostgreSQL REQUIRED)
+
+    file(GLOB_RECURSE WOLF_SYSTEM_POSTGRESQL_SRC
+        "${CMAKE_CURRENT_SOURCE_DIR}/system/db/w_postgresql.hpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/system/db/w_postgresql.cpp"
+    )
+
+    list(APPEND SRCS ${WOLF_SYSTEM_POSTGRESQL_SRC})
+    list(APPEND LIBS PostgreSQL::PostgreSQL)
+endif()
+
 if (EMSCRIPTEN)
     file (GLOB_RECURSE WOLF_SYSTEM_SRC
         "${CMAKE_CURRENT_SOURCE_DIR}/system/w_trace.hpp"
