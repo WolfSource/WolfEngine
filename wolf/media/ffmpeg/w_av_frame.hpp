@@ -28,6 +28,14 @@ struct w_av_config {
   int height = 0;
   // data alignment
   int alignment = 1;
+  // the number of audio channels
+  int channels = 0;
+  // the sample rate of the audio
+  int sample_rate = 0;
+  // the sample format of the audio
+  AVSampleFormat sample_fmts;
+  // the channel layout of the audio
+  int channel_layout;
 
   /**
    * @returns the required buffer size for frame
@@ -58,7 +66,7 @@ public:
   W_API explicit w_av_frame(_In_ const w_av_config &p_config) noexcept;
 
   // move constructor.
-  W_API w_av_frame(w_av_frame &&p_other) noexcept;
+  W_API w_av_frame(_Inout_ w_av_frame &&p_other) noexcept;
   // move assignment operator.
   W_API w_av_frame &operator=(w_av_frame &&p_other) noexcept;
 
@@ -95,11 +103,20 @@ public:
   std::tuple<uint8_t **, int *> get() const noexcept;
 
   /**
-   * convert the ffmpeg AVFrame
+   * convert the ffmpeg video AVFrame
    * @returns the converted instance of AVFrame
    */
   W_API
-  boost::leaf::result<w_av_frame> convert(_In_ const w_av_config &p_dst_config);
+  boost::leaf::result<w_av_frame>
+  convert_video(_In_ const w_av_config &p_dst_config);
+
+  /**
+   * convert the ffmpeg audio AVFrame
+   * @returns the converted instance of AVFrame
+   */
+  W_API
+  boost::leaf::result<w_av_frame>
+  convert_audio(_In_ const w_av_config &p_dst_config);
 
   /**
    * @returns av_config

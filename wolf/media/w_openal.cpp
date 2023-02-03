@@ -16,10 +16,6 @@ ALsizei AL_APIENTRY w_openal::s_openal_callback(_In_ void *p_user_ptr,
   return p_size;
 }
 
-w_openal::w_openal(_In_ const w_openal_config &p_config) noexcept
-    : _config(p_config), _device(nullptr), _ctx(nullptr), _buffer(0),
-      _source(0), _size_of_chunk(0), _callback_ptr(nullptr) {}
-
 w_openal::w_openal(w_openal &&p_other) noexcept {
 
   if (this == &p_other)
@@ -83,10 +79,12 @@ std::string w_openal::get_last_error() {
 
 w_openal_config w_openal::get_config() const { return this->_config; }
 
-boost::leaf::result<int> w_openal::init() {
-  auto _ret = S_OK;
+boost::leaf::result<int> w_openal::init(_In_ const w_openal_config &p_config) {
+  auto _ret = 0;
+  this->_config = p_config;
+
   DEFER {
-    if (_ret != S_OK) {
+    if (_ret != 0) {
       _release();
     }
   });

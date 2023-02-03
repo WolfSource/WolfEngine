@@ -34,7 +34,7 @@ struct w_openal_config {
 class w_openal {
 public:
   // constructor
-  W_API w_openal(_In_ const w_openal_config &p_config) noexcept;
+  W_API w_openal() noexcept = default;
 
   // move constructor.
   W_API w_openal(w_openal &&p_other) noexcept;
@@ -50,7 +50,7 @@ public:
    * returns zero on success as result format
    */
   W_API
-  boost::leaf::result<int> init();
+  boost::leaf::result<int> init(_In_ const w_openal_config &p_config);
 
   /**
    * update the openal

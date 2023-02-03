@@ -34,7 +34,7 @@ BOOST_AUTO_TEST_CASE(avframe_test) {
 
   w_av_config _dst_config = {AVPixelFormat::AV_PIX_FMT_BGRA, _config.width,
                              _config.height};
-  auto _dst_frame_res = _src_frame->convert(_dst_config);
+  auto _dst_frame_res = _src_frame->convert_video(_dst_config);
   BOOST_REQUIRE(_dst_frame_res.has_error() == false);
   BOOST_REQUIRE(_dst_frame_res.has_value() == true);
 

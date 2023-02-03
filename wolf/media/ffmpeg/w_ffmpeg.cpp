@@ -18,7 +18,7 @@ using w_ffmpeg_ctx = wolf::media::ffmpeg::w_ffmpeg_ctx;
 
 static boost::leaf::result<void>
 s_set_opts(_In_ AVFormatContext *p_ctx,
-         _In_ const std::vector<w_av_set_opt> &p_opts) {
+           _In_ const std::vector<w_av_set_opt> &p_opts) {
 
   for (const auto &_opt : p_opts) {
     if (_opt.name.empty() == true) {
@@ -76,7 +76,7 @@ s_set_opts(_In_ AVFormatContext *p_ctx,
   return {};
 }
 
-static boost::leaf::result<AVDictionary*>
+static boost::leaf::result<AVDictionary *>
 s_set_dict(_In_ const std::vector<w_av_set_opt> &p_opts) {
 
   AVDictionary *_dict = nullptr;
@@ -134,7 +134,7 @@ s_set_dict(_In_ const std::vector<w_av_set_opt> &p_opts) {
 static boost::leaf::result<int>
 s_create(_Inout_ w_ffmpeg_ctx &p_ctx, _In_ const w_av_config &p_config,
          _In_ const w_av_codec_opt &p_codec_opts,
-       _In_ const std::vector<w_av_set_opt> &p_opts) noexcept {
+         _In_ const std::vector<w_av_set_opt> &p_opts) noexcept {
 
   p_ctx.codec_ctx = avcodec_alloc_context3(p_ctx.codec);
   auto _context_nn = gsl::narrow_cast<AVCodecContext *>(p_ctx.codec_ctx);
@@ -280,19 +280,25 @@ boost::leaf::result<w_decoder> w_ffmpeg::create_decoder(
     _In_ const std::vector<w_av_set_opt> &p_opts) noexcept {
 
   w_decoder _decoder = {};
+  w_av_config _config = p_config;
 
   _decoder.ctx.codec = avcodec_find_decoder(p_id);
   if (_decoder.ctx.codec == nullptr) {
     return W_FAILURE(std::errc::invalid_argument,
-                     "could not find decoder codec id: " + std::to_string(p_id));
+                     "could not find decoder codec id: " + p_id);
   }
+  if (_decoder.ctx.codec->sample_fmts) {
+    _config.sample_fmts =
+        gsl::narrow_cast<AVSampleFormat>(*_decoder.ctx.codec->sample_fmts);
+  }
+
   _decoder.ctx.parser = av_parser_init(_decoder.ctx.codec->id);
   if (_decoder.ctx.parser == nullptr) {
     return W_FAILURE(std::errc::invalid_argument,
-                     "could not initialize parser for codec id: " + std::to_string(p_id));
+                     "could not initialize parser for codec id: " + p_id);
   }
 
-  BOOST_LEAF_CHECK(s_create(_decoder.ctx, p_config, p_codec_opts, p_opts));
+  BOOST_LEAF_CHECK(s_create(_decoder.ctx, _config, p_codec_opts, p_opts));
 
   return _decoder;
 }
@@ -323,7 +329,7 @@ boost::leaf::result<w_decoder> w_ffmpeg::create_decoder(
 boost::leaf::result<int> w_ffmpeg::open_stream_receiver(
     _In_ const std::string &p_url, _In_ const std::vector<w_av_set_opt> &p_opts,
     _In_ std::function<bool(const w_av_packet & /*p_packet*/,
-                            const std::vector<AVStream *>& /*p_streams*/,
+                            const std::vector<AVStream *> & /*p_streams*/,
                             const int /*p_video_stream_index*/,
                             const int /*p_audio_stream_index*/)>
         p_on_frame) noexcept {
@@ -392,7 +398,7 @@ boost::leaf::result<int> w_ffmpeg::open_stream_receiver(
 
   std::vector<AVStream *> _streams;
   _streams.reserve(_fmt_ctx->nb_streams);
-  for (auto i = 0u; i < _fmt_ctx->nb_streams; ++i) {
+  for (uint32_t i = 0; i < _fmt_ctx->nb_streams; ++i) {
     _streams.push_back(_fmt_ctx->streams[i]);
   }
 

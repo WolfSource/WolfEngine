@@ -33,18 +33,19 @@ if (WOLF_MEDIA_OPENAL)
   
   set(ALSOFT_EXAMPLES OFF CACHE BOOL "ALSOFT_EXAMPLES")
   set(ALSOFT_INSTALL_EXAMPLES OFF CACHE BOOL "ALSOFT_INSTALL_EXAMPLES")
+  set(LIBTYPE "STATIC" CACHE STRING "STATIC")
 
   set(FETCHCONTENT_QUIET OFF)
   FetchContent_MakeAvailable(openal)
-
+  
   file(GLOB_RECURSE WOLF_MEDIA_OPENAL_SRC
     "${CMAKE_CURRENT_SOURCE_DIR}/media/w_openal.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/media/w_openal.cpp"
   )
-
+   
   list(APPEND SRCS ${WOLF_MEDIA_OPENAL_SRC})
   list(APPEND INCLUDES ${openal_SOURCE_DIR}/include)
-  list(APPEND LIBS ${openal_BINARY_DIR}/${CMAKE_BUILD_TYPE}/OpenAL32.${LIB_EXT})    
+  list(APPEND LIBS OpenAL::OpenAL)    
 
   set_target_properties(
     build_version
