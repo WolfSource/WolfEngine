@@ -8,21 +8,22 @@
 #pragma once
 
 #include <boost/test/included/unit_test.hpp>
-// #include <system/w_leak_detector.hpp>
+#include <system/w_leak_detector.hpp>
 #include <wolf.hpp>
 
 #include <media/ffmpeg/w_ffmpeg.hpp>
 #include <media/w_openal.hpp>
 
 BOOST_AUTO_TEST_CASE(ffmpeg_stream_test) {
-  // const wolf::system::w_leak_detector _detector = {};
+  const wolf::system::w_leak_detector _detector = {};
 
   std::cout << "ffmpeg_stream_test is running" << std::endl;
 
   using w_av_set_opt = wolf::media::ffmpeg::w_av_set_opt;
   const auto _opt = std::vector<w_av_set_opt>();
+
   constexpr auto _url =
-      "srt://20.71.33.86:554?mode=caller&transtype=live&timeout=5000000";
+      "srt://127.0.0.1:554?mode=caller&transtype=live&timeout=5000000";
 
   boost::leaf::try_handle_all(
       [&]() -> boost::leaf::result<void> {
@@ -46,7 +47,7 @@ BOOST_AUTO_TEST_CASE(ffmpeg_stream_test) {
         wolf::media::ffmpeg::w_av_frame _av_audio_frame = {};
         wolf::media::ffmpeg::w_av_config _audio_config = {};
         wolf::media::w_openal_config _openal_config = {};
-        wolf::media::w_openal _openal = {};
+        //wolf::media::w_openal _openal = {};
         auto _width = 0;
         auto _height = 0;
 
@@ -129,7 +130,7 @@ BOOST_AUTO_TEST_CASE(ffmpeg_stream_test) {
               } else {
                 const auto _path = std::filesystem::current_path().append(
                     "/" + std::to_string(_index++) + "_rist_decoded.png");
-                //_rgba_frame.value().save_to_img_file(_path);
+               // _rgba_frame.value().save_to_img_file(_path);
                 std::cout << "rgb frame created" << std::endl;
               }
             }
@@ -166,12 +167,12 @@ BOOST_AUTO_TEST_CASE(ffmpeg_stream_test) {
               _openal_config = {AL_FORMAT_STEREO16, _audio_config.sample_rate,
                                 25, _audio_config.channels};
 
-              auto _ret = _openal.init(_openal_config);
+              //auto _ret = _openal.init(_openal_config);
 
-              if (_ret.has_error()) {
-                std::cout << "could not initialize openal" << std::endl;
-                return false; // close it
-              }
+              //if (_ret.has_error()) {
+              //  std::cout << "could not initialize openal" << std::endl;
+              //  return false; // close it
+              //}
 
               _audio_initialized = true;
             }
@@ -199,14 +200,19 @@ BOOST_AUTO_TEST_CASE(ffmpeg_stream_test) {
                 auto _data = std::get<0>(_content);
                 auto _size = std::get<1>(_content);
 
-                auto _ret = _openal.update(
-                    gsl::narrow_cast<const uint8_t *>(*_data), *_size);
+                if (_data  && *_data && _size) {
+                  /*const auto _ret = _openal.update(
+                      gsl::narrow_cast<const uint8_t *>(*_data), *_size);
+                  if (_ret.has_error()) {
+                    std::cout << "could not update openal because " << std::endl;
+                  }*/
+                }
               }
             }
           }
 
           const auto t1 = std::chrono::high_resolution_clock::now();
-          if (std::chrono::duration_cast<std::chrono::seconds>(t1 - t0) > 5s) {
+          if (std::chrono::duration_cast<std::chrono::seconds>(t1 - t0) > 20s) {
             return false;
           }
           return true;

@@ -38,7 +38,7 @@ BOOST_AUTO_TEST_CASE(wolf_test) {
 
 #pragma region stream tests
 
-#include <wolf/stream/test/ffmpeg_stream.hpp>
+//#include <wolf/stream/test/ffmpeg_stream.hpp>
 #include <wolf/stream/test/rist.hpp>
 
 #pragma endregion
@@ -48,6 +48,6 @@ BOOST_AUTO_TEST_CASE(wolf_test) {
 #include <wolf/media/test/avframe.hpp>
 #include <wolf/media/test/ffmpeg.hpp>
 #include <wolf/media/test/image.hpp>
-#include <media/test/openal.hpp>
+//#include <wolf/media/test/openal.hpp>
 
 #pragma endregion

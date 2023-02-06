@@ -18,6 +18,7 @@ BOOST_AUTO_TEST_CASE(openal_play_wav) {
 
   const wolf::system::w_leak_detector _detector = {};
 
+  // TODO (pooya: openAL has memoy leak https://github.com/kcat/openal-soft/issues/782)
   auto a = w_openal();
   a.init(w_openal_config{});
 

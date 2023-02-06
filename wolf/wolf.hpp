@@ -33,11 +33,11 @@ constexpr inline int S_OK = 0;
 
 #include <boost/leaf.hpp>
 
-#ifdef __clang__
+#ifdef _MSC_VER
+#include <format>
+#else
 #include <fmt/chrono.h>
 #include <fmt/format.h>
-#else
-#include <format>
 #endif
 
 #include <gsl/gsl>
@@ -132,18 +132,18 @@ namespace wolf {
  */
 W_API std::string w_init();
 
-#ifdef __clang__
+#ifdef _MSC_VER
+template <class... Args>
+W_API std::string format(_In_ const std::string_view p_fmt,
+                         _In_ Args &&...p_args) {
+  return std::vformat(p_fmt, std::make_format_args(p_args...));
+}
+#else
 template <class... Args>
 W_API std::string format(_In_ const fmt::v9::format_string<Args...> p_fmt,
                          _In_ Args &&...p_args) {
   return fmt::v9::vformat(p_fmt, fmt::v9::make_format_args(p_args...));
 }
-#else
-template <class... Args>
-W_API std::string format(_In_ const std::string_view p_fmt,
-                         _In_ Args &&...p_args) {
-    return std::vformat(p_fmt, std::make_format_args(p_args...));
-}
-#endif // __clang__
+#endif // _MSC_VER
 
 } // namespace wolf

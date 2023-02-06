@@ -160,22 +160,17 @@ w_av_frame::convert_video(_In_ const w_av_config &p_dst_config) {
 boost::leaf::result<w_av_frame>
 w_av_frame::convert_audio(_In_ const w_av_config &p_dst_config) {
 
-  auto _ret = S_OK;
+  auto _ret = 0;
   SwrContext *swr = nullptr;
   w_av_frame _dst_frame = {};
-  AVFrame *_dst_avframe_nn = nullptr;
 
   DEFER {
-    if (_ret != S_OK) {
+    if (_ret != 0) {
       if (swr) {
         if (swr_is_initialized(swr)) {
           swr_close(swr);
         }
-
         swr_free(&swr);
-      }
-      if (_dst_avframe_nn->data[0]) {
-        av_freep(&_dst_avframe_nn->data[0]);
       }
     }
   });
@@ -202,10 +197,8 @@ w_av_frame::convert_audio(_In_ const w_av_config &p_dst_config) {
   _dst_frame = w_av_frame(p_dst_config);
   _dst_frame.set(nullptr);
 
-  _dst_avframe_nn = gsl::narrow_cast<AVFrame *>(_dst_frame._av_frame);
-
   // get number of samples
-  _dst_avframe_nn->nb_samples = av_rescale_rnd(
+  _dst_frame._av_frame->nb_samples = av_rescale_rnd(
       swr_get_delay(swr,
                     gsl::narrow_cast<int64_t>(this->_av_frame->sample_rate)) +
           this->_av_frame->nb_samples,
@@ -213,9 +206,9 @@ w_av_frame::convert_audio(_In_ const w_av_config &p_dst_config) {
       gsl::narrow_cast<int64_t>(this->_av_frame->sample_rate), AV_ROUND_UP);
 
   _ret = av_samples_alloc(
-      gsl::narrow_cast<uint8_t **>(&_dst_avframe_nn->data[0]),
-      &_dst_avframe_nn->linesize[0], _dst_avframe_nn->channels,
-      _dst_avframe_nn->nb_samples,
+      gsl::narrow_cast<uint8_t **>(&_dst_frame._av_frame->data[0]),
+      &_dst_frame._av_frame->linesize[0], _dst_frame._av_frame->channels,
+      _dst_frame._av_frame->nb_samples,
       gsl::narrow_cast<AVSampleFormat>(p_dst_config.sample_fmts), 1);
   if (_ret < 0) {
     return W_FAILURE(std::errc::operation_canceled,
@@ -223,18 +216,18 @@ w_av_frame::convert_audio(_In_ const w_av_config &p_dst_config) {
   }
 
   /* convert to destination format */
-  _ret =
-      swr_convert(swr, gsl::narrow_cast<uint8_t **>(&_dst_avframe_nn->data[0]),
-                  _dst_avframe_nn->nb_samples,
-                  (const uint8_t **)(&this->_av_frame->data[0]),
-                  this->_av_frame->nb_samples);
+  _ret = swr_convert(
+      swr, gsl::narrow_cast<uint8_t **>(&_dst_frame._av_frame->data[0]),
+      _dst_frame._av_frame->nb_samples,
+      (const uint8_t **)(&this->_av_frame->data[0]),
+      this->_av_frame->nb_samples);
   if (_ret < 0) {
     return W_FAILURE(std::errc::operation_canceled,
                      "error while audio converting\n");
   }
 
-  auto _buffer_size = av_samples_get_buffer_size(
-      &_dst_avframe_nn->linesize[0], _dst_avframe_nn->channels, _ret,
+  const auto _buffer_size = av_samples_get_buffer_size(
+      &_dst_frame._av_frame->linesize[0], _dst_frame._av_frame->channels, _ret,
       p_dst_config.sample_fmts, 1);
 
   if (_buffer_size < 0) {
@@ -246,12 +239,10 @@ w_av_frame::convert_audio(_In_ const w_av_config &p_dst_config) {
   return _dst_frame;
 }
 
-#ifdef WOLF_MEDIA_STB
-
 boost::leaf::result<w_av_frame>
 w_av_frame::load_from_img_file(_In_ const std::filesystem::path &p_path,
                                _In_ AVPixelFormat p_pixel_fmt) {
-
+#ifdef WOLF_MEDIA_STB
   // width, height, comp
   int _width = 0;
   int _height = 0;
@@ -276,11 +267,17 @@ w_av_frame::load_from_img_file(_In_ const std::filesystem::path &p_path,
   _src_frame.set(&_raw_img_data);
 
   return _src_frame;
+
+#else
+  return W_FAILURE(std::errc::not_supported, "WOLF_MEDIA_STB not defined");
+#endif
 }
 
 boost::leaf::result<int>
 w_av_frame::save_to_img_file(_In_ const std::filesystem::path &p_path,
                              int p_quality) {
+#ifdef WOLF_MEDIA_STB
+
   if (this->_av_frame == nullptr || this->_av_frame->width == 0 ||
       this->_av_frame->height == 0) {
     return W_FAILURE(std::errc::invalid_argument, "bad parameters for avframe");
@@ -310,8 +307,9 @@ w_av_frame::save_to_img_file(_In_ const std::filesystem::path &p_path,
     return W_FAILURE(std::errc::invalid_argument,
                      "image format not supported for " + _path);
   }
-}
-
+#else
+  return W_FAILURE(std::errc::not_supported, "WOLF_MEDIA_STB not defined");
 #endif
+}
 
 #endif // WOLF_MEDIA_FFMPEG
