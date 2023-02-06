@@ -163,14 +163,19 @@ w_av_frame::convert_audio(_In_ const w_av_config &p_dst_config) {
   auto _ret = 0;
   SwrContext *swr = nullptr;
   w_av_frame _dst_frame = {};
+  AVFrame* _dst_avframe_nn = nullptr;
 
-  DEFER {
-    if (_ret != 0) {
+  DEFER{
+    if (_ret != S_OK) {
       if (swr) {
         if (swr_is_initialized(swr)) {
           swr_close(swr);
         }
+
         swr_free(&swr);
+      }
+      if (_dst_avframe_nn->data[0]) {
+        av_freep(&_dst_avframe_nn->data[0]);
       }
     }
   });
@@ -197,6 +202,8 @@ w_av_frame::convert_audio(_In_ const w_av_config &p_dst_config) {
   _dst_frame = w_av_frame(p_dst_config);
   _dst_frame.set(nullptr);
 
+  _dst_avframe_nn = gsl::narrow_cast<AVFrame*>(_dst_frame._av_frame);
+
   // get number of samples
   _dst_frame._av_frame->nb_samples = av_rescale_rnd(
       swr_get_delay(swr,
@@ -205,29 +212,30 @@ w_av_frame::convert_audio(_In_ const w_av_config &p_dst_config) {
       gsl::narrow_cast<int64_t>(p_dst_config.sample_rate),
       gsl::narrow_cast<int64_t>(this->_av_frame->sample_rate), AV_ROUND_UP);
 
-  _ret = av_samples_alloc(
-      gsl::narrow_cast<uint8_t **>(&_dst_frame._av_frame->data[0]),
-      &_dst_frame._av_frame->linesize[0], _dst_frame._av_frame->channels,
-      _dst_frame._av_frame->nb_samples,
+  auto size = av_samples_alloc(
+      gsl::narrow_cast<uint8_t **>(&_dst_avframe_nn->data[0]),
+      &_dst_avframe_nn->linesize[0], _dst_avframe_nn->channels,
+      _dst_avframe_nn->nb_samples,
       gsl::narrow_cast<AVSampleFormat>(p_dst_config.sample_fmts), 1);
-  if (_ret < 0) {
+  if (size < 0) {
+    _ret = -1;
     return W_FAILURE(std::errc::operation_canceled,
                      "could not allocate memory for buffer of audio");
   }
 
   /* convert to destination format */
-  _ret = swr_convert(
-      swr, gsl::narrow_cast<uint8_t **>(&_dst_frame._av_frame->data[0]),
-      _dst_frame._av_frame->nb_samples,
-      (const uint8_t **)(&this->_av_frame->data[0]),
-      this->_av_frame->nb_samples);
-  if (_ret < 0) {
+  size = swr_convert(swr, gsl::narrow_cast<uint8_t **>(&_dst_avframe_nn->data[0]),
+                  _dst_avframe_nn->nb_samples,
+                  (const uint8_t **)(&this->_av_frame->data[0]),
+                  this->_av_frame->nb_samples);
+  if (size < 0) {
+    _ret = -1;
     return W_FAILURE(std::errc::operation_canceled,
                      "error while audio converting\n");
   }
 
   const auto _buffer_size = av_samples_get_buffer_size(
-      &_dst_frame._av_frame->linesize[0], _dst_frame._av_frame->channels, _ret,
+      &_dst_frame._av_frame->linesize[0], _dst_frame._av_frame->channels, size,
       p_dst_config.sample_fmts, 1);
 
   if (_buffer_size < 0) {
