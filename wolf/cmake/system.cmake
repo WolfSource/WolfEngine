@@ -12,8 +12,8 @@ list(APPEND INCLUDES
     ${gsl_SOURCE_DIR}/include
 )
 
-if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
-    # fetch fmt for clang
+if (NOT CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    # don't 'fetch fmt for visual c++
     message("fetching https://github.com/fmtlib/fmt.git")
     FetchContent_Declare(
         fmt
@@ -196,10 +196,11 @@ if (WOLF_SYSTEM_LOG)
         ${WOLF_SYSTEM_LOG_SRC} 
     )
 
-    # use external fmt headers for clang compiler
-    if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
+    # use external fmt headers for other compilers except MSVC
+    if (NOT CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
         add_definitions(-DSPDLOG_FMT_EXTERNAL_HQ)
     endif()
+
 endif()
 
 if (WOLF_SYSTEM_LZ4)
