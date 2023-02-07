@@ -61,7 +61,7 @@ BOOST_AUTO_TEST_CASE(ws_server_timeout_test) {
       });
   _io.run();
 
-  std::cout << "ws_server_timeout_test just done" << std::endl;
+  std::cout << "ws_server_timeout_test is done" << std::endl;
 }
 
 BOOST_AUTO_TEST_CASE(ws_client_timeout_test) {
@@ -102,7 +102,7 @@ BOOST_AUTO_TEST_CASE(ws_client_timeout_test) {
 
   _io.run();
 
-  std::cout << "ws_client_timeout_test just done" << std::endl;
+  std::cout << "ws_client_timeout_test is done" << std::endl;
 }
 
 // BOOST_AUTO_TEST_CASE(ws_read_write) {

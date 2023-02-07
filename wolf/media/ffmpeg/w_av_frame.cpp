@@ -106,7 +106,7 @@ boost::leaf::result<int> w_av_frame::set(_Inout_ uint8_t **p_data) noexcept {
                            this->_config.format, _av_frame_nn->width,
                            _av_frame_nn->height, _alignment);
 
-  return S_OK;
+  return 0;
 }
   
 void w_av_frame::set_pts(_In_ int64_t p_pts) noexcept {

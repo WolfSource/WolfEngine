@@ -15,7 +15,7 @@
 BOOST_AUTO_TEST_CASE(image_load_save_test) {
   const wolf::system::w_leak_detector _detector = {};
 
-  std::cout << "image_load_save_test just done" << std::endl;
+  std::cout << "image_load_save_test is done" << std::endl;
 
   boost::leaf::try_handle_all(
       [&]() -> boost::leaf::result<void> {
@@ -49,7 +49,7 @@ BOOST_AUTO_TEST_CASE(image_load_save_test) {
         BOOST_ERROR(false);
       });
 
-  std::cout << "image_load_save_test just done" << std::endl;
+  std::cout << "image_load_save_test is done" << std::endl;
 }
 
 #endif

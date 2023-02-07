@@ -44,7 +44,7 @@ BOOST_AUTO_TEST_CASE(avframe_test) {
   auto _ret = _dst_frame->save_to_img_file(_new_path);
   BOOST_REQUIRE(_ret.has_error() == false);
 
-  std::cout << "avframe_test just done" << std::endl;
+  std::cout << "avframe_test is done" << std::endl;
 }
 
 #endif

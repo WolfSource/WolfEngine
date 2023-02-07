@@ -41,7 +41,7 @@ BOOST_AUTO_TEST_CASE(gametime_fixed_time_test) {
     _total_seconds = _gametime.get_total_secs();
   }
 
-  std::cout << "gametime_fixed_time_test just done" << std::endl;
+  std::cout << "gametime_fixed_time_test is done" << std::endl;
 }
 
 BOOST_AUTO_TEST_CASE(gametime_unfixed_time_test) {
@@ -69,7 +69,7 @@ BOOST_AUTO_TEST_CASE(gametime_unfixed_time_test) {
 
   BOOST_REQUIRE(_gametime.get_fps() >= 30);
 
-  std::cout << "gametime_unfixed_time_test just done" << std::endl;
+  std::cout << "gametime_unfixed_time_test is done" << std::endl;
 }
 
 #endif // WOLF_TESTS

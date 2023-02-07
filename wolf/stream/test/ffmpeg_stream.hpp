@@ -231,7 +231,7 @@ BOOST_AUTO_TEST_CASE(ffmpeg_stream_test) {
         BOOST_ERROR(false);
       });
 
-  std::cout << "ffmpeg_stream_test just done" << std::endl;
+  std::cout << "ffmpeg_stream_test is done" << std::endl;
 }
 
 #endif

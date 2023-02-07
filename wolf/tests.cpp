@@ -25,6 +25,7 @@ BOOST_AUTO_TEST_CASE(wolf_test) {
 #pragma region system tests
 
 #include <wolf/system/test/compress.hpp>
+#include <wolf/system/test/coroutine.hpp>
 #include <wolf/system/test/gamepad.hpp>
 #include <wolf/system/test/gametime.hpp>
 #include <wolf/system/test/log.hpp>

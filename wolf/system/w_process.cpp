@@ -16,7 +16,7 @@ boost::leaf::result<std::filesystem::path> w_process::current_exe_path() {
 #ifdef WIN32
   std::array<wchar_t, W_MAX_PATH> _buffer = {};
   std::ignore = GetModuleFileNameW(nullptr, _buffer.data(), sizeof(_buffer));
-  const auto _ret = ::GetLastError();
+  const auto _ret = GetLastError();
 
   if (_ret != S_OK) {
     return W_FAILURE(_ret, "GetModuleFileNameW failed because:" +

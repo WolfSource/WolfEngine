@@ -58,7 +58,7 @@ BOOST_AUTO_TEST_CASE(gamepad_virtual_test) {
 
   w_gamepad_virtual_pool::fini();
 
-  std::cout << "gamepad_virtual_test just done" << std::endl;
+  std::cout << "gamepad_virtual_test is done" << std::endl;
 }
 
 #endif // WOLF_SYSTEM_GAMEPAD_VIRTUAL

@@ -128,7 +128,7 @@ w_openal::init(_In_ const w_openal_config &p_config) noexcept {
   this->_config = p_config;
 
   DEFER{
-    if (_ret != S_OK) {
+    if (_ret != 0) {
       _release();
     }
   });

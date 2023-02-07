@@ -23,7 +23,7 @@ BOOST_AUTO_TEST_CASE(sig_slot_test) {
   sig.connect([]() { std::cout << "hello from slot 2" << std::endl; });
   sig();
 
-  std::cout << "sig_slot_test just done" << std::endl;
+  std::cout << "sig_slot_test is done" << std::endl;
 }
 
 #endif // defined(WOLF_TESTS) && defined(WOLF_SYSYEM_SIG_SLOT)

@@ -170,7 +170,7 @@ public:
     
     this->_total_read_bytes = 0;
     
-    return S_OK;
+    return 0;
   }
 
     /**

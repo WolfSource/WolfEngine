@@ -115,7 +115,7 @@ w_av_format::init(_In_ int p_stream_buf_size) noexcept {
                      "could not find best stream");
   }
 
-  return S_OK;
+  return 0;
 }
 
 #endif // WOLF_MEDIA_FFMPEG

@@ -33,7 +33,7 @@ BOOST_AUTO_TEST_CASE(rist_data_block_test) {
     BOOST_REQUIRE(new_msg == "hello");
   }
 
-  std::cout << "rist_data_block_test just done" << std::endl;
+  std::cout << "rist_data_block_test is done" << std::endl;
 }
 
 BOOST_AUTO_TEST_CASE(rist_sender_receiver_test) {
@@ -138,7 +138,7 @@ BOOST_AUTO_TEST_CASE(rist_sender_receiver_test) {
   thread_sender.join();
   thread_receiver.join();
 
-  std::cout << "rist_sender_receiver_test just done" << std::endl;
+  std::cout << "rist_sender_receiver_test is done" << std::endl;
 }
 
 #endif

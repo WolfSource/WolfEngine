@@ -103,7 +103,7 @@ BOOST_AUTO_TEST_CASE(log_stress_test) {
     t.join();
   }
 
-  std::cout << "log_stress_test just done" << std::endl;
+  std::cout << "log_stress_test is done" << std::endl;
 }
 
 #endif

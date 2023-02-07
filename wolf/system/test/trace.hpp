@@ -41,7 +41,7 @@ BOOST_AUTO_TEST_CASE(trace_test) {
         BOOST_ERROR(false);
       });
 
-  std::cout << "trace_test just done" << std::endl;
+  std::cout << "trace_test is done" << std::endl;
 }
 
 #endif // WOLF_TESTS

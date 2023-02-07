@@ -51,7 +51,7 @@ BOOST_AUTO_TEST_CASE(tcp_server_timeout_test) {
       });
   _io.run();
 
-  std::cout << "tcp_server_timeout_test just done" << std::endl;
+  std::cout << "tcp_server_timeout_test is done" << std::endl;
 }
 
 BOOST_AUTO_TEST_CASE(tcp_client_timeout_test) {
@@ -100,7 +100,7 @@ BOOST_AUTO_TEST_CASE(tcp_client_timeout_test) {
 
   _io.run();
 
-  std::cout << "tcp_client_timeout_test just done" << std::endl;
+  std::cout << "tcp_client_timeout_test is done" << std::endl;
 }
 
 BOOST_AUTO_TEST_CASE(tcp_read_write_test) {
@@ -214,7 +214,7 @@ BOOST_AUTO_TEST_CASE(tcp_read_write_test) {
 
   _io.run();
 
-  std::cout << "tcp_read_write_test just done" << std::endl;
+  std::cout << "tcp_read_write_test is done" << std::endl;
 }
 
 #endif

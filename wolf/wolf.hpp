@@ -15,8 +15,6 @@
 
 #ifdef WIN32
 #include <Windows.h>
-#else
-constexpr inline int S_OK = 0;
 #endif
 
 #ifndef EMSCRIPTEN
@@ -132,6 +130,12 @@ namespace wolf {
  */
 W_API std::string w_init();
 
+/**
+ * make a string via format
+ * @param p_fmt, the fmt
+ * @param p_args, the args
+ * @return a string
+ */
 #ifdef _MSC_VER
 template <class... Args>
 W_API std::string format(_In_ const std::string_view p_fmt,
@@ -145,5 +149,4 @@ W_API std::string format(_In_ const fmt::v9::format_string<Args...> p_fmt,
   return fmt::v9::vformat(p_fmt, fmt::v9::make_format_args(p_args...));
 }
 #endif // _MSC_VER
-
 } // namespace wolf

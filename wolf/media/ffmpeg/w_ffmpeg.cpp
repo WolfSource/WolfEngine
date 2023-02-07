@@ -234,7 +234,7 @@ s_create(_Inout_ w_ffmpeg_ctx &p_ctx, _In_ const w_av_config &p_config,
                      "could not open avcodec because " +
                          w_ffmpeg_ctx::get_av_error_str(_ret));
   }
-  return S_OK;
+  return 0;
 }
 
 boost::leaf::result<w_encoder> w_ffmpeg::create_encoder(

@@ -60,7 +60,7 @@ BOOST_AUTO_TEST_CASE(compress_lz4_test) {
         BOOST_ERROR(false);
       });
 
-  std::cout << "compress_lz4_test done" << std::endl;
+  std::cout << "compress_lz4_test is done" << std::endl;
 }
 
 #endif // WOLF_SYSTEM_LZ4
@@ -106,7 +106,7 @@ BOOST_AUTO_TEST_CASE(compress_lzma_test) {
         BOOST_ERROR(false);
       });
 
-  std::cout << "compress_lzma_test just done" << std::endl;
+  std::cout << "compress_lzma_test is done" << std::endl;
 }
 
 #endif // WOLF_SYSTEM_LZMA
