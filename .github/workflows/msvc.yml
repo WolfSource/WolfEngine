@@ -10,15 +10,15 @@ name: Microsoft C++ Code Analysis
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
   schedule:
-    - cron: '41 16 * * 1'
+    - cron: "41 16 * * 1"
 
 env:
   # Path to the CMake build directory.
-  build: '${{ github.workspace }}/build'
+  build: "${{ github.workspace }}/build"
 
 permissions:
   contents: read
@@ -36,15 +36,23 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Get SW
+        uses: egorpugin/sw-action@master
+
+      - name: SW setup and add to PATH
+        run: |
+          ./sw setup
+          echo "D:\a\WolfEngine\WolfEngine" >> $env:GITHUB_PATH
+
       - name: Setup OpenCppCoverage and add to PATh
         id: setup_opencppcoverage
         run: |
           choco install OpenCppCoverage -y
           echo "C:\Program Files\OpenCppCoverage" >> $env:GITHUB_PATH
-          
+
       - name: Configure CMake
         run: cmake -B ${{ env.build }}
-        
+
       # Build is not required for MSVC Code Analysis and will be used for Codecov
       - name: Build CMake
         run: cmake --build ${{ env.build }}
@@ -57,8 +65,8 @@ jobs:
           cmakeBuildDirectory: ${{ env.build }}
           # Ruleset file that will determine what checks will be run
           ruleset: NativeRecommendedRules.ruleset
-          ignoredPaths: build/_deps
-          
+          ignoredTargetPaths: ${{ env.build }}/_deps/boost_chrono-src;${{ env.build }}/_deps/boost_context-src;${{ env.build }}/_deps/boost_coroutine-src;${{ env.build }}/_deps/boost_date_time-src;${{ env.build }}/_deps/boost_exception-src;${{ env.build }}/_deps/fmt-src;${{ env.build }}/_deps/boost_container-src
+
       - name: Generate Codecov Report
         id: generate_test_report
         shell: cmd
@@ -69,7 +77,7 @@ jobs:
           files: ./WolfCov.xml
           fail_ci_if_error: true
           functionalities: fix
-          
+
       # Upload SARIF file to GitHub Code Scanning Alerts
       #- name: Upload SARIF to GitHub
       #  uses: github/codeql-action/upload-sarif@v2
@@ -80,5 +88,5 @@ jobs:
       - name: Upload SARIF as an Artifact
         uses: actions/upload-artifact@v3
         with:
-         name: sarif-file
-         path: ${{ steps.run-analysis.outputs.sarif }}
+          name: sarif-file
+          path: ${{ steps.run-analysis.outputs.sarif }}
