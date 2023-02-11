@@ -53,10 +53,8 @@ if(WOLF_ML_OCR)
             set(DEBUG_LIB_EXTENTION "")
         endif()
 
-        link_directories(${tesseract_BINARY_DIR}/${CMAKE_BUILD_TYPE})
-
         list(APPEND LIBS
-            tesseract
+            ${tesseract_BINARY_DIR}/${CMAKE_BUILD_TYPE}/tesseract53${DEBUG_LIB_EXTENTION}.lib
         )
     elseif(LINUX)
         FetchContent_Populate(tesseract)
