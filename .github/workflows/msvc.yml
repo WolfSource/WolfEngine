@@ -65,7 +65,7 @@ jobs:
           cmakeBuildDirectory: ${{ env.build }}
           # Ruleset file that will determine what checks will be run
           ruleset: NativeRecommendedRules.ruleset
-          ignoredTargetPaths: ${{ env.build }}/_deps/boost_chrono-src;${{ env.build }}/_deps/boost_context-src;${{ env.build }}/_deps/boost_coroutine-src;${{ env.build }}/_deps/boost_date_time-src;${{ env.build }}/_deps/boost_exception-src;${{ env.build }}/_deps/fmt-src;${{ env.build }}/_deps/boost_container-src
+          ignoredTargetPaths: ${{ env.build }}/_deps/boost_chrono-src;${{ env.build }}/_deps/boost_context-src;${{ env.build }}/_deps/boost_coroutine-src;${{ env.build }}/_deps/boost_date_time-src;${{ env.build }}/_deps/boost_exception-src;${{ env.build }}/_deps/fmt-src;${{ env.build }}/_deps/boost_container-src;${{ env.build }}/_deps/opencv-src;${{ env.build }}/_deps/rapidjson-src;${{ env.build }}/_deps/tesseract-src
 
       - name: Generate Codecov Report
         id: generate_test_report
