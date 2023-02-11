@@ -23,13 +23,15 @@ if(WOLF_ML_OCR)
     FetchContent_Declare(
         tesseract
         GIT_REPOSITORY https://github.com/tesseract-ocr/tesseract.git
-        GIT_TAG 4.1.1
+        GIT_TAG main
 
         GIT_SHALLOW TRUE
         GIT_PROGRESS TRUE
     )
 
     if(WIN64)
+        set(FETCHCONTENT_QUIET OFF)
+
         set(BUILD_TESTS OFF CACHE BOOL "BUILD_TESTS")
         set(BUILD_TRAINING_TOOLS OFF CACHE BOOL "BUILD_TRAINING_TOOLS")
         set(DISABLE_ARCHIVE ON CACHE BOOL "DISABLE_ARCHIVE")
@@ -51,8 +53,10 @@ if(WOLF_ML_OCR)
             set(DEBUG_LIB_EXTENTION "")
         endif()
 
+        link_directories(${tesseract_BINARY_DIR}/${CMAKE_BUILD_TYPE})
+
         list(APPEND LIBS
-            ${tesseract_BINARY_DIR}/${CMAKE_BUILD_TYPE}/tesseract53${DEBUG_LIB_EXTENTION}.lib
+            tesseract
         )
     elseif(LINUX)
         FetchContent_Populate(tesseract)
@@ -62,8 +66,9 @@ if(WOLF_ML_OCR)
         ${tesseract_BINARY_DIR}/install/include
         )
 
+        link_directories(${tesseract_BINARY_DIR}/install/lib)
         list(APPEND LIBS
-            ${tesseract_BINARY_DIR}/install/lib/libtesseract.so
+            tesseract
         )
 
         add_custom_command(OUTPUT tess_config.out COMMAND cmake -B ${tesseract_BINARY_DIR} -DBUILD_TESTS=OFF -DBUILD_TRAINING_TOOLS=OFF -DDISABLE_ARCHIVE=ON -DDISABLE_CURL=ON -DFAST_FLOAT=ON -DGRAPHICS_DISABLED=ON -DINSTALL_CONFIGS=OFF -DLeptonica_DIR=${leptonica_BINARY_DIR} -DCMAKE_INSTALL_PREFIX:PATH=${tesseract_BINARY_DIR}/install ${tesseract_SOURCE_DIR} )
