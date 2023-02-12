@@ -91,6 +91,7 @@ option(WOLF_SYSTEM_MIMALLOC "Enable Microsoft's mimalloc memory allocator" OFF)
 option(WOLF_SYSTEM_SIG_SLOT "Enable signal/slot based on boost signals2" OFF)
 option(WOLF_SYSTEM_SOCKET "Enable TCP/UDP protocol over socket" OFF)
 option(WOLF_SYSTEM_STACKTRACE "Enable boost stacktrace" OFF)
+option(WOLF_SYSTEM_POSTGRESQL "Enable postgresql database client" OFF)
 
 #option(WOLF_SYSTEM_WASM3 "Enable WebAssembly interpreter" OFF)
 #option(WOLF_SYSTEM_ZLIB "Enable zlib for compression" OFF)
@@ -138,11 +139,11 @@ set(CMAKE_CXX_EXTENSIONS ON)
 set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
 set(THREADS_PREFER_PTHREAD_FLAG TRUE)
 
-set(CMAKE_BUILD_TYPE "${default_build_type}" CACHE STRING "Choose the type of build." FORCE)
+#set(CMAKE_BUILD_TYPE "${default_build_type}" CACHE STRING "Choose the type of build." FORCE)
 if ("${CMAKE_BUILD_TYPE}" STREQUAL "")
   set(CMAKE_BUILD_TYPE "Debug")
 endif()
-set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
+#set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
 
 # set C++ flags based on compiler
 if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
@@ -274,7 +275,7 @@ endif()
 #endif()
 
 # link libraries
-target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBS})
+target_link_libraries(${PROJECT_NAME} PUBLIC ${LIBS})
 
 # create source group
 source_group("wolf" FILES ${WOLF_SRCS})
@@ -319,4 +320,7 @@ if (WOLF_TEST)
     if (NOT WIN32)
         target_compile_options(${TEST_PROJECT_NAME} PRIVATE -std=c++2b)
     endif()
+
+    include(CTest)
+    add_test(NAME ${TEST_PROJECT_NAME} COMMAND ${TEST_PROJECT_NAME})
 endif()

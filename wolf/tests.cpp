@@ -34,6 +34,7 @@ BOOST_AUTO_TEST_CASE(wolf_test) {
 #include <wolf/system/test/tcp.hpp>
 #include <wolf/system/test/trace.hpp>
 #include <wolf/system/test/ws.hpp>
+#include <wolf/system/test/postgresql.hpp>
 
 #pragma endregion
 
