@@ -12,6 +12,9 @@ message("CXX Compiler ID is ${CMAKE_CXX_COMPILER_ID}")
 # set the options and enviroment variables
 set(WEBRTC_SRC $ENV{WEBRTC_ROOT} CACHE STRING "path to the root folder of webrtc folder")
 
+# set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${PROJECT_NAME})
+# set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${PROJECT_NAME})
+
 # check the OS
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
     if (WIN32)
@@ -95,6 +98,10 @@ option(WOLF_SYSTEM_POSTGRESQL "Enable postgresql database client" OFF)
 
 #option(WOLF_SYSTEM_WASM3 "Enable WebAssembly interpreter" OFF)
 #option(WOLF_SYSTEM_ZLIB "Enable zlib for compression" OFF)
+
+# machine learing modules
+option(WOLF_ML_OCR "Enable machine learning referee ocr" ON)
+option(WOLF_ML_NUDITY_DETECTION "Enable machine learning nudity detection" OFF)
 
 #option(WOLF_ENABLE_LTO "Enable cross language linking time optimization" OFF)
 option(WOLF_TEST "Enable tests" ON)
@@ -186,6 +193,8 @@ include(cmake/media.cmake)
 include(cmake/rust.cmake)
 include(cmake/system.cmake)
 include(cmake/stream.cmake)
+include(cmake/ml.cmake)
+
 
 if (WOLF_ENABLE_ASAN)
     set(ENABLE_ASAN TRUE)
@@ -300,6 +309,9 @@ source_group("system" FILES ${WOLF_SYSTEM_SRC})
 source_group("media/test" FILES ${WOLF_MEDIA_TEST_SRC})
 source_group("media/ffmpeg" FILES ${WOLF_MEDIA_FFMPEG_SRC})
 source_group("media" FILES ${WOLF_MEDIA_OPENAL_SRC} ${WOLF_MEDIA_STB_SRC})
+source_group("ml/referee_ocr" FILES ${WOLF_ML_OCR_SRC})
+
+# file(COPY ${CMAKE_BINARY_DIR}/bin/${CMAKE_BUILD_TYPE} DESTINATION ${CMAKE_BINARY_DIR}/${PROJECT_NAME}/${CMAKE_BUILD_TYPE})
 
 # add compile options
 if (NOT WIN32)
@@ -323,4 +335,10 @@ if (WOLF_TEST)
 
     include(CTest)
     add_test(NAME ${TEST_PROJECT_NAME} COMMAND ${TEST_PROJECT_NAME})
+endif()
+
+if(WOLF_ML_OCR AND WIN64)
+    add_custom_command(TARGET ${TEST_PROJECT_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_BINARY_DIR}/bin/${CMAKE_BUILD_TYPE} ${CMAKE_BINARY_DIR}/${PROJECT_NAME}/${CMAKE_BUILD_TYPE}
+    )
 endif()
