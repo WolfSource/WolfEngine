@@ -1,5 +1,3 @@
-use std::time::Duration;
-
 /// A timeout handler function
 /// # Arguments
 ///
@@ -23,15 +21,13 @@ use std::time::Duration;
 /// let mut ret = time::timeout(Duration::from_secs(2), func).await;
 /// assert!(ret.is_err()); //timeout should return error///
 /// ```
-pub async fn timeout<F>(p_duration: Duration, p_future: F) -> anyhow::Result<()>
+#[cfg(not(target_arch = "wasm32"))]
+pub async fn timeout<F>(p_duration: std::time::Duration, p_future: F) -> anyhow::Result<()>
 where
     F: std::future::Future<Output = ()> + Send + 'static,
 {
-    #[cfg(not(target_arch = "wasm32"))]
-    {
-        if let Err(e) = tokio::time::timeout(p_duration, p_future).await {
-            anyhow::bail!("timeout reached after {}", e)
-        }
+    if let Err(e) = tokio::time::timeout(p_duration, p_future).await {
+        anyhow::bail!("timeout reached after {}", e)
     }
 
     Ok(())

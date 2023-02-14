@@ -1,39 +1,28 @@
 //cargo test test_system_gamepad --release -- --exact --nocapture
-#[cfg(all(feature = "system_gamepad_sim", target_os = "windows"))]
+#[cfg(all(feature = "system_gamepad_virtual", target_os = "windows"))]
 #[test]
-fn test_system_gamepad() {
-    use wolf::system::ffi::vigem_client::{xinput_gamepad_t, xinput_state_t};
-    use wolf::system::os::gamepad_sim::GamePadSim;
-    println!("testing GamePad Simulator");
-    for _index in 0..2 {
-        let gamepad_res = &GamePadSim::new();
-        match gamepad_res {
-            Ok(gamepad) => {
-                // add gamepad
-                gamepad.add().unwrap();
-                assert!(gamepad.get_number_of_gamepads() == 1);
-                let mut input = xinput_state_t {
-                    packet_number: 0,
-                    gamepad: xinput_gamepad_t {
-                        buttons: 0u16,
-                        left_trigger: 0u8,
-                        right_trigger: 0u8,
-                        thumb_lx: 0i16,
-                        thumb_ly: 0i16,
-                        thumb_rx: 0i16,
-                        thumb_ry: 0i16,
-                    },
-                };
-                gamepad.send_input(0, &mut input).unwrap();
-                gamepad.remove(0).unwrap();
-                assert!(gamepad.get_number_of_gamepads() == 0);
-                gamepad.add().unwrap();
-                gamepad.clear_state(0).unwrap();
-            }
-            Err(e) => {
-                println!("error just happened {e:?}");
-            }
-        }
-        println!("object is {gamepad_res:?}");
+fn test_system_gamepad_virtual() -> Result<(), wolf::system::ffi::vigem_client::VIGEM_ERROR> {
+    use windows_sys::Win32::UI::Input::XboxController::{
+        XINPUT_GAMEPAD, XINPUT_GAMEPAD_DPAD_UP, XINPUT_STATE,
+    };
+    use wolf::system::os::gamepad_virtual_bus::GamePadVirtualBus;
+
+    let gamepad_virtual_bus = GamePadVirtualBus::new()?;
+    for _index in 0..4 {
+        let mut gamepad = gamepad_virtual_bus.create()?;
+        gamepad.clear_state()?;
+        gamepad.send_input(XINPUT_STATE {
+            dwPacketNumber: 0,
+            Gamepad: XINPUT_GAMEPAD {
+                wButtons: XINPUT_GAMEPAD_DPAD_UP,
+                bLeftTrigger: 0,
+                bRightTrigger: 0,
+                sThumbLX: 0,
+                sThumbLY: 0,
+                sThumbRX: 0,
+                sThumbRY: 0,
+            },
+        })?;
     }
+    Ok(())
 }

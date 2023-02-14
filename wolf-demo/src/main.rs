@@ -5,15 +5,15 @@
 
 use anyhow::{anyhow, Result};
 use raw_window_handle::HasRawWindowHandle;
-use wgpu::SurfaceError;
 use winit::event::{ElementState, Event, KeyboardInput, VirtualKeyCode, WindowEvent};
 use winit::event_loop::{ControlFlow, EventLoop};
 use winit::window::WindowBuilder;
-use wolf::render::graphics_device::WindowInfo;
+use wolf::system::os::runtime::RunTime;
+//use wolf::render::graphics_device::WindowInfo;
 use wolf::system::os::sigslot::SigSlot;
 use wolf::{
-    render::{graphics_device::GraphicsDevice, scene::IScene},
-    system::{chrono::gametime::GameTime, os::runtime::RunTime},
+    //render::{graphics_device::GraphicsDevice, scene::IScene},
+    system::chrono::gametime::GameTime,
     w_log,
 };
 
@@ -111,82 +111,83 @@ async fn test() {
     sig_slot.emit();
 }
 
-#[derive(Default)]
-struct WScene {}
+// #[derive(Default)]
+// struct WScene {}
 
-impl IScene for WScene {
-    fn load(&self, _p_g_device: &mut GraphicsDevice) -> Result<()> {
-        w_log!("scene is going to loaded");
-        RunTime::spawn_local(async move {
-            test().await;
-        });
-        w_log!("scene just loaded");
-        Ok(())
-    }
-    fn render(
-        &self,
-        p_gdevice: &mut GraphicsDevice,
-        p_gametime: &mut GameTime,
-    ) -> std::result::Result<(), wgpu::SurfaceError> {
-        w_log!(
-            "scene is rendering {}",
-            p_gametime.get_total_elapsed_seconds()
-        );
+// impl IScene for WScene {
+//     fn load(&self, _p_g_device: &mut GraphicsDevice) -> Result<()> {
+//         w_log!("scene is going to loaded");
+//         RunTime::spawn_local(async move {
+//             test().await;
+//         });
+//         w_log!("scene just loaded");
+//         Ok(())
+//     }
+//     fn render(
+//         &self,
+//         p_gdevice: &mut GraphicsDevice,
+//         p_gametime: &mut GameTime,
+//     ) -> std::result::Result<(), wgpu::SurfaceError> {
+//         w_log!(
+//             "scene is rendering {}",
+//             p_gametime.get_total_elapsed_seconds()
+//         );
 
-        // get output from surface
-        let output_res = p_gdevice.surface.as_ref().map_or_else(|| {
-            w_log!("surface is None, make sure use render_to_texture function for offscreen rendering mode");
-            Err(SurfaceError::Outdated)
-            }, wgpu::Surface::get_current_texture);
+//         // get output from surface
+//         let output_res = p_gdevice.surface.as_ref().map_or_else(|| {
+//             w_log!("surface is None, make sure use render_to_texture function for offscreen rendering mode");
+//             Err(SurfaceError::Outdated)
+//             }, wgpu::Surface::get_current_texture);
 
-        let output = output_res?;
+//         let output = output_res?;
 
-        // create texture view
-        let view = output
-            .texture
-            .create_view(&wgpu::TextureViewDescriptor::default());
+//         // create texture view
+//         let view = output
+//             .texture
+//             .create_view(&wgpu::TextureViewDescriptor::default());
 
-        // create command encoder
-        let mut cmd_encoder =
-            p_gdevice
-                .device
-                .create_command_encoder(&wgpu::CommandEncoderDescriptor {
-                    label: Some("Render Encoder"),
-                });
-        // execute command
-        {
-            let _render_pass = cmd_encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
-                label: Some("Render Pass"),
-                color_attachments: &[Some(wgpu::RenderPassColorAttachment {
-                    view: &view,
-                    resolve_target: None,
-                    ops: wgpu::Operations {
-                        load: wgpu::LoadOp::Clear(wgpu::Color {
-                            r: 0.1,
-                            g: 0.2,
-                            b: 0.3,
-                            a: 1.0,
-                        }),
-                        store: true,
-                    },
-                })],
-                depth_stencil_attachment: None,
-            });
-        }
-        // submit to the queue
-        p_gdevice
-            .queue
-            .submit(std::iter::once(cmd_encoder.finish()));
-        // send to output
-        output.present();
-        Ok(())
-    }
-}
+//         // create command encoder
+//         let mut cmd_encoder =
+//             p_gdevice
+//                 .device
+//                 .create_command_encoder(&wgpu::CommandEncoderDescriptor {
+//                     label: Some("Render Encoder"),
+//                 });
+//         // execute command
+//         {
+//             let _render_pass = cmd_encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
+//                 label: Some("Render Pass"),
+//                 color_attachments: &[Some(wgpu::RenderPassColorAttachment {
+//                     view: &view,
+//                     resolve_target: None,
+//                     ops: wgpu::Operations {
+//                         load: wgpu::LoadOp::Clear(wgpu::Color {
+//                             r: 0.1,
+//                             g: 0.2,
+//                             b: 0.3,
+//                             a: 1.0,
+//                         }),
+//                         store: true,
+//                     },
+//                 })],
+//                 depth_stencil_attachment: None,
+//             });
+//         }
+//         // submit to the queue
+//         p_gdevice
+//             .queue
+//             .submit(std::iter::once(cmd_encoder.finish()));
+//         // send to output
+//         output.present();
+//         Ok(())
+//     }
+// }
 
-async fn run<I>(p_scene: I) -> Result<()>
-where
-    I: IScene + Sync + Send + 'static,
-{
+// async fn run<I>(p_scene: I) -> Result<()>
+// where
+//     I: IScene + Sync + Send + 'static,
+// {
+async fn run() -> Result<()> {
     const TRACE: &str = "WSceneManager::run";
 
     // create a window
@@ -213,73 +214,76 @@ where
             .expect("couldn't append canvas to document body.");
     }
 
-    let size = window.inner_size();
-    let win_info = WindowInfo {
-        handle: window.raw_window_handle(),
-        width: size.width,
-        height: size.height,
-    };
+    let _size = window.inner_size();
+    // let win_info = WindowInfo {
+    //     handle: window.raw_window_handle(),
+    //     width: size.width,
+    //     height: size.height,
+    // };
 
     // create a graphics device
-    let mut g_device = GraphicsDevice::new(Some(win_info)).await?;
-    let mut game_time = GameTime::new();
+    //let mut g_device = GraphicsDevice::new(Some(win_info)).await?;
+    let mut _game_time = GameTime::new();
 
-    // load scene
-    let load_res = p_scene.load(&mut g_device);
-    match load_res {
-        Ok(_) => {}
-        Err(e) => {
-            w_log!("could not load scene because {:?} trace info: {}", e, TRACE);
-        }
-    }
+    test().await;
+    // // load scene
+    // let load_res = p_scene.load(&mut g_device);
+    // match load_res {
+    //     Ok(_) => {}
+    //     Err(e) => {
+    //         w_log!("could not load scene because {:?} trace info: {}", e, TRACE);
+    //     }
+    // }
 
     // create an event loop
-    event_loop.run(move |event, _, control_flow| match event {
-        Event::WindowEvent {
-            ref event,
-            window_id,
-        } if window_id == window.id() => match event {
-            WindowEvent::CloseRequested
-            | WindowEvent::KeyboardInput {
-                input:
-                    KeyboardInput {
-                        state: ElementState::Pressed,
-                        virtual_keycode: Some(VirtualKeyCode::Escape),
-                        ..
-                    },
-                ..
-            } => *control_flow = ControlFlow::Exit,
-            _ => {}
-        },
-        Event::RedrawRequested(window_id) if window_id == window.id() => {
-            // tick game time
-            game_time.tick();
-            // render scene
-            let render_res = p_scene.render(&mut g_device, &mut game_time);
-            match render_res {
-                Ok(()) => {
-                    //Success
-                }
-                // Reconfigure the surface if lost
-                Err(SurfaceError::Lost) => {
-                    g_device.resize(g_device.get_size());
-                }
-                // The system is out of memory, we should probably quit
-                Err(SurfaceError::OutOfMemory) => {
-                    *control_flow = ControlFlow::Exit;
-                }
-                // All other errors (Outdated, Timeout) should be resolved by the next frame
-                Err(e) => {
-                    w_log!("render failed because of {:?}", e);
-                }
-            };
-        }
-        Event::RedrawEventsCleared => {
-            // RedrawRequested will only trigger once, unless we manually, request it.
-            window.request_redraw();
-        }
-        _ => {}
-    });
+    // event_loop.run(move |event, _, control_flow| match event {
+    //     Event::WindowEvent {
+    //         ref event,
+    //         window_id,
+    //     } if window_id == window.id() => match event {
+    //         WindowEvent::CloseRequested
+    //         | WindowEvent::KeyboardInput {
+    //             input:
+    //                 KeyboardInput {
+    //                     state: ElementState::Pressed,
+    //                     virtual_keycode: Some(VirtualKeyCode::Escape),
+    //                     ..
+    //                 },
+    //             ..
+    //         } => *control_flow = ControlFlow::Exit,
+    //         _ => {}
+    //     },
+    //     Event::RedrawRequested(window_id) if window_id == window.id() => {
+    //         // tick game time
+    //         game_time.tick();
+    //         // render scene
+    //         // let render_res = p_scene.render(&mut g_device, &mut game_time);
+    //         // match render_res {
+    //         //     Ok(()) => {
+    //         //         //Success
+    //         //     }
+    //         //     // Reconfigure the surface if lost
+    //         //     Err(SurfaceError::Lost) => {
+    //         //         g_device.resize(g_device.get_size());
+    //         //     }
+    //         //     // The system is out of memory, we should probably quit
+    //         //     Err(SurfaceError::OutOfMemory) => {
+    //         //         *control_flow = ControlFlow::Exit;
+    //         //     }
+    //         //     // All other errors (Outdated, Timeout) should be resolved by the next frame
+    //         //     Err(e) => {
+    //         //         w_log!("render failed because of {:?}", e);
+    //         //     }
+    //         // };
+    //     }
+    //     Event::RedrawEventsCleared => {
+    //         // RedrawRequested will only trigger once, unless we manually, request it.
+    //         window.request_redraw();
+    //     }
+    //     _ => {}
+    // });
+
+    Ok(())
 }
 
 #[cfg(target_arch = "wasm32")]
@@ -289,7 +293,7 @@ pub fn main() {
     // run scene
     w_log!("starting wolf-demo in wasm mode");
     RunTime::spawn_local(async move {
-        let _res = run(WScene::default()).await;
+        let _res = run().await; //WScene::default()).await;
     });
 }
 

@@ -2,7 +2,7 @@
 
 #[test]
 fn test_gametime() {
-    println!("wolf_sys version is : {:?}", wolf::sys_init());
+    //println!("wolf_sys version is : {:?}", wolf::sys_init());
 
     let mut gtime = wolf::system::chrono::gametime::GameTime::new();
     gtime.set_fixed_time_step(true);

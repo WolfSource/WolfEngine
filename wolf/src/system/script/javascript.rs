@@ -22,11 +22,13 @@ impl JavaScript {
         const TRACE: &str = "WJavaScript::execute";
         // init the wasm web worker
         let wasm_mt_res = WasmMt::new(&self.js_worker_path).and_init().await;
-        let res = match wasm_mt_res {
+
+        match wasm_mt_res {
             Ok(wasm_mt) => {
                 // init a thread from web worker
                 let thread_res = wasm_mt.thread().and_init().await;
-                let ret = match thread_res {
+
+                match thread_res {
                     Ok(t) => {
                         // execute async closure with web worker
                         let js_res = if p_async {
@@ -44,13 +46,11 @@ impl JavaScript {
                     Err(e) => {
                         bail!("{:?}. trace info: {}", e, TRACE)
                     }
-                };
-                ret
+                }
             }
             Err(e) => {
                 bail!("{:?}. trace info: {}", e, TRACE)
             }
-        };
-        res
+        }
     }
 }

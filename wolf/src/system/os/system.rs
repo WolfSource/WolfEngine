@@ -1,4 +1,3 @@
-use anyhow::{bail, Result};
 use sysinfo::{ProcessExt, SystemExt};
 use tokio::process::{Child, Command};
 

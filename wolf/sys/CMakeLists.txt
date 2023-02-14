@@ -39,10 +39,7 @@ option(WOLF_STREAM_RTSP_CLIENT "Enable real time streaming for client" OFF)
 
 option(WOLF_SYSTEM_LZ4 "Enable LZ4 Compression" OFF)
 option(WOLF_SYSTEM_LZMA "Enable LZMA Compression" OFF)
-option(WOLF_SYSTEM_STACKTRACE "Enable stacktrace" OFF)
-option(WOLF_SYSTEM_GAMEPAD_SIM "Enable gamepad simulator based on ViGEm" OFF)
-
-option(WOLF_ENABLE_TESTS "Enable test for wolf_sys" OFF)
+option(WOLF_SYSTEM_GAMEPAD_VIRTUAL "Enable gamepad virtual simulator based on ViGEm" OFF)
 
 set(LIBRARY_TYPE "STATIC" CACHE STRING "Library type")
 
@@ -68,19 +65,12 @@ endif()
 
 # include sources
 file(GLOB_RECURSE CMAKE_SRCS
-    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/boost.cmake"
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/media.cmake"
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/stream.cmake"
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/system.cmake"
 )
 file(GLOB_RECURSE WOLF_SRCS
     "${CMAKE_CURRENT_SOURCE_DIR}/dllmain.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/wolf/wolf.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/wolf/wolf.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/wolf/sys_init.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/wolf/sys_init.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/wolf/DISABLE_ANALYSIS_BEGIN"
-    "${CMAKE_CURRENT_SOURCE_DIR}/wolf/DISABLE_ANALYSIS_END"
 )
 set(SRCS
     ${CMAKE_SRCS}
@@ -88,33 +78,9 @@ set(SRCS
 )
 set(INCLUDES 
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}/wolf/
     ${CMAKE_CURRENT_SOURCE_DIR}/third_party
 )
 set(LIBS)
-
-# include cmakes
-include(cmake/boost.cmake)
-include(cmake/system.cmake)
-include(cmake/stream.cmake)
-include(cmake/media.cmake)
-
-# fetch catch2 for tests
-if (WOLF_ENABLE_TESTS)
-    message("fetching https://github.com/catchorg/Catch2.git")
-    FetchContent_Declare(
-      catch2
-      GIT_REPOSITORY https://github.com/catchorg/Catch2.git
-      GIT_TAG        v2.x
-    )
-    FetchContent_Populate(catch2)
-    list(APPEND INCLUDES ${CMAKE_CURRENT_BINARY_DIR}/_deps/catch2-src/single_include/)
-endif()
-
-# set clang tidy
-set(CMAKE_CXX_CLANG_TIDY
-    clang-tidy;
-    -format-style=file;)  
 
 # set win32 & win64 defenitions
 if (MSVC)
@@ -131,14 +97,10 @@ else()
   add_definitions(-DNDEBUG)
 endif()
 
-# set Wolf definitions
-get_cmake_property(_vars VARIABLES)
-foreach (_var ${_vars})
-    string(FIND ${_var} "WOLF_" out)
-    if(("${out}" EQUAL 0) AND ("(${${_var}}" MATCHES ON))
-        add_definitions("-D${_var}")
-    endif()
-endforeach()
+# include cmakes
+include(cmake/system.cmake)
+include(cmake/stream.cmake)
+include(cmake/media.cmake)
 
 # add includes
 include_directories(${INCLUDES})
@@ -149,39 +111,13 @@ add_library(${PROJECT_NAME} ${LIBRARY_TYPE}
 )
 
 # link libraries
-target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBS})
+target_link_libraries(${PROJECT_NAME} PUBLIC ${LIBS})
 
 # create source groups
 source_group("cmake" FILES 
     ${CMAKE_SRCS}
 )
-source_group("wolf" FILES 
-    ${WOLF_SRCS}
-)
-source_group("media" FILES 
-    ${FFMPEG_SRCS}
-    ${OPENAL_SRCS}
-)
-source_group("stream" FILES 
-    ${RIST_SRCS}
-)
-source_group("system" FILES 
-    ${LZ4_SRCS}
-    ${lZMA_SRCS}
-    ${ViGEmClient_SRCS}
-)
 
 if (NOT MSVC)
-    target_compile_options(${PROJECT_NAME} PRIVATE -std=c++20 -fPIC -Wall)
-endif()
-
-# build tests
-if (WOLF_ENABLE_TESTS)
-  add_executable (${TEST_PROJECT_NAME} test.cpp)
-  target_link_libraries(${TEST_PROJECT_NAME} PRIVATE ${PROJECT_NAME})
-  if (MSVC)
-    target_compile_options(${TEST_PROJECT_NAME} PRIVATE -std=c++20)
-  else()
-    target_compile_options(${TEST_PROJECT_NAME} PRIVATE -Wall)
-  endif()
+    target_compile_options(${PROJECT_NAME} PUBLIC -std=c++20 -fPIC -Wall)
 endif()

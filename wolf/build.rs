@@ -75,14 +75,14 @@ fn main() {
         }
     };
 
-    // execute cmake for building deps of wolf_sys
+    // execute cmake for building deps
     cmake(&current_dir_path, build_profile, &target_os);
 
     // compile c/cpp sources and link
     link(current_dir_path_str, build_profile, &target_os);
 
     //bindgen
-    bindgens(current_dir_path_str);
+    bindgens(current_dir_path_str, build_profile);
 }
 
 /// # Errors
@@ -222,19 +222,14 @@ fn get_cmake_defines(
     .to_vec();
 
     // set defines
-    args.push("-DWOLF_ENABLE_TESTS=OFF".to_owned());
-
-    #[cfg(any(feature = "system_stacktrace"))]
-    args.push("-DWOLF_SYSTEM_STACKTRACE=ON".to_owned());
-
     #[cfg(feature = "system_lz4")]
     args.push("-DWOLF_SYSTEM_LZ4=ON".to_owned());
 
     #[cfg(feature = "system_lzma")]
     args.push("-DWOLF_SYSTEM_LZMA=ON".to_owned());
 
-    #[cfg(feature = "system_gamepad_sim")]
-    args.push("-DWOLF_SYSTEM_GAMEPAD_SIM=ON".to_owned());
+    #[cfg(feature = "system_gamepad_virtual")]
+    args.push("-DWOLF_SYSTEM_GAMEPAD_VIRTUAL=ON".to_owned());
 
     #[cfg(feature = "stream_rist")]
     args.push("-DWOLF_STREAM_RIST=ON".to_owned());
@@ -308,8 +303,8 @@ fn link(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &str) 
     } else {
         sys_build_dir
     };
-    println!("cargo:rustc-link-search=native={lib_path}");
-    println!("cargo:rustc-link-lib=dylib=wolf_sys");
+    // println!("cargo:rustc-link-search=native={lib_path}");
+    // println!("cargo:rustc-link-lib=static=wolf_sys");
 
     let mut libs = Vec::<(String, String)>::new();
     #[cfg(feature = "system_lz4")]
@@ -318,8 +313,8 @@ fn link(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &str) 
         "lz4".to_owned(),
     ));
 
-    #[cfg(feature = "system_lz4")]
-    libs.push((format!("lzma-build/{p_build_profile}"), "lzma".to_owned()));
+    // #[cfg(feature = "system_lz4")]
+    // libs.push((format!("lz4-build/{p_build_profile}"), "lzma".to_owned()));
 
     #[cfg(feature = "media_openal")]
     {
@@ -333,11 +328,15 @@ fn link(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &str) 
     #[cfg(feature = "stream_rist")]
     libs.push(("librist-build".to_owned(), "rist".to_owned()));
 
-    #[cfg(feature = "system_gamepad_sim")]
-    libs.push((
-        format!("vigemclient-build/{p_build_profile}"),
-        "ViGEmClient".to_owned(),
-    ));
+    #[cfg(feature = "system_gamepad_virtual")]
+    {
+        println!("cargo:rustc-link-lib=Xinput");
+        println!("cargo:rustc-link-lib=SetupAPI");
+        libs.push((
+            format!("vigemclient-build/{p_build_profile}"),
+            "ViGEmClient".to_owned(),
+        ));
+    }
 
     for lib in libs {
         println!("cargo:rustc-link-search=native={p_current_dir_path_str}/sys/build/{p_build_profile}/_deps/{}", lib.0);
@@ -398,52 +397,62 @@ fn copy_openal(p_current_dir_path_str: &str, p_build_profile: &str) {
     copy_shared_libs(&bin_lib_path, &dll_names);
 }
 
-fn bindgens(p_current_dir_path_str: &str) {
+fn bindgens(p_current_dir_path_str: &str, p_build_profile: &str) {
     struct Binding<'a> {
-        src: &'a str,
+        headers: Vec<String>,
         dst: &'a str,
         block_headers: &'a [&'a str],
+        allow_funcs: &'a [&'a str],
     }
-    let mut headers = vec![Binding {
-        src: "sys/wolf/sys_init.h",
-        dst: "src/system/ffi/sys_init.rs",
-        block_headers: &[],
-    }];
+    let mut bindings = Vec::<Binding>::new();
+    let mut clang_args = Vec::<String>::new();
+    let pre_path = format!("{p_current_dir_path_str}/sys/build/{p_build_profile}");
 
     #[cfg(feature = "system_lz4")]
-    headers.push(Binding {
-        src: "sys/system/lz4.h",
-        dst: "src/system/ffi/lz4.rs",
-        block_headers: &[],
-    });
+    {
+        let include_path = format!("{pre_path}/_deps/lz4_static-src/lib");
+        clang_args.push(format!("-I{}", include_path));
+        bindings.push(Binding {
+            headers: vec![format!("{include_path}/lz4.h")],
+            dst: "src/system/ffi/lz4.rs",
+            block_headers: &[],
+            allow_funcs: &["LZ4_.*"],
+        });
+    }
 
     #[cfg(feature = "system_lzma")]
-    headers.push(Binding {
-        src: "sys/system/lzma.h",
+    bindings.push(Binding {
+        headers: "sys/system/lzma.h",
         dst: "src/system/ffi/lzma.rs",
         block_headers: &[],
     });
 
-    #[cfg(feature = "system_gamepad_sim")]
-    headers.push(Binding {
-        src: "sys/system/vigem_client.h",
-        dst: "src/system/ffi/vigem_client.rs",
-        block_headers: &[],
-    });
+    #[cfg(feature = "system_gamepad_virtual")]
+    {
+        let include_path = format!("{pre_path}/_deps/vigemclient-src/include");
+        clang_args.push(format!("-I{}", include_path));
+        bindings.push(Binding {
+            headers: vec![format!("{include_path}/ViGEm/Client.h")],
+            dst: "src/system/ffi/vigem_client.rs",
+            block_headers: &[],
+            allow_funcs: &["vigem_.*"],
+        });
+    }
 
     #[cfg(feature = "stream_rist")]
-    headers.push(Binding {
-        src: "sys/stream/rist.h",
+    bindings.push(Binding {
+        headers: "sys/stream/rist.h",
         dst: "src/stream/ffi/rist.rs",
         block_headers: &[],
     });
 
     if cfg!(feature = "media_ffmpeg") {
-        headers.push(Binding {
-            src: "sys/media/ffmpeg.h",
-            dst: "src/media/ffi/ffmpeg.rs",
-            block_headers: &[],
-        });
+        // bindings.push(Binding {
+        //     headers: &["sys/media/ffmpeg.h".to_owned()],
+        //     dst: "src/media/ffi/ffmpeg.rs",
+        //     block_headers: &[],
+        //     allow_funcs: &[],
+        // });
         // headers.push(Binding {
         //     src: "sys/media/test.h",
         //     dst: "src/media/ffi/test.rs",
@@ -451,57 +460,77 @@ fn bindgens(p_current_dir_path_str: &str) {
         // });
     }
 
-    if cfg!(feature = "media_openal") {
-        headers.push(Binding {
-            src: "sys/media/openal.h",
-            dst: "src/media/ffi/openal.rs",
-            block_headers: &[],
-        });
-    }
+    // if cfg!(feature = "media_openal") {
+    //     headers.push(Binding {
+    //         headers: &["sys/media/openal.h".to_owned()],
+    //         dst: "src/media/ffi/openal.rs",
+    //         block_headers: &[],
+    //     });
+    // }
 
-    // add include paths
-    let clang_include_arg_0 = format!("-I{p_current_dir_path_str}/sys");
-    let clang_include_arg_1 = format!("-I{p_current_dir_path_str}/sys/wolf");
-    //let clang_include_arg_2 = format!("-I{}/sys/media", p_current_dir_path_str);
-    //let clang_include_arg_2 = format!("-I{}/sys/stream", p_current_dir_path_str);
-
-    for header in headers {
-        println!("cargo:rerun-if-changed=sys/{}", header.src);
-
+    for binding in bindings {
         // The bindgen::Builder is the main entry point
         // to bindgen, and lets you build up options for
         // the resulting bindings.
         let mut builder = bindgen::Builder::default()
-            // The input header we would like to generate bindings for.
-            .header(header.src)
-            .layout_tests(false)
-            .clang_args([
-                clang_include_arg_0.as_str(),
-                clang_include_arg_1.as_str(),
-                //clang_include_arg_2.as_str(),
-            ])
+            .default_enum_style(bindgen::EnumVariation::Rust {
+                non_exhaustive: false,
+            })
+            .raw_line(
+                "#![allow(dead_code, non_camel_case_types, non_snake_case, trivial_numeric_casts)]",
+            )
+            .raw_line("#![allow(clippy::unreadable_literal, clippy::upper_case_acronyms)]")
+            .layout_tests(false) // disable test
+            .clang_args(["-x", "c++", "-std=c++20"])
+            .clang_args(clang_args.clone())
+            .header("sys/w_platform.h")
             // tell cargo to invalidate the built crate whenever any of the
             // included header files changed.
             .parse_callbacks(Box::new(bindgen::CargoCallbacks));
 
-        for block_header in header.block_headers {
+        // blocklist for Windows.h
+        #[cfg(target_os = "windows")]
+        {
+            builder = builder
+                .blocklist_type("_IMAGE_TLS_DIRECTORY64")
+                .blocklist_type("IMAGE_TLS_DIRECTORY64")
+                .blocklist_type("PIMAGE_TLS_DIRECTORY64")
+                .blocklist_type("IMAGE_TLS_DIRECTORY")
+                .blocklist_type("PIMAGE_TLS_DIRECTORY");
+        }
+
+        for header_file in binding.headers {
+            println!("cargo:rerun-if-changed=sys/{header_file}");
+            builder = builder.header(header_file);
+        }
+
+        // allowlist functions
+        for fun in binding.allow_funcs {
+            builder = builder.allowlist_function(fun);
+        }
+
+        // blocklist headers
+        for block_header in binding.block_headers {
             builder = builder.blocklist_file(block_header);
         }
 
         // finish the builder and generate the bindings.
-        let out_path = Path::new(p_current_dir_path_str).join(header.dst);
+        let out_path = Path::new(p_current_dir_path_str).join(binding.dst);
         builder
             .generate()
             // unwrap the Result and panic on failure.
             .unwrap_or_else(|e| {
                 panic!(
-                    "couldn't create bindings for header {} because {e:?}",
-                    header.src
+                    "couldn't create bindings for header {:?} because {e:?}",
+                    binding.dst
                 );
             })
             .write_to_file(out_path)
             .unwrap_or_else(|e| {
-                panic!("couldn't write bindings for {} because {e:?}", header.src);
+                panic!(
+                    "couldn't write bindings for {:?} because {e:?}",
+                    binding.dst
+                );
             });
     }
 }

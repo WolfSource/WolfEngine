@@ -1,4 +1,5 @@
 use anyhow::{bail, Result};
+use wgpu::{Backends, InstanceDescriptor};
 
 pub struct WindowInfo {
     pub handle: raw_window_handle::RawWindowHandle,
@@ -7,6 +8,24 @@ pub struct WindowInfo {
 }
 
 unsafe impl Send for WindowInfo {}
+
+unsafe impl raw_window_handle::HasRawWindowHandle for WindowInfo {
+    fn raw_window_handle(&self) -> raw_window_handle::RawWindowHandle {
+        #[cfg(target_os = "windows")]
+        let handle = raw_window_handle::RawWindowHandle::Windows(
+            raw_window_handle::WindowsWindowHandle::empty(),
+        );
+        #[cfg(target_os = "linux")]
+        let handle =
+            raw_window_handle::RawWindowHandle::Xcb(raw_window_handle::XcbWindowHandle::empty());
+
+        #[cfg(target_arch = "wasm32")]
+        let handle =
+            raw_window_handle::RawWindowHandle::Web(raw_window_handle::WebWindowHandle::empty());
+
+        handle
+    }
+}
 
 unsafe impl raw_window_handle::HasRawDisplayHandle for WindowInfo {
     fn raw_display_handle(&self) -> raw_window_handle::RawDisplayHandle {
@@ -18,10 +37,15 @@ unsafe impl raw_window_handle::HasRawDisplayHandle for WindowInfo {
         let handle =
             raw_window_handle::RawDisplayHandle::Xcb(raw_window_handle::XcbDisplayHandle::empty());
 
+        #[cfg(target_arch = "wasm32")]
+        let handle =
+            raw_window_handle::RawDisplayHandle::Web(raw_window_handle::WebDisplayHandle::empty());
+
         handle
     }
 }
 
+#[cfg(any(target_os = "windows", target_os = "linux"))]
 unsafe impl raw_window_handle::HasRawWindowHandle for WindowInfo {
     fn raw_window_handle(&self) -> raw_window_handle::RawWindowHandle {
         self.handle
@@ -48,12 +72,15 @@ impl GraphicsDevice {
 
         // Backends::all means select Vulkan or Metal or DX12 or Browser
         // the WebGPU will be choose a backend based on the host platform
-        let instance = wgpu::Instance::new(wgpu::Backends::all());
+        let instance = wgpu::Instance::new(InstanceDescriptor {
+            backends: Backends::all(),
+            dx12_shader_compiler: wgpu::Dx12Compiler::Fxc,
+        });
         let adapter_res = if let Some(win_info) = p_window_info {
             // get size
             size = (win_info.width, win_info.height);
             // create an adaptor for window
-            surface = Some(unsafe { instance.create_surface(&win_info) });
+            surface = Some(unsafe { instance.create_surface(&win_info).unwrap() });
             // create instance
             instance
                 .request_adapter(&wgpu::RequestAdapterOptions {
@@ -93,12 +120,6 @@ impl GraphicsDevice {
                     .unwrap();
 
                 if let Some(g_surface) = surface {
-                    // create a graphics device for this surface window
-                    let format_res = g_surface.get_supported_formats(&adapter);
-                    // in this match block, we are going to return a Result<GraphicsDevice> object
-                    if format_res.is_empty() {
-                        bail!("get_supported_formats returns nothing")
-                    }
                     // create config
                     let config = wgpu::SurfaceConfiguration {
                         usage: wgpu::TextureUsages::RENDER_ATTACHMENT,
@@ -107,6 +128,7 @@ impl GraphicsDevice {
                         height: size.1,
                         present_mode: wgpu::PresentMode::Fifo,
                         alpha_mode: wgpu::CompositeAlphaMode::Auto,
+                        view_formats: todo!(),
                     };
 
                     // configure the surface
@@ -133,6 +155,7 @@ impl GraphicsDevice {
                         height: size.1,
                         present_mode: wgpu::PresentMode::Fifo,
                         alpha_mode: wgpu::CompositeAlphaMode::Auto,
+                        view_formats: todo!(),
                     };
                     // create graphics device
                     let g_device = Self {

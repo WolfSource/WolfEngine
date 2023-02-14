@@ -1,0 +1,1 @@
+wasm-pack build --out-dir wasm/www/pkg --target no-modules 
