@@ -6,5 +6,5 @@ static GLOBAL: mimalloc::MiMalloc = mimalloc::MiMalloc;
 // pub mod media;
 //#[cfg(feature = "render")]
 //pub mod render;
-// pub mod stream;
+pub mod stream;
 pub mod system;

@@ -20,13 +20,6 @@ if (WOLF_SYSTEM_LZMA)
     GIT_TAG        main
   )
   FetchContent_MakeAvailable(lzma)
-
-  file(GLOB_RECURSE lZMA_SRCS
-    "${CMAKE_CURRENT_SOURCE_DIR}/system/lzma.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/system/lzma.cpp"
-  )
-  list(APPEND SRCS ${lZMA_SRCS})
-  list(APPEND INCLUDES ${lzma_SOURCE_DIR}/src)
   list(APPEND LIBS lzma)    
 endif()
 

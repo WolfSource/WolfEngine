@@ -13,6 +13,7 @@
 #![allow(unused_qualifications)]
 
 use super::raft_imp::{self, MemRaft};
+use async_trait::async_trait;
 use std::collections::HashSet;
 use std::sync::Arc;
 use tonic::{Request, Response, Status};
@@ -51,7 +52,7 @@ impl Srv {
     }
 }
 
-#[tonic::async_trait]
+#[async_trait]
 impl Raft for Srv {
     async fn bootstrap(
         &self,

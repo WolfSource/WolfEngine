@@ -1,7 +1,4 @@
-//use core::result::Result;
-use thiserror::Error;
-
-#[derive(Clone, Debug, Error)]
+#[derive(Clone, Debug, thiserror::Error)]
 pub enum LZMAError {
     #[error("An invalid header found for LZMA")]
     /// An invalid header found for LZMA

@@ -1,9 +1,18 @@
-use anyhow::{anyhow, ensure, Result};
 use std::{path::Path, sync::Arc};
 use tokio_rustls::{
     rustls::{Certificate, PrivateKey, ServerConfig},
     TlsAcceptor,
 };
+
+#[derive(Debug, thiserror::Error)]
+pub enum TlsError {
+    #[error("invalid tls cert file `{0}`")]
+    InvalidCertFile(String),
+    #[error("invalid tls key file `{0}`")]
+    InvalidPrivateKeyFile(String),
+    #[error("build rustls failed because `{0}`")]
+    BuildFailed(tokio_rustls::rustls::Error),
+}
 
 #[derive(Debug)]
 pub enum TlsPrivateKeyType {
@@ -29,34 +38,32 @@ impl Tls {
         p_tls_certificate_path: Option<&Path>,
         p_tls_private_key_path: Option<&Path>,
         p_tls_private_type: Option<&TlsPrivateKeyType>,
-    ) -> Result<Self> {
-        //tls-mode
-        let err_msg = "Invalid Parameters for tcp::run_server";
-
+    ) -> Result<Self, TlsError> {
         //load certificate
-        let crt = p_tls_certificate_path.ok_or_else(|| {
-            anyhow!(err_msg).context("p_tls_certificate_path not provided for tcp server")
-        })?;
+        let crt = p_tls_certificate_path.ok_or_else(|| TlsError::InvalidCertFile("".to_owned()))?;
         let certs = Self::load_certs(crt)?;
-        ensure!(certs.is_empty(), "missing certificate for TLS tcp server");
+        if certs.is_empty() {
+            return Err(TlsError::InvalidCertFile(crt));
+        }
 
         //load private key
-        let key = p_tls_private_key_path.ok_or_else(|| {
-            anyhow!(err_msg).context("p_tls_private_key_path not provided for tcp server")
-        })?;
+        let key =
+            p_tls_private_key_path.ok_or_else(|| TlsError::InvalidPrivateKeyFile("".to_owned()))?;
+
         //load private key type
-        let key_type = p_tls_private_type.ok_or_else(|| {
-            anyhow!(err_msg).context("p_tls_private_type not provided for tcp server")
-        })?;
+        let key_type = p_tls_private_type.ok_or_else(|| TlsError::InvalidPrivateKeyFile(key))?;
+
         let mut keys = Self::load_private_keys(key, key_type)?;
-        ensure!(keys.is_empty(), "missing private key for TLS tcp server");
+        if keys.is_empty() {
+            return Err(TlsError::InvalidPrivateKeyFile(key));
+        }
 
         //create tls config
         let tls_server_config = ServerConfig::builder()
             .with_safe_defaults()
             .with_no_client_auth()
             .with_single_cert(certs, keys.remove(0))
-            .map_err(|e| anyhow!("could not build tls server config because of {:?}", e))?;
+            .map_err(|e| Err(TlsError::BuildFailed(e)))?;
 
         // run acceptor & listener
         let tls_ = Self {
@@ -68,20 +75,23 @@ impl Tls {
     /// # Errors
     ///
     /// TODO: add error description
-    fn load_certs(p_path: &Path) -> Result<Vec<Certificate>> {
+    fn load_certs(p_path: &Path) -> Result<Vec<Certificate>, TlsError> {
         std::fs::File::open(p_path)
             .and_then(|f| {
                 let mut buf = std::io::BufReader::new(f);
                 rustls_pemfile::certs(&mut buf)
                     .map(|certs| certs.into_iter().map(Certificate).collect())
             })
-            .map_err(|e| anyhow!("could not load certs {:?} because of {:?}", p_path, e))
+            .map_err(|_| Err(TlsError::InvalidCertFile(p_path)))
     }
 
     /// # Errors
     ///
     /// TODO: add error description
-    fn load_private_keys(p_path: &Path, p_type: &TlsPrivateKeyType) -> Result<Vec<PrivateKey>> {
+    fn load_private_keys(
+        p_path: &Path,
+        p_type: &TlsPrivateKeyType,
+    ) -> Result<Vec<PrivateKey>, TlsError> {
         std::fs::File::open(p_path)
             .and_then(|f| {
                 let mut buf = std::io::BufReader::new(f);
@@ -92,13 +102,6 @@ impl Tls {
                         .map(|keys| keys.into_iter().map(PrivateKey).collect()),
                 }
             })
-            .map_err(|e| {
-                anyhow!(
-                    "could not load private keys {:?} with type {:?} because of {:?}",
-                    p_path,
-                    p_type,
-                    e
-                )
-            })
+            .map_err(|_| Err(TlsError::InvalidPrivateKeyFile(p_path)))
     }
 }

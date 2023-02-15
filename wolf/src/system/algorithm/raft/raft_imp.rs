@@ -4,7 +4,6 @@ use crate::{
         raft_converter, raft_srv::wolf_raft, raft_srv::wolf_raft::raft_client::RaftClient,
     },
 };
-use anyhow::{bail, Result};
 use async_raft::{
     raft::{self, InstallSnapshotRequest, InstallSnapshotResponse, VoteRequest, VoteResponse},
     Config, NodeId, RaftNetwork,
@@ -42,8 +41,6 @@ impl RaftNetwork<ClientRequest> for RaftRouter {
         p_target_node: NodeId,
         p_rpc: raft::AppendEntriesRequest<ClientRequest>,
     ) -> Result<raft::AppendEntriesResponse> {
-        const TRACE: &str = "raft_imp:append_entries";
-
         let uuid = Uuid::new_v5(&Uuid::NAMESPACE_X500, b"wolf_raft_append_entries");
         let res_append = raft_converter::raft_append_entries_req_to_grpc_append_entries_req(
             uuid.to_string(),

@@ -1,8 +1,10 @@
-use super::raft_srv::wolf_raft::{
-    ConflictOpt, RaftAppendEntriesOkRes, RaftAppendEntriesReq, RaftInstallSnapshotOkRes,
-    RaftInstallSnapshotReq, RaftVoteOkRes, RaftVoteReq,
+use super::{
+    raft_error::RaftError,
+    raft_srv::wolf_raft::{
+        ConflictOpt, RaftAppendEntriesOkRes, RaftAppendEntriesReq, RaftInstallSnapshotOkRes,
+        RaftInstallSnapshotReq, RaftVoteOkRes, RaftVoteReq,
+    },
 };
-use anyhow::{anyhow, bail};
 
 /// Convert `async_raft`'s `AppendEntriesRequest` to grpc's `RaftAppendEntriesReq`
 /// # Errors
@@ -11,20 +13,13 @@ use anyhow::{anyhow, bail};
 pub fn raft_append_entries_req_to_grpc_append_entries_req(
     p_msg_id: String,
     p_req: &async_raft::raft::AppendEntriesRequest<memstore::ClientRequest>,
-) -> anyhow::Result<RaftAppendEntriesReq> {
-    const TRACE: &str =
-        "raft_converter::convert_raft_append_entries_req_to_grpc_append_entries_req";
-
+) -> Result<RaftAppendEntriesReq, RaftError> {
     serde_json::to_string(&p_req)
-        .map(|json| {
-            RaftAppendEntriesReq {
-                msg_id: p_msg_id,
-                req: json,
-            }
+        .map(|json| RaftAppendEntriesReq {
+            msg_id: p_msg_id,
+            req: json,
         })
-        .map_err(|e| {
-            anyhow!("could not serialize and convert async_raft::raft::AppendEntriesRequest<memstore::ClientRequest> to json because: {:?}.", e).context(TRACE)
-        })
+        .map_err(|e| RaftError::JsonConvertError(e))
 }
 
 /// Convert grpc's `RaftAppendEntriesReq` to `async_raft`'s `AppendEntriesRequest`
@@ -33,17 +28,14 @@ pub fn raft_append_entries_req_to_grpc_append_entries_req(
 /// if the function couldn't deserialize json message.
 pub fn grpc_append_entries_req_to_raft_append_entries_req(
     p_req: &RaftAppendEntriesReq,
-) -> anyhow::Result<async_raft::raft::AppendEntriesRequest<memstore::ClientRequest>> {
-    const TRACE: &str = "raft_converter::convert_raft_append_entries_req_to_append_entries_req";
+) -> Result<async_raft::raft::AppendEntriesRequest<memstore::ClientRequest>, RaftError> {
     let app_res: Result<
         async_raft::raft::AppendEntriesRequest<memstore::ClientRequest>,
         serde_json::Error,
     > = serde_json::from_str(&p_req.req);
     match app_res {
         Ok(aer) => Ok(aer),
-        Err(e) => {
-            bail!("could not deserialize json to async_raft::raft::AppendEntriesRequest<memstore::ClientRequest> to json because: {:?}. trace: {}", e, TRACE)
-        }
+        Err(e) => RaftError::JsonDeSerializeError(e),
     }
 }
 

@@ -411,7 +411,7 @@ fn bindgens(p_current_dir_path_str: &str, p_build_profile: &str) {
     #[cfg(feature = "system_lz4")]
     {
         let include_path = format!("{pre_path}/_deps/lz4_static-src/lib");
-        clang_args.push(format!("-I{}", include_path));
+        clang_args.push(format!("-I{include_path}"));
         bindings.push(Binding {
             headers: vec![format!("{include_path}/lz4.h")],
             dst: "src/system/ffi/lz4.rs",
@@ -430,7 +430,7 @@ fn bindgens(p_current_dir_path_str: &str, p_build_profile: &str) {
     #[cfg(feature = "system_gamepad_virtual")]
     {
         let include_path = format!("{pre_path}/_deps/vigemclient-src/include");
-        clang_args.push(format!("-I{}", include_path));
+        clang_args.push(format!("-I{include_path}"));
         bindings.push(Binding {
             headers: vec![format!("{include_path}/ViGEm/Client.h")],
             dst: "src/system/ffi/vigem_client.rs",
