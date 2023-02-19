@@ -13,10 +13,9 @@
 #include <opencv2/opencv.hpp>
 
 namespace fs = std::filesystem;
+fs::path utilities_asset_path = "../ml/test/common_test_asset/utilities";
 
 using namespace wolf::ml::ocr;
-
-fs::path utilities_asset_path = "../ml/test/common_test_asset/utilities";
 
 BOOST_AUTO_TEST_CASE(get_value_from_json_file_by_key_gives_value_by_key) {
   fs::path json_file_path =

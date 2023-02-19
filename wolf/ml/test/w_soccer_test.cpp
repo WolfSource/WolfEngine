@@ -5,10 +5,10 @@
 #include <new>
 #include <opencv2/opencv.hpp>
 
-#include "w_ocr_engine.h"
-#include "w_read_video_frames.h"
-#include "w_referee.h"
-#include "w_utilities.h"
+#include "w_ocr_engine.hpp"
+#include "w_read_video_frames.hpp"
+#include "w_referee.hpp"
+#include "w_utilities.hpp"
 
 namespace fs = std::filesystem;
 fs::path soccer_asset_path = "../../../ocr/common_test_asset/soccer";
