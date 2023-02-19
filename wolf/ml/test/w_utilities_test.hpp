@@ -1,50 +1,57 @@
-#include "w_utilities.h"
+#ifdef WOLF_TEST
 
-#include <catch2/catch_all.hpp>
+#pragma once
+
+#ifdef WOLF_ML_OCR
+
+#define BOOST_TEST_MODULE referee_ocr_utilities
+
+#include <ml/referee_ocr/w_utilities.hpp>
+
+#include <boost/test/included/unit_test.hpp>
 #include <filesystem>
 #include <opencv2/opencv.hpp>
 
 namespace fs = std::filesystem;
 
-fs::path utilities_asset_path = "../../../ocr/common_test_asset/utilities";
+using namespace wolf::ml::ocr;
 
-TEST_CASE("get_value_from_json_file_by_key gives value by key",
-          "[w_utilities_test.cpp]") {
+fs::path utilities_asset_path = "../ml/test/common_test_asset/utilities";
+
+BOOST_AUTO_TEST_CASE(get_value_from_json_file_by_key_gives_value_by_key) {
   fs::path json_file_path =
       utilities_asset_path / "get_value_from_json_file_by_key.json";
   std::string key = "cpp-test-json";
   std::string value =
       get_value_from_json_file_by_key(json_file_path.string(), key);
-  REQUIRE(value.compare("ready") == 0);
+  BOOST_TEST(value.compare("ready") == 0);
 }
 
-TEST_CASE("string_2_boolean on capitalized characters",
-          "[w_utilities_test.cpp]") {
+BOOST_AUTO_TEST_CASE(string_2_boolean_on_capitalized_characters) {
   std::vector<std::string> list_string;
   list_string.push_back("true");
   list_string.push_back("FalSe");
   bool temp;
   temp = string_2_boolean(list_string[0]);
-  REQUIRE(temp);
+  BOOST_TEST(temp);
   temp = string_2_boolean(list_string[1]);
-  REQUIRE(!temp);
+  BOOST_TEST(!temp);
 }
 
-TEST_CASE("line_of_numbers_in_string_to_vector_of_integers function",
-          "[w_utilities_test.cpp]") {
+BOOST_AUTO_TEST_CASE(line_of_numbers_in_string_to_vector_of_integers_function) {
   std::string temp = "100,200,300,400";
   std::vector<int> integer_list =
       line_of_numbers_in_string_to_vector_of_integers(temp);
-  REQUIRE(integer_list[0] == 100);
-  REQUIRE(integer_list[1] == 200);
-  REQUIRE(integer_list[2] == 300);
-  REQUIRE(integer_list[3] == 400);
+  BOOST_TEST(integer_list[0] == 100);
+  BOOST_TEST(integer_list[1] == 200);
+  BOOST_TEST(integer_list[2] == 300);
+  BOOST_TEST(integer_list[3] == 400);
 }
 
-TEST_CASE("store_image_in_folder function", "[w_utilities_test.cpp]") {
-  std::vector<ocr_referee_class::match_result_struct> temp_video_result;
-  ocr_referee_class::match_result_struct temp;
-  ocr_referee_class::frame_result_struct frame_result;
+BOOST_AUTO_TEST_CASE(store_image_in_folder_function) {
+  std::vector<w_referee::match_result_struct> temp_video_result;
+  w_referee::match_result_struct temp;
+  w_referee::frame_result_struct frame_result;
 
   frame_result.home_name.text = "Home";
   frame_result.home_result.text = "2";
@@ -69,13 +76,13 @@ TEST_CASE("store_image_in_folder function", "[w_utilities_test.cpp]") {
   if (std::filesystem::remove(file_path.string())) {
     is_file_exist = true;
   }
-  REQUIRE(is_file_exist);
+  BOOST_TEST(is_file_exist);
 }
 
-TEST_CASE("write_results_in_file function", "[w_utilities_test.cpp]") {
-  std::vector<ocr_referee_class::match_result_struct> temp_video_result;
-  ocr_referee_class::match_result_struct temp;
-  ocr_referee_class::frame_result_struct frame_result;
+BOOST_AUTO_TEST_CASE(write_results_in_file_function) {
+  std::vector<w_referee::match_result_struct> temp_video_result;
+  w_referee::match_result_struct temp;
+  w_referee::frame_result_struct frame_result;
 
   frame_result.home_name.text = "Home";
   frame_result.home_result.text = "2";
@@ -97,10 +104,10 @@ TEST_CASE("write_results_in_file function", "[w_utilities_test.cpp]") {
       read_text_file_line_by_line(temp_output_text_file.string());
 
   if (!std::filesystem::remove(temp_output_text_file.string())) {
-    REQUIRE(false);
+    BOOST_TEST(false);
   }
 
-  REQUIRE(lines[0].compare(temp_video_result[0].stat + "," +
+  BOOST_TEST(lines[0].compare(temp_video_result[0].stat + "," +
                            temp_video_result[0].home_name.text + "," +
                            temp_video_result[0].home_result.text + "," +
                            temp_video_result[0].away_name.text + "," +
@@ -109,7 +116,7 @@ TEST_CASE("write_results_in_file function", "[w_utilities_test.cpp]") {
           0);
 }
 
-TEST_CASE("read_text_file_line_by_line function", "[w_utilities_test.cpp]") {
+BOOST_AUTO_TEST_CASE(read_text_file_line_by_line_function) {
   fs::path file_path = "./test_read_text_file_line_by_line.txt";
   std::string content = "This is a test!";
 
@@ -118,50 +125,43 @@ TEST_CASE("read_text_file_line_by_line function", "[w_utilities_test.cpp]") {
       read_text_file_line_by_line(file_path.string());
 
   if (!std::filesystem::remove(file_path.string())) {
-    REQUIRE(false);
+    BOOST_TEST(false);
   }
 
-  REQUIRE(lines[0].compare(content) == 0);
+  BOOST_TEST(lines[0].compare(content) == 0);
 }
 
-TEST_CASE("normalized_levenshtein_similarity on one empty argument",
-          "[w_utilities_test.cpp]") {
+BOOST_AUTO_TEST_CASE(normalized_levenshtein_similarity_on_one_empty_argument) {
   float similarity = normalized_levenshtein_similarity("", "text");
-  REQUIRE(similarity == 0);
+  BOOST_TEST(similarity == 0);
 }
 
-TEST_CASE("normalized_levenshtein_similarity on two empty argument",
-          "[w_utilities_test.cpp]") {
+BOOST_AUTO_TEST_CASE(normalized_levenshtein_similarity_on_two_empty_argument) {
   float similarity = normalized_levenshtein_similarity("", "");
-  REQUIRE(similarity == 0);
+  BOOST_TEST(similarity == 0);
 }
 
-TEST_CASE("normalized_levenshtein_similarity on two equal string",
-          "[w_utilities_test.cpp]") {
+BOOST_AUTO_TEST_CASE(normalized_levenshtein_similarity_on_two_equal_string) {
   float similarity = normalized_levenshtein_similarity("test", "test");
-  REQUIRE(similarity == 1);
+  BOOST_TEST(similarity == 1);
 }
 
-TEST_CASE("normalized_levenshtein_similarity with similarity 0.5 on strings",
-          "[w_utilities_test.cpp]") {
+BOOST_AUTO_TEST_CASE(normalized_levenshtein_similarity_with_similarity_0_5_on_strings) {
   float similarity = normalized_levenshtein_similarity("test", "mast");
-  REQUIRE(similarity == 0.5);
+  BOOST_TEST(similarity == 0.5);
 }
 
-TEST_CASE("normalized_levenshtein_similarity on same numbers",
-          "[w_utilities_test.cpp]") {
+BOOST_AUTO_TEST_CASE(normalized_levenshtein_similarity_on_same_numbers) {
   float similarity = normalized_levenshtein_similarity("1234", "1234");
-  REQUIRE(similarity == 1);
+  BOOST_TEST(similarity == 1);
 }
 
-TEST_CASE("normalized_levenshtein_similarity on strings with different length",
-          "[w_utilities_test.cpp]") {
+BOOST_AUTO_TEST_CASE(normalized_levenshtein_similarity_on_strings_with_different_length) {
   float similarity = normalized_levenshtein_similarity("test", "tst");
-  REQUIRE(similarity == 0.75);
+  BOOST_TEST(similarity == 0.75);
 }
 
-TEST_CASE("get_nearest_string with threshold 0.5 returns similar string",
-          "[w_utilities_test.cpp]") {
+BOOST_AUTO_TEST_CASE(get_nearest_string_with_threshold_0_5_returns_similar_string) {
   fs::path similar_strings_path =
       utilities_asset_path / ".get_nearest_string_0_5";
 
@@ -169,11 +169,10 @@ TEST_CASE("get_nearest_string with threshold 0.5 returns similar string",
 
   std::string path = get_env_string("SIMILAR_STRINGS_FILE_PATH");
   std::string output = get_nearest_string("tst1", path);
-  REQUIRE(output.compare("test1") == 0);
+  BOOST_TEST(output.compare("test1") == 0);
 }
 
-TEST_CASE("get_nearest_string with threshold 0.9 returns input",
-          "[w_utilities_test.cpp]") {
+BOOST_AUTO_TEST_CASE(get_nearest_string_with_threshold_0_9_returns_input) {
   fs::path similar_strings_path =
       utilities_asset_path / ".get_nearest_string_0_9";
 
@@ -181,11 +180,10 @@ TEST_CASE("get_nearest_string with threshold 0.9 returns input",
 
   std::string path = get_env_string("SIMILAR_STRINGS_FILE_PATH");
   std::string output = get_nearest_string("tst1", path);
-  REQUIRE(output.compare("tst1") == 0);
+  BOOST_TEST(output.compare("tst1") == 0);
 }
 
-TEST_CASE("get_nearest_string on empty string returns empty string",
-          "[w_utilities_test.cpp]") {
+BOOST_AUTO_TEST_CASE(get_nearest_string_on_empty_string_returns_empty_string) {
   fs::path similar_strings_path =
       utilities_asset_path / ".get_nearest_string_0_5";
 
@@ -193,68 +191,63 @@ TEST_CASE("get_nearest_string on empty string returns empty string",
 
   std::string path = get_env_string("SIMILAR_STRINGS_FILE_PATH");
   std::string output = get_nearest_string("", path);
-  REQUIRE(output.compare("") == 0);
+  BOOST_TEST(output.compare("") == 0);
 }
 
-TEST_CASE("replace_string first phrase exists in text",
-          "[w_utilities_test.cpp]") {
+BOOST_AUTO_TEST_CASE(replace_string_first_phrase_exists_in_text) {
   std::string text = "hello hamed";
   replace_string(text, "hamed", "bagher");
-  REQUIRE(text.compare("hello bagher") == 0);
+  BOOST_TEST(text.compare("hello bagher") == 0);
 }
 
-TEST_CASE("replace_string returns text if first phrase not exists in text",
-          "[w_utilities_test.cpp]") {
+BOOST_AUTO_TEST_CASE(replace_string_returns_text_if_first_phrase_not_exists_in_text) {
   std::string text = "hello hamed";
   replace_string(text, "shahoo", "bagher");
-  REQUIRE(text.compare("hello hamed") == 0);
+  BOOST_TEST(text.compare("hello hamed") == 0);
 }
 
-TEST_CASE("replace_string returns empty text if input text was empty",
-          "[w_utilities_test.cpp]") {
+BOOST_AUTO_TEST_CASE(replace_string_returns_empty_text_if_input_text_was_empty) {
   std::string text = "";
   replace_string(text, "shahoo", "bagher");
-  REQUIRE(text.compare("") == 0);
+  BOOST_TEST(text.compare("") == 0);
 }
 
-TEST_CASE("is_line_contains_variable function find empty line",
-          "[w_utilities_test.cpp]") {
+BOOST_AUTO_TEST_CASE(is_line_contains_variable_function_find_empty_line) {
   const std::string content = "";
 
-  REQUIRE(!is_line_contains_variable(content));
+  BOOST_TEST(!is_line_contains_variable(content));
 }
 
-TEST_CASE("is_line_contains_variable function find line started by #",
-          "[w_utilities_test.cpp]") {
+BOOST_AUTO_TEST_CASE(is_line_contains_variable_function_find_line_started_by_sharp) {
   const std::string content = "# This is a commented line!";
 
-  REQUIRE(!is_line_contains_variable(content));
+  BOOST_TEST(!is_line_contains_variable(content));
 }
 
-TEST_CASE("set_env function", "[w_utilities_test.cpp]") {
+BOOST_AUTO_TEST_CASE(set_env_function) {
   fs::path dot_env_file_path = utilities_asset_path / ".set_env";
 
   set_env(dot_env_file_path.string().c_str());
 
   if (const char *env_p1 = getenv("V1")) {
     std::string temp(env_p1);
-    REQUIRE(temp.compare("v1") == 0);
+    BOOST_TEST(temp.compare("v1") == 0);
   }
   if (const char *env_p2 = getenv("V2")) {
     std::string temp(env_p2);
-    REQUIRE(temp.compare("v2") == 0);
+    BOOST_TEST(temp.compare("v2") == 0);
   }
   if (const char *env_p3 = getenv("V3")) {
     std::string temp(env_p3);
-    REQUIRE(temp.compare("v3") == 0);
+    BOOST_TEST(temp.compare("v3") == 0);
   }
   if (const char *env_p4 = getenv("V4")) {
     std::string temp(env_p4);
-    REQUIRE(temp.compare("v4") == 0);
+    BOOST_TEST(temp.compare("v4") == 0);
   }
 }
 
-TEST_CASE("get_env_int function", "[w_utilities_test.cpp]") {
+BOOST_AUTO_TEST_CASE(get_env_int_function) {
   fs::path dot_env_file_path = utilities_asset_path / ".get_env_int";
 
   set_env(dot_env_file_path.string().c_str());
@@ -262,10 +255,10 @@ TEST_CASE("get_env_int function", "[w_utilities_test.cpp]") {
   std::string key = "INT_VALUE";
   int value = get_env_int(key.c_str());
 
-  REQUIRE(value == 7);
+  BOOST_TEST(value == 7);
 }
 
-TEST_CASE("get_env_float function", "[w_utilities_test.cpp]") {
+BOOST_AUTO_TEST_CASE(get_env_float_function) {
   fs::path dot_env_file_path = utilities_asset_path / ".get_env_float";
 
   set_env(dot_env_file_path.string().c_str());
@@ -273,10 +266,10 @@ TEST_CASE("get_env_float function", "[w_utilities_test.cpp]") {
   std::string key = "FLOAT_VALUE";
   float value = get_env_float(key.c_str());
 
-  REQUIRE(value == 4.5);
+  BOOST_TEST(value == 4.5);
 }
 
-TEST_CASE("get_env_boolean function", "[w_utilities_test.cpp]") {
+BOOST_AUTO_TEST_CASE(get_env_boolean_function) {
   fs::path dot_env_file_path = utilities_asset_path / ".get_env_boolean";
 
   set_env(dot_env_file_path.string().c_str());
@@ -284,10 +277,10 @@ TEST_CASE("get_env_boolean function", "[w_utilities_test.cpp]") {
   std::string key = "BOOLEAN_VALUE";
   bool value = get_env_boolean(key.c_str());
 
-  REQUIRE(value);
+  BOOST_TEST(value);
 }
 
-TEST_CASE("get_env_string function", "[w_utilities_test.cpp]") {
+BOOST_AUTO_TEST_CASE(get_env_string_function) {
   fs::path dot_env_file_path = utilities_asset_path / ".get_env_string";
 
   set_env(dot_env_file_path.string().c_str());
@@ -295,10 +288,10 @@ TEST_CASE("get_env_string function", "[w_utilities_test.cpp]") {
   std::string key = "STRING_VALUE";
   std::string value = get_env_string(key.c_str());
 
-  REQUIRE(value.compare("this is a test! == 0"));
+  BOOST_TEST(value.compare("this is a test! == 0"));
 }
 
-TEST_CASE("get_env_cv_rect function", "[w_utilities_test.cpp]") {
+BOOST_AUTO_TEST_CASE(get_env_cv_rect_function) {
   fs::path dot_env_file_path = utilities_asset_path / ".get_env_cv_rect";
 
   set_env(dot_env_file_path.string().c_str());
@@ -306,16 +299,20 @@ TEST_CASE("get_env_cv_rect function", "[w_utilities_test.cpp]") {
   std::string key = "CV_RECT_VALUE";
   cv::Rect value = get_env_cv_rect(key.c_str());
 
-  REQUIRE(value.x == 313);
-  REQUIRE(value.y == 110);
-  REQUIRE(value.width == 72);
-  REQUIRE(value.height == 14);
+  BOOST_TEST(value.x == 313);
+  BOOST_TEST(value.y == 110);
+  BOOST_TEST(value.width == 72);
+  BOOST_TEST(value.height == 14);
 }
 
-TEST_CASE("get_relative_path_to_root function", "[w_utilities_test.cpp]") {
+BOOST_AUTO_TEST_CASE(get_relative_path_to_root_function) {
   std::string temp = get_relative_path_to_root();
 
   bool result = (temp.compare("../") == 0 || temp.compare("../../../") == 0);
 
-  REQUIRE(result);
+  BOOST_TEST(result);
 }
+
+#endif // WOLF_ML_OCR
+
+#endif // WOLF_TEST

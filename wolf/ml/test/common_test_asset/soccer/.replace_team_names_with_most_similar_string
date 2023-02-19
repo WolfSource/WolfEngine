@@ -1,0 +1,2 @@
+SIMILAR_STRINGS_FILE_PATH=../../../ocr/common_test_asset/soccer/replace_team_names_with_most_similar_string.txt
+SIMILARITY_THRESHOLD=0.5
