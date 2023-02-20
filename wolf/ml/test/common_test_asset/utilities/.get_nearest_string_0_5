@@ -1,2 +1,2 @@
-SIMILAR_STRINGS_FILE_PATH=../../../ocr/common_test_asset/utilities/get_nearest_string.txt
+SIMILAR_STRINGS_FILE_PATH=../wolf/ml/test/common_test_asset/utilities/get_nearest_string.txt
 SIMILARITY_THRESHOLD=0.5

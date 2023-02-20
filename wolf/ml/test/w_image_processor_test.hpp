@@ -13,7 +13,7 @@
 #include <opencv2/opencv.hpp>
 
 namespace fs = std::filesystem;
-fs::path image_processor_path = "../ml/test/common_test_asset/image_processor";
+fs::path image_processor_path = "../wolf/ml/test/common_test_asset/image_processor";
 
 using namespace wolf::ml::ocr;
 

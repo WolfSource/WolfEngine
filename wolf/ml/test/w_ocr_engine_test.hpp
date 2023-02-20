@@ -18,7 +18,7 @@ using namespace wolf::ml::ocr;
 
 namespace fs = std::filesystem;
 w_ocr_engine ocr_object;
-fs::path ocr_engine_asset_path = "../ml/test/common_test_asset/ocr_engine";
+fs::path ocr_engine_asset_path = "../wolf/ml/test/common_test_asset/ocr_engine";
 
 BOOST_AUTO_TEST_CASE(check_if_overlapped_with_default_arguments_on_overlapped_rects) {
   cv::Rect rect1(0, 0, 10, 10);

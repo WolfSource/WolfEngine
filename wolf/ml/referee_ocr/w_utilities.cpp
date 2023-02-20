@@ -261,7 +261,6 @@ auto store_image_in_folder(
   for (size_t i = 0; i < pVideoResult.size(); i++) {
     fs::path out_path = pOutputImageFolderPath + "/" + video_name + "_" +
                         std::to_string(i) + ".png";
-    std::cout << out_path.string() << std::endl;
     cv::imwrite(out_path.string().c_str(), pVideoResult[i].result_image);
     cv::waitKey(300);
     pVideoResult[i].release();

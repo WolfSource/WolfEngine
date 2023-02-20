@@ -15,7 +15,7 @@
 #include <ml/referee_ocr/w_ocr_engine.hpp>
 
 namespace fs = std::filesystem;
-fs::path w_referee_path = "../ml/test/common_test_asset/w_referee";
+fs::path w_referee_path = "../wolf/ml/test/common_test_asset/w_referee";
 
 using namespace wolf::ml::ocr;
 

@@ -56,10 +56,10 @@ BOOST_AUTO_TEST_CASE(wolf_test) {
 
 #pragma region ml tests
 
-#include <wolf/ml/test/w_utilities_test.hpp>
 #include <wolf/ml/test/w_image_processor_test.hpp>
-// #include <wolf/ml/test/w_ocr_engine_test.hpp>
+#include <wolf/ml/test/w_ocr_engine_test.hpp>
 #include <wolf/ml/test/w_referee_test.hpp>
-// #include <wolf/ml/test/w_soccer_test.hpp>
+#include <wolf/ml/test/w_soccer_test.hpp>
+#include <wolf/ml/test/w_utilities_test.hpp>
 
 #pragma endregion

@@ -19,7 +19,7 @@
 #include <ml/referee_ocr/w_utilities.hpp>
 
 namespace fs = std::filesystem;
-fs::path soccer_asset_path = "../ml/test/common_test_asset/soccer";
+fs::path soccer_asset_path = "../wolf/ml/test/common_test_asset/soccer";
 
 using namespace wolf::ml::ocr;
 
@@ -89,11 +89,11 @@ BOOST_AUTO_TEST_CASE(single_image_result_extraction_function) {
   }
   frame.release();
 
-  std::cout << "Results: " << video_result[0].stat << " "
-            << video_result[0].home_name.text << " "
-            << video_result[0].away_name.text << " "
-            << video_result[0].home_result.text << " "
-            << video_result[0].away_result.text << std::endl;
+  // std::cout << "Results: " << video_result[0].stat << " "
+  //           << video_result[0].home_name.text << " "
+  //           << video_result[0].away_name.text << " "
+  //           << video_result[0].home_result.text << " "
+  //           << video_result[0].away_result.text << std::endl;
 
   BOOST_TEST(video_result[0].stat.compare("90 00") == 0);
   BOOST_TEST(video_result[0].home_name.text.compare("ARSENAL") == 0);

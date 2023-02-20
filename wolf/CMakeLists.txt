@@ -302,7 +302,13 @@ if (WOLF_TEST)
     add_executable(${TEST_PROJECT_NAME}
         tests.cpp
     )
-    target_link_libraries(${TEST_PROJECT_NAME} PRIVATE ${PROJECT_NAME})
+    
+    if(WOLF_ML_OCR)
+        target_link_libraries(${TEST_PROJECT_NAME} PRIVATE ${PROJECT_NAME} ${leptonica_BINARY_DIR}/install/lib/libleptonica.so)
+    else()
+        target_link_libraries(${TEST_PROJECT_NAME} PRIVATE ${PROJECT_NAME})
+    endif()
+
     if (NOT WIN32)
         target_compile_options(${TEST_PROJECT_NAME} PRIVATE -std=c++2b)
     endif()

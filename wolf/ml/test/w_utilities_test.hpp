@@ -13,7 +13,7 @@
 #include <opencv2/opencv.hpp>
 
 namespace fs = std::filesystem;
-fs::path utilities_asset_path = "../ml/test/common_test_asset/utilities";
+fs::path utilities_asset_path = "../wolf/ml/test/common_test_asset/utilities";
 
 using namespace wolf::ml::ocr;
 
