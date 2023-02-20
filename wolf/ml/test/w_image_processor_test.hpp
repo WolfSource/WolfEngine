@@ -4,7 +4,7 @@
 
 #ifdef WOLF_ML_OCR
 
-#define BOOST_TEST_MODULE referee_ocr_image_processor
+#define BOOST_TEST_MODULE ml_image_processor
 
 #include <ml/referee_ocr/w_image_processor.hpp>
 

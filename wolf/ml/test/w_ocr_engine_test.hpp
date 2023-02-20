@@ -4,7 +4,7 @@
 
 #ifdef WOLF_ML_OCR
 
-#define BOOST_TEST_MODULE referee_ocr_engine
+#define BOOST_TEST_MODULE ml_ocr_engine
 
 #include <ml/referee_ocr/w_ocr_engine.hpp>
 
