@@ -69,7 +69,7 @@ if(WOLF_ML_OCR)
             tesseract
         )
 
-        add_custom_command(OUTPUT tess_config.out COMMAND cmake -B ${tesseract_BINARY_DIR} -DBUILD_TESTS=OFF -DBUILD_TRAINING_TOOLS=OFF -DDISABLE_ARCHIVE=ON -DDISABLE_CURL=ON -DFAST_FLOAT=ON -DGRAPHICS_DISABLED=ON -DINSTALL_CONFIGS=OFF -DLeptonica_DIR=${leptonica_BINARY_DIR} -DCMAKE_INSTALL_PREFIX:PATH=${tesseract_BINARY_DIR}/install ${tesseract_SOURCE_DIR} )
+        add_custom_command(OUTPUT tess_config.out COMMAND cmake -B ${tesseract_BINARY_DIR} -DBUILD_SHARED_LIBS=1 -DBUILD_TESTS=OFF -DBUILD_TRAINING_TOOLS=OFF -DDISABLE_ARCHIVE=ON -DDISABLE_CURL=ON -DFAST_FLOAT=ON -DGRAPHICS_DISABLED=ON -DINSTALL_CONFIGS=OFF -DLeptonica_DIR=${leptonica_BINARY_DIR} -DCMAKE_INSTALL_PREFIX:PATH=${tesseract_BINARY_DIR}/install ${tesseract_SOURCE_DIR} )
         add_custom_target(tess_config ALL DEPENDS tess_config.out)
         add_custom_command(OUTPUT tess_build.out COMMAND cmake --build ${tesseract_BINARY_DIR} --target install )
         add_custom_target(tess_build ALL DEPENDS tess_build.out)

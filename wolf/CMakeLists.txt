@@ -303,7 +303,7 @@ if (WOLF_TEST)
         tests.cpp
     )
     
-    if(WOLF_ML_OCR)
+    if(WOLF_ML_OCR AND LINUX)
         target_link_libraries(${TEST_PROJECT_NAME} PRIVATE ${PROJECT_NAME} ${leptonica_BINARY_DIR}/install/lib/libleptonica.so)
     else()
         target_link_libraries(${TEST_PROJECT_NAME} PRIVATE ${PROJECT_NAME})
