@@ -1,15 +1,17 @@
 <html>
-
 <head>
     <meta content="text/html;charset=utf-8" http-equiv="Content-Type" />
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/webrtc-adapter/8.2.0/adapter.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/spin.js/2.3.2/spin.min.js"></script>
+    <script type="text/javascript" src = "./pkg/janus_env.js"></script>
+    <script type="text/javascript" src = "./pkg/janus.js"></script>
+    <script type="module" src = "./pkg/wolf.js"></script>
 </head>
-
 <body>
-    <script type="module">
-        import run_wasm from './run-wasm.js';
-        run_wasm('wolf_demo');
-    </script>
-    <div id="wolf"></div>
+    <button type="button" style="margin: 3px 3px 3px 3px;">Join</button>
+    <div id="streamscreen"></div>
+  </body>
 </body>
-
 </html>

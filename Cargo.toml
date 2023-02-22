@@ -89,7 +89,7 @@ incremental = true
 # linker-flavor
 # linker-plugin-lto
 # llvm-args
-lto = false
+lto = true
 # metadata
 # no-prepopulate-passes
 # no-redzone
@@ -136,7 +136,7 @@ incremental = true
 # linker-flavor
 # linker-plugin-lto
 # llvm-args
-lto = false
+lto = true
 # metadata
 # no-prepopulate-passes
 # no-redzone
@@ -218,5 +218,5 @@ rpath = false
 resolver = "2"
 members = [
   "wolf",
-  #"wolf-demo",
+  "wolf-demo",
 ]

@@ -1,5 +1,10 @@
-use anyhow::{anyhow, Result};
 use rhai::{Engine, Identifier, RegisterNativeFunction, Variant};
+
+#[derive(Debug, thiserror::Error)]
+pub enum RhaiError {
+    #[error("failed on creating rhai engine '{0}'")]
+    EngineFailed(String),
+}
 
 pub struct Rhai {
     engine: Engine,
@@ -21,32 +26,36 @@ impl Rhai {
 
     /// # Errors
     ///
-    /// TODO:
-    pub fn run_return_void(&self, p_script: &str) -> Result<()> {
-        const TRACE: &str = "WRhai::run_return_void";
-        self.engine
-            .run(p_script)
-            .map_err(|e| anyhow!("{:?}", e).context(TRACE))
+    /// returns `RhaiError` on error
+    pub fn run_return_void(&self, p_script: &str) -> Result<(), RhaiError> {
+        let x = self.engine.run(p_script).map_err(|e| {
+            let error_msg = format!("{e:?}");
+            Err(RhaiError::EngineFailed(error_msg))
+        });
     }
 
     /// # Errors
     ///
-    /// TODO:
-    pub fn run_return_any<T>(&self, p_script: &str) -> Result<T>
+    /// returns `RhaiError` on error
+    pub fn run_return_any<T>(&self, p_script: &str) -> Result<T, RhaiError>
     where
         T: Clone + Variant,
     {
-        const TRACE: &str = "WRhai::run_return_any";
         self.engine
             .eval(p_script)
-            .map_err(|e| anyhow!("{:?}", e).context(TRACE))
+            .map_err(|e| Err(RhaiError::EngineFailed(e)))
     }
 
-    pub fn register_function<N, A, F>(&mut self, p_name: N, p_func: F)
+    pub fn register_function<A, const N: usize, const C: bool, R, const L: bool, F>(
+        &mut self,
+        p_name: impl AsRef<str> + Into<Identifier>,
+        p_func: F,
+    ) -> &mut Self
     where
-        N: AsRef<str> + Into<Identifier>,
-        F: RegisterNativeFunction<A, ()>,
+        A: 'static,
+        R: Variant + Clone,
+        F: RegisterNativeFunction<A, N, C, R, L>,
     {
-        self.engine.register_fn(p_name, p_func);
+        self.engine.register_fn(p_name, p_func)
     }
 }

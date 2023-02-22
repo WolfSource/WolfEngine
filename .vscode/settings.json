@@ -131,5 +131,8 @@
     "workbench.iconTheme": "material-icon-theme",
     "[rust]": {
         "editor.defaultFormatter": "rust-lang.rust-analyzer"
+    },
+    "[javascript]": {
+        "editor.defaultFormatter": "vscode.typescript-language-features"
     }
 }

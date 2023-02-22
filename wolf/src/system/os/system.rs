@@ -1,6 +1,14 @@
 use sysinfo::{ProcessExt, SystemExt};
 use tokio::process::{Child, Command};
 
+#[derive(Debug, thiserror::Error)]
+pub enum SystemError {
+    #[error("invalid Metadata for process path '{0}'")]
+    InvalidMetadata(String),
+    #[error("invalid system process path '{0}'")]
+    InvalidProcessPath(String),
+}
+
 #[derive(Debug)]
 pub struct System {
     sys: sysinfo::System,
@@ -105,14 +113,19 @@ impl System {
     /// # Errors
     ///
     /// TODO:
-    pub async fn create_process(p_process_path: &str, p_process_args: &[&str]) -> Result<Child> {
+    pub async fn create_process(
+        p_process_path: &str,
+        p_process_args: &[&str],
+    ) -> Result<Child, SystemError> {
         //check is file
-        let meta = tokio::fs::metadata(p_process_path).await?;
+        let meta = tokio::fs::metadata(p_process_path)
+            .await
+            .map_err(|e| Err(SystemError::InvalidMetadata(p_process_path.to_owned())))?;
         if meta.is_file() {
             let child = Command::new(p_process_path).args(p_process_args).spawn()?;
             return Ok(child);
         }
-        bail!("Process {} is not a valid file", p_process_path)
+        return Err(SystemError::InvalidProcessPath(p_process_path.to_owned()));
     }
 
     #[must_use]

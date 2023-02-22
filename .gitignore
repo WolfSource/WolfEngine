@@ -5,13 +5,12 @@
 !Logo.png
 coverage/
 documentation/
-src/cxx/*
-!src/cxx/w_platform.h
 profile/
 release/
 target/
 wolf/jniLibs/*
 wolf/sys/build/*
+wolf-demo/wasm/cert.pem
 coverage/*
 !coverage/coverage.json
 

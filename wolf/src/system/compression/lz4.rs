@@ -1,6 +1,7 @@
 use crate::system::ffi::lz4::{
     LZ4_compressBound, LZ4_compress_default, LZ4_compress_fast, LZ4_decompress_safe,
 };
+
 #[derive(Debug, thiserror::Error)]
 pub enum LZ4Error {
     #[error("invalid source size: `{0}`")]

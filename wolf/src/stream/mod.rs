@@ -5,6 +5,7 @@
 pub mod common;
 // pub mod ffi;
 pub mod http;
+pub mod webrtc;
 // #[cfg(feature = "stream_rist")]
 // pub mod rist;
 // pub mod tcp;

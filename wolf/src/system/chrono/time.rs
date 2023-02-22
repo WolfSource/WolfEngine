@@ -1,3 +1,4 @@
+#[cfg(not(target_arch = "wasm32"))]
 #[derive(Debug, thiserror::Error)]
 pub enum TimeError {
     #[error("timeout reached after `{0}`")]
