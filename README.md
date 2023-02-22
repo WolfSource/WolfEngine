@@ -11,9 +11,9 @@ This Wolf is a comprehensive set of Rust/C libraries for realtime rendering, rea
 <img src="https://raw.githubusercontent.com/WolfEngine/WolfEngine/wolf-2/samples/03_advances/07_lod/doc/view.gif" width="640" height="360" alt="Dynamic LOD Generation gif"/>
 
 ### Supported platforms and APIs for render module
-| Planned | In Progress | Done |
-|:-----------:|:-----------:|:-----------:|
-| :memo:  | :construction: | :white_check_mark: | 
+| Not Supported | Planned | In Progress | Done |
+|:-----------:|:-----------:|:-----------:|:-----------:|
+| :x:  | :memo:  | :construction: | :white_check_mark: | 
 
 | API | Windows | Linux | macOS | iOS | Android | Wasm |
 |:-----------:|:-----------:|:--------------------------:|:--------------:|:-------------:|:--------------:|:-------------:|
@@ -31,7 +31,7 @@ This Wolf is a comprehensive set of Rust/C libraries for realtime rendering, rea
 | API | Windows | Linux | macOS | iOS | Android | Wasm |
 |:-----------:|:-----------:|:--------------------------:|:--------------:|:-------------:|:--------------:|:-------------:|
 | gRPC | :white_check_mark: | :x: | :x: | :x: | :x: | :x: |
-| Janus | :white_check_mark: | :x: | :x: | :x: | :x: | :white_check_mark: |
+| Janus | :x: | :x: | :x: | :x: | :x: | :white_check_mark: |
 | QUIC | :memo: | :memo: | :memo: | :memo: | :memo: | :x: |
 | RIST | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :x: |
 | RTMP | :memo: | :x: | :x: | :x: | :x: | :x: |
