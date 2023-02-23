@@ -24,7 +24,7 @@ BOOST_AUTO_TEST_CASE(gametime_fixed_time_test) {
   bool _ticked = false;
 
   constexpr double _stop_after_secs = 3.0;
-  constexpr double _target_elapsed_secs = 1.0 / 50.0; // 50 fps
+  constexpr double _target_elapsed_secs = 1.0 / 50.0;  // 50 fps
 
   auto _gametime = w_gametime();
   _gametime.reset();
@@ -52,7 +52,7 @@ BOOST_AUTO_TEST_CASE(gametime_unfixed_time_test) {
   std::cout << "gametime_unfixed_time_test is running" << std::endl;
 
   constexpr double _stop_after_secs = 5.0;
-  constexpr double _target_elapsed_secs = 1.0 / 50.0; // 50 fps
+  constexpr double _target_elapsed_secs = 1.0 / 50.0;  // 50 fps
 
   auto _gametime = w_gametime();
   _gametime.reset();

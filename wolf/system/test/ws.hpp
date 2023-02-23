@@ -36,28 +36,24 @@ BOOST_AUTO_TEST_CASE(ws_server_timeout_test) {
     _io.stop();
   });
 
-  const auto _timeout =
-      boost::beast::websocket::stream_base::timeout{// handshake_timeout
-                                                    5s,
-                                                    // idle_timeout
-                                                    5s,
-                                                    // keep_alive_pings
-                                                    false};
+  const auto _timeout = boost::beast::websocket::stream_base::timeout{// handshake_timeout
+                                                                      5s,
+                                                                      // idle_timeout
+                                                                      5s,
+                                                                      // keep_alive_pings
+                                                                      false};
 
   w_ws_server::run(
       _io, std::move(_endpoint), _timeout, std::move(_opts),
       [](const std::string &p_conn_id, _Inout_ w_buffer &p_buffer,
          _Inout_ bool &p_is_binary) -> auto{
-        std::cout << "websocket server just got: /'" << p_buffer.to_string()
-                  << "/' and " << p_buffer.used_bytes
-                  << " bytes from connection id: " << p_conn_id << std::endl;
+        std::cout << "websocket server just got: /'" << p_buffer.to_string() << "/' and "
+                  << p_buffer.used_bytes << " bytes from connection id: " << p_conn_id << std::endl;
         return boost::beast::websocket::close_code::normal;
       },
-      [](const std::string &p_conn_id,
-         const boost::system::system_error &p_error) {
-        std::cout << "connection just got an error: " << p_conn_id
-                  << " because of " << p_error.what()
-                  << " error code: " << p_error.code() << std::endl;
+      [](const std::string &p_conn_id, const boost::system::system_error &p_error) {
+        std::cout << "connection just got an error: " << p_conn_id << " because of "
+                  << p_error.what() << " error code: " << p_error.code() << std::endl;
       });
   _io.run();
 
@@ -88,9 +84,8 @@ BOOST_AUTO_TEST_CASE(ws_client_timeout_test) {
         _timer.expires_after(std::chrono::nanoseconds(1));
 
         // run a coroutine
-        const auto _ret =
-            co_await (_timer.async_wait(boost::asio::use_awaitable) ||
-                      _client.async_resolve(_endpoint));
+        const auto _ret = co_await (_timer.async_wait(boost::asio::use_awaitable) ||
+                                    _client.async_resolve(_endpoint));
         // expect timeout
         BOOST_REQUIRE(_ret.index() == 0);
 

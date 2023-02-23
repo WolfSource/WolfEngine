@@ -61,13 +61,11 @@ constexpr auto W_MAX_BUFFER_SIZE = 1024;
 #define DEFER auto _ = std::shared_ptr<void>(nullptr, [&](...)
 
 struct w_buffer {
-
   w_buffer() noexcept = default;
 
-  explicit w_buffer(const std::string_view &p_str) { from_string(p_str); }
+  explicit w_buffer(const std::string_view p_str) { from_string(p_str); }
 
-  w_buffer(std::array<char, W_MAX_BUFFER_SIZE> &&p_array,
-           const size_t &p_used_bytes) noexcept {
+  w_buffer(std::array<char, W_MAX_BUFFER_SIZE> &&p_array, const size_t p_used_bytes) noexcept {
     this->buf = std::move(p_array);
     this->used_bytes = p_used_bytes;
   }
@@ -78,9 +76,7 @@ struct w_buffer {
     std::copy(p_str.cbegin(), p_str.cbegin() + this->used_bytes, buf.begin());
   }
 
-  std::string to_string() {
-    return std::string(this->buf.data(), this->used_bytes);
-  }
+  std::string to_string() { return std::string(this->buf.data(), this->used_bytes); }
 
   std::array<char, W_MAX_BUFFER_SIZE> buf = {0};
   size_t used_bytes = 0;
@@ -138,15 +134,13 @@ W_API std::string w_init();
  */
 #ifdef _MSC_VER
 template <class... Args>
-W_API std::string format(_In_ const std::string_view p_fmt,
-                         _In_ Args &&...p_args) {
+W_API std::string format(_In_ const std::string_view p_fmt, _In_ Args &&...p_args) {
   return std::vformat(p_fmt, std::make_format_args(p_args...));
 }
 #else
 template <class... Args>
-W_API std::string format(_In_ const fmt::v9::format_string<Args...> p_fmt,
-                         _In_ Args &&...p_args) {
+W_API std::string format(_In_ const fmt::v9::format_string<Args...> p_fmt, _In_ Args &&...p_args) {
   return fmt::v9::vformat(p_fmt, fmt::v9::make_format_args(p_args...));
 }
-#endif // _MSC_VER
-} // namespace wolf
+#endif  // _MSC_VER
+}  // namespace wolf

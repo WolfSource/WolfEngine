@@ -90,8 +90,7 @@ BOOST_AUTO_TEST_CASE(log_stress_test) {
 
         const auto time_2 = std::chrono::high_resolution_clock::now();
         const auto _delta =
-            std::chrono::duration_cast<std::chrono::seconds>(time_2 - time_1)
-                .count();
+            std::chrono::duration_cast<std::chrono::seconds>(time_2 - time_1).count();
         if (_delta > _max_delta_in_sec) {
           break;
         }

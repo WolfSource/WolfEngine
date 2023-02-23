@@ -10,10 +10,7 @@ set(TEST_PROJECT_NAME "${PROJECT_NAME}_tests")
 message("CXX Compiler ID is ${CMAKE_CXX_COMPILER_ID}")
 
 # set the options and enviroment variables
-set(WEBRTC_SRC $ENV{WEBRTC_ROOT} CACHE STRING "path to the root folder of webrtc folder")
-
-# set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${PROJECT_NAME})
-# set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${PROJECT_NAME})
+#set(WEBRTC_SRC $ENV{WEBRTC_ROOT} CACHE STRING "path to the root folder of webrtc folder")
 
 # check the OS
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
@@ -96,11 +93,8 @@ option(WOLF_SYSTEM_SOCKET "Enable TCP/UDP protocol over socket" OFF)
 option(WOLF_SYSTEM_STACKTRACE "Enable boost stacktrace" OFF)
 option(WOLF_SYSTEM_POSTGRESQL "Enable postgresql database client" OFF)
 
-#option(WOLF_SYSTEM_WASM3 "Enable WebAssembly interpreter" OFF)
-#option(WOLF_SYSTEM_ZLIB "Enable zlib for compression" OFF)
-
 # machine learing modules
-option(WOLF_ML_OCR "Enable machine learning referee ocr" ON)
+option(WOLF_ML_OCR "Enable machine learning referee ocr" OFF)
 option(WOLF_ML_NUDITY_DETECTION "Enable machine learning nudity detection" OFF)
 
 #option(WOLF_ENABLE_LTO "Enable cross language linking time optimization" OFF)
@@ -121,36 +115,17 @@ if(ENABLE_LTO)
   endif()
 endif()
 
-# media modules
-# 
-# option(WOLF_MEDIA_IMAGE "Enable WebP/BMP/JPG/PNG formats" OFF)
-# 
-
-# stream modules
-# option(WOLF_STREAM_KAFKA_CLIENT "Enable Kafka API connector" OFF)
-
-# option(WOLF_STREAM_RTSP_CLIENT "Enable RTSP for client" OFF)
-# option(WOLF_STREAM_RTSP_SERVER "Enable RTSP for server" OFF)
-#option(WOLF_STREAM_WEBRTC "Enable native webRTC" OFF)
-
-# system modules
-# option(WOLF_SYSTEM_AVX2 "Enable avx2" OFF)
-# option(WOLF_SYSTEM_AVX512 "Enable avx512" OFF)
-# option(WOLF_SYSTEM_BROTLI "Enable brotli compression" OFF)
-# option(WOLF_SYSTEM_RAFT "Enable raft algorithm" OFF)
-
-# set C/CXX ios standards
+# set C/CXX standards
 set(CMAKE_C_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS ON)
 set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
 set(THREADS_PREFER_PTHREAD_FLAG TRUE)
 
-#set(CMAKE_BUILD_TYPE "${default_build_type}" CACHE STRING "Choose the type of build." FORCE)
+#set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
 if ("${CMAKE_BUILD_TYPE}" STREQUAL "")
   set(CMAKE_BUILD_TYPE "Debug")
 endif()
-#set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
 
 # set C++ flags based on compiler
 if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
@@ -190,11 +165,12 @@ endif()
 # include cmakes
 include(cmake/boost.cmake)
 include(cmake/media.cmake)
-include(cmake/rust.cmake)
 include(cmake/system.cmake)
 include(cmake/stream.cmake)
 include(cmake/ml.cmake)
 
+# disable build testing
+set(BUILD_TESTING OFF CACHE BOOL "BUILD_TESTING")
 
 if (WOLF_ENABLE_ASAN)
     set(ENABLE_ASAN TRUE)
@@ -208,9 +184,9 @@ endif()
 # https://devblogs.microsoft.com/cppblog/visual-studio-code-c-december-2021-update-clang-tidy/
 # can be enabled with .CLANG-TIDY from Visual Studio
 # https://devblogs.microsoft.com/cppblog/code-analysis-with-clang-tidy-in-visual-studio/
-#set(CMAKE_CXX_CLANG_TIDY
-#     clang-tidy;
-#     -format-style=file;)  
+set(CMAKE_CXX_CLANG_TIDY
+     clang-tidy;
+     -format-style=file;)  
 
 # add definitions
 
@@ -310,8 +286,6 @@ source_group("media/test" FILES ${WOLF_MEDIA_TEST_SRC})
 source_group("media/ffmpeg" FILES ${WOLF_MEDIA_FFMPEG_SRC})
 source_group("media" FILES ${WOLF_MEDIA_OPENAL_SRC} ${WOLF_MEDIA_STB_SRC})
 source_group("ml/referee_ocr" FILES ${WOLF_ML_OCR_SRC})
-
-# file(COPY ${CMAKE_BINARY_DIR}/bin/${CMAKE_BUILD_TYPE} DESTINATION ${CMAKE_BINARY_DIR}/${PROJECT_NAME}/${CMAKE_BUILD_TYPE})
 
 # add compile options
 if (NOT WIN32)

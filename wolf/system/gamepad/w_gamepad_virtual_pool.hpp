@@ -22,7 +22,7 @@ public:
    * add a gamepad to the ViGEm bus
    * @returns a tuple which contains index of gamepad and VIGEM_ERROR
    */
-  W_API static boost::leaf::result<w_gamepad_virtual> create() noexcept;
+  W_API static boost::leaf::result<w_gamepad_virtual> add() noexcept;
 
   /**
    * convert a ViGEm error to string

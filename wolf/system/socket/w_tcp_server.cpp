@@ -38,8 +38,8 @@ static boost::asio::awaitable<void> on_handle_session(
     const boost::asio::io_context &p_io_context, tcp::socket &p_socket,
     const std::string &p_conn_id, time_point &p_deadline,
     steady_clock::duration p_timeout,
-    const w_session_on_data_callback &p_on_data_callback,
-    const w_session_on_error_callback &p_on_error_callback) noexcept {
+    const w_session_on_data_callback p_on_data_callback,
+    const w_session_on_error_callback p_on_error_callback) noexcept {
   w_buffer _buffer = {};
 
 #ifdef __clang__

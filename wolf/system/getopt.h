@@ -285,15 +285,14 @@ enum /* permitted values for its `has_arg' field...	*/
  * Returns -1 if short_too is set and the option does not match long_options.
  */
 static int parse_long_options(char *const *nargv, const char *options,
-                              const struct option *long_options, int *idx,
-                              int short_too) {
+                              const struct option *long_options, int *idx, int short_too) {
                 char *current_argv, *has_equal;
                 size_t current_argv_len;
                 int i, ambiguous, match;
 
-#define IDENTICAL_INTERPRETATION(_x, _y)                                       \
-  (long_options[(_x)].has_arg == long_options[(_y)].has_arg &&                 \
-   long_options[(_x)].flag == long_options[(_y)].flag &&                       \
+#define IDENTICAL_INTERPRETATION(_x, _y)                       \
+  (long_options[(_x)].has_arg == long_options[(_y)].has_arg && \
+   long_options[(_x)].flag == long_options[(_y)].flag &&       \
    long_options[(_x)].val == long_options[(_y)].val)
 
                 current_argv = (char *)place;
@@ -311,8 +310,7 @@ static int parse_long_options(char *const *nargv, const char *options,
 
                 for (i = 0; long_options[i].name; i++) {
                         /* find matching long option */
-                        if (strncmp(current_argv, long_options[i].name,
-                                    current_argv_len))
+                        if (strncmp(current_argv, long_options[i].name, current_argv_len))
                                 continue;
 
                         if (strlen(long_options[i].name) == current_argv_len) {
@@ -336,17 +334,14 @@ static int parse_long_options(char *const *nargv, const char *options,
                 if (ambiguous) {
                         /* ambiguous abbreviation */
                         if (PRINT_ERROR)
-                                warnx(ambig, (int)current_argv_len,
-                                      current_argv);
+                                warnx(ambig, (int)current_argv_len, current_argv);
                         optopt = 0;
                         return (BADCH);
                 }
                 if (match != -1) { /* option found */
-                        if (long_options[match].has_arg == no_argument &&
-                            has_equal) {
+                        if (long_options[match].has_arg == no_argument && has_equal) {
                                 if (PRINT_ERROR)
-                                        warnx(noarg, (int)current_argv_len,
-                                              current_argv);
+                                        warnx(noarg, (int)current_argv_len, current_argv);
                                 /*
                                  * XXX: GNU sets optopt to val regardless of
                                  * flag
@@ -361,8 +356,7 @@ static int parse_long_options(char *const *nargv, const char *options,
                             long_options[match].has_arg == optional_argument) {
                                 if (has_equal)
                                         optarg = has_equal;
-                                else if (long_options[match].has_arg ==
-                                         required_argument) {
+                                else if (long_options[match].has_arg == required_argument) {
                                         /*
                                          * optional argument doesn't use next
                                          * nargv
@@ -370,8 +364,7 @@ static int parse_long_options(char *const *nargv, const char *options,
                                         optarg = nargv[optind++];
                                 }
                         }
-                        if ((long_options[match].has_arg ==
-                             required_argument) &&
+                        if ((long_options[match].has_arg == required_argument) &&
                             (optarg == NULL)) {
                                 /*
                                  * Missing argument; leading ':' indicates no
@@ -415,8 +408,7 @@ static int parse_long_options(char *const *nargv, const char *options,
  *	Parse argc/argv argument vector.  Called by user level routines.
  */
 static int getopt_internal(int nargc, char *const *nargv, const char *options,
-                           const struct option *long_options, int *idx,
-                           int flags) {
+                           const struct option *long_options, int *idx, int flags) {
                 char *oli; /* option letter list index */
                 int optchar, short_too;
                 static int posixly_correct = -1;
@@ -457,8 +449,7 @@ start:
                                 place = EMSG;
                                 if (nonopt_end != -1) {
                                         /* do permutation, if we have to */
-                                        permute_args(nonopt_start, nonopt_end,
-                                                     optind, nargv);
+                                        permute_args(nonopt_start, nonopt_end, optind, nargv);
                                         optind -= nonopt_end - nonopt_start;
                                 } else if (nonopt_start != -1) {
                                         /*
@@ -471,8 +462,7 @@ start:
                                 return (-1);
                         }
                         if (*(place = nargv[optind]) != '-' ||
-                            (place[1] == '\0' &&
-                             strchr(options, '-') == NULL)) {
+                            (place[1] == '\0' && strchr(options, '-') == NULL)) {
                                 place = EMSG; /* found non-option */
                                 if (flags & FLAG_ALLARGS) {
                                         /*
@@ -494,10 +484,8 @@ start:
                                 if (nonopt_start == -1)
                                         nonopt_start = optind;
                                 else if (nonopt_end != -1) {
-                                        permute_args(nonopt_start, nonopt_end,
-                                                     optind, nargv);
-                                        nonopt_start = optind - (nonopt_end -
-                                                                 nonopt_start);
+                                        permute_args(nonopt_start, nonopt_end, optind, nargv);
+                                        nonopt_start = optind - (nonopt_end - nonopt_start);
                                         nonopt_end = -1;
                                 }
                                 optind++;
@@ -510,8 +498,7 @@ start:
                         /*
                          * If we have "-" do nothing, if "--" we are done.
                          */
-                        if (place[1] != '\0' && *++place == '-' &&
-                            place[1] == '\0') {
+                        if (place[1] != '\0' && *++place == '-' && place[1] == '\0') {
                                 optind++;
                                 place = EMSG;
                                 /*
@@ -519,8 +506,7 @@ start:
                                  * non-options, we have to permute.
                                  */
                                 if (nonopt_end != -1) {
-                                        permute_args(nonopt_start, nonopt_end,
-                                                     optind, nargv);
+                                        permute_args(nonopt_start, nonopt_end, optind, nargv);
                                         optind -= nonopt_end - nonopt_start;
                                 }
                                 nonopt_start = nonopt_end = -1;
@@ -539,12 +525,10 @@ start:
                         short_too = 0;
                         if (*place == '-')
                                 place++; /* --foo long option */
-                        else if (*place != ':' &&
-                                 strchr(options, *place) != NULL)
+                        else if (*place != ':' && strchr(options, *place) != NULL)
                                 short_too = 1; /* could be short option too */
 
-                        optchar = parse_long_options(
-                            nargv, options, long_options, idx, short_too);
+                        optchar = parse_long_options(nargv, options, long_options, idx, short_too);
                         if (optchar != -1) {
                                 place = EMSG;
                                 return (optchar);
@@ -581,8 +565,7 @@ start:
                                 return (BADARG);
                         } else /* white space */
                                 place = nargv[optind];
-                        optchar = parse_long_options(nargv, options,
-                                                     long_options, idx, 0);
+                        optchar = parse_long_options(nargv, options, long_options, idx, 0);
                         place = EMSG;
                         return (optchar);
                 }
@@ -616,9 +599,7 @@ start:
  */
 int getopt_long(int nargc, char *const *nargv, const char *options,
                 const struct option *long_options, int *idx) {
-
-                return (getopt_internal(nargc, nargv, options, long_options,
-                                        idx, FLAG_PERMUTE));
+                return (getopt_internal(nargc, nargv, options, long_options, idx, FLAG_PERMUTE));
 }
 
 /*
@@ -627,9 +608,8 @@ int getopt_long(int nargc, char *const *nargv, const char *options,
  */
 int getopt_long_only(int nargc, char *const *nargv, const char *options,
                      const struct option *long_options, int *idx) {
-
-                return (getopt_internal(nargc, nargv, options, long_options,
-                                        idx, FLAG_PERMUTE | FLAG_LONGONLY));
+                return (getopt_internal(nargc, nargv, options, long_options, idx,
+                                        FLAG_PERMUTE | FLAG_LONGONLY));
 }
 
 // extern int getopt_long(int nargc, char * const *nargv, const char *options,

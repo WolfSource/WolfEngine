@@ -13,7 +13,7 @@ using tcp = boost::asio::ip::tcp;
 static boost::asio::awaitable<void>
 s_session(_In_ const boost::asio::io_context &p_io_context,
           _In_ w_ws_stream &&p_ws,
-          _In_ const std::string &p_conn_id,
+          _In_ const std::string p_conn_id,
           _In_ w_session_ws_on_data_callback p_on_data_callback,
           _In_ w_session_on_error_callback p_on_error_callback) {
 

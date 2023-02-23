@@ -29,24 +29,20 @@ BOOST_AUTO_TEST_CASE(compress_lz4_test) {
             "HELLO WOLF\r\nHELLO WOLF!*&%!HELLO WOLF!07*&%!\r\nThe quick "
             "brown fox jumps over the lazy dog!";
 
-        const auto _bytes = std::span(
-            reinterpret_cast<const std::byte *>(_mock_compression_data),
-            strlen(_mock_compression_data));
+        const auto _bytes = std::span(reinterpret_cast<const std::byte *>(_mock_compression_data),
+                                      strlen(_mock_compression_data));
         const auto _bytes_len = _bytes.size();
 
         constexpr auto _max_retry = 10;
         BOOST_LEAF_AUTO(_compress_default, lz4::compress_default(_bytes));
 
-        BOOST_LEAF_AUTO(_decompress_default,
-                        lz4::decompress(_compress_default, _max_retry));
+        BOOST_LEAF_AUTO(_decompress_default, lz4::decompress(_compress_default, _max_retry));
         BOOST_REQUIRE_EQUAL(_decompress_default.size(), _bytes_len);
 
         constexpr auto _acceleration = 1000;
-        BOOST_LEAF_AUTO(_compress_fast,
-                        lz4::compress_fast(_bytes, _acceleration));
+        BOOST_LEAF_AUTO(_compress_fast, lz4::compress_fast(_bytes, _acceleration));
 
-        BOOST_LEAF_AUTO(_decompress_fast,
-                        lz4::decompress(_compress_fast, _max_retry));
+        BOOST_LEAF_AUTO(_decompress_fast, lz4::decompress(_compress_fast, _max_retry));
         BOOST_REQUIRE_EQUAL(_decompress_fast.size(), _bytes_len);
 
         return {};
@@ -80,20 +76,17 @@ BOOST_AUTO_TEST_CASE(compress_lzma_test) {
             "HELLO WOLF\r\nHELLO WOLF!*&%!HELLO WOLF!07*&%!\r\nThe quick "
             "brown fox jumps over the lazy dog!";
 
-        const auto _bytes = std::span(
-            reinterpret_cast<const std::byte *>(_mock_compression_data),
-            strlen(_mock_compression_data));
+        const auto _bytes = std::span(reinterpret_cast<const std::byte *>(_mock_compression_data),
+                                      strlen(_mock_compression_data));
         const auto _bytes_len = _bytes.size();
 
         BOOST_LEAF_AUTO(_compress_lzm1, lzma::compress_lzma1(_bytes, 7));
 
-        BOOST_LEAF_AUTO(_decompress_lzm1,
-                        lzma::decompress_lzma1(_compress_lzm1));
+        BOOST_LEAF_AUTO(_decompress_lzm1, lzma::decompress_lzma1(_compress_lzm1));
 
         BOOST_LEAF_AUTO(_compress_lzm2, lzma::compress_lzma2(_bytes, 7));
 
-        BOOST_LEAF_AUTO(_decompress_lzm2,
-                        lzma::decompress_lzma2(_compress_lzm2));
+        BOOST_LEAF_AUTO(_decompress_lzm2, lzma::decompress_lzma2(_compress_lzm2));
 
         return {};
       },

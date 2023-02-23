@@ -5,8 +5,6 @@
 
 #ifdef WOLF_TEST
 
-#pragma once
-
 #include <boost/test/included/unit_test.hpp>
 #include <system/w_leak_detector.hpp>
 #include <wolf/wolf.hpp>
@@ -40,10 +38,10 @@ BOOST_AUTO_TEST_CASE(gamepad_virtual_test) {
   boost::leaf::try_handle_all(
       [&]() -> boost::leaf::result<void> {
         // create 4 gamepads and destroy them at the end of their lifetime
-        BOOST_LEAF_AUTO(_gamepad_1, w_gamepad_virtual_pool::create());
-        BOOST_LEAF_AUTO(_gamepad_2, w_gamepad_virtual_pool::create());
-        BOOST_LEAF_AUTO(_gamepad_3, w_gamepad_virtual_pool::create());
-        BOOST_LEAF_AUTO(_gamepad_4, w_gamepad_virtual_pool::create());
+        BOOST_LEAF_AUTO(_gamepad_1, w_gamepad_virtual_pool::add());
+        BOOST_LEAF_AUTO(_gamepad_2, w_gamepad_virtual_pool::add());
+        BOOST_LEAF_AUTO(_gamepad_3, w_gamepad_virtual_pool::add());
+        BOOST_LEAF_AUTO(_gamepad_4, w_gamepad_virtual_pool::add());
 
         return {};
       },

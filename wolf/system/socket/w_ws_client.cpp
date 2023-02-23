@@ -87,10 +87,11 @@ w_ws_client::async_read(_Inout_ w_buffer &p_mut_buffer) {
   boost::beast::flat_buffer _buffer = {};
   co_await this->_ws->async_read(_buffer);
 
-  // an extra copy just for having stable ABI
+  // an extra copy just for having a stable ABI
   const auto _size = std::min(_buffer.cdata().size(), p_mut_buffer.buf.size());
   std::memcpy(p_mut_buffer.buf.data(),
               static_cast<char const *>(_buffer.cdata().data()), _size);
+  co_return _size;
 }
 
 boost::asio::awaitable<size_t>

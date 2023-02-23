@@ -1,25 +1,28 @@
 #if defined(WOLF_SYSTEM_GAMEPAD_VIRTUAL) && !defined(EMSCRIPTEN)
 
 #include "w_gamepad_virtual_pool.hpp"
+#include <shared_mutex>
 
 using w_gamepad_virtual = wolf::system::gamepad::w_gamepad_virtual;
 using w_gamepad_virtual_pool = wolf::system::gamepad::w_gamepad_virtual_pool;
+using w_gamepad_virtual_bus = wolf::system::gamepad::w_gamepad_virtual_bus;
 
-static PVIGEM_CLIENT s_driver_handle = nullptr;
+static auto s_bus = std::make_shared<w_gamepad_virtual_bus>();
 
 boost::leaf::result<VIGEM_ERROR> w_gamepad_virtual_pool::init() noexcept {
+  std::unique_lock lock(s_bus->mutex);
+
   // check for driver handle memory
-  if (s_driver_handle == nullptr) {
+  if (s_bus->driver_handle == nullptr) {
     // allocate memory for bus driver
-    s_driver_handle = vigem_alloc();
-    if (s_driver_handle == nullptr) {
-      return W_FAILURE(std::errc::not_enough_memory,
-                       "could not allocate memory for ViGem client");
+    s_bus->driver_handle = vigem_alloc();
+    if (s_bus->driver_handle == nullptr) {
+      return W_FAILURE(std::errc::not_enough_memory, "could not allocate memory for ViGem client");
     }
   }
 
   // connect to vigem
-  const auto _ret = vigem_connect(s_driver_handle);
+  const auto _ret = vigem_connect(s_bus->driver_handle);
   if (_ret != VIGEM_ERROR_NONE) {
     // release it
     fini();
@@ -29,37 +32,19 @@ boost::leaf::result<VIGEM_ERROR> w_gamepad_virtual_pool::init() noexcept {
   return _ret;
 }
 
-boost::leaf::result<w_gamepad_virtual>
-w_gamepad_virtual_pool::create() noexcept {
-  if (s_driver_handle == nullptr) {
-    return W_FAILURE(std::errc::host_unreachable,
-                     "could not allocate memory for ViGem client");
-  }
-
-  // allocate handle to identify new pad
-  auto _handle = vigem_target_x360_alloc();
-  if (_handle == nullptr) {
-    return W_FAILURE(std::errc::not_enough_memory,
-                     "could not allocate memory for ViGem target client");
-  }
-
-  // add client to the bus, this equals a plug-in event
-  const auto _ret = vigem_target_add(s_driver_handle, _handle);
-  if (_ret != VIGEM_ERROR_NONE) {
-    return W_FAILURE(
-        std::errc::not_enough_memory,
-        "could not create ViGEm target device to bus driver because: " +
-            vigem_error_to_string(_ret));
-  }
-
-  return w_gamepad_virtual(s_driver_handle, _handle);
+boost::leaf::result<w_gamepad_virtual> w_gamepad_virtual_pool::add() noexcept {
+  auto _gamepad = w_gamepad_virtual(s_bus);
+  BOOST_LEAF_AUTO(init_res, _gamepad.init());
+  return _gamepad;
 }
 
 void w_gamepad_virtual_pool::fini() noexcept {
-  if (s_driver_handle) {
-    vigem_disconnect(s_driver_handle);
-    vigem_free(s_driver_handle);
-    s_driver_handle = nullptr;
+  std::unique_lock lock(s_bus->mutex);
+
+  if (s_bus->driver_handle) {
+    vigem_disconnect(s_bus->driver_handle);
+    vigem_free(s_bus->driver_handle);
+    s_bus->driver_handle = nullptr;
   }
 }
 

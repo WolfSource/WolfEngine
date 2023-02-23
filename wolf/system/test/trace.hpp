@@ -20,9 +20,7 @@ BOOST_AUTO_TEST_CASE(trace_test) {
     return W_FAILURE(std::errc::bad_message, "error from function 1");
   };
 
-  const auto _function_2 = [&]() noexcept -> boost::leaf::result<void> {
-    return _function_1();
-  };
+  const auto _function_2 = [&]() noexcept -> boost::leaf::result<void> { return _function_1(); };
 
   // how to use w_trace
   boost::leaf::try_handle_all(

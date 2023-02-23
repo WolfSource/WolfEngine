@@ -8,7 +8,7 @@
 
 namespace wolf::system {
 class w_process {
-public:
+ public:
   // default constructor
   W_API w_process() noexcept = default;
   // destructor
@@ -30,10 +30,10 @@ public:
    */
   W_API static boost::leaf::result<std::filesystem::path> current_exe_path();
 
-private:
+ private:
   // copy constructor.
   w_process(const w_process &) = delete;
   // copy assignment operator.
   w_process &operator=(const w_process &) = delete;
 };
-} // namespace wolf::system
+}  // namespace wolf::system

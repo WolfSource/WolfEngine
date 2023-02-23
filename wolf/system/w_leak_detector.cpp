@@ -22,8 +22,7 @@ w_leak_detector::~w_leak_detector() noexcept {
     _CrtMemState _new_mem_state;
     _CrtMemCheckpoint(&_new_mem_state);
 
-    const auto _dif =
-        _CrtMemDifference(&_diff_mem, &this->_mem_state, &_new_mem_state);
+    const auto _dif = _CrtMemDifference(&_diff_mem, &this->_mem_state, &_new_mem_state);
     if (_dif > 0) {
       _CrtMemDumpStatistics(&_diff_mem);
       _CrtMemDumpAllObjectsSince(&this->_mem_state);
@@ -32,7 +31,7 @@ w_leak_detector::~w_leak_detector() noexcept {
       assert(false);
       std::terminate();
     }
-  } catch (...) // const std::exception& p_ex)
+  } catch (...)  // const std::exception& p_ex)
   {
     // write to the log file
     // "~w_leak_detector thrown an exception:" << p_ex.what();

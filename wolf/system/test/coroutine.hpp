@@ -29,8 +29,7 @@ BOOST_AUTO_TEST_CASE(coroutine_test) {
             [&]() -> boost::asio::awaitable<void> {
               using namespace boost::asio::experimental::awaitable_operators;
 
-              auto _coro = [](_In_ bool p_abort) noexcept
-                  -> boost::asio::awaitable<std::errc> {
+              auto _coro = [](_In_ bool p_abort) noexcept -> boost::asio::awaitable<std::errc> {
                 if (p_abort) {
                   co_return std::errc::connection_aborted;
                 }

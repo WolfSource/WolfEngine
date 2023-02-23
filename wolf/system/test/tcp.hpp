@@ -39,15 +39,13 @@ BOOST_AUTO_TEST_CASE(tcp_server_timeout_test) {
       _io, std::move(_endpoint), std::move(timeout), std::move(_opts),
       [](const std::string &p_conn_id, w_buffer &p_mut_data) -> auto{
         std::cout << "tcp server just got: /'" << p_mut_data.to_string() << "/'"
-                  << " and " << p_mut_data.used_bytes
-                  << " bytes from connection id: " << p_conn_id << std::endl;
+                  << " and " << p_mut_data.used_bytes << " bytes from connection id: " << p_conn_id
+                  << std::endl;
         return boost::system::errc::connection_aborted;
       },
-      [](const std::string &p_conn_id,
-         const boost::system::system_error &p_error) {
-        std::cout << "timeout for connection: " << p_conn_id << " because of "
-                  << p_error.what() << "error code: " << p_error.code()
-                  << std::endl;
+      [](const std::string &p_conn_id, const boost::system::system_error &p_error) {
+        std::cout << "timeout for connection: " << p_conn_id << " because of " << p_error.what()
+                  << "error code: " << p_error.code() << std::endl;
       });
   _io.run();
 
@@ -131,9 +129,8 @@ BOOST_AUTO_TEST_CASE(tcp_read_write_test) {
         auto _timer = w_timer(_io);
 
         _timer.expires_after(_timeout);
-        auto _resolve_res =
-            co_await (_timer.async_wait(boost::asio::use_awaitable) ||
-                      _client.async_resolve("127.0.0.1", 8080));
+        auto _resolve_res = co_await (_timer.async_wait(boost::asio::use_awaitable) ||
+                                      _client.async_resolve("127.0.0.1", 8080));
         // expect resolve
         BOOST_REQUIRE(_resolve_res.index() == 1);
 
@@ -142,9 +139,8 @@ BOOST_AUTO_TEST_CASE(tcp_read_write_test) {
 
         const auto _endpoint = _endpoints.cbegin()->endpoint();
 
-        auto _conn_res =
-            co_await (_timer.async_wait(boost::asio::use_awaitable) ||
-                      _client.async_connect(_endpoint, _opts));
+        auto _conn_res = co_await (_timer.async_wait(boost::asio::use_awaitable) ||
+                                   _client.async_connect(_endpoint, _opts));
         // expect the connection
         BOOST_REQUIRE(_conn_res.index() == 1);
 
@@ -164,8 +160,8 @@ BOOST_AUTO_TEST_CASE(tcp_read_write_test) {
           BOOST_REQUIRE(_res.index() == 1);
           _recv_buffer.used_bytes = std::get<1>(_res);
 
-          BOOST_REQUIRE(_recv_buffer.used_bytes == 10);            // hello-back
-          BOOST_REQUIRE(_recv_buffer.to_string() == "hello-back"); // hello-back
+          BOOST_REQUIRE(_recv_buffer.used_bytes == 10);             // hello-back
+          BOOST_REQUIRE(_recv_buffer.to_string() == "hello-back");  // hello-back
         }
 
         _send_buffer.from_string("exit");
@@ -185,8 +181,7 @@ BOOST_AUTO_TEST_CASE(tcp_read_write_test) {
   // command from client
   w_tcp_server::run(
       _io, std::move(_endpoint), _timeout, std::move(_opts),
-      [](_In_ const std::string &p_conn_id,
-         _Inout_ w_buffer &p_mut_data) -> auto{
+      [](_In_ const std::string &p_conn_id, _Inout_ w_buffer &p_mut_data) -> auto{
         // close on overflow
         if (p_mut_data.used_bytes > 1025) {
           return boost::system::errc::connection_aborted;
@@ -194,8 +189,8 @@ BOOST_AUTO_TEST_CASE(tcp_read_write_test) {
 
         auto _reply = std::string(p_mut_data.buf.data(), p_mut_data.used_bytes);
 
-        std::cout << "tcp server just got: \"" << _reply
-                  << "\" from connection id: " << p_conn_id << std::endl;
+        std::cout << "tcp server just got: \"" << _reply << "\" from connection id: " << p_conn_id
+                  << std::endl;
 
         if (_reply == "exit") {
           return boost::system::errc::connection_aborted;
@@ -204,11 +199,9 @@ BOOST_AUTO_TEST_CASE(tcp_read_write_test) {
         p_mut_data.from_string(_reply);
         return boost::system::errc::success;
       },
-      [&](const std::string &p_conn_id,
-          const boost::system::system_error &p_error) {
-        std::cout << "error happened for connection: " << p_conn_id
-                  << " because of " << p_error.what()
-                  << " error code: " << p_error.code() << std::endl;
+      [&](const std::string &p_conn_id, const boost::system::system_error &p_error) {
+        std::cout << "error happened for connection: " << p_conn_id << " because of "
+                  << p_error.what() << " error code: " << p_error.code() << std::endl;
         _io.stop();
       });
 

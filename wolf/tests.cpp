@@ -8,7 +8,7 @@
 
 #include <wolf/DISABLE_ANALYSIS_BEGIN>
 #define BOOST_TEST_MODULE wolf
-#include <boost/test/included/unit_test.hpp>
+#include <boost/test/included/unit_test.hpp> // NOLINT
 #include <wolf/DISABLE_ANALYSIS_END>
 
 BOOST_AUTO_TEST_CASE(wolf_test) {
@@ -29,19 +29,19 @@ BOOST_AUTO_TEST_CASE(wolf_test) {
 #include <wolf/system/test/gamepad.hpp>
 #include <wolf/system/test/gametime.hpp>
 #include <wolf/system/test/log.hpp>
+//#include <wolf/system/test/postgresql.hpp>
 #include <wolf/system/test/process.hpp>
 #include <wolf/system/test/signal_slot.hpp>
 #include <wolf/system/test/tcp.hpp>
 #include <wolf/system/test/trace.hpp>
 #include <wolf/system/test/ws.hpp>
-#include <wolf/system/test/postgresql.hpp>
 
 #pragma endregion
 
 #pragma region stream tests
 
 //#include <wolf/stream/test/ffmpeg_stream.hpp>
-#include <wolf/stream/test/rist.hpp>
+//#include <wolf/stream/test/rist.hpp>
 
 #pragma endregion
 

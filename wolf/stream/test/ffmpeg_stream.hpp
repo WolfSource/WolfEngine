@@ -22,8 +22,7 @@ BOOST_AUTO_TEST_CASE(ffmpeg_stream_test) {
   using w_av_set_opt = wolf::media::ffmpeg::w_av_set_opt;
   const auto _opt = std::vector<w_av_set_opt>();
 
-  constexpr auto _url =
-      "srt://127.0.0.1:554?mode=caller&transtype=live&timeout=5000000";
+  constexpr auto _url = "srt://127.0.0.1:554?mode=caller&transtype=live&timeout=5000000";
 
   boost::leaf::try_handle_all(
       [&]() -> boost::leaf::result<void> {
@@ -47,14 +46,13 @@ BOOST_AUTO_TEST_CASE(ffmpeg_stream_test) {
         wolf::media::ffmpeg::w_av_frame _av_audio_frame = {};
         wolf::media::ffmpeg::w_av_config _audio_config = {};
         wolf::media::w_openal_config _openal_config = {};
-        //wolf::media::w_openal _openal = {};
+        // wolf::media::w_openal _openal = {};
         auto _width = 0;
         auto _height = 0;
 
-        auto _on_frame_cb = [&](const w_av_packet &p_packet,
-                                const std::vector<AVStream *> &p_streams,
-                                const int p_video_stream_index,
-                                const int p_audio_stream_index) -> bool {
+        auto _on_frame_cb =
+            [&](const w_av_packet &p_packet, const std::vector<AVStream *> &p_streams,
+                const int p_video_stream_index, const int p_audio_stream_index) -> bool {
           const auto _stream_index = p_packet.get_stream_index();
           if (_stream_index == p_video_stream_index) {
             std::cout << "got video frame" << std::endl;
@@ -65,19 +63,9 @@ BOOST_AUTO_TEST_CASE(ffmpeg_stream_test) {
               _height = p_streams[p_video_stream_index]->codecpar->height;
 
               const auto _codec_id = _codec_param->codec_id;
-              const auto _fmt =
-                  gsl::narrow_cast<AVPixelFormat>(_codec_param->format);
+              const auto _fmt = gsl::narrow_cast<AVPixelFormat>(_codec_param->format);
 
-              const auto _config = w_av_config{
-                  // the format of av frame
-                  _fmt,
-                  // the width of av frame
-                  _width,
-                  // the height of av frame
-                  _height,
-                  // data alignment
-                  1,
-              };
+              const auto _config = w_av_config(_fmt, _width, _height);
 
               const auto _codec_opt = w_av_codec_opt{
                   _codec_param->bit_rate, /*bitrate*/
@@ -89,10 +77,9 @@ BOOST_AUTO_TEST_CASE(ffmpeg_stream_test) {
                   -1,                     /*thread_count*/
               };
 
-              auto _decoder_res =
-                  w_ffmpeg::create_decoder(_config, _codec_id, _codec_opt);
+              auto _decoder_res = w_ffmpeg::create_decoder(_config, _codec_id, _codec_opt);
               if (_decoder_res.has_error()) {
-                return false; // close it
+                return false;  // close it
               }
 
               _video_decoder = std::move(_decoder_res.value());
@@ -102,7 +89,7 @@ BOOST_AUTO_TEST_CASE(ffmpeg_stream_test) {
               auto _decoded_frame_res = _av_video_frame.init();
               if (_decoded_frame_res.has_error()) {
                 std::cout << "could not initialize decoder" << std::endl;
-                return false; // close it
+                return false;  // close it
               }
 
               _video_initialized = true;
@@ -112,25 +99,15 @@ BOOST_AUTO_TEST_CASE(ffmpeg_stream_test) {
             if (_res.has_error()) {
               std::cout << "could not decode" << std::endl;
             } else {
-              const auto _dst_config = w_av_config{
-                  // the format of av frame
-                  AVPixelFormat::AV_PIX_FMT_RGBA,
-                  // the width of av frame
-                  _width,
-                  // the height of av frame
-                  _height,
-                  // data alignment
-                  1,
-              };
+              const auto _dst_config = w_av_config(AVPixelFormat::AV_PIX_FMT_RGBA, _width, _height);
 
               auto _rgba_frame = _av_video_frame.convert_video(_dst_config);
               if (_rgba_frame.has_error()) {
-                std::cout << "could not convert av video frame to rgb frame"
-                          << std::endl;
+                std::cout << "could not convert av video frame to rgb frame" << std::endl;
               } else {
                 const auto _path = std::filesystem::current_path().append(
                     "/" + std::to_string(_index++) + "_rist_decoded.png");
-               // _rgba_frame.value().save_to_img_file(_path);
+                // _rgba_frame.value().save_to_img_file(_path);
                 std::cout << "rgb frame created" << std::endl;
               }
             }
@@ -146,14 +123,13 @@ BOOST_AUTO_TEST_CASE(ffmpeg_stream_test) {
 
               const auto _codec_opt = w_av_codec_opt{};
 
-              auto _decoder_res = w_ffmpeg::create_decoder(
-                  _audio_config, _codec_id, _codec_opt);
+              auto _decoder_res = w_ffmpeg::create_decoder(_audio_config, _codec_id, _codec_opt);
               if (_decoder_res.has_error()) {
-                return false; // close it
+                return false;  // close it
               }
 
-              _audio_config.sample_fmts = gsl::narrow_cast<AVSampleFormat>(
-                  *_decoder_res->ctx.codec->sample_fmts);
+              _audio_config.sample_fmts =
+                  gsl::narrow_cast<AVSampleFormat>(*_decoder_res->ctx.codec->sample_fmts);
               _audio_decoder = std::move(_decoder_res.value());
 
               // create destination avframe for decoder
@@ -161,18 +137,18 @@ BOOST_AUTO_TEST_CASE(ffmpeg_stream_test) {
               auto _decoded_frame_res = _av_audio_frame.init();
               if (_decoded_frame_res.has_error()) {
                 std::cout << "could not initialize decoder" << std::endl;
-                return false; // close it
+                return false;  // close it
               }
 
-              _openal_config = {AL_FORMAT_STEREO16, _audio_config.sample_rate,
-                                25, _audio_config.channels};
+              _openal_config = {AL_FORMAT_STEREO16, _audio_config.sample_rate, 25,
+                                _audio_config.channels};
 
-              //auto _ret = _openal.init(_openal_config);
+              // auto _ret = _openal.init(_openal_config);
 
-              //if (_ret.has_error()) {
-              //  std::cout << "could not initialize openal" << std::endl;
-              //  return false; // close it
-              //}
+              // if (_ret.has_error()) {
+              //   std::cout << "could not initialize openal" << std::endl;
+              //   return false; // close it
+              // }
 
               _audio_initialized = true;
             }
@@ -182,13 +158,10 @@ BOOST_AUTO_TEST_CASE(ffmpeg_stream_test) {
               std::cout << "could not decode" << std::endl;
             } else {
               auto _frame = _av_audio_frame.get();
-              std::cout << "audio size: "
-                        << gsl::narrow_cast<int>(*std::get<1>(_frame))
+              std::cout << "audio size: " << gsl::narrow_cast<int>(*std::get<1>(_frame))
                         << std::endl;
 
               auto _dst_config = _audio_config;
-              _dst_config.sample_fmts = AV_SAMPLE_FMT_S16;
-              _dst_config.channel_layout = AV_CH_LAYOUT_STEREO;
 
               auto _audio_frame = _av_audio_frame.convert_audio(_dst_config);
               if (_audio_frame.has_error()) {
@@ -200,7 +173,7 @@ BOOST_AUTO_TEST_CASE(ffmpeg_stream_test) {
                 auto _data = std::get<0>(_content);
                 auto _size = std::get<1>(_content);
 
-                if (_data  && *_data && _size) {
+                if (_data && *_data && _size) {
                   /*const auto _ret = _openal.update(
                       gsl::narrow_cast<const uint8_t *>(*_data), *_size);
                   if (_ret.has_error()) {

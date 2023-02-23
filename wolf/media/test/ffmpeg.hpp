@@ -21,26 +21,22 @@ using w_av_packet = wolf::media::ffmpeg::w_av_packet;
 using w_ffmpeg = wolf::media::ffmpeg::w_ffmpeg;
 
 static boost::leaf::result<
-    std::tuple<w_av_packet, const w_av_config, const w_av_config>>
-s_encode(_In_ const std::string &p_name,
-         _In_ std::variant<const char *, AVCodecID> &p_codec_id,
-         _In_ const w_av_codec_opt &p_codec_options,
-         _In_ const std::vector<w_av_set_opt> &p_av_set_options,
-         _In_ const bool p_flush = true) {
+    std::tuple<w_av_packet, const w_av_config, const w_av_config>> s_encode(
+    _In_ const std::string &p_name, _In_ std::variant<const char *, AVCodecID> &p_codec_id,
+    _In_ const w_av_codec_opt &p_codec_options,
+    _In_ const std::vector<w_av_set_opt> &p_av_set_options, _In_ const bool p_flush = true) {
   // namespaces
   using w_encoder = wolf::media::ffmpeg::w_encoder;
 
   // create av frame from img
-  const auto _current_dir =
-      std::filesystem::current_path().append("../../content/texture/rgb.png");
+  const auto _current_dir = std::filesystem::current_path().append("../../content/texture/rgb.png");
   BOOST_LEAF_AUTO(_src_frame,
-                  w_av_frame::load_from_img_file(
-                      _current_dir, AVPixelFormat::AV_PIX_FMT_RGBA));
+                  w_av_frame::load_from_img_file(_current_dir, AVPixelFormat::AV_PIX_FMT_RGBA));
 
   // source & destination configs
   const auto _src_config = _src_frame.get_config();
-  const auto _dst_config = w_av_config{AVPixelFormat::AV_PIX_FMT_YUV420P,
-                                       _src_config.width, _src_config.height};
+  const auto _dst_config =
+      w_av_config{AVPixelFormat::AV_PIX_FMT_YUV420P, _src_config.width, _src_config.height};
 
   // convert source frame to yuv frame
   BOOST_LEAF_AUTO(_yuv_frame, _src_frame.convert_video(_dst_config));
@@ -49,12 +45,12 @@ s_encode(_In_ const std::string &p_name,
   boost::leaf::result<w_encoder> _encoder_res;
   if (p_codec_id.index() == 0) {
     auto _codec_id = std::get<0>(p_codec_id);
-    _encoder_res = w_ffmpeg::create_encoder(_dst_config, _codec_id,
-                                            p_codec_options, p_av_set_options);
+    _encoder_res =
+        w_ffmpeg::create_encoder(_dst_config, _codec_id, p_codec_options, p_av_set_options);
   } else {
     const auto _codec_id = std::get<1>(p_codec_id);
-    _encoder_res = w_ffmpeg::create_encoder(_dst_config, _codec_id,
-                                            p_codec_options, p_av_set_options);
+    _encoder_res =
+        w_ffmpeg::create_encoder(_dst_config, _codec_id, p_codec_options, p_av_set_options);
   }
 
   // check encoder
@@ -65,11 +61,9 @@ s_encode(_In_ const std::string &p_name,
 
   const auto _encoded_path =
       std::filesystem::current_path().append("/" + p_name + "_yuv_encoded.png");
-  BOOST_LEAF_AUTO(final_encoded_result,
-                  _yuv_frame.save_to_img_file(_encoded_path));
+  BOOST_LEAF_AUTO(final_encoded_result, _yuv_frame.save_to_img_file(_encoded_path));
 
-  return std::make_tuple(std::move(_packet), std::move(_src_config),
-                         std::move(_dst_config));
+  return std::make_tuple(std::move(_packet), std::move(_src_config), std::move(_dst_config));
 }
 
 static boost::leaf::result<void> s_decode(
@@ -143,12 +137,10 @@ BOOST_AUTO_TEST_CASE(av1_encode_decode_test) {
         };
 
         std::variant<const char *, AVCodecID> _encode_codec_id("libsvtav1");
-        BOOST_LEAF_AUTO(_encoded_tuple,
-                        s_encode(_name, _encode_codec_id, _codec_opt, _opts));
+        BOOST_LEAF_AUTO(_encoded_tuple, s_encode(_name, _encode_codec_id, _codec_opt, _opts));
 
         std::variant<const char *, AVCodecID> _decode_codec_id("libdav1d");
-        BOOST_LEAF_CHECK(
-            s_decode(_encoded_tuple, _name, _decode_codec_id, _codec_opt, {}));
+        BOOST_LEAF_CHECK(s_decode(_encoded_tuple, _name, _decode_codec_id, _codec_opt, {}));
 
         return {};
       },
@@ -185,13 +177,10 @@ BOOST_AUTO_TEST_CASE(vp9_encode_decode_test) {
         // for more info read https://trac.ffmpeg.org/wiki/Encode/VP9
         const auto _opts = std::vector<w_av_set_opt>();
 
-        std::variant<const char *, AVCodecID> _codec_id(
-            AVCodecID::AV_CODEC_ID_VP9);
-        BOOST_LEAF_AUTO(_encoded_tuple,
-                        s_encode(_name, _codec_id, _codec_opt, _opts));
+        std::variant<const char *, AVCodecID> _codec_id(AVCodecID::AV_CODEC_ID_VP9);
+        BOOST_LEAF_AUTO(_encoded_tuple, s_encode(_name, _codec_id, _codec_opt, _opts));
 
-        BOOST_LEAF_CHECK(
-            s_decode(_encoded_tuple, _name, _codec_id, _codec_opt, {}));
+        BOOST_LEAF_CHECK(s_decode(_encoded_tuple, _name, _codec_id, _codec_opt, {}));
 
         return {};
       },
@@ -230,13 +219,10 @@ BOOST_AUTO_TEST_CASE(x264_encode_decode_test) {
             w_av_set_opt{"profile", "main"}, w_av_set_opt{"preset", "veryfast"},
             w_av_set_opt{"tune", "zerolatency"}, w_av_set_opt{"crf", 22}};
 
-        std::variant<const char *, AVCodecID> _codec_id(
-            AVCodecID::AV_CODEC_ID_H264);
-        BOOST_LEAF_AUTO(_encoded_tuple,
-                        s_encode(_name, _codec_id, _codec_opt, _opts));
+        std::variant<const char *, AVCodecID> _codec_id(AVCodecID::AV_CODEC_ID_H264);
+        BOOST_LEAF_AUTO(_encoded_tuple, s_encode(_name, _codec_id, _codec_opt, _opts));
 
-        BOOST_LEAF_CHECK(
-            s_decode(_encoded_tuple, _name, _codec_id, _codec_opt, {}, true));
+        BOOST_LEAF_CHECK(s_decode(_encoded_tuple, _name, _codec_id, _codec_opt, {}, true));
 
         return {};
       },

@@ -20,7 +20,7 @@ namespace wolf::system {
 template <typename T>
   requires std::is_integral_v<T>
 class w_ring_buffer_spsc {
-public:
+ public:
   using value_type = std::remove_cvref_t<T>;
 
   w_ring_buffer_spsc() noexcept = default;
@@ -38,8 +38,7 @@ public:
     _size = size;
     _buffer = std::make_unique<value_type[]>(size);
     if (!_buffer) {
-      return W_FAILURE(std::errc::not_enough_memory,
-                       "could not allocate ring buffer memory");
+      return W_FAILURE(std::errc::not_enough_memory, "could not allocate ring buffer memory");
     }
 
     return 0;
@@ -95,7 +94,7 @@ public:
       head = more;
     }
 
-    _head_offset = head; // update real head offset...
+    _head_offset = head;  // update real head offset...
 
     return amount;
   }
@@ -130,26 +129,24 @@ public:
       tail = more;
     }
 
-    _tail_offset = tail; // update real tail offset...
+    _tail_offset = tail;  // update real tail offset...
 
     return amount;
   }
 
-private:
+ private:
   // copy conclassor.
   w_ring_buffer_spsc(const w_ring_buffer_spsc &) = delete;
   // copy assignment operator.
   w_ring_buffer_spsc &operator=(const w_ring_buffer_spsc &) = delete;
 
-  std::size_t _size = 0; //< total/maximum size that buffer can hold.
+  std::size_t _size = 0;  //< total/maximum size that buffer can hold.
   std::unique_ptr<value_type[]> _buffer{nullptr};
 
-  alignas(std::hardware_destructive_interference_size)
-      std::atomic<std::size_t> _head_offset =
-          0; //< starting point of valid data in circular buffer.
+  alignas(std::hardware_destructive_interference_size) std::atomic<std::size_t> _head_offset =
+      0;  //< starting point of valid data in circular buffer.
 
-  alignas(std::hardware_destructive_interference_size) std::atomic<
-      std::size_t> _tail_offset =
-      0; //< end point of valid data in circular buffer. (tail-1 = last byte)
+  alignas(std::hardware_destructive_interference_size) std::atomic<std::size_t> _tail_offset =
+      0;  //< end point of valid data in circular buffer. (tail-1 = last byte)
 };
-} // namespace wolf::system
+}  // namespace wolf::system

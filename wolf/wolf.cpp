@@ -30,10 +30,9 @@ static void w_signal_handler(int p_signum) {
 
 #ifdef __clang__
 #pragma unroll
-#endif // __clang__
+#endif  // __clang__
   for (const auto &trace : boost::stacktrace::stacktrace()) {
-    _traces << "name: " << trace.name()
-            << " source_file: " << trace.source_file() << "("
+    _traces << "name: " << trace.name() << " source_file: " << trace.source_file() << "("
             << std::to_string(trace.source_line()) << ")\r\n";
   }
 
@@ -64,8 +63,7 @@ std::string wolf::w_init() {
   // for debugging
   constexpr auto WOLF_DEBUG_VERSION = 0;
 
-  auto _version =
-      wolf::format("v{}.{}.{}.{}", WOLF_MAJOR_VERSION, WOLF_MINOR_VERSION,
-                   WOLF_PATCH_VERSION, WOLF_DEBUG_VERSION);
+  auto _version = wolf::format("v{}.{}.{}.{}", WOLF_MAJOR_VERSION, WOLF_MINOR_VERSION,
+                               WOLF_PATCH_VERSION, WOLF_DEBUG_VERSION);
   return _version;
 }

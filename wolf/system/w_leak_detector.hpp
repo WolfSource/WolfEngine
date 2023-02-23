@@ -13,13 +13,13 @@
 
 namespace wolf::system {
 class w_leak_detector {
-public:
+ public:
   // default constructor
   W_API w_leak_detector() noexcept;
   // destructor
   W_API virtual ~w_leak_detector() noexcept;
 
-private:
+ private:
   // move constructor
   w_leak_detector(w_leak_detector &&p_src) noexcept = delete;
   // move assignment operator.
@@ -33,4 +33,4 @@ private:
   _CrtMemState _mem_state;
 #endif
 };
-} // namespace wolf::system
+}  // namespace wolf::system

@@ -27,9 +27,8 @@ BOOST_AUTO_TEST_CASE(rist_data_block_test) {
     _data_block.set(_block);
     auto _new_block = _data_block.get();
 
-    const auto new_msg = std::string_view(
-        gsl::narrow_cast<const char *>(std::get<0>(_new_block)),
-        std::get<1>(_new_block));
+    const auto new_msg = std::string_view(gsl::narrow_cast<const char *>(std::get<0>(_new_block)),
+                                          std::get<1>(_new_block));
     BOOST_REQUIRE(new_msg == "hello");
   }
 
@@ -49,15 +48,14 @@ BOOST_AUTO_TEST_CASE(rist_sender_receiver_test) {
   constexpr auto _mode = rist_profile::RIST_PROFILE_MAIN;
   constexpr auto _loss = 0;
 
-   std::thread thread_sender([&]() {
-     boost::leaf::try_handle_all(
-         [&]() -> boost::leaf::result<void> {
-           // create a rist sender
-           auto _sender = w_rist(rist_ctx_mode::RIST_SENDER_MODE, _mode,
-           _loss,
-                                 rist_log_level::RIST_LOG_DEBUG);
-           auto _ret = _sender.init();
-           BOOST_REQUIRE(_ret.has_error() == false);
+  std::thread thread_sender([&]() {
+    boost::leaf::try_handle_all(
+        [&]() -> boost::leaf::result<void> {
+          // create a rist sender
+          auto _sender =
+              w_rist(rist_ctx_mode::RIST_SENDER_MODE, _mode, _loss, rist_log_level::RIST_LOG_DEBUG);
+          auto _ret = _sender.init();
+          BOOST_REQUIRE(_ret.has_error() == false);
 
           constexpr auto _url =
               "rist://"
@@ -71,11 +69,8 @@ BOOST_AUTO_TEST_CASE(rist_sender_receiver_test) {
           static std::once_flag _once_flag;
 
           for (;;) {
-
-            std::string _msg =
-                "hello from RIST stream: #" + std::to_string(_index++);
-            const auto _block =
-                std::make_tuple((void *)_msg.data(), _msg.size());
+            std::string _msg = "hello from RIST stream: #" + std::to_string(_index++);
+            const auto _block = std::make_tuple((void *)_msg.data(), _msg.size());
 
             auto _data_block = w_rist_data_block();
             _data_block.set(_block);
@@ -84,8 +79,7 @@ BOOST_AUTO_TEST_CASE(rist_sender_receiver_test) {
             BOOST_REQUIRE(_sent.has_error() == false);
 
             const auto t1 = std::chrono::high_resolution_clock::now();
-            if (std::chrono::duration_cast<std::chrono::seconds>(t1 - t0) >
-                _timeout_in_sec) {
+            if (std::chrono::duration_cast<std::chrono::seconds>(t1 - t0) > _timeout_in_sec) {
               break;
             }
             std::this_thread::sleep_for(std::chrono::duration(1ms));
@@ -106,15 +100,14 @@ BOOST_AUTO_TEST_CASE(rist_sender_receiver_test) {
   std::thread thread_receiver([&]() {
     std::this_thread::sleep_for(std::chrono::duration(1s));
 
-    auto _receiver = w_rist(rist_ctx_mode::RIST_RECEIVER_MODE, _mode, _loss,
-                            rist_log_level::RIST_LOG_DEBUG);
+    auto _receiver =
+        w_rist(rist_ctx_mode::RIST_RECEIVER_MODE, _mode, _loss, rist_log_level::RIST_LOG_DEBUG);
     auto _ret = _receiver.init();
     BOOST_REQUIRE(_ret.has_error() == false);
 
-    _receiver.on_receiver_data_callback =
-        [](_In_ const w_rist_data_block &p_data_block) {
-          std::cout << p_data_block.to_string() << std::endl;
-        };
+    _receiver.on_receiver_data_callback = [](_In_ const w_rist_data_block &p_data_block) {
+      std::cout << p_data_block.to_string() << std::endl;
+    };
 
     constexpr auto url =
         "rist://@"
@@ -127,8 +120,7 @@ BOOST_AUTO_TEST_CASE(rist_sender_receiver_test) {
     const auto t0 = std::chrono::high_resolution_clock::now();
     for (;;) {
       const auto t1 = std::chrono::high_resolution_clock::now();
-      if (std::chrono::duration_cast<std::chrono::seconds>(t1 - t0) >
-          _timeout_in_sec) {
+      if (std::chrono::duration_cast<std::chrono::seconds>(t1 - t0) > _timeout_in_sec) {
         break;
       }
       std::this_thread::sleep_for(std::chrono::duration(1ms));

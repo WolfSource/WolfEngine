@@ -22,19 +22,16 @@ BOOST_AUTO_TEST_CASE(image_load_save_test) {
         using w_image = wolf::media::w_image;
         using w_image_data = wolf::media::w_image_data;
 
-        auto _rgb_file = std::filesystem::current_path().append(
-            "../../content/texture/rgb.png");
+        auto _rgb_file = std::filesystem::current_path().append("../../content/texture/rgb.png");
         auto _src_image_res = w_image::load(_rgb_file, 0);
-        // POOYA: don't use BOOST_LEAF_AUTO directly, because CodeCov might break 
+        // POOYA: don't use BOOST_LEAF_AUTO directly, because CodeCov might break
         if (!_src_image_res.has_error()) {
           BOOST_LEAF_AUTO(_src_image, std::move(_src_image_res));
-          const auto _bmp_path =
-              std::filesystem::current_path().append("/rgb_bmp.png");
+          const auto _bmp_path = std::filesystem::current_path().append("/rgb_bmp.png");
           BOOST_LEAF_CHECK(w_image::save_bmp(_bmp_path, _src_image));
 
           constexpr auto _quality = 90;
-          const auto _jpg_path =
-              std::filesystem::current_path().append("/rgb_jpg.png");
+          const auto _jpg_path = std::filesystem::current_path().append("/rgb_jpg.png");
           BOOST_LEAF_CHECK(w_image::save_jpg(_jpg_path, _src_image, _quality));
         }
 

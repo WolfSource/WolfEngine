@@ -10,11 +10,11 @@
 #include <wolf/wolf.hpp>
 
 namespace wolf::system {
-constexpr auto MAX_DELTA_TIME_IN_SECS = 60000.0; // 60 minutes
+constexpr auto MAX_DELTA_TIME_IN_SECS = 60000.0;  // 60 minutes
 constexpr auto TARGET_ELAPSED_SECS = 1.0 / 60.0;
 
 class w_gametime {
-public:
+ public:
   // default constructor
   W_API w_gametime() noexcept = default;
 
@@ -43,14 +43,13 @@ public:
 
   W_API void set_target_elapsed_secs(double p_value) noexcept;
 
-  template <typename F> W_API void tick(F &&p_tick_function) {
+  template <typename F>
+  W_API void tick(F &&p_tick_function) {
     using namespace std::chrono;
 
     // Query the current time.
     const auto current_time = steady_clock::now();
-    auto delta =
-        duration<double, std::milli>(current_time - this->_last_time).count() /
-        1000.000;
+    auto delta = duration<double, std::milli>(current_time - this->_last_time).count() / 1000.000;
 
     this->_last_time = current_time;
     this->_secs_counter += delta;
@@ -73,8 +72,7 @@ public:
          zero to leave things running smoothly.
       */
       constexpr auto quarter_of_one_milli_in_sec = 0.0004;
-      if (std::abs(delta - this->_target_elapsed_secs) <
-          quarter_of_one_milli_in_sec) {
+      if (std::abs(delta - this->_target_elapsed_secs) < quarter_of_one_milli_in_sec) {
         delta = this->_target_elapsed_secs;
       }
 
@@ -85,7 +83,6 @@ public:
 #pragma unroll
 #endif
       while (this->_left_over_ticks >= this->_target_elapsed_secs) {
-
         this->_total_secs += this->_target_elapsed_secs;
         this->_left_over_ticks -= this->_target_elapsed_secs;
 
@@ -116,7 +113,7 @@ public:
     tick([] {});
   }
 
-private:
+ private:
   // copy constructor.
   w_gametime(const w_gametime &) = delete;
   // copy assignment operator.
@@ -134,7 +131,6 @@ private:
   uint32_t _frames_count = 0;
   uint32_t _frames_this_sec = 0;
 
-  std::chrono::steady_clock::time_point _last_time = {
-      std::chrono::steady_clock::now()};
+  std::chrono::steady_clock::time_point _last_time = {std::chrono::steady_clock::now()};
 };
-} // namespace wolf::system
+}  // namespace wolf::system

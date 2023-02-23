@@ -19,7 +19,21 @@ extern "C" {
 
 namespace wolf::media::ffmpeg {
 
-struct w_av_config {
+class w_av_config {
+ public:
+  W_API w_av_config(_In_ AVPixelFormat p_format = AVPixelFormat::AV_PIX_FMT_NONE,
+                    _In_ int p_width = 0, _In_ int p_height = 0) noexcept
+      : format(p_format), width(p_width), height(p_height) {
+    av_channel_layout_default(&this->channel_layout, 2);
+  }
+
+  W_API ~w_av_config() noexcept { av_channel_layout_uninit(&this->channel_layout); }
+
+  /**
+   * @returns the required buffer size for frame
+   */
+  W_API int get_required_buffer_size() noexcept;
+
   // the format of av frame
   AVPixelFormat format = AVPixelFormat::AV_PIX_FMT_NONE;
   // the width of av frame
@@ -28,19 +42,12 @@ struct w_av_config {
   int height = 0;
   // data alignment
   int alignment = 1;
-  // the number of audio channels
-  int channels = 0;
   // the sample rate of the audio
-  int sample_rate = 0;
+  int sample_rate = 44100;
   // the sample format of the audio
-  AVSampleFormat sample_fmts;
+  AVSampleFormat sample_fmts = AV_SAMPLE_FMT_S16;
   // the channel layout of the audio
-  int channel_layout;
-
-  /**
-   * @returns the required buffer size for frame
-   */
-  W_API int get_required_buffer_size() noexcept;
+  AVChannelLayout channel_layout;
 };
 
 class w_decoder;
@@ -86,7 +93,7 @@ public:
    * @param p_alignment, the alignment
    * @returns zero on success
    */
-  W_API boost::leaf::result<int> set(_Inout_ uint8_t **p_data) noexcept;
+  W_API boost::leaf::result<int> set(_Inout_ std::optional<uint8_t **> p_data = {}) noexcept;
 
   /**
    * set the AVFrame's pts
@@ -116,7 +123,7 @@ public:
    */
   W_API
   boost::leaf::result<w_av_frame>
-  convert_audio(_In_ const w_av_config &p_dst_config);
+  convert_audio(_In_ w_av_config &p_dst_config);
 
   /**
    * @returns av_config
