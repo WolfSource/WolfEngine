@@ -51,7 +51,7 @@ jobs:
           echo "C:\Program Files\OpenCppCoverage" >> $env:GITHUB_PATH
 
       - name: Configure CMake
-        run: cmake -DCMAKE_BUILD_TYPE=Dbug -B ${{ env.build }}
+        run: cmake -DCMAKE_BUILD_TYPE=Debug -B ${{ env.build }}
 
       # Build is not required for MSVC Code Analysis and will be used for Codecov
       - name: Build CMake
