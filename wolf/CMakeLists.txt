@@ -94,7 +94,7 @@ option(WOLF_SYSTEM_STACKTRACE "Enable boost stacktrace" OFF)
 option(WOLF_SYSTEM_POSTGRESQL "Enable postgresql database client" OFF)
 
 # machine learing modules
-option(WOLF_ML_OCR "Enable machine learning referee ocr" OFF)
+option(WOLF_ML_OCR "Enable machine learning referee ocr" ON)
 option(WOLF_ML_NUDITY_DETECTION "Enable machine learning nudity detection" OFF)
 
 #option(WOLF_ENABLE_LTO "Enable cross language linking time optimization" OFF)
