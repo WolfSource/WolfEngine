@@ -12,11 +12,6 @@ message("CXX Compiler ID is ${CMAKE_CXX_COMPILER_ID}")
 # set the options and enviroment variables
 #set(WEBRTC_SRC $ENV{WEBRTC_ROOT} CACHE STRING "path to the root folder of webrtc folder")
 
-# Set the default build type to "Debug" if it's not specified
-if(NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "Choose the type of build: Debug or Release")
-endif()
-
 # check the OS
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
     if (WIN32)
