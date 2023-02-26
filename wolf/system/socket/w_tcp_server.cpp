@@ -4,6 +4,9 @@
 #include <random>
 
 #include "DISABLE_ANALYSIS_BEGIN"
+#ifdef WOLF_SYSTEM_SSL
+    #include <boost/asio/ssl.hpp>
+#endif
 #include <boost/asio/experimental/awaitable_operators.hpp>
 #include "DISABLE_ANALYSIS_END"
 
@@ -89,12 +92,11 @@ s_session(const boost::asio::io_context &p_io_context, tcp::socket p_socket,
   co_return;
 }
 
-static boost::asio::awaitable<void>
-s_listen(_In_ const boost::asio::io_context &p_io_context,
-         _In_ tcp::endpoint &p_endpoint, _In_ const steady_clock::duration &p_timeout,
-         _In_ w_socket_options &p_socket_options,
-         _In_ w_session_on_data_callback p_on_data_callback,
-         _In_ w_session_on_error_callback p_on_error_callback) noexcept {
+static boost::asio::awaitable<void> s_listen(
+    _In_ const boost::asio::io_context &p_io_context, _In_ tcp::endpoint &p_endpoint,
+    _In_ const steady_clock::duration &p_timeout, _In_ w_socket_options &p_socket_options,
+    _In_ w_session_on_data_callback p_on_data_callback,
+    _In_ w_session_on_error_callback p_on_error_callback) noexcept {
   // create acceptor from this coroutine
   auto _executor = co_await boost::asio::this_coro::executor;
   tcp::acceptor _acceptor(_executor, p_endpoint);
@@ -109,40 +111,43 @@ s_listen(_In_ const boost::asio::io_context &p_io_context,
 #pragma unroll
 #endif
   while (!p_io_context.stopped()) {
-    tcp::socket _socket =
-        co_await _acceptor.async_accept(boost::asio::use_awaitable);
-
+    tcp::socket _socket = co_await _acceptor.async_accept(boost::asio::use_awaitable);
     p_socket_options.set_to_socket(_socket);
+
+    //auto _ssl_session = boost::asio::ssl::stream<tcp::socket>(std::move(_socket), _ssl_context);
 
     // spawn a coroutinue for handling session
     co_spawn(_executor,
-             s_session(p_io_context, std::move(_socket), p_timeout,
-                       p_on_data_callback,
+             s_session(p_io_context, std::move(_socket), p_timeout, p_on_data_callback,
                        p_on_error_callback),
              boost::asio::detached);
   }
 }
 
 boost::leaf::result<int> w_tcp_server::run(
-    _In_ boost::asio::io_context &p_io_context,
-    _In_ boost::asio::ip::tcp::endpoint &&p_endpoint,
-    _In_ std::chrono::steady_clock::duration &&p_timeout,
-    _In_ w_socket_options &&p_socket_options,
+    _In_ boost::asio::io_context &p_io_context, _In_ boost::asio::ip::tcp::endpoint &&p_endpoint,
+    _In_ std::chrono::steady_clock::duration &&p_timeout, _In_ w_socket_options &&p_socket_options,
     _In_ w_session_on_data_callback p_on_data_callback,
     _In_ w_session_on_error_callback p_on_error_callback) noexcept {
   try {
+#ifdef WOLF_SYSTEM_SSL
+    // try create ssl context
+    auto _ssl = boost::asio::ssl::context(p_socket_options.tls_version);
+    _ssl.use_certificate_chain_file(p_socket_options.certificate_chain_file.string());
+    _ssl.use_private_key_file(p_socket_options.private_key_file.string(),
+                              boost::asio::ssl::context::pem);
+#endif  // WOLF_SYSTEM_SSL
+
     // server with coroutines
     boost::asio::co_spawn(p_io_context,
-                          s_listen(p_io_context, p_endpoint, p_timeout,
-                                   p_socket_options, p_on_data_callback,
-                                   p_on_error_callback),
+                          s_listen(p_io_context, p_endpoint, p_timeout, p_socket_options,
+                                   p_on_data_callback, p_on_error_callback),
                           boost::asio::detached);
     return S_OK;
 
   } catch (_In_ const std::exception &p_ex) {
     return W_FAILURE(std::errc::operation_canceled,
-                     "tcp server caught an exception : " +
-                         std::string(p_ex.what()));
+                     "tcp server caught an exception : " + std::string(p_ex.what()));
   }
 }
 

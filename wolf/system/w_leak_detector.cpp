@@ -31,10 +31,7 @@ w_leak_detector::~w_leak_detector() noexcept {
       assert(false);
       std::terminate();
     }
-  } catch (...)  // const std::exception& p_ex)
-  {
-    // write to the log file
-    // "~w_leak_detector thrown an exception:" << p_ex.what();
+  } catch (...) {
   }
 #endif
 }

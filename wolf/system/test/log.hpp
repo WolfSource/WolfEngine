@@ -5,8 +5,6 @@
 
 #if defined(WOLF_TEST) && defined(WOLF_SYSTEM_LOG)
 
-#pragma once
-
 #include <boost/test/included/unit_test.hpp>
 #include <system/w_leak_detector.hpp>
 #include <wolf/wolf.hpp>
@@ -19,7 +17,7 @@
 BOOST_AUTO_TEST_CASE(log_stress_test) {
   const wolf::system::w_leak_detector _detector = {};
 
-  std::cout << "log_stress_test is running" << std::endl;
+  std::cout << "entering test case 'log_stress_test'" << std::endl;
 
   using w_log = wolf::system::log::w_log;
   using w_log_config = wolf::system::log::w_log_config;
@@ -102,7 +100,7 @@ BOOST_AUTO_TEST_CASE(log_stress_test) {
     t.join();
   }
 
-  std::cout << "log_stress_test is done" << std::endl;
+  std::cout << "leaving test case 'log_stress_test'" << std::endl;
 }
 
-#endif
+#endif  // defined(WOLF_TEST) && defined(WOLF_SYSTEM_LOG)

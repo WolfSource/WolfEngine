@@ -8,7 +8,7 @@
 
 #endif
 
-#if defined(WOLF_SYSTEM_STACKTRACE) && !defined(WOLF_TESTS)
+#if defined(WOLF_SYSTEM_STACKTRACE) && !defined(WOLF_TEST)
 
 #include <csignal>
 #include <filesystem>

@@ -3,10 +3,7 @@
     https://github.com/WolfEngine/WolfEngine
 */
 
-#if defined(WOLF_TEST) && defined(WOLF_SYSTEM_SOCKET) &&                       \
-    defined(WOLF_SYSTEM_HTTP1_WS)
-
-#pragma once
+#if defined(WOLF_TEST) && defined(WOLF_SYSTEM_SOCKET) && defined(WOLF_SYSTEM_HTTP1_WS)
 
 #include <boost/test/included/unit_test.hpp>
 #include <system/w_leak_detector.hpp>
@@ -19,7 +16,7 @@
 BOOST_AUTO_TEST_CASE(ws_server_timeout_test) {
   const wolf::system::w_leak_detector _detector = {};
 
-  std::cout << "ws_server_timeout_test is running" << std::endl;
+  std::cout << "entering leaving test case 'ws_server_timeout_test'" << std::endl;
 
   using tcp = boost::asio::ip::tcp;
   using w_ws_server = wolf::system::socket::w_ws_server;
@@ -57,13 +54,13 @@ BOOST_AUTO_TEST_CASE(ws_server_timeout_test) {
       });
   _io.run();
 
-  std::cout << "ws_server_timeout_test is done" << std::endl;
+  std::cout << "leaving test case 'ws_server_timeout_test'" << std::endl;
 }
 
 BOOST_AUTO_TEST_CASE(ws_client_timeout_test) {
   const wolf::system::w_leak_detector _detector = {};
 
-  std::cout << "ws_client_timeout_test is running" << std::endl;
+  std::cout << "entering test case 'ws_client_timeout_test'" << std::endl;
 
   using tcp = boost::asio::ip::tcp;
   using w_ws_client = wolf::system::socket::w_ws_client;
@@ -97,7 +94,7 @@ BOOST_AUTO_TEST_CASE(ws_client_timeout_test) {
 
   _io.run();
 
-  std::cout << "ws_client_timeout_test is done" << std::endl;
+  std::cout << "leaving test case 'ws_client_timeout_test'" << std::endl;
 }
 
 // BOOST_AUTO_TEST_CASE(ws_read_write) {
@@ -222,5 +219,4 @@ BOOST_AUTO_TEST_CASE(ws_client_timeout_test) {
 //   _io.run();
 // }
 
-#endif // defined(WOLF_TEST) && defined(WOLF_SYSTEM_SOCKET) &&
-       // defined(WOLF_SYSTEM_HTTP1_WS)
+#endif // defined(WOLF_TEST) && defined(WOLF_SYSTEM_SOCKET) && defined(WOLF_SYSTEM_HTTP1_WS)

@@ -79,7 +79,7 @@ option(WOLF_STREAM_RIST   "Enable RIST streaming protocol" OFF)
 option(WOLF_STREAM_WEBRTC "Enable webRTC" OFF)
 
 # system modules
-option(WOLF_SYSTEM_BORINGSSL "Enable boringSSL" OFF)
+option(WOLF_SYSTEM_SSL "Enable SSL based on boringSSL" OFF)
 option(WOLF_SYSTEM_GAMEPAD_CLIENT "Enable gamepad input handling" OFF)
 option(WOLF_SYSTEM_GAMEPAD_VIRTUAL "Enable virtual gamepad simulator" OFF)
 option(WOLF_SYSTEM_HTTP1_WS "Enable http1.1 and websocket client/server based on boost beast or Emscripten" OFF)
@@ -163,11 +163,11 @@ else()
 endif()
 
 # include cmakes
-include(cmake/boost.cmake)
-include(cmake/media.cmake)
 include(cmake/system.cmake)
 include(cmake/stream.cmake)
+include(cmake/media.cmake)
 include(cmake/ml.cmake)
+include(cmake/boost.cmake)
 
 # disable build testing
 set(BUILD_TESTING OFF CACHE BOOL "BUILD_TESTING")
@@ -184,6 +184,9 @@ endif()
 # https://devblogs.microsoft.com/cppblog/visual-studio-code-c-december-2021-update-clang-tidy/
 # can be enabled with .CLANG-TIDY from Visual Studio
 # https://devblogs.microsoft.com/cppblog/code-analysis-with-clang-tidy-in-visual-studio/
+set(CMAKE_C_CLANG_TIDY
+     clang-tidy;
+     -format-style=file;) 
 set(CMAKE_CXX_CLANG_TIDY
      clang-tidy;
      -format-style=file;)  

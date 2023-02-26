@@ -5,8 +5,6 @@
 
 #if defined(WOLF_TEST) && defined(WOLF_SYSTEM_SOCKET)
 
-#pragma once
-
 #include <boost/test/included/unit_test.hpp>
 #include <system/w_leak_detector.hpp>
 #include <wolf.hpp>
@@ -18,44 +16,57 @@
 BOOST_AUTO_TEST_CASE(tcp_server_timeout_test) {
   const wolf::system::w_leak_detector _detector = {};
 
-  std::cout << "tcp_server_timeout_test is running" << std::endl;
+  std::cout << "entering test case 'tcp_server_timeout_test'" << std::endl;
 
-  using tcp = boost::asio::ip::tcp;
-  using w_tcp_server = wolf::system::socket::w_tcp_server;
-  using w_socket_options = wolf::system::socket::w_socket_options;
+  boost::leaf::try_handle_all(
+      [&]() -> boost::leaf::result<void> {
+        using tcp = boost::asio::ip::tcp;
+        using w_tcp_server = wolf::system::socket::w_tcp_server;
+        using w_socket_options = wolf::system::socket::w_socket_options;
 
-  auto _io = boost::asio::io_context();
-  w_socket_options _opts = {};
-  tcp::endpoint _endpoint = {tcp::v4(), 8080};
-  auto timeout = std::chrono::milliseconds(3000);
+        auto _io = boost::asio::io_context();
+        w_socket_options _opts = {};
+        tcp::endpoint _endpoint = {tcp::v4(), 8080};
+        auto timeout = std::chrono::milliseconds(3000);
 
-  auto t1 = std::jthread([&]() {
-    // stop server
-    std::this_thread::sleep_for(std::chrono::seconds(5));
-    _io.stop();
-  });
+        auto t1 = std::jthread([&]() {
+          // stop server
+          std::this_thread::sleep_for(std::chrono::seconds(5));
+          _io.stop();
+        });
 
-  w_tcp_server::run(
-      _io, std::move(_endpoint), std::move(timeout), std::move(_opts),
-      [](const std::string &p_conn_id, w_buffer &p_mut_data) -> auto{
-        std::cout << "tcp server just got: /'" << p_mut_data.to_string() << "/'"
-                  << " and " << p_mut_data.used_bytes << " bytes from connection id: " << p_conn_id
-                  << std::endl;
-        return boost::system::errc::connection_aborted;
+        BOOST_LEAF_AUTO(
+            _run_res,
+            w_tcp_server::run(
+                _io, std::move(_endpoint), std::move(timeout), std::move(_opts),
+                [](const std::string &p_conn_id, w_buffer &p_mut_data) -> auto{
+                  std::cout << "tcp server just got: /'" << p_mut_data.to_string() << "/'"
+                            << " and " << p_mut_data.used_bytes
+                            << " bytes from connection id: " << p_conn_id << std::endl;
+                  return boost::system::errc::connection_aborted;
+                },
+                [](const std::string &p_conn_id, const boost::system::system_error &p_error) {
+                  std::cout << "timeout for connection: " << p_conn_id << " because of "
+                            << p_error.what() << "error code: " << p_error.code() << std::endl;
+                }));
+
+        _io.run();
+
+        return {};
       },
-      [](const std::string &p_conn_id, const boost::system::system_error &p_error) {
-        std::cout << "timeout for connection: " << p_conn_id << " because of " << p_error.what()
-                  << "error code: " << p_error.code() << std::endl;
-      });
-  _io.run();
+      [](const w_trace &p_trace) {
+        const auto _msg = wolf::format("tcp_server_timeout_test got an error : {}", p_trace.to_string());
+        BOOST_ERROR(_msg);
+      },
+      [] { BOOST_ERROR("tcp_server_timeout_test got an error!"); });
 
-  std::cout << "tcp_server_timeout_test is done" << std::endl;
+  std::cout << "leaving test case 'tcp_server_timeout_test'" << std::endl;
 }
 
 BOOST_AUTO_TEST_CASE(tcp_client_timeout_test) {
   const wolf::system::w_leak_detector _detector = {};
 
-  std::cout << "tcp_client_timeout_test is running" << std::endl;
+  std::cout << "entering test case 'tcp_client_timeout_test'" << std::endl;
 
   using tcp = boost::asio::ip::tcp;
   using w_tcp_client = wolf::system::socket::w_tcp_client;
@@ -98,13 +109,13 @@ BOOST_AUTO_TEST_CASE(tcp_client_timeout_test) {
 
   _io.run();
 
-  std::cout << "tcp_client_timeout_test is done" << std::endl;
+  std::cout << "leaving test case 'tcp_client_timeout_test'" << std::endl;
 }
 
 BOOST_AUTO_TEST_CASE(tcp_read_write_test) {
   const wolf::system::w_leak_detector _detector = {};
 
-  std::cout << "tcp_read_write_test is running" << std::endl;
+  std::cout << "entering test case 'tcp_read_write_test'" << std::endl;
 
   using tcp = boost::asio::ip::tcp;
   using w_tcp_client = wolf::system::socket::w_tcp_client;
@@ -207,7 +218,7 @@ BOOST_AUTO_TEST_CASE(tcp_read_write_test) {
 
   _io.run();
 
-  std::cout << "tcp_read_write_test is done" << std::endl;
+  std::cout << "leaving test case 'tcp_read_write_test'" << std::endl;
 }
 
-#endif
+#endif  // defined(WOLF_TEST) && defined(WOLF_SYSTEM_SOCKET)

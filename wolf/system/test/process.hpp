@@ -5,8 +5,6 @@
 
 #ifdef WOLF_TEST
 
-#pragma once
-
 #include <boost/test/included/unit_test.hpp>
 #include <system/w_leak_detector.hpp>
 #include <wolf/wolf.hpp>
@@ -17,7 +15,7 @@ BOOST_AUTO_TEST_CASE(process_current_path_test) {
   const wolf::system::w_leak_detector _detector = {};
   using w_process = wolf::system::w_process;
 
-  std::cout << "process_current_path_test is running" << std::endl;
+  std::cout << "entering test case 'process_current_path_test'" << std::endl;
 
   const auto _path = w_process::current_path();
   BOOST_REQUIRE(_path.has_error() == false);
@@ -27,7 +25,7 @@ BOOST_AUTO_TEST_CASE(process_current_path_test) {
   BOOST_REQUIRE(_exe_path.has_error() == false);
   BOOST_REQUIRE(_exe_path.value().empty() == false);
 
-  std::cout << "process_current_path_test is done" << std::endl;
+  std::cout << "leaving test case 'process_current_path_test'" << std::endl;
 }
 
-#endif // WOLF_TESTS
+#endif // WOLF_TEST

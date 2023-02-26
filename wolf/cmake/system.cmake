@@ -28,10 +28,10 @@ if (NOT CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     add_definitions(-DFMT_HEADER_ONLY)
 endif()
 
-# fetch boringssl, note that boringssl was already fetched by GRPC  
-if (WOLF_SYSTEM_BORINGSSL AND (NOT WOLF_STREAM_GRPC))
+# fetch boringssl
+if (WOLF_SYSTEM_SSL)
     if (EMSCRIPTEN)
-        message(FATAL_ERROR "the wasm32 target is not supported for WOLF_SYSTEM_BORINGSSL")
+        message(FATAL_ERROR "WOLF_SYSTEM_SSL is not supported for the wasm32 target")
     endif()
 
     message("fetching https://github.com/google/boringssl.git")
@@ -39,27 +39,43 @@ if (WOLF_SYSTEM_BORINGSSL AND (NOT WOLF_STREAM_GRPC))
         boringssl
         GIT_REPOSITORY https://github.com/google/boringssl.git
         GIT_TAG        master
+        FIND_PACKAGE_ARGS NAMES boringssl
     )
     set(FETCHCONTENT_QUIET OFF)
     FetchContent_MakeAvailable(boringssl)
-    
-    # we will need these for lsquic
+
+    # we need these global variables to be set for the other builds
     set(BORINGSSL_INCLUDE ${boringssl_SOURCE_DIR}/include)
     set(BORINGSSL_LIB_ssl ${boringssl_BINARY_DIR}/ssl/${CMAKE_BUILD_TYPE})
     set(BORINGSSL_LIB_crypto ${boringssl_BINARY_DIR}/crypto/${CMAKE_BUILD_TYPE})
-
-    list(APPEND INCLUDES 
-        ${BORINGSSL_INCLUDE}
-        ${boringssl_BINARY_DIR}/include
-    )
-    list(APPEND LIBS ssl crypto)   
     
-    add_definitions(-DLIBUS_USE_OPENSSL)
+    # it seems that this is abug in boringssl, so set it's' include for ssl and crypto
+    set(boringssl_projects 
+        boringssl_gtest_main
+        bssl
+        bssl_shim
+        crypto_test
+        crypto
+        decrepit
+        decrepit_test
+        ssl
+        ssl_test
+        test_support_lib
+        urandom_test
+    )
+    foreach(proj ${boringssl_projects})
+		target_include_directories(${proj} PRIVATE ${BORINGSSL_INCLUDE})
+    endforeach()
+
+    # add boringssl to the list of includes
+    list(APPEND INCLUDES ${BORINGSSL_INCLUDE})
+    list(APPEND LIBS ssl crypto)   
 
     set_target_properties(
         all_tests 
         boringssl_gtest
         boringssl_gtest_main
+        boringssl_prefix_symbols
         bssl
         bssl_shim
         crypto
@@ -69,7 +85,6 @@ if (WOLF_SYSTEM_BORINGSSL AND (NOT WOLF_STREAM_GRPC))
         decrepit_test
         fipsmodule
         fips_specific_tests_if_any
-        global_target
         handshaker
         run_tests
         ssl

@@ -5,10 +5,16 @@ set(BOOST_MASTER_LIBS
 )
 
 if (NOT EMSCRIPTEN)
+    if (WOLF_SYSTEM_SOCKET AND WOLF_SYSTEM_SSL)
+        # disable TLS for asio
+        add_definitions(-DASIO_NO_TS_EXECUTORS)
+    endif()
+
     if (WOLF_SYSTEM_HTTP1_WS)
         if (NOT WOLF_SYSTEM_SOCKET)
             message(FATAL_ERROR "WOLF_SYSTEM_HTTP1_WS needs WOLF_SYSTEM_SOCKET module")
         endif()
+
         list(APPEND BOOST_MASTER_LIBS   
             boost_beast
             boost_endian

@@ -5,8 +5,6 @@
 
 #if defined(WOLF_TEST)
 
-#pragma once
-
 #include <boost/test/included/unit_test.hpp>
 #include <system/w_leak_detector.hpp>
 #include <wolf/wolf.hpp>
@@ -14,7 +12,7 @@
 BOOST_AUTO_TEST_CASE(trace_test) {
   const wolf::system::w_leak_detector _detector = {};
 
-  std::cout << "trace_test is running" << std::endl;
+  std::cout << "entering test case 'trace_test'" << std::endl;
 
   const auto _function_1 = []() noexcept -> boost::leaf::result<void> {
     return W_FAILURE(std::errc::bad_message, "error from function 1");
@@ -31,15 +29,12 @@ BOOST_AUTO_TEST_CASE(trace_test) {
         return {};
       },
       [](const w_trace &p_trace) {
-        std::cout << "caught a test error! trace info:" << p_trace << std::endl;
-        BOOST_REQUIRE(true);
+        const auto _msg = wolf::format("caught a test error! trace info: {}", p_trace.to_string());
+        BOOST_WARN_MESSAGE(false, _msg);
       },
-      [] {
-        std::cout << "caught an error!" << std::endl;
-        BOOST_ERROR(false);
-      });
+      [] { BOOST_ERROR("trace_test caught an error!"); });
 
-  std::cout << "trace_test is done" << std::endl;
+  std::cout << "leaving test case 'trace_test'" << std::endl;
 }
 
 #endif // WOLF_TESTS

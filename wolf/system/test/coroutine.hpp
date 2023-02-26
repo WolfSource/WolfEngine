@@ -5,8 +5,6 @@
 
 #ifdef WOLF_TEST
 
-#pragma once
-
 #include <boost/test/included/unit_test.hpp>
 #include <system/w_leak_detector.hpp>
 #include <wolf/wolf.hpp>
@@ -19,7 +17,7 @@
 BOOST_AUTO_TEST_CASE(coroutine_test) {
   const wolf::system::w_leak_detector _detector = {};
 
-  std::cout << "coroutine_test is running" << std::endl;
+  std::cout << "entering test case 'coroutine_test'" << std::endl;
 
   boost::leaf::try_handle_all(
       [&]() -> boost::leaf::result<void> {
@@ -46,15 +44,12 @@ BOOST_AUTO_TEST_CASE(coroutine_test) {
         return {};
       },
       [](const w_trace &p_trace) {
-        std::cout << "coroutine_test got an error :" << p_trace << std::endl;
-        BOOST_REQUIRE(false);
+        const auto _msg = wolf::format("coroutine_test got an error : {}", p_trace.to_string());
+        BOOST_ERROR(_msg);
       },
-      [] {
-        std::cout << "coroutine_test got an error!" << std::endl;
-        BOOST_ERROR(false);
-      });
+      [] { BOOST_ERROR("coroutine_test got an error!"); });
 
-  std::cout << "coroutine_test is done" << std::endl;
+  std::cout << "leaving test case 'coroutine_test'" << std::endl;
 }
 
 #endif // WOLF_TESTS

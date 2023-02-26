@@ -3,8 +3,6 @@
     https://github.com/WolfEngine/WolfEngine
 */
 
-#pragma once
-
 #if defined(WOLF_TEST) && defined(WOLF_SYSTEM_SIG_SLOT)
 
 #include <boost/test/included/unit_test.hpp>
@@ -16,14 +14,14 @@
 BOOST_AUTO_TEST_CASE(sig_slot_test) {
   const wolf::system::w_leak_detector _detector = {};
 
-  std::cout << "sig_slot_test is running" << std::endl;
+  std::cout << "entering test case 'sig_slot_test'" << std::endl;
 
   auto sig = boost::signals2::signal<void()>();
   sig.connect([]() { std::cout << "hello from slot 1" << std::endl; });
   sig.connect([]() { std::cout << "hello from slot 2" << std::endl; });
   sig();
 
-  std::cout << "sig_slot_test is done" << std::endl;
+  std::cout << "leaving test case 'sig_slot_test'" << std::endl;
 }
 
-#endif // defined(WOLF_TESTS) && defined(WOLF_SYSYEM_SIG_SLOT)
+#endif // defined(WOLF_TEST) && defined(WOLF_SYSYEM_SIG_SLOT)

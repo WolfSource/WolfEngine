@@ -5,8 +5,6 @@
 
 #if defined(WOLF_TEST) && defined(WOLF_MEDIA_FFMPEG) && defined(WOLF_MEDIA_STB)
 
-#pragma once
-
 #include <system/w_leak_detector.hpp>
 #include <boost/test/included/unit_test.hpp>
 

@@ -39,6 +39,12 @@ struct w_socket_options {
   bool reuse_address = true;
   int max_connections = boost::asio::socket_base::max_listen_connections;
 
+#ifdef WOLF_SYSTEM_SSL
+  boost::asio::ssl::context::method tls_version = boost::asio::ssl::context::tlsv13_server;
+  std::filesystem::path certificate_chain_file = {};
+  std::filesystem::path private_key_file = {};
+#endif //WOLF_SYSTEM_SSL
+
   void set_to_socket(_Inout_ boost::asio::ip::tcp::socket &p_socket) {
     // set acceptor's options
     const auto _keep_alive_option =

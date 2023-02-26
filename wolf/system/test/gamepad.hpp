@@ -28,7 +28,7 @@ BOOST_AUTO_TEST_CASE(gamepad_test) {
 BOOST_AUTO_TEST_CASE(gamepad_virtual_test) {
   const wolf::system::w_leak_detector _detector = {};
 
-  std::cout << "gamepad_virtual_test is running" << std::endl;
+  std::cout << "entering test case 'gamepad_virtual_test'" << std::endl;
 
   using w_gamepad_virtual_pool = wolf::system::gamepad::w_gamepad_virtual_pool;
 
@@ -46,17 +46,14 @@ BOOST_AUTO_TEST_CASE(gamepad_virtual_test) {
         return {};
       },
       [](const w_trace &p_trace) {
-        std::cout << "got error :" << p_trace << std::endl;
-        BOOST_REQUIRE(false);
+        const auto _msg = wolf::format("gamepad_virtual_test got error : {}", p_trace.to_string());
+        BOOST_ERROR(_msg);
       },
-      [] {
-        std::cout << "got an error!" << std::endl;
-        BOOST_ERROR(false);
-      });
+      [] { BOOST_ERROR("gamepad_virtual_test got an error!"); });
 
   w_gamepad_virtual_pool::fini();
 
-  std::cout << "gamepad_virtual_test is done" << std::endl;
+  std::cout << "leaving test case 'gamepad_virtual_test'" << std::endl;
 }
 
 #endif // WOLF_SYSTEM_GAMEPAD_VIRTUAL

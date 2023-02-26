@@ -94,7 +94,10 @@ endif()
 # fetch lsquic
 if (WOLF_STREAM_QUIC)
     if (EMSCRIPTEN)
-        message(FATAL_ERROR "the wasm32 target is not supported for WOLF_STREAM_QUIC")
+        message(FATAL_ERROR "WOLF_STREAM_QUIC is not supported for wasm32 target")
+    endif()
+    if (NOT WOLF_SYSTEM_SSL)
+        message(FATAL_ERROR "WOLF_SYSTEM_SSL is required for WOLF_STREAM_QUIC")
     endif()
     
     message("fetching https://github.com/litespeedtech/lsquic.git")
@@ -115,10 +118,6 @@ if (WOLF_STREAM_QUIC)
     )
     list(APPEND LIBS lsquic)
     
-    add_definitions(-DLIBUS_USE_QUIC)
-
-    list(APPEND SRCS ${WOLF_STREAM_QUIC_SRC})
-      
 endif()
 
 if (WOLF_STREAM_RIST)

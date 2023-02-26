@@ -68,6 +68,19 @@ class w_trace {
     }
   }
 
+  std::string to_string() const noexcept {
+    std::string _result;
+    try {
+      std::stringstream ss;
+      for (const auto &_stack : this->_stacks) {
+        ss << _stack;
+      }
+      _result = ss.str();
+    } catch (...) {
+    }
+    return _result;
+  }
+
   friend std::ostream &operator<<(std::ostream &p_os, w_trace const &p_trace) noexcept {
     try {
       for (const auto &index : p_trace._stacks) {

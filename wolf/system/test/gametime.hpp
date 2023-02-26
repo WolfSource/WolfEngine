@@ -5,8 +5,6 @@
 
 #ifdef WOLF_TEST
 
-#pragma once
-
 #include <boost/test/included/unit_test.hpp>
 #include <system/w_leak_detector.hpp>
 #include <wolf/wolf.hpp>
@@ -18,7 +16,7 @@ BOOST_AUTO_TEST_CASE(gametime_fixed_time_test) {
   const wolf::system::w_leak_detector _detector = {};
   using w_gametime = wolf::system::w_gametime;
 
-  std::cout << "gametime_fixed_time_test is running" << std::endl;
+  std::cout << "entering test case 'gametime_fixed_time_test'" << std::endl;
 
   std::once_flag _flag;
   bool _ticked = false;
@@ -41,7 +39,7 @@ BOOST_AUTO_TEST_CASE(gametime_fixed_time_test) {
     _total_seconds = _gametime.get_total_secs();
   }
 
-  std::cout << "gametime_fixed_time_test is done" << std::endl;
+  std::cout << "leaving test case 'gametime_fixed_time_test'" << std::endl;
 }
 
 BOOST_AUTO_TEST_CASE(gametime_unfixed_time_test) {
@@ -49,7 +47,7 @@ BOOST_AUTO_TEST_CASE(gametime_unfixed_time_test) {
 
   using w_gametime = wolf::system::w_gametime;
 
-  std::cout << "gametime_unfixed_time_test is running" << std::endl;
+  std::cout << "entering test case 'gametime_unfixed_time_test'" << std::endl;
 
   constexpr double _stop_after_secs = 5.0;
   constexpr double _target_elapsed_secs = 1.0 / 50.0;  // 50 fps
@@ -69,7 +67,7 @@ BOOST_AUTO_TEST_CASE(gametime_unfixed_time_test) {
 
   BOOST_REQUIRE(_gametime.get_fps() >= 30);
 
-  std::cout << "gametime_unfixed_time_test is done" << std::endl;
+  std::cout << "leaving test case 'gametime_unfixed_time_test'" << std::endl;
 }
 
 #endif // WOLF_TESTS

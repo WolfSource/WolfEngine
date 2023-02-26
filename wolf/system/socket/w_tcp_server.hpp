@@ -11,7 +11,7 @@
 
 namespace wolf::system::socket {
 class w_tcp_server {
-public:
+ public:
   /*
    * @param p_io_context, the boost io context
    * @param p_endpoint, the endpoint of the server
@@ -21,13 +21,11 @@ public:
    * @param p_on_error_callback, on error callback for session
    * @returns void
    */
-  W_API static boost::leaf::result<int>
-  run(_In_ boost::asio::io_context &p_io_context,
-      _In_ boost::asio::ip::tcp::endpoint &&p_endpoint,
+  W_API static boost::leaf::result<int> run(
+      _In_ boost::asio::io_context &p_io_context, _In_ boost::asio::ip::tcp::endpoint &&p_endpoint,
       _In_ std::chrono::steady_clock::duration &&p_timeout,
-      _In_ w_socket_options &&p_socket_options,
-      _In_ w_session_on_data_callback p_on_data_callback,
+      _In_ w_socket_options &&p_socket_options, _In_ w_session_on_data_callback p_on_data_callback,
       _In_ w_session_on_error_callback p_on_error_callback) noexcept;
 };
-} // namespace wolf::system::socket
+}  // namespace wolf::system::socket
 #endif // WOLF_SYSTEM_SOCKET
