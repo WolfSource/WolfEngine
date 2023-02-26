@@ -1,0 +1,3 @@
+
+# Variables for testing get_env_float functions
+FLOAT_VALUE=4.5

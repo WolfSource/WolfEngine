@@ -1,15 +1,23 @@
-#include "w_image_processor.h"
+#ifdef WOLF_TEST
 
-#include <catch2/catch_all.hpp>
+#pragma once
+
+#ifdef WOLF_ML_OCR
+
+#define BOOST_TEST_MODULE ml_image_processor
+
+#include <ml/referee_ocr/w_image_processor.hpp>
+
+#include <boost/test/included/unit_test.hpp>
 #include <filesystem>
 #include <opencv2/opencv.hpp>
 
 namespace fs = std::filesystem;
-fs::path image_processor_path =
-    "../../../ocr/common_test_asset/image_processor";
+fs::path image_processor_path = "../wolf/ml/test/common_test_asset/image_processor";
 
-TEST_CASE("prepare_image_for_contour_detection with default arguments",
-          "[w_image_processor_test.cpp]") {
+using namespace wolf::ml::ocr;
+
+BOOST_AUTO_TEST_CASE(prepare_image_for_contour_detection_with_default_arguments) {
   fs::path source_image_path = image_processor_path / "test_image.png";
   cv::Mat source_image = cv::imread(source_image_path.string());
   fs::path desired_image_path =
@@ -21,22 +29,20 @@ TEST_CASE("prepare_image_for_contour_detection with default arguments",
   cv::Mat processed_image =
       prepare_image_for_contour_detection(source_image, config_for_ocr_struct);
   cv::Mat diff = processed_image != desired_image;
-  CHECK(cv::countNonZero(diff) == 0);
+  BOOST_TEST(cv::countNonZero(diff) == 0);
 }
 
-TEST_CASE("negative_image with default arguments",
-          "[w_image_processor_test.cpp]") {
+BOOST_AUTO_TEST_CASE(negative_image_with_default_arguments) {
   fs::path source_image_path = image_processor_path / "test_image.png";
   cv::Mat source_image = cv::imread(source_image_path.string());
   fs::path desired_image_path =
       image_processor_path / "negative_image_default.png";
   cv::Mat desired_image = cv::imread(desired_image_path.string());
   negative_image(source_image);
-  CHECK((sum(source_image != desired_image) == cv::Scalar(0, 0, 0, 0)));
+  BOOST_TEST((sum(source_image != desired_image) == cv::Scalar(0, 0, 0, 0)));
 }
 
-TEST_CASE("make_white_background with default arguments",
-          "[w_image_processor_test.cpp]") {
+BOOST_AUTO_TEST_CASE(make_white_background_with_default_arguments) {
   fs::path source_image_path = image_processor_path / "test_image.png";
   cv::Mat source_image = cv::imread(source_image_path.string());
   fs::path desired_image_temp =
@@ -45,11 +51,10 @@ TEST_CASE("make_white_background with default arguments",
   config_for_ocr_struct config_for_ocr_struct;
   config_for_ocr_struct.make_white_background = true;
   make_contour_white_background(source_image, config_for_ocr_struct);
-  CHECK((sum(source_image != desired_image) == cv::Scalar(0, 0, 0, 0)));
+  BOOST_TEST((sum(source_image != desired_image) == cv::Scalar(0, 0, 0, 0)));
 }
 
-TEST_CASE("make_white_background with threshold 50",
-          "[w_image_processor_test.cpp]") {
+BOOST_AUTO_TEST_CASE(make_white_background_with_threshold_50) {
   fs::path source_image_path = image_processor_path / "test_image.png";
   cv::Mat source_image = cv::imread(source_image_path.string());
   fs::path desired_image_temp =
@@ -59,11 +64,10 @@ TEST_CASE("make_white_background with threshold 50",
   config_for_ocr_struct.make_white_background = true;
   config_for_ocr_struct.white_background_threshold = 50;
   make_contour_white_background(source_image, config_for_ocr_struct);
-  CHECK((sum(source_image != desired_image) == cv::Scalar(0, 0, 0, 0)));
+  BOOST_TEST((sum(source_image != desired_image) == cv::Scalar(0, 0, 0, 0)));
 }
 
-TEST_CASE("find_all_contours on image with contours",
-          "[w_image_processor_test.cpp]") {
+BOOST_AUTO_TEST_CASE(find_all_contours_on_image_with_contours) {
   fs::path source_image_path = image_processor_path / "test_image.png";
   cv::Mat source_image = cv::imread(source_image_path.string());
   config_for_ocr_struct config_for_ocr_struct;
@@ -71,11 +75,10 @@ TEST_CASE("find_all_contours on image with contours",
       prepare_image_for_contour_detection(source_image, config_for_ocr_struct);
   std::vector<std::vector<cv::Point>> contours =
       find_all_countors(filtered_image);
-  CHECK(contours.size() == 475);
+  BOOST_TEST(contours.size() == 475);
 }
 
-TEST_CASE("find_all_contours on image without contours",
-          "[w_image_processor_test.cpp]") {
+BOOST_AUTO_TEST_CASE(find_all_contours_on_image_without_contours) {
   fs::path source_image_path =
       image_processor_path / "find_all_contours_solid_black.png";
   cv::Mat source_image = cv::imread(source_image_path.string());
@@ -84,37 +87,34 @@ TEST_CASE("find_all_contours on image without contours",
       prepare_image_for_contour_detection(source_image, config_for_ocr_struct);
   std::vector<std::vector<cv::Point>> contours =
       find_all_countors(filtered_image);
-  CHECK(contours.size() == 0);
+  BOOST_TEST(contours.size() == 0);
 }
 
-TEST_CASE("resize_function with only height argument",
-          "[w_image_processor_test.cpp]") {
+BOOST_AUTO_TEST_CASE(resize_function_with_only_height_argument) {
   fs::path source_image_path = image_processor_path / "test_image.png";
   cv::Mat source_image = cv::imread(source_image_path.string());
   resize_image(source_image, 40);
-  CHECK(source_image.rows == 40);
+  BOOST_TEST(source_image.rows == 40);
 }
 
-TEST_CASE("resize_function with only width argument",
-          "[w_image_processor_test.cpp]") {
+BOOST_AUTO_TEST_CASE(resize_function_with_only_width_argument) {
   fs::path source_image_path = image_processor_path / "test_image.png";
   cv::Mat source_image = cv::imread(source_image_path.string());
   resize_image(source_image, -1, 60);
-  CHECK(source_image.cols == 60);
+  BOOST_TEST(source_image.cols == 60);
 }
 
-TEST_CASE("resize_function without argument", "[w_image_processor_test.cpp]") {
+BOOST_AUTO_TEST_CASE(resize_function_without_argument) {
   fs::path source_image_path = image_processor_path / "test_image.png";
   cv::Mat source_image = cv::imread(source_image_path.string());
   int cols = source_image.cols;
   int rows = source_image.rows;
   resize_image(source_image);
-  CHECK(source_image.cols == cols);
-  CHECK(source_image.rows == rows);
+  BOOST_TEST(source_image.cols == cols);
+  BOOST_TEST(source_image.rows == rows);
 }
 
-TEST_CASE("gaussian_filter with default argument",
-          "[w_image_processor_test.cpp]") {
+BOOST_AUTO_TEST_CASE(gaussian_filter_with_default_argument) {
   fs::path source_image_path = image_processor_path / "test_image.png";
   cv::Mat source_image = cv::imread(source_image_path.string());
   fs::path desired_image_path =
@@ -122,10 +122,10 @@ TEST_CASE("gaussian_filter with default argument",
   cv::Mat desired_image = cv::imread(desired_image_path.string());
   config_for_ocr_struct config_for_ocr_struct;
   gaussian_blur(source_image, config_for_ocr_struct);
-  CHECK((sum(source_image != desired_image) == cv::Scalar(0, 0, 0, 0)));
+  BOOST_TEST((sum(source_image != desired_image) == cv::Scalar(0, 0, 0, 0)));
 }
 
-TEST_CASE("gaussian_filter with win size 7", "[w_image_processor_test.cpp]") {
+BOOST_AUTO_TEST_CASE(gaussian_filter_with_win_size_7) {
   fs::path source_image_path = image_processor_path / "test_image.png";
   cv::Mat source_image = cv::imread(source_image_path.string());
   fs::path desired_image_path = image_processor_path / "gaussian_filter_7.png";
@@ -133,11 +133,10 @@ TEST_CASE("gaussian_filter with win size 7", "[w_image_processor_test.cpp]") {
   config_for_ocr_struct config_for_ocr_struct;
   config_for_ocr_struct.gaussian_blur_win_size = 7;
   gaussian_blur(source_image, config_for_ocr_struct);
-  CHECK((sum(source_image != desired_image) == cv::Scalar(0, 0, 0, 0)));
+  BOOST_TEST((sum(source_image != desired_image) == cv::Scalar(0, 0, 0, 0)));
 }
 
-TEST_CASE("threshold_filter with default argument ",
-          "[w_image_processor_test.cpp]") {
+BOOST_AUTO_TEST_CASE(threshold_filter_with_default_argument) {
   fs::path source_image_path = image_processor_path / "test_image.png";
   cv::Mat source_image = cv::imread(source_image_path.string());
   fs::path desired_image_path =
@@ -148,11 +147,10 @@ TEST_CASE("threshold_filter with default argument ",
   config_for_ocr_struct config_for_ocr_struct;
   threshold_image(source_image, config_for_ocr_struct);
   cv::Mat diff = source_image != desired_image;
-  CHECK(cv::countNonZero(diff) == 0);
+  BOOST_TEST(cv::countNonZero(diff) == 0);
 }
 
-TEST_CASE("threshold_filter with threshold value 180 ",
-          "[w_image_processor_test.cpp]") {
+BOOST_AUTO_TEST_CASE(threshold_filter_with_threshold_value_180) {
   fs::path source_image_path = image_processor_path / "test_image.png";
   cv::Mat source_image = cv::imread(source_image_path.string());
   fs::path desired_image_path =
@@ -164,5 +162,9 @@ TEST_CASE("threshold_filter with threshold value 180 ",
   config_for_ocr_struct.threshold_value = 180;
   threshold_image(source_image, config_for_ocr_struct);
   cv::Mat diff = desired_image != desired_image;
-  CHECK(cv::countNonZero(diff) == 0);
+  BOOST_TEST(cv::countNonZero(diff) == 0);
 }
+
+#endif // WOLF_ML_OCR
+
+#endif // WOLF_TEST
