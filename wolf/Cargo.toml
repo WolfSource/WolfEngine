@@ -81,14 +81,14 @@ wav = {version = "1.0.0", default-features = false }
 # features
 [features]
 all = [
+    "media_ffmpeg",
     "stream_grpc",
+    "stream_janus",
     "system_gamepad_virtual",
     "system_lz4",
     "system_rhai",
-    "stream_janus",
     #"system_lzma",
     #"system_raft",
-#     "media_ffmpeg",
 #     "media_openal",
 #     "render",
 #     "stream_rist",
@@ -108,7 +108,7 @@ all = [
 #     "system_screen_capture",
 # ]
 default = ["all"]
-# media_ffmpeg = [] # enable ffmpeg
+media_ffmpeg = [] # enable ffmpeg
 # media_openal = [] # enable openal
 # render = ["wgpu"] # enable real-time rendering
 stream_grpc = ["tonic", "prost"] # enable gRPC (http2/1.1) for stream module

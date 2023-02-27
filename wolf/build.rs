@@ -81,7 +81,7 @@ fn main() {
     // compile c/cpp sources and link
     link(current_dir_path_str, build_profile, &target_os);
 
-    //bindgen
+    // generate bindings
     bindgens(current_dir_path_str, build_profile);
 }
 
@@ -447,6 +447,15 @@ fn bindgens(p_current_dir_path_str: &str, p_build_profile: &str) {
     });
 
     if cfg!(feature = "media_ffmpeg") {
+        let include_path = format!("{p_current_dir_path_str}/sys/third_party/ffmpeg/include");
+        clang_args.push(format!("-I{include_path}"));
+        bindings.push(Binding {
+            headers: vec![format!("{p_current_dir_path_str}/sys/media/ffmpeg.h")],
+            dst: "src/media/ffi/ffmpeg.rs",
+            block_headers: &[],
+            allow_funcs: &[],
+        });
+
         // bindings.push(Binding {
         //     headers: &["sys/media/ffmpeg.h".to_owned()],
         //     dst: "src/media/ffi/ffmpeg.rs",
@@ -469,6 +478,11 @@ fn bindgens(p_current_dir_path_str: &str, p_build_profile: &str) {
     // }
 
     for binding in bindings {
+        // don't generate if already exists
+        let out_path = Path::new(p_current_dir_path_str).join(binding.dst);
+        if out_path.exists() {
+            continue;
+        }
         // The bindgen::Builder is the main entry point
         // to bindgen, and lets you build up options for
         // the resulting bindings.
@@ -515,7 +529,6 @@ fn bindgens(p_current_dir_path_str: &str, p_build_profile: &str) {
         }
 
         // finish the builder and generate the bindings.
-        let out_path = Path::new(p_current_dir_path_str).join(binding.dst);
         builder
             .generate()
             // unwrap the Result and panic on failure.

@@ -3,53 +3,40 @@
 
 #[cfg(feature = "media_ffmpeg")]
 #[test]
-fn test_av_frame_convert() {
-    use image::{EncodableLayout, GenericImageView};
-    use wolf::media::av_frame::{AVFrame, AVPixelFormat};
+fn test_av_frame_convert() -> Result<(), wolf::media::ffmpeg::av_error::AvError> {
+    use image::GenericImageView;
+    use wolf::media::{
+        ffi::ffmpeg::AVPixelFormat,
+        ffmpeg::{av_frame::AvFrame, av_video_config::AvVideoConfig},
+    };
 
     let current_dir = std::env::current_dir().unwrap();
-    let file_name = "sample_rgba.png";
-    let wolf_dir = current_dir.join("wolf");
-    let file_path = if wolf_dir.exists() {
-        wolf_dir.join(file_name)
-    } else {
-        current_dir.join(file_name)
-    };
+    let file_path = current_dir.join("content/texture/rgb.png");
 
     let img = image::open(file_path).unwrap();
     let img_size = img.dimensions();
-    let pixels = img.as_rgba8().unwrap().as_bytes();
+    let pixels = img.as_rgba8().unwrap().to_vec();
 
-    // create a source frame from img
-    let src_frame = AVFrame::new(AVPixelFormat::RGBA, img_size.0, img_size.1, 1, pixels).unwrap();
+    // create a source frame from image
+    let src_config = AvVideoConfig::new(AVPixelFormat::AV_PIX_FMT_RGBA, img_size.0, img_size.1, 1);
+    let src_frame = AvFrame::new_video(src_config, pixels)?;
 
-    // create dst frame
-    let dst_frame_size =
-        AVFrame::get_required_buffer_size(AVPixelFormat::RGBA, img_size.0, img_size.1, 1);
-    let mut dst_pixels = Vec::<u8>::with_capacity(dst_frame_size);
-    dst_pixels.fill(0u8);
-
-    // create avframe
-    let mut dst_frame = AVFrame::new(
-        AVPixelFormat::BGRA,
-        img_size.0,
-        img_size.1,
-        1,
-        dst_pixels.as_bytes(),
-    )
-    .unwrap();
-
-    src_frame.convert(&mut dst_frame).unwrap();
-    let dst_pixels = dst_frame.get_data(0).unwrap();
+    // convert to bgra
+    let dst_config = AvVideoConfig::new(AVPixelFormat::AV_PIX_FMT_BGRA, img_size.0, img_size.1, 1);
+    let dst_frame = src_frame.convert_video(dst_config.clone())?;
 
     let out_path = current_dir.join("sample_bgra.png");
-    image::save_buffer_with_format(
+    let dst_pixels = dst_frame.get_video_data_ptr(0)?;
+    let image_res = image::save_buffer_with_format(
         out_path,
         dst_pixels,
-        img_size.0,
-        img_size.1,
+        dst_config.width,
+        dst_config.height,
         image::ColorType::Rgba8,
         image::ImageFormat::Png,
-    )
-    .unwrap();
+    );
+    if image_res.is_err() {
+        return Err(wolf::media::ffmpeg::av_error::AvError::InvalidParameter);
+    }
+    Ok(())
 }
