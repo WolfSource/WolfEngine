@@ -1,6 +1,6 @@
 use super::{av_audio_config::AvAudioConfig, av_video_config::AvVideoConfig};
 use crate::media::{
-    ffi::ffmpeg::{
+    binding::ffmpeg::{
         av_frame_alloc, av_frame_free, av_image_fill_arrays, sws_freeContext, sws_getContext,
         sws_scale, AVFrame, SWS_BICUBIC,
     },

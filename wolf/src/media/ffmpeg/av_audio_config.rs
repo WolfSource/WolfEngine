@@ -1,4 +1,4 @@
-use crate::media::ffi::ffmpeg::{
+use crate::media::binding::ffmpeg::{
     av_channel_layout_default, av_channel_layout_uninit, AVChannelLayout, AVSampleFormat,
 };
 

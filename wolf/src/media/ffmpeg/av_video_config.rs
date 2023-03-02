@@ -1,4 +1,4 @@
-use crate::media::ffi::ffmpeg::{av_image_get_buffer_size, AVPixelFormat};
+use crate::media::binding::ffmpeg::{av_image_get_buffer_size, AVPixelFormat};
 
 #[derive(Debug, Clone)]
 pub struct AvVideoConfig {

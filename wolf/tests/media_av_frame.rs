@@ -6,11 +6,14 @@
 fn test_av_frame_convert() -> Result<(), wolf::media::ffmpeg::av_error::AvError> {
     use image::GenericImageView;
     use wolf::media::{
-        ffi::ffmpeg::AVPixelFormat,
+        bindgen::ffmpeg::AVPixelFormat,
         ffmpeg::{av_frame::AvFrame, av_video_config::AvVideoConfig},
     };
 
-    let current_dir = std::env::current_dir().unwrap();
+    let mut current_dir = std::env::current_dir().unwrap();
+    if current_dir.ends_with("wolf") {
+        current_dir = current_dir.join("..");
+    }
     let file_path = current_dir.join("content/texture/rgb.png");
 
     let img = image::open(file_path).unwrap();

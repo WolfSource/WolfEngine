@@ -1,18 +1,19 @@
-*.db-*
-*.prof*
-.git/
-*.png
+!coverage/coverage.json
 !Logo.png
+.git/
+*.db-*
+*.png
+*.prof*
 coverage/
+coverage/*
 documentation/
+ffi/__pycache__/*
 profile/
 release/
 target/
+wolf-demo/wasm/cert.pem
 wolf/jniLibs/*
 wolf/sys/build/*
-wolf-demo/wasm/cert.pem
-coverage/*
-!coverage/coverage.json
 
 # Created by https://www.toptal.com/developers/gitignore/api/dotenv,linux,macos,osx,rust,visualstudiocode,windows
 # Edit at https://www.toptal.com/developers/gitignore?templates=dotenv,linux,macos,osx,rust,visualstudiocode,windows

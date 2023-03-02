@@ -1,7 +1,7 @@
 //cargo test test_system_gamepad --release -- --exact --nocapture
 #[cfg(all(feature = "system_gamepad_virtual", target_os = "windows"))]
 #[test]
-fn test_system_gamepad_virtual() -> Result<(), wolf::system::ffi::vigem_client::VIGEM_ERROR> {
+fn test_system_gamepad_virtual() -> Result<(), wolf::system::bindgen::vigem_client::VIGEM_ERROR> {
     use windows_sys::Win32::UI::Input::XboxController::{
         XINPUT_GAMEPAD, XINPUT_GAMEPAD_DPAD_UP, XINPUT_STATE,
     };

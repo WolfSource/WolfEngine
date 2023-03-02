@@ -1,4 +1,4 @@
-use crate::system::ffi::lz4::{
+use crate::system::binding::lz4::{
     LZ4_compressBound, LZ4_compress_default, LZ4_compress_fast, LZ4_decompress_safe,
 };
 

@@ -5,7 +5,7 @@ fn encode(p_packet: &mut wolf::media::av_packet::AVPacket, p_codec_id: &str) -> 
     use image::{EncodableLayout, GenericImageView};
     use wolf::media::{
         av_frame::{AVFrame, AVPixelFormat},
-        ffi::ffmpeg::{AVCodeOptions, AVSetOption, AVSetOptionValueType_INTEGER},
+        bindgen::ffmpeg::{AVCodeOptions, AVSetOption, AVSetOptionValueType_INTEGER},
         ffmpeg::{FFmpeg, FFmpegMode},
     };
 
@@ -85,7 +85,7 @@ fn encode(p_packet: &mut wolf::media::av_packet::AVPacket, p_codec_id: &str) -> 
 fn decode(p_packet: &wolf::media::av_packet::AVPacket, p_codec_id: &str, p_img_size: (u32, u32)) {
     use wolf::media::{
         av_frame::{AVFrame, AVPixelFormat},
-        ffi::ffmpeg::AVCodeOptions,
+        bindgen::ffmpeg::AVCodeOptions,
         ffmpeg::{FFmpeg, FFmpegMode},
     };
 
