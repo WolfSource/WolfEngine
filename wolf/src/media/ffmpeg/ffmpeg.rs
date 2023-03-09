@@ -1,61 +1,63 @@
-// use crate::media::binding::ffmpeg::{
-//     av_parser_close, avcodec_close, avcodec_free_context, avcodec_is_open, AVCodec, AVCodecContext,
-//     AVCodecParserContext,
-// };
+use super::av_error::AvError;
+use crate::media::ffi::ffmpeg::{
+    _av_make_error_string, av_opt_set, av_opt_set_double, av_opt_set_int, av_parser_close,
+    avcodec_close, avcodec_free_context, avcodec_is_open, AVCodec, AVCodecContext,
+    AVCodecParserContext, AVFormatContext,
+};
 
-// #[derive(Debug, Clone, Copy)]
-// pub enum FFmpegMode {
-//     Encoder = 0,
-//     Decoder,
-//     EncoderAndDecoder,
-// }
+#[derive(Debug, Clone, Copy)]
+pub enum FFmpegMode {
+    Encoder = 0,
+    Decoder,
+    EncoderAndDecoder,
+}
 
-// pub struct AvCodecOpt {
-//     bitrate: i64,
-//     fps: i32,
-//     gop: i32,
-//     level: i32,
-//     max_b_frames: i32,
-//     refs: i32,
-//     thread_count: i32,
-// }
+pub struct AvCodecOpt {
+    pub bitrate: i64,
+    pub fps: i32,
+    pub gop: i32,
+    pub level: i32,
+    pub max_b_frames: i32,
+    pub refs: i32,
+    pub thread_count: i32,
+}
 
 // union AvOptionValue<'a> {
-//     i: i32,
-//     f: f64,
-//     s: &'a str,
+//     pub i: i32,
+//     pub f: f64,
+//     pub s: &'a str,
 // }
 
 // struct AvSetOpt<'a> {
 //     // name of option
-//     name: String,
+//     pub name: String,
 //     // value of option
-//     value: AvOptionValue<'a>,
+//     pub value: AvOptionValue<'a>,
 // }
 
-// #[derive(Clone)]
-// pub struct FFmpeg {
-//     mode: FFmpegMode,
-//     codec_ctx: *mut AVCodecContext,
-//     codec: *mut AVCodec,
-//     parser: *mut AVCodecParserContext,
-// }
+#[derive(Clone)]
+pub struct FFmpeg {
+    mode: FFmpegMode,
+    codec_ctx: *mut AVCodecContext,
+    codec: *mut AVCodec,
+    parser: *mut AVCodecParserContext,
+}
 
-// impl Drop for FFmpeg {
-//     fn drop(&mut self) {
-//         unsafe {
-//             if !self.parser.is_null() {
-//                 av_parser_close(self.parser);
-//             }
-//             if !self.codec_ctx.is_null() {
-//                 if avcodec_is_open(self.codec_ctx) > 0 {
-//                     avcodec_close(self.codec_ctx);
-//                 }
-//                 avcodec_free_context(&mut self.codec_ctx);
-//             }
-//         }
-//     }
-// }
+impl Drop for FFmpeg {
+    fn drop(&mut self) {
+        unsafe {
+            if !self.parser.is_null() {
+                av_parser_close(self.parser);
+            }
+            if !self.codec_ctx.is_null() {
+                if avcodec_is_open(self.codec_ctx) > 0 {
+                    avcodec_close(self.codec_ctx);
+                }
+                avcodec_free_context(&mut self.codec_ctx);
+            }
+        }
+    }
+}
 
 // //impl FFmpeg {
 // // /// create a new ffmpeg object with both encoder & decoder modes
@@ -70,19 +72,67 @@
 // // ) -> Result<Self> {
 // // }
 
-// // /// create a new ffmpeg object with both encoder & decoder modes
-// // /// # Errors
-// // ///
-// // /// TODO: add error description
-// // pub fn new_encoder(
-// //     p_audio_config: Option<AvAudioConfig>,
-// //     p_video_config: Option<AvVideoConfig>,
-// //     p_id: &str,
-// //     p_codec_opts: &AvCodecOpt,
-// //     p_opts: &[AvSetOpt],
-// // ) -> Result<Self, AvError> {
-// //     Ok(())
-// // }
+// /// create a new ffmpeg object with both encoder & decoder modes
+// /// # Errors
+// ///
+// /// TODO: add error description
+// pub fn new_encoder(
+//     p_audio_config: Option<AvAudioConfig>,
+//     p_video_config: Option<AvVideoConfig>,
+//     p_id: &str,
+//     p_codec_opts: &AvCodecOpt,
+//     p_opts: &[AvSetOpt],
+// ) -> Result<Self, AvError> {
+//     Ok(())
+// }
+
+// fn get_av_error_str(p_error_code: i32) -> String {
+//     const max_array_size: usize = 255;
+//     let mut error: [std::ffi::c_char; max_array_size] = [0; max_array_size];
+//     let ptr = error.as_mut_ptr();
+//     unsafe {
+//         _av_make_error_string(ptr, max_array_size, p_error_code);
+//         let c_err_str = std::ffi::CStr::from_ptr(ptr);
+//         c_err_str.to_str().unwrap_or_default().to_string()
+//     }
+// }
+
+// #[allow(unreachable_patterns)]
+// fn set_opts(p_ctx: *mut AVFormatContext, p_opts: &[AvSetOpt]) -> Result<(), AvError> {
+//     for opt in p_opts {
+//         if opt.name.is_empty() {
+//             continue;
+//         }
+
+//         let name_str = opt.name.as_str().as_ptr() as *const i8;
+//         unsafe {
+//             match opt.value {
+//                 AvOptionValue { i } => {
+//                     let ret = av_opt_set_int((*p_ctx).priv_data, name_str, i.into(), 0);
+//                     if ret < 0 {
+//                         let error_msg = get_av_error_str(ret);
+//                         return Err(AvError::InvalidAvSetOption(error_msg));
+//                     }
+//                 }
+//                 AvOptionValue { f } => {
+//                     let ret = av_opt_set_double((*p_ctx).priv_data, name_str, f, 0);
+//                     if ret < 0 {
+//                         let error_msg = get_av_error_str(ret);
+//                         return Err(AvError::InvalidAvSetOption(error_msg));
+//                     }
+//                 }
+//                 AvOptionValue { s } => {
+//                     let ret = av_opt_set((*p_ctx).priv_data, name_str, s.as_ptr() as *const i8, 0);
+//                     if ret < 0 {
+//                         let error_msg = get_av_error_str(ret);
+//                         return Err(AvError::InvalidAvSetOption(error_msg));
+//                     }
+//                 }
+//             }
+//         }
+//     }
+//     Ok(())
+// }
 
 // // /// # Errors
 // // ///

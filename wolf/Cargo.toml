@@ -23,7 +23,6 @@ thiserror = {version = "1.0.38", default-features = false}
 raw-window-handle = {version = "0.5.0", default-features = false, features = ["alloc"]} 
 signals2 = {version = "0.3.2", default-features = false}
 tracing = {version = "0.1.37", default-features = false, features = ["std", "attributes"]}
-interoptopus = { version = "0.14.15" }
 
 # dependencies of windows x64
 [target.'cfg(any(target_os = "windows", target_arch = "x86_64"))'.dependencies]
@@ -40,12 +39,14 @@ web-sys = {version = "0.3.61", default-features = false, features = ["console", 
 
 # shared dependencies between arm, aarch64 & x86_64
 [target.'cfg(any(target_arch = "arm", target_arch = "aarch64", target_arch = "x86_64"))'.dependencies]
+boring = { version = "2.1.0", default-features = false }
 instant = {version = "0.1.12", default-features = false}
 pollster = {version = "0.3.0", default-features = false}
+quiche = { version = "0.16.0", default-features = false, features = ["boringssl-vendored"], optional = true}
 rhai = { version = "1.12.0", default-features = false, features = ["sync", "internals"], optional = true}
 rustls-pemfile = {version = "1.0.2", default-features = false}
 tokio = {version = "1.26.0", default-features = false, features = ["full"]}
-tokio-rustls = {version = "0.23.4", default-features = false, features = ["logging", "tls12"]}
+tokio-boring = {version = "2.1.5", default-features = false, optional = true}
 tonic = {version = "0.8.3", default-features = false, features = ["codegen", "prost", "tls", "gzip"], optional = true}
 webpki-roots = {version = "0.22.6", default-features = false}
 #wgpu = {version = "0.15.1", default-features = false, optional = true}
@@ -56,7 +57,7 @@ webpki-roots = {version = "0.22.6", default-features = false}
 # dependencies of x86_64
 [target.'cfg(target_arch = "x86_64")'.dependencies]
 async-raft = {version = "0.6.1", default-features = false, optional = true}
-async-trait = {version = "0.1.64", default-features = false}
+async-trait = {version = "0.1.65", default-features = false}
 futures = { version = "0.3.26", default-features = false }
 hyper = {version = "0.14.24", default-features = false}
 may = {version = "0.3.41", default-features = false, optional = true}
@@ -66,8 +67,8 @@ parking_lot = {version = "0.12.1",  default-features = false, features = ["deadl
 prost = {version = "0.11.8", default-features = false, optional = true}
 scrap ={version = "0.5.0", default-features = false, optional = true}
 serde_json = {version = "1.0.93", default-features = false, features = ["std"]}
-sysinfo = {version = "0.28.1", default-features = false, features = ["multithread"]}
-tokio-tungstenite = {version = "0.18.0", default-features = false, features = ["connect", "rustls"], optional = true}
+sysinfo = {version = "0.28.2", default-features = false, features = ["multithread"]}
+tokio-tungstenite = {version = "0.18.0", default-features = false, features = ["connect", "native-tls"], optional = true}
 uuid = {version = "1.3.0", default-features = false, features = ["v5"]}
 
 [build-dependencies]
@@ -76,20 +77,20 @@ tonic-build = {version = "0.8.4", default-features = false, features = ["transpo
 
 [dev-dependencies]
 image = {version ="0.24.5", default-features = false, features = ["jpeg", "png", "rgb"]}
-interoptopus_backend_c = { version = "0.14.15" }
-interoptopus_backend_cpython = { version = "0.14.15" }
 lazy_static = {version = "1.4.0", default-features = false}
 wav = {version = "1.0.0", default-features = false }
 
 # features
 [features]
 all = [
-    "ffi",
-    "media_ffmpeg",
-    "stream_grpc",
-    "stream_janus",
-    "system_gamepad_virtual",
-    "system_lz4",
+    "stream_quic",
+    "system_socket_client",
+    "system_socket_server",
+    #"media_ffmpeg",
+    #"stream_grpc",
+    #"stream_janus",
+    #"system_gamepad_virtual",
+    #"system_lz4",
     #"system_lzma",
     #"system_raft",
 #     "media_openal",
@@ -111,12 +112,12 @@ all = [
 #     "system_screen_capture",
 # ]
 default = ["all"]
-ffi = []
 media_ffmpeg = [] # enable ffmpeg
 # media_openal = [] # enable openal
 # render = ["wgpu"] # enable real-time rendering
 stream_grpc = ["tonic", "prost"] # enable gRPC (http2/1.1) for stream module
 stream_janus = []
+stream_quic = ["quiche"] # enable QUIC protocol for stream module 
 
 # stream_rist = [] # enable RIST streaming protocol for stream module
 # stream_socket_client = ["tokio-tungstenite"] # enable tcp/udp/ws server for stream module
@@ -126,6 +127,8 @@ system_gamepad_virtual = [] # enable gamepad virtual simulator
 system_lz4 = [] # enable LZ4 compression for system module
 # system_lzma = [] # enable LZMA compression for system module
 system_raft = ["async-raft", "prost", "stream_grpc"] # enable raft algorithm for system module
+system_socket_client = ["tokio-boring"] # enable client socket for system module
+system_socket_server = ["tokio-boring"] # enable server socket for system module
 # system_screen_capture = ["scrap"] # enable screen capture
 
 # brotli = [] # enable brotli compression

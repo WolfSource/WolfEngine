@@ -397,6 +397,7 @@ fn copy_openal(p_current_dir_path_str: &str, p_build_profile: &str) {
     copy_shared_libs(&bin_lib_path, &dll_names);
 }
 
+#[allow(clippy::too_many_lines)]
 fn bindgens(p_current_dir_path_str: &str, p_build_profile: &str) {
     struct Binding<'a> {
         headers: Vec<String>,
@@ -414,7 +415,7 @@ fn bindgens(p_current_dir_path_str: &str, p_build_profile: &str) {
         clang_args.push(format!("-I{include_path}"));
         bindings.push(Binding {
             headers: vec![format!("{include_path}/lz4.h")],
-            dst: "src/system/binding/lz4.rs",
+            dst: "src/system/ffi/lz4.rs",
             block_headers: &[],
             allow_funcs: &["LZ4_.*"],
         });
@@ -423,7 +424,7 @@ fn bindgens(p_current_dir_path_str: &str, p_build_profile: &str) {
     #[cfg(feature = "system_lzma")]
     bindings.push(Binding {
         headers: "sys/system/lzma.h",
-        dst: "src/system/binding/lzma.rs",
+        dst: "src/system/ffi/lzma.rs",
         block_headers: &[],
     });
 
@@ -433,7 +434,7 @@ fn bindgens(p_current_dir_path_str: &str, p_build_profile: &str) {
         clang_args.push(format!("-I{include_path}"));
         bindings.push(Binding {
             headers: vec![format!("{include_path}/ViGEm/Client.h")],
-            dst: "src/system/binding/vigem_client.rs",
+            dst: "src/system/ffi/vigem_client.rs",
             block_headers: &[],
             allow_funcs: &["vigem_.*"],
         });
@@ -442,7 +443,7 @@ fn bindgens(p_current_dir_path_str: &str, p_build_profile: &str) {
     #[cfg(feature = "stream_rist")]
     bindings.push(Binding {
         headers: "sys/stream/rist.h",
-        dst: "src/stream/binding/rist.rs",
+        dst: "src/stream/ffi/rist.rs",
         block_headers: &[],
     });
 
@@ -451,20 +452,20 @@ fn bindgens(p_current_dir_path_str: &str, p_build_profile: &str) {
         clang_args.push(format!("-I{include_path}"));
         bindings.push(Binding {
             headers: vec![format!("{p_current_dir_path_str}/sys/media/ffmpeg.h")],
-            dst: "src/media/binding/ffmpeg.rs",
+            dst: "src/media/ffi/ffmpeg.rs",
             block_headers: &[],
             allow_funcs: &[],
         });
 
         // bindgens.push(Binding {
         //     headers: &["sys/media/ffmpeg.h".to_owned()],
-        //     dst: "src/media/binding/ffmpeg.rs",
+        //     dst: "src/media/ffi/ffmpeg.rs",
         //     block_headers: &[],
         //     allow_funcs: &[],
         // });
         // headers.push(Binding {
         //     src: "sys/media/test.h",
-        //     dst: "src/media/binding/test.rs",
+        //     dst: "src/media/ffi/test.rs",
         //     block_headers: &["sys/media/av_frame.h"],
         // });
     }
@@ -472,7 +473,7 @@ fn bindgens(p_current_dir_path_str: &str, p_build_profile: &str) {
     // if cfg!(feature = "media_openal") {
     //     headers.push(Binding {
     //         headers: &["sys/media/openal.h".to_owned()],
-    //         dst: "src/media/binding/openal.rs",
+    //         dst: "src/media/ffi/openal.rs",
     //         block_headers: &[],
     //     });
     // }
@@ -497,6 +498,7 @@ fn bindgens(p_current_dir_path_str: &str, p_build_profile: &str) {
             .layout_tests(false) // disable test
             .clang_args(["-x", "c++", "-std=c++20"])
             .clang_args(clang_args.clone())
+            .generate_inline_functions(true)
             .header("sys/w_platform.h")
             // tell cargo to invalidate the built crate whenever any of the
             // included header files changed.

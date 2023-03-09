@@ -14,4 +14,6 @@ pub enum AvError {
     InvalidSwsContext,
     #[error("could not scale via SWS context")]
     SwsScaleFailed,
+    #[error("invalid AvSetOption because '{0}'")]
+    InvalidAvSetOption(String),
 }

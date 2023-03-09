@@ -1,5 +1,5 @@
 use super::av_error::AvError;
-use crate::media::binding::ffmpeg::{av_packet_alloc, av_packet_free, AVPacket};
+use crate::media::ffi::ffmpeg::{av_packet_alloc, av_packet_free, AVPacket};
 
 #[derive(Clone)]
 pub struct AvPacket {

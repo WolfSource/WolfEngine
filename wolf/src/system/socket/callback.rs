@@ -1,9 +1,8 @@
-#![allow(missing_debug_implementations)]
-use super::{buffer::Buffer, socket_error::SocketError};
+use crate::{error::WError, system::buffer::Buffer};
 use std::{net::SocketAddr, sync::Arc};
 
 // OnMessageCallback
-type Fp1 = Box<dyn Fn(f64, &SocketAddr, &mut Buffer) -> Result<(), SocketError> + Send + Sync>;
+type Fp1 = Box<dyn Fn(f64, &SocketAddr, &mut Buffer) -> Result<(), WError> + Send + Sync>;
 
 pub struct OnMessageCallback {
     f: Arc<Fp1>,
@@ -23,7 +22,7 @@ impl OnMessageCallback {
         p_socket_time_in_secs: f64,
         p_peer_address: &SocketAddr,
         p_msg: &mut Buffer,
-    ) -> Result<(), SocketError> {
+    ) -> Result<(), WError> {
         (self.f)(p_socket_time_in_secs, p_peer_address, p_msg)
     }
 }
@@ -50,7 +49,7 @@ impl Clone for OnMessageCallback {
 }
 
 // OnSocketCallback
-type Fp2 = Box<dyn Fn(&SocketAddr) -> Result<(), SocketError> + Send + Sync>;
+type Fp2 = Box<dyn Fn(&SocketAddr) -> Result<(), WError> + Send + Sync>;
 
 pub struct OnSocketCallback {
     f: Arc<Fp2>,
@@ -65,7 +64,7 @@ impl OnSocketCallback {
     /// # Errors
     ///
     /// TODO: add error description
-    pub fn run(&self, p_arg: &SocketAddr) -> Result<(), SocketError> {
+    pub fn run(&self, p_arg: &SocketAddr) -> Result<(), WError> {
         (self.f)(p_arg)
     }
 }
@@ -91,7 +90,7 @@ impl Clone for OnSocketCallback {
 }
 
 // OnCloseSocketCallback
-type Fp3 = Box<dyn Fn(&SocketAddr, &str) -> Result<(), SocketError> + Send + Sync>;
+type Fp3 = Box<dyn Fn(&SocketAddr, &str) -> Result<(), WError> + Send + Sync>;
 
 pub struct OnCloseSocketCallback {
     f: Arc<Fp3>,
@@ -106,7 +105,7 @@ impl OnCloseSocketCallback {
     /// # Errors
     ///
     /// TODO: add error description
-    pub fn run(&self, p_arg1: &SocketAddr, p_arg2: &str) -> Result<(), SocketError> {
+    pub fn run(&self, p_arg1: &SocketAddr, p_arg2: &str) -> Result<(), WError> {
         (self.f)(p_arg1, p_arg2)
     }
 }

@@ -21707,10 +21707,54 @@ extern "C" {
     pub fn __iscsym(_C: ::std::os::raw::c_int) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    pub fn __acrt_locale_get_ctype_array_value(
+        _Locale_pctype_array: *const ::std::os::raw::c_ushort,
+        _Char_value: ::std::os::raw::c_int,
+        _Mask: ::std::os::raw::c_int,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
     pub fn ___mb_cur_max_func() -> ::std::os::raw::c_int;
 }
 extern "C" {
     pub fn ___mb_cur_max_l_func(_Locale: _locale_t) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn __ascii_tolower(_C: ::std::os::raw::c_int) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn __ascii_toupper(_C: ::std::os::raw::c_int) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn __ascii_iswalpha(_C: ::std::os::raw::c_int) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn __ascii_iswdigit(_C: ::std::os::raw::c_int) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn __ascii_towlower(_C: ::std::os::raw::c_int) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn __ascii_towupper(_C: ::std::os::raw::c_int) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn __acrt_get_locale_data_prefix(
+        _LocalePointers: *const ::std::os::raw::c_void,
+    ) -> *mut __crt_locale_data_public;
+}
+extern "C" {
+    pub fn _chvalidchk_l(
+        _C: ::std::os::raw::c_int,
+        _Mask: ::std::os::raw::c_int,
+        _Locale: _locale_t,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _ischartype_l(
+        _C: ::std::os::raw::c_int,
+        _Mask: ::std::os::raw::c_int,
+        _Locale: _locale_t,
+    ) -> ::std::os::raw::c_int;
 }
 pub type POINTER_64_INT = ::std::os::raw::c_ulonglong;
 pub type INT8 = ::std::os::raw::c_schar;
@@ -21750,6 +21794,57 @@ pub type UHALF_PTR = ::std::os::raw::c_uint;
 pub type PUHALF_PTR = *mut ::std::os::raw::c_uint;
 pub type HALF_PTR = ::std::os::raw::c_int;
 pub type PHALF_PTR = *mut ::std::os::raw::c_int;
+extern "C" {
+    pub fn HandleToULong(h: *const ::std::os::raw::c_void) -> ::std::os::raw::c_ulong;
+}
+extern "C" {
+    pub fn HandleToLong(h: *const ::std::os::raw::c_void) -> ::std::os::raw::c_long;
+}
+extern "C" {
+    pub fn ULongToHandle(h: ::std::os::raw::c_ulong) -> *mut ::std::os::raw::c_void;
+}
+extern "C" {
+    pub fn LongToHandle(h: ::std::os::raw::c_long) -> *mut ::std::os::raw::c_void;
+}
+extern "C" {
+    pub fn PtrToUlong(p: *const ::std::os::raw::c_void) -> ::std::os::raw::c_ulong;
+}
+extern "C" {
+    pub fn PtrToUint(p: *const ::std::os::raw::c_void) -> ::std::os::raw::c_uint;
+}
+extern "C" {
+    pub fn PtrToUshort(p: *const ::std::os::raw::c_void) -> ::std::os::raw::c_ushort;
+}
+extern "C" {
+    pub fn PtrToLong(p: *const ::std::os::raw::c_void) -> ::std::os::raw::c_long;
+}
+extern "C" {
+    pub fn PtrToInt(p: *const ::std::os::raw::c_void) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn PtrToShort(p: *const ::std::os::raw::c_void) -> ::std::os::raw::c_short;
+}
+extern "C" {
+    pub fn IntToPtr(i: ::std::os::raw::c_int) -> *mut ::std::os::raw::c_void;
+}
+extern "C" {
+    pub fn UIntToPtr(ui: ::std::os::raw::c_uint) -> *mut ::std::os::raw::c_void;
+}
+extern "C" {
+    pub fn LongToPtr(l: ::std::os::raw::c_long) -> *mut ::std::os::raw::c_void;
+}
+extern "C" {
+    pub fn ULongToPtr(ul: ::std::os::raw::c_ulong) -> *mut ::std::os::raw::c_void;
+}
+extern "C" {
+    pub fn Ptr32ToPtr(p: *const ::std::os::raw::c_void) -> *mut ::std::os::raw::c_void;
+}
+extern "C" {
+    pub fn Handle32ToHandle(h: *const ::std::os::raw::c_void) -> *mut ::std::os::raw::c_void;
+}
+extern "C" {
+    pub fn PtrToPtr32(p: *const ::std::os::raw::c_void) -> *mut ::std::os::raw::c_void;
+}
 pub type SIZE_T = ULONG_PTR;
 pub type PSIZE_T = *mut ULONG_PTR;
 pub type SSIZE_T = LONG_PTR;
@@ -22165,6 +22260,14 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    #[link_name = "\u{1}?memchr@@YAPEAXPEAXH_K@Z"]
+    pub fn memchr1(
+        _Pv: *mut ::std::os::raw::c_void,
+        _C: ::std::os::raw::c_int,
+        _N: usize,
+    ) -> *mut ::std::os::raw::c_void;
+}
+extern "C" {
     pub fn wcscat_s(_Destination: *mut u16, _SizeInWords: rsize_t, _Source: *const u16) -> errno_t;
 }
 extern "C" {
@@ -22232,6 +22335,10 @@ extern "C" {
 }
 extern "C" {
     pub fn wcstok(_String: *mut u16, _Delimiter: *const u16, _Context: *mut *mut u16) -> *mut u16;
+}
+extern "C" {
+    #[link_name = "\u{1}?wcstok@@YAPEA_WPEA_WPEB_W@Z"]
+    pub fn wcstok1(_String: *mut u16, _Delimiter: *const u16) -> *mut u16;
 }
 extern "C" {
     pub fn _wcserror(_ErrorNumber: ::std::os::raw::c_int) -> *mut u16;
@@ -22382,6 +22489,22 @@ extern "C" {
         _MaxCount: usize,
         _Locale: _locale_t,
     ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    #[link_name = "\u{1}?wcschr@@YAPEA_WPEA_W_W@Z"]
+    pub fn wcschr1(_String: *mut u16, _C: u16) -> *mut u16;
+}
+extern "C" {
+    #[link_name = "\u{1}?wcspbrk@@YAPEA_WPEA_WPEB_W@Z"]
+    pub fn wcspbrk1(_String: *mut u16, _Control: *const u16) -> *mut u16;
+}
+extern "C" {
+    #[link_name = "\u{1}?wcsrchr@@YAPEA_WPEA_W_W@Z"]
+    pub fn wcsrchr1(_String: *mut u16, _C: u16) -> *mut u16;
+}
+extern "C" {
+    #[link_name = "\u{1}?wcsstr@@YAPEA_WPEA_WPEB_W@Z"]
+    pub fn wcsstr1(_String: *mut u16, _SubStr: *const u16) -> *mut u16;
 }
 extern "C" {
     pub fn wcsdup(_String: *const u16) -> *mut u16;
@@ -22729,6 +22852,34 @@ extern "C" {
     ) -> usize;
 }
 extern "C" {
+    #[link_name = "\u{1}?strchr@@YAPEADQEADH@Z"]
+    pub fn strchr1(
+        _String: *mut ::std::os::raw::c_char,
+        _Ch: ::std::os::raw::c_int,
+    ) -> *mut ::std::os::raw::c_char;
+}
+extern "C" {
+    #[link_name = "\u{1}?strpbrk@@YAPEADQEADQEBD@Z"]
+    pub fn strpbrk1(
+        _String: *mut ::std::os::raw::c_char,
+        _Control: *const ::std::os::raw::c_char,
+    ) -> *mut ::std::os::raw::c_char;
+}
+extern "C" {
+    #[link_name = "\u{1}?strrchr@@YAPEADQEADH@Z"]
+    pub fn strrchr1(
+        _String: *mut ::std::os::raw::c_char,
+        _Ch: ::std::os::raw::c_int,
+    ) -> *mut ::std::os::raw::c_char;
+}
+extern "C" {
+    #[link_name = "\u{1}?strstr@@YAPEADQEADQEBD@Z"]
+    pub fn strstr1(
+        _String: *mut ::std::os::raw::c_char,
+        _SubString: *const ::std::os::raw::c_char,
+    ) -> *mut ::std::os::raw::c_char;
+}
+extern "C" {
     pub fn strdup(_String: *const ::std::os::raw::c_char) -> *mut ::std::os::raw::c_char;
 }
 extern "C" {
@@ -22771,6 +22922,12 @@ extern "C" {
 }
 extern "C" {
     pub fn strupr(_String: *mut ::std::os::raw::c_char) -> *mut ::std::os::raw::c_char;
+}
+extern "C" {
+    pub fn InlineIsEqualGUID(rguid1: *const GUID, rguid2: *const GUID) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn IsEqualGUID(rguid1: *const GUID, rguid2: *const GUID) -> ::std::os::raw::c_int;
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -23053,6 +23210,9 @@ extern "C" {
     pub fn _InterlockedExchangeAdd(Addend: *mut LONG, Value: LONG) -> LONG;
 }
 extern "C" {
+    pub fn _InlineInterlockedAdd(Addend: *mut LONG, Value: LONG) -> LONG;
+}
+extern "C" {
     pub fn _InterlockedCompareExchange(
         Destination: *mut LONG,
         ExChange: LONG,
@@ -23070,6 +23230,9 @@ extern "C" {
 }
 extern "C" {
     pub fn _InterlockedExchangeAdd64(Addend: *mut LONG64, Value: LONG64) -> LONG64;
+}
+extern "C" {
+    pub fn _InlineInterlockedAdd64(Addend: *mut LONG64, Value: LONG64) -> LONG64;
 }
 extern "C" {
     pub fn _InterlockedCompareExchange64(
@@ -23241,6 +23404,16 @@ extern "C" {
         Multiplier: DWORD64,
         Multiplicand: DWORD64,
         HighProduct: *mut DWORD64,
+    ) -> DWORD64;
+}
+extern "C" {
+    pub fn MultiplyExtract128(Multiplier: LONG64, Multiplicand: LONG64, Shift: BYTE) -> LONG64;
+}
+extern "C" {
+    pub fn UnsignedMultiplyExtract128(
+        Multiplier: DWORD64,
+        Multiplicand: DWORD64,
+        Shift: BYTE,
     ) -> DWORD64;
 }
 extern "C" {
@@ -23962,6 +24135,222 @@ impl _LDT_ENTRY__bindgen_ty_1__bindgen_ty_2 {
 }
 pub type LDT_ENTRY = _LDT_ENTRY;
 pub type PLDT_ENTRY = *mut _LDT_ENTRY;
+extern "C" {
+    pub fn ReadAcquire8(Source: *const CHAR) -> CHAR;
+}
+extern "C" {
+    pub fn ReadNoFence8(Source: *const CHAR) -> CHAR;
+}
+extern "C" {
+    pub fn WriteRelease8(Destination: *mut CHAR, Value: CHAR);
+}
+extern "C" {
+    pub fn WriteNoFence8(Destination: *mut CHAR, Value: CHAR);
+}
+extern "C" {
+    pub fn ReadAcquire16(Source: *const SHORT) -> SHORT;
+}
+extern "C" {
+    pub fn ReadNoFence16(Source: *const SHORT) -> SHORT;
+}
+extern "C" {
+    pub fn WriteRelease16(Destination: *mut SHORT, Value: SHORT);
+}
+extern "C" {
+    pub fn WriteNoFence16(Destination: *mut SHORT, Value: SHORT);
+}
+extern "C" {
+    pub fn ReadAcquire(Source: *const LONG) -> LONG;
+}
+extern "C" {
+    pub fn ReadNoFence(Source: *const LONG) -> LONG;
+}
+extern "C" {
+    pub fn WriteRelease(Destination: *mut LONG, Value: LONG);
+}
+extern "C" {
+    pub fn WriteNoFence(Destination: *mut LONG, Value: LONG);
+}
+extern "C" {
+    pub fn ReadAcquire64(Source: *const LONG64) -> LONG64;
+}
+extern "C" {
+    pub fn ReadNoFence64(Source: *const LONG64) -> LONG64;
+}
+extern "C" {
+    pub fn WriteRelease64(Destination: *mut LONG64, Value: LONG64);
+}
+extern "C" {
+    pub fn WriteNoFence64(Destination: *mut LONG64, Value: LONG64);
+}
+extern "C" {
+    pub fn BarrierAfterRead();
+}
+extern "C" {
+    pub fn ReadRaw8(Source: *const CHAR) -> CHAR;
+}
+extern "C" {
+    pub fn WriteRaw8(Destination: *mut CHAR, Value: CHAR);
+}
+extern "C" {
+    pub fn ReadRaw16(Source: *const SHORT) -> SHORT;
+}
+extern "C" {
+    pub fn WriteRaw16(Destination: *mut SHORT, Value: SHORT);
+}
+extern "C" {
+    pub fn ReadRaw(Source: *const LONG) -> LONG;
+}
+extern "C" {
+    pub fn WriteRaw(Destination: *mut LONG, Value: LONG);
+}
+extern "C" {
+    pub fn ReadRaw64(Source: *const LONG64) -> LONG64;
+}
+extern "C" {
+    pub fn WriteRaw64(Destination: *mut LONG64, Value: LONG64);
+}
+extern "C" {
+    pub fn ReadUCharAcquire(Source: *const BYTE) -> BYTE;
+}
+extern "C" {
+    pub fn ReadUCharNoFence(Source: *const BYTE) -> BYTE;
+}
+extern "C" {
+    pub fn ReadBooleanAcquire(Source: *const BOOLEAN) -> BYTE;
+}
+extern "C" {
+    pub fn ReadBooleanNoFence(Source: *const BOOLEAN) -> BYTE;
+}
+extern "C" {
+    pub fn ReadBooleanRaw(Source: *const BOOLEAN) -> BYTE;
+}
+extern "C" {
+    pub fn ReadUCharRaw(Source: *const BYTE) -> BYTE;
+}
+extern "C" {
+    pub fn WriteUCharRelease(Destination: *mut BYTE, Value: BYTE);
+}
+extern "C" {
+    pub fn WriteUCharNoFence(Destination: *mut BYTE, Value: BYTE);
+}
+extern "C" {
+    pub fn WriteBooleanRelease(Destination: *mut BOOLEAN, Value: BOOLEAN);
+}
+extern "C" {
+    pub fn WriteBooleanNoFence(Destination: *mut BOOLEAN, Value: BOOLEAN);
+}
+extern "C" {
+    pub fn WriteUCharRaw(Destination: *mut BYTE, Value: BYTE);
+}
+extern "C" {
+    pub fn ReadUShortAcquire(Source: *const WORD) -> WORD;
+}
+extern "C" {
+    pub fn ReadUShortNoFence(Source: *const WORD) -> WORD;
+}
+extern "C" {
+    pub fn ReadUShortRaw(Source: *const WORD) -> WORD;
+}
+extern "C" {
+    pub fn WriteUShortRelease(Destination: *mut WORD, Value: WORD);
+}
+extern "C" {
+    pub fn WriteUShortNoFence(Destination: *mut WORD, Value: WORD);
+}
+extern "C" {
+    pub fn WriteUShortRaw(Destination: *mut WORD, Value: WORD);
+}
+extern "C" {
+    pub fn ReadULongAcquire(Source: *const DWORD) -> DWORD;
+}
+extern "C" {
+    pub fn ReadULongNoFence(Source: *const DWORD) -> DWORD;
+}
+extern "C" {
+    pub fn ReadULongRaw(Source: *const DWORD) -> DWORD;
+}
+extern "C" {
+    pub fn WriteULongRelease(Destination: *mut DWORD, Value: DWORD);
+}
+extern "C" {
+    pub fn WriteULongNoFence(Destination: *mut DWORD, Value: DWORD);
+}
+extern "C" {
+    pub fn WriteULongRaw(Destination: *mut DWORD, Value: DWORD);
+}
+extern "C" {
+    pub fn ReadInt32Acquire(Source: *const INT32) -> INT32;
+}
+extern "C" {
+    pub fn ReadInt32NoFence(Source: *const INT32) -> INT32;
+}
+extern "C" {
+    pub fn ReadInt32Raw(Source: *const INT32) -> INT32;
+}
+extern "C" {
+    pub fn WriteInt32Release(Destination: *mut INT32, Value: INT32);
+}
+extern "C" {
+    pub fn WriteInt32NoFence(Destination: *mut INT32, Value: INT32);
+}
+extern "C" {
+    pub fn WriteInt32Raw(Destination: *mut INT32, Value: INT32);
+}
+extern "C" {
+    pub fn ReadUInt32Acquire(Source: *const UINT32) -> UINT32;
+}
+extern "C" {
+    pub fn ReadUInt32NoFence(Source: *const UINT32) -> UINT32;
+}
+extern "C" {
+    pub fn ReadUInt32Raw(Source: *const UINT32) -> UINT32;
+}
+extern "C" {
+    pub fn WriteUInt32Release(Destination: *mut UINT32, Value: UINT32);
+}
+extern "C" {
+    pub fn WriteUInt32NoFence(Destination: *mut UINT32, Value: UINT32);
+}
+extern "C" {
+    pub fn WriteUInt32Raw(Destination: *mut UINT32, Value: UINT32);
+}
+extern "C" {
+    pub fn ReadULong64Acquire(Source: *const DWORD64) -> DWORD64;
+}
+extern "C" {
+    pub fn ReadULong64NoFence(Source: *const DWORD64) -> DWORD64;
+}
+extern "C" {
+    pub fn ReadULong64Raw(Source: *const DWORD64) -> DWORD64;
+}
+extern "C" {
+    pub fn WriteULong64Release(Destination: *mut DWORD64, Value: DWORD64);
+}
+extern "C" {
+    pub fn WriteULong64NoFence(Destination: *mut DWORD64, Value: DWORD64);
+}
+extern "C" {
+    pub fn WriteULong64Raw(Destination: *mut DWORD64, Value: DWORD64);
+}
+extern "C" {
+    pub fn ReadPointerAcquire(Source: *const PVOID) -> PVOID;
+}
+extern "C" {
+    pub fn ReadPointerNoFence(Source: *const PVOID) -> PVOID;
+}
+extern "C" {
+    pub fn ReadPointerRaw(Source: *const PVOID) -> PVOID;
+}
+extern "C" {
+    pub fn WritePointerRelease(Destination: *mut PVOID, Value: PVOID);
+}
+extern "C" {
+    pub fn WritePointerNoFence(Destination: *mut PVOID, Value: PVOID);
+}
+extern "C" {
+    pub fn WritePointerRaw(Destination: *mut PVOID, Value: PVOID);
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _WOW64_FLOATING_SAVE_AREA {
@@ -33530,6 +33919,19 @@ pub type PRTL_BARRIER = *mut _RTL_BARRIER;
 extern "C" {
     pub fn __fastfail(Code: ::std::os::raw::c_uint) -> !;
 }
+extern "C" {
+    pub fn HEAP_MAKE_TAG_FLAGS(TagBase: DWORD, Tag: DWORD) -> DWORD;
+}
+extern "C" {
+    pub fn RtlConstantTimeEqualMemory(
+        v1: *const ::std::os::raw::c_void,
+        v2: *const ::std::os::raw::c_void,
+        len: ::std::os::raw::c_ulong,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn RtlSecureZeroMemory(ptr: PVOID, cnt: SIZE_T) -> PVOID;
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _MESSAGE_RESOURCE_ENTRY {
@@ -33773,6 +34175,12 @@ pub struct _CUSTOM_SYSTEM_EVENT_TRIGGER_CONFIG {
 }
 pub type CUSTOM_SYSTEM_EVENT_TRIGGER_CONFIG = _CUSTOM_SYSTEM_EVENT_TRIGGER_CONFIG;
 pub type PCUSTOM_SYSTEM_EVENT_TRIGGER_CONFIG = *mut _CUSTOM_SYSTEM_EVENT_TRIGGER_CONFIG;
+extern "C" {
+    pub fn CUSTOM_SYSTEM_EVENT_TRIGGER_INIT(
+        Config: PCUSTOM_SYSTEM_EVENT_TRIGGER_CONFIG,
+        TriggerId: PCWSTR,
+    );
+}
 extern "C" {
     pub fn RtlRaiseCustomSystemEventTrigger(
         TriggerConfig: PCUSTOM_SYSTEM_EVENT_TRIGGER_CONFIG,
@@ -34822,6 +35230,52 @@ impl _TP_CALLBACK_ENVIRON_V3__bindgen_ty_1__bindgen_ty_1 {
 pub type TP_CALLBACK_ENVIRON_V3 = _TP_CALLBACK_ENVIRON_V3;
 pub type TP_CALLBACK_ENVIRON = TP_CALLBACK_ENVIRON_V3;
 pub type PTP_CALLBACK_ENVIRON = *mut TP_CALLBACK_ENVIRON_V3;
+extern "C" {
+    pub fn TpInitializeCallbackEnviron(CallbackEnviron: PTP_CALLBACK_ENVIRON);
+}
+extern "C" {
+    pub fn TpSetCallbackThreadpool(CallbackEnviron: PTP_CALLBACK_ENVIRON, Pool: PTP_POOL);
+}
+extern "C" {
+    pub fn TpSetCallbackCleanupGroup(
+        CallbackEnviron: PTP_CALLBACK_ENVIRON,
+        CleanupGroup: PTP_CLEANUP_GROUP,
+        CleanupGroupCancelCallback: PTP_CLEANUP_GROUP_CANCEL_CALLBACK,
+    );
+}
+extern "C" {
+    pub fn TpSetCallbackActivationContext(
+        CallbackEnviron: PTP_CALLBACK_ENVIRON,
+        ActivationContext: *mut _ACTIVATION_CONTEXT,
+    );
+}
+extern "C" {
+    pub fn TpSetCallbackNoActivationContext(CallbackEnviron: PTP_CALLBACK_ENVIRON);
+}
+extern "C" {
+    pub fn TpSetCallbackLongFunction(CallbackEnviron: PTP_CALLBACK_ENVIRON);
+}
+extern "C" {
+    pub fn TpSetCallbackRaceWithDll(CallbackEnviron: PTP_CALLBACK_ENVIRON, DllHandle: PVOID);
+}
+extern "C" {
+    pub fn TpSetCallbackFinalizationCallback(
+        CallbackEnviron: PTP_CALLBACK_ENVIRON,
+        FinalizationCallback: PTP_SIMPLE_CALLBACK,
+    );
+}
+extern "C" {
+    pub fn TpSetCallbackPriority(
+        CallbackEnviron: PTP_CALLBACK_ENVIRON,
+        Priority: TP_CALLBACK_PRIORITY,
+    );
+}
+extern "C" {
+    pub fn TpSetCallbackPersistent(CallbackEnviron: PTP_CALLBACK_ENVIRON);
+}
+extern "C" {
+    pub fn TpDestroyCallbackEnviron(CallbackEnviron: PTP_CALLBACK_ENVIRON);
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _TP_WORK {
@@ -34869,6 +35323,15 @@ pub type PTP_IO = *mut _TP_IO;
 #[derive(Debug, Copy, Clone)]
 pub struct _TEB {
     _unused: [u8; 0],
+}
+extern "C" {
+    pub fn NtCurrentTeb() -> *mut _TEB;
+}
+extern "C" {
+    pub fn GetCurrentFiber() -> PVOID;
+}
+extern "C" {
+    pub fn GetFiberData() -> PVOID;
 }
 pub type WPARAM = UINT_PTR;
 pub type LPARAM = LONG_PTR;
@@ -37332,6 +37795,15 @@ extern "C" {
     ) -> BOOL;
 }
 extern "C" {
+    pub fn GetCurrentProcessToken() -> HANDLE;
+}
+extern "C" {
+    pub fn GetCurrentThreadToken() -> HANDLE;
+}
+extern "C" {
+    pub fn GetCurrentThreadEffectiveToken() -> HANDLE;
+}
+extern "C" {
     pub fn SetThreadToken(Thread: PHANDLE, Token: HANDLE) -> BOOL;
 }
 extern "C" {
@@ -38544,6 +39016,17 @@ extern "C" {
         AllocationType: ULONG,
         PageProtection: ULONG,
         PreferredNode: ULONG,
+    ) -> PVOID;
+}
+extern "C" {
+    pub fn MapViewOfFile2(
+        FileMappingHandle: HANDLE,
+        ProcessHandle: HANDLE,
+        Offset: ULONG64,
+        BaseAddress: PVOID,
+        ViewSize: SIZE_T,
+        AllocationType: ULONG,
+        PageProtection: ULONG,
     ) -> PVOID;
 }
 extern "C" {
@@ -43299,6 +43782,37 @@ extern "C" {
     pub fn CancelTimerQueueTimer(TimerQueue: HANDLE, Timer: HANDLE) -> BOOL;
 }
 extern "C" {
+    pub fn InitializeThreadpoolEnvironment(pcbe: PTP_CALLBACK_ENVIRON);
+}
+extern "C" {
+    pub fn SetThreadpoolCallbackPool(pcbe: PTP_CALLBACK_ENVIRON, ptpp: PTP_POOL);
+}
+extern "C" {
+    pub fn SetThreadpoolCallbackCleanupGroup(
+        pcbe: PTP_CALLBACK_ENVIRON,
+        ptpcg: PTP_CLEANUP_GROUP,
+        pfng: PTP_CLEANUP_GROUP_CANCEL_CALLBACK,
+    );
+}
+extern "C" {
+    pub fn SetThreadpoolCallbackRunsLong(pcbe: PTP_CALLBACK_ENVIRON);
+}
+extern "C" {
+    pub fn SetThreadpoolCallbackLibrary(pcbe: PTP_CALLBACK_ENVIRON, mod_: PVOID);
+}
+extern "C" {
+    pub fn SetThreadpoolCallbackPriority(
+        pcbe: PTP_CALLBACK_ENVIRON,
+        Priority: TP_CALLBACK_PRIORITY,
+    );
+}
+extern "C" {
+    pub fn DestroyThreadpoolEnvironment(pcbe: PTP_CALLBACK_ENVIRON);
+}
+extern "C" {
+    pub fn SetThreadpoolCallbackPersistent(pcbe: PTP_CALLBACK_ENVIRON);
+}
+extern "C" {
     pub fn CreatePrivateNamespaceA(
         lpPrivateNamespaceAttributes: LPSECURITY_ATTRIBUTES,
         lpBoundaryDescriptor: LPVOID,
@@ -43356,6 +43870,12 @@ extern "C" {
         dwTypeMask: DWORD,
         dwlConditionMask: DWORDLONG,
     ) -> BOOL;
+}
+extern "C" {
+    pub fn HRESULT_FROM_WIN32(x: ::std::os::raw::c_ulong) -> HRESULT;
+}
+extern "C" {
+    pub fn HRESULT_FROM_SETUPAPI(x: ::std::os::raw::c_ulong) -> HRESULT;
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -44247,6 +44767,142 @@ extern "C" {
     pub fn RaiseCustomSystemEventTrigger(
         CustomSystemEventTriggerConfig: PCUSTOM_SYSTEM_EVENT_TRIGGER_CONFIG,
     ) -> DWORD;
+}
+extern "C" {
+    #[link_name = "\u{1}?_InterlockedIncrement@@YAIPECI@Z"]
+    pub fn _InterlockedIncrement1(Addend: *mut ::std::os::raw::c_uint) -> ::std::os::raw::c_uint;
+}
+extern "C" {
+    #[link_name = "\u{1}?_InterlockedIncrement@@YAKPECK@Z"]
+    pub fn _InterlockedIncrement2(Addend: *mut ::std::os::raw::c_ulong) -> ::std::os::raw::c_ulong;
+}
+extern "C" {
+    #[link_name = "\u{1}?_InterlockedIncrement@@YA_KPEC_K@Z"]
+    pub fn _InterlockedIncrement3(
+        Addend: *mut ::std::os::raw::c_ulonglong,
+    ) -> ::std::os::raw::c_ulonglong;
+}
+extern "C" {
+    #[link_name = "\u{1}?_InterlockedDecrement@@YAIPECI@Z"]
+    pub fn _InterlockedDecrement1(Addend: *mut ::std::os::raw::c_uint) -> ::std::os::raw::c_uint;
+}
+extern "C" {
+    #[link_name = "\u{1}?_InterlockedDecrement@@YAKPECK@Z"]
+    pub fn _InterlockedDecrement2(Addend: *mut ::std::os::raw::c_ulong) -> ::std::os::raw::c_ulong;
+}
+extern "C" {
+    #[link_name = "\u{1}?_InterlockedDecrement@@YA_KPEC_K@Z"]
+    pub fn _InterlockedDecrement3(
+        Addend: *mut ::std::os::raw::c_ulonglong,
+    ) -> ::std::os::raw::c_ulonglong;
+}
+extern "C" {
+    #[link_name = "\u{1}?_InterlockedExchange@@YAIPECII@Z"]
+    pub fn _InterlockedExchange1(
+        Target: *mut ::std::os::raw::c_uint,
+        Value: ::std::os::raw::c_uint,
+    ) -> ::std::os::raw::c_uint;
+}
+extern "C" {
+    #[link_name = "\u{1}?_InterlockedExchange@@YAKPECKK@Z"]
+    pub fn _InterlockedExchange2(
+        Target: *mut ::std::os::raw::c_ulong,
+        Value: ::std::os::raw::c_ulong,
+    ) -> ::std::os::raw::c_ulong;
+}
+extern "C" {
+    #[link_name = "\u{1}?_InterlockedExchange@@YA_KPEC_K_K@Z"]
+    pub fn _InterlockedExchange3(
+        Target: *mut ::std::os::raw::c_ulonglong,
+        Value: ::std::os::raw::c_ulonglong,
+    ) -> ::std::os::raw::c_ulonglong;
+}
+extern "C" {
+    #[link_name = "\u{1}?_InterlockedExchangeAdd@@YAIPECII@Z"]
+    pub fn _InterlockedExchangeAdd1(
+        Addend: *mut ::std::os::raw::c_uint,
+        Value: ::std::os::raw::c_uint,
+    ) -> ::std::os::raw::c_uint;
+}
+extern "C" {
+    #[link_name = "\u{1}?InterlockedExchangeSubtract@@YAIPECII@Z"]
+    pub fn InterlockedExchangeSubtract(
+        Addend: *mut ::std::os::raw::c_uint,
+        Value: ::std::os::raw::c_uint,
+    ) -> ::std::os::raw::c_uint;
+}
+extern "C" {
+    #[link_name = "\u{1}?_InterlockedExchangeAdd@@YAKPECKK@Z"]
+    pub fn _InterlockedExchangeAdd2(
+        Addend: *mut ::std::os::raw::c_ulong,
+        Value: ::std::os::raw::c_ulong,
+    ) -> ::std::os::raw::c_ulong;
+}
+extern "C" {
+    #[link_name = "\u{1}?InterlockedExchangeSubtract@@YAKPECKK@Z"]
+    pub fn InterlockedExchangeSubtract1(
+        Addend: *mut ::std::os::raw::c_ulong,
+        Value: ::std::os::raw::c_ulong,
+    ) -> ::std::os::raw::c_ulong;
+}
+extern "C" {
+    #[link_name = "\u{1}?_InterlockedExchangeAdd@@YA_KPEC_K_K@Z"]
+    pub fn _InterlockedExchangeAdd3(
+        Addend: *mut ::std::os::raw::c_ulonglong,
+        Value: ::std::os::raw::c_ulonglong,
+    ) -> ::std::os::raw::c_ulonglong;
+}
+extern "C" {
+    #[link_name = "\u{1}?InterlockedExchangeSubtract@@YA_KPEC_K_K@Z"]
+    pub fn InterlockedExchangeSubtract2(
+        Addend: *mut ::std::os::raw::c_ulonglong,
+        Value: ::std::os::raw::c_ulonglong,
+    ) -> ::std::os::raw::c_ulonglong;
+}
+extern "C" {
+    #[link_name = "\u{1}?_InterlockedCompareExchange@@YAIPECIII@Z"]
+    pub fn _InterlockedCompareExchange1(
+        Destination: *mut ::std::os::raw::c_uint,
+        Exchange: ::std::os::raw::c_uint,
+        Comperand: ::std::os::raw::c_uint,
+    ) -> ::std::os::raw::c_uint;
+}
+extern "C" {
+    #[link_name = "\u{1}?_InterlockedCompareExchange@@YAKPECKKK@Z"]
+    pub fn _InterlockedCompareExchange2(
+        Destination: *mut ::std::os::raw::c_ulong,
+        Exchange: ::std::os::raw::c_ulong,
+        Comperand: ::std::os::raw::c_ulong,
+    ) -> ::std::os::raw::c_ulong;
+}
+extern "C" {
+    #[link_name = "\u{1}?_InterlockedCompareExchange@@YA_KPEC_K_K1@Z"]
+    pub fn _InterlockedCompareExchange3(
+        Destination: *mut ::std::os::raw::c_ulonglong,
+        Exchange: ::std::os::raw::c_ulonglong,
+        Comperand: ::std::os::raw::c_ulonglong,
+    ) -> ::std::os::raw::c_ulonglong;
+}
+extern "C" {
+    #[link_name = "\u{1}?_InterlockedAnd@@YA_KPEC_K_K@Z"]
+    pub fn _InterlockedAnd1(
+        Destination: *mut ::std::os::raw::c_ulonglong,
+        Value: ::std::os::raw::c_ulonglong,
+    ) -> ::std::os::raw::c_ulonglong;
+}
+extern "C" {
+    #[link_name = "\u{1}?_InterlockedOr@@YA_KPEC_K_K@Z"]
+    pub fn _InterlockedOr1(
+        Destination: *mut ::std::os::raw::c_ulonglong,
+        Value: ::std::os::raw::c_ulonglong,
+    ) -> ::std::os::raw::c_ulonglong;
+}
+extern "C" {
+    #[link_name = "\u{1}?_InterlockedXor@@YA_KPEC_K_K@Z"]
+    pub fn _InterlockedXor1(
+        Destination: *mut ::std::os::raw::c_ulonglong,
+        Value: ::std::os::raw::c_ulonglong,
+    ) -> ::std::os::raw::c_ulonglong;
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -78523,6 +79179,90 @@ pub struct _DEVICE_DSM_CONVERSION_OUTPUT {
 }
 pub type DEVICE_DSM_CONVERSION_OUTPUT = _DEVICE_DSM_CONVERSION_OUTPUT;
 pub type PDEVICE_DSM_CONVERSION_OUTPUT = *mut _DEVICE_DSM_CONVERSION_OUTPUT;
+extern "C" {
+    pub fn DeviceDsmParameterBlock(Input: PDEVICE_DSM_INPUT) -> PVOID;
+}
+extern "C" {
+    pub fn DeviceDsmDataSetRanges(Input: PDEVICE_DSM_INPUT) -> PDEVICE_DSM_RANGE;
+}
+extern "C" {
+    pub fn DeviceDsmNumberOfDataSetRanges(Input: PDEVICE_DSM_INPUT) -> DWORD;
+}
+extern "C" {
+    pub fn DeviceDsmGetInputLength(
+        Definition: PDEVICE_DSM_DEFINITION,
+        ParameterBlockLength: DWORD,
+        NumberOfDataSetRanges: DWORD,
+    ) -> DWORD;
+}
+extern "C" {
+    pub fn DeviceDsmGetNumberOfDataSetRanges(
+        Definition: PDEVICE_DSM_DEFINITION,
+        InputLength: DWORD,
+        ParameterBlockLength: DWORD,
+    ) -> DWORD;
+}
+extern "C" {
+    pub fn DeviceDsmInitializeInput(
+        Definition: PDEVICE_DSM_DEFINITION,
+        Input: PDEVICE_DSM_INPUT,
+        InputLength: DWORD,
+        Flags: DWORD,
+        Parameters: PVOID,
+        ParameterBlockLength: DWORD,
+    );
+}
+extern "C" {
+    pub fn DeviceDsmAddDataSetRange(
+        Input: PDEVICE_DSM_INPUT,
+        InputLength: DWORD,
+        Offset: LONGLONG,
+        Length: DWORDLONG,
+    ) -> BOOLEAN;
+}
+extern "C" {
+    pub fn DeviceDsmValidateInput(
+        Definition: PDEVICE_DSM_DEFINITION,
+        Input: PDEVICE_DSM_INPUT,
+        InputLength: DWORD,
+    ) -> BOOLEAN;
+}
+extern "C" {
+    pub fn DeviceDsmOutputBlock(Output: PDEVICE_DSM_OUTPUT) -> PVOID;
+}
+extern "C" {
+    pub fn DeviceDsmGetOutputLength(
+        Definition: PDEVICE_DSM_DEFINITION,
+        OutputBlockLength: DWORD,
+    ) -> DWORD;
+}
+extern "C" {
+    pub fn DeviceDsmValidateOutputLength(
+        Definition: PDEVICE_DSM_DEFINITION,
+        OutputLength: DWORD,
+    ) -> BOOLEAN;
+}
+extern "C" {
+    pub fn DeviceDsmGetOutputBlockLength(
+        Definition: PDEVICE_DSM_DEFINITION,
+        OutputLength: DWORD,
+    ) -> DWORD;
+}
+extern "C" {
+    pub fn DeviceDsmInitializeOutput(
+        Definition: PDEVICE_DSM_DEFINITION,
+        Output: PDEVICE_DSM_OUTPUT,
+        OutputLength: DWORD,
+        Flags: DWORD,
+    );
+}
+extern "C" {
+    pub fn DeviceDsmValidateOutput(
+        Definition: PDEVICE_DSM_DEFINITION,
+        Output: PDEVICE_DSM_OUTPUT,
+        OutputLength: DWORD,
+    ) -> BOOLEAN;
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _STORAGE_GET_BC_PROPERTIES_OUTPUT {
@@ -88131,6 +88871,22 @@ extern "C" {
 }
 extern "C" {
     pub fn rand() -> ::std::os::raw::c_int;
+}
+extern "C" {
+    #[link_name = "\u{1}?abs@@YAJJ@Z"]
+    pub fn abs1(_X: ::std::os::raw::c_long) -> ::std::os::raw::c_long;
+}
+extern "C" {
+    #[link_name = "\u{1}?abs@@YA_J_J@Z"]
+    pub fn abs2(_X: ::std::os::raw::c_longlong) -> ::std::os::raw::c_longlong;
+}
+extern "C" {
+    #[link_name = "\u{1}?div@@YA?AU_ldiv_t@@JJ@Z"]
+    pub fn div1(_A1: ::std::os::raw::c_long, _A2: ::std::os::raw::c_long) -> ldiv_t;
+}
+extern "C" {
+    #[link_name = "\u{1}?div@@YA?AU_lldiv_t@@_J0@Z"]
+    pub fn div2(_A1: ::std::os::raw::c_longlong, _A2: ::std::os::raw::c_longlong) -> lldiv_t;
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -99455,6 +100211,9 @@ pub enum PIDMSI_STATUS_VALUE {
     PIDMSI_STATUS_FINAL = 8,
     PIDMSI_STATUS_OTHER = 32767,
 }
+extern "C" {
+    pub fn PropVariantInit(pvar: *mut PROPVARIANT);
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct tagSERIALIZEDPROPERTYVALUE {
@@ -100560,6 +101319,10 @@ extern "C" {
 extern "C" {
     pub fn VarCmp(pvarLeft: LPVARIANT, pvarRight: LPVARIANT, lcid: LCID, dwFlags: ULONG)
         -> HRESULT;
+}
+extern "C" {
+    #[link_name = "\u{1}?VarCmp@@YAJPEAUtagVARIANT@@0K@Z"]
+    pub fn VarCmp1(pvarLeft: LPVARIANT, pvarRight: LPVARIANT, lcid: LCID) -> HRESULT;
 }
 extern "C" {
     pub fn VarDecAdd(pdecLeft: LPDECIMAL, pdecRight: LPDECIMAL, pdecResult: LPDECIMAL) -> HRESULT;
@@ -104013,6 +104776,42 @@ extern "C" {
 extern "C" {
     pub static _LXbig_C: f64;
 }
+extern "C" {
+    #[link_name = "\u{1}?fpclassify@@YAHM@Z"]
+    pub fn fpclassify(_X: f32) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    #[link_name = "\u{1}?fpclassify@@YAHN@Z"]
+    pub fn fpclassify1(_X: f64) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    #[link_name = "\u{1}?fpclassify@@YAHO@Z"]
+    pub fn fpclassify2(_X: f64) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    #[link_name = "\u{1}?signbit@@YA_NM@Z"]
+    pub fn signbit(_X: f32) -> bool;
+}
+extern "C" {
+    #[link_name = "\u{1}?signbit@@YA_NN@Z"]
+    pub fn signbit1(_X: f64) -> bool;
+}
+extern "C" {
+    #[link_name = "\u{1}?signbit@@YA_NO@Z"]
+    pub fn signbit2(_X: f64) -> bool;
+}
+extern "C" {
+    #[link_name = "\u{1}?_fpcomp@@YAHMM@Z"]
+    pub fn _fpcomp(_X: f32, _Y: f32) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    #[link_name = "\u{1}?_fpcomp@@YAHNN@Z"]
+    pub fn _fpcomp1(_X: f64, _Y: f64) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    #[link_name = "\u{1}?_fpcomp@@YAHOO@Z"]
+    pub fn _fpcomp2(_X: f64, _Y: f64) -> ::std::os::raw::c_int;
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _Combined_type {
@@ -104392,10 +105191,22 @@ extern "C" {
     pub fn expf(_X: f32) -> f32;
 }
 extern "C" {
+    pub fn fabsf(_X: f32) -> f32;
+}
+extern "C" {
     pub fn floorf(_X: f32) -> f32;
 }
 extern "C" {
     pub fn fmodf(_X: f32, _Y: f32) -> f32;
+}
+extern "C" {
+    pub fn frexpf(_X: f32, _Y: *mut ::std::os::raw::c_int) -> f32;
+}
+extern "C" {
+    pub fn hypotf(_X: f32, _Y: f32) -> f32;
+}
+extern "C" {
+    pub fn ldexpf(_X: f32, _Y: ::std::os::raw::c_int) -> f32;
 }
 extern "C" {
     pub fn log10f(_X: f32) -> f32;
@@ -104428,16 +105239,43 @@ extern "C" {
     pub fn acoshl(_X: f64) -> f64;
 }
 extern "C" {
+    pub fn acosl(_X: f64) -> f64;
+}
+extern "C" {
     pub fn asinhl(_X: f64) -> f64;
+}
+extern "C" {
+    pub fn asinl(_X: f64) -> f64;
+}
+extern "C" {
+    pub fn atan2l(_Y: f64, _X: f64) -> f64;
 }
 extern "C" {
     pub fn atanhl(_X: f64) -> f64;
 }
 extern "C" {
+    pub fn atanl(_X: f64) -> f64;
+}
+extern "C" {
     pub fn cbrtl(_X: f64) -> f64;
 }
 extern "C" {
+    pub fn ceill(_X: f64) -> f64;
+}
+extern "C" {
+    pub fn _chgsignl(_X: f64) -> f64;
+}
+extern "C" {
     pub fn copysignl(_Number: f64, _Sign: f64) -> f64;
+}
+extern "C" {
+    pub fn _copysignl(_Number: f64, _Sign: f64) -> f64;
+}
+extern "C" {
+    pub fn coshl(_X: f64) -> f64;
+}
+extern "C" {
+    pub fn cosl(_X: f64) -> f64;
 }
 extern "C" {
     pub fn erfl(_X: f64) -> f64;
@@ -104446,13 +105284,22 @@ extern "C" {
     pub fn erfcl(_X: f64) -> f64;
 }
 extern "C" {
+    pub fn expl(_X: f64) -> f64;
+}
+extern "C" {
     pub fn exp2l(_X: f64) -> f64;
 }
 extern "C" {
     pub fn expm1l(_X: f64) -> f64;
 }
 extern "C" {
+    pub fn fabsl(_X: f64) -> f64;
+}
+extern "C" {
     pub fn fdiml(_X: f64, _Y: f64) -> f64;
+}
+extern "C" {
+    pub fn floorl(_X: f64) -> f64;
 }
 extern "C" {
     pub fn fmal(_X: f64, _Y: f64, _Z: f64) -> f64;
@@ -104464,7 +105311,22 @@ extern "C" {
     pub fn fminl(_X: f64, _Y: f64) -> f64;
 }
 extern "C" {
+    pub fn fmodl(_X: f64, _Y: f64) -> f64;
+}
+extern "C" {
+    pub fn frexpl(_X: f64, _Y: *mut ::std::os::raw::c_int) -> f64;
+}
+extern "C" {
     pub fn ilogbl(_X: f64) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _hypotl(_X: f64, _Y: f64) -> f64;
+}
+extern "C" {
+    pub fn hypotl(_X: f64, _Y: f64) -> f64;
+}
+extern "C" {
+    pub fn ldexpl(_X: f64, _Y: ::std::os::raw::c_int) -> f64;
 }
 extern "C" {
     pub fn lgammal(_X: f64) -> f64;
@@ -104474,6 +105336,12 @@ extern "C" {
 }
 extern "C" {
     pub fn llroundl(_X: f64) -> ::std::os::raw::c_longlong;
+}
+extern "C" {
+    pub fn logl(_X: f64) -> f64;
+}
+extern "C" {
+    pub fn log10l(_X: f64) -> f64;
 }
 extern "C" {
     pub fn log1pl(_X: f64) -> f64;
@@ -104491,6 +105359,9 @@ extern "C" {
     pub fn lroundl(_X: f64) -> ::std::os::raw::c_long;
 }
 extern "C" {
+    pub fn modfl(_X: f64, _Y: *mut f64) -> f64;
+}
+extern "C" {
     pub fn nanl(_X: *const ::std::os::raw::c_char) -> f64;
 }
 extern "C" {
@@ -104501,6 +105372,9 @@ extern "C" {
 }
 extern "C" {
     pub fn nexttowardl(_X: f64, _Y: f64) -> f64;
+}
+extern "C" {
+    pub fn powl(_X: f64, _Y: f64) -> f64;
 }
 extern "C" {
     pub fn remainderl(_X: f64, _Y: f64) -> f64;
@@ -104519,6 +105393,21 @@ extern "C" {
 }
 extern "C" {
     pub fn scalbnl(_X: f64, _Y: ::std::os::raw::c_int) -> f64;
+}
+extern "C" {
+    pub fn sinhl(_X: f64) -> f64;
+}
+extern "C" {
+    pub fn sinl(_X: f64) -> f64;
+}
+extern "C" {
+    pub fn sqrtl(_X: f64) -> f64;
+}
+extern "C" {
+    pub fn tanhl(_X: f64) -> f64;
+}
+extern "C" {
+    pub fn tanl(_X: f64) -> f64;
 }
 extern "C" {
     pub fn tgammal(_X: f64) -> f64;
@@ -104546,6 +105435,12 @@ extern "C" {
 }
 extern "C" {
     pub fn yn(_X: ::std::os::raw::c_int, _Y: f64) -> f64;
+}
+extern "C" {
+    pub fn __local_stdio_printf_options() -> *mut ::std::os::raw::c_ulonglong;
+}
+extern "C" {
+    pub fn __local_stdio_scanf_options() -> *mut ::std::os::raw::c_ulonglong;
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -104684,6 +105579,132 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    pub fn _vfwprintf_l(
+        _Stream: *mut FILE,
+        _Format: *const u16,
+        _Locale: _locale_t,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn vfwprintf(
+        _Stream: *mut FILE,
+        _Format: *const u16,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _vfwprintf_s_l(
+        _Stream: *mut FILE,
+        _Format: *const u16,
+        _Locale: _locale_t,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn vfwprintf_s(
+        _Stream: *mut FILE,
+        _Format: *const u16,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _vfwprintf_p_l(
+        _Stream: *mut FILE,
+        _Format: *const u16,
+        _Locale: _locale_t,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _vfwprintf_p(
+        _Stream: *mut FILE,
+        _Format: *const u16,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _vwprintf_l(
+        _Format: *const u16,
+        _Locale: _locale_t,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn vwprintf(_Format: *const u16, _ArgList: va_list) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _vwprintf_s_l(
+        _Format: *const u16,
+        _Locale: _locale_t,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn vwprintf_s(_Format: *const u16, _ArgList: va_list) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _vwprintf_p_l(
+        _Format: *const u16,
+        _Locale: _locale_t,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _vwprintf_p(_Format: *const u16, _ArgList: va_list) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _fwprintf_l(
+        _Stream: *mut FILE,
+        _Format: *const u16,
+        _Locale: _locale_t,
+        ...
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn fwprintf(_Stream: *mut FILE, _Format: *const u16, ...) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _fwprintf_s_l(
+        _Stream: *mut FILE,
+        _Format: *const u16,
+        _Locale: _locale_t,
+        ...
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn fwprintf_s(_Stream: *mut FILE, _Format: *const u16, ...) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _fwprintf_p_l(
+        _Stream: *mut FILE,
+        _Format: *const u16,
+        _Locale: _locale_t,
+        ...
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _fwprintf_p(_Stream: *mut FILE, _Format: *const u16, ...) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _wprintf_l(_Format: *const u16, _Locale: _locale_t, ...) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn wprintf(_Format: *const u16, ...) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _wprintf_s_l(_Format: *const u16, _Locale: _locale_t, ...) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn wprintf_s(_Format: *const u16, ...) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _wprintf_p_l(_Format: *const u16, _Locale: _locale_t, ...) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _wprintf_p(_Format: *const u16, ...) -> ::std::os::raw::c_int;
+}
+extern "C" {
     pub fn __stdio_common_vfwscanf(
         _Options: ::std::os::raw::c_ulonglong,
         _Stream: *mut FILE,
@@ -104691,6 +105712,90 @@ extern "C" {
         _Locale: _locale_t,
         _ArgList: va_list,
     ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _vfwscanf_l(
+        _Stream: *mut FILE,
+        _Format: *const u16,
+        _Locale: _locale_t,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn vfwscanf(
+        _Stream: *mut FILE,
+        _Format: *const u16,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _vfwscanf_s_l(
+        _Stream: *mut FILE,
+        _Format: *const u16,
+        _Locale: _locale_t,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn vfwscanf_s(
+        _Stream: *mut FILE,
+        _Format: *const u16,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _vwscanf_l(
+        _Format: *const u16,
+        _Locale: _locale_t,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn vwscanf(_Format: *const u16, _ArgList: va_list) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _vwscanf_s_l(
+        _Format: *const u16,
+        _Locale: _locale_t,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn vwscanf_s(_Format: *const u16, _ArgList: va_list) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _fwscanf_l(
+        _Stream: *mut FILE,
+        _Format: *const u16,
+        _Locale: _locale_t,
+        ...
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn fwscanf(_Stream: *mut FILE, _Format: *const u16, ...) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _fwscanf_s_l(
+        _Stream: *mut FILE,
+        _Format: *const u16,
+        _Locale: _locale_t,
+        ...
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn fwscanf_s(_Stream: *mut FILE, _Format: *const u16, ...) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _wscanf_l(_Format: *const u16, _Locale: _locale_t, ...) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn wscanf(_Format: *const u16, ...) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _wscanf_s_l(_Format: *const u16, _Locale: _locale_t, ...) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn wscanf_s(_Format: *const u16, ...) -> ::std::os::raw::c_int;
 }
 extern "C" {
     pub fn __stdio_common_vswprintf(
@@ -104734,6 +105839,302 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    pub fn _vsnwprintf_l(
+        _Buffer: *mut u16,
+        _BufferCount: usize,
+        _Format: *const u16,
+        _Locale: _locale_t,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _vsnwprintf_s_l(
+        _Buffer: *mut u16,
+        _BufferCount: usize,
+        _MaxCount: usize,
+        _Format: *const u16,
+        _Locale: _locale_t,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _vsnwprintf_s(
+        _Buffer: *mut u16,
+        _BufferCount: usize,
+        _MaxCount: usize,
+        _Format: *const u16,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _snwprintf(
+        _Buffer: *mut u16,
+        _BufferCount: usize,
+        _Format: *const u16,
+        ...
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _vsnwprintf(
+        _Buffer: *mut u16,
+        _BufferCount: usize,
+        _Format: *const u16,
+        _Args: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _vswprintf_c_l(
+        _Buffer: *mut u16,
+        _BufferCount: usize,
+        _Format: *const u16,
+        _Locale: _locale_t,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _vswprintf_c(
+        _Buffer: *mut u16,
+        _BufferCount: usize,
+        _Format: *const u16,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _vswprintf_l(
+        _Buffer: *mut u16,
+        _BufferCount: usize,
+        _Format: *const u16,
+        _Locale: _locale_t,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn __vswprintf_l(
+        _Buffer: *mut u16,
+        _Format: *const u16,
+        _Locale: _locale_t,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _vswprintf(
+        _Buffer: *mut u16,
+        _Format: *const u16,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn vswprintf(
+        _Buffer: *mut u16,
+        _BufferCount: usize,
+        _Format: *const u16,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _vswprintf_s_l(
+        _Buffer: *mut u16,
+        _BufferCount: usize,
+        _Format: *const u16,
+        _Locale: _locale_t,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn vswprintf_s(
+        _Buffer: *mut u16,
+        _BufferCount: usize,
+        _Format: *const u16,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _vswprintf_p_l(
+        _Buffer: *mut u16,
+        _BufferCount: usize,
+        _Format: *const u16,
+        _Locale: _locale_t,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _vswprintf_p(
+        _Buffer: *mut u16,
+        _BufferCount: usize,
+        _Format: *const u16,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _vscwprintf_l(
+        _Format: *const u16,
+        _Locale: _locale_t,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _vscwprintf(_Format: *const u16, _ArgList: va_list) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _vscwprintf_p_l(
+        _Format: *const u16,
+        _Locale: _locale_t,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _vscwprintf_p(_Format: *const u16, _ArgList: va_list) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn __swprintf_l(
+        _Buffer: *mut u16,
+        _Format: *const u16,
+        _Locale: _locale_t,
+        ...
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _swprintf_l(
+        _Buffer: *mut u16,
+        _BufferCount: usize,
+        _Format: *const u16,
+        _Locale: _locale_t,
+        ...
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _swprintf(_Buffer: *mut u16, _Format: *const u16, ...) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn swprintf(
+        _Buffer: *mut u16,
+        _BufferCount: usize,
+        _Format: *const u16,
+        ...
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _swprintf_s_l(
+        _Buffer: *mut u16,
+        _BufferCount: usize,
+        _Format: *const u16,
+        _Locale: _locale_t,
+        ...
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn swprintf_s(
+        _Buffer: *mut u16,
+        _BufferCount: usize,
+        _Format: *const u16,
+        ...
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _swprintf_p_l(
+        _Buffer: *mut u16,
+        _BufferCount: usize,
+        _Format: *const u16,
+        _Locale: _locale_t,
+        ...
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _swprintf_p(
+        _Buffer: *mut u16,
+        _BufferCount: usize,
+        _Format: *const u16,
+        ...
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _swprintf_c_l(
+        _Buffer: *mut u16,
+        _BufferCount: usize,
+        _Format: *const u16,
+        _Locale: _locale_t,
+        ...
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _swprintf_c(
+        _Buffer: *mut u16,
+        _BufferCount: usize,
+        _Format: *const u16,
+        ...
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _snwprintf_l(
+        _Buffer: *mut u16,
+        _BufferCount: usize,
+        _Format: *const u16,
+        _Locale: _locale_t,
+        ...
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _snwprintf_s_l(
+        _Buffer: *mut u16,
+        _BufferCount: usize,
+        _MaxCount: usize,
+        _Format: *const u16,
+        _Locale: _locale_t,
+        ...
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _snwprintf_s(
+        _Buffer: *mut u16,
+        _BufferCount: usize,
+        _MaxCount: usize,
+        _Format: *const u16,
+        ...
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _scwprintf_l(_Format: *const u16, _Locale: _locale_t, ...) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _scwprintf(_Format: *const u16, ...) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _scwprintf_p_l(_Format: *const u16, _Locale: _locale_t, ...) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _scwprintf_p(_Format: *const u16, ...) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    #[link_name = "\u{1}?swprintf@@YAHQEA_WQEB_WZZ"]
+    pub fn swprintf1(_Buffer: *mut u16, _Format: *const u16, ...) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    #[link_name = "\u{1}?vswprintf@@YAHQEA_WQEB_WPEAD@Z"]
+    pub fn vswprintf1(
+        _Buffer: *mut u16,
+        _Format: *const u16,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    #[link_name = "\u{1}?_swprintf_l@@YAHQEA_WQEB_WQEAU__crt_locale_pointers@@ZZ"]
+    pub fn _swprintf_l1(
+        _Buffer: *mut u16,
+        _Format: *const u16,
+        _Locale: _locale_t,
+        ...
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    #[link_name = "\u{1}?_vswprintf_l@@YAHQEA_WQEB_WQEAU__crt_locale_pointers@@PEAD@Z"]
+    pub fn _vswprintf_l1(
+        _Buffer: *mut u16,
+        _Format: *const u16,
+        _Locale: _locale_t,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
     pub fn __stdio_common_vswscanf(
         _Options: ::std::os::raw::c_ulonglong,
         _Buffer: *const u16,
@@ -104741,6 +106142,110 @@ extern "C" {
         _Format: *const u16,
         _Locale: _locale_t,
         _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _vswscanf_l(
+        _Buffer: *const u16,
+        _Format: *const u16,
+        _Locale: _locale_t,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn vswscanf(
+        _Buffer: *const u16,
+        _Format: *const u16,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _vswscanf_s_l(
+        _Buffer: *const u16,
+        _Format: *const u16,
+        _Locale: _locale_t,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn vswscanf_s(
+        _Buffer: *const u16,
+        _Format: *const u16,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _vsnwscanf_l(
+        _Buffer: *const u16,
+        _BufferCount: usize,
+        _Format: *const u16,
+        _Locale: _locale_t,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _vsnwscanf_s_l(
+        _Buffer: *const u16,
+        _BufferCount: usize,
+        _Format: *const u16,
+        _Locale: _locale_t,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _swscanf_l(
+        _Buffer: *const u16,
+        _Format: *const u16,
+        _Locale: _locale_t,
+        ...
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn swscanf(_Buffer: *const u16, _Format: *const u16, ...) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _swscanf_s_l(
+        _Buffer: *const u16,
+        _Format: *const u16,
+        _Locale: _locale_t,
+        ...
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn swscanf_s(_Buffer: *const u16, _Format: *const u16, ...) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _snwscanf_l(
+        _Buffer: *const u16,
+        _BufferCount: usize,
+        _Format: *const u16,
+        _Locale: _locale_t,
+        ...
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _snwscanf(
+        _Buffer: *const u16,
+        _BufferCount: usize,
+        _Format: *const u16,
+        ...
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _snwscanf_s_l(
+        _Buffer: *const u16,
+        _BufferCount: usize,
+        _Format: *const u16,
+        _Locale: _locale_t,
+        ...
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _snwscanf_s(
+        _Buffer: *const u16,
+        _BufferCount: usize,
+        _Format: *const u16,
+        ...
     ) -> ::std::os::raw::c_int;
 }
 pub type fpos_t = ::std::os::raw::c_longlong;
@@ -105103,10 +106608,169 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    pub fn _vfprintf_l(
+        _Stream: *mut FILE,
+        _Format: *const ::std::os::raw::c_char,
+        _Locale: _locale_t,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn vfprintf(
+        _Stream: *mut FILE,
+        _Format: *const ::std::os::raw::c_char,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _vfprintf_s_l(
+        _Stream: *mut FILE,
+        _Format: *const ::std::os::raw::c_char,
+        _Locale: _locale_t,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn vfprintf_s(
+        _Stream: *mut FILE,
+        _Format: *const ::std::os::raw::c_char,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _vfprintf_p_l(
+        _Stream: *mut FILE,
+        _Format: *const ::std::os::raw::c_char,
+        _Locale: _locale_t,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _vfprintf_p(
+        _Stream: *mut FILE,
+        _Format: *const ::std::os::raw::c_char,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _vprintf_l(
+        _Format: *const ::std::os::raw::c_char,
+        _Locale: _locale_t,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn vprintf(
+        _Format: *const ::std::os::raw::c_char,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _vprintf_s_l(
+        _Format: *const ::std::os::raw::c_char,
+        _Locale: _locale_t,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn vprintf_s(
+        _Format: *const ::std::os::raw::c_char,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _vprintf_p_l(
+        _Format: *const ::std::os::raw::c_char,
+        _Locale: _locale_t,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _vprintf_p(
+        _Format: *const ::std::os::raw::c_char,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _fprintf_l(
+        _Stream: *mut FILE,
+        _Format: *const ::std::os::raw::c_char,
+        _Locale: _locale_t,
+        ...
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn fprintf(
+        _Stream: *mut FILE,
+        _Format: *const ::std::os::raw::c_char,
+        ...
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
     pub fn _set_printf_count_output(_Value: ::std::os::raw::c_int) -> ::std::os::raw::c_int;
 }
 extern "C" {
     pub fn _get_printf_count_output() -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _fprintf_s_l(
+        _Stream: *mut FILE,
+        _Format: *const ::std::os::raw::c_char,
+        _Locale: _locale_t,
+        ...
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn fprintf_s(
+        _Stream: *mut FILE,
+        _Format: *const ::std::os::raw::c_char,
+        ...
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _fprintf_p_l(
+        _Stream: *mut FILE,
+        _Format: *const ::std::os::raw::c_char,
+        _Locale: _locale_t,
+        ...
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _fprintf_p(
+        _Stream: *mut FILE,
+        _Format: *const ::std::os::raw::c_char,
+        ...
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _printf_l(
+        _Format: *const ::std::os::raw::c_char,
+        _Locale: _locale_t,
+        ...
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn printf(_Format: *const ::std::os::raw::c_char, ...) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _printf_s_l(
+        _Format: *const ::std::os::raw::c_char,
+        _Locale: _locale_t,
+        ...
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn printf_s(_Format: *const ::std::os::raw::c_char, ...) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _printf_p_l(
+        _Format: *const ::std::os::raw::c_char,
+        _Locale: _locale_t,
+        ...
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _printf_p(_Format: *const ::std::os::raw::c_char, ...) -> ::std::os::raw::c_int;
 }
 extern "C" {
     pub fn __stdio_common_vfscanf(
@@ -105116,6 +106780,112 @@ extern "C" {
         _Locale: _locale_t,
         _Arglist: va_list,
     ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _vfscanf_l(
+        _Stream: *mut FILE,
+        _Format: *const ::std::os::raw::c_char,
+        _Locale: _locale_t,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn vfscanf(
+        _Stream: *mut FILE,
+        _Format: *const ::std::os::raw::c_char,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _vfscanf_s_l(
+        _Stream: *mut FILE,
+        _Format: *const ::std::os::raw::c_char,
+        _Locale: _locale_t,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn vfscanf_s(
+        _Stream: *mut FILE,
+        _Format: *const ::std::os::raw::c_char,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _vscanf_l(
+        _Format: *const ::std::os::raw::c_char,
+        _Locale: _locale_t,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn vscanf(
+        _Format: *const ::std::os::raw::c_char,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _vscanf_s_l(
+        _Format: *const ::std::os::raw::c_char,
+        _Locale: _locale_t,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn vscanf_s(
+        _Format: *const ::std::os::raw::c_char,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _fscanf_l(
+        _Stream: *mut FILE,
+        _Format: *const ::std::os::raw::c_char,
+        _Locale: _locale_t,
+        ...
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn fscanf(
+        _Stream: *mut FILE,
+        _Format: *const ::std::os::raw::c_char,
+        ...
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _fscanf_s_l(
+        _Stream: *mut FILE,
+        _Format: *const ::std::os::raw::c_char,
+        _Locale: _locale_t,
+        ...
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn fscanf_s(
+        _Stream: *mut FILE,
+        _Format: *const ::std::os::raw::c_char,
+        ...
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _scanf_l(
+        _Format: *const ::std::os::raw::c_char,
+        _Locale: _locale_t,
+        ...
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn scanf(_Format: *const ::std::os::raw::c_char, ...) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _scanf_s_l(
+        _Format: *const ::std::os::raw::c_char,
+        _Locale: _locale_t,
+        ...
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn scanf_s(_Format: *const ::std::os::raw::c_char, ...) -> ::std::os::raw::c_int;
 }
 extern "C" {
     pub fn __stdio_common_vsprintf(
@@ -105159,6 +106929,281 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    pub fn _vsnprintf_l(
+        _Buffer: *mut ::std::os::raw::c_char,
+        _BufferCount: usize,
+        _Format: *const ::std::os::raw::c_char,
+        _Locale: _locale_t,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _vsnprintf(
+        _Buffer: *mut ::std::os::raw::c_char,
+        _BufferCount: usize,
+        _Format: *const ::std::os::raw::c_char,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn vsnprintf(
+        _Buffer: *mut ::std::os::raw::c_char,
+        _BufferCount: usize,
+        _Format: *const ::std::os::raw::c_char,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _vsprintf_l(
+        _Buffer: *mut ::std::os::raw::c_char,
+        _Format: *const ::std::os::raw::c_char,
+        _Locale: _locale_t,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn vsprintf(
+        _Buffer: *mut ::std::os::raw::c_char,
+        _Format: *const ::std::os::raw::c_char,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _vsprintf_s_l(
+        _Buffer: *mut ::std::os::raw::c_char,
+        _BufferCount: usize,
+        _Format: *const ::std::os::raw::c_char,
+        _Locale: _locale_t,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn vsprintf_s(
+        _Buffer: *mut ::std::os::raw::c_char,
+        _BufferCount: usize,
+        _Format: *const ::std::os::raw::c_char,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _vsprintf_p_l(
+        _Buffer: *mut ::std::os::raw::c_char,
+        _BufferCount: usize,
+        _Format: *const ::std::os::raw::c_char,
+        _Locale: _locale_t,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _vsprintf_p(
+        _Buffer: *mut ::std::os::raw::c_char,
+        _BufferCount: usize,
+        _Format: *const ::std::os::raw::c_char,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _vsnprintf_s_l(
+        _Buffer: *mut ::std::os::raw::c_char,
+        _BufferCount: usize,
+        _MaxCount: usize,
+        _Format: *const ::std::os::raw::c_char,
+        _Locale: _locale_t,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _vsnprintf_s(
+        _Buffer: *mut ::std::os::raw::c_char,
+        _BufferCount: usize,
+        _MaxCount: usize,
+        _Format: *const ::std::os::raw::c_char,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn vsnprintf_s(
+        _Buffer: *mut ::std::os::raw::c_char,
+        _BufferCount: usize,
+        _MaxCount: usize,
+        _Format: *const ::std::os::raw::c_char,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _vscprintf_l(
+        _Format: *const ::std::os::raw::c_char,
+        _Locale: _locale_t,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _vscprintf(
+        _Format: *const ::std::os::raw::c_char,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _vscprintf_p_l(
+        _Format: *const ::std::os::raw::c_char,
+        _Locale: _locale_t,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _vscprintf_p(
+        _Format: *const ::std::os::raw::c_char,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _vsnprintf_c_l(
+        _Buffer: *mut ::std::os::raw::c_char,
+        _BufferCount: usize,
+        _Format: *const ::std::os::raw::c_char,
+        _Locale: _locale_t,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _vsnprintf_c(
+        _Buffer: *mut ::std::os::raw::c_char,
+        _BufferCount: usize,
+        _Format: *const ::std::os::raw::c_char,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _sprintf_l(
+        _Buffer: *mut ::std::os::raw::c_char,
+        _Format: *const ::std::os::raw::c_char,
+        _Locale: _locale_t,
+        ...
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn sprintf(
+        _Buffer: *mut ::std::os::raw::c_char,
+        _Format: *const ::std::os::raw::c_char,
+        ...
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _sprintf_s_l(
+        _Buffer: *mut ::std::os::raw::c_char,
+        _BufferCount: usize,
+        _Format: *const ::std::os::raw::c_char,
+        _Locale: _locale_t,
+        ...
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn sprintf_s(
+        _Buffer: *mut ::std::os::raw::c_char,
+        _BufferCount: usize,
+        _Format: *const ::std::os::raw::c_char,
+        ...
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _sprintf_p_l(
+        _Buffer: *mut ::std::os::raw::c_char,
+        _BufferCount: usize,
+        _Format: *const ::std::os::raw::c_char,
+        _Locale: _locale_t,
+        ...
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _sprintf_p(
+        _Buffer: *mut ::std::os::raw::c_char,
+        _BufferCount: usize,
+        _Format: *const ::std::os::raw::c_char,
+        ...
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _snprintf_l(
+        _Buffer: *mut ::std::os::raw::c_char,
+        _BufferCount: usize,
+        _Format: *const ::std::os::raw::c_char,
+        _Locale: _locale_t,
+        ...
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn snprintf(
+        _Buffer: *mut ::std::os::raw::c_char,
+        _BufferCount: usize,
+        _Format: *const ::std::os::raw::c_char,
+        ...
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _snprintf(
+        _Buffer: *mut ::std::os::raw::c_char,
+        _BufferCount: usize,
+        _Format: *const ::std::os::raw::c_char,
+        ...
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _snprintf_c_l(
+        _Buffer: *mut ::std::os::raw::c_char,
+        _BufferCount: usize,
+        _Format: *const ::std::os::raw::c_char,
+        _Locale: _locale_t,
+        ...
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _snprintf_c(
+        _Buffer: *mut ::std::os::raw::c_char,
+        _BufferCount: usize,
+        _Format: *const ::std::os::raw::c_char,
+        ...
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _snprintf_s_l(
+        _Buffer: *mut ::std::os::raw::c_char,
+        _BufferCount: usize,
+        _MaxCount: usize,
+        _Format: *const ::std::os::raw::c_char,
+        _Locale: _locale_t,
+        ...
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _snprintf_s(
+        _Buffer: *mut ::std::os::raw::c_char,
+        _BufferCount: usize,
+        _MaxCount: usize,
+        _Format: *const ::std::os::raw::c_char,
+        ...
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _scprintf_l(
+        _Format: *const ::std::os::raw::c_char,
+        _Locale: _locale_t,
+        ...
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _scprintf(_Format: *const ::std::os::raw::c_char, ...) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _scprintf_p_l(
+        _Format: *const ::std::os::raw::c_char,
+        _Locale: _locale_t,
+        ...
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _scprintf_p(_Format: *const ::std::os::raw::c_char, ...) -> ::std::os::raw::c_int;
+}
+extern "C" {
     pub fn __stdio_common_vsscanf(
         _Options: ::std::os::raw::c_ulonglong,
         _Buffer: *const ::std::os::raw::c_char,
@@ -105166,6 +107211,100 @@ extern "C" {
         _Format: *const ::std::os::raw::c_char,
         _Locale: _locale_t,
         _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _vsscanf_l(
+        _Buffer: *const ::std::os::raw::c_char,
+        _Format: *const ::std::os::raw::c_char,
+        _Locale: _locale_t,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn vsscanf(
+        _Buffer: *const ::std::os::raw::c_char,
+        _Format: *const ::std::os::raw::c_char,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _vsscanf_s_l(
+        _Buffer: *const ::std::os::raw::c_char,
+        _Format: *const ::std::os::raw::c_char,
+        _Locale: _locale_t,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn vsscanf_s(
+        _Buffer: *const ::std::os::raw::c_char,
+        _Format: *const ::std::os::raw::c_char,
+        _ArgList: va_list,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _sscanf_l(
+        _Buffer: *const ::std::os::raw::c_char,
+        _Format: *const ::std::os::raw::c_char,
+        _Locale: _locale_t,
+        ...
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn sscanf(
+        _Buffer: *const ::std::os::raw::c_char,
+        _Format: *const ::std::os::raw::c_char,
+        ...
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _sscanf_s_l(
+        _Buffer: *const ::std::os::raw::c_char,
+        _Format: *const ::std::os::raw::c_char,
+        _Locale: _locale_t,
+        ...
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn sscanf_s(
+        _Buffer: *const ::std::os::raw::c_char,
+        _Format: *const ::std::os::raw::c_char,
+        ...
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _snscanf_l(
+        _Buffer: *const ::std::os::raw::c_char,
+        _BufferCount: usize,
+        _Format: *const ::std::os::raw::c_char,
+        _Locale: _locale_t,
+        ...
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _snscanf(
+        _Buffer: *const ::std::os::raw::c_char,
+        _BufferCount: usize,
+        _Format: *const ::std::os::raw::c_char,
+        ...
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _snscanf_s_l(
+        _Buffer: *const ::std::os::raw::c_char,
+        _BufferCount: usize,
+        _Format: *const ::std::os::raw::c_char,
+        _Locale: _locale_t,
+        ...
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn _snscanf_s(
+        _Buffer: *const ::std::os::raw::c_char,
+        _BufferCount: usize,
+        _Format: *const ::std::os::raw::c_char,
+        ...
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
@@ -112324,6 +114463,14 @@ extern "C" {
 extern "C" {
     #[doc = " Get the AVClass for swsContext. It can be used in combination with\n AV_OPT_SEARCH_FAKE_OBJ for examining options.\n\n @see av_opt_find()."]
     pub fn sws_get_class() -> *const AVClass;
+}
+extern "C" {
+    #[doc = " Fill the provided buffer with a string containing an error string\n corresponding to the AVERROR code errnum.\n\n @param errbuf         a buffer\n @param errbuf_size    size in bytes of errbuf\n @param errnum         error code to describe\n @return the buffer in input, filled with the error description\n @see av_strerror()"]
+    pub fn _av_make_error_string(
+        errbuf: *mut ::std::os::raw::c_char,
+        errbuf_size: usize,
+        errnum: ::std::os::raw::c_int,
+    ) -> *mut ::std::os::raw::c_char;
 }
 pub type __builtin_va_list = *mut ::std::os::raw::c_char;
 #[repr(C)]
