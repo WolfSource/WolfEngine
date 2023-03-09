@@ -130,8 +130,6 @@ public:
    */
   W_API w_av_config get_config() const noexcept;
 
-#ifdef WOLF_MEDIA_STB
-
   /**
    * create w_av_frame from image file path
    * @returns the AVFrame
@@ -151,8 +149,6 @@ public:
   boost::leaf::result<int>
   save_to_img_file(_In_ const std::filesystem::path &p_path,
                    int p_quality = 100);
-
-#endif
 
 private:
   // copy constructor.
