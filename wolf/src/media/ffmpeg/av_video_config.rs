@@ -1,15 +1,18 @@
-use crate::media::ffi::ffmpeg::{av_image_get_buffer_size, AVPixelFormat};
+use crate::{
+    error::WError,
+    media::ffi::ffmpeg::{av_image_get_buffer_size, AVPixelFormat},
+};
 
 #[derive(Debug, Clone)]
 pub struct AvVideoConfig {
     // the format of av frame
     pub format: AVPixelFormat,
     // the width of av frame
-    pub width: u32,
+    pub width: i32,
     // the height of av frame
-    pub height: u32,
+    pub height: i32,
     // data alignment
-    pub alignment: u32,
+    pub alignment: i32,
 }
 
 impl Default for AvVideoConfig {
@@ -24,23 +27,27 @@ impl Default for AvVideoConfig {
 }
 
 impl AvVideoConfig {
-    pub fn new(p_format: AVPixelFormat, p_width: u32, p_height: u32, p_alignment: u32) -> Self {
-        Self {
+    pub fn new(
+        p_format: AVPixelFormat,
+        p_width: u32,
+        p_height: u32,
+        p_alignment: u32,
+    ) -> Result<Self, WError> {
+        // cast to i32
+        let width = i32::try_from(p_width).map_err(WError::IntCastError)?;
+        let height = i32::try_from(p_height).map_err(WError::IntCastError)?;
+        let alignment = i32::try_from(p_alignment).map_err(WError::IntCastError)?;
+
+        Ok(Self {
             format: p_format,
-            width: p_width,
-            height: p_height,
-            alignment: p_alignment,
-        }
+            width,
+            height,
+            alignment,
+        })
     }
 
+    #[must_use]
     pub fn get_required_buffer_size(&self) -> i32 {
-        unsafe {
-            av_image_get_buffer_size(
-                self.format,
-                self.width as i32,
-                self.height as i32,
-                self.alignment as i32,
-            )
-        }
+        unsafe { av_image_get_buffer_size(self.format, self.width, self.height, self.alignment) }
     }
 }

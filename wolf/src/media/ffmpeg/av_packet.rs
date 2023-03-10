@@ -1,5 +1,7 @@
-use super::av_error::AvError;
-use crate::media::ffi::ffmpeg::{av_packet_alloc, av_packet_free, AVPacket};
+use crate::{
+    error::WError,
+    media::ffi::ffmpeg::{av_packet_alloc, av_packet_free, AVPacket},
+};
 
 #[derive(Clone)]
 pub struct AvPacket {
@@ -17,11 +19,11 @@ impl Drop for AvPacket {
 impl AvPacket {
     /// # Errors
     ///
-    /// returns an AvError if the object could not be created
-    pub fn new() -> Result<Self, AvError> {
+    /// returns an `WError`
+    pub fn new() -> Result<Self, WError> {
         let pkt = unsafe { av_packet_alloc() };
         if pkt.is_null() {
-            return Err(AvError::OutOfMemory);
+            return Err(WError::OutOfMemory);
         }
         Ok(Self { pkt })
     }

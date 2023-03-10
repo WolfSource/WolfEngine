@@ -1,4 +1,4 @@
-pub const MAX_MSG_SIZE: usize = 1024; //1K
+pub const MAX_BUFFER_SIZE: usize = 1024; //1K
 
 #[derive(Debug)]
 pub enum BufferType {
@@ -9,7 +9,7 @@ pub enum BufferType {
 pub struct Buffer {
     pub type_: BufferType,
     pub size: usize,
-    pub buf: [u8; MAX_MSG_SIZE],
+    pub buf: [u8; MAX_BUFFER_SIZE],
 }
 
 impl Buffer {
@@ -18,7 +18,7 @@ impl Buffer {
         Self {
             type_: p_type,
             size: 0,
-            buf: [0; MAX_MSG_SIZE],
+            buf: [0; MAX_BUFFER_SIZE],
         }
     }
     pub fn reset(&mut self) {

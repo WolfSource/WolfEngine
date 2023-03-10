@@ -1,14 +1,53 @@
-use std::str::Utf8Error;
-
 #[derive(Debug, thiserror::Error)]
 pub enum WError {
-    #[cfg(any(feature = "system_socket_client", feature = "system_socket_server"))]
+    #[error("invalid parameter")]
+    InvalidParameter,
+    #[error("could not allocate memory")]
+    OutOfMemory,
+    #[error("could not cast to int '{0}'")]
+    IntCastError(std::num::TryFromIntError),
+    #[error("could not cast to usize or isize '{0}'")]
+    SizeCastError(std::num::TryFromIntError),
+    #[cfg(feature = "media_ffmpeg")]
+    #[error("invalid video frame size")]
+    MediaInvalidVideoFrameSize,
+    #[cfg(feature = "media_ffmpeg")]
+    #[error("invalid av config")]
+    MediaInvalidAvConfig,
+    #[cfg(feature = "media_ffmpeg")]
+    #[error("could not fill image")]
+    MediaImageFillFailed,
+    #[cfg(feature = "media_ffmpeg")]
+    #[error("could not create SWS context")]
+    MediaInvalidSwsContext,
+    #[cfg(feature = "media_ffmpeg")]
+    #[error("could not scale via SWS context")]
+    MediaSwsScaleFailed,
+    #[cfg(feature = "media_ffmpeg")]
+    #[error("invalid AvSetOption because '{0}'")]
+    MediaInvalidAvSetOption(String),
+    #[cfg(any(
+        feature = "system_socket_client",
+        feature = "system_socket_server",
+        feature = "stream_quic"
+    ))]
     #[error("could not parse the address '{0}'")]
     SystemSocketAddressParseFailed(std::net::AddrParseError),
+    #[cfg(any(
+        feature = "system_socket_client",
+        feature = "system_socket_server",
+        feature = "stream_quic"
+    ))]
+    #[error("could not create poll '{0}'")]
+    SystemPollFailed(std::io::Error),
     #[cfg(any(feature = "system_socket_client", feature = "system_socket_server"))]
     #[error("socket could not connect to the address '{0}'")]
     SystemSocketConnectFailed(std::io::Error),
-    #[cfg(any(feature = "system_socket_client", feature = "system_socket_server"))]
+    #[cfg(any(
+        feature = "system_socket_client",
+        feature = "system_socket_server",
+        feature = "stream_quic"
+    ))]
     #[error("could not bind to the socket '{0}'")]
     SystemSocketBindFailed(std::io::Error),
     #[cfg(any(feature = "system_socket_client", feature = "system_socket_server"))]
@@ -41,6 +80,13 @@ pub enum WError {
     #[cfg(any(feature = "system_socket_client", feature = "system_socket_server"))]
     #[error("could not load local address '{0}'")]
     SystemSocketLoadLocalAddressFailed(std::io::Error),
+    #[cfg(any(
+        feature = "system_socket_client",
+        feature = "system_socket_server",
+        feature = "stream_quic"
+    ))]
+    #[error("could not register the poll '{0}'")]
+    SystemPollRegisterFailed(std::io::Error),
     #[cfg(any(feature = "system_socket_client", feature = "system_socket_server"))]
     #[error("could not convert from UTF8 '{0}'")]
     SystemSocketUtf8Error(Utf8Error),

@@ -1,10 +1,10 @@
 use super::{av_audio_config::AvAudioConfig, av_video_config::AvVideoConfig};
-use crate::media::{
-    ffi::ffmpeg::{
+use crate::{
+    error::WError,
+    media::ffi::ffmpeg::{
         av_frame_alloc, av_frame_free, av_image_fill_arrays, sws_freeContext, sws_getContext,
         sws_scale, AVFrame, SWS_BICUBIC,
     },
-    ffmpeg::av_error::AvError,
 };
 use core::result::Result;
 
@@ -43,7 +43,7 @@ impl AvFrame {
         p_video_config: AvVideoConfig,
         p_audio_data: Vec<u8>,
         p_video_data: Vec<u8>,
-    ) -> Result<Self, AvError> {
+    ) -> Result<Self, WError> {
         let mut av_frame = Self {
             audio_config: Some(p_audio_config),
             video_config: Some(p_video_config),
@@ -55,7 +55,7 @@ impl AvFrame {
         Ok(av_frame)
     }
 
-    pub fn new_audio(p_config: AvAudioConfig, p_audio_data: Vec<u8>) -> Result<Self, AvError> {
+    pub fn new_audio(p_config: AvAudioConfig, p_audio_data: Vec<u8>) -> Result<Self, WError> {
         let mut av_frame = Self {
             audio_config: Some(p_config),
             video_config: None,
@@ -67,7 +67,7 @@ impl AvFrame {
         Ok(av_frame)
     }
 
-    pub fn new_video(p_config: AvVideoConfig, p_video_data: Vec<u8>) -> Result<Self, AvError> {
+    pub fn new_video(p_config: AvVideoConfig, p_video_data: Vec<u8>) -> Result<Self, WError> {
         let mut av_frame = Self {
             audio_config: None,
             video_config: Some(p_config),
@@ -83,15 +83,15 @@ impl AvFrame {
         p_frame: &mut Self,
         p_audio_data: Vec<u8>,
         p_video_data: Vec<u8>,
-    ) -> Result<(), AvError> {
+    ) -> Result<(), WError> {
         if p_frame.audio_config.is_none() && p_frame.video_config.is_none() {
-            return Err(AvError::InvalidAvConfig);
+            return Err(WError::MediaInvalidAvConfig);
         }
         // allocate memory for frame
         unsafe {
             p_frame.frame = av_frame_alloc();
             if p_frame.frame.is_null() {
-                return Err(AvError::OutOfMemory);
+                return Err(WError::OutOfMemory);
             }
         }
 
@@ -104,9 +104,9 @@ impl AvFrame {
         Ok(())
     }
 
-    pub fn get_video_data_ptr(&self, p_index: usize) -> Result<&[u8], AvError> {
+    pub fn get_video_data_ptr(&self, p_index: usize) -> Result<&[u8], WError> {
         if p_index > 7 {
-            return Err(AvError::InvalidParameter);
+            return Err(WError::InvalidParameter);
         }
         let slice = unsafe {
             std::slice::from_raw_parts(
@@ -117,7 +117,7 @@ impl AvFrame {
         Ok(slice)
     }
 
-    pub fn set_audio_frame(&mut self, p_data: Vec<u8>) -> Result<(), AvError> {
+    pub fn set_audio_frame(&mut self, p_data: Vec<u8>) -> Result<(), WError> {
         self.audio_data = p_data;
         Ok(())
         // if let Some(_p_config) = &self.audio_config {
@@ -127,44 +127,47 @@ impl AvFrame {
         // }
     }
 
-    pub fn set_video_frame(&mut self, p_data: Vec<u8>) -> Result<(), AvError> {
+    pub fn set_video_frame(&mut self, p_data: Vec<u8>) -> Result<(), WError> {
         // set frame data
         self.video_data = p_data;
 
         let config = self.video_config.clone();
         if let Some(p_config) = &config {
+            let format = p_config.format as i32;
             // store width, height and format to frame
             unsafe {
-                (*self.frame).width = p_config.width as i32;
-                (*self.frame).height = p_config.height as i32;
-                (*self.frame).format = p_config.format as i32;
+                (*self.frame).width = p_config.width;
+                (*self.frame).height = p_config.height;
+                (*self.frame).format = format;
             }
-            self.fill_video_frame(p_config)
-        } else {
-            Err(AvError::InvalidAvConfig)
+            return self.fill_video_frame(p_config);
         }
+        Err(WError::MediaInvalidAvConfig)
     }
 
-    pub fn convert_video(&self, p_dst_config: AvVideoConfig) -> Result<AvFrame, AvError> {
+    pub fn convert_video(&self, p_dst_config: AvVideoConfig) -> Result<AvFrame, WError> {
         if let Some(p_video_config) = &self.video_config {
+            // create flag
+            let flags = SWS_BICUBIC as i32;
+
             // create a destination video frame
             let dst_frame = AvFrame::new_video(p_dst_config.clone(), Vec::new())?;
             // create sws context
             unsafe {
                 let sws_context = sws_getContext(
-                    p_video_config.width as i32,
-                    p_video_config.height as i32,
+                    p_video_config.width,
+                    p_video_config.height,
                     p_video_config.format,
-                    p_dst_config.width as i32,
-                    p_dst_config.height as i32,
+                    p_dst_config.width,
+                    p_dst_config.height,
                     p_dst_config.format,
-                    SWS_BICUBIC as i32,
+                    flags,
                     std::ptr::null_mut(),
                     std::ptr::null_mut(),
                     std::ptr::null_mut(),
                 );
                 if sws_context.is_null() {
-                    return Err(AvError::InvalidSwsContext);
+                    return Err(WError::MediaInvalidSwsContext);
                 }
 
                 // scale video frame
@@ -173,7 +176,7 @@ impl AvFrame {
                     (*self.frame).data.as_ptr() as *const *const u8,
                     (*self.frame).linesize.as_ptr(),
                     0,
-                    p_video_config.height as i32,
+                    p_video_config.height,
                     (*dst_frame.frame).data.as_mut_ptr(),
                     (*dst_frame.frame).linesize.as_mut_ptr(),
                 );
@@ -181,22 +184,22 @@ impl AvFrame {
                 sws_freeContext(sws_context);
 
                 if height < 0 {
-                    return Err(AvError::SwsScaleFailed);
+                    return Err(WError::MediaSwsScaleFailed);
                 }
             };
-            Ok(dst_frame)
-        } else {
-            Err(AvError::InvalidAvConfig)
+            return Ok(dst_frame);
         }
+        Err(WError::MediaInvalidAvConfig)
     }
 
-    fn fill_video_frame(&mut self, p_config: &AvVideoConfig) -> Result<(), AvError> {
-        let buf_size = p_config.get_required_buffer_size() as usize;
+    fn fill_video_frame(&mut self, p_config: &AvVideoConfig) -> Result<(), WError> {
+        let buf_size =
+            usize::try_from(p_config.get_required_buffer_size()).map_err(WError::SizeCastError)?;
         if self.video_data.is_empty() {
             // allocate buffer based on the config
             self.video_data = vec![0u8; buf_size];
         } else if buf_size < self.video_data.len() {
-            return Err(AvError::InvalidVideoFrameSize);
+            return Err(WError::MediaInvalidVideoFrameSize);
         }
 
         unsafe {
@@ -205,12 +208,12 @@ impl AvFrame {
                 (*self.frame).linesize.as_mut_ptr(),
                 self.video_data.as_ptr(),
                 p_config.format,
-                p_config.width as i32,
-                p_config.height as i32,
-                p_config.alignment as i32,
+                p_config.width,
+                p_config.height,
+                p_config.alignment,
             );
             if size < 0 {
-                return Err(AvError::ImageFillFailed);
+                return Err(WError::MediaImageFillFailed);
             }
         }
         Ok(())

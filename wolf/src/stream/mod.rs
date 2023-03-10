@@ -3,6 +3,8 @@
 // #![allow(non_snake_case)]
 
 pub mod http;
+#[cfg(feature = "stream_quic")]
+pub mod quic;
 pub mod webrtc;
 // #[cfg(feature = "stream_rist")]
 // pub mod rist;

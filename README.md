@@ -24,7 +24,7 @@ This Wolf is a comprehensive set of Rust/C libraries for realtime rendering, rea
 | API | Windows | Linux | macOS | iOS | Android | Wasm |
 |:-----------:|:-----------:|:--------------------------:|:--------------:|:-------------:|:--------------:|:-------------:|
 | FFmpeg | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :x: |
-| OpenAL | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :x: |
+| CPAL | :construction: | :memo: | :memo: | :memo: | :memo: | :x: |
 
 ### Supported platforms and APIs for stream module
 
@@ -32,28 +32,28 @@ This Wolf is a comprehensive set of Rust/C libraries for realtime rendering, rea
 |:-----------:|:-----------:|:--------------------------:|:--------------:|:-------------:|:--------------:|:-------------:|
 | gRPC | :white_check_mark: | :x: | :x: | :x: | :x: | :x: |
 | Janus | :x: | :x: | :x: | :x: | :x: | :white_check_mark: |
-| QUIC | :memo: | :memo: | :memo: | :memo: | :memo: | :x: |
+| Matrix | :memo: | :memo: | :memo: | :memo: | :memo: | :memo: |
+| QUIC | :construction: | :memo: | :memo: | :memo: | :memo: | :x: |
 | RIST | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :x: |
 | RTMP | :memo: | :x: | :x: | :x: | :x: | :x: |
-| RTSP | :memo: | :memo: | :memo: | :memo: | :memo: | :x: |
-| SRT | :memo: | :memo: | :memo: | :memo: | :memo: | :x: |
-| webRTC | :memo: | :memo: | :memo: | :memo: | :memo: | :memo: |
-| WS | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :memo: |
+| RTSP | :construction: | :memo: | :memo: | :memo: | :memo: | :x: |
+| SRT | :construction: | :memo: | :memo: | :memo: | :memo: | :x: |
+| webRTC | :construction: | :memo: | :memo: | :memo: | :memo: | :memo: |
+| WS | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :construction: |
 
 ### Supported platforms and APIs for system module
 
 | API | Windows | Linux | macOS | iOS | Android | Wasm |
 |:-----------:|:-----------:|:--------------------------:|:--------------:|:-------------:|:--------------:|:-------------:|
-| Embedded JavaScript  | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :memo: |
 | Fiber | :white_check_mark: | :memo: | :memo: | :x: | :x: | :x: |
-| Gamepad | :construction: | :memo: | :memo: | :memo: | :memo: | :memo: |
+| Gamepad | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :memo: |
 | Gamepad Simulator | :white_check_mark: | :memo: | :memo: | :x: | :x: | :x: |
 | Log  | :construction: | :construction: | :construction: | :construction: | :construction: | :construction: | 
-| LuaJit  | :memo: | :memo: | :memo: | :memo: | :memo: | :x: |
 | LZ4  | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :x: |
 | LZMA  | :white_check_mark: | :memo: | :memo: | :x: | :x: | :x: |
 | OpenTelemetry  | :memo: | :memo: | :memo: | :x: | :x: | :x: |
 | RAFT  | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :memo: |
+| Redis  | :memo: | :memo: | :memo: | :memo: | :memo: | :memo: |
 | Screen Capture  | :white_check_mark: | :construction: | :construction: | :x: | :x: | :x: |
 | Signal-Slot  | :white_check_mark: | :construction: | :construction: | :construction: | :construction: | :white_check_mark: |
 | Stacktrace  | :white_check_mark: | :construction: | :construction: | :construction: | :construction: | :x: |

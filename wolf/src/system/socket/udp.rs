@@ -2,7 +2,7 @@
 use crate::{
     error::WError,
     system::{
-        buffer::{Buffer, BufferType, MAX_MSG_SIZE},
+        buffer::{Buffer, BufferType, MAX_BUFFER_SIZE},
         socket::timeouts::{timeout_for_read_write, timeout_for_udp_read},
     },
 };
@@ -143,7 +143,7 @@ impl UdpClient {
 
     async fn read(
         p_socket: &UdpSocket,
-        p_buffer: &mut [u8; MAX_MSG_SIZE],
+        p_buffer: &mut [u8; MAX_BUFFER_SIZE],
         p_read_write_timeout_in_secs: f64,
     ) -> Result<(usize, SocketAddr), WError> {
         let res = if p_read_write_timeout_in_secs > 0.0 {
@@ -168,7 +168,7 @@ impl UdpClient {
     async fn send(
         p_socket: &UdpSocket,
         peer_addr: &SocketAddr,
-        p_buffer: &mut [u8; MAX_MSG_SIZE],
+        p_buffer: &mut [u8; MAX_BUFFER_SIZE],
         p_read_write_timeout_in_secs: f64,
     ) -> Result<usize, WError> {
         let res = if p_read_write_timeout_in_secs > 0.0 {
@@ -193,7 +193,7 @@ impl UdpClient {
         &self,
         p_socket: &UdpSocket,
         p_peer_addr: &SocketAddr,
-        p_buffer: &mut [u8; MAX_MSG_SIZE],
+        p_buffer: &mut [u8; MAX_BUFFER_SIZE],
     ) -> Result<usize, WError> {
         let mut res: Result<usize, WError> = Err(WError::Unknown);
         let mut retry = 0;
@@ -213,7 +213,7 @@ impl UdpClient {
     async fn try_read(
         &self,
         p_socket: &UdpSocket,
-        p_buffer: &mut [u8; MAX_MSG_SIZE],
+        p_buffer: &mut [u8; MAX_BUFFER_SIZE],
     ) -> Result<(usize, SocketAddr), WError> {
         let mut res: Result<(usize, SocketAddr), WError> = Err(WError::Unknown);
         let mut retry = 0;
