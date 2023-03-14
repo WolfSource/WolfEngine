@@ -1,13 +1,16 @@
+#[repr(C)]
 #[derive(Debug, thiserror::Error)]
 pub enum WError {
+    #[error("no error")]
+    None,
     #[error("invalid parameter")]
     InvalidParameter,
     #[error("could not allocate memory")]
     OutOfMemory,
-    #[error("could not cast to int '{0}'")]
-    IntCastError(std::num::TryFromIntError),
-    #[error("could not cast to usize or isize '{0}'")]
-    SizeCastError(std::num::TryFromIntError),
+    #[error("could not cast to int")]
+    IntCastError,
+    #[error("could not cast to usize or isize")]
+    SizeCastError,
     #[cfg(feature = "media_ffmpeg")]
     #[error("invalid video frame size")]
     MediaInvalidVideoFrameSize,
@@ -24,38 +27,38 @@ pub enum WError {
     #[error("could not scale via SWS context")]
     MediaSwsScaleFailed,
     #[cfg(feature = "media_ffmpeg")]
-    #[error("invalid AvSetOption because '{0}'")]
-    MediaInvalidAvSetOption(String),
+    #[error("invalid AvSetOption")]
+    MediaInvalidAvSetOption,
     #[cfg(any(
         feature = "system_socket_client",
         feature = "system_socket_server",
         feature = "stream_quic"
     ))]
-    #[error("could not parse the address '{0}'")]
-    SystemSocketAddressParseFailed(std::net::AddrParseError),
+    #[error("could not parse the address")]
+    SystemSocketAddressParseFailed,
     #[cfg(any(
         feature = "system_socket_client",
         feature = "system_socket_server",
         feature = "stream_quic"
     ))]
-    #[error("could not create poll '{0}'")]
-    SystemPollFailed(std::io::Error),
+    #[error("could not create poll")]
+    SystemPollFailed,
     #[cfg(any(feature = "system_socket_client", feature = "system_socket_server"))]
-    #[error("socket could not connect to the address '{0}'")]
-    SystemSocketConnectFailed(std::io::Error),
+    #[error("socket could not connect to the address")]
+    SystemSocketConnectFailed,
     #[cfg(any(
         feature = "system_socket_client",
         feature = "system_socket_server",
         feature = "stream_quic"
     ))]
-    #[error("could not bind to the socket '{0}'")]
-    SystemSocketBindFailed(std::io::Error),
+    #[error("could not bind to the socket")]
+    SystemSocketBindFailed,
     #[cfg(any(feature = "system_socket_client", feature = "system_socket_server"))]
-    #[error("could not create boring SSL builder '{0}'")]
-    SystemSocketSSLBuilderFailed(boring::error::ErrorStack),
+    #[error("could not create boring SSL builder")]
+    SystemSocketSSLBuilderFailed,
     #[cfg(any(feature = "system_socket_client", feature = "system_socket_server"))]
-    #[error("could not acceot ssl socket stream '{0}'")]
-    SystemSocketSSLAcceptFailed(tokio_boring::HandshakeError<tokio::net::TcpStream>),
+    #[error("could not acceot ssl socket stream")]
+    SystemSocketSSLAcceptFailed,
     #[cfg(any(feature = "system_socket_client", feature = "system_socket_server"))]
     #[error("could not connect to the ssl socket stream")]
     SystemSocketSSLConnectFailed,
@@ -72,24 +75,24 @@ pub enum WError {
     #[error("could not write to the udp socket")]
     SystemUDPSocketWriteFailed,
     #[cfg(any(feature = "system_socket_client", feature = "system_socket_server"))]
-    #[error("could not connect to the server after '{0}' seconds")]
-    SystemSocketConnectTimeout(f64),
+    #[error("could not connect to the server")]
+    SystemSocketConnectTimeout,
     #[cfg(any(feature = "system_socket_client", feature = "system_socket_server"))]
-    #[error("could not handshake to the server after '{0}' seconds")]
-    SystemSocketSSLHandshakeTimeout(f64),
+    #[error("could not handshake to the server")]
+    SystemSocketSSLHandshakeTimeout,
     #[cfg(any(feature = "system_socket_client", feature = "system_socket_server"))]
-    #[error("could not load local address '{0}'")]
-    SystemSocketLoadLocalAddressFailed(std::io::Error),
+    #[error("could not load local address")]
+    SystemSocketLoadLocalAddressFailed,
     #[cfg(any(
         feature = "system_socket_client",
         feature = "system_socket_server",
         feature = "stream_quic"
     ))]
-    #[error("could not register the poll '{0}'")]
-    SystemPollRegisterFailed(std::io::Error),
+    #[error("could not register the poll")]
+    SystemPollRegisterFailed,
     #[cfg(any(feature = "system_socket_client", feature = "system_socket_server"))]
-    #[error("could not convert from UTF8 '{0}'")]
-    SystemSocketUtf8Error(Utf8Error),
+    #[error("could not convert from UTF8")]
+    SystemSocketUtf8Error,
     #[error("unknown error")]
     Unknown,
 }

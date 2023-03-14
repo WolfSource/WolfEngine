@@ -3,10 +3,11 @@
 
 #[cfg(feature = "media_ffmpeg")]
 #[test]
-fn test_av_frame_convert() -> Result<(), wolf::media::ffmpeg::av_error::AvError> {
+fn test_av_frame_convert() -> Result<(), wolf::error::WError> {
     use image::GenericImageView;
+    use wolf::error::WError;
     use wolf::media::{
-        bindgen::ffmpeg::AVPixelFormat,
+        ffi::ffmpeg::AVPixelFormat,
         ffmpeg::{av_frame::AvFrame, av_video_config::AvVideoConfig},
     };
 
@@ -21,25 +22,29 @@ fn test_av_frame_convert() -> Result<(), wolf::media::ffmpeg::av_error::AvError>
     let pixels = img.as_rgba8().unwrap().to_vec();
 
     // create a source frame from image
-    let src_config = AvVideoConfig::new(AVPixelFormat::AV_PIX_FMT_RGBA, img_size.0, img_size.1, 1);
-    let src_frame = AvFrame::new_video(src_config, pixels)?;
+    let src_config = AvVideoConfig::new(AVPixelFormat::AV_PIX_FMT_RGBA, img_size.0, img_size.1, 1)?;
+    let src_frame = AvFrame::new_video(&src_config, pixels)?;
 
     // convert to bgra
-    let dst_config = AvVideoConfig::new(AVPixelFormat::AV_PIX_FMT_BGRA, img_size.0, img_size.1, 1);
-    let dst_frame = src_frame.convert_video(dst_config.clone())?;
+    let dst_config = AvVideoConfig::new(AVPixelFormat::AV_PIX_FMT_BGRA, img_size.0, img_size.1, 1)?;
+    let dst_frame = src_frame.convert_video(&dst_config)?;
 
     let out_path = current_dir.join("sample_bgra.png");
     let dst_pixels = dst_frame.get_video_data_ptr(0)?;
+
+    let width = u32::try_from(dst_config.width).map_err(|_| WError::IntCastError)?;
+    let height = u32::try_from(dst_config.height).map_err(|_| WError::IntCastError)?;
+
     let image_res = image::save_buffer_with_format(
         out_path,
         dst_pixels,
-        dst_config.width,
-        dst_config.height,
+        width,
+        height,
         image::ColorType::Rgba8,
         image::ImageFormat::Png,
     );
     if image_res.is_err() {
-        return Err(wolf::media::ffmpeg::av_error::AvError::InvalidParameter);
+        return Err(WError::InvalidParameter);
     }
     Ok(())
 }

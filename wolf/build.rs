@@ -81,8 +81,11 @@ fn main() {
     // compile c/cpp sources and link
     link(current_dir_path_str, build_profile, &target_os);
 
-    // generate bindings
+    // generate rust bindings for C/C++
     bindgens(current_dir_path_str, build_profile);
+
+    // generate C bindings
+    cbindgens(current_dir_path_str);
 }
 
 /// # Errors
@@ -487,14 +490,40 @@ fn bindgens(p_current_dir_path_str: &str, p_build_profile: &str) {
         // The bindgen::Builder is the main entry point
         // to bindgen, and lets you build up options for
         // the resulting bindings.
+
         let mut builder = bindgen::Builder::default()
             .default_enum_style(bindgen::EnumVariation::Rust {
                 non_exhaustive: false,
             })
             .raw_line(
-                "#![allow(dead_code, non_camel_case_types, non_snake_case, trivial_numeric_casts)]",
+                "#![allow(dead_code, 
+                    non_camel_case_types, 
+                    non_snake_case, 
+                    non_upper_case_globals,
+                    trivial_numeric_casts)]",
             )
-            .raw_line("#![allow(clippy::unreadable_literal, clippy::upper_case_acronyms)]")
+            .raw_line(
+                "#![allow(clippy::cast_lossless,
+                clippy::approx_constant,
+                clippy::cast_possible_truncation,
+                clippy::default_trait_access,
+                clippy::missing_const_for_fn,
+                clippy::missing_safety_doc,
+                clippy::must_use_candidate,
+                clippy::octal_escapes,        
+                clippy::ptr_as_ptr,
+                clippy::semicolon_if_nothing_returned,
+                clippy::too_many_arguments,
+                clippy::too_many_lines,
+                clippy::transmute_ptr_to_ptr,
+                clippy::type_complexity,
+                clippy::unnecessary_cast,
+                clippy::unreadable_literal, 
+                clippy::upper_case_acronyms,
+                clippy::use_self,
+                clippy::used_underscore_binding,
+                clippy::useless_transmute)]",
+            )
             .layout_tests(false) // disable test
             .clang_args(["-x", "c++", "-std=c++20"])
             .clang_args(clang_args.clone())
@@ -548,4 +577,16 @@ fn bindgens(p_current_dir_path_str: &str, p_build_profile: &str) {
                 );
             });
     }
+}
+
+fn cbindgens(p_current_dir_path_str: &str) {
+    let crate_dir = std::env::var("CARGO_MANIFEST_DIR").unwrap();
+
+    cbindgen::Builder::new()
+        .with_crate(crate_dir)
+        .with_language(cbindgen::Language::C)
+        .with_style(cbindgen::Style::Type)
+        .generate()
+        .expect("Unable to generate c bindings")
+        .write_to_file("c-api/wolf.h");
 }

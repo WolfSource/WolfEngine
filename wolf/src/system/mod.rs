@@ -2,6 +2,7 @@ pub mod algorithm;
 pub mod buffer;
 pub mod chrono;
 pub mod compression;
+/// cbindgen:ignore
 pub mod ffi;
 pub mod macros;
 pub mod os;

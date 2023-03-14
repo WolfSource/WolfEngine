@@ -3,7 +3,7 @@ use crate::{
     media::ffi::ffmpeg::{av_image_get_buffer_size, AVPixelFormat},
 };
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Copy)]
 pub struct AvVideoConfig {
     // the format of av frame
     pub format: AVPixelFormat,
@@ -27,6 +27,9 @@ impl Default for AvVideoConfig {
 }
 
 impl AvVideoConfig {
+    /// # Errors
+    ///
+    /// returns an `WError`
     pub fn new(
         p_format: AVPixelFormat,
         p_width: u32,
@@ -34,9 +37,9 @@ impl AvVideoConfig {
         p_alignment: u32,
     ) -> Result<Self, WError> {
         // cast to i32
-        let width = i32::try_from(p_width).map_err(WError::IntCastError)?;
-        let height = i32::try_from(p_height).map_err(WError::IntCastError)?;
-        let alignment = i32::try_from(p_alignment).map_err(WError::IntCastError)?;
+        let width = i32::try_from(p_width).map_err(|_| WError::IntCastError)?;
+        let height = i32::try_from(p_height).map_err(|_| WError::IntCastError)?;
+        let alignment = i32::try_from(p_alignment).map_err(|_| WError::IntCastError)?;
 
         Ok(Self {
             format: p_format,

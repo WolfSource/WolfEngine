@@ -8,3 +8,14 @@ pub mod media;
 pub mod error;
 pub mod stream;
 pub mod system;
+
+/// # Safety
+///
+/// unsafe function for C ABI
+#[cfg(feature = "ffi")]
+#[no_mangle]
+pub unsafe extern "C" fn w_version(p_major: *mut i32, p_minor: *mut i32, p_patch: *mut i32) {
+    std::ptr::write(p_major, 3);
+    std::ptr::write(p_minor, 1);
+    std::ptr::write(p_patch, 0);
+}
