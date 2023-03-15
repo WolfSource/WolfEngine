@@ -1,7 +1,7 @@
 use super::{av_audio_config::AvAudioConfig, av_video_config::AvVideoConfig};
 use crate::{
     error::WError,
-    media::ffi::ffmpeg::{
+    media::bindgen::ffmpeg::{
         av_frame_alloc, av_frame_free, av_image_fill_arrays, sws_freeContext, sws_getContext,
         sws_scale, AVFrame, SWS_BICUBIC,
     },
@@ -34,6 +34,8 @@ impl Drop for AvFrame {
         unsafe {
             av_frame_free(&mut self.frame);
         }
+        #[cfg(debug_assertions)]
+        println!("AvFrame dropped");
     }
 }
 
@@ -79,7 +81,7 @@ impl AvFrame {
     pub fn new_video(p_config: &AvVideoConfig, p_video_data: Vec<u8>) -> Result<Self, WError> {
         let mut av_frame = Self {
             audio_config: None,
-            video_config: Some(*p_config),
+            video_config: Some(p_config.clone()),
             frame: std::ptr::null_mut(),
             video_data: Vec::new(),
             audio_data: Vec::new(),
@@ -152,8 +154,7 @@ impl AvFrame {
         // set frame data
         self.video_data = p_data;
 
-        let config = self.video_config;
-        if let Some(p_config) = &config {
+        if let Some(p_config) = &self.video_config.clone() {
             let format = p_config.format as i32;
             // store width, height and format to frame
             unsafe {

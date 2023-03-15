@@ -30,18 +30,18 @@ async fn test() -> Result<(), wolf::error::WError> {
     ));
 
     let on_msg_callback = OnMessageCallback::new(Box::new(
-        |p_socket_time_in_secs: f64,
-         p_peer_address: &SocketAddr,
-         p_msg: &mut Buffer|
+        |p_peer_address: &SocketAddr,
+         p_msg: &mut Buffer,
+         p_socket_livetime_in_secs: f64|
          -> Result<(), WError> {
             println!(
-                "client: number of received byte(s) from {p_peer_address:?} is {}. socket live time {p_socket_time_in_secs}",
+                "client: number of received byte(s) from {p_peer_address:?} is {}. socket live time {p_socket_livetime_in_secs}",
                 p_msg.size
             );
 
             if p_msg.size > 0 {
                 let msg = std::str::from_utf8(p_msg.buf.as_slice())
-                    .map_err(WError::SystemSocketUtf8Error);
+                    .map_err(|_| WError::SystemSocketUtf8Error);
                 println!("client: received buffer is {msg:?}");
             }
             //now store new bytes for write
@@ -49,7 +49,7 @@ async fn test() -> Result<(), wolf::error::WError> {
             p_msg.buf[0..msg.len()].copy_from_slice(msg.as_bytes());
             p_msg.size = msg.len();
 
-            if p_socket_time_in_secs > 10.0 {
+            if p_socket_livetime_in_secs > 10.0 {
                 return Err(WError::Unknown);
             }
             Ok(())

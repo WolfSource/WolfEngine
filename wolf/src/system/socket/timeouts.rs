@@ -77,5 +77,5 @@ where
     S: tokio::io::AsyncRead + tokio::io::AsyncWrite + Unpin,
 {
     tokio::time::sleep(Duration::from_secs_f64(p_timeout_in_secs)).await;
-    Err(WError::SystemSocketSSLHandshakeTimeout(p_timeout_in_secs))
+    Err(WError::SystemSocketSSLHandshakeTimeout)
 }

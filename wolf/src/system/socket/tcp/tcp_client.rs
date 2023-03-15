@@ -24,17 +24,32 @@ pub struct TcpClient {
     pub tls: bool,
 }
 
+impl Drop for TcpClient {
+    fn drop(&mut self) {
+        #[cfg(debug_assertions)]
+        println!("TcpClient dropped");
+    }
+}
+
 impl TcpClient {
     #[must_use]
-    pub fn new(p_endpoint_address: &str, p_port: u16) -> Self {
+    pub fn new(
+        p_endpoint_address: &str,
+        p_port: u16,
+        p_connect_number_of_retry: u32,
+        p_connect_timeout_in_secs: f64,
+        p_io_number_of_retry: u32,
+        p_io_timeout_in_secs: f64,
+        p_tls: bool,
+    ) -> Self {
         Self {
-            connect_number_of_retry: 3,
-            connect_timeout_in_secs: 3.0,
+            connect_number_of_retry: p_connect_number_of_retry,
+            connect_timeout_in_secs: p_connect_timeout_in_secs,
             endpoint_address: p_endpoint_address.to_owned(),
-            io_number_of_retry: 3,
-            io_timeout_in_secs: 3.0,
+            io_number_of_retry: p_io_number_of_retry,
+            io_timeout_in_secs: p_io_timeout_in_secs,
             port: p_port,
-            tls: false,
+            tls: p_tls,
         }
     }
 
@@ -51,84 +66,83 @@ impl TcpClient {
         //create an address
         let address = format!("{}:{}", self.endpoint_address, self.port);
         let socket_addr =
-            SocketAddr::from_str(&address).map_err(WError::SystemSocketAddressParseFailed)?;
+            SocketAddr::from_str(&address).map_err(|_| WError::SystemSocketAddressParseFailed)?;
 
         // retry to connect for a number of times
         let mut retry = 0;
         let mut connected = false;
         while retry < self.connect_number_of_retry && !connected {
             // wait for a timeout
-            match Self::connect_with_timeout(&socket_addr, self.connect_timeout_in_secs).await {
-                Ok(stream) => {
-                    // create tls
-                    if self.tls {
-                        //let ssl_method = boring::ssl::SslMethod::tls_client();
-                        //let mut ssl_builder = boring::ssl::SslAcceptor::mozilla_modern(ssl_method)
-                        //  .map_err(WError::SystemSocketSSLBuilderFailed)?;
+            if let Ok(stream) =
+                Self::connect_with_timeout(&socket_addr, self.connect_timeout_in_secs).await
+            {
+                // create tls
+                if self.tls {
+                    //let ssl_method = boring::ssl::SslMethod::tls_client();
+                    //let mut ssl_builder = boring::ssl::SslAcceptor::mozilla_modern(ssl_method)
+                    //  .map_err(WError::SystemSocketSSLBuilderFailed)?;
 
-                        // if let Some(cert) = self.tls_ca_path {
-                        //     ssl_builder
-                        //         .set_certificate_file(cert, boring::ssl::SslFiletype::PEM)
-                        //         .map_err(WError::SystemSocketSSLBuilderFailed)?;
-                        // }
-                        // ssl_builder
-                        //     .set_default_verify_paths()
-                        //     .map_err(WError::SystemSocketSSLBuilderFailed)?;
-                        // ssl_builder.set_verify(boring::ssl::SslVerifyMode::PEER);
+                    // if let Some(cert) = self.tls_ca_path {
+                    //     ssl_builder
+                    //         .set_certificate_file(cert, boring::ssl::SslFiletype::PEM)
+                    //         .map_err(WError::SystemSocketSSLBuilderFailed)?;
+                    // }
+                    // ssl_builder
+                    //     .set_default_verify_paths()
+                    //     .map_err(WError::SystemSocketSSLBuilderFailed)?;
+                    // ssl_builder.set_verify(boring::ssl::SslVerifyMode::PEER);
 
-                        // build ssl acceptor
-                        //let acceptor = ssl_builder.build();
+                    // build ssl acceptor
+                    //let acceptor = ssl_builder.build();
 
-                        // let ssl_stream = tokio_boring::accept(&acceptor, stream)
-                        //     .await
-                        //     .map_err(WError::SystemSocketSSLAcceptFailed)?;
+                    // let ssl_stream = tokio_boring::accept(&acceptor, stream)
+                    //     .await
+                    //     .map_err(WError::SystemSocketSSLAcceptFailed)?;
 
-                        let ssl_builder = SslConnector::builder(SslMethod::tls_client())
-                            .map_err(WError::SystemSocketSSLBuilderFailed)?;
-                        let ssl_config = ssl_builder
-                            .build()
-                            .configure()
-                            .map_err(WError::SystemSocketSSLBuilderFailed)?;
+                    let ssl_builder = SslConnector::builder(SslMethod::tls_client())
+                        .map_err(|_| WError::SystemSocketSSLBuilderFailed)?;
+                    let ssl_config = ssl_builder
+                        .build()
+                        .configure()
+                        .map_err(|_| WError::SystemSocketSSLBuilderFailed)?;
 
-                        let ssl_stream = Self::ssl_connect_with_timeout(
-                            ssl_config,
-                            &self.endpoint_address,
-                            stream,
-                            self.connect_timeout_in_secs,
-                        )
-                        .await?;
+                    let ssl_stream = Self::ssl_connect_with_timeout(
+                        ssl_config,
+                        &self.endpoint_address,
+                        stream,
+                        self.connect_timeout_in_secs,
+                    )
+                    .await?;
 
-                        connected = true;
-                        p_on_accept_connection.run(&socket_addr)?;
+                    connected = true;
+                    p_on_accept_connection.run(&socket_addr)?;
 
-                        Self::handle_client_stream(
-                            ssl_stream,
-                            &socket_addr,
-                            self.io_timeout_in_secs,
-                            self.io_number_of_retry,
-                            p_on_message.clone(),
-                        )
-                        .await?;
-                    } else {
-                        connected = true;
-                        // run accept callback
-                        p_on_accept_connection.run(&socket_addr)?;
+                    Self::handle_client_stream(
+                        ssl_stream,
+                        &socket_addr,
+                        self.io_timeout_in_secs,
+                        self.io_number_of_retry,
+                        p_on_message.clone(),
+                    )
+                    .await?;
+                } else {
+                    connected = true;
+                    // run accept callback
+                    p_on_accept_connection.run(&socket_addr)?;
 
-                        Self::handle_client_stream(
-                            stream,
-                            &socket_addr,
-                            self.io_timeout_in_secs,
-                            self.io_number_of_retry,
-                            p_on_message.clone(),
-                        )
-                        .await?;
-                    }
+                    Self::handle_client_stream(
+                        stream,
+                        &socket_addr,
+                        self.io_timeout_in_secs,
+                        self.io_number_of_retry,
+                        p_on_message.clone(),
+                    )
+                    .await?;
                 }
-                Err(e) => {
-                    retry += 1;
-                    if retry == self.connect_number_of_retry {
-                        return Err(WError::SystemSocketConnectFailed(e));
-                    }
+            } else {
+                retry += 1;
+                if retry == self.connect_number_of_retry {
+                    return Err(WError::SystemSocketConnectFailed);
                 }
             }
         }
@@ -153,7 +167,7 @@ impl TcpClient {
         loop {
             let elapsed_secs = socket_live_time.elapsed().as_secs_f64();
             if p_on_message
-                .run(elapsed_secs, p_peer_address, &mut msg_buffer)
+                .run(p_peer_address, &mut msg_buffer, elapsed_secs)
                 .is_err()
             {
                 break;

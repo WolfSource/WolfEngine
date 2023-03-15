@@ -88,8 +88,8 @@ wav = {version = "1.0.0", default-features = false }
 all = [
     "ffi",
     #"stream_quic",
-    #"system_socket_client",
-    #"system_socket_server",
+    "system_socket_client",
+    "system_socket_server",
     "media_ffmpeg",
     #"stream_grpc",
     #"stream_janus",

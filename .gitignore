@@ -4,10 +4,10 @@
 *.db-*
 *.png
 *.prof*
+build/*
 coverage/
 coverage/*
 documentation/
-ffi/__pycache__/*
 profile/
 release/
 target/

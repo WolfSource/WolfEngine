@@ -1,8 +1,10 @@
 #[repr(C)]
-#[derive(Debug, thiserror::Error)]
+#[derive(Debug, thiserror::Error, Eq, PartialEq)]
 pub enum WError {
     #[error("no error")]
     None,
+    #[error("the memory was not initialized")]
+    MemoryWasNotInitialized,
     #[error("invalid parameter")]
     InvalidParameter,
     #[error("could not allocate memory")]

@@ -1,11 +1,13 @@
 pub const MAX_BUFFER_SIZE: usize = 1024; //1K
 
+#[repr(C)]
 #[derive(Debug)]
 pub enum BufferType {
     BINARY = 0,
     TEXT,
 }
 
+#[repr(C)]
 pub struct Buffer {
     pub type_: BufferType,
     pub size: usize,

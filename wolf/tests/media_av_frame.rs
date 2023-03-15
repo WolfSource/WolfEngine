@@ -7,7 +7,7 @@ fn test_av_frame_convert() -> Result<(), wolf::error::WError> {
     use image::GenericImageView;
     use wolf::error::WError;
     use wolf::media::{
-        ffi::ffmpeg::AVPixelFormat,
+        bindgen::ffmpeg::AVPixelFormat,
         ffmpeg::{av_frame::AvFrame, av_video_config::AvVideoConfig},
     };
 

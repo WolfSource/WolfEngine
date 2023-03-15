@@ -30,7 +30,11 @@ if ("${CMAKE_BUILD_TYPE}" STREQUAL "")
 endif()
 string(TOLOWER ${CMAKE_BUILD_TYPE} BUILD_TYPE)
 
-add_executable(${PROJECT_NAME} wolf/c-api/tests.cpp)
+add_executable(${PROJECT_NAME} 
+    wolf/c-api/tests.cpp
+    wolf/c-api/w_leak_detector.hpp
+    wolf/c-api/w_leak_detector.cpp
+)
 
 # link libraries
 target_link_libraries(${PROJECT_NAME} PRIVATE Catch2::Catch2WithMain)

@@ -55,6 +55,8 @@ impl Drop for FFmpeg {
                 }
                 avcodec_free_context(&mut self.codec_ctx);
             }
+            #[cfg(debug_assertions)]
+            println!("FFmpeg dropped");
         }
     }
 }

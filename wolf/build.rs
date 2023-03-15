@@ -418,7 +418,7 @@ fn bindgens(p_current_dir_path_str: &str, p_build_profile: &str) {
         clang_args.push(format!("-I{include_path}"));
         bindings.push(Binding {
             headers: vec![format!("{include_path}/lz4.h")],
-            dst: "src/system/ffi/lz4.rs",
+            dst: "src/system/bindgen/lz4.rs",
             block_headers: &[],
             allow_funcs: &["LZ4_.*"],
         });
@@ -427,7 +427,7 @@ fn bindgens(p_current_dir_path_str: &str, p_build_profile: &str) {
     #[cfg(feature = "system_lzma")]
     bindings.push(Binding {
         headers: "sys/system/lzma.h",
-        dst: "src/system/ffi/lzma.rs",
+        dst: "src/system/bindgen/lzma.rs",
         block_headers: &[],
     });
 
@@ -437,7 +437,7 @@ fn bindgens(p_current_dir_path_str: &str, p_build_profile: &str) {
         clang_args.push(format!("-I{include_path}"));
         bindings.push(Binding {
             headers: vec![format!("{include_path}/ViGEm/Client.h")],
-            dst: "src/system/ffi/vigem_client.rs",
+            dst: "src/system/bindgen/vigem_client.rs",
             block_headers: &[],
             allow_funcs: &["vigem_.*"],
         });
@@ -446,7 +446,7 @@ fn bindgens(p_current_dir_path_str: &str, p_build_profile: &str) {
     #[cfg(feature = "stream_rist")]
     bindings.push(Binding {
         headers: "sys/stream/rist.h",
-        dst: "src/stream/ffi/rist.rs",
+        dst: "src/stream/bindgen/rist.rs",
         block_headers: &[],
     });
 
@@ -455,20 +455,20 @@ fn bindgens(p_current_dir_path_str: &str, p_build_profile: &str) {
         clang_args.push(format!("-I{include_path}"));
         bindings.push(Binding {
             headers: vec![format!("{p_current_dir_path_str}/sys/media/ffmpeg.h")],
-            dst: "src/media/ffi/ffmpeg.rs",
+            dst: "src/media/bindgen/ffmpeg.rs",
             block_headers: &[],
             allow_funcs: &[],
         });
 
         // bindgens.push(Binding {
         //     headers: &["sys/media/ffmpeg.h".to_owned()],
-        //     dst: "src/media/ffi/ffmpeg.rs",
+        //     dst: "src/media/bindgen/ffmpeg.rs",
         //     block_headers: &[],
         //     allow_funcs: &[],
         // });
         // headers.push(Binding {
         //     src: "sys/media/test.h",
-        //     dst: "src/media/ffi/test.rs",
+        //     dst: "src/media/bindgen/test.rs",
         //     block_headers: &["sys/media/av_frame.h"],
         // });
     }
@@ -476,7 +476,7 @@ fn bindgens(p_current_dir_path_str: &str, p_build_profile: &str) {
     // if cfg!(feature = "media_openal") {
     //     headers.push(Binding {
     //         headers: &["sys/media/openal.h".to_owned()],
-    //         dst: "src/media/ffi/openal.rs",
+    //         dst: "src/media/bindgen/openal.rs",
     //         block_headers: &[],
     //     });
     // }

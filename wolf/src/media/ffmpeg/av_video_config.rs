@@ -1,9 +1,9 @@
 use crate::{
     error::WError,
-    media::ffi::ffmpeg::{av_image_get_buffer_size, AVPixelFormat},
+    media::bindgen::ffmpeg::{av_image_get_buffer_size, AVPixelFormat},
 };
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone)]
 pub struct AvVideoConfig {
     // the format of av frame
     pub format: AVPixelFormat,
@@ -13,6 +13,13 @@ pub struct AvVideoConfig {
     pub height: i32,
     // data alignment
     pub alignment: i32,
+}
+
+impl Drop for AvVideoConfig {
+    fn drop(&mut self) {
+        #[cfg(debug_assertions)]
+        println!("AvVideoConfig dropped");
+    }
 }
 
 impl Default for AvVideoConfig {

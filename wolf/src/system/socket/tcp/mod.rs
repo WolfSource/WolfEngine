@@ -5,6 +5,7 @@ pub mod tcp_server;
 #[cfg(all(feature = "system_socket_server", feature = "system_fiber"))]
 pub mod tcp_server_fiber;
 
+#[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub enum TcpProtocol {
     Native = 0,

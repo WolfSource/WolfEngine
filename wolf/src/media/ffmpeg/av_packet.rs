@@ -1,6 +1,6 @@
 use crate::{
     error::WError,
-    media::ffi::ffmpeg::{av_packet_alloc, av_packet_free, AVPacket},
+    media::bindgen::ffmpeg::{av_packet_alloc, av_packet_free, AVPacket},
 };
 
 #[derive(Clone)]
@@ -13,6 +13,8 @@ impl Drop for AvPacket {
         if !self.pkt.is_null() {
             unsafe { av_packet_free(&mut self.pkt) };
         }
+        #[cfg(debug_assertions)]
+        println!("AvPacket dropped");
     }
 }
 

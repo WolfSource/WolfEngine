@@ -2,7 +2,7 @@ use crate::{error::WError, system::buffer::Buffer};
 use std::{net::SocketAddr, sync::Arc};
 
 // OnMessageCallback
-type Fp1 = Box<dyn Fn(f64, &SocketAddr, &mut Buffer) -> Result<(), WError> + Send + Sync>;
+type Fp1 = Box<dyn Fn(&SocketAddr, &mut Buffer, f64) -> Result<(), WError> + Send + Sync>;
 
 pub struct OnMessageCallback {
     f: Arc<Fp1>,
@@ -19,11 +19,11 @@ impl OnMessageCallback {
     /// TODO: add error description
     pub fn run(
         &self,
-        p_socket_time_in_secs: f64,
         p_peer_address: &SocketAddr,
         p_msg: &mut Buffer,
+        p_socket_live_time_in_secs: f64,
     ) -> Result<(), WError> {
-        (self.f)(p_socket_time_in_secs, p_peer_address, p_msg)
+        (self.f)(p_peer_address, p_msg, p_socket_live_time_in_secs)
     }
 }
 

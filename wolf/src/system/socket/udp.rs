@@ -11,6 +11,7 @@ use tokio::{net::UdpSocket, time::Instant};
 
 use super::callback::{OnCloseSocketCallback, OnMessageCallback, OnSocketCallback};
 
+#[repr(C)]
 #[derive(Debug)]
 pub enum UdpConnectionType {
     Server = 0, // read then write
@@ -49,12 +50,12 @@ impl UdpClient {
     ) -> Result<(), WError> {
         let address = format!("{}:{}", self.address, self.port);
         let socket_addr =
-            SocketAddr::from_str(&address).map_err(WError::SystemSocketAddressParseFailed)?;
+            SocketAddr::from_str(&address).map_err(|_| WError::SystemSocketAddressParseFailed)?;
 
         //no tls-mode
         let socket = UdpSocket::bind(socket_addr)
             .await
-            .map_err(WError::SystemSocketBindFailed)?;
+            .map_err(|_| WError::SystemSocketBindFailed)?;
         // on bind
         p_on_bind_socket.run(&socket_addr)?;
 
@@ -82,7 +83,7 @@ impl UdpClient {
                     // copy msg size
                     msg.size = msg_size;
 
-                    let want_to_close_conn = p_on_message.run(elpased_secs, &peer_addr, &mut msg);
+                    let want_to_close_conn = p_on_message.run(&peer_addr, &mut msg, elpased_secs);
                     if want_to_close_conn.is_err() {
                         close_msg = format!("udp connection {socket_addr:?} will be closed because of the p_on_msg_callback request. Reason: {want_to_close_conn:?}");
                         break;
@@ -103,13 +104,13 @@ impl UdpClient {
                 let mut msg_size: usize;
                 let peer_addr = socket
                     .local_addr()
-                    .map_err(WError::SystemSocketLoadLocalAddressFailed)?;
+                    .map_err(|_| WError::SystemSocketLoadLocalAddressFailed)?;
 
                 // let's loop for write and reading to the socket
                 loop {
                     let elpased_secs = socket_live_time.elapsed().as_secs_f64();
                     // write buffer
-                    let want_to_close_conn = p_on_message.run(elpased_secs, &peer_addr, &mut msg);
+                    let want_to_close_conn = p_on_message.run(&peer_addr, &mut msg, elpased_secs);
                     if want_to_close_conn.is_err() {
                         close_msg = format!("udp client connected to {socket_addr:?} will be closed because of the p_on_msg_callback request. Reason: {want_to_close_conn:?}");
                         break;
