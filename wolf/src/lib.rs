@@ -9,6 +9,15 @@ pub mod error;
 pub mod stream;
 pub mod system;
 
+pub struct ScopeCall<F: FnOnce()> {
+    cell: Option<F>,
+}
+impl<F: FnOnce()> Drop for ScopeCall<F> {
+    fn drop(&mut self) {
+        self.cell.take().unwrap()()
+    }
+}
+
 /// # Safety
 ///
 /// unsafe function for C ABI

@@ -9,6 +9,35 @@ macro_rules! w_log {
     };
 }
 
+#[cfg(not(target_arch = "wasm32"))]
+#[macro_export]
+macro_rules! w_init {
+    ($ptr:expr, $obj:expr) => {
+        match $obj {
+            Ok(obj) => {
+                *$ptr = Box::into_raw(Box::new(obj));
+                WError::None
+            }
+            Err(e) => {
+                *$ptr = std::ptr::null_mut();
+                e
+            }
+        }
+    };
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+#[macro_export]
+macro_rules! w_fini {
+    ($ptr:expr) => {
+        if $ptr.is_null() || (*$ptr).is_null() {
+            return;
+        }
+        std::mem::drop(Box::from_raw(*$ptr));
+        *$ptr = std::ptr::null_mut();
+    };
+}
+
 #[cfg(target_arch = "wasm32")]
 #[macro_export]
 macro_rules! w_log {
@@ -20,3 +49,12 @@ macro_rules! w_log {
         web_sys::console::log_1(&msg.into())
     };
 }
+
+// #[macro_export]
+// macro_rules! w_defer {
+//     ($($data: tt)*) => (
+//         let _scope_call = ScopeCall {
+//             cell: Some(|| -> () { { $($data)* } })
+//         };
+//     )
+// }

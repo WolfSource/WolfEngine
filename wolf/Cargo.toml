@@ -23,6 +23,7 @@ thiserror = {version = "1.0.39", default-features = false}
 raw-window-handle = {version = "0.5.1", default-features = false, features = ["alloc"]} 
 signals2 = {version = "0.3.2", default-features = false}
 tracing = {version = "0.1.37", default-features = false, features = ["std", "attributes"]}
+bitmask-enum = { version = "2.1.0", optional = true }
 
 # dependencies of windows x64
 [target.'cfg(any(target_os = "windows", target_arch = "x86_64"))'.dependencies]
@@ -87,7 +88,7 @@ wav = {version = "1.0.0", default-features = false }
 [features]
 all = [
     "ffi",
-    #"stream_quic",
+    "stream_quic",
     "system_socket_client",
     "system_socket_server",
     "media_ffmpeg",
@@ -117,7 +118,7 @@ all = [
 # ]
 default = ["all"]
 ffi = []
-media_ffmpeg = [] # enable ffmpeg
+media_ffmpeg = ["bitmask-enum"] # enable ffmpeg
 # media_openal = [] # enable openal
 # render = ["wgpu"] # enable real-time rendering
 stream_grpc = ["tonic", "prost"] # enable gRPC (http2/1.1) for stream module

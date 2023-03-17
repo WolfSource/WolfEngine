@@ -30,11 +30,11 @@ impl Quic {
     /// `WError`
     pub fn connect(&self) -> Result<(), WError> {
         // setup the event loop.
-        let poll = mio::Poll::new().map_err(WError::SystemPollFailed)?;
+        let poll = mio::Poll::new().map_err(|_e| WError::SystemPollFailed)?;
         let _events = mio::Events::with_capacity(MAX_EVENT_SIZE);
 
-        let peer_addr =
-            SocketAddr::from_str(&self.address).map_err(WError::SystemSocketAddressParseFailed)?;
+        let peer_addr = SocketAddr::from_str(&self.address)
+            .map_err(|_e| WError::SystemSocketAddressParseFailed)?;
 
         // Bind to INADDR_ANY or IN6ADDR_ANY depending on the IP family of the
         // server address. This is needed on macOS and BSD variants that don't
@@ -46,14 +46,14 @@ impl Quic {
 
         let address = bind_addr
             .parse()
-            .map_err(WError::SystemSocketAddressParseFailed)?;
+            .map_err(|_e| WError::SystemSocketAddressParseFailed)?;
 
         // Create the UDP socket backing the QUIC connection, and register it with the event loop.
         let mut socket =
-            mio::net::UdpSocket::bind(address).map_err(WError::SystemSocketBindFailed)?;
+            mio::net::UdpSocket::bind(address).map_err(|_e| WError::SystemSocketBindFailed)?;
         poll.registry()
             .register(&mut socket, mio::Token(0), mio::Interest::READABLE)
-            .map_err(WError::SystemPollRegisterFailed)?;
+            .map_err(|_e| WError::SystemPollRegisterFailed)?;
 
         Ok(())
     }

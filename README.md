@@ -15,51 +15,51 @@ This Wolf is a comprehensive set of Rust/C libraries for realtime rendering, rea
 |:-----------:|:-----------:|:-----------:|:-----------:|
 | :x:  | :memo:  | :construction: | :white_check_mark: | 
 
-| API | Windows | Linux | macOS | iOS | Android | Wasm |
+| API | Windows | Linux | macOS | iOS | Android | Wasm | FFI |
 |:-----------:|:-----------:|:--------------------------:|:--------------:|:-------------:|:--------------:|:-------------:|
-|  WebGPU | :construction: | :construction: | :construction: | :construction: | :construction: | :construction: |
+|  WebGPU | :construction: | :construction: | :construction: | :construction: | :construction: | :construction: | :x: |
 
 ### Supported platforms and APIs for media module
 
-| API | Windows | Linux | macOS | iOS | Android | Wasm |
-|:-----------:|:-----------:|:--------------------------:|:--------------:|:-------------:|:--------------:|:-------------:|
-| FFmpeg | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :x: |
-| CPAL | :construction: | :memo: | :memo: | :memo: | :memo: | :x: |
+| API | Windows | Linux | macOS | iOS | Android | Wasm | FFI |
+|:-----------:|:-----------:|:--------------------------:|:--------------:|:-------------:|:--------------:|:-------------:|:-------------:|
+| FFmpeg | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :x: | :memo: |
+| CPAL | :construction: | :memo: | :memo: | :memo: | :memo: | :x: | :memo: |
 
 ### Supported platforms and APIs for stream module
 
-| API | Windows | Linux | macOS | iOS | Android | Wasm |
-|:-----------:|:-----------:|:--------------------------:|:--------------:|:-------------:|:--------------:|:-------------:|
-| gRPC | :white_check_mark: | :x: | :x: | :x: | :x: | :x: |
-| Janus | :x: | :x: | :x: | :x: | :x: | :white_check_mark: |
-| Matrix | :memo: | :memo: | :memo: | :memo: | :memo: | :memo: |
-| QUIC | :construction: | :memo: | :memo: | :memo: | :memo: | :x: |
-| RIST | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :x: |
-| RTMP | :memo: | :x: | :x: | :x: | :x: | :x: |
-| RTSP | :construction: | :memo: | :memo: | :memo: | :memo: | :x: |
-| SRT | :construction: | :memo: | :memo: | :memo: | :memo: | :x: |
-| webRTC | :construction: | :memo: | :memo: | :memo: | :memo: | :memo: |
-| WS | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :construction: |
+| API | Windows | Linux | macOS | iOS | Android | Wasm | FFI |
+|:-----------:|:-----------:|:--------------------------:|:--------------:|:-------------:|:--------------:|:-------------:|:-------------:|
+| gRPC | :white_check_mark: | :x: | :x: | :x: | :x: | :x: | :x: |
+| Janus | :x: | :x: | :x: | :x: | :x: | :white_check_mark: | :x: |
+| Matrix | :memo: | :memo: | :memo: | :memo: | :memo: | :memo: | :x: |
+| QUIC | :construction: | :memo: | :memo: | :memo: | :memo: | :x: | :memo: |
+| RIST | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :x: | :memo: |
+| RTMP | :memo: | :x: | :x: | :x: | :x: | :x: | :memo: |
+| RTSP | :construction: | :memo: | :memo: | :memo: | :memo: | :x: | :memo: |
+| SRT | :construction: | :memo: | :memo: | :memo: | :memo: | :x: | :memo: |
+| webRTC | :construction: | :memo: | :memo: | :memo: | :memo: | :memo: | :memo: |
+| WS | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :construction: | :memo: |
 
 ### Supported platforms and APIs for system module
 
-| API | Windows | Linux | macOS | iOS | Android | Wasm |
-|:-----------:|:-----------:|:--------------------------:|:--------------:|:-------------:|:--------------:|:-------------:|
-| Fiber | :white_check_mark: | :memo: | :memo: | :x: | :x: | :x: |
-| Gamepad | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :memo: |
-| Gamepad Simulator | :white_check_mark: | :memo: | :memo: | :x: | :x: | :x: |
-| Log  | :construction: | :construction: | :construction: | :construction: | :construction: | :construction: | 
-| LZ4  | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :x: |
-| LZMA  | :white_check_mark: | :memo: | :memo: | :x: | :x: | :x: |
-| OpenTelemetry  | :memo: | :memo: | :memo: | :x: | :x: | :x: |
-| RAFT  | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :memo: |
-| Redis  | :memo: | :memo: | :memo: | :memo: | :memo: | :memo: |
-| Screen Capture  | :white_check_mark: | :construction: | :construction: | :x: | :x: | :x: |
-| Signal-Slot  | :white_check_mark: | :construction: | :construction: | :construction: | :construction: | :white_check_mark: |
-| Stacktrace  | :white_check_mark: | :construction: | :construction: | :construction: | :construction: | :x: |
-| Socket | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :x: |
-| Trace | :construction: | :memo: | :memo: | :memo: | :memo: | :x: |
-| Wasmer  | :memo: | :memo: | :memo: | :x: | :x: | :x: |
+| API | Windows | Linux | macOS | iOS | Android | Wasm | FFI |
+|:-----------:|:-----------:|:--------------------------:|:--------------:|:-------------:|:--------------:|:-------------:|:-------------:|
+| Fiber | :white_check_mark: | :memo: | :memo: | :x: | :x: | :x: | :x: |
+| Gamepad | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :memo: | :memo: | :x: |
+| Gamepad Simulator | :white_check_mark: | :memo: | :memo: | :x: | :x: | :x: | :memo: | :x: |
+| Log  | :construction: | :construction: | :construction: | :construction: | :construction: | :construction: | :memo: | 
+| LZ4  | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :x: | :memo: |
+| LZMA  | :white_check_mark: | :memo: | :memo: | :x: | :x: | :x: | :memo: |
+| OpenTelemetry  | :memo: | :memo: | :memo: | :x: | :x: | :x: | :memo: |
+| RAFT  | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :memo: | :memo: |
+| Redis  | :memo: | :memo: | :memo: | :memo: | :memo: | :memo: | :memo: |
+| Screen Capture  | :white_check_mark: | :construction: | :construction: | :x: | :x: | :x: | :memo: |
+| Signal-Slot  | :white_check_mark: | :construction: | :construction: | :construction: | :construction: | :white_check_mark: | :memo: |
+| Stacktrace  | :white_check_mark: | :construction: | :construction: | :construction: | :construction: | :x: | :memo: |
+| Socket | :white_check_mark: | :memo: | :memo: | :memo: | :memo: | :x: | :memo: |
+| Trace | :construction: | :memo: | :memo: | :memo: | :memo: | :x: | :memo: |
+| Wasmer  | :memo: | :memo: | :memo: | :x: | :x: | :x: | :memo: |
 
 ## Branches
 - [main](https://github.com/WolfEngine/WolfEngine/tree/main), Wolf3, is the latest version of Wolf which is written in **Rust and contains some unsafe cpp codes** and is not ready for production
