@@ -16,7 +16,7 @@ This Wolf is a comprehensive set of Rust/C libraries for realtime rendering, rea
 | :x:  | :memo:  | :construction: | :white_check_mark: | 
 
 | API | Windows | Linux | macOS | iOS | Android | Wasm | FFI |
-|:-----------:|:-----------:|:--------------------------:|:--------------:|:-------------:|:--------------:|:-------------:|
+|:-----------:|:-----------:|:--------------------------:|:--------------:|:-------------:|:--------------:|:-------------:|:-------------:|
 |  WebGPU | :construction: | :construction: | :construction: | :construction: | :construction: | :construction: | :x: |
 
 ### Supported platforms and APIs for media module
