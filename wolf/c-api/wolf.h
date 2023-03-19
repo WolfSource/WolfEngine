@@ -17,6 +17,7 @@ typedef enum {
   OutOfMemory,
   IntCastError,
   SizeCastError,
+  MediaCodecNotFound,
   MediaInvalidVideoFrameSize,
   MediaInvalidAvConfig,
   MediaImageFillFailed,
@@ -42,9 +43,7 @@ typedef enum {
   Unknown,
 } WError;
 
-typedef struct AvAudioConfig AvAudioConfig;
-
-typedef struct AvVideoConfig AvVideoConfig;
+typedef struct AvConfig AvConfig;
 
 typedef struct TcpClient TcpClient;
 
@@ -66,17 +65,7 @@ void w_version(int32_t *p_major, int32_t *p_minor, int32_t *p_patch);
  *
  * unsafe function for C ABI
  */
-WError w_media_av_audio_config_init(AvAudioConfig **p_obj,
-                                    uint32_t p_channels,
-                                    uint32_t p_sample_rate,
-                                    int32_t p_sample_fmt);
-
-/**
- * # Safety
- *
- * unsafe function for C ABI
- */
-WError w_media_av_audio_config_set(AvAudioConfig *p_obj,
+WError w_media_av_config_audio_new(AvConfig **p_obj,
                                    uint32_t p_channels,
                                    uint32_t p_sample_rate,
                                    int32_t p_sample_fmt);
@@ -86,25 +75,7 @@ WError w_media_av_audio_config_set(AvAudioConfig *p_obj,
  *
  * unsafe function for C ABI
  */
-void w_media_av_audio_config_fini(AvAudioConfig **p_ptr);
-
-/**
- * # Safety
- *
- * unsafe function for C ABI
- */
-WError w_media_av_video_config_init(AvVideoConfig **p_obj,
-                                    int32_t p_pixel_format,
-                                    uint32_t p_width,
-                                    uint32_t p_height,
-                                    uint32_t p_alignment);
-
-/**
- * # Safety
- *
- * unsafe function for C ABI
- */
-WError w_media_av_video_config_set(AvVideoConfig *p_obj,
+WError w_media_av_config_video_new(AvConfig **p_obj,
                                    int32_t p_pixel_format,
                                    uint32_t p_width,
                                    uint32_t p_height,
@@ -115,14 +86,42 @@ WError w_media_av_video_config_set(AvVideoConfig *p_obj,
  *
  * unsafe function for C ABI
  */
-int32_t w_media_av_video_config_get_required_buffer_size(AvVideoConfig *p_obj);
+WError w_media_av_audio_config_set(AvConfig *p_obj,
+                                   uint32_t p_channels,
+                                   uint32_t p_sample_rate,
+                                   int32_t p_sample_fmt);
 
 /**
  * # Safety
  *
  * unsafe function for C ABI
  */
-void w_media_av_video_config_fini(AvVideoConfig **p_ptr);
+void w_media_av_audio_config_free(AvConfig **p_ptr);
+
+/**
+ * # Safety
+ *
+ * unsafe function for C ABI
+ */
+WError w_media_av_video_config_set(AvConfig *p_obj,
+                                   int32_t p_pixel_format,
+                                   uint32_t p_width,
+                                   uint32_t p_height,
+                                   uint32_t p_alignment);
+
+/**
+ * # Safety
+ *
+ * unsafe function for C ABI
+ */
+int32_t w_media_av_video_config_get_required_buffer_size(AvConfig *p_obj);
+
+/**
+ * # Safety
+ *
+ * unsafe function for C ABI
+ */
+void w_media_av_video_config_free(AvConfig **p_ptr);
 
 /**
  * # Safety

@@ -11,7 +11,7 @@ macro_rules! w_log {
 
 #[cfg(not(target_arch = "wasm32"))]
 #[macro_export]
-macro_rules! w_init {
+macro_rules! w_new {
     ($ptr:expr, $obj:expr) => {
         match $obj {
             Ok(obj) => {
@@ -28,7 +28,7 @@ macro_rules! w_init {
 
 #[cfg(not(target_arch = "wasm32"))]
 #[macro_export]
-macro_rules! w_fini {
+macro_rules! w_free {
     ($ptr:expr) => {
         if $ptr.is_null() || (*$ptr).is_null() {
             return;

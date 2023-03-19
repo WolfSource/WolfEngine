@@ -13,6 +13,14 @@ extern "C"
 {
 #endif
 
+#ifndef W_API
+#ifdef _WIN32
+#define W_API __declspec(dllexport)
+#else
+#define W_API
+#endif
+#endif
+
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
 #include <libavformat/avio.h>
@@ -32,7 +40,7 @@ extern "C"
  * @return the buffer in input, filled with the error description
  * @see av_strerror()
  */
-inline char *_av_make_error_string(char *errbuf, size_t errbuf_size, int errnum)
+inline W_API char *_av_make_error_string(char *errbuf, size_t errbuf_size, int errnum)
 {
     av_strerror(errnum, errbuf, errbuf_size);
     return errbuf;

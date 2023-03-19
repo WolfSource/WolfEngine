@@ -14,6 +14,9 @@ pub enum WError {
     #[error("could not cast to usize or isize")]
     SizeCastError,
     #[cfg(feature = "media_ffmpeg")]
+    #[error("invalid AVCodec")]
+    MediaCodecNotFound,
+    #[cfg(feature = "media_ffmpeg")]
     #[error("invalid video frame size")]
     MediaInvalidVideoFrameSize,
     #[cfg(feature = "media_ffmpeg")]

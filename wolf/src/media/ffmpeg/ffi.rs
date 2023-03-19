@@ -1,26 +1,44 @@
-use super::{av_audio_config::AvAudioConfig, av_video_config::AvVideoConfig};
+use super::av_config::AvConfig;
 use crate::{
     error::WError,
     media::bindgen::ffmpeg::{
         av_channel_layout_default, av_channel_layout_uninit, AVPixelFormat, AVSampleFormat,
     },
-    w_fini, w_init,
+    w_free, w_new,
 };
 
 /// # Safety
 ///
 /// unsafe function for C ABI
 #[no_mangle]
-pub unsafe extern "C" fn w_media_av_audio_config_init(
-    p_obj: *mut *mut AvAudioConfig,
+pub unsafe extern "C" fn w_media_av_config_audio_new(
+    p_obj: *mut *mut AvConfig,
     p_channels: u32,
     p_sample_rate: u32,
     p_sample_fmt: i32,
 ) -> WError {
     let sample_fmt: AVSampleFormat = std::mem::transmute(p_sample_fmt);
-    w_init!(
+    w_new!(
         p_obj,
-        AvAudioConfig::new(p_channels, p_sample_rate, sample_fmt)
+        AvConfig::new_audio(p_channels, p_sample_rate, sample_fmt)
+    )
+}
+
+/// # Safety
+///
+/// unsafe function for C ABI
+#[no_mangle]
+pub unsafe extern "C" fn w_media_av_config_video_new(
+    p_obj: *mut *mut AvConfig,
+    p_pixel_format: i32,
+    p_width: u32,
+    p_height: u32,
+    p_alignment: u32,
+) -> WError {
+    let pixel_fmt: AVPixelFormat = std::mem::transmute(p_pixel_format);
+    w_new!(
+        p_obj,
+        AvConfig::new_video(pixel_fmt, p_width, p_height, p_alignment)
     )
 }
 
@@ -29,7 +47,7 @@ pub unsafe extern "C" fn w_media_av_audio_config_init(
 /// unsafe function for C ABI
 #[no_mangle]
 pub unsafe extern "C" fn w_media_av_audio_config_set(
-    p_obj: *mut AvAudioConfig,
+    p_obj: *mut AvConfig,
     p_channels: u32,
     p_sample_rate: u32,
     p_sample_fmt: i32,
@@ -59,26 +77,8 @@ pub unsafe extern "C" fn w_media_av_audio_config_set(
 ///
 /// unsafe function for C ABI
 #[no_mangle]
-pub unsafe extern "C" fn w_media_av_audio_config_fini(p_ptr: *mut *mut AvAudioConfig) {
-    w_fini!(p_ptr);
-}
-
-/// # Safety
-///
-/// unsafe function for C ABI
-#[no_mangle]
-pub unsafe extern "C" fn w_media_av_video_config_init(
-    p_obj: *mut *mut AvVideoConfig,
-    p_pixel_format: i32,
-    p_width: u32,
-    p_height: u32,
-    p_alignment: u32,
-) -> WError {
-    let pixel_fmt: AVPixelFormat = std::mem::transmute(p_pixel_format);
-    w_init!(
-        p_obj,
-        AvVideoConfig::new(pixel_fmt, p_width, p_height, p_alignment)
-    )
+pub unsafe extern "C" fn w_media_av_audio_config_free(p_ptr: *mut *mut AvConfig) {
+    w_free!(p_ptr);
 }
 
 /// # Safety
@@ -86,7 +86,7 @@ pub unsafe extern "C" fn w_media_av_video_config_init(
 /// unsafe function for C ABI
 #[no_mangle]
 pub unsafe extern "C" fn w_media_av_video_config_set(
-    p_obj: *mut AvVideoConfig,
+    p_obj: *mut AvConfig,
     p_pixel_format: i32,
     p_width: u32,
     p_height: u32,
@@ -123,7 +123,7 @@ pub unsafe extern "C" fn w_media_av_video_config_set(
 /// unsafe function for C ABI
 #[no_mangle]
 pub unsafe extern "C" fn w_media_av_video_config_get_required_buffer_size(
-    p_obj: *mut AvVideoConfig,
+    p_obj: *mut AvConfig,
 ) -> i32 {
     if p_obj.is_null() {
         return -1;
@@ -136,6 +136,6 @@ pub unsafe extern "C" fn w_media_av_video_config_get_required_buffer_size(
 ///
 /// unsafe function for C ABI
 #[no_mangle]
-pub unsafe extern "C" fn w_media_av_video_config_fini(p_ptr: *mut *mut AvVideoConfig) {
-    w_fini!(p_ptr);
+pub unsafe extern "C" fn w_media_av_video_config_free(p_ptr: *mut *mut AvConfig) {
+    w_free!(p_ptr);
 }

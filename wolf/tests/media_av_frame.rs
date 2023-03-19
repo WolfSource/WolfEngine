@@ -6,10 +6,8 @@
 fn test_av_frame_convert() -> Result<(), wolf::error::WError> {
     use image::GenericImageView;
     use wolf::error::WError;
-    use wolf::media::{
-        bindgen::ffmpeg::AVPixelFormat,
-        ffmpeg::{av_frame::AvFrame, av_video_config::AvVideoConfig},
-    };
+    use wolf::media::ffmpeg::av_config::AvConfig;
+    use wolf::media::{bindgen::ffmpeg::AVPixelFormat, ffmpeg::av_frame::AvFrame};
 
     let mut current_dir = std::env::current_dir().unwrap();
     if current_dir.ends_with("wolf") {
@@ -22,11 +20,13 @@ fn test_av_frame_convert() -> Result<(), wolf::error::WError> {
     let pixels = img.as_rgba8().unwrap().to_vec();
 
     // create a source frame from image
-    let src_config = AvVideoConfig::new(AVPixelFormat::AV_PIX_FMT_RGBA, img_size.0, img_size.1, 1)?;
-    let src_frame = AvFrame::new_video(&src_config, pixels)?;
+    let src_config =
+        AvConfig::new_video(AVPixelFormat::AV_PIX_FMT_RGBA, img_size.0, img_size.1, 1)?;
+    let src_frame = AvFrame::new(src_config, Vec::new(), pixels)?;
 
     // convert to bgra
-    let dst_config = AvVideoConfig::new(AVPixelFormat::AV_PIX_FMT_BGRA, img_size.0, img_size.1, 1)?;
+    let dst_config =
+        AvConfig::new_video(AVPixelFormat::AV_PIX_FMT_BGRA, img_size.0, img_size.1, 1)?;
     let dst_frame = src_frame.convert_video(&dst_config)?;
 
     let out_path = current_dir.join("sample_bgra.png");
