@@ -1,15 +1,23 @@
-use super::av_config::AvConfig;
+use super::{av_config::AvConfig, av_frame::AvFrame, av_packet::AvPacket};
 use crate::{
     error::WError,
     media::bindgen::ffmpeg::{
         av_dict_set, av_dict_set_int, av_opt_set, av_opt_set_double, av_opt_set_int,
-        av_parser_close, av_strerror, avcodec_alloc_context3, avcodec_close, avcodec_find_decoder,
-        avcodec_find_decoder_by_name, avcodec_find_encoder, avcodec_find_encoder_by_name,
-        avcodec_free_context, avcodec_is_open, AVCodec, AVCodecContext, AVCodecID,
-        AVCodecParserContext, AVDictionary, AVFMT_GLOBALHEADER, AV_CODEC_FLAG_GLOBAL_HEADER,
+        av_parser_close, av_parser_init, av_parser_parse2, av_strerror, avcodec_alloc_context3,
+        avcodec_close, avcodec_find_decoder, avcodec_find_decoder_by_name, avcodec_find_encoder,
+        avcodec_find_encoder_by_name, avcodec_free_context, avcodec_is_open, avcodec_open2,
+        avcodec_receive_frame, avcodec_receive_packet, avcodec_send_frame, avcodec_send_packet,
+        AVCodec, AVCodecContext, AVCodecID, AVCodecParserContext, AVDictionary, AVFMT_GLOBALHEADER,
+        AV_CODEC_FLAG_GLOBAL_HEADER,
     },
 };
 use std::fmt::{Debug, Formatter};
+
+const EOF: i32 = -22;
+const EAGAIN: i32 = -11;
+
+#[allow(clippy::cast_possible_wrap)]
+const AV_NOPTS_VALUE: i64 = 0x8000_0000_0000_0000_u64 as i64;
 
 #[repr(C)]
 #[derive(Debug, Clone, Copy, Eq, PartialEq)]
@@ -32,9 +40,9 @@ pub struct AvCodecOpt {
 
 #[derive(Clone, Copy)]
 pub union Value<'a> {
-    i: i64,
-    d: f64,
-    s: &'a str,
+    pub i: i64,
+    pub d: f64,
+    pub s: &'a str,
 }
 
 #[derive(Clone, Copy)]
@@ -108,6 +116,7 @@ impl FFmpeg {
         p_config: &AvConfig,
         p_codec_opt: &AvCodecOpt,
         p_options: &[AvSetOpt],
+        p_av_dict: Option<*mut AVDictionary>,
     ) -> Result<Self, WError> {
         let mut obj = unsafe {
             let codec = avcodec_find_encoder(p_codec_id);
@@ -120,7 +129,7 @@ impl FFmpeg {
                 parser: std::ptr::null_mut(),
             }
         };
-        obj.init(p_config, p_codec_opt, p_options)?;
+        obj.init(p_config, p_codec_opt, p_options, p_av_dict)?;
         Ok(obj)
     }
 
@@ -133,6 +142,7 @@ impl FFmpeg {
         p_config: &AvConfig,
         p_codec_opt: &AvCodecOpt,
         p_options: &[AvSetOpt],
+        p_av_dict: Option<*mut AVDictionary>,
     ) -> Result<Self, WError> {
         let mut obj = unsafe {
             let codec = avcodec_find_encoder_by_name(p_codec_id.as_ptr().cast::<i8>());
@@ -145,7 +155,7 @@ impl FFmpeg {
                 parser: std::ptr::null_mut(),
             }
         };
-        obj.init(p_config, p_codec_opt, p_options)?;
+        obj.init(p_config, p_codec_opt, p_options, p_av_dict)?;
         Ok(obj)
     }
 
@@ -155,14 +165,18 @@ impl FFmpeg {
     /// TODO: add error description
     pub fn new_decoder(
         p_codec_id: AVCodecID,
-        p_config: &AvConfig,
+        p_config: &mut AvConfig,
         p_codec_opt: &AvCodecOpt,
         p_options: &[AvSetOpt],
+        p_av_dict: Option<*mut AVDictionary>,
     ) -> Result<Self, WError> {
         let mut obj = unsafe {
             let codec = avcodec_find_decoder(p_codec_id);
             if codec.is_null() {
                 return Err(WError::MediaCodecNotFound);
+            }
+            if !(*codec).sample_fmts.is_null() {
+                p_config.sample_fmt = *(*codec).sample_fmts;
             }
             Self {
                 codec,
@@ -170,7 +184,8 @@ impl FFmpeg {
                 parser: std::ptr::null_mut(),
             }
         };
-        obj.init(p_config, p_codec_opt, p_options)?;
+        obj.init(p_config, p_codec_opt, p_options, p_av_dict)?;
+        obj.parser = unsafe { av_parser_init((*obj.codec).id as i32) };
         Ok(obj)
     }
 
@@ -180,14 +195,18 @@ impl FFmpeg {
     /// TODO: add error description
     pub fn new_decoder_from_codec_id_str(
         p_codec_id: &str,
-        p_config: &AvConfig,
+        p_config: &mut AvConfig,
         p_codec_opt: &AvCodecOpt,
         p_options: &[AvSetOpt],
+        p_av_dict: Option<*mut AVDictionary>,
     ) -> Result<Self, WError> {
         let mut obj = unsafe {
             let codec = avcodec_find_decoder_by_name(p_codec_id.as_ptr().cast::<i8>());
             if codec.is_null() {
                 return Err(WError::MediaCodecNotFound);
+            }
+            if !(*codec).sample_fmts.is_null() {
+                p_config.sample_fmt = *(*codec).sample_fmts;
             }
             Self {
                 codec,
@@ -195,7 +214,11 @@ impl FFmpeg {
                 parser: std::ptr::null_mut(),
             }
         };
-        obj.init(p_config, p_codec_opt, p_options)?;
+        obj.init(p_config, p_codec_opt, p_options, p_av_dict)?;
+        obj.parser = unsafe { av_parser_init((*obj.codec).id as i32) };
+        if obj.parser.is_null() {
+            return Err(WError::MediaInitParserFailed);
+        }
         Ok(obj)
     }
 
@@ -204,6 +227,7 @@ impl FFmpeg {
         p_config: &AvConfig,
         p_codec_opts: &AvCodecOpt,
         p_options: &[AvSetOpt],
+        p_av_dict: Option<*mut AVDictionary>,
     ) -> Result<(), WError> {
         // allocate codec context
         self.codec_ctx = unsafe { avcodec_alloc_context3(self.codec) };
@@ -287,14 +311,27 @@ impl FFmpeg {
                 },
             };
         }
+
+        let mut av_dic = p_av_dict.map_or(std::ptr::null_mut(), |av_dic| av_dic);
+        // open avcodec
+        let ret = unsafe {
+            avcodec_open2(
+                self.codec_ctx,
+                (*self.codec_ctx).codec,
+                std::ptr::addr_of_mut!(av_dic),
+            )
+        };
+        if ret < 0 {
+            return Err(WError::MediaAvCodecOpenFailed);
+        }
         Ok(())
     }
 
     /// create `AvDictionary` from `AvSetOpt`
     /// # Errors
     ///
-    /// TODO: add error description
-    pub fn set_dict(p_options: &[AvSetOpt]) -> Result<*mut AVDictionary, WError> {
+    /// returns `WError`
+    pub fn setup_av_dictionary(p_options: &[AvSetOpt]) -> Result<*mut AVDictionary, WError> {
         if p_options.is_empty() {
             return Err(WError::InvalidParameter);
         }
@@ -352,6 +389,152 @@ impl FFmpeg {
             av_strerror(p_error_code, ptr, MAX_ARRAY_SIZE);
             let c_err_str = std::ffi::CStr::from_ptr(ptr);
             c_err_str.to_str().unwrap_or_default().to_string()
+        }
+    }
+
+    /// encode `AvFrame` to the `AvPacket`
+    /// # Errors
+    ///
+    /// returns `WError`
+    pub fn encode(&self, p_frame: &AvFrame, p_flush: bool) -> Result<AvPacket, WError> {
+        let mut packet_data = Vec::new();
+        // encode frame to packet
+        self.encode_frame_to_packet(Some(p_frame), &mut packet_data)?;
+        if p_flush {
+            // flush
+            self.encode_frame_to_packet(None, &mut packet_data)?;
+        }
+        AvPacket::new_from_data(packet_data)
+    }
+
+    /// encode `AvFrame` to the `AvPacket`
+    /// # Errors
+    ///
+    /// returns `WError`
+    fn encode_frame_to_packet(
+        &self,
+        p_frame: Option<&AvFrame>,
+        p_packet_data: &mut Vec<u8>,
+    ) -> Result<(), WError> {
+        let tmp_packet = AvPacket::new()?;
+        let frame = p_frame.map_or(std::ptr::null_mut(), |packet| packet.frame);
+        loop {
+            unsafe {
+                let send_ret = avcodec_send_frame(self.codec_ctx, frame);
+                if send_ret < 0 {
+                    // let str = crate::media::ffmpeg::ffmpeg_ctx::FFmpeg::get_av_error_str(send_ret);
+                    // println!("{str}");
+                    return Err(WError::MediaEncodeSendFrameFailed);
+                }
+                loop {
+                    let rec_ret = avcodec_receive_packet(self.codec_ctx, tmp_packet.pkt);
+                    if rec_ret == 0 || rec_ret == EOF {
+                        // append temp packet to source packet
+                        let append_size = usize::try_from((*tmp_packet.pkt).size)
+                            .map_err(|_e| WError::SizeCastError)?;
+                        let ptr_offset = p_packet_data.len();
+                        p_packet_data.resize(p_packet_data.len() + append_size, 0u8);
+                        std::ptr::copy_nonoverlapping(
+                            (*tmp_packet.pkt).data,
+                            p_packet_data.as_mut_ptr().add(ptr_offset),
+                            append_size,
+                        );
+                        return Ok(());
+                    }
+                    tmp_packet.unref();
+                    if rec_ret == EAGAIN {
+                        break;
+                    }
+                    if rec_ret < 0 {
+                        return Err(WError::MediaEncodeReceivePacketFailed);
+                    }
+                }
+            }
+        }
+    }
+
+    /// decode `AvFrame` from the `AvPacket`
+    /// # Errors
+    ///
+    /// returns `WError`
+    pub fn decode(
+        &self,
+        p_packet: &AvPacket,
+        p_frame: &mut AvFrame,
+        p_flush: bool,
+    ) -> Result<(), WError> {
+        let dst_packet = AvPacket::new()?;
+        unsafe {
+            loop {
+                let bytes = av_parser_parse2(
+                    self.parser,
+                    self.codec_ctx,
+                    std::ptr::addr_of_mut!((*dst_packet.pkt).data),
+                    std::ptr::addr_of_mut!((*dst_packet.pkt).size),
+                    (*p_packet.pkt).data,
+                    (*p_packet.pkt).size,
+                    AV_NOPTS_VALUE,
+                    AV_NOPTS_VALUE,
+                    0,
+                );
+                let bytes_usize = usize::try_from(bytes).map_err(|_e| WError::MediaParserFailed)?;
+                if bytes_usize == 0 {
+                    break;
+                }
+
+                if (*dst_packet.pkt).size == 0 {
+                    self.decode_frame_from_packet(Some(p_packet), p_frame)?;
+                } else {
+                    (*p_packet.pkt).data = (*p_packet.pkt).data.add(bytes_usize);
+                    (*p_packet.pkt).size -= bytes;
+                    if (*dst_packet.pkt).size > 0 {
+                        self.decode_frame_from_packet(Some(&dst_packet), p_frame)?;
+                    }
+                }
+
+                // (*p_packet.pkt).data = (*p_packet.pkt).data.add(bytes_usize);
+                // (*p_packet.pkt).size -= bytes;
+
+                // if (*dst_packet.pkt).size > 0 {
+                //     self.decode_frame_from_packet(Some(&dst_packet), p_frame)?;
+                // }
+            }
+
+            if p_flush {
+                // flush the decoder
+                self.decode_frame_from_packet(None, p_frame)?;
+            }
+        }
+        Ok(())
+    }
+
+    /// decode `AvFrame` from the `AvPacket`
+    /// # Errors
+    ///
+    /// returns `WError`
+    fn decode_frame_from_packet(
+        &self,
+        p_packet: Option<&AvPacket>,
+        p_frame: &mut AvFrame,
+    ) -> Result<(), WError> {
+        let packet = p_packet.map_or(std::ptr::null_mut(), |packet| packet.pkt);
+        loop {
+            unsafe {
+                let send_ret = avcodec_send_packet(self.codec_ctx, packet);
+                if send_ret < 0 {
+                    // let str = FFmpeg::get_av_error_str(send_ret);
+                    // println!("{str}");
+                    return Err(WError::MediaDecodeSendFrameFailed);
+                }
+                let rec_ret = avcodec_receive_frame(self.codec_ctx, p_frame.frame);
+                if rec_ret == 0 || rec_ret == EOF {
+                    return Ok(());
+                }
+                if rec_ret == EAGAIN {
+                    continue;
+                }
+                return Err(WError::MediaDecodeReceivePacketFailed);
+            }
         }
     }
 }

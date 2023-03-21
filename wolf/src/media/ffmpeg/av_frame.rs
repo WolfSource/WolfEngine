@@ -11,7 +11,7 @@ use core::result::Result;
 #[derive(Debug, Clone)]
 pub struct AvFrame {
     pub config: AvConfig,
-    frame: *mut AVFrame,
+    pub frame: *mut AVFrame,
     video_data: Vec<u8>,
     audio_data: Vec<u8>,
 }

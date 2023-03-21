@@ -34,6 +34,27 @@ pub enum WError {
     #[cfg(feature = "media_ffmpeg")]
     #[error("invalid AvSetOption")]
     MediaInvalidAvSetOption,
+    #[cfg(feature = "media_ffmpeg")]
+    #[error("ffmpeg could not send frame while encoding")]
+    MediaEncodeSendFrameFailed,
+    #[cfg(feature = "media_ffmpeg")]
+    #[error("ffmpeg could not receive frame while encoding")]
+    MediaEncodeReceivePacketFailed,
+    #[cfg(feature = "media_ffmpeg")]
+    #[error("ffmpeg could not send frame while decoding")]
+    MediaDecodeSendFrameFailed,
+    #[cfg(feature = "media_ffmpeg")]
+    #[error("ffmpeg could not receive frame while decoding")]
+    MediaDecodeReceivePacketFailed,
+    #[cfg(feature = "media_ffmpeg")]
+    #[error("ffmpeg initializing parser was failed")]
+    MediaInitParserFailed,
+    #[cfg(feature = "media_ffmpeg")]
+    #[error("ffmpeg parser failed")]
+    MediaParserFailed,
+    #[cfg(feature = "media_ffmpeg")]
+    #[error("ffmpeg was failed to open AvCodec")]
+    MediaAvCodecOpenFailed,
     #[cfg(any(
         feature = "system_socket_client",
         feature = "system_socket_server",
