@@ -7,11 +7,14 @@ use crate::{
         avcodec_close, avcodec_find_decoder, avcodec_find_decoder_by_name, avcodec_find_encoder,
         avcodec_find_encoder_by_name, avcodec_free_context, avcodec_is_open, avcodec_open2,
         avcodec_receive_frame, avcodec_receive_packet, avcodec_send_frame, avcodec_send_packet,
-        AVCodec, AVCodecContext, AVCodecID, AVCodecParserContext, AVDictionary, AVFMT_GLOBALHEADER,
-        AV_CODEC_FLAG_GLOBAL_HEADER,
+        AVCodec, AVCodecContext, AVCodecID, AVCodecParserContext, AVDictionary, AVPacket, AVStream,
+        AVFMT_GLOBALHEADER, AV_CODEC_FLAG_GLOBAL_HEADER,
     },
 };
-use std::fmt::{Debug, Formatter};
+use std::{
+    fmt::{Debug, Formatter},
+    sync::Arc,
+};
 
 const EOF: i32 = -22;
 const EAGAIN: i32 = -11;
@@ -19,12 +22,34 @@ const EAGAIN: i32 = -11;
 #[allow(clippy::cast_possible_wrap)]
 const AV_NOPTS_VALUE: i64 = 0x8000_0000_0000_0000_u64 as i64;
 
-#[repr(C)]
-#[derive(Debug, Clone, Copy, Eq, PartialEq)]
-pub enum FFmpegMode {
-    Encoder,
-    Decoder,
-    Both,
+// OnStreamFrameCallback
+type Fp1 = Box<
+    dyn Fn(&AVPacket, Option<*mut AVStream>, Option<*mut AVStream>) -> Result<(), WError>
+        + Send
+        + Sync,
+>;
+
+pub struct OnStreamFrameCallback {
+    f: Arc<Fp1>,
+}
+
+impl OnStreamFrameCallback {
+    #[must_use]
+    pub fn new(f: Fp1) -> Self {
+        Self { f: Arc::new(f) }
+    }
+
+    /// # Errors
+    ///
+    /// returns `WError`
+    pub fn run(
+        &self,
+        p_packet: &AVPacket,
+        p_audio_stream: Option<*mut AVStream>,
+        p_video_stream: Option<*mut AVStream>,
+    ) -> Result<(), WError> {
+        (self.f)(p_packet, p_audio_stream, p_video_stream)
+    }
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -536,5 +561,16 @@ impl FFmpeg {
                 return Err(WError::MediaDecodeReceivePacketFailed);
             }
         }
+    }
+
+    /// open a stream from file or url
+    /// # Errors
+    ///
+    /// returns `WError`
+    pub const fn open_stream_receiver(
+        _p_url: &str,
+        _p_options: &[AvSetOpt],
+        _p_on_frame: &OnStreamFrameCallback,
+    ) {
     }
 }

@@ -16,7 +16,7 @@ impl OnMessageCallback {
 
     /// # Errors
     ///
-    /// TODO: add error description
+    /// returns `WError`
     pub fn run(
         &self,
         p_peer_address: &SocketAddr,
