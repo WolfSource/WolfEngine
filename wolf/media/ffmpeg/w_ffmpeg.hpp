@@ -34,32 +34,32 @@ struct w_av_set_opt {
 };
 
 class w_ffmpeg {
-public:
+ public:
   /*
    * create ffmpeg encoder
-   * @param p_config, the avconfig
+   * @param p_config, the video config
    * @param p_id, the avcodec id
    * @param p_codec_opts, the codec settings
    * @param p_opts, the codec options
    * @returns encoder object on success
    */
-  W_API static boost::leaf::result<w_encoder>
-  create_encoder(_In_ const w_av_config &p_config, _In_ const AVCodecID p_id,
-                 _In_ const w_av_codec_opt &p_codec_opts,
-                 _In_ const std::vector<w_av_set_opt> &p_opts = {}) noexcept;
+  W_API static boost::leaf::result<w_encoder> create_encoder(
+      _In_ const w_av_config &p_config, _In_ AVCodecID p_id,
+      _In_ const w_av_codec_opt &p_codec_opts,
+      _In_ const std::vector<w_av_set_opt> &p_opts = {}) noexcept;
 
   /*
    * create ffmpeg encoder
-   * @param p_config, the avconfig
+   * @param p_config, the video config
    * @param p_id, the avcodec id in string (e.g. "libsvtav1", "libvpx")
    * @param p_codec_opts, the codec settings
    * @param p_opts, the codec options
    * @returns encoder object on success
    */
-  W_API static boost::leaf::result<w_encoder>
-  create_encoder(_In_ const w_av_config &p_config, _In_ const std::string &p_id,
-                 _In_ const w_av_codec_opt &p_codec_opts,
-                 _In_ const std::vector<w_av_set_opt> &p_opts = {}) noexcept;
+  W_API static boost::leaf::result<w_encoder> create_encoder(
+      _In_ const w_av_config &p_config, _In_ const std::string &p_id,
+      _In_ const w_av_codec_opt &p_codec_opts,
+      _In_ const std::vector<w_av_set_opt> &p_opts = {}) noexcept;
 
   /*
    * create ffmpeg decoder
@@ -69,11 +69,11 @@ public:
    * @param p_opts, the codec options
    * @returns encoder object on success
    */
-  W_API static boost::leaf::result<w_decoder>
-  create_decoder(_In_ const w_av_config &p_config, _In_ const AVCodecID p_id,
-                 _In_ const w_av_codec_opt &p_codec_opts,
-                 _In_ const std::vector<w_av_set_opt> &p_opts = {}) noexcept;
-  ;
+  W_API static boost::leaf::result<w_decoder> create_decoder(
+      _In_ const w_av_config &p_config, _In_ AVCodecID p_id,
+      _In_ const w_av_codec_opt &p_codec_opts,
+      _In_ const std::vector<w_av_set_opt> &p_opts = {}) noexcept;
+
   /*
    * create ffmpeg decoder
    * @param p_config, the avconfig
@@ -82,10 +82,10 @@ public:
    * @param p_opts, the codec options
    * @returns encoder object on success
    */
-  W_API static boost::leaf::result<w_decoder>
-  create_decoder(_In_ const w_av_config &p_config, _In_ const std::string &p_id,
-                 _In_ const w_av_codec_opt &p_codec_opts,
-                 _In_ const std::vector<w_av_set_opt> &p_opts = {}) noexcept;
+  W_API static boost::leaf::result<w_decoder> create_decoder(
+      _In_ const w_av_config &p_config, _In_ const std::string &p_id,
+      _In_ const w_av_codec_opt &p_codec_opts,
+      _In_ const std::vector<w_av_set_opt> &p_opts = {}) noexcept;
 
   /*
    * open and receive stream from file or url
@@ -95,14 +95,12 @@ public:
    * @returns encoder object on success
    */
   W_API static boost::leaf::result<int> open_stream_receiver(
-      _In_ const std::string &p_url,
-      _In_ const std::vector<w_av_set_opt> &p_opts,
-      _In_ std::function<bool(const w_av_packet & /*p_packet*/,
-                              const std::vector<AVStream *>& /*p_streams*/,
-                              const int /*p_video_stream_index*/,
-                              const int /*p_audio_stream_index*/)>
-          p_on_frame) noexcept;
+      _In_ const std::string &p_url, _In_ const std::vector<w_av_set_opt> &p_opts,
+      _In_ const std::function<bool(const w_av_packet & /*p_packet*/,
+                                    const std::vector<AVStream *> & /*p_streams*/,
+                                    const int /*p_video_stream_index*/,
+                                    const int /*p_audio_stream_index*/)> &p_on_frame) noexcept;
 };
-} // namespace wolf::media::ffmpeg
+}  // namespace wolf::media::ffmpeg
 
 #endif // WOLF_MEDIA_FFMPEG

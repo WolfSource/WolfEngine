@@ -5,7 +5,7 @@
 
 #pragma once
 
-#if defined(WIN32) && defined(DEBUG)
+#if defined(WIN32) && defined(_DEBUG)
 #define _CRTDBG_MAP_ALLOC
 #endif
 
@@ -29,7 +29,7 @@ class w_leak_detector {
   // copy assignment operator.
   w_leak_detector &operator=(const w_leak_detector &) = delete;
 
-#if defined(WIN32) && defined(DEBUG)
+#if defined(WIN32) && defined(_DEBUG)
   _CrtMemState _mem_state;
 #endif
 };

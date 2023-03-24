@@ -66,4 +66,3 @@ CheckOptions:
     value:           'NULL'
   - key:             readability-braces-around-statements.ShortStatementLines
     value:           '2'
-...

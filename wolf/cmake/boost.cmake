@@ -113,7 +113,7 @@ foreach (_var ${BOOST_MASTER_LIBS})
         FetchContent_Declare(
         ${_var}
         GIT_REPOSITORY ${git_url}
-        GIT_TAG        master
+        GIT_TAG        ${BOOST_TAG}
     )
 endforeach()
 
@@ -145,7 +145,7 @@ if (WOLF_SYSTEM_STACKTRACE)
     FetchContent_Declare(
         boost_stacktrace
         GIT_REPOSITORY https://github.com/boostorg/stacktrace.git
-        GIT_TAG        master
+        GIT_TAG        ${BOOST_TAG}
     )
     set(FETCHCONTENT_QUIET OFF)
     FetchContent_MakeAvailable(boost_stacktrace)
@@ -174,7 +174,7 @@ if (WOLF_TEST)
     FetchContent_Declare(
         boost_test
         GIT_REPOSITORY https://github.com/boostorg/test.git
-        GIT_TAG        master
+        GIT_TAG        ${BOOST_TAG}
     )
     FetchContent_Populate(boost_test)
     list(APPEND INCLUDES

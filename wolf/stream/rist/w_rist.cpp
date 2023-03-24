@@ -20,18 +20,14 @@ static int s_on_log_callback(_In_ void *p_arg, _In_ rist_log_level p_log_level,
   return S_OK;
 }
 
-static int s_on_auth_handler_connect_callback(_In_ void *p_arg,
-                                              _In_z_ const char *p_conn_ip,
+static int s_on_auth_handler_connect_callback(_In_ void *p_arg, _In_z_ const char *p_conn_ip,
                                               _In_ uint16_t p_conn_port,
                                               _In_z_ const char *p_local_ip,
-                                              _In_ uint16_t p_local_port,
-                                              _In_ rist_peer *p_peer) {
-  const auto _rist_nn =
-      gsl::not_null<w_rist *>(gsl::narrow_cast<w_rist *>(p_arg));
+                                              _In_ uint16_t p_local_port, _In_ rist_peer *p_peer) {
+  const auto _rist_nn = gsl::not_null<w_rist *>(gsl::narrow_cast<w_rist *>(p_arg));
 
   if (_rist_nn->on_auth_connected_callback) {
-    _rist_nn->on_auth_connected_callback(p_conn_ip, p_conn_port, p_local_ip,
-                                         p_local_port);
+    _rist_nn->on_auth_connected_callback(p_conn_ip, p_conn_port, p_local_ip, p_local_port);
   }
 
   return S_OK;

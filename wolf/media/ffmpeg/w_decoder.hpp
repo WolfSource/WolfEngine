@@ -38,8 +38,8 @@ private:
   // copy operator
   w_decoder &operator=(const w_decoder &) = delete;
 
-  boost::leaf::result<int> _decode(_In_ AVPacket *p_packet,
-                                   _Inout_ w_av_frame &p_frame);
+  boost::leaf::result<int> decode_frame_from_packet(_In_ AVPacket *p_packet,
+                                                    _Inout_ w_av_frame &p_frame);
 };
 } // namespace wolf::media::ffmpeg
 

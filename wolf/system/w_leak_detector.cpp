@@ -4,18 +4,18 @@
 using w_leak_detector = wolf::system::w_leak_detector;
 
 w_leak_detector::w_leak_detector() noexcept
-#if defined(WIN32) && defined(DEBUG)
+#if defined(WIN32) && defined(_DEBUG)
     : _mem_state()
 #endif
 {
-#if defined(WIN32) && defined(DEBUG)
+#if defined(WIN32) && defined(_DEBUG)
   // take a snapshot from memory
   _CrtMemCheckpoint(&this->_mem_state);
 #endif
 }
 
 w_leak_detector::~w_leak_detector() noexcept {
-#if defined(WIN32) && defined(DEBUG)
+#if defined(WIN32) && defined(_DEBUG)
   try {
     // take a snapshot from memory
     _CrtMemState _diff_mem;

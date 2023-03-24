@@ -130,13 +130,14 @@ boost::leaf::result<int> w_tcp_server::run(
     _In_ w_session_on_data_callback p_on_data_callback,
     _In_ w_session_on_error_callback p_on_error_callback) noexcept {
   try {
+
 #ifdef WOLF_SYSTEM_SSL
     // try create ssl context
-    auto _ssl = boost::asio::ssl::context(p_socket_options.tls_version);
-    _ssl.use_certificate_chain_file(p_socket_options.certificate_chain_file.string());
-    _ssl.use_private_key_file(p_socket_options.private_key_file.string(),
-                              boost::asio::ssl::context::pem);
-#endif  // WOLF_SYSTEM_SSL
+    //auto _ssl = boost::asio::ssl::context(p_socket_options.tls_version);
+    //_ssl.use_certificate_chain_file(p_socket_options.certificate_chain_file.string());
+    //_ssl.use_private_key_file(p_socket_options.private_key_file.string(),
+    //                          boost::asio::ssl::context::pem);
+#endif // WOLF_SYSTEM_SSL
 
     // server with coroutines
     boost::asio::co_spawn(p_io_context,

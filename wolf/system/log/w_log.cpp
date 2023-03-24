@@ -22,8 +22,7 @@ boost::leaf::result<int> w_log::init() {
     // try to create a directory for it
     const auto _dir_created = std::filesystem::create_directory(_parent_path);
     if (!_dir_created) {
-      return W_FAILURE(std::errc::invalid_argument,
-                   "could not create log directory path");
+      return W_FAILURE(std::errc::invalid_argument, "could not create log directory path");
     }
   }
 
@@ -55,34 +54,36 @@ boost::leaf::result<int> w_log::init() {
 
   if (this->_config.type & w_log_sink::ASYNC_FILE) {
     // async file sink
-    this->_async_file_logger =
-        spdlog::create_async_nb<spdlog::sinks::rotating_file_sink_mt>(
-            _filename, _path, this->_config.max_file_size_in_mb,
-            this->_config.max_files, this->_config.rotate_on_open);
-    // test for memory violation
-    std::ignore = gsl::not_null<spdlog::logger *>(_async_file_logger.get());
+    this->_async_file_logger = spdlog::create_async_nb<spdlog::sinks::rotating_file_sink_mt>(
+        _filename, _path, this->_config.max_file_size_in_mb, this->_config.max_files,
+        this->_config.rotate_on_open);
+    if (this->_async_file_logger == nullptr) {
+      return W_FAILURE(std::errc::invalid_argument,
+                       "could not allocate memory for async file logger");
+    }
 
     this->_async_file_logger->set_level(_level);
     this->_async_file_logger->flush_on(_flush_level);
   } else if (this->_config.type & w_log_sink::ASYNC_DAILY_FILE) {
     // async daily file sink
-    this->_async_file_logger =
-        spdlog::create_async_nb<spdlog::sinks::daily_file_sink_mt>(
-            _filename, _path, this->_config.hour, this->_config.minute,
-            false, // truncate
-            gsl::narrow_cast<uint16_t>(this->_config.max_files));
-    // test for memory violation
-    std::ignore = gsl::not_null<spdlog::logger *>(_async_file_logger.get());
+    this->_async_file_logger = spdlog::create_async_nb<spdlog::sinks::daily_file_sink_mt>(
+        _filename, _path, this->_config.hour, this->_config.minute,
+        false,  // truncate
+        gsl::narrow_cast<uint16_t>(this->_config.max_files));
+    if (this->_async_file_logger == nullptr) {
+      return W_FAILURE(std::errc::invalid_argument,
+                       "could not allocate memory for daily async file logger");
+    }
 
     this->_async_file_logger->set_level(_level);
     this->_async_file_logger->flush_on(_flush_level);
   }
 
   // create logger for other sinks
-  this->_logger =
-      std::make_shared<spdlog::logger>(_filename, _sinks.begin(), _sinks.end());
-  // test for memory violation
-  std::ignore = gsl::not_null<spdlog::logger *>(this->_logger.get());
+  this->_logger = std::make_shared<spdlog::logger>(_filename, _sinks.begin(), _sinks.end());
+  if (this->_logger == nullptr) {
+    return W_FAILURE(std::errc::invalid_argument, "could not create logger");
+  }
 
   this->_logger->set_level(_level);
   this->_logger->flush_on(_flush_level);

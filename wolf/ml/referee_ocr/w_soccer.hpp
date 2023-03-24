@@ -103,7 +103,7 @@ public:
       _Inout_ frame_result_struct &frame_data) -> void;
 
   /*!
-  The function returns the game results, if the image contain the game final
+  The function returns the game results, if the image contains the game final
   result.
 
           \param pRawImage The sequence of the input image pixels array in BGR

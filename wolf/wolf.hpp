@@ -6,7 +6,9 @@
 #pragma once
 
 #ifdef __SANITIZE_ADDRESS__
+#ifndef _DISABLE_VECTOR_ANNOTATION
 #define _DISABLE_VECTOR_ANNOTATION
+#endif
 #endif
 
 #ifdef _MSC_VER
@@ -26,8 +28,7 @@
 #include <memory>
 #include <sstream>
 #include <string>
-
-#include "DISABLE_ANALYSIS_BEGIN"
+#include <optional>
 
 #include <boost/leaf.hpp>
 
@@ -40,12 +41,6 @@
 
 #include <gsl/gsl>
 
-#ifdef WOLF_SYSTEM_MIMALLOC
-
-#include <mimalloc-override.h>
-
-#endif
-
 #ifdef WOLF_SYSTEM_STACKTRACE
 // disable warning 26458
 #ifdef _MSC_VER
@@ -53,7 +48,6 @@
 #endif //_MSC_VER
 #include <boost/stacktrace/stacktrace.hpp>
 #endif
-#include "DISABLE_ANALYSIS_END"
 
 constexpr auto W_MAX_PATH = 260;
 constexpr auto W_MAX_BUFFER_SIZE = 1024;

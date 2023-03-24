@@ -35,19 +35,19 @@ BOOST_AUTO_TEST_CASE(compress_lz4_test) {
         BOOST_LEAF_AUTO(_compress_default, lz4::compress_default(_bytes));
 
         BOOST_LEAF_AUTO(_decompress_default, lz4::decompress(_compress_default, _max_retry));
-        BOOST_REQUIRE_EQUAL(_decompress_default.size(), _bytes_len);
+        BOOST_REQUIRE(_decompress_default.size() == _bytes_len);
 
         constexpr auto _acceleration = 1000;
         BOOST_LEAF_AUTO(_compress_fast, lz4::compress_fast(_bytes, _acceleration));
 
         BOOST_LEAF_AUTO(_decompress_fast, lz4::decompress(_compress_fast, _max_retry));
-        BOOST_REQUIRE_EQUAL(_decompress_fast.size(), _bytes_len);
+        BOOST_REQUIRE(_decompress_fast.size() == _bytes_len);
 
         return {};
       },
       [](const w_trace &p_trace) {
-        const auto _msg = "compress_lz4_test got an error : {}", p_trace);
-        BOOST_ERROR("compress_lz4_test got an error!");
+        const auto _msg = wolf::format("compress_lz4_test got an error : {}", p_trace.to_string());
+        BOOST_ERROR(_msg);
       },
       [] { BOOST_ERROR("compress_lz4_test got an error!"); });
 
@@ -86,8 +86,8 @@ BOOST_AUTO_TEST_CASE(compress_lzma_test) {
         return {};
       },
       [](const w_trace &p_trace) {
-        const auto _msg = wolf::format("compress_lzma_test got an error : {}", p_trace);
-        BOOST_REQUIRE(_msg);
+        const auto _msg = wolf::format("compress_lzma_test got an error : {}", p_trace.to_string());
+        BOOST_ERROR(_msg);
       },
       [] { BOOST_ERROR("compress_lzma_test got an error!"); });
 

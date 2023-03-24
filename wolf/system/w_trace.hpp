@@ -6,6 +6,8 @@
 #pragma once
 
 #include <boost/leaf.hpp>
+#include <gsl/gsl>
+#include <stdint.h>
 #include <deque>
 #include <iostream>
 #include <ostream>
@@ -28,7 +30,7 @@ class w_trace {
     int64_t err_code = 0;
     std::string err_msg;
     std::string source_file;
-    uint32_t source_file_line = 0;
+    int source_file_line = 0;
   } W_ALIGNMENT_128;
 
   w_trace() noexcept = default;
@@ -41,7 +43,7 @@ class w_trace {
   }
 
   w_trace(_In_ int64_t p_err_code, _In_ std::string p_err_msg, _In_ const char *p_source_file,
-          _In_ uint32_t p_source_file_line) noexcept {
+          _In_ int p_source_file_line) noexcept {
     try {
       this->_stacks.emplace_front(stack{std::this_thread::get_id(), p_err_code,
                                         std::move(p_err_msg), p_source_file, p_source_file_line});
@@ -50,7 +52,7 @@ class w_trace {
   }
 
   w_trace(_In_ std::errc p_err_code, _In_ std::string p_err_msg, _In_ const char *p_source_file,
-          _In_ uint32_t p_source_file_line) noexcept {
+          _In_ int p_source_file_line) noexcept {
     try {
       this->_stacks.emplace_front(stack{std::this_thread::get_id(),
                                         gsl::narrow_cast<int64_t>(p_err_code), std::move(p_err_msg),
@@ -60,7 +62,7 @@ class w_trace {
   }
 
   void push(_In_ int64_t p_err_code, _In_ std::string p_err_msg, _In_ const char *p_source_file,
-            _In_ uint32_t p_source_file_line) noexcept {
+            _In_ int p_source_file_line) noexcept {
     try {
       this->_stacks.emplace_front(stack{std::this_thread::get_id(), p_err_code,
                                         std::move(p_err_msg), p_source_file, p_source_file_line});

@@ -2,13 +2,12 @@
 
 #ifdef WOLF_SYSTEM_MIMALLOC
 
-#include <DISABLE_ANALYSIS_BEGIN>
-#include <DISABLE_ANALYSIS_END>
+#include <mimalloc-override.h>
 #include <mimalloc-new-delete.h>
 
 #endif
 
-#if defined(WOLF_SYSTEM_STACKTRACE) && !defined(WOLF_TEST)
+#if defined(WOLF_SYSTEM_STACKTRACE)
 
 #include <csignal>
 #include <filesystem>

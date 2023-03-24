@@ -61,6 +61,7 @@ set(LIBRARY_TYPE "STATIC" CACHE STRING "Library type")
 
 # CMAKE GUI Options
 set(EMSDK "$ENV{EMSDK}" CACHE STRING "Emscripten SDK path")
+set(BOOST_TAG "boost-1.81.0" CACHE STRING "Boost version tag")
 
 # render modules
 option(WOLF_RENDER "Enable cross platform render engine based on Vulkan / OpenGL ES" OFF)
