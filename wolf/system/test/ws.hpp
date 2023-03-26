@@ -13,8 +13,12 @@
 #include <system/socket/w_ws_server.hpp>
 #include <system/w_timer.hpp>
 
+#include <system/socket/w_ws_client_emc.hpp>
+
 BOOST_AUTO_TEST_CASE(ws_server_timeout_test) {
   const wolf::system::w_leak_detector _detector = {};
+
+  wolf::system::socket::w_ws_client_emc a;
 
   std::cout << "entering leaving test case 'ws_server_timeout_test'" << std::endl;
 
@@ -81,7 +85,7 @@ BOOST_AUTO_TEST_CASE(ws_client_timeout_test) {
         _timer.expires_after(std::chrono::nanoseconds(1));
 
         // run a coroutine
-        const auto _ret = co_await (_timer.async_wait(boost::asio::use_awaitable) ||
+        const auto& _ret = co_await (_timer.async_wait(boost::asio::use_awaitable) ||
                                     _client.async_resolve(_endpoint));
         // expect timeout
         BOOST_REQUIRE(_ret.index() == 0);

@@ -70,7 +70,12 @@ struct w_buffer {
     std::copy(p_str.cbegin(), p_str.cbegin() + this->used_bytes, buf.begin());
   }
 
-  std::string to_string() { return std::string(this->buf.data(), this->used_bytes); }
+  std::string to_string() {
+    if (this->buf.size() && this->used_bytes) {
+      return std::string(this->buf.data(), this->used_bytes);
+    }
+    return std::string();
+  }
 
   std::array<char, W_MAX_BUFFER_SIZE> buf = {0};
   size_t used_bytes = 0;
@@ -111,8 +116,13 @@ struct w_buffer {
 #endif
 
 #include <wolf/system/w_trace.hpp>
+#include <ofats/invocable.h>
 
 namespace wolf {
+  template <class T>
+  using w_function = ofats::any_invocable<T>;
+  using w_binary = std::vector<std::byte>;
+
 /**
  * returns wolf version
  * @return string format with the following style

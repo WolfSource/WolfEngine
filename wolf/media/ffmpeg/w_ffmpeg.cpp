@@ -248,12 +248,11 @@ boost::leaf::result<w_decoder> w_ffmpeg::create_decoder(
   return _decoder;
 }
 
-boost::leaf::result<int> w_ffmpeg::open_stream_receiver(
+boost::leaf::result<int> w_ffmpeg::open_stream(
     _In_ const std::string &p_url, _In_ const std::vector<w_av_set_opt> &p_opts,
     _In_ const std::function<bool(const w_av_packet & /*p_packet*/,
-                                  const std::vector<AVStream *> & /*p_streams*/,
-                                  const int /*p_video_stream_index*/,
-                                  const int /*p_audio_stream_index*/)> &p_on_frame) noexcept {
+                                  const AVStream * /*p_audio_stream*/, const AVStream * /*p_video_stream*/)>
+        &p_on_frame) noexcept {
   try {
     // url is invalid
     if (p_url.empty()) {
@@ -308,16 +307,21 @@ boost::leaf::result<int> w_ffmpeg::open_stream_receiver(
     const auto _audio_stream_index =
         av_find_best_stream(_fmt_ctx, AVMEDIA_TYPE_AUDIO, -1, -1, nullptr, 0);
 
-    if (_video_stream_index < 0 && _audio_stream_index < 0) {
+    if (_audio_stream_index < 0 && _video_stream_index < 0) {
       return W_FAILURE(std::errc::operation_canceled,
                        "could not find any video or audio stream from the url: " + p_url);
     }
 
-    std::vector<AVStream *> _streams;
-    _streams.reserve(_fmt_ctx->nb_streams);
-    for (uint32_t i = 0; i < _fmt_ctx->nb_streams; ++i) {
-      _streams.push_back(_fmt_ctx->streams[i]);
+    AVStream * _audio_stream = nullptr;
+    AVStream * _video_stream = nullptr;
+
+    if (_audio_stream_index >= 0){
+      _audio_stream = _fmt_ctx->streams[_audio_stream_index];
     }
+    if (_video_stream_index >= 0) {
+      _video_stream = _fmt_ctx->streams[_video_stream_index];
+    }
+
 
     for (;;) {
       // unref packet
@@ -328,10 +332,8 @@ boost::leaf::result<int> w_ffmpeg::open_stream_receiver(
         break;
       }
 
-      if (p_on_frame) {
-        if (!p_on_frame(_packet, _streams, _video_stream_index, _audio_stream_index)) {
-          break;
-        }
+      if (p_on_frame && !p_on_frame(_packet, _audio_stream, _video_stream)) {
+        break;
       }
     }
     return 0;

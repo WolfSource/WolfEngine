@@ -1,98 +1,84 @@
-#if defined(WOLF_SYSTEM_HTTP1_WS) && defined(EMSCRIPTEN)
+#if defined(WOLF_SYSTEM_HTTP1_WS)// && defined(EMSCRIPTEN)
 
 #include "w_ws_client_emc.hpp"
+//#include <emscripten/emscripten.h>
+
+extern "C" {
+extern int wsCreateWebSocket(const char *url);
+extern void wsDeleteWebSocket(int ws);
+extern void wsSetOpenCallback(int ws, void (*openCallback)(void *));
+extern void wsSetErrorCallback(int ws, void (*errorCallback)(const char *, void *));
+extern void wsSetMessageCallback(int ws, void (*messageCallback)(const char *, int, void *));
+extern int wsSendMessage(int ws, const char *buffer, int size);
+extern void wsSetUserPointer(int ws, void *ptr);
+}
 
 using w_ws_client_emc = wolf::system::socket::w_ws_client_emc;
 
-static std::string s_emc_result_to_string(_In_ EMSCRIPTEN_RESULT p_emc_result) {
-  switch (p_emc_result) {
-  default:
-    return "undefined EMSCRIPTEN_RESULT";
-  case EMSCRIPTEN_RESULT_SUCCESS:
-    return "EMSCRIPTEN_RESULT_SUCCESS";
-  case EMSCRIPTEN_RESULT_DEFERRED:
-    return "EMSCRIPTEN_RESULT_DEFERRED";
-  case EMSCRIPTEN_RESULT_NOT_SUPPORTED:
-    return "EMSCRIPTEN_RESULT_NOT_SUPPORTED";
-  case EMSCRIPTEN_RESULT_FAILED_NOT_DEFERRED:
-    return "EMSCRIPTEN_RESULT_FAILED_NOT_DEFERRED";
-  case EMSCRIPTEN_RESULT_INVALID_TARGET:
-    return "EMSCRIPTEN_RESULT_INVALID_TARGET";
-  case EMSCRIPTEN_RESULT_UNKNOWN_TARGET:
-    return "EMSCRIPTEN_RESULT_UNKNOWN_TARGET";
-  case EMSCRIPTEN_RESULT_INVALID_PARAM:
-    return "EMSCRIPTEN_RESULT_INVALID_PARAM";
-  case EMSCRIPTEN_RESULT_FAILED:
-    return "EMSCRIPTEN_RESULT_FAILED";
-  case EMSCRIPTEN_RESULT_NO_DATA:
-    return "EMSCRIPTEN_RESULT_NO_DATA";
-  case EMSCRIPTEN_RESULT_TIMED_OUT:
-    return "EMSCRIPTEN_RESULT_TIMED_OUT";
+void w_ws_client_emc::s_on_open_callback(_In_ void *p_ptr) noexcept {
+  const auto _ws = gsl::narrow_cast<w_ws_client_emc *>(p_ptr);
+  if (_ws) {
+    _ws->_connected = true;
+    _ws->_on_open_handler();
   }
 }
 
-boost::leaf::result<int> w_ws_client_emc::init(
-    _In_ EmscriptenWebSocketCreateAttributes &p_create_attribute) noexcept {
-  if (emscripten_websocket_is_supported() < 1) {
-    return W_FAILURE(std::errc::not_supported,
-                     "emscripten websocket is not supported");
+void w_ws_client_emc::s_on_error_callback(_In_ const char *p_error, _In_ void *p_ptr) noexcept {
+  const auto _ws = gsl::narrow_cast<w_ws_client_emc *>(p_ptr) ;
+  if (_ws) {
+    auto _error_msg = std::string(p_error ? p_error : "unknown");
+    _ws->_on_error_handler(std::move(_error_msg));
+  }
+}
+
+void w_ws_client_emc::s_on_message_callback(_In_ const char *p_data, _In_ int p_size,
+                                            _In_ void *p_ptr) noexcept {
+  const auto _ws = gsl::narrow_cast<w_ws_client_emc *>(p_ptr);
+  if (_ws == nullptr) {
+    return;
   }
 
-  this->_ws = emscripten_websocket_new(&p_create_attribute);
-  if (this->_ws == 0) {
-    return W_FAILURE(std::errc::operation_canceled,
-                     "could not create emscripten websocket");
+  if (p_data) {
+    if (p_size >= 0) {
+      auto _bytes = reinterpret_cast<const std::byte *>(p_data);
+      _ws->triggerMessage(w_binary(_bytes, _bytes + p_size));
+    } else {
+      _ws->triggerMessage(std::string(p_data));
+    }
+  } else {
+    _ws->_on_close_handler();
+    _ws->close();
   }
-  if (this->_ws < 0) {
-    return W_FAILURE(std::errc::operation_canceled,
-                     "could not create emscripten websocket because: " +
-                         s_emc_result_to_string(
-                             gsl::narrow_cast<EMSCRIPTEN_RESULT>(this->_ws)));
+}
+
+boost::leaf::result<int> w_ws_client_emc::open(
+    _In_ const std::string &p_url, _In_ wolf::w_function<void(void) noexcept> &&p_on_open_handler,
+    _In_ wolf::w_function<void(void) noexcept> &&p_on_message_handler,
+    _In_ wolf::w_function<void(std::string) noexcept> &&p_on_error_handler,
+    _In_ wolf::w_function<void(void) noexcept> &&p_on_close_handler) noexcept {
+  if (p_url.empty()) {
+    return W_FAILURE(std::errc::invalid_argument, "missing websocket url endpoint");
   }
+
+  // close current websocket
+  close();
+
+  this->_on_open_handler = std::move(p_on_open_handler);
+  // this->_on_message_handler = std::move(p_on_message_handler);
+  this->_on_error_handler = std::move(p_on_error_handler);
+  // this->_on_close_handler = std::move(p_on_close_handler);
+
+  this->_id = wsCreateWebSocket(p_url.c_str());
+  if (this->_id <= 0) {
+    return W_FAILURE(std::errc::operation_canceled, "websocket is not supported");
+  }
+
+  wsSetUserPointer(this->_id, this);
+  wsSetOpenCallback(this->_id, s_on_open_callback);
+  wsSetErrorCallback(this->_id, s_on_error_callback);
+  wsSetMessageCallback(this->_id, s_on_message_callback);
 
   return 0;
 }
-
-w_ws_client_emc::~w_ws_client_emc() noexcept {
-  if (this->_ws > 0) {
-    close();
-    emscripten_websocket_delete(this->_ws);
-    this->_ws = -1;
-  }
-}
-
-void w_ws_client_emc::set_onopen_callback(_In_ em_websocket_open_callback_func
-                                              p_callback,
-                                          _In_ void *p_user_data) noexcept {
-  this->_is_open = true;
-  emscripten_websocket_set_onopen_callback(this->_ws, p_user_data, p_callback);
-}
-
-void w_ws_client_emc::set_onerror_callback(_In_ em_websocket_error_callback_func
-                                               p_callback,
-                                           _In_ void *p_user_data) noexcept {
-  emscripten_websocket_set_onerror_callback(this->_ws, p_user_data, p_callback);
-}
-
-void w_ws_client_emc::set_onmessage_callback(
-    _In_ em_websocket_message_callback_func p_callback,
-    _In_ void *p_user_data) noexcept {
-  emscripten_websocket_set_onmessage_callback(this->_ws, p_user_data,
-                                              p_callback);
-}
-
-void w_ws_client_emc::set_onclose_callback(_In_ em_websocket_close_callback_func
-                                               p_callback,
-                                           _In_ void *p_user_data) noexcept {
-  this->_is_open = false;
-  emscripten_websocket_set_onclose_callback(this->_ws, p_user_data, p_callback);
-}
-
-void w_ws_client_emc::close(_In_ uint16_t p_code,
-                            _In_ const std::string &p_reason) noexcept {
-  emscripten_websocket_close(this->_ws, p_code, p_reason.data());
-}
-
-bool w_ws_client_emc::is_open() const noexcept { return this->_is_open; }
 
 #endif // defined(WOLF_SYSTEM_HTTP1_WS) && defined(EMSCRIPTEN)

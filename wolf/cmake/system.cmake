@@ -12,6 +12,19 @@ list(APPEND INCLUDES
     ${gsl_SOURCE_DIR}/include
 )
 
+# fetch any_invocable
+message("fetching https://github.com/ofats/any_invocable.git")
+FetchContent_Declare(
+  any_invocable
+  GIT_REPOSITORY https://github.com/ofats/any_invocable.git
+  GIT_TAG        master
+)
+FetchContent_Populate(any_invocable)
+
+list(APPEND INCLUDES
+    ${any_invocable_SOURCE_DIR}/include
+)
+
 if (NOT CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     # don't 'fetch fmt for visual c++
     message("fetching https://github.com/fmtlib/fmt.git")

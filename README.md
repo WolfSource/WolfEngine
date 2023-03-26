@@ -11,12 +11,13 @@ The Wolf is a comprehensive set of C++ open source libraries for realtime render
 - Prerequisites 
       - For windows, make sure install the latest Windows 11/10 SDK
 	- [git](https://git-scm.com/downloads)
+	- [Python3](https://www.python.org/downloads/) for embedded scripting language and running WASM demos
 	- [CMake](https://cmake.org/download/)
 	- [Meson](https://github.com/mesonbuild/meson/releases)
 	- [Ninja](https://ninja-build.org/). Alternatively, setup [Python3](https://www.python.org/downloads/) and use "pip3 install ninja"
-	- [Nasm](https://nasm.us/) for fiber & boringSSL
-	- [Perl](https://www.perl.org/get.html) for boringSSL. [Strawberry Perl](https://strawberryperl.com/) is recommended for Windows.
-	- [Go](https://go.dev/dl/) for boringSSL
+	- [Nasm](https://nasm.us/) for building boringSSL
+	- [Perl](https://www.perl.org/get.html) for building boringSSL. [Strawberry Perl](https://strawberryperl.com/) is recommended for Windows.
+	- [Go](https://go.dev/dl/) for building boringSSL
 	- [QT6](https://www.qt.io/download) for wolf render, demos and examples
 	- [NDK](https://developer.android.com/ndk/downloads) for android.
 	
