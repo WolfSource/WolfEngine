@@ -39,8 +39,8 @@ private:
   w_encoder &operator=(const w_encoder &) = delete;
 
   boost::leaf::result<int>
-  _encode(_In_ const AVFrame *p_frame,
-          _Inout_ std::vector<uint8_t> &p_packet_data) noexcept;
+  _encode_frame_to_packet(_In_ const AVFrame *p_frame,
+          _Inout_ std::vector<uint8_t> &p_packet_data) const noexcept;
 };
 } // namespace wolf::media::ffmpeg
 

@@ -9,53 +9,42 @@
 
 #include <wolf/wolf.hpp>
 
-#include <DISABLE_ANALYSIS_BEGIN>
 extern "C" {
 #include <libavformat/avformat.h>
 }
-#include <DISABLE_ANALYSIS_END>
 
 namespace wolf::media::ffmpeg {
-
 class w_av_format {
-public:
-  /**
-   * constructor the av_frame with specific config
-   * @param p_config, the av frame config
-   */
+ public:
+#pragma region Constructors /Destructor
   W_API w_av_format() noexcept;
-
+  W_API ~w_av_format() noexcept { _release(); };
   // move constructor.
-  W_API w_av_format(w_av_format &&p_other) noexcept;
+  W_API w_av_format(w_av_format &&p_other) noexcept = default;
   // move assignment operator.
-  W_API w_av_format &operator=(w_av_format &&p_other) noexcept;
-
-  // destructor
-  W_API virtual ~w_av_format() noexcept;
+  W_API w_av_format &operator=(w_av_format &&p_other) noexcept = default;
+#pragma endregion
 
   boost::leaf::result<int> init(_In_ int p_stream_buf_size = 32'767) noexcept;
 
-  uint8_t *get_io_ctx_buffer() const { return this->_io_ctx->buffer; }
-  int get_io_ctx_size() const { return this->_io_ctx->buffer_size; }
+  uint8_t *get_io_ctx_buffer() const;
+  int get_io_ctx_size() const;
 
-  std::function<int(_Inout_ uint8_t * /*p_buf*/, _In_ int /*p_buf_size*/)>
-      on_read_callback;
+  std::function<int(_Inout_ uint8_t * /*p_buf*/, _In_ int /*p_buf_size*/)> on_read_callback;
 
-private:
+ private:
   // copy constructor.
   w_av_format(const w_av_format &) = delete;
   // copy assignment operator.
   w_av_format &operator=(const w_av_format &) = delete;
 
-  // move implementation
-  void _move(w_av_format &&p_other) noexcept;
   // release
   void _release() noexcept;
 
-  uint8_t *_stream_buffer = nullptr;
-  AVFormatContext *_fmt_ctx = nullptr;
-  AVIOContext *_io_ctx = nullptr;
+  std::unique_ptr<uint8_t[]> _stream_buffer = nullptr;
+  std::unique_ptr<AVFormatContext> _fmt_ctx = nullptr;
+  std::unique_ptr<AVIOContext> _io_ctx = nullptr;
 };
-} // namespace wolf::media::ffmpeg
+}  // namespace wolf::media::ffmpeg
 
 #endif // WOLF_MEDIA_FFMPEG

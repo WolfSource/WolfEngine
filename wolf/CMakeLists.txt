@@ -61,6 +61,7 @@ set(LIBRARY_TYPE "STATIC" CACHE STRING "Library type")
 
 # CMAKE GUI Options
 set(EMSDK "$ENV{EMSDK}" CACHE STRING "Emscripten SDK path")
+set(BOOST_TAG "boost-1.81.0" CACHE STRING "Boost version tag")
 
 # render modules
 option(WOLF_RENDER "Enable cross platform render engine based on Vulkan / OpenGL ES" OFF)
@@ -94,7 +95,7 @@ option(WOLF_SYSTEM_STACKTRACE "Enable boost stacktrace" OFF)
 option(WOLF_SYSTEM_POSTGRESQL "Enable postgresql database client" OFF)
 
 # machine learing modules
-option(WOLF_ML_OCR "Enable machine learning referee ocr" ON)
+option(WOLF_ML_OCR "Enable machine learning referee ocr" OFF)
 option(WOLF_ML_NUDITY_DETECTION "Enable machine learning nudity detection" OFF)
 
 #option(WOLF_ENABLE_LTO "Enable cross language linking time optimization" OFF)
@@ -184,12 +185,12 @@ endif()
 # https://devblogs.microsoft.com/cppblog/visual-studio-code-c-december-2021-update-clang-tidy/
 # can be enabled with .CLANG-TIDY from Visual Studio
 # https://devblogs.microsoft.com/cppblog/code-analysis-with-clang-tidy-in-visual-studio/
-set(CMAKE_C_CLANG_TIDY
-     clang-tidy;
-     -format-style=file;) 
-set(CMAKE_CXX_CLANG_TIDY
-     clang-tidy;
-     -format-style=file;)  
+#set(CMAKE_C_CLANG_TIDY
+#     clang-tidy;
+#     -format-style=file;) 
+#set(CMAKE_CXX_CLANG_TIDY
+#     clang-tidy;
+#     -format-style=file;)  
 
 # add definitions
 
