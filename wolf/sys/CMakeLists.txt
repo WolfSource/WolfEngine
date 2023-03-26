@@ -59,9 +59,9 @@ endif()
 
 find_package(Threads REQUIRED)
 
-if(NOT CMAKE_BUILD_TYPE)
-  set(CMAKE_BUILD_TYPE Debug)
-endif()
+# if(NOT CMAKE_BUILD_TYPE)
+#   set(CMAKE_BUILD_TYPE Debug)
+# endif()
 
 # include sources
 file(GLOB_RECURSE CMAKE_SRCS

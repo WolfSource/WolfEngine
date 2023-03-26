@@ -1,4 +1,5 @@
 #![allow(unused_assignments)]
+use super::callback::{OnCloseSocketCallback, OnMessageCallback, OnSocketCallback};
 use crate::{
     error::WError,
     system::{
@@ -8,8 +9,6 @@ use crate::{
 };
 use std::{net::SocketAddr, str::FromStr};
 use tokio::{net::UdpSocket, time::Instant};
-
-use super::callback::{OnCloseSocketCallback, OnMessageCallback, OnSocketCallback};
 
 #[repr(C)]
 #[derive(Debug)]
@@ -154,7 +153,7 @@ impl UdpClient {
                 {
                     res1
                 },
-                res2 = async { p_socket.recv_from(p_buffer).await } =>
+                res2 = p_socket.recv_from(p_buffer) =>
                 {
                     res2
                 },
@@ -179,7 +178,7 @@ impl UdpClient {
                 {
                     res1
                 },
-                res2 = async { p_socket.send_to(p_buffer, peer_addr).await } =>
+                res2 = p_socket.send_to(p_buffer, peer_addr) =>
                 {
                     res2
                 },

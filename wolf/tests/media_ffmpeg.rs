@@ -244,41 +244,41 @@ fn test_vp9_encode_decode() {
     );
 }
 
-//cargo test test_h265_encode_decode --release -- --exact --nocapture
-#[cfg(feature = "media_ffmpeg")]
-#[test]
-fn test_h265_encode_decode() {
-    use std::time::Instant;
-    use wolf::media::bindgen::ffmpeg::AVCodecID;
+// //cargo test test_h265_encode_decode --release -- --exact --nocapture
+// #[cfg(feature = "media_ffmpeg")]
+// #[test]
+// fn test_h265_encode_decode() {
+//     use std::time::Instant;
+//     use wolf::media::bindgen::ffmpeg::AVCodecID;
 
-    let encoder_decoder_codec_id = AVCodecID::AV_CODEC_ID_HEVC;
-    let encoder_decoder_codec_id_str = "";
+//     let encoder_decoder_codec_id = AVCodecID::AV_CODEC_ID_HEVC;
+//     let encoder_decoder_codec_id_str = "";
 
-    let mut t0 = Instant::now();
-    let (packet, img_size) = encode(encoder_decoder_codec_id, encoder_decoder_codec_id_str, &[]);
-    let mut t1 = Instant::now();
+//     let mut t0 = Instant::now();
+//     let (packet, img_size) = encode(encoder_decoder_codec_id, encoder_decoder_codec_id_str, &[]);
+//     let mut t1 = Instant::now();
 
-    println!(
-        "Codec ID:{:?} Encoded packet:{:?} Encode Time:{:?} ms",
-        encoder_decoder_codec_id,
-        packet.size(),
-        (t1 - t0).as_millis()
-    );
+//     println!(
+//         "Codec ID:{:?} Encoded packet:{:?} Encode Time:{:?} ms",
+//         encoder_decoder_codec_id,
+//         packet.size(),
+//         (t1 - t0).as_millis()
+//     );
 
-    t0 = Instant::now();
-    decode(
-        &packet,
-        encoder_decoder_codec_id,
-        encoder_decoder_codec_id_str,
-        img_size,
-    );
-    t1 = Instant::now();
-    println!(
-        "Codec ID:{:?} Decode Time:{:?} ms",
-        encoder_decoder_codec_id,
-        (t1 - t0).as_millis()
-    );
-}
+//     t0 = Instant::now();
+//     decode(
+//         &packet,
+//         encoder_decoder_codec_id,
+//         encoder_decoder_codec_id_str,
+//         img_size,
+//     );
+//     t1 = Instant::now();
+//     println!(
+//         "Codec ID:{:?} Decode Time:{:?} ms",
+//         encoder_decoder_codec_id,
+//         (t1 - t0).as_millis()
+//     );
+// }
 
 //cargo test test_h264_encode_decode --release -- --exact --nocapture
 #[cfg(feature = "media_ffmpeg")]
@@ -314,4 +314,52 @@ fn test_h264_encode_decode() {
         encoder_decoder_codec_id,
         (t1 - t0).as_millis()
     );
+}
+
+#[cfg(feature = "media_ffmpeg")]
+#[test]
+fn test_av_frame_convert() -> Result<(), wolf::error::WError> {
+    use image::GenericImageView;
+    use wolf::error::WError;
+    use wolf::media::ffmpeg::av_config::AvConfig;
+    use wolf::media::{bindgen::ffmpeg::AVPixelFormat, ffmpeg::av_frame::AvFrame};
+
+    let mut current_dir = std::env::current_dir().unwrap();
+    if current_dir.ends_with("wolf") {
+        current_dir = current_dir.join("..");
+    }
+    let file_path = current_dir.join("content/texture/rgb.png");
+
+    let img = image::open(file_path).unwrap();
+    let img_size = img.dimensions();
+    let pixels = img.as_rgba8().unwrap().to_vec();
+
+    // create a source frame from image
+    let src_config =
+        AvConfig::new_video(AVPixelFormat::AV_PIX_FMT_RGBA, img_size.0, img_size.1, 1)?;
+    let src_frame = AvFrame::new(src_config, Vec::new(), pixels)?;
+
+    // convert to bgra
+    let dst_config =
+        AvConfig::new_video(AVPixelFormat::AV_PIX_FMT_BGRA, img_size.0, img_size.1, 1)?;
+    let dst_frame = src_frame.convert_video(&dst_config)?;
+
+    let out_path = current_dir.join("sample_bgra.png");
+    let dst_pixels = dst_frame.get_video_data_ptr(0)?;
+
+    let width = u32::try_from(dst_config.width).map_err(|_| WError::IntCastError)?;
+    let height = u32::try_from(dst_config.height).map_err(|_| WError::IntCastError)?;
+
+    let image_res = image::save_buffer_with_format(
+        out_path,
+        dst_pixels,
+        width,
+        height,
+        image::ColorType::Rgba8,
+        image::ImageFormat::Png,
+    );
+    if image_res.is_err() {
+        return Err(WError::InvalidParameter);
+    }
+    Ok(())
 }

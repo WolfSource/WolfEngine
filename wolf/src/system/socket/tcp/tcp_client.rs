@@ -230,7 +230,7 @@ impl TcpClient {
         if p_timeout_in_secs > 0.0 {
             tokio::select! {
                 res1 = timeout_for_connect(p_timeout_in_secs) => res1,
-                res2 = async {tokio::net::TcpStream::connect(p_socket_addr).await} => res2,
+                res2 = tokio::net::TcpStream::connect(p_socket_addr) => res2,
             }
         } else {
             tokio::net::TcpStream::connect(p_socket_addr).await
@@ -277,10 +277,8 @@ impl TcpClient {
         if p_timeout_in_secs > 0.0 {
             tokio::select! {
                 res1 = timeout_for_read_write(p_timeout_in_secs) => res1,
-                res2 = async {
-                    p_writer
-                    .write(&p_msg_buffer.buf[0..p_msg_buffer.size])
-                    .await} => res2,
+                res2 = p_writer
+                    .write(&p_msg_buffer.buf[0..p_msg_buffer.size]) => res2,
             }
         } else {
             p_writer
@@ -300,10 +298,8 @@ impl TcpClient {
         if p_timeout_in_secs > 0.0 {
             tokio::select! {
                 res1 = timeout_for_read_write(p_timeout_in_secs) => res1,
-                res2 = async {
-                    p_reader
-                    .read(p_msg_buffer)
-                    .await} => res2,
+                res2 = p_reader
+                    .read(p_msg_buffer) => res2,
             }
         } else {
             p_reader.read(p_msg_buffer).await

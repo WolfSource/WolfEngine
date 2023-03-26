@@ -17,6 +17,12 @@ pub enum WError {
     #[error("invalid AVCodec")]
     MediaCodecNotFound,
     #[cfg(feature = "media_ffmpeg")]
+    #[error("invalid media URL")]
+    MediaUrlInvalid,
+    #[cfg(feature = "media_ffmpeg")]
+    #[error("media does not have stream info")]
+    MediaStreamInfoNotFound,
+    #[cfg(feature = "media_ffmpeg")]
     #[error("invalid video frame size")]
     MediaInvalidVideoFrameSize,
     #[cfg(feature = "media_ffmpeg")]
@@ -55,6 +61,9 @@ pub enum WError {
     #[cfg(feature = "media_ffmpeg")]
     #[error("ffmpeg was failed to open AvCodec")]
     MediaAvCodecOpenFailed,
+    #[cfg(feature = "media_ffmpeg")]
+    #[error("ffmpeg could not allocate memory for AvFormatContext")]
+    MediaAvFormatContextAllocFailed,
     #[cfg(any(
         feature = "system_socket_client",
         feature = "system_socket_server",
@@ -119,6 +128,36 @@ pub enum WError {
     #[cfg(any(feature = "system_socket_client", feature = "system_socket_server"))]
     #[error("could not convert from UTF8")]
     SystemSocketUtf8Error,
+    #[cfg(feature = "system_lz4")]
+    #[error("invalid source size")]
+    SystemLZ4InvalidSourceSize,
+    #[cfg(feature = "system_lz4")]
+    #[error("invalid destination size")]
+    SystemLZ4InvalidDestinationSize,
+    #[cfg(feature = "stream_grpc")]
+    #[error("TLS certificate file was not found for Grpc")]
+    StreamGrpcTlsCrtNotFound,
+    #[cfg(feature = "stream_grpc")]
+    #[error("TLS key file was not found for Grpc")]
+    StreamGrpcTlsKeyNotFound,
+    #[cfg(feature = "stream_grpc")]
+    #[error("Address parser failed")]
+    StreamGrpcAddrressParseFailed,
+    #[cfg(feature = "stream_grpc")]
+    #[error("Grpc Server could not build")]
+    StreamGrpcServerBuildFailed,
+    #[cfg(feature = "stream_grpc")]
+    #[error("Invalid Grpc endpoint")]
+    StreamGrpcServerInvalidUri,
+    #[cfg(feature = "stream_grpc")]
+    #[error("Grpc endpoint with invalid TLS config")]
+    StreamGrpcInvalidTlsConfig,
+    #[cfg(feature = "stream_grpc")]
+    #[error("Grpc endpoint missing TLS config")]
+    StreamGrpcMissingTlsConfig,
+    #[cfg(feature = "stream_grpc")]
+    #[error("Grpc endpoint could not create a channel")]
+    StreamGrpcChannelError,
     #[error("unknown error")]
     Unknown,
 }

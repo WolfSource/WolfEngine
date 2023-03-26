@@ -57,7 +57,7 @@ fn main() {
     // get current build profile
     let profile_str = std::env::var("PROFILE").expect("could not get PROFILE");
     let build_profile = match &opt_level_str[..] {
-        "0" => "Debug",
+        "0" => "RelWithDebInfo", //"Debug",
         "1" | "2" | "3" => {
             if profile_str == "debug" {
                 "RelWithDebInfo"
@@ -68,7 +68,7 @@ fn main() {
         "s" | "z" => "MinSizeRel",
         _ => {
             if profile_str == "debug" {
-                "Debug"
+                "RelWithDebInfo" //Debug"
             } else {
                 "Release"
             }
@@ -189,7 +189,12 @@ pub fn cmake(p_current_dir_path_str: &Path, p_build_profile: &str, p_target_os: 
     // build cmake
     out = Command::new("cmake")
         .current_dir(&cmake_build_path)
-        .args(["--build", ".", "--parallel 8"])
+        .args([
+            "--build",
+            ".",
+            "--parallel 8",
+            &format!("--config {p_build_profile}"),
+        ])
         .output()
         .expect("could not build cmake of wolf/sys");
 
@@ -315,9 +320,6 @@ fn link(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &str) 
         format!("lz4_static-build/{p_build_profile}"),
         "lz4".to_owned(),
     ));
-
-    // #[cfg(feature = "system_lz4")]
-    // libs.push((format!("lz4-build/{p_build_profile}"), "lzma".to_owned()));
 
     #[cfg(feature = "media_openal")]
     {

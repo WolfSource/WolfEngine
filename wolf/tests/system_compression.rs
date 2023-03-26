@@ -19,13 +19,13 @@ fn test_lz4() {
         }
 
         let mut compress_buffer = Vec::new();
-        let mut ret = lz4::compress(
+        lz4::compress(
             &mut compress_buffer,
             mock_compression_data.as_bytes(),
             mode,
             5,
-        );
-        assert!(ret.is_ok(), "lz4 compress failed");
+        )
+        .unwrap();
         println!(
             "compressd buffer is {:?} with size of {} bytes and mode: {:?}",
             compress_buffer,
@@ -34,8 +34,7 @@ fn test_lz4() {
         );
 
         let mut decompress_buffer = Vec::new();
-        ret = lz4::de_compress(&mut decompress_buffer, compress_buffer.as_slice());
-        assert!(ret.is_ok(), "lz4 compress failed");
+        lz4::de_compress(&mut decompress_buffer, compress_buffer.as_slice()).unwrap();
         println!(
             "decompressd buffer is {:?} with size of {} bytes",
             std::str::from_utf8(decompress_buffer.as_slice()),

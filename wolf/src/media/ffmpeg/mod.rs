@@ -1,4 +1,5 @@
 pub mod av_config;
+pub mod av_format_ctx;
 pub mod av_frame;
 pub mod av_packet;
 #[cfg(feature = "ffi")]

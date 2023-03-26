@@ -73,7 +73,6 @@ codegen-units = 1
 # control-flow-guard
 debug = true
 debug-assertions = true
-# debuginfo
 # default-linker-libraries
 # embed-bitcode
 # extra-filename
@@ -89,7 +88,7 @@ incremental = true
 # linker-flavor
 # linker-plugin-lto
 # llvm-args
-lto = true
+# lto = true
 # metadata
 # no-prepopulate-passes
 # no-redzone

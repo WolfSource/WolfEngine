@@ -2,8 +2,12 @@
 // #![allow(non_camel_case_types)]
 // #![allow(non_snake_case)]
 
-pub mod http;
-#[cfg(feature = "stream_quic")]
+#[cfg(all(
+    feature = "stream_grpc",
+    not(any(target_os = "android", target_os = "ios", target_arch = "wasm32"))
+))]
+pub mod grpc;
+#[cfg(all(feature = "stream_quic", not(target_arch = "wasm32")))]
 pub mod quic;
 pub mod webrtc;
 // #[cfg(feature = "stream_rist")]

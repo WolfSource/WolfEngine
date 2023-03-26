@@ -10,6 +10,7 @@ repository = "https://github.com/WolfEngine/WolfEngine/"
 version = "3.0.3"
 
 [lib]
+doctest = false
 crate-type = ["rlib", "cdylib"]
 name = "wolf"
 path = "src/lib.rs"
@@ -91,30 +92,19 @@ all = [
     "system_socket_client",
     "system_socket_server",
     "media_ffmpeg",
-    #"stream_grpc",
-    #"stream_janus",
-    #"system_gamepad_virtual",
-    #"system_lz4",
+    "stream_grpc",
+    "stream_janus",
+    "system_gamepad_virtual",
+    "system_lz4",
     #"system_lzma",
     #"system_raft",
 #     "media_openal",
 #     "render",
 #     "stream_rist",
-#     "stream_socket_client",
-#     "stream_socket_server",
 #     "system_fiber",
 #     "system_screen_capture",
 ]
-# github_action = [
-#     "render",
-#     "stream_socket_client",
-#     "stream_socket_server",
-#     "system_fiber",
-#     "system_gamepad_virtual",
-#     "system_lz4",
-#     "system_lzma",
-#     "system_screen_capture",
-# ]
+
 default = ["all"]
 ffi = []
 media_ffmpeg = [] # enable ffmpeg
@@ -123,8 +113,7 @@ media_ffmpeg = [] # enable ffmpeg
 stream_grpc = ["tonic", "prost"] # enable gRPC (http2/1.1) for stream module
 stream_janus = []
 stream_quic = ["mio", "quiche"] # enable QUIC protocol for stream module 
-
-# stream_rist = [] # enable RIST streaming protocol for stream module
+stream_rist = [] # enable RIST streaming protocol for stream module
 # stream_socket_client = ["tokio-tungstenite"] # enable tcp/udp/ws server for stream module
 # stream_socket_server = ["tokio-tungstenite"] # enable tcp/udp/ws client for stream module
 # system_fiber = ["may"] # enable fiber

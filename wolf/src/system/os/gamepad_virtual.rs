@@ -1,4 +1,4 @@
-use crate::system::ffi::vigem_client::{
+use crate::system::bindgen::vigem_client::{
     vigem_target_add, vigem_target_free, vigem_target_remove, vigem_target_x360_alloc,
     vigem_target_x360_update, PVIGEM_CLIENT, PVIGEM_TARGET, VIGEM_ERROR, XUSB_REPORT,
 };

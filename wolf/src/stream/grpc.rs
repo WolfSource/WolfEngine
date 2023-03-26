@@ -1,30 +1,7 @@
-use std::{
-    net::AddrParseError,
-    path::{Path, PathBuf},
-};
+use crate::error::WError;
+use std::path::Path;
 use tonic::transport::{Certificate, Channel, ClientTlsConfig, Endpoint};
 
-#[derive(Debug, thiserror::Error)]
-pub enum GrpcError {
-    #[error("TLS cert not found: `{0}`")]
-    TlsCrtNotFound(PathBuf),
-    #[error("TLS key not found: `{0}`")]
-    TlsKeyNotFound(PathBuf),
-    #[error("Address parse error: `{0}`")]
-    AddrParse(AddrParseError),
-    #[error("Server could not build because: `{0}`")]
-    ServerBuildFailed(tonic::transport::Error),
-    #[error("Grpc endpoint `{0}` is invalid because `{1}`")]
-    InvalidUri(String, tonic::codegen::http::uri::InvalidUri),
-    #[error("Grpc endpoint `{0}` had an invalid TLS config `{1}`")]
-    InvalidClientTlsConfig(String, tonic::transport::Error),
-    #[error("Grpc endpoint `{0}` missing Tls file `{1}`")]
-    InvalidTlsCert(String, std::io::Error),
-    #[error("Grpc endpoint `{0}` could not create a channel because of `{1}`")]
-    ChannelError(String, tonic::transport::Error),
-}
-
-#[cfg(not(any(target_os = "android", target_os = "ios", target_arch = "wasm32")))]
 #[derive(Debug)]
 pub struct GrpcServerConfig<'a> {
     pub address: &'a str,
@@ -39,15 +16,14 @@ pub struct GrpcServerConfig<'a> {
     pub accept_http1: bool,
 }
 
-#[cfg(not(any(target_os = "android", target_os = "ios", target_arch = "wasm32")))]
 /// # Errors
 ///
-/// returns `GrpcError` on error
+/// returns `WError` on error
 pub async fn run_server<S, F>(
     p_config: &GrpcServerConfig<'_>,
     p_service: S,
     p_shutdown_signal: F,
-) -> Result<(), GrpcError>
+) -> Result<(), WError>
 where
     S: tonic::codegen::Service<
             hyper::Request<hyper::Body>,
@@ -62,7 +38,7 @@ where
 {
     let addr = format!("{}:{}", p_config.address, p_config.port)
         .parse()
-        .map_err(GrpcError::AddrParse)?;
+        .map_err(|_e| WError::StreamGrpcAddrressParseFailed)?;
 
     let mut builder = tonic::transport::Server::builder()
         .tcp_nodelay(p_config.tcp_no_delay)
@@ -75,51 +51,51 @@ where
         use tonic::transport::Identity;
         use tonic::transport::ServerTlsConfig;
 
-        let p = Path::new("");
+        let default_path = Path::new("");
         //load certificate and private key for tls
-        let cert_path = p_config.tls_certificate_path.unwrap_or(p);
-        let key_path = p_config.tls_private_key_path.unwrap_or(p);
+        let cert_path = p_config.tls_certificate_path.unwrap_or(default_path);
+        let key_path = p_config.tls_private_key_path.unwrap_or(default_path);
 
         if !cert_path.exists() {
-            return Err(GrpcError::TlsCrtNotFound(cert_path.to_path_buf()));
+            return Err(WError::StreamGrpcTlsCrtNotFound);
         }
         if !key_path.exists() {
-            return Err(GrpcError::TlsKeyNotFound(key_path.to_path_buf()));
+            return Err(WError::StreamGrpcTlsKeyNotFound);
         }
 
         //load certificates
         let cert = tokio::fs::read(cert_path)
             .await
-            .map_err(|_| GrpcError::TlsCrtNotFound(cert_path.to_path_buf()))?;
+            .map_err(|_e| WError::StreamGrpcTlsCrtNotFound)?;
 
         let key = tokio::fs::read(key_path)
             .await
-            .map_err(|_| GrpcError::TlsCrtNotFound(key_path.to_path_buf()))?;
+            .map_err(|_e| WError::StreamGrpcTlsCrtNotFound)?;
 
         let identity = Identity::from_pem(cert, key);
         let server_tls_config = ServerTlsConfig::new().identity(identity);
 
         builder = builder
             .tls_config(server_tls_config)
-            .map_err(GrpcError::ServerBuildFailed)?;
+            .map_err(|_e| WError::StreamGrpcServerBuildFailed)?;
     }
 
     builder
         .add_service(p_service)
         .serve_with_shutdown(addr, p_shutdown_signal)
         .await
-        .map_err(GrpcError::ServerBuildFailed)
+        .map_err(|_e| WError::StreamGrpcServerBuildFailed)
 }
 
 ///create a tls grpc endpoint
 /// # Errors
 ///
-/// returns an enpoint on success or `GrpcError` on error
+/// returns `WError` on error
 pub async fn create_tls_endpoint(
     p_end_point: String,
     p_domain_name: String,
     p_tls_certificate: &Path,
-) -> Result<Endpoint, GrpcError> {
+) -> Result<Endpoint, WError> {
     let pem_res = tokio::fs::read(p_tls_certificate).await;
     match pem_res {
         Ok(pem) => {
@@ -137,41 +113,39 @@ pub async fn create_tls_endpoint(
                     //configures TLS for the endpoint
                     endpoint
                         .tls_config(tls)
-                        .map_err(|e| GrpcError::InvalidClientTlsConfig(p_end_point, e))
+                        .map_err(|_e| WError::StreamGrpcInvalidTlsConfig)
                 }
-                Err(e) => Err(GrpcError::InvalidUri(p_end_point, e)),
+                Err(_e) => Err(WError::StreamGrpcServerInvalidUri),
             }
         }
-        Err(e) => Err(GrpcError::InvalidTlsCert(p_end_point, e)),
+        Err(_e) => Err(WError::StreamGrpcInvalidTlsConfig),
     }
 }
 
 ///create a tls channel for connecting to grpc server
 /// # Errors
 ///
-/// returns a Channel on success or `GrpcError` on error
-pub async fn create_tls_channel(p_tls_endpoint: &Endpoint) -> Result<Channel, GrpcError> {
-    const TRACE: &str = "create_tls_channel";
+/// returns `WError` on error
+pub async fn create_tls_channel(p_tls_endpoint: &Endpoint) -> Result<Channel, WError> {
     //configures TLS for the endpoint
     p_tls_endpoint
         .connect()
         .await
-        .map_err(|e| GrpcError::ChannelError(p_tls_endpoint.uri().to_string(), e))
+        .map_err(|_| WError::StreamGrpcChannelError)
 }
 
 ///create a none tls channel for connecting to grpc server
 /// # Errors
 ///
-/// returns a Channel on success or `GrpcError` on error
-pub async fn create_channel(p_end_point: String) -> Result<Channel, GrpcError> {
-    const TRACE: &str = "create_channel";
+/// returns `WError` on error
+pub async fn create_channel(p_end_point: String) -> Result<Channel, WError> {
     //create endpoint
     let endpoint_res = Channel::from_shared(p_end_point.clone());
     match endpoint_res {
         Ok(endpoint) => endpoint
             .connect()
             .await
-            .map_err(|e| GrpcError::ChannelError(p_end_point, e)),
-        Err(e) => Err(GrpcError::InvalidUri(p_end_point, e)),
+            .map_err(|_e| WError::StreamGrpcChannelError),
+        Err(_e) => Err(WError::StreamGrpcServerInvalidUri),
     }
 }

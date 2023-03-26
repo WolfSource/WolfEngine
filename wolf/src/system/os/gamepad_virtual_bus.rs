@@ -1,10 +1,9 @@
-use std::sync::Arc;
-
 use super::gamepad_virtual::GamePadVirtual;
-use crate::system::ffi::vigem_client::{
+use crate::system::bindgen::vigem_client::{
     vigem_alloc, vigem_connect, vigem_disconnect, vigem_free, PVIGEM_CLIENT, VIGEM_ERROR,
 };
 use parking_lot::RwLock;
+use std::sync::Arc;
 
 #[derive(Debug)]
 pub struct GamePadVirtualBus {

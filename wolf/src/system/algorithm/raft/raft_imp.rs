@@ -1,5 +1,6 @@
 use crate::{
-    stream::http::grpc,
+    error::WError,
+    stream::grpc,
     system::algorithm::raft::{
         raft_converter, raft_srv::wolf_raft, raft_srv::wolf_raft::raft_client::RaftClient,
     },
@@ -40,7 +41,7 @@ impl RaftNetwork<ClientRequest> for RaftRouter {
         &self,
         p_target_node: NodeId,
         p_rpc: raft::AppendEntriesRequest<ClientRequest>,
-    ) -> Result<raft::AppendEntriesResponse> {
+    ) -> Result<raft::AppendEntriesResponse, WError> {
         let uuid = Uuid::new_v5(&Uuid::NAMESPACE_X500, b"wolf_raft_append_entries");
         let res_append = raft_converter::raft_append_entries_req_to_grpc_append_entries_req(
             uuid.to_string(),
