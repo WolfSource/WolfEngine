@@ -24,6 +24,7 @@ thiserror = {version = "1.0.39", default-features = false}
 raw-window-handle = {version = "0.5.1", default-features = false, features = ["alloc"]} 
 signals2 = {version = "0.3.2", default-features = false}
 tracing = {version = "0.1.37", default-features = false, features = ["std", "attributes"]}
+libc = {version = "0.2.140", default-features = false, features = ["std"], optional = true }
 
 # dependencies of windows x64
 [target.'cfg(any(target_os = "windows", target_arch = "x86_64"))'.dependencies]
@@ -88,15 +89,15 @@ wav = {version = "1.0.0", default-features = false }
 [features]
 all = [
     "ffi",
-    "stream_quic",
-    "system_socket_client",
-    "system_socket_server",
     "media_ffmpeg",
     "stream_grpc",
     "stream_janus",
+    "stream_quic",
     "system_gamepad_virtual",
     "system_lz4",
-    #"system_lzma",
+    "system_lzma",
+    "system_socket_client",
+    "system_socket_server",
     #"system_raft",
 #     "media_openal",
 #     "render",
@@ -119,7 +120,7 @@ stream_rist = [] # enable RIST streaming protocol for stream module
 # system_fiber = ["may"] # enable fiber
 system_gamepad_virtual = [] # enable gamepad virtual simulator 
 system_lz4 = [] # enable LZ4 compression for system module
-# system_lzma = [] # enable LZMA compression for system module
+system_lzma = ["libc"] # enable LZMA compression for system module
 system_raft = ["async-raft", "prost", "stream_grpc"] # enable raft algorithm for system module
 system_socket_client = ["tokio-boring"] # enable client socket for system module
 system_socket_server = ["tokio-boring"] # enable server socket for system module
@@ -128,7 +129,6 @@ system_socket_server = ["tokio-boring"] # enable server socket for system module
 # brotli = [] # enable brotli compression
 # kafka_client = [] # enable Kafka client
 # lzma = [] # enable LZMA Compression
-# quic = [] # enable QUIC protocol
 # redis_client = [] # enable redis client
 # rocksDB_client = [] # enable rocksDB client
 # simd = [] # enable SIMD

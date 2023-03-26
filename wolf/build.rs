@@ -58,13 +58,13 @@ fn main() {
     let profile_str = std::env::var("PROFILE").expect("could not get PROFILE");
     let build_profile = match &opt_level_str[..] {
         "0" => "RelWithDebInfo", //"Debug",
-        "1" | "2" | "3" => {
-            if profile_str == "debug" {
-                "RelWithDebInfo"
-            } else {
-                "Release"
-            }
-        }
+        // "1" | "2" | "3" => {
+        //     if profile_str == "debug" {
+        //         "RelWithDebInfo"
+        //     } else {
+        //         "Release"
+        //     }
+        // }
         "s" | "z" => "MinSizeRel",
         _ => {
             if profile_str == "debug" {
@@ -321,6 +321,9 @@ fn link(p_current_dir_path_str: &str, p_build_profile: &str, p_target_os: &str) 
         "lz4".to_owned(),
     ));
 
+    #[cfg(feature = "system_lzma")]
+    libs.push((format!("lzma-build/{p_build_profile}"), "lzma".to_owned()));
+
     #[cfg(feature = "media_openal")]
     {
         libs.push((
@@ -405,7 +408,7 @@ fn copy_openal(p_current_dir_path_str: &str, p_build_profile: &str) {
 #[allow(clippy::too_many_lines)]
 fn bindgens(p_current_dir_path_str: &str, p_build_profile: &str) {
     struct Binding<'a> {
-        headers: Vec<String>,
+        header: String,
         dst: &'a str,
         block_headers: &'a [&'a str],
         allow_funcs: &'a [&'a str],
@@ -419,7 +422,7 @@ fn bindgens(p_current_dir_path_str: &str, p_build_profile: &str) {
         let include_path = format!("{pre_path}/_deps/lz4_static-src/lib");
         clang_args.push(format!("-I{include_path}"));
         bindings.push(Binding {
-            headers: vec![format!("{include_path}/lz4.h")],
+            header: format!("{include_path}/lz4.h"),
             dst: "src/system/bindgen/lz4.rs",
             block_headers: &[],
             allow_funcs: &["LZ4_.*"],
@@ -427,18 +430,23 @@ fn bindgens(p_current_dir_path_str: &str, p_build_profile: &str) {
     }
 
     #[cfg(feature = "system_lzma")]
-    bindings.push(Binding {
-        headers: "sys/system/lzma.h",
-        dst: "src/system/bindgen/lzma.rs",
-        block_headers: &[],
-    });
+    {
+        let include_path = format!("{pre_path}/_deps/lzma-src/src");
+        clang_args.push(format!("-I{include_path}"));
+        bindings.push(Binding {
+            header: format!("{p_current_dir_path_str}/sys/system/lzma.h"),
+            dst: "src/system/bindgen/lzma.rs",
+            block_headers: &[],
+            allow_funcs: &["Lzma.*"],
+        });
+    }
 
     #[cfg(feature = "system_gamepad_virtual")]
     {
         let include_path = format!("{pre_path}/_deps/vigemclient-src/include");
         clang_args.push(format!("-I{include_path}"));
         bindings.push(Binding {
-            headers: vec![format!("{include_path}/ViGEm/Client.h")],
+            header: format!("{include_path}/ViGEm/Client.h"),
             dst: "src/system/bindgen/vigem_client.rs",
             block_headers: &[],
             allow_funcs: &["vigem_.*"],
@@ -456,7 +464,7 @@ fn bindgens(p_current_dir_path_str: &str, p_build_profile: &str) {
         let include_path = format!("{p_current_dir_path_str}/sys/third_party/ffmpeg/include");
         clang_args.push(format!("-I{include_path}"));
         bindings.push(Binding {
-            headers: vec![format!("{p_current_dir_path_str}/sys/media/ffmpeg.h")],
+            header: format!("{p_current_dir_path_str}/sys/media/ffmpeg.h"),
             dst: "src/media/bindgen/ffmpeg.rs",
             block_headers: &[],
             allow_funcs: &[],
@@ -546,10 +554,8 @@ fn bindgens(p_current_dir_path_str: &str, p_build_profile: &str) {
                 .blocklist_type("PIMAGE_TLS_DIRECTORY");
         }
 
-        for header_file in binding.headers {
-            println!("cargo:rerun-if-changed=sys/{header_file}");
-            builder = builder.header(header_file);
-        }
+        println!("cargo:rerun-if-changed=sys/{}", binding.header);
+        builder = builder.header(binding.header);
 
         // allowlist functions
         for fun in binding.allow_funcs {

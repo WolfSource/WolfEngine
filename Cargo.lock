@@ -2774,6 +2774,7 @@ dependencies = [
  "image",
  "instant",
  "lazy_static",
+ "libc",
  "may",
  "memstore",
  "mimalloc",

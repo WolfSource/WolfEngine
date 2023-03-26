@@ -628,12 +628,16 @@ impl FFmpeg {
                 (*fmt_ctx.ctx).nb_streams as usize,
             );
             let av_audio_stream = if audio_stream_index >= 0 {
-                streams.get(audio_stream_index as usize)
+                let index =
+                    usize::try_from(audio_stream_index).map_err(|_e| WError::SizeCastError)?;
+                streams.get(index)
             } else {
                 None
             };
             let av_video_stream = if video_stream_index >= 0 {
-                streams.get(video_stream_index as usize)
+                let index =
+                    usize::try_from(video_stream_index).map_err(|_e| WError::SizeCastError)?;
+                streams.get(index)
             } else {
                 None
             };
@@ -644,8 +648,8 @@ impl FFmpeg {
                 packet.unref();
 
                 // read packet
-                let res = av_read_frame(fmt_ctx.ctx, packet.pkt);
-                if res < 0 {
+                let av_res = av_read_frame(fmt_ctx.ctx, packet.pkt);
+                if av_res < 0 {
                     break;
                 }
 
