@@ -1,26 +1,10 @@
 use crate::error::WError;
 use cpal::{
-    traits::{DeviceTrait, HostTrait},
-    Device, HostId, SupportedInputConfigs, SupportedStreamConfig,
+    traits::{DeviceTrait, HostTrait, StreamTrait},
+    Device, FromSample, Host, HostId, Sample, SizedSample, StreamConfig, SupportedInputConfigs,
+    SupportedStreamConfig,
 };
-
-#[derive(Clone, Copy, Debug)]
-pub enum SampleRate {
-    _44100 = 44_100,
-    _48000 = 48_000,
-}
-
-#[derive(Clone, Copy, Debug)]
-pub enum Format {
-    /// 8-bit mono buffer format
-    Mono8,
-    /// 16-bit mono buffer format
-    Mono16,
-    /// 8-bit stereo buffer format
-    Stereo8,
-    /// 16-bit stereo buffer format
-    Stereo16,
-}
+use instant::Duration;
 
 #[derive(Clone, Debug)]
 pub struct Audio {}
@@ -38,6 +22,14 @@ impl Audio {
         cpal::available_hosts()
     }
 
+    pub fn get_default_host() -> Host {
+        cpal::default_host()
+    }
+
+    /// get default audio devices
+    /// # Errors
+    ///
+    /// returns an `WError`
     pub fn get_default_devices(
         p_host_id: HostId,
     ) -> Result<(Option<Device>, Option<Device>), WError> {
@@ -45,6 +37,10 @@ impl Audio {
         Ok((host.default_input_device(), host.default_output_device()))
     }
 
+    /// get default input config from audio device
+    /// # Errors
+    ///
+    /// returns an `WError`
     pub fn get_device_default_input_config(
         p_device: &Device,
     ) -> Result<SupportedStreamConfig, WError> {
@@ -53,6 +49,10 @@ impl Audio {
             .map_err(|_e| WError::MediaAudioStreamConfigNotFound)
     }
 
+    /// get default supported config from audio device
+    /// # Errors
+    ///
+    /// returns an `WError`
     pub fn get_device_supported_input_config(
         p_device: &Device,
     ) -> Result<SupportedInputConfigs, WError> {
@@ -61,169 +61,54 @@ impl Audio {
             .map_err(|_e| WError::MediaAudioSupportedInputConfigNotFound)
     }
 
-    // pub fn find_input_host(p_output_name: &str) -> Vec<HostId> {
-    //     cpal::available_hosts()
-    // }
+    fn write_data<T>(p_output: &mut [T], p_channels: usize, p_next_sample: &mut dyn FnMut() -> f32)
+    where
+        T: Sample + FromSample<f32>,
+    {
+        for frame in p_output.chunks_mut(p_channels) {
+            let value: T = T::from_sample(p_next_sample());
+            for sample in frame.iter_mut() {
+                *sample = value;
+            }
+        }
+    }
 
-    //     /// # Errors
-    //     ///
-    //     /// TODO: add error description
-    //     #[allow(clippy::cast_possible_wrap)]
-    //     #[allow(clippy::cast_possible_truncation)]
-    //     pub fn new(
-    //         p_format: Format,
-    //         p_sample_rate: SampleRate,
-    //         p_refresh: u32,
-    //         p_number_of_channels: std::num::NonZeroU32,
-    //     ) -> Result<Self> {
-    //         let mut obj = Self {
-    //             ctx: std::ptr::null_mut(),
-    //             format: p_format,
-    //             sample_rate: p_sample_rate,
-    //             refresh: p_refresh,
-    //         };
+    pub fn play<T>(
+        p_device: &Device,
+        p_config: &StreamConfig,
+        p_timeout: Option<Duration>,
+        p_post_wait: Duration,
+    ) -> Result<(), WError>
+    where
+        T: SizedSample + FromSample<f32>,
+    {
+        let sample_rate = p_config.sample_rate.0 as f32;
+        let channels = p_config.channels as usize;
 
-    //         // create a buffer for error
-    //         let mut buf = [1i8; W_MAX_PATH as usize];
-    //         let buf_ptr = buf.as_mut_ptr();
+        // produce a sinusoid of maximum amplitude.
+        let mut sample_clock = 0f32;
+        let mut next_value = move || {
+            sample_clock = (sample_clock + 1.0) % sample_rate;
+            (sample_clock * 440.0 * 2.0 * std::f32::consts::PI / sample_rate).sin()
+        };
 
-    //         let channels = p_number_of_channels.get() as i32;
-    //         unsafe {
-    //             let ret = w_openal_init(
-    //                 &mut obj.ctx,
-    //                 obj.format as i32,
-    //                 obj.sample_rate as i32,
-    //                 obj.refresh as i32,
-    //                 channels,
-    //                 buf_ptr,
-    //             );
-    //             if ret == 0 {
-    //                 Ok(obj)
-    //             } else {
-    //                 let c_err_str = std::ffi::CStr::from_ptr(buf_ptr);
-    //                 let str = c_err_str.to_str().unwrap_or_default();
-    //                 bail!(
-    //                     "could not create openal object because {}",
-    //                     String::from(str)
-    //                 )
-    //             }
-    //         }
-    //     }
+        let err_fn = |err| eprintln!("an error occurred on stream: {}", err);
 
-    //     /// # Safety
-    //     ///
-    //     /// TODO: add safety description
-    //     /// # Errors
-    //     ///
-    //     /// TODO: add error description
-    //     pub fn open(&self) -> Result<()> {
-    //         // create a buffer for error
-    //         let mut buf = [1i8; W_MAX_PATH as usize];
-    //         let buf_ptr = buf.as_mut_ptr();
+        let stream = p_device
+            .build_output_stream(
+                p_config,
+                move |data: &mut [T], _cb: &cpal::OutputCallbackInfo| {
+                    Self::write_data(data, channels, &mut next_value)
+                },
+                err_fn,
+                p_timeout,
+            )
+            .map_err(|_e| WError::MediaAudioBuildStreamFailed)?;
+        stream
+            .play()
+            .map_err(|_e| WError::MediaAudioBuildStreamFailed)?;
 
-    //         unsafe {
-    //             let ret = w_openal_open(self.ctx, buf_ptr);
-    //             if ret == 0 {
-    //                 Ok(())
-    //             } else {
-    //                 let c_err_str = std::ffi::CStr::from_ptr(buf_ptr);
-    //                 let str = c_err_str.to_str().unwrap_or_default();
-    //                 bail!(
-    //                     "could not create openal object because {}",
-    //                     String::from(str)
-    //                 )
-    //             }
-    //         }
-    //     }
-
-    //     /// # Errors
-    //     ///
-    //     /// TODO: add error description
-    //     pub fn update_from_stack_i16(&self, p_audio_frame_buffer: &[i16]) -> Result<()> {
-    //         let mut buf = [1i8; W_MAX_PATH as usize];
-    //         let buf_ptr = buf.as_mut_ptr();
-
-    //         unsafe {
-    //             let ret = w_openal_update_i16(
-    //                 self.ctx,
-    //                 p_audio_frame_buffer.as_ptr(),
-    //                 p_audio_frame_buffer.len(),
-    //                 buf_ptr,
-    //             );
-    //             if ret == 0 {
-    //                 Ok(())
-    //             } else {
-    //                 let c_err_str = std::ffi::CStr::from_ptr(buf_ptr);
-    //                 let str = c_err_str.to_str().unwrap_or_default();
-    //                 bail!(
-    //                     "could not update openal object because {}",
-    //                     String::from(str)
-    //                 )
-    //             }
-    //         }
-    //     }
-
-    //     /// # Errors
-    //     ///
-    //     /// TODO: add error description
-    //     pub fn update_from_heap_i16(&self, p_audio_frame_buffer: &Vec<i16>) -> Result<()> {
-    //         let mut buf = [1i8; W_MAX_PATH as usize];
-    //         let buf_ptr = buf.as_mut_ptr();
-
-    //         unsafe {
-    //             let ret = w_openal_update_i16(
-    //                 self.ctx,
-    //                 p_audio_frame_buffer.as_ptr(),
-    //                 p_audio_frame_buffer.len(),
-    //                 buf_ptr,
-    //             );
-    //             if ret == 0 {
-    //                 Ok(())
-    //             } else {
-    //                 let c_err_str = std::ffi::CStr::from_ptr(buf_ptr);
-    //                 let str = c_err_str.to_str().unwrap_or_default();
-    //                 bail!(
-    //                     "could not update openal object because {}",
-    //                     String::from(str)
-    //                 )
-    //             }
-    //         }
-    //     }
-
-    //     /// reset openal
-    //     pub fn reset(&self) {
-    //         unsafe {
-    //             w_openal_reset(self.ctx);
-    //         }
-    //     }
-
-    //     /// close openal
-    //     pub fn close(&self, p_force_stop: bool) {
-    //         unsafe {
-    //             w_openal_close(self.ctx, p_force_stop);
-    //         }
-    //     }
-
-    //     /// # Errors
-    //     ///
-    //     /// TODO: add error description
-    //     pub fn list_all_devices() -> Result<(String, String)> {
-    //         // create two buffers for input & output devices
-    //         let mut input = [0i8; W_MAX_PATH as usize];
-    //         let mut output = [0i8; W_MAX_PATH as usize];
-    //         let input_ptr = input.as_mut_ptr();
-    //         let output_ptr = output.as_mut_ptr();
-
-    //         unsafe {
-    //             w_openal_list_all_devices(output_ptr, input_ptr);
-
-    //             let in_cstr = std::ffi::CStr::from_ptr(input_ptr);
-    //             let out_cstr = std::ffi::CStr::from_ptr(output_ptr);
-
-    //             let in_devices = in_cstr.to_str().unwrap_or_default();
-    //             let out_devices = out_cstr.to_str().unwrap_or_default();
-
-    //             Ok((String::from(out_devices), String::from(in_devices)))
-    //         }
-    //     }
+        std::thread::sleep(p_post_wait);
+        Ok(())
+    }
 }

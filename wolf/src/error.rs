@@ -10,9 +10,15 @@ pub enum WError {
     #[error("invalid parameter")]
     InvalidParameter,
     #[cfg(feature = "media_audio")]
+    #[error("Audio build stream failed")]
+    MediaAudioBuildStreamFailed,
+    #[cfg(feature = "media_audio")]
     #[error("Audio host was not avaiable")]
     MediaAudioHostWasNotFound,
     #[cfg(feature = "media_audio")]
+    #[cfg(feature = "media_audio")]
+    #[error("Audio play stream failed")]
+    MediaAudioPlayStreamFailed,
     #[error("Audio stream config was not found")]
     MediaAudioStreamConfigNotFound,
     #[cfg(feature = "media_audio")]
