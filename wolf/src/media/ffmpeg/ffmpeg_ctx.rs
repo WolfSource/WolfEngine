@@ -1,14 +1,17 @@
-use super::{av_config::AvConfig, av_frame::AvFrame, av_packet::AvPacket};
+use super::{
+    av_config::AvConfig, av_format_ctx::AvFormatContext, av_frame::AvFrame, av_packet::AvPacket,
+};
 use crate::{
     error::WError,
     media::bindgen::ffmpeg::{
-        av_dict_set, av_dict_set_int, av_opt_set, av_opt_set_double, av_opt_set_int,
-        av_parser_close, av_parser_init, av_parser_parse2, av_strerror, avcodec_alloc_context3,
-        avcodec_close, avcodec_find_decoder, avcodec_find_decoder_by_name, avcodec_find_encoder,
-        avcodec_find_encoder_by_name, avcodec_free_context, avcodec_is_open, avcodec_open2,
-        avcodec_receive_frame, avcodec_receive_packet, avcodec_send_frame, avcodec_send_packet,
-        AVCodec, AVCodecContext, AVCodecID, AVCodecParserContext, AVDictionary, AVPacket, AVStream,
-        AVFMT_GLOBALHEADER, AV_CODEC_FLAG_GLOBAL_HEADER,
+        av_dict_set, av_dict_set_int, av_find_best_stream, av_opt_set, av_opt_set_double,
+        av_opt_set_int, av_parser_close, av_parser_init, av_parser_parse2, av_read_frame,
+        av_strerror, avcodec_alloc_context3, avcodec_close, avcodec_find_decoder,
+        avcodec_find_decoder_by_name, avcodec_find_encoder, avcodec_find_encoder_by_name,
+        avcodec_free_context, avcodec_is_open, avcodec_open2, avcodec_receive_frame,
+        avcodec_receive_packet, avcodec_send_frame, avcodec_send_packet, avformat_find_stream_info,
+        avformat_open_input, AVCodec, AVCodecContext, AVCodecID, AVCodecParserContext,
+        AVDictionary, AVMediaType, AVStream, AVFMT_GLOBALHEADER, AV_CODEC_FLAG_GLOBAL_HEADER,
     },
 };
 use std::{
@@ -24,7 +27,7 @@ const AV_NOPTS_VALUE: i64 = 0x8000_0000_0000_0000_u64 as i64;
 
 // OnStreamFrameCallback
 type Fp1 = Box<
-    dyn Fn(&AVPacket, Option<*mut AVStream>, Option<*mut AVStream>) -> Result<(), WError>
+    dyn Fn(&AvPacket, Option<&*mut AVStream>, Option<&*mut AVStream>) -> Result<(), WError>
         + Send
         + Sync,
 >;
@@ -44,9 +47,9 @@ impl OnStreamFrameCallback {
     /// returns `WError`
     pub fn run(
         &self,
-        p_packet: &AVPacket,
-        p_audio_stream: Option<*mut AVStream>,
-        p_video_stream: Option<*mut AVStream>,
+        p_packet: &AvPacket,
+        p_audio_stream: Option<&*mut AVStream>,
+        p_video_stream: Option<&*mut AVStream>,
     ) -> Result<(), WError> {
         (self.f)(p_packet, p_audio_stream, p_video_stream)
     }
@@ -516,13 +519,6 @@ impl FFmpeg {
                         self.decode_frame_from_packet(Some(&dst_packet), p_frame)?;
                     }
                 }
-
-                // (*p_packet.pkt).data = (*p_packet.pkt).data.add(bytes_usize);
-                // (*p_packet.pkt).size -= bytes;
-
-                // if (*dst_packet.pkt).size > 0 {
-                //     self.decode_frame_from_packet(Some(&dst_packet), p_frame)?;
-                // }
             }
 
             if p_flush {
@@ -567,10 +563,98 @@ impl FFmpeg {
     /// # Errors
     ///
     /// returns `WError`
-    pub const fn open_stream_receiver(
-        _p_url: &str,
-        _p_options: &[AvSetOpt],
-        _p_on_frame: &OnStreamFrameCallback,
-    ) {
+    pub fn open_stream(
+        p_url: &str,
+        p_options: &[AvSetOpt],
+        p_on_frame: &OnStreamFrameCallback,
+    ) -> Result<(), WError> {
+        // check the url
+        if p_url.is_empty() {
+            return Err(WError::MediaUrlInvalid);
+        }
+
+        unsafe {
+            // allocate memory for avformat context
+            let mut fmt_ctx = AvFormatContext::new()?;
+
+            // set options to av format context
+            let mut dict = if p_options.is_empty() {
+                std::ptr::null_mut()
+            } else {
+                Self::setup_av_dictionary(p_options)?
+            };
+
+            // open input url
+            let mut ret = avformat_open_input(
+                std::ptr::addr_of_mut!(fmt_ctx.ctx),
+                p_url.as_ptr().cast::<i8>(),
+                std::ptr::null_mut(),
+                std::ptr::addr_of_mut!(dict),
+            );
+            if ret < 0 {
+                return Err(WError::MediaUrlInvalid);
+            }
+
+            // find the stream info
+            ret = avformat_find_stream_info(fmt_ctx.ctx, std::ptr::null_mut());
+            if ret < 0 || (*fmt_ctx.ctx).nb_streams == 0 {
+                return Err(WError::MediaStreamInfoNotFound);
+            }
+
+            // find the video stream
+            let video_stream_index = av_find_best_stream(
+                fmt_ctx.ctx,
+                AVMediaType::AVMEDIA_TYPE_VIDEO,
+                -1,
+                -1,
+                std::ptr::null_mut(),
+                0,
+            );
+            let audio_stream_index = av_find_best_stream(
+                fmt_ctx.ctx,
+                AVMediaType::AVMEDIA_TYPE_AUDIO,
+                -1,
+                -1,
+                std::ptr::null_mut(),
+                0,
+            );
+
+            if video_stream_index < 0 && audio_stream_index < 0 {
+                return Err(WError::MediaStreamInfoNotFound);
+            }
+
+            let streams = std::slice::from_raw_parts(
+                (*fmt_ctx.ctx).streams,
+                (*fmt_ctx.ctx).nb_streams as usize,
+            );
+            let av_audio_stream = if audio_stream_index >= 0 {
+                streams.get(audio_stream_index as usize)
+            } else {
+                None
+            };
+            let av_video_stream = if video_stream_index >= 0 {
+                streams.get(video_stream_index as usize)
+            } else {
+                None
+            };
+
+            let packet = AvPacket::new()?;
+            loop {
+                // unref packet
+                packet.unref();
+
+                // read packet
+                let res = av_read_frame(fmt_ctx.ctx, packet.pkt);
+                if res < 0 {
+                    break;
+                }
+
+                let res_cb = p_on_frame.run(&packet, av_audio_stream, av_video_stream);
+                if res_cb.is_err() {
+                    break;
+                }
+            }
+        }
+        Ok(())
     }
 }
