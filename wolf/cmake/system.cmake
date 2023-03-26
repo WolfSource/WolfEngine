@@ -371,6 +371,84 @@ if (WOLF_SYSTEM_POSTGRESQL)
     list(APPEND LIBS PostgreSQL::PostgreSQL)
 endif()
 
+if (WOLF_SYSTEM_LUAJIT)
+    include(ExternalProject)
+
+    file(GLOB_RECURSE WOLF_SYSTEM_LUAJIT_SRC
+            "${CMAKE_CURRENT_SOURCE_DIR}/system/luajit/w_lua.hpp"
+            "${CMAKE_CURRENT_SOURCE_DIR}/system/luajit/w_lua.cpp"
+            )
+
+    set(LuaJIT_PROJECT_SOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/LuaJIT)
+    set(LuaJIT_LIBS ${LuaJIT_PROJECT_SOURCE_DIR}/src/lua51${CMAKE_STATIC_LIBRARY_SUFFIX})
+    set(LuaJIT_INCLUDE ${LuaJIT_PROJECT_SOURCE_DIR}/src)
+
+    add_library(LuaJIT STATIC IMPORTED GLOBAL)
+    target_include_directories(LuaJIT INTERFACE ${LuaJIT_INCLUDE})
+    set_property(TARGET LuaJIT PROPERTY IMPORTED_LOCATION ${LuaJIT_LIBS})
+
+    if (MSVC)
+        set_source_files_properties(${WOLF_SYSTEM_LUAJIT_SRC} PROPERTIES COMPILE_FLAGS /EHa)
+        # Find VsDevCmd.bat regardless of the visual studio version
+        string(FIND ${CMAKE_C_COMPILER} "/VC/" VC_BEGIN)
+        string(SUBSTRING ${CMAKE_C_COMPILER} 0 ${VC_BEGIN} VS_TOOLS_DIR)
+        string(APPEND VS_TOOLS_DIR "/Common7/Tools")
+        set(VsDevCmd ${VS_TOOLS_DIR}/VsDevCmd.bat)
+
+        ExternalProject_Add(
+                LuaJIT_PROJECT
+                GIT_REPOSITORY https://github.com/LuaJIT/LuaJIT.git
+                GIT_TAG v2.0
+                SOURCE_DIR ${LuaJIT_PROJECT_SOURCE_DIR}
+                CONFIGURE_COMMAND ""
+                BUILD_COMMAND ""
+                INSTALL_COMMAND ""
+        )
+        # LuaJIT build script need to be called from inside the src directory
+        add_custom_command(
+                OUTPUT ${LuaJIT_LIBS}
+                WORKING_DIRECTORY ${LuaJIT_PROJECT_SOURCE_DIR}/src
+                COMMAND cmd /c "${VsDevCmd}" & "${LuaJIT_PROJECT_SOURCE_DIR}/src/msvcbuild.bat" static
+                DEPENDS LuaJIT_PROJECT
+                COMMENT "Building LuaJIT ..."
+        )
+        add_custom_target(LuaJIT_TARGET DEPENDS ${LuaJIT_LIBS})
+        add_dependencies(LuaJIT LuaJIT_TARGET)
+    else()
+        find_program(MAKE_EXE NAMES gmake nmake make)
+        ExternalProject_Add(
+                LuaJIT_PROJECT
+                GIT_REPOSITORY https://github.com/LuaJIT/LuaJIT.git
+                GIT_TAG v2.0
+                SOURCE_DIR ${LuaJIT_PROJECT_SOURCE_DIR}
+                CONFIGURE_COMMAND ""
+                BUILD_COMMAND ${MAKE_EXE}
+                INSTALL_COMMAND ""
+        )
+        add_dependencies(LuaJIT LuaJIT_PROJECT)
+    endif()
+
+    set(SOL2_ENABLE_INSTALL OFF CACHE BOOL "SOL2_ENABLE_INSTALL")
+
+    set(FETCHCONTENT_QUIET OFF)
+    FetchContent_Declare(
+            sol2
+            GIT_REPOSITORY https://github.com/ThePhD/sol2
+            GIT_TAG        main
+    )
+    FetchContent_MakeAvailable(sol2)
+
+    target_link_libraries(sol2 INTERFACE LuaJIT)
+
+    list(APPEND SRCS ${WOLF_SYSTEM_LUAJIT_SRC})
+
+    list(APPEND INCLUDES
+            ${sol2_SOURCE_DIR}/include
+            )
+    list(APPEND LIBS sol2::sol2)
+
+endif()
+
 if (EMSCRIPTEN)
     file (GLOB_RECURSE WOLF_SYSTEM_SRC
         "${CMAKE_CURRENT_SOURCE_DIR}/system/w_trace.hpp"
