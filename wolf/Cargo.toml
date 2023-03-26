@@ -25,6 +25,7 @@ raw-window-handle = {version = "0.5.1", default-features = false, features = ["a
 signals2 = {version = "0.3.2", default-features = false}
 tracing = {version = "0.1.37", default-features = false, features = ["std", "attributes"]}
 libc = {version = "0.2.140", default-features = false, features = ["std"], optional = true }
+cpal = {version = "0.15.0", default-features = false, optional = true }
 
 # dependencies of windows x64
 [target.'cfg(any(target_os = "windows", target_arch = "x86_64"))'.dependencies]
@@ -89,6 +90,7 @@ wav = {version = "1.0.0", default-features = false }
 [features]
 all = [
     "ffi",
+    "media_audio",
     "media_ffmpeg",
     "stream_grpc",
     "stream_janus",
@@ -108,8 +110,8 @@ all = [
 
 default = ["all"]
 ffi = []
+media_audio = ["cpal"] # enable cross-platform audio I/O library based on cpal
 media_ffmpeg = [] # enable ffmpeg
-# media_openal = [] # enable openal
 # render = ["wgpu"] # enable real-time rendering
 stream_grpc = ["tonic", "prost"] # enable gRPC (http2/1.1) for stream module
 stream_janus = []

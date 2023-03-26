@@ -9,6 +9,15 @@ pub enum WError {
     IntCastError,
     #[error("invalid parameter")]
     InvalidParameter,
+    #[cfg(feature = "media_audio")]
+    #[error("Audio host was not avaiable")]
+    MediaAudioHostWasNotFound,
+    #[cfg(feature = "media_audio")]
+    #[error("Audio stream config was not found")]
+    MediaAudioStreamConfigNotFound,
+    #[cfg(feature = "media_audio")]
+    #[error("Audio supported input config was not found")]
+    MediaAudioSupportedInputConfigNotFound,
     #[cfg(feature = "media_ffmpeg")]
     #[error("ffmpeg could not open AvCodec")]
     MediaAvCodecOpenFailed,
