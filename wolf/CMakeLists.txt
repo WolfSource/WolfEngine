@@ -59,6 +59,11 @@ include(FetchContent)
 # set type of library
 set(LIBRARY_TYPE "STATIC" CACHE STRING "Library type")
 
+# Build options
+set(LIB_INSTALL_DIR lib CACHE STRING "Install location of libraries")
+set(BIN_INSTALL_DIR bin CACHE STRING "Install location of executables")
+set(INCLUDE_INSTALL_DIR include CACHE STRING "Install location of executables")
+
 # CMAKE GUI Options
 set(EMSDK "$ENV{EMSDK}" CACHE STRING "Emscripten SDK path")
 set(BOOST_TAG "boost-1.81.0" CACHE STRING "Boost version tag")
@@ -151,7 +156,6 @@ endif()
 set(GETOPT_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/system)
 
 #define includes, libs and srcs
-set(INCLUDES ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../)
 set(LIBS)
 set(SRCS)
 
@@ -242,7 +246,10 @@ file(GLOB_RECURSE WOLF_CMAKES
 )
 
 # includes
-include_directories(${INCLUDES})
+include_directories(${INCLUDES}
+		    ${CMAKE_CURRENT_SOURCE_DIR} 
+		    ${CMAKE_CURRENT_SOURCE_DIR}/../
+)
 
 # add source codes
 add_library(${PROJECT_NAME} ${LIBRARY_TYPE} 
@@ -325,4 +332,19 @@ if(WOLF_ML_OCR AND WIN64)
     add_custom_command(TARGET ${TEST_PROJECT_NAME} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_BINARY_DIR}/bin/${CMAKE_BUILD_TYPE} ${CMAKE_BINARY_DIR}/${PROJECT_NAME}/${CMAKE_BUILD_TYPE}
     )
+endif()
+
+# install target
+install(TARGETS ${PROJECT_NAME}
+    LIBRARY DESTINATION ${LIB_INSTALL_DIR}
+    ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
+	
+foreach(ITEM ${INCLUDES})
+  install(DIRECTORY ${ITEM}/ DESTINATION ${INCLUDE_INSTALL_DIR})
+endforeach()
+
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/wolf.hpp DESTINATION ${INCLUDE_INSTALL_DIR})
+
+if (WOLF_TEST)
+	install(TARGETS ${TEST_PROJECT_NAME} DESTINATION ${BIN_INSTALL_DIR})
 endif()

@@ -24,6 +24,7 @@
 /bin/*
 /build/*
 /coverage/*
+/install/*
 
 # Compiled Object files
 *.slo
