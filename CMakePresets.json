@@ -163,9 +163,15 @@
             "configurePreset": "wasm32-unknown-emscripten"
         },
         {
-            "name": "default-build-windows",
-            "displayName": "Default Windows",
-            "description": "Build Windows",
+            "name": "win-x64-release",
+            "displayName": "Win x64 Release",
+            "description": "Sets windows platform and debug build type for x64 arch in release mode",
+            "configurePreset": "win-x64-release"
+        },
+		{
+            "name": "win-x64-debug",
+            "displayName": "Win x64 Debug",
+            "description": "Sets windows platform and debug build type for x64 arch in debug mode",
             "configurePreset": "win-x64-debug"
         },
         {
