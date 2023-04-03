@@ -5,13 +5,23 @@
 using w_log = wolf::system::log::w_log;
 using w_log_config = wolf::system::log::w_log_config;
 
-w_log::w_log(const w_log_config &p_config) noexcept : _config(p_config) {}
+w_log::w_log(_In_ const w_log_config &p_config) noexcept : _config(p_config) {}
 
 w_log::~w_log() noexcept {
   try {
     flush();
   } catch (...) {
   }
+}
+
+void w_log::_move(_Inout_ w_log &&p_other) noexcept {
+  if (this == &p_other) {
+    return;
+  }
+
+  this->_config = std::move(p_other._config);
+  this->_logger = std::move(p_other._logger);
+  this->_async_file_logger = std::move(p_other._async_file_logger);
 }
 
 boost::leaf::result<int> w_log::init() {

@@ -250,9 +250,9 @@ boost::leaf::result<w_decoder> w_ffmpeg::create_decoder(
 
 boost::leaf::result<int> w_ffmpeg::open_stream(
     _In_ const std::string &p_url, _In_ const std::vector<w_av_set_opt> &p_opts,
-    _In_ const std::function<bool(const w_av_packet & /*p_packet*/,
-                                  const AVStream * /*p_audio_stream*/, const AVStream * /*p_video_stream*/)>
-        &p_on_frame) noexcept {
+    _In_ const
+        std::function<bool(const w_av_packet & /*p_packet*/, const AVStream * /*p_audio_stream*/,
+                           const AVStream * /*p_video_stream*/)> &p_on_frame) noexcept {
   try {
     // url is invalid
     if (p_url.empty()) {
@@ -312,16 +312,15 @@ boost::leaf::result<int> w_ffmpeg::open_stream(
                        "could not find any video or audio stream from the url: " + p_url);
     }
 
-    AVStream * _audio_stream = nullptr;
-    AVStream * _video_stream = nullptr;
+    AVStream *_audio_stream = nullptr;
+    AVStream *_video_stream = nullptr;
 
-    if (_audio_stream_index >= 0){
+    if (_audio_stream_index >= 0) {
       _audio_stream = _fmt_ctx->streams[_audio_stream_index];
     }
     if (_video_stream_index >= 0) {
       _video_stream = _fmt_ctx->streams[_video_stream_index];
     }
-
 
     for (;;) {
       // unref packet

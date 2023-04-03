@@ -63,7 +63,7 @@ set(LIBRARY_TYPE "STATIC" CACHE STRING "Library type")
 set(EMSDK "$ENV{EMSDK}" CACHE STRING "Emscripten SDK path")
 set(BOOST_TAG "boost-1.81.0" CACHE STRING "Boost version tag")
 
-# render modules
+# render module
 option(WOLF_RENDER "Enable cross platform render engine based on Vulkan / OpenGL ES" OFF)
 
 # media modules
@@ -80,23 +80,25 @@ option(WOLF_STREAM_RIST   "Enable RIST streaming protocol" OFF)
 option(WOLF_STREAM_WEBRTC "Enable webRTC" OFF)
 
 # system modules
-option(WOLF_SYSTEM_SSL "Enable SSL based on boringSSL" OFF)
 option(WOLF_SYSTEM_GAMEPAD_CLIENT "Enable gamepad input handling" OFF)
 option(WOLF_SYSTEM_GAMEPAD_VIRTUAL "Enable virtual gamepad simulator" OFF)
 option(WOLF_SYSTEM_HTTP1_WS "Enable http1.1 and websocket client/server based on boost beast or Emscripten" OFF)
+option(WOLF_SYSTEM_JSON "Enable JsonCpp" OFF)
 option(WOLF_SYSTEM_LOG "Enable log" OFF)
-option(WOLF_SYSTEM_LUAJIT "Enable luaJIT" OFF)
 option(WOLF_SYSTEM_LZ4 "Enable lz4 for compression" OFF)
 option(WOLF_SYSTEM_LZMA "Enable lzma for compression" OFF)
 option(WOLF_SYSTEM_MIMALLOC "Enable Microsoft's mimalloc memory allocator" OFF)
+option(WOLF_SYSTEM_POSTGRESQL "Enable postgresql database client" OFF)
+option(WOLF_SYSTEM_PYTHON "Enable embedded Python3 scripting" OFF)
 option(WOLF_SYSTEM_SIG_SLOT "Enable signal/slot based on boost signals2" OFF)
 option(WOLF_SYSTEM_SOCKET "Enable TCP/UDP protocol over socket" OFF)
+option(WOLF_SYSTEM_SSL "Enable SSL based on boringSSL" OFF)
 option(WOLF_SYSTEM_STACKTRACE "Enable boost stacktrace" OFF)
-option(WOLF_SYSTEM_POSTGRESQL "Enable postgresql database client" OFF)
+option(WOLF_SYSTEM_ZLIB "Enable Zlib compression library" OFF)
 
 # machine learing modules
-option(WOLF_ML_OCR "Enable machine learning referee ocr" OFF)
 option(WOLF_ML_NUDITY_DETECTION "Enable machine learning nudity detection" OFF)
+option(WOLF_ML_OCR "Enable machine learning referee ocr" OFF)
 
 #option(WOLF_ENABLE_LTO "Enable cross language linking time optimization" OFF)
 option(WOLF_TEST "Enable tests" ON)
@@ -283,6 +285,7 @@ source_group("stream" FILES ${WOLF_STREAM_SRC})
 source_group("system/gamepad" FILES ${WOLF_SYSTEM_GAMEPAD_CLIENT_SRC} ${WOLF_SYSTEM_GAMEPAD_VIRTUAL_SRCS})
 source_group("system/log" FILES ${WOLF_SYSTEM_LOG_SRC})
 source_group("system/compression" FILES ${WOLF_SYSTEM_LZ4_SRCS} ${WOLF_SYSTEM_LZMA_SRCS})
+source_group("system/script" FILES ${WOLF_SYSTEM_LUAJIT_SRC})
 source_group("system/socket" FILES ${WOLF_SYSTEM_SOCKET_SRC})
 source_group("system/test" FILES ${WOLF_SYSTEM_TEST_SRC})
 source_group("system" FILES ${WOLF_SYSTEM_SRC})

@@ -4,7 +4,7 @@ if (WOLF_STREAM_GRPC)
         message(FATAL_ERROR "the wasm32 target is not supported for WOLF_STREAM_GRPC")
     endif()
 
-    # enable zlib and boringSSL
+    # enable zlib
     set(WOLF_SYSTEM_ZLIB TRUE)
 
     message("fetching https://github.com/grpc/grpc")

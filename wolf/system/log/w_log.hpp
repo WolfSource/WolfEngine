@@ -31,9 +31,12 @@ public:
   W_API explicit w_log(const w_log_config &p_config) noexcept;
 
   // move constructor.
-  W_API w_log(w_log &&p_other) = default;
+  W_API w_log(w_log &&p_other) noexcept { _move(std::forward<w_log &&>(p_other)); }
   // move assignment operator.
-  W_API w_log &operator=(w_log &&p_other) = default;
+  W_API w_log &operator=(w_log &&p_other) noexcept {
+    _move(std::forward<w_log &&>(p_other));
+    return *this;
+  }
 
   // destructor
   W_API virtual ~w_log() noexcept;
@@ -90,6 +93,8 @@ private:
   w_log(const w_log &) = delete;
   // disable copy operator
   w_log &operator=(const w_log &) = delete;
+
+  W_API void _move(_Inout_ w_log &&p_other) noexcept;
 
   w_log_config _config = {};
   std::shared_ptr<spdlog::logger> _logger = nullptr;
