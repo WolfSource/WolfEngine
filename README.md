@@ -28,10 +28,19 @@ then make sure get the main branch
 	
 To list configure presets: `cmake . --list-presets`
 To list build presets: `cmake --build --list-presets`
+To install wolf: `cmake --install <build-dir> --prefix <prefix>`
+
 For example for building wolf for android:
 ```
 cmake . --preset android-arm64-release
-cmake --build --preset default-build-android
+cmake --build --preset android-arm64-release
+```
+
+For example for building wolf for windows:
+```
+cmake . --preset win-x64-release
+cmake --build --preset win-x64-release
+cmake --install C:/WolfEngine/build/win-x64-release --prefix C:/wolf
 ```
 
 ## Recent Sample
