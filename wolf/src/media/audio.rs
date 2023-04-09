@@ -14,14 +14,17 @@ impl Drop for Audio {
 }
 
 impl Audio {
+    #[must_use]
     pub fn get_all_hosts() -> Vec<HostId> {
         cpal::ALL_HOSTS.to_vec()
     }
 
+    #[must_use]
     pub fn get_available_hosts() -> Vec<HostId> {
         cpal::available_hosts()
     }
 
+    #[must_use]
     pub fn get_default_host() -> Host {
         cpal::default_host()
     }
@@ -73,6 +76,10 @@ impl Audio {
         }
     }
 
+    /// play stream of audio
+    /// # Errors
+    ///
+    /// returns an `WError`
     pub fn play<T>(
         p_device: &Device,
         p_config: &StreamConfig,
@@ -82,6 +89,7 @@ impl Audio {
     where
         T: SizedSample + FromSample<f32>,
     {
+        #[allow(clippy::cast_precision_loss)]
         let sample_rate = p_config.sample_rate.0 as f32;
         let channels = p_config.channels as usize;
 
@@ -92,13 +100,13 @@ impl Audio {
             (sample_clock * 440.0 * 2.0 * std::f32::consts::PI / sample_rate).sin()
         };
 
-        let err_fn = |err| eprintln!("an error occurred on stream: {}", err);
+        let err_fn = |err| eprintln!("an error occurred on stream: {err}");
 
         let stream = p_device
             .build_output_stream(
                 p_config,
                 move |data: &mut [T], _cb: &cpal::OutputCallbackInfo| {
-                    Self::write_data(data, channels, &mut next_value)
+                    Self::write_data(data, channels, &mut next_value);
                 },
                 err_fn,
                 p_timeout,

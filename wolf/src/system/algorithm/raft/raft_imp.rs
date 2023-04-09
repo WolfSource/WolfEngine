@@ -68,53 +68,22 @@ impl RaftNetwork<ClientRequest> for RaftRouter {
                                             //create AppendEntriesResponse from RaftAppendEntriesOkRes
                                             let ret = raft_converter::grpc_append_entries_ok_res_to_raft_append_entries_res(&ok);
                                             Ok(ret)
-                                        } else if let Response::ErrorRes(e) = s {
-                                            bail!(
-                                                "AppendEntriesResponse for node {} contains Error {:?}. Trace: {}",
-                                                p_target_node,
-                                                e,
-                                                TRACE
-                                            )
+                                        } else if let Response::ErrorRes(_e) = s {
+                                            Err(WError::SystemRaftAppendEntriesErrorResponse)
                                         } else {
-                                            bail!(
-                                                "AppendEntriesResponse for node {} contains Unknown error. Trace: {}",
-                                                p_target_node,
-                                                TRACE
-                                            )
+                                            Err(WError::SystemRaftAppendEntriesErrorResponse)
                                         }
                                     }
-                                    None => {
-                                        bail!(
-                                            "inner message of AppendEntriesResponse is None for node {}. Trace: {}",
-                                            p_target_node,
-                                            TRACE
-                                        )
-                                    }
+                                    None => Err(WError::SystemRaftAppendEntriesNoResponse),
                                 }
                             }
-                            Err(e) => {
-                                bail!(
-                                    "AppendEntriesResponse for node {} contains error status {:?}. Trace: {}",
-                                    p_target_node,
-                                    e,
-                                    TRACE
-                                )
-                            }
+                            Err(e) => Err(WError::SystemRaftAppendEntriesFailed),
                         }
                     }
-                    Err(e) => {
-                        bail!(
-                            "could not create a grpc channel while sending raft::AppendEntriesResponse for node {} because: {:?}. Trace: {}",
-                            p_target_node,
-                            e,
-                            TRACE
-                        )
-                    }
+                    Err(e) => Err(WError::SystemRaftAppendEntriesCreateChannelFailed),
                 }
             }
-            Err(e) => {
-                bail!("{:?}. trace: {}", e, TRACE)
-            }
+            Err(e) => Err(WError::SystemRaftAppendEntriesFailed),
         }
     }
 

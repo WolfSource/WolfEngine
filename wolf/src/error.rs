@@ -134,6 +134,18 @@ pub enum WError {
     ))]
     #[error("system could not register the poll for socket")]
     SystemPollRegisterFailed,
+    #[cfg(any(feature = "system_raft"))]
+    #[error("system raft append enteries with error response")]
+    SystemRaftAppendEntriesErrorResponse,
+    #[cfg(any(feature = "system_raft"))]
+    #[error("system raft append enteries failed")]
+    SystemRaftAppendEntriesFailed,
+    #[cfg(any(feature = "system_raft"))]
+    #[error("system raft append enteries create channel failed")]
+    SystemRaftAppendEntriesCreateChannelFailed,
+    #[cfg(any(feature = "system_raft"))]
+    #[error("system raft append enteries have no response")]
+    SystemRaftAppendEntriesNoResponse,
     #[cfg(any(
         feature = "system_socket_client",
         feature = "system_socket_server",

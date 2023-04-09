@@ -84,7 +84,7 @@ fn test_play_beep() {
                 };
             }
             Err(e) => {
-                println!("Could not get default output config because {:?}", e);
+                println!("Could not get default output config because {e:?}");
             }
         }
     }
