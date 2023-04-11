@@ -26,9 +26,9 @@
 
 namespace wolf::system::log {
 class w_log {
-public:
+ public:
   // constructor
-  W_API explicit w_log(const w_log_config &p_config) noexcept;
+  W_API explicit w_log(w_log_config &&p_config) noexcept;
 
   // move constructor.
   W_API w_log(w_log &&p_other) noexcept { _move(std::forward<w_log &&>(p_other)); }
@@ -50,19 +50,15 @@ public:
 
 #ifdef __clang__
   template <class... Args>
-  W_API void write(_In_ const fmt::v9::format_string<Args...> p_fmt,
-                   _In_ Args &&...p_args) {
-    const auto _str =
-        fmt::v9::vformat(p_fmt, fmt::v9::make_format_args(p_args...));
+  W_API void write(_In_ const fmt::v9::format_string<Args...> p_fmt, _In_ Args &&...p_args) {
+    const auto _str = fmt::v9::vformat(p_fmt, fmt::v9::make_format_args(p_args...));
     write(_str);
   }
 
   template <class... Args>
   W_API void write(_In_ const spdlog::level::level_enum &p_level,
-                   _In_ const fmt::v9::format_string<Args...> p_fmt,
-                   _In_ Args &&...p_args) {
-    const auto _str =
-        fmt::v9::vformat(p_fmt, fmt::v9::make_format_args(p_args...));
+                   _In_ const fmt::v9::format_string<Args...> p_fmt, _In_ Args &&...p_args) {
+    const auto _str = fmt::v9::vformat(p_fmt, fmt::v9::make_format_args(p_args...));
     write(p_level, _str);
   }
 
@@ -70,25 +66,24 @@ public:
 
   template <class... Args>
   W_API void write(_In_ const std::string_view p_fmt, _In_ Args &&...p_args) {
-    const auto _str =
-        std::vformat(p_fmt, std::make_format_args(p_args...));
+    const auto _str = std::vformat(p_fmt, std::make_format_args(p_args...));
     write(_str);
   }
 
   template <class... Args>
-  W_API void write(_In_ const spdlog::level::level_enum &p_level,
-                   _In_ const std::string_view p_fmt, _In_ Args &&...p_args) {
+  W_API void write(_In_ const spdlog::level::level_enum &p_level, _In_ const std::string_view p_fmt,
+                   _In_ Args &&...p_args) {
     const auto _str = std::vformat(p_fmt, std::make_format_args(p_args...));
     write(p_level, _str);
   }
 
-#endif // __clang__
+#endif  // __clang__
 
   W_API boost::leaf::result<int> flush();
 
   W_API w_log_config get_config() const;
 
-private:
+ private:
   // disable copy constructor
   w_log(const w_log &) = delete;
   // disable copy operator
@@ -96,10 +91,10 @@ private:
 
   W_API void _move(_Inout_ w_log &&p_other) noexcept;
 
-  w_log_config _config = {};
+  w_log_config &&_config = {};
   std::shared_ptr<spdlog::logger> _logger = nullptr;
   std::shared_ptr<spdlog::logger> _async_file_logger = nullptr;
 };
-} // namespace wolf::system::log
+}  // namespace wolf::system::log
 
 #endif

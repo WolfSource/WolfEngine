@@ -1,29 +1,21 @@
 #pragma once
 
-#ifdef WOLF_SYSTEM_LUAJIT
+#ifdef WOLF_SYSTEM_LUA
 
 #include <wolf/wolf.hpp>
 
-#define SOL_NO_EXCEPTIONS 1
-
-//#ifndef SOL_EXCEPTIONS_SAFE_PROPAGATION
-//#define SOL_EXCEPTIONS_SAFE_PROPAGATION 1
-//#endif
-//
-//#ifndef SOL_ALL_SAFETIES_ON 
-//#define SOL_ALL_SAFETIES_ON 1
-//#endif
+#define SOL_EXCEPTIONS_SAFE_PROPAGATION 1
+#define SOL_ALL_SAFETIES_ON 1
 
 #include <sol/sol.hpp>
 #include <filesystem>
 
 namespace wolf::system::script {
 using w_lib = sol::lib;
-
 class w_lua {
  public:
-  W_API w_lua()
-      : _lua(std::make_unique<sol::state>(
+   W_API w_lua()
+      : _lua(std::make_shared<sol::state>(
             sol::c_call<decltype(&w_lua::w_lua_panic), &w_lua::w_lua_panic>)),
         _load_result(nullptr, -1, 0, 0, sol::load_status::syntax) {}
 
@@ -71,7 +63,7 @@ class w_lua {
    * run previously loaded lua script
    * @return result
    */
-  template <typename... RETYPES, typename... ARGS>
+   template <typename... RETYPES, typename... ARGS>
   W_API boost::leaf::result<std::tuple<RETYPES...>> run(ARGS &&...p_args) {
     if (!_load_result.valid()) {
       return W_FAILURE(1, "no script currently loaded");
@@ -95,8 +87,9 @@ class w_lua {
    * run lua script from file
    * @param p_file file path
    */
-  template <typename... RETYPES>
-  W_API boost::leaf::result<std::tuple<RETYPES...>> run_file(const std::filesystem::path &p_file) {
+   template <typename... RETYPES>
+   W_API boost::leaf::result<std::tuple<RETYPES...>> run_file(const std::filesystem::path &p_file)
+   {
     auto result = this->_lua->script_file(p_file.string());
     if (!result.valid()) {
       sol::error err = result;
@@ -116,7 +109,7 @@ class w_lua {
    * run from buffer
    * @param p_str string buffer
    */
-  template <typename... RETYPES>
+   template <typename... RETYPES>
   W_API boost::leaf::result<std::tuple<RETYPES...>> run_from_buffer(const std::string_view p_str) {
     auto result = this->_lua->script(p_str);
     if (!result.valid()) {
@@ -154,7 +147,7 @@ class w_lua {
    * @param p_name lua function name
    * @param p_args function arguments
    */
-  template <typename... RETYPES, typename... ARGS>
+   template <typename... RETYPES, typename... ARGS>
   W_API boost::leaf::result<std::tuple<RETYPES...>> call_function(const std::string_view p_name,
                                                                   ARGS &&...p_args) {
     auto _ptr = this->_lua.get();
@@ -179,7 +172,7 @@ class w_lua {
    * return the lua state for custom operation
    * @return soL state object
    */
-  //W_API boost::leaf::result<sol::state &> get_state() { auto x = this->_lua->get(); };
+  W_API std::shared_ptr<sol::state> get_state() { return this->_lua; };
 
   /**
    * get global variable
@@ -187,14 +180,13 @@ class w_lua {
    * @param pValue value of variable
    * @return result
    */
-  template <typename T>
+   template <typename T>
   W_API boost::leaf::result<void> get_global_variable(const std::string_view p_name, T &p_value) {
     try {
-      p_value = this->_lua[p_name];
+      p_value = this->_lua["p_name"];
     } catch (...) {
       return W_FAILURE(1, "can not get global variable");
     }
-
     return {};
   }
 
@@ -204,7 +196,7 @@ class w_lua {
    * @param p_value value of variable
    * @return result
    */
-  template <typename... ARGS>
+   template <typename... ARGS>
   W_API boost::leaf::result<void> set_global_variable(std::string_view p_name, ARGS &&...p_value) {
     try {
       this->_lua->set(p_name, std::forward<ARGS>(p_value)...);
@@ -230,11 +222,9 @@ class w_lua {
     // When this function exits, Lua will exhibit default behavior and abort()
   }
 
-  std::unique_ptr<sol::state> _lua;
+  std::shared_ptr<sol::state> _lua;
   sol::load_result _load_result;
 };
-
-} // namespace wolf::system::script
-
+}  // namespace wolf::system::script
 
 #endif

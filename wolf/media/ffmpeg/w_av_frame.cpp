@@ -25,6 +25,7 @@ void w_av_frame::_release() noexcept {
     if (this->_config.nb_channels > 0) {
       av_channel_layout_uninit(&this->_av_frame->ch_layout);
     }
+    av_freep(&this->_av_frame[0]);
   }
 }
 
@@ -98,116 +99,96 @@ boost::leaf::result<int> w_av_frame::set_video_frame(
   
 void w_av_frame::set_pts(_In_ int64_t p_pts) noexcept { this->_av_frame->pts = p_pts; }
 
-std::tuple<uint8_t **, int *> w_av_frame::get() const noexcept {
+std::tuple<uint8_t **, int> w_av_frame::get() const noexcept {
   if (this->_av_frame) {
-    return std::make_tuple(this->_av_frame->data, this->_av_frame->linesize);
+    auto _buffer_size =
+        av_image_get_buffer_size(gsl::narrow_cast<AVPixelFormat>(this->_av_frame->format),
+                                 this->_av_frame->width, this->_av_frame->height, 4);
+
+    return std::make_tuple(this->_av_frame->data, _buffer_size);
   }
-  return std::make_tuple(nullptr, nullptr);
+  return std::make_tuple(nullptr, 0);
 }
 
 w_av_config w_av_frame::get_config() const noexcept { return this->_config; }
 
-boost::leaf::result<w_av_frame> w_av_frame::convert_video(_In_ w_av_config &&p_dst_config) {
-  // create a buffer and dst frame
-  auto _video_buffer = std::vector<uint8_t>();
-  auto _dst_frame = w_av_frame(std::move(p_dst_config));
-  BOOST_LEAF_CHECK(_dst_frame.init());
-  BOOST_LEAF_CHECK(_dst_frame.set_video_frame(std::move(_video_buffer)));
+boost::leaf::result<w_av_frame> w_av_frame::convert_audio(_In_ w_av_config &&p_dst_config) {
+  auto _ret = 0;
 
-  auto *_context = sws_getContext(
-      this->_config.width, this->_config.height, this->_config.format, _dst_frame._config.width,
-      _dst_frame._config.height, _dst_frame._config.format, SWS_BICUBIC, nullptr, nullptr, nullptr);
-  if (_context == nullptr) {
-    return W_FAILURE(std::errc::not_enough_memory, "could not create sws context");
+  SwrContext *swr = nullptr;
+  auto _dst_frame = w_av_frame(std::move(p_dst_config));
+  _dst_frame.init();
+
+  DEFER {
+    if (_ret != S_OK) {
+      if (swr) {
+        if (swr_is_initialized(swr)) {
+          swr_close(swr);
+        }
+        swr_free(&swr);
+      }
+    }
+  });
+
+  swr_alloc_set_opts2(&swr, &this->_channel_layout, p_dst_config.sample_fmts,
+                      p_dst_config.sample_rate, &this->_av_frame->ch_layout,
+                      gsl::narrow_cast<AVSampleFormat>(this->_av_frame->format),
+                      this->_av_frame->sample_rate, 0, nullptr);
+
+  if (swr == nullptr) {
+    _ret = -1;
+    return W_FAILURE(std::errc::operation_canceled, "could not create audio SwrContext");
   }
 
-  auto _dst_frame_nn = gsl::not_null<AVFrame *>(_dst_frame._av_frame);
-  const auto _height =
-      sws_scale(_context, gsl::narrow_cast<const uint8_t *const *>(this->_av_frame->data),
-                gsl::narrow_cast<const int *>(this->_av_frame->linesize), 0, this->_config.height,
-                gsl::narrow_cast<uint8_t *const *>(_dst_frame_nn->data),
-                gsl::narrow_cast<const int *>(_dst_frame_nn->linesize));
+  _ret = swr_init(swr);
 
-  // free context
-  sws_freeContext(_context);
+  if (_ret < 0) {
+    return W_FAILURE(std::errc::operation_canceled, "could not initialize audio SwrContext");
+  }
 
-  if (_height < 0) {
-    return W_FAILURE(
-        std::errc::invalid_argument,
-        "w_av_frame sws_scale failed because: \"" + w_ffmpeg_ctx::get_av_error_str(_height) + "\"");
+  // get number of samples
+  auto _sample_rate = gsl::narrow_cast<int64_t>(this->_av_frame->sample_rate);
+
+  auto _delay = swr_get_delay(swr, _sample_rate);
+
+  const auto _rescale_rnd =
+      av_rescale_rnd(_delay + _sample_rate, gsl::narrow_cast<int64_t>(p_dst_config.sample_rate),
+                     _sample_rate, AV_ROUND_UP);
+
+  _dst_frame._av_frame->nb_samples = gsl::narrow_cast<int>(_rescale_rnd);
+
+  auto size = av_samples_alloc(gsl::narrow_cast<uint8_t **>(&_dst_frame._av_frame->data[0]),
+                               &_dst_frame._av_frame->linesize[0],
+                               this->_channel_layout.nb_channels, _dst_frame._config.nb_channels,
+                               gsl::narrow_cast<AVSampleFormat>(p_dst_config.sample_fmts), 1);
+
+  if (size < 0) {
+    _ret = -1;
+    return W_FAILURE(std::errc::operation_canceled,
+                     "could not allocate memory for buffer of audio");
+  }
+
+  /* convert to destination format */
+  size = swr_convert(swr, gsl::narrow_cast<uint8_t **>(&_dst_frame._av_frame->data[0]),
+                     _dst_frame._av_frame->nb_samples,
+                     (const uint8_t **)(&this->_av_frame->data[0]), this->_av_frame->nb_samples);
+
+  if (size < 0) {
+    _ret = -1;
+    return W_FAILURE(std::errc::operation_canceled, "error while audio converting\n");
+  }
+
+  const auto _buffer_size = av_samples_get_buffer_size(&_dst_frame._av_frame->linesize[0],
+                                                       _dst_frame._av_frame->ch_layout.nb_channels,
+                                                       size, p_dst_config.sample_fmts, 1);
+
+  if (_buffer_size < 0) {
+    _ret = -1;
+    return W_FAILURE(std::errc::operation_canceled, "could not get sample buffer size\n");
   }
 
   return _dst_frame;
 }
-
-//boost::leaf::result<w_av_frame> w_av_frame::convert_audio(_In_ std::unique_ptr<w_av_config> p_dst_config) {
-//  auto _ret = 0;
-//  SwrContext *swr = nullptr;
-//
-//  DEFER {
-//    if (_ret != 0) {
-//      if (swr) {
-//        if (swr_is_initialized(swr)) {
-//          swr_close(swr);
-//        }
-//        swr_free(&swr);
-//      }
-//    }
-//  });
-//
-//  swr_alloc_set_opts2(&swr, &p_dst_config.channel_layout, p_dst_config.sample_fmts,
-//                      p_dst_config.sample_rate, &this->_av_frame->ch_layout,
-//                      gsl::narrow_cast<AVSampleFormat>(this->_av_frame->format),
-//                      this->_av_frame->sample_rate, 0, nullptr);
-//
-//  if (swr == nullptr) {
-//    _ret = -1;
-//    return W_FAILURE(std::errc::operation_canceled, "could not create audio SwrContext");
-//  }
-//
-//  _ret = swr_init(swr);
-//  if (_ret < 0) {
-//    return W_FAILURE(std::errc::operation_canceled, "could not initialize audio SwrContext");
-//  }
-//
-//  // create buffer and dst frame
-//  auto _dst_frame = w_av_frame(std::forward<w_av_config &&>(p_dst_config));
-//  _dst_frame.init();
-//
-//  // get number of samples
-//  auto _sample_rate = gsl::narrow_cast<int64_t>(this->_av_frame->sample_rate);
-//  auto _delay = swr_get_delay(swr, _sample_rate);
-//  _dst_frame._av_frame->nb_samples = gsl::narrow_cast<int>(av_rescale_rnd(
-//      _delay + _sample_rate, _dst_frame._config.sample_rate, _sample_rate, AV_ROUND_UP));
-//
-//  _ret = av_samples_alloc(gsl::narrow_cast<uint8_t **>(&_dst_frame._av_frame->data[0]),
-//                          &_dst_frame._av_frame->linesize[0],
-//                          _dst_frame._av_frame->ch_layout.nb_channels,
-//                          _dst_frame._av_frame->nb_samples, _dst_frame._config.sample_fmts, 1);
-//  if (_ret < 0) {
-//    return W_FAILURE(std::errc::operation_canceled,
-//                     "could not allocate memory for buffer of audio");
-//  }
-//
-//  /* convert to destination format */
-//  _ret = swr_convert(swr, gsl::narrow_cast<uint8_t **>(&_dst_frame._av_frame->data[0]),
-//                     _dst_frame._av_frame->nb_samples,
-//                     const_cast<const uint8_t **>(&this->_av_frame->data[0]),
-//                     this->_av_frame->nb_samples);
-//  if (_ret < 0) {
-//    return W_FAILURE(std::errc::operation_canceled, "error while audio converting\n");
-//  }
-//
-//  const auto _buffer_size = av_samples_get_buffer_size(&_dst_frame._av_frame->linesize[0],
-//                                                       _dst_frame._av_frame->ch_layout.nb_channels,
-//                                                       _ret, _dst_frame._config.sample_fmts, 1);
-//  if (_buffer_size < 0) {
-//    _ret = -1;
-//    return W_FAILURE(std::errc::operation_canceled, "could not get sample buffer size\n");
-//  }
-//
-//  return _dst_frame;
-//}
 
 boost::leaf::result<w_av_frame> w_av_frame::load_video_frame_from_img_file(
     _In_ const std::filesystem::path &p_path, _In_ AVPixelFormat p_pixel_fmt) {

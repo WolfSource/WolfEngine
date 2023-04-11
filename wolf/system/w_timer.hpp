@@ -18,9 +18,9 @@ namespace wolf::system {
 class w_timer {};
 #else
 class w_timer : public boost::asio::high_resolution_timer {
-public:
+ public:
   explicit w_timer(boost::asio::io_context &p_io_context)
       : boost::asio::high_resolution_timer(p_io_context, 0) {}
 };
 #endif
-} // namespace wolf::system
+}  // namespace wolf::system

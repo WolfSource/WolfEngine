@@ -88,18 +88,18 @@ BOOST_AUTO_TEST_CASE(tcp_client_timeout_test) {
         _timer.expires_after(std::chrono::nanoseconds(1));
 
         // run a coroutine
-        auto _ret = co_await (_timer.async_wait(boost::asio::use_awaitable) ||
-                              _client.async_resolve(_endpoint));
+        const auto &_ret1 = co_await (_timer.async_wait(boost::asio::use_awaitable) ||
+                                      _client.async_resolve(_endpoint));
         // expect timeout
-        BOOST_REQUIRE(_ret.index() == 0);
+        BOOST_REQUIRE(_ret1.index() == 0);
 
         // run timer with 5 seconds interval
         _timer.cancel();
         _timer.expires_after(std::chrono::seconds(5));
-        _ret = co_await (_timer.async_wait(boost::asio::use_awaitable) ||
-                         _client.async_resolve("google.com", 443));
+        const auto &_ret2 = co_await (_timer.async_wait(boost::asio::use_awaitable) ||
+                                      _client.async_resolve("google.com", 443));
         // expect resolving
-        BOOST_REQUIRE(_ret.index() == 1);
+        BOOST_REQUIRE(_ret2.index() == 1);
 
         _io.stop();
 
@@ -140,12 +140,12 @@ BOOST_AUTO_TEST_CASE(tcp_read_write_test) {
         auto _timer = w_timer(_io);
 
         _timer.expires_after(_timeout);
-        auto _resolve_res = co_await (_timer.async_wait(boost::asio::use_awaitable) ||
-                                      _client.async_resolve("127.0.0.1", 8080));
+        const auto &_resolve_res = co_await (_timer.async_wait(boost::asio::use_awaitable) ||
+                                             _client.async_resolve("127.0.0.1", 8080));
         // expect resolve
         BOOST_REQUIRE(_resolve_res.index() == 1);
 
-        auto _endpoints = std::get<1>(_resolve_res);
+        auto &_endpoints = std::get<1>(_resolve_res);
         BOOST_REQUIRE(_endpoints.size() != 0);
 
         const auto _endpoint = _endpoints.cbegin()->endpoint();

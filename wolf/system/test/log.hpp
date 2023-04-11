@@ -26,11 +26,8 @@ BOOST_AUTO_TEST_CASE(log_stress_test) {
   auto _path = wolf::system::w_process::current_exe_path();
   BOOST_REQUIRE(_path.has_error() == false);
 
-  auto _p = _path.value();
-  BOOST_REQUIRE(_p.empty() == false);
-
-  const auto _log_path = _p.append("/log/");
-  const w_log_config _config = {
+  const auto &_log_path = _path.value().append("/log/");
+  w_log_config _config = {
       // create an async logger
       false,
       // enable multi-threaded feature
@@ -59,7 +56,7 @@ BOOST_AUTO_TEST_CASE(log_stress_test) {
       // start creation time for daily log
       0};
 
-  w_log _log(_config);
+  w_log _log(std::move(_config));
   const auto _ret = _log.init();
   BOOST_REQUIRE(_ret.has_error() == false);
 

@@ -14,7 +14,7 @@
 #include "DISABLE_ANALYSIS_BEGIN"
 #include <boost/asio.hpp>
 #include <boost/system/errc.hpp>
-#ifdef WOLF_SYSTEM_HTTP1_WS
+#ifdef WOLF_SYSTEM_HTTP_WS
 #include <boost/asio/experimental/awaitable_operators.hpp>
 #include <boost/beast.hpp>
 #endif
@@ -67,7 +67,7 @@ struct w_socket_options {
   }
 };
 
-#ifdef WOLF_SYSTEM_HTTP1_WS
+#ifdef WOLF_SYSTEM_HTTP_WS
 using w_ws_stream = boost::beast::websocket::stream<
     typename boost::beast::tcp_stream::rebind_executor<
         typename boost::asio::use_awaitable_t<>::executor_with_default<

@@ -14,6 +14,7 @@
 #include <fstream>
 #include <sstream>
 #include <system/w_process.hpp>
+#include <stacktrace>
 
 static void w_signal_handler(int p_signum) {
   auto _path = wolf::system::w_process::current_exe_path();
@@ -21,7 +22,7 @@ static void w_signal_handler(int p_signum) {
     return;
   }
 
-  auto _path_str = _path.value().append("wolf.dump");
+  const auto &_path_str = _path.value().append("wolf.dump");
 
   std::ignore = signal(p_signum, nullptr);
 
@@ -30,8 +31,8 @@ static void w_signal_handler(int p_signum) {
 #ifdef __clang__
 #pragma unroll
 #endif  // __clang__
-  for (const auto &trace : boost::stacktrace::stacktrace()) {
-    _traces << "name: " << trace.name() << " source_file: " << trace.source_file() << "("
+  for (const auto &trace : std::stacktrace()) {
+    _traces << "name: " << trace.description() << " source_file: " << trace.source_file() << "("
             << std::to_string(trace.source_line()) << ")\r\n";
   }
 

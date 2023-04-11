@@ -5,7 +5,7 @@
 using w_log = wolf::system::log::w_log;
 using w_log_config = wolf::system::log::w_log_config;
 
-w_log::w_log(_In_ const w_log_config &p_config) noexcept : _config(p_config) {}
+w_log::w_log(_In_ w_log_config &&p_config) noexcept : _config(std::move(p_config)) {}
 
 w_log::~w_log() noexcept {
   try {
@@ -116,10 +116,10 @@ void w_log::write(_In_ const spdlog::level::level_enum &p_level,
 }
 
 boost::leaf::result<int> w_log::flush() {
-  if (this->_logger.get() != nullptr) {
+  if (this->_logger != nullptr) {
     this->_logger->flush();
   }
-  if (this->_async_file_logger.get() != nullptr) {
+  if (this->_async_file_logger != nullptr) {
     this->_async_file_logger->flush();
   }
 

@@ -26,9 +26,9 @@
 #include <chrono>
 #include <exception>
 #include <memory>
+#include <optional>
 #include <sstream>
 #include <string>
-#include <optional>
 
 #include <boost/leaf.hpp>
 
@@ -40,14 +40,6 @@
 #endif
 
 #include <gsl/gsl>
-
-#ifdef WOLF_SYSTEM_STACKTRACE
-// disable warning 26458
-#ifdef _MSC_VER
-#pragma warning(disable : 26458)
-#endif //_MSC_VER
-#include <boost/stacktrace/stacktrace.hpp>
-#endif
 
 constexpr auto W_MAX_PATH = 260;
 constexpr auto W_MAX_BUFFER_SIZE = 1024;
@@ -116,7 +108,7 @@ struct w_buffer {
 #endif
 
 #include <wolf/system/w_trace.hpp>
-#include <ofats/invocable.h>
+#include <wolf/system/invocable.h>
 
 namespace wolf {
   template <class T>

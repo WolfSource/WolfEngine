@@ -3,79 +3,24 @@ if (WOLF_STREAM_GRPC)
     if (EMSCRIPTEN)
         message(FATAL_ERROR "the wasm32 target is not supported for WOLF_STREAM_GRPC")
     endif()
-
-    # enable zlib
-    set(WOLF_SYSTEM_ZLIB TRUE)
-
-    message("fetching https://github.com/grpc/grpc")
-    FetchContent_Declare(
-        grpc
-        GIT_REPOSITORY https://github.com/grpc/grpc
-        GIT_TAG        master
-    )
-    
-    set(ABSL_BUILD_TESTING OFF CACHE BOOL "ABSL_BUILD_TESTING")
-
-    set(gRPC_BUILD_CSHARP_EXT OFF CACHE BOOL "GRPC_BUILD_CSHARP_EXT")
-    set(gRPC_BUILD_GRPC_CPP_PLUGIN ON CACHE BOOL "gRPC_BUILD_GRPC_CPP_PLUGIN")
-    set(gRPC_BUILD_GRPC_CSHARP_PLUGIN OFF CACHE BOOL "gRPC_BUILD_GRPC_CSHARP_PLUGIN")
-    set(gRPC_BUILD_GRPC_NODE_PLUGIN OFF CACHE BOOL "gRPC_BUILD_GRPC_NODE_PLUGIN")
-    set(gRPC_BUILD_GRPC_OBJECTIVE_C_PLUGIN OFF CACHE BOOL "gRPC_BUILD_GRPC_OBJECTIVE_C_PLUGIN")
-    set(gRPC_BUILD_GRPC_PHP_PLUGIN OFF CACHE BOOL "gRPC_BUILD_GRPC_PHP_PLUGIN")
-    set(gRPC_BUILD_GRPC_PYTHON_PLUGIN OFF CACHE BOOL "gRPC_BUILD_GRPC_PYTHON_PLUGIN")
-    set(gRPC_BUILD_GRPC_RUBY_PLUGIN OFF CACHE BOOL "gRPC_BUILD_GRPC_RUBY_PLUGIN")
-    set(gRPC_BUILD_TESTS OFF CACHE BOOL "gRPC_BUILD_TESTS")
-    
-    set(RE2_BUILD_TESTING OFF CACHE BOOL "RE2_BUILD_TESTING")
-
-    set(FETCHCONTENT_QUIET OFF)
-    FetchContent_MakeAvailable(grpc)
+    vcpkg_install(asio-grpc asio-grpc TRUE)
+    list(APPEND LIBS asio-grpc::asio-grpc)
 
     file(GLOB_RECURSE WOLF_STREAM_GRPC_SRC
         "${CMAKE_CURRENT_SOURCE_DIR}/stream/grpc/*"
     )
+
     list(APPEND SRCS 
-        ${WOLF_STREAM_GRPC_SRC} 
+        ${WOLF_STREAM_GRPC_SRC}
     )
-    list(APPEND INCLUDES
-        ${grpc_SOURCE_DIR}/include
-    )
-    list(APPEND LIBS grpc)
-    
-    set_target_properties(
-        acountry 
-        address_sorting
-        adig
-        ahost
-        bssl
-        c-ares
-        crypto
-        example
-        gpr
-        grpc
-        grpc_authorization_provider
-        grpc_cpp_plugin
-        grpc_plugin_support
-        grpc_unsecure
-        grpc++
-        grpc++_alts
-        grpc++_error_details
-        grpc++_reflection
-        grpc++_unsecure
-        grpcpp_channelz
-        libprotobuf
-        libprotobuf-lite
-        libprotoc
-        minigzip
-        plugins
-        protoc
-        re2
-        ssl
-        tools
-        tools_c
-        tools_cxx
-        upb
-        PROPERTIES FOLDER "gRPC")
+
+    # TODO (Pooya): Not working
+    asio_grpc_protobuf_generate(
+        GENERATE_GRPC GENERATE_MOCK_CODE
+        OUT_VAR "RAFT_PROTO_SOURCES"
+        OUT_DIR "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/protos"
+        IMPORT_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/protos"
+        PROTOS  "${CMAKE_CURRENT_SOURCE_DIR}/protos/raft.proto")
 
 endif()
 

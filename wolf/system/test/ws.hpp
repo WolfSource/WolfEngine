@@ -3,7 +3,7 @@
     https://github.com/WolfEngine/WolfEngine
 */
 
-#if defined(WOLF_TEST) && defined(WOLF_SYSTEM_SOCKET) && defined(WOLF_SYSTEM_HTTP1_WS)
+#if defined(WOLF_TEST) && defined(WOLF_SYSTEM_SOCKET) && defined(WOLF_SYSTEM_HTTP_WS)
 
 #include <boost/test/included/unit_test.hpp>
 #include <system/w_leak_detector.hpp>
@@ -17,8 +17,6 @@
 
 BOOST_AUTO_TEST_CASE(ws_server_timeout_test) {
   const wolf::system::w_leak_detector _detector = {};
-
-  wolf::system::socket::w_ws_client_emc a;
 
   std::cout << "entering leaving test case 'ws_server_timeout_test'" << std::endl;
 
@@ -223,4 +221,4 @@ BOOST_AUTO_TEST_CASE(ws_client_timeout_test) {
 //   _io.run();
 // }
 
-#endif // defined(WOLF_TEST) && defined(WOLF_SYSTEM_SOCKET) && defined(WOLF_SYSTEM_HTTP1_WS)
+#endif // defined(WOLF_TEST) && defined(WOLF_SYSTEM_SOCKET) && defined(WOLF_SYSTEM_HTTP_WS)

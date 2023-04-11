@@ -1,4 +1,4 @@
-#if defined(WOLF_SYSTEM_HTTP1_WS) && defined(WOLF_SYSTEM_SOCKET)
+#if defined(WOLF_SYSTEM_HTTP_WS) && defined(WOLF_SYSTEM_SOCKET)
 
 #include "w_ws_client.hpp"
 
@@ -114,4 +114,4 @@ bool w_ws_client::is_open() const {
   return this->_ws->is_open();
 }
 
-#endif //defined(WOLF_SYSTEM_HTTP1_WS) && defined(WOLF_SYSTEM_SOCKET)
+#endif //defined(WOLF_SYSTEM_HTTP_WS) && defined(WOLF_SYSTEM_SOCKET)

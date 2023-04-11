@@ -68,7 +68,7 @@ class w_av_frame {
    * @returns tuple<int*[8], int[8]>
    */
   W_API
-  std::tuple<uint8_t **, int *> get() const noexcept;
+  std::tuple<uint8_t **, int> get() const noexcept;
 
   /**
    * convert the ffmpeg video AVFrame
@@ -81,8 +81,8 @@ class w_av_frame {
    * convert the ffmpeg audio AVFrame
    * @returns the converted instance of AVFrame
    */
-  // W_API
-  // boost::leaf::result<w_av_frame> convert_audio(_In_ std::unique_ptr<w_av_config> p_dst_config);
+  W_API
+  boost::leaf::result<w_av_frame> convert_audio(_In_ w_av_config &&p_dst_config);
 
   /**
    * @returns config

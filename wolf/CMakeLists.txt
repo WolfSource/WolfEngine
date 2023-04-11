@@ -5,12 +5,21 @@
 cmake_minimum_required(VERSION 3.22...3.23)
 
 # set the name of the projects
-project(wolf)
+project(wolf
+    DESCRIPTION "Wolf Engine"
+    LANGUAGES CXX
+)
+
 set(TEST_PROJECT_NAME "${PROJECT_NAME}_tests")
 message("CXX Compiler ID is ${CMAKE_CXX_COMPILER_ID}")
 
 # set the options and enviroment variables
 #set(WEBRTC_SRC $ENV{WEBRTC_ROOT} CACHE STRING "path to the root folder of webrtc folder")
+
+#define includes, libs and srcs
+set(INCLUDES)
+set(LIBS PARENT_SCOPE) 
+set(SRCS)
 
 # check the OS
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
@@ -55,6 +64,7 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 # FetchContent for cloning repositories, avaiable since CMAKE 3.11
 include(FetchContent)
+set(FETCHCONTENT_QUIET OFF)
 
 # set type of library
 set(LIBRARY_TYPE "STATIC" CACHE STRING "Library type")
@@ -66,7 +76,7 @@ set(INCLUDE_INSTALL_DIR include CACHE STRING "Install location of executables")
 
 # CMAKE GUI Options
 set(EMSDK "$ENV{EMSDK}" CACHE STRING "Emscripten SDK path")
-set(BOOST_TAG "boost-1.81.0" CACHE STRING "Boost version tag")
+set(BOOST_VERSION "1.81.0" CACHE STRING "Boost version tag")
 
 # render module
 option(WOLF_RENDER "Enable cross platform render engine based on Vulkan / OpenGL ES" OFF)
@@ -87,11 +97,11 @@ option(WOLF_STREAM_WEBRTC "Enable webRTC" OFF)
 # system modules
 option(WOLF_SYSTEM_GAMEPAD_CLIENT "Enable gamepad input handling" OFF)
 option(WOLF_SYSTEM_GAMEPAD_VIRTUAL "Enable virtual gamepad simulator" OFF)
-option(WOLF_SYSTEM_HTTP1_WS "Enable http1.1 and websocket client/server based on boost beast or Emscripten" OFF)
-option(WOLF_SYSTEM_JSON "Enable JsonCpp" OFF)
+option(WOLF_SYSTEM_HTTP_WS "Enable http1.1 and websocket client/server based on boost beast or Emscripten" OFF)
 option(WOLF_SYSTEM_LOG "Enable log" OFF)
 option(WOLF_SYSTEM_LZ4 "Enable lz4 for compression" OFF)
 option(WOLF_SYSTEM_LZMA "Enable lzma for compression" OFF)
+#option(WOLF_SYSTEM_LUA "Enable lua scripting language" OFF)
 option(WOLF_SYSTEM_MIMALLOC "Enable Microsoft's mimalloc memory allocator" OFF)
 option(WOLF_SYSTEM_POSTGRESQL "Enable postgresql database client" OFF)
 option(WOLF_SYSTEM_PYTHON "Enable embedded Python3 scripting" OFF)
@@ -157,9 +167,12 @@ endif()
 
 set(GETOPT_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/system)
 
-#define includes, libs and srcs
-set(LIBS)
-set(SRCS)
+# include cmakes
+include(cmake/vcpkg.cmake)
+include(cmake/system.cmake)
+include(cmake/stream.cmake)
+include(cmake/media.cmake)
+include(cmake/ml.cmake)
 
 if (EMSCRIPTEN)
     message(WARNING "WOLF_TEST will be disabled for Emscripten")
@@ -168,13 +181,6 @@ else()
     # currently threads was not supported with WASM
     list(APPEND LIBS Threads::Threads)
 endif()
-
-# include cmakes
-include(cmake/system.cmake)
-include(cmake/stream.cmake)
-include(cmake/media.cmake)
-include(cmake/ml.cmake)
-include(cmake/boost.cmake)
 
 # disable build testing
 set(BUILD_TESTING OFF CACHE BOOL "BUILD_TESTING")
@@ -248,9 +254,10 @@ file(GLOB_RECURSE WOLF_CMAKES
 )
 
 # includes
-include_directories(${INCLUDES}
-		    ${CMAKE_CURRENT_SOURCE_DIR} 
-		    ${CMAKE_CURRENT_SOURCE_DIR}/../
+include_directories(
+    ${INCLUDES}
+	${CMAKE_CURRENT_SOURCE_DIR} 
+	${CMAKE_CURRENT_SOURCE_DIR}/../
 )
 
 # add source codes
@@ -278,6 +285,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC ${LIBS})
 # create source group
 source_group("wolf" FILES ${WOLF_SRCS})
 source_group("cmake" FILES ${WOLF_CMAKES})
+source_group("stream/grpc" FILES ${WOLF_STREAM_GRPC_SRC})
 source_group("stream/janus" FILES ${WOLF_STREAM_JANUS_SRC})
 source_group("stream/test" FILES ${WOLF_STREAM_TEST_SRC})
 source_group("stream/quic" FILES ${WOLF_STREAM_QUIC_SRC})
@@ -292,8 +300,8 @@ source_group("stream" FILES ${WOLF_STREAM_SRC})
 source_group("system/gamepad" FILES ${WOLF_SYSTEM_GAMEPAD_CLIENT_SRC} ${WOLF_SYSTEM_GAMEPAD_VIRTUAL_SRCS})
 source_group("system/log" FILES ${WOLF_SYSTEM_LOG_SRC})
 source_group("system/compression" FILES ${WOLF_SYSTEM_LZ4_SRCS} ${WOLF_SYSTEM_LZMA_SRCS})
-source_group("system/script" FILES ${WOLF_SYSTEM_LUAJIT_SRC})
-source_group("system/socket" FILES ${WOLF_SYSTEM_SOCKET_SRC})
+source_group("system/script" FILES ${WOLF_SYSTEM_LUA_SRC})
+source_group("system/socket" FILES ${WOLF_SYSTEM_SOCKET_SRC} ${WOLF_SYSTEM_HTTP_WS_SRC})
 source_group("system/test" FILES ${WOLF_SYSTEM_TEST_SRC})
 source_group("system" FILES ${WOLF_SYSTEM_SRC})
 source_group("media/test" FILES ${WOLF_MEDIA_TEST_SRC})

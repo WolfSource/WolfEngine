@@ -1,4 +1,4 @@
-#if defined(WOLF_SYSTEM_HTTP1_WS) && defined(WOLF_SYSTEM_SOCKET)
+#if defined(WOLF_SYSTEM_HTTP_WS) && defined(WOLF_SYSTEM_SOCKET)
 
 #pragma once
 
@@ -28,4 +28,4 @@ public:
 };
 } // namespace wolf::system::socket
 
-#endif // defined(WOLF_SYSTEM_HTTP1_WS) && defined(WOLF_SYSTEM_SOCKET)
+#endif // defined(WOLF_SYSTEM_HTTP_WS) && defined(WOLF_SYSTEM_SOCKET)

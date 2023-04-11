@@ -1,4 +1,4 @@
-#if defined(WOLF_SYSTEM_HTTP1_WS) && defined(WOLF_SYSTEM_SOCKET)
+#if defined(WOLF_SYSTEM_HTTP_WS) && defined(WOLF_SYSTEM_SOCKET)
 
 #include "w_ws_server.hpp"
 
@@ -129,4 +129,4 @@ boost::leaf::result<int> w_ws_server::run(
   }
 }
 
-#endif //defined(WOLF_SYSTEM_HTTP1_WS) && defined(WOLF_SYSTEM_SOCKET)
+#endif //defined(WOLF_SYSTEM_HTTP_WS) && defined(WOLF_SYSTEM_SOCKET)
