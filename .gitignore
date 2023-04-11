@@ -23,6 +23,7 @@
 
 /bin/*
 /build/*
+/build_/*
 /coverage/*
 /install/*
 
