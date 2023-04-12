@@ -37,7 +37,8 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Get VCPKG
-        uses: lukka/run-vcpkg@v11
+        uses: friendlyanon/setup-vcpkg@v1
+        with: { committish: 63aa65e65b9d2c08772ea15d25fb8fdb0d32e557 }
 
       - name: Get SW
         uses: egorpugin/sw-action@master
