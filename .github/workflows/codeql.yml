@@ -44,9 +44,6 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Get VCPKG
-      uses: lukka/run-vcpkg@v11
-
     # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v2
@@ -68,6 +65,9 @@ jobs:
     - name: Configure CMake
       run: cmake -B ${{ env.build }}
         
+    - name: Get VCPKG
+      uses: lukka/run-vcpkg@v11
+      
     # Build is not required for MSVC Code Analysis and will be used for Codecov
     - name: Build CMake
       run: cmake --build ${{ env.build }}
