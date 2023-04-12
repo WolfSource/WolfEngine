@@ -27,34 +27,33 @@ BOOST_AUTO_TEST_CASE(log_stress_test) {
   BOOST_REQUIRE(_path.has_error() == false);
 
   const auto &_log_path = _path.value().append("/log/");
-  w_log_config _config = {
-      // create an async logger
-      false,
-      // enable multi-threaded feature
-      true,
-      // the path of log file
-      _log_path,
-      // the log level
-      spdlog::level::level_enum::debug,
-      // the flush level
-      spdlog::level::level_enum::debug,
+  w_log_config _config = {// create an async logger
+                          false,
+                          // enable multi-threaded feature
+                          true,
+                          // the path of log file
+                          _log_path,
+                          // the log level
+                          spdlog::level::level_enum::debug,
+                          // the flush level
+                          spdlog::level::level_enum::debug,
   // the sinks of log
 #ifdef _MSC_VER
-      w_log_sink::VISUAL_STUDIO | w_log_sink::CONSOLE,
+                          w_log_sink::VISUAL_STUDIO | w_log_sink::CONSOLE,
 #else
-      w_log_sink::CONSOLE,
+                          w_log_sink::CONSOLE,
 #endif
-      // max file size in Mb (e.g. maximum 100 log files * with size of 100 Mb
-      // file)
-      100 * 1048576,
-      // max number of files
-      10,
-      // rotate file on open
-      false,
-      // start creation time for daily log
-      0,
-      // start creation time for daily log
-      0};
+                          // max file size in Mb (e.g. maximum 100 log files * with size of 100 Mb
+                          // file)
+                          100 * 1048576,
+                          // max number of files
+                          10,
+                          // rotate file on open
+                          false,
+                          // start creation time for daily log
+                          0,
+                          // start creation time for daily log
+                          0};
 
   w_log _log(std::move(_config));
   const auto _ret = _log.init();

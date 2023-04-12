@@ -14,7 +14,7 @@ execute_process(COMMAND vcpkg install
     boost-beast 
     boost-leaf 
     boost-signals2 
-    boost-test --triplet=${vcpkg_triplet}) 
+    boost-test --triplet=${vcpkg_triplet}-static) 
 find_package(Boost ${Boost_VERSION} REQUIRED)
 list(APPEND INCLUDES ${Boost_INCLUDE_DIR})
 

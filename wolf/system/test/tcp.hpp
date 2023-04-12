@@ -55,7 +55,8 @@ BOOST_AUTO_TEST_CASE(tcp_server_timeout_test) {
         return {};
       },
       [](const w_trace &p_trace) {
-        const auto _msg = wolf::format("tcp_server_timeout_test got an error : {}", p_trace.to_string());
+        const auto _msg =
+            wolf::format("tcp_server_timeout_test got an error : {}", p_trace.to_string());
         BOOST_ERROR(_msg);
       },
       [] { BOOST_ERROR("tcp_server_timeout_test got an error!"); });
