@@ -36,6 +36,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Get VCPKG
+        uses: lukka/run-vcpkg@v11
+
       - name: Get SW
         uses: egorpugin/sw-action@master
 
