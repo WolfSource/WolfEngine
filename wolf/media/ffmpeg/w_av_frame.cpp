@@ -25,7 +25,6 @@ void w_av_frame::_release() noexcept {
     if (this->_config.nb_channels > 0) {
       av_channel_layout_uninit(&this->_av_frame->ch_layout);
     }
-    av_freep(&this->_av_frame[0]);
   }
 }
 
@@ -185,6 +184,39 @@ boost::leaf::result<w_av_frame> w_av_frame::convert_audio(_In_ w_av_config &&p_d
   if (_buffer_size < 0) {
     _ret = -1;
     return W_FAILURE(std::errc::operation_canceled, "could not get sample buffer size\n");
+  }
+
+  return _dst_frame;
+}
+
+boost::leaf::result<w_av_frame> w_av_frame::convert_video(_In_ w_av_config &&p_dst_config) {
+  // create a buffer and dst frame
+  auto _video_buffer = std::vector<uint8_t>();
+  auto _dst_frame = w_av_frame(std::move(p_dst_config));
+  BOOST_LEAF_CHECK(_dst_frame.init());
+  BOOST_LEAF_CHECK(_dst_frame.set_video_frame(std::move(_video_buffer)));
+
+  auto *_context = sws_getContext(
+      this->_config.width, this->_config.height, this->_config.format, _dst_frame._config.width,
+      _dst_frame._config.height, _dst_frame._config.format, SWS_BICUBIC, nullptr, nullptr, nullptr);
+  if (_context == nullptr) {
+    return W_FAILURE(std::errc::not_enough_memory, "could not create sws context");
+  }
+
+  auto _dst_frame_nn = gsl::not_null<AVFrame *>(_dst_frame._av_frame);
+  const auto _height =
+      sws_scale(_context, gsl::narrow_cast<const uint8_t *const *>(this->_av_frame->data),
+                gsl::narrow_cast<const int *>(this->_av_frame->linesize), 0, this->_config.height,
+                gsl::narrow_cast<uint8_t *const *>(_dst_frame_nn->data),
+                gsl::narrow_cast<const int *>(_dst_frame_nn->linesize));
+
+  // free context
+  sws_freeContext(_context);
+
+  if (_height < 0) {
+    return W_FAILURE(
+        std::errc::invalid_argument,
+        "w_av_frame sws_scale failed because: \"" + w_ffmpeg_ctx::get_av_error_str(_height) + "\"");
   }
 
   return _dst_frame;
