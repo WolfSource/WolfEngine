@@ -86,6 +86,7 @@ option(WOLF_MEDIA_FFMPEG "Enable ffmpeg encoding and decoding" OFF)
 option(WOLF_MEDIA_OPENAL "Enable OpenAL soft" OFF)
 option(WOLF_MEDIA_SCREEN_CAPTURE "Enable screen capture" OFF)
 option(WOLF_MEDIA_STB "Enable stb headers" OFF)
+option(WOLF_MEDIA_GSTREAMER "Enable gstreamer wrapper" OFF)
 
 # stream modules
 option(WOLF_STREAM_GRPC   "Enable gRPC connection" OFF)

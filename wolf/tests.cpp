@@ -50,6 +50,7 @@ BOOST_AUTO_TEST_CASE(wolf_test) {
 //#include <wolf/media/test/ffmpeg.hpp>
 //#include <wolf/media/test/image.hpp>
 //#include <wolf/media/test/openal.hpp>
+#include <wolf/media/test/gstreamer.hpp>
 
 #pragma endregion
 
