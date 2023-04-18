@@ -12,7 +12,7 @@
 #include <stdexcept>
 #include <utility>
 
-namespace wolf::gst {
+namespace wolf::media::gst {
 
 /**
  * wrapper of GstAudioInfo.
@@ -65,4 +65,4 @@ private:
     {}
 };
 
-}  // namespace wolf::gst
+}  // namespace wolf::media::gst

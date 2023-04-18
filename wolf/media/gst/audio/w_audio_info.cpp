@@ -1,6 +1,6 @@
 #include "media/gst/audio/w_audio_info.hpp"
 
-namespace wolf::gst {
+namespace wolf::media::gst {
 
 auto w_audio_info::make(w_audio_format p_format, size_t p_channels, size_t p_samples)
     -> boost::leaf::result<wolf::gst::w_audio_info>
@@ -22,4 +22,4 @@ auto w_audio_info::make(w_audio_format p_format, size_t p_channels, size_t p_sam
     return w_audio_info(internal::w_raw_tag{}, audioinfo_raw);
 }
 
-}  // namespace wolf::gst
+}  // namespace wolf::media::gst

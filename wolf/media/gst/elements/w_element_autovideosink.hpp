@@ -4,7 +4,7 @@
 
 #include <gst/gst.h>
 
-namespace wolf::gst {
+namespace wolf::media::gst {
 
 /**
  * @brief wrappper of audiovideosink gstreamer element.
@@ -26,4 +26,4 @@ private:
     {}
 };
 
-}  // namespace wolf::gst
+}  // namespace wolf::media::gst

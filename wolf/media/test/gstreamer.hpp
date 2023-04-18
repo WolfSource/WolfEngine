@@ -23,7 +23,7 @@
 #include <thread>
 
 BOOST_AUTO_TEST_CASE(gstreamer_wrapper) {
-    namespace gst = wolf::gst;
+    namespace gst = wolf::media::gst;
 
     boost::leaf::try_handle_all(
         []() -> boost::leaf::result<void> {

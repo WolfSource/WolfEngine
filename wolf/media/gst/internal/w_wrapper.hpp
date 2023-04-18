@@ -7,7 +7,7 @@
 #include <memory>
 #include <utility>
 
-namespace wolf::gst {
+namespace wolf::media::gst {
 
 /**
  * the w_wrapper is helper CRTP class wrapping given raw C type pointer,
@@ -110,4 +110,4 @@ private:
     std::unique_ptr<underlying_type, internal::w_functor<FreeFV>> _ptr;
 };
 
-}  // namespace wolf::gst
+}  // namespace wolf::media::gst

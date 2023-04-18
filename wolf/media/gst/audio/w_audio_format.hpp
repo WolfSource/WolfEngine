@@ -2,7 +2,7 @@
 
 #include <gst/audio/audio-format.h>
 
-namespace wolf::gst {
+namespace wolf::media::gst {
 
 /**
  * enum same as GstAudioFormat.
@@ -36,4 +36,4 @@ enum class w_audio_format
     F64BE = GST_AUDIO_FORMAT_F64BE
 };
 
-}  // namespace wolf::gst
+}  // namespace wolf::media::gst

@@ -9,7 +9,7 @@
 #include <cstddef>
 #include <stdexcept>
 
-namespace wolf::gst {
+namespace wolf::media::gst {
 
 /**
  * @brief read/write map flags.
@@ -189,4 +189,4 @@ private:
     {}
 };
 
-}  // namespace wolf::gst
+}  // namespace wolf::media::gst

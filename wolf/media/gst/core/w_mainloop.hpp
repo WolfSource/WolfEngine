@@ -11,7 +11,7 @@
 #include <utility>
 #include <vector>
 
-namespace wolf::gst {
+namespace wolf::media::gst {
 
 /**
  * @brief wrapper of GMainLoop, GLib's mainloop/eventloop facility.
@@ -80,4 +80,4 @@ private:
     {}
 };
 
-}  // namespace wolf::gst
+}  // namespace wolf::media::gst

@@ -7,7 +7,7 @@
 
 #include <utility>
 
-namespace wolf::gst {
+namespace wolf::media::gst {
 
 /** gstreamer pad availablity */
 enum class w_availability
@@ -36,4 +36,4 @@ private:
     {}
 };
 
-}  // namespace wolf::gst
+}  // namespace wolf::media::gst

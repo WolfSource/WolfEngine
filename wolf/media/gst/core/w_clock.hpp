@@ -4,7 +4,7 @@
 
 #include <gst/gst.h>
 
-namespace wolf::gst {
+namespace wolf::media::gst {
 
 /**
  * @brief wrapper of GstClock.
@@ -33,4 +33,4 @@ private:
     {}
 };
 
-}  // namespace wolf::gst
+}  // namespace wolf::media::gst

@@ -12,7 +12,7 @@
 #include <string_view>
 #include <stdexcept>
 
-namespace wolf::gst {
+namespace wolf::media::gst {
 
 /**
  * @brief wrapper of GstElement, providing gstreamer pipeline concept.
@@ -141,4 +141,4 @@ private:
     {}
 };
 
-}  // namespace wolf::gst
+}  // namespace wolf::media::gst

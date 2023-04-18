@@ -1,6 +1,6 @@
 #include "media/gst/core/w_pipeline.hpp"
 
-namespace wolf::gst {
+namespace wolf::media::gst {
 
 auto wolf::gst::w_pipeline::make(const char *p_name)
     -> boost::leaf::result<wolf::gst::w_pipeline>
@@ -48,4 +48,4 @@ bool w_pipeline::link(w_flow_path &p_flow)
     return true;
 }
 
-}  // namespace wolf::gst
+}  // namespace wolf::media::gst

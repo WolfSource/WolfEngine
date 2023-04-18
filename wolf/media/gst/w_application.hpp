@@ -2,7 +2,7 @@
 
 #include <gst/gst.h>
 
-namespace wolf::gst {
+namespace wolf::media::gst {
 
 /**
  * @brief a gstreamer application.
@@ -19,4 +19,4 @@ public:
     }
 };
 
-}  // namespace wolf::gst
+}  // namespace wolf::media::gst

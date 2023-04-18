@@ -9,7 +9,7 @@
 #include <utility>
 #include <stdexcept>
 
-namespace wolf::gst {
+namespace wolf::media::gst {
 
 /**
  * @brief gstreamer's element factory to create elements.
@@ -53,4 +53,4 @@ public:
     }
 };
 
-}  // namespace wolf::gst
+}  // namespace wolf::media::gst

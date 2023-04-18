@@ -2,7 +2,7 @@
 
 #include <gst/gst.h>
 
-namespace wolf::gst {
+namespace wolf::media::gst {
 
 /** wrapper of GstFormat */
 enum class w_format
@@ -15,4 +15,4 @@ enum class w_format
     Percent = GST_FORMAT_PERCENT
 };
 
-}  // namespace wolf::gst
+}  // namespace wolf::media::gst

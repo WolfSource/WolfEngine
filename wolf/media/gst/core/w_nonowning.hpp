@@ -4,7 +4,7 @@
 
 #include <utility>
 
-namespace wolf::gst {
+namespace wolf::media::gst {
 
 /**
  * @brief nonowning view of `T` pointing to same resource
@@ -68,4 +68,4 @@ private:
 };
 
 
-}  // namespace wolf::gst
+}  // namespace wolf::media::gst

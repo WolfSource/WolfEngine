@@ -8,7 +8,7 @@
 #include <utility>
 #include <stdexcept>
 
-namespace wolf::gst {
+namespace wolf::media::gst {
 
 /**
  * @brief internal signal handler to use in signallable wrappers.
@@ -120,4 +120,4 @@ private:
     handlerid_type _handlerid{};
 };
 
-}  // namespace wolf::gst
+}  // namespace wolf::media::gst

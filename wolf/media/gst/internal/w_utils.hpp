@@ -2,7 +2,7 @@
 
 #include <utility>
 
-namespace wolf::gst::internal {
+namespace wolf::media::gst::internal {
 
 /**
  * @brief The famous overloaded pattern to overload several callables, e.g. lambdas.
@@ -57,4 +57,4 @@ public:
     }
 };
 
-}  // namespace wolf::gst::internal
+}  // namespace wolf::media::gst::internal

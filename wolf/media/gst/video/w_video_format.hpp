@@ -2,7 +2,7 @@
 
 #include <gst/video/video-format.h>
 
-namespace wolf::gst {
+namespace wolf::media::gst {
 
 /**
  * enum same as GstVideoFormat.
@@ -16,4 +16,4 @@ enum class w_video_format
     // ...
 };
 
-}  // namespace wolf::gst
+}  // namespace wolf::media::gst

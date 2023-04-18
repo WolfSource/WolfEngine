@@ -1,6 +1,6 @@
 #include "media/gst/core/w_element.hpp"
 
-namespace wolf::gst {
+namespace wolf::media::gst {
 
 auto w_element::make(const char *p_factory_name) -> boost::leaf::result<wolf::gst::w_element>
 {
@@ -26,4 +26,4 @@ auto w_element::make(const char *p_factory_name) -> boost::leaf::result<wolf::gs
     return w_element(internal::w_raw_tag{}, element_raw);
 }
 
-}  // namespace wolf::gst
+}  // namespace wolf::media::gst

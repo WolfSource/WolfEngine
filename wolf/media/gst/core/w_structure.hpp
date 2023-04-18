@@ -9,7 +9,7 @@
 #include <string_view>
 #include <concepts>
 
-namespace wolf::gst {
+namespace wolf::media::gst {
 
 struct w_fraction
 {
@@ -83,4 +83,4 @@ private:
     {}
 };
 
-}  // namespace wolf::gst
+}  // namespace wolf::media::gst

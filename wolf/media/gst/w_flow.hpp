@@ -7,7 +7,7 @@
 #include <memory>
 #include <utility>
 
-namespace wolf::gst {
+namespace wolf::media::gst {
 
 /**
  * @brief a container of w_refptr<w_element> representing a path in a pipeline flow.
@@ -59,4 +59,4 @@ private:
     std::vector<w_refptr<w_element>> _vec;
 };
 
-}  // namespace wolf::gst
+}  // namespace wolf::media::gst

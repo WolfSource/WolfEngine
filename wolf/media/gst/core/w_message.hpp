@@ -7,7 +7,7 @@
 
 #include <utility>
 
-namespace wolf::gst {
+namespace wolf::media::gst {
 
 class w_message;
 
@@ -140,4 +140,4 @@ private:
     }
 };
 
-}  // namespace wolf::gst
+}  // namespace wolf::media::gst

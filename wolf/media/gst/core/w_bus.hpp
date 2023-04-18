@@ -6,7 +6,7 @@
 
 #include <gst/gst.h>
 
-namespace wolf::gst {
+namespace wolf::media::gst {
 
 /**
  * @brief wrapper of GstBus. a bus to send messages to and notify listeners.
@@ -92,4 +92,4 @@ private:
     std::size_t _watch_count = 0;
 };
 
-}  // namespace wolf::gst
+}  // namespace wolf::media::gst

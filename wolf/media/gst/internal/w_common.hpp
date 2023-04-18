@@ -2,7 +2,7 @@
 
 #include <utility>
 
-namespace wolf::gst::internal {
+namespace wolf::media::gst::internal {
 
 /** tag to indicate having a raw pointer in the context. */
 struct w_raw_tag {};
@@ -54,4 +54,4 @@ public:
     }
 };
 
-}  // namespace wolf::gst::internal
+}  // namespace wolf::media::gst::internal

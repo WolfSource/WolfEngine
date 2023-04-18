@@ -7,7 +7,7 @@
 
 #include <gst/gst.h>
 
-namespace wolf::gst {
+namespace wolf::media::gst {
 
 /**
  * @brief wrappper of appsrc gstreamer element.
@@ -131,4 +131,4 @@ private:
     } _sighandlers;
 };
 
-}  // namespace wolf::gst
+}  // namespace wolf::media::gst

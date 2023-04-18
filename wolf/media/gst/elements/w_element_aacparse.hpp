@@ -2,7 +2,7 @@
 
 #include "media/gst/core/w_element.hpp"
 
-namespace wolf::gst {
+namespace wolf::media::gst {
 
 /**
  * @brief wrappper of aacparse gstreamer element.
@@ -24,4 +24,4 @@ private:
     {}
 };
 
-}  // namespace wolf::gst
+}  // namespace wolf::media::gst

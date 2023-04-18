@@ -11,7 +11,7 @@
 
 #include <stdexcept>
 
-namespace wolf::gst {
+namespace wolf::media::gst {
 
 /**
  * @brief wrapper of GstElement, gstreamer elements process stream data.
@@ -82,4 +82,4 @@ private:
     {}
 };
 
-}  // namespace wolf::gst
+}  // namespace wolf::media::gst

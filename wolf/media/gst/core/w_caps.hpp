@@ -10,7 +10,7 @@
 
 #include <string_view>
 
-namespace wolf::gst {
+namespace wolf::media::gst {
 
 /**
  * @brief wrapper of GstCaps, gstreamer capabilities concept.
@@ -83,4 +83,4 @@ private:
     {}
 };
 
-}  // namespace wolf::gst
+}  // namespace wolf::media::gst

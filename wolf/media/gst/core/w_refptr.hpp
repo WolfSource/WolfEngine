@@ -5,7 +5,7 @@
 #include <type_traits>
 #include <memory>
 
-namespace wolf::gst {
+namespace wolf::media::gst {
 
 /**
  * shared ref-counting smart pointer of given `T`.
@@ -47,4 +47,4 @@ inline w_refptr<T> to_refptr(w_refptr<T> p_value)
 //    return to_refptr<T>(std::move(*p_value));
 //}
 
-}  // namespace wolf::gst
+}  // namespace wolf::media::gst
