@@ -308,6 +308,7 @@ source_group("media/test" FILES ${WOLF_MEDIA_TEST_SRC})
 source_group("media/ffmpeg" FILES ${WOLF_MEDIA_FFMPEG_SRC})
 source_group("media" FILES ${WOLF_MEDIA_OPENAL_SRC} ${WOLF_MEDIA_STB_SRC})
 source_group("ml/referee_ocr" FILES ${WOLF_ML_OCR_SRC})
+source_group("ml/nudity_detection" FILES ${WOLF_ML_NUD_DET_SRC})
 
 # add compile options
 if (NOT WIN32)
