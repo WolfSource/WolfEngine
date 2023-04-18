@@ -1,5 +1,4 @@
 if(WOLF_ML_OCR)
-
     if(LINUX)
         # fetch leptonica
         message("fetching https://github.com/DanBloomberg/leptonica.git")
@@ -12,9 +11,9 @@ if(WOLF_ML_OCR)
         )
         FetchContent_Populate(leptonica)
 
-        add_custom_command(OUTPUT lept_config.out COMMAND cmake -B ${leptonica_BINARY_DIR} -DBUILD_SHARED_LIBS=1 -DCMAKE_INSTALL_PREFIX:PATH=${leptonica_BINARY_DIR}/install ${leptonica_SOURCE_DIR} )
+        add_custom_command(OUTPUT lept_config.out COMMAND cmake -B ${leptonica_BINARY_DIR} -DBUILD_SHARED_LIBS=1 -DCMAKE_INSTALL_PREFIX:PATH=${leptonica_BINARY_DIR}/install ${leptonica_SOURCE_DIR})
         add_custom_target(lept_config ALL DEPENDS lept_config.out)
-        add_custom_command(OUTPUT lept_build.out COMMAND cmake --build ${leptonica_BINARY_DIR} --target install )
+        add_custom_command(OUTPUT lept_build.out COMMAND cmake --build ${leptonica_BINARY_DIR} --target install)
         add_custom_target(lept_build ALL DEPENDS lept_build.out)
     endif()
 
@@ -60,8 +59,8 @@ if(WOLF_ML_OCR)
         FetchContent_Populate(tesseract)
 
         list(APPEND INCLUDES
-        ${tesseract_SOURCE_DIR}/include
-        ${tesseract_BINARY_DIR}/install/include
+            ${tesseract_SOURCE_DIR}/include
+            ${tesseract_BINARY_DIR}/install/include
         )
 
         link_directories(${tesseract_BINARY_DIR}/install/lib)
@@ -69,9 +68,9 @@ if(WOLF_ML_OCR)
             tesseract
         )
 
-        add_custom_command(OUTPUT tess_config.out COMMAND cmake -B ${tesseract_BINARY_DIR} -DBUILD_SHARED_LIBS=1 -DBUILD_TESTS=OFF -DBUILD_TRAINING_TOOLS=OFF -DDISABLE_ARCHIVE=ON -DDISABLE_CURL=ON -DFAST_FLOAT=ON -DGRAPHICS_DISABLED=ON -DINSTALL_CONFIGS=OFF -DLeptonica_DIR=${leptonica_BINARY_DIR} -DCMAKE_INSTALL_PREFIX:PATH=${tesseract_BINARY_DIR}/install ${tesseract_SOURCE_DIR} )
+        add_custom_command(OUTPUT tess_config.out COMMAND cmake -B ${tesseract_BINARY_DIR} -DBUILD_SHARED_LIBS=1 -DBUILD_TESTS=OFF -DBUILD_TRAINING_TOOLS=OFF -DDISABLE_ARCHIVE=ON -DDISABLE_CURL=ON -DFAST_FLOAT=ON -DGRAPHICS_DISABLED=ON -DINSTALL_CONFIGS=OFF -DLeptonica_DIR=${leptonica_BINARY_DIR} -DCMAKE_INSTALL_PREFIX:PATH=${tesseract_BINARY_DIR}/install ${tesseract_SOURCE_DIR})
         add_custom_target(tess_config ALL DEPENDS tess_config.out)
-        add_custom_command(OUTPUT tess_build.out COMMAND cmake --build ${tesseract_BINARY_DIR} --target install )
+        add_custom_command(OUTPUT tess_build.out COMMAND cmake --build ${tesseract_BINARY_DIR} --target install)
         add_custom_target(tess_build ALL DEPENDS tess_build.out)
     endif()
 
@@ -105,11 +104,11 @@ if(WOLF_ML_OCR)
             ${opencv_SOURCE_DIR}/modules/videoio/include
         )
         list(APPEND LIBS
-           ${opencv_BINARY_DIR}/lib/${CMAKE_BUILD_TYPE}/opencv_core454${DEBUG_LIB_EXTENTION}.lib
-           ${opencv_BINARY_DIR}/lib/${CMAKE_BUILD_TYPE}/opencv_highgui454${DEBUG_LIB_EXTENTION}.lib
-           ${opencv_BINARY_DIR}/lib/${CMAKE_BUILD_TYPE}/opencv_imgcodecs454${DEBUG_LIB_EXTENTION}.lib
-           ${opencv_BINARY_DIR}/lib/${CMAKE_BUILD_TYPE}/opencv_imgproc454${DEBUG_LIB_EXTENTION}.lib
-           ${opencv_BINARY_DIR}/lib/${CMAKE_BUILD_TYPE}/opencv_videoio454${DEBUG_LIB_EXTENTION}.lib
+            ${opencv_BINARY_DIR}/lib/${CMAKE_BUILD_TYPE}/opencv_core454${DEBUG_LIB_EXTENTION}.lib
+            ${opencv_BINARY_DIR}/lib/${CMAKE_BUILD_TYPE}/opencv_highgui454${DEBUG_LIB_EXTENTION}.lib
+            ${opencv_BINARY_DIR}/lib/${CMAKE_BUILD_TYPE}/opencv_imgcodecs454${DEBUG_LIB_EXTENTION}.lib
+            ${opencv_BINARY_DIR}/lib/${CMAKE_BUILD_TYPE}/opencv_imgproc454${DEBUG_LIB_EXTENTION}.lib
+            ${opencv_BINARY_DIR}/lib/${CMAKE_BUILD_TYPE}/opencv_videoio454${DEBUG_LIB_EXTENTION}.lib
         )
     elseif(LINUX)
         FetchContent_Populate(opencv)
@@ -125,9 +124,9 @@ if(WOLF_ML_OCR)
             ${opencv_BINARY_DIR}/install/lib/libopencv_videoio.so
         )
 
-        add_custom_command(OUTPUT opencv_config.out COMMAND cmake -B ${opencv_BINARY_DIR} -DBUILD_LIST=core,highgui,videoio -DBUILD_opencv_python3=OFF -DWITH_IPP=OFF -DBUILD_EXAMPLES=OFF -DOPENCV_GENERATE_PKGCONFIG=ON -DCMAKE_INSTALL_PREFIX:PATH=${opencv_BINARY_DIR}/install ${opencv_SOURCE_DIR} )
+        add_custom_command(OUTPUT opencv_config.out COMMAND cmake -B ${opencv_BINARY_DIR} -DBUILD_LIST=core,highgui,videoio -DBUILD_opencv_python3=OFF -DWITH_IPP=OFF -DBUILD_EXAMPLES=OFF -DOPENCV_GENERATE_PKGCONFIG=ON -DCMAKE_INSTALL_PREFIX:PATH=${opencv_BINARY_DIR}/install ${opencv_SOURCE_DIR})
         add_custom_target(opencv_config ALL DEPENDS opencv_config.out)
-        add_custom_command(OUTPUT opencv_build.out COMMAND cmake --build ${opencv_BINARY_DIR} --target install )
+        add_custom_command(OUTPUT opencv_build.out COMMAND cmake --build ${opencv_BINARY_DIR} --target install)
         add_custom_target(opencv_build ALL DEPENDS opencv_build.out)
     endif()
 
@@ -153,5 +152,45 @@ if(WOLF_ML_OCR)
 
     list(APPEND SRCS
         ${WOLF_ML_OCR_SRC}
+    )
+endif()
+
+if(WOLF_ML_NUDITY_DETECTION)
+    # Set the C++ standard for the rest of the project
+    set(CMAKE_CXX_STANDARD 17)
+    set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+    # Find Torch package
+    find_package(Torch REQUIRED)
+
+    # Set the C++ standard for the rest of the project
+    set(CMAKE_CXX_STANDARD 23)
+    set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+    find_package(OpenCV REQUIRED)
+
+    list(APPEND INCLUDES
+        ${OpenCV_INCLUDE_DIRS}
+    )
+
+    list(APPEND LIBS
+        ${TORCH_LIBRARIES}
+        ${OpenCV_LIBS}
+    )
+
+    file(GLOB_RECURSE WOLF_ML_SHARED_SRC
+        "${CMAKE_CURRENT_SOURCE_DIR}/ml/w_common.*"
+    )
+
+    list(APPEND SRCS
+        ${WOLF_ML_SHARED_SRC}
+    )
+
+    file(GLOB_RECURSE WOLF_ML_NUD_DET_SRC
+        "${CMAKE_CURRENT_SOURCE_DIR}/ml/nudity_detection/*"
+    )
+
+    list(APPEND SRCS
+        ${WOLF_ML_NUD_DET_SRC}
     )
 endif()
