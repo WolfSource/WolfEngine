@@ -3,7 +3,7 @@ if (WOLF_STREAM_GRPC)
     if (EMSCRIPTEN)
         message(FATAL_ERROR "the wasm32 target is not supported for WOLF_STREAM_GRPC")
     endif()
-    vcpkg_install(asio-grpc asio-grpc TRUE)
+    vcpkg_install(asio-grpc asio-grpc)
     list(APPEND LIBS asio-grpc::asio-grpc)
 
     file(GLOB_RECURSE WOLF_STREAM_GRPC_SRC

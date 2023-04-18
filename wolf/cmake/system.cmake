@@ -3,27 +3,38 @@ if (WOLF_SYSTEM_MIMALLOC)
     if (EMSCRIPTEN)
         message(FATAL_ERROR "the wasm32 target is not supported for WOLF_SYSTEM_MIMALLOC")
     endif()
-    vcpkg_install(mimalloc mimalloc TRUE)
-    list(APPEND LIBS mimalloc-static)
+    vcpkg_install(mimalloc mimalloc)
+    if (LIBRARY_TYPE STREQUAL "STATIC")
+        list(APPEND LIBS mimalloc-static)
+    else()
+        list(APPEND LIBS mimalloc)
+    endif()
 endif()
 
 # install boost leaf
 set(Boost_USE_STATIC_LIBS ON)  # only find static libs
+if (LIBRARY_TYPE STREQUAL "STATIC")
+    set(triplet ${vcpkg_triplet}-static)
+else()
+    set(triplet ${vcpkg_triplet})
+endif()
+# fetch boost via vcpkg
 execute_process(COMMAND vcpkg install 
     boost-asio 
     boost-beast 
     boost-leaf 
     boost-signals2 
-    boost-test --triplet=${vcpkg_triplet}-static) 
-find_package(Boost ${Boost_VERSION} REQUIRED)
+    boost-test --triplet=${triplet})
+set(Boost_INCLUDE_DIR $ENV{VCPKG_ROOT}/installed/${triplet}/include CACHE STRING "vcpkg target triplet" FORCE)
 list(APPEND INCLUDES ${Boost_INCLUDE_DIR})
+find_package(Boost ${Boost_VERSION} REQUIRED)
 
 # install gsl
-vcpkg_install(Microsoft.GSL ms-gsl TRUE)
+vcpkg_install(Microsoft.GSL ms-gsl)
 list(APPEND LIBS Microsoft.GSL::GSL)
 
 if (NOT CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-    vcpkg_install(fmt fmt TRUE)
+    vcpkg_install(fmt fmt)
     list(APPEND LIBS fmt::fmt)
 endif()
 
@@ -118,7 +129,7 @@ if (WOLF_SYSTEM_LOG)
         message(FATAL_ERROR "the wasm32 target is not supported for WOLF_SYSTEM_LOG")
     endif()
 
-    vcpkg_install(spdlog spdlog TRUE)
+    vcpkg_install(spdlog spdlog)
     list(APPEND LIBS spdlog::spdlog spdlog::spdlog_header_only)
 
     file(GLOB_RECURSE WOLF_SYSTEM_LOG_SRC
@@ -131,7 +142,7 @@ if (WOLF_SYSTEM_LZ4)
   if (EMSCRIPTEN)
         message(FATAL_ERROR "the wasm32 target is not supported for WOLF_SYSTEM_LZ4")
   endif()
-  vcpkg_install(lz4 lz4 TRUE)
+  vcpkg_install(lz4 lz4)
   list(APPEND LIBS lz4::lz4)
 
   file(GLOB_RECURSE WOLF_SYSTEM_LZ4_SRCS
@@ -167,7 +178,7 @@ endif()
 if (WOLF_SYSTEM_SOCKET AND NOT EMSCRIPTEN)
     find_package(Boost ${BOOST_VERSION})
     if(NOT Boost_FOUND)
-        vcpkg_install(boost boost-asio TRUE)
+        vcpkg_install(boost boost-asio)
     endif()
     
     file(GLOB_RECURSE WOLF_SYSTEM_SOCKET_SRC
@@ -189,7 +200,7 @@ if (WOLF_SYSTEM_HTTP_WS)
     else()
         find_package(Boost ${BOOST_VERSION})
         if(NOT Boost_FOUND)
-            vcpkg_install(boost boost-beast TRUE)
+            vcpkg_install(boost boost-beast)
         endif()
         file(GLOB_RECURSE WOLF_SYSTEM_HTTP_WS_SRC
             "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_ws_client.cpp"
@@ -202,12 +213,13 @@ if (WOLF_SYSTEM_HTTP_WS)
 endif()
 
 if (WOLF_SYSTEM_ZLIB)
-    vcpkg_install(ZLIB zlib TRUE)
+    vcpkg_install(ZLIB zlib)
     list(APPEND LIBS ZLIB::ZLIB)
 endif()
 
 if (WOLF_SYSTEM_POSTGRESQL)
-    vcpkg_install(libpq libpq TRUE libpq::libpq)
+    vcpkg_install(libpq libpq)
+    list(APPEND LIBS libpq::libpq)
 
     file(GLOB_RECURSE WOLF_SYSTEM_POSTGRESQL_SRC
         "${CMAKE_CURRENT_SOURCE_DIR}/system/db/w_postgresql.hpp"
@@ -217,7 +229,7 @@ if (WOLF_SYSTEM_POSTGRESQL)
 endif()
 
 #if (WOLF_SYSTEM_LUA)
-    #vcpkg_install(sol2 sol2 TRUE)
+    #vcpkg_install(sol2 sol2)
     #list(APPEND LIBS sol2)
     #
     #file(GLOB_RECURSE WOLF_SYSTEM_LUA_SRC
