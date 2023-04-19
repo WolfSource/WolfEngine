@@ -66,11 +66,11 @@ jobs:
     #uses: github/codeql-action/autobuild@v2
       
     - name: Configure CMake
-      run: cmake -B ${{ env.build }}
+      run: cmake -B ${{ env.build }} --preset linux-x64-release
         
     # Build is not required for MSVC Code Analysis and will be used for Codecov
     - name: Build CMake
-      run: cmake --build ${{ env.build }}
+      run: cmake --build ${{ env.build }} --preset linux-x64-release
 
     # ℹ️ Command-line programs to run using the OS shell.
     # 📚 See https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsrun
