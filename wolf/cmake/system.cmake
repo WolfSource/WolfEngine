@@ -12,7 +12,7 @@ if (WOLF_SYSTEM_MIMALLOC)
     if (EMSCRIPTEN)
         message(FATAL_ERROR "the wasm32 target is not supported for WOLF_SYSTEM_MIMALLOC")
     endif()
-    vcpkg_install(mimalloc mimalloc TRUE)
+    vcpkg_install(mimalloc mimalloc FALSE)
     list(APPEND LIBS mimalloc)
 endif()
 
