@@ -144,8 +144,8 @@
             }
         },
         {
-            "name": "Linux GCC x86-64 Debug",
-            "displayName": "GCC 11.3.0 x86_64-linux-gnu",
+            "name": "linux-x64-debug",
+            "displayName": "GCC x64 linux gnu debug",
             "description": "Using compilers: C = /usr/bin/gcc, CXX = /usr/bin/g++",
             "binaryDir": "${sourceDir}/build/${presetName}",
             "cacheVariables": {
@@ -153,6 +153,14 @@
                 "CMAKE_C_COMPILER": "gcc",
                 "CMAKE_CXX_COMPILER": "g++",
                 "CMAKE_BUILD_TYPE": "Debug"
+            }
+        }
+        {
+            "name": "linux-x64-release",
+            "displayName": "GCC x64 linux gnu release",
+            "inherits": "linux-x64-debug",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release"
             }
         }
     ],
