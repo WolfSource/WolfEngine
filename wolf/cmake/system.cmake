@@ -12,7 +12,7 @@ if (WOLF_SYSTEM_MIMALLOC)
     if (EMSCRIPTEN)
         message(FATAL_ERROR "the wasm32 target is not supported for WOLF_SYSTEM_MIMALLOC")
     endif()
-    vcpkg_install(mimalloc mimalloc)
+    vcpkg_install(mimalloc mimalloc TRUE)
     list(APPEND LIBS mimalloc)
 endif()
 
@@ -28,11 +28,11 @@ list(APPEND INCLUDES ${Boost_INCLUDE_DIR})
 find_package(Boost ${Boost_VERSION} REQUIRED)
 
 # install gsl
-vcpkg_install(Microsoft.GSL ms-gsl)
+vcpkg_install(Microsoft.GSL ms-gsl TRUE)
 list(APPEND LIBS Microsoft.GSL::GSL)
 
 if (NOT CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" AND NOT EMSCRIPTEN)
-    vcpkg_install(fmt fmt)
+    vcpkg_install(fmt fmt FALSE)
     list(APPEND LIBS fmt::fmt-header-only)
 endif()
 
@@ -127,7 +127,7 @@ if (WOLF_SYSTEM_LOG)
         message(FATAL_ERROR "the wasm32 target is not supported for WOLF_SYSTEM_LOG")
     endif()
 
-    vcpkg_install(spdlog spdlog)
+    vcpkg_install(spdlog spdlog TRUE)
     list(APPEND LIBS spdlog::spdlog spdlog::spdlog_header_only)
 
     file(GLOB_RECURSE WOLF_SYSTEM_LOG_SRC
@@ -140,7 +140,7 @@ if (WOLF_SYSTEM_LZ4)
   if (EMSCRIPTEN)
         message(FATAL_ERROR "the wasm32 target is not supported for WOLF_SYSTEM_LZ4")
   endif()
-  vcpkg_install(lz4 lz4)
+  vcpkg_install(lz4 lz4 TRUE)
   list(APPEND LIBS lz4::lz4)
 
   file(GLOB_RECURSE WOLF_SYSTEM_LZ4_SRCS
@@ -174,7 +174,7 @@ endif()
 
 # include openSSL
 if (WOLF_SYSTEM_OPENSSL AND NOT EMSCRIPTEN)
-    vcpkg_install(OpenSSL openssl)
+    vcpkg_install(OpenSSL openssl FALSE)
     list(APPEND LIBS OpenSSL::SSL OpenSSL::Crypto)
 endif()
 
@@ -208,12 +208,12 @@ if (WOLF_SYSTEM_HTTP_WS)
 endif()
 
 if (WOLF_SYSTEM_ZLIB)
-    vcpkg_install(ZLIB zlib)
+    vcpkg_install(ZLIB zlib FALSE)
     list(APPEND LIBS ZLIB::ZLIB)
 endif()
 
 if (WOLF_SYSTEM_POSTGRESQL)
-    vcpkg_install(libpq libpq)
+    vcpkg_install(libpq libpq TRUE)
     list(APPEND LIBS libpq::libpq)
 
     file(GLOB_RECURSE WOLF_SYSTEM_POSTGRESQL_SRC

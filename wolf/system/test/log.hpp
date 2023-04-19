@@ -56,7 +56,7 @@ BOOST_AUTO_TEST_CASE(log_stress_test) {
 
   w_log _log(std::move(_config));
   const auto _ret = _log.init();
-  if (_ret.has_error() == false) {
+  if (_ret.has_error() == true) {
     return;
   }
 
