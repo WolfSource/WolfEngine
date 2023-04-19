@@ -154,7 +154,7 @@
                 "CMAKE_CXX_COMPILER": "g++",
                 "CMAKE_BUILD_TYPE": "Debug"
             }
-        }
+        },
         {
             "name": "linux-x64-release",
             "displayName": "GCC x64 linux gnu release",
