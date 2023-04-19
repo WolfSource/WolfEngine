@@ -120,7 +120,7 @@ boost::leaf::result<int> w_ws_server::run(
                                    p_socket_options, std::move(p_on_data_callback),
                                    std::move(p_on_error_callback)),
                           boost::asio::detached);
-    return S_OK;
+    return 0;
 
   } catch (_In_ const std::exception &p_ex) {
     return W_FAILURE(std::errc::operation_canceled,

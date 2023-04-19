@@ -146,9 +146,9 @@
             "name": "Linux GCC x86-64 Debug",
             "displayName": "GCC 11.3.0 x86_64-linux-gnu",
             "description": "Using compilers: C = /usr/bin/gcc, CXX = /usr/bin/g++",
-            "binaryDir": "${sourceDir}/out/build/${presetName}",
+            "binaryDir": "${sourceDir}/build/${presetName}",
             "cacheVariables": {
-                "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/${presetName}",
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/build/install/${presetName}",
                 "CMAKE_C_COMPILER": "gcc",
                 "CMAKE_CXX_COMPILER": "g++",
                 "CMAKE_BUILD_TYPE": "Debug"
@@ -168,7 +168,7 @@
             "description": "Sets windows platform and debug build type for x64 arch in release mode",
             "configurePreset": "win-x64-release"
         },
-		{
+        {
             "name": "win-x64-debug",
             "displayName": "Win x64 Debug",
             "description": "Sets windows platform and debug build type for x64 arch in debug mode",

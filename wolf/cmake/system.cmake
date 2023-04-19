@@ -1,31 +1,29 @@
+if (WOLF_SYSTEM_STACKTRACE)
+    if (EMSCRIPTEN)
+        message(FATAL_ERROR "the wasm32 target is not supported for WOLF_SYSTEM_STACKTRACE")
+    elseif(NOT MSVC)
+        message(FATAL_ERROR "WOLF_SYSTEM_STACKTRACE is only supported on Visual C++")
+    endif()
+endif()
+
+
 # fetch mimalloc
 if (WOLF_SYSTEM_MIMALLOC)
     if (EMSCRIPTEN)
         message(FATAL_ERROR "the wasm32 target is not supported for WOLF_SYSTEM_MIMALLOC")
     endif()
     vcpkg_install(mimalloc mimalloc)
-    if (LIBRARY_TYPE STREQUAL "STATIC")
-        list(APPEND LIBS mimalloc-static)
-    else()
-        list(APPEND LIBS mimalloc)
-    endif()
+    list(APPEND LIBS mimalloc)
 endif()
 
-# install boost leaf
-set(Boost_USE_STATIC_LIBS ON)  # only find static libs
-if (LIBRARY_TYPE STREQUAL "STATIC")
-    set(triplet ${vcpkg_triplet}-static)
-else()
-    set(triplet ${vcpkg_triplet})
-endif()
 # fetch boost via vcpkg
 execute_process(COMMAND vcpkg install 
     boost-asio 
     boost-beast 
     boost-leaf 
     boost-signals2 
-    boost-test --triplet=${triplet})
-set(Boost_INCLUDE_DIR $ENV{VCPKG_ROOT}/installed/${triplet}/include CACHE STRING "vcpkg target triplet" FORCE)
+    boost-test --triplet=${VCPKG_TARGET_TRIPLET})
+set(Boost_INCLUDE_DIR $ENV{VCPKG_ROOT}/installed/${VCPKG_TARGET_TRIPLET}/include CACHE STRING "boost include directory" FORCE)
 list(APPEND INCLUDES ${Boost_INCLUDE_DIR})
 find_package(Boost ${Boost_VERSION} REQUIRED)
 
@@ -33,9 +31,9 @@ find_package(Boost ${Boost_VERSION} REQUIRED)
 vcpkg_install(Microsoft.GSL ms-gsl)
 list(APPEND LIBS Microsoft.GSL::GSL)
 
-if (NOT CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+if (NOT CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" AND NOT EMSCRIPTEN)
     vcpkg_install(fmt fmt)
-    list(APPEND LIBS fmt::fmt)
+    list(APPEND LIBS fmt::fmt-header-only)
 endif()
 
 if (WOLF_SYSTEM_GAMEPAD_CLIENT)
@@ -174,13 +172,14 @@ if (WOLF_SYSTEM_LZMA)
   list(APPEND LIBS lzma)  
 endif()
 
+# include openSSL
+if (WOLF_SYSTEM_OPENSSL AND NOT EMSCRIPTEN)
+    vcpkg_install(OpenSSL openssl)
+    list(APPEND LIBS OpenSSL::SSL OpenSSL::Crypto)
+endif()
+
 # include socket/websocket sources
-if (WOLF_SYSTEM_SOCKET AND NOT EMSCRIPTEN)
-    find_package(Boost ${BOOST_VERSION})
-    if(NOT Boost_FOUND)
-        vcpkg_install(boost boost-asio)
-    endif()
-    
+if (WOLF_SYSTEM_SOCKET AND NOT EMSCRIPTEN)    
     file(GLOB_RECURSE WOLF_SYSTEM_SOCKET_SRC
         "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_socket_options.hpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_tcp_client.cpp"
@@ -198,10 +197,6 @@ if (WOLF_SYSTEM_HTTP_WS)
             "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_ws_client_emc.hpp"
         )
     else()
-        find_package(Boost ${BOOST_VERSION})
-        if(NOT Boost_FOUND)
-            vcpkg_install(boost boost-beast)
-        endif()
         file(GLOB_RECURSE WOLF_SYSTEM_HTTP_WS_SRC
             "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_ws_client.cpp"
             "${CMAKE_CURRENT_SOURCE_DIR}/system/socket/w_ws_client.hpp"

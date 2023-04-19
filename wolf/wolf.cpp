@@ -2,19 +2,19 @@
 
 #ifdef WOLF_SYSTEM_MIMALLOC
 
-#include <mimalloc-override.h>
 #include <mimalloc-new-delete.h>
+#include <mimalloc-override.h>
 
 #endif
 
-#if defined(WOLF_SYSTEM_STACKTRACE)
+#ifdef WOLF_SYSTEM_STACKTRACE
 
 #include <csignal>
 #include <filesystem>
 #include <fstream>
 #include <sstream>
-#include <system/w_process.hpp>
 #include <stacktrace>
+#include <system/w_process.hpp>
 
 static void w_signal_handler(int p_signum) {
   auto _path = wolf::system::w_process::current_exe_path();
@@ -32,7 +32,8 @@ static void w_signal_handler(int p_signum) {
 #pragma unroll
 #endif  // __clang__
   for (const auto &trace : std::stacktrace()) {
-    _traces << "name: " << trace.description() << " source_file: " << trace.source_file() << "("
+    _traces << "name: " << trace.description()
+            << " source_file: " << trace.source_file() << "("
             << std::to_string(trace.source_line()) << ")\r\n";
   }
 
@@ -63,7 +64,8 @@ std::string wolf::w_init() {
   // for debugging
   constexpr auto WOLF_DEBUG_VERSION = 0;
 
-  auto _version = wolf::format("v{}.{}.{}.{}", WOLF_MAJOR_VERSION, WOLF_MINOR_VERSION,
-                               WOLF_PATCH_VERSION, WOLF_DEBUG_VERSION);
+  auto _version =
+      wolf::format("v{}.{}.{}.{}", WOLF_MAJOR_VERSION, WOLF_MINOR_VERSION,
+                   WOLF_PATCH_VERSION, WOLF_DEBUG_VERSION);
   return _version;
 }

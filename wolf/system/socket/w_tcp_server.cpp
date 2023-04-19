@@ -143,7 +143,7 @@ boost::leaf::result<int> w_tcp_server::run(
                           s_listen(p_io_context, p_endpoint, p_timeout, p_socket_options,
                                    p_on_data_callback, p_on_error_callback),
                           boost::asio::detached);
-    return S_OK;
+    return 0;
 
   } catch (_In_ const std::exception &p_ex) {
     return W_FAILURE(std::errc::operation_canceled,

@@ -7,16 +7,16 @@
 
 #ifdef WOLF_SYSTEM_LOG
 
-#include "w_log_config.hpp"
-#include <wolf/wolf.hpp>
-
-#include <DISABLE_ANALYSIS_BEGIN>
-
 #include <spdlog/async.h>
 #include <spdlog/sinks/basic_file_sink.h>
 #include <spdlog/sinks/daily_file_sink.h>
 #include <spdlog/sinks/rotating_file_sink.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
+
+#include <DISABLE_ANALYSIS_BEGIN>
+#include <wolf/wolf.hpp>
+
+#include "w_log_config.hpp"
 
 #ifdef _MSC_VER
 #include <spdlog/sinks/msvc_sink.h>
@@ -31,7 +31,9 @@ class w_log {
   W_API explicit w_log(w_log_config &&p_config) noexcept;
 
   // move constructor.
-  W_API w_log(w_log &&p_other) noexcept { _move(std::forward<w_log &&>(p_other)); }
+  W_API w_log(w_log &&p_other) noexcept {
+    _move(std::forward<w_log &&>(p_other));
+  }
   // move assignment operator.
   W_API w_log &operator=(w_log &&p_other) noexcept {
     _move(std::forward<w_log &&>(p_other));
@@ -48,21 +50,7 @@ class w_log {
   W_API void write(_In_ const spdlog::level::level_enum &p_level,
                    _In_ const std::string_view &p_fmt);
 
-#ifdef __clang__
-  template <class... Args>
-  W_API void write(_In_ const fmt::v9::format_string<Args...> p_fmt, _In_ Args &&...p_args) {
-    const auto _str = fmt::v9::vformat(p_fmt, fmt::v9::make_format_args(p_args...));
-    write(_str);
-  }
-
-  template <class... Args>
-  W_API void write(_In_ const spdlog::level::level_enum &p_level,
-                   _In_ const fmt::v9::format_string<Args...> p_fmt, _In_ Args &&...p_args) {
-    const auto _str = fmt::v9::vformat(p_fmt, fmt::v9::make_format_args(p_args...));
-    write(p_level, _str);
-  }
-
-#else
+#ifdef _MSC_VER
 
   template <class... Args>
   W_API void write(_In_ const std::string_view p_fmt, _In_ Args &&...p_args) {
@@ -71,13 +59,31 @@ class w_log {
   }
 
   template <class... Args>
-  W_API void write(_In_ const spdlog::level::level_enum &p_level, _In_ const std::string_view p_fmt,
-                   _In_ Args &&...p_args) {
+  W_API void write(_In_ const spdlog::level::level_enum &p_level,
+                   _In_ const std::string_view p_fmt, _In_ Args &&...p_args) {
     const auto _str = std::vformat(p_fmt, std::make_format_args(p_args...));
     write(p_level, _str);
   }
 
-#endif  // __clang__
+#else
+  template <class... Args>
+  W_API void write(_In_ const fmt::v9::format_string<Args...> p_fmt,
+                   _In_ Args &&...p_args) {
+    const auto _str =
+        fmt::v9::vformat(p_fmt, fmt::v9::make_format_args(p_args...));
+    write(_str);
+  }
+
+  template <class... Args>
+  W_API void write(_In_ const spdlog::level::level_enum &p_level,
+                   _In_ const fmt::v9::format_string<Args...> p_fmt,
+                   _In_ Args &&...p_args) {
+    const auto _str =
+        fmt::v9::vformat(p_fmt, fmt::v9::make_format_args(p_args...));
+    write(p_level, _str);
+  }
+
+#endif  // _MSC_VER
 
   W_API boost::leaf::result<int> flush();
 

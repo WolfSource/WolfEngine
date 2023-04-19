@@ -67,7 +67,10 @@ include(FetchContent)
 set(FETCHCONTENT_QUIET OFF)
 
 # set type of library
-set(LIBRARY_TYPE "STATIC" CACHE STRING "Library type")
+set(LIBRARY_TYPE "${LIBRARY_TYPE}" CACHE STRING "Library type")
+if ("${LIBRARY_TYPE}" STREQUAL "")
+    set(LIBRARY_TYPE "SHARED")
+endif()
 
 # Build options
 set(LIB_INSTALL_DIR lib CACHE STRING "Install location of libraries")
@@ -76,7 +79,7 @@ set(INCLUDE_INSTALL_DIR include CACHE STRING "Install location of executables")
 
 # CMAKE GUI Options
 set(EMSDK "$ENV{EMSDK}" CACHE STRING "Emscripten SDK path")
-set(BOOST_VERSION "1.81.0" CACHE STRING "Boost version tag")
+set(BOOST_VERSION "1.82.0" CACHE STRING "Boost version tag")
 
 # render module
 option(WOLF_RENDER "Enable cross platform render engine based on Vulkan / OpenGL ES" OFF)
@@ -98,19 +101,19 @@ option(WOLF_STREAM_WEBRTC "Enable webRTC" OFF)
 # system modules
 option(WOLF_SYSTEM_GAMEPAD_CLIENT "Enable gamepad input handling" OFF)
 option(WOLF_SYSTEM_GAMEPAD_VIRTUAL "Enable virtual gamepad simulator" OFF)
-option(WOLF_SYSTEM_HTTP_WS "Enable http1.1 and websocket client/server based on boost beast or Emscripten" OFF)
-option(WOLF_SYSTEM_LOG "Enable log" OFF)
-option(WOLF_SYSTEM_LZ4 "Enable lz4 for compression" OFF)
-option(WOLF_SYSTEM_LZMA "Enable lzma for compression" OFF)
+option(WOLF_SYSTEM_HTTP_WS "Enable http1.1 and websocket client/server based on boost beast or Emscripten" ON)
+option(WOLF_SYSTEM_LOG "Enable log" ON)
+option(WOLF_SYSTEM_LZ4 "Enable lz4 for compression" ON)
+option(WOLF_SYSTEM_LZMA "Enable lzma for compression" ON)
 #option(WOLF_SYSTEM_LUA "Enable lua scripting language" OFF)
-option(WOLF_SYSTEM_MIMALLOC "Enable Microsoft's mimalloc memory allocator" OFF)
+option(WOLF_SYSTEM_MIMALLOC "Enable Microsoft's mimalloc memory allocator" ON)
 option(WOLF_SYSTEM_POSTGRESQL "Enable postgresql database client" OFF)
 option(WOLF_SYSTEM_PYTHON "Enable embedded Python3 scripting" OFF)
-option(WOLF_SYSTEM_SIG_SLOT "Enable signal/slot based on boost signals2" OFF)
-option(WOLF_SYSTEM_SOCKET "Enable TCP/UDP protocol over socket" OFF)
-option(WOLF_SYSTEM_SSL "Enable SSL based on boringSSL" OFF)
+option(WOLF_SYSTEM_SIG_SLOT "Enable signal/slot based on boost signals2" ON)
+option(WOLF_SYSTEM_SOCKET "Enable TCP/UDP protocol over socket" ON)
+option(WOLF_SYSTEM_OPENSSL "Enable openSSL" ON)
 option(WOLF_SYSTEM_STACKTRACE "Enable boost stacktrace" OFF)
-option(WOLF_SYSTEM_ZLIB "Enable Zlib compression library" OFF)
+option(WOLF_SYSTEM_ZLIB "Enable Zlib compression library" ON)
 
 # machine learing modules
 option(WOLF_ML_NUDITY_DETECTION "Enable machine learning nudity detection" OFF)
