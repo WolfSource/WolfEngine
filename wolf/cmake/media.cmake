@@ -78,6 +78,33 @@ if (WOLF_MEDIA_STB)
 
 endif()
 
+if (WOLF_MEDIA_GSTREAMER)
+  file(GLOB_RECURSE WOLF_MEDIA_GSTREAMER_SRC
+    "${CMAKE_CURRENT_SOURCE_DIR}/media/gst/*"
+    "${CMAKE_CURRENT_SOURCE_DIR}/media/gst/core/*"
+    "${CMAKE_CURRENT_SOURCE_DIR}/media/gst/audio/*"
+    "${CMAKE_CURRENT_SOURCE_DIR}/media/gst/video/*"
+    "${CMAKE_CURRENT_SOURCE_DIR}/media/gst/elements/*"
+  )
+
+  find_package(PkgConfig REQUIRED)
+
+  pkg_check_modules(gstreamer REQUIRED IMPORTED_TARGET
+        gstreamer-1.0
+        gstreamer-video-1.0
+        gstreamer-audio-1.0)
+
+  add_library(gstreamer-lib INTERFACE)
+
+  target_compile_options(gstreamer-lib INTERFACE ${gstreamer_CFLAGS})
+  target_include_directories(gstreamer-lib INTERFACE ${gstreamer_INCLUDE_DIRS})
+  target_link_directories(gstreamer-lib BEFORE INTERFACE ${gstreamer_LIBRARY_DIRS})
+  target_link_libraries(gstreamer-lib INTERFACE ${gstreamer_LIBRARIES})
+
+  list(APPEND SRCS ${WOLF_MEDIA_GSTREAMER_SRC})
+  list(APPEND LIBS gstreamer-lib)
+endif()
+
 file(GLOB_RECURSE WOLF_MEDIA_TEST_SRC
     "${CMAKE_CURRENT_SOURCE_DIR}/media/test/*"
 )
