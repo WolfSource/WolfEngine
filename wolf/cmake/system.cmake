@@ -237,6 +237,17 @@ endif()
     #)
 #endif()
 
+if (WOLF_SYSTEM_PYTHON)
+    file(GLOB_RECURSE WOLF_SYSTEM_PYTHON_SRC
+        "${CMAKE_CURRENT_SOURCE_DIR}/system/script/w_python.hpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/system/script/w_python.cpp"
+    )
+
+    list(APPEND SRCS
+        ${WOLF_SYSTEM_PYTHON_SRC}
+    )
+endif()
+
 if (EMSCRIPTEN)
     file (GLOB_RECURSE WOLF_SYSTEM_SRC
         "${CMAKE_CURRENT_SOURCE_DIR}/system/w_trace.hpp"
