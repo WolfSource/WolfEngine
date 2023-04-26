@@ -5,12 +5,9 @@
 
 #include <wolf/system/w_leak_detector.hpp>
 #include <wolf/wolf.hpp>
-#include "wolf/system/script/w_python.hpp"
 #define BOOST_TEST_MODULE wolf
 #include <boost/test/included/unit_test.hpp>
 #include <iostream>
-using namespace boost::python;
-using namespace python_wrapper; using namespace python_testcase;
 void python_execution_test_case();
 
 BOOST_AUTO_TEST_CASE(wolf_test) {
@@ -20,24 +17,9 @@ BOOST_AUTO_TEST_CASE(wolf_test) {
     std::cout << "entering test case 'wolf_test'" << std::endl;
     const auto _wolf_version = wolf::w_init();
 
-    python_execution_test_case();
 
     BOOST_TEST(_wolf_version.empty() == false);
     std::cout << "leaving test case 'wolf_test'" << std::endl;
-}
-
-void python_execution_test_case()
-{
-    try {
-        apply_simple_script();
-        apply_simple_script_from_file();
-        apply_run_function_from_script_file_and_get_result();
-        apply_call_function();
-    }
-    catch(const std::runtime_error& err)
-    {
-        std::cout << err.what() << '\n';
-    }
 }
 
 #pragma region system tests
@@ -54,6 +36,8 @@ void python_execution_test_case()
 //#include <wolf/system/test/trace.hpp>
 //#include <wolf/system/test/ws.hpp>
 //#include <wolf/system/test/lua.hpp>
+//#include "wolf/system/script/w_python.hpp"
+//#include "wolf/system/test/python.hpp"
 
 #pragma endregion
 
