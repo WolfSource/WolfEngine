@@ -46,7 +46,7 @@ public:
      */
     void set_rate(std::size_t p_rate)
     {
-        raw()->rate = p_rate;
+        raw()->rate = gsl::narrow_cast<gint>(p_rate);
     }
 
     /**
@@ -54,7 +54,7 @@ public:
      */
     void set_channels(std::size_t p_channels)
     {
-        raw()->channels = p_channels;
+        raw()->channels = gsl::narrow_cast<gint>(p_channels);
     }
 
 private:

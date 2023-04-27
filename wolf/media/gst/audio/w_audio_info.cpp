@@ -3,7 +3,7 @@
 namespace wolf::media::gst {
 
 auto w_audio_info::make(w_audio_format p_format, size_t p_channels, size_t p_samples)
-    -> boost::leaf::result<wolf::gst::w_audio_info>
+    -> boost::leaf::result<w_audio_info>
 {
     auto audioinfo_raw = gst_audio_info_new();
     if (!audioinfo_raw) {
@@ -14,8 +14,8 @@ auto w_audio_info::make(w_audio_format p_format, size_t p_channels, size_t p_sam
     gst_audio_info_set_format(
                 audioinfo_raw,
                 format_raw,
-                p_samples,
-                p_channels,
+                gsl::narrow_cast<gint>(p_samples),
+                gsl::narrow_cast<gint>(p_channels),
                 nullptr
                 );
 

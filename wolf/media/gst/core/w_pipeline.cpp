@@ -2,8 +2,8 @@
 
 namespace wolf::media::gst {
 
-auto wolf::gst::w_pipeline::make(const char *p_name)
-    -> boost::leaf::result<wolf::gst::w_pipeline>
+auto w_pipeline::make(const char *p_name)
+    -> boost::leaf::result<w_pipeline>
 {
     auto pipeline_raw = gst_pipeline_new(p_name);
     if (!pipeline_raw) {
