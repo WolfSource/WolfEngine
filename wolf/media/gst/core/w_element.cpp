@@ -2,7 +2,7 @@
 
 namespace wolf::media::gst {
 
-auto w_element::make(const char *p_factory_name) -> boost::leaf::result<wolf::gst::w_element>
+auto w_element::make(const char *p_factory_name) -> boost::leaf::result<w_element>
 {
     auto element_factory_raw = gst_element_factory_find(p_factory_name);
     if (!element_factory_raw) {

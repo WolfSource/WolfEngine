@@ -1,8 +1,9 @@
 #include "media/gst/video/w_video_info.hpp"
 
-namespace wolf::gst {
+namespace wolf::media::gst {
 
-auto wolf::gst::w_video_info::make(w_video_format p_format, size_t p_width, size_t p_height) -> boost::leaf::result<wolf::gst::w_video_info>
+auto w_video_info::make(w_video_format p_format, size_t p_width, size_t p_height)
+    -> boost::leaf::result<w_video_info>
 {
     auto video_info_raw = gst_video_info_new();
     if (!video_info_raw) {
@@ -22,4 +23,4 @@ auto wolf::gst::w_video_info::make(w_video_format p_format, size_t p_width, size
     return w_video_info(internal::w_raw_tag{}, video_info_raw);
 }
 
-}  // namespace wolf::gst
+}  // namespace wolf::media::gst

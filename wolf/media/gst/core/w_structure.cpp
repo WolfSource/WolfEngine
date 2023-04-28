@@ -2,8 +2,8 @@
 
 namespace wolf::media::gst {
 
-auto wolf::gst::w_structure::make(const char *p_name)
-    -> boost::leaf::result<wolf::gst::w_structure>
+auto w_structure::make(const char *p_name)
+    -> boost::leaf::result<w_structure>
 {
     auto structure_raw = gst_structure_new_empty(p_name);
     if (!structure_raw) {
