@@ -20,6 +20,7 @@ message("CXX Compiler ID is ${CMAKE_CXX_COMPILER_ID}")
 set(INCLUDES)
 set(LIBS PARENT_SCOPE) 
 set(SRCS)
+set(TESTS_SRCS)
 
 # check the OS
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
@@ -327,13 +328,7 @@ endif()
 if (WOLF_TEST)
     add_executable(${TEST_PROJECT_NAME}
         tests.cpp
-          ${PROJECT_BINARY_DIR}/helloworld.pb.cc
-          ${PROJECT_BINARY_DIR}/helloworld.grpc.pb.cc
-          ${PROJECT_BINARY_DIR}/example.pb.cc
-          ${PROJECT_BINARY_DIR}/example.grpc.pb.cc
-          ${PROJECT_BINARY_DIR}/example_ext.pb.cc 
-          ${PROJECT_BINARY_DIR}/example_ext.grpc.pb.cc
-          ${CMAKE_CURRENT_SOURCE_DIR}/stream/grpc/w_grpc.cpp
+        ${TESTS_SRCS}
     )
     
     if(WOLF_ML_OCR AND LINUX)
