@@ -92,8 +92,7 @@ option(WOLF_MEDIA_STB "Enable stb headers" OFF)
 option(WOLF_MEDIA_GSTREAMER "Enable gstreamer wrapper" OFF)
 
 # stream modules
-option(WOLF_STREAM_GRPC   "Enable gRPC connection" OFF)
-option(WOLF_STREAM_JANUS  "Enable Janus client API" OFF)
+option(WOLF_STREAM_GRPC   "Enable gRPC connection" ON)
 option(WOLF_STREAM_QUIC   "Enable QUIC" OFF)
 option(WOLF_STREAM_RIST   "Enable RIST streaming protocol" OFF)
 option(WOLF_STREAM_WEBRTC "Enable webRTC" OFF)
@@ -328,6 +327,13 @@ endif()
 if (WOLF_TEST)
     add_executable(${TEST_PROJECT_NAME}
         tests.cpp
+          ${PROJECT_BINARY_DIR}/helloworld.pb.cc
+          ${PROJECT_BINARY_DIR}/helloworld.grpc.pb.cc
+          ${PROJECT_BINARY_DIR}/example.pb.cc
+          ${PROJECT_BINARY_DIR}/example.grpc.pb.cc
+          ${PROJECT_BINARY_DIR}/example_ext.pb.cc 
+          ${PROJECT_BINARY_DIR}/example_ext.grpc.pb.cc
+          ${CMAKE_CURRENT_SOURCE_DIR}/stream/grpc/w_grpc.cpp
     )
     
     if(WOLF_ML_OCR AND LINUX)

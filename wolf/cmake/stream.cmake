@@ -3,7 +3,7 @@ if (WOLF_STREAM_GRPC)
     if (EMSCRIPTEN)
         message(FATAL_ERROR "the wasm32 target is not supported for WOLF_STREAM_GRPC")
     endif()
-    vcpkg_install(asio-grpc asio-grpc)
+    vcpkg_install(asio-grpc asio-grpc TRUE)
     list(APPEND LIBS asio-grpc::asio-grpc)
 
     file(GLOB_RECURSE WOLF_STREAM_GRPC_SRC
@@ -16,11 +16,49 @@ if (WOLF_STREAM_GRPC)
 
     # TODO (Pooya): Not working
     asio_grpc_protobuf_generate(
-        GENERATE_GRPC GENERATE_MOCK_CODE
-        OUT_VAR "RAFT_PROTO_SOURCES"
-        OUT_DIR "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/protos"
-        IMPORT_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/protos"
-        PROTOS  "${CMAKE_CURRENT_SOURCE_DIR}/protos/raft.proto")
+    GENERATE_GRPC GENERATE_MOCK_CODE
+    OUT_VAR "RAFT_PROTO_SOURCES"
+    OUT_DIR "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/protos"
+    IMPORT_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/protos"
+    PROTOS  "${CMAKE_CURRENT_SOURCE_DIR}/protos/raft.proto")
+
+    add_custom_command(
+  OUTPUT helloworld.pb.cc helloworld.grpc.pb.cc
+  COMMAND "E:/Software/vcpkg/vcpkg/installed/x64-windows/tools/protobuf/protoc.exe" ARGS --proto_path=${CMAKE_CURRENT_SOURCE_DIR}/protos --grpc_out=. --cpp_out=. --plugin=protoc-gen-grpc="E:/Software/vcpkg/vcpkg/installed/x64-windows/tools/grpc/grpc_cpp_plugin.exe" ${CMAKE_CURRENT_SOURCE_DIR}/protos/helloworld.proto
+  COMMAND "E:/Software/vcpkg/vcpkg/installed/x64-windows/tools/protobuf/protoc.exe" ARGS --proto_path=${CMAKE_CURRENT_SOURCE_DIR}/protos --grpc_out=. --cpp_out=. --plugin=protoc-gen-grpc="E:/Software/vcpkg/vcpkg/installed/x64-windows/tools/grpc/grpc_cpp_plugin.exe" ${CMAKE_CURRENT_SOURCE_DIR}/protos/example.proto
+)
+
+    add_custom_command(
+  OUTPUT example.pb.cc example.grpc.pb.cc
+  COMMAND "E:/Software/vcpkg/vcpkg/installed/x64-windows/tools/protobuf/protoc.exe" ARGS --proto_path=${CMAKE_CURRENT_SOURCE_DIR}/protos --grpc_out=. --cpp_out=. --plugin=protoc-gen-grpc="E:/Software/vcpkg/vcpkg/installed/x64-windows/tools/grpc/grpc_cpp_plugin.exe" ${CMAKE_CURRENT_SOURCE_DIR}/protos/example.proto
+)
+
+    add_custom_command(
+  OUTPUT example_ext.pb.cc example_ext.grpc.pb.cc
+  COMMAND "E:/Software/vcpkg/vcpkg/installed/x64-windows/tools/protobuf/protoc.exe" ARGS --proto_path=${CMAKE_CURRENT_SOURCE_DIR}/protos --grpc_out=. --cpp_out=. --plugin=protoc-gen-grpc="E:/Software/vcpkg/vcpkg/installed/x64-windows/tools/grpc/grpc_cpp_plugin.exe" ${CMAKE_CURRENT_SOURCE_DIR}/protos/example_ext.proto
+)
+        add_custom_target(proto_generate ALL
+            DEPENDS  helloworld.pb.cc helloworld.grpc.pb.cc example.grpc.cc example.grpc.pb.cc example_ext.pb.cc example_ext.grpc.pb.cc
+            VERBATIM
+            WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+        )
+
+    list(APPEND SRCS 
+          ${PROJECT_BINARY_DIR}/helloworld.pb.cc
+          ${PROJECT_BINARY_DIR}/helloworld.grpc.pb.cc
+          ${PROJECT_BINARY_DIR}/example.pb.cc
+          ${PROJECT_BINARY_DIR}/example.grpc.pb.cc
+          ${PROJECT_BINARY_DIR}/example_ext.pb.cc 
+          ${PROJECT_BINARY_DIR}/example_ext.grpc.pb.cc
+    )
+
+    list(APPEND INCLUDES ${PROJECT_BINARY_DIR}/example.grpc.pb.h
+      ${PROJECT_BINARY_DIR}/example.grpc.h
+    ${PROJECT_BINARY_DIR}/example_ext.grpc.pb.h
+    ${PROJECT_BINARY_DIR}/example_ext.pb.h
+    ${PROJECT_BINARY_DIR}/helloworld.pb.h
+    ${PROJECT_BINARY_DIR}/helloworld.grpc.pb.h
+    )
 
 endif()
 
