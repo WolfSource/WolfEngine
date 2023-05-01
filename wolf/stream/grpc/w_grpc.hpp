@@ -23,7 +23,7 @@ class w_grpc {
  public:
 
   template <auto PrepareAsync, typename Stub, typename Request, typename Response>
-  W_API static boost::asio::awaitable<void> cancel_safe(
+  W_API boost::asio::awaitable<void> cancel_safe(
        _In_ agrpc::GrpcContext& _context,
        _In_ boost::asio::cancellation_signal& signal,
        _In_ agrpc::GrpcCancelSafe& safe) noexcept {
@@ -89,7 +89,7 @@ class w_grpc {
   }
 
   template <auto PrepareAsync, typename Stub, typename Request, typename Response>
-  W_API static boost::asio::awaitable<void> send_async(
+  W_API boost::asio::awaitable<void> send_async(
       _In_ Request& request, 
       _Inout_ Response& response) noexcept {
 
@@ -114,8 +114,9 @@ class w_grpc {
   }
 
   template <class Function, typename... Args>
-  W_API static void run_async(agrpc::GrpcContext& _context, Function&& function,
-        Args&&... p_args) noexcept {
+  W_API void run_async(
+      _In_ Function&& function,
+      _In_ Args&&... p_args) noexcept {
 
     boost::asio::co_spawn(
         _context,
@@ -127,7 +128,7 @@ class w_grpc {
     _context.run();
   }
 
-  W_API static boost::leaf::result<int> init(
+  W_API boost::leaf::result<int> init(
       _In_ const char* server_url,
       _In_ const int port) noexcept {
       
@@ -145,8 +146,8 @@ class w_grpc {
   }
 
 private:
-  //static agrpc::GrpcContext _context;
-  static std::shared_ptr<grpc::Channel> _channel;
+  agrpc::GrpcContext _context;
+  std::shared_ptr<grpc::Channel> _channel;
 };
 
  #endif
