@@ -3,7 +3,7 @@ if (WOLF_STREAM_GRPC)
     if (EMSCRIPTEN)
         message(FATAL_ERROR "the wasm32 target is not supported for WOLF_STREAM_GRPC")
     endif()
-    vcpkg_install(asio-grpc asio-grpc)
+    vcpkg_install(asio-grpc asio-grpc TRUE)
     list(APPEND LIBS asio-grpc::asio-grpc)
 
     file(GLOB_RECURSE WOLF_STREAM_GRPC_SRC
@@ -14,13 +14,28 @@ if (WOLF_STREAM_GRPC)
         ${WOLF_STREAM_GRPC_SRC}
     )
 
-    # TODO (Pooya): Not working
-    asio_grpc_protobuf_generate(
-        GENERATE_GRPC GENERATE_MOCK_CODE
-        OUT_VAR "RAFT_PROTO_SOURCES"
-        OUT_DIR "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/protos"
-        IMPORT_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/protos"
-        PROTOS  "${CMAKE_CURRENT_SOURCE_DIR}/protos/raft.proto")
+    if(WOLF_TEST)
+        add_library(generate-protos OBJECT)
+        
+        target_link_libraries(generate-protos PUBLIC protobuf::libprotobuf gRPC::grpc++_unsecure)
+        
+        set(PROTO_BINARY_DIR "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/protos")
+        set(PROTO_IMPORT_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/protos")
+        
+        asio_grpc_protobuf_generate(
+            GENERATE_GRPC GENERATE_MOCK_CODE
+            TARGET generate-protos
+            USAGE_REQUIREMENT PUBLIC
+            IMPORT_DIRS ${PROTO_IMPORT_DIRS}
+            OUT_DIR "${PROTO_BINARY_DIR}"
+            PROTOS "${CMAKE_CURRENT_SOURCE_DIR}/protos/raft.proto")
+
+        list(APPEND INCLUDES "${PROTO_BINARY_DIR}")
+        list(APPEND TESTS_SRCS 
+                "${PROTO_BINARY_DIR}/raft.grpc.pb.cc"
+                "${PROTO_BINARY_DIR}/raft.pb.cc"
+        )
+    endif()
 
 endif()
 

@@ -20,6 +20,7 @@ message("CXX Compiler ID is ${CMAKE_CXX_COMPILER_ID}")
 set(INCLUDES)
 set(LIBS PARENT_SCOPE) 
 set(SRCS)
+set(TESTS_SRCS)
 
 # check the OS
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
@@ -92,8 +93,7 @@ option(WOLF_MEDIA_STB "Enable stb headers" OFF)
 option(WOLF_MEDIA_GSTREAMER "Enable gstreamer wrapper" OFF)
 
 # stream modules
-option(WOLF_STREAM_GRPC   "Enable gRPC connection" OFF)
-option(WOLF_STREAM_JANUS  "Enable Janus client API" OFF)
+option(WOLF_STREAM_GRPC   "Enable gRPC connection" ON)
 option(WOLF_STREAM_QUIC   "Enable QUIC" OFF)
 option(WOLF_STREAM_RIST   "Enable RIST streaming protocol" OFF)
 option(WOLF_STREAM_WEBRTC "Enable webRTC" OFF)
@@ -330,6 +330,7 @@ endif()
 if (WOLF_TEST)
     add_executable(${TEST_PROJECT_NAME}
         tests.cpp
+        ${TESTS_SRCS}
     )
     
     if(WOLF_ML_OCR AND LINUX)

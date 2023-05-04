@@ -2,7 +2,11 @@ syntax = "proto3";
 package wolf.raft;
 
 service Raft {
-    rpc Bootstrap (RaftBootstrapReq) returns (RaftBootstrapRes);
+    rpc BootstrapClientStreaming(stream RaftBootstrapReq) returns (RaftBootstrapRes) {}
+    rpc Bootstrap (RaftBootstrapReq) returns (RaftBootstrapRes) {}
+    rpc BootstrapServerStreaming(RaftBootstrapReq) returns (stream RaftBootstrapRes) {}
+    rpc BootstrapBidirectionalStreaming(stream RaftBootstrapReq) returns (stream RaftBootstrapRes) {}
+
 }
 
 /*
