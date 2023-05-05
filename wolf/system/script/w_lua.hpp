@@ -19,10 +19,17 @@ class w_lua {
             sol::c_call<decltype(&w_lua::w_lua_panic), &w_lua::w_lua_panic>)),
         _load_result(nullptr, -1, 0, 0, sol::load_status::syntax) {}
 
+  W_API ~w_lua() {
+     _release();
+  }
+  
   // move constructor.
-  W_API w_lua(w_lua &&p_other) noexcept = default;
+  W_API w_lua(w_lua &&p_other) noexcept { _move(std::forward<w_lua &&>(p_other)); }
   // move assignment operator.
-  W_API w_lua &operator=(w_lua &&p_other) noexcept = default;
+  W_API w_lua &operator=(w_lua &&p_other) noexcept {
+    _move(std::forward<w_lua &&>(p_other));
+    return *this;
+  }
 
   /**
    * open lua libraries
@@ -110,7 +117,7 @@ class w_lua {
    * @param p_str string buffer
    */
    template <typename... RETYPES>
-  W_API boost::leaf::result<std::tuple<RETYPES...>> run_from_buffer(const std::string_view p_str) {
+  W_API boost::leaf::result<std::tuple<RETYPES...>> run_from_buffer(const std::string_view& p_str) {
     auto result = this->_lua->script(p_str);
     if (!result.valid()) {
       sol::error err = result;
@@ -119,7 +126,7 @@ class w_lua {
 
     std::tuple<RETYPES...> value;
     try {
-      value = result;
+      value = std::move(result);
     } catch (...) {
       return W_FAILURE(1, "can not convert arguments");
     }
@@ -213,13 +220,25 @@ class w_lua {
   // disable copy operator
   w_lua &operator=(const w_lua &) = delete;
 
-  inline void w_lua_panic(sol::optional<std::string> p_maybe_msg) {
-    std::cerr << "Lua is in a panic state and will now abort() the application" << std::endl;
-    if (p_maybe_msg) {
-      const std::string &msg = p_maybe_msg.value();
-      std::cerr << "\terror message: " << msg << std::endl;
+  void _release() {
+    if (this->_lua) {
+      this->_lua->stack_clear();
+      this->_lua->collect_garbage();
     }
-    // When this function exits, Lua will exhibit default behavior and abort()
+  }
+
+  void _move(w_lua &&p_other) noexcept {
+    if (this == &p_other) {
+      return;
+    }
+    this->_lua = std::move(p_other._lua);
+    this->_load_result = std::move(p_other._load_result);
+  }
+
+  inline void w_lua_panic(sol::optional<std::string> p_maybe_msg) {
+    if (p_maybe_msg) {
+      throw std::runtime_error(p_maybe_msg.value());
+    }
   }
 
   std::shared_ptr<sol::state> _lua;

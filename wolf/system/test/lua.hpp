@@ -19,7 +19,7 @@ BOOST_AUTO_TEST_CASE(lua_run_from_buffer_test) {
         w_lua lua{};
         lua.open_libraries(w_lib::base);
 
-        ///// BOOST_LEAF_AUTO(result, lua.run_from_buffer("a = 'hello world'"));
+        BOOST_LEAF_AUTO(result, lua.run_from_buffer("a = 'hello world'"));
 
         BOOST_CHECK(true);
         return {};

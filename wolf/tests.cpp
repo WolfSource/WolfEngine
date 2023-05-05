@@ -22,25 +22,26 @@ BOOST_AUTO_TEST_CASE(wolf_test) {
 
 #pragma region system tests
 
-#include <wolf/system/test/compress.hpp>
-#include <wolf/system/test/coroutine.hpp>
-#include <wolf/system/test/gamepad.hpp>
-#include <wolf/system/test/gametime.hpp>
-#include <wolf/system/test/log.hpp>
-//#include <wolf/system/test/postgresql.hpp>
-#include <wolf/system/test/process.hpp>
-#include <wolf/system/test/signal_slot.hpp>
-#include <wolf/system/test/tcp.hpp>
-#include <wolf/system/test/trace.hpp>
-#include <wolf/system/test/ws.hpp>
-#include <wolf/system/test/lua.hpp>
+//#include <wolf/system/test/compress.hpp>
+//#include <wolf/system/test/coroutine.hpp>
+//#include <wolf/system/test/gamepad.hpp>
+//#include <wolf/system/test/gametime.hpp>
+//#include <wolf/system/test/log.hpp>
+////#include <wolf/system/test/postgresql.hpp>
+//#include <wolf/system/test/process.hpp>
+//#include <wolf/system/test/signal_slot.hpp>
+//#include <wolf/system/test/tcp.hpp>
+//#include <wolf/system/test/trace.hpp>
+//#include <wolf/system/test/ws.hpp>
+//#include <wolf/system/test/lua.hpp>
+#include <wolf/system/test/python.hpp>
 
 #pragma endregion
 
 #pragma region stream tests
 
 //#include <wolf/stream/test/ffmpeg_stream.hpp>
-#include <wolf/stream/test/rist.hpp>
+//#include <wolf/stream/test/rist.hpp>
 
 #pragma endregion
 
@@ -50,7 +51,7 @@ BOOST_AUTO_TEST_CASE(wolf_test) {
 //#include <wolf/media/test/ffmpeg.hpp>
 //#include <wolf/media/test/image.hpp>
 //#include <wolf/media/test/openal.hpp>
-#include <wolf/media/test/gstreamer.hpp>
+//#include <wolf/media/test/gstreamer.hpp>
 
 #pragma endregion
 

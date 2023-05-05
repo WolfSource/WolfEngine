@@ -27,7 +27,7 @@ w_leak_detector::~w_leak_detector() noexcept {
       _CrtMemDumpStatistics(&_diff_mem);
       _CrtMemDumpAllObjectsSince(&this->_mem_state);
       _CrtDumpMemoryLeaks();
-      std::cerr << "memory leak detected!\r\n";
+      std::cerr << "Detected memory leak!\r\n";
       assert(false);
       std::terminate();
     }

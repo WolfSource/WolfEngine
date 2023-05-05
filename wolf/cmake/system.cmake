@@ -16,13 +16,28 @@ if (WOLF_SYSTEM_MIMALLOC)
     list(APPEND LIBS mimalloc)
 endif()
 
-# fetch boost via vcpkg
-execute_process(COMMAND vcpkg install 
-    boost-asio 
-    boost-beast 
-    boost-leaf 
-    boost-signals2 
-    boost-test --triplet=${VCPKG_TARGET_TRIPLET})
+# fetch boost components via vcpkg
+if (EMSCRIPTEN)
+    execute_process(COMMAND vcpkg install 
+        boost-leaf 
+        boost-signals2 --triplet=${VCPKG_TARGET_TRIPLET})
+elseif(WOLF_SYSTEM_PYTHON)
+    execute_process(COMMAND vcpkg install 
+        boost-asio 
+        boost-beast 
+        boost-leaf 
+        boost-python
+        boost-signals2
+        boost-test --triplet=${VCPKG_TARGET_TRIPLET})
+else()
+    execute_process(COMMAND vcpkg install 
+        boost-asio 
+        boost-beast 
+        boost-leaf 
+        boost-signals2 
+        boost-test --triplet=${VCPKG_TARGET_TRIPLET})
+endif()
+
 set(Boost_INCLUDE_DIR $ENV{VCPKG_ROOT}/installed/${VCPKG_TARGET_TRIPLET}/include CACHE STRING "boost include directory" FORCE)
 list(APPEND INCLUDES ${Boost_INCLUDE_DIR})
 find_package(Boost ${Boost_VERSION} REQUIRED)
@@ -223,27 +238,40 @@ if (WOLF_SYSTEM_POSTGRESQL)
     list(APPEND LIBS PostgreSQL::PostgreSQL)
 endif()
 
-#if (WOLF_SYSTEM_LUA)
-    #vcpkg_install(sol2 sol2)
-    #list(APPEND LIBS sol2)
-    #
-    #file(GLOB_RECURSE WOLF_SYSTEM_LUA_SRC
-    #    "${CMAKE_CURRENT_SOURCE_DIR}/system/script/w_lua.hpp"
-    #    "${CMAKE_CURRENT_SOURCE_DIR}/system/script/w_lua.cpp"
-    #)
-    #
-    #list(APPEND SRCS 
-    #    ${WOLF_SYSTEM_LUA_SRC}
-    #)
-#endif()
+if (WOLF_SYSTEM_LUA)
+    vcpkg_install(Lua lua FALSE)
+    vcpkg_install(sol2 sol2 TRUE)
+
+    list(APPEND LIBS lua sol2)
+    
+    file(GLOB_RECURSE WOLF_SYSTEM_LUA_SRC
+        "${CMAKE_CURRENT_SOURCE_DIR}/system/script/w_lua.hpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/system/script/w_lua.cpp"
+    )
+    
+    list(APPEND SRCS 
+        ${WOLF_SYSTEM_LUA_SRC}
+    )
+endif()
+
 if (WOLF_SYSTEM_PYTHON)
+    find_package(Python3 REQUIRED COMPONENTS Development)
+    find_package(Boost REQUIRED COMPONENTS python${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR})
+
     file(GLOB_RECURSE WOLF_SYSTEM_PYTHON_SRC
         "${CMAKE_CURRENT_SOURCE_DIR}/system/script/w_python.hpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/system/script/w_python.cpp"
     )
-
     list(APPEND SRCS
         ${WOLF_SYSTEM_PYTHON_SRC}
+    )
+    list(APPEND INCLUDES ${Python3_INCLUDE_DIRS})
+    list(APPEND LIBS Python3::Python Boost::python${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR})
+
+    get_filename_component(PYTHON_HOME ${Python3_EXECUTABLE} DIRECTORY)
+    add_definitions(
+        -DBOOST_PYTHON_STATIC_LIB
+        -DPYTHON_HOME="${PYTHON_HOME}"
     )
 endif()
 

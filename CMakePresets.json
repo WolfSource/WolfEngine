@@ -13,18 +13,27 @@
             "installDir": "${sourceDir}/install/${presetName}",
             "generator": "Ninja",
             "cacheVariables": {
-              "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
-              "ARCH": "win64"
+                "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+                "ARCH": "win64"
             }
         },
         {
-            "name": "wasm32-unknown-emscripten",
+            "name": "wasm32-unknown-emscripten-debug",
             "displayName": "wasm32-unknown-emscripten",
-            "description": "Configure based on Emscripten",
+            "description": "Configure debug mode based on Emscripten",
             "inherits": "base",
             "cacheVariables": {
                 "CMAKE_TOOLCHAIN_FILE": "$env{EMSDK}/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake",
                 "CMAKE_BUILD_TYPE": "Debug"
+            }
+        },
+        {
+            "name": "wasm32-unknown-emscripten-release",
+            "displayName": "Win x64 Release",
+            "description": "Configure release mode based on Emscripten",
+            "inherits": "wasm32-unknown-emscripten-debug",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release"
             }
         },
         {
@@ -48,7 +57,7 @@
         {
             "name": "win-x64-release",
             "displayName": "Win x64 Release",
-            "description": "Sets windows platform and debug build type for x64 arch",
+            "description": "Sets windows platform and release build type for x64 arch",
             "inherits": "win-x64-debug",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Release"
@@ -164,62 +173,74 @@
             }
         }
     ],
-  "buildPresets": [
-    {
-      "name": "wasm32-unknown-emscripten",
-      "displayName": "wasm32-unknown-emscripten",
-      "description": "Build WebAssembly with Emscripten",
-      "configurePreset": "wasm32-unknown-emscripten"
-    },
-    {
-      "name": "win-x64-release",
-      "displayName": "Win x64 Release",
-      "description": "Sets windows platform and debug build type for x64 arch in release mode",
-      "configurePreset": "win-x64-release"
-    },
-    {
-      "name": "win-x64-debug",
-      "displayName": "Win x64 Debug",
-      "description": "Sets windows platform and release build type for x64 arch in debug mode",
-      "configurePreset": "win-x64-debug"
-    },
-    {
-      "name": "android-arm64-debug",
-      "displayName": "Android ARM64 v8a Debug",
-      "description": "Build Android",
-      "configurePreset": "android-arm64-debug"
-    },
-    {
-      "name": "android-arm64-release",
-      "displayName": "Android ARM64 v8a Release",
-      "description": "Build Android",
-      "configurePreset": "android-arm64-release"
-    },
-    {
-      "name": "android-arm-debug",
-      "displayName": "Android ARM eabi v7a Debug",
-      "description": "Build Android",
-      "configurePreset": "android-arm-debug"
-    },
-    {
-      "name": "android-arm-release",
-      "displayName": "Android ARM eabi v7a Release",
-      "description": "Build Android",
-      "configurePreset": "android-arm-release"
-    },
-    {
-      "name": "linux-x64-debug",
-      "displayName": "Sets linux platform and debug build type for x64 arch in debug mode",
-      "description": "linux x64 Debug",
-      "configurePreset": "linux-x64-debug"
-    },
-    {
-      "name": "linux-x64-release",
-      "displayName": "Sets linux platform and release build type for x64 arch in release mode",
-      "description": "linux x64 Release",
-      "configurePreset": "linux-x64-release"
-    }
-  ],
+    "buildPresets": [
+        {
+            "name": "wasm32-unknown-emscripten-debug",
+            "displayName": "wasm32-unknown-emscripten-debug",
+            "description": "Build WebAssembly with Emscripten",
+            "configurePreset": "wasm32-unknown-emscripten-debug"
+        },
+        {
+            "name": "wasm32-unknown-emscripten-release",
+            "displayName": "wasm32-unknown-emscripten-release",
+            "description": "Build WebAssembly with Emscripten",
+            "configurePreset": "wasm32-unknown-emscripten-release"
+        },
+        {
+            "name": "win-x64-release",
+            "displayName": "Win x64 Release",
+            "description": "Sets windows platform and debug build type for x64 arch in release mode",
+            "configurePreset": "win-x64-release"
+        },
+        {
+            "name": "win-x64-debug",
+            "displayName": "Win x64 Debug",
+            "description": "Sets windows platform and debug build type for x64 arch in debug mode",
+            "configurePreset": "win-x64-debug"
+        },
+        {
+            "name": "android-arm64-debug",
+            "displayName": "Android ARM64 v8a Debug",
+            "description": "Build Android",
+            "configurePreset": "android-arm64-debug"
+        },
+        {
+            "name": "android-arm64-release",
+            "displayName": "Android ARM64 v8a Release",
+            "description": "Build Android",
+            "configurePreset": "android-arm64-release"
+        },
+        {
+            "name": "android-arm-debug",
+            "displayName": "Android ARM eabi v7a Debug",
+            "description": "Build Android",
+            "configurePreset": "android-arm-debug"
+        },
+        {
+            "name": "android-arm-release",
+            "displayName": "Android ARM eabi v7a Release",
+            "description": "Build Android",
+            "configurePreset": "android-arm-release"
+        },
+        {
+            "name": "linux-x64-debug",
+            "displayName": "Sets linux platform and debug build type for x64 arch in debug mode",
+            "description": "linux x64 Debug",
+            "configurePreset": "linux-x64-debug"
+        },
+        {
+            "name": "linux-x64-release",
+            "displayName": "Sets linux platform and release build type for x64 arch in release mode",
+            "description": "linux x64 Release",
+            "configurePreset": "linux-x64-release"
+        },
+        {
+            "name": "wasm",
+            "description": "",
+            "displayName": "",
+            "configurePreset": "wasm32-unknown-emscripten-debug"
+        }
+    ],
     "testPresets": [
         {
             "name": "base-tests",
