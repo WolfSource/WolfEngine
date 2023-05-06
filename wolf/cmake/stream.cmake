@@ -51,33 +51,40 @@ if (WOLF_STREAM_JANUS)
 
 endif()
 
-# fetch lsquic
+# fetch msquic
 if (WOLF_STREAM_QUIC)
     if (EMSCRIPTEN)
         message(FATAL_ERROR "WOLF_STREAM_QUIC is not supported for wasm32 target")
     endif()
-    if (NOT WOLF_SYSTEM_SSL)
-        message(FATAL_ERROR "WOLF_SYSTEM_SSL is required for WOLF_STREAM_QUIC")
+
+    if (NOT WIN32)
+        message(FATAL_ERROR "WOLF_STREAM_QUIC feature is not avilable on non-windows yet.")
     endif()
-    
-    message("fetching https://github.com/litespeedtech/lsquic.git")
-    FetchContent_Declare(
-        lsquic
-        GIT_REPOSITORY https://github.com/litespeedtech/lsquic.git
-        GIT_TAG        master
+
+    file(GLOB_RECURSE WOLF_STREAM_QUIC_SRCS
+      "${CMAKE_CURRENT_SOURCE_DIR}/stream/quic/*"
     )
 
-    set(LSQUIC_TESTS OFF CACHE BOOL "LSQUIC_TESTS")
+    if (WIN32 OR WIN64)
+        FetchContent_Declare(
+            msquic
+            URL https://github.com/microsoft/msquic/releases/download/v2.2.0/msquic_windows_x64_Release_schannel.zip
+            DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+        )
+        FetchContent_Populate(msquic)
+    else()
+        message(FATAL_ERROR "WOLF_STREAM_QUIC feature is not supported on target platform.")
+    endif()
 
-    set(FETCHCONTENT_QUIET OFF)
-    FetchContent_MakeAvailable(lsquic)
+    add_library(msquic-lib INTERFACE)
+    add_library(msquic::msquic ALIAS msquic-lib)
+    target_include_directories(msquic-lib INTERFACE ${msquic_SOURCE_DIR}/include)
+    target_link_directories(msquic-lib INTERFACE BEFORE ${msquic_SOURCE_DIR}/bin)
+    target_link_directories(msquic-lib INTERFACE BEFORE ${msquic_SOURCE_DIR}/lib)
+    target_link_libraries(msquic-lib INTERFACE msquic)
 
-    list(APPEND INCLUDES
-        ${lsquic_SOURCE_DIR}/include
-        ${lsquic_SOURCE_DIR}/wincompat
-    )
-    list(APPEND LIBS lsquic)
-    
+    list(APPEND SRCS ${WOLF_STREAM_QUIC_SRCS})
+    list(APPEND LIBS msquic::msquic)
 endif()
 
 if (WOLF_STREAM_RIST)

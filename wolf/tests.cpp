@@ -43,6 +43,7 @@ BOOST_AUTO_TEST_CASE(wolf_test) {
 //#include <wolf/stream/test/ffmpeg_stream.hpp>
 //#include <wolf/stream/test/rist.hpp>
 #include <wolf/stream/test/grpc.hpp>
+#include <wolf/stream/test/quic.hpp>
 
 #pragma endregion
 
