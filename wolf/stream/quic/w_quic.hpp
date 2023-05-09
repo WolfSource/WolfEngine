@@ -4,8 +4,9 @@
 
 #pragma once
 
-#include <wolf.hpp>
-
-#include <msquic.h>
-
-W_API auto foo() -> const QUIC_API_TABLE*;
+#include "stream/quic/datatypes/w_status.hpp"
+#include "stream/quic/datatypes/w_settings.hpp"
+#include "stream/quic/datatypes/w_address.hpp"
+#include "stream/quic/datatypes/w_credential_config.hpp"
+#include "stream/quic/datatypes/w_registration_config.hpp"
+#include "stream/quic/datatypes/w_new_connection_info.hpp"

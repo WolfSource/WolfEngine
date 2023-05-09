@@ -8,15 +8,17 @@
 
 #include <stream/quic/w_quic.hpp>
 
-BOOST_AUTO_TEST_CASE(quic)
-{
-    std::cout << "entering test case 'quic'" << std::endl;
+namespace quic = wolf::stream::quic;
 
-    const wolf::system::w_leak_detector detector{};
+BOOST_AUTO_TEST_CASE(msquic_base_types) {
+    BOOST_REQUIRE(quic::w_status(quic::w_status_code::Success).succeeded());
+    BOOST_REQUIRE(quic::w_status(quic::w_status_code::Aborted).failed());
 
-    BOOST_REQUIRE(foo());
-
-    std::cout << "leaving test case 'quic'" << std::endl;
+    {
+        auto status_code = quic::w_status_code::Success;
+        auto status = quic::w_status(status_code);
+        BOOST_REQUIRE(quic::status_to_str(status_code) == quic::status_to_str(status));
+    }
 }
 
 #endif  // defined(WOLF_TEST) && defined(WOLF_STREAM_QUIC)
