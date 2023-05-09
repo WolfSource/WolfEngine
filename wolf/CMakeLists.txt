@@ -256,6 +256,11 @@ file(GLOB_RECURSE WOLF_SRCS
     "${CMAKE_CURRENT_SOURCE_DIR}/DISABLE_ANALYSIS_BEGIN"
     "${CMAKE_CURRENT_SOURCE_DIR}/DISABLE_ANALYSIS_END"
 )
+
+file(GLOB_RECURSE WOLF_PROTOS
+    "${CMAKE_CURRENT_SOURCE_DIR}/protos/*"
+)
+
 file(GLOB_RECURSE WOLF_CMAKES
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/*"
 )
@@ -272,6 +277,7 @@ add_library(${PROJECT_NAME} ${LIBRARY_TYPE}
     ${SRCS}
     ${WOLF_SRCS}
     ${WOLF_CMAKES}
+    ${WOLF_PROTOS}
 )
 
 if (WOLF_STREAM_RIST)
@@ -292,6 +298,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC ${LIBS})
 # create source group
 source_group("wolf" FILES ${WOLF_SRCS})
 source_group("cmake" FILES ${WOLF_CMAKES})
+source_group("protos" FILES ${WOLF_PROTOS})
 source_group("stream/grpc" FILES ${WOLF_STREAM_GRPC_SRC})
 source_group("stream/janus" FILES ${WOLF_STREAM_JANUS_SRC})
 source_group("stream/test" FILES ${WOLF_STREAM_TEST_SRC})

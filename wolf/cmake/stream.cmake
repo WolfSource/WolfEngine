@@ -3,6 +3,7 @@ if (WOLF_STREAM_GRPC)
     if (EMSCRIPTEN)
         message(FATAL_ERROR "the wasm32 target is not supported for WOLF_STREAM_GRPC")
     endif()
+
     vcpkg_install(asio-grpc asio-grpc TRUE)
     list(APPEND LIBS asio-grpc::asio-grpc)
 
@@ -127,11 +128,11 @@ if (WOLF_STREAM_RIST)
         ${rist_BINARY_DIR}
         ${rist_BINARY_DIR}/include
         ${rist_BINARY_DIR}/include/librist
-        ${rist_SOURCE_DIR}/src
-        ${rist_SOURCE_DIR}/include
-        ${rist_SOURCE_DIR}/include/librist
         ${rist_SOURCE_DIR}/contrib
         ${rist_SOURCE_DIR}/contrib/mbedtls/include
+        ${rist_SOURCE_DIR}/include
+        ${rist_SOURCE_DIR}/include/librist
+        ${rist_SOURCE_DIR}/src
       )
       
       file(GLOB_RECURSE WOLF_STREAM_RIST_SRC
@@ -182,16 +183,16 @@ if (WOLF_STREAM_WEBRTC)
             -DHAVE_SOUND) 
 
         list(APPEND LIBS
-            secur32 
-            dmoguids 
-            wmcodecdspuuid 
-            strmiids 
-            msdmo 
-            winmm 
-            dxgi 
             d3d11 
-            iphlpapi 
+            dmoguids 
             dwmapi
+            dxgi 
+            iphlpapi 
+            msdmo 
+            secur32 
+            strmiids 
+            winmm 
+            wmcodecdspuuid 
         )
     elseif (APPLE)
 
@@ -201,20 +202,20 @@ if (WOLF_STREAM_WEBRTC)
             -DWEBRTC_POSIX 
             -fno-rtti)
         
-        find_library(FOUNDATION Foundation)
-        find_library(CORE_FOUNDATION CoreFoundation)
         find_library(APPLICATION_SERVICES ApplicationServices)
-        find_library(CORE_SERVICES CoreServices)
-        find_library(CORE_AUDIO CoreAudio)
         find_library(AUDIO_TOOLBOX AudioToolBox)
+        find_library(CORE_AUDIO CoreAudio)
+        find_library(CORE_FOUNDATION CoreFoundation)
+        find_library(CORE_SERVICES CoreServices)
+        find_library(FOUNDATION Foundation)
 
         list(APPEND LIBS
-            ${FOUNDATION} 
-            ${CORE_FOUNDATION} 
             ${APPLICATION_SERVICES} 
-            ${CORE_SERVICES}
-            ${CORE_AUDIO} 
             ${AUDIO_TOOLBOX} 
+            ${CORE_AUDIO} 
+            ${CORE_FOUNDATION} 
+            ${CORE_SERVICES}
+            ${FOUNDATION} 
         )
     endif()
     add_definitions(-DHAVE_JPEG)

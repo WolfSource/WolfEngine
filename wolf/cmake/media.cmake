@@ -69,8 +69,8 @@ if (WOLF_MEDIA_STB)
   FetchContent_Populate(stb)
 
   file(GLOB_RECURSE WOLF_MEDIA_STB_SRC
-    "${CMAKE_CURRENT_SOURCE_DIR}/media/w_image.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/media/w_image.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/media/w_image.hpp"
   )
 
   list(APPEND SRCS ${WOLF_MEDIA_STB_SRC})
@@ -81,10 +81,10 @@ endif()
 if (WOLF_MEDIA_GSTREAMER)
   file(GLOB_RECURSE WOLF_MEDIA_GSTREAMER_SRC
     "${CMAKE_CURRENT_SOURCE_DIR}/media/gst/*"
-    "${CMAKE_CURRENT_SOURCE_DIR}/media/gst/core/*"
     "${CMAKE_CURRENT_SOURCE_DIR}/media/gst/audio/*"
-    "${CMAKE_CURRENT_SOURCE_DIR}/media/gst/video/*"
+    "${CMAKE_CURRENT_SOURCE_DIR}/media/gst/core/*"
     "${CMAKE_CURRENT_SOURCE_DIR}/media/gst/elements/*"
+    "${CMAKE_CURRENT_SOURCE_DIR}/media/gst/video/*"
   )
 
   find_package(PkgConfig REQUIRED)
@@ -106,6 +106,6 @@ if (WOLF_MEDIA_GSTREAMER)
 endif()
 
 file(GLOB_RECURSE WOLF_MEDIA_TEST_SRC
-    "${CMAKE_CURRENT_SOURCE_DIR}/media/test/*"
+"${CMAKE_CURRENT_SOURCE_DIR}/media/test/*"
 )
 list(APPEND SRCS ${WOLF_MEDIA_TEST_SRC})

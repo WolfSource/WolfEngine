@@ -27,7 +27,7 @@ elseif(WOLF_SYSTEM_PYTHON)
         boost-beast 
         boost-leaf 
         boost-python
-        boost-signals2
+        boost-signals2 
         boost-test --triplet=${VCPKG_TARGET_TRIPLET})
 else()
     execute_process(COMMAND vcpkg install 
@@ -53,11 +53,11 @@ endif()
 
 if (WOLF_SYSTEM_GAMEPAD_CLIENT)
     file(GLOB_RECURSE WOLF_SYSTEM_GAMEPAD_CLIENT_SRC
-        "${CMAKE_CURRENT_SOURCE_DIR}/system/gamepad/w_gamepad_client.hpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/system/gamepad/w_gamepad_client_emc.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/system/gamepad/w_gamepad_client_keymap.hpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/system/gamepad/w_gamepad_client_sdl.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/system/gamepad/w_gamepad_client_types.hpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/system/gamepad/w_gamepad_client.hpp"
     )
     list(APPEND SRCS ${WOLF_SYSTEM_GAMEPAD_CLIENT_SRC})
 
@@ -83,16 +83,16 @@ if (WOLF_SYSTEM_GAMEPAD_CLIENT)
         set(SDL_RENDER OFF CACHE BOOL "SDL_RENDER")
         set(SDL_RENDER_D3D OFF CACHE BOOL "SDL_RENDER_D3D")
         set(SDL_RENDER_METAL OFF CACHE BOOL "SDL_RENDER_METAL")
+        set(SDL_SHARED OFF CACHE BOOL "SDL_SHARED")
         set(SDL_TEST OFF CACHE BOOL "SDL_TEST")
         set(SDL_TESTS OFF CACHE BOOL "SDL_TESTS")
         set(SDL_VIDEO OFF CACHE BOOL "SDL_VIDEO")
         set(SDL_VULKAN OFF CACHE BOOL "SDL_VULKAN")
         set(SDL_WASAPI OFF CACHE BOOL "SDL_WASAPI")
-        set(SDL_SHARED OFF CACHE BOOL "SDL_SHARED")
 
-        set(SDL_STATIC ON CACHE BOOL "SDL_STATIC")
         set(SDL_HIGHDAPI_JOYSTICK ON CACHE BOOL "SDL_HIGHDAPI_JOYSTICK")
         set(SDL_JOYSTICK ON CACHE BOOL "SDL_JOYSTICK")
+        set(SDL_STATIC ON CACHE BOOL "SDL_STATIC")
         set(SDL_XINPUT ON CACHE BOOL "SDL_XINPUT")
 
         set(FETCHCONTENT_QUIET OFF)
@@ -232,8 +232,8 @@ if (WOLF_SYSTEM_POSTGRESQL)
     list(APPEND LIBS libpq::libpq)
 
     file(GLOB_RECURSE WOLF_SYSTEM_POSTGRESQL_SRC
-        "${CMAKE_CURRENT_SOURCE_DIR}/system/db/w_postgresql.hpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/system/db/w_postgresql.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/system/db/w_postgresql.hpp"
     )
     list(APPEND LIBS PostgreSQL::PostgreSQL)
 endif()
@@ -245,8 +245,8 @@ if (WOLF_SYSTEM_LUA)
     list(APPEND LIBS lua sol2)
     
     file(GLOB_RECURSE WOLF_SYSTEM_LUA_SRC
-        "${CMAKE_CURRENT_SOURCE_DIR}/system/script/w_lua.hpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/system/script/w_lua.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/system/script/w_lua.hpp"
     )
     
     list(APPEND SRCS 
@@ -259,8 +259,8 @@ if (WOLF_SYSTEM_PYTHON)
     find_package(Boost REQUIRED COMPONENTS python${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR})
 
     file(GLOB_RECURSE WOLF_SYSTEM_PYTHON_SRC
-        "${CMAKE_CURRENT_SOURCE_DIR}/system/script/w_python.hpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/system/script/w_python.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/system/script/w_python.hpp"
     )
     list(APPEND SRCS
         ${WOLF_SYSTEM_PYTHON_SRC}
@@ -277,23 +277,22 @@ endif()
 
 if (EMSCRIPTEN)
     file (GLOB_RECURSE WOLF_SYSTEM_SRC
-        "${CMAKE_CURRENT_SOURCE_DIR}/system/w_trace.hpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/system/w_gametime.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/system/w_gametime.hpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/system/w_trace.hpp"
     )
 else()
     file (GLOB_RECURSE WOLF_SYSTEM_SRC
-        "${CMAKE_CURRENT_SOURCE_DIR}/system/w_trace.hpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/system/getopt.h"
         "${CMAKE_CURRENT_SOURCE_DIR}/system/w_gametime.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/system/w_gametime.hpp"
-        "${CMAKE_CURRENT_SOURCE_DIR}/system/w_trace.hpp"
-        "${CMAKE_CURRENT_SOURCE_DIR}/system/getopt.h"
         "${CMAKE_CURRENT_SOURCE_DIR}/system/w_leak_detector.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/system/w_leak_detector.hpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/system/w_process.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/system/w_process.hpp"
-        "${CMAKE_CURRENT_SOURCE_DIR}/system/w_ring_buffer_spsc.hpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/system/w_time.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/system/w_time.hpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/system/w_trace.hpp"
     )
 endif()
 
