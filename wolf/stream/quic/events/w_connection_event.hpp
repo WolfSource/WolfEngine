@@ -2,10 +2,16 @@
 
 #include "system/w_flags.hpp"
 #include "stream/quic/internal/common.hpp"
+#include "stream/quic/internal/w_msquic_api.hpp"
 #include "stream/quic/datatypes/common_flags.hpp"
 #include "stream/quic/datatypes/w_status.hpp"
+#include "stream/quic/handles/w_stream.hpp"
 
 #include <msquic.h>
+
+// NOTE windows.h must be included after msquic.h
+//      due to some declaration issues.
+#include "wolf.hpp"
 
 #include <string_view>
 
@@ -18,7 +24,7 @@ namespace wolf::stream::quic {
  *       but only referencible.
  *       please refer to its provider for lifetime guarantees.
  */
-class w_connection_event_connected {
+class W_API w_connection_event_connected {
     friend class internal::w_raw_access;
 
 public:
@@ -58,7 +64,7 @@ private:
  *       but only referencible.
  *       please refer to its provider for lifetime guarantees.
  */
-class w_connection_event_shutdown_initiated_by_peer {
+class W_API w_connection_event_shutdown_initiated_by_peer {
     friend class internal::w_raw_access;
 
 public:
@@ -90,7 +96,7 @@ private:
  *       but only referencible.
  *       please refer to its provider for lifetime guarantees.
  */
-class w_connection_event_local_address_changed {
+class W_API w_connection_event_local_address_changed {
     friend class internal::w_raw_access;
 
 public:
@@ -103,11 +109,11 @@ private:
      * @brief wrap the given raw event as non-owning.
      * @param p_event  pointer to event.
      */
-    w_connection_event_local_address_changed(internal::w_raw_tag, QUIC_CONNECTION_EVENT* p_event)
-        : _event(p_event)
+    w_connection_event_local_address_changed(internal::w_raw_tag, QUIC_CONNECTION_EVENT* /*p_event*/)
+        // : _event(p_event)
     {}
 
-    QUIC_CONNECTION_EVENT* _event = nullptr;
+    // QUIC_CONNECTION_EVENT* _event = nullptr;
 };
 
 /**
@@ -117,7 +123,7 @@ private:
  *       but only referencible.
  *       please refer to its provider for lifetime guarantees.
  */
-class w_connection_event_peer_address_changed {
+class W_API w_connection_event_peer_address_changed {
     friend class internal::w_raw_access;
 
 public:
@@ -130,11 +136,11 @@ private:
      * @brief wrap the given raw event as non-owning.
      * @param p_event  pointer to event.
      */
-    w_connection_event_peer_address_changed(internal::w_raw_tag, QUIC_CONNECTION_EVENT* p_event)
-        : _event(p_event)
+    w_connection_event_peer_address_changed(internal::w_raw_tag, QUIC_CONNECTION_EVENT* /*p_event*/)
+        // : _event(p_event)
     {}
 
-    QUIC_CONNECTION_EVENT* _event = nullptr;
+    // QUIC_CONNECTION_EVENT* _event = nullptr;
 };
 
 /**
@@ -144,7 +150,7 @@ private:
  *       but only referencible.
  *       please refer to its provider for lifetime guarantees.
  */
-class w_connection_event_peer_stream_started {
+class W_API w_connection_event_peer_stream_started {
     friend class internal::w_raw_access;
 
 public:
@@ -152,14 +158,62 @@ public:
     w_connection_event_peer_stream_started(const w_connection_event_peer_stream_started&) = delete;
     w_connection_event_peer_stream_started(w_connection_event_peer_stream_started&&) = delete;
 
-    [[nodiscard]] auto stream() const noexcept
+    ~w_connection_event_peer_stream_started()
     {
-        // TODO stream handle is not implemented yet.
+        if (_event->PEER_STREAM_STARTED.Stream) {
+            reject_stream();
+        }
     }
 
-    [[nodiscard]] ::wolf::system::w_flags<w_stream_open_flag> flags() const noexcept
+    [[nodiscard]] bool is_unidirectional() const noexcept
+    {
+        return _event->PEER_STREAM_STARTED.Flags & QUIC_STREAM_OPEN_FLAG_UNIDIRECTIONAL;
+    }
+
+    [[nodiscard]] bool is_bidirectional() const noexcept
+    {
+        return !(_event->PEER_STREAM_STARTED.Flags & QUIC_STREAM_OPEN_FLAG_UNIDIRECTIONAL);
+    }
+
+    [[nodiscard]] wolf::w_flags<w_stream_open_flag> flags() const noexcept
     {
         return static_cast<w_stream_open_flag>(_event->PEER_STREAM_STARTED.Flags);
+    }
+
+    /**
+     * @brief reject the incoming stream.
+     */
+    void reject_stream() const noexcept
+    {
+        if (!_event->PEER_STREAM_STARTED.Stream) {
+            return;
+        }
+
+        internal::w_msquic_api::api()->StreamClose(_event->PEER_STREAM_STARTED.Stream);
+        _event->PEER_STREAM_STARTED.Stream = nullptr;  // to avoid Use-After-Free.
+    }
+
+    /**
+     * @brief accept the incoming stream and set its handler callback.
+     * @param p_callback  event handler callback.
+     */
+    template <typename HandlerF>
+    auto accept_stream(HandlerF&& p_callback) const noexcept
+        -> boost::leaf::result<w_stream>
+    {
+        if (!_event->PEER_STREAM_STARTED.Stream) {
+            return W_FAILURE(std::errc::operation_canceled,
+                             "stream is already accepted/rejected.");
+        }
+
+        BOOST_LEAF_AUTO(stream, w_stream::setup_new_raw_stream(
+            _event->PEER_STREAM_STARTED.Stream,
+            std::forward<HandlerF>(p_callback)
+        ));
+
+        _event->PEER_STREAM_STARTED.Stream = nullptr;
+
+        return stream;
     }
 
 private:
@@ -181,7 +235,7 @@ private:
  *       but only referencible.
  *       please refer to its provider for lifetime guarantees.
  */
-class w_connection_event_streams_available {
+class W_API w_connection_event_streams_available {
     friend class internal::w_raw_access;
 
 public:
@@ -218,7 +272,7 @@ private:
  *       but only referencible.
  *       please refer to its provider for lifetime guarantees.
  */
-class w_connection_event_ideal_processor_changed {
+class W_API w_connection_event_ideal_processor_changed {
     friend class internal::w_raw_access;
 
 public:
@@ -231,11 +285,11 @@ private:
      * @brief wrap the given raw event as non-owning.
      * @param p_event  pointer to event.
      */
-    w_connection_event_ideal_processor_changed(internal::w_raw_tag, QUIC_CONNECTION_EVENT* p_event)
-        : _event(p_event)
+    w_connection_event_ideal_processor_changed(internal::w_raw_tag, QUIC_CONNECTION_EVENT* /*p_event*/)
+        // : _event(p_event)
     {}
 
-    QUIC_CONNECTION_EVENT* _event = nullptr;
+    // QUIC_CONNECTION_EVENT* _event = nullptr;
 };
 
 /**
@@ -245,7 +299,7 @@ private:
  *       but only referencible.
  *       please refer to its provider for lifetime guarantees.
  */
-class w_connection_event_datagram_state_changed {
+class W_API w_connection_event_datagram_state_changed {
     friend class internal::w_raw_access;
 
 public:
@@ -258,11 +312,11 @@ private:
      * @brief wrap the given raw event as non-owning.
      * @param p_event  pointer to event.
      */
-    w_connection_event_datagram_state_changed(internal::w_raw_tag, QUIC_CONNECTION_EVENT* p_event)
-        : _event(p_event)
+    w_connection_event_datagram_state_changed(internal::w_raw_tag, QUIC_CONNECTION_EVENT* /*p_event*/)
+        // : _event(p_event)
     {}
 
-    QUIC_CONNECTION_EVENT* _event = nullptr;
+    // QUIC_CONNECTION_EVENT* _event = nullptr;
 };
 
 /**
@@ -272,7 +326,7 @@ private:
  *       but only referencible.
  *       please refer to its provider for lifetime guarantees.
  */
-class w_connection_event_resumed {
+class W_API w_connection_event_resumed {
     friend class internal::w_raw_access;
 
 public:
@@ -285,11 +339,11 @@ private:
      * @brief wrap the given raw event as non-owning.
      * @param p_event  pointer to event.
      */
-    w_connection_event_resumed(internal::w_raw_tag, QUIC_CONNECTION_EVENT* p_event)
-        : _event(p_event)
+    w_connection_event_resumed(internal::w_raw_tag, QUIC_CONNECTION_EVENT* /*p_event*/)
+        // : _event(p_event)
     {}
 
-    QUIC_CONNECTION_EVENT* _event = nullptr;
+    // QUIC_CONNECTION_EVENT* _event = nullptr;
 };
 
 /**
@@ -299,7 +353,7 @@ private:
  *       but only referencible.
  *       please refer to its provider for lifetime guarantees.
  */
-class w_connection_event_resumption_ticket_received {
+class W_API w_connection_event_resumption_ticket_received {
     friend class internal::w_raw_access;
 
 public:
@@ -312,11 +366,11 @@ private:
      * @brief wrap the given raw event as non-owning.
      * @param p_event  pointer to event.
      */
-    w_connection_event_resumption_ticket_received(internal::w_raw_tag, QUIC_CONNECTION_EVENT* p_event)
-        : _event(p_event)
+    w_connection_event_resumption_ticket_received(internal::w_raw_tag, QUIC_CONNECTION_EVENT* /*p_event*/)
+        // : _event(p_event)
     {}
 
-    QUIC_CONNECTION_EVENT* _event = nullptr;
+    // QUIC_CONNECTION_EVENT* _event = nullptr;
 };
 
 /**
@@ -326,7 +380,7 @@ private:
  *       but only referencible.
  *       please refer to its provider for lifetime guarantees.
  */
-class w_connection_event_peer_certificate_received {
+class W_API w_connection_event_peer_certificate_received {
     friend class internal::w_raw_access;
 
 public:
@@ -339,11 +393,11 @@ private:
      * @brief wrap the given raw event as non-owning.
      * @param p_event  pointer to event.
      */
-    w_connection_event_peer_certificate_received(internal::w_raw_tag, QUIC_CONNECTION_EVENT* p_event)
-        : _event(p_event)
+    w_connection_event_peer_certificate_received(internal::w_raw_tag, QUIC_CONNECTION_EVENT* /*p_event*/)
+        // : _event(p_event)
     {}
 
-    QUIC_CONNECTION_EVENT* _event = nullptr;
+    // QUIC_CONNECTION_EVENT* _event = nullptr;
 };
 
 /**
@@ -353,7 +407,7 @@ private:
  *       but only referencible.
  *       please refer to its provider for lifetime guarantees.
  */
-class w_connection_event_datagram_received {
+class W_API w_connection_event_datagram_received {
     friend class internal::w_raw_access;
 
 public:
@@ -366,11 +420,11 @@ private:
      * @brief wrap the given raw event as non-owning.
      * @param p_event  pointer to event.
      */
-    w_connection_event_datagram_received(internal::w_raw_tag, QUIC_CONNECTION_EVENT* p_event)
-        : _event(p_event)
+    w_connection_event_datagram_received(internal::w_raw_tag, QUIC_CONNECTION_EVENT* /*p_event*/)
+        // : _event(p_event)
     {}
 
-    QUIC_CONNECTION_EVENT* _event = nullptr;
+    // QUIC_CONNECTION_EVENT* _event = nullptr;
 };
 
 /**
@@ -380,7 +434,7 @@ private:
  *       but only referencible.
  *       please refer to its provider for lifetime guarantees.
  */
-class w_connection_event_shutdown_initiated_by_transport {
+class W_API w_connection_event_shutdown_initiated_by_transport {
     friend class internal::w_raw_access;
 
 public:
@@ -417,7 +471,7 @@ private:
  *       but only referencible.
  *       please refer to its provider for lifetime guarantees.
  */
-class w_connection_event_datagram_send_state_changed {
+class W_API w_connection_event_datagram_send_state_changed {
     friend class internal::w_raw_access;
 
 public:
@@ -430,11 +484,11 @@ private:
      * @brief wrap the given raw event as non-owning.
      * @param p_event  pointer to event.
      */
-    w_connection_event_datagram_send_state_changed(internal::w_raw_tag, QUIC_CONNECTION_EVENT* p_event)
-        : _event(p_event)
+    w_connection_event_datagram_send_state_changed(internal::w_raw_tag, QUIC_CONNECTION_EVENT* /*p_event*/)
+        // : _event(p_event)
     {}
 
-    QUIC_CONNECTION_EVENT* _event = nullptr;
+    // QUIC_CONNECTION_EVENT* _event = nullptr;
 };
 
 /**
@@ -444,7 +498,7 @@ private:
  *       but only referencible.
  *       please refer to its provider for lifetime guarantees.
  */
-class w_connection_event_peer_needs_streams {
+class W_API w_connection_event_peer_needs_streams {
     friend class internal::w_raw_access;
 
 public:
@@ -457,11 +511,11 @@ private:
      * @brief wrap the given raw event as non-owning.
      * @param p_event  pointer to event.
      */
-    w_connection_event_peer_needs_streams(internal::w_raw_tag, QUIC_CONNECTION_EVENT* p_event)
-        : _event(p_event)
+    w_connection_event_peer_needs_streams(internal::w_raw_tag, QUIC_CONNECTION_EVENT* /*p_event*/)
+        // : _event(p_event)
     {}
 
-    QUIC_CONNECTION_EVENT* _event = nullptr;
+    // QUIC_CONNECTION_EVENT* _event = nullptr;
 };
 
 /**
@@ -471,7 +525,7 @@ private:
  *       but only referencible.
  *       please refer to its provider for lifetime guarantees.
  */
-class w_connection_event_shutdown_complete {
+class W_API w_connection_event_shutdown_complete {
     friend class internal::w_raw_access;
 
 public:
@@ -513,11 +567,71 @@ private:
  *       but only referencible.
  *       please refer to its provider for lifetime guarantees.
  */
-class w_connection_event {
+class W_API w_connection_event {
+    friend class internal::w_raw_access;
+
 public:
     w_connection_event() = delete;
     w_connection_event(const w_connection_event&) = delete;
     w_connection_event(w_connection_event&&) = delete;
+
+    /**
+     * @brief get string name of the underlying event.
+     */
+    [[nodiscard]] auto name() const noexcept -> std::string_view
+    {
+        switch (_event->Type) {
+        case QUIC_CONNECTION_EVENT_CONNECTED:
+            return "connected";
+
+        case QUIC_CONNECTION_EVENT_SHUTDOWN_INITIATED_BY_PEER:
+            return "shutdown-initiated-by-peer";
+
+        case QUIC_CONNECTION_EVENT_LOCAL_ADDRESS_CHANGED:
+            return "local-address-changed";
+
+        case QUIC_CONNECTION_EVENT_PEER_ADDRESS_CHANGED:
+            return "peer-address-changed";
+
+        case QUIC_CONNECTION_EVENT_PEER_STREAM_STARTED:
+            return "peer-stream-started";
+
+        case QUIC_CONNECTION_EVENT_STREAMS_AVAILABLE:
+            return "streams-available";
+
+        case QUIC_CONNECTION_EVENT_IDEAL_PROCESSOR_CHANGED:
+            return "ideal-processor-changed";
+
+        case QUIC_CONNECTION_EVENT_DATAGRAM_STATE_CHANGED:
+            return "datagram-state-changed";
+
+        case QUIC_CONNECTION_EVENT_RESUMED:
+            return "resumed";
+
+        case QUIC_CONNECTION_EVENT_RESUMPTION_TICKET_RECEIVED:
+            return "resumption-ticket-received";
+
+        case QUIC_CONNECTION_EVENT_PEER_CERTIFICATE_RECEIVED:
+            return "peer-certificate-received";
+
+        case QUIC_CONNECTION_EVENT_DATAGRAM_RECEIVED:
+            return "datagram-received";
+
+        case QUIC_CONNECTION_EVENT_SHUTDOWN_INITIATED_BY_TRANSPORT:
+            return "shutdown-initiated-by-transport";
+
+        case QUIC_CONNECTION_EVENT_DATAGRAM_SEND_STATE_CHANGED:
+            return "datagram-send-state-changed";
+
+        case QUIC_CONNECTION_EVENT_PEER_NEEDS_STREAMS:
+            return "peer-needs-streams";
+
+        case QUIC_CONNECTION_EVENT_SHUTDOWN_COMPLETE:
+            return "shutdown-complete";
+        }
+
+        return "unknown";
+    }
 
     /**
      * @brief visit the variant based on event type.
@@ -577,6 +691,8 @@ public:
         case QUIC_CONNECTION_EVENT_SHUTDOWN_COMPLETE:
             return p_visitor(accessor::from_raw<w_connection_event_shutdown_complete>(_event));
         }
+
+        return p_visitor(std::monostate{});
     }
 
 private:

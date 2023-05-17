@@ -1,7 +1,5 @@
 #pragma once
 
-#include "wolf.hpp"
-
 #include "stream/quic/internal/common.hpp"
 
 #include <msquic.h>

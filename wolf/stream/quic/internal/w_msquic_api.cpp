@@ -4,21 +4,21 @@
 
 namespace wolf::stream::quic::internal {
 
-std::mutex w_msquic_api::_s_mutex{};
-const QUIC_API_TABLE* w_msquic_api::_s_instance = nullptr;
+static std::mutex g_msquic_api_table_mutex{};
+static const QUIC_API_TABLE* g_msquic_api_table_instance = nullptr;
 
 auto w_msquic_api::api() -> const QUIC_API_TABLE*
 {
-    std::unique_lock lk{_s_mutex};
+    auto lk = std::unique_lock(g_msquic_api_table_mutex);
 
-    if (!_s_instance) {
+    if (!g_msquic_api_table_instance) {
         QUIC_STATUS status;
-        if (QUIC_FAILED(status = MsQuicOpen2(&_s_instance))) {
+        if (QUIC_FAILED(status = MsQuicOpen2(&g_msquic_api_table_instance))) {
             throw std::exception("error occured when initializing msquic library.");
         }
     }
 
-    return _s_instance;
+    return g_msquic_api_table_instance;
 }
 
 }  // namespace wolf::stream::quic::internal

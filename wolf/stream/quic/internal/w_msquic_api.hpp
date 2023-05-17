@@ -19,10 +19,6 @@ public:
      * @brief make a valid QUIC_API_TABLE pointer instance.
      */
     static auto api() -> const QUIC_API_TABLE*;
-
-private:
-    static std::mutex _s_mutex;
-    static const QUIC_API_TABLE* _s_instance;
 };
 
 }  // namespace wolf::stream::quic::internal
