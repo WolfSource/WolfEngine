@@ -1,7 +1,5 @@
 #pragma once
 
-#include "wolf.hpp"
-
 #include "stream/quic/internal/common.hpp"
 
 #include <msquic.h>
@@ -68,8 +66,8 @@ private:
     auto raw() noexcept { return &_config; }
     auto raw() const noexcept { return &_config; }
 
-    QUIC_REGISTRATION_CONFIG _config = { 0 };
     const std::string _app_name;
+    QUIC_REGISTRATION_CONFIG _config = { 0 };
 };
 
 }  // namespace wolf::stream::quic

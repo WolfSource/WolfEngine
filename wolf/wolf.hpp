@@ -131,7 +131,7 @@ W_API std::string w_init();
 #ifdef _MSC_VER
 template <class... Args>
 W_API std::string format(_In_ const std::string_view p_fmt, _In_ Args &&...p_args) {
-  return std::vformat(p_fmt, std::make_format_args(p_args...));
+  return std::vformat(p_fmt, std::make_format_args(std::forward<Args>(p_args)...));
 }
 #else
 template <class... Args>

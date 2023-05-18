@@ -1,13 +1,10 @@
 #pragma once
 
-#include "wolf.hpp"
-
 #include "stream/quic/internal/common.hpp"
 
 #include <msquic.h>
 
 #include <cstdint>
-#include <memory>
 
 namespace wolf::stream::quic {
 
@@ -25,7 +22,7 @@ enum class w_address_family {
  *
  * Commonly used to open a listener.
  */
-class w_address {
+class W_API w_address {
     friend class internal::w_raw_access;
 
 public:
@@ -73,10 +70,10 @@ private:
 
     w_address(internal::w_raw_tag, const QUIC_ADDR& p_raw_addr)
     {
-        std::memcpy(&_address, &p_raw_addr, sizeof(QUIC_ADDR));
+        std::memcpy(&_address, &p_raw_addr, sizeof(_address));
     }
 
-    QUIC_ADDR _address;
+    QUIC_ADDR _address{};
 };
 
 }  // namespace wolf::stream::quic

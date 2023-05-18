@@ -1,7 +1,5 @@
 #pragma once
 
-#include "wolf.hpp"
-
 #include "stream/quic/internal/common.hpp"
 #include "stream/quic/datatypes/w_address.hpp"
 
@@ -17,7 +15,7 @@ namespace wolf::stream::quic {
  *
  * This class wraps the raw C type, and provides simple accessor methods.
  */
-class w_new_connection_info {
+class W_API w_new_connection_info {
     friend class internal::w_raw_access;
 
 public:

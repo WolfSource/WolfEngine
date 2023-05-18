@@ -19,7 +19,7 @@ namespace wolf::stream::quic {
  *       but only referencible.
  *       please refer to its provider for lifetime guarantees.
  */
-class w_stream_event_start_complete {
+class W_API w_stream_event_start_complete {
     friend class internal::w_raw_access;
 
 public:
@@ -61,7 +61,7 @@ private:
  *       but only referencible.
  *       please refer to its provider for lifetime guarantees.
  */
-class w_stream_event_receive {
+class W_API w_stream_event_receive {
     friend class internal::w_raw_access;
 
 public:
@@ -77,12 +77,12 @@ public:
     [[nodiscard]] auto buffers() const noexcept
     {
         return std::span(_event->RECEIVE.Buffers, _event->RECEIVE.BufferCount)
-            | std::ranges::views::transform([](const QUIC_BUFFER& buf) {
-                return std::span(buf.Buffer, buf.Length);
-            });
+             | std::ranges::views::transform([](const QUIC_BUFFER& buf) {
+                 return std::span(buf.Buffer, buf.Length);
+               });
     }
 
-    [[nodiscard]] ::wolf::system::w_flags<w_receive_flag> flags() const noexcept
+    [[nodiscard]] wolf::w_flags<w_receive_flag> flags() const noexcept
     {
         return static_cast<w_receive_flag>(_event->RECEIVE.Flags);
     }
@@ -106,7 +106,7 @@ private:
  *       but only referencible.
  *       please refer to its provider for lifetime guarantees.
  */
-class w_stream_event_send_complete {
+class W_API w_stream_event_send_complete {
     friend class internal::w_raw_access;
 
 public:
@@ -138,7 +138,7 @@ private:
  *       but only referencible.
  *       please refer to its provider for lifetime guarantees.
  */
-class w_stream_event_peer_send_shutdown {
+class W_API w_stream_event_peer_send_shutdown {
     friend class internal::w_raw_access;
 
 public:
@@ -165,7 +165,7 @@ private:
  *       but only referencible.
  *       please refer to its provider for lifetime guarantees.
  */
-class w_stream_event_peer_send_aborted {
+class W_API w_stream_event_peer_send_aborted {
     friend class internal::w_raw_access;
 
 public:
@@ -197,7 +197,7 @@ private:
  *       but only referencible.
  *       please refer to its provider for lifetime guarantees.
  */
-class w_stream_event_peer_receive_aborted {
+class W_API w_stream_event_peer_receive_aborted {
     friend class internal::w_raw_access;
 
 public:
@@ -229,7 +229,7 @@ private:
  *       but only referencible.
  *       please refer to its provider for lifetime guarantees.
  */
-class w_stream_event_send_shutdown_complete {
+class W_API w_stream_event_send_shutdown_complete {
     friend class internal::w_raw_access;
 
 public:
@@ -261,7 +261,7 @@ private:
  *       but only referencible.
  *       please refer to its provider for lifetime guarantees.
  */
-class w_stream_event_shutdown_complete {
+class W_API w_stream_event_shutdown_complete {
     friend class internal::w_raw_access;
 
 public:
@@ -318,7 +318,7 @@ private:
  *       but only referencible.
  *       please refer to its provider for lifetime guarantees.
  */
-class w_stream_event_ideal_send_buffer_size {
+class W_API w_stream_event_ideal_send_buffer_size {
     friend class internal::w_raw_access;
 
 public:
@@ -350,7 +350,7 @@ private:
  *       but only referencible.
  *       please refer to its provider for lifetime guarantees.
  */
-class w_stream_event_peer_accepted {
+class W_API w_stream_event_peer_accepted {
     friend class internal::w_raw_access;
 
 public:
@@ -377,11 +377,53 @@ private:
  *       but only referencible.
  *       please refer to its provider for lifetime guarantees.
  */
-class w_stream_event {
+class W_API w_stream_event {
+    friend class internal::w_raw_access;
+
 public:
     w_stream_event() = delete;
     w_stream_event(const w_stream_event&) = delete;
     w_stream_event(w_stream_event&&) = delete;
+
+    /**
+     * @brief get string name of the underlying event.
+     */
+    [[nodiscard]] auto name() const noexcept -> std::string_view
+    {
+        switch (_event->Type) {
+        case QUIC_STREAM_EVENT_START_COMPLETE:
+            return "start-complete";
+
+        case QUIC_STREAM_EVENT_RECEIVE:
+            return "receive";
+
+        case QUIC_STREAM_EVENT_SEND_COMPLETE:
+            return "send-complete";
+
+        case QUIC_STREAM_EVENT_PEER_SEND_SHUTDOWN:
+            return "peer-send-shutdown";
+
+        case QUIC_STREAM_EVENT_PEER_SEND_ABORTED:
+            return "peer-send-aborted";
+
+        case QUIC_STREAM_EVENT_PEER_RECEIVE_ABORTED:
+            return "peer-receive-aborted";
+
+        case QUIC_STREAM_EVENT_SEND_SHUTDOWN_COMPLETE:
+            return "send-shutdown-complete";
+
+        case QUIC_STREAM_EVENT_SHUTDOWN_COMPLETE:
+            return "shutdown-complete";
+
+        case QUIC_STREAM_EVENT_IDEAL_SEND_BUFFER_SIZE:
+            return "ideal-send-buffer-size";
+
+        case QUIC_STREAM_EVENT_PEER_ACCEPTED:
+            return "peer-accepted";
+        }
+
+        return "unknown";
+    }
 
     /**
      * @brief visit the variant based on event type.
@@ -440,8 +482,9 @@ public:
             return p_visitor(
                 internal::w_raw_access::from_raw<w_stream_event_peer_accepted>(_event)
             );
-            break;
         }
+
+        return p_visitor(std::monostate{});
     }
 
 private:

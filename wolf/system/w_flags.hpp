@@ -4,7 +4,7 @@
 
 #include <type_traits>
 
-namespace wolf::system {
+namespace wolf {
 
 /**
  * @brief combinable and comparable bit flags of given enum.
@@ -100,5 +100,8 @@ private:
     underlying_type _bits;
 };
 
-}  // namespace wolf::system
+template <typename T> requires std::is_enum_v<T>
+w_flags(T&&) -> w_flags<T>;
+
+}  // namespace wolf
 
