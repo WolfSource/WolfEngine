@@ -40,10 +40,10 @@ private:
 
 public:
     /**
-     * @brief it's not purely constructible.
-     * @note use static factory function `open`.
+     * @brief construct an empty handle.
+     * @note use static factory function `open` to create a valid handle.
      */
-    w_listener() = delete;
+    w_listener() {}
 
     w_listener(const w_listener&) = delete;
     w_listener(w_listener&& p_other) noexcept
@@ -58,6 +58,16 @@ public:
     }
 
     ~w_listener() { close(); }
+
+    /**
+     * @brief whether the handle is open/valid or not.
+     */
+    [[nodiscard]] bool is_valid() const noexcept { return _handle; }
+
+    /**
+     * @brief whether it has been started and running.
+     */
+    [[nodiscard]] bool is_running() const noexcept;
 
     /**
      * @brief open/create a listener.
@@ -91,12 +101,14 @@ public:
      */
     void stop();
 
-private:
     /**
      * @brief close the listener handle.
+     *
+     * after this the instance will be unusable.
      */
     void close();
 
+private:
     auto raw() noexcept { return _handle; }
     auto raw() const noexcept { return _handle; }
 
