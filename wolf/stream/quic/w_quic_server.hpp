@@ -12,7 +12,6 @@
 #include "wolf.hpp"
 
 #include <string>
-#include <optional>
 
 namespace wolf::stream::quic {
 
@@ -21,7 +20,10 @@ namespace wolf::stream::quic {
  */
 struct w_quic_server_config {
     std::string alpn = "";
-    w_settings settings{};
+    w_settings settings{
+        .peer_bidi_stream_count = 1,
+        .peer_unidi_stream_count = 1
+    };
     w_registration_config reg_config;
     w_credential_config cred_config;
 };
@@ -51,7 +53,7 @@ public:
      * @param p_server_config  server configuration bundle.
      * @return an instance on success.
      */
-    static auto make(const w_quic_server_config& p_server_config)
+    [[nodiscard]] static auto make(const w_quic_server_config& p_server_config)
         -> boost::leaf::result<w_quic_server>
     {
         auto ret = w_quic_server();
@@ -74,7 +76,8 @@ public:
      * @brief run the server to listen on the given port with given callback.
      * @return success or failure.
      */
-    auto run(std::uint16_t p_port, w_listener::callback_type p_listener_cb) -> boost::leaf::result<void>
+    auto run(std::uint16_t p_port, w_listener::callback_type p_listener_cb)
+        -> boost::leaf::result<void>
     {
         if (_listener.is_valid()) {
             stop();
