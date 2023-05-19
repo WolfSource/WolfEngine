@@ -64,5 +64,6 @@ BOOST_AUTO_TEST_CASE(wolf_test) {
 //#include <wolf/ml/test/w_referee_test.hpp>
 //#include <wolf/ml/test/w_soccer_test.hpp>
 //#include <wolf/ml/test/w_utilities_test.hpp>
+//#include <wolf/ml/test/w_nudity_detection_test.hpp>
 
 #pragma endregion
