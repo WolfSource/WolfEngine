@@ -44,10 +44,10 @@ private:
 
 public:
     /**
-     * @brief it's not purely constructible.
-     * @note use static factory function `open`.
+     * @brief constructs an empty handle.
+     * @note use static factory function `open` to create a valid handle.
      */
-    w_connection() = delete;
+    w_connection() {}
 
     w_connection(const w_connection&) = delete;
     w_connection(w_connection&& p_other) noexcept
@@ -62,6 +62,16 @@ public:
     }
 
     ~w_connection() { close(); }
+
+    /**
+     * @brief whether the handle is open/valid or not.
+     */
+    [[nodiscard]] bool is_valid() const noexcept { return _handle; }
+
+    /**
+     * @brief whether it has been started and running.
+     */
+    [[nodiscard]] bool is_running() const noexcept;
 
     /**
      * @brief open/create a connection.
@@ -97,12 +107,14 @@ public:
     void shutdown(wolf::w_flags<w_connection_shutdown_flag> p_flags = w_connection_shutdown_flag::None,
                   std::size_t p_error_code = 0);
 
-private:
     /**
      * @brief close the connection handle.
+     *
+     * after this the instance will be unusable.
      */
     void close();
 
+private:
     /**
      * @brief setup the new raw connection created by msquic.
      * @param p_conn_raw  raw connection handle.

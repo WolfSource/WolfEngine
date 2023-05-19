@@ -42,10 +42,10 @@ private:
 
 public:
     /**
-     * @brief it's not purely constructible.
-     * @note use static factory function `open`.
+     * @brief constructs an empty handle.
+     * @note use static factory function `open` to create a valid handle.
      */
-    w_stream() = delete;
+    w_stream() {}
 
     w_stream(const w_stream&) = delete;
     w_stream(w_stream&& p_other) noexcept
@@ -60,6 +60,16 @@ public:
     }
 
     ~w_stream() { close(); }
+
+    /**
+     * @brief whether the handle is open/valid or not.
+     */
+    [[nodiscard]] bool is_valid() const noexcept { return _handle; }
+
+    /**
+     * @brief whether it has been started and running.
+     */
+    [[nodiscard]] bool is_running() const noexcept;
 
     /**
      * @brief open/create a stream on a connection.
@@ -112,12 +122,14 @@ public:
      */
     void shutdown(wolf::w_flags<w_stream_shutdown_flag> p_flags = w_stream_shutdown_flag::Graceful,
                   std::size_t p_error_code = 0);
-private:
     /**
      * @brief close the connection handle.
+     *
+     * after this the instance will be unusable.
      */
     void close();
 
+private:
     /**
      * @brief setup the new raw stream created by msquic.
      * @param p_conn_raw  raw stream handle.

@@ -28,9 +28,10 @@ class W_API w_registration {
 
 public:
     /**
-     * @brief use static factory function `open`.
+     * @brief constructs an empty unusable handle.
+     * @note use static factory function `open` to create a valid handle.
      */
-    w_registration() = delete;
+    w_registration() {}
 
     w_registration(const w_registration&) = delete;
     w_registration(w_registration&& p_other) noexcept
@@ -45,6 +46,11 @@ public:
     }
 
     ~w_registration() { close(); }
+
+    /**
+     * @brief whether the handle is open/valid or not.
+     */
+    [[nodiscard]] bool is_valid() const noexcept { return _handle; }
 
     /**
      * @brief open/create a regisration with default registration config.

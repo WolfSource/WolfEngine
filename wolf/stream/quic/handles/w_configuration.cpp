@@ -57,6 +57,10 @@ auto w_configuration::open(w_registration& p_reg,
 
 w_status wolf::stream::quic::w_configuration::load_credential(const w_credential_config& p_creds_config)
 {
+    if (!_handle) {
+        return w_status_code::InvalidState;
+    }
+
     auto api = internal::w_msquic_api::api();
     auto creds_config_raw = internal::w_raw_access::raw(p_creds_config);
     return api->ConfigurationLoadCredential(_handle, creds_config_raw);

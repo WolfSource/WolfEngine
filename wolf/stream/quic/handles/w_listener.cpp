@@ -24,9 +24,21 @@ QUIC_STATUS w_listener::internal_raw_callback(HQUIC p_listener_raw,
 
     if (p_event_raw->Type == QUIC_LISTENER_EVENT_STOP_COMPLETE) {
         context->running = false;
+        --context->refcount;
     }
 
     return status;
+}
+
+bool w_listener::is_running() const noexcept
+{
+    if (!_handle) {
+        return false;
+    }
+
+    auto api = internal::w_msquic_api::api();
+    auto context = static_cast<context_bundle*>(api->GetContext(_handle));
+    return context->running;
 }
 
 auto w_listener::open(w_registration& p_reg, callback_type p_callback) noexcept
@@ -111,6 +123,7 @@ w_status w_listener::start(const w_address& p_address, w_alpn_view p_alpn)
     }
 
     context->running = true;
+    ++context->refcount;
 
     return status;
 }

@@ -37,6 +37,17 @@ QUIC_STATUS w_stream::internal_raw_callback(HQUIC stream_raw,
     return status;
 }
 
+bool w_stream::is_running() const noexcept
+{
+    if (!_handle) {
+        return false;
+    }
+
+    auto api = internal::w_msquic_api::api();
+    auto context = static_cast<context_bundle*>(api->GetContext(_handle));
+    return context->running;
+}
+
 auto w_stream::open(w_connection& p_conn,
                     callback_type p_callback,
                     wolf::w_flags<w_stream_open_flag> p_flags) noexcept

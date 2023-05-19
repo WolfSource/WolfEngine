@@ -32,6 +32,17 @@ QUIC_STATUS w_connection::internal_raw_callback(HQUIC p_connection_raw,
     return status;
 }
 
+bool w_connection::is_running() const noexcept
+{
+    if (!_handle) {
+        return false;
+    }
+
+    auto api = internal::w_msquic_api::api();
+    auto context = static_cast<context_bundle*>(api->GetContext(_handle));
+    return context->running;
+}
+
 auto w_connection::open(w_registration& p_reg, callback_type p_callback) noexcept
     -> boost::leaf::result<w_connection>
 {

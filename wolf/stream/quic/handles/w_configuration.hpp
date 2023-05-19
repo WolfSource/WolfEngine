@@ -28,10 +28,10 @@ class W_API w_configuration {
 
 public:
     /**
-     * @brief it's not purely constructible.
-     * @note use static factory function `open`.
+     * @brief constructs an empty handle.
+     * @note use static factory function `open` to create valid handle.
      */
-    w_configuration() = delete;
+    w_configuration() {}
 
     w_configuration(const w_configuration&) = delete;
     w_configuration(w_configuration&& p_other) noexcept
@@ -46,6 +46,11 @@ public:
     }
 
     ~w_configuration() { close(); }
+
+    /**
+     * @brief whether the handle is open/valid or not.
+     */
+    [[nodiscard]] bool is_valid() const noexcept { return _handle; }
 
     /**
      * @brief open/create a configuration with given registration, settings and alpn.
