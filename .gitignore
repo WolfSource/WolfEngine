@@ -4,17 +4,27 @@
 *.idb
 *.pdb
 *.ipch
-/bin/Build/
-/bin/x64/
-/docs/extra/
-/samples/.vs/*
-/engine/builds/mvsc/.vs/*
-/engine/dependencies/*
-!/engine/dependencies/*.zip
+*.ilk
+*.recipe
+*.res
+*.enc
+*.vscode
+*.advixeproj
+*.advixeexp
+*.dflgadvixe
+*.infoadvixe
+*.DS_Store
+*.db
+*.db-shm
+*.db-wal
+*.opendb
+*.DS_Store
+*.pem
 
-# Prerequisites 
-*.c
-*.c++ 
+/bin/*
+/build/*
+/coverage/*
+/install/*
 
 # Compiled Object files
 *.slo
@@ -26,47 +36,12 @@
 *.gch
 *.pch
 
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
 
 # Fortran module files
 *.mod
 
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
 
 # Executables
 *.exe
 *.out
 *.app
-/samples/00-system/01-async/builds/netbeans/build/
-/samples/00-system/01-async/builds/netbeans/dist/
-/samples/01-initialize/01-window/builds/netbeans/build/
-/samples/01-initialize/01-window/builds/netbeans/dist/
-/samples/01_initialize/03_scene/builds/netbeans/build/
-/samples/01_initialize/03_scene/builds/netbeans/dist/
-/engine/builds/netbeans/wolf.system/build/
-/engine/builds/netbeans/wolf.system/dist/
-/engine/builds/netbeans/wolf.vulkan/build/
-/engine/builds/netbeans/wolf.vulkan/dist/
-/engine/builds/netbeans/tests/vulkan.linux/build/
-/engine/builds/netbeans/tests/vulkan.linux/dist/
-/engine/builds/netbeans/wolf.content_pipeline/build/
-/engine/builds/netbeans/wolf.media_core/build/
-/samples/01_system/01_async/builds/netbeans/01_async/build/
-/samples/01_system/01_async/builds/netbeans/01_async/dist/
-/samples/01_system/02_thread/builds/netbeans/02_thread/dist/
-/samples/01_system/02_thread/builds/netbeans/02_thread/build/
-/samples/01_system/03_signal/builds/netbeans/03_signal/build/
-/samples/01_system/03_signal/builds/netbeans/03_signal/dist/
-/samples/01_system/04_timer/builds/netbeans/04_timer/build/
-/samples/01_system/04_timer/builds/netbeans/04_timer/dist/
-/samples/01_system/05_window/builds/netbeans/05_window/build/
-/samples/01_system/05_window/builds/netbeans/05_window/dist/
-/samples/01_system/06_lua/builds/netbeans/06_lua/build/
-/samples/01_system/06_lua/builds/netbeans/06_lua/dist/

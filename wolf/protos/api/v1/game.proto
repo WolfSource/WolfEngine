@@ -1,0 +1,311 @@
+syntax = "proto3";
+
+package api.v1;
+
+import "google/api/annotations.proto";
+import "google/api/field_behavior.proto";
+import "google/protobuf/timestamp.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "validate/validate.proto";
+
+option go_package = "gitlab.playpod.ir/alpha/backend/server-services-next/gen/go/api/v1;apiv1";
+
+// Game is a message.
+message Game {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    example: '{"about":"about1","banner_url":"banner_url1","developer":"developer1","download_url":"download_url1","icon_url":"icon_url1","id":"00000000-0000-0000-0000-000000000001","is_pro":true,"max_players":1,"min_players":1,"number_of_plays":1,"price":1.0,"publisher":"publisher1","release_time":"1970-01-01T00:00:01Z","title":"title1","urn_id":"urn_id1"}',
+    external_docs: {
+      description: "Find out more about Game";
+      url: "https://gitlab.playpod.ir/alpha/backend/server-services-next",
+    },
+    json_schema: {
+      description: "A game"
+      title: "Game Message",
+    },
+    read_only: true,
+  };
+  // Output only. about is a property.
+  string about = 1 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The about field."},
+    (validate.rules) = {
+      string: {ignore_empty: true}
+    }
+  ];
+  // Output only. banner_url is a property.
+  string banner_url = 2 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The banner_url field."},
+    (validate.rules) = {
+      string: {ignore_empty: true}
+    }
+  ];
+  // Output only. developer is a property.
+  string developer = 3 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The developer field."},
+    (validate.rules) = {
+      string: {ignore_empty: true}
+    }
+  ];
+  // Output only. download_url is a property.
+  string download_url = 4 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The download_url field."},
+    (validate.rules) = {
+      string: {ignore_empty: true}
+    }
+  ];
+  // Output only. icon_url is a property.
+  string icon_url = 6 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The icon_url field."},
+    (validate.rules) = {
+      string: {ignore_empty: true}
+    }
+  ];
+  // Output only. id is a property.
+  string id = 7 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The id field."},
+    (validate.rules) = {
+      string: {uuid: true}
+    }
+  ];
+  // Output only. is_pro is a property.
+  bool is_pro = 8 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The is_pro field."}
+  ];
+  // Output only. max_players is a property.
+  uint32 max_players = 9 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The max_players field."}
+  ];
+  // Output only. min_players is a property.
+  uint32 min_players = 10 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The min_players field."}
+  ];
+  // Output only. number_of_plays is a property.
+  uint32 number_of_plays = 11 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The number_of_plays field."}
+  ];
+  // Output only. price is a property.
+  double price = 12 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The price field."}
+  ];
+  // Output only. publisher is a property.
+  string publisher = 13 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The publisher field."},
+    (validate.rules) = {
+      string: {ignore_empty: true}
+    }
+  ];
+  // release_time is a property.
+  google.protobuf.Timestamp release_time = 14 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The release_time field."}
+  ];
+  // Output only. title is a property.
+  string title = 15 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The title field."},
+    (validate.rules) = {
+      string: {ignore_empty: true}
+    }
+  ];
+  // Output only. urn_id is a property.
+  string urn_id = 16 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The urn_id field."},
+    (validate.rules) = {
+      string: {ignore_empty: true}
+    }
+  ];
+}
+
+// GameServiceGetRequest is a message.
+message GameServiceGetRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    example: '{"id":"00000000-0000-0000-0000-000000000001"}',
+    external_docs: {
+      description: "Find out more about GameServiceGetRequest",
+      url: "https://gitlab.playpod.ir/alpha/backend/server-services-next",
+    },
+    json_schema: {
+      description: "A game service get request",
+      required: ["id"],
+      title: "GameServiceGetRequest Message",
+    },
+    read_only: false,
+  };
+  // Required. id is a property.
+  string id = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The id field."},
+    (validate.rules) = {
+      string: {uuid: true}
+    }
+  ];
+}
+
+// GameServiceGetResponse is a message.
+message GameServiceGetResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    example: '{"game":{"about":"about1","banner_url":"banner_url1","developer":"developer1","download_url":"download_url1","icon_url":"icon_url1","id":"00000000-0000-0000-0000-000000000001","is_pro":true,"max_players":1,"min_players":1,"number_of_plays":1,"price":1.0,"publisher":"publisher1","release_time":"1970-01-01T00:00:01Z","urn_id":"urn_id1","title":"title1"}}'
+    external_docs: {
+      description: "Find out more about GameServiceGetResponse",
+      url: "https://gitlab.playpod.ir/alpha/backend/server-services-next",
+    },
+    json_schema: {
+      description: "A game service get response",
+      title: "GameServiceGetResponse Message",
+    },
+    read_only: false,
+  };
+  // Output only. game is a property.
+  Game game = 1 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The game field."}
+  ];
+}
+
+// GameServiceListRequest is a message.
+message GameServiceListRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    example: '{"page_token":"Cv-BBgEC_4QAAAAG_4IAAjEK","page_size":10,"best":true,"tag_ids":["00000000-0000-0000-0000-000000000001","00000000-0000-0000-0000-000000000002"],"tag_types":["tag_type1","tag_type2"],"title":"title1","urn_id":"urn_id1"}',
+    external_docs: {
+      description: "Find out more about GameServiceListRequest",
+      url: "https://gitlab.playpod.ir/alpha/backend/server-services-next",
+    },
+    json_schema: {
+      description: "A game service get list request",
+      required: ["page_size"],
+      title: "GameServiceListRequest Message",
+    },
+    read_only: false,
+  };
+  // page_token is a property.
+  string page_token = 1 [
+    (google.api.field_behavior) = OPTIONAL,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The page_token field."},
+    (validate.rules) = {
+      string: {ignore_empty: true}
+    }
+  ];
+  // Required. page_size is a property.
+  uint32 page_size = 2 [
+    (google.api.field_behavior) = REQUIRED,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The page_size field."},
+    (validate.rules) = {
+      uint32: {
+        gt: 0,
+        lt: 100
+      }
+    }
+  ];
+  // best is a property.
+  bool best = 3 [
+    (google.api.field_behavior) = OPTIONAL,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The best field."}
+  ];
+  // tag_ids is a property.
+  repeated string tag_ids = 4 [
+    (google.api.field_behavior) = OPTIONAL,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The tag_ids field."},
+    (validate.rules) = {
+      repeated: {
+        ignore_empty: true,
+        items: {
+          string: {uuid: true}
+        },
+        unique: true
+      }
+    }
+  ];
+  // tag_types is a property.
+  repeated string tag_types = 5 [
+    (google.api.field_behavior) = OPTIONAL,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The tag_types field."},
+    (validate.rules) = {
+      repeated: {
+        ignore_empty: true,
+        unique: true
+      }
+    }
+  ];
+  // title is a property.
+  string title = 6 [
+    (google.api.field_behavior) = OPTIONAL,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The title field."},
+    (validate.rules) = {
+      string: {
+        ignore_empty: true,
+        min_len: 3
+      }
+    }
+  ];
+  // urn_id is a property.
+  string urn_id = 7 [
+    (google.api.field_behavior) = OPTIONAL,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The urn_id field."},
+    (validate.rules) = {
+      string: {ignore_empty: true}
+    }
+  ];
+}
+
+// GameServiceListResponse is a message.
+message GameServiceListResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    example: '{"next_page_token":"Cv-BBgEC_4QAAAAH_4IAAzExCg==","games":[{"about":"about1","banner_url":"banner_url1","developer":"developer1","download_url":"download_url1","icon_url":"icon_url1","id":"00000000-0000-0000-0000-000000000001","is_pro":true,"max_players":1,"min_players":1,"number_of_plays":1,"price":1.0,"publisher":"publisher1","release_time":"1970-01-01T00:00:01Z","urn_id":"urn_id1","title":"title1"}]}'
+    external_docs: {
+      description: "Find out more about GameServiceListResponse",
+      url: "https://gitlab.playpod.ir/alpha/backend/server-services-next",
+    },
+    json_schema: {
+      description: "A game service get list response",
+      title: "GameServiceListResponse Message",
+    },
+    read_only: true,
+  };
+  // next_page_token is a property.
+  string next_page_token = 1 [
+    (google.api.field_behavior) = OPTIONAL,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The next_page_token field."},
+    (validate.rules) = {
+      string: {ignore_empty: true}
+    }
+  ];
+  // games is a property.
+  repeated Game games = 2 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The games field."}
+  ];
+}
+
+// GameService is a service.
+service GameService {
+  // Get is a rpc.
+  rpc Get(GameServiceGetRequest) returns (GameServiceGetResponse) {
+    option (google.api.http) = {get: "/api/v1/games/{id}"};
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      security: {
+        security_requirement: {},
+      },
+    };
+  }
+  // List is a rpc.
+  rpc List(GameServiceListRequest) returns (GameServiceListResponse) {
+    option (google.api.http) = {get: "/api/v1/games"};
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      security: {
+        security_requirement: {},
+      },
+    };
+  }
+}

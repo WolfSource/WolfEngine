@@ -1,0 +1,287 @@
+syntax = "proto3";
+
+package api.v1;
+
+import "api/v1/package.proto";
+import "api/v1/user_info.proto";
+import "google/api/annotations.proto";
+import "google/api/field_behavior.proto";
+import "google/protobuf/timestamp.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "validate/validate.proto";
+
+option go_package = "gitlab.playpod.ir/alpha/backend/server-services-next/gen/go/api/v1;apiv1";
+
+// UserPackage is a message.
+message UserPackage {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    example: '{"package":{"subscription_duration":"1000000000s","id":"00000000-0000-0000-0000-000000000001","limit_daily_duration":"1000000000s","price":1.0,"priority":0,"title":"title1"},"priority":0,"user_info":{"email":"email1","first_name":"first_name1","id":"00000000-0000-0000-0000-000000000001","last_name":"last_name1","locale":"en","picture":"picture1","private_metadata":"{\\"version\\":\\"1\\"}","public_metadata":"{\\"version\\":\\"1\\"}","status_tag_id":"00000000-0000-0000-0000-000000000002","username":"username1"}}',
+    external_docs: {
+      description: "Find out more about UserPackage",
+      url: "https://gitlab.playpod.ir/alpha/backend/server-services-next",
+    },
+    json_schema: {
+      description: "A userPackage",
+      required: [],
+      title: "UserPackage Message",
+    },
+    read_only: true,
+  };
+  // package is a property.
+  Package package = 1 [
+    (google.api.field_behavior) = OPTIONAL,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The package field."}
+  ];
+  // Required. priority is a property.
+  uint32 priority = 2 [
+    (google.api.field_behavior) = REQUIRED,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The priority field."},
+    (validate.rules) = {
+      uint32: {gt: 0}
+    }
+  ];
+  // user_info is a property.
+  UserInfo user_info = 3 [
+    (google.api.field_behavior) = OPTIONAL,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The user_info field."}
+  ];
+}
+
+// UserPackageServiceCreateRequest is a message.
+message UserPackageServiceCreateRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    example: '{"package_id":"00000000-0000-0000-0000-000000000001","priority":1,"user_id":"00000000-0000-0000-0000-000000000001"}',
+    external_docs: {
+      description: "Find out more about UserPackageServiceCreateRequest",
+      url: "https://gitlab.playpod.ir/alpha/backend/server-services-next",
+    },
+    json_schema: {
+      description: "A userPackage service create request.",
+      required: [
+        "user_id",
+        "package_id",
+        "priority"
+      ],
+      title: "UserPackageServiceCreaterequest",
+    },
+    read_only: false,
+  };
+  // Required. package_id is a property.
+  string package_id = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The package_id field."},
+    (validate.rules) = {
+      string: {uuid: true}
+    }
+  ];
+  // Required. priority is a property.
+  uint32 priority = 2 [
+    (google.api.field_behavior) = REQUIRED,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The priority field."},
+    (validate.rules) = {
+      uint32: {gt: 0}
+    }
+  ];
+  // Required. user_id is a property.
+  string user_id = 3 [
+    (google.api.field_behavior) = REQUIRED,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The user_id field."},
+    (validate.rules) = {
+      string: {uuid: true}
+    }
+  ];
+}
+
+// UserPackageServiceCreateResponse is a message.
+message UserPackageServiceCreateResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    example: '{}',
+    external_docs: {
+      url: "https://gitlab.playpod.ir/alpha/backend/server-services-next",
+      description: "Find out more about UserPackageServiceCreateResponse",
+    },
+    json_schema: {
+      title: "UserPackageServiceCreateresponse",
+      description: "A userPackage service create response.",
+    },
+    read_only: true,
+  };
+}
+
+// UserPackageServiceDeleteRequest is a message.
+message UserPackageServiceDeleteRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    example: '{"package_id":"00000000-0000-0000-0000-000000000001","user_id":"00000000-0000-0000-0000-000000000001"}',
+    external_docs: {
+      description: "Find out more about UserPackageServiceDeleteRequest",
+      url: "https://gitlab.playpod.ir/alpha/backend/server-services-next",
+    },
+    json_schema: {
+      description: "A userPackage service delete request."
+      required: [
+        "user_id",
+        "package_id"
+      ],
+      title: "UserPackageServiceDeleterequest",
+    },
+    read_only: false,
+  };
+  // Required. package_id is a property.
+  string package_id = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The package_id field."},
+    (validate.rules) = {
+      string: {uuid: true}
+    }
+  ];
+  // Required. user_id is a property.
+  string user_id = 2 [
+    (google.api.field_behavior) = REQUIRED,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The user_id field."},
+    (validate.rules) = {
+      string: {uuid: true}
+    }
+  ];
+}
+
+// UserPackageServiceDeleteResponse is a message.
+message UserPackageServiceDeleteResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    example: '{"deleted_at":"2022-12-04T13:34:33.584278540Z"}',
+    external_docs: {
+      description: "Find out more about UserPackageServiceDeleteResponse",
+      url: "https://gitlab.playpod.ir/alpha/backend/server-services-next",
+    },
+    json_schema: {
+      description: "A userPackage service delete response."
+      title: "UserPackageServiceDeleteresponse",
+    },
+    read_only: true,
+  };
+  // deleted_at is a property.
+  google.protobuf.Timestamp deleted_at = 1 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The deleted_at field."}
+  ];
+}
+
+// UserPackageServiceListRequest is a message.
+message UserPackageServiceListRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    example: '{"page_token":"Cv-BBgEC_4QAAAAG_4IAAjEK","page_size":10,"user_id":"00000000-0000-0000-0000-000000000001"}',
+    external_docs: {
+      description: "Find out more about UserPackageServiceListRequest",
+      url: "https://gitlab.playpod.ir/alpha/backend/server-services-next",
+    },
+    json_schema: {
+      description: "A userPackage service get list request",
+      required: ["page_size"],
+      title: "UserPackageServiceListRequest Message",
+    },
+    read_only: false,
+  };
+  // page_token is a property.
+  string page_token = 1 [
+    (google.api.field_behavior) = OPTIONAL,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The page_token field."},
+    (validate.rules) = {
+      string: {ignore_empty: true}
+    }
+  ];
+  // Required. page_size is a property.
+  uint32 page_size = 2 [
+    (google.api.field_behavior) = REQUIRED,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The page_size field."},
+    (validate.rules) = {
+      uint32: {
+        gt: 0,
+        lt: 100
+      }
+    }
+  ];
+  // user_id is a property.
+  string user_id = 3 [
+    (google.api.field_behavior) = OPTIONAL,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The user_ids field."},
+    (validate.rules) = {
+      string: {
+        ignore_empty: true,
+        uuid: true
+      }
+    }
+  ];
+  // package_id is a property.
+  string package_id = 4 [
+    (google.api.field_behavior) = OPTIONAL,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The package_ids field."},
+    (validate.rules) = {
+      string: {
+        ignore_empty: true,
+        uuid: true
+      }
+    }
+  ];
+}
+
+// UserPackageServiceListResponse is a message.
+message UserPackageServiceListResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    example: '{"next_page_token":"Cv-BBgEC_4QAAAAH_4IAAzExCg==","user_packages":[{"package":{"subscription_duration":"1000000000s","id":"00000000-0000-0000-0000-000000000001","limit_daily_duration":"1000000000s","price":1.0,"priority":0,"title":"title1"},"priority":0,"user_info":{"email":"email1","first_name":"first_name1","id":"00000000-0000-0000-0000-000000000001","last_name":"last_name1","locale":"en","picture":"picture1","private_metadata":"{\\"version\\":\\"1\\"}","public_metadata":"{\\"version\\":\\"1\\"}","status_tag_id":"00000000-0000-0000-0000-000000000002","username":"username1"}}]}',
+    external_docs: {
+      description: "Find out more about UserPackageServiceListResponse",
+      url: "https://gitlab.playpod.ir/alpha/backend/server-services-next",
+    },
+    json_schema: {
+      description: "A userPackage service get list response",
+      title: "UserPackageServiceListResponse Message",
+    },
+    read_only: true,
+  };
+  // next_page_token is a property.
+  string next_page_token = 1 [
+    (google.api.field_behavior) = OPTIONAL,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The next_page_token field."},
+    (validate.rules) = {
+      string: {ignore_empty: true}
+    }
+  ];
+  // user_packages is a property.
+  repeated UserPackage user_packages = 2 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The user_packages field."}
+  ];
+}
+
+// UserPackageService is a service.
+service UserPackageService {
+  // Create is a rpc.
+  rpc Create(UserPackageServiceCreateRequest) returns (UserPackageServiceCreateResponse) {
+    option (google.api.http) = {
+      body: "*",
+      post: "/api/v1/userPackages",
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      security: {
+        security_requirement: {},
+      },
+    };
+  }
+  // Delete is a rpc.
+  rpc Delete(UserPackageServiceDeleteRequest) returns (UserPackageServiceDeleteResponse) {
+    option (google.api.http) = {delete: "/api/v1/userPackages/{user_id}/{package_id}"};
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      security: {
+        security_requirement: {},
+      },
+    };
+  }
+  // List is a rpc.
+  rpc List(UserPackageServiceListRequest) returns (UserPackageServiceListResponse) {
+    option (google.api.http) = {get: "/api/v1/userPackages"};
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      security: {
+        security_requirement: {},
+      },
+    };
+  }
+}

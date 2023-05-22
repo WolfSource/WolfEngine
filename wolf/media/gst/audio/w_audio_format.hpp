@@ -1,0 +1,39 @@
+#pragma once
+
+#include <gst/audio/audio-format.h>
+
+namespace wolf::media::gst {
+
+/**
+ * enum same as GstAudioFormat.
+ */
+enum class w_audio_format
+{
+    Unknonw = GST_AUDIO_FORMAT_UNKNOWN,
+    Encoded = GST_AUDIO_FORMAT_ENCODED,
+
+    S8 = GST_AUDIO_FORMAT_S8,
+    S16 = GST_AUDIO_FORMAT_S16,
+    S16LE = GST_AUDIO_FORMAT_S16LE,
+    S16BE = GST_AUDIO_FORMAT_S16BE,
+    S32 = GST_AUDIO_FORMAT_S32,
+    S32LE = GST_AUDIO_FORMAT_S32LE,
+    S32BE = GST_AUDIO_FORMAT_S32BE,
+
+    U8 = GST_AUDIO_FORMAT_U8,
+    U16 = GST_AUDIO_FORMAT_U16,
+    U16LE = GST_AUDIO_FORMAT_U16LE,
+    U16BE = GST_AUDIO_FORMAT_U16BE,
+    U32 = GST_AUDIO_FORMAT_U32,
+    U32LE = GST_AUDIO_FORMAT_U32LE,
+    U32BE = GST_AUDIO_FORMAT_U32BE,
+
+    F32 = GST_AUDIO_FORMAT_F32,
+    F32LE = GST_AUDIO_FORMAT_F32LE,
+    F32BE = GST_AUDIO_FORMAT_F32BE,
+    F64 = GST_AUDIO_FORMAT_F32,
+    F64LE = GST_AUDIO_FORMAT_F64LE,
+    F64BE = GST_AUDIO_FORMAT_F64BE
+};
+
+}  // namespace wolf::media::gst

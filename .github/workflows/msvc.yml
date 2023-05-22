@@ -1,0 +1,97 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+#
+# Find more information at:
+# https://github.com/microsoft/msvc-code-analysis-action
+
+name: Microsoft C++ Code Analysis
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+  schedule:
+    - cron: "41 16 * * 1"
+
+env:
+  # Path to the CMake build directory.
+  build: "${{ github.workspace }}/build"
+
+permissions:
+  contents: read
+
+jobs:
+  analyze:
+    permissions:
+      contents: read # for actions/checkout to fetch code
+      security-events: write # for github/codeql-action/upload-sarif to upload SARIF results
+      actions: read # only required for a private repository by github/codeql-action/upload-sarif to get the Action run status
+    name: Analyze
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup VCPKG
+        uses: friendlyanon/setup-vcpkg@v1
+        with: { committish: 63aa65e65b9d2c08772ea15d25fb8fdb0d32e557 }
+
+      - name: Get SW
+        uses: egorpugin/sw-action@master
+
+      - name: SW setup and add to PATH
+        run: |
+          ./sw setup
+          echo "D:\a\WolfEngine\WolfEngine" >> $env:GITHUB_PATH
+
+      - name: Setup OpenCppCoverage and add to PATh
+        id: setup_opencppcoverage
+        run: |
+          choco install OpenCppCoverage -y
+          echo "C:\Program Files\OpenCppCoverage" >> $env:GITHUB_PATH
+
+      - name: Configure CMake
+        run: cmake -DCMAKE_BUILD_TYPE=Debug -B ${{ env.build }} 
+         
+
+      # Build is not required for MSVC Code Analysis and will be used for Codecov
+      - name: Build CMake
+        run: cmake --build ${{ env.build }}
+
+      - name: Run MSVC Code Analysis
+        uses: microsoft/msvc-code-analysis-action@04825f6d9e00f87422d6bf04e1a38b1f3ed60d99
+        # Provide a unique ID to access the sarif output path
+        id: run-analysis
+        with:
+          cmakeBuildDirectory: ${{ env.build }}
+          # Ruleset file that will determine what checks will be run
+          ruleset: NativeRecommendedRules.ruleset
+          ignoredTargetPaths: ${{ env.build }}/_deps/boost_chrono-src;${{ env.build }}/_deps/boost_context-src;${{ env.build }}/_deps/boost_coroutine-src;${{ env.build }}/_deps/boost_date_time-src;${{ env.build }}/_deps/boost_exception-src;${{ env.build }}/_deps/fmt-src;${{ env.build }}/_deps/boost_container-src;${{ env.build }}/_deps/opencv-src;${{ env.build }}/_deps/rapidjson-src;${{ env.build }}/_deps/tesseract-src
+
+      - name: Generate Codecov Report
+        id: generate_test_report
+        shell: cmd
+        run: OpenCppCoverage.exe --continue_after_cpp_exception --export_type cobertura:WolfCov.xml --sources %CD% --excluded_sources %CD%\build\_deps -- %CD%\build\wolf\Debug\wolf_tests.exe
+      - name: Upload Report to Codecov
+        uses: codecov/codecov-action@v2
+        with:
+          files: ./WolfCov.xml
+          fail_ci_if_error: true
+          functionalities: fix
+
+      # Upload SARIF file to GitHub Code Scanning Alerts
+      #- name: Upload SARIF to GitHub
+      #  uses: github/codeql-action/upload-sarif@v2
+      #  with:
+      #    sarif_file: ${{ steps.run-analysis.outputs.sarif }}
+
+      # Upload SARIF file as an Artifact to download and view
+      - name: Upload SARIF as an Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: sarif-file
+          path: ${{ steps.run-analysis.outputs.sarif }}

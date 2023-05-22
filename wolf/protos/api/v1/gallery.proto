@@ -1,0 +1,148 @@
+syntax = "proto3";
+
+package api.v1;
+
+import "google/api/annotations.proto";
+import "google/api/field_behavior.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "validate/validate.proto";
+
+option go_package = "gitlab.playpod.ir/alpha/backend/server-services-next/gen/go/api/v1;apiv1";
+
+// Gallery is a message.
+message Gallery {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    example: '{"gallery_type":"gallery_type1","game_id":"00000000-0000-0000-0000-000000000001","id":"00000000-0000-0000-0000-000000000001","url":"url1"}',
+    external_docs: {
+      description: "Find out more about Gallery",
+      url: "https://gitlab.playpod.ir/alpha/backend/server-services-next",
+    },
+    json_schema: {
+      description: "A gallery",
+      required: [],
+      title: "Gallery Message",
+    },
+    read_only: true,
+  };
+  // Output only. gallery_type is a property.
+  string gallery_type = 1 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The gallery_type field."},
+    (validate.rules) = {
+      string: {ignore_empty: true}
+    }
+  ];
+  // Output only. game_id is a property.
+  string game_id = 2 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The game_id field."},
+    (validate.rules) = {
+      string: {uuid: true}
+    }
+  ];
+  // Output only. id is a property.
+  string id = 3 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The id field."},
+    (validate.rules) = {
+      string: {uuid: true}
+    }
+  ];
+  // Output only. url is a property.
+  string url = 4 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The url field."},
+    (validate.rules) = {
+      string: {ignore_empty: true}
+    }
+  ];
+}
+
+// GalleryServiceListRequest is a message.
+message GalleryServiceListRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    example: '{"page_token":"Cv-BBgEC_4QAAAAG_4IAAjEK","page_size":10,"game_id":"00000000-0000-0000-0000-000000000001"}',
+    external_docs: {
+      description: "Find out more about GalleryServiceListRequest",
+      url: "https://gitlab.playpod.ir/alpha/backend/server-services-next",
+    },
+    json_schema: {
+      description: "A gallery service get list request",
+      required: ["page_size"],
+      title: "GalleryServiceListRequest Message",
+    },
+    read_only: false,
+  };
+  // page_token is a property.
+  string page_token = 1 [
+    (google.api.field_behavior) = OPTIONAL,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The page_token field."},
+    (validate.rules) = {
+      string: {ignore_empty: true}
+    }
+  ];
+  // Required. page_size is a property.
+  uint32 page_size = 2 [
+    (google.api.field_behavior) = REQUIRED,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The page_size field."},
+    (validate.rules) = {
+      uint32: {
+        gt: 0,
+        lt: 100
+      }
+    }
+  ];
+  // game_id is a property.
+  string game_id = 3 [
+    (google.api.field_behavior) = OPTIONAL,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The game_id field."},
+    (validate.rules) = {
+      string: {
+        ignore_empty: true,
+        uuid: true
+      }
+    }
+  ];
+}
+
+// GalleryServiceListResponse is a message.
+message GalleryServiceListResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    example: '{"next_page_token":"Cv-BBgEC_4QAAAAH_4IAAzExCg==","galleries":[{"gallery_type":"gallery_type1","game_id":"00000000-0000-0000-0000-000000000001","id":"00000000-0000-0000-0000-000000000001","url":"url1"}]}',
+    external_docs: {
+      description: "Find out more about GalleryServiceListResponse",
+      url: "https://gitlab.playpod.ir/alpha/backend/server-services-next",
+    },
+    json_schema: {
+      description: "A gallery service get list response",
+      title: "GalleryServiceListResponse Message",
+    },
+    read_only: true,
+  };
+  // next_page_token is a property.
+  string next_page_token = 1 [
+    (google.api.field_behavior) = OPTIONAL,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The next_page_token field."},
+    (validate.rules) = {
+      string: {ignore_empty: true}
+    }
+  ];
+  // galleries is a property.
+  repeated Gallery galleries = 2 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The galleries field."}
+  ];
+}
+
+// GalleryService is a service.
+service GalleryService {
+  // List is a rpc.
+  rpc List(GalleryServiceListRequest) returns (GalleryServiceListResponse) {
+    option (google.api.http) = {get: "/api/v1/galleries"};
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      security: {
+        security_requirement: {},
+      },
+    };
+  }
+}

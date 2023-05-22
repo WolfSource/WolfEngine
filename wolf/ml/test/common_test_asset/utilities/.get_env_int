@@ -1,0 +1,3 @@
+
+# Variables for testing get_env_int functions
+INT_VALUE=7

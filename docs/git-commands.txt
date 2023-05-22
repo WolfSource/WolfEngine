@@ -1,5 +1,6 @@
 //subtrees
 
+git config commit.gpgsign false
 git fetch git@github.com:g-truc/glm.git master
 git subtree add --prefix=engine/dependencies/glm-master/ --squash git@github.com:g-truc/glm.git master
 git subtree pull --prefix=engine/dependencies/glm-master/ --squash git@github.com:g-truc/glm.git master

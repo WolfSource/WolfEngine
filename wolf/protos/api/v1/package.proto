@@ -1,0 +1,210 @@
+syntax = "proto3";
+
+package api.v1;
+
+import "google/api/annotations.proto";
+import "google/api/field_behavior.proto";
+import "google/protobuf/duration.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "validate/validate.proto";
+
+option go_package = "gitlab.playpod.ir/alpha/backend/server-services-next/gen/go/api/v1;apiv1";
+
+// Package is a message.
+message Package {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    example: '{"id":"00000000-0000-0000-0000-000000000001","limit_daily_duration":"1000000000s","price":1.0,"priority":0,"subscription_duration":"1000000000s","title":"title1"}',
+    external_docs: {
+      description: "Find out more about Package";
+      url: "https://gitlab.playpod.ir/alpha/backend/server-services-next",
+    },
+    json_schema: {
+      description: "A package"
+      title: "Package Message",
+    },
+    read_only: true,
+  };
+  // Output only. id is a property.
+  string id = 1 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The id field."},
+    (validate.rules) = {
+      string: {uuid: true}
+    }
+  ];
+  // limit_daily_duration is a property.
+  google.protobuf.Duration limit_daily_duration = 2 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The limit_daily_duration field."}
+  ];
+  // Output only. price is a property.
+  double price = 3 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The price field."}
+  ];
+  // Output only. priority is a property.
+  uint32 priority = 4 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The priority field."},
+    (validate.rules) = {
+      uint32: {gt: 0}
+    }
+  ];
+  // subscription_duration is a property.
+  google.protobuf.Duration subscription_duration = 5 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The subscription_duration field."}
+  ];
+  // Output only. title is a property.
+  string title = 6 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The title field."},
+    (validate.rules) = {
+      string: {ignore_empty: true}
+    }
+  ];
+}
+
+// PackageServiceGetRequest is a message.
+message PackageServiceGetRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    example: '{"id":"00000000-0000-0000-0000-000000000001"}',
+    external_docs: {
+      description: "Find out more about PackageServiceGetRequest",
+      url: "https://gitlab.playpod.ir/alpha/backend/server-services-next",
+    },
+    json_schema: {
+      description: "A package service get request",
+      required: ["id"],
+      title: "PackageServiceGetRequest Message",
+    },
+    read_only: false,
+  };
+  // Required. id is a property.
+  string id = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The id field."},
+    (validate.rules) = {
+      string: {uuid: true}
+    }
+  ];
+}
+
+// PackageServiceGetResponse is a message.
+message PackageServiceGetResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    example: '{"package":{"id":"00000000-0000-0000-0000-000000000001","limit_daily_duration":"1000000000s","price":1.0,"priority":0,"subscription_duration":"1000000000s","title":"title1"}}'
+    external_docs: {
+      description: "Find out more about PackageServiceGetResponse",
+      url: "https://gitlab.playpod.ir/alpha/backend/server-services-next",
+    },
+    json_schema: {
+      description: "A package service get response",
+      title: "PackageServiceGetResponse Message",
+    },
+    read_only: false,
+  };
+  // Output only. package is a property.
+  Package package = 1 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The package field."}
+  ];
+}
+
+// PackageServiceListRequest is a message.
+message PackageServiceListRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    example: '{"page_token":"Cv-BBgEC_4QAAAAG_4IAAjEK","page_size":10,"title":"title1"}',
+    external_docs: {
+      description: "Find out more about PackageServiceListRequest",
+      url: "https://gitlab.playpod.ir/alpha/backend/server-services-next",
+    },
+    json_schema: {
+      description: "A package service get list request",
+      required: ["page_size"],
+      title: "PackageServiceListRequest Message",
+    },
+    read_only: false,
+  };
+  // page_token is a property.
+  string page_token = 1 [
+    (google.api.field_behavior) = OPTIONAL,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The page_token field."},
+    (validate.rules) = {
+      string: {ignore_empty: true}
+    }
+  ];
+  // Required. page_size is a property.
+  uint32 page_size = 2 [
+    (google.api.field_behavior) = REQUIRED,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The page_size field."},
+    (validate.rules) = {
+      uint32: {
+        gt: 0,
+        lt: 100
+      }
+    }
+  ];
+  // title is a property.
+  string title = 3 [
+    (google.api.field_behavior) = OPTIONAL,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The title field."},
+    (validate.rules) = {
+      string: {
+        ignore_empty: true,
+        min_len: 3
+      }
+    }
+  ];
+}
+
+// PackageServiceListResponse is a message.
+message PackageServiceListResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    example: '{"next_page_token":"Cv-BBgEC_4QAAAAH_4IAAzExCg==","packages":[{"id":"00000000-0000-0000-0000-000000000001","limit_daily_duration":"1000000000s","price":1.0,"priority":0,"subscription_duration":"1000000000s","title":"title1"}]}'
+    external_docs: {
+      description: "Find out more about PackageServiceListResponse",
+      url: "https://gitlab.playpod.ir/alpha/backend/server-services-next",
+    },
+    json_schema: {
+      description: "A package service get list response",
+      title: "PackageServiceListResponse Message",
+    },
+    read_only: true,
+  };
+  // next_page_token is a property.
+  string next_page_token = 1 [
+    (google.api.field_behavior) = OPTIONAL,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The next_page_token field."},
+    (validate.rules) = {
+      string: {ignore_empty: true}
+    }
+  ];
+  // packages is a property.
+  repeated Package packages = 2 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The packages field."}
+  ];
+}
+
+// PackageService is a service.
+service PackageService {
+  // Get is a rpc.
+  rpc Get(PackageServiceGetRequest) returns (PackageServiceGetResponse) {
+    option (google.api.http) = {get: "/api/v1/packages/{id}"};
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      security: {
+        security_requirement: {},
+      },
+    };
+  }
+  // List is a rpc.
+  rpc List(PackageServiceListRequest) returns (PackageServiceListResponse) {
+    option (google.api.http) = {get: "/api/v1/packages"};
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      security: {
+        security_requirement: {},
+      },
+    };
+  }
+}

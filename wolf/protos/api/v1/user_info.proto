@@ -1,0 +1,428 @@
+syntax = "proto3";
+
+package api.v1;
+
+import "google/api/annotations.proto";
+import "google/api/field_behavior.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "validate/validate.proto";
+
+option go_package = "gitlab.playpod.ir/alpha/backend/server-services-next/gen/go/api/v1;apiv1";
+
+// UserInfo is a message.
+message UserInfo {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    example: '{"email":"email1","first_name":"first_name1","id":"00000000-0000-0000-0000-000000000001","last_name":"last_name1","locale":"en","picture":"picture1","private_metadata":"{\\"version\\":\\"1\\"}","public_metadata":"{\\"version\\":\\"1\\"}","status_tag_id":"00000000-0000-0000-0000-000000000002","username":"username1"}',
+    external_docs: {
+      description: "Find out more about UserInfo",
+      url: "https://gitlab.playpod.ir/alpha/backend/server-services-next",
+    },
+    json_schema: {
+      description: "A userInfo",
+      required: [],
+      title: "UserInfo Message",
+    },
+    read_only: true,
+  };
+  // Output only. email is a property.
+  string email = 1 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The email field."},
+    (validate.rules) = {
+      string: {ignore_empty: true}
+    }
+  ];
+  // Output only. first_name is a property.
+  string first_name = 2 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The first_name field."},
+    (validate.rules) = {
+      string: {ignore_empty: true}
+    }
+  ];
+  // Output only. id is a property.
+  string id = 3 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The id field."},
+    (validate.rules) = {
+      string: {uuid: true}
+    }
+  ];
+  // Output only. last_name is a property.
+  string last_name = 4 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The last_name field."},
+    (validate.rules) = {
+      string: {ignore_empty: true}
+    }
+  ];
+  // Output only. locale is a property.
+  string locale = 5 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The locale field."},
+    (validate.rules) = {
+      string: {ignore_empty: true}
+    }
+  ];
+  // Output only. picture is a property.
+  string picture = 6 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The picture field."},
+    (validate.rules) = {
+      string: {ignore_empty: true}
+    }
+  ];
+  // Output only. private_metadata is a property.
+  string private_metadata = 7 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The private_metadata field."},
+    (validate.rules) = {
+      string: {ignore_empty: true}
+    }
+  ];
+  // Output only. public_metadata is a property.
+  string public_metadata = 8 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The public_metadata field."},
+    (validate.rules) = {
+      string: {ignore_empty: true}
+    }
+  ];
+  // Output only. status_tag_id is a property.
+  string status_tag_id = 9 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The status_tag_id field."},
+    (validate.rules) = {
+      string: {
+        ignore_empty: true,
+        uuid: true
+      }
+    }
+  ];
+  // Output only. username is a property.
+  string username = 10 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The username field."},
+    (validate.rules) = {
+      string: {
+        ignore_empty: true,
+        pattern: "^[A-Za-z]\\w{3,14}$"
+      }
+    }
+  ];
+}
+
+// UserInfoUpdate is a message.
+message UserInfoUpdate {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    example: '{"email":"email1","first_name":"first_name1","last_name":"last_name1","locale":"en","picture":"picture1","private_metadata":"{\\"version\\":\\"1\\"}","public_metadata":"{\\"version\\":\\"1\\"}","status_tag_id":"00000000-0000-0000-0000-000000000002","username":"username1"}',
+    external_docs: {
+      description: "Find out more about UserInfo",
+      url: "https://gitlab.playpod.ir/alpha/backend/server-services-next",
+    },
+    json_schema: {
+      description: "A userInfo",
+      required: [],
+      title: "UserInfo Message",
+    },
+    read_only: true,
+  };
+  // email is a property.
+  google.protobuf.StringValue email = 1 [
+    (google.api.field_behavior) = OPTIONAL,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The email field."},
+    (validate.rules) = {
+      string: {ignore_empty: true}
+    }
+  ];
+  // first_name is a property.
+  google.protobuf.StringValue first_name = 2 [
+    (google.api.field_behavior) = OPTIONAL,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The first_name field."},
+    (validate.rules) = {
+      string: {ignore_empty: true}
+    }
+  ];
+  // last_name is a property.
+  google.protobuf.StringValue last_name = 3 [
+    (google.api.field_behavior) = OPTIONAL,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The last_name field."},
+    (validate.rules) = {
+      string: {ignore_empty: true}
+    }
+  ];
+  // locale is a property.
+  google.protobuf.StringValue locale = 4 [
+    (google.api.field_behavior) = OPTIONAL,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The locale field."},
+    (validate.rules) = {
+      string: {ignore_empty: true}
+    }
+  ];
+  // picture is a property.
+  google.protobuf.StringValue picture = 5 [
+    (google.api.field_behavior) = OPTIONAL,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The picture field."},
+    (validate.rules) = {
+      string: {ignore_empty: true}
+    }
+  ];
+  // private_metadata is a property.
+  google.protobuf.StringValue private_metadata = 6 [
+    (google.api.field_behavior) = OPTIONAL,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The private_metadata field."},
+    (validate.rules) = {
+      string: {ignore_empty: true}
+    }
+  ];
+  // public_metadata is a property.
+  google.protobuf.StringValue public_metadata = 7 [
+    (google.api.field_behavior) = OPTIONAL,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The public_metadata field."},
+    (validate.rules) = {
+      string: {ignore_empty: true}
+    }
+  ];
+  // status_tag_id is a property.
+  google.protobuf.StringValue status_tag_id = 9 [
+    (google.api.field_behavior) = OPTIONAL,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The status_tag_id field."},
+    (validate.rules) = {
+      string: {
+        ignore_empty: true,
+        uuid: true
+      }
+    }
+  ];
+  // username is a property.
+  google.protobuf.StringValue username = 10 [
+    (google.api.field_behavior) = OPTIONAL,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The username field."},
+    (validate.rules) = {
+      string: {
+        ignore_empty: false,
+        pattern: "^[A-Za-z]\\w{3,14}$"
+      }
+    }
+  ];
+}
+
+// UserInfoServiceUpdateRequest is a message.
+message UserInfoServiceUpdateRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    example: '{"id":"00000000-0000-0000-0000-000000000001","user_info_update":{"email":"email1","first_name":"first_name1","last_name":"last_name1","locale":"en","picture":"picture1","private_metadata":"{\\"version\\":\\"1\\"}","public_metadata":"{\\"version\\":\\"1\\"}","status_tag_id":"00000000-0000-0000-0000-000000000002","username":"username1"}}',
+    external_docs: {
+      description: "Find out more about UserInfoServiceUpdateRequest",
+      url: "https://gitlab.playpod.ir/alpha/backend/server-services-next",
+    },
+    json_schema: {
+      description: "A userInfo service update request",
+      required: ["user_info_update"],
+      title: "UserInfoServiceUpdateRequest Message",
+    },
+    read_only: false,
+  };
+  // Required. id is a property.
+  string id = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The id field."},
+    (validate.rules) = {
+      string: {uuid: true}
+    }
+  ];
+  // Required. user_info_update is a property.
+  UserInfoUpdate user_info_update = 2 [
+    (google.api.field_behavior) = OPTIONAL,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The user_info_update field."}
+  ];
+}
+
+// UserInfoServiceUpdateResponse is a message.
+message UserInfoServiceUpdateResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    example: '{"updated_at":"2022-12-04T13:37:00.888824135Z"}'
+    external_docs: {
+      description: "Find out more about UserInfoServiceUpdateResponse",
+      url: "https://gitlab.playpod.ir/alpha/backend/server-services-next",
+    },
+    json_schema: {
+      description: "A user info service update response",
+      title: "UserInfoServiceUpdateResponse Message",
+    },
+    read_only: false,
+  };
+  // updated_at is a property.
+  google.protobuf.Timestamp updated_at = 1 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The updated_at field."}
+  ];
+}
+
+// UserInfoServiceGetRequest is a message.
+message UserInfoServiceGetRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    example: '{"id":"00000000-0000-0000-0000-000000000001"}',
+    external_docs: {
+      description: "Find out more about UserInfoServiceGetRequest",
+      url: "https://gitlab.playpod.ir/alpha/backend/server-services-next",
+    },
+    json_schema: {
+      description: "A userInfo service get request",
+      required: ["id"],
+      title: "UserInfoServiceGetRequest Message",
+    },
+    read_only: false,
+  };
+  // Required. id is a property.
+  string id = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The id field."},
+    (validate.rules) = {
+      string: {uuid: true}
+    }
+  ];
+}
+
+// UserInfoServiceGetResponse is a message.
+message UserInfoServiceGetResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    example: '{"user_info":{"email":"email1","first_name":"first_name1","id":"00000000-0000-0000-0000-000000000001","last_name":"last_name1","locale":"en","picture":"picture1","private_metadata":"{\\"version\\":\\"1\\"}","public_metadata":"{\\"version\\":\\"1\\"}","status_tag_id":"00000000-0000-0000-0000-000000000002","username":"username1"}}'
+    external_docs: {
+      description: "Find out more about UserInfoServiceGetResponse",
+      url: "https://gitlab.playpod.ir/alpha/backend/server-services-next",
+    },
+    json_schema: {
+      description: "A user info service get response",
+      title: "UserInfoServiceGetResponse Message",
+    },
+    read_only: false,
+  };
+  // Output only. user_info is a property.
+  UserInfo user_info = 1 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The user_info field."}
+  ];
+}
+
+// UserInfoServiceListRequest is a message.
+message UserInfoServiceListRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    example: '{"page_token":"Cv-BBgEC_4QAAAAG_4IAAjEK","page_size":10,"status_tag_id":"00000000-0000-0000-0000-000000000002","username":"username1"}',
+    external_docs: {
+      description: "Find out more about UserInfoServiceListRequest",
+      url: "https://gitlab.playpod.ir/alpha/backend/server-services-next",
+    },
+    json_schema: {
+      description: "A user info service get list request",
+      required: ["page_size"],
+      title: "UserInfoServiceListRequest Message",
+    },
+    read_only: false,
+  };
+  // page_token is a property.
+  string page_token = 1 [
+    (google.api.field_behavior) = OPTIONAL,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The page_token field."},
+    (validate.rules) = {
+      string: {ignore_empty: true}
+    }
+  ];
+  // Required. page_size is a property.
+  uint32 page_size = 2 [
+    (google.api.field_behavior) = REQUIRED,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The page_size field."},
+    (validate.rules) = {
+      uint32: {
+        gt: 0,
+        lt: 100
+      }
+    }
+  ];
+  // status_tag_id is a property.
+  string status_tag_id = 3 [
+    (google.api.field_behavior) = OPTIONAL,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The status_tag_id field."},
+    (validate.rules) = {
+      string: {
+        ignore_empty: true,
+        uuid: true
+      }
+    }
+  ];
+  // username is a property.
+  string username = 4 [
+    (google.api.field_behavior) = OPTIONAL,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The username field."},
+    (validate.rules) = {
+      string: {
+        ignore_empty: true,
+        min_len: 3
+      }
+    }
+  ];
+}
+
+// UserInfoServiceListResponse is a message.
+message UserInfoServiceListResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    example: '{"next_page_token":"Cv-BBgEC_4QAAAAH_4IAAzExCg==","user_infos":[{"email":"email1","first_name":"first_name1","id":"00000000-0000-0000-0000-000000000001","last_name":"last_name1","locale":"en","picture":"picture1","private_metadata":"{\\"version\\":\\"1\\"}","public_metadata":"{\\"version\\":\\"1\\"}","status_tag_id":"00000000-0000-0000-0000-000000000002","username":"username1"}]}'
+    external_docs: {
+      description: "Find out more about UserInfoServiceListResponse",
+      url: "https://gitlab.playpod.ir/alpha/backend/server-services-next",
+    },
+    json_schema: {
+      description: "A user info service get list response",
+      title: "UserInfoServiceListResponse Message",
+    },
+    read_only: true,
+  };
+  // next_page_token is a property.
+  string next_page_token = 1 [
+    (google.api.field_behavior) = OPTIONAL,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The next_page_token field."},
+    (validate.rules) = {
+      string: {ignore_empty: true}
+    }
+  ];
+  // user_infos is a property.
+  repeated UserInfo user_infos = 2 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The user_infos field."}
+  ];
+}
+
+// UserInfoService is a service.
+service UserInfoService {
+  // Update is a rpc.
+  rpc Update(UserInfoServiceUpdateRequest) returns (UserInfoServiceUpdateResponse) {
+    option (google.api.http) = {
+      body: "user_info_update",
+      patch: "/api/v1/userInfos/{id}",
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      security: {
+        security_requirement: {},
+      },
+    };
+  }
+  // Get is a rpc.
+  rpc Get(UserInfoServiceGetRequest) returns (UserInfoServiceGetResponse) {
+    option (google.api.http) = {get: "/api/v1/userInfos/{id}"};
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      security: {
+        security_requirement: {},
+      },
+    };
+  }
+  // List is a rpc.
+  rpc List(UserInfoServiceListRequest) returns (UserInfoServiceListResponse) {
+    option (google.api.http) = {get: "/api/v1/userInfos"};
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      security: {
+        security_requirement: {},
+      },
+    };
+  }
+}

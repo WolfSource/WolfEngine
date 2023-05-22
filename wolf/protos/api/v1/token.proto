@@ -1,0 +1,257 @@
+syntax = "proto3";
+
+package api.v1;
+
+import "google/api/annotations.proto";
+import "google/api/field_behavior.proto";
+import "google/protobuf/timestamp.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "validate/validate.proto";
+
+option go_package = "gitlab.playpod.ir/alpha/backend/server-services-next/gen/go/api/v1;apiv1";
+
+// Token is a message.
+message Token {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    example: '{"access_token":"ya29.a0AX9GBdWtZWzIPiu93H3kCXFBKaFXwnX1fv8iJPk5F9-nx1GJSDt5Yn2uVgxKaZVwprsRyvk8oAp2W9R7hbfdYfiTzZX278Y6lOyEs_LRXtGv6Lhm4neAqDXwqPJIiY0dGHMqyzEw2saqV-JjbgJbPkcLuo_a4XAaCgYKAR8SARASFQHUCsbCIGC8YPxsIS-DwAmbBMv13A0166","expiry_time":"2022-12-24T10:54:29.272126+03:30","id":"00000000-0000-0000-0000-000000000001","token_type":"Bearer","user_id":"00000000-0000-0000-0000-000000000001"}',
+    external_docs: {
+      description: "Find out more about Token",
+      url: "https://gitlab.playpod.ir/alpha/backend/server-services-next",
+    },
+    json_schema: {
+      description: "A token",
+      required: [],
+      title: "Token Message",
+    },
+    read_only: true,
+  };
+  // Output only. access_token is a property.
+  string access_token = 1 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The access_token field."},
+    (validate.rules) = {
+      string: {ignore_empty: true}
+    }
+  ];
+  // expiry_time is a property.
+  google.protobuf.Timestamp expiry_time = 2 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The expiry_time field."}
+  ];
+  // Output only. id is a property.
+  string id = 3 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The id field."},
+    (validate.rules) = {
+      string: {uuid: true}
+    }
+  ];
+  // Output only. token_type is a property.
+  string token_type = 4 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The token_type field."},
+    (validate.rules) = {
+      string: {ignore_empty: true}
+    }
+  ];
+  // Output only. user_id is a property.
+  string user_id = 5 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The user_id field."},
+    (validate.rules) = {
+      string: {
+        ignore_empty: true,
+        uuid: true
+      }
+    }
+  ];
+}
+
+// TokenServiceCallbackRequest is a message.
+message TokenServiceCallbackRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    example: '{"authuser":"authuser1","code":"code1","prompt":"prompt1","scope":"scope1","state":"state1"}',
+    external_docs: {
+      description: "Find out more about TokenServiceCallbackRequest",
+      url: "https://gitlab.playpod.ir/alpha/backend/server-services-next",
+    },
+    json_schema: {
+      description: "A token service callback request",
+      required: [
+        "authuser",
+        "code",
+        "prompt",
+        "scope",
+        "state"
+      ],
+      title: "TokenServiceCallbackRequest Message",
+    },
+    read_only: false,
+  };
+  // Required. authuser is a property.
+  string authuser = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The authuser field."}
+  ];
+  // Required. code is a property.
+  string code = 2 [
+    (google.api.field_behavior) = REQUIRED,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The code field."}
+  ];
+  // Required. prompt is a property.
+  string prompt = 3 [
+    (google.api.field_behavior) = REQUIRED,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The prompt field."}
+  ];
+  // Required. scope is a property.
+  string scope = 4 [
+    (google.api.field_behavior) = REQUIRED,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The scope field."}
+  ];
+  // Required. state is a property.
+  string state = 5 [
+    (google.api.field_behavior) = REQUIRED,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The state field."}
+  ];
+}
+
+// TokenServiceCallbackResponse is a message.
+message TokenServiceCallbackResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    example: '{"token":{"access_token":"ya29.a0AX9GBdWtZWzIPiu93H3kCXFBKaFXwnX1fv8iJPk5F9-nx1GJSDt5Yn2uVgxKaZVwprsRyvk8oAp2W9R7hbfdYfiTzZX278Y6lOyEs_LRXtGv6Lhm4neAqDXwqPJIiY0dGHMqyzEw2saqV-JjbgJbPkcLuo_a4XAaCgYKAR8SARASFQHUCsbCIGC8YPxsIS-DwAmbBMv13A0166","expiry_time":"2022-12-24T10:54:29.272126+03:30","id":"00000000-0000-0000-0000-000000000001","token_type":"Bearer","user_id":"00000000-0000-0000-0000-000000000001"}}',
+    external_docs: {
+      description: "Find out more about TokenServiceCallbackResponse",
+      url: "https://gitlab.playpod.ir/alpha/backend/server-services-next",
+    },
+    json_schema: {
+      description: "A token service callback response",
+      title: "TokenServiceCallbackResponse Message",
+    },
+    read_only: true,
+  };
+  // Output only. token is a property.
+  Token token = 1 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The token field."}
+  ];
+}
+
+// TokenServiceGetByAccessTokenRequest is a message.
+message TokenServiceGetByAccessTokenRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    example: '{"access_token":"ya29.a0AX9GBdWtZWzIPiu93H3kCXFBKaFXwnX1fv8iJPk5F9-nx1GJSDt5Yn2uVgxKaZVwprsRyvk8oAp2W9R7hbfdYfiTzZX278Y6lOyEs_LRXtGv6Lhm4neAqDXwqPJIiY0dGHMqyzEw2saqV-JjbgJbPkcLuo_a4XAaCgYKAR8SARASFQHUCsbCIGC8YPxsIS-DwAmbBMv13A0166"}',
+    external_docs: {
+      description: "Find out more about TokenServiceGetByAccessTokenRequest",
+      url: "https://gitlab.playpod.ir/alpha/backend/server-services-next",
+    },
+    json_schema: {
+      description: "A token service get by access token request",
+      required: ["access_token"],
+      title: "TokenServiceGetByAccessTokenRequest Message",
+    },
+    read_only: false,
+  };
+  // Required. access_token is a property.
+  string access_token = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The access_token field."}
+  ];
+}
+
+// TokenServiceGetByAccessTokenResponse is a message.
+message TokenServiceGetByAccessTokenResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    example: '{"token":{"access_token":"ya29.a0AX9GBdWtZWzIPiu93H3kCXFBKaFXwnX1fv8iJPk5F9-nx1GJSDt5Yn2uVgxKaZVwprsRyvk8oAp2W9R7hbfdYfiTzZX278Y6lOyEs_LRXtGv6Lhm4neAqDXwqPJIiY0dGHMqyzEw2saqV-JjbgJbPkcLuo_a4XAaCgYKAR8SARASFQHUCsbCIGC8YPxsIS-DwAmbBMv13A0166","expiry_time":"2022-12-24T10:54:29.272126+03:30","id":"00000000-0000-0000-0000-000000000001","token_type":"Bearer","user_id":"00000000-0000-0000-0000-000000000001"}}',
+    external_docs: {
+      description: "Find out more about TokenServiceGetByAccessTokenResponse",
+      url: "https://gitlab.playpod.ir/alpha/backend/server-services-next",
+    },
+    json_schema: {
+      description: "A token service get by access token response",
+      title: "TokenServiceGetByAccessTokenResponse Message",
+    },
+    read_only: true,
+  };
+  // Output only. token is a property.
+  Token token = 1 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The token field."}
+  ];
+}
+
+// TokenServiceVerifyRequest is a message.
+message TokenServiceVerifyRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    example: '{"access_token":"ya29.a0AX9GBdWtZWzIPiu93H3kCXFBKaFXwnX1fv8iJPk5F9-nx1GJSDt5Yn2uVgxKaZVwprsRyvk8oAp2W9R7hbfdYfiTzZX278Y6lOyEs_LRXtGv6Lhm4neAqDXwqPJIiY0dGHMqyzEw2saqV-JjbgJbPkcLuo_a4XAaCgYKAR8SARASFQHUCsbCIGC8YPxsIS-DwAmbBMv13A0166"}',
+    external_docs: {
+      description: "Find out more about TokenServiceVerifyRequest",
+      url: "https://gitlab.playpod.ir/alpha/backend/server-services-next",
+    },
+    json_schema: {
+      description: "A token service verify request",
+      required: ["access_token"],
+      title: "TokenServiceVerifyRequest Message",
+    },
+    read_only: false,
+  };
+  // Required. access_token is a property.
+  string access_token = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The access_token field."}
+  ];
+}
+
+// TokenServiceVerifyResponse is a message.
+message TokenServiceVerifyResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    example: '{"is_verified":false}',
+    external_docs: {
+      description: "Find out more about TokenServiceVerifyResponse",
+      url: "https://gitlab.playpod.ir/alpha/backend/server-services-next",
+    },
+    json_schema: {
+      description: "A token service verisy response",
+      title: "TokenServiceVerifyResponse Message",
+    },
+    read_only: true,
+  };
+  // Output only. is_verified is a property.
+  bool is_verified = 1 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The is_verified field."}
+  ];
+}
+
+// TokenService is a service.
+service TokenService {
+  // Callback is a rpc.
+  rpc Callback(TokenServiceCallbackRequest) returns (TokenServiceCallbackResponse) {
+    option (google.api.http) = {
+      body: "*",
+      post: "/api/v1/tokens:callback",
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      security: {
+        security_requirement: {},
+      },
+    };
+  }
+  // GetByAccessToken is a rpc.
+  rpc GetByAccessToken(TokenServiceGetByAccessTokenRequest) returns (TokenServiceGetByAccessTokenResponse) {
+    option (google.api.http) = {get: "/api/v1/tokens:accessToken"};
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      security: {
+        security_requirement: {},
+      },
+    };
+  }
+  // Verify is a rpc.
+  rpc Verify(TokenServiceVerifyRequest) returns (TokenServiceVerifyResponse) {
+    option (google.api.http) = {get: "/api/v1/tokens:verify"};
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      security: {
+        security_requirement: {},
+      },
+    };
+  }
+}

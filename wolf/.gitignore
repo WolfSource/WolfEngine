@@ -1,0 +1,5 @@
+*.DS_Store
+*.suo
+/build/*
+/shells/ffmpeg/build/*
+/rust/target/*
