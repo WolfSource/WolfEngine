@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <h1>Hello Wolf</h1>
+</body>
+<script>
+    let socket = new WebSocket("ws://127.0.0.1:8881");
+    socket.onopen = function (e) {
+        alert("[open] connection established");
+        alert("sending to server");
+        socket.send("Hello Wolf from WS");
+    };
+    socket.onmessage = function (event) {
+        console.log(`[message] data received from server: ${event.data}`);
+    };
+    socket.onclose = function (event) {
+        if (event.wasClean) {
+            alert(`[close] connection closed cleanly, code=${event.code} reason=${event.reason}`);
+        } else {
+            // e.g. server process killed or network down
+            // event.code is usually 1006 in this case
+            alert('[close] connection died');
+        }
+    };
+    socket.onerror = function (error) {
+        alert(`[error] ${error.message}`);
+    };
+</script>
+</html>

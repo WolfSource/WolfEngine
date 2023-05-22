@@ -1,0 +1,3 @@
+
+# Variables for testing get_env_boolean functions
+BOOLEAN_VALUE=True

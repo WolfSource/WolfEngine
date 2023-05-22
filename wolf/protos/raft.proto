@@ -1,0 +1,47 @@
+syntax = "proto3";
+package wolf.raft;
+
+service Raft {
+    rpc BootstrapClientStreaming(stream RaftBootstrapReq) returns (RaftBootstrapRes) {}
+    rpc Bootstrap (RaftBootstrapReq) returns (RaftBootstrapRes) {}
+    rpc BootstrapServerStreaming(RaftBootstrapReq) returns (stream RaftBootstrapRes) {}
+    rpc BootstrapBidirectionalStreaming(stream RaftBootstrapReq) returns (stream RaftBootstrapRes) {}
+
+}
+
+/*
+    Represents all error codes of services
+*/
+enum ErrorCode {
+    RAFT_UNDEFINED_ERROR = 0;
+    RAFT_BOOTSTRAP_FAILED = 1;
+}
+
+/*
+    The structure of the error response which is shared
+    between all rpc(s) of all services.
+*/
+message RaftErrorRes {
+    string msg_id = 1;
+    ErrorCode code = 2;
+    string msg = 3;
+}
+
+/*
+    messages for Bootstrap
+*/
+message RaftBootstrapReq {
+    string msg_id = 1;
+    uint64 number_of_nodes = 3;
+}
+
+message RaftBootstrapOkRes {
+    string msg_id = 1;
+}
+
+message RaftBootstrapRes {
+    oneof response {
+        RaftBootstrapOkRes ok_res = 1;
+        RaftErrorRes error_res = 2;
+    }
+}

@@ -1,3 +1,31 @@
+*.log
+*.tlog
+*.wLog
+*.idb
+*.pdb
+*.ipch
+*.ilk
+*.recipe
+*.res
+*.enc
+*.vscode
+*.advixeproj
+*.advixeexp
+*.dflgadvixe
+*.infoadvixe
+*.DS_Store
+*.db
+*.db-shm
+*.db-wal
+*.opendb
+*.DS_Store
+*.pem
+
+/bin/*
+/build/*
+/coverage/*
+/install/*
+
 # Compiled Object files
 *.slo
 *.lo
@@ -8,19 +36,10 @@
 *.gch
 *.pch
 
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
 
 # Fortran module files
 *.mod
 
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
 
 # Executables
 *.exe
